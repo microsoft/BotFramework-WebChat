@@ -1,0 +1,11 @@
+{
+  "name": "msbotchat",
+  "version": "0.0.1",
+  "description": "web chat app for MS bot framework ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bill Barnes",
+  "license": "MIT"
+}
