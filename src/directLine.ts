@@ -15,15 +15,15 @@ interface Attachment {
 
 interface Message
 {
-    id: string,
+    id?: string,
     conversationId: string,
-    created: string,
-    from: string,
-    text: string,
-    channelData: string,
+    created?: string,
+    from?: string,
+    text?: string,
+    channelData?: string,
     images?: string[],
     attachments?: Attachment[];
-    etag: string;
+    etag?: string;
 }
 
 interface MessageGroup
@@ -34,20 +34,45 @@ interface MessageGroup
 }
 
 const baseUrl = "https://ic-webchat-scratch.azurewebsites.net";
+const app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
 
-const conversation = Observable.ajax<AjaxResponse>({
-    method: "POST",
-    url: baseUrl + "/api/conversations",
-    headers: {
-        "Accept": "application/json",
-        "Authorization": "BotConnector RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0" 
-    }
-})
-.map(ajaxResponse => ajaxResponse.response as Conversation);
+const thisConversation = Observable
+    .ajax<AjaxResponse>({
+        method: "POST",
+        url: `${baseUrl}/api/conversations`,
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `BotConnector ${app_secret}` 
+        }
+    })
+    .first()
+    .map(ajaxResponse => ajaxResponse.response as Conversation);
 
-const foo = conversation.subscribe({
-    next: result => console.log("result", result.conversationId),
-    error: result => console.log("error", result),
-    complete: () => console.log("done")
+const postMessage = (message:Message, conversationId:string, token:string) =>
+    Observable
+    .ajax<AjaxResponse>({
+        method: "POST",
+        url: `${baseUrl}/api/conversations/${conversationId}/messages`,
+        body: message,
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `BotConnector ${token}`
+        }
+    });
+
+thisConversation.subscribe({
+    next: conversation => {
+        const testMessage:Message = {
+            conversationId: conversation.conversationId,
+            from:null,
+            text: "Boy Howdy"
+        }
+        postMessage(testMessage, conversation.conversationId, conversation.token).subscribe({
+            error: error => console.log("error posting message", error),
+            complete: () => console.log("done posting message")
+        })
+    },
+    error: result => console.log("error starting conversation", result),
+    complete: () => console.log("done starting conversation")
 });
 

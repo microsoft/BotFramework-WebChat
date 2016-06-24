@@ -55,19 +55,44 @@
 	var rxjs_1 = __webpack_require__(2);
 	var source = rxjs_1.Observable.ajax({ method: "GET", url: "myurl" });
 	var baseUrl = "https://ic-webchat-scratch.azurewebsites.net";
-	var conversation = rxjs_1.Observable.ajax({
+	var app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
+	var thisConversation = rxjs_1.Observable
+	    .ajax({
 	    method: "POST",
 	    url: baseUrl + "/api/conversations",
 	    headers: {
 	        "Accept": "application/json",
-	        "Authorization": "BotConnector RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0"
+	        "Authorization": "BotConnector " + app_secret
 	    }
 	})
+	    .first()
 	    .map(function (ajaxResponse) { return ajaxResponse.response; });
-	var foo = conversation.subscribe({
-	    next: function (result) { return console.log("result", result.conversationId); },
-	    error: function (result) { return console.log("error", result); },
-	    complete: function () { return console.log("done"); }
+	var postMessage = function (message, conversationId, token) {
+	    return rxjs_1.Observable
+	        .ajax({
+	        method: "POST",
+	        url: baseUrl + "/api/conversations/" + conversationId + "/messages",
+	        body: message,
+	        headers: {
+	            "Accept": "application/json",
+	            "Authorization": "BotConnector " + token
+	        }
+	    });
+	};
+	thisConversation.subscribe({
+	    next: function (conversation) {
+	        var testMessage = {
+	            conversationId: conversation.conversationId,
+	            from: null,
+	            text: "Boy Howdy"
+	        };
+	        postMessage(testMessage, conversation.conversationId, conversation.token).subscribe({
+	            error: function (error) { return console.log("error posting message", error); },
+	            complete: function () { return console.log("done posting message"); }
+	        });
+	    },
+	    error: function (result) { return console.log("error starting conversation", result); },
+	    complete: function () { return console.log("done starting conversation"); }
 	});
 
 
