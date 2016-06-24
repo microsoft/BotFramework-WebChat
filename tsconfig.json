@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "outDir": "./public/",
+        "jsx": "react",
+        "sourceMap": true,
+        "noImplicitAny": false
+    },
+    "files": [
+        "typings/index.d.ts",
+        "src/directLine.ts"
+    ]
+}
