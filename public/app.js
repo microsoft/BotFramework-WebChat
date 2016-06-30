@@ -56,17 +56,50 @@
 	var source = rxjs_1.Observable.ajax({ method: "GET", url: "myurl" });
 	var baseUrl = "https://ic-webchat-scratch.azurewebsites.net";
 	var app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
-	var thisConversation = rxjs_1.Observable
-	    .ajax({
-	    method: "POST",
-	    url: baseUrl + "/api/conversations",
-	    headers: {
-	        "Accept": "application/json",
-	        "Authorization": "BotConnector " + app_secret
-	    }
-	})
-	    .first()
-	    .map(function (ajaxResponse) { return ajaxResponse.response; });
+	var app = function () {
+	    return startConversation().first().do(function (conversation) {
+	        getMessages(conversation.conversationId, conversation.token)
+	            .subscribe({
+	            next: function (message) { return console.log("got message", message); },
+	            error: function (error) { return console.log("error getting messages", error); },
+	            complete: function () { return console.log("done getting messages"); }
+	        });
+	        console.log("let's post some messages!");
+	        rxjs_1.Observable
+	            .range(0, 30)
+	            .map(function (i) { return {
+	            conversationId: conversation.conversationId,
+	            from: null,
+	            text: "Message #" + i
+	        }; })
+	            .delay(0)
+	            .do(function (message) { return console.log("preparing to post message", message); })
+	            .map(function (message) { return postMessage(message, conversation.conversationId, conversation.token); })
+	            .subscribe({
+	            next: function (ajaxResponse) { return console.log("posted message"); },
+	            error: function (error) { return console.log("error posting messages", error); },
+	            complete: function () { return console.log("done posting messages"); }
+	        });
+	    })
+	        .subscribe({
+	        next: function (conversation) { return console.log("got the conversation", conversation); },
+	        error: function (result) { return console.log("error starting conversation", result); },
+	        complete: function () { return console.log("done starting conversation"); }
+	    });
+	};
+	var startConversation = function () {
+	    return rxjs_1.Observable
+	        .ajax({
+	        method: "POST",
+	        url: baseUrl + "/api/conversations",
+	        headers: {
+	            "Accept": "application/json",
+	            "Authorization": "BotConnector " + app_secret
+	        }
+	    })
+	        .do(function (ajaxResponse) { return console.log("conversation", ajaxResponse.response); })
+	        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	};
 	var postMessage = function (message, conversationId, token) {
 	    return rxjs_1.Observable
 	        .ajax({
@@ -77,23 +110,42 @@
 	            "Accept": "application/json",
 	            "Authorization": "BotConnector " + token
 	        }
-	    });
+	    })
+	        .do(function (ajaxResponse) { return console.log("post message response", ajaxResponse.response); });
 	};
-	thisConversation.subscribe({
-	    next: function (conversation) {
-	        var testMessage = {
-	            conversationId: conversation.conversationId,
-	            from: null,
-	            text: "Boy Howdy"
-	        };
-	        postMessage(testMessage, conversation.conversationId, conversation.token).subscribe({
-	            error: function (error) { return console.log("error posting message", error); },
-	            complete: function () { return console.log("done posting message"); }
-	        });
-	    },
-	    error: function (result) { return console.log("error starting conversation", result); },
-	    complete: function () { return console.log("done starting conversation"); }
-	});
+	var getMessageGroup = function (conversationId, token, watermark) {
+	    return rxjs_1.Observable
+	        .ajax({
+	        method: "GET",
+	        url: (baseUrl + "/api/conversations/" + conversationId + "/messages") + watermark ? "?watermark=" + watermark : "",
+	        headers: {
+	            "Accept": "application/json",
+	            "Authorization": "BotConnector " + token
+	        }
+	    })
+	        .do(function (ajaxResponse) { return console.log("MessageGroup", ajaxResponse.response); })
+	        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	};
+	var getMessages = function (conversationId, token) {
+	    return new rxjs_1.Observable(function (subscriber) {
+	        var watermark;
+	        while (true) {
+	            console.log("let's get some messages!");
+	            getMessageGroup(conversationId, token, watermark)
+	                .delay(watermark ? 0 : 1000) // This is not the right place for this
+	                .subscribe({
+	                next: function (messageGroup) {
+	                    subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+	                    watermark = messageGroup.watermark;
+	                },
+	                error: function (result) { return subscriber.error(result); },
+	                complete: function () { return subscriber.complete(); }
+	            });
+	        }
+	    })
+	        .concatAll();
+	};
+	app();
 
 
 /***/ },
