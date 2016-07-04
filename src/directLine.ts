@@ -23,17 +23,18 @@ interface Message
     channelData?: string,
     images?: string[],
     attachments?: Attachment[];
-    etag?: string;
+    eTag?: string;
 }
 
 interface MessageGroup
 {
     messages: Message[],
-    watermark: string,
-    eTag: string
+    watermark?: string,
+    eTag?: string
 }
 
-const baseUrl = "https://ic-webchat-scratch.azurewebsites.net";
+const domain = "https://ic-webchat-scratch.azurewebsites.net";
+const baseUrl = `${domain}/api/conversations`;
 const app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
 
 const app = () =>
@@ -47,7 +48,7 @@ const app = () =>
 
         console.log("let's post some messages!");
         Observable
-            .range(0, 30)
+            .range(0, 1)
             .map(i => <Message>
                 {
                     conversationId: conversation.conversationId,
@@ -62,6 +63,7 @@ const app = () =>
                 error: error => console.log("error posting messages", error),
                 complete: () => console.log("done posting messages")
             });
+
     })
     .subscribe({
         next: conversation => console.log("got the conversation", conversation),
@@ -70,10 +72,12 @@ const app = () =>
     });
 
 const startConversation = () =>
+//    Observable.of<Conversation>({conversationId:"foo", token:"bar"})
+
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
-            url: `${baseUrl}/api/conversations`,
+            url: `${baseUrl}`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `BotConnector ${app_secret}` 
@@ -86,7 +90,7 @@ const postMessage = (message:Message, conversationId:string, token:string) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
-            url: `${baseUrl}/api/conversations/${conversationId}/messages`,
+            url: `${baseUrl}/${conversationId}/messages`,
             body: message,
             headers: {
                 "Accept": "application/json",
@@ -95,11 +99,19 @@ const postMessage = (message:Message, conversationId:string, token:string) =>
         })
         .do(ajaxResponse => console.log("post message response", ajaxResponse.response));
 
+const getMessages = (conversationId:string, token:string) =>
+    new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) =>
+        messageGroupGenerator(conversationId, token, subscriber)
+    )
+    .concatAll();
+
 const getMessageGroup = (conversationId:string, token:string, watermark?:string) =>
+//    Observable.of<MessageGroup>({messages:[{conversationId:"foo", text:"hey"}]})
+
     Observable
         .ajax<AjaxResponse>({
             method: "GET",
-            url: `${baseUrl}/api/conversations/${conversationId}/messages` + watermark ? `?watermark=${watermark}` : "",
+            url: `${baseUrl}/${conversationId}/messages` + watermark ? `?watermark=${watermark}` : "",
             headers: {
                 "Accept": "application/json",
                 "Authorization": `BotConnector ${token}`
@@ -108,23 +120,22 @@ const getMessageGroup = (conversationId:string, token:string, watermark?:string)
         .do(ajaxResponse => console.log("MessageGroup", ajaxResponse.response))
         .map(ajaxResponse => ajaxResponse.response as MessageGroup);
 
-const getMessages = (conversationId:string, token:string) =>
-    new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) => {
-        var watermark:string;
-        while(true) {
-            console.log("let's get some messages!");
-            getMessageGroup(conversationId, token, watermark)
-            .delay(watermark ? 0 : 1000) // This is not the right place for this
-            .subscribe({
-                next: messageGroup => {
-                    subscriber.next(Observable.from(messageGroup.messages));
-                    watermark = messageGroup.watermark;
-                },
-                error: result => subscriber.error(result),
-                complete: () => subscriber.complete()
-            });
-        }
-    })
-    .concatAll();
+const messageGroupGenerator = (conversationId:string, token:string, subscriber:Subscriber<Observable<Message>>, watermark?:string) => {
+    console.log("let's get some messages!", conversationId, token, watermark);
+    getMessageGroup(conversationId, token, watermark)
+    .subscribe({
+        next: messageGroup => {
+            console.log("messageGroup", messageGroup);
+            if (messageGroup)
+                subscriber.next(Observable.from(messageGroup.messages));
+
+            setTimeout(
+                () => messageGroupGenerator(conversationId, token, subscriber, messageGroup && messageGroup.watermark),
+                messageGroup && messageGroup.watermark ? 0 : 3000
+            );
+        },
+        error: result => subscriber.error(result),
+    });
+}
 
 app();

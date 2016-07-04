@@ -54,7 +54,8 @@
 	"use strict";
 	var rxjs_1 = __webpack_require__(2);
 	var source = rxjs_1.Observable.ajax({ method: "GET", url: "myurl" });
-	var baseUrl = "https://ic-webchat-scratch.azurewebsites.net";
+	var domain = "https://ic-webchat-scratch.azurewebsites.net";
+	var baseUrl = domain + "/api/conversations";
 	var app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
 	var app = function () {
 	    return startConversation().first().do(function (conversation) {
@@ -66,7 +67,7 @@
 	        });
 	        console.log("let's post some messages!");
 	        rxjs_1.Observable
-	            .range(0, 30)
+	            .range(0, 1)
 	            .map(function (i) { return {
 	            conversationId: conversation.conversationId,
 	            from: null,
@@ -88,10 +89,11 @@
 	    });
 	};
 	var startConversation = function () {
+	    //    Observable.of<Conversation>({conversationId:"foo", token:"bar"})
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
-	        url: baseUrl + "/api/conversations",
+	        url: "" + baseUrl,
 	        headers: {
 	            "Accept": "application/json",
 	            "Authorization": "BotConnector " + app_secret
@@ -104,7 +106,7 @@
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
-	        url: baseUrl + "/api/conversations/" + conversationId + "/messages",
+	        url: baseUrl + "/" + conversationId + "/messages",
 	        body: message,
 	        headers: {
 	            "Accept": "application/json",
@@ -113,11 +115,18 @@
 	    })
 	        .do(function (ajaxResponse) { return console.log("post message response", ajaxResponse.response); });
 	};
+	var getMessages = function (conversationId, token) {
+	    return new rxjs_1.Observable(function (subscriber) {
+	        return messageGroupGenerator(conversationId, token, subscriber);
+	    })
+	        .concatAll();
+	};
 	var getMessageGroup = function (conversationId, token, watermark) {
+	    //    Observable.of<MessageGroup>({messages:[{conversationId:"foo", text:"hey"}]})
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "GET",
-	        url: (baseUrl + "/api/conversations/" + conversationId + "/messages") + watermark ? "?watermark=" + watermark : "",
+	        url: (baseUrl + "/" + conversationId + "/messages") + watermark ? "?watermark=" + watermark : "",
 	        headers: {
 	            "Accept": "application/json",
 	            "Authorization": "BotConnector " + token
@@ -126,24 +135,18 @@
 	        .do(function (ajaxResponse) { return console.log("MessageGroup", ajaxResponse.response); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
-	var getMessages = function (conversationId, token) {
-	    return new rxjs_1.Observable(function (subscriber) {
-	        var watermark;
-	        while (true) {
-	            console.log("let's get some messages!");
-	            getMessageGroup(conversationId, token, watermark)
-	                .delay(watermark ? 0 : 1000) // This is not the right place for this
-	                .subscribe({
-	                next: function (messageGroup) {
-	                    subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	                    watermark = messageGroup.watermark;
-	                },
-	                error: function (result) { return subscriber.error(result); },
-	                complete: function () { return subscriber.complete(); }
-	            });
-	        }
-	    })
-	        .concatAll();
+	var messageGroupGenerator = function (conversationId, token, subscriber, watermark) {
+	    console.log("let's get some messages!", conversationId, token, watermark);
+	    getMessageGroup(conversationId, token, watermark)
+	        .subscribe({
+	        next: function (messageGroup) {
+	            console.log("messageGroup", messageGroup);
+	            if (messageGroup)
+	                subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+	            setTimeout(function () { return messageGroupGenerator(conversationId, token, subscriber, messageGroup && messageGroup.watermark); }, messageGroup && messageGroup.watermark ? 0 : 3000);
+	        },
+	        error: function (result) { return subscriber.error(result); },
+	    });
 	};
 	app();
 

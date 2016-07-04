@@ -58,3 +58,29 @@ That said, the system is built to ressurect chat sessions, so a refresh need not
 
 Don't know much about this. Sounds promising.
 
+## To Do
+
+### Bugs
+
+* Figure out why TestBot is returning null even after we post stuff
+
+### AppState 
+
+* Start a theory about using scan() to turn getMessages into the state we'll render
+* How efficient is that? Will it make new state even when nothing changes?
+* Do sent messages come back from getMessageGroup? If so, how will we reconcile the messages we send from the "copy" we get back? How do we know they're the same message?
+
+### Testing
+
+* What test framework?
+
+* Test versions of the directLine APIs that allow us to inject in static test data
+* Multiple test scenarios, e.g. "reconstruct a large chat session"
+* For each scenario, call test APIs with test data and check the resultant app state
+
+## Implementation Theories
+
+We combine Incoming Messages with Outgoing Messages
+Outgoing messages that are also Incoming are de-duped (the incoming version wins)
+The remaining Outgoing messages are shown last, in the order "sent". We indicate that they are still pending.
+
