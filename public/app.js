@@ -59,25 +59,33 @@
 	var app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
 	var app = function () {
 	    return startConversation().first().do(function (conversation) {
+	        var messages = document.getElementById("app");
+	        //      conversation.conversationId = '17bHVgYjmwG';
+	        //      conversation.token = 'RCurR_XV9ZA.dAA.MQA3AGIASABWAGcAWQBqAG0AdwBHAA.ttGtI73W0QE.7FdDj5c4l8s.T5bgqhfhF3OSlkNbjki74Zi7XerxOamQhwF6AB-v9FA';
 	        getMessages(conversation.conversationId, conversation.token)
 	            .subscribe({
-	            next: function (message) { return console.log("got message", message); },
+	            next: function (message) { return messages.innerHTML += "<p>Received: " + message.text + "</p>"; },
 	            error: function (error) { return console.log("error getting messages", error); },
 	            complete: function () { return console.log("done getting messages"); }
 	        });
 	        console.log("let's post some messages!");
 	        rxjs_1.Observable
-	            .range(0, 1)
+	            .interval(3000)
 	            .map(function (i) { return {
 	            conversationId: conversation.conversationId,
 	            from: null,
 	            text: "Message #" + i
 	        }; })
-	            .delay(0)
-	            .do(function (message) { return console.log("preparing to post message", message); })
-	            .map(function (message) { return postMessage(message, conversation.conversationId, conversation.token); })
+	            .do(function (message) { return messages.innerHTML += "<p>Posting: " + JSON.stringify(message) + "</p>"; })
 	            .subscribe({
-	            next: function (ajaxResponse) { return console.log("posted message"); },
+	            next: function (message) {
+	                return postMessage(message, conversation.conversationId, conversation.token)
+	                    .subscribe({
+	                    next: function (ajaxResponse) { return console.log("posted message", ajaxResponse); },
+	                    error: function (error) { return console.log("error posting message", error); },
+	                    complete: function () { return console.log("done posting message"); }
+	                });
+	            },
 	            error: function (error) { return console.log("error posting messages", error); },
 	            complete: function () { return console.log("done posting messages"); }
 	        });
@@ -99,7 +107,7 @@
 	            "Authorization": "BotConnector " + app_secret
 	        }
 	    })
-	        .do(function (ajaxResponse) { return console.log("conversation", ajaxResponse.response); })
+	        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
 	var postMessage = function (message, conversationId, token) {
@@ -110,10 +118,11 @@
 	        body: message,
 	        headers: {
 	            "Accept": "application/json",
+	            "Content-Type": "application/json",
 	            "Authorization": "BotConnector " + token
 	        }
 	    })
-	        .do(function (ajaxResponse) { return console.log("post message response", ajaxResponse.response); });
+	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); });
 	};
 	var getMessages = function (conversationId, token) {
 	    return new rxjs_1.Observable(function (subscriber) {
@@ -126,13 +135,13 @@
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "GET",
-	        url: (baseUrl + "/" + conversationId + "/messages") + watermark ? "?watermark=" + watermark : "",
+	        url: baseUrl + "/" + conversationId + "/messages?watermark=" + watermark,
 	        headers: {
 	            "Accept": "application/json",
 	            "Authorization": "BotConnector " + token
 	        }
 	    })
-	        .do(function (ajaxResponse) { return console.log("MessageGroup", ajaxResponse.response); })
+	        .do(function (ajaxResponse) { return console.log("get messages ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
 	var messageGroupGenerator = function (conversationId, token, subscriber, watermark) {
@@ -140,10 +149,10 @@
 	    getMessageGroup(conversationId, token, watermark)
 	        .subscribe({
 	        next: function (messageGroup) {
-	            console.log("messageGroup", messageGroup);
-	            if (messageGroup)
+	            var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+	            if (someMessages)
 	                subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	            setTimeout(function () { return messageGroupGenerator(conversationId, token, subscriber, messageGroup && messageGroup.watermark); }, messageGroup && messageGroup.watermark ? 0 : 3000);
+	            setTimeout(function () { return messageGroupGenerator(conversationId, token, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
 	        },
 	        error: function (result) { return subscriber.error(result); },
 	    });
