@@ -62,7 +62,7 @@
 	        var messages = document.getElementById("app");
 	        //      conversation.conversationId = '17bHVgYjmwG';
 	        //      conversation.token = 'RCurR_XV9ZA.dAA.MQA3AGIASABWAGcAWQBqAG0AdwBHAA.ttGtI73W0QE.7FdDj5c4l8s.T5bgqhfhF3OSlkNbjki74Zi7XerxOamQhwF6AB-v9FA';
-	        getMessages(conversation.conversationId, conversation.token)
+	        getMessages(conversation)
 	            .subscribe({
 	            next: function (message) { return messages.innerHTML += "<p>Received: " + message.text + "</p>"; },
 	            error: function (error) { return console.log("error getting messages", error); },
@@ -79,7 +79,7 @@
 	            .do(function (message) { return messages.innerHTML += "<p>Posting: " + JSON.stringify(message) + "</p>"; })
 	            .subscribe({
 	            next: function (message) {
-	                return postMessage(message, conversation.conversationId, conversation.token)
+	                return postMessage(message, conversation)
 	                    .subscribe({
 	                    next: function (ajaxResponse) { return console.log("posted message", ajaxResponse); },
 	                    error: function (error) { return console.log("error posting message", error); },
@@ -110,49 +110,49 @@
 	        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
-	var postMessage = function (message, conversationId, token) {
+	var postMessage = function (message, conversation) {
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
-	        url: baseUrl + "/" + conversationId + "/messages",
+	        url: baseUrl + "/" + conversation.conversationId + "/messages",
 	        body: message,
 	        headers: {
 	            "Accept": "application/json",
 	            "Content-Type": "application/json",
-	            "Authorization": "BotConnector " + token
+	            "Authorization": "BotConnector " + conversation.token
 	        }
 	    })
 	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); });
 	};
-	var getMessages = function (conversationId, token) {
+	var getMessages = function (conversation) {
 	    return new rxjs_1.Observable(function (subscriber) {
-	        return messageGroupGenerator(conversationId, token, subscriber);
+	        return messageGroupGenerator(conversation, subscriber);
 	    })
 	        .concatAll();
 	};
-	var getMessageGroup = function (conversationId, token, watermark) {
+	var getMessageGroup = function (conversation, watermark) {
 	    //    Observable.of<MessageGroup>({messages:[{conversationId:"foo", text:"hey"}]})
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "GET",
-	        url: baseUrl + "/" + conversationId + "/messages?watermark=" + watermark,
+	        url: baseUrl + "/" + conversation.conversationId + "/messages?watermark=" + watermark,
 	        headers: {
 	            "Accept": "application/json",
-	            "Authorization": "BotConnector " + token
+	            "Authorization": "BotConnector " + conversation.token
 	        }
 	    })
 	        .do(function (ajaxResponse) { return console.log("get messages ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
-	var messageGroupGenerator = function (conversationId, token, subscriber, watermark) {
-	    console.log("let's get some messages!", conversationId, token, watermark);
-	    getMessageGroup(conversationId, token, watermark)
+	var messageGroupGenerator = function (conversation, subscriber, watermark) {
+	    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
+	    getMessageGroup(conversation, watermark)
 	        .subscribe({
 	        next: function (messageGroup) {
 	            var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
 	            if (someMessages)
 	                subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	            setTimeout(function () { return messageGroupGenerator(conversationId, token, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+	            setTimeout(function () { return messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
 	        },
 	        error: function (result) { return subscriber.error(result); },
 	    });

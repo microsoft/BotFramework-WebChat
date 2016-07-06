@@ -42,7 +42,7 @@ const app = () =>
         var messages = document.getElementById("app");
 //      conversation.conversationId = '17bHVgYjmwG';
 //      conversation.token = 'RCurR_XV9ZA.dAA.MQA3AGIASABWAGcAWQBqAG0AdwBHAA.ttGtI73W0QE.7FdDj5c4l8s.T5bgqhfhF3OSlkNbjki74Zi7XerxOamQhwF6AB-v9FA';
-        getMessages(conversation.conversationId, conversation.token)
+        getMessages(conversation)
             .subscribe({
                 next: message =>  messages.innerHTML += "<p>Received: " + message.text + "</p>",
                 error: error => console.log("error getting messages", error),
@@ -61,7 +61,7 @@ const app = () =>
             .do(message => messages.innerHTML += "<p>Posting: " + JSON.stringify(message) + "</p>")
             .subscribe({
                 next: message => 
-                    postMessage(message, conversation.conversationId, conversation.token)
+                    postMessage(message, conversation)
                         .subscribe({
                             next: ajaxResponse => console.log("posted message", ajaxResponse),
                             error: error => console.log("error posting message", error),
@@ -91,44 +91,44 @@ const startConversation = () =>
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as Conversation);
 
-const postMessage = (message:Message, conversationId:string, token:string) =>
+const postMessage = (message:Message, conversation:Conversation) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
-            url: `${baseUrl}/${conversationId}/messages`,
+            url: `${baseUrl}/${conversation.conversationId}/messages`,
             body: message,
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": `BotConnector ${token}`
+                "Authorization": `BotConnector ${conversation.token}`
             }
         })
         .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse));
 
-const getMessages = (conversationId:string, token:string) =>
+const getMessages = (conversation:Conversation) =>
     new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) =>
-        messageGroupGenerator(conversationId, token, subscriber)
+        messageGroupGenerator(conversation, subscriber)
     )
     .concatAll();
 
-const getMessageGroup = (conversationId:string, token:string, watermark?:string) =>
+const getMessageGroup = (conversation:Conversation, watermark?:string) =>
 //    Observable.of<MessageGroup>({messages:[{conversationId:"foo", text:"hey"}]})
 
     Observable
         .ajax<AjaxResponse>({
             method: "GET",
-            url: `${baseUrl}/${conversationId}/messages?watermark=${watermark}`,
+            url: `${baseUrl}/${conversation.conversationId}/messages?watermark=${watermark}`,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${token}`
+                "Authorization": `BotConnector ${conversation.token}`
             }
         })
         .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as MessageGroup);
 
-const messageGroupGenerator = (conversationId:string, token:string, subscriber:Subscriber<Observable<Message>>, watermark?:string) => {
-    console.log("let's get some messages!", conversationId, token, watermark);
-    getMessageGroup(conversationId, token, watermark)
+const messageGroupGenerator = (conversation:Conversation, subscriber:Subscriber<Observable<Message>>, watermark?:string) => {
+    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
+    getMessageGroup(conversation, watermark)
     .subscribe({
         next: messageGroup => {
             const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
@@ -136,7 +136,7 @@ const messageGroupGenerator = (conversationId:string, token:string, subscriber:S
                 subscriber.next(Observable.from(messageGroup.messages));
 
             setTimeout(
-                () => messageGroupGenerator(conversationId, token, subscriber, messageGroup && messageGroup.watermark),
+                () => messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark),
                 someMessages && messageGroup.watermark ? 0 : 3000
             );
         },
