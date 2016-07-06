@@ -72,28 +72,7 @@ const app = () =>
         () => console.log("done starting conversation")
     );
 
-const getMessages = (conversation:Conversation) =>
-    new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) =>
-        messageGroupGenerator(conversation, subscriber)
-    )
-    .concatAll();
-
-const messageGroupGenerator = (conversation:Conversation, subscriber:Subscriber<Observable<Message>>, watermark?:string) => {
-    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
-    getMessageGroup(conversation, watermark).subscribe(
-        messageGroup => {
-            const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
-            if (someMessages)
-                subscriber.next(Observable.from(messageGroup.messages));
-
-            setTimeout(
-                () => messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark),
-                someMessages && messageGroup.watermark ? 0 : 3000
-            );
-        },
-        result => subscriber.error(result)
-    );
-}
+app();
 
 // DirectLine calls
 
@@ -124,6 +103,29 @@ const postMessage = (message:Message, conversation:Conversation) =>
         })
         .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse));
 
+const getMessages = (conversation:Conversation) =>
+    new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) =>
+        messageGroupGenerator(conversation, subscriber)
+    )
+    .concatAll();
+
+const messageGroupGenerator = (conversation:Conversation, subscriber:Subscriber<Observable<Message>>, watermark?:string) => {
+    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
+    getMessageGroup(conversation, watermark).subscribe(
+        messageGroup => {
+            const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+            if (someMessages)
+                subscriber.next(Observable.from(messageGroup.messages));
+
+            setTimeout(
+                () => messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark),
+                someMessages && messageGroup.watermark ? 0 : 3000
+            );
+        },
+        result => subscriber.error(result)
+    );
+}
+
 const getMessageGroup = (conversation:Conversation, watermark?:string) =>
     Observable
         .ajax<AjaxResponse>({
@@ -137,4 +139,3 @@ const getMessageGroup = (conversation:Conversation, watermark?:string) =>
         .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as MessageGroup);
 
-app();
