@@ -58,14 +58,9 @@
 	var baseUrl = domain + "/api/conversations";
 	var app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
 	var app = function () {
-	    return startConversation().first().do(function (conversation) {
+	    return startConversation().subscribe(function (conversation) {
 	        var messages = document.getElementById("app");
-	        getMessages(conversation)
-	            .subscribe({
-	            next: function (message) { return messages.innerHTML += "<p>Received: " + message.text + "</p>"; },
-	            error: function (error) { return console.log("error getting messages", error); },
-	            complete: function () { return console.log("done getting messages"); }
-	        });
+	        getMessages(conversation).subscribe(function (message) { return messages.innerHTML += "<p>Received: " + message.text + "</p>"; }, function (error) { return console.log("error getting messages", error); }, function () { return console.log("done getting messages"); });
 	        console.log("let's post some messages!");
 	        rxjs_1.Observable
 	            .interval(3000)
@@ -75,25 +70,27 @@
 	            text: "Message #" + i
 	        }; })
 	            .do(function (message) { return messages.innerHTML += "<p>Posting: " + JSON.stringify(message) + "</p>"; })
-	            .subscribe({
-	            next: function (message) {
-	                return postMessage(message, conversation)
-	                    .subscribe({
-	                    next: function (ajaxResponse) { return console.log("posted message", ajaxResponse); },
-	                    error: function (error) { return console.log("error posting message", error); },
-	                    complete: function () { return console.log("done posting message"); }
-	                });
-	            },
-	            error: function (error) { return console.log("error posting messages", error); },
-	            complete: function () { return console.log("done posting messages"); }
-	        });
-	    })
-	        .subscribe({
-	        next: function (conversation) { return console.log("got the conversation", conversation); },
-	        error: function (result) { return console.log("error starting conversation", result); },
-	        complete: function () { return console.log("done starting conversation"); }
-	    });
+	            .subscribe(function (message) {
+	            return postMessage(message, conversation).subscribe(function (ajaxResponse) { return console.log("posted message", ajaxResponse); }, function (error) { return console.log("error posting message", error); }, function () { return console.log("done posting message"); });
+	        }, function (error) { return console.log("error posting messages", error); }, function () { return console.log("done posting messages"); });
+	    }, function (result) { return console.log("error starting conversation", result); }, function () { return console.log("done starting conversation"); });
 	};
+	var getMessages = function (conversation) {
+	    return new rxjs_1.Observable(function (subscriber) {
+	        return messageGroupGenerator(conversation, subscriber);
+	    })
+	        .concatAll();
+	};
+	var messageGroupGenerator = function (conversation, subscriber, watermark) {
+	    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
+	    getMessageGroup(conversation, watermark).subscribe(function (messageGroup) {
+	        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+	        if (someMessages)
+	            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+	        setTimeout(function () { return messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+	    }, function (result) { return subscriber.error(result); });
+	};
+	// DirectLine calls
 	var startConversation = function () {
 	    return rxjs_1.Observable
 	        .ajax({
@@ -121,12 +118,6 @@
 	    })
 	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); });
 	};
-	var getMessages = function (conversation) {
-	    return new rxjs_1.Observable(function (subscriber) {
-	        return messageGroupGenerator(conversation, subscriber);
-	    })
-	        .concatAll();
-	};
 	var getMessageGroup = function (conversation, watermark) {
 	    return rxjs_1.Observable
 	        .ajax({
@@ -139,19 +130,6 @@
 	    })
 	        .do(function (ajaxResponse) { return console.log("get messages ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
-	};
-	var messageGroupGenerator = function (conversation, subscriber, watermark) {
-	    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
-	    getMessageGroup(conversation, watermark)
-	        .subscribe({
-	        next: function (messageGroup) {
-	            var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
-	            if (someMessages)
-	                subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	            setTimeout(function () { return messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
-	        },
-	        error: function (result) { return subscriber.error(result); },
-	    });
 	};
 	app();
 
