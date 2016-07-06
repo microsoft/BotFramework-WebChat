@@ -40,8 +40,6 @@ const app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4
 const app = () =>
     startConversation().first().do(conversation => {
         var messages = document.getElementById("app");
-//      conversation.conversationId = '17bHVgYjmwG';
-//      conversation.token = 'RCurR_XV9ZA.dAA.MQA3AGIASABWAGcAWQBqAG0AdwBHAA.ttGtI73W0QE.7FdDj5c4l8s.T5bgqhfhF3OSlkNbjki74Zi7XerxOamQhwF6AB-v9FA';
         getMessages(conversation)
             .subscribe({
                 next: message =>  messages.innerHTML += "<p>Received: " + message.text + "</p>",
@@ -78,7 +76,6 @@ const app = () =>
     });
 
 const startConversation = () =>
-//    Observable.of<Conversation>({conversationId:"foo", token:"bar"})
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
@@ -112,8 +109,6 @@ const getMessages = (conversation:Conversation) =>
     .concatAll();
 
 const getMessageGroup = (conversation:Conversation, watermark?:string) =>
-//    Observable.of<MessageGroup>({messages:[{conversationId:"foo", text:"hey"}]})
-
     Observable
         .ajax<AjaxResponse>({
             method: "GET",

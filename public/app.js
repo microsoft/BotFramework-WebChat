@@ -60,8 +60,6 @@
 	var app = function () {
 	    return startConversation().first().do(function (conversation) {
 	        var messages = document.getElementById("app");
-	        //      conversation.conversationId = '17bHVgYjmwG';
-	        //      conversation.token = 'RCurR_XV9ZA.dAA.MQA3AGIASABWAGcAWQBqAG0AdwBHAA.ttGtI73W0QE.7FdDj5c4l8s.T5bgqhfhF3OSlkNbjki74Zi7XerxOamQhwF6AB-v9FA';
 	        getMessages(conversation)
 	            .subscribe({
 	            next: function (message) { return messages.innerHTML += "<p>Received: " + message.text + "</p>"; },
@@ -97,7 +95,6 @@
 	    });
 	};
 	var startConversation = function () {
-	    //    Observable.of<Conversation>({conversationId:"foo", token:"bar"})
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
@@ -131,7 +128,6 @@
 	        .concatAll();
 	};
 	var getMessageGroup = function (conversation, watermark) {
-	    //    Observable.of<MessageGroup>({messages:[{conversationId:"foo", text:"hey"}]})
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "GET",

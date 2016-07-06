@@ -62,13 +62,14 @@ Don't know much about this. Sounds promising.
 
 ### Bugs
 
-* Figure out why TestBot is returning null even after we post stuff
+### Questions
+
+* How can we reconcile the messages we send from the "copy" we get back? How do we know they're the same message?
 
 ### AppState 
 
 * Start a theory about using scan() to turn getMessages into the state we'll render
 * How efficient is that? Will it make new state even when nothing changes?
-* Do sent messages come back from getMessageGroup? If so, how will we reconcile the messages we send from the "copy" we get back? How do we know they're the same message?
 
 ### Testing
 
