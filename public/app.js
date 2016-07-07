@@ -75,21 +75,7 @@
 	        }, function (error) { return console.log("error posting messages", error); }, function () { return console.log("done posting messages"); });
 	    }, function (result) { return console.log("error starting conversation", result); }, function () { return console.log("done starting conversation"); });
 	};
-	var getMessages = function (conversation) {
-	    return new rxjs_1.Observable(function (subscriber) {
-	        return messageGroupGenerator(conversation, subscriber);
-	    })
-	        .concatAll();
-	};
-	var messageGroupGenerator = function (conversation, subscriber, watermark) {
-	    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
-	    getMessageGroup(conversation, watermark).subscribe(function (messageGroup) {
-	        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
-	        if (someMessages)
-	            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	        setTimeout(function () { return messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
-	    }, function (result) { return subscriber.error(result); });
-	};
+	app();
 	// DirectLine calls
 	var startConversation = function () {
 	    return rxjs_1.Observable
@@ -118,6 +104,21 @@
 	    })
 	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); });
 	};
+	var getMessages = function (conversation) {
+	    return new rxjs_1.Observable(function (subscriber) {
+	        return messageGroupGenerator(conversation, subscriber);
+	    })
+	        .concatAll();
+	};
+	var messageGroupGenerator = function (conversation, subscriber, watermark) {
+	    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
+	    getMessageGroup(conversation, watermark).subscribe(function (messageGroup) {
+	        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+	        if (someMessages)
+	            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+	        setTimeout(function () { return messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+	    }, function (result) { return subscriber.error(result); });
+	};
 	var getMessageGroup = function (conversation, watermark) {
 	    return rxjs_1.Observable
 	        .ajax({
@@ -131,7 +132,6 @@
 	        .do(function (ajaxResponse) { return console.log("get messages ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
-	app();
 
 
 /***/ },
@@ -543,7 +543,7 @@
 	"use strict";
 	var root_1 = __webpack_require__(6);
 	var toSubscriber_1 = __webpack_require__(8);
-	var $$observable = __webpack_require__(19);
+	var symbol_observable_1 = __webpack_require__(19);
 	/**
 	 * A representation of any set of values over any amount of time. This the most basic building block
 	 * of RxJS.
@@ -660,7 +660,7 @@
 	     * @method Symbol.observable
 	     * @return {Observable} this instance of the observable
 	     */
-	    Observable.prototype[$$observable] = function () {
+	    Observable.prototype[symbol_observable_1.default] = function () {
 	        return this;
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
@@ -1236,8 +1236,11 @@
 	    function UnsubscriptionError(errors) {
 	        _super.call(this);
 	        this.errors = errors;
-	        this.name = 'UnsubscriptionError';
-	        this.message = errors ? errors.length + " errors occurred during unsubscription:\n" + errors.map(function (err, i) { return ((i + 1) + ") " + err.toString()); }).join('\n') : '';
+	        var err = Error.call(this, errors ?
+	            errors.length + " errors occurred during unsubscription:\n  " + errors.map(function (err, i) { return ((i + 1) + ") " + err.toString()); }).join('\n  ') : '');
+	        this.name = err.name = 'UnsubscriptionError';
+	        this.stack = err.stack;
+	        this.message = err.message;
 	    }
 	    return UnsubscriptionError;
 	}(Error));
@@ -1272,12 +1275,8 @@
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
-	'use strict';
-	
-	module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./ponyfill\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()))(global || window || this);
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	module.exports = __webpack_require__(343);
+
 
 /***/ },
 /* 20 */,
@@ -1302,8 +1301,10 @@
 	var ObjectUnsubscribedError = (function (_super) {
 	    __extends(ObjectUnsubscribedError, _super);
 	    function ObjectUnsubscribedError() {
-	        _super.call(this, 'object unsubscribed');
-	        this.name = 'ObjectUnsubscribedError';
+	        var err = _super.call(this, 'object unsubscribed');
+	        this.name = err.name = 'ObjectUnsubscribedError';
+	        this.stack = err.stack;
+	        this.message = err.message;
 	    }
 	    return ObjectUnsubscribedError;
 	}(Error));
@@ -2358,7 +2359,7 @@
 	var Observable_1 = __webpack_require__(5);
 	var iterator_1 = __webpack_require__(40);
 	var InnerSubscriber_1 = __webpack_require__(41);
-	var $$observable = __webpack_require__(19);
+	var symbol_observable_1 = __webpack_require__(19);
 	function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
 	    var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
 	    if (destination.isUnsubscribed) {
@@ -2407,8 +2408,8 @@
 	            destination.complete();
 	        }
 	    }
-	    else if (typeof result[$$observable] === 'function') {
-	        var obs = result[$$observable]();
+	    else if (typeof result[symbol_observable_1.default] === 'function') {
+	        var obs = result[symbol_observable_1.default]();
 	        if (typeof obs.subscribe !== 'function') {
 	            destination.error('invalid observable');
 	        }
@@ -3072,7 +3073,7 @@
 	var iterator_1 = __webpack_require__(40);
 	var Observable_1 = __webpack_require__(5);
 	var observeOn_1 = __webpack_require__(60);
-	var $$observable = __webpack_require__(19);
+	var symbol_observable_1 = __webpack_require__(19);
 	var isArrayLike = (function (x) { return x && typeof x.length === 'number'; });
 	/**
 	 * We need this JSDoc comment for affecting ESDoc.
@@ -3152,7 +3153,7 @@
 	            scheduler = mapFnOrScheduler;
 	        }
 	        if (ish != null) {
-	            if (typeof ish[$$observable] === 'function') {
+	            if (typeof ish[symbol_observable_1.default] === 'function') {
 	                if (ish instanceof Observable_1.Observable && !scheduler) {
 	                    return ish;
 	                }
@@ -3177,10 +3178,10 @@
 	        var ish = this.ish;
 	        var scheduler = this.scheduler;
 	        if (scheduler == null) {
-	            return ish[$$observable]().subscribe(subscriber);
+	            return ish[symbol_observable_1.default]().subscribe(subscriber);
 	        }
 	        else {
-	            return ish[$$observable]().subscribe(new observeOn_1.ObserveOnSubscriber(subscriber, scheduler, 0));
+	            return ish[symbol_observable_1.default]().subscribe(new observeOn_1.ObserveOnSubscriber(subscriber, scheduler, 0));
 	        }
 	    };
 	    return FromObservable;
@@ -5975,22 +5976,44 @@
 	var errorObject_1 = __webpack_require__(15);
 	var Observable_1 = __webpack_require__(5);
 	var Subscriber_1 = __webpack_require__(9);
-	function createXHRDefault() {
-	    var xhr = new root_1.root.XMLHttpRequest();
-	    if (this.crossDomain) {
+	function getCORSRequest() {
+	    if (root_1.root.XMLHttpRequest) {
+	        var xhr = new root_1.root.XMLHttpRequest();
 	        if ('withCredentials' in xhr) {
-	            xhr.withCredentials = true;
-	            return xhr;
+	            xhr.withCredentials = !!this.withCredentials;
 	        }
-	        else if (!!root_1.root.XDomainRequest) {
-	            return new root_1.root.XDomainRequest();
-	        }
-	        else {
-	            throw new Error('CORS is not supported by your browser');
-	        }
+	        return xhr;
+	    }
+	    else if (!!root_1.root.XDomainRequest) {
+	        return new root_1.root.XDomainRequest();
 	    }
 	    else {
-	        return xhr;
+	        throw new Error('CORS is not supported by your browser');
+	    }
+	}
+	function getXMLHttpRequest() {
+	    if (root_1.root.XMLHttpRequest) {
+	        return new root_1.root.XMLHttpRequest();
+	    }
+	    else {
+	        var progId = void 0;
+	        try {
+	            var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'];
+	            for (var i = 0; i < 3; i++) {
+	                try {
+	                    progId = progIds[i];
+	                    if (new root_1.root.ActiveXObject(progId)) {
+	                        break;
+	                    }
+	                }
+	                catch (e) {
+	                }
+	            }
+	            return new root_1.root.ActiveXObject(progId);
+	        }
+	        catch (e) {
+	            throw new Error('XMLHttpRequest is not supported by your browser');
+	        }
 	    }
 	}
 	function defaultGetResultSelector(response) {
@@ -6035,8 +6058,11 @@
 	        _super.call(this);
 	        var request = {
 	            async: true,
-	            createXHR: createXHRDefault,
+	            createXHR: function () {
+	                return this.crossDomain ? getCORSRequest.call(this) : getXMLHttpRequest();
+	            },
 	            crossDomain: false,
+	            withCredentials: false,
 	            headers: {},
 	            method: 'GET',
 	            responseType: 'json',
@@ -6054,6 +6080,9 @@
 	        }
 	        this.request = request;
 	    }
+	    AjaxObservable.prototype._subscribe = function (subscriber) {
+	        return new AjaxSubscriber(subscriber, this.request);
+	    };
 	    /**
 	     * Creates an observable for an Ajax request with either a request object with
 	     * url, headers, etc or a string for a URL.
@@ -6080,10 +6109,6 @@
 	     * @name ajax
 	     * @owner Observable
 	    */
-	    AjaxObservable._create_stub = function () { return null; };
-	    AjaxObservable.prototype._subscribe = function (subscriber) {
-	        return new AjaxSubscriber(subscriber, this.request);
-	    };
 	    AjaxObservable.create = (function () {
 	        var create = function (urlOrRequest) {
 	            return new AjaxObservable(urlOrRequest);
@@ -6115,7 +6140,7 @@
 	            headers['X-Requested-With'] = 'XMLHttpRequest';
 	        }
 	        // ensure content type is set
-	        if (!('Content-Type' in headers)) {
+	        if (!('Content-Type' in headers) && !(root_1.root.FormData && request.body instanceof root_1.root.FormData)) {
 	            headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 	        }
 	        // properly serialize body
@@ -6184,15 +6209,19 @@
 	        else if (root_1.root.FormData && body instanceof root_1.root.FormData) {
 	            return body;
 	        }
-	        var splitIndex = contentType.indexOf(';');
-	        if (splitIndex !== -1) {
-	            contentType = contentType.substring(0, splitIndex);
+	        if (contentType) {
+	            var splitIndex = contentType.indexOf(';');
+	            if (splitIndex !== -1) {
+	                contentType = contentType.substring(0, splitIndex);
+	            }
 	        }
 	        switch (contentType) {
 	            case 'application/x-www-form-urlencoded':
 	                return Object.keys(body).map(function (key) { return (encodeURI(key) + "=" + encodeURI(body[key])); }).join('&');
 	            case 'application/json':
 	                return JSON.stringify(body);
+	            default:
+	                return body;
 	        }
 	    };
 	    AjaxSubscriber.prototype.setHeaders = function (xhr, headers) {
@@ -6390,20 +6419,25 @@
 	var WebSocketSubject = (function (_super) {
 	    __extends(WebSocketSubject, _super);
 	    function WebSocketSubject(urlConfigOrSource, destination) {
-	        _super.call(this);
-	        this._output = new Subject_1.Subject();
-	        this.WebSocketCtor = root_1.root.WebSocket;
-	        if (typeof urlConfigOrSource === 'string') {
-	            this.url = urlConfigOrSource;
+	        if (urlConfigOrSource instanceof Observable_1.Observable) {
+	            _super.call(this, destination, urlConfigOrSource);
 	        }
 	        else {
-	            // WARNING: config object could override important members here.
-	            assign_1.assign(this, urlConfigOrSource);
+	            _super.call(this);
+	            this.WebSocketCtor = root_1.root.WebSocket;
+	            this._output = new Subject_1.Subject();
+	            if (typeof urlConfigOrSource === 'string') {
+	                this.url = urlConfigOrSource;
+	            }
+	            else {
+	                // WARNING: config object could override important members here.
+	                assign_1.assign(this, urlConfigOrSource);
+	            }
+	            if (!this.WebSocketCtor) {
+	                throw new Error('no WebSocket constructor can be found');
+	            }
+	            this.destination = new ReplaySubject_1.ReplaySubject();
 	        }
-	        if (!this.WebSocketCtor) {
-	            throw new Error('no WebSocket constructor can be found');
-	        }
-	        this.destination = new ReplaySubject_1.ReplaySubject();
 	    }
 	    WebSocketSubject.prototype.resultSelector = function (e) {
 	        return JSON.parse(e.data);
@@ -6417,6 +6451,11 @@
 	     */
 	    WebSocketSubject.create = function (urlConfigOrSource) {
 	        return new WebSocketSubject(urlConfigOrSource);
+	    };
+	    WebSocketSubject.prototype.lift = function (operator) {
+	        var sock = new WebSocketSubject(this, this.destination);
+	        sock.operator = operator;
+	        return sock;
 	    };
 	    // TODO: factor this out to be a proper Operator/Subscriber implementation and eliminate closures
 	    WebSocketSubject.prototype.multiplex = function (subMsg, unsubMsg, messageFilter) {
@@ -6452,7 +6491,10 @@
 	    };
 	    WebSocketSubject.prototype._connectSocket = function () {
 	        var _this = this;
-	        var socket = this.protocol ? new WebSocket(this.url, this.protocol) : new WebSocket(this.url);
+	        var WebSocketCtor = this.WebSocketCtor;
+	        var socket = this.protocol ?
+	            new WebSocketCtor(this.url, this.protocol) :
+	            new WebSocketCtor(this.url);
 	        this.socket = socket;
 	        var subscription = new Subscription_1.Subscription(function () {
 	            _this.socket = null;
@@ -6519,6 +6561,10 @@
 	    };
 	    WebSocketSubject.prototype._subscribe = function (subscriber) {
 	        var _this = this;
+	        var source = this.source;
+	        if (source) {
+	            return source.subscribe(subscriber);
+	        }
 	        if (!this.socket) {
 	            this._connectSocket();
 	        }
@@ -6534,13 +6580,15 @@
 	        return subscription;
 	    };
 	    WebSocketSubject.prototype.unsubscribe = function () {
-	        var socket = this.socket;
+	        var _a = this, source = _a.source, socket = _a.socket;
 	        if (socket && socket.readyState === 1) {
 	            socket.close();
 	            this.socket = null;
 	        }
 	        _super.prototype.unsubscribe.call(this);
-	        this.destination = new ReplaySubject_1.ReplaySubject();
+	        if (!source) {
+	            this.destination = new ReplaySubject_1.ReplaySubject();
+	        }
 	    };
 	    return WebSocketSubject;
 	}(Subject_1.AnonymousSubject));
@@ -7076,7 +7124,10 @@
 	    BufferTimeSubscriber.prototype.closeContext = function (context) {
 	        this.destination.next(context.buffer);
 	        var contexts = this.contexts;
-	        contexts.splice(contexts.indexOf(context), 1);
+	        var spliceIndex = contexts ? contexts.indexOf(context) : -1;
+	        if (spliceIndex >= 0) {
+	            contexts.splice(contexts.indexOf(context), 1);
+	        }
 	    };
 	    return BufferTimeSubscriber;
 	}(Subscriber_1.Subscriber));
@@ -7086,8 +7137,8 @@
 	    if (prevContext) {
 	        subscriber.closeContext(prevContext);
 	    }
-	    state.context = subscriber.openContext();
 	    if (!subscriber.isUnsubscribed) {
+	        state.context = subscriber.openContext();
 	        state.context.closeAction = this.schedule(state, state.bufferTimeSpan);
 	    }
 	}
@@ -10020,8 +10071,10 @@
 	var ArgumentOutOfRangeError = (function (_super) {
 	    __extends(ArgumentOutOfRangeError, _super);
 	    function ArgumentOutOfRangeError() {
-	        _super.call(this, 'argument out of range');
-	        this.name = 'ArgumentOutOfRangeError';
+	        var err = _super.call(this, 'argument out of range');
+	        this.name = err.name = 'ArgumentOutOfRangeError';
+	        this.stack = err.stack;
+	        this.message = err.message;
 	    }
 	    return ArgumentOutOfRangeError;
 	}(Error));
@@ -10551,8 +10604,10 @@
 	var EmptyError = (function (_super) {
 	    __extends(EmptyError, _super);
 	    function EmptyError() {
-	        _super.call(this, 'no elements in sequence');
-	        this.name = 'EmptyError';
+	        var err = _super.call(this, 'no elements in sequence');
+	        this.name = err.name = 'EmptyError';
+	        this.stack = err.stack;
+	        this.message = err.message;
 	    }
 	    return EmptyError;
 	}(Error));
@@ -12197,8 +12252,9 @@
 	            return subjectOrSubjectFactory;
 	        };
 	    }
-	    var connectable = new ConnectableObservable_1.ConnectableObservable(this, subjectFactory);
-	    return selector ? new MulticastObservable_1.MulticastObservable(this, connectable, selector) : connectable;
+	    return !selector ?
+	        new ConnectableObservable_1.ConnectableObservable(this, subjectFactory) :
+	        new MulticastObservable_1.MulticastObservable(this, subjectFactory, selector);
 	}
 	exports.multicast = multicast;
 
@@ -12214,16 +12270,18 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var Observable_1 = __webpack_require__(5);
+	var ConnectableObservable_1 = __webpack_require__(231);
 	var MulticastObservable = (function (_super) {
 	    __extends(MulticastObservable, _super);
-	    function MulticastObservable(source, connectable, selector) {
+	    function MulticastObservable(source, subjectFactory, selector) {
 	        _super.call(this);
 	        this.source = source;
-	        this.connectable = connectable;
+	        this.subjectFactory = subjectFactory;
 	        this.selector = selector;
 	    }
 	    MulticastObservable.prototype._subscribe = function (subscriber) {
-	        var _a = this, selector = _a.selector, connectable = _a.connectable;
+	        var _a = this, selector = _a.selector, source = _a.source;
+	        var connectable = new ConnectableObservable_1.ConnectableObservable(source, this.subjectFactory);
 	        var subscription = selector(connectable).subscribe(subscriber);
 	        subscription.add(connectable.connect());
 	        return subscription;
@@ -12463,8 +12521,8 @@
 	 * @see {@link buffer}
 	 * @see {@link bufferCount}
 	 *
-	 * @return {Observable<[T, T]>} An Observable of pairs of consecutive values
-	 * from the source Observable.
+	 * @return {Observable<Array<T>>} An Observable of pairs (as arrays) of
+	 * consecutive values from the source Observable.
 	 * @method pairwise
 	 * @owner Observable
 	 */
@@ -17710,6 +17768,62 @@
 	exports.RequestAnimationFrameDefinition = RequestAnimationFrameDefinition;
 	exports.AnimationFrame = new RequestAnimationFrameDefinition(root_1.root);
 
+
+/***/ },
+/* 343 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _ponyfill = __webpack_require__(344);
+	
+	var _ponyfill2 = _interopRequireDefault(_ponyfill);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var root = undefined; /* global window */
+	
+	if (typeof global !== 'undefined') {
+		root = global;
+	} else if (typeof window !== 'undefined') {
+		root = window;
+	}
+	
+	var result = (0, _ponyfill2.default)(root);
+	exports.default = result;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 344 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = symbolObservablePonyfill;
+	function symbolObservablePonyfill(root) {
+		var result;
+		var _Symbol = root.Symbol;
+	
+		if (typeof _Symbol === 'function') {
+			if (_Symbol.observable) {
+				result = _Symbol.observable;
+			} else {
+				result = _Symbol('observable');
+				_Symbol.observable = result;
+			}
+		} else {
+			result = '@@observable';
+		}
+	
+		return result;
+	};
 
 /***/ }
 /******/ ]);
