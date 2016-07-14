@@ -9,6 +9,9 @@
     },
     "files": [
         "typings/index.d.ts",
-        "src/directLine.ts"
+        "src/directLineTypes.ts",
+        "src/directLine.ts",
+        "src/mockLine.ts",
+        "src/app.ts"
     ]
 }

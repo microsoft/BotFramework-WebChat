@@ -1,82 +1,11 @@
 import { Observable, Subscriber, AjaxResponse } from '@reactivex/rxjs';
-
-const source = Observable.ajax({ method:"GET", url: "myurl" });
-
-interface Conversation {
-    conversationId: string,
-    token: string,
-    eTag?: string
-}
-
-interface Attachment {
-    url: string,
-    contentType: string
-}
-
-interface Message
-{
-    id?: string,
-    conversationId: string,
-    created?: string,
-    from?: string,
-    text?: string,
-    channelData?: string,
-    images?: string[],
-    attachments?: Attachment[];
-    eTag?: string;
-}
-
-interface MessageGroup
-{
-    messages: Message[],
-    watermark?: string,
-    eTag?: string
-}
+import { Conversation, Message, MessageGroup } from './directLineTypes'; 
 
 const domain = "https://ic-webchat-scratch.azurewebsites.net";
 const baseUrl = `${domain}/api/conversations`;
 const app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
 
-const app = () =>
-    startConversation().subscribe(
-        conversation => {
-            const messages = document.getElementById("app");
-            getMessages(conversation).subscribe(
-                message =>  messages.innerHTML += "<p>Received: " + message.text + "</p>",
-                error => console.log("error getting messages", error),
-                () => console.log("done getting messages")
-            );
-
-            console.log("let's post some messages!");
-            Observable
-                .interval(3000)
-                .map(i => <Message>
-                    {
-                        conversationId: conversation.conversationId,
-                        from: null,
-                        text: `Message #${i}`
-                    })
-                .do(message => messages.innerHTML += "<p>Posting: " + JSON.stringify(message) + "</p>")
-                .subscribe(
-                    message => 
-                        postMessage(message, conversation).subscribe(
-                            ajaxResponse => console.log("posted message", ajaxResponse),
-                            error => console.log("error posting message", error),
-                            () => console.log("done posting message")
-                        ),
-                    error => console.log("error posting messages", error),
-                    () => console.log("done posting messages")
-                );
-            },
-        result => console.log("error starting conversation", result),
-        () => console.log("done starting conversation")
-    );
-
-app();
-
-// DirectLine calls
-
-const startConversation = () =>
+export const startConversation = () =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
@@ -89,7 +18,7 @@ const startConversation = () =>
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as Conversation);
 
-const postMessage = (message:Message, conversation:Conversation) =>
+export const postMessage = (message:Message, conversation:Conversation) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
@@ -101,9 +30,10 @@ const postMessage = (message:Message, conversation:Conversation) =>
                 "Authorization": `BotConnector ${conversation.token}`
             }
         })
-        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse));
+        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
+        .map(ar => true)
 
-const getMessages = (conversation:Conversation) =>
+export const getMessages = (conversation:Conversation) =>
     new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) =>
         messageGroupGenerator(conversation, subscriber)
     )
@@ -138,4 +68,3 @@ const getMessageGroup = (conversation:Conversation, watermark?:string) =>
         })
         .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as MessageGroup);
-

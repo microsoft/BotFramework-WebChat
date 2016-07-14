@@ -1,6 +1,6 @@
 module.exports = {
     entry: [
-        "./src/directLine.ts"
+        "./src/app.ts"
     ],
     output: {
         filename: "./public/app.js",
@@ -31,7 +31,5 @@ module.exports = {
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
     externals: {
-        "react": "React",
-        "react-dom": "ReactDOM",
     },
 };

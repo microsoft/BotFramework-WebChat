@@ -1,7 +1,7 @@
 {
   "name": "msbotchat",
   "version": "0.0.1",
-  "description": "web chat app for MS bot framework ",
+  "description": "sample web chat app for MS bot framework ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "@reactivex/rxjs": "^5.0.0-beta.10",
-    "promise": "^7.1.1"
+    "promise": "^7.1.1",
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1"
   },
   "devDependencies": {
     "http-server": "^0.9.0",
