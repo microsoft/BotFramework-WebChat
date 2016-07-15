@@ -1,6 +1,6 @@
 module.exports = {
     entry: [
-        "./src/app.ts"
+        "./src/App.tsx"
     ],
     output: {
         filename: "./public/app.js",

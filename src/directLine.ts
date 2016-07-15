@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse } from '@reactivex/rxjs';
-import { Conversation, Message, MessageGroup } from './directLineTypes'; 
+import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'; 
 
 const domain = "https://ic-webchat-scratch.azurewebsites.net";
 const baseUrl = `${domain}/api/conversations`;
@@ -16,9 +16,9 @@ export const startConversation = () =>
             }
         })
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
-        .map(ajaxResponse => ajaxResponse.response as Conversation);
+        .map(ajaxResponse => ajaxResponse.response as BotConversation);
 
-export const postMessage = (message:Message, conversation:Conversation) =>
+export const postMessage = (message:BotMessage, conversation:BotConversation) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
@@ -33,13 +33,13 @@ export const postMessage = (message:Message, conversation:Conversation) =>
         .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
         .map(ar => true)
 
-export const getMessages = (conversation:Conversation) =>
-    new Observable<Observable<Message>>((subscriber:Subscriber<Observable<Message>>) =>
+export const getMessages = (conversation:BotConversation) =>
+    new Observable<Observable<BotMessage>>((subscriber:Subscriber<Observable<BotMessage>>) =>
         messageGroupGenerator(conversation, subscriber)
     )
     .concatAll();
 
-const messageGroupGenerator = (conversation:Conversation, subscriber:Subscriber<Observable<Message>>, watermark?:string) => {
+const messageGroupGenerator = (conversation:BotConversation, subscriber:Subscriber<Observable<BotMessage>>, watermark?:string) => {
     console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
     getMessageGroup(conversation, watermark).subscribe(
         messageGroup => {
@@ -56,7 +56,7 @@ const messageGroupGenerator = (conversation:Conversation, subscriber:Subscriber<
     );
 }
 
-const getMessageGroup = (conversation:Conversation, watermark?:string) =>
+const getMessageGroup = (conversation:BotConversation, watermark?:string) =>
     Observable
         .ajax<AjaxResponse>({
             method: "GET",
@@ -67,4 +67,4 @@ const getMessageGroup = (conversation:Conversation, watermark?:string) =>
             }
         })
         .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
-        .map(ajaxResponse => ajaxResponse.response as MessageGroup);
+        .map(ajaxResponse => ajaxResponse.response as BotMessageGroup);

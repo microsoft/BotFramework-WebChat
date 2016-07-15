@@ -1,15 +1,15 @@
-export interface Conversation {
+export interface BotConversation {
     conversationId: string,
     token: string,
     eTag?: string
 }
 
-export interface Attachment {
+export interface BotAttachment {
     url: string,
     contentType: string
 }
 
-export interface Message
+export interface BotMessage
 {
     id?: string,
     conversationId: string,
@@ -18,13 +18,13 @@ export interface Message
     text?: string,
     channelData?: string,
     images?: string[],
-    attachments?: Attachment[];
+    attachments?: BotAttachment[];
     eTag?: string;
 }
 
-export interface MessageGroup
+export interface BotMessageGroup
 {
-    messages: Message[],
+    messages: BotMessage[],
     watermark?: string,
     eTag?: string
 }
