@@ -13,6 +13,8 @@
         "src/directLine.ts",
         "src/mockLine.ts",
         "src/Message.tsx",
+        "src/Outgoing.tsx",
+        "src/History.tsx",
         "src/App.tsx"
     ]
 }

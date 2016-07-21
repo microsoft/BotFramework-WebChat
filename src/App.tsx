@@ -1,15 +1,19 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
 import { startConversation, getMessages, postMessage } from './mockLine';
-import { Message } from './Message.tsx'
+import { History } from './History.tsx'
+import { Outgoing } from './Outgoing.tsx'
 
 interface AppState {
     conversation?: BotConversation; 
     messages: string[];
 }
 
-class App extends React.Component<any, AppState> {
+const outgoing$ = new Subject<string>(); 
+
+class App extends React.Component<{}, AppState> {
     constructor() {
         super();
         this.state = {
@@ -20,7 +24,9 @@ class App extends React.Component<any, AppState> {
         startConversation().subscribe(
             conversation => {
                 getMessages(conversation)
-                .scan<string[]>((messages, message) => [...messages, message.text], [])
+                .map(message => message.text)
+                .merge(outgoing$)
+                .scan<string[]>((messages, message) => [...messages, message], [])
                 .subscribe(
                     messages => this.setState({ messages : messages }),
                     error => console.log("error getting messages", error),
@@ -32,13 +38,17 @@ class App extends React.Component<any, AppState> {
         )
     }
 
+    sendMessage = (text:string) => {
+        outgoing$.next(text);
+    }
+
     render() {
         console.log("rendering I guess", this.state.messages);
-        return <div>
-            { this.state.messages.map(message => <Message key={ message } text={ message }/>) }
+        return <div id="appFrame">
+            <Outgoing sendMessage={ this.sendMessage }/>
+            <History messages={ this.state.messages }/> 
         </div>;
     }
 }
-
 
 ReactDOM.render(<App />, document.getElementById("app"));
