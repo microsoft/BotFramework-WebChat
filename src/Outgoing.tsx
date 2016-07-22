@@ -2,19 +2,18 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 interface Props {
-    sendMessage: (string) => void;
+    outgoingMessage: string;
+    updateMessage: (string) => void;
+    sendMessage: () => void;
+    enableSend: boolean;
 }
 
 export class Outgoing extends React.Component<Props, {}> {
-    _outgoing: any;
-
-    onClickSend = () =>
-        this.props.sendMessage(this._outgoing.value);
-
     render() {
+        console.log("rendering outgoing", this.props);
         return <div id="outgoingFrame">
-            <textarea id="outgoing" ref={ outgoing => this._outgoing = outgoing }/ >
-            <button id="send" onClick={ this.onClickSend }>send</button>
+            <textarea id="outgoing" value={ this.props.outgoingMessage } onChange={ e => this.props.updateMessage(e.target.value) } disabled={ !this.props.enableSend } / >
+            <button id="send" onClick={ this.props.sendMessage } disabled={ !this.props.outgoingMessage || this.props.outgoingMessage.length == 0 || !this.props.enableSend } >send</button>
         </div>;
     }
 }

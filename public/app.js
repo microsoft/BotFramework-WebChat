@@ -60,25 +60,39 @@
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(34);
 	var rxjs_1 = __webpack_require__(173);
-	var directLine_1 = __webpack_require__(518);
-	var History_tsx_1 = __webpack_require__(517);
-	var Outgoing_tsx_1 = __webpack_require__(516);
+	var directLine_1 = __webpack_require__(514);
+	var History_tsx_1 = __webpack_require__(515);
+	var Outgoing_tsx_1 = __webpack_require__(517);
 	var outgoing$ = new rxjs_1.Subject();
 	var App = (function (_super) {
 	    __extends(App, _super);
 	    function App() {
 	        var _this = this;
 	        _super.call(this);
-	        this.sendMessage = function (text) {
+	        this.updateMessage = function (text) {
+	            _this.setState({ outgoingMessage: text });
+	        };
+	        this.sendMessage = function () {
+	            _this.setState({ enableSend: false });
 	            directLine_1.postMessage({
-	                text: text,
+	                text: _this.state.outgoingMessage,
 	                from: null,
 	                conversationId: _this.state.conversation.conversationId
-	            }, _this.state.conversation).subscribe(function () { return outgoing$.next(text); }, function (error) { return console.log("failed to send"); });
+	            }, _this.state.conversation)
+	                .retry(2)
+	                .subscribe(function () {
+	                outgoing$.next(_this.state.outgoingMessage);
+	                _this.setState({ outgoingMessage: "", enableSend: true });
+	            }, function (error) {
+	                console.log("failed to post message");
+	                _this.setState({ enableSend: true });
+	            });
 	        };
 	        this.state = {
 	            conversation: null,
-	            messages: []
+	            messages: [],
+	            outgoingMessage: "",
+	            enableSend: true
 	        };
 	        directLine_1.startConversation().subscribe(function (conversation) {
 	            _this.setState({ conversation: conversation });
@@ -90,7 +104,7 @@
 	        }, function (error) { return console.log("error starting conversation", error); }, function () { return console.log("done starting conversation"); });
 	    }
 	    App.prototype.render = function () {
-	        return React.createElement("div", {id: "appFrame"}, React.createElement(Outgoing_tsx_1.Outgoing, {sendMessage: this.sendMessage}), React.createElement(History_tsx_1.History, {messages: this.state.messages}));
+	        return React.createElement("div", {id: "appFrame"}, React.createElement(Outgoing_tsx_1.Outgoing, {sendMessage: this.sendMessage, updateMessage: this.updateMessage, enableSend: this.state.enableSend, outgoingMessage: this.state.outgoingMessage}), React.createElement(History_tsx_1.History, {messages: this.state.messages}));
 	    };
 	    return App;
 	}(React.Component));
@@ -38723,86 +38737,7 @@
 
 
 /***/ },
-/* 514 */,
-/* 515 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(2);
-	var Message = (function (_super) {
-	    __extends(Message, _super);
-	    function Message() {
-	        _super.apply(this, arguments);
-	    }
-	    Message.prototype.render = function () {
-	        return React.createElement("p", null, this.props.text);
-	    };
-	    return Message;
-	}(React.Component));
-	exports.Message = Message;
-
-
-/***/ },
-/* 516 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(2);
-	var Outgoing = (function (_super) {
-	    __extends(Outgoing, _super);
-	    function Outgoing() {
-	        var _this = this;
-	        _super.apply(this, arguments);
-	        this.onClickSend = function () {
-	            return _this.props.sendMessage(_this._outgoing.value);
-	        };
-	    }
-	    Outgoing.prototype.render = function () {
-	        var _this = this;
-	        return React.createElement("div", {id: "outgoingFrame"}, React.createElement("textarea", {id: "outgoing", ref: function (outgoing) { return _this._outgoing = outgoing; }}), React.createElement("button", {id: "send", onClick: this.onClickSend}, "send"));
-	    };
-	    return Outgoing;
-	}(React.Component));
-	exports.Outgoing = Outgoing;
-
-
-/***/ },
-/* 517 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(2);
-	var Message_tsx_1 = __webpack_require__(515);
-	var History = (function (_super) {
-	    __extends(History, _super);
-	    function History() {
-	        _super.apply(this, arguments);
-	    }
-	    History.prototype.render = function () {
-	        return React.createElement("div", {id: "historyFrame"}, this.props.messages.map(function (message, index) { return React.createElement(Message_tsx_1.Message, {key: index.toString(), text: message}); }));
-	    };
-	    return History;
-	}(React.Component));
-	exports.History = History;
-
-
-/***/ },
-/* 518 */
+/* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38835,6 +38770,7 @@
 	            "Authorization": "BotConnector " + conversation.token
 	        }
 	    })
+	        .delay(2000)
 	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return true; });
 	};
@@ -38865,6 +38801,81 @@
 	        .do(function (ajaxResponse) { return console.log("get messages ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	};
+
+
+/***/ },
+/* 515 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(2);
+	var Message_tsx_1 = __webpack_require__(516);
+	var History = (function (_super) {
+	    __extends(History, _super);
+	    function History() {
+	        _super.apply(this, arguments);
+	    }
+	    History.prototype.render = function () {
+	        return React.createElement("div", {id: "historyFrame"}, this.props.messages.map(function (message, index) { return React.createElement(Message_tsx_1.Message, {key: index.toString(), text: message}); }));
+	    };
+	    return History;
+	}(React.Component));
+	exports.History = History;
+
+
+/***/ },
+/* 516 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(2);
+	var Message = (function (_super) {
+	    __extends(Message, _super);
+	    function Message() {
+	        _super.apply(this, arguments);
+	    }
+	    Message.prototype.render = function () {
+	        return React.createElement("p", null, this.props.text);
+	    };
+	    return Message;
+	}(React.Component));
+	exports.Message = Message;
+
+
+/***/ },
+/* 517 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(2);
+	var Outgoing = (function (_super) {
+	    __extends(Outgoing, _super);
+	    function Outgoing() {
+	        _super.apply(this, arguments);
+	    }
+	    Outgoing.prototype.render = function () {
+	        var _this = this;
+	        console.log("rendering outgoing", this.props);
+	        return React.createElement("div", {id: "outgoingFrame"}, React.createElement("textarea", {id: "outgoing", value: this.props.outgoingMessage, onChange: function (e) { return _this.props.updateMessage(e.target.value); }, disabled: !this.props.enableSend}), React.createElement("button", {id: "send", onClick: this.props.sendMessage, disabled: !this.props.outgoingMessage || this.props.outgoingMessage.length == 0 || !this.props.enableSend}, "send"));
+	    };
+	    return Outgoing;
+	}(React.Component));
+	exports.Outgoing = Outgoing;
 
 
 /***/ }

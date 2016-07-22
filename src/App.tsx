@@ -9,6 +9,8 @@ import { Outgoing } from './Outgoing.tsx'
 interface AppState {
     conversation?: BotConversation; 
     messages?: string[];
+    outgoingMessage?: string;
+    enableSend?: boolean;
 }
 
 const outgoing$ = new Subject<string>(); 
@@ -18,7 +20,9 @@ class App extends React.Component<{}, AppState> {
         super();
         this.state = {
             conversation: null,
-            messages: []
+            messages: [],
+            outgoingMessage: "",
+            enableSend: true
         }
 
         startConversation().subscribe(
@@ -40,20 +44,33 @@ class App extends React.Component<{}, AppState> {
         )
     }
 
-    sendMessage = (text: string) => {
+    updateMessage = (text:string) => {
+        this.setState({ outgoingMessage: text });
+    }
+
+    sendMessage = () => {
+        this.setState({enableSend: false});
         postMessage({
-            text: text,
+            text: this.state.outgoingMessage,
             from: null,
             conversationId: this.state.conversation.conversationId
-        }, this.state.conversation).subscribe(
-            () => outgoing$.next(text),
-            error => console.log("failed to send")
+        }, this.state.conversation)
+        .retry(2)
+        .subscribe(
+            () => {
+                outgoing$.next(this.state.outgoingMessage);
+                this.setState({outgoingMessage: "", enableSend:true});
+            },
+            error => {
+                console.log("failed to post message");
+                this.setState({enableSend: true});
+            }
         );
     }
 
     render() {
         return <div id="appFrame">
-            <Outgoing sendMessage={ this.sendMessage }/>
+            <Outgoing sendMessage={ this.sendMessage } updateMessage={ this.updateMessage } enableSend={ this.state.enableSend } outgoingMessage={ this.state.outgoingMessage }/>
             <History messages={ this.state.messages }/> 
         </div>;
     }
