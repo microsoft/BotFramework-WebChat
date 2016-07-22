@@ -3,7 +3,7 @@ import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'
 
 const domain = "https://ic-webchat-scratch.azurewebsites.net";
 const baseUrl = `${domain}/api/conversations`;
-const app_secret = "RCurR_XV9ZA.cwA.BKA.iaJrC8xpy8qbOF5xnR2vtCX7CZj0LdjAPGfiCpg4Fv0";
+const app_secret = "acWN4N4CRLc.cwA.NhI.0Tyg-Wl1eJ9SbIaiVuiV233GVCJEkK4xAKZDwv4ebZw";
 
 export const startConversation = () =>
     Observable
@@ -31,7 +31,7 @@ export const postMessage = (message:BotMessage, conversation:BotConversation) =>
             }
         })
         .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
-        .map(ar => true)
+        .map(ajaxResponse => true);
 
 export const getMessages = (conversation:BotConversation) =>
     new Observable<Observable<BotMessage>>((subscriber:Subscriber<Observable<BotMessage>>) =>
@@ -40,7 +40,6 @@ export const getMessages = (conversation:BotConversation) =>
     .concatAll();
 
 const messageGroupGenerator = (conversation:BotConversation, subscriber:Subscriber<Observable<BotMessage>>, watermark?:string) => {
-    console.log("let's get some messages!", conversation.conversationId, conversation.token, watermark);
     getMessageGroup(conversation, watermark).subscribe(
         messageGroup => {
             const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;

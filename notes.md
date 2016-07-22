@@ -64,8 +64,6 @@ Don't know much about this. Sounds promising.
 
 ### Questions
 
-* How can we reconcile the messages we send from the "copy" we get back? How do we know they're the same message?
-
 ### AppState 
 
 * Start a theory about using scan() to turn getMessages into the state we'll render

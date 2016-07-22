@@ -60,7 +60,7 @@
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(34);
 	var rxjs_1 = __webpack_require__(173);
-	var mockLine_1 = __webpack_require__(514);
+	var directLine_1 = __webpack_require__(518);
 	var History_tsx_1 = __webpack_require__(517);
 	var Outgoing_tsx_1 = __webpack_require__(516);
 	var outgoing$ = new rxjs_1.Subject();
@@ -70,14 +70,19 @@
 	        var _this = this;
 	        _super.call(this);
 	        this.sendMessage = function (text) {
-	            outgoing$.next(text);
+	            directLine_1.postMessage({
+	                text: text,
+	                from: null,
+	                conversationId: _this.state.conversation.conversationId
+	            }, _this.state.conversation).subscribe(function () { return outgoing$.next(text); }, function (error) { return console.log("failed to send"); });
 	        };
 	        this.state = {
 	            conversation: null,
 	            messages: []
 	        };
-	        mockLine_1.startConversation().subscribe(function (conversation) {
-	            mockLine_1.getMessages(conversation)
+	        directLine_1.startConversation().subscribe(function (conversation) {
+	            _this.setState({ conversation: conversation });
+	            directLine_1.getMessages(conversation)
 	                .map(function (message) { return message.text; })
 	                .merge(outgoing$)
 	                .scan(function (messages, message) { return messages.concat([message]); }, [])
@@ -85,7 +90,6 @@
 	        }, function (error) { return console.log("error starting conversation", error); }, function () { return console.log("done starting conversation"); });
 	    }
 	    App.prototype.render = function () {
-	        console.log("rendering I guess", this.state.messages);
 	        return React.createElement("div", {id: "appFrame"}, React.createElement(Outgoing_tsx_1.Outgoing, {sendMessage: this.sendMessage}), React.createElement(History_tsx_1.History, {messages: this.state.messages}));
 	    };
 	    return App;
@@ -38719,31 +38723,7 @@
 
 
 /***/ },
-/* 514 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var rxjs_1 = __webpack_require__(173);
-	exports.startConversation = function () {
-	    return rxjs_1.Observable.of({
-	        conversationId: "foo",
-	        token: "bar"
-	    });
-	};
-	exports.postMessage = function (message, conversation) {
-	    return rxjs_1.Observable.of(true);
-	};
-	exports.getMessages = function (conversation) {
-	    return rxjs_1.Observable.interval(2000)
-	        .map(function (i) { return {
-	        conversationId: conversation.conversationId,
-	        from: "bot",
-	        text: "sample text #" + i
-	    }; });
-	};
-
-
-/***/ },
+/* 514 */,
 /* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -38819,6 +38799,72 @@
 	    return History;
 	}(React.Component));
 	exports.History = History;
+
+
+/***/ },
+/* 518 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var rxjs_1 = __webpack_require__(173);
+	var domain = "https://ic-webchat-scratch.azurewebsites.net";
+	var baseUrl = domain + "/api/conversations";
+	var app_secret = "acWN4N4CRLc.cwA.NhI.0Tyg-Wl1eJ9SbIaiVuiV233GVCJEkK4xAKZDwv4ebZw";
+	exports.startConversation = function () {
+	    return rxjs_1.Observable
+	        .ajax({
+	        method: "POST",
+	        url: "" + baseUrl,
+	        headers: {
+	            "Accept": "application/json",
+	            "Authorization": "BotConnector " + app_secret
+	        }
+	    })
+	        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
+	        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	};
+	exports.postMessage = function (message, conversation) {
+	    return rxjs_1.Observable
+	        .ajax({
+	        method: "POST",
+	        url: baseUrl + "/" + conversation.conversationId + "/messages",
+	        body: message,
+	        headers: {
+	            "Accept": "application/json",
+	            "Content-Type": "application/json",
+	            "Authorization": "BotConnector " + conversation.token
+	        }
+	    })
+	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); })
+	        .map(function (ajaxResponse) { return true; });
+	};
+	exports.getMessages = function (conversation) {
+	    return new rxjs_1.Observable(function (subscriber) {
+	        return messageGroupGenerator(conversation, subscriber);
+	    })
+	        .concatAll();
+	};
+	var messageGroupGenerator = function (conversation, subscriber, watermark) {
+	    getMessageGroup(conversation, watermark).subscribe(function (messageGroup) {
+	        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+	        if (someMessages)
+	            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+	        setTimeout(function () { return messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+	    }, function (result) { return subscriber.error(result); });
+	};
+	var getMessageGroup = function (conversation, watermark) {
+	    return rxjs_1.Observable
+	        .ajax({
+	        method: "GET",
+	        url: baseUrl + "/" + conversation.conversationId + "/messages?watermark=" + watermark,
+	        headers: {
+	            "Accept": "application/json",
+	            "Authorization": "BotConnector " + conversation.token
+	        }
+	    })
+	        .do(function (ajaxResponse) { return console.log("get messages ajaxResponse", ajaxResponse); })
+	        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	};
 
 
 /***/ }

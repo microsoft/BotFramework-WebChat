@@ -2,13 +2,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
-import { startConversation, getMessages, postMessage } from './mockLine';
+import { startConversation, getMessages, postMessage } from './directLine';
 import { History } from './History.tsx'
 import { Outgoing } from './Outgoing.tsx'
 
 interface AppState {
     conversation?: BotConversation; 
-    messages: string[];
+    messages?: string[];
 }
 
 const outgoing$ = new Subject<string>(); 
@@ -23,6 +23,8 @@ class App extends React.Component<{}, AppState> {
 
         startConversation().subscribe(
             conversation => {
+                this.setState({conversation:conversation});
+
                 getMessages(conversation)
                 .map(message => message.text)
                 .merge(outgoing$)
@@ -38,12 +40,18 @@ class App extends React.Component<{}, AppState> {
         )
     }
 
-    sendMessage = (text:string) => {
-        outgoing$.next(text);
+    sendMessage = (text: string) => {
+        postMessage({
+            text: text,
+            from: null,
+            conversationId: this.state.conversation.conversationId
+        }, this.state.conversation).subscribe(
+            () => outgoing$.next(text),
+            error => console.log("failed to send")
+        );
     }
 
     render() {
-        console.log("rendering I guess", this.state.messages);
         return <div id="appFrame">
             <Outgoing sendMessage={ this.sendMessage }/>
             <History messages={ this.state.messages }/> 
