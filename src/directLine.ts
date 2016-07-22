@@ -30,7 +30,6 @@ export const postMessage = (message:BotMessage, conversation:BotConversation) =>
                 "Authorization": `BotConnector ${conversation.token}`
             }
         })
-        .delay(2000)
         .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
         .map(ajaxResponse => true);
 

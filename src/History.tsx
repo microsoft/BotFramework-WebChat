@@ -1,15 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Message } from './Message.tsx';
+import { Message } from './App.tsx';
+import { HistoryMessage } from './HistoryMessage.tsx';
 
-interface Props {
-    messages: string[];
-}
-
-export class History extends React.Component<Props, {}> {
-    render() {
-        return <div id="historyFrame">
-            { this.props.messages.map((message, index) => <Message key={ index.toString() } text={ message }/>) }
-        </div>;
-    }
-}
+export const History = (props: {
+    messages: Message[]
+}) => 
+     <div id="historyFrame">
+        { props.messages.map((message, index) => <HistoryMessage key={ index.toString() } message={ message }/>) }
+    </div>;

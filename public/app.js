@@ -81,7 +81,7 @@
 	            }, _this.state.conversation)
 	                .retry(2)
 	                .subscribe(function () {
-	                outgoing$.next(_this.state.outgoingMessage);
+	                outgoing$.next({ text: _this.state.outgoingMessage, from: "me" });
 	                _this.setState({ outgoingMessage: "", enableSend: true });
 	            }, function (error) {
 	                console.log("failed to post message");
@@ -97,7 +97,8 @@
 	        directLine_1.startConversation().subscribe(function (conversation) {
 	            _this.setState({ conversation: conversation });
 	            directLine_1.getMessages(conversation)
-	                .map(function (message) { return message.text; })
+	                .filter(function (botmessage) { return botmessage.from === "TestBot"; })
+	                .map(function (botmessage) { return ({ text: botmessage.text, from: "bot" }); })
 	                .merge(outgoing$)
 	                .scan(function (messages, message) { return messages.concat([message]); }, [])
 	                .subscribe(function (messages) { return _this.setState({ messages: messages }); }, function (error) { return console.log("error getting messages", error); }, function () { return console.log("done getting messages"); });
@@ -38770,7 +38771,6 @@
 	            "Authorization": "BotConnector " + conversation.token
 	        }
 	    })
-	        .delay(2000)
 	        .do(function (ajaxResponse) { return console.log("post message ajaxResponse", ajaxResponse); })
 	        .map(function (ajaxResponse) { return true; });
 	};
@@ -38808,24 +38808,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var React = __webpack_require__(2);
-	var Message_tsx_1 = __webpack_require__(516);
-	var History = (function (_super) {
-	    __extends(History, _super);
-	    function History() {
-	        _super.apply(this, arguments);
-	    }
-	    History.prototype.render = function () {
-	        return React.createElement("div", {id: "historyFrame"}, this.props.messages.map(function (message, index) { return React.createElement(Message_tsx_1.Message, {key: index.toString(), text: message}); }));
-	    };
-	    return History;
-	}(React.Component));
-	exports.History = History;
+	var HistoryMessage_tsx_1 = __webpack_require__(516);
+	exports.History = function (props) {
+	    return React.createElement("div", {id: "historyFrame"}, props.messages.map(function (message, index) { return React.createElement(HistoryMessage_tsx_1.HistoryMessage, {key: index.toString(), message: message}); }));
+	};
 
 
 /***/ },
@@ -38833,23 +38820,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var React = __webpack_require__(2);
-	var Message = (function (_super) {
-	    __extends(Message, _super);
-	    function Message() {
-	        _super.apply(this, arguments);
-	    }
-	    Message.prototype.render = function () {
-	        return React.createElement("p", null, this.props.text);
-	    };
-	    return Message;
-	}(React.Component));
-	exports.Message = Message;
+	exports.HistoryMessage = function (props) {
+	    return React.createElement("p", null, props.message.from + ": " + props.message.text);
+	};
 
 
 /***/ },
@@ -38857,25 +38831,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var React = __webpack_require__(2);
-	var Outgoing = (function (_super) {
-	    __extends(Outgoing, _super);
-	    function Outgoing() {
-	        _super.apply(this, arguments);
-	    }
-	    Outgoing.prototype.render = function () {
-	        var _this = this;
-	        console.log("rendering outgoing", this.props);
-	        return React.createElement("div", {id: "outgoingFrame"}, React.createElement("textarea", {id: "outgoing", value: this.props.outgoingMessage, onChange: function (e) { return _this.props.updateMessage(e.target.value); }, disabled: !this.props.enableSend}), React.createElement("button", {id: "send", onClick: this.props.sendMessage, disabled: !this.props.outgoingMessage || this.props.outgoingMessage.length == 0 || !this.props.enableSend}, "send"));
-	    };
-	    return Outgoing;
-	}(React.Component));
-	exports.Outgoing = Outgoing;
+	exports.Outgoing = function (props) {
+	    return React.createElement("div", {id: "outgoingFrame"}, React.createElement("textarea", {id: "outgoing", value: props.outgoingMessage, onChange: function (e) { return props.updateMessage(e.target.value); }, disabled: !props.enableSend}), React.createElement("button", {id: "send", onClick: props.sendMessage, disabled: !props.outgoingMessage || props.outgoingMessage.length == 0 || !props.enableSend}, "send"));
+	};
 
 
 /***/ }

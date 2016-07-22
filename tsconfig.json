@@ -12,7 +12,7 @@
         "src/directLineTypes.ts",
         "src/directLine.ts",
         "src/mockLine.ts",
-        "src/Message.tsx",
+        "src/HistoryMessage.tsx",
         "src/Outgoing.tsx",
         "src/History.tsx",
         "src/App.tsx"

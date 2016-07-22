@@ -6,16 +6,21 @@ import { startConversation, getMessages, postMessage } from './directLine';
 import { History } from './History.tsx'
 import { Outgoing } from './Outgoing.tsx'
 
-interface AppState {
+export interface Message {
+    from: "me" | "bot";
+    text: string;
+} 
+
+interface State {
     conversation?: BotConversation; 
-    messages?: string[];
+    messages?: Message[];
     outgoingMessage?: string;
     enableSend?: boolean;
 }
 
-const outgoing$ = new Subject<string>(); 
+const outgoing$ = new Subject<Message>();
 
-class App extends React.Component<{}, AppState> {
+class App extends React.Component<{}, State> {
     constructor() {
         super();
         this.state = {
@@ -30,9 +35,10 @@ class App extends React.Component<{}, AppState> {
                 this.setState({conversation:conversation});
 
                 getMessages(conversation)
-                .map(message => message.text)
+                .filter(botmessage => botmessage.from === "TestBot")
+                .map<Message>(botmessage => ({ text: botmessage.text, from: "bot" }))
                 .merge(outgoing$)
-                .scan<string[]>((messages, message) => [...messages, message], [])
+                .scan<Message[]>((messages, message) => [...messages, message], [])
                 .subscribe(
                     messages => this.setState({ messages : messages }),
                     error => console.log("error getting messages", error),
@@ -58,7 +64,7 @@ class App extends React.Component<{}, AppState> {
         .retry(2)
         .subscribe(
             () => {
-                outgoing$.next(this.state.outgoingMessage);
+                outgoing$.next({text: this.state.outgoingMessage, from: "me"});
                 this.setState({outgoingMessage: "", enableSend:true});
             },
             error => {
