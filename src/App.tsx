@@ -19,6 +19,7 @@ interface State {
 }
 
 const outgoing$ = new Subject<Message>();
+const outgoingMessage$ = new Subject<string>();
 
 class App extends React.Component<{}, State> {
     constructor() {
@@ -39,8 +40,12 @@ class App extends React.Component<{}, State> {
                 .map<Message>(botmessage => ({ text: botmessage.text, from: "bot" }))
                 .merge(outgoing$)
                 .scan<Message[]>((messages, message) => [...messages, message], [])
+                .combineLatest(outgoingMessage$, (messages, outgoingMessage) => ({
+                    messages: messages,
+                    outgoingMessage: outgoingMessage
+                }))
                 .subscribe(
-                    messages => this.setState({ messages : messages }),
+                    state => this.setState(state),
                     error => console.log("error getting messages", error),
                     () => console.log("done getting messages")
                 );
@@ -51,7 +56,7 @@ class App extends React.Component<{}, State> {
     }
 
     updateMessage = (text:string) => {
-        this.setState({ outgoingMessage: text });
+        outgoingMessage$.next(text);
     }
 
     sendMessage = () => {

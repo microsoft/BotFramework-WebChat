@@ -4,6 +4,8 @@
   "description": "sample web chat app for MS bot framework ",
   "main": "index.js",
   "scripts": {
+    "build": "webpack --optimize-minimize --optimize-dedupe",
+    "watch": "webpack --optimize-minimize --optimize-dedupe -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,9 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@reactivex/rxjs": "^5.0.0-beta.10",
-    "promise": "^7.1.1",
-    "react": "^15.2.1",
-    "react-dom": "^15.2.1"
+    "promise": "^7.1.1"
   },
   "devDependencies": {
     "http-server": "^0.9.0",
