@@ -30,7 +30,7 @@ export const postMessage = (message:BotMessage, conversation:BotConversation) =>
                 "Authorization": `BotConnector ${conversation.token}`
             }
         })
-        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
+//        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
         .map(ajaxResponse => true);
 
 export const getMessages = (conversation:BotConversation) =>
@@ -65,5 +65,5 @@ const getMessageGroup = (conversation:BotConversation, watermark?:string) =>
                 "Authorization": `BotConnector ${conversation.token}`
             }
         })
-        .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
+//        .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as BotMessageGroup);
