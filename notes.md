@@ -13,6 +13,12 @@ Listed in decreasing order of importance. Another way to think about this list i
 
     <iframe src="path/to/embed/TestBot?s=APP_SECRET'></iframe>
 
+May add skinning parameters
+
+* css=STYLESHEET-PATH
+* l=LOCALIZATION-PATH
+* ... and possibly other metadata like icon and title
+
 ## Features
 
 ### Styling
@@ -28,7 +34,7 @@ A major goal for this app is to allow full styling by customers, including
 
 The view engine is [React](https://facebook.github.io/react/).
 
-I'm going to start out with [RxJS](http://reactivex.io/rxjs) and see how far it takes us. 
+Currently reliant on [RxJS](http://reactivex.io/rxjs) but contemplating switching to the smaller [xstream](https://github.com/staltz/xstream). 
 
 ## Dependencies
 
@@ -38,20 +44,24 @@ I'm going to start out with [RxJS](http://reactivex.io/rxjs) and see how far it 
 
 ### Libraries
 
-* React
-* RxJS 
+* React (loaded as a global at runtime)
+* RxJS (currently bundled)
 
 ### Polyfills
+
+* [Promise](https://github.com/then/promise)
 
 ## Non-Dependencies
 
 ## Building & Bundling
 
-We'll [Webpack](http://webpack.github.io) everything together using [ts_loader](https://github.com/TypeStrong/ts-loader) into a bundle.js.
+We'll [Webpack](http://webpack.github.io) things together using [ts_loader](https://github.com/TypeStrong/ts-loader) into a bundle.js.
+
+Certain libraries -- currently React -- will be loaded as globals at runtime so that browsers have the opportunity to cache them.
 
 ## Deployment
 
-No idea right now. If this is meant to be used in production by customers I'm particularly concerned about notifying them and/or their users about downtime.
+No idea right now. If this is meant to be used in production by customers then I'm particularly concerned about notifying them and/or their users about downtime.
 That said, the system is built to ressurect chat sessions, so a refresh need not be debilitating, just surprising.  
 
 ### Hot Loading
@@ -66,9 +76,6 @@ Don't know much about this. Sounds promising.
 
 ### AppState 
 
-* Start a theory about using scan() to turn getMessages into the state we'll render
-* How efficient is that? Will it make new state even when nothing changes?
-
 ### Testing
 
 * What test framework?
@@ -79,7 +86,8 @@ Don't know much about this. Sounds promising.
 
 ## Implementation Theories
 
-We combine Incoming Messages with Outgoing Messages
-Outgoing messages that are also Incoming are de-duped (the incoming version wins)
-The remaining Outgoing messages are shown last, in the order "sent". We indicate that they are still pending.
+## Changes needed/wanted in DirectLine
 
+* More efficient message passing (probably WebSocket)
+* A way to reconcile incoming versions of messages we've already sent, so that we know whether or not to show them
+* Possibly some metadata when creating a conversation, e.g. icon, title
