@@ -7,19 +7,51 @@ import { History } from './History.tsx'
 import { Outgoing } from './Outgoing.tsx'
 
 export interface Message {
-    from: "me" | "bot";
-    text: string;
+    from: "me" | "bot",
+    text: string
 } 
 
-interface State {
-    conversation?: BotConversation; 
-    messages?: Message[];
-    outgoingMessage?: string;
-    enableSend?: boolean;
+export interface Compose {
+    text?: string,
+    enableSend?: boolean
 }
 
+interface State {
+    // conversation metadata
+    conversation?: BotConversation,
+    // message history
+    messages?: Message[],
+    // compose window
+    compose?: Compose
+}
+
+const composeStart:Compose = {text: "", enableSend: true}
+
 const outgoing$ = new Subject<Message>();
-const outgoingMessage$ = new Subject<string>();
+
+const compose$ = new Subject<Compose>();
+
+const incoming$ = (conversation) =>
+    getMessages(conversation)
+    .filter(botmessage => botmessage.from === "TestBot");
+
+const message$ = (conversation) =>
+    incoming$(conversation)
+    .map<Message>(botmessage => ({ text: botmessage.text, from: "bot" }))
+    .merge(outgoing$)
+    .scan<Message[]>((messages, message) => [...messages, message], []);
+
+const state$ = (conversation) => 
+    message$(conversation).startWith([])
+    .combineLatest(
+        compose$.startWith(composeStart),
+        (messages, compose) => ({
+            conversation: conversation,
+            messages: messages,
+            compose: compose
+        } as State)
+    )
+    .do(state => console.log("state", state));
 
 class App extends React.Component<{}, State> {
     constructor() {
@@ -27,61 +59,51 @@ class App extends React.Component<{}, State> {
         this.state = {
             conversation: null,
             messages: [],
-            outgoingMessage: "",
-            enableSend: true
+            compose: composeStart
         }
 
         startConversation().subscribe(
-            conversation => {
-                this.setState({conversation:conversation});
-
-                getMessages(conversation)
-                .filter(botmessage => botmessage.from === "TestBot")
-                .map<Message>(botmessage => ({ text: botmessage.text, from: "bot" }))
-                .merge(outgoing$)
-                .scan<Message[]>((messages, message) => [...messages, message], [])
-                .combineLatest(outgoingMessage$, (messages, outgoingMessage) => ({
-                    messages: messages,
-                    outgoingMessage: outgoingMessage
-                }))
-                .subscribe(
-                    state => this.setState(state),
-                    error => console.log("error getting messages", error),
-                    () => console.log("done getting messages")
-                );
-            },
-            error => console.log("error starting conversation", error),
-            () => console.log("done starting conversation")
+            conversation => state$(conversation).subscribe(
+                state => this.setState(state),
+                error => console.log("errors", error)
+            ),
+            error => console.log("error starting conversation", error)
         )
     }
 
-    updateMessage = (text:string) => {
-        outgoingMessage$.next(text);
+    updateMessage = (text: string) => {
+        compose$.next({text: text, enableSend: this.state.compose.enableSend});
     }
 
     sendMessage = () => {
-        this.setState({enableSend: false});
+        compose$.next({text: this.state.compose.text, enableSend: false});
         postMessage({
-            text: this.state.outgoingMessage,
+            text: this.state.compose.text,
             from: null,
             conversationId: this.state.conversation.conversationId
         }, this.state.conversation)
         .retry(2)
         .subscribe(
             () => {
-                outgoing$.next({text: this.state.outgoingMessage, from: "me"});
-                this.setState({outgoingMessage: "", enableSend:true});
+                outgoing$.next({
+                    text: this.state.compose.text,
+                    from: "me"
+                });
+                compose$.next({
+                    text: "",
+                    enableSend: true
+                });
             },
             error => {
                 console.log("failed to post message");
-                this.setState({enableSend: true});
+                compose$.next({text: this.state.compose.text, enableSend: true});
             }
         );
     }
 
     render() {
         return <div id="appFrame">
-            <Outgoing sendMessage={ this.sendMessage } updateMessage={ this.updateMessage } enableSend={ this.state.enableSend } outgoingMessage={ this.state.outgoingMessage }/>
+            <Outgoing sendMessage={ this.sendMessage } updateMessage={ this.updateMessage } { ...this.state.compose } />
             <History messages={ this.state.messages }/> 
         </div>;
     }
