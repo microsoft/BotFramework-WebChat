@@ -4,14 +4,14 @@ import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
 import { startConversation, getMessages, postMessage } from './directLine';
 import { History } from './History.tsx'
-import { Outgoing } from './Outgoing.tsx'
+import { Console } from './Console.tsx'
 
 export interface Message {
     from: "me" | "bot",
     text: string
 } 
 
-export interface Compose {
+export interface ConsoleState {
     text?: string,
     enableSend?: boolean
 }
@@ -22,14 +22,13 @@ interface State {
     // message history
     messages?: Message[],
     // compose window
-    compose?: Compose
+    console?: ConsoleState
 }
-
-const composeStart:Compose = {text: "", enableSend: true}
 
 const outgoing$ = new Subject<Message>();
 
-const compose$ = new Subject<Compose>();
+const console$ = new Subject<ConsoleState>();
+const consoleStart = {text: "", enableSend: true};
 
 const incoming$ = (conversation) =>
     getMessages(conversation)
@@ -44,14 +43,16 @@ const message$ = (conversation) =>
 const state$ = (conversation) => 
     message$(conversation).startWith([])
     .combineLatest(
-        compose$.startWith(composeStart),
+        console$.startWith(consoleStart),
         (messages, compose) => ({
             conversation: conversation,
             messages: messages,
-            compose: compose
+            console: compose
         } as State)
     )
     .do(state => console.log("state", state));
+
+const conversation$ = startConversation();
 
 class App extends React.Component<{}, State> {
     constructor() {
@@ -59,10 +60,10 @@ class App extends React.Component<{}, State> {
         this.state = {
             conversation: null,
             messages: [],
-            compose: composeStart
+            console: consoleStart
         }
 
-        startConversation().subscribe(
+        conversation$.subscribe(
             conversation => state$(conversation).subscribe(
                 state => this.setState(state),
                 error => console.log("errors", error)
@@ -71,39 +72,45 @@ class App extends React.Component<{}, State> {
         )
     }
 
-    updateMessage = (text: string) => {
-        compose$.next({text: text, enableSend: this.state.compose.enableSend});
-    }
+    private consoleActions = {
+        updateMessage: (text: string) => {
+            console$.next({text: text, enableSend: this.state.console.enableSend});
+        },
 
-    sendMessage = () => {
-        compose$.next({text: this.state.compose.text, enableSend: false});
-        postMessage({
-            text: this.state.compose.text,
-            from: null,
-            conversationId: this.state.conversation.conversationId
-        }, this.state.conversation)
-        .retry(2)
-        .subscribe(
-            () => {
-                outgoing$.next({
-                    text: this.state.compose.text,
-                    from: "me"
-                });
-                compose$.next({
-                    text: "",
-                    enableSend: true
-                });
-            },
-            error => {
-                console.log("failed to post message");
-                compose$.next({text: this.state.compose.text, enableSend: true});
-            }
-        );
+        sendMessage: () => {
+            console$.next({text: this.state.console.text, enableSend: false});
+            postMessage({
+                text: this.state.console.text,
+                from: null,
+                conversationId: this.state.conversation.conversationId
+            }, this.state.conversation)
+            .retry(2)
+            .subscribe(
+                () => {
+                    outgoing$.next({
+                        text: this.state.console.text,
+                        from: "me"
+                    });
+                    console$.next({
+                        text: "",
+                        enableSend: true
+                    });
+                },
+                error => {
+                    console.log("failed to post message");
+                    console$.next({text: this.state.console.text, enableSend: true});
+                }
+            );
+        },
+
+        sendFile: (file:string) => {
+            console.log("attachment", file);
+        }
     }
 
     render() {
         return <div id="appFrame">
-            <Outgoing sendMessage={ this.sendMessage } updateMessage={ this.updateMessage } { ...this.state.compose } />
+            <Console actions={ this.consoleActions } { ...this.state.console } />
             <History messages={ this.state.messages }/> 
         </div>;
     }

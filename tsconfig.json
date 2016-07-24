@@ -13,7 +13,7 @@
         "src/directLine.ts",
         "src/mockLine.ts",
         "src/HistoryMessage.tsx",
-        "src/Outgoing.tsx",
+        "src/Console.tsx",
         "src/History.tsx",
         "src/App.tsx"
     ]
