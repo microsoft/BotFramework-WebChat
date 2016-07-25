@@ -4,5 +4,12 @@ import { Message } from './App.tsx';
 
 export const HistoryMessage = (props:{
     message:Message
-}) =>
-    <p>{ props.message.from + ": " + props.message.text }</p>;
+}) => {
+    let inside;
+    if (props.message.images && props.message.images.length > 0)
+        inside = props.message.images.map(path => <img src= { path }/>);
+    else
+        inside = props.message.text;
+    console.log("inside", inside);
+    return <p>{ props.message.from + ": "}{ inside }</p>;
+}

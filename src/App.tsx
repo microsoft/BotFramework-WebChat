@@ -2,13 +2,14 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
-import { startConversation, getMessages, postMessage } from './directLine';
+import { domain, startConversation, getMessages, postMessage, postFile } from './directLine';
 import { History } from './History.tsx'
 import { Console } from './Console.tsx'
 
 export interface Message {
     from: "me" | "bot",
-    text: string
+    text?: string,
+    images?: string[]
 } 
 
 export interface ConsoleState {
@@ -36,7 +37,7 @@ const incoming$ = (conversation) =>
 
 const message$ = (conversation) =>
     incoming$(conversation)
-    .map<Message>(botmessage => ({ text: botmessage.text, from: "bot" }))
+    .map<Message>(botmessage => ({ text: botmessage.text, images: botmessage.images.map(path => domain + path), from: "bot" }))
     .merge(outgoing$)
     .scan<Message[]>((messages, message) => [...messages, message], []);
 
@@ -79,11 +80,7 @@ class App extends React.Component<{}, State> {
 
         sendMessage: () => {
             console$.next({text: this.state.console.text, enableSend: false});
-            postMessage({
-                text: this.state.console.text,
-                from: null,
-                conversationId: this.state.conversation.conversationId
-            }, this.state.conversation)
+            postMessage(this.state.console.text, this.state.conversation)
             .retry(2)
             .subscribe(
                 () => {
@@ -103,8 +100,25 @@ class App extends React.Component<{}, State> {
             );
         },
 
-        sendFile: (file:string) => {
-            console.log("attachment", file);
+        sendFile: (files:FileList) => {
+            console.log("files", files);
+            for (let i = 0, numFiles = files.length; i < numFiles; i++) {
+                const file = files[i];
+                console.log("attachment", file);
+                postFile(file, this.state.conversation)
+                .retry(2)
+                .subscribe(
+                    () => {
+                        outgoing$.next({
+                            images: [window.URL.createObjectURL(file)],
+                            from: "me"
+                        });
+                    },
+                    error => {
+                        console.log("failed to post file");
+                    }
+                )
+            }
         }
     }
 
