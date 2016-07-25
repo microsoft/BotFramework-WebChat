@@ -1,7 +1,7 @@
-import { Observable, Subscriber, AjaxResponse } from '@reactivex/rxjs';
+import { Observable, Subscriber, AjaxResponse, AjaxRequest } from '@reactivex/rxjs';
 import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'; 
 
-const domain = "https://ic-webchat-scratch.azurewebsites.net";
+export const domain = "https://ic-webchat-scratch.azurewebsites.net";
 const baseUrl = `${domain}/api/conversations`;
 const app_secret = "acWN4N4CRLc.cwA.NhI.0Tyg-Wl1eJ9SbIaiVuiV233GVCJEkK4xAKZDwv4ebZw";
 
@@ -15,17 +15,20 @@ export const startConversation = () =>
                 "Authorization": `BotConnector ${app_secret}` 
             }
         })
-        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
+//        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as BotConversation);
 
-export const postMessage = (message:BotMessage, conversation:BotConversation) =>
+export const postMessage = (text: string, conversation: BotConversation) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
             url: `${baseUrl}/${conversation.conversationId}/messages`,
-            body: message,
+            body: {
+                text: text,
+                from: null,
+                conversationId: conversation.conversationId
+            },
             headers: {
-                "Accept": "application/json",
                 "Content-Type": "application/json",
                 "Authorization": `BotConnector ${conversation.token}`
             }
@@ -33,13 +36,29 @@ export const postMessage = (message:BotMessage, conversation:BotConversation) =>
 //        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
         .map(ajaxResponse => true);
 
-export const getMessages = (conversation:BotConversation) =>
+export const postFile = (file: File, conversation: BotConversation) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return Observable
+        .ajax<AjaxResponse>({
+            method: "POST",
+            url: `${baseUrl}/${conversation.conversationId}/upload`,
+            body: formData,
+            headers: {
+                "Authorization": `BotConnector ${conversation.token}`
+            }
+        } as AjaxRequest)
+//        .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
+        .map(ajaxResponse => true)
+}
+
+export const getMessages = (conversation: BotConversation) =>
     new Observable<Observable<BotMessage>>((subscriber:Subscriber<Observable<BotMessage>>) =>
         messageGroupGenerator(conversation, subscriber)
     )
     .concatAll();
 
-const messageGroupGenerator = (conversation:BotConversation, subscriber:Subscriber<Observable<BotMessage>>, watermark?:string) => {
+const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark?: string) => {
     getMessageGroup(conversation, watermark).subscribe(
         messageGroup => {
             const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
@@ -55,7 +74,7 @@ const messageGroupGenerator = (conversation:BotConversation, subscriber:Subscrib
     );
 }
 
-const getMessageGroup = (conversation:BotConversation, watermark?:string) =>
+const getMessageGroup = (conversation: BotConversation, watermark?: string) =>
     Observable
         .ajax<AjaxResponse>({
             method: "GET",
