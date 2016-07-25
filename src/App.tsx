@@ -33,7 +33,7 @@ const consoleStart = {text: "", enableSend: true};
 
 const incoming$ = (conversation) =>
     getMessages(conversation)
-    .filter(botmessage => botmessage.from === "TestBot");
+    .filter(botmessage => botmessage.from === "TestBotV3");
 
 const message$ = (conversation) =>
     incoming$(conversation)
@@ -64,13 +64,12 @@ class App extends React.Component<{}, State> {
             console: consoleStart
         }
 
-        conversation$.subscribe(
-            conversation => state$(conversation).subscribe(
-                state => this.setState(state),
-                error => console.log("errors", error)
-            ),
-            error => console.log("error starting conversation", error)
-        )
+        conversation$
+        .flatMap(conversation => state$(conversation))
+        .subscribe(
+            state => this.setState(state),
+            error => console.log("errors", error)
+        );
     }
 
     private consoleActions = {
