@@ -93,7 +93,18 @@
 	    }); })
 	        .do(function (state) { return console.log("state", state); });
 	};
-	var conversation$ = directLine_1.startConversation();
+	var conversation$ = directLine_1.startConversation;
+	var getQueryParams = function () {
+	    var params = {};
+	    location.search.
+	        substring(1).
+	        split("&").
+	        forEach(function (pair) {
+	        var p = pair.split("=");
+	        params[p[0]] = p[1];
+	    });
+	    return params;
+	};
 	var App = (function (_super) {
 	    __extends(App, _super);
 	    function App() {
@@ -122,10 +133,8 @@
 	                });
 	            },
 	            sendFile: function (files) {
-	                console.log("files", files);
 	                var _loop_1 = function(i, numFiles) {
 	                    var file = files[i];
-	                    console.log("attachment", file);
 	                    directLine_1.postFile(file, _this.state.conversation)
 	                        .retry(2)
 	                        .subscribe(function () {
@@ -147,7 +156,9 @@
 	            messages: [],
 	            console: consoleStart
 	        };
-	        conversation$
+	        var queryParams = getQueryParams();
+	        var appSecret = queryParams['s'];
+	        conversation$(appSecret)
 	            .flatMap(function (conversation) { return state$(conversation); })
 	            .subscribe(function (state) { return _this.setState(state); }, function (error) { return console.log("errors", error); });
 	    }
@@ -17897,15 +17908,14 @@
 	var rxjs_1 = __webpack_require__(4);
 	exports.domain = "https://ic-webchat-scratch.azurewebsites.net";
 	var baseUrl = exports.domain + "/api/conversations";
-	var app_secret = "vwobyzXEHXk.cwA.uqg.gc_BxsXCM2nUM71kbhflRQqqtRHYb8wd4ED2q49r148";
-	exports.startConversation = function () {
+	exports.startConversation = function (appSecret) {
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
 	        url: "" + baseUrl,
 	        headers: {
 	            "Accept": "application/json",
-	            "Authorization": "BotConnector " + app_secret
+	            "Authorization": "BotConnector " + appSecret
 	        }
 	    })
 	        .map(function (ajaxResponse) { return ajaxResponse.response; });
@@ -17994,7 +18004,6 @@
 	        inside = props.message.images.map(function (path) { return React.createElement("img", {src: path}); });
 	    else
 	        inside = props.message.text;
-	    console.log("inside", inside);
 	    return React.createElement("p", null, props.message.from + ": ", inside);
 	};
 
