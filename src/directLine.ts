@@ -3,7 +3,7 @@ import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'
 
 export const domain = "https://ic-webchat-scratch.azurewebsites.net";
 const baseUrl = `${domain}/api/conversations`;
-const app_secret = "acWN4N4CRLc.cwA.NhI.0Tyg-Wl1eJ9SbIaiVuiV233GVCJEkK4xAKZDwv4ebZw";
+const app_secret = "vwobyzXEHXk.cwA.uqg.gc_BxsXCM2nUM71kbhflRQqqtRHYb8wd4ED2q49r148";
 
 export const startConversation = () =>
     Observable
@@ -58,7 +58,7 @@ export const getMessages = (conversation: BotConversation) =>
     )
     .concatAll();
 
-const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark?: string) => {
+const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark="") => {
     getMessageGroup(conversation, watermark).subscribe(
         messageGroup => {
             const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
