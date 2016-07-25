@@ -53,7 +53,19 @@ const state$ = (conversation) =>
     )
     .do(state => console.log("state", state));
 
-const conversation$ = startConversation();
+const conversation$ = startConversation;
+
+const getQueryParams = () => {
+    const params = {};
+    location.search.
+        substring(1).
+        split("&").
+        forEach(pair => {
+            const p = pair.split("=");
+            params[p[0]] = p[1];
+        });
+    return params;
+}
 
 class App extends React.Component<{}, State> {
     constructor() {
@@ -64,7 +76,10 @@ class App extends React.Component<{}, State> {
             console: consoleStart
         }
 
-        conversation$
+        const queryParams = getQueryParams();
+        const appSecret = queryParams['s'];
+
+        conversation$(appSecret)
         .flatMap(conversation => state$(conversation))
         .subscribe(
             state => this.setState(state),
@@ -100,10 +115,8 @@ class App extends React.Component<{}, State> {
         },
 
         sendFile: (files:FileList) => {
-            console.log("files", files);
             for (let i = 0, numFiles = files.length; i < numFiles; i++) {
                 const file = files[i];
-                console.log("attachment", file);
                 postFile(file, this.state.conversation)
                 .retry(2)
                 .subscribe(

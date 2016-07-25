@@ -3,16 +3,15 @@ import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'
 
 export const domain = "https://ic-webchat-scratch.azurewebsites.net";
 const baseUrl = `${domain}/api/conversations`;
-const app_secret = "vwobyzXEHXk.cwA.uqg.gc_BxsXCM2nUM71kbhflRQqqtRHYb8wd4ED2q49r148";
 
-export const startConversation = () =>
+export const startConversation = (appSecret: string) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
             url: `${baseUrl}`,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${app_secret}` 
+                "Authorization": `BotConnector ${appSecret}` 
             }
         })
 //        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))

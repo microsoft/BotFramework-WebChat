@@ -10,6 +10,5 @@ export const HistoryMessage = (props:{
         inside = props.message.images.map(path => <img src= { path }/>);
     else
         inside = props.message.text;
-    console.log("inside", inside);
     return <p>{ props.message.from + ": "}{ inside }</p>;
 }
