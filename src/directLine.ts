@@ -17,6 +17,7 @@ export const startConversation = (appSecret: string) =>
             }
         })
 //        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
+        .retry(50)
         .map(ajaxResponse => ajaxResponse.response as BotConversation);
 
 export const postMessage = (text: string, conversation: BotConversation, userId: string) =>
@@ -87,4 +88,5 @@ const getMessageGroup = (conversation: BotConversation, watermark = "") =>
             }
         })
 //        .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
+        .retry(50)
         .map(ajaxResponse => ajaxResponse.response as BotMessageGroup);
