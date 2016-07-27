@@ -26,6 +26,11 @@ const timeStuff:TimeStuff = (timestamp:number) => {
         return [new Date (milliseconds).toLocaleDateString(), null]; 
 }
 
+const textify = (text:string) =>
+    text.split("\n").map((line, index) =>
+        <span>{ index > 0 ? <br/> : null }{ line }</span>
+    );
+
 interface Props {
     message: Message
 }
@@ -59,7 +64,8 @@ export class HistoryMessage extends React.Component<Props, {}> {
         if (this.props.message.images && this.props.message.images.length > 0)
             inside = this.props.message.images.map(path => <img src= { path }/>);
         else
-            inside = this.props.message.text;
+            inside = textify(this.props.message.text);
+             
         return <p>{ this.props.message.from } ({ timeStuff(this.props.message.timestamp)[0]}): { inside }</p>;
     }
 }
