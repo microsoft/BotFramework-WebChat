@@ -80,7 +80,12 @@
 	};
 	var message$ = function (conversation) {
 	    return incoming$(conversation)
-	        .map(function (botmessage) { return ({ text: botmessage.text, images: botmessage.images.map(function (path) { return directLine_1.domain + path; }), from: "bot" }); })
+	        .map(function (botmessage) { return ({
+	        text: botmessage.text,
+	        images: botmessage.images.map(function (path) { return directLine_1.domain + path; }),
+	        from: "bot",
+	        timestamp: Date.parse(botmessage.created)
+	    }); })
 	        .merge(outgoing$)
 	        .scan(function (messages, message) { return messages.concat([message]); }, []);
 	};
@@ -121,7 +126,8 @@
 	                    .subscribe(function () {
 	                    outgoing$.next({
 	                        text: _this.state.console.text,
-	                        from: "me"
+	                        from: "me",
+	                        timestamp: Date.now()
 	                    });
 	                    console$.next({
 	                        text: "",
@@ -140,7 +146,8 @@
 	                        .subscribe(function () {
 	                        outgoing$.next({
 	                            images: [window.URL.createObjectURL(file)],
-	                            from: "me"
+	                            from: "me",
+	                            timestamp: Date.now()
 	                        });
 	                    }, function (error) {
 	                        console.log("failed to post file");
@@ -17997,15 +18004,65 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var React = __webpack_require__(2);
-	exports.HistoryMessage = function (props) {
-	    var inside;
-	    if (props.message.images && props.message.images.length > 0)
-	        inside = props.message.images.map(function (path) { return React.createElement("img", {src: path}); });
-	    else
-	        inside = props.message.text;
-	    return React.createElement("p", null, props.message.from + ": ", inside);
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	var React = __webpack_require__(2);
+	var timeStuff = function (timestamp) {
+	    var milliseconds = Date.now() - timestamp;
+	    var minutes = Math.floor(milliseconds / (1000 * 60));
+	    var hours = Math.floor(minutes / 60);
+	    if (minutes < 1)
+	        return ["Now", 60 * 1000];
+	    else if (minutes === 1)
+	        return ["1 minute", 60 * 1000];
+	    else if (hours < 1)
+	        return [(minutes + " minutes"), 60 * 1000];
+	    else if (hours === 1)
+	        return ["1 hour", 60 * 60 * 1000];
+	    else if (hours < 5)
+	        return [(hours + " hours"), 60 * 60 * 1000 * (5 - hours)];
+	    else if (hours <= 24)
+	        return ["today", 60 * 60 * 1000 * (24 - hours)];
+	    else if (hours <= 48)
+	        return ["yesterday", 60 * 60 * 1000 * (48 - hours)];
+	    else
+	        return [new Date(milliseconds).toLocaleDateString(), null];
+	};
+	var HistoryMessage = (function (_super) {
+	    __extends(HistoryMessage, _super);
+	    function HistoryMessage(props) {
+	        _super.call(this);
+	        this.nextRender = null;
+	    }
+	    HistoryMessage.prototype.setNextRender = function (timestamp) {
+	        var _this = this;
+	        var ts = timeStuff(timestamp);
+	        if (ts[1])
+	            this.nextRender = setTimeout(function () {
+	                _this.forceUpdate();
+	                _this.setNextRender(timestamp);
+	            }, ts[1]);
+	    };
+	    HistoryMessage.prototype.componentDidMount = function () {
+	        this.setNextRender(this.props.message.timestamp);
+	    };
+	    HistoryMessage.prototype.componentWillUnmount = function () {
+	        clearTimeout(this.nextRender);
+	    };
+	    HistoryMessage.prototype.render = function () {
+	        var inside;
+	        if (this.props.message.images && this.props.message.images.length > 0)
+	            inside = this.props.message.images.map(function (path) { return React.createElement("img", {src: path}); });
+	        else
+	            inside = this.props.message.text;
+	        return React.createElement("p", null, this.props.message.from, " (", timeStuff(this.props.message.timestamp)[0], "): ", inside);
+	    };
+	    return HistoryMessage;
+	}(React.Component));
+	exports.HistoryMessage = HistoryMessage;
 
 
 /***/ },
