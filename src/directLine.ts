@@ -1,8 +1,10 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest } from '@reactivex/rxjs';
 import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'; 
 
-export const domain = "https://ic-webchat-scratch.azurewebsites.net";
+const domain = "https://directline.botframework.com";
 const baseUrl = `${domain}/api/conversations`;
+
+export const imageURL = (path:string) => domain + path;
 
 export const startConversation = (appSecret: string) =>
     Observable
