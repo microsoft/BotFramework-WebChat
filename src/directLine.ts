@@ -46,7 +46,7 @@ export const postFile = (file: File, conversation: BotConversation) => {
             headers: {
                 "Authorization": `BotConnector ${conversation.token}`
             }
-        } as AjaxRequest)
+        })
 //        .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
         .map(ajaxResponse => true)
 }
@@ -57,7 +57,7 @@ export const getMessages = (conversation: BotConversation) =>
     )
     .concatAll();
 
-const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark="") => {
+const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark?: string) => {
     getMessageGroup(conversation, watermark).subscribe(
         messageGroup => {
             const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
@@ -69,11 +69,11 @@ const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscr
                 someMessages && messageGroup.watermark ? 0 : 3000
             );
         },
-        result => subscriber.error(result)
+        error => subscriber.error(error)
     );
 }
 
-const getMessageGroup = (conversation: BotConversation, watermark?: string) =>
+const getMessageGroup = (conversation: BotConversation, watermark = "") =>
     Observable
         .ajax<AjaxResponse>({
             method: "GET",

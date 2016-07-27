@@ -9,7 +9,8 @@ import { Console } from './Console.tsx'
 export interface Message {
     from: "me" | "bot",
     text?: string,
-    images?: string[]
+    images?: string[],
+    timestamp: number
 } 
 
 export interface ConsoleState {
@@ -37,7 +38,12 @@ const incoming$ = (conversation) =>
 
 const message$ = (conversation) =>
     incoming$(conversation)
-    .map<Message>(botmessage => ({ text: botmessage.text, images: botmessage.images.map(path => domain + path), from: "bot" }))
+    .map<Message>(botmessage => ({
+        text: botmessage.text,
+        images: botmessage.images.map(path => domain + path),
+        from: "bot",
+        timestamp: Date.parse(botmessage.created)
+    }))
     .merge(outgoing$)
     .scan<Message[]>((messages, message) => [...messages, message], []);
 
@@ -100,7 +106,8 @@ class App extends React.Component<{}, State> {
                 () => {
                     outgoing$.next({
                         text: this.state.console.text,
-                        from: "me"
+                        from: "me",
+                        timestamp: Date.now()
                     });
                     console$.next({
                         text: "",
@@ -123,7 +130,8 @@ class App extends React.Component<{}, State> {
                     () => {
                         outgoing$.next({
                             images: [window.URL.createObjectURL(file)],
-                            from: "me"
+                            from: "me",
+                            timestamp: Date.now()
                         });
                     },
                     error => {
