@@ -17,14 +17,14 @@ export const startConversation = (appSecret: string) =>
 //        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as BotConversation);
 
-export const postMessage = (text: string, conversation: BotConversation) =>
+export const postMessage = (text: string, conversation: BotConversation, userId: string) =>
     Observable
         .ajax<AjaxResponse>({
             method: "POST",
             url: `${baseUrl}/${conversation.conversationId}/messages`,
             body: {
                 text: text,
-                from: null,
+                from: userId,
                 conversationId: conversation.conversationId
             },
             headers: {
@@ -33,6 +33,7 @@ export const postMessage = (text: string, conversation: BotConversation) =>
             }
         })
 //        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
+        .retry(50)
         .map(ajaxResponse => true);
 
 export const postFile = (file: File, conversation: BotConversation) => {

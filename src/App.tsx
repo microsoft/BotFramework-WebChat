@@ -19,12 +19,19 @@ export interface ConsoleState {
 }
 
 interface State {
+    // user ID
+    userId?: string;
     // conversation metadata
     conversation?: BotConversation,
     // message history
     messages?: Message[],
     // compose window
     console?: ConsoleState
+}
+
+const guid = () => {
+  const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
 const outgoing$ = new Subject<Message>();
@@ -77,6 +84,7 @@ class App extends React.Component<{}, State> {
     constructor() {
         super();
         this.state = {
+            userId: guid(),
             conversation: null,
             messages: [],
             console: consoleStart
@@ -100,7 +108,7 @@ class App extends React.Component<{}, State> {
 
         sendMessage: () => {
             console$.next({text: this.state.console.text, enableSend: false});
-            postMessage(this.state.console.text, this.state.conversation)
+            postMessage(this.state.console.text, this.state.conversation, this.state.userId)
             .retry(2)
             .subscribe(
                 () => {
@@ -144,8 +152,8 @@ class App extends React.Component<{}, State> {
 
     render() {
         return <div id="appFrame">
-            <Console actions={ this.consoleActions } { ...this.state.console } />
             <History messages={ this.state.messages }/> 
+            <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }
 }
