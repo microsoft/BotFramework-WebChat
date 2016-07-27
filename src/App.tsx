@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
-import { domain, startConversation, getMessages, postMessage, postFile } from './directLine';
+import { startConversation, getMessages, postMessage, postFile, imageURL } from './directLine';
 import { History } from './History.tsx'
 import { Console } from './Console.tsx'
 
@@ -47,7 +47,7 @@ const message$ = (conversation) =>
     incoming$(conversation)
     .map<Message>(botmessage => ({
         text: botmessage.text,
-        images: botmessage.images.map(path => domain + path),
+        images: botmessage.images.map(path => imageURL(path)),
         from: "bot",
         timestamp: Date.parse(botmessage.created)
     }))

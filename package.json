@@ -4,8 +4,10 @@
   "description": "sample web chat app for MS bot framework ",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --optimize-minimize --optimize-dedupe",
-    "watch": "webpack --optimize-minimize --optimize-dedupe -w",
+    "typings": "typings install",
+    "build": "webpack",
+    "watch": "webpack -w",
+    "minify": "webpack --optimize-minimize --optimize-dedupe",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

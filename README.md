@@ -12,8 +12,9 @@ I keep [notes](./notes.md) reflecting my current thinking. I try to keep them re
 
 1. Clone this repo
 2. `npm install`
-3. `webpack -watch`
-4. Start a local web server (I used http-server) and aim your browser at localhost.
+3. `npm run typings`
+4. `npm run build` (to build on every change `npm run watch`, to build minified `npm run minify`)
+5. Start a local web server (I used http-server) and aim your browser at http://localhost/{port}/test.html (for TestBot) or http://localhost/{port}/index.html?s={appsecret} using the DirectLine app secret for your bot
 
 # Copyright & License
 
