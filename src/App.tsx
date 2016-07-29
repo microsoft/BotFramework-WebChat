@@ -44,12 +44,12 @@ const outgoing$ = new Subject<Message>();
 const console$ = new Subject<ConsoleState>();
 const consoleStart = {text: "", enableSend: true};
 
-const incoming$ = (conversation) =>
+const incoming$ = (conversation: BotConversation, userId: string) =>
     getMessages(conversation)
-    .filter(botmessage => botmessage.from === "TestBotV3");
+    .filter(botmessage => botmessage.from != userId);
 
-const messagegroup$ = (conversation) =>
-    incoming$(conversation)
+const messagegroup$ = (conversation: BotConversation, userId: string) =>
+    incoming$(conversation, userId)
     .map<Message>(botmessage => ({
         text: botmessage.text,
         images: botmessage.images.map(path => imageURL(path)),
@@ -78,8 +78,8 @@ const messagegroup$ = (conversation) =>
         return mgs;
     }, []);
 
-const state$ = (conversation) => 
-    messagegroup$(conversation).startWith([])
+const state$ = (conversation: BotConversation, userId: string) => 
+    messagegroup$(conversation, userId).startWith([])
     .combineLatest(
         console$.startWith(consoleStart),
         (messagegroups, console) => ({
@@ -118,7 +118,7 @@ class App extends React.Component<{}, State> {
         const appSecret = queryParams['s'];
 
         conversation$(appSecret)
-        .flatMap(conversation => state$(conversation))
+        .flatMap(conversation => state$(conversation, this.state.userId))
         .subscribe(
             state => this.setState(state),
             error => console.log("errors", error)
