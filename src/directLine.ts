@@ -57,11 +57,11 @@ export const postFile = (file: File, conversation: BotConversation) => {
 
 export const getMessages = (conversation: BotConversation) =>
     new Observable<Observable<BotMessage>>((subscriber:Subscriber<Observable<BotMessage>>) =>
-        messageGroupGenerator(conversation, subscriber)
+        messagesGenerator(conversation, subscriber)
     )
     .concatAll();
 
-const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark?: string) => {
+const messagesGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark?: string) => {
     getMessageGroup(conversation, watermark).subscribe(
         messageGroup => {
             const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
@@ -69,7 +69,7 @@ const messageGroupGenerator = (conversation: BotConversation, subscriber: Subscr
                 subscriber.next(Observable.from(messageGroup.messages));
 
             setTimeout(
-                () => messageGroupGenerator(conversation, subscriber, messageGroup && messageGroup.watermark),
+                () => messagesGenerator(conversation, subscriber, messageGroup && messageGroup.watermark),
                 someMessages && messageGroup.watermark ? 0 : 3000
             );
         },
