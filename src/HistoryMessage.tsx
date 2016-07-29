@@ -1,20 +1,16 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Message } from './App.tsx';
-
-const textify = (text:string) =>
-    text.split("\n").map((line, index) =>
-        <span>{ index > 0 ? <br/> : null }{ line }</span>
-    );
+import { ImageMessage } from './ImageMessage.tsx';
+import { TextMessage } from './TextMessage.tsx';
 
 export const HistoryMessage = (props: {
-    message:Message
+    message: Message
 }) => {
     let inside;
     if (props.message.images && props.message.images.length > 0)
-        inside = props.message.images.map(path => <img src= { path }/>);
+        inside = <ImageMessage images={ props.message.images }/>;
     else
-        inside = textify(props.message.text);
-
-    return <p>{ props.message.from }: { inside }</p>;
+        inside = <TextMessage text={ props.message.text }/>;
+    return <p class="message">{ props.message.from }: <br/>{ inside }</p>;
 }
