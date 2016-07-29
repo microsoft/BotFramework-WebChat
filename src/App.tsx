@@ -58,22 +58,34 @@ const messagegroup$ = (conversation) =>
     }))
     .merge(outgoing$)
     .scan<MessageGroup[]>((messagegroups, message) => {
-        if (messagegroups.length === 0)
-            return [{ messages: [message], timestamp: message.timestamp }];
-        const [latest, ... older] = messagegroups;
-        if (message.timestamp - latest.timestamp < 5000)
-            return [{ messages: [message, ... latest.messages], timestamp: message.timestamp }, ... older];
-        return [{ messages: [message], timestamp: message.timestamp }, ... messagegroups];
+        let ms: Message[];
+        let mgs: MessageGroup[];
+        if (messagegroups.length === 0) {
+            ms = [message];
+            mgs = [];
+        } else {
+            const latest = messagegroups[messagegroups.length - 1];        
+            if (message.timestamp - latest.timestamp < 60 * 1000) {
+                ms = latest.messages.slice();
+                ms.push(message);
+                mgs = messagegroups.slice(0, messagegroups.length - 1);
+            } else {
+                ms = [message];
+                mgs = messagegroups.slice();
+            }
+        }
+        mgs.push({ messages: ms, timestamp: message.timestamp });
+        return mgs;
     }, []);
 
 const state$ = (conversation) => 
     messagegroup$(conversation).startWith([])
     .combineLatest(
         console$.startWith(consoleStart),
-        (messagegroups, compose) => ({
+        (messagegroups, console) => ({
             conversation: conversation,
             messagegroups: messagegroups,
-            console: compose
+            console: console
         } as State)
     )
     .do(state => console.log("state", state));

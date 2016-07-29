@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-type TimeStuff = (timeout:number) => [string, number];
+type TimeStuff = (timestamp:number) => [string, number];
 
 const timeStuff:TimeStuff = (timestamp:number) => {
     const milliseconds = Date.now() - timestamp;
@@ -9,20 +9,19 @@ const timeStuff:TimeStuff = (timestamp:number) => {
     const hours = Math.floor(minutes / 60);
     if (minutes < 1)
         return ["Now", 60 * 1000];
-    else if (minutes === 1)
+    if (minutes === 1)
         return [`1 minute`, 60 * 1000];
-    else if (hours < 1)
+    if (hours < 1)
         return [`${minutes} minutes`, 60 * 1000];
-    else if (hours === 1)
+    if (hours === 1)
         return [`1 hour`, 60 * 60 * 1000];
-    else if (hours < 5)
+    if (hours < 5)
         return [`${hours} hours`, 60 * 60 * 1000 * (5 - hours)];
-    else if (hours <= 24)
+    if (hours <= 24)
         return ["today", 60 * 60 * 1000 * (24 - hours)];
-    else if (hours <= 48)
+    if (hours <= 48)
         return ["yesterday", 60 * 60 * 1000 * (48 - hours)];
-    else
-        return [new Date (milliseconds).toLocaleDateString(), null]; 
+    return [new Date (milliseconds).toLocaleDateString(), null]; 
 }
 
 interface Props {
@@ -54,6 +53,6 @@ export class Timestamp extends React.Component<Props, {}> {
     }
 
     render() {
-        return <p><i>{ timeStuff(this.props.timestamp)[0]})</i></p>;
+        return <p><i>{ timeStuff(this.props.timestamp)[0] }</i></p>;
     }
 }

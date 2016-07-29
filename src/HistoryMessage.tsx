@@ -11,10 +11,10 @@ export const HistoryMessage = (props: {
     message:Message
 }) => {
     let inside;
-    if (this.props.message.images && this.props.message.images.length > 0)
-        inside = this.props.message.images.map(path => <img src= { path }/>);
+    if (props.message.images && props.message.images.length > 0)
+        inside = props.message.images.map(path => <img src= { path }/>);
     else
-        inside = textify(this.props.message.text);
+        inside = textify(props.message.text);
 
-    return <p>{ this.props.message.from }: { inside }</p>;
+    return <p>{ props.message.from }: { inside }</p>;
 }

@@ -8,10 +8,10 @@ export const History = (props: {
     messagegroups: MessageGroup[]
 }) =>
     <div id="messageHistoryFrame">
-        { props.messagegroups.reverse().map(messagegroup =>
+        { props.messagegroups.map(messagegroup =>
             <div id="messageGroupFrame">
                 <Timestamp timestamp={ messagegroup.timestamp } />
-                { messagegroup.messages.reverse().map(message =>
+                { messagegroup.messages.map(message =>
                     <HistoryMessage message={ message }/>
                 ) }
             </div>

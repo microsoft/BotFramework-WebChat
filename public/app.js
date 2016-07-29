@@ -92,20 +92,34 @@
 	    }); })
 	        .merge(outgoing$)
 	        .scan(function (messagegroups, message) {
-	        if (messagegroups.length === 0)
-	            return [{ messages: [message], timestamp: message.timestamp }];
-	        var latest = messagegroups[0], older = messagegroups.slice(1);
-	        if (message.timestamp - latest.timestamp < 5000)
-	            return [{ messages: [message].concat(latest.messages), timestamp: message.timestamp }].concat(older);
-	        return [{ messages: [message], timestamp: message.timestamp }].concat(messagegroups);
+	        var ms;
+	        var mgs;
+	        if (messagegroups.length === 0) {
+	            ms = [message];
+	            mgs = [];
+	        }
+	        else {
+	            var latest = messagegroups[messagegroups.length - 1];
+	            if (message.timestamp - latest.timestamp < 60 * 1000) {
+	                ms = latest.messages.slice();
+	                ms.push(message);
+	                mgs = messagegroups.slice(0, messagegroups.length - 1);
+	            }
+	            else {
+	                ms = [message];
+	                mgs = messagegroups.slice();
+	            }
+	        }
+	        mgs.push({ messages: ms, timestamp: message.timestamp });
+	        return mgs;
 	    }, []);
 	};
 	var state$ = function (conversation) {
 	    return messagegroup$(conversation).startWith([])
-	        .combineLatest(console$.startWith(consoleStart), function (messagegroups, compose) { return ({
+	        .combineLatest(console$.startWith(consoleStart), function (messagegroups, console) { return ({
 	        conversation: conversation,
 	        messagegroups: messagegroups,
-	        console: compose
+	        console: console
 	    }); })
 	        .do(function (state) { return console.log("state", state); });
 	};
@@ -18012,8 +18026,8 @@
 	var Timestamp_tsx_1 = __webpack_require__(348);
 	var HistoryMessage_tsx_1 = __webpack_require__(349);
 	exports.History = function (props) {
-	    return React.createElement("div", {id: "messageHistoryFrame"}, props.messagegroups.reverse().map(function (messagegroup) {
-	        return React.createElement("div", {id: "messageGroupFrame"}, React.createElement(Timestamp_tsx_1.Timestamp, {timestamp: messagegroup.timestamp}), messagegroup.messages.reverse().map(function (message) {
+	    return React.createElement("div", {id: "messageHistoryFrame"}, props.messagegroups.map(function (messagegroup) {
+	        return React.createElement("div", {id: "messageGroupFrame"}, React.createElement(Timestamp_tsx_1.Timestamp, {timestamp: messagegroup.timestamp}), messagegroup.messages.map(function (message) {
 	            return React.createElement(HistoryMessage_tsx_1.HistoryMessage, {message: message});
 	        }));
 	    }));
@@ -18037,20 +18051,19 @@
 	    var hours = Math.floor(minutes / 60);
 	    if (minutes < 1)
 	        return ["Now", 60 * 1000];
-	    else if (minutes === 1)
+	    if (minutes === 1)
 	        return ["1 minute", 60 * 1000];
-	    else if (hours < 1)
+	    if (hours < 1)
 	        return [(minutes + " minutes"), 60 * 1000];
-	    else if (hours === 1)
+	    if (hours === 1)
 	        return ["1 hour", 60 * 60 * 1000];
-	    else if (hours < 5)
+	    if (hours < 5)
 	        return [(hours + " hours"), 60 * 60 * 1000 * (5 - hours)];
-	    else if (hours <= 24)
+	    if (hours <= 24)
 	        return ["today", 60 * 60 * 1000 * (24 - hours)];
-	    else if (hours <= 48)
+	    if (hours <= 48)
 	        return ["yesterday", 60 * 60 * 1000 * (48 - hours)];
-	    else
-	        return [new Date(milliseconds).toLocaleDateString(), null];
+	    return [new Date(milliseconds).toLocaleDateString(), null];
 	};
 	var Timestamp = (function (_super) {
 	    __extends(Timestamp, _super);
@@ -18074,7 +18087,7 @@
 	        clearTimeout(this.nextRender);
 	    };
 	    Timestamp.prototype.render = function () {
-	        return React.createElement("p", null, React.createElement("i", null, timeStuff(this.props.timestamp)[0], ")"));
+	        return React.createElement("p", null, React.createElement("i", null, timeStuff(this.props.timestamp)[0]));
 	    };
 	    return Timestamp;
 	}(React.Component));
@@ -18086,7 +18099,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var _this = this;
 	var React = __webpack_require__(2);
 	var textify = function (text) {
 	    return text.split("\n").map(function (line, index) {
@@ -18095,11 +18107,11 @@
 	};
 	exports.HistoryMessage = function (props) {
 	    var inside;
-	    if (_this.props.message.images && _this.props.message.images.length > 0)
-	        inside = _this.props.message.images.map(function (path) { return React.createElement("img", {src: path}); });
+	    if (props.message.images && props.message.images.length > 0)
+	        inside = props.message.images.map(function (path) { return React.createElement("img", {src: path}); });
 	    else
-	        inside = textify(_this.props.message.text);
-	    return React.createElement("p", null, _this.props.message.from, ": ", inside);
+	        inside = textify(props.message.text);
+	    return React.createElement("p", null, props.message.from, ": ", inside);
 	};
 
 
