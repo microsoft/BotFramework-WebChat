@@ -13,6 +13,11 @@ export interface Message {
     timestamp: number
 } 
 
+export interface MessageGroup {
+    messages: Message[],
+    timestamp: number
+}
+
 export interface ConsoleState {
     text?: string,
     enableSend?: boolean
@@ -24,7 +29,7 @@ interface State {
     // conversation metadata
     conversation?: BotConversation,
     // message history
-    messages?: Message[],
+    messagegroups?: MessageGroup[],
     // compose window
     console?: ConsoleState
 }
@@ -43,7 +48,7 @@ const incoming$ = (conversation) =>
     getMessages(conversation)
     .filter(botmessage => botmessage.from === "TestBotV3");
 
-const message$ = (conversation) =>
+const messagegroup$ = (conversation) =>
     incoming$(conversation)
     .map<Message>(botmessage => ({
         text: botmessage.text,
@@ -52,16 +57,35 @@ const message$ = (conversation) =>
         timestamp: Date.parse(botmessage.created)
     }))
     .merge(outgoing$)
-    .scan<Message[]>((messages, message) => [...messages, message], []);
+    .scan<MessageGroup[]>((messagegroups, message) => {
+        let ms: Message[];
+        let mgs: MessageGroup[];
+        if (messagegroups.length === 0) {
+            ms = [message];
+            mgs = [];
+        } else {
+            const latest = messagegroups[messagegroups.length - 1];        
+            if (message.timestamp - latest.timestamp < 60 * 1000) {
+                ms = latest.messages.slice();
+                ms.push(message);
+                mgs = messagegroups.slice(0, messagegroups.length - 1);
+            } else {
+                ms = [message];
+                mgs = messagegroups.slice();
+            }
+        }
+        mgs.push({ messages: ms, timestamp: message.timestamp });
+        return mgs;
+    }, []);
 
 const state$ = (conversation) => 
-    message$(conversation).startWith([])
+    messagegroup$(conversation).startWith([])
     .combineLatest(
         console$.startWith(consoleStart),
-        (messages, compose) => ({
+        (messagegroups, console) => ({
             conversation: conversation,
-            messages: messages,
-            console: compose
+            messagegroups: messagegroups,
+            console: console
         } as State)
     )
     .do(state => console.log("state", state));
@@ -86,7 +110,7 @@ class App extends React.Component<{}, State> {
         this.state = {
             userId: guid(),
             conversation: null,
-            messages: [],
+            messagegroups: [],
             console: consoleStart
         }
 
@@ -152,7 +176,7 @@ class App extends React.Component<{}, State> {
 
     render() {
         return <div id="appFrame">
-            <History messages={ this.state.messages }/> 
+            <History messagegroups={ this.state.messagegroups }/> 
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }

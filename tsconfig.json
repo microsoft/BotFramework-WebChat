@@ -12,6 +12,7 @@
         "src/directLineTypes.ts",
         "src/directLine.ts",
         "src/mockLine.ts",
+        "src/Timestamp.tsx",
         "src/HistoryMessage.tsx",
         "src/Console.tsx",
         "src/History.tsx",
