@@ -12,6 +12,8 @@
         "src/directLineTypes.ts",
         "src/directLine.ts",
         "src/mockLine.ts",
+        "src/ImageMessage.tsx",
+        "src/TextMessage.tsx",
         "src/Timestamp.tsx",
         "src/HistoryMessage.tsx",
         "src/Console.tsx",

@@ -70,7 +70,7 @@
 	var rxjs_1 = __webpack_require__(4);
 	var directLine_1 = __webpack_require__(346);
 	var History_tsx_1 = __webpack_require__(347);
-	var Console_tsx_1 = __webpack_require__(350);
+	var Console_tsx_1 = __webpack_require__(352);
 	var guid = function () {
 	    var s4 = function () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
 	    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -18026,10 +18026,8 @@
 	var Timestamp_tsx_1 = __webpack_require__(348);
 	var HistoryMessage_tsx_1 = __webpack_require__(349);
 	exports.History = function (props) {
-	    return React.createElement("div", {id: "messageHistoryFrame"}, props.messagegroups.map(function (messagegroup) {
-	        return React.createElement("div", {id: "messageGroupFrame"}, React.createElement(Timestamp_tsx_1.Timestamp, {timestamp: messagegroup.timestamp}), messagegroup.messages.map(function (message) {
-	            return React.createElement(HistoryMessage_tsx_1.HistoryMessage, {message: message});
-	        }));
+	    return React.createElement("div", {id: "messageHistory"}, props.messagegroups.map(function (messagegroup) {
+	        return React.createElement("div", {class: "messageGroup"}, React.createElement(Timestamp_tsx_1.Timestamp, {timestamp: messagegroup.timestamp}), messagegroup.messages.map(function (message) { return React.createElement(HistoryMessage_tsx_1.HistoryMessage, {message: message}); }));
 	    }));
 	};
 
@@ -18100,23 +18098,47 @@
 
 	"use strict";
 	var React = __webpack_require__(2);
-	var textify = function (text) {
-	    return text.split("\n").map(function (line, index) {
-	        return React.createElement("span", null, index > 0 ? React.createElement("br", null) : null, line);
-	    });
-	};
+	var ImageMessage_tsx_1 = __webpack_require__(350);
+	var TextMessage_tsx_1 = __webpack_require__(351);
 	exports.HistoryMessage = function (props) {
 	    var inside;
 	    if (props.message.images && props.message.images.length > 0)
-	        inside = props.message.images.map(function (path) { return React.createElement("img", {src: path}); });
+	        inside = React.createElement(ImageMessage_tsx_1.ImageMessage, {images: props.message.images});
 	    else
-	        inside = textify(props.message.text);
-	    return React.createElement("p", null, props.message.from, ": ", inside);
+	        inside = React.createElement(TextMessage_tsx_1.TextMessage, {text: props.message.text});
+	    return React.createElement("p", {class: "message"}, props.message.from, ": ", React.createElement("br", null), inside);
 	};
 
 
 /***/ },
 /* 350 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(2);
+	exports.ImageMessage = function (props) {
+	    return React.createElement("div", {class: "imageMessage"}, props.images.map(function (path) { return React.createElement("img", {src: path}); }));
+	};
+
+
+/***/ },
+/* 351 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(2);
+	var textify = function (text) {
+	    return text.split("\n").map(function (line, index) {
+	        return React.createElement("span", null, index > 0 ? React.createElement("br", null) : null, line);
+	    });
+	};
+	exports.TextMessage = function (props) {
+	    return React.createElement("div", {class: "textMessage"}, textify(props.text));
+	};
+
+
+/***/ },
+/* 352 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
