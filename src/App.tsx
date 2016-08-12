@@ -104,6 +104,16 @@ const getQueryParams = () => {
     return params;
 }
 
+export interface ButtonActions {
+    imBack: (text:string) => void,
+}
+
+export interface ConsoleActions {
+    updateMessage: (text:string) => void,
+    sendMessage: () => void,
+    sendFile: (files:FileList) => void
+}
+
 class App extends React.Component<{}, State> {
     constructor() {
         super();
@@ -125,7 +135,26 @@ class App extends React.Component<{}, State> {
         );
     }
 
-    private consoleActions = {
+    private buttonActions: ButtonActions = {
+        imBack: (text:string) => {
+            postMessage(text, this.state.conversation, this.state.userId)
+            .retry(2)
+            .subscribe(
+                () => {
+                    outgoing$.next({
+                        text: text,
+                        from: "me",
+                        timestamp: Date.now()
+                    });
+                },
+                error => {
+                    console.log("failed to post message");
+                }
+            );
+        }
+    }
+
+    private consoleActions: ConsoleActions = {
         updateMessage: (text: string) => {
             console$.next({text: text, enableSend: this.state.console.enableSend});
         },
@@ -176,7 +205,7 @@ class App extends React.Component<{}, State> {
 
     render() {
         return <div id="appFrame">
-            <History messagegroups={ this.state.messagegroups }/> 
+            <History messagegroups={ this.state.messagegroups } buttonActions={ this.buttonActions }/> 
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }
