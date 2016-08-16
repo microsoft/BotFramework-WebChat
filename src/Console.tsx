@@ -1,12 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { ConsoleActions } from './App.tsx';
 
 export const Console = (props: {
-    actions: {
-        updateMessage(string): void,
-        sendMessage(): void,
-        sendFile(string): void
-    },
+    actions: ConsoleActions,
     text: string,
     enableSend: boolean
 }) =>
