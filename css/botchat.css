@@ -1,0 +1,94 @@
+﻿
+body, input, textarea {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 15px;
+}
+
+.wc-message-groups {
+    overflow: hidden;
+}
+
+.wc-message-group {
+    clear: both;
+}
+
+.wc-message {
+    clear: both;
+    margin-bottom: 10px;
+    max-width: 80%;
+    position: relative;
+}
+
+.wc-message svg.wc-message-callout {
+    height: 8px;
+    position: absolute;
+    stroke: none;
+    top: 0;
+    width: 12px;
+}
+
+.wc-message-from {
+    color: #999;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.wc-message-from-me {
+    float: right;
+    margin-right: 12px;
+}
+
+.wc-message-from-me .wc-message-from {
+    text-align: right;
+}
+
+.wc-message-from-bot {
+    float: left;
+    margin-left: 12px;
+}
+
+.wc-message-content {
+    border-radius: 2px;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+    overflow: hidden;
+    padding: 5.5px 10px;
+}
+
+.wc-message-content img {
+    max-height: 320px;
+    width: 100%;
+}
+
+.wc-message-from-me .wc-message-content {
+    background-color: #808c95;
+    color: #fff;
+}
+
+.wc-message-from-me svg.wc-message-callout path {
+    fill: #808c95;
+}
+
+.wc-message-from-me svg.wc-message-callout path.point-left {
+    display: none;
+}
+
+.wc-message-from-me svg.wc-message-callout {
+    right: -10px;
+}
+
+.wc-message-from-bot .wc-message-content {
+    background-color: #eceff1;
+    color: #000;
+}
+
+.wc-message-from-bot svg.wc-message-callout path {
+    fill: #eceff1;
+}
+
+.wc-message-from-bot svg.wc-message-callout path.point-right {
+    display: none;
+}
+
+.wc-message-from-bot svg.wc-message-callout {
+    left: -12px;
+}
