@@ -14,7 +14,17 @@ export const HistoryMessage = (props: {
         inside = <ImageMessage images={ props.message.images }/>;
     else if (props.message.text.includes("Bender"))
         inside = <HeroCard buttonActions={ props.buttonActions }/>
-    else 
+    else
         inside = <TextMessage text={ props.message.text }/>;
-    return <p class="message">{ props.message.from }: <br/>{ inside }</p>;
+
+    return <div className={ 'wc-message wc-message-from-' + props.message.from }>
+        <div className="wc-message-content">
+            <svg className="wc-message-callout">
+                <path className="point-left" d="m0,0 h12 v10 z" />
+                <path className="point-right" d="m0,10 v-10 h12 z" />
+            </svg>
+            { inside }
+        </div>
+        <div className="wc-message-from">{ props.message.from }</div>
+    </div>;
 }
