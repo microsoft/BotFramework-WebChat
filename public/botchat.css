@@ -1,94 +1,173 @@
-﻿
-body, input, textarea {
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 15px;
-}
+﻿/* reset */
 
-.wc-message-groups {
-    overflow: hidden;
-}
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
 
-.wc-message-group {
-    clear: both;
-}
+    body, input, textarea {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 15px;
+    }
 
-.wc-message {
-    clear: both;
-    margin-bottom: 10px;
-    max-width: 80%;
-    position: relative;
-}
+/* docking */
 
-.wc-message svg.wc-message-callout {
-    height: 8px;
-    position: absolute;
-    stroke: none;
-    top: 0;
-    width: 12px;
-}
+    .wc-header {
+        background-color: #3e92d2;
+        color: #fff;
+        font-weight: 500;
+        height: 35px;   /* height + padding-top = total height */
+        left: 0;
+        letter-spacing: 0.5px;
+        padding: 10px 15px 0 15px;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
 
-.wc-message-from {
-    color: #999;
-    font-size: 11px;
-    margin-top: 5px;
-}
+    .wc-time {
+        color: #999;
+        margin-bottom: 10px;
+    }
 
-.wc-message-from-me {
-    float: right;
-    margin-right: 12px;
-}
+    .wc-message-groups {
+        bottom: 50px;
+        left: 0;
+        overflow-y: scroll;
+        padding: 10px;
+        position: absolute;
+        right: 0;
+        top: 45px;  /* from wc-header total height */
+    }
 
-.wc-message-from-me .wc-message-from {
-    text-align: right;
-}
+    .wc-console {
+        border: 5px solid #dbdee1;
+        bottom: 0;
+        box-sizing: border-box;
+        height: 50px;
+        left: 0;
+        position: absolute;
+        right: 0;
+    }
 
-.wc-message-from-bot {
-    float: left;
-    margin-left: 12px;
-}
+/* messages */
 
-.wc-message-content {
-    border-radius: 2px;
-    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
-    overflow: hidden;
-    padding: 5.5px 10px;
-}
+    .wc-message-group {
+        clear: both;
+    }
 
-.wc-message-content img {
-    max-height: 320px;
-    width: 100%;
-}
+    .wc-message {
+        clear: both;
+        margin-bottom: 10px;
+        max-width: 80%;
+        position: relative;
+    }
 
-.wc-message-from-me .wc-message-content {
-    background-color: #808c95;
-    color: #fff;
-}
+    .wc-message svg.wc-message-callout {
+        height: 8px;
+        position: absolute;
+        stroke: none;
+        top: 0;
+        width: 12px;
+    }
 
-.wc-message-from-me svg.wc-message-callout path {
-    fill: #808c95;
-}
+    .wc-message-content {
+        border-radius: 2px;
+        box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+        overflow: hidden;
+        padding: 5.5px 10px;
+    }
 
-.wc-message-from-me svg.wc-message-callout path.point-left {
-    display: none;
-}
+    .wc-message-content img {
+        max-height: 320px;
+        width: 100%;
+    }
 
-.wc-message-from-me svg.wc-message-callout {
-    right: -10px;
-}
+    .wc-message-from {
+        color: #999;
+        font-size: 11px;
+        margin-top: 5px;
+    }
 
-.wc-message-from-bot .wc-message-content {
-    background-color: #eceff1;
-    color: #000;
-}
+/* from me */
 
-.wc-message-from-bot svg.wc-message-callout path {
-    fill: #eceff1;
-}
+    .wc-message-from-me {
+        float: right;
+        margin-right: 12px;
+    }
 
-.wc-message-from-bot svg.wc-message-callout path.point-right {
-    display: none;
-}
+    .wc-message-from-me .wc-message-from {
+        text-align: right;
+    }
 
-.wc-message-from-bot svg.wc-message-callout {
-    left: -12px;
-}
+    .wc-message-from-me .wc-message-content {
+        background-color: #808c95;
+        color: #fff;
+    }
+
+    .wc-message-from-me svg.wc-message-callout path {
+        fill: #808c95;
+    }
+
+    .wc-message-from-me svg.wc-message-callout path.point-left {
+        display: none;
+    }
+
+    .wc-message-from-me svg.wc-message-callout {
+        right: -10px;
+    }
+
+/* from bot */
+
+    .wc-message-from-bot {
+        float: left;
+        margin-left: 12px;
+    }
+
+    .wc-message-from-bot .wc-message-content {
+        background-color: #eceff1;
+        color: #000;
+    }
+
+    .wc-message-from-bot svg.wc-message-callout path {
+        fill: #eceff1;
+    }
+
+    .wc-message-from-bot svg.wc-message-callout path.point-right {
+        display: none;
+    }
+
+    .wc-message-from-bot svg.wc-message-callout {
+        left: -12px;
+    }
+
+/* console */
+
+    .wc-console > * {
+        vertical-align: middle;
+    }
+
+    .wc-console textarea, .wc-console input[type=text] {
+        border: none;
+        height: 30px;
+        outline: none;
+        padding: 0;
+        resize: none;
+    }
+
+    label.wc-upload {
+        cursor: pointer;
+        display: inline-block;
+        height: 40px;
+    }
+
+    .wc-upload svg {
+        fill: #8A8A8A;
+        margin: 11px;
+    }
+
+    .wc-upload input {
+        display: none;
+    }
