@@ -204,7 +204,10 @@ class App extends React.Component<{}, State> {
     }
 
     render() {
-        return <div id="appFrame">
+        return <div id="appFrame" className="wc-app">
+            <div className="wc-header">
+                WebChat
+            </div>
             <History messagegroups={ this.state.messagegroups } buttonActions={ this.buttonActions }/> 
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;

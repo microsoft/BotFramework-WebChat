@@ -53,6 +53,6 @@ export class Timestamp extends React.Component<Props, {}> {
     }
 
     render() {
-        return <p><i>{ timeStuff(this.props.timestamp)[0] }</i></p>;
+        return <div className="wc-time">{ timeStuff(this.props.timestamp)[0] }</div>;
     }
 }
