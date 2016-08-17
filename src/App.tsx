@@ -204,7 +204,7 @@ class App extends React.Component<{}, State> {
     }
 
     render() {
-        return <div id="appFrame" className="wc-app">
+        return <div className="wc-app">
             <div className="wc-header">
                 WebChat
             </div>

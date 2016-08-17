@@ -8,7 +8,7 @@ export const History = (props: {
     messagegroups: MessageGroup[],
     buttonActions: ButtonActions
 }) =>
-    <div id="messageHistory" className="wc-message-groups">
+    <div className="wc-message-groups">
         { props.messagegroups.map(messagegroup =>
             <div className="wc-message-group">
                 <Timestamp timestamp={ messagegroup.timestamp } />
