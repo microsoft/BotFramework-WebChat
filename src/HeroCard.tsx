@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { ButtonActions } from './App.tsx';
+import { HistoryActions } from './App.tsx';
 
 const content = {
     'images': [{
@@ -18,7 +18,7 @@ const content = {
 }
 
 export const HeroCard = (props: {
-    buttonActions: ButtonActions
+    actions: HistoryActions
 }) =>
     <div class="imageMessage">
         { content.images.map(image => <img src={ image.url } alt={ image.url } />) }
@@ -26,6 +26,6 @@ export const HeroCard = (props: {
         <p><i>{ content.subtitle }</i></p>
         <p>{ content.text }</p>
         <ul>
-        { content.buttons.map(button => <li><button onClick={ () => props.buttonActions.imBack(button.value) }>{ button.title }</button></li>) }
+        { content.buttons.map(button => <li><button onClick={ () => props.actions.buttonImBack(button.value) }>{ button.title }</button></li>) }
         </ul>
     </div>;

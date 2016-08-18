@@ -1,19 +1,19 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Message, ButtonActions } from './App.tsx';
+import { Message, HistoryActions } from './App.tsx';
 import { ImageMessage } from './ImageMessage.tsx';
 import { TextMessage } from './TextMessage.tsx';
 import { HeroCard } from './HeroCard.tsx';
 
 export const HistoryMessage = (props: {
     message: Message,
-    buttonActions: ButtonActions
+    actions: HistoryActions
 }) => {
     let inside;
     if (props.message.images && props.message.images.length > 0)
         inside = <ImageMessage images={ props.message.images }/>;
     else if (props.message.text.includes("Bender"))
-        inside = <HeroCard buttonActions={ props.buttonActions }/>
+        inside = <HeroCard actions={ props.actions }/>
     else
         inside = <TextMessage text={ props.message.text }/>;
 

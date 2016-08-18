@@ -30,6 +30,7 @@ interface State {
     conversation?: BotConversation,
     // message history
     messagegroups?: MessageGroup[],
+    autoscroll: boolean,
     // compose window
     console?: ConsoleState
 }
@@ -78,13 +79,17 @@ const messagegroup$ = (conversation: BotConversation, userId: string) =>
         return mgs;
     }, []);
 
+const autoscroll$ = new Subject<boolean>();
+
 const state$ = (conversation: BotConversation, userId: string) => 
     messagegroup$(conversation, userId).startWith([])
     .combineLatest(
+        autoscroll$.distinctUntilChanged().startWith(true),
         console$.startWith(consoleStart),
-        (messagegroups, console) => ({
+        (messagegroups, autoscroll, console) => ({
             conversation: conversation,
             messagegroups: messagegroups,
+            autoscroll: autoscroll,
             console: console
         } as State)
     )
@@ -104,8 +109,9 @@ const getQueryParams = () => {
     return params;
 }
 
-export interface ButtonActions {
-    imBack: (text:string) => void,
+export interface HistoryActions {
+    buttonImBack: (text:string) => void,
+    setAutoscroll: (autoscroll:boolean) => void
 }
 
 export interface ConsoleActions {
@@ -121,6 +127,7 @@ class App extends React.Component<{}, State> {
             userId: guid(),
             conversation: null,
             messagegroups: [],
+            autoscroll: true,
             console: consoleStart
         }
 
@@ -135,8 +142,8 @@ class App extends React.Component<{}, State> {
         );
     }
 
-    private buttonActions: ButtonActions = {
-        imBack: (text:string) => {
+    private historyActions: HistoryActions = {
+        buttonImBack: (text:string) => {
             postMessage(text, this.state.conversation, this.state.userId)
             .retry(2)
             .subscribe(
@@ -151,6 +158,10 @@ class App extends React.Component<{}, State> {
                     console.log("failed to post message");
                 }
             );
+        },
+
+        setAutoscroll: (autoscroll:boolean) => {
+            autoscroll$.next(autoscroll);
         }
     }
 
@@ -174,6 +185,7 @@ class App extends React.Component<{}, State> {
                         text: "",
                         enableSend: true
                     });
+                    autoscroll$.next(true);
                 },
                 error => {
                     console.log("failed to post message");
@@ -208,7 +220,7 @@ class App extends React.Component<{}, State> {
             <div className="wc-header">
                 WebChat
             </div>
-            <History messagegroups={ this.state.messagegroups } buttonActions={ this.buttonActions }/> 
+            <History messagegroups={ this.state.messagegroups } autoscroll={ this.state.autoscroll } actions={ this.historyActions }/> 
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }

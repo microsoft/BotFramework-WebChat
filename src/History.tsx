@@ -1,18 +1,36 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Timestamp } from './Timestamp.tsx';
-import { MessageGroup, ButtonActions } from './App.tsx';
+import { MessageGroup, HistoryActions } from './App.tsx';
 import { HistoryMessage } from './HistoryMessage.tsx';
 
-export const History = (props: {
+interface Props {
     messagegroups: MessageGroup[],
-    buttonActions: ButtonActions
-}) =>
-    <div className="wc-message-groups">
-        { props.messagegroups.map(messagegroup =>
-            <div className="wc-message-group">
-                <Timestamp timestamp={ messagegroup.timestamp } />
-                { messagegroup.messages.map(message => <HistoryMessage message={ message } buttonActions={ props.buttonActions }/>) }
+    autoscroll: boolean,
+    actions: HistoryActions
+}
+
+export class History extends React.Component<Props, {}> {
+    scrollme:any;
+    constructor(props:Props) {
+        super();
+    }
+
+    componentDidUpdate(prevProps:Props, prevState:{}) {
+        if (this.props.autoscroll)
+            this.scrollme.scrollTop = this.scrollme.scrollHeight;
+    }
+
+    render() {
+        return ( 
+            <div className="wc-message-groups" ref={ref => this.scrollme = ref} onScroll={ e => this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) }>
+                { this.props.messagegroups.map(messagegroup =>
+                    <div className="wc-message-group">
+                        <Timestamp timestamp={ messagegroup.timestamp } />
+                        { messagegroup.messages.map(message => <HistoryMessage message={ message } actions={ this.props.actions }/>) }
+                    </div>
+                ) }
             </div>
-        ) }
-    </div>;
+        );
+    }
+}
