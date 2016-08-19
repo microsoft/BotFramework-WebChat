@@ -111,6 +111,8 @@ const getQueryParams = () => {
 
 export interface HistoryActions {
     buttonImBack: (text:string) => void,
+    buttonOpenUrl: (text:string) => void,
+    buttonPostBack: (text:string) => void,
     setAutoscroll: (autoscroll:boolean) => void
 }
 
@@ -153,6 +155,23 @@ class App extends React.Component<{}, State> {
                         from: "me",
                         timestamp: Date.now()
                     });
+                },
+                error => {
+                    console.log("failed to post message");
+                }
+            );
+        },
+
+        buttonOpenUrl: (text:string) => {
+            console.log("open URL", text);
+        },
+
+        buttonPostBack: (text:string) => {
+            postMessage(text, this.state.conversation, this.state.userId)
+            .retry(2)
+            .subscribe(
+                () => {
+                    console.log("quietly posted message to bot", text);
                 },
                 error => {
                     console.log("failed to post message");
