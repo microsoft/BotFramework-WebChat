@@ -17,7 +17,7 @@ export const startConversation = (appSecret: string) =>
             }
         })
 //        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
-        .retry(50)
+        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => ajaxResponse.response as BotConversation);
 
 export const postMessage = (text: string, conversation: BotConversation, userId: string) =>
@@ -36,7 +36,7 @@ export const postMessage = (text: string, conversation: BotConversation, userId:
             }
         })
 //        .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
-        .retry(50)
+        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => true);
 
 export const postFile = (file: File, conversation: BotConversation) => {
@@ -52,6 +52,7 @@ export const postFile = (file: File, conversation: BotConversation) => {
             }
         })
 //        .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
+        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => true)
 }
 
@@ -88,5 +89,5 @@ const getMessageGroup = (conversation: BotConversation, watermark = "") =>
             }
         })
 //        .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
-        .retry(50)
+        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => ajaxResponse.response as BotMessageGroup);
