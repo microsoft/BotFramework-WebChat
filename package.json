@@ -17,7 +17,7 @@
   "author": "Bill Barnes",
   "license": "MIT",
   "dependencies": {
-    "@reactivex/rxjs": "5.0.0-beta.10",
+    "@reactivex/rxjs": "5.0.0-beta.11",
     "promise": "^7.1.1"
   },
   "devDependencies": {
