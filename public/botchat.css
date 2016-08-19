@@ -146,28 +146,41 @@
 /* console */
 
     .wc-console > * {
+        position: absolute;
+        top: 0;
         vertical-align: middle;
     }
 
-    .wc-console textarea, .wc-console input[type=text] {
-        border: none;
-        height: 30px;
-        outline: none;
-        padding: 0;
-        resize: none;
-    }
-
-    label.wc-upload {
+    .wc-console label {
         cursor: pointer;
         display: inline-block;
         height: 40px;
     }
 
-    .wc-upload svg {
+    .wc-console svg {
         fill: #8A8A8A;
         margin: 11px;
     }
 
+    .wc-console textarea, .wc-console input[type=text] {
+        border: none;
+        height: 100%;
+        outline: none;
+        padding: 0;
+        resize: none;
+        width: 100%;
+    }
+
     .wc-upload input {
         display: none;
+    }
+
+    .wc-textbox {
+        bottom: 0;
+        left: 48px;
+        right: 49px;
+    }
+
+    .wc-send {
+        right: 0;
     }
