@@ -8,7 +8,7 @@ export const imageURL = (path:string) => domain + path;
 
 export const startConversation = (appSecret: string) =>
     Observable
-        .ajax<AjaxResponse>({
+        .ajax({
             method: "POST",
             url: `${baseUrl}`,
             headers: {
@@ -22,7 +22,7 @@ export const startConversation = (appSecret: string) =>
 
 export const postMessage = (text: string, conversation: BotConversation, userId: string) =>
     Observable
-        .ajax<AjaxResponse>({
+        .ajax({
             method: "POST",
             url: `${baseUrl}/${conversation.conversationId}/messages`,
             body: {
@@ -43,7 +43,7 @@ export const postFile = (file: File, conversation: BotConversation) => {
     const formData = new FormData();
     formData.append('file', file);
     return Observable
-        .ajax<AjaxResponse>({
+        .ajax({
             method: "POST",
             url: `${baseUrl}/${conversation.conversationId}/upload`,
             body: formData,
@@ -79,7 +79,7 @@ const messagesGenerator = (conversation: BotConversation, subscriber: Subscriber
 
 const getMessageGroup = (conversation: BotConversation, watermark = "") =>
     Observable
-        .ajax<AjaxResponse>({
+        .ajax({
             method: "GET",
             url: `${baseUrl}/${conversation.conversationId}/messages?watermark=${watermark}`,
             headers: {
