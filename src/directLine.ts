@@ -1,6 +1,10 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest } from '@reactivex/rxjs';
 import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'; 
 
+/* V3 endpoint
+const domain = "https://ic-dandris-scratch.azurewebsites.net";
+const baseUrl = `${domain}/V3/directline/conversations`;
+*/
 const domain = "https://directline.botframework.com";
 const baseUrl = `${domain}/api/conversations`;
 
@@ -16,7 +20,7 @@ export const startConversation = (appSecret: string) =>
                 "Authorization": `BotConnector ${appSecret}` 
             }
         })
-//        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
+        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => ajaxResponse.response as BotConversation);
 
@@ -57,10 +61,14 @@ export const postFile = (file: File, conversation: BotConversation) => {
 }
 
 export const getMessages = (conversation: BotConversation) =>
-    new Observable<Observable<BotMessage>>((subscriber:Subscriber<Observable<BotMessage>>) =>
-        messagesGenerator(conversation, subscriber)
-    )
-    .concatAll();
+    conversation.streamUrl ?
+        Observable.webSocket<BotMessage>(conversation.streamUrl)
+        .do(message => console.log("message", message))
+        :
+        new Observable<Observable<BotMessage>>((subscriber:Subscriber<Observable<BotMessage>>) =>
+            messagesGenerator(conversation, subscriber)
+        )
+        .concatAll();
 
 const messagesGenerator = (conversation: BotConversation, subscriber: Subscriber<Observable<BotMessage>>, watermark?: string) => {
     getMessageGroup(conversation, watermark).subscribe(
