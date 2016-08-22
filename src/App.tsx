@@ -148,6 +148,7 @@ class App extends React.Component<{}, State> {
             .subscribe(
                 () => {
                     outgoing$.next({
+                        text: text,
                         fromBot: false,
                         timestamp: Date.now()
                     });
