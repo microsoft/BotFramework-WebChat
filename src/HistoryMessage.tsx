@@ -1,9 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Message, HistoryActions } from './App.tsx';
-import { ImageMessage } from './ImageMessage.tsx';
-import { TextMessage } from './TextMessage.tsx';
 import { HeroCard } from './HeroCard.tsx';
+
+const textify = (text:string) =>
+    text.split("\n").map((line, index) =>
+        <span>{ index > 0 ? <br/> : null }{ line }</span>
+    );
 
 export const HistoryMessage = (props: {
     message: Message,
@@ -14,11 +17,10 @@ export const HistoryMessage = (props: {
         const attachment = props.message.channelData.attachments[0];
         if (attachment.contentType == "application/vnd.microsoft.card.hero")
             inside = <HeroCard actions={ props.actions } content={ attachment.content } />;
-    }
-    else if (props.message.images && props.message.images.length > 0)
-        inside = <ImageMessage images={ props.message.images }/>;
-    else
-        inside = <TextMessage text={ props.message.text }/>;
+        else if (attachment.contentType == "image/png")
+            inside = <img src={ attachment.contentUrl }/>;
+    } else
+        inside = <span>{ textify(props.message.text) }</span>
 
     return <div className={ 'wc-message wc-message-from-' + (props.message.fromBot ? 'bot' : 'me') }>
         <div className="wc-message-content">

@@ -14,7 +14,7 @@ export const HeroCard = (props: {
     // REVIEW we need to make sure each button.type is one of these
     return (
         <div class="imageMessage">
-            { props.content.images.map(image => <img src={ image.url } alt={ image.url } />) }
+            { props.content.images.map(image => <img src={ image.url } />) }
             <p><b>{ props.content.title }</b></p>
             <p><i>{ props.content.subtitle }</i></p>
             <p>{ props.content.text }</p>
