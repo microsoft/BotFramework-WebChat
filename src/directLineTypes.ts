@@ -1,7 +1,8 @@
 export interface BotConversation {
     conversationId: string,
     token: string,
-    eTag?: string
+    eTag?: string,
+    streamUrl?: string
 }
 
 export interface BotAttachment {
@@ -12,11 +13,11 @@ export interface BotAttachment {
 export interface BotMessage
 {
     id?: string,
-    conversationId: string,
+    conversationId?: string,
     created?: string,
     from?: string,
     text?: string,
-    channelData?: string,
+    channelData?: any,
     images?: string[],
     attachments?: BotAttachment[];
     eTag?: string;
