@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
-import { startConversation, getMessages, postMessage, postFile, imageURL } from './directLine';
+import { startConversation, getMessages, postMessage, postFile } from './directLine';
 import { History } from './History.tsx'
 import { Console } from './Console.tsx'
 
@@ -50,7 +50,6 @@ const incoming$ = (conversation: BotConversation, userId: string) =>
 const messagegroup$ = (conversation: BotConversation, userId: string) =>
     incoming$(conversation, userId)
     .map<Message>(botmessage => Object.assign({}, botmessage, {
-            images: botmessage.images.map(path => imageURL(path)),
             fromBot: true,
             timestamp: Date.parse(botmessage.created)
         }) as Message)
