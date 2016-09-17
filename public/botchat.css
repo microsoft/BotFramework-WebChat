@@ -91,6 +91,48 @@
         margin-top: 5px;
     }
 
+/* cards */
+
+    .wc-card {
+        width: 300px;
+    }
+
+/* carousel */
+
+    .wc-carousel {
+        padding-left: 10px;
+        position: relative;
+    }
+
+    .wc-carousel button.scroll {
+        position: absolute;
+        top: 50%;
+    }
+
+    .wc-carousel button.scroll.previous {
+        left: 0;
+    }
+
+    .wc-carousel button.scroll.next {
+        right: 0;
+    }
+
+    .wc-carousel ul {
+        padding: 0;
+        white-space: nowrap;
+    }
+
+    .wc-carousel > ul > li {
+        display: inline-block;
+        vertical-align: top;
+        white-space: nowrap;
+        width: 300px;
+    }
+
+    .wc-carousel > li p {
+        white-space: normal;
+    }
+
 /* from me */
 
     .wc-message-from-me {
