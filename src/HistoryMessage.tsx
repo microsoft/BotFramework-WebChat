@@ -17,7 +17,7 @@ export const HistoryMessage = (props: {
     if (props.message.channelData) {
         const attachmentLayout = props.message.channelData.attachmentLayout;
 
-        if (attachmentLayout === 'carousel') {
+        if (attachmentLayout === 'carousel' && props.message.channelData.attachments.length > 1) {
             inside = <Carousel attachments={props.message.channelData.attachments} actions={props.actions} />;
         } else {
             inside = <Attachment attachment={props.message.channelData.attachments[0]} actions={props.actions} />;
