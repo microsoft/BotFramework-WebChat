@@ -45,7 +45,7 @@ export class Carousel extends React.Component<Props, State> {
         }) as React.ReactElement<any>[];
 
         let style = {
-            marginLeft: this.state.scrollIndex * this.state.itemWidth
+            marginLeft: this.state.itemWidth ? this.state.scrollIndex * this.state.itemWidth : 0
         };
 
         return <div className="wc-carousel">
