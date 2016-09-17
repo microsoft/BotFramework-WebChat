@@ -28,7 +28,7 @@ export const Attachment = (props: {
         case "application/vnd.microsoft.card.hero":
 
             return (
-                <div class="wc-card">
+                <div className="wc-card">
                     { content.images.map(image => <img src={ image.url } />) }
                     <p><b>{ content.title }</b></p>
                     <p><i>{ content.subtitle }</i></p>
@@ -39,5 +39,10 @@ export const Attachment = (props: {
                 </div>
             );
 
+        case "application/vnd.microsoft.card.thumbnail":
+        case "application/vnd.microsoft.card.hero":
+        case "application/vnd.microsoft.card.signin":
+        case "application/vnd.microsoft.card.receipt":
+            //TODO
     }
 }
