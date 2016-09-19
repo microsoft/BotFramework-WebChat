@@ -8,9 +8,10 @@ export interface Props {
     actions: HistoryActions;
 }
 
-interface State {
+export interface State {
     scrollIndex: number;
     itemWidth: number;
+    ul?: HTMLUListElement
 }
 
 export class Carousel extends React.Component<Props, State> {
@@ -25,11 +26,9 @@ export class Carousel extends React.Component<Props, State> {
 
     }
 
-    private measureFirstLi(ul: HTMLUListElement) {
-        if (!this.state.itemWidth) {
-            var li = ul.firstChild as HTMLLIElement;
-            this.state.itemWidth = li.offsetWidth;
-        }
+    private componentDidMount() {
+        var li = this.state.ul.firstChild as HTMLLIElement;
+        this.state.itemWidth = li.offsetWidth;
     }
 
     private scrollBy(increment: number) {
@@ -50,7 +49,7 @@ export class Carousel extends React.Component<Props, State> {
 
         return <div className="wc-carousel">
             <button className="scroll previous" onClick={() => { this.scrollBy(-1); } }>left</button>
-            <ul style={style} ref={(ul) => { this.measureFirstLi(ul); } }>{items}</ul>
+            <ul style={style} ref={(ul: HTMLUListElement) => { this.state.ul = ul; } }>{items}</ul>
             <button className="scroll next" onClick={() => { this.scrollBy(1); } }>right</button>
         </div>;
     }
