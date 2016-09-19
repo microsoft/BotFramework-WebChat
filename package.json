@@ -8,6 +8,7 @@
     "build": "webpack",
     "watch": "webpack -w",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
+    "start": "http-server -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +18,7 @@
   "author": "Bill Barnes",
   "license": "MIT",
   "dependencies": {
-    "@reactivex/rxjs": "5.0.0-beta.12",
+    "@reactivex/rxjs": "^5.0.0-beta.12",
     "promise": "^7.1.1"
   },
   "devDependencies": {
