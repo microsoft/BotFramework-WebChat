@@ -3,3 +3,4 @@ node_modules
 /.vs/config/applicationhost.config
 /botchat.sln
 /Web.config
+/local
