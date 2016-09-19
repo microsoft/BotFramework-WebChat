@@ -29,7 +29,7 @@ export const Attachment = (props: {
 
             return (
                 <div className="wc-card">
-                    { content.images.map(image => <img src={ image.url } />) }
+                    <img src={ content.images[0].url } />
                     <p><b>{ content.title }</b></p>
                     <p><i>{ content.subtitle }</i></p>
                     <p>{ content.text }</p>
