@@ -4,7 +4,7 @@ import { Timestamp } from './Timestamp.tsx';
 import { MessageGroup, HistoryActions } from './App.tsx';
 import { HistoryMessage } from './HistoryMessage.tsx';
 
-interface Props {
+export interface Props {
     messagegroups: MessageGroup[],
     autoscroll: boolean,
     actions: HistoryActions
