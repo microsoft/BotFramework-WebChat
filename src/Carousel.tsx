@@ -28,7 +28,7 @@ export class Carousel extends React.Component<Props, State> {
     }
 
     private componentDidMount() {
-        var li = this.state.ul.firstChild as HTMLLIElement;
+        const li = this.state.ul.firstChild as HTMLLIElement;
         this.state.itemWidth = li.offsetWidth;
     }
 
@@ -40,15 +40,15 @@ export class Carousel extends React.Component<Props, State> {
         //TODO: cancel existing animation when clicking fast
         //TODO: animate to boundaries
 
-        var unit = increment * this.state.itemWidth;
+        const unit = increment * this.state.itemWidth;
 
-        var div = document.createElement('div');
+        const div = document.createElement('div');
         div.className = 'wc-animate-scroll';
         div.style.left = this.state.scrollDiv.scrollLeft + 'px';
         document.body.appendChild(div);
 
         //capture ComputedStyle every millisecond
-        var captureTimer = setInterval(() => {
+        const captureTimer = setInterval(() => {
             var num = parseFloat(getComputedStyle(div).left);
             this.state.scrollDiv.scrollLeft = num;
         }, 1);
@@ -56,7 +56,7 @@ export class Carousel extends React.Component<Props, State> {
         div.style.left = (this.state.scrollDiv.scrollLeft + unit) + 'px';
 
         //stop capturing
-        var finishTimer = setTimeout(() => {
+        const finishTimer = setTimeout(() => {
             clearInterval(captureTimer);
             document.body.removeChild(div);
         }, 1000 * parseFloat(getComputedStyle(div).transitionDuration) || 5000);
@@ -65,9 +65,7 @@ export class Carousel extends React.Component<Props, State> {
 
     render() {
 
-        let items = this.props.attachments.map((attachment, i) => {
-            return <li><Attachment attachment={attachment} actions={this.props.actions}/></li>;
-        }) as React.ReactElement<any>[];
+        const items = this.props.attachments.map(attachment => <li><Attachment attachment={attachment} actions={this.props.actions}/></li>);
 
         return <div className="wc-carousel">
             <button className="scroll previous" onClick={() => { this.scrollBy(-1); } }>left</button>
