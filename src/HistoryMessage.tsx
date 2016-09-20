@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Message, HistoryActions } from './App.tsx';
-import { HeroCard } from './HeroCard.tsx';
+import { IAttachment, Attachment } from './Attachment.tsx';
+import { Carousel } from './Carousel.tsx';
 
-const textify = (text:string) =>
+const textify = (text: string) =>
     text.split("\n").map((line, index) =>
         <span>{ index > 0 ? <br/> : null }{ line }</span>
     );
@@ -14,11 +15,14 @@ export const HistoryMessage = (props: {
 }) => {
     let inside;
     if (props.message.channelData) {
-        const attachment = props.message.channelData.attachments[0];
-        if (attachment.contentType == "application/vnd.microsoft.card.hero")
-            inside = <HeroCard actions={ props.actions } content={ attachment.content } />;
-        else if (attachment.contentType == "image/png")
-            inside = <img src={ attachment.contentUrl }/>;
+        const attachmentLayout = props.message.channelData.attachmentLayout;
+
+        if (attachmentLayout === 'carousel' && props.message.channelData.attachments.length > 1) {
+            inside = <Carousel attachments={props.message.channelData.attachments} actions={props.actions} />;
+        } else {
+            inside = <Attachment attachment={props.message.channelData.attachments[0]} actions={props.actions} />;
+        }
+
     } else
         inside = <span>{ textify(props.message.text) }</span>
 
