@@ -19,7 +19,7 @@ export const Attachment = (props: {
     }
     // REVIEW we need to make sure each button.type is one of these
 
-    let content = props.attachment.content;
+    const content = props.attachment.content;
 
     switch (props.attachment.contentType) {
         case "image/png":
@@ -40,7 +40,6 @@ export const Attachment = (props: {
             );
 
         case "application/vnd.microsoft.card.thumbnail":
-        case "application/vnd.microsoft.card.hero":
         case "application/vnd.microsoft.card.signin":
         case "application/vnd.microsoft.card.receipt":
             //TODO
