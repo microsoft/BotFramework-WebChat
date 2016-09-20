@@ -3,12 +3,12 @@ import * as ReactDOM from 'react-dom';
 import { HistoryActions } from './App.tsx';
 import { IAttachment, Attachment } from './Attachment.tsx';
 
-export interface Props {
+interface Props {
     attachments: any[];
     actions: HistoryActions;
 }
 
-export interface State {
+interface State {
     scrollIndex: number;
     itemWidth: number;
     ul?: HTMLUListElement

@@ -24,7 +24,7 @@ const timeStuff:TimeStuff = (timestamp:number) => {
     return [new Date (milliseconds).toLocaleDateString(), null]; 
 }
 
-export interface Props {
+interface Props {
     timestamp: number
 }
 
