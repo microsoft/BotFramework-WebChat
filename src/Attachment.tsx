@@ -33,7 +33,7 @@ export const Attachment = (props: {
                     <p><b>{ content.title }</b></p>
                     <p><i>{ content.subtitle }</i></p>
                     <p>{ content.text }</p>
-                    <ul>
+                    <ul className="wc-card-buttons">
                         { content.buttons.map(button => <li><button onClick={ () => buttonActions[button.type](button.value) }>{ button.title }</button></li>) }
                     </ul>
                 </div>
