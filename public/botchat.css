@@ -234,5 +234,14 @@
 /* animation */
 
     .wc-animate-scroll {
-        transition: left .8s cubic-bezier(.25, .1, .25, 1);
+        transition: left .8s ease;
     }
+
+    .wc-animate-scroll-rapid {
+        transition: left .4s ease;
+    }
+
+    .wc-animate-scroll-near {
+        transition: left .5s ease-in-out;
+    }
+
