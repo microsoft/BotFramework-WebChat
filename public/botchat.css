@@ -12,6 +12,16 @@
         font-size: 15px;
     }
 
+    button {
+        background-color: #3e92d2;
+        border-color: #3e92d2;
+        border-radius: 2px;
+        border-style: solid;
+        border-width: 1px;
+        color: #fff;
+        height: 24px;
+    }
+
 /* docking */
 
     .wc-header {
@@ -94,13 +104,29 @@
 /* cards */
 
     .wc-card {
+        background-color: #fff;
+        padding: 10px;
         width: 300px;
+    }
+
+    ul.wc-card-buttons {
+        padding: 0;
+    }
+
+    ul.wc-card-buttons li {
+        list-style-type: none;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    .wc-card-buttons li button {
+        width: 200px;
     }
 
 /* carousel */
 
     .wc-carousel {
-        padding-left: 10px;
+        padding: 0 20px;
         position: relative;
     }
 
@@ -118,7 +144,10 @@
     }
 
     .wc-carousel-scroll {
-        overflow: hidden;
+        /* allow horizontal scrolling but hide the scrollbar */
+        margin-bottom: -20px;
+        overflow-x: scroll;
+        overflow-y: hidden;
     }
 
     .wc-carousel-scroll > ul {
@@ -128,12 +157,12 @@
 
     .wc-carousel-scroll > ul > li {
         display: inline-block;
+        padding: 0 5px;
         vertical-align: top;
         white-space: nowrap;
-        width: 300px;
     }
 
-    .wc-carousel > li p {
+    .wc-carousel li p {
         white-space: normal;
     }
 
@@ -234,5 +263,14 @@
 /* animation */
 
     .wc-animate-scroll {
-        transition: left .8s cubic-bezier(.25, .1, .25, 1);
+        transition: left .8s ease;
     }
+
+    .wc-animate-scroll-rapid {
+        transition: left .4s ease;
+    }
+
+    .wc-animate-scroll-near {
+        transition: left .5s ease-in-out;
+    }
+
