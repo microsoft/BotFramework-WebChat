@@ -148,6 +148,7 @@
     }
 
     .wc-card.receipt tr th[colspan="2"] {
+        font-size: larger;
         text-align: center;
     }
 
