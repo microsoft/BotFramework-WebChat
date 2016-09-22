@@ -18,6 +18,6 @@ I keep [notes](./notes.md) reflecting my current thinking. I try to keep them re
 
 # Copyright & License
 
-(c) 2016 Bill Barnes
+© 2016 Microsoft Corporation
 
-MIT License
+[MIT License](/LICENSE)
