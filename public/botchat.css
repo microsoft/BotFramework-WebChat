@@ -22,6 +22,11 @@
         height: 24px;
     }
 
+    h2, h3, p {
+        margin-bottom: 8px;
+        margin-top: 0;
+    }
+
 /* docking */
 
     .wc-header {
@@ -110,6 +115,7 @@
     }
 
     ul.wc-card-buttons {
+        clear: both;
         padding: 0;
     }
 
@@ -122,6 +128,39 @@
     .wc-card-buttons li button {
         width: 200px;
     }
+
+    .wc-card.receipt table {
+        width: 100%;
+    }
+
+    .wc-card.receipt th, .wc-card.receipt td {
+        text-align: right;
+        vertical-align: top;
+    }
+
+    .wc-card.receipt td img {
+        float: right;
+        width: 50px;
+    }
+
+    .wc-card.receipt tr th:first-child, .wc-card.receipt tr td:first-child {
+        text-align: left;
+    }
+
+    .wc-card.receipt tr th[colspan="2"] {
+        font-size: larger;
+        text-align: center;
+    }
+
+    .wc-card.receipt tbody tr:first-child td, .wc-card.receipt tfoot tr:first-child td {
+        padding-top: 1em;
+    }
+
+    .wc-card.thumbnail img {
+        float: right;
+        margin-left: 10px;
+        width: 100px;
+    } 
 
 /* carousel */
 
