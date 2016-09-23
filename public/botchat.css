@@ -7,24 +7,22 @@
         overflow: hidden;
     }
 
-    body, input, textarea {
+    body, button, input, textarea {
         font-family: 'Segoe UI', sans-serif;
         font-size: 15px;
     }
 
     button {
-        background-color: #3e92d2;
-        border-color: #3e92d2;
+        background-color: #29a3ed;
+        border: none;
         border-radius: 2px;
-        border-style: solid;
-        border-width: 1px;
         color: #fff;
-        height: 24px;
+        outline: none;
     }
 
-    h2, h3, p {
-        margin-bottom: 8px;
-        margin-top: 0;
+    h1, h2, h3, p, ul {
+        margin: 0;
+        padding: 0;
     }
 
 /* docking */
@@ -91,8 +89,8 @@
     .wc-message-content {
         border-radius: 2px;
         box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
-        overflow: hidden;
-        padding: 5.5px 10px;
+        padding: 8px;
+        word-wrap: break-word;
     }
 
     .wc-message-content img {
@@ -110,23 +108,51 @@
 
     .wc-card {
         background-color: #fff;
-        padding: 10px;
+        font-size: 13px;
+        padding: 8px;
         width: 300px;
+    }
+
+    .wc-card button {
+        height: 42px;
+        width: 100%;
+    }
+
+    .wc-card h1 {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .wc-card h2 {
+        color: #808c95;
+        font-size: inherit;
+        font-weight: normal;
+        margin-bottom: 8px;
+    }
+
+    .wc-card p {
+        padding-bottom: 10px;
+    }
+
+    .wc-card h1, .wc-card h2, .wc-card p {
+        margin-left: 8px;
+        margin-right: 8px;
     }
 
     ul.wc-card-buttons {
         clear: both;
-        padding: 0;
     }
 
     ul.wc-card-buttons li {
         list-style-type: none;
-        margin-bottom: 5px;
+        margin-top: 8px;
         text-align: center;
     }
 
-    .wc-card-buttons li button {
-        width: 200px;
+    .wc-card.hero img {
+        display: block;
+        filter: brightness(20%);
+        margin-bottom: 11px;
     }
 
     .wc-card.receipt table {
@@ -148,7 +174,8 @@
     }
 
     .wc-card.receipt tr th[colspan="2"] {
-        font-size: larger;
+        font-size: 15px;
+        font-weight: 600;
         text-align: center;
     }
 
@@ -165,7 +192,6 @@
 /* carousel */
 
     .wc-carousel {
-        padding: 0 20px;
         position: relative;
     }
 
@@ -182,23 +208,31 @@
         right: 0;
     }
 
+    .wc-carousel-scroll-outer {
+        /* allow horizontal scrolling but hide the scrollbar */
+        overflow: hidden;
+    }
+
     .wc-carousel-scroll {
         /* allow horizontal scrolling but hide the scrollbar */
-        margin-bottom: -20px;
         overflow-x: scroll;
         overflow-y: hidden;
     }
 
     .wc-carousel-scroll > ul {
-        padding: 0;
+        margin-left: -4px;
         white-space: nowrap;
     }
 
     .wc-carousel-scroll > ul > li {
         display: inline-block;
-        padding: 0 5px;
+        padding: 0 4px;
         vertical-align: top;
         white-space: nowrap;
+    }
+
+    .wc-carousel-scroll > ul > li:last-child {
+        padding-right: 0;
     }
 
     .wc-carousel li p {

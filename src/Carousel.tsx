@@ -71,6 +71,8 @@ export class Carousel extends React.Component<Props, State> {
         this.manageScrollButtons();
 
         this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
+
+        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
     }
 
     private componentWillUnmount() {
@@ -150,8 +152,10 @@ export class Carousel extends React.Component<Props, State> {
 
         return <div className="wc-carousel">
             <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>{'\u25C0'}</button>
-            <div className="wc-carousel-scroll" ref={div => this.scrollDiv = div}>
-                <ul ref={ul => this.ul = ul}>{items}</ul>
+            <div className="wc-carousel-scroll-outer">
+                <div className="wc-carousel-scroll" ref={div => this.scrollDiv = div}>
+                    <ul ref={ul => this.ul = ul}>{items}</ul>
+                </div>
             </div>
             <button disabled={!this.state.nextButtonEnabled} className="scroll next" onClick={() => this.scrollBy(1) }>{'\u25B6'}</button>
         </div >;
