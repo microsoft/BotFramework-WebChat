@@ -41,8 +41,8 @@ export const Attachment = (props: {
                 return (
                     <div className={className}>
                         <img src={ content.images[0].url } />
-                        <h2>{ content.title }</h2>
-                        <h3>{ content.subtitle }</h3>
+                        <h1>{ content.title }</h1>
+                        <h2>{ content.subtitle }</h2>
                         <p>{ content.text }</p>
                         {buttonList() }
                     </div>
@@ -51,10 +51,10 @@ export const Attachment = (props: {
             case 'thumbnail':
                 return (
                     <div className={className}>
-                        <h2>{ content.title }</h2>
+                        <h1>{ content.title }</h1>
                         <p>
                             <img src={ content.images[0].url } />
-                            <h3>{ content.subtitle }</h3>
+                            <h2>{ content.subtitle }</h2>
                             { content.text }
                         </p>
                         {buttonList() }
@@ -64,7 +64,7 @@ export const Attachment = (props: {
             case 'signin':
                 return (
                     <div className={className}>
-                        <h3>{ content.text }</h3>
+                        <h1>{ content.text }</h1>
                         {buttonList() }
                     </div>
                 );
