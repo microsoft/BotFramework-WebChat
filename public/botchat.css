@@ -127,7 +127,7 @@
 
     .wc-card h1 {
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 700;
     }
 
     .wc-card h2 {
@@ -167,6 +167,7 @@
     }
 
     .wc-card.receipt table {
+        border-collapse: collapse;
         width: 100%;
     }
 
@@ -175,23 +176,48 @@
         vertical-align: top;
     }
 
-    .wc-card.receipt td img {
-        float: right;
-        width: 50px;
-    }
-
-    .wc-card.receipt tr th:first-child, .wc-card.receipt tr td:first-child {
+    .wc-card.receipt th:first-child, .wc-card.receipt td:first-child {
         text-align: left;
     }
 
-    .wc-card.receipt tr th[colspan="2"] {
-        font-size: 15px;
-        font-weight: 600;
-        text-align: center;
+    .wc-card.receipt th {
+        color: #808c95;
+        font-size: inherit;
+        font-weight: normal;
+        line-height: 1.75;
     }
 
-    .wc-card.receipt tbody tr:first-child td, .wc-card.receipt tfoot tr:first-child td {
-        padding-top: 1em;
+    .wc-card.receipt thead tr:last-child th {
+        padding-bottom: 16px;
+    }
+
+    .wc-card.receipt th[colspan="2"] {
+        color: inherit;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .wc-card.receipt td {
+        padding: 4px 8px 0 8px;
+    }
+
+    .wc-card.receipt td img {
+        float: left;
+        margin: 5px 8px 8px 0;
+        max-height: 50px;
+        max-width: 50px;
+    }
+
+    .wc-card.receipt tbody tr, .wc-card.receipt tfoot tr {
+        border-top: 1px solid #d2dde5;
+    }
+
+    .wc-card.receipt tbody tr:first-child, .wc-card.receipt tfoot tr:first-child {
+        border-top-width: 2px;
+    }
+
+    .wc-card.receipt tfoot td {
+        line-height: 2.25;
     }
 
     .wc-card.thumbnail img {
