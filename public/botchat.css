@@ -7,24 +7,27 @@
         overflow: hidden;
     }
 
-    body, input, textarea {
+    body, button, input, textarea {
         font-family: 'Segoe UI', sans-serif;
         font-size: 15px;
     }
 
     button {
-        background-color: #3e92d2;
-        border-color: #3e92d2;
+        background-color: #29a3ed;
+        border: none;
         border-radius: 2px;
-        border-style: solid;
-        border-width: 1px;
         color: #fff;
-        height: 24px;
+        cursor: pointer;
+        outline: none;
     }
 
-    h2, h3, p {
-        margin-bottom: 8px;
-        margin-top: 0;
+    button:hover {
+        background-color: #3e92d2;
+    }
+
+    h1, h2, h3, p, ul {
+        margin: 0;
+        padding: 0;
     }
 
 /* docking */
@@ -50,6 +53,7 @@
     .wc-message-groups {
         bottom: 50px;
         left: 0;
+        overflow-x: hidden;
         overflow-y: scroll;
         padding: 10px;
         position: absolute;
@@ -91,8 +95,8 @@
     .wc-message-content {
         border-radius: 2px;
         box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
-        overflow: hidden;
-        padding: 5.5px 10px;
+        padding: 8px;
+        word-wrap: break-word;
     }
 
     .wc-message-content img {
@@ -110,26 +114,60 @@
 
     .wc-card {
         background-color: #fff;
-        padding: 10px;
+        border: 1px solid #d2dde5;
+        font-size: 13px;
+        padding: 8px;
         width: 300px;
+    }
+
+    .wc-card button {
+        height: 42px;
+        width: 100%;
+    }
+
+    .wc-card h1 {
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .wc-card h2 {
+        color: #808c95;
+        font-size: inherit;
+        font-weight: normal;
+        margin-bottom: 8px;
+    }
+
+    .wc-card p {
+        padding-bottom: 10px;
+    }
+
+    .wc-card h1, .wc-card h2, .wc-card p {
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
+    /* don't double indent */
+    .wc-card p h2 {
+        margin-left: 0;
     }
 
     ul.wc-card-buttons {
         clear: both;
-        padding: 0;
     }
 
     ul.wc-card-buttons li {
         list-style-type: none;
-        margin-bottom: 5px;
+        margin-top: 8px;
         text-align: center;
     }
 
-    .wc-card-buttons li button {
-        width: 200px;
+    .wc-card.hero img {
+        display: block;
+        margin-bottom: 11px;
     }
 
     .wc-card.receipt table {
+        border-collapse: collapse;
         width: 100%;
     }
 
@@ -138,22 +176,48 @@
         vertical-align: top;
     }
 
-    .wc-card.receipt td img {
-        float: right;
-        width: 50px;
-    }
-
-    .wc-card.receipt tr th:first-child, .wc-card.receipt tr td:first-child {
+    .wc-card.receipt th:first-child, .wc-card.receipt td:first-child {
         text-align: left;
     }
 
-    .wc-card.receipt tr th[colspan="2"] {
-        font-size: larger;
-        text-align: center;
+    .wc-card.receipt th {
+        color: #808c95;
+        font-size: inherit;
+        font-weight: normal;
+        line-height: 1.75;
     }
 
-    .wc-card.receipt tbody tr:first-child td, .wc-card.receipt tfoot tr:first-child td {
-        padding-top: 1em;
+    .wc-card.receipt thead tr:last-child th {
+        padding-bottom: 16px;
+    }
+
+    .wc-card.receipt th[colspan="2"] {
+        color: inherit;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .wc-card.receipt td {
+        padding: 4px 8px 0 8px;
+    }
+
+    .wc-card.receipt td img {
+        float: left;
+        margin: 5px 8px 8px 0;
+        max-height: 50px;
+        max-width: 50px;
+    }
+
+    .wc-card.receipt tbody tr, .wc-card.receipt tfoot tr {
+        border-top: 1px solid #d2dde5;
+    }
+
+    .wc-card.receipt tbody tr:first-child, .wc-card.receipt tfoot tr:first-child {
+        border-top-width: 2px;
+    }
+
+    .wc-card.receipt tfoot td {
+        line-height: 2.25;
     }
 
     .wc-card.thumbnail img {
@@ -165,43 +229,67 @@
 /* carousel */
 
     .wc-carousel {
-        padding: 0 20px;
         position: relative;
     }
 
     .wc-carousel button.scroll {
+        background-color: #d2dde5;
+        height: 28px;
+        padding: 0;
         position: absolute;
         top: 50%;
+        width: 28px;
+    }
+    
+    .wc-carousel button.scroll:disabled {
+        display: none;
     }
 
+    .wc-carousel button.scroll:hover {
+        background-color:  #808c95;
+    }
+
+    .wc-carousel button.scroll svg {
+        fill: #fff;
+    }
+    
     .wc-carousel button.scroll.previous {
-        left: 0;
+        left: -16px;
     }
 
     .wc-carousel button.scroll.next {
-        right: 0;
+        right: -16px;
+    }
+
+    .wc-carousel-scroll-outer {
+        /* allow horizontal scrolling but hide the scrollbar */
+        overflow: hidden;
     }
 
     .wc-carousel-scroll {
         /* allow horizontal scrolling but hide the scrollbar */
-        margin-bottom: -20px;
         overflow-x: scroll;
         overflow-y: hidden;
     }
 
     .wc-carousel-scroll > ul {
-        padding: 0;
+        margin-left: -4px;
         white-space: nowrap;
     }
 
     .wc-carousel-scroll > ul > li {
         display: inline-block;
-        padding: 0 5px;
+        padding: 0 4px;
         vertical-align: top;
         white-space: nowrap;
     }
 
+    .wc-carousel-scroll > ul > li:last-child {
+        padding-right: 0;
+    }
+
     .wc-carousel li p {
+        min-height: 4em;
         white-space: normal;
     }
 
