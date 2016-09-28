@@ -19004,9 +19004,9 @@
 	        var text = Marked(src, options);
 	        var elements = renderer.getElements(text);
 	        /*// debug
-	        const remaining = renderer.elements.filter(el => !!el)
+	        const remaining = renderer.elements.filter(el => !!el);
 	        if (remaining.length) {
-	            console.warn(`There were ${remaining.length} unused markdown elements!`)
+	            console.warn(`There were ${remaining.length} unused markdown elements!`);
 	        }*/
 	        return React.createElement("span", {className: "format-markdown"}, elements);
 	    };
