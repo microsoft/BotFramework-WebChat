@@ -18742,21 +18742,21 @@
 	            case 'hero':
 	                return (React.createElement("div", {className: className}, 
 	                    React.createElement("img", {src: content.images[0].url}), 
-	                    React.createElement("h2", null, content.title), 
-	                    React.createElement("h3", null, content.subtitle), 
+	                    React.createElement("h1", null, content.title), 
+	                    React.createElement("h2", null, content.subtitle), 
 	                    React.createElement("p", null, content.text), 
 	                    buttonList()));
 	            case 'thumbnail':
 	                return (React.createElement("div", {className: className}, 
-	                    React.createElement("h2", null, content.title), 
+	                    React.createElement("h1", null, content.title), 
 	                    React.createElement("p", null, 
 	                        React.createElement("img", {src: content.images[0].url}), 
-	                        React.createElement("h3", null, content.subtitle), 
+	                        React.createElement("h2", null, content.subtitle), 
 	                        content.text), 
 	                    buttonList()));
 	            case 'signin':
 	                return (React.createElement("div", {className: className}, 
-	                    React.createElement("h3", null, content.text), 
+	                    React.createElement("h1", null, content.text), 
 	                    buttonList()));
 	            case 'receipt':
 	                var itemImage_1 = function (item) {
@@ -18848,6 +18848,7 @@
 	        this.itemWidth = li.offsetWidth;
 	        this.manageScrollButtons();
 	        this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
+	        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
 	    };
 	    Carousel.prototype.componentWillUnmount = function () {
 	        this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
@@ -18911,11 +18912,21 @@
 	            React.createElement(Attachment_1.Attachment, {attachment: attachment, actions: _this.props.actions})
 	        ); });
 	        return React.createElement("div", {className: "wc-carousel"}, 
-	            React.createElement("button", {disabled: !this.state.previousButtonEnabled, className: "scroll previous", onClick: function () { return _this.scrollBy(-1); }}, '\u25C0'), 
-	            React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
-	                React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, items)
+	            React.createElement("button", {disabled: !this.state.previousButtonEnabled, className: "scroll previous", onClick: function () { return _this.scrollBy(-1); }}, 
+	                React.createElement("svg", null, 
+	                    React.createElement("path", {d: "M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z"})
+	                )
 	            ), 
-	            React.createElement("button", {disabled: !this.state.nextButtonEnabled, className: "scroll next", onClick: function () { return _this.scrollBy(1); }}, '\u25B6'));
+	            React.createElement("div", {className: "wc-carousel-scroll-outer"}, 
+	                React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
+	                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, items)
+	                )
+	            ), 
+	            React.createElement("button", {disabled: !this.state.nextButtonEnabled, className: "scroll next", onClick: function () { return _this.scrollBy(1); }}, 
+	                React.createElement("svg", null, 
+	                    React.createElement("path", {d: "M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"})
+	                )
+	            ));
 	    };
 	    return Carousel;
 	}(React.Component));
