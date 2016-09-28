@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { ConsoleActions } from './App.tsx';
+import { ConsoleActions } from './App';
 
 export const Console = (props: {
     actions: ConsoleActions,

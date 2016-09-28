@@ -19,7 +19,10 @@
   "license": "MIT",
   "dependencies": {
     "@reactivex/rxjs": "^5.0.0-beta.12",
-    "promise": "^7.1.1"
+    "he": "^1.1.0",
+    "marked": "^0.3.6",
+    "promise": "^7.1.1",
+    "react": "^15.3.2"
   },
   "devDependencies": {
     "http-server": "^0.9.0",

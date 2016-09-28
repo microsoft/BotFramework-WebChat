@@ -3,13 +3,13 @@ import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { BotMessage, BotConversation } from './directLineTypes';
 import { startConversation, getMessages, postMessage, postFile } from './directLine';
-import { History } from './History.tsx'
-import { Console } from './Console.tsx'
+import { History } from './History'
+import { Console } from './Console'
 
 export interface Message extends BotMessage {
     fromBot: boolean,
     timestamp: number
-} 
+}
 
 export interface MessageGroup {
     messages: Message[],
@@ -61,7 +61,7 @@ const messagegroup$ = (conversation: BotConversation, userId: string) =>
             ms = [message];
             mgs = [];
         } else {
-            const latest = messagegroups[messagegroups.length - 1];        
+            const latest = messagegroups[messagegroups.length - 1];
             if (message.timestamp - latest.timestamp < 60 * 1000) {
                 ms = latest.messages.slice();
                 ms.push(message);
@@ -77,7 +77,7 @@ const messagegroup$ = (conversation: BotConversation, userId: string) =>
 
 const autoscroll$ = new Subject<boolean>();
 
-const state$ = (conversation: BotConversation, userId: string) => 
+const state$ = (conversation: BotConversation, userId: string) =>
     messagegroup$(conversation, userId).startWith([])
     .combineLatest(
         autoscroll$.distinctUntilChanged().startWith(true),
@@ -235,7 +235,7 @@ class App extends React.Component<{}, State> {
             <div className="wc-header">
                 WebChat
             </div>
-            <History messagegroups={ this.state.messagegroups } autoscroll={ this.state.autoscroll } actions={ this.historyActions }/> 
+            <History messagegroups={ this.state.messagegroups } autoscroll={ this.state.autoscroll } actions={ this.historyActions }/>
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }

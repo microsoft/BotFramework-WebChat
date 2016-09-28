@@ -97,7 +97,6 @@
 
     .wc-message-content img {
         max-height: 320px;
-        width: 100%;
     }
 
     .wc-message-from {
@@ -160,7 +159,7 @@
         float: right;
         margin-left: 10px;
         width: 100px;
-    } 
+    }
 
 /* carousel */
 
@@ -311,5 +310,15 @@
 
     .wc-animate-scroll-near {
         transition: left .5s ease-in-out;
+    }
+
+/* text formats */
+
+    .format-markdown>p {
+        margin-bottom: 0px;
+    }
+
+    .format-markdown code {
+        white-space: pre-wrap;
     }
 
