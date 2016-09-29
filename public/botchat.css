@@ -25,9 +25,9 @@
         background-color: #3e92d2;
     }
 
-    h1, h2, h3, p, ul {
-        margin: 0;
-        padding: 0;
+    h1, h2, h3, h4, p, ul, ol {
+        margin-bottom: 8px;
+        margin-top: 0;
     }
 
 /* docking */
@@ -101,7 +101,6 @@
 
     .wc-message-content img {
         max-height: 320px;
-        width: 100%;
     }
 
     .wc-message-from {
@@ -224,7 +223,7 @@
         float: right;
         margin-left: 10px;
         width: 100px;
-    } 
+    }
 
 /* carousel */
 
@@ -240,7 +239,7 @@
         top: 50%;
         width: 28px;
     }
-    
+
     .wc-carousel button.scroll:disabled {
         display: none;
     }
@@ -252,7 +251,7 @@
     .wc-carousel button.scroll svg {
         fill: #fff;
     }
-    
+
     .wc-carousel button.scroll.previous {
         left: -16px;
     }
@@ -401,3 +400,12 @@
         transition: left .5s ease-in-out;
     }
 
+/* text formats */
+
+    .format-markdown>p {
+        margin-bottom: 0px;
+    }
+
+    .format-markdown code {
+        white-space: pre-wrap;
+    }
