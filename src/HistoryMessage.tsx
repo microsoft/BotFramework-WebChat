@@ -1,20 +1,17 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Message, HistoryActions } from './App.tsx';
-import { IAttachment, Attachment } from './Attachment.tsx';
-import { Carousel } from './Carousel.tsx';
+import { Message, HistoryActions } from './App';
+import { IAttachment, Attachment } from './Attachment';
+import { Carousel } from './Carousel';
+import { FormattedText } from './FormattedText';
 
-const textify = (text: string) =>
-    text.split("\n").map((line, index) =>
-        <span>{ index > 0 ? <br/> : null }{ line }</span>
-    );
 
 export const HistoryMessage = (props: {
     message: Message,
     actions: HistoryActions
 }) => {
     let inside;
-    if (props.message.channelData) {
+    if (props.message.channelData && props.message.channelData.attachments) {
         const attachmentLayout = props.message.channelData.attachmentLayout;
 
         if (attachmentLayout === 'carousel' && props.message.channelData.attachments.length > 1) {
@@ -23,8 +20,13 @@ export const HistoryMessage = (props: {
             inside = <Attachment attachment={props.message.channelData.attachments[0]} actions={props.actions} />;
         }
 
-    } else
-        inside = <span>{ textify(props.message.text) }</span>
+    } else if (props.message.text) {
+        // TODO @eanders-MS: Send format={ props.activity.textFormat } once updated to DirectLine v3
+        inside = <FormattedText text={ props.message.text } format="markdown" />
+    }
+    else {
+        inside = <span></span>
+    }
 
     return <div className={ 'wc-message wc-message-from-' + (props.message.fromBot ? 'bot' : 'me') }>
         <div className="wc-message-content">

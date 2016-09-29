@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Timestamp } from './Timestamp.tsx';
-import { MessageGroup, HistoryActions } from './App.tsx';
-import { HistoryMessage } from './HistoryMessage.tsx';
+import { Timestamp } from './Timestamp';
+import { MessageGroup, HistoryActions } from './App';
+import { HistoryMessage } from './HistoryMessage';
 
 interface Props {
     messagegroups: MessageGroup[],
@@ -22,7 +22,7 @@ export class History extends React.Component<Props, {}> {
     }
 
     render() {
-        return ( 
+        return (
             <div className="wc-message-groups" ref={ref => this.scrollme = ref} onScroll={ e => this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) }>
                 { this.props.messagegroups.map(messagegroup =>
                     <div className="wc-message-group">

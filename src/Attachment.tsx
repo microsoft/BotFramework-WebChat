@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { HistoryActions } from './App.tsx';
+import { HistoryActions } from './App';
 
 export interface IAttachment {
     content: any;

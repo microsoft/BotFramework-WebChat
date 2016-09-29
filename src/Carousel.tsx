@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { HistoryActions } from './App.tsx';
-import { IAttachment, Attachment } from './Attachment.tsx';
+import { HistoryActions } from './App';
+import { IAttachment, Attachment } from './Attachment';
 
 interface Props {
     attachments: any[];
@@ -115,7 +115,7 @@ export class Carousel extends React.Component<Props, State> {
         this.animateDiv.className = easingClassName;
         this.animateDiv.style.left = scrollLeft + 'px';
         document.body.appendChild(this.animateDiv);
-         
+
         //capture ComputedStyle every millisecond
         this.scrollSyncTimer = setInterval(() => {
             var num = parseFloat(getComputedStyle(this.animateDiv).left);
