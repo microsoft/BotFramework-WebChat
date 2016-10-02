@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Attachment } from './directLineTypes';
 import { HistoryActions } from './App';
-import { IAttachment, Attachment } from './Attachment';
+import { AttachmentView } from './Attachment';
 
 interface Props {
-    attachments: any[];
+    attachments: Attachment[];
     actions: HistoryActions;
 }
 
@@ -125,47 +126,44 @@ export class Carousel extends React.Component<Props, State> {
         //don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
         //we accomplish this by calling 'this.animateDiv.style.left' off this thread, using setTimeout
         this.scrollStartTimer = setTimeout(() => {
-
             this.animateDiv.style.left = dest + 'px';
 
             let duration = 1000 * parseFloat(getComputedStyle(this.animateDiv).transitionDuration);
             if (duration) {
-
                 //slightly longer that the CSS time so we don't cut it off prematurely
                 duration += 50;
 
                 //stop capturing
-                this.scrollDurationTimer = setTimeout(() => {
-                    this.clearScrollTimers();
-                }, duration);
-
+                this.scrollDurationTimer = setTimeout(() => this.clearScrollTimers(), duration);
             } else {
                 this.clearScrollTimers();
             }
-
         }, 1);
     }
 
     render() {
-
-        const items = this.props.attachments.map(attachment => <li><Attachment attachment={attachment} actions={this.props.actions}/></li>);
-
-        return <div className="wc-carousel">
-            <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
-                <svg>
-                    <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
-                </svg>
-            </button>
-            <div className="wc-carousel-scroll-outer">
-                <div className="wc-carousel-scroll" ref={div => this.scrollDiv = div}>
-                    <ul ref={ul => this.ul = ul}>{items}</ul>
+        return (
+            <div className="wc-carousel">
+                <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
+                    <svg>
+                        <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
+                    </svg>
+                </button>
+                <div className="wc-carousel-scroll-outer">
+                    <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
+                        <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map(attachment =>
+                            <li>
+                                <AttachmentView attachment={ attachment } actions={ this.props.actions }/>
+                            </li>) }
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <button disabled={!this.state.nextButtonEnabled} className="scroll next" onClick={() => this.scrollBy(1) }>
-                <svg>
-                    <path d="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z" />
-                </svg>
-            </button>
-        </div >;
+                <button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
+                    <svg>
+                        <path d="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z" />
+                    </svg>
+                </button>
+            </div >
+        )
     }
 }

@@ -1,20 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
-import { BotMessage, BotConversation } from './directLineTypes';
-import { startConversation, getMessages, postMessage, postFile } from './directLine';
+import { Activity, Message, Conversation } from './directLineTypes';
+import { startConversation, getActivities, postMessage, postFile, mimeTypes } from './directLine';
 import { History } from './History'
 import { Console } from './Console'
-
-export interface Message extends BotMessage {
-    fromBot: boolean,
-    timestamp: number
-}
-
-export interface MessageGroup {
-    messages: Message[],
-    timestamp: number
-}
 
 export interface ConsoleState {
     text?: string,
@@ -25,9 +15,9 @@ interface State {
     // user ID
     userId?: string;
     // conversation metadata
-    conversation?: BotConversation,
+    conversation?: Conversation,
     // message history
-    messagegroups?: MessageGroup[],
+    activities?: Activity[],
     autoscroll: boolean,
     // compose window
     console?: ConsoleState
@@ -38,56 +28,33 @@ const guid = () => {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
-const outgoing$ = new Subject<Message>();
+const outgoingMessage$ = new Subject<Message>();
 
 const console$ = new Subject<ConsoleState>();
 const consoleStart = {text: "", enableSend: true};
 
-const incoming$ = (conversation: BotConversation, userId: string) =>
-    getMessages(conversation)
-    .filter(botmessage => botmessage.from != userId);
+const incomingActivity$ = (conversation: Conversation) =>
+    getActivities(conversation);
 
-const messagegroup$ = (conversation: BotConversation, userId: string) =>
-    incoming$(conversation, userId)
-    .map<Message>(botmessage => Object.assign({}, botmessage, {
-            fromBot: true,
-            timestamp: Date.parse(botmessage.created)
-        }) as Message)
-    .merge(outgoing$)
-    .scan<MessageGroup[]>((messagegroups, message) => {
-        let ms: Message[];
-        let mgs: MessageGroup[];
-        if (messagegroups.length === 0) {
-            ms = [message];
-            mgs = [];
-        } else {
-            const latest = messagegroups[messagegroups.length - 1];
-            if (message.timestamp - latest.timestamp < 60 * 1000) {
-                ms = latest.messages.slice();
-                ms.push(message);
-                mgs = messagegroups.slice(0, messagegroups.length - 1);
-            } else {
-                ms = [message];
-                mgs = messagegroups.slice();
-            }
-        }
-        mgs.push({ messages: ms, timestamp: message.timestamp });
-        return mgs;
-    }, []);
+const activities$ = (conversation: Conversation, userId: string) =>
+    incomingActivity$(conversation)
+    .merge(outgoingMessage$)
+    .scan<Activity[]>((activities, activity) => [... activities, activity], [])
+    .startWith([]);
 
 const autoscroll$ = new Subject<boolean>();
 
-const state$ = (conversation: BotConversation, userId: string) =>
-    messagegroup$(conversation, userId).startWith([])
+const state$ = (conversation: Conversation, userId: string) =>
+    activities$(conversation, userId)
     .combineLatest(
         autoscroll$.distinctUntilChanged().startWith(true),
         console$.startWith(consoleStart),
-        (messagegroups, autoscroll, console) => ({
+        (activities, autoscroll, console):State => ({
             conversation: conversation,
-            messagegroups: messagegroups,
+            activities: activities,
             autoscroll: autoscroll,
             console: console
-        } as State)
+        })
     )
     .do(state => console.log("state", state));
 
@@ -109,6 +76,7 @@ export interface HistoryActions {
     buttonImBack: (text:string) => void,
     buttonOpenUrl: (text:string) => void,
     buttonPostBack: (text:string) => void,
+    buttonSignIn: (text:string) => void,
     setAutoscroll: (autoscroll:boolean) => void
 }
 
@@ -124,7 +92,7 @@ class App extends React.Component<{}, State> {
         this.state = {
             userId: guid(),
             conversation: null,
-            messagegroups: [],
+            activities: [],
             autoscroll: true,
             console: consoleStart
         }
@@ -146,10 +114,11 @@ class App extends React.Component<{}, State> {
             .retry(2)
             .subscribe(
                 () => {
-                    outgoing$.next({
+                    outgoingMessage$.next({
+                        type: "message",
                         text: text,
-                        fromBot: false,
-                        timestamp: Date.now()
+                        from: {id: this.state.userId},
+                        timestamp: Date.now().toString()
                     });
                 },
                 error => {
@@ -175,6 +144,10 @@ class App extends React.Component<{}, State> {
             );
         },
 
+        buttonSignIn: (text:string) => {
+            console.log("sign in", text);
+        },
+
         setAutoscroll: (autoscroll:boolean) => {
             autoscroll$.next(autoscroll);
         }
@@ -191,10 +164,11 @@ class App extends React.Component<{}, State> {
             .retry(2)
             .subscribe(
                 () => {
-                    outgoing$.next({
+                    outgoingMessage$.next({
+                        type: "message",
                         text: this.state.console.text,
-                        fromBot: false,
-                        timestamp: Date.now()
+                        from: {id: 'user'},
+                        timestamp: Date.now().toString()
                     });
                     console$.next({
                         text: "",
@@ -216,10 +190,17 @@ class App extends React.Component<{}, State> {
                 .retry(2)
                 .subscribe(
                     () => {
-                        outgoing$.next({
-                            images: [window.URL.createObjectURL(file)],
-                            fromBot: false,
-                            timestamp: Date.now()
+                        const path = window.URL.createObjectURL(file);
+                        outgoingMessage$.next({
+                            type: "message",
+                            text: this.state.console.text,
+                            from: {id: 'user'},
+                            timestamp: Date.now().toString(),
+                            attachments: [{
+                                contentType: mimeTypes[path.split('.').pop()],
+                                contentUrl: path,
+                                name: 'Your file here'
+                            }]
                         });
                     },
                     error => {
@@ -235,7 +216,7 @@ class App extends React.Component<{}, State> {
             <div className="wc-header">
                 WebChat
             </div>
-            <History messagegroups={ this.state.messagegroups } autoscroll={ this.state.autoscroll } actions={ this.historyActions }/>
+            <History activities={ this.state.activities } autoscroll={ this.state.autoscroll } actions={ this.historyActions } userId={ this.state.userId }/>
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }

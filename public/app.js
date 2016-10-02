@@ -70,54 +70,29 @@
 	var rxjs_1 = __webpack_require__(4);
 	var directLine_1 = __webpack_require__(350);
 	var History_1 = __webpack_require__(351);
-	var Console_1 = __webpack_require__(360);
+	var Console_1 = __webpack_require__(359);
 	var guid = function () {
 	    var s4 = function () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
 	    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 	};
-	var outgoing$ = new rxjs_1.Subject();
+	var outgoingMessage$ = new rxjs_1.Subject();
 	var console$ = new rxjs_1.Subject();
 	var consoleStart = { text: "", enableSend: true };
-	var incoming$ = function (conversation, userId) {
-	    return directLine_1.getMessages(conversation)
-	        .filter(function (botmessage) { return botmessage.from != userId; });
+	var incomingActivity$ = function (conversation) {
+	    return directLine_1.getActivities(conversation);
 	};
-	var messagegroup$ = function (conversation, userId) {
-	    return incoming$(conversation, userId)
-	        .map(function (botmessage) { return Object.assign({}, botmessage, {
-	        fromBot: true,
-	        timestamp: Date.parse(botmessage.created)
-	    }); })
-	        .merge(outgoing$)
-	        .scan(function (messagegroups, message) {
-	        var ms;
-	        var mgs;
-	        if (messagegroups.length === 0) {
-	            ms = [message];
-	            mgs = [];
-	        }
-	        else {
-	            var latest = messagegroups[messagegroups.length - 1];
-	            if (message.timestamp - latest.timestamp < 60 * 1000) {
-	                ms = latest.messages.slice();
-	                ms.push(message);
-	                mgs = messagegroups.slice(0, messagegroups.length - 1);
-	            }
-	            else {
-	                ms = [message];
-	                mgs = messagegroups.slice();
-	            }
-	        }
-	        mgs.push({ messages: ms, timestamp: message.timestamp });
-	        return mgs;
-	    }, []);
+	var activities$ = function (conversation, userId) {
+	    return incomingActivity$(conversation)
+	        .merge(outgoingMessage$)
+	        .scan(function (activities, activity) { return activities.concat([activity]); }, [])
+	        .startWith([]);
 	};
 	var autoscroll$ = new rxjs_1.Subject();
 	var state$ = function (conversation, userId) {
-	    return messagegroup$(conversation, userId).startWith([])
-	        .combineLatest(autoscroll$.distinctUntilChanged().startWith(true), console$.startWith(consoleStart), function (messagegroups, autoscroll, console) { return ({
+	    return activities$(conversation, userId)
+	        .combineLatest(autoscroll$.distinctUntilChanged().startWith(true), console$.startWith(consoleStart), function (activities, autoscroll, console) { return ({
 	        conversation: conversation,
-	        messagegroups: messagegroups,
+	        activities: activities,
 	        autoscroll: autoscroll,
 	        console: console
 	    }); })
@@ -145,10 +120,11 @@
 	                directLine_1.postMessage(text, _this.state.conversation, _this.state.userId)
 	                    .retry(2)
 	                    .subscribe(function () {
-	                    outgoing$.next({
+	                    outgoingMessage$.next({
+	                        type: "message",
 	                        text: text,
-	                        fromBot: false,
-	                        timestamp: Date.now()
+	                        from: { id: _this.state.userId },
+	                        timestamp: Date.now().toString()
 	                    });
 	                }, function (error) {
 	                    console.log("failed to post message");
@@ -166,6 +142,9 @@
 	                    console.log("failed to post message");
 	                });
 	            },
+	            buttonSignIn: function (text) {
+	                console.log("sign in", text);
+	            },
 	            setAutoscroll: function (autoscroll) {
 	                autoscroll$.next(autoscroll);
 	            }
@@ -179,10 +158,11 @@
 	                directLine_1.postMessage(_this.state.console.text, _this.state.conversation, _this.state.userId)
 	                    .retry(2)
 	                    .subscribe(function () {
-	                    outgoing$.next({
+	                    outgoingMessage$.next({
+	                        type: "message",
 	                        text: _this.state.console.text,
-	                        fromBot: false,
-	                        timestamp: Date.now()
+	                        from: { id: 'user' },
+	                        timestamp: Date.now().toString()
 	                    });
 	                    console$.next({
 	                        text: "",
@@ -200,10 +180,17 @@
 	                    directLine_1.postFile(file, _this.state.conversation)
 	                        .retry(2)
 	                        .subscribe(function () {
-	                        outgoing$.next({
-	                            images: [window.URL.createObjectURL(file)],
-	                            fromBot: false,
-	                            timestamp: Date.now()
+	                        var path = window.URL.createObjectURL(file);
+	                        outgoingMessage$.next({
+	                            type: "message",
+	                            text: _this.state.console.text,
+	                            from: { id: 'user' },
+	                            timestamp: Date.now().toString(),
+	                            attachments: [{
+	                                    contentType: directLine_1.mimeTypes[path.split('.').pop()],
+	                                    contentUrl: path,
+	                                    name: 'Your file here'
+	                                }]
 	                        });
 	                    }, function (error) {
 	                        console.log("failed to post file");
@@ -217,7 +204,7 @@
 	        this.state = {
 	            userId: guid(),
 	            conversation: null,
-	            messagegroups: [],
+	            activities: [],
 	            autoscroll: true,
 	            console: consoleStart
 	        };
@@ -230,7 +217,7 @@
 	    App.prototype.render = function () {
 	        return React.createElement("div", {className: "wc-app"}, 
 	            React.createElement("div", {className: "wc-header"}, "WebChat"), 
-	            React.createElement(History_1.History, {messagegroups: this.state.messagegroups, autoscroll: this.state.autoscroll, actions: this.historyActions}), 
+	            React.createElement(History_1.History, {activities: this.state.activities, autoscroll: this.state.autoscroll, actions: this.historyActions, userId: this.state.userId}), 
 	            React.createElement(Console_1.Console, __assign({actions: this.consoleActions}, this.state.console)));
 	    };
 	    return App;
@@ -18495,13 +18482,15 @@
 
 	"use strict";
 	var rxjs_1 = __webpack_require__(4);
-	/* V3 endpoint
+	/*
+	// DL V3
+	
 	const domain = "https://ic-dandris-scratch.azurewebsites.net";
 	const baseUrl = `${domain}/V3/directline/conversations`;
 	*/
+	// DL v1 
 	var domain = "https://directline.botframework.com";
 	var baseUrl = domain + "/api/conversations";
-	exports.imageURL = function (path) { return domain + path; };
 	exports.startConversation = function (appSecret) {
 	    return rxjs_1.Observable
 	        .ajax({
@@ -18514,7 +18503,7 @@
 	    })
 	        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
 	        .retryWhen(function (error$) { return error$.delay(1000); })
-	        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	        .map(function (ajaxResponse) { return Object.assign({}, ajaxResponse.response, { userId: 'foo' }); });
 	};
 	exports.postMessage = function (text, conversation, userId) {
 	    return rxjs_1.Observable
@@ -18549,25 +18538,60 @@
 	        .retryWhen(function (error$) { return error$.delay(1000); })
 	        .map(function (ajaxResponse) { return true; });
 	};
-	exports.getMessages = function (conversation) {
-	    return conversation.streamUrl ?
-	        rxjs_1.Observable.webSocket(conversation.streamUrl)
-	            .do(function (message) { return console.log("message", message); })
-	        :
-	            new rxjs_1.Observable(function (subscriber) {
-	                return messagesGenerator(conversation, subscriber);
-	            })
-	                .concatAll();
+	exports.mimeTypes = {
+	    png: 'image/png',
+	    jpg: 'image/jpg',
+	    jpeg: 'image/jpeg'
 	};
-	var messagesGenerator = function (conversation, subscriber, watermark) {
-	    getMessageGroup(conversation, watermark).subscribe(function (messageGroup) {
+	exports.getActivities = function (conversation) {
+	    return new rxjs_1.Observable(function (subscriber) {
+	        return activitiesGenerator(conversation, subscriber);
+	    })
+	        .concatAll()
+	        .do(function (dlm) { return console.log("DL Message", dlm); })
+	        .map(function (dlm) {
+	        if (dlm.channelData) {
+	            switch (dlm.channelData.type) {
+	                case "message":
+	                    return Object.assign({}, dlm.channelData, {
+	                        id: dlm.id,
+	                        conversation: { id: dlm.conversationId },
+	                        timestamp: dlm.created,
+	                        from: { id: dlm.from },
+	                        channelData: null,
+	                    });
+	                default:
+	                    return dlm.channelData;
+	            }
+	        }
+	        else {
+	            return {
+	                type: "message",
+	                id: dlm.id,
+	                conversation: { id: dlm.conversationId },
+	                timestamp: dlm.created,
+	                from: { id: dlm.from },
+	                text: dlm.text,
+	                textFormat: "markdown",
+	                eTag: dlm.eTag,
+	                attachments: dlm.images && dlm.images.map(function (path) { return ({
+	                    contentType: exports.mimeTypes[path.split('.').pop()],
+	                    contentUrl: domain + path,
+	                    name: '2009-09-21'
+	                }); })
+	            };
+	        }
+	    });
+	};
+	var activitiesGenerator = function (conversation, subscriber, watermark) {
+	    getActivityGroup(conversation, watermark).subscribe(function (messageGroup) {
 	        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
 	        if (someMessages)
 	            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	        setTimeout(function () { return messagesGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+	        setTimeout(function () { return activitiesGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
 	    }, function (error) { return subscriber.error(error); });
 	};
-	var getMessageGroup = function (conversation, watermark) {
+	var getActivityGroup = function (conversation, watermark) {
 	    if (watermark === void 0) { watermark = ""; }
 	    return rxjs_1.Observable
 	        .ajax({
@@ -18594,8 +18618,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(2);
-	var Timestamp_1 = __webpack_require__(352);
-	var HistoryMessage_1 = __webpack_require__(353);
+	var HistoryMessage_1 = __webpack_require__(352);
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
@@ -18603,19 +18626,29 @@
 	    }
 	    History.prototype.componentDidUpdate = function (prevProps, prevState) {
 	        if (this.props.autoscroll)
-	            this.scrollme.scrollTop = this.scrollme.scrollHeight;
+	            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
 	    };
 	    History.prototype.render = function () {
 	        var _this = this;
-	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollme = ref; }, onScroll: function (e) { return _this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight); }}, this.props.messagegroups.map(function (messagegroup) {
-	            return React.createElement("div", {className: "wc-message-group"}, 
-	                React.createElement(Timestamp_1.Timestamp, {timestamp: messagegroup.timestamp}), 
-	                messagegroup.messages.map(function (message) { return React.createElement(HistoryMessage_1.HistoryMessage, {message: message, actions: _this.props.actions}); }));
-	        })));
+	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }, onScroll: function (e) { return _this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight); }}, 
+	            React.createElement("div", {className: "wc-message-group"}, this.props.activities
+	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != _this.props.userId || !activity.id); })
+	                .map(function (activity) {
+	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
+	                    React.createElement("div", {className: "wc-message-content"}, 
+	                        React.createElement("svg", {className: "wc-message-callout"}, 
+	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
+	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
+	                        React.createElement(HistoryMessage_1.HistoryMessage, {activity: activity, actions: _this.props.actions})), 
+	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === 'user' ? 'you' : activity.from.id));
+	            }))
+	        ));
 	    };
 	    return History;
 	}(React.Component));
 	exports.History = History;
+	// <Timestamp timestamp={ messagegroup.timestamp } />
+	// { activities.map(activity => <HistoryMessage message={ activity } actions={ this.props.actions }/>) }
 
 
 /***/ },
@@ -18623,59 +18656,24 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var React = __webpack_require__(2);
-	var timeStuff = function (timestamp) {
-	    var milliseconds = Date.now() - timestamp;
-	    var minutes = Math.floor(milliseconds / (1000 * 60));
-	    var hours = Math.floor(minutes / 60);
-	    if (minutes < 1)
-	        return ["Now", 60 * 1000];
-	    if (minutes === 1)
-	        return ["1 minute", 60 * 1000];
-	    if (hours < 1)
-	        return [(minutes + " minutes"), 60 * 1000];
-	    if (hours === 1)
-	        return ["1 hour", 60 * 60 * 1000];
-	    if (hours < 5)
-	        return [(hours + " hours"), 60 * 60 * 1000 * (5 - hours)];
-	    if (hours <= 24)
-	        return ["today", 60 * 60 * 1000 * (24 - hours)];
-	    if (hours <= 48)
-	        return ["yesterday", 60 * 60 * 1000 * (48 - hours)];
-	    return [new Date(milliseconds).toLocaleDateString(), null];
-	};
-	var Timestamp = (function (_super) {
-	    __extends(Timestamp, _super);
-	    function Timestamp(props) {
-	        _super.call(this);
-	        this.nextRender = null;
+	var Attachment_1 = __webpack_require__(353);
+	var Carousel_1 = __webpack_require__(354);
+	var FormattedText_1 = __webpack_require__(355);
+	exports.HistoryMessage = function (props) {
+	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
+	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
+	            return React.createElement(Carousel_1.Carousel, {attachments: props.activity.attachments, actions: props.actions});
+	        else
+	            return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {attachment: attachment, actions: props.actions}); })));
 	    }
-	    Timestamp.prototype.setNextRender = function (timestamp) {
-	        var _this = this;
-	        var ts = timeStuff(timestamp);
-	        if (ts[1])
-	            this.nextRender = setTimeout(function () {
-	                _this.forceUpdate();
-	                _this.setNextRender(timestamp);
-	            }, ts[1]);
-	    };
-	    Timestamp.prototype.componentDidMount = function () {
-	        this.setNextRender(this.props.timestamp);
-	    };
-	    Timestamp.prototype.componentWillUnmount = function () {
-	        clearTimeout(this.nextRender);
-	    };
-	    Timestamp.prototype.render = function () {
-	        return React.createElement("div", {className: "wc-time"}, timeStuff(this.props.timestamp)[0]);
-	    };
-	    return Timestamp;
-	}(React.Component));
-	exports.Timestamp = Timestamp;
+	    else if (props.activity.text) {
+	        return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
+	    }
+	    else {
+	        return React.createElement("span", null);
+	    }
+	};
 
 
 /***/ },
@@ -18684,121 +18682,77 @@
 
 	"use strict";
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(354);
-	var Carousel_1 = __webpack_require__(355);
-	var FormattedText_1 = __webpack_require__(356);
-	exports.HistoryMessage = function (props) {
-	    var inside;
-	    if (props.message.channelData && props.message.channelData.attachments) {
-	        var attachmentLayout = props.message.channelData.attachmentLayout;
-	        if (attachmentLayout === 'carousel' && props.message.channelData.attachments.length > 1) {
-	            inside = React.createElement(Carousel_1.Carousel, {attachments: props.message.channelData.attachments, actions: props.actions});
-	        }
-	        else {
-	            inside = React.createElement(Attachment_1.Attachment, {attachment: props.message.channelData.attachments[0], actions: props.actions});
-	        }
+	exports.AttachmentView = function (props) {
+	    var buttonActions = {
+	        "imBack": props.actions.buttonImBack,
+	        "openUrl": props.actions.buttonOpenUrl,
+	        "postBack": props.actions.buttonPostBack,
+	        "signin": props.actions.buttonSignIn
+	    };
+	    // REVIEW we need to make sure each button.type is one of these
+	    var buttons = function (buttons) { return buttons &&
+	        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button) { return React.createElement("li", null, 
+	            React.createElement("button", {onClick: function () { return buttonActions[button.type](button.value); }}, button.title)
+	        ); })); };
+	    var images = function (images) { return images &&
+	        React.createElement("div", null, images.map(function (image) { return React.createElement("img", {src: image.url}); })); };
+	    switch (props.attachment.contentType) {
+	        case "application/vnd.microsoft.card.hero":
+	            return (React.createElement("div", {className: 'wc-card hero'}, 
+	                images(props.attachment.content.images), 
+	                React.createElement("h1", null, props.attachment.content.title), 
+	                React.createElement("h2", null, props.attachment.content.subtitle), 
+	                React.createElement("p", null, props.attachment.content.text), 
+	                buttons(props.attachment.content.buttons)));
+	        case "application/vnd.microsoft.card.thumbnail":
+	            return (React.createElement("div", {className: 'wc-card thumbnail'}, 
+	                React.createElement("h1", null, props.attachment.content.title), 
+	                React.createElement("p", null, 
+	                    images(props.attachment.content.images), 
+	                    React.createElement("h2", null, props.attachment.content.subtitle), 
+	                    props.attachment.content.text), 
+	                buttons(props.attachment.content.buttons)));
+	        case "application/vnd.microsoft.card.signin":
+	            return (React.createElement("div", {className: 'wc-card signin'}, 
+	                React.createElement("h1", null, props.attachment.content.text), 
+	                buttons(props.attachment.content.buttons)));
+	        case "application/vnd.microsoft.card.receipt":
+	            return (React.createElement("div", {className: 'wc-card receipt'}, 
+	                React.createElement("table", null, 
+	                    React.createElement("thead", null, 
+	                        React.createElement("tr", null, 
+	                            React.createElement("th", {colSpan: "2"}, props.attachment.content.title)
+	                        ), 
+	                        props.attachment.content.facts && props.attachment.content.facts.map(function (fact) { return React.createElement("tr", null, 
+	                            React.createElement("th", null, fact.key), 
+	                            React.createElement("th", null, fact.value)); })), 
+	                    React.createElement("tbody", null, props.attachment.content.items && props.attachment.content.items.map(function (item) {
+	                        return React.createElement("tr", null, 
+	                            React.createElement("td", null, 
+	                                item.image && React.createElement("img", {src: item.image.url}), 
+	                                React.createElement("span", null, item.title)), 
+	                            React.createElement("td", null, item.price));
+	                    })), 
+	                    React.createElement("tfoot", null, 
+	                        React.createElement("tr", null, 
+	                            React.createElement("td", null, "Tax"), 
+	                            React.createElement("td", null, props.attachment.content.tax)), 
+	                        React.createElement("tr", null, 
+	                            React.createElement("td", null, "Total"), 
+	                            React.createElement("td", null, props.attachment.content.total))))
+	            ));
+	        case "image/png":
+	        case "image/jpg":
+	        case "image/jpeg":
+	            return React.createElement("img", {src: props.attachment.contentUrl});
+	        default:
+	            return React.createElement("span", null);
 	    }
-	    else if (props.message.text) {
-	        // TODO @eanders-MS: Send format={ props.activity.textFormat } once updated to DirectLine v3
-	        inside = React.createElement(FormattedText_1.FormattedText, {text: props.message.text, format: "markdown"});
-	    }
-	    else {
-	        inside = React.createElement("span", null);
-	    }
-	    return React.createElement("div", {className: 'wc-message wc-message-from-' + (props.message.fromBot ? 'bot' : 'me')}, 
-	        React.createElement("div", {className: "wc-message-content"}, 
-	            React.createElement("svg", {className: "wc-message-callout"}, 
-	                React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
-	                React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
-	            inside), 
-	        React.createElement("div", {className: "wc-message-from"}, props.message.fromBot ? props.message.from : 'you'));
 	};
 
 
 /***/ },
 /* 354 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var React = __webpack_require__(2);
-	exports.Attachment = function (props) {
-	    var buttonActions = {
-	        "imBack": props.actions.buttonImBack,
-	        "openUrl": props.actions.buttonOpenUrl,
-	        "postBack": props.actions.buttonPostBack
-	    };
-	    // REVIEW we need to make sure each button.type is one of these
-	    var content = props.attachment.content;
-	    var cardPrefix = 'application/vnd.microsoft.card.';
-	    if (props.attachment.contentType && props.attachment.contentType.indexOf(cardPrefix) == 0) {
-	        var buttonList = function () {
-	            return (React.createElement("ul", {className: "wc-card-buttons"}, content.buttons.map(function (button) { return React.createElement("li", null, 
-	                React.createElement("button", {onClick: function () { return buttonActions[button.type](button.value); }}, button.title)
-	            ); })));
-	        };
-	        var cardType = props.attachment.contentType.substring(cardPrefix.length);
-	        var className = 'wc-card ' + cardType;
-	        switch (cardType) {
-	            case 'hero':
-	                return (React.createElement("div", {className: className}, 
-	                    React.createElement("img", {src: content.images[0].url}), 
-	                    React.createElement("h1", null, content.title), 
-	                    React.createElement("h2", null, content.subtitle), 
-	                    React.createElement("p", null, content.text), 
-	                    buttonList()));
-	            case 'thumbnail':
-	                return (React.createElement("div", {className: className}, 
-	                    React.createElement("h1", null, content.title), 
-	                    React.createElement("p", null, 
-	                        React.createElement("img", {src: content.images[0].url}), 
-	                        React.createElement("h2", null, content.subtitle), 
-	                        content.text), 
-	                    buttonList()));
-	            case 'signin':
-	                return (React.createElement("div", {className: className}, 
-	                    React.createElement("h1", null, content.text), 
-	                    buttonList()));
-	            case 'receipt':
-	                var itemImage_1 = function (item) {
-	                    if (item.image) {
-	                        return React.createElement("img", {src: item.image.url});
-	                    }
-	                };
-	                return (React.createElement("div", {className: className}, 
-	                    React.createElement("table", null, 
-	                        React.createElement("thead", null, 
-	                            React.createElement("tr", null, 
-	                                React.createElement("th", {colSpan: "2"}, content.title)
-	                            ), 
-	                            content.facts.map(function (fact) { return React.createElement("tr", null, 
-	                                React.createElement("th", null, fact.key), 
-	                                React.createElement("th", null, fact.value)); })), 
-	                        React.createElement("tbody", null, content.items.map(function (item) { return React.createElement("tr", null, 
-	                            React.createElement("td", null, 
-	                                itemImage_1(item), 
-	                                React.createElement("span", null, item.title)), 
-	                            React.createElement("td", null, item.price)); })), 
-	                        React.createElement("tfoot", null, 
-	                            React.createElement("tr", null, 
-	                                React.createElement("td", null, "Tax"), 
-	                                React.createElement("td", null, content.tax)), 
-	                            React.createElement("tr", null, 
-	                                React.createElement("td", null, "Total"), 
-	                                React.createElement("td", null, content.total))))
-	                ));
-	        }
-	    }
-	    else {
-	        switch (props.attachment.contentType) {
-	            case "image/png":
-	                return React.createElement("img", {src: props.attachment.contentUrl});
-	        }
-	    }
-	};
-
-
-/***/ },
-/* 355 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18808,7 +18762,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(354);
+	var Attachment_1 = __webpack_require__(353);
 	var Carousel = (function (_super) {
 	    __extends(Carousel, _super);
 	    function Carousel(props) {
@@ -18897,9 +18851,7 @@
 	                //slightly longer that the CSS time so we don't cut it off prematurely
 	                duration += 50;
 	                //stop capturing
-	                _this.scrollDurationTimer = setTimeout(function () {
-	                    _this.clearScrollTimers();
-	                }, duration);
+	                _this.scrollDurationTimer = setTimeout(function () { return _this.clearScrollTimers(); }, duration);
 	            }
 	            else {
 	                _this.clearScrollTimers();
@@ -18908,10 +18860,7 @@
 	    };
 	    Carousel.prototype.render = function () {
 	        var _this = this;
-	        var items = this.props.attachments.map(function (attachment) { return React.createElement("li", null, 
-	            React.createElement(Attachment_1.Attachment, {attachment: attachment, actions: _this.props.actions})
-	        ); });
-	        return React.createElement("div", {className: "wc-carousel"}, 
+	        return (React.createElement("div", {className: "wc-carousel"}, 
 	            React.createElement("button", {disabled: !this.state.previousButtonEnabled, className: "scroll previous", onClick: function () { return _this.scrollBy(-1); }}, 
 	                React.createElement("svg", null, 
 	                    React.createElement("path", {d: "M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z"})
@@ -18919,14 +18868,18 @@
 	            ), 
 	            React.createElement("div", {className: "wc-carousel-scroll-outer"}, 
 	                React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
-	                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, items)
+	                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment) {
+	                        return React.createElement("li", null, 
+	                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment, actions: _this.props.actions})
+	                        );
+	                    }))
 	                )
 	            ), 
 	            React.createElement("button", {disabled: !this.state.nextButtonEnabled, className: "scroll next", onClick: function () { return _this.scrollBy(1); }}, 
 	                React.createElement("svg", null, 
 	                    React.createElement("path", {d: "M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"})
 	                )
-	            ));
+	            )));
 	    };
 	    return Carousel;
 	}(React.Component));
@@ -18934,7 +18887,7 @@
 
 
 /***/ },
-/* 356 */
+/* 355 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18952,8 +18905,8 @@
 	    return t;
 	};
 	var React = __webpack_require__(2);
-	var Marked = __webpack_require__(357);
-	var He = __webpack_require__(358);
+	var Marked = __webpack_require__(356);
+	var He = __webpack_require__(357);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
 	    function FormattedText() {
@@ -19166,7 +19119,7 @@
 
 
 /***/ },
-/* 357 */
+/* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -20459,7 +20412,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 358 */
+/* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/he v1.1.0 by @mathias | MIT license */
@@ -20803,10 +20756,10 @@
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(359)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(358)(module), (function() { return this; }())))
 
 /***/ },
-/* 359 */
+/* 358 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -20822,7 +20775,7 @@
 
 
 /***/ },
-/* 360 */
+/* 359 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
