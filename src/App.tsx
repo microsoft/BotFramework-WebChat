@@ -3,8 +3,8 @@ import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, Conversation } from './directLineTypes';
 import { startConversation, getActivities, postMessage, postFile, mimeTypes } from './directLine';
-import { History } from './History'
-import { Console } from './Console'
+import { History } from './History';
+import { Console } from './Console';
 
 export interface ConsoleState {
     text?: string,

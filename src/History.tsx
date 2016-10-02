@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Timestamp } from './Timestamp';
-import { Activity, Message } from './directLineTypes'
+import { Activity, Message } from './directLineTypes';
 import { HistoryActions } from './App';
 import { HistoryMessage } from './HistoryMessage';
 
@@ -29,7 +29,7 @@ export class History extends React.Component<Props, {}> {
                 <div className="wc-message-group">
                 { this.props.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != this.props.userId || !activity.id))
-                    .map((activity:Message) => 
+                    .map((activity:Message) =>
                         <div className={ 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot') }>
                             <div className="wc-message-content">
                                 <svg className="wc-message-callout">
