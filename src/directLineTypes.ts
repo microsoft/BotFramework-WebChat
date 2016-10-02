@@ -2,8 +2,7 @@ export interface Conversation {
     conversationId: string,
     token: string,
     eTag?: string,
-    streamUrl?: string,
-    userId: string
+    streamUrl?: string
 }
 
 export interface Image {

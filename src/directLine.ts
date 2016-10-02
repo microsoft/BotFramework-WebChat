@@ -1,10 +1,15 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest } from '@reactivex/rxjs';
 import { Conversation, Activity, Message } from './directLineTypes'; 
 
-/* V3 endpoint
+/*
+// DL V3
+
 const domain = "https://ic-dandris-scratch.azurewebsites.net";
 const baseUrl = `${domain}/V3/directline/conversations`;
 */
+
+// DL v1 
+
 const domain = "https://directline.botframework.com";
 const baseUrl = `${domain}/api/conversations`;
 
@@ -47,14 +52,14 @@ export const startConversation = (appSecret: string) =>
         .retryWhen(error$ => error$.delay(1000))
         .map<Conversation>(ajaxResponse => Object.assign({}, ajaxResponse.response, { userId: 'foo'}));
 
-export const postMessage = (text: string, conversation: Conversation) =>
+export const postMessage = (text: string, conversation: Conversation, userId: string) =>
     Observable
         .ajax({
             method: "POST",
             url: `${baseUrl}/${conversation.conversationId}/messages`,
             body: <DLMessage>{
                 text: text,
-                from: conversation.userId,
+                from: userId,
                 conversationId: conversation.conversationId
             },
             headers: {

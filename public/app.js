@@ -78,11 +78,11 @@
 	var outgoingMessage$ = new rxjs_1.Subject();
 	var console$ = new rxjs_1.Subject();
 	var consoleStart = { text: "", enableSend: true };
-	var incomingActivity$ = function (conversation, userId) {
+	var incomingActivity$ = function (conversation) {
 	    return directLine_1.getActivities(conversation);
 	};
 	var activities$ = function (conversation, userId) {
-	    return incomingActivity$(conversation, userId)
+	    return incomingActivity$(conversation)
 	        .merge(outgoingMessage$)
 	        .scan(function (activities, activity) { return activities.concat([activity]); }, [])
 	        .startWith([]);
@@ -117,13 +117,13 @@
 	        _super.call(this);
 	        this.historyActions = {
 	            buttonImBack: function (text) {
-	                directLine_1.postMessage(text, _this.state.conversation)
+	                directLine_1.postMessage(text, _this.state.conversation, _this.state.userId)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    outgoingMessage$.next({
 	                        type: "message",
 	                        text: text,
-	                        from: { id: 'user' },
+	                        from: { id: _this.state.userId },
 	                        timestamp: Date.now().toString()
 	                    });
 	                }, function (error) {
@@ -134,7 +134,7 @@
 	                console.log("open URL", text);
 	            },
 	            buttonPostBack: function (text) {
-	                directLine_1.postMessage(text, _this.state.conversation)
+	                directLine_1.postMessage(text, _this.state.conversation, _this.state.userId)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    console.log("quietly posted message to bot", text);
@@ -155,7 +155,7 @@
 	            },
 	            sendMessage: function () {
 	                console$.next({ text: _this.state.console.text, enableSend: false });
-	                directLine_1.postMessage(_this.state.console.text, _this.state.conversation)
+	                directLine_1.postMessage(_this.state.console.text, _this.state.conversation, _this.state.userId)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    outgoingMessage$.next({
@@ -217,7 +217,7 @@
 	    App.prototype.render = function () {
 	        return React.createElement("div", {className: "wc-app"}, 
 	            React.createElement("div", {className: "wc-header"}, "WebChat"), 
-	            React.createElement(History_1.History, {activities: this.state.activities, autoscroll: this.state.autoscroll, actions: this.historyActions}), 
+	            React.createElement(History_1.History, {activities: this.state.activities, autoscroll: this.state.autoscroll, actions: this.historyActions, userId: this.state.userId}), 
 	            React.createElement(Console_1.Console, __assign({actions: this.consoleActions}, this.state.console)));
 	    };
 	    return App;
@@ -18482,10 +18482,13 @@
 
 	"use strict";
 	var rxjs_1 = __webpack_require__(4);
-	/* V3 endpoint
+	/*
+	// DL V3
+	
 	const domain = "https://ic-dandris-scratch.azurewebsites.net";
 	const baseUrl = `${domain}/V3/directline/conversations`;
 	*/
+	// DL v1 
 	var domain = "https://directline.botframework.com";
 	var baseUrl = domain + "/api/conversations";
 	exports.startConversation = function (appSecret) {
@@ -18502,14 +18505,14 @@
 	        .retryWhen(function (error$) { return error$.delay(1000); })
 	        .map(function (ajaxResponse) { return Object.assign({}, ajaxResponse.response, { userId: 'foo' }); });
 	};
-	exports.postMessage = function (text, conversation) {
+	exports.postMessage = function (text, conversation, userId) {
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
 	        url: baseUrl + "/" + conversation.conversationId + "/messages",
 	        body: {
 	            text: text,
-	            from: conversation.userId,
+	            from: userId,
 	            conversationId: conversation.conversationId
 	        },
 	        headers: {
@@ -18628,7 +18631,9 @@
 	    History.prototype.render = function () {
 	        var _this = this;
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }, onScroll: function (e) { return _this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight); }}, 
-	            React.createElement("div", {className: "wc-message-group"}, this.props.activities.filter(function (activity) { return activity.type === "message"; }).map(function (activity) {
+	            React.createElement("div", {className: "wc-message-group"}, this.props.activities
+	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != _this.props.userId || !activity.id); })
+	                .map(function (activity) {
 	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: "wc-message-content"}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
@@ -18693,14 +18698,14 @@
 	        React.createElement("div", null, images.map(function (image) { return React.createElement("img", {src: image.url}); })); };
 	    switch (props.attachment.contentType) {
 	        case "application/vnd.microsoft.card.hero":
-	            return (React.createElement("div", {className: 'wc-card.hero'}, 
+	            return (React.createElement("div", {className: 'wc-card hero'}, 
 	                images(props.attachment.content.images), 
 	                React.createElement("h1", null, props.attachment.content.title), 
 	                React.createElement("h2", null, props.attachment.content.subtitle), 
 	                React.createElement("p", null, props.attachment.content.text), 
 	                buttons(props.attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.thumbnail":
-	            return (React.createElement("div", {className: 'wc-card.thumbnail'}, 
+	            return (React.createElement("div", {className: 'wc-card thumbnail'}, 
 	                React.createElement("h1", null, props.attachment.content.title), 
 	                React.createElement("p", null, 
 	                    images(props.attachment.content.images), 
@@ -18708,11 +18713,11 @@
 	                    props.attachment.content.text), 
 	                buttons(props.attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.signin":
-	            return (React.createElement("div", {className: 'wc-card.signin'}, 
+	            return (React.createElement("div", {className: 'wc-card signin'}, 
 	                React.createElement("h1", null, props.attachment.content.text), 
 	                buttons(props.attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.receipt":
-	            return (React.createElement("div", {className: 'wc-card.receipt'}, 
+	            return (React.createElement("div", {className: 'wc-card receipt'}, 
 	                React.createElement("table", null, 
 	                    React.createElement("thead", null, 
 	                        React.createElement("tr", null, 

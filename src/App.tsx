@@ -33,11 +33,11 @@ const outgoingMessage$ = new Subject<Message>();
 const console$ = new Subject<ConsoleState>();
 const consoleStart = {text: "", enableSend: true};
 
-const incomingActivity$ = (conversation: Conversation, userId: string) =>
+const incomingActivity$ = (conversation: Conversation) =>
     getActivities(conversation);
 
 const activities$ = (conversation: Conversation, userId: string) =>
-    incomingActivity$(conversation, userId)
+    incomingActivity$(conversation)
     .merge(outgoingMessage$)
     .scan<Activity[]>((activities, activity) => [... activities, activity], [])
     .startWith([]);
@@ -110,14 +110,14 @@ class App extends React.Component<{}, State> {
 
     private historyActions: HistoryActions = {
         buttonImBack: (text:string) => {
-            postMessage(text, this.state.conversation)
+            postMessage(text, this.state.conversation, this.state.userId)
             .retry(2)
             .subscribe(
                 () => {
                     outgoingMessage$.next({
                         type: "message",
                         text: text,
-                        from: {id: 'user'},
+                        from: {id: this.state.userId},
                         timestamp: Date.now().toString()
                     });
                 },
@@ -132,7 +132,7 @@ class App extends React.Component<{}, State> {
         },
 
         buttonPostBack: (text:string) => {
-            postMessage(text, this.state.conversation)
+            postMessage(text, this.state.conversation, this.state.userId)
             .retry(2)
             .subscribe(
                 () => {
@@ -160,7 +160,7 @@ class App extends React.Component<{}, State> {
 
         sendMessage: () => {
             console$.next({text: this.state.console.text, enableSend: false});
-            postMessage(this.state.console.text, this.state.conversation)
+            postMessage(this.state.console.text, this.state.conversation, this.state.userId)
             .retry(2)
             .subscribe(
                 () => {
@@ -216,7 +216,7 @@ class App extends React.Component<{}, State> {
             <div className="wc-header">
                 WebChat
             </div>
-            <History activities={ this.state.activities } autoscroll={ this.state.autoscroll } actions={ this.historyActions }/>
+            <History activities={ this.state.activities } autoscroll={ this.state.autoscroll } actions={ this.historyActions } userId={ this.state.userId }/>
             <Console actions={ this.consoleActions } { ...this.state.console } />
         </div>;
     }

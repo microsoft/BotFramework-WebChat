@@ -28,7 +28,7 @@ export const AttachmentView = (props: {
     switch (props.attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
             return (
-                <div className='wc-card.hero'>
+                <div className='wc-card hero'>
                     { images(props.attachment.content.images) }
                     <h1>{ props.attachment.content.title }</h1>
                     <h2>{ props.attachment.content.subtitle }</h2>
@@ -39,7 +39,7 @@ export const AttachmentView = (props: {
 
         case "application/vnd.microsoft.card.thumbnail":
             return (
-                <div className='wc-card.thumbnail'>
+                <div className='wc-card thumbnail'>
                     <h1>{ props.attachment.content.title }</h1>
                     <p>
                         { images(props.attachment.content.images) }
@@ -52,7 +52,7 @@ export const AttachmentView = (props: {
 
         case "application/vnd.microsoft.card.signin":
             return (
-                <div className='wc-card.signin'>
+                <div className='wc-card signin'>
                     <h1>{ props.attachment.content.text }</h1>
                     { buttons(props.attachment.content.buttons) }
                 </div>
@@ -60,7 +60,7 @@ export const AttachmentView = (props: {
 
         case "application/vnd.microsoft.card.receipt":
             return (
-                <div className='wc-card.receipt'>
+                <div className='wc-card receipt'>
                     <table>
                         <thead>
                             <tr>
