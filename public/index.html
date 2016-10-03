@@ -6,9 +6,13 @@
         <link href="botchat.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="app"/>
+        <div id="BotChatGoesHere"></div>
         <script src="https://fb.me/react-15.2.1.min.js"></script>
         <script src="https://fb.me/react-dom-15.2.1.min.js"></script>
-        <script src="app.js"></script>
+        <script src="botchat.js"></script>
+        <script>
+            console.log("BotChat", BotChat.UI);
+            ReactDOM.render(React.createElement(BotChat.UI, null), document.getElementById("BotChatGoesHere"));
+        </script>
     </body>
 </html>

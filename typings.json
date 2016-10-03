@@ -1,7 +1,0 @@
-{
-  "globalDependencies": {
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
-    "he": "registry:dt/he#0.5.0+20160505181202",
-    "marked": "registry:dt/marked#0.0.0+20160325085301"
-  }
-}

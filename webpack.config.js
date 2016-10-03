@@ -1,9 +1,11 @@
 module.exports = {
     entry: [
-        "./src/App.tsx"
+        "./src/BotChat.tsx"
     ],
     output: {
-        filename: "./public/app.js",
+        libraryTarget: "var",
+        library: "BotChat",
+        filename: "./public/botchat.js",
     },
 
     // Enable sourcemaps for debugging webpack's output.

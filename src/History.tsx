@@ -1,8 +1,7 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Timestamp } from './Timestamp';
+//import { Timestamp } from './Timestamp';
 import { Activity, Message } from './directLineTypes';
-import { HistoryActions } from './App';
+import { HistoryActions } from './BotChat';
 import { HistoryMessage } from './HistoryMessage';
 
 interface Props {
@@ -27,7 +26,7 @@ export class History extends React.Component<Props, {}> {
 
     render() {
         return (
-            <div className="wc-message-groups" ref={ref => this.scrollMe = ref} onScroll={ e => this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) }>
+            <div className="wc-message-groups" ref={ref => this.scrollMe = ref} onScroll={ e => this.props.actions.setAutoscroll((e.target as any).scrollTop + (e.target as any).offsetHeight >= (e.target as any).scrollHeight) }>
                 <div className="wc-message-group">
                 { this.props.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != this.props.userId || !activity.id))
@@ -44,9 +43,7 @@ export class History extends React.Component<Props, {}> {
                                     </svg>
                                     <HistoryMessage
                                         activity={ activity }
-                                        actions={ this.props.actions }
-                                        clickable={ this.props.debuggerActive }
-                                        selected={ activity === this.props.debugActivity } />
+                                        actions={ this.props.actions }/>
                                 </div>
                             <div className="wc-message-from">{ activity.from.id === 'user' ? 'you' : activity.from.id }</div>
                         </div>);
