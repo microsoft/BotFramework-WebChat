@@ -266,7 +266,7 @@ var BotChat =
 	    };
 	    UI.prototype.render = function () {
 	        var _this = this;
-	        return React.createElement("div", {className: "wc-app"}, 
+	        return (React.createElement("div", {className: "wc-app"}, 
 	            React.createElement("div", {className: "wc-chatview-panel" + (this.isDebuggerVisible() ? " wc-withdebugview" : "")}, 
 	                React.createElement("div", {className: "wc-header"}, 
 	                    React.createElement("span", null, "WebChat"), 
@@ -281,7 +281,7 @@ var BotChat =
 	                React.createElement("div", {className: "wc-header"}, 
 	                    React.createElement("span", null, "Debug")
 	                ), 
-	                React.createElement(DebugView_1.DebugView, {activity: this.state.selectedActivity})));
+	                React.createElement(DebugView_1.DebugView, {activity: this.state.selectedActivity}))));
 	    };
 	    return UI;
 	}(React.Component));
@@ -18691,16 +18691,13 @@ var BotChat =
 	            React.createElement("div", {className: "wc-message-group"}, this.props.activities
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != _this.props.userId || !activity.id); })
 	                .map(function (activity) {
-	                var clickable = _this.props.debuggerVisible;
-	                var selected = activity === _this.props.selectedActivity;
-	                var contentClassName = 'wc-message-content' + (clickable ? ' clickable' : '') + (selected ? ' selected' : '');
-	                return (React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
-	                    React.createElement("div", {className: contentClassName, onClick: clickable ? function (e) { _this.props.actions.onMessageClicked(activity, e); } : function () { }}, 
+	                React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
+	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.debuggerVisible ? ' clickable' : '') + (activity === _this.props.selectedActivity ? ' selected' : ''), onClick: _this.props.debuggerVisible ? function (e) { _this.props.actions.onMessageClicked(activity, e); } : function () { }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
 	                        React.createElement(HistoryMessage_1.HistoryMessage, {activity: activity, actions: _this.props.actions})), 
-	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === 'user' ? 'you' : activity.from.id)));
+	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === 'user' ? 'you' : activity.from.id));
 	            }))
 	        ));
 	    };
