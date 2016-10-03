@@ -9,8 +9,8 @@ interface Props {
     autoscroll: boolean,
     actions: HistoryActions,
     userId: string,
-    debugActivity: Activity,
-    debuggerActive: boolean
+    selectedActivity: Activity,
+    debuggerVisible: boolean
 }
 
 export class History extends React.Component<Props, {}> {
@@ -31,8 +31,8 @@ export class History extends React.Component<Props, {}> {
                 { this.props.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != this.props.userId || !activity.id))
                     .map((activity:Message) => {
-		    	        let clickable = this.props.debuggerActive;
-		    	        let selected = activity === this.props.debugActivity;
+		    	        let clickable = this.props.debuggerVisible;
+		    	        let selected = activity === this.props.selectedActivity;
     			        let contentClassName = 'wc-message-content' + (clickable ? ' clickable' : '') + (selected ? ' selected' : '');
                         return (
                             <div className={ 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot') }>
