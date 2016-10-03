@@ -31,18 +31,20 @@ export class History extends React.Component<Props, {}> {
                 { this.props.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != this.props.userId || !activity.id))
                     .map((activity:Message) => {
-                        <div className={ 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot') }>
-                            <div className={ 'wc-message-content' + (this.props.debuggerVisible ? ' clickable' : '') + (activity === this.props.selectedActivity ? ' selected' : '') } onClick={ this.props.debuggerVisible ? (e) => { this.props.actions.onMessageClicked(activity, e); } : () => {} }>
-                                <svg className="wc-message-callout">
-                                    <path className="point-left" d="m0,0 h12 v10 z" />
-                                    <path className="point-right" d="m0,10 v-10 h12 z" />
-                                </svg>
-                                <HistoryMessage
-                                    activity={ activity }
-                                    actions={ this.props.actions }/>
+                        return (
+                            <div className={ 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot') }>
+                                <div className={ 'wc-message-content' + (this.props.debuggerVisible ? ' clickable' : '') + (activity === this.props.selectedActivity ? ' selected' : '') } onClick={ this.props.debuggerVisible ? (e) => { this.props.actions.onMessageClicked(activity, e); } : () => {} }>
+                                    <svg className="wc-message-callout">
+                                        <path className="point-left" d="m0,0 h12 v10 z" />
+                                        <path className="point-right" d="m0,10 v-10 h12 z" />
+                                    </svg>
+                                    <HistoryMessage
+                                        activity={ activity }
+                                        actions={ this.props.actions }/>
+                                </div>
+                                <div className="wc-message-from">{ activity.from.id === 'user' ? 'you' : activity.from.id }</div>
                             </div>
-                            <div className="wc-message-from">{ activity.from.id === 'user' ? 'you' : activity.from.id }</div>
-                        </div>
+                        );
                     })
                 }
                 </div>
