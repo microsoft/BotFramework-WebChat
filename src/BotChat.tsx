@@ -49,9 +49,9 @@ const incomingActivity$ = (conversation: Conversation) =>
 
 const activities$ = (conversation: Conversation, userId: string) =>
     incomingActivity$(conversation)
-        .merge(outgoingMessage$)
-        .scan<Activity[]>((activities, activity) => [... activities, activity], [])
-        .startWith([]);
+    .merge(outgoingMessage$)
+    .scan<Activity[]>((activities, activity) => [... activities, activity], [])
+    .startWith([]);
 
 const autoscroll$ = new Subject<boolean>();
 const debugViewState$ = new Subject<DebugViewState>();
@@ -59,21 +59,21 @@ const selectedActivity$ = new Subject<Activity>();
 
 const state$ = (conversation: Conversation, userId: string, debugViewState: DebugViewState) =>
     activities$(conversation, userId)
-        .combineLatest(
-            autoscroll$.distinctUntilChanged().startWith(true),
-            debugViewState$.distinctUntilChanged().startWith(debugViewState),
-            selectedActivity$.distinctUntilChanged().startWith(undefined),
-            console$.startWith(consoleStart),
-            (activities, autoscroll, debugViewState, selectedActivity, console):State => ({
-                conversation: conversation,
-                activities: activities,
-                autoscroll: autoscroll,
-                debugViewState: debugViewState,
-                selectedActivity: selectedActivity,
-                console: console
-            })
-        )
-        .do(state => console.log("state", state));
+    .combineLatest(
+        autoscroll$.distinctUntilChanged().startWith(true),
+        debugViewState$.distinctUntilChanged().startWith(debugViewState),
+        selectedActivity$.distinctUntilChanged().startWith(undefined),
+        console$.startWith(consoleStart),
+        (activities, autoscroll, debugViewState, selectedActivity, console):State => ({
+            conversation: conversation,
+            activities: activities,
+            autoscroll: autoscroll,
+            debugViewState: debugViewState,
+            selectedActivity: selectedActivity,
+            console: console
+        })
+    )
+    .do(state => console.log("state", state));
 
 const conversation$ = startConversation;
 
@@ -130,30 +130,30 @@ export class UI extends React.Component<{}, State> {
         const appSecret = queryParams['s'];
 
         conversation$(appSecret)
-            .flatMap(conversation => state$(conversation, this.state.userId, queryParams.debug))
-            .subscribe(
-                state => this.setState(state),
-                error => console.log("errors", error)
-            );
+        .flatMap(conversation => state$(conversation, this.state.userId, queryParams.debug))
+        .subscribe(
+            state => this.setState(state),
+            error => console.log("errors", error)
+        );
     }
 
     private historyActions: HistoryActions = {
         buttonImBack: (text:string) => {
             postMessage(text, this.state.conversation, this.state.userId)
-                .retry(2)
-                .subscribe(
-                    () => {
-                        outgoingMessage$.next({
-                            type: "message",
-                            text: text,
-                            from: {id: this.state.userId},
-                            timestamp: Date.now().toString()
-                        });
-                    },
-                    error => {
-                        console.log("failed to post message");
-                    }
-                );
+            .retry(2)
+            .subscribe(
+                () => {
+                    outgoingMessage$.next({
+                        type: "message",
+                        text: text,
+                        from: {id: this.state.userId},
+                        timestamp: Date.now().toString()
+                    });
+                },
+                error => {
+                    console.log("failed to post message");
+                }
+            );
         },
 
         buttonOpenUrl: (text:string) => {
@@ -162,15 +162,15 @@ export class UI extends React.Component<{}, State> {
 
         buttonPostBack: (text:string) => {
             postMessage(text, this.state.conversation, this.state.userId)
-                .retry(2)
-                .subscribe(
-                    () => {
-                        console.log("quietly posted message to bot", text);
-                    },
-                    error => {
-                        console.log("failed to post message");
-                    }
-                );
+            .retry(2)
+            .subscribe(
+                () => {
+                    console.log("quietly posted message to bot", text);
+                },
+                error => {
+                    console.log("failed to post message");
+                }
+            );
         },
 
         buttonSignIn: (text:string) => {
@@ -196,52 +196,52 @@ export class UI extends React.Component<{}, State> {
         sendMessage: () => {
             console$.next({text: this.state.console.text, enableSend: false});
             postMessage(this.state.console.text, this.state.conversation, this.state.userId)
-                .retry(2)
-                .subscribe(
-                    () => {
-                        outgoingMessage$.next({
-                            type: "message",
-                            text: this.state.console.text,
-                            from: {id: 'user'},
-                            timestamp: Date.now().toString()
-                        });
-                        console$.next({
-                            text: "",
-                            enableSend: true
-                        });
-                        autoscroll$.next(true);
-                    },
-                    error => {
-                        console.log("failed to post message");
-                        console$.next({text: this.state.console.text, enableSend: true});
-                    }
-                );
+            .retry(2)
+            .subscribe(
+                () => {
+                    outgoingMessage$.next({
+                        type: "message",
+                        text: this.state.console.text,
+                        from: {id: 'user'},
+                        timestamp: Date.now().toString()
+                    });
+                    console$.next({
+                        text: "",
+                        enableSend: true
+                    });
+                    autoscroll$.next(true);
+                },
+                error => {
+                    console.log("failed to post message");
+                    console$.next({text: this.state.console.text, enableSend: true});
+                }
+            );
         },
 
         sendFile: (files:FileList) => {
             for (let i = 0, numFiles = files.length; i < numFiles; i++) {
                 const file = files[i];
                 postFile(file, this.state.conversation)
-                    .retry(2)
-                    .subscribe(
-                        () => {
-                            const path = window.URL.createObjectURL(file);
-                            outgoingMessage$.next({
-                                type: "message",
-                                text: this.state.console.text,
-                                from: {id: 'user'},
-                                timestamp: Date.now().toString(),
-                                attachments: [{
-                                    contentType: mimeTypes[path.split('.').pop()],
-                                    contentUrl: path,
-                                    name: 'Your file here'
-                                }]
-                            });
-                        },
-                        error => {
-                            console.log("failed to post file");
-                        }
-                    )
+                .retry(2)
+                .subscribe(
+                    () => {
+                        const path = window.URL.createObjectURL(file);
+                        outgoingMessage$.next({
+                            type: "message",
+                            text: this.state.console.text,
+                            from: {id: 'user'},
+                            timestamp: Date.now().toString(),
+                            attachments: [{
+                                contentType: mimeTypes[path.split('.').pop()],
+                                contentUrl: path,
+                                name: 'Your file here'
+                            }]
+                        });
+                    },
+                    error => {
+                        console.log("failed to post file");
+                    }
+                )
             }
         }
     }
