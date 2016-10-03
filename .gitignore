@@ -4,3 +4,4 @@ node_modules
 /botchat.sln
 /Web.config
 /local
+/.vscode

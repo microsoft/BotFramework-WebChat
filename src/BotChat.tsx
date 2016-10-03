@@ -270,32 +270,34 @@ export class UI extends React.Component<{}, State> {
     }
 
     render() {
-        return <div className="wc-app">
-            <div className={ "wc-chatview-panel" + (this.isDebuggerVisible() ? " wc-withdebugview" : "") }>
-                <div className="wc-header">
-                    <span>WebChat</span>
-                    <div className={ "wc-toggledebugview" + (this.isDebuggerEnabled() ? "" : " wc-hidden") } onClick={ () => this.toggleDebugView() }>
-                        <svg width="20" height="20" viewBox="0 0 1792 1792">
-                            <rect id="panel" height="1152.159352" width="642.020858" y="384.053042" x="959.042634" />
-                            <path id="frame" d="m224,1536l608,0l0,-1152l-640,0l0,1120q0,13 9.5,22.5t22.5,9.5zm1376,-32l0,-1120l-640,0l0,1152l608,0q13,0 22.5,-9.5t9.5,-22.5zm128,-1216l0,1216q0,66 -47,113t-113,47l-1344,0q-66,0 -113,-47t-47,-113l0,-1216q0,-66 47,-113t113,-47l1344,0q66,0 113,47t47,113z" />
-                        </svg>
+        return (
+            <div className="wc-app">
+                <div className={ "wc-chatview-panel" + (this.isDebuggerVisible() ? " wc-withdebugview" : "") }>
+                    <div className="wc-header">
+                        <span>WebChat</span>
+                        <div className={ "wc-toggledebugview" + (this.isDebuggerEnabled() ? "" : " wc-hidden") } onClick={ () => this.toggleDebugView() }>
+                            <svg width="20" height="20" viewBox="0 0 1792 1792">
+                                <rect id="panel" height="1152.159352" width="642.020858" y="384.053042" x="959.042634" />
+                                <path id="frame" d="m224,1536l608,0l0,-1152l-640,0l0,1120q0,13 9.5,22.5t22.5,9.5zm1376,-32l0,-1120l-640,0l0,1152l608,0q13,0 22.5,-9.5t9.5,-22.5zm128,-1216l0,1216q0,66 -47,113t-113,47l-1344,0q-66,0 -113,-47t-47,-113l0,-1216q0,-66 47,-113t113,-47l1344,0q66,0 113,47t47,113z" />
+                            </svg>
+                        </div>
                     </div>
+                    <History
+                        activities={ this.state.activities }
+                        autoscroll={ this.state.autoscroll }
+                        actions={ this.historyActions }
+                        userId={ this.state.userId }
+                        selectedActivity={ this.state.selectedActivity }
+                        debuggerVisible={ this.isDebuggerVisible() } />
+                    <Console actions={ this.consoleActions } { ...this.state.console } />
                 </div>
-                <History
-                    activities={ this.state.activities }
-                    autoscroll={ this.state.autoscroll }
-                    actions={ this.historyActions }
-                    userId={ this.state.userId }
-                    selectedActivity={ this.state.selectedActivity }
-                    debuggerVisible={ this.isDebuggerVisible() } />
-                <Console actions={ this.consoleActions } { ...this.state.console } />
-            </div>
-            <div className={ "wc-debugview-panel" + (this.isDebuggerVisible() ? "" : " wc-hidden") }>
-                <div className="wc-header">
-                    <span>Debug</span>
+                <div className={ "wc-debugview-panel" + (this.isDebuggerVisible() ? "" : " wc-hidden") }>
+                    <div className="wc-header">
+                        <span>Debug</span>
+                    </div>
+                    <DebugView activity={ this.state.selectedActivity } />
                 </div>
-                <DebugView activity={ this.state.selectedActivity } />
             </div>
-        </div>;
+        );
     }
 }
