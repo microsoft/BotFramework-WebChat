@@ -1,8 +1,7 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Timestamp } from './Timestamp';
+//import { Timestamp } from './Timestamp';
 import { Activity, Message } from './directLineTypes'
-import { HistoryActions } from './App';
+import { HistoryActions } from './BotChat';
 import { HistoryMessage } from './HistoryMessage';
 
 interface Props {

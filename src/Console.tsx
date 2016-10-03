@@ -1,6 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { ConsoleActions } from './App';
+import { ConsoleActions } from './BotChat';
 
 export const Console = (props: {
     actions: ConsoleActions,

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, Conversation } from './directLineTypes';
 import { startConversation, getActivities, postMessage, postFile, mimeTypes } from './directLine';
@@ -86,7 +85,7 @@ export interface ConsoleActions {
     sendFile: (files:FileList) => void
 }
 
-class App extends React.Component<{}, State> {
+export class UI extends React.Component<{}, State> {
     constructor() {
         super();
         this.state = {
@@ -221,5 +220,3 @@ class App extends React.Component<{}, State> {
         </div>;
     }
 }
-
-ReactDOM.render(<App />, document.getElementById("app"));

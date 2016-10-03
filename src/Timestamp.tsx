@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
 type TimeStuff = (timestamp:number) => [string, number];
 

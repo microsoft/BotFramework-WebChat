@@ -9,16 +9,6 @@
     },
     "files": [
         "typings/index.d.ts",
-        "src/directLineTypes.ts",
-        "src/directLine.ts",
-//      "src/mockLine.ts",
-        "src/Attachment.tsx",
-        "src/Carousel.tsx",
-        "src/Timestamp.tsx",
-        "src/HistoryMessage.tsx",
-        "src/Console.tsx",
-        "src/History.tsx",
-        "src/FormattedText.tsx",
-        "src/App.tsx"
+        "src/BotChat.tsx"
     ]
 }

@@ -1,7 +1,6 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Attachment, Button } from './directLineTypes';
-import { HistoryActions } from './App';
+import { HistoryActions } from './BotChat';
 
 export const AttachmentView = (props: {
     actions: HistoryActions,
