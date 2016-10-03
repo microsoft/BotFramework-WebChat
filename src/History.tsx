@@ -30,7 +30,7 @@ export class History extends React.Component<Props, {}> {
                 <div className="wc-message-group">
                 { this.props.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != this.props.userId || !activity.id))
-                    .map((activity:Message) => {
+                    .map((activity:Message) =>
                         <div className={ 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot') }>
                             <div className={ 'wc-message-content' + (this.props.debuggerVisible ? ' clickable' : '') + (activity === this.props.selectedActivity ? ' selected' : '') } onClick={ this.props.debuggerVisible ? (e) => { this.props.actions.onMessageClicked(activity, e); } : () => {} }>
                                 <svg className="wc-message-callout">
@@ -43,7 +43,7 @@ export class History extends React.Component<Props, {}> {
                             </div>
                             <div className="wc-message-from">{ activity.from.id === 'user' ? 'you' : activity.from.id }</div>
                         </div>
-                    })
+                    )
                 }
                 </div>
             </div>

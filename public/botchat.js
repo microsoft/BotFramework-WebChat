@@ -111,28 +111,6 @@ var BotChat =
 	        .do(function (state) { return console.log("state", state); });
 	};
 	var conversation$ = directLine_1.startConversation;
-	var getQueryParams = function () {
-	    var params = {};
-	    location.search.
-	        substring(1).
-	        split("&").
-	        forEach(function (pair) {
-	        var p = pair.split("=");
-	        params[p[0]] = p[1];
-	    });
-	    var result = {
-	        debug: DebugViewState.disabled,
-	        s: params["s"]
-	    };
-	    if (params["debug"]) {
-	        var debug = params["debug"].toLowerCase();
-	        if (debug === DebugViewState[DebugViewState.enabled])
-	            result.debug = DebugViewState.enabled;
-	        else if (debug === DebugViewState[DebugViewState.visible])
-	            result.debug = DebugViewState.visible;
-	    }
-	    return result;
-	};
 	var UI = (function (_super) {
 	    __extends(UI, _super);
 	    function UI() {
@@ -236,12 +214,19 @@ var BotChat =
 	            autoscroll: true,
 	            console: consoleStart
 	        };
-	        var queryParams = getQueryParams();
-	        var appSecret = queryParams['s'];
-	        conversation$(appSecret)
-	            .flatMap(function (conversation) { return state$(conversation, _this.state.userId, queryParams.debug); })
-	            .subscribe(function (state) { return _this.setState(state); }, function (error) { return console.log("errors", error); });
 	    }
+	    UI.prototype.componentWillMount = function () {
+	        var _this = this;
+	        var debug = this.props.debug && this.props.debug.toLowerCase();
+	        var debugViewState = DebugViewState.disabled;
+	        if (debug === DebugViewState[DebugViewState.enabled])
+	            debugViewState = DebugViewState.enabled;
+	        else if (debug === DebugViewState[DebugViewState.visible])
+	            debugViewState = DebugViewState.visible;
+	        conversation$(this.props.appSecret)
+	            .flatMap(function (conversation) { return state$(conversation, _this.state.userId, debugViewState); })
+	            .subscribe(function (state) { return _this.setState(state); }, function (error) { return console.log("errors", error); });
+	    };
 	    UI.prototype.toggleDebugView = function () {
 	        var newState;
 	        if (this.isDebuggerVisible()) {
@@ -18691,7 +18676,7 @@ var BotChat =
 	            React.createElement("div", {className: "wc-message-group"}, this.props.activities
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != _this.props.userId || !activity.id); })
 	                .map(function (activity) {
-	                React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
+	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.debuggerVisible ? ' clickable' : '') + (activity === _this.props.selectedActivity ? ' selected' : ''), onClick: _this.props.debuggerVisible ? function (e) { _this.props.actions.onMessageClicked(activity, e); } : function () { }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
