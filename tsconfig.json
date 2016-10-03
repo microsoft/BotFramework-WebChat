@@ -18,7 +18,9 @@
         "src/HistoryMessage.tsx",
         "src/Console.tsx",
         "src/History.tsx",
+        "src/DebugView.tsx",
         "src/FormattedText.tsx",
+        "src/FormattedJSON.tsx",
         "src/App.tsx"
     ]
 }
