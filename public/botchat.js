@@ -71,6 +71,14 @@ var BotChat =
 	var directLine_1 = __webpack_require__(349);
 	var History_1 = __webpack_require__(350);
 	var Console_1 = __webpack_require__(358);
+	var DebugView_1 = __webpack_require__(359);
+	// Visibility state of the DebugView panel
+	(function (DebugViewState) {
+	    DebugViewState[DebugViewState["disabled"] = 0] = "disabled";
+	    DebugViewState[DebugViewState["enabled"] = 1] = "enabled";
+	    DebugViewState[DebugViewState["visible"] = 2] = "visible";
+	})(exports.DebugViewState || (exports.DebugViewState = {}));
+	var DebugViewState = exports.DebugViewState;
 	var guid = function () {
 	    var s4 = function () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
 	    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -88,12 +96,16 @@ var BotChat =
 	        .startWith([]);
 	};
 	var autoscroll$ = new rxjs_1.Subject();
-	var state$ = function (conversation, userId) {
+	var debugViewState$ = new rxjs_1.Subject();
+	var selectedActivity$ = new rxjs_1.Subject();
+	var state$ = function (conversation, userId, debugViewState) {
 	    return activities$(conversation, userId)
-	        .combineLatest(autoscroll$.distinctUntilChanged().startWith(true), console$.startWith(consoleStart), function (activities, autoscroll, console) { return ({
+	        .combineLatest(autoscroll$.distinctUntilChanged().startWith(true), debugViewState$.distinctUntilChanged().startWith(debugViewState), selectedActivity$.distinctUntilChanged().startWith(undefined), console$.startWith(consoleStart), function (activities, autoscroll, debugViewState, selectedActivity, console) { return ({
 	        conversation: conversation,
 	        activities: activities,
 	        autoscroll: autoscroll,
+	        debugViewState: debugViewState,
+	        selectedActivity: selectedActivity,
 	        console: console
 	    }); })
 	        .do(function (state) { return console.log("state", state); });
@@ -108,7 +120,18 @@ var BotChat =
 	        var p = pair.split("=");
 	        params[p[0]] = p[1];
 	    });
-	    return params;
+	    var result = {
+	        debug: DebugViewState.disabled,
+	        s: params["s"]
+	    };
+	    if (params["debug"]) {
+	        var debug = params["debug"].toLowerCase();
+	        if (debug === DebugViewState[DebugViewState.enabled])
+	            result.debug = DebugViewState.enabled;
+	        else if (debug === DebugViewState[DebugViewState.visible])
+	            result.debug = DebugViewState.visible;
+	    }
+	    return result;
 	};
 	var UI = (function (_super) {
 	    __extends(UI, _super);
@@ -147,6 +170,11 @@ var BotChat =
 	            },
 	            setAutoscroll: function (autoscroll) {
 	                autoscroll$.next(autoscroll);
+	            },
+	            onMessageClicked: function (message, e) {
+	                selectedActivity$.next(message);
+	                e.preventDefault();
+	                e.stopPropagation();
 	            }
 	        };
 	        this.consoleActions = {
@@ -211,14 +239,49 @@ var BotChat =
 	        var queryParams = getQueryParams();
 	        var appSecret = queryParams['s'];
 	        conversation$(appSecret)
-	            .flatMap(function (conversation) { return state$(conversation, _this.state.userId); })
+	            .flatMap(function (conversation) { return state$(conversation, _this.state.userId, queryParams.debug); })
 	            .subscribe(function (state) { return _this.setState(state); }, function (error) { return console.log("errors", error); });
 	    }
+	    UI.prototype.toggleDebugView = function () {
+	        var newState;
+	        if (this.isDebuggerVisible()) {
+	            newState = DebugViewState.enabled;
+	        }
+	        else if (this.isDebuggerEnabled()) {
+	            newState = DebugViewState.visible;
+	        }
+	        else {
+	            newState = DebugViewState.disabled;
+	        }
+	        if (newState !== DebugViewState.visible) {
+	            selectedActivity$.next(null);
+	        }
+	        debugViewState$.next(newState);
+	    };
+	    UI.prototype.isDebuggerVisible = function () {
+	        return this.state.debugViewState === DebugViewState.visible;
+	    };
+	    UI.prototype.isDebuggerEnabled = function () {
+	        return this.state.debugViewState !== DebugViewState.disabled;
+	    };
 	    UI.prototype.render = function () {
-	        return React.createElement("div", {className: "wc-app"}, 
-	            React.createElement("div", {className: "wc-header"}, "WebChat"), 
-	            React.createElement(History_1.History, {activities: this.state.activities, autoscroll: this.state.autoscroll, actions: this.historyActions, userId: this.state.userId}), 
-	            React.createElement(Console_1.Console, __assign({actions: this.consoleActions}, this.state.console)));
+	        var _this = this;
+	        return (React.createElement("div", {className: "wc-app"}, 
+	            React.createElement("div", {className: "wc-chatview-panel" + (this.isDebuggerVisible() ? " wc-withdebugview" : "")}, 
+	                React.createElement("div", {className: "wc-header"}, 
+	                    React.createElement("span", null, "WebChat"), 
+	                    React.createElement("div", {className: "wc-toggledebugview" + (this.isDebuggerEnabled() ? "" : " wc-hidden"), onClick: function () { return _this.toggleDebugView(); }}, 
+	                        React.createElement("svg", {width: "20", height: "20", viewBox: "0 0 1792 1792"}, 
+	                            React.createElement("rect", {id: "panel", height: "1152.159352", width: "642.020858", y: "384.053042", x: "959.042634"}), 
+	                            React.createElement("path", {id: "frame", d: "m224,1536l608,0l0,-1152l-640,0l0,1120q0,13 9.5,22.5t22.5,9.5zm1376,-32l0,-1120l-640,0l0,1152l608,0q13,0 22.5,-9.5t9.5,-22.5zm128,-1216l0,1216q0,66 -47,113t-113,47l-1344,0q-66,0 -113,-47t-47,-113l0,-1216q0,-66 47,-113t113,-47l1344,0q66,0 113,47t47,113z"}))
+	                    )), 
+	                React.createElement(History_1.History, {activities: this.state.activities, autoscroll: this.state.autoscroll, actions: this.historyActions, userId: this.state.userId, selectedActivity: this.state.selectedActivity, debuggerVisible: this.isDebuggerVisible()}), 
+	                React.createElement(Console_1.Console, __assign({actions: this.consoleActions}, this.state.console))), 
+	            React.createElement("div", {className: "wc-debugview-panel" + (this.isDebuggerVisible() ? "" : " wc-hidden")}, 
+	                React.createElement("div", {className: "wc-header"}, 
+	                    React.createElement("span", null, "Debug")
+	                ), 
+	                React.createElement(DebugView_1.DebugView, {activity: this.state.selectedActivity}))));
 	    };
 	    return UI;
 	}(React.Component));
@@ -18624,12 +18687,12 @@ var BotChat =
 	    };
 	    History.prototype.render = function () {
 	        var _this = this;
-	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }, onScroll: function (e) { return _this.props.actions.setAutoscroll(e.target['scrollTop'] + e.target['offsetHeight'] >= e.target['scrollHeight']); }}, 
+	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }, onScroll: function (e) { return _this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight); }}, 
 	            React.createElement("div", {className: "wc-message-group"}, this.props.activities
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != _this.props.userId || !activity.id); })
 	                .map(function (activity) {
-	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
-	                    React.createElement("div", {className: "wc-message-content"}, 
+	                React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
+	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.debuggerVisible ? ' clickable' : '') + (activity === _this.props.selectedActivity ? ' selected' : ''), onClick: _this.props.debuggerVisible ? function (e) { _this.props.actions.onMessageClicked(activity, e); } : function () { }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
@@ -20777,18 +20840,106 @@ var BotChat =
 	exports.Console = function (props) {
 	    return React.createElement("div", {className: "wc-console"}, 
 	        React.createElement("label", {className: "wc-upload"}, 
-	            React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return props.actions.sendFile(e.target['files']); }}), 
+	            React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return props.actions.sendFile(e.target.files); }}), 
 	            React.createElement("svg", {width: "26", height: "18"}, 
 	                React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
 	            )), 
 	        React.createElement("div", {className: "wc-textbox"}, 
-	            React.createElement("input", {type: "text", autoFocus: true, value: props.text, onChange: function (e) { return props.actions.updateMessage(e.target['value']); }, onKeyPress: function (e) { return e.key == 'Enter' ? props.actions.sendMessage() : null; }, disabled: !props.enableSend, placeholder: "Type your message..."})
+	            React.createElement("input", {type: "text", autoFocus: true, value: props.text, onChange: function (e) { return props.actions.updateMessage(e.target.value); }, onKeyPress: function (e) { return e.key == 'Enter' ? props.actions.sendMessage() : null; }, disabled: !props.enableSend, placeholder: "Type your message..."})
 	        ), 
 	        React.createElement("label", {className: "wc-send", onClick: function (e) { return props.text && props.text.length > 0 && props.enableSend && props.actions.sendMessage(); }}, 
 	            React.createElement("svg", {width: "27", height: "18"}, 
 	                React.createElement("path", {d: "M 26.7862876 9.3774996 A 0.3121028 0.3121028 0 0 0 26.7862876 8.785123 L 0.4081408 0.0226012 C 0.363153 0.0000109 0.3406591 0.0000109 0.3181652 0.0000109 C 0.1372585 0.0000109 0 0.1315165 0 0.2887646 C 0 0.3270384 0.0081316 0.3668374 0.0257445 0.4066363 L 3.4448168 9.0813113 L 0.0257445 17.7556097 A 0.288143 0.288143 0 0 0 0.0126457 17.7975417 A 0.279813 0.279813 0 0 0 0.0055133 17.8603089 C 0.0055133 18.0178895 0.138422 18.1590562 0.303205 18.1590562 A 0.3049569 0.3049569 0 0 0 0.4081408 18.1400213 L 26.7862876 9.3774996 Z M 0.8130309 0.7906714 L 24.8365128 8.7876374 L 3.9846704 8.7876374 L 0.8130309 0.7906714 Z M 3.9846704 9.3749852 L 24.8365128 9.3749852 L 0.8130309 17.3719511 L 3.9846704 9.3749852 Z"})
 	            )
 	        ));
+	};
+
+
+/***/ },
+/* 359 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(2);
+	var FormattedJSON_1 = __webpack_require__(360);
+	var DebugView = (function (_super) {
+	    __extends(DebugView, _super);
+	    function DebugView() {
+	        _super.apply(this, arguments);
+	    }
+	    DebugView.prototype.render = function () {
+	        if (this.props.activity) {
+	            return (React.createElement("div", {className: "wc-debugview"}, 
+	                React.createElement("div", {className: "wc-debugview-json"}, 
+	                    React.createElement(FormattedJSON_1.FormattedJSON, {obj: this.props.activity})
+	                )
+	            ));
+	        }
+	        else {
+	            return (React.createElement("div", {className: "wc-debugview"}));
+	        }
+	    };
+	    return DebugView;
+	}(React.Component));
+	exports.DebugView = DebugView;
+
+
+/***/ },
+/* 360 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(2);
+	var formatJSON = function (obj) {
+	    var json = JSON.stringify(obj, null, 2);
+	    // Hide ampersands we don't want replaced
+	    json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
+	    // Escape remaining ampersands and other HTML special characters
+	    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	    // Restore hidden ampersands
+	    json = json.replace(/\x01/g, '&');
+	    // Match all the JSON parts and add theming markup
+	    json = json.replace(/"(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, function (match) {
+	        // Default to "number"
+	        var cls = 'number';
+	        // Detect the type of the JSON part
+	        if (/^"/.test(match)) {
+	            if (/:$/.test(match)) {
+	                cls = 'key';
+	            }
+	            else {
+	                cls = 'string';
+	            }
+	        }
+	        else if (/true|false/.test(match)) {
+	            cls = 'boolean';
+	        }
+	        else if (/null/.test(match)) {
+	            cls = 'null';
+	        }
+	        if (cls === 'key') {
+	            // Color string content, not the quotes or colon delimiter
+	            var exec = /"(.*)":\s*/.exec(match);
+	            return "\"<span class=\"json-" + cls + "\">" + exec[1] + "</span>\": ";
+	        }
+	        else if (cls === 'string') {
+	            // Color string content, not the quotes
+	            var exec = /"(.*)"/.exec(match);
+	            return "\"<span class=\"json-" + cls + "\">" + exec[1] + "</span>\"";
+	        }
+	        else {
+	            return "<span class=\"json-" + cls + "\">" + match + "</span>";
+	        }
+	    });
+	    return React.createElement("span", {dangerouslySetInnerHTML: { __html: json }});
+	};
+	exports.FormattedJSON = function (props) {
+	    return formatJSON(props.obj || {});
 	};
 
 

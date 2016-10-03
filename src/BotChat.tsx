@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, Conversation } from './directLineTypes';
 import { startConversation, getActivities, postMessage, postFile, mimeTypes } from './directLine';
-import { History } from './History'
-import { Console } from './Console'
+import { History } from './History';
+import { Console } from './Console';
+import { DebugView } from './DebugView';
 
 export interface ConsoleState {
     text?: string,
@@ -18,13 +19,24 @@ interface State {
     // message history
     activities?: Activity[],
     autoscroll: boolean,
+    // State of the DebugView control
+    debugViewState?: DebugViewState,
+    // Currently selected activity
+    selectedActivity?: Activity,
     // compose window
     console?: ConsoleState
 }
 
+// Visibility state of the DebugView panel
+export enum DebugViewState {
+    disabled,
+    enabled,
+    visible
+}
+
 const guid = () => {
-  const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
 const outgoingMessage$ = new Subject<Message>();
@@ -42,16 +54,22 @@ const activities$ = (conversation: Conversation, userId: string) =>
     .startWith([]);
 
 const autoscroll$ = new Subject<boolean>();
+const debugViewState$ = new Subject<DebugViewState>();
+const selectedActivity$ = new Subject<Activity>();
 
-const state$ = (conversation: Conversation, userId: string) =>
+const state$ = (conversation: Conversation, userId: string, debugViewState: DebugViewState) =>
     activities$(conversation, userId)
     .combineLatest(
         autoscroll$.distinctUntilChanged().startWith(true),
+        debugViewState$.distinctUntilChanged().startWith(debugViewState),
+        selectedActivity$.distinctUntilChanged().startWith(undefined),
         console$.startWith(consoleStart),
-        (activities, autoscroll, console):State => ({
+        (activities, autoscroll, debugViewState, selectedActivity, console):State => ({
             conversation: conversation,
             activities: activities,
             autoscroll: autoscroll,
+            debugViewState: debugViewState,
+            selectedActivity: selectedActivity,
             console: console
         })
     )
@@ -68,7 +86,18 @@ const getQueryParams = () => {
             const p = pair.split("=");
             params[p[0]] = p[1];
         });
-    return params;
+    let result = {
+        debug: DebugViewState.disabled,
+        s: params["s"]
+    };
+    if (params["debug"]) {
+        let debug = params["debug"].toLowerCase();
+        if (debug === DebugViewState[DebugViewState.enabled])
+            result.debug = DebugViewState.enabled;
+        else if (debug === DebugViewState[DebugViewState.visible])
+            result.debug = DebugViewState.visible;
+    }
+    return result;
 }
 
 export interface HistoryActions {
@@ -76,7 +105,8 @@ export interface HistoryActions {
     buttonOpenUrl: (text:string) => void,
     buttonPostBack: (text:string) => void,
     buttonSignIn: (text:string) => void,
-    setAutoscroll: (autoscroll:boolean) => void
+    setAutoscroll: (autoscroll:boolean) => void,
+    onMessageClicked: (message: Activity, e: React.SyntheticEvent<any>) => void
 }
 
 export interface ConsoleActions {
@@ -100,7 +130,7 @@ export class UI extends React.Component<{}, State> {
         const appSecret = queryParams['s'];
 
         conversation$(appSecret)
-        .flatMap(conversation => state$(conversation, this.state.userId))
+        .flatMap(conversation => state$(conversation, this.state.userId, queryParams.debug))
         .subscribe(
             state => this.setState(state),
             error => console.log("errors", error)
@@ -149,6 +179,12 @@ export class UI extends React.Component<{}, State> {
 
         setAutoscroll: (autoscroll:boolean) => {
             autoscroll$.next(autoscroll);
+        },
+
+        onMessageClicked: (message: Activity, e: React.SyntheticEvent<any>) => {
+            selectedActivity$.next(message);
+            e.preventDefault();
+            e.stopPropagation();
         }
     }
 
@@ -210,13 +246,58 @@ export class UI extends React.Component<{}, State> {
         }
     }
 
+    toggleDebugView() {
+        let newState;
+        if (this.isDebuggerVisible()) {
+            newState = DebugViewState.enabled;
+        } else if (this.isDebuggerEnabled()) {
+            newState = DebugViewState.visible;
+        } else {
+            newState = DebugViewState.disabled;
+        }
+        if (newState !== DebugViewState.visible) {
+            selectedActivity$.next(null);
+        }
+        debugViewState$.next(newState);
+    }
+
+    isDebuggerVisible() {
+        return this.state.debugViewState === DebugViewState.visible;
+    }
+
+    isDebuggerEnabled() {
+        return this.state.debugViewState !== DebugViewState.disabled;
+    }
+
     render() {
-        return <div className="wc-app">
-            <div className="wc-header">
-                WebChat
+        return (
+            <div className="wc-app">
+                <div className={ "wc-chatview-panel" + (this.isDebuggerVisible() ? " wc-withdebugview" : "") }>
+                    <div className="wc-header">
+                        <span>WebChat</span>
+                        <div className={ "wc-toggledebugview" + (this.isDebuggerEnabled() ? "" : " wc-hidden") } onClick={ () => this.toggleDebugView() }>
+                            <svg width="20" height="20" viewBox="0 0 1792 1792">
+                                <rect id="panel" height="1152.159352" width="642.020858" y="384.053042" x="959.042634" />
+                                <path id="frame" d="m224,1536l608,0l0,-1152l-640,0l0,1120q0,13 9.5,22.5t22.5,9.5zm1376,-32l0,-1120l-640,0l0,1152l608,0q13,0 22.5,-9.5t9.5,-22.5zm128,-1216l0,1216q0,66 -47,113t-113,47l-1344,0q-66,0 -113,-47t-47,-113l0,-1216q0,-66 47,-113t113,-47l1344,0q66,0 113,47t47,113z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <History
+                        activities={ this.state.activities }
+                        autoscroll={ this.state.autoscroll }
+                        actions={ this.historyActions }
+                        userId={ this.state.userId }
+                        selectedActivity={ this.state.selectedActivity }
+                        debuggerVisible={ this.isDebuggerVisible() } />
+                    <Console actions={ this.consoleActions } { ...this.state.console } />
+                </div>
+                <div className={ "wc-debugview-panel" + (this.isDebuggerVisible() ? "" : " wc-hidden") }>
+                    <div className="wc-header">
+                        <span>Debug</span>
+                    </div>
+                    <DebugView activity={ this.state.selectedActivity } />
+                </div>
             </div>
-            <History activities={ this.state.activities } autoscroll={ this.state.autoscroll } actions={ this.historyActions } userId={ this.state.userId }/>
-            <Console actions={ this.consoleActions } { ...this.state.console } />
-        </div>;
+        );
     }
 }
