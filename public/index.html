@@ -11,8 +11,17 @@
         <script src="https://fb.me/react-dom-15.2.1.min.js"></script>
         <script src="botchat.js"></script>
         <script>
-            console.log("BotChat", BotChat.UI);
-            ReactDOM.render(React.createElement(BotChat.UI, null), document.getElementById("BotChatGoesHere"));
+            var params = {};
+            location
+                .search
+                .substring(1)
+                .split("&")
+                .forEach(function (pair) {
+                    var p = pair.split("=");
+                    params[p[0]] = p[1];
+                });
+
+            ReactDOM.render(React.createElement(BotChat.UI, { appSecret: params['s'], debug: params['debug'] }), document.getElementById("BotChatGoesHere"));
         </script>
     </body>
 </html>
