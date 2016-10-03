@@ -65,40 +65,17 @@ const state$ = (conversation: Conversation, userId: string, debugViewState: Debu
         selectedActivity$.distinctUntilChanged().startWith(undefined),
         console$.startWith(consoleStart),
         (activities, autoscroll, debugViewState, selectedActivity, console):State => ({
-            conversation: conversation,
-            activities: activities,
-            autoscroll: autoscroll,
-            debugViewState: debugViewState,
-            selectedActivity: selectedActivity,
-            console: console
+            conversation,
+            activities,
+            autoscroll,
+            debugViewState,
+            selectedActivity,
+            console
         })
     )
     .do(state => console.log("state", state));
 
 const conversation$ = startConversation;
-
-const getQueryParams = () => {
-    const params = {};
-    location.search.
-        substring(1).
-        split("&").
-        forEach(pair => {
-            const p = pair.split("=");
-            params[p[0]] = p[1];
-        });
-    let result = {
-        debug: DebugViewState.disabled,
-        s: params["s"]
-    };
-    if (params["debug"]) {
-        let debug = params["debug"].toLowerCase();
-        if (debug === DebugViewState[DebugViewState.enabled])
-            result.debug = DebugViewState.enabled;
-        else if (debug === DebugViewState[DebugViewState.visible])
-            result.debug = DebugViewState.visible;
-    }
-    return result;
-}
 
 export interface HistoryActions {
     buttonImBack: (text:string) => void,
@@ -115,7 +92,12 @@ export interface ConsoleActions {
     sendFile: (files:FileList) => void
 }
 
-export class UI extends React.Component<{}, State> {
+interface Props {
+    appSecret: string,
+    debug: string
+}
+
+export class UI extends React.Component<Props, State> {
     constructor() {
         super();
         this.state = {
@@ -125,12 +107,18 @@ export class UI extends React.Component<{}, State> {
             autoscroll: true,
             console: consoleStart
         }
+    }
 
-        const queryParams = getQueryParams();
-        const appSecret = queryParams['s'];
+    componentWillMount() {
+        const debug = this.props.debug && this.props.debug.toLowerCase();
+        let debugViewState = DebugViewState.disabled;
+        if (debug === DebugViewState[DebugViewState.enabled])
+            debugViewState = DebugViewState.enabled;
+        else if (debug === DebugViewState[DebugViewState.visible])
+            debugViewState = DebugViewState.visible;
 
-        conversation$(appSecret)
-        .flatMap(conversation => state$(conversation, this.state.userId, queryParams.debug))
+        conversation$(this.props.appSecret)
+        .flatMap(conversation => state$(conversation, this.state.userId, debugViewState))
         .subscribe(
             state => this.setState(state),
             error => console.log("errors", error)
