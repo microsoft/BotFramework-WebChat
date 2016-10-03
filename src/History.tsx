@@ -24,7 +24,7 @@ export class History extends React.Component<Props, {}> {
 
     render() {
         return (
-            <div className="wc-message-groups" ref={ref => this.scrollMe = ref} onScroll={ e => this.props.actions.setAutoscroll(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) }>
+            <div className="wc-message-groups" ref={ref => this.scrollMe = ref} onScroll={ e => this.props.actions.setAutoscroll((e.target as any).scrollTop + (e.target as any).offsetHeight >= (e.target as any).scrollHeight }>
                 <div className="wc-message-group">
                 { this.props.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != this.props.userId || !activity.id))

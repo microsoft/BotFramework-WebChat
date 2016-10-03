@@ -63,7 +63,7 @@ export const AttachmentView = (props: {
                     <table>
                         <thead>
                             <tr>
-                                <th colSpan="2">{ props.attachment.content.title }</th>
+                                <th colSpan={ 2 }>{ props.attachment.content.title }</th>
                             </tr>
                             { props.attachment.content.facts && props.attachment.content.facts.map(fact => <tr><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
                         </thead>

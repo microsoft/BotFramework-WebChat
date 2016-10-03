@@ -5,10 +5,12 @@
         "outDir": "./public/",
         "jsx": "react",
         "sourceMap": true,
+        "types": [
+            "es6-shim"
+        ],
         "noImplicitAny": false
     },
     "files": [
-        "typings/index.d.ts",
         "src/BotChat.tsx"
     ]
 }
