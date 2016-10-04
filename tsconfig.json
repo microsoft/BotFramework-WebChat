@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es5",
-        "outDir": "./public/",
+        "outDir": "./built/",
         "jsx": "react",
         "sourceMap": true,
         "types": [
