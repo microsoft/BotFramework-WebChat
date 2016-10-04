@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "typings": "typings install",
-    "build": "webpack",
-    "watch": "webpack -w",
+    "build": "tsc && webpack",
+    "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
+    "tsc-watch": "tsc -w",
+    "webpack-watch": "webpack -w",
+    "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
     "start": "http-server -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "http-server": "^0.9.0",
+    "npm-run-all": "^3.1.0",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^0.8.2",
     "typescript": "^2.0.3",
