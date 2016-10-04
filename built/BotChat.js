@@ -113,7 +113,7 @@ var UI = (function (_super) {
                     outgoingMessage$.next({
                         type: "message",
                         text: _this.state.console.text,
-                        from: { id: 'user' },
+                        from: { id: _this.state.userId },
                         timestamp: Date.now().toString()
                     });
                     console$.next({
@@ -136,7 +136,7 @@ var UI = (function (_super) {
                         outgoingMessage$.next({
                             type: "message",
                             text: _this.state.console.text,
-                            from: { id: 'user' },
+                            from: { id: _this.state.userId },
                             timestamp: Date.now().toString(),
                             attachments: [{
                                     contentType: directLine_1.mimeTypes[path.split('.').pop()],

@@ -167,7 +167,7 @@ var BotChat =
 	                    outgoingMessage$.next({
 	                        type: "message",
 	                        text: _this.state.console.text,
-	                        from: { id: 'user' },
+	                        from: { id: _this.state.userId },
 	                        timestamp: Date.now().toString()
 	                    });
 	                    console$.next({
@@ -190,7 +190,7 @@ var BotChat =
 	                        outgoingMessage$.next({
 	                            type: "message",
 	                            text: _this.state.console.text,
-	                            from: { id: 'user' },
+	                            from: { id: _this.state.userId },
 	                            timestamp: Date.now().toString(),
 	                            attachments: [{
 	                                    contentType: directLine_1.mimeTypes[path.split('.').pop()],
@@ -18676,13 +18676,13 @@ var BotChat =
 	            React.createElement("div", {className: "wc-message-group"}, this.props.activities
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != _this.props.userId || !activity.id); })
 	                .map(function (activity) {
-	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === 'user' ? 'me' : 'bot')}, 
+	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === _this.props.userId ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.debuggerVisible ? ' clickable' : '') + (activity === _this.props.selectedActivity ? ' selected' : ''), onClick: _this.props.debuggerVisible ? function (e) { _this.props.actions.onMessageClicked(activity, e); } : function () { }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
 	                        React.createElement(HistoryMessage_1.HistoryMessage, {activity: activity, actions: _this.props.actions})), 
-	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === 'user' ? 'you' : activity.from.id));
+	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === _this.props.userId ? 'you' : activity.from.id));
 	            }))
 	        ));
 	    };

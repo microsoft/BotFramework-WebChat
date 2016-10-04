@@ -190,7 +190,7 @@ export class UI extends React.Component<Props, State> {
                     outgoingMessage$.next({
                         type: "message",
                         text: this.state.console.text,
-                        from: {id: 'user'},
+                        from: {id: this.state.userId},
                         timestamp: Date.now().toString()
                     });
                     console$.next({
@@ -217,7 +217,7 @@ export class UI extends React.Component<Props, State> {
                         outgoingMessage$.next({
                             type: "message",
                             text: this.state.console.text,
-                            from: {id: 'user'},
+                            from: {id: this.state.userId},
                             timestamp: Date.now().toString(),
                             attachments: [{
                                 contentType: mimeTypes[path.split('.').pop()],
