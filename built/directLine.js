@@ -3,17 +3,18 @@ var rxjs_1 = require('@reactivex/rxjs');
 /*
 // DL V3
 
-const domain = "https://ic-dandris-scratch.azurewebsites.net";
-const baseUrl = `${domain}/V3/directline/conversations`;
+var domain = "https://ic-dandris-scratch.azurewebsites.net";
+const baseUrl = () => `${domain}/V3/directline/conversations`;
 */
-// DL v1 
+// DL v1
 var domain = "https://directline.botframework.com";
-var baseUrl = domain + "/api/conversations";
+var baseUrl = function () { return (domain + "/api/conversations"); };
+exports.setHost = function (host) { return domain = host; };
 exports.startConversation = function (appSecret) {
     return rxjs_1.Observable
         .ajax({
         method: "POST",
-        url: "" + baseUrl,
+        url: "" + baseUrl(),
         headers: {
             "Accept": "application/json",
             "Authorization": "BotConnector " + appSecret
@@ -27,7 +28,7 @@ exports.postMessage = function (text, conversation, userId) {
     return rxjs_1.Observable
         .ajax({
         method: "POST",
-        url: baseUrl + "/" + conversation.conversationId + "/messages",
+        url: baseUrl() + "/" + conversation.conversationId + "/messages",
         body: {
             text: text,
             from: userId,
@@ -47,7 +48,7 @@ exports.postFile = function (file, conversation) {
     return rxjs_1.Observable
         .ajax({
         method: "POST",
-        url: baseUrl + "/" + conversation.conversationId + "/upload",
+        url: baseUrl() + "/" + conversation.conversationId + "/upload",
         body: formData,
         headers: {
             "Authorization": "BotConnector " + conversation.token
@@ -114,7 +115,7 @@ var getActivityGroup = function (conversation, watermark) {
     return rxjs_1.Observable
         .ajax({
         method: "GET",
-        url: baseUrl + "/" + conversation.conversationId + "/messages?watermark=" + watermark,
+        url: baseUrl() + "/" + conversation.conversationId + "/messages?watermark=" + watermark,
         headers: {
             "Accept": "application/json",
             "Authorization": "BotConnector " + conversation.token
