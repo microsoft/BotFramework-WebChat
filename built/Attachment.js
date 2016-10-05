@@ -1,16 +1,44 @@
 "use strict";
 var React = require('react');
+var directLine_1 = require('./directLine');
+var BotChat_1 = require('./BotChat');
 exports.AttachmentView = function (props) {
-    var buttonActions = {
-        "imBack": props.actions.buttonImBack,
-        "openUrl": props.actions.buttonOpenUrl,
-        "postBack": props.actions.buttonPostBack,
-        "signin": props.actions.buttonSignIn
+    var state = BotChat_1.store.getState();
+    var onClickButton = function (type, value) {
+        switch (type) {
+            case "imBack":
+            case "postBack":
+                directLine_1.postMessage(value, state.connection.conversation, state.connection.userId)
+                    .retry(2)
+                    .subscribe(function () {
+                    if (type === "imBack") {
+                        BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+                                type: "message",
+                                text: value,
+                                from: { id: state.connection.userId },
+                                timestamp: Date.now().toString()
+                            } });
+                    }
+                    else {
+                        console.log("quietly posted message", value);
+                    }
+                }, function (error) {
+                    console.log("failed to post message");
+                });
+                break;
+            case "openUrl":
+                console.log("open URL", value);
+                break;
+            case "signin":
+                console.log("sign in", value);
+                break;
+            default:
+                console.log("unknown button type");
+        }
     };
-    // REVIEW we need to make sure each button.type is one of these
     var buttons = function (buttons) { return buttons &&
         React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button) { return React.createElement("li", null, 
-            React.createElement("button", {onClick: function () { return buttonActions[button.type](button.value); }}, button.title)
+            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
         ); })); };
     var images = function (images) { return images &&
         React.createElement("div", null, images.map(function (image) { return React.createElement("img", {src: image.url}); })); };

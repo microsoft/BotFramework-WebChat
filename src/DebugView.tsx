@@ -46,5 +46,7 @@ export const DebugView = (props: {
     activity: Activity
 }) =>
     <div className="wc-debugview">
-        { formatJSON(props.activity || {}) }
+        <div className="wc-debugview-json">
+            { formatJSON(props.activity || {}) }
+        </div>
     </div>;

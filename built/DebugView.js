@@ -1,29 +1,51 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var React = require('react');
-var FormattedJSON_1 = require('./FormattedJSON');
-var DebugView = (function (_super) {
-    __extends(DebugView, _super);
-    function DebugView() {
-        _super.apply(this, arguments);
-    }
-    DebugView.prototype.render = function () {
-        if (this.props.activity) {
-            return (React.createElement("div", {className: "wc-debugview"}, 
-                React.createElement("div", {className: "wc-debugview-json"}, 
-                    React.createElement(FormattedJSON_1.FormattedJSON, {obj: this.props.activity})
-                )
-            ));
+var formatJSON = function (obj) {
+    var json = JSON.stringify(obj, null, 2);
+    // Hide ampersands we don't want replaced
+    json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
+    // Escape remaining ampersands and other HTML special characters
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Restore hidden ampersands
+    json = json.replace(/\x01/g, '&');
+    // Match all the JSON parts and add theming markup
+    json = json.replace(/"(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, function (match) {
+        // Default to "number"
+        var cls = 'number';
+        // Detect the type of the JSON part
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            }
+            else {
+                cls = 'string';
+            }
+        }
+        else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        }
+        else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        if (cls === 'key') {
+            // Color string content, not the quotes or colon delimiter
+            var exec = /"(.*)":\s*/.exec(match);
+            return "\"<span class=\"json-" + cls + "\">" + exec[1] + "</span>\": ";
+        }
+        else if (cls === 'string') {
+            // Color string content, not the quotes
+            var exec = /"(.*)"/.exec(match);
+            return "\"<span class=\"json-" + cls + "\">" + exec[1] + "</span>\"";
         }
         else {
-            return (React.createElement("div", {className: "wc-debugview"}));
+            return "<span class=\"json-" + cls + "\">" + match + "</span>";
         }
-    };
-    return DebugView;
-}(React.Component));
-exports.DebugView = DebugView;
+    });
+    return React.createElement("span", {dangerouslySetInnerHTML: { __html: json }});
+};
+exports.DebugView = function (props) {
+    return React.createElement("div", {className: "wc-debugview"}, 
+        React.createElement("div", {className: "wc-debugview-json"}, formatJSON(props.activity || {}))
+    );
+};
 //# sourceMappingURL=DebugView.js.map

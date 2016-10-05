@@ -21830,7 +21830,9 @@ var BotChat =
 	    return React.createElement("span", {dangerouslySetInnerHTML: { __html: json }});
 	};
 	exports.DebugView = function (props) {
-	    return React.createElement("div", {className: "wc-debugview"}, formatJSON(props.activity || {}));
+	    return React.createElement("div", {className: "wc-debugview"}, 
+	        React.createElement("div", {className: "wc-debugview-json"}, formatJSON(props.activity || {}))
+	    );
 	};
 
 

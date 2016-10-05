@@ -113,7 +113,7 @@ var Carousel = (function (_super) {
                 React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
                     React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment) {
                         return React.createElement("li", null, 
-                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment, actions: _this.props.actions})
+                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment})
                         );
                     }))
                 )
