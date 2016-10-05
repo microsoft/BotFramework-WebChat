@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "typings": "typings install",
-    "build": "tsc && webpack",
+    "build": "tsc --pretty && webpack",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
-    "tsc-watch": "tsc -w",
+    "tsc-watch": "tsc -w --pretty",
     "webpack-watch": "webpack -w",
     "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",

@@ -58,7 +58,7 @@ var history = function (state, action) {
             return state;
     }
 };
-// Visibility state of the DebugView panel 
+// Visibility state of the DebugView panel
 (function (DebugViewState) {
     DebugViewState[DebugViewState["disabled"] = 0] = "disabled";
     DebugViewState[DebugViewState["enabled"] = 1] = "enabled";
@@ -115,6 +115,7 @@ var UI = (function (_super) {
         else if (debug === DebugViewState[DebugViewState.visible])
             debugViewState = DebugViewState.visible;
         exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
+        directLine_1.setHost(this.props.host || "https://directline.botframework.com");
         directLine_1.startConversation(this.props.appSecret)
             .do(function (conversation) {
             exports.store.dispatch({ type: 'Connected_To_Bot', conversation: conversation });
