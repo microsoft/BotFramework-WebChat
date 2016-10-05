@@ -1,22 +1,19 @@
 import * as React from 'react';
 import { Message } from './directLineTypes';
-import { HistoryActions } from './BotChat';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
 
-
 export const HistoryMessage = (props: {
-    activity: Message,
-    actions: HistoryActions
+    activity: Message
 }) => {
     if (props.activity.attachments && props.activity.attachments.length >= 1) {
         if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
-            return <Carousel attachments={props.activity.attachments} actions={props.actions} />;
+            return <Carousel attachments={props.activity.attachments} />;
         else
             return ( 
                 <div>
-                    { props.activity.attachments.map(attachment => <AttachmentView attachment={ attachment } actions={props.actions} />)}
+                    { props.activity.attachments.map(attachment => <AttachmentView attachment={ attachment } />)}
                 </div>
             );
     } else if (props.activity.text) {

@@ -27,9 +27,11 @@
     "@types/marked": "0.0.28",
     "@types/react": "^0.14.37",
     "@types/react-dom": "^0.14.17",
+    "@types/redux": "^3.5.30",
     "he": "^1.1.0",
     "marked": "^0.3.6",
-    "promise": "^7.1.1"
+    "promise": "^7.1.1",
+    "redux": "^3.6.0"
   },
   "devDependencies": {
     "http-server": "^0.9.0",
