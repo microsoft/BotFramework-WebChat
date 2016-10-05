@@ -1,22 +1,54 @@
 import * as React from 'react';
 import { Attachment, Button } from './directLineTypes';
-import { HistoryActions } from './BotChat';
+import { postMessage } from './directLine';
+import { store, HistoryAction } from './BotChat';
 
 export const AttachmentView = (props: {
-    actions: HistoryActions,
     attachment: Attachment
 }) => {
-    const buttonActions = {
-        "imBack": props.actions.buttonImBack,
-        "openUrl": props.actions.buttonOpenUrl,
-        "postBack": props.actions.buttonPostBack,
-        "signin": props.actions.buttonSignIn
+    const state = store.getState();
+
+    const onClickButton = (type: string, value: string) => {
+        switch (type) {
+            case "imBack":
+            case "postBack":
+                postMessage(value, state.connection.conversation, state.connection.userId)
+                .retry(2)
+                .subscribe(
+                    () => {
+                        if (type === "imBack") {
+                            store.dispatch({ type: 'Send_Message', activity: {
+                                type: "message",
+                                text: value,
+                                from: {id: state.connection.userId},
+                                timestamp: Date.now().toString()
+                            }} as HistoryAction);
+                        } else {
+                            console.log("quietly posted message", value);
+                        }
+                    },
+                    error => {
+                        console.log("failed to post message");
+                    }
+                );
+                break;
+
+            case "openUrl":
+                console.log("open URL", value);
+                break;
+
+            case "signin":
+                console.log("sign in", value);
+                break;
+            
+            default:
+                console.log("unknown button type");
+            }
     }
-    // REVIEW we need to make sure each button.type is one of these
 
     const buttons = (buttons?: Button[]) => buttons &&
         <ul className="wc-card-buttons">
-            { buttons.map(button => <li><button onClick={ () => buttonActions[button.type](button.value) }>{ button.title }</button></li>) }
+            { buttons.map(button => <li><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
         </ul>;
     
     const images = (images?: { url: string }[]) => images &&

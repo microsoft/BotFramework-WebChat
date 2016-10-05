@@ -12,7 +12,7 @@ export interface Image {
 }
 
 export interface Button {
-    type: "imBack" | "postBack" | "openUrl",
+    type: "imBack" | "postBack" | "openUrl" | "signin",
     title: string,
     value: string
     image?: string,

@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { Attachment } from './directLineTypes';
-import { HistoryActions } from './BotChat';
 import { AttachmentView } from './Attachment';
 
 interface Props {
-    attachments: Attachment[];
-    actions: HistoryActions;
+    attachments: Attachment[]
 }
 
 interface State {
@@ -152,7 +150,7 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map(attachment =>
                             <li>
-                                <AttachmentView attachment={ attachment } actions={ this.props.actions }/>
+                                <AttachmentView attachment={ attachment } />
                             </li>) }
                         </ul>
                     </div>
