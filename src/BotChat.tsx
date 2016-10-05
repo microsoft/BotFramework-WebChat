@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createStore, combineReducers, Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, Conversation } from './directLineTypes';
-import { startConversation, getActivities, postMessage, postFile, mimeTypes } from './directLine';
+import { startConversation, getActivities, postMessage, postFile, mimeTypes, setHost } from './directLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { DebugView } from './DebugView';
@@ -13,7 +13,7 @@ interface ConnectionState {
 }
 
 export type ConnectionAction = {
-    type: 'Set_UserId', 
+    type: 'Set_UserId',
     userId: string
 } | {
     type: 'Connected_To_Bot',
@@ -76,7 +76,7 @@ interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message', 
+    type: 'Receive_Message' | 'Send_Message',
     activity: Activity
 } | {
     type: 'Set_Autoscroll',
@@ -102,9 +102,9 @@ const history: Reducer<HistoryState> = (
     }
 }
 
-// Visibility state of the DebugView panel 
+// Visibility state of the DebugView panel
 export enum DebugViewState {
-    disabled,   // default: panel and toggle control are both hidden 
+    disabled,   // default: panel and toggle control are both hidden
     enabled,    // panel is hidden, toggle control is visible
     visible     // panel and toggle control are both visible
 }
@@ -169,7 +169,8 @@ const guid = () => {
 
 interface Props {
     appSecret: string,
-    debug: string
+    debug: string,
+    host?: string
 }
 
 export class UI extends React.Component<Props, {}> {
@@ -179,7 +180,7 @@ export class UI extends React.Component<Props, {}> {
 
     componentWillMount() {
         console.log("Starting BotChat", this.props);
-        store.subscribe(() => 
+        store.subscribe(() =>
             this.forceUpdate()
         );
 
@@ -193,6 +194,8 @@ export class UI extends React.Component<Props, {}> {
             debugViewState = DebugViewState.visible;
 
         store.dispatch({ type: 'Set_Debug', viewState: debugViewState } as DebugAction);
+
+        setHost(this.props.host || "https://directline.botframework.com");
 
         startConversation(this.props.appSecret)
         .do(conversation => {

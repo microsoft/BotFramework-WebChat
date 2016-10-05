@@ -1,17 +1,19 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest } from '@reactivex/rxjs';
-import { Conversation, Activity, Message } from './directLineTypes'; 
+import { Conversation, Activity, Message } from './directLineTypes';
 
 /*
 // DL V3
 
-const domain = "https://ic-dandris-scratch.azurewebsites.net";
-const baseUrl = `${domain}/V3/directline/conversations`;
+var domain = "https://ic-dandris-scratch.azurewebsites.net";
+const baseUrl = () => `${domain}/V3/directline/conversations`;
 */
 
-// DL v1 
+// DL v1
 
-const domain = "https://directline.botframework.com";
-const baseUrl = `${domain}/api/conversations`;
+var domain = "https://directline.botframework.com";
+const baseUrl = () => `${domain}/api/conversations`;
+
+export const setHost = (host: string) => domain = host;
 
 export interface DLAttachment {
     url: string,
@@ -42,10 +44,10 @@ export const startConversation = (appSecret: string) =>
     Observable
         .ajax({
             method: "POST",
-            url: `${baseUrl}`,
+            url: `${baseUrl()}`,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${appSecret}` 
+                "Authorization": `BotConnector ${appSecret}`
             }
         })
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
@@ -56,7 +58,7 @@ export const postMessage = (text: string, conversation: Conversation, userId: st
     Observable
         .ajax({
             method: "POST",
-            url: `${baseUrl}/${conversation.conversationId}/messages`,
+            url: `${baseUrl()}/${conversation.conversationId}/messages`,
             body: <DLMessage>{
                 text: text,
                 from: userId,
@@ -77,7 +79,7 @@ export const postFile = (file: File, conversation: Conversation) => {
     return Observable
         .ajax({
             method: "POST",
-            url: `${baseUrl}/${conversation.conversationId}/upload`,
+            url: `${baseUrl()}/${conversation.conversationId}/upload`,
             body: formData,
             headers: {
                 "Authorization": `BotConnector ${conversation.token}`
@@ -98,7 +100,7 @@ export const getActivities = (conversation: Conversation) =>
     new Observable<Observable<DLMessage>>((subscriber:Subscriber<Observable<DLMessage>>) =>
         activitiesGenerator(conversation, subscriber)
     )
-    .concatAll() 
+    .concatAll()
     .do(dlm => console.log("DL Message", dlm))
     .map(dlm => {
         if (dlm.channelData) {
@@ -153,7 +155,7 @@ const getActivityGroup = (conversation: Conversation, watermark = "") =>
     Observable
         .ajax({
             method: "GET",
-            url: `${baseUrl}/${conversation.conversationId}/messages?watermark=${watermark}`,
+            url: `${baseUrl()}/${conversation.conversationId}/messages?watermark=${watermark}`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `BotConnector ${conversation.token}`
