@@ -34,7 +34,9 @@ A major goal for this app is to allow full styling by customers, including
 
 The view engine is [React](https://facebook.github.io/react/).
 
-Currently reliant on [RxJS](http://reactivex.io/rxjs) but contemplating switching to the smaller [xstream](https://github.com/staltz/xstream). 
+Async operations use [RxJS](http://reactivex.io/rxjs) but contemplating switching to the smaller [xstream](https://github.com/staltz/xstream).
+
+State management through [Redux](http://redux.js.org)
 
 ## Dependencies
 
@@ -46,6 +48,7 @@ Currently reliant on [RxJS](http://reactivex.io/rxjs) but contemplating switchin
 
 * React (loaded as a global at runtime)
 * RxJS (currently bundled)
+* Redux (currently bundled)
 
 ### Polyfills
 
