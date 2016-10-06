@@ -9,14 +9,14 @@ const baseUrl = `${domain}/V3/directline/conversations`;
 // DL v1 
 var domain = "https://directline.botframework.com";
 var baseUrl = domain + "/api/conversations";
-exports.startConversation = function (appSecret) {
+exports.startConversation = function (secretOrToken) {
     return rxjs_1.Observable
         .ajax({
         method: "POST",
         url: "" + baseUrl,
         headers: {
             "Accept": "application/json",
-            "Authorization": "BotConnector " + appSecret
+            "Authorization": "BotConnector " + secretOrToken
         }
     })
         .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })

@@ -115,7 +115,7 @@ var UI = (function (_super) {
         else if (debug === DebugViewState[DebugViewState.visible])
             debugViewState = DebugViewState.visible;
         exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
-        directLine_1.startConversation(this.props.appSecret)
+        directLine_1.startConversation(this.props.appSecret || this.props.token)
             .do(function (conversation) {
             exports.store.dispatch({ type: 'Connected_To_Bot', conversation: conversation });
         })

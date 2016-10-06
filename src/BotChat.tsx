@@ -168,7 +168,8 @@ const guid = () => {
 }
 
 interface Props {
-    appSecret: string,
+    appSecret?: string,
+    token?: string,
     debug: string
 }
 
@@ -194,7 +195,7 @@ export class UI extends React.Component<Props, {}> {
 
         store.dispatch({ type: 'Set_Debug', viewState: debugViewState } as DebugAction);
 
-        startConversation(this.props.appSecret)
+        startConversation(this.props.appSecret || this.props.token)
         .do(conversation => {
             store.dispatch({ type: 'Connected_To_Bot', conversation } as ConnectionAction)
         })

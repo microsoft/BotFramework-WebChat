@@ -38,14 +38,14 @@ export interface DLMessageGroup
     eTag?: string
 }
 
-export const startConversation = (appSecret: string) =>
+export const startConversation = (secretOrToken: string) =>
     Observable
         .ajax({
             method: "POST",
             url: `${baseUrl}`,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${appSecret}` 
+                "Authorization": `BotConnector ${secretOrToken}` 
             }
         })
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))

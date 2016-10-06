@@ -169,7 +169,7 @@ var BotChat =
 	        else if (debug === DebugViewState[DebugViewState.visible])
 	            debugViewState = DebugViewState.visible;
 	        exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
-	        directLine_1.startConversation(this.props.appSecret)
+	        directLine_1.startConversation(this.props.appSecret || this.props.token)
 	            .do(function (conversation) {
 	            exports.store.dispatch({ type: 'Connected_To_Bot', conversation: conversation });
 	        })
@@ -1276,14 +1276,14 @@ var BotChat =
 	// DL v1 
 	var domain = "https://directline.botframework.com";
 	var baseUrl = domain + "/api/conversations";
-	exports.startConversation = function (appSecret) {
+	exports.startConversation = function (secretOrToken) {
 	    return rxjs_1.Observable
 	        .ajax({
 	        method: "POST",
 	        url: "" + baseUrl,
 	        headers: {
 	            "Accept": "application/json",
-	            "Authorization": "BotConnector " + appSecret
+	            "Authorization": "BotConnector " + secretOrToken
 	        }
 	    })
 	        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
