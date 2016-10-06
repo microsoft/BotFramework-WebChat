@@ -2,27 +2,32 @@ import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
 import { store, ShellAction, HistoryAction } from './BotChat';
-import { postMessage } from './directLine';
+import { postMessage, postFile, mimeTypes } from './directLine';
 
 export class Shell extends React.Component<{}, {}> {
+    textInput:any;
     componentDidMount() {
         store.subscribe(() => 
             this.forceUpdate()
         );
     }
 
+    componentDidUpdate() {
+        this.textInput.focus();
+    }
+
     sendFile = (files: FileList) => {
-/*
+        const state = store.getState();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
-            postFile(file, this.state.conversation)
+            postFile(file, state.connection.conversation)
             .retry(2)
             .subscribe(
                 () => {
                     const path = window.URL.createObjectURL(file);
-                    outgoingMessage$.next({
+                    store.dispatch({ type: 'Send_Message', activity: {
                         type: "message",
-                        text: this.state.console.text,
+                        text: '',
                         from: { id: state.connection.userId },
                         timestamp: Date.now().toString(),
                         attachments: [{
@@ -30,14 +35,13 @@ export class Shell extends React.Component<{}, {}> {
                             contentUrl: path,
                             name: 'Your file here'
                         }]
-                    });
+                    }} as HistoryAction);
                 },
                 error => {
                     console.log("failed to post file");
                 }
             )
         }
-*/
     }
 
     sendMessage = () => {
@@ -89,7 +93,7 @@ export class Shell extends React.Component<{}, {}> {
                     </svg>
                 </label>
                 <div className="wc-textbox">
-                    <input type="text" autoFocus value={ state.shell.text } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } disabled={ !state.shell.enableSend } placeholder="Type your message..." />
+                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.shell.text } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } disabled={ !state.shell.enableSend } placeholder="Type your message..." />
                 </div>
                 <label className="wc-send" onClick={ this.onClickSend } >
                     <svg width="27" height="18">

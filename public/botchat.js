@@ -21692,32 +21692,31 @@ var BotChat =
 	        var _this = this;
 	        _super.apply(this, arguments);
 	        this.sendFile = function (files) {
-	            /*
-	                    for (let i = 0, numFiles = files.length; i < numFiles; i++) {
-	                        const file = files[i];
-	                        postFile(file, this.state.conversation)
-	                        .retry(2)
-	                        .subscribe(
-	                            () => {
-	                                const path = window.URL.createObjectURL(file);
-	                                outgoingMessage$.next({
-	                                    type: "message",
-	                                    text: this.state.console.text,
-	                                    from: { id: state.connection.userId },
-	                                    timestamp: Date.now().toString(),
-	                                    attachments: [{
-	                                        contentType: mimeTypes[path.split('.').pop()],
-	                                        contentUrl: path,
-	                                        name: 'Your file here'
-	                                    }]
-	                                });
-	                            },
-	                            error => {
-	                                console.log("failed to post file");
-	                            }
-	                        )
-	                    }
-	            */
+	            var state = BotChat_1.store.getState();
+	            var _loop_1 = function(i, numFiles) {
+	                var file = files[i];
+	                directLine_1.postFile(file, state.connection.conversation)
+	                    .retry(2)
+	                    .subscribe(function () {
+	                    var path = window.URL.createObjectURL(file);
+	                    BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+	                            type: "message",
+	                            text: '',
+	                            from: { id: state.connection.userId },
+	                            timestamp: Date.now().toString(),
+	                            attachments: [{
+	                                    contentType: directLine_1.mimeTypes[path.split('.').pop()],
+	                                    contentUrl: path,
+	                                    name: 'Your file here'
+	                                }]
+	                        } });
+	                }, function (error) {
+	                    console.log("failed to post file");
+	                });
+	            };
+	            for (var i = 0, numFiles = files.length; i < numFiles; i++) {
+	                _loop_1(i, numFiles);
+	            }
 	        };
 	        this.sendMessage = function () {
 	            var state = BotChat_1.store.getState();
@@ -21757,6 +21756,9 @@ var BotChat =
 	            return _this.forceUpdate();
 	        });
 	    };
+	    Shell.prototype.componentDidUpdate = function () {
+	        this.textInput.focus();
+	    };
 	    Shell.prototype.render = function () {
 	        var _this = this;
 	        var state = BotChat_1.store.getState();
@@ -21767,7 +21769,7 @@ var BotChat =
 	                    React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
 	                )), 
 	            React.createElement("div", {className: "wc-textbox"}, 
-	                React.createElement("input", {type: "text", autoFocus: true, value: state.shell.text, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, disabled: !state.shell.enableSend, placeholder: "Type your message..."})
+	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.shell.text, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, disabled: !state.shell.enableSend, placeholder: "Type your message..."})
 	            ), 
 	            React.createElement("label", {className: "wc-send", onClick: this.onClickSend}, 
 	                React.createElement("svg", {width: "27", height: "18"}, 
