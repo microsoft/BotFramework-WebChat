@@ -170,7 +170,8 @@ const guid = () => {
 interface Props {
     appSecret?: string,
     token?: string,
-    debug: string
+    debug?: string,
+    title?: string
 }
 
 export class UI extends React.Component<Props, {}> {
@@ -219,7 +220,7 @@ export class UI extends React.Component<Props, {}> {
             <div className="wc-app">
                 <div className={ "wc-chatview-panel" + (state.debug.viewState === DebugViewState.visible ? " wc-withdebugview" : "") }>
                     <div className="wc-header">
-                        <span>WebChat</span>
+                        <span>{ this.props.title || "WebChat" }</span>
                         <div className={ "wc-toggledebugview" + (state.debug.viewState !== DebugViewState.disabled ? "" : " wc-hidden") } onClick={ this.onClickDebug }>
                             <svg width="20" height="20" viewBox="0 0 1792 1792">
                                 <rect id="panel" height="1152.159352" width="642.020858" y="384.053042" x="959.042634" />

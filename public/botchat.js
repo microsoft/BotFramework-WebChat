@@ -187,7 +187,7 @@ var BotChat =
 	        return (React.createElement("div", {className: "wc-app"}, 
 	            React.createElement("div", {className: "wc-chatview-panel" + (state.debug.viewState === DebugViewState.visible ? " wc-withdebugview" : "")}, 
 	                React.createElement("div", {className: "wc-header"}, 
-	                    React.createElement("span", null, "WebChat"), 
+	                    React.createElement("span", null, this.props.title || "WebChat"), 
 	                    React.createElement("div", {className: "wc-toggledebugview" + (state.debug.viewState !== DebugViewState.disabled ? "" : " wc-hidden"), onClick: this.onClickDebug}, 
 	                        React.createElement("svg", {width: "20", height: "20", viewBox: "0 0 1792 1792"}, 
 	                            React.createElement("rect", {id: "panel", height: "1152.159352", width: "642.020858", y: "384.053042", x: "959.042634"}), 
