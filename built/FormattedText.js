@@ -24,15 +24,13 @@ var FormattedText = (function (_super) {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
     };
     FormattedText.prototype.render = function () {
-        var format = this.props.format || "markdown";
-        if (format === "plain") {
-            return this.renderPlainText();
-        }
-        else if (format === "xml") {
-            return this.renderXml();
-        }
-        else {
-            return this.renderMarkdown();
+        switch (this.props.format) {
+            case "plain":
+                return this.renderPlainText();
+            case "xml":
+                return this.renderXml();
+            default:
+                return this.renderMarkdown();
         }
     };
     FormattedText.prototype.renderPlainText = function () {
