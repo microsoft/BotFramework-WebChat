@@ -25,7 +25,7 @@ export interface DLMessage
     created?: string,
     from?: string,
     text?: string,
-    channelData?: Activity,
+    channelData?: Activity | any,
     images?: string[],
     attachments?: DLAttachment[];
     eTag?: string;
@@ -52,15 +52,16 @@ export const startConversation = (secretOrToken: string) =>
         .retryWhen(error$ => error$.delay(1000))
         .map<Conversation>(ajaxResponse => Object.assign({}, ajaxResponse.response, { userId: 'foo'}));
 
-export const postMessage = (text: string, conversation: Conversation, userId: string) =>
+export const postMessage = (text: string, conversation: Conversation, from: string, channelData?: any) =>
     Observable
         .ajax({
             method: "POST",
             url: `${baseUrl}/${conversation.conversationId}/messages`,
             body: <DLMessage>{
-                text: text,
-                from: userId,
-                conversationId: conversation.conversationId
+                text,
+                from,
+                conversationId: conversation.conversationId,
+                channelData
             },
             headers: {
                 "Content-Type": "application/json",
@@ -102,9 +103,10 @@ export const getActivities = (conversation: Conversation) =>
     .do(dlm => console.log("DL Message", dlm))
     .map(dlm => {
         if (dlm.channelData) {
-            switch(dlm.channelData.type) {
+            const channelData = <Activity>dlm.channelData; 
+            switch(channelData.type) {
                 case "message":
-                    return <Message>Object.assign({}, dlm.channelData, {
+                    return <Message>Object.assign({}, channelData, {
                         id: dlm.id,
                         conversation: { id: dlm.conversationId },
                         timestamp: dlm.created,
@@ -112,7 +114,7 @@ export const getActivities = (conversation: Conversation) =>
                         channelData: null,
                     });
                 default:
-                    return <Activity>dlm.channelData;
+                    return channelData;
             }
         } else {
             return <Message>{

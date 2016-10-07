@@ -99,14 +99,32 @@ var guid = function () {
 var UI = (function (_super) {
     __extends(UI, _super);
     function UI() {
+        var _this = this;
         _super.call(this);
+        this.receiveMessageFromHostingPage = function (event) {
+            var state = exports.store.getState();
+            if (!_this.props.allowMessagesFrom || _this.props.allowMessagesFrom.indexOf(event.origin) === -1) {
+                console.log("Rejecting Message from unknown source", event.source);
+                return;
+            }
+            if (!event.data) {
+                console.log("Empty message from source", event.source);
+                return;
+            }
+            _this.host = event.source;
+            console.log("Received Message", event.data, "from", _this.host, event.data);
+            directLine_1.postMessage("channeldata", state.connection.conversation, state.connection.userId, { data: event.data })
+                .retry(2)
+                .subscribe(function () {
+                console.log("message passed on to bot");
+            }, function (error) {
+                console.log("failed to post message");
+            });
+        };
     }
     UI.prototype.componentWillMount = function () {
         var _this = this;
         console.log("Starting BotChat", this.props);
-        exports.store.subscribe(function () {
-            return _this.forceUpdate();
-        });
         exports.store.dispatch({ type: 'Set_UserId', userId: guid() });
         var debug = this.props.debug && this.props.debug.toLowerCase();
         var debugViewState = DebugViewState.disabled;
@@ -123,6 +141,13 @@ var UI = (function (_super) {
             return directLine_1.getActivities(conversation);
         })
             .subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+        if (this.props.allowMessagesFrom) {
+            console.log("adding event listener for messages from hosting web page");
+            window.addEventListener("message", this.receiveMessageFromHostingPage, false);
+        }
+        exports.store.subscribe(function () {
+            return _this.forceUpdate();
+        });
     };
     UI.prototype.onClickDebug = function () {
         exports.store.dispatch({ type: 'Toggle_Debug' });

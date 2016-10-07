@@ -171,19 +171,44 @@ interface Props {
     appSecret?: string,
     token?: string,
     debug?: string,
-    title?: string
+    title?: string,
+    allowMessagesFrom?: string[]
 }
 
 export class UI extends React.Component<Props, {}> {
+    host:Window;
     constructor() {
         super();
     }
 
+    receiveMessageFromHostingPage = (event: MessageEvent) => {
+        const state = store.getState();
+        if (!this.props.allowMessagesFrom || this.props.allowMessagesFrom.indexOf(event.origin) === -1) {
+            console.log("Rejecting Message from unknown source", event.source);
+            return;
+        }
+
+        if (!event.data) {
+            console.log("Empty message from source", event.source);
+            return;
+        }
+
+        this.host = event.source;
+        console.log("Received Message", event.data, "from", this.host, event.data);
+        postMessage("channeldata", state.connection.conversation, state.connection.userId, {data: event.data})
+            .retry(2)
+            .subscribe(
+                () => {
+                    console.log("message passed on to bot");
+                },
+                error => {
+                    console.log("failed to post message");
+                }
+            );
+    }
+
     componentWillMount() {
         console.log("Starting BotChat", this.props);
-        store.subscribe(() => 
-            this.forceUpdate()
-        );
 
         store.dispatch({ type: 'Set_UserId', userId:guid() } as ConnectionAction);
 
@@ -206,6 +231,15 @@ export class UI extends React.Component<Props, {}> {
         .subscribe(
             activity => store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
             error => console.log("errors", error)
+        );
+
+        if (this.props.allowMessagesFrom) {
+            console.log("adding event listener for messages from hosting web page");
+            window.addEventListener("message", this.receiveMessageFromHostingPage, false);
+        }
+
+        store.subscribe(() => 
+            this.forceUpdate()
         );
     }
 

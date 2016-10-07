@@ -23,15 +23,16 @@ exports.startConversation = function (secretOrToken) {
         .retryWhen(function (error$) { return error$.delay(1000); })
         .map(function (ajaxResponse) { return Object.assign({}, ajaxResponse.response, { userId: 'foo' }); });
 };
-exports.postMessage = function (text, conversation, userId) {
+exports.postMessage = function (text, conversation, from, channelData) {
     return rxjs_1.Observable
         .ajax({
         method: "POST",
         url: baseUrl + "/" + conversation.conversationId + "/messages",
         body: {
             text: text,
-            from: userId,
-            conversationId: conversation.conversationId
+            from: from,
+            conversationId: conversation.conversationId,
+            channelData: channelData
         },
         headers: {
             "Content-Type": "application/json",
@@ -69,9 +70,10 @@ exports.getActivities = function (conversation) {
         .do(function (dlm) { return console.log("DL Message", dlm); })
         .map(function (dlm) {
         if (dlm.channelData) {
-            switch (dlm.channelData.type) {
+            var channelData = dlm.channelData;
+            switch (channelData.type) {
                 case "message":
-                    return Object.assign({}, dlm.channelData, {
+                    return Object.assign({}, channelData, {
                         id: dlm.id,
                         conversation: { id: dlm.conversationId },
                         timestamp: dlm.created,
@@ -79,7 +81,7 @@ exports.getActivities = function (conversation) {
                         channelData: null,
                     });
                 default:
-                    return dlm.channelData;
+                    return channelData;
             }
         }
         else {
