@@ -42,11 +42,6 @@ var History = (function (_super) {
         if (BotChat_1.store.getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     };
-    /*
-        onScroll = (e) => {
-            store.dispatch({ type: 'Set_Autoscroll', autoscroll: e.scrollTop + e.offsetHeight >= e.scrollHeight } as HistoryAction);
-        }
-    */
     History.prototype.render = function () {
         var _this = this;
         var state = BotChat_1.store.getState();

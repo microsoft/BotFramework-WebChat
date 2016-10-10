@@ -6,7 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var BotChat_1 = require('./BotChat');
-var directLine_1 = require('./directLine');
+var directLineTypes_1 = require('./directLineTypes');
 var Shell = (function (_super) {
     __extends(Shell, _super);
     function Shell() {
@@ -16,7 +16,7 @@ var Shell = (function (_super) {
             var state = BotChat_1.store.getState();
             var _loop_1 = function(i, numFiles) {
                 var file = files[i];
-                directLine_1.postFile(file, state.connection.conversation)
+                state.connection.botConnection.postFile(file)
                     .retry(2)
                     .subscribe(function () {
                     var path = window.URL.createObjectURL(file);
@@ -26,7 +26,7 @@ var Shell = (function (_super) {
                             from: { id: state.connection.userId },
                             timestamp: Date.now().toString(),
                             attachments: [{
-                                    contentType: directLine_1.mimeTypes[path.split('.').pop()],
+                                    contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
                                     contentUrl: path,
                                     name: 'Your file here'
                                 }]
@@ -43,7 +43,7 @@ var Shell = (function (_super) {
             var state = BotChat_1.store.getState();
             console.log("shell sendMessage");
             BotChat_1.store.dispatch({ type: 'Pre_Send_Shell_Text' });
-            directLine_1.postMessage(state.shell.text, state.connection.conversation, state.connection.userId)
+            state.connection.botConnection.postMessage(state.shell.text, state.connection.userId)
                 .retry(2)
                 .subscribe(function () {
                 BotChat_1.store.dispatch({ type: 'Send_Message', activity: {

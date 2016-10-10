@@ -7,19 +7,21 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var redux_1 = require('redux');
 var directLine_1 = require('./directLine');
+var browserLine_1 = require('./browserLine');
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var DebugView_1 = require('./DebugView');
 var connection = function (state, action) {
     if (state === void 0) { state = {
-        conversation: undefined,
+        connected: false,
+        botConnection: undefined,
         userId: undefined,
     }; }
     switch (action.type) {
-        case 'Set_UserId':
-            return { conversation: state.conversation, userId: action.userId };
+        case 'Start_Connection':
+            return { connected: false, botConnection: action.botConnection, userId: action.userId };
         case 'Connected_To_Bot':
-            return { conversation: action.conversation, userId: state.userId };
+            return { connected: true, botConnection: state.botConnection, userId: state.userId };
         default:
             return state;
     }
@@ -113,7 +115,7 @@ var UI = (function (_super) {
             }
             _this.host = event.source;
             console.log("Received Message", event.data, "from", _this.host, event.data);
-            directLine_1.postMessage("channeldata", state.connection.conversation, state.connection.userId, { data: event.data })
+            state.connection.botConnection.postMessage("channeldata", state.connection.userId, { data: event.data })
                 .retry(2)
                 .subscribe(function () {
                 console.log("message passed on to bot");
@@ -125,7 +127,11 @@ var UI = (function (_super) {
     UI.prototype.componentWillMount = function () {
         var _this = this;
         console.log("Starting BotChat", this.props);
-        exports.store.dispatch({ type: 'Set_UserId', userId: guid() });
+        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+        exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
+        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
+            exports.store.dispatch({ type: 'Connected_To_Bot' });
+        });
         var debug = this.props.debug && this.props.debug.toLowerCase();
         var debugViewState = DebugViewState.disabled;
         if (debug === DebugViewState[DebugViewState.enabled])
@@ -133,14 +139,7 @@ var UI = (function (_super) {
         else if (debug === DebugViewState[DebugViewState.visible])
             debugViewState = DebugViewState.visible;
         exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
-        directLine_1.startConversation(this.props.appSecret || this.props.token)
-            .do(function (conversation) {
-            exports.store.dispatch({ type: 'Connected_To_Bot', conversation: conversation });
-        })
-            .flatMap(function (conversation) {
-            return directLine_1.getActivities(conversation);
-        })
-            .subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+        bc.activities$.subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
         if (this.props.allowMessagesFrom) {
             console.log("adding event listener for messages from hosting web page");
             window.addEventListener("message", this.receiveMessageFromHostingPage, false);

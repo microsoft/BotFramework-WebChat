@@ -1,6 +1,5 @@
 "use strict";
 var React = require('react');
-var directLine_1 = require('./directLine');
 var BotChat_1 = require('./BotChat');
 exports.AttachmentView = function (props) {
     var state = BotChat_1.store.getState();
@@ -8,7 +7,7 @@ exports.AttachmentView = function (props) {
         switch (type) {
             case "imBack":
             case "postBack":
-                directLine_1.postMessage(value, state.connection.conversation, state.connection.userId)
+                state.connection.botConnection.postMessage(value, state.connection.userId)
                     .retry(2)
                     .subscribe(function () {
                     if (type === "imBack") {

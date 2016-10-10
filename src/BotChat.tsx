@@ -1,37 +1,40 @@
 import * as React from 'react';
 import { createStore, combineReducers, Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
-import { Activity, Message, Conversation } from './directLineTypes';
-import { startConversation, getActivities, postMessage, postFile, mimeTypes } from './directLine';
+import { Activity, Message, mimeTypes, IBotConnection } from './directLineTypes';
+import { DirectLine } from './directLine';
+import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { DebugView } from './DebugView';
 
 interface ConnectionState {
-    conversation: Conversation,
+    connected: boolean
+    botConnection: IBotConnection,
     userId: string
 }
 
 export type ConnectionAction = {
-    type: 'Set_UserId', 
-    userId: string
+    type: 'Start_Connection',
+    botConnection: IBotConnection,
+    userId: string,
 } | {
-    type: 'Connected_To_Bot',
-    conversation: Conversation
+    type: 'Connected_To_Bot'
 }
 
 const connection: Reducer<ConnectionState> = (
     state: ConnectionState = {
-        conversation: undefined,
+        connected: false,
+        botConnection: undefined,
         userId: undefined,
     },
     action: ConnectionAction
 ) => {
     switch (action.type) {
-        case 'Set_UserId':
-            return { conversation: state.conversation, userId: action.userId };
+        case 'Start_Connection':
+            return { connected: false, botConnection: action.botConnection, userId: action.userId };
         case 'Connected_To_Bot':
-            return { conversation: action.conversation, userId: state.userId };
+            return { connected: true, botConnection: state.botConnection, userId: state.userId };
         default:
             return state;
     }
@@ -168,11 +171,12 @@ const guid = () => {
 }
 
 interface Props {
-    appSecret?: string,
+    secret?: string,
     token?: string,
     debug?: string,
     title?: string,
-    allowMessagesFrom?: string[]
+    allowMessagesFrom?: string[],
+    directLineDomain?: string 
 }
 
 export class UI extends React.Component<Props, {}> {
@@ -195,22 +199,27 @@ export class UI extends React.Component<Props, {}> {
 
         this.host = event.source;
         console.log("Received Message", event.data, "from", this.host, event.data);
-        postMessage("channeldata", state.connection.conversation, state.connection.userId, {data: event.data})
-            .retry(2)
-            .subscribe(
-                () => {
-                    console.log("message passed on to bot");
-                },
-                error => {
-                    console.log("failed to post message");
-                }
-            );
+        state.connection.botConnection.postMessage("channeldata", state.connection.userId, { data: event.data })
+        .retry(2)
+        .subscribe(
+            () => {
+                console.log("message passed on to bot");
+            },
+            error => {
+                console.log("failed to post message");
+            }
+        );
     }
 
     componentWillMount() {
         console.log("Starting BotChat", this.props);
 
-        store.dispatch({ type: 'Set_UserId', userId:guid() } as ConnectionAction);
+        let bc = this.props.directLineDomain === "browser" ? new BrowserLine() : new DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+        store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc } as ConnectionAction);
+
+        bc.connected$.filter(connected => connected === true).subscribe(connected => { 
+            store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
+        }); 
 
         const debug = this.props.debug && this.props.debug.toLowerCase();
         let debugViewState: DebugViewState = DebugViewState.disabled;
@@ -221,14 +230,7 @@ export class UI extends React.Component<Props, {}> {
 
         store.dispatch({ type: 'Set_Debug', viewState: debugViewState } as DebugAction);
 
-        startConversation(this.props.appSecret || this.props.token)
-        .do(conversation => {
-            store.dispatch({ type: 'Connected_To_Bot', conversation } as ConnectionAction)
-        })
-        .flatMap(conversation =>
-            getActivities(conversation)
-        )
-        .subscribe(
+        bc.activities$.subscribe(
             activity => store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
             error => console.log("errors", error)
         );

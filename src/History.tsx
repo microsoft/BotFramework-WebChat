@@ -1,7 +1,6 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './directLineTypes';
-import { postMessage } from './directLine';
 import { store, HistoryAction, DebugAction, DebugViewState } from './BotChat';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
@@ -46,11 +45,7 @@ export class History extends React.Component<{}, {}> {
             store.dispatch({ type: 'Select_Activity', activity } as DebugAction)
         }
     }
-/*
-    onScroll = (e) => {
-        store.dispatch({ type: 'Set_Autoscroll', autoscroll: e.scrollTop + e.offsetHeight >= e.scrollHeight } as HistoryAction);
-    }
-*/
+
     render() {
         const state = store.getState();
         return (

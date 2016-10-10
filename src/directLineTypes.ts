@@ -1,3 +1,5 @@
+import { Observable, BehaviorSubject } from '@reactivex/rxjs';
+
 export interface Conversation {
     conversationId: string,
     token: string,
@@ -98,3 +100,16 @@ export interface Typing {
 }
 
 export type Activity = Message | Typing;
+
+export const mimeTypes = {
+    png: 'image/png',
+    jpg: 'image/jpg',
+    jpeg: 'image/jpeg'
+}
+
+export interface IBotConnection {
+    connected$: BehaviorSubject<boolean>;
+    activities$: Observable<Activity>    
+    postMessage: (text: string, from: string, channelData?: any) => Observable<boolean>,
+    postFile: (file: File) => Observable<boolean>,
+}

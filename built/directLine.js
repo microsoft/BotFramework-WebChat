@@ -1,128 +1,129 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
-/*
-// DL V3
-
-const domain = "https://ic-dandris-scratch.azurewebsites.net";
-const baseUrl = `${domain}/V3/directline/conversations`;
-*/
-// DL v1 
-var domain = "https://directline.botframework.com";
-var baseUrl = domain + "/api/conversations";
-exports.startConversation = function (secretOrToken) {
-    return rxjs_1.Observable
-        .ajax({
-        method: "POST",
-        url: "" + baseUrl,
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "BotConnector " + secretOrToken
-        }
-    })
-        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
-        .retryWhen(function (error$) { return error$.delay(1000); })
-        .map(function (ajaxResponse) { return Object.assign({}, ajaxResponse.response, { userId: 'foo' }); });
-};
-exports.postMessage = function (text, conversation, from, channelData) {
-    return rxjs_1.Observable
-        .ajax({
-        method: "POST",
-        url: baseUrl + "/" + conversation.conversationId + "/messages",
-        body: {
-            text: text,
-            from: from,
-            conversationId: conversation.conversationId,
-            channelData: channelData
-        },
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "BotConnector " + conversation.token
-        }
-    })
-        .retryWhen(function (error$) { return error$.delay(1000); })
-        .map(function (ajaxResponse) { return true; });
-};
-exports.postFile = function (file, conversation) {
-    var formData = new FormData();
-    formData.append('file', file);
-    return rxjs_1.Observable
-        .ajax({
-        method: "POST",
-        url: baseUrl + "/" + conversation.conversationId + "/upload",
-        body: formData,
-        headers: {
-            "Authorization": "BotConnector " + conversation.token
-        }
-    })
-        .retryWhen(function (error$) { return error$.delay(1000); })
-        .map(function (ajaxResponse) { return true; });
-};
-exports.mimeTypes = {
-    png: 'image/png',
-    jpg: 'image/jpg',
-    jpeg: 'image/jpeg'
-};
-exports.getActivities = function (conversation) {
-    return new rxjs_1.Observable(function (subscriber) {
-        return activitiesGenerator(conversation, subscriber);
-    })
-        .concatAll()
-        .do(function (dlm) { return console.log("DL Message", dlm); })
-        .map(function (dlm) {
-        if (dlm.channelData) {
-            var channelData = dlm.channelData;
-            switch (channelData.type) {
-                case "message":
-                    return Object.assign({}, channelData, {
+var directLineTypes_1 = require('./directLineTypes');
+var DirectLine = (function () {
+    function DirectLine(secretOrToken, domain) {
+        var _this = this;
+        if (domain === void 0) { domain = "https://directline.botframework.com"; }
+        this.domain = domain;
+        this.connected$ = new rxjs_1.BehaviorSubject(false);
+        this.postMessage = function (text, from, channelData) {
+            return rxjs_1.Observable.ajax({
+                method: "POST",
+                url: _this.baseUrl + "/" + _this.conversationId + "/messages",
+                body: {
+                    text: text,
+                    from: from,
+                    conversationId: _this.conversationId,
+                    channelData: channelData
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "BotConnector " + _this.token
+                }
+            })
+                .retryWhen(function (error$) { return error$.delay(1000); })
+                .mapTo(true);
+        };
+        this.postFile = function (file) {
+            var formData = new FormData();
+            formData.append('file', file);
+            return rxjs_1.Observable.ajax({
+                method: "POST",
+                url: _this.baseUrl + "/" + _this.conversationId + "/upload",
+                body: formData,
+                headers: {
+                    "Authorization": "BotConnector " + _this.token
+                }
+            })
+                .retryWhen(function (error$) { return error$.delay(1000); })
+                .mapTo(true);
+        };
+        this.getActivities = function () {
+            return new rxjs_1.Observable(function (subscriber) {
+                return _this.activitiesGenerator(subscriber);
+            })
+                .concatAll()
+                .do(function (dlm) { return console.log("DL Message", dlm); })
+                .map(function (dlm) {
+                if (dlm.channelData) {
+                    var channelData = dlm.channelData;
+                    switch (channelData.type) {
+                        case "message":
+                            return Object.assign({}, channelData, {
+                                id: dlm.id,
+                                conversation: { id: dlm.conversationId },
+                                timestamp: dlm.created,
+                                from: { id: dlm.from },
+                                channelData: null,
+                            });
+                        default:
+                            return channelData;
+                    }
+                }
+                else {
+                    return {
+                        type: "message",
                         id: dlm.id,
                         conversation: { id: dlm.conversationId },
                         timestamp: dlm.created,
                         from: { id: dlm.from },
-                        channelData: null,
-                    });
-                default:
-                    return channelData;
+                        text: dlm.text,
+                        textFormat: "markdown",
+                        eTag: dlm.eTag,
+                        attachments: dlm.images && dlm.images.map(function (path) { return ({
+                            contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
+                            contentUrl: _this.domain + path,
+                            name: '2009-09-21'
+                        }); })
+                    };
+                }
+            });
+        };
+        this.activitiesGenerator = function (subscriber, watermark) {
+            _this.getActivityGroup(watermark).subscribe(function (messageGroup) {
+                var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+                if (someMessages)
+                    subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+                setTimeout(function () { return _this.activitiesGenerator(subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+            }, function (error) { return subscriber.error(error); });
+        };
+        this.getActivityGroup = function (watermark) {
+            if (watermark === void 0) { watermark = ""; }
+            return rxjs_1.Observable.ajax({
+                method: "GET",
+                url: _this.baseUrl + "/" + _this.conversationId + "/messages?watermark=" + watermark,
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": "BotConnector " + _this.token
+                }
+            })
+                .retryWhen(function (error$) { return error$.delay(1000); })
+                .map(function (ajaxResponse) { return ajaxResponse.response; });
+        };
+        this.baseUrl = domain + "/api/conversations";
+        rxjs_1.Observable.ajax({
+            method: "POST",
+            url: "" + this.baseUrl,
+            headers: {
+                "Accept": "application/json",
+                "Authorization": "BotConnector " + secretOrToken
             }
-        }
-        else {
-            return {
-                type: "message",
-                id: dlm.id,
-                conversation: { id: dlm.conversationId },
-                timestamp: dlm.created,
-                from: { id: dlm.from },
-                text: dlm.text,
-                textFormat: "markdown",
-                eTag: dlm.eTag,
-                attachments: dlm.images && dlm.images.map(function (path) { return ({
-                    contentType: exports.mimeTypes[path.split('.').pop()],
-                    contentUrl: domain + path,
-                    name: '2009-09-21'
-                }); })
-            };
-        }
-    });
-};
-var activitiesGenerator = function (conversation, subscriber, watermark) {
-    getActivityGroup(conversation, watermark).subscribe(function (messageGroup) {
-        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
-        if (someMessages)
-            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-        setTimeout(function () { return activitiesGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
-    }, function (error) { return subscriber.error(error); });
-};
-var getActivityGroup = function (conversation, watermark) {
-    if (watermark === void 0) { watermark = ""; }
-    return rxjs_1.Observable
-        .ajax({
-        method: "GET",
-        url: baseUrl + "/" + conversation.conversationId + "/messages?watermark=" + watermark,
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "BotConnector " + conversation.token
-        }
-    })
-        .retryWhen(function (error$) { return error$.delay(1000); })
-        .map(function (ajaxResponse) { return ajaxResponse.response; });
-};
+        })
+            .map(function (ajaxResponse) { return ajaxResponse.response; })
+            .retryWhen(function (error$) { return error$.delay(1000); })
+            .subscribe(function (conversation) {
+            _this.conversationId = conversation.conversationId;
+            _this.token = conversation.token;
+            _this.connected$.next(true);
+        }, function (error) {
+            console.log("failed to connect");
+        });
+        this.activities$ = this.connected$
+            .filter(function (connected) { return connected === true; })
+            .flatMap(function (_) { return _this.getActivities(); });
+    }
+    return DirectLine;
+}());
+exports.DirectLine = DirectLine;
 //# sourceMappingURL=directLine.js.map

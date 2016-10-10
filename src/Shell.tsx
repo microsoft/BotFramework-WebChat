@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
 import { store, ShellAction, HistoryAction } from './BotChat';
-import { postMessage, postFile, mimeTypes } from './directLine';
+import { mimeTypes } from './directLineTypes';
+
 
 export class Shell extends React.Component<{}, {}> {
     textInput:any;
@@ -20,7 +21,7 @@ export class Shell extends React.Component<{}, {}> {
         const state = store.getState();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
-            postFile(file, state.connection.conversation)
+            state.connection.botConnection.postFile(file)
             .retry(2)
             .subscribe(
                 () => {
@@ -48,7 +49,7 @@ export class Shell extends React.Component<{}, {}> {
         const state = store.getState();
         console.log("shell sendMessage");
         store.dispatch({ type: 'Pre_Send_Shell_Text' });
-        postMessage(state.shell.text, state.connection.conversation, state.connection.userId)
+        state.connection.botConnection.postMessage(state.shell.text, state.connection.userId)
         .retry(2)
         .subscribe(
             () => {

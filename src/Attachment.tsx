@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Attachment, Button } from './directLineTypes';
-import { postMessage } from './directLine';
 import { store, HistoryAction } from './BotChat';
 
 export const AttachmentView = (props: {
@@ -12,7 +11,7 @@ export const AttachmentView = (props: {
         switch (type) {
             case "imBack":
             case "postBack":
-                postMessage(value, state.connection.conversation, state.connection.userId)
+                state.connection.botConnection.postMessage(value, state.connection.userId)
                 .retry(2)
                 .subscribe(
                     () => {

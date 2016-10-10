@@ -61,19 +61,21 @@ var BotChat =
 	var React = __webpack_require__(2);
 	var redux_1 = __webpack_require__(3);
 	var directLine_1 = __webpack_require__(18);
+	var browserLine_1 = __webpack_require__(375);
 	var History_1 = __webpack_require__(364);
 	var Shell_1 = __webpack_require__(372);
 	var DebugView_1 = __webpack_require__(373);
 	var connection = function (state, action) {
 	    if (state === void 0) { state = {
-	        conversation: undefined,
+	        connected: false,
+	        botConnection: undefined,
 	        userId: undefined,
 	    }; }
 	    switch (action.type) {
-	        case 'Set_UserId':
-	            return { conversation: state.conversation, userId: action.userId };
+	        case 'Start_Connection':
+	            return { connected: false, botConnection: action.botConnection, userId: action.userId };
 	        case 'Connected_To_Bot':
-	            return { conversation: action.conversation, userId: state.userId };
+	            return { connected: true, botConnection: state.botConnection, userId: state.userId };
 	        default:
 	            return state;
 	    }
@@ -167,7 +169,7 @@ var BotChat =
 	            }
 	            _this.host = event.source;
 	            console.log("Received Message", event.data, "from", _this.host, event.data);
-	            directLine_1.postMessage("channeldata", state.connection.conversation, state.connection.userId, { data: event.data })
+	            state.connection.botConnection.postMessage("channeldata", state.connection.userId, { data: event.data })
 	                .retry(2)
 	                .subscribe(function () {
 	                console.log("message passed on to bot");
@@ -179,7 +181,11 @@ var BotChat =
 	    UI.prototype.componentWillMount = function () {
 	        var _this = this;
 	        console.log("Starting BotChat", this.props);
-	        exports.store.dispatch({ type: 'Set_UserId', userId: guid() });
+	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+	        exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
+	        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
+	            exports.store.dispatch({ type: 'Connected_To_Bot' });
+	        });
 	        var debug = this.props.debug && this.props.debug.toLowerCase();
 	        var debugViewState = DebugViewState.disabled;
 	        if (debug === DebugViewState[DebugViewState.enabled])
@@ -187,14 +193,7 @@ var BotChat =
 	        else if (debug === DebugViewState[DebugViewState.visible])
 	            debugViewState = DebugViewState.visible;
 	        exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
-	        directLine_1.startConversation(this.props.appSecret || this.props.token)
-	            .do(function (conversation) {
-	            exports.store.dispatch({ type: 'Connected_To_Bot', conversation: conversation });
-	        })
-	            .flatMap(function (conversation) {
-	            return directLine_1.getActivities(conversation);
-	        })
-	            .subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+	        bc.activities$.subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
 	        if (this.props.allowMessagesFrom) {
 	            console.log("adding event listener for messages from hosting web page");
 	            window.addEventListener("message", this.receiveMessageFromHostingPage, false);
@@ -1292,131 +1291,132 @@ var BotChat =
 
 	"use strict";
 	var rxjs_1 = __webpack_require__(19);
-	/*
-	// DL V3
-	
-	const domain = "https://ic-dandris-scratch.azurewebsites.net";
-	const baseUrl = `${domain}/V3/directline/conversations`;
-	*/
-	// DL v1 
-	var domain = "https://directline.botframework.com";
-	var baseUrl = domain + "/api/conversations";
-	exports.startConversation = function (secretOrToken) {
-	    return rxjs_1.Observable
-	        .ajax({
-	        method: "POST",
-	        url: "" + baseUrl,
-	        headers: {
-	            "Accept": "application/json",
-	            "Authorization": "BotConnector " + secretOrToken
-	        }
-	    })
-	        .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse); })
-	        .retryWhen(function (error$) { return error$.delay(1000); })
-	        .map(function (ajaxResponse) { return Object.assign({}, ajaxResponse.response, { userId: 'foo' }); });
-	};
-	exports.postMessage = function (text, conversation, from, channelData) {
-	    return rxjs_1.Observable
-	        .ajax({
-	        method: "POST",
-	        url: baseUrl + "/" + conversation.conversationId + "/messages",
-	        body: {
-	            text: text,
-	            from: from,
-	            conversationId: conversation.conversationId,
-	            channelData: channelData
-	        },
-	        headers: {
-	            "Content-Type": "application/json",
-	            "Authorization": "BotConnector " + conversation.token
-	        }
-	    })
-	        .retryWhen(function (error$) { return error$.delay(1000); })
-	        .map(function (ajaxResponse) { return true; });
-	};
-	exports.postFile = function (file, conversation) {
-	    var formData = new FormData();
-	    formData.append('file', file);
-	    return rxjs_1.Observable
-	        .ajax({
-	        method: "POST",
-	        url: baseUrl + "/" + conversation.conversationId + "/upload",
-	        body: formData,
-	        headers: {
-	            "Authorization": "BotConnector " + conversation.token
-	        }
-	    })
-	        .retryWhen(function (error$) { return error$.delay(1000); })
-	        .map(function (ajaxResponse) { return true; });
-	};
-	exports.mimeTypes = {
-	    png: 'image/png',
-	    jpg: 'image/jpg',
-	    jpeg: 'image/jpeg'
-	};
-	exports.getActivities = function (conversation) {
-	    return new rxjs_1.Observable(function (subscriber) {
-	        return activitiesGenerator(conversation, subscriber);
-	    })
-	        .concatAll()
-	        .do(function (dlm) { return console.log("DL Message", dlm); })
-	        .map(function (dlm) {
-	        if (dlm.channelData) {
-	            var channelData = dlm.channelData;
-	            switch (channelData.type) {
-	                case "message":
-	                    return Object.assign({}, channelData, {
+	var directLineTypes_1 = __webpack_require__(374);
+	var DirectLine = (function () {
+	    function DirectLine(secretOrToken, domain) {
+	        var _this = this;
+	        if (domain === void 0) { domain = "https://directline.botframework.com"; }
+	        this.domain = domain;
+	        this.connected$ = new rxjs_1.BehaviorSubject(false);
+	        this.postMessage = function (text, from, channelData) {
+	            return rxjs_1.Observable.ajax({
+	                method: "POST",
+	                url: _this.baseUrl + "/" + _this.conversationId + "/messages",
+	                body: {
+	                    text: text,
+	                    from: from,
+	                    conversationId: _this.conversationId,
+	                    channelData: channelData
+	                },
+	                headers: {
+	                    "Content-Type": "application/json",
+	                    "Authorization": "BotConnector " + _this.token
+	                }
+	            })
+	                .retryWhen(function (error$) { return error$.delay(1000); })
+	                .mapTo(true);
+	        };
+	        this.postFile = function (file) {
+	            var formData = new FormData();
+	            formData.append('file', file);
+	            return rxjs_1.Observable.ajax({
+	                method: "POST",
+	                url: _this.baseUrl + "/" + _this.conversationId + "/upload",
+	                body: formData,
+	                headers: {
+	                    "Authorization": "BotConnector " + _this.token
+	                }
+	            })
+	                .retryWhen(function (error$) { return error$.delay(1000); })
+	                .mapTo(true);
+	        };
+	        this.getActivities = function () {
+	            return new rxjs_1.Observable(function (subscriber) {
+	                return _this.activitiesGenerator(subscriber);
+	            })
+	                .concatAll()
+	                .do(function (dlm) { return console.log("DL Message", dlm); })
+	                .map(function (dlm) {
+	                if (dlm.channelData) {
+	                    var channelData = dlm.channelData;
+	                    switch (channelData.type) {
+	                        case "message":
+	                            return Object.assign({}, channelData, {
+	                                id: dlm.id,
+	                                conversation: { id: dlm.conversationId },
+	                                timestamp: dlm.created,
+	                                from: { id: dlm.from },
+	                                channelData: null,
+	                            });
+	                        default:
+	                            return channelData;
+	                    }
+	                }
+	                else {
+	                    return {
+	                        type: "message",
 	                        id: dlm.id,
 	                        conversation: { id: dlm.conversationId },
 	                        timestamp: dlm.created,
 	                        from: { id: dlm.from },
-	                        channelData: null,
-	                    });
-	                default:
-	                    return channelData;
+	                        text: dlm.text,
+	                        textFormat: "markdown",
+	                        eTag: dlm.eTag,
+	                        attachments: dlm.images && dlm.images.map(function (path) { return ({
+	                            contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
+	                            contentUrl: _this.domain + path,
+	                            name: '2009-09-21'
+	                        }); })
+	                    };
+	                }
+	            });
+	        };
+	        this.activitiesGenerator = function (subscriber, watermark) {
+	            _this.getActivityGroup(watermark).subscribe(function (messageGroup) {
+	                var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+	                if (someMessages)
+	                    subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
+	                setTimeout(function () { return _this.activitiesGenerator(subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
+	            }, function (error) { return subscriber.error(error); });
+	        };
+	        this.getActivityGroup = function (watermark) {
+	            if (watermark === void 0) { watermark = ""; }
+	            return rxjs_1.Observable.ajax({
+	                method: "GET",
+	                url: _this.baseUrl + "/" + _this.conversationId + "/messages?watermark=" + watermark,
+	                headers: {
+	                    "Accept": "application/json",
+	                    "Authorization": "BotConnector " + _this.token
+	                }
+	            })
+	                .retryWhen(function (error$) { return error$.delay(1000); })
+	                .map(function (ajaxResponse) { return ajaxResponse.response; });
+	        };
+	        this.baseUrl = domain + "/api/conversations";
+	        rxjs_1.Observable.ajax({
+	            method: "POST",
+	            url: "" + this.baseUrl,
+	            headers: {
+	                "Accept": "application/json",
+	                "Authorization": "BotConnector " + secretOrToken
 	            }
-	        }
-	        else {
-	            return {
-	                type: "message",
-	                id: dlm.id,
-	                conversation: { id: dlm.conversationId },
-	                timestamp: dlm.created,
-	                from: { id: dlm.from },
-	                text: dlm.text,
-	                textFormat: "markdown",
-	                eTag: dlm.eTag,
-	                attachments: dlm.images && dlm.images.map(function (path) { return ({
-	                    contentType: exports.mimeTypes[path.split('.').pop()],
-	                    contentUrl: domain + path,
-	                    name: '2009-09-21'
-	                }); })
-	            };
-	        }
-	    });
-	};
-	var activitiesGenerator = function (conversation, subscriber, watermark) {
-	    getActivityGroup(conversation, watermark).subscribe(function (messageGroup) {
-	        var someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
-	        if (someMessages)
-	            subscriber.next(rxjs_1.Observable.from(messageGroup.messages));
-	        setTimeout(function () { return activitiesGenerator(conversation, subscriber, messageGroup && messageGroup.watermark); }, someMessages && messageGroup.watermark ? 0 : 3000);
-	    }, function (error) { return subscriber.error(error); });
-	};
-	var getActivityGroup = function (conversation, watermark) {
-	    if (watermark === void 0) { watermark = ""; }
-	    return rxjs_1.Observable
-	        .ajax({
-	        method: "GET",
-	        url: baseUrl + "/" + conversation.conversationId + "/messages?watermark=" + watermark,
-	        headers: {
-	            "Accept": "application/json",
-	            "Authorization": "BotConnector " + conversation.token
-	        }
-	    })
-	        .retryWhen(function (error$) { return error$.delay(1000); })
-	        .map(function (ajaxResponse) { return ajaxResponse.response; });
-	};
+	        })
+	            .map(function (ajaxResponse) { return ajaxResponse.response; })
+	            .retryWhen(function (error$) { return error$.delay(1000); })
+	            .subscribe(function (conversation) {
+	            _this.conversationId = conversation.conversationId;
+	            _this.token = conversation.token;
+	            _this.connected$.next(true);
+	        }, function (error) {
+	            console.log("failed to connect");
+	        });
+	        this.activities$ = this.connected$
+	            .filter(function (connected) { return connected === true; })
+	            .flatMap(function (_) { return _this.getActivities(); });
+	    }
+	    return DirectLine;
+	}());
+	exports.DirectLine = DirectLine;
 
 
 /***/ },
@@ -19520,11 +19520,6 @@ var BotChat =
 	        if (BotChat_1.store.getState().history.autoscroll)
 	            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
 	    };
-	    /*
-	        onScroll = (e) => {
-	            store.dispatch({ type: 'Set_Autoscroll', autoscroll: e.scrollTop + e.offsetHeight >= e.scrollHeight } as HistoryAction);
-	        }
-	    */
 	    History.prototype.render = function () {
 	        var _this = this;
 	        var state = BotChat_1.store.getState();
@@ -19580,7 +19575,6 @@ var BotChat =
 
 	"use strict";
 	var React = __webpack_require__(2);
-	var directLine_1 = __webpack_require__(18);
 	var BotChat_1 = __webpack_require__(1);
 	exports.AttachmentView = function (props) {
 	    var state = BotChat_1.store.getState();
@@ -19588,7 +19582,7 @@ var BotChat =
 	        switch (type) {
 	            case "imBack":
 	            case "postBack":
-	                directLine_1.postMessage(value, state.connection.conversation, state.connection.userId)
+	                state.connection.botConnection.postMessage(value, state.connection.userId)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    if (type === "imBack") {
@@ -21710,7 +21704,7 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var BotChat_1 = __webpack_require__(1);
-	var directLine_1 = __webpack_require__(18);
+	var directLineTypes_1 = __webpack_require__(374);
 	var Shell = (function (_super) {
 	    __extends(Shell, _super);
 	    function Shell() {
@@ -21720,7 +21714,7 @@ var BotChat =
 	            var state = BotChat_1.store.getState();
 	            var _loop_1 = function(i, numFiles) {
 	                var file = files[i];
-	                directLine_1.postFile(file, state.connection.conversation)
+	                state.connection.botConnection.postFile(file)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    var path = window.URL.createObjectURL(file);
@@ -21730,7 +21724,7 @@ var BotChat =
 	                            from: { id: state.connection.userId },
 	                            timestamp: Date.now().toString(),
 	                            attachments: [{
-	                                    contentType: directLine_1.mimeTypes[path.split('.').pop()],
+	                                    contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
 	                                    contentUrl: path,
 	                                    name: 'Your file here'
 	                                }]
@@ -21747,7 +21741,7 @@ var BotChat =
 	            var state = BotChat_1.store.getState();
 	            console.log("shell sendMessage");
 	            BotChat_1.store.dispatch({ type: 'Pre_Send_Shell_Text' });
-	            directLine_1.postMessage(state.shell.text, state.connection.conversation, state.connection.userId)
+	            state.connection.botConnection.postMessage(state.shell.text, state.connection.userId)
 	                .retry(2)
 	                .subscribe(function () {
 	                BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
@@ -21861,6 +21855,47 @@ var BotChat =
 	        React.createElement("div", {className: "wc-debugview-json"}, formatJSON(props.activity || {}))
 	    );
 	};
+
+
+/***/ },
+/* 374 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.mimeTypes = {
+	    png: 'image/png',
+	    jpg: 'image/jpg',
+	    jpeg: 'image/jpeg'
+	};
+
+
+/***/ },
+/* 375 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var rxjs_1 = __webpack_require__(19);
+	// An experimental feature. The idea is to allow two instances of botchat on a page, A and B
+	// A sends and receives messages to and from the bot, as normal
+	// B sends and receives backchannel messages to and from the bot using A as a proxy
+	var BrowserLine = (function () {
+	    function BrowserLine() {
+	        this.connected$ = new rxjs_1.BehaviorSubject(false);
+	        this.postMessage = function (text, from, channelData) {
+	            return rxjs_1.Observable.of(true);
+	        };
+	        this.postFile = function (file) {
+	            return rxjs_1.Observable.of(true);
+	        };
+	        this.getActivities = function () { return rxjs_1.Observable.of({
+	            type: "message"
+	        }); };
+	        this.connected$.next(true);
+	        this.activities$ = this.getActivities();
+	    }
+	    return BrowserLine;
+	}());
+	exports.BrowserLine = BrowserLine;
 
 
 /***/ }
