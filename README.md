@@ -2,6 +2,8 @@
 
 Sample chat app for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](http://docs.botframework.com/sdkreference/restapi-directline/) API.
 
+You can easily play with a recent build using [botchattest](https://botchattest.herokuapp.com)
+
 ## How real is this?
 
 Rapidly-evolving proof of concept. Not currently supported or in any way production-ready. Questions and comments to [billba@microsoft.com](mailto:billba@microsoft.com). Please don't submit pull requests unless we have previously discussed it.
