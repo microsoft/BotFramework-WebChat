@@ -19601,10 +19601,8 @@ var BotChat =
 	                });
 	                break;
 	            case "openUrl":
-	                console.log("open URL", value);
-	                break;
 	            case "signin":
-	                console.log("sign in", value);
+	                window.open(value);
 	                break;
 	            default:
 	                console.log("unknown button type");
