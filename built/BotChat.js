@@ -130,18 +130,19 @@ var UI = (function (_super) {
                         console.log("Backchannel message has no contents");
                         return;
                     }
-                    var state = exports.store.getState();
-                    state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data.contents })
-                        .retry(2)
-                        .subscribe(function (success) {
-                        console.log("message passed on to bot");
-                    }, function (error) {
-                        console.log("failed to post message");
-                    });
                     break;
                 default:
                     console.log("unknown message type", event.data.type);
+                    return;
             }
+            var state = exports.store.getState();
+            state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data })
+                .retry(2)
+                .subscribe(function (success) {
+                console.log("backchannel message sent to bot");
+            }, function (error) {
+                console.log("failed to send backchannel message to bot");
+            });
         };
     }
     UI.prototype.componentWillMount = function () {

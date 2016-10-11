@@ -218,18 +218,19 @@ export class UI extends React.Component<Props, {}> {
                     console.log("Backchannel message has no contents");
                     return;
                 }
-                const state = store.getState();
-                state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data.contents })
-                .retry(2)
-                .subscribe(success => {
-                    console.log("message passed on to bot");
-                }, error => {
-                    console.log("failed to post message");
-                });
                 break;
             default:
                 console.log("unknown message type", event.data.type);
+                return;
         }
+        const state = store.getState();
+        state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data })
+        .retry(2)
+        .subscribe(success => {
+            console.log("backchannel message sent to bot");
+        }, error => {
+            console.log("failed to send backchannel message to bot");
+        });
     }
 
     componentWillMount() {
