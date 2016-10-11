@@ -3,9 +3,14 @@ import { Attachment, Button } from './directLineTypes';
 import { store, HistoryAction } from './BotChat';
 
 export const AttachmentView = (props: {
-    attachment: Attachment
+    attachment: Attachment,
+    onImageLoad?: ()=> void
 }) => {
     const state = store.getState();
+
+    const imgLoad = () => {
+        if (props.onImageLoad) props.onImageLoad();
+    }
 
     const onClickButton = (type: string, value: string) => {
         switch (type) {
@@ -49,7 +54,7 @@ export const AttachmentView = (props: {
     
     const images = (images?: { url: string }[]) => images &&
         <div> 
-            { images.map(image => <img src={ image.url } />) }
+            { images.map(image => <img src={ image.url } onLoad={ () => imgLoad() } />) }
         </div>;
 
     switch (props.attachment.contentType) {
@@ -97,7 +102,7 @@ export const AttachmentView = (props: {
                         </thead>
                         <tbody>{ props.attachment.content.items && props.attachment.content.items.map(item =>
                             <tr>
-                                <td>{ item.image && <img src={ item.image.url }/> }<span>{ item.title }</span></td>
+                                <td>{ item.image && <img src={ item.image.url } onLoad={ () => imgLoad() } /> }<span>{ item.title }</span></td>
                                 <td>{ item.price }</td>
                             </tr>) }
                         </tbody>
@@ -118,7 +123,7 @@ export const AttachmentView = (props: {
         case "image/png":
         case "image/jpg":
         case "image/jpeg":
-            return <img src={ props.attachment.contentUrl }/>;
+            return <img src={ props.attachment.contentUrl } onLoad={ () => imgLoad() } />;
         
         default:
             return <span/>;

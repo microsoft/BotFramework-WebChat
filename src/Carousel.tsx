@@ -20,6 +20,7 @@ export class Carousel extends React.Component<Props, State> {
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
+    private resizeListener: () => void;
     private scrollEventListener: () => void;
     private scrollAllowInterrupt = true;
 
@@ -30,6 +31,8 @@ export class Carousel extends React.Component<Props, State> {
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
+
+        this.resizeListener = () => this.resize();
 
         this.scrollEventListener = () => this.onScroll();
     }
@@ -62,19 +65,26 @@ export class Carousel extends React.Component<Props, State> {
         this.setState(newState);
     }
 
-    private componentDidMount() {
+    private setItemWidth(didMount: boolean = false) {
         const li = this.ul.firstChild as HTMLLIElement;
         this.itemWidth = li.offsetWidth;
+    }
+
+    private componentDidMount() {
+        this.setItemWidth(true);
 
         this.manageScrollButtons();
 
         this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
 
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
+
+        window.addEventListener('resize', this.resizeListener);
     }
 
     private componentWillUnmount() {
         this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
+        window.removeEventListener('resize', this.resizeListener);
     }
 
     private onScroll() {
@@ -150,7 +160,7 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map(attachment =>
                             <li>
-                                <AttachmentView attachment={ attachment } />
+                                <AttachmentView attachment={ attachment } onImageLoad={ () => this.resize() } />
                             </li>) }
                         </ul>
                     </div>
@@ -162,5 +172,10 @@ export class Carousel extends React.Component<Props, State> {
                 </button>
             </div >
         )
+    }
+
+    resize() {
+        this.setItemWidth();
+        this.manageScrollButtons();
     }
 }
