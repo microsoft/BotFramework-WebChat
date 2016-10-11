@@ -61,21 +61,26 @@ var BotChat =
 	var React = __webpack_require__(2);
 	var redux_1 = __webpack_require__(3);
 	var directLine_1 = __webpack_require__(18);
-	var browserLine_1 = __webpack_require__(375);
-	var History_1 = __webpack_require__(364);
-	var Shell_1 = __webpack_require__(372);
-	var DebugView_1 = __webpack_require__(373);
+	var browserLine_1 = __webpack_require__(365);
+	var History_1 = __webpack_require__(366);
+	var Shell_1 = __webpack_require__(374);
+	var DebugView_1 = __webpack_require__(375);
 	var connection = function (state, action) {
 	    if (state === void 0) { state = {
 	        connected: false,
 	        botConnection: undefined,
 	        userId: undefined,
+	        host: undefined
 	    }; }
 	    switch (action.type) {
 	        case 'Start_Connection':
-	            return { connected: false, botConnection: action.botConnection, userId: action.userId };
+	            return { connected: false, botConnection: action.botConnection, userId: action.userId, host: state.host };
 	        case 'Connected_To_Bot':
-	            return { connected: true, botConnection: state.botConnection, userId: state.userId };
+	            return { connected: true, botConnection: state.botConnection, userId: state.userId, host: state.host };
+	        case 'Subscribe_Host':
+	            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: action.host };
+	        case 'Unsubscribe_Host':
+	            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: undefined };
 	        default:
 	            return state;
 	    }
@@ -157,25 +162,40 @@ var BotChat =
 	    function UI() {
 	        var _this = this;
 	        _super.call(this);
-	        this.receiveMessageFromHostingPage = function (event) {
-	            var state = exports.store.getState();
+	        this.receiveBackchannelMessageFromHostingPage = function (event) {
 	            if (!_this.props.allowMessagesFrom || _this.props.allowMessagesFrom.indexOf(event.origin) === -1) {
-	                console.log("Rejecting Message from unknown source", event.source);
+	                console.log("Rejecting backchannel message from unknown source", event.source);
 	                return;
 	            }
-	            if (!event.data) {
-	                console.log("Empty message from source", event.source);
+	            if (!event.data || !event.data.type) {
+	                console.log("Empty or typeless backchannel message from source", event.source);
 	                return;
 	            }
-	            _this.host = event.source;
-	            console.log("Received Message", event.data, "from", _this.host, event.data);
-	            state.connection.botConnection.postMessage("channeldata", state.connection.userId, { data: event.data })
-	                .retry(2)
-	                .subscribe(function () {
-	                console.log("message passed on to bot");
-	            }, function (error) {
-	                console.log("failed to post message");
-	            });
+	            console.log("Received backchannel message", event.data, "from", event.source);
+	            switch (event.data.type) {
+	                case "subscribe":
+	                    exports.store.dispatch({ type: 'Subscribe_Host', host: event.source });
+	                    break;
+	                case "unsubscribe":
+	                    exports.store.dispatch({ type: 'Unsubscribe_Host' });
+	                    break;
+	                case "send":
+	                    if (!event.data.contents) {
+	                        console.log("Backchannel message has no contents");
+	                        return;
+	                    }
+	                    var state = exports.store.getState();
+	                    state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data.contents })
+	                        .retry(2)
+	                        .subscribe(function (success) {
+	                        console.log("message passed on to bot");
+	                    }, function (error) {
+	                        console.log("failed to post message");
+	                    });
+	                    break;
+	                default:
+	                    console.log("unknown message type", event.data.type);
+	            }
 	        };
 	    }
 	    UI.prototype.componentWillMount = function () {
@@ -196,7 +216,7 @@ var BotChat =
 	        bc.activities$.subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
 	        if (this.props.allowMessagesFrom) {
 	            console.log("adding event listener for messages from hosting web page");
-	            window.addEventListener("message", this.receiveMessageFromHostingPage, false);
+	            window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
 	        }
 	        exports.store.subscribe(function () {
 	            return _this.forceUpdate();
@@ -1291,7 +1311,7 @@ var BotChat =
 
 	"use strict";
 	var rxjs_1 = __webpack_require__(19);
-	var directLineTypes_1 = __webpack_require__(374);
+	var directLineTypes_1 = __webpack_require__(364);
 	var DirectLine = (function () {
 	    function DirectLine(secretOrToken, domain) {
 	        var _this = this;
@@ -19474,6 +19494,47 @@ var BotChat =
 
 /***/ },
 /* 364 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.mimeTypes = {
+	    png: 'image/png',
+	    jpg: 'image/jpg',
+	    jpeg: 'image/jpeg'
+	};
+
+
+/***/ },
+/* 365 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var rxjs_1 = __webpack_require__(19);
+	// An experimental feature. The idea is to allow two instances of botchat on a page, A and B
+	// A sends and receives messages to and from the bot, as normal
+	// B sends and receives backchannel messages to and from the bot using A as a proxy
+	var BrowserLine = (function () {
+	    function BrowserLine() {
+	        this.connected$ = new rxjs_1.BehaviorSubject(false);
+	        this.postMessage = function (text, from, channelData) {
+	            return rxjs_1.Observable.of(true);
+	        };
+	        this.postFile = function (file) {
+	            return rxjs_1.Observable.of(true);
+	        };
+	        this.getActivities = function () { return rxjs_1.Observable.of({
+	            type: "message"
+	        }); };
+	        this.connected$.next(true);
+	        this.activities$ = this.getActivities();
+	    }
+	    return BrowserLine;
+	}());
+	exports.BrowserLine = BrowserLine;
+
+
+/***/ },
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19484,7 +19545,7 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var BotChat_1 = __webpack_require__(1);
-	var HistoryMessage_1 = __webpack_require__(365);
+	var HistoryMessage_1 = __webpack_require__(367);
 	var rxjs_1 = __webpack_require__(19);
 	var History = (function (_super) {
 	    __extends(History, _super);
@@ -19545,14 +19606,14 @@ var BotChat =
 
 
 /***/ },
-/* 365 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(366);
-	var Carousel_1 = __webpack_require__(367);
-	var FormattedText_1 = __webpack_require__(368);
+	var Attachment_1 = __webpack_require__(368);
+	var Carousel_1 = __webpack_require__(369);
+	var FormattedText_1 = __webpack_require__(370);
 	exports.HistoryMessage = function (props) {
 	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
 	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
@@ -19570,7 +19631,7 @@ var BotChat =
 
 
 /***/ },
-/* 366 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19670,7 +19731,7 @@ var BotChat =
 
 
 /***/ },
-/* 367 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19680,7 +19741,7 @@ var BotChat =
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(366);
+	var Attachment_1 = __webpack_require__(368);
 	var Carousel = (function (_super) {
 	    __extends(Carousel, _super);
 	    function Carousel(props) {
@@ -19805,7 +19866,7 @@ var BotChat =
 
 
 /***/ },
-/* 368 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19823,8 +19884,8 @@ var BotChat =
 	    return t;
 	};
 	var React = __webpack_require__(2);
-	var Marked = __webpack_require__(369);
-	var He = __webpack_require__(370);
+	var Marked = __webpack_require__(371);
+	var He = __webpack_require__(372);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
 	    function FormattedText() {
@@ -20035,7 +20096,7 @@ var BotChat =
 
 
 /***/ },
-/* 369 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -21328,7 +21389,7 @@ var BotChat =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 370 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/he v1.1.0 by @mathias | MIT license */
@@ -21672,10 +21733,10 @@ var BotChat =
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(371)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(373)(module), (function() { return this; }())))
 
 /***/ },
-/* 371 */
+/* 373 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -21691,7 +21752,7 @@ var BotChat =
 
 
 /***/ },
-/* 372 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21702,7 +21763,7 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var BotChat_1 = __webpack_require__(1);
-	var directLineTypes_1 = __webpack_require__(374);
+	var directLineTypes_1 = __webpack_require__(364);
 	var Shell = (function (_super) {
 	    __extends(Shell, _super);
 	    function Shell() {
@@ -21800,7 +21861,7 @@ var BotChat =
 
 
 /***/ },
-/* 373 */
+/* 375 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21853,47 +21914,6 @@ var BotChat =
 	        React.createElement("div", {className: "wc-debugview-json"}, formatJSON(props.activity || {}))
 	    );
 	};
-
-
-/***/ },
-/* 374 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.mimeTypes = {
-	    png: 'image/png',
-	    jpg: 'image/jpg',
-	    jpeg: 'image/jpeg'
-	};
-
-
-/***/ },
-/* 375 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var rxjs_1 = __webpack_require__(19);
-	// An experimental feature. The idea is to allow two instances of botchat on a page, A and B
-	// A sends and receives messages to and from the bot, as normal
-	// B sends and receives backchannel messages to and from the bot using A as a proxy
-	var BrowserLine = (function () {
-	    function BrowserLine() {
-	        this.connected$ = new rxjs_1.BehaviorSubject(false);
-	        this.postMessage = function (text, from, channelData) {
-	            return rxjs_1.Observable.of(true);
-	        };
-	        this.postFile = function (file) {
-	            return rxjs_1.Observable.of(true);
-	        };
-	        this.getActivities = function () { return rxjs_1.Observable.of({
-	            type: "message"
-	        }); };
-	        this.connected$.next(true);
-	        this.activities$ = this.getActivities();
-	    }
-	    return BrowserLine;
-	}());
-	exports.BrowserLine = BrowserLine;
 
 
 /***/ }

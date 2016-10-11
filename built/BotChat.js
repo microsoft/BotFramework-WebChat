@@ -16,12 +16,17 @@ var connection = function (state, action) {
         connected: false,
         botConnection: undefined,
         userId: undefined,
+        host: undefined
     }; }
     switch (action.type) {
         case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, userId: action.userId };
+            return { connected: false, botConnection: action.botConnection, userId: action.userId, host: state.host };
         case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, userId: state.userId };
+            return { connected: true, botConnection: state.botConnection, userId: state.userId, host: state.host };
+        case 'Subscribe_Host':
+            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: action.host };
+        case 'Unsubscribe_Host':
+            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: undefined };
         default:
             return state;
     }
@@ -103,25 +108,40 @@ var UI = (function (_super) {
     function UI() {
         var _this = this;
         _super.call(this);
-        this.receiveMessageFromHostingPage = function (event) {
-            var state = exports.store.getState();
+        this.receiveBackchannelMessageFromHostingPage = function (event) {
             if (!_this.props.allowMessagesFrom || _this.props.allowMessagesFrom.indexOf(event.origin) === -1) {
-                console.log("Rejecting Message from unknown source", event.source);
+                console.log("Rejecting backchannel message from unknown source", event.source);
                 return;
             }
-            if (!event.data) {
-                console.log("Empty message from source", event.source);
+            if (!event.data || !event.data.type) {
+                console.log("Empty or typeless backchannel message from source", event.source);
                 return;
             }
-            _this.host = event.source;
-            console.log("Received Message", event.data, "from", _this.host, event.data);
-            state.connection.botConnection.postMessage("channeldata", state.connection.userId, { data: event.data })
-                .retry(2)
-                .subscribe(function () {
-                console.log("message passed on to bot");
-            }, function (error) {
-                console.log("failed to post message");
-            });
+            console.log("Received backchannel message", event.data, "from", event.source);
+            switch (event.data.type) {
+                case "subscribe":
+                    exports.store.dispatch({ type: 'Subscribe_Host', host: event.source });
+                    break;
+                case "unsubscribe":
+                    exports.store.dispatch({ type: 'Unsubscribe_Host' });
+                    break;
+                case "send":
+                    if (!event.data.contents) {
+                        console.log("Backchannel message has no contents");
+                        return;
+                    }
+                    var state = exports.store.getState();
+                    state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data.contents })
+                        .retry(2)
+                        .subscribe(function (success) {
+                        console.log("message passed on to bot");
+                    }, function (error) {
+                        console.log("failed to post message");
+                    });
+                    break;
+                default:
+                    console.log("unknown message type", event.data.type);
+            }
         };
     }
     UI.prototype.componentWillMount = function () {
@@ -142,7 +162,7 @@ var UI = (function (_super) {
         bc.activities$.subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
         if (this.props.allowMessagesFrom) {
             console.log("adding event listener for messages from hosting web page");
-            window.addEventListener("message", this.receiveMessageFromHostingPage, false);
+            window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
         exports.store.subscribe(function () {
             return _this.forceUpdate();

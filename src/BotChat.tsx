@@ -11,7 +11,8 @@ import { DebugView } from './DebugView';
 interface ConnectionState {
     connected: boolean
     botConnection: IBotConnection,
-    userId: string
+    userId: string,
+    host: Window
 }
 
 export type ConnectionAction = {
@@ -19,7 +20,10 @@ export type ConnectionAction = {
     botConnection: IBotConnection,
     userId: string,
 } | {
-    type: 'Connected_To_Bot'
+    type: 'Connected_To_Bot' | 'Unsubscribe_Host'
+} | {
+    type: 'Subscribe_Host',
+    host: Window
 }
 
 const connection: Reducer<ConnectionState> = (
@@ -27,14 +31,19 @@ const connection: Reducer<ConnectionState> = (
         connected: false,
         botConnection: undefined,
         userId: undefined,
+        host: undefined
     },
     action: ConnectionAction
 ) => {
     switch (action.type) {
         case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, userId: action.userId };
+            return { connected: false, botConnection: action.botConnection, userId: action.userId, host: state.host };
         case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, userId: state.userId };
+            return { connected: true, botConnection: state.botConnection, userId: state.userId, host: state.host  };
+        case 'Subscribe_Host':
+            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: action.host  };
+        case 'Unsubscribe_Host':
+            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: undefined  };
         default:
             return state;
     }
@@ -180,35 +189,47 @@ interface Props {
 }
 
 export class UI extends React.Component<Props, {}> {
-    host:Window;
     constructor() {
         super();
     }
 
-    receiveMessageFromHostingPage = (event: MessageEvent) => {
-        const state = store.getState();
+    receiveBackchannelMessageFromHostingPage = (event: MessageEvent) => {
         if (!this.props.allowMessagesFrom || this.props.allowMessagesFrom.indexOf(event.origin) === -1) {
-            console.log("Rejecting Message from unknown source", event.source);
+            console.log("Rejecting backchannel message from unknown source", event.source);
             return;
         }
 
-        if (!event.data) {
-            console.log("Empty message from source", event.source);
+        if (!event.data || !event.data.type) {
+            console.log("Empty or typeless backchannel message from source", event.source);
             return;
         }
+ 
+        console.log("Received backchannel message", event.data, "from", event.source);
 
-        this.host = event.source;
-        console.log("Received Message", event.data, "from", this.host, event.data);
-        state.connection.botConnection.postMessage("channeldata", state.connection.userId, { data: event.data })
-        .retry(2)
-        .subscribe(
-            () => {
-                console.log("message passed on to bot");
-            },
-            error => {
-                console.log("failed to post message");
-            }
-        );
+        switch (event.data.type) {
+            case "subscribe":
+                store.dispatch({ type: 'Subscribe_Host', host: event.source } as ConnectionAction)
+                break;
+            case "unsubscribe":
+                store.dispatch({ type: 'Unsubscribe_Host' } as ConnectionAction)
+                break;
+            case "send":
+                if (!event.data.contents) {
+                    console.log("Backchannel message has no contents");
+                    return;
+                }
+                const state = store.getState();
+                state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data.contents })
+                .retry(2)
+                .subscribe(success => {
+                    console.log("message passed on to bot");
+                }, error => {
+                    console.log("failed to post message");
+                });
+                break;
+            default:
+                console.log("unknown message type", event.data.type);
+        }
     }
 
     componentWillMount() {
@@ -237,7 +258,7 @@ export class UI extends React.Component<Props, {}> {
 
         if (this.props.allowMessagesFrom) {
             console.log("adding event listener for messages from hosting web page");
-            window.addEventListener("message", this.receiveMessageFromHostingPage, false);
+            window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
 
         store.subscribe(() => 
