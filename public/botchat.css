@@ -26,8 +26,8 @@
     }
 
     h1, h2, h3, h4, p, ul, ol {
-        margin-bottom: 8px;
-        margin-top: 0;
+        margin: 0;
+        padding: 0;
     }
 
 /* docking */
@@ -220,7 +220,6 @@
         border: 1px solid #d2dde5;
         font-size: 13px;
         padding: 8px;
-        width: 300px;
     }
 
     .wc-card button {
@@ -338,6 +337,7 @@
     .wc-carousel button.scroll {
         background-color: #d2dde5;
         height: 28px;
+        overflow: hidden;
         padding: 0;
         position: absolute;
         top: 50%;
@@ -382,9 +382,11 @@
 
     .wc-carousel-scroll > ul > li {
         display: inline-block;
+        max-width: 640px;
         padding: 0 4px;
         vertical-align: top;
-        white-space: nowrap;
+        white-space: nowrap;        
+        width: 85%;
     }
 
     .wc-carousel-scroll > ul > li:last-child {
