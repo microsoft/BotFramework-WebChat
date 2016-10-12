@@ -61,7 +61,7 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.hero":
             return (
                 <div className='wc-card hero'>
-                    { images(props.attachment.content.images) }
+                    { images([props.attachment.content.images[0]]) }
                     <h1>{ props.attachment.content.title }</h1>
                     <h2>{ props.attachment.content.subtitle }</h2>
                     <p>{ props.attachment.content.text }</p>
@@ -74,7 +74,7 @@ export const AttachmentView = (props: {
                 <div className='wc-card thumbnail'>
                     <h1>{ props.attachment.content.title }</h1>
                     <p>
-                        { images(props.attachment.content.images) }
+                        { images([props.attachment.content.images[0]]) }
                         <h2>{ props.attachment.content.subtitle }</h2>
                         { props.attachment.content.text }
                     </p>
