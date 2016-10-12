@@ -16,6 +16,7 @@ var Carousel = (function (_super) {
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
+        this.resizeListener = function () { return _this.resize(); };
         this.scrollEventListener = function () { return _this.onScroll(); };
     }
     Carousel.prototype.clearScrollTimers = function () {
@@ -40,15 +41,21 @@ var Carousel = (function (_super) {
         };
         this.setState(newState);
     };
-    Carousel.prototype.componentDidMount = function () {
+    Carousel.prototype.setItemWidth = function (didMount) {
+        if (didMount === void 0) { didMount = false; }
         var li = this.ul.firstChild;
         this.itemWidth = li.offsetWidth;
+    };
+    Carousel.prototype.componentDidMount = function () {
+        this.setItemWidth(true);
         this.manageScrollButtons();
         this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
+        window.addEventListener('resize', this.resizeListener);
     };
     Carousel.prototype.componentWillUnmount = function () {
         this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
+        window.removeEventListener('resize', this.resizeListener);
     };
     Carousel.prototype.onScroll = function () {
         this.manageScrollButtons();
@@ -113,7 +120,7 @@ var Carousel = (function (_super) {
                 React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
                     React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment) {
                         return React.createElement("li", null, 
-                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment})
+                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment, onImageLoad: function () { return _this.resize(); }})
                         );
                     }))
                 )
@@ -123,6 +130,10 @@ var Carousel = (function (_super) {
                     React.createElement("path", {d: "M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"})
                 )
             )));
+    };
+    Carousel.prototype.resize = function () {
+        this.setItemWidth();
+        this.manageScrollButtons();
     };
     return Carousel;
 }(React.Component));
