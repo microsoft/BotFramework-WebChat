@@ -8,10 +8,6 @@ export const AttachmentView = (props: {
 }) => {
     const state = store.getState();
 
-    const imgLoad = () => {
-        if (props.onImageLoad) props.onImageLoad();
-    }
-
     const onClickButton = (type: string, value: string) => {
         switch (type) {
             case "imBack":
@@ -51,17 +47,18 @@ export const AttachmentView = (props: {
         <ul className="wc-card-buttons">
             { buttons.map(button => <li><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
         </ul>;
-    
-    const images = (images?: { url: string }[]) => images &&
-        <div> 
-            { images.map(image => <img src={ image.url } onLoad={ () => imgLoad() } />) }
-        </div>;
+
+    const imageWithOnLoad = (url: string) => 
+        <img src={ url } onLoad={ () => props.onImageLoad && props.onImageLoad() } />;
+
+    const attachedImage = (images?: { url: string }[]) =>
+        images && imageWithOnLoad(images[0].url); 
 
     switch (props.attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
             return (
                 <div className='wc-card hero'>
-                    { images(props.attachment.content.images) }
+                    { attachedImage(props.attachment.content.images) }
                     <h1>{ props.attachment.content.title }</h1>
                     <h2>{ props.attachment.content.subtitle }</h2>
                     <p>{ props.attachment.content.text }</p>
@@ -74,7 +71,7 @@ export const AttachmentView = (props: {
                 <div className='wc-card thumbnail'>
                     <h1>{ props.attachment.content.title }</h1>
                     <p>
-                        { images(props.attachment.content.images) }
+                        { attachedImage(props.attachment.content.images) }
                         <h2>{ props.attachment.content.subtitle }</h2>
                         { props.attachment.content.text }
                     </p>
@@ -102,7 +99,7 @@ export const AttachmentView = (props: {
                         </thead>
                         <tbody>{ props.attachment.content.items && props.attachment.content.items.map(item =>
                             <tr>
-                                <td>{ item.image && <img src={ item.image.url } onLoad={ () => imgLoad() } /> }<span>{ item.title }</span></td>
+                                <td>{ item.image && imageWithOnLoad(item.image.url) } /> }<span>{ item.title }</span></td>
                                 <td>{ item.price }</td>
                             </tr>) }
                         </tbody>
@@ -123,7 +120,7 @@ export const AttachmentView = (props: {
         case "image/png":
         case "image/jpg":
         case "image/jpeg":
-            return <img src={ props.attachment.contentUrl } onLoad={ () => imgLoad() } />;
+            return imageWithOnLoad(props.attachment.contentUrl);
         
         default:
             return <span/>;

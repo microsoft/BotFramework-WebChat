@@ -19674,12 +19674,16 @@ var BotChat =
 	        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button) { return React.createElement("li", null, 
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
-	    var images = function (images) { return images &&
-	        React.createElement("div", null, images.map(function (image) { return React.createElement("img", {src: image.url}); })); };
+	    var imageWithOnLoad = function (url) {
+	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad && props.onImageLoad(); }});
+	    };
+	    var attachedImage = function (images) {
+	        return images && imageWithOnLoad(images[0].url);
+	    };
 	    switch (props.attachment.contentType) {
 	        case "application/vnd.microsoft.card.hero":
 	            return (React.createElement("div", {className: 'wc-card hero'}, 
-	                images(props.attachment.content.images), 
+	                attachedImage(props.attachment.content.images), 
 	                React.createElement("h1", null, props.attachment.content.title), 
 	                React.createElement("h2", null, props.attachment.content.subtitle), 
 	                React.createElement("p", null, props.attachment.content.text), 
@@ -19688,7 +19692,7 @@ var BotChat =
 	            return (React.createElement("div", {className: 'wc-card thumbnail'}, 
 	                React.createElement("h1", null, props.attachment.content.title), 
 	                React.createElement("p", null, 
-	                    images(props.attachment.content.images), 
+	                    attachedImage(props.attachment.content.images), 
 	                    React.createElement("h2", null, props.attachment.content.subtitle), 
 	                    props.attachment.content.text), 
 	                buttons(props.attachment.content.buttons)));
@@ -19709,7 +19713,8 @@ var BotChat =
 	                    React.createElement("tbody", null, props.attachment.content.items && props.attachment.content.items.map(function (item) {
 	                        return React.createElement("tr", null, 
 	                            React.createElement("td", null, 
-	                                item.image && React.createElement("img", {src: item.image.url}), 
+	                                item.image && imageWithOnLoad(item.image.url), 
+	                                " /> }", 
 	                                React.createElement("span", null, item.title)), 
 	                            React.createElement("td", null, item.price));
 	                    })), 
@@ -19724,7 +19729,7 @@ var BotChat =
 	        case "image/png":
 	        case "image/jpg":
 	        case "image/jpeg":
-	            return React.createElement("img", {src: props.attachment.contentUrl});
+	            return imageWithOnLoad(props.attachment.contentUrl);
 	        default:
 	            return React.createElement("span", null);
 	    }
@@ -19753,6 +19758,7 @@ var BotChat =
 	            previousButtonEnabled: false,
 	            nextButtonEnabled: false
 	        };
+	        this.resizeListener = function () { return _this.resize(); };
 	        this.scrollEventListener = function () { return _this.onScroll(); };
 	    }
 	    Carousel.prototype.clearScrollTimers = function () {
@@ -19777,15 +19783,21 @@ var BotChat =
 	        };
 	        this.setState(newState);
 	    };
-	    Carousel.prototype.componentDidMount = function () {
+	    Carousel.prototype.setItemWidth = function (didMount) {
+	        if (didMount === void 0) { didMount = false; }
 	        var li = this.ul.firstChild;
 	        this.itemWidth = li.offsetWidth;
+	    };
+	    Carousel.prototype.componentDidMount = function () {
+	        this.setItemWidth(true);
 	        this.manageScrollButtons();
 	        this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
 	        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
+	        window.addEventListener('resize', this.resizeListener);
 	    };
 	    Carousel.prototype.componentWillUnmount = function () {
 	        this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
+	        window.removeEventListener('resize', this.resizeListener);
 	    };
 	    Carousel.prototype.onScroll = function () {
 	        this.manageScrollButtons();
@@ -19850,7 +19862,7 @@ var BotChat =
 	                React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
 	                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment) {
 	                        return React.createElement("li", null, 
-	                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment})
+	                            React.createElement(Attachment_1.AttachmentView, {attachment: attachment, onImageLoad: function () { return _this.resize(); }})
 	                        );
 	                    }))
 	                )
@@ -19860,6 +19872,10 @@ var BotChat =
 	                    React.createElement("path", {d: "M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"})
 	                )
 	            )));
+	    };
+	    Carousel.prototype.resize = function () {
+	        this.setItemWidth();
+	        this.manageScrollButtons();
 	    };
 	    return Carousel;
 	}(React.Component));
