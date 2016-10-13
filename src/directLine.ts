@@ -38,42 +38,45 @@ export class DirectLine implements IBotConnection {
     private tokenTimer: number;
 
     constructor(
-        secretOrToken?: string,
+        secretOrToken: {
+            secret?: string,
+            token?: string
+        },
         private domain = "https://directline.botframework.com"
     ) {
         this.baseUrl = `${domain}/api/conversations`;
+        this.token = secretOrToken.secret || secretOrToken.token;
         Observable.ajax({
             method: "POST",
             url: `${this.baseUrl}`,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${secretOrToken}`
+                "Authorization": `BotConnector ${this.token}`
             }
         })
 //      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
         .retryWhen(error$ => error$.delay(1000))
-        .flatMap(conversation => {
-            this.conversationId = conversation.conversationId
-            this.token = conversation.token;
+        .subscribe(conversation => {
+            this.conversationId = conversation.conversationId;
             this.connected$.next(true);
-            return Observable.timer(intervalRefreshToken, intervalRefreshToken)
-            .flatMap(_ =>
-                Observable.ajax({
-                    method: "GET",
-                    url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
-                    headers: {
-                        "Accept": "application/json",
-                        "Authorization": `BotConnector ${this.token}`
-                    }
+            if (!secretOrToken.secret) {
+                Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
+                    Observable.ajax({
+                        method: "GET",
+                        url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
+                        headers: {
+                            "Accept": "application/json",
+                            "Authorization": `BotConnector ${this.token}`
+                        }
+                    })
+                    .retryWhen(error$ => error$.delay(1000))
+                    .map(ajaxResponse => <string>ajaxResponse.response)
+                ).subscribe(token => {
+                    console.log("refreshing token", token)
+                    this.token = token;
                 })
-                .map(ajaxResponse => <string>ajaxResponse.response)
-            );
-        }).subscribe(token => {
-            console.log("refreshing token", token)
-            this.token = token;
-        }, error => {
-            console.log("failure to connect");
+            }
         });
 
         this.activities$ = this.connected$

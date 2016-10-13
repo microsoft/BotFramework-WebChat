@@ -202,7 +202,7 @@ var BotChat =
 	    UI.prototype.componentWillMount = function () {
 	        var _this = this;
 	        console.log("Starting BotChat", this.props);
-	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
 	        exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
 	        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            exports.store.dispatch({ type: 'Connected_To_Bot' });
@@ -1415,37 +1415,37 @@ var BotChat =
 	                .map(function (ajaxResponse) { return ajaxResponse.response; });
 	        };
 	        this.baseUrl = domain + "/api/conversations";
+	        this.token = secretOrToken.secret || secretOrToken.token;
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: "" + this.baseUrl,
 	            headers: {
 	                "Accept": "application/json",
-	                "Authorization": "BotConnector " + secretOrToken
+	                "Authorization": "BotConnector " + this.token
 	            }
 	        })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
 	            .retryWhen(function (error$) { return error$.delay(1000); })
-	            .flatMap(function (conversation) {
+	            .subscribe(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
-	            _this.token = conversation.token;
 	            _this.connected$.next(true);
-	            return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
-	                .flatMap(function (_) {
-	                return rxjs_1.Observable.ajax({
-	                    method: "GET",
-	                    url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
-	                    headers: {
-	                        "Accept": "application/json",
-	                        "Authorization": "BotConnector " + _this.token
-	                    }
-	                })
-	                    .map(function (ajaxResponse) { return ajaxResponse.response; });
-	            });
-	        }).subscribe(function (token) {
-	            console.log("refreshing token", token);
-	            _this.token = token;
-	        }, function (error) {
-	            console.log("failure to connect");
+	            if (!secretOrToken.secret) {
+	                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
+	                    return rxjs_1.Observable.ajax({
+	                        method: "GET",
+	                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+	                        headers: {
+	                            "Accept": "application/json",
+	                            "Authorization": "BotConnector " + _this.token
+	                        }
+	                    })
+	                        .retryWhen(function (error$) { return error$.delay(1000); })
+	                        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	                }).subscribe(function (token) {
+	                    console.log("refreshing token", token);
+	                    _this.token = token;
+	                });
+	            }
 	        });
 	        this.activities$ = this.connected$
 	            .filter(function (connected) { return connected === true; })
