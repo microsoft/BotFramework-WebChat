@@ -26,36 +26,54 @@ interface DLMessageGroup
     eTag?: string
 }
 
+const intervalRefreshToken = 29*60*1000;
+
 export class DirectLine implements IBotConnection {    
     connected$ = new BehaviorSubject(false);
     activities$: Observable<Activity>;
 
     private conversationId: string;
     private token: string;
-    private baseUrl: string;
 
     constructor(
-        secretOrToken?: string,
+        secretOrToken: {
+            secret?: string,
+            token?: string
+        },
         private domain = "https://directline.botframework.com"
     ) {
-        this.baseUrl = `${domain}/api/conversations`;
+        this.token = secretOrToken.secret || secretOrToken.token;
         Observable.ajax({
             method: "POST",
-            url: `${this.baseUrl}`,
+            url: `${this.domain}/api/conversations`,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${secretOrToken}`
+                "Authorization": `BotConnector ${this.token}`
             }
         })
 //      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
         .retryWhen(error$ => error$.delay(1000))
         .subscribe(conversation => {
-            this.conversationId = conversation.conversationId
-            this.token = conversation.token;
+            this.conversationId = conversation.conversationId;
             this.connected$.next(true);
-        }, error => {
-            console.log("failed to connect");
+            if (!secretOrToken.secret) {
+                Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
+                    Observable.ajax({
+                        method: "GET",
+                        url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
+                        headers: {
+                            "Accept": "application/json",
+                            "Authorization": `BotConnector ${this.token}`
+                        }
+                    })
+                    .retryWhen(error$ => error$.delay(1000))
+                    .map(ajaxResponse => <string>ajaxResponse.response)
+                ).subscribe(token => {
+                    console.log("refreshing token", token)
+                    this.token = token;
+                })
+            }
         });
 
         this.activities$ = this.connected$
@@ -66,7 +84,7 @@ export class DirectLine implements IBotConnection {
     postMessage = (text: string, from: string, channelData?: any) =>
         Observable.ajax({
             method: "POST",
-            url: `${this.baseUrl}/${this.conversationId}/messages`,
+            url: `${this.domain}/api/conversations/${this.conversationId}/messages`,
             body: <DLMessage>{
                 text,
                 from,
@@ -87,7 +105,7 @@ export class DirectLine implements IBotConnection {
             formData.append('file', file);
             return Observable.ajax({
                 method: "POST",
-                url: `${this.baseUrl}/${this.conversationId}/upload`,
+                url: `${this.domain}/api/conversations/${this.conversationId}/upload`,
                 body: formData,
                 headers: {
                     "Authorization": `BotConnector ${this.token}`
@@ -158,7 +176,7 @@ export class DirectLine implements IBotConnection {
     private getActivityGroup = (watermark = "") => {
         return Observable.ajax({
             method: "GET",
-            url: `${this.baseUrl}/${this.conversationId}/messages?watermark=${watermark}`,
+            url: `${this.domain}/api/conversations/${this.conversationId}/messages?watermark=${watermark}`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `BotConnector ${this.token}`

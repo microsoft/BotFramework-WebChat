@@ -202,7 +202,7 @@ var BotChat =
 	    UI.prototype.componentWillMount = function () {
 	        var _this = this;
 	        console.log("Starting BotChat", this.props);
-	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
 	        exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
 	        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            exports.store.dispatch({ type: 'Connected_To_Bot' });
@@ -1313,6 +1313,7 @@ var BotChat =
 	"use strict";
 	var rxjs_1 = __webpack_require__(19);
 	var directLineTypes_1 = __webpack_require__(364);
+	var intervalRefreshToken = 29 * 60 * 1000;
 	var DirectLine = (function () {
 	    function DirectLine(secretOrToken, domain) {
 	        var _this = this;
@@ -1322,7 +1323,7 @@ var BotChat =
 	        this.postMessage = function (text, from, channelData) {
 	            return rxjs_1.Observable.ajax({
 	                method: "POST",
-	                url: _this.baseUrl + "/" + _this.conversationId + "/messages",
+	                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages",
 	                body: {
 	                    text: text,
 	                    from: from,
@@ -1342,7 +1343,7 @@ var BotChat =
 	            formData.append('file', file);
 	            return rxjs_1.Observable.ajax({
 	                method: "POST",
-	                url: _this.baseUrl + "/" + _this.conversationId + "/upload",
+	                url: _this.domain + "/api/conversations/" + _this.conversationId + "/upload",
 	                body: formData,
 	                headers: {
 	                    "Authorization": "BotConnector " + _this.token
@@ -1404,7 +1405,7 @@ var BotChat =
 	            if (watermark === void 0) { watermark = ""; }
 	            return rxjs_1.Observable.ajax({
 	                method: "GET",
-	                url: _this.baseUrl + "/" + _this.conversationId + "/messages?watermark=" + watermark,
+	                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages?watermark=" + watermark,
 	                headers: {
 	                    "Accept": "application/json",
 	                    "Authorization": "BotConnector " + _this.token
@@ -1413,23 +1414,37 @@ var BotChat =
 	                .retryWhen(function (error$) { return error$.delay(1000); })
 	                .map(function (ajaxResponse) { return ajaxResponse.response; });
 	        };
-	        this.baseUrl = domain + "/api/conversations";
+	        this.token = secretOrToken.secret || secretOrToken.token;
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "" + this.baseUrl,
+	            url: this.domain + "/api/conversations",
 	            headers: {
 	                "Accept": "application/json",
-	                "Authorization": "BotConnector " + secretOrToken
+	                "Authorization": "BotConnector " + this.token
 	            }
 	        })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
 	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .subscribe(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
-	            _this.token = conversation.token;
 	            _this.connected$.next(true);
-	        }, function (error) {
-	            console.log("failed to connect");
+	            if (!secretOrToken.secret) {
+	                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
+	                    return rxjs_1.Observable.ajax({
+	                        method: "GET",
+	                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+	                        headers: {
+	                            "Accept": "application/json",
+	                            "Authorization": "BotConnector " + _this.token
+	                        }
+	                    })
+	                        .retryWhen(function (error$) { return error$.delay(1000); })
+	                        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	                }).subscribe(function (token) {
+	                    console.log("refreshing token", token);
+	                    _this.token = token;
+	                });
+	            }
 	        });
 	        this.activities$ = this.connected$
 	            .filter(function (connected) { return connected === true; })

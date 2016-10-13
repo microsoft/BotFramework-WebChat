@@ -1,6 +1,7 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var directLineTypes_1 = require('./directLineTypes');
+var intervalRefreshToken = 29 * 60 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
         var _this = this;
@@ -10,7 +11,7 @@ var DirectLine = (function () {
         this.postMessage = function (text, from, channelData) {
             return rxjs_1.Observable.ajax({
                 method: "POST",
-                url: _this.baseUrl + "/" + _this.conversationId + "/messages",
+                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages",
                 body: {
                     text: text,
                     from: from,
@@ -30,7 +31,7 @@ var DirectLine = (function () {
             formData.append('file', file);
             return rxjs_1.Observable.ajax({
                 method: "POST",
-                url: _this.baseUrl + "/" + _this.conversationId + "/upload",
+                url: _this.domain + "/api/conversations/" + _this.conversationId + "/upload",
                 body: formData,
                 headers: {
                     "Authorization": "BotConnector " + _this.token
@@ -92,7 +93,7 @@ var DirectLine = (function () {
             if (watermark === void 0) { watermark = ""; }
             return rxjs_1.Observable.ajax({
                 method: "GET",
-                url: _this.baseUrl + "/" + _this.conversationId + "/messages?watermark=" + watermark,
+                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages?watermark=" + watermark,
                 headers: {
                     "Accept": "application/json",
                     "Authorization": "BotConnector " + _this.token
@@ -101,23 +102,37 @@ var DirectLine = (function () {
                 .retryWhen(function (error$) { return error$.delay(1000); })
                 .map(function (ajaxResponse) { return ajaxResponse.response; });
         };
-        this.baseUrl = domain + "/api/conversations";
+        this.token = secretOrToken.secret || secretOrToken.token;
         rxjs_1.Observable.ajax({
             method: "POST",
-            url: "" + this.baseUrl,
+            url: this.domain + "/api/conversations",
             headers: {
                 "Accept": "application/json",
-                "Authorization": "BotConnector " + secretOrToken
+                "Authorization": "BotConnector " + this.token
             }
         })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
             .retryWhen(function (error$) { return error$.delay(1000); })
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
-            _this.token = conversation.token;
             _this.connected$.next(true);
-        }, function (error) {
-            console.log("failed to connect");
+            if (!secretOrToken.secret) {
+                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
+                    return rxjs_1.Observable.ajax({
+                        method: "GET",
+                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+                        headers: {
+                            "Accept": "application/json",
+                            "Authorization": "BotConnector " + _this.token
+                        }
+                    })
+                        .retryWhen(function (error$) { return error$.delay(1000); })
+                        .map(function (ajaxResponse) { return ajaxResponse.response; });
+                }).subscribe(function (token) {
+                    console.log("refreshing token", token);
+                    _this.token = token;
+                });
+            }
         });
         this.activities$ = this.connected$
             .filter(function (connected) { return connected === true; })

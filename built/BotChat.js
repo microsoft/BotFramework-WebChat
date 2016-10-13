@@ -148,7 +148,7 @@ var UI = (function (_super) {
     UI.prototype.componentWillMount = function () {
         var _this = this;
         console.log("Starting BotChat", this.props);
-        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
         exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
         bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
             exports.store.dispatch({ type: 'Connected_To_Bot' });

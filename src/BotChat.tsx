@@ -236,7 +236,7 @@ export class UI extends React.Component<Props, {}> {
     componentWillMount() {
         console.log("Starting BotChat", this.props);
 
-        let bc = this.props.directLineDomain === "browser" ? new BrowserLine() : new DirectLine(this.props.secret || this.props.token, this.props.directLineDomain);
+        let bc = this.props.directLineDomain === "browser" ? new BrowserLine() : new DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
         store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc } as ConnectionAction);
 
         bc.connected$.filter(connected => connected === true).subscribe(connected => { 
