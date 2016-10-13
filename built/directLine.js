@@ -11,7 +11,7 @@ var DirectLine = (function () {
         this.postMessage = function (text, from, channelData) {
             return rxjs_1.Observable.ajax({
                 method: "POST",
-                url: _this.baseUrl + "/" + _this.conversationId + "/messages",
+                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages",
                 body: {
                     text: text,
                     from: from,
@@ -31,7 +31,7 @@ var DirectLine = (function () {
             formData.append('file', file);
             return rxjs_1.Observable.ajax({
                 method: "POST",
-                url: _this.baseUrl + "/" + _this.conversationId + "/upload",
+                url: _this.domain + "/api/conversations/" + _this.conversationId + "/upload",
                 body: formData,
                 headers: {
                     "Authorization": "BotConnector " + _this.token
@@ -93,7 +93,7 @@ var DirectLine = (function () {
             if (watermark === void 0) { watermark = ""; }
             return rxjs_1.Observable.ajax({
                 method: "GET",
-                url: _this.baseUrl + "/" + _this.conversationId + "/messages?watermark=" + watermark,
+                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages?watermark=" + watermark,
                 headers: {
                     "Accept": "application/json",
                     "Authorization": "BotConnector " + _this.token
@@ -102,11 +102,10 @@ var DirectLine = (function () {
                 .retryWhen(function (error$) { return error$.delay(1000); })
                 .map(function (ajaxResponse) { return ajaxResponse.response; });
         };
-        this.baseUrl = domain + "/api/conversations";
         this.token = secretOrToken.secret || secretOrToken.token;
         rxjs_1.Observable.ajax({
             method: "POST",
-            url: "" + this.baseUrl,
+            url: this.domain + "/api/conversations",
             headers: {
                 "Accept": "application/json",
                 "Authorization": "BotConnector " + this.token

@@ -34,8 +34,6 @@ export class DirectLine implements IBotConnection {
 
     private conversationId: string;
     private token: string;
-    private baseUrl: string;
-    private tokenTimer: number;
 
     constructor(
         secretOrToken: {
@@ -44,11 +42,10 @@ export class DirectLine implements IBotConnection {
         },
         private domain = "https://directline.botframework.com"
     ) {
-        this.baseUrl = `${domain}/api/conversations`;
         this.token = secretOrToken.secret || secretOrToken.token;
         Observable.ajax({
             method: "POST",
-            url: `${this.baseUrl}`,
+            url: `${this.domain}/api/conversations`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `BotConnector ${this.token}`
@@ -87,7 +84,7 @@ export class DirectLine implements IBotConnection {
     postMessage = (text: string, from: string, channelData?: any) =>
         Observable.ajax({
             method: "POST",
-            url: `${this.baseUrl}/${this.conversationId}/messages`,
+            url: `${this.domain}/api/conversations/${this.conversationId}/messages`,
             body: <DLMessage>{
                 text,
                 from,
@@ -108,7 +105,7 @@ export class DirectLine implements IBotConnection {
             formData.append('file', file);
             return Observable.ajax({
                 method: "POST",
-                url: `${this.baseUrl}/${this.conversationId}/upload`,
+                url: `${this.domain}/api/conversations/${this.conversationId}/upload`,
                 body: formData,
                 headers: {
                     "Authorization": `BotConnector ${this.token}`
@@ -179,7 +176,7 @@ export class DirectLine implements IBotConnection {
     private getActivityGroup = (watermark = "") => {
         return Observable.ajax({
             method: "GET",
-            url: `${this.baseUrl}/${this.conversationId}/messages?watermark=${watermark}`,
+            url: `${this.domain}/api/conversations/${this.conversationId}/messages?watermark=${watermark}`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `BotConnector ${this.token}`
