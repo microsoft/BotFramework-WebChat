@@ -26,7 +26,7 @@ interface DLMessageGroup
     eTag?: string
 }
 
-const intervalRefreshToken = 29*60*1000;
+const intervalRefreshToken = 28*60*1000;
 
 export class DirectLine implements IBotConnection {    
     connected$ = new BehaviorSubject(false);
@@ -63,14 +63,13 @@ export class DirectLine implements IBotConnection {
                         method: "GET",
                         url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
                         headers: {
-                            "Accept": "application/json",
                             "Authorization": `BotConnector ${this.token}`
                         }
                     })
                     .retryWhen(error$ => error$.delay(1000))
                     .map(ajaxResponse => <string>ajaxResponse.response)
                 ).subscribe(token => {
-                    console.log("refreshing token", token)
+                    console.log("refreshing token", token, "at", new Date())
                     this.token = token;
                 })
             }
@@ -115,7 +114,6 @@ export class DirectLine implements IBotConnection {
             .retryWhen(error$ => error$.delay(1000))
             .mapTo(true)
         }
-
 
     private getActivities = () => 
         new Observable<Observable<DLMessage>>((subscriber:Subscriber<Observable<DLMessage>>) =>

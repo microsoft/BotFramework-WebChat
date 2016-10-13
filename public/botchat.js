@@ -1313,7 +1313,7 @@ var BotChat =
 	"use strict";
 	var rxjs_1 = __webpack_require__(19);
 	var directLineTypes_1 = __webpack_require__(364);
-	var intervalRefreshToken = 29 * 60 * 1000;
+	var intervalRefreshToken = 28 * 60 * 1000;
 	var DirectLine = (function () {
 	    function DirectLine(secretOrToken, domain) {
 	        var _this = this;
@@ -1434,14 +1434,13 @@ var BotChat =
 	                        method: "GET",
 	                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
 	                        headers: {
-	                            "Accept": "application/json",
 	                            "Authorization": "BotConnector " + _this.token
 	                        }
 	                    })
 	                        .retryWhen(function (error$) { return error$.delay(1000); })
 	                        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	                }).subscribe(function (token) {
-	                    console.log("refreshing token", token);
+	                    console.log("refreshing token", token, "at", new Date());
 	                    _this.token = token;
 	                });
 	            }

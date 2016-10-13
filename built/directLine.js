@@ -1,7 +1,7 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var directLineTypes_1 = require('./directLineTypes');
-var intervalRefreshToken = 29 * 60 * 1000;
+var intervalRefreshToken = 28 * 60 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
         var _this = this;
@@ -122,14 +122,13 @@ var DirectLine = (function () {
                         method: "GET",
                         url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
                         headers: {
-                            "Accept": "application/json",
                             "Authorization": "BotConnector " + _this.token
                         }
                     })
                         .retryWhen(function (error$) { return error$.delay(1000); })
                         .map(function (ajaxResponse) { return ajaxResponse.response; });
                 }).subscribe(function (token) {
-                    console.log("refreshing token", token);
+                    console.log("refreshing token", token, "at", new Date());
                     _this.token = token;
                 });
             }
