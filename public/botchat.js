@@ -1313,6 +1313,7 @@ var BotChat =
 	"use strict";
 	var rxjs_1 = __webpack_require__(19);
 	var directLineTypes_1 = __webpack_require__(364);
+	var intervalRefreshToken = 29 * 60 * 1000;
 	var DirectLine = (function () {
 	    function DirectLine(secretOrToken, domain) {
 	        var _this = this;
@@ -1428,6 +1429,18 @@ var BotChat =
 	            _this.conversationId = conversation.conversationId;
 	            _this.token = conversation.token;
 	            _this.connected$.next(true);
+	            rxjs_1.Observable.ajax({
+	                method: "GET",
+	                url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+	                headers: {
+	                    "Accept": "application/json",
+	                    "Authorization": "BotConnector " + _this.token
+	                }
+	            })
+	                .map(function (ajaxResponse) { return ajaxResponse.response; })
+	                .subscribe(function (token) {
+	                _this.token = token;
+	            });
 	        }, function (error) {
 	            console.log("failed to connect");
 	        });
