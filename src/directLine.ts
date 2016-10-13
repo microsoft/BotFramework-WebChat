@@ -53,24 +53,27 @@ export class DirectLine implements IBotConnection {
 //      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
         .retryWhen(error$ => error$.delay(1000))
-        .subscribe(conversation => {
+        .flatMap(conversation => {
             this.conversationId = conversation.conversationId
             this.token = conversation.token;
             this.connected$.next(true);
-            Observable.ajax({
-                method: "GET",
-                url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
-                headers: {
-                    "Accept": "application/json",
-                    "Authorization": `BotConnector ${this.token}`
-                }
-            })
-            .map(ajaxResponse => <string>ajaxResponse.response)
-            .subscribe(token => {
-                this.token = token;
-            });
+            return Observable.timer(intervalRefreshToken, intervalRefreshToken)
+            .flatMap(_ =>
+                Observable.ajax({
+                    method: "GET",
+                    url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `BotConnector ${this.token}`
+                    }
+                })
+                .map(ajaxResponse => <string>ajaxResponse.response)
+            );
+        }).subscribe(token => {
+            console.log("refreshing token", token)
+            this.token = token;
         }, error => {
-            console.log("failed to connect");
+            console.log("failure to connect");
         });
 
         this.activities$ = this.connected$

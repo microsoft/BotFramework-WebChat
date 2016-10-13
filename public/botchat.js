@@ -1425,24 +1425,27 @@ var BotChat =
 	        })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
 	            .retryWhen(function (error$) { return error$.delay(1000); })
-	            .subscribe(function (conversation) {
+	            .flatMap(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
 	            _this.token = conversation.token;
 	            _this.connected$.next(true);
-	            rxjs_1.Observable.ajax({
-	                method: "GET",
-	                url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
-	                headers: {
-	                    "Accept": "application/json",
-	                    "Authorization": "BotConnector " + _this.token
-	                }
-	            })
-	                .map(function (ajaxResponse) { return ajaxResponse.response; })
-	                .subscribe(function (token) {
-	                _this.token = token;
+	            return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
+	                .flatMap(function (_) {
+	                return rxjs_1.Observable.ajax({
+	                    method: "GET",
+	                    url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+	                    headers: {
+	                        "Accept": "application/json",
+	                        "Authorization": "BotConnector " + _this.token
+	                    }
+	                })
+	                    .map(function (ajaxResponse) { return ajaxResponse.response; });
 	            });
+	        }).subscribe(function (token) {
+	            console.log("refreshing token", token);
+	            _this.token = token;
 	        }, function (error) {
-	            console.log("failed to connect");
+	            console.log("failure to connect");
 	        });
 	        this.activities$ = this.connected$
 	            .filter(function (connected) { return connected === true; })
