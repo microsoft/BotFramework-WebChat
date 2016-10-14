@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, IBotConnection, User, mimeTypes } from './directLineTypes'; 
+import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './directLineTypes'; 
 
 interface DLAttachment {
     url: string,
@@ -146,11 +146,11 @@ export class DirectLine implements IBotConnection {
                     text: dlm.text,
                     textFormat: "markdown",
                     eTag: dlm.eTag,
-                    attachments: dlm.images && dlm.images.map(path => ({
-                        contentType: mimeTypes[path.split('.').pop()],
+                    attachments: dlm.images && dlm.images.map(path => <Image>{
+                        contentType: "image/png",
                         contentUrl: this.domain + path,
                         name: '2009-09-21'
-                    }))
+                    })
                 }
             }
         });

@@ -1308,7 +1308,6 @@ var BotChat =
 
 	"use strict";
 	var rxjs_1 = __webpack_require__(19);
-	var directLineTypes_1 = __webpack_require__(364);
 	var intervalRefreshToken = 28 * 60 * 1000;
 	var DirectLine = (function () {
 	    function DirectLine(secretOrToken, domain) {
@@ -1380,11 +1379,11 @@ var BotChat =
 	                        text: dlm.text,
 	                        textFormat: "markdown",
 	                        eTag: dlm.eTag,
-	                        attachments: dlm.images && dlm.images.map(function (path) { return ({
-	                            contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
+	                        attachments: dlm.images && dlm.images.map(function (path) { return {
+	                            contentType: "image/png",
 	                            contentUrl: _this.domain + path,
 	                            name: '2009-09-21'
-	                        }); })
+	                        }; })
 	                    };
 	                }
 	            });
@@ -19504,18 +19503,7 @@ var BotChat =
 
 
 /***/ },
-/* 364 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.mimeTypes = {
-	    png: 'image/png',
-	    jpg: 'image/jpg',
-	    jpeg: 'image/jpeg'
-	};
-
-
-/***/ },
+/* 364 */,
 /* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -21790,7 +21778,6 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var BotChat_1 = __webpack_require__(1);
-	var directLineTypes_1 = __webpack_require__(364);
 	var Shell = (function (_super) {
 	    __extends(Shell, _super);
 	    function Shell() {
@@ -21806,11 +21793,10 @@ var BotChat =
 	                    var path = window.URL.createObjectURL(file);
 	                    BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
 	                            type: "message",
-	                            text: '',
-	                            from: { id: state.connection.user.id },
+	                            from: state.connection.user,
 	                            timestamp: Date.now().toString(),
 	                            attachments: [{
-	                                    contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
+	                                    contentType: "image/png",
 	                                    contentUrl: path,
 	                                    name: 'Your file here'
 	                                }]
@@ -21833,9 +21819,9 @@ var BotChat =
 	                BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
 	                        type: "message",
 	                        text: state.shell.text,
-	                        from: { id: state.connection.user.id },
-	                        timestamp: Date.now().toString()
-	                    } });
+	                        from: state.connection.user },
+	                    timestamp: Date.now().toString()
+	                });
 	                BotChat_1.store.dispatch({ type: 'Post_Send_Shell_Text' });
 	            }, function (error) {
 	                console.log("failed to post message");

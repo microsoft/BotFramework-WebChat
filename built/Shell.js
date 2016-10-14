@@ -6,7 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var BotChat_1 = require('./BotChat');
-var directLineTypes_1 = require('./directLineTypes');
 var Shell = (function (_super) {
     __extends(Shell, _super);
     function Shell() {
@@ -22,11 +21,10 @@ var Shell = (function (_super) {
                     var path = window.URL.createObjectURL(file);
                     BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
                             type: "message",
-                            text: '',
-                            from: { id: state.connection.user.id },
+                            from: state.connection.user,
                             timestamp: Date.now().toString(),
                             attachments: [{
-                                    contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
+                                    contentType: "image/png",
                                     contentUrl: path,
                                     name: 'Your file here'
                                 }]
@@ -49,9 +47,9 @@ var Shell = (function (_super) {
                 BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
                         type: "message",
                         text: state.shell.text,
-                        from: { id: state.connection.user.id },
-                        timestamp: Date.now().toString()
-                    } });
+                        from: state.connection.user },
+                    timestamp: Date.now().toString()
+                });
                 BotChat_1.store.dispatch({ type: 'Post_Send_Shell_Text' });
             }, function (error) {
                 console.log("failed to post message");

@@ -1,6 +1,5 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
-var directLineTypes_1 = require('./directLineTypes');
 var intervalRefreshToken = 28 * 60 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
@@ -72,11 +71,11 @@ var DirectLine = (function () {
                         text: dlm.text,
                         textFormat: "markdown",
                         eTag: dlm.eTag,
-                        attachments: dlm.images && dlm.images.map(function (path) { return ({
-                            contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
+                        attachments: dlm.images && dlm.images.map(function (path) { return {
+                            contentType: "image/png",
                             contentUrl: _this.domain + path,
                             name: '2009-09-21'
-                        }); })
+                        }; })
                     };
                 }
             });

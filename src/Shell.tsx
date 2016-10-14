@@ -28,11 +28,10 @@ export class Shell extends React.Component<{}, {}> {
                     const path = window.URL.createObjectURL(file);
                     store.dispatch({ type: 'Send_Message', activity: {
                         type: "message",
-                        text: '',
-                        from: { id: state.connection.user.id },
+                        from: state.connection.user,
                         timestamp: Date.now().toString(),
                         attachments: [{
-                            contentType: mimeTypes[path.split('.').pop()],
+                            contentType: "image/png",
                             contentUrl: path,
                             name: 'Your file here'
                         }]
@@ -56,9 +55,9 @@ export class Shell extends React.Component<{}, {}> {
                 store.dispatch({ type: 'Send_Message', activity: {
                     type: "message",
                     text: state.shell.text,
-                    from: { id: state.connection.user.id },
+                    from: state.connection.user },
                     timestamp: Date.now().toString()
-                }} as HistoryAction);
+                } as HistoryAction);
                 store.dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);
             },
             error => {
