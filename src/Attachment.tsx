@@ -12,7 +12,7 @@ export const AttachmentView = (props: {
         switch (type) {
             case "imBack":
             case "postBack":
-                state.connection.botConnection.postMessage(value, state.connection.userId)
+                state.connection.botConnection.postMessage(value, state.connection.user)
                 .retry(2)
                 .subscribe(
                     () => {
@@ -20,7 +20,7 @@ export const AttachmentView = (props: {
                             store.dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
-                                from: {id: state.connection.userId},
+                                from: { id: state.connection.user.id },
                                 timestamp: Date.now().toString()
                             }} as HistoryAction);
                         } else {

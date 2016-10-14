@@ -29,7 +29,7 @@ export class Shell extends React.Component<{}, {}> {
                     store.dispatch({ type: 'Send_Message', activity: {
                         type: "message",
                         text: '',
-                        from: { id: state.connection.userId },
+                        from: { id: state.connection.user.id },
                         timestamp: Date.now().toString(),
                         attachments: [{
                             contentType: mimeTypes[path.split('.').pop()],
@@ -49,14 +49,14 @@ export class Shell extends React.Component<{}, {}> {
         const state = store.getState();
         console.log("shell sendMessage");
         store.dispatch({ type: 'Pre_Send_Shell_Text' });
-        state.connection.botConnection.postMessage(state.shell.text, state.connection.userId)
+        state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
         .retry(2)
         .subscribe(
             () => {
                 store.dispatch({ type: 'Send_Message', activity: {
                     type: "message",
                     text: state.shell.text,
-                    from: { id: state.connection.userId },
+                    from: { id: state.connection.user.id },
                     timestamp: Date.now().toString()
                 }} as HistoryAction);
                 store.dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);

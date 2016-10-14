@@ -15,18 +15,18 @@ var connection = function (state, action) {
     if (state === void 0) { state = {
         connected: false,
         botConnection: undefined,
-        userId: undefined,
+        user: undefined,
         host: undefined
     }; }
     switch (action.type) {
         case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, userId: action.userId, host: state.host };
+            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
         case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, userId: state.userId, host: state.host };
+            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
         case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: action.host };
+            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
         case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: undefined };
+            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
         default:
             return state;
     }
@@ -99,10 +99,6 @@ exports.store = redux_1.createStore(redux_1.combineReducers({
     history: history,
     debug: debug
 }));
-var guid = function () {
-    var s4 = function () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-};
 var UI = (function (_super) {
     __extends(UI, _super);
     function UI() {
@@ -136,7 +132,7 @@ var UI = (function (_super) {
                     return;
             }
             var state = exports.store.getState();
-            state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data })
+            state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
                 .retry(2)
                 .subscribe(function (success) {
                 console.log("backchannel message sent to bot");
@@ -149,7 +145,7 @@ var UI = (function (_super) {
         var _this = this;
         console.log("Starting BotChat", this.props);
         var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-        exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
+        exports.store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
         bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
             exports.store.dispatch({ type: 'Connected_To_Bot' });
         });

@@ -7,14 +7,14 @@ exports.AttachmentView = function (props) {
         switch (type) {
             case "imBack":
             case "postBack":
-                state.connection.botConnection.postMessage(value, state.connection.userId)
+                state.connection.botConnection.postMessage(value, state.connection.user)
                     .retry(2)
                     .subscribe(function () {
                     if (type === "imBack") {
                         BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
-                                from: { id: state.connection.userId },
+                                from: { id: state.connection.user.id },
                                 timestamp: Date.now().toString()
                             } });
                     }

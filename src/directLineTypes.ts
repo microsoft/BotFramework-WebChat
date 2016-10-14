@@ -77,13 +77,17 @@ export interface Receipt {
 
 export type Attachment = Image | HeroCard | Thumbnail | Signin | Receipt;  
 
+export interface User {
+    id: string,
+    name?: string
+}
 export interface Message
 {
     type: "message",
     id?: string,
-    conversation?: {id: string},
+    conversation?: { id: string },
     timestamp?: string,
-    from?: {id: string},
+    from?: User,
     text?: string,
     local?: string,
     textFormat?: "plain" | "markdown" | "xml",
@@ -110,6 +114,6 @@ export const mimeTypes = {
 export interface IBotConnection {
     connected$: BehaviorSubject<boolean>;
     activities$: Observable<Activity>    
-    postMessage: (text: string, from: string, channelData?: any) => Observable<boolean>,
+    postMessage: (text: string, from: User, channelData?: any) => Observable<boolean>,
     postFile: (file: File) => Observable<boolean>,
 }

@@ -69,18 +69,18 @@ var BotChat =
 	    if (state === void 0) { state = {
 	        connected: false,
 	        botConnection: undefined,
-	        userId: undefined,
+	        user: undefined,
 	        host: undefined
 	    }; }
 	    switch (action.type) {
 	        case 'Start_Connection':
-	            return { connected: false, botConnection: action.botConnection, userId: action.userId, host: state.host };
+	            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
 	        case 'Connected_To_Bot':
-	            return { connected: true, botConnection: state.botConnection, userId: state.userId, host: state.host };
+	            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
 	        case 'Subscribe_Host':
-	            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: action.host };
+	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
 	        case 'Unsubscribe_Host':
-	            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: undefined };
+	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
 	        default:
 	            return state;
 	    }
@@ -153,10 +153,6 @@ var BotChat =
 	    history: history,
 	    debug: debug
 	}));
-	var guid = function () {
-	    var s4 = function () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
-	    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	};
 	var UI = (function (_super) {
 	    __extends(UI, _super);
 	    function UI() {
@@ -190,7 +186,7 @@ var BotChat =
 	                    return;
 	            }
 	            var state = exports.store.getState();
-	            state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data })
+	            state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
 	                .retry(2)
 	                .subscribe(function (success) {
 	                console.log("backchannel message sent to bot");
@@ -203,7 +199,7 @@ var BotChat =
 	        var _this = this;
 	        console.log("Starting BotChat", this.props);
 	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-	        exports.store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc });
+	        exports.store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
 	        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            exports.store.dispatch({ type: 'Connected_To_Bot' });
 	        });
@@ -1326,7 +1322,7 @@ var BotChat =
 	                url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages",
 	                body: {
 	                    text: text,
-	                    from: from,
+	                    from: from.id,
 	                    conversationId: _this.conversationId,
 	                    channelData: channelData
 	                },
@@ -19601,15 +19597,15 @@ var BotChat =
 	        var state = BotChat_1.store.getState();
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
 	            React.createElement("div", {className: "wc-message-group"}, state.history.activities
-	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.userId || !activity.id); })
+	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
 	                .map(function (activity) {
-	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.userId ? 'me' : 'bot')}, 
+	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (state.debug.viewState === BotChat_1.DebugViewState.visible ? ' clickable' : '') + (activity === state.debug.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onMessageClicked(e, activity); }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
 	                        React.createElement(HistoryMessage_1.HistoryMessage, {activity: activity})), 
-	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.userId ? 'you' : activity.from.id));
+	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
 	            }))
 	        ));
 	    };
@@ -19658,14 +19654,14 @@ var BotChat =
 	        switch (type) {
 	            case "imBack":
 	            case "postBack":
-	                state.connection.botConnection.postMessage(value, state.connection.userId)
+	                state.connection.botConnection.postMessage(value, state.connection.user)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    if (type === "imBack") {
 	                        BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
 	                                type: "message",
 	                                text: value,
-	                                from: { id: state.connection.userId },
+	                                from: { id: state.connection.user.id },
 	                                timestamp: Date.now().toString()
 	                            } });
 	                    }
@@ -21811,7 +21807,7 @@ var BotChat =
 	                    BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
 	                            type: "message",
 	                            text: '',
-	                            from: { id: state.connection.userId },
+	                            from: { id: state.connection.user.id },
 	                            timestamp: Date.now().toString(),
 	                            attachments: [{
 	                                    contentType: directLineTypes_1.mimeTypes[path.split('.').pop()],
@@ -21831,13 +21827,13 @@ var BotChat =
 	            var state = BotChat_1.store.getState();
 	            console.log("shell sendMessage");
 	            BotChat_1.store.dispatch({ type: 'Pre_Send_Shell_Text' });
-	            state.connection.botConnection.postMessage(state.shell.text, state.connection.userId)
+	            state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
 	                .retry(2)
 	                .subscribe(function () {
 	                BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
 	                        type: "message",
 	                        text: state.shell.text,
-	                        from: { id: state.connection.userId },
+	                        from: { id: state.connection.user.id },
 	                        timestamp: Date.now().toString()
 	                    } });
 	                BotChat_1.store.dispatch({ type: 'Post_Send_Shell_Text' });

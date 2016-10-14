@@ -14,7 +14,7 @@ var DirectLine = (function () {
                 url: _this.domain + "/api/conversations/" + _this.conversationId + "/messages",
                 body: {
                     text: text,
-                    from: from,
+                    from: from.id,
                     conversationId: _this.conversationId,
                     channelData: channelData
                 },

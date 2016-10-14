@@ -47,15 +47,15 @@ var History = (function (_super) {
         var state = BotChat_1.store.getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
             React.createElement("div", {className: "wc-message-group"}, state.history.activities
-                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.userId || !activity.id); })
+                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
                 .map(function (activity) {
-                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.userId ? 'me' : 'bot')}, 
+                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
                     React.createElement("div", {className: 'wc-message-content' + (state.debug.viewState === BotChat_1.DebugViewState.visible ? ' clickable' : '') + (activity === state.debug.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onMessageClicked(e, activity); }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
                             React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
                         React.createElement(HistoryMessage_1.HistoryMessage, {activity: activity})), 
-                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.userId ? 'you' : activity.from.id));
+                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
             }))
         ));
     };

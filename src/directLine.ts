@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, IBotConnection, mimeTypes } from './directLineTypes'; 
+import { Conversation, Activity, Message, IBotConnection, User, mimeTypes } from './directLineTypes'; 
 
 interface DLAttachment {
     url: string,
@@ -80,13 +80,13 @@ export class DirectLine implements IBotConnection {
         .flatMap(_ => this.getActivities());
     }
 
-    postMessage = (text: string, from: string, channelData?: any) =>
+    postMessage = (text: string, from: User, channelData?: any) =>
         Observable.ajax({
             method: "POST",
             url: `${this.domain}/api/conversations/${this.conversationId}/messages`,
             body: <DLMessage>{
                 text,
-                from,
+                from: from.id,
                 conversationId: this.conversationId,
                 channelData
             },

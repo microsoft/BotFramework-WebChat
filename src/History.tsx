@@ -52,9 +52,9 @@ export class History extends React.Component<{}, {}> {
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">
                 { state.history.activities
-                    .filter(activity => activity.type === "message" && (activity.from.id != state.connection.userId || !activity.id))
+                    .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id))
                     .map((activity:Message) =>
-                        <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.userId ? 'me' : 'bot') }>
+                        <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
                             <div className={ 'wc-message-content' + (state.debug.viewState === DebugViewState.visible ? ' clickable' : '') + (activity === state.debug.selectedActivity ? ' selected' : '') } onClick={ e => this.onMessageClicked(e, activity) }>
                                 <svg className="wc-message-callout">
                                     <path className="point-left" d="m0,0 h12 v10 z" />
@@ -62,7 +62,7 @@ export class History extends React.Component<{}, {}> {
                                 </svg>
                                 <HistoryMessage activity={ activity }/>
                             </div>
-                            <div className="wc-message-from">{ activity.from.id === state.connection.userId ? 'you' : activity.from.id }</div>
+                            <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
                         </div>
                     )
                 }

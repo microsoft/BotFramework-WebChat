@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createStore, combineReducers, Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
-import { Activity, Message, mimeTypes, IBotConnection } from './directLineTypes';
+import { Activity, Message, mimeTypes, IBotConnection, User } from './directLineTypes';
 import { DirectLine } from './directLine';
 import { BrowserLine } from './browserLine';
 import { History } from './History';
@@ -11,14 +11,14 @@ import { DebugView } from './DebugView';
 interface ConnectionState {
     connected: boolean
     botConnection: IBotConnection,
-    userId: string,
+    user: User,
     host: Window
 }
 
 export type ConnectionAction = {
     type: 'Start_Connection',
     botConnection: IBotConnection,
-    userId: string,
+    user: User,
 } | {
     type: 'Connected_To_Bot' | 'Unsubscribe_Host'
 } | {
@@ -30,20 +30,20 @@ const connection: Reducer<ConnectionState> = (
     state: ConnectionState = {
         connected: false,
         botConnection: undefined,
-        userId: undefined,
+        user: undefined,
         host: undefined
     },
     action: ConnectionAction
 ) => {
     switch (action.type) {
         case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, userId: action.userId, host: state.host };
+            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
         case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, userId: state.userId, host: state.host  };
+            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host  };
         case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: action.host  };
+            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host  };
         case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, userId: state.userId, host: undefined  };
+            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined  };
         default:
             return state;
     }
@@ -174,12 +174,8 @@ export const store = createStore(combineReducers<Chat>({
     debug
 }));
 
-const guid = () => {
-    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
-
 interface Props {
+    user: { id: string, name: string },
     secret?: string,
     token?: string,
     debug?: string,
@@ -224,7 +220,7 @@ export class UI extends React.Component<Props, {}> {
                 return;
         }
         const state = store.getState();
-        state.connection.botConnection.postMessage("backchannel", state.connection.userId, { backchannel: event.data })
+        state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
         .retry(2)
         .subscribe(success => {
             console.log("backchannel message sent to bot");
@@ -237,7 +233,7 @@ export class UI extends React.Component<Props, {}> {
         console.log("Starting BotChat", this.props);
 
         let bc = this.props.directLineDomain === "browser" ? new BrowserLine() : new DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-        store.dispatch({ type: 'Start_Connection', userId: guid(), botConnection: bc } as ConnectionAction);
+        store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc } as ConnectionAction);
 
         bc.connected$.filter(connected => connected === true).subscribe(connected => { 
             store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
