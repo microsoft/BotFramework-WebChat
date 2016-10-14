@@ -61,10 +61,10 @@ var BotChat =
 	var React = __webpack_require__(2);
 	var redux_1 = __webpack_require__(3);
 	var directLine_1 = __webpack_require__(18);
-	var browserLine_1 = __webpack_require__(365);
-	var History_1 = __webpack_require__(366);
-	var Shell_1 = __webpack_require__(374);
-	var DebugView_1 = __webpack_require__(375);
+	var browserLine_1 = __webpack_require__(364);
+	var History_1 = __webpack_require__(365);
+	var Shell_1 = __webpack_require__(373);
+	var DebugView_1 = __webpack_require__(374);
 	var connection = function (state, action) {
 	    if (state === void 0) { state = {
 	        connected: false,
@@ -19503,8 +19503,7 @@ var BotChat =
 
 
 /***/ },
-/* 364 */,
-/* 365 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19533,7 +19532,7 @@ var BotChat =
 
 
 /***/ },
-/* 366 */
+/* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19544,7 +19543,7 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var BotChat_1 = __webpack_require__(1);
-	var HistoryMessage_1 = __webpack_require__(367);
+	var HistoryMessage_1 = __webpack_require__(366);
 	var rxjs_1 = __webpack_require__(19);
 	var History = (function (_super) {
 	    __extends(History, _super);
@@ -19605,14 +19604,14 @@ var BotChat =
 
 
 /***/ },
-/* 367 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(368);
-	var Carousel_1 = __webpack_require__(369);
-	var FormattedText_1 = __webpack_require__(370);
+	var Attachment_1 = __webpack_require__(367);
+	var Carousel_1 = __webpack_require__(368);
+	var FormattedText_1 = __webpack_require__(369);
 	exports.HistoryMessage = function (props) {
 	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
 	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
@@ -19630,7 +19629,7 @@ var BotChat =
 
 
 /***/ },
-/* 368 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19735,7 +19734,7 @@ var BotChat =
 
 
 /***/ },
-/* 369 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19745,7 +19744,7 @@ var BotChat =
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(368);
+	var Attachment_1 = __webpack_require__(367);
 	var Carousel = (function (_super) {
 	    __extends(Carousel, _super);
 	    function Carousel(props) {
@@ -19881,7 +19880,7 @@ var BotChat =
 
 
 /***/ },
-/* 370 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19899,8 +19898,8 @@ var BotChat =
 	    return t;
 	};
 	var React = __webpack_require__(2);
-	var Marked = __webpack_require__(371);
-	var He = __webpack_require__(372);
+	var Marked = __webpack_require__(370);
+	var He = __webpack_require__(371);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
 	    function FormattedText() {
@@ -20111,7 +20110,7 @@ var BotChat =
 
 
 /***/ },
-/* 371 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -21404,7 +21403,7 @@ var BotChat =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 372 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/he v1.1.0 by @mathias | MIT license */
@@ -21748,10 +21747,10 @@ var BotChat =
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(373)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(372)(module), (function() { return this; }())))
 
 /***/ },
-/* 373 */
+/* 372 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -21767,7 +21766,7 @@ var BotChat =
 
 
 /***/ },
-/* 374 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21874,7 +21873,7 @@ var BotChat =
 
 
 /***/ },
-/* 375 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
