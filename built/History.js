@@ -13,16 +13,16 @@ var History = (function (_super) {
     function History() {
         _super.call(this);
         this.onMessageClicked = function (e, activity) {
-            if (BotChat_1.store.getState().debug.viewState === BotChat_1.DebugViewState.visible) {
+            if (BotChat_1.getStore().getState().debug.viewState === BotChat_1.DebugViewState.visible) {
                 e.preventDefault();
                 e.stopPropagation();
-                BotChat_1.store.dispatch({ type: 'Select_Activity', activity: activity });
+                BotChat_1.getStore().dispatch({ type: 'Select_Activity', activity: activity });
             }
         };
     }
     History.prototype.componentWillMount = function () {
         var _this = this;
-        BotChat_1.store.subscribe(function () {
+        BotChat_1.getStore().subscribe(function () {
             return _this.forceUpdate();
         });
     };
@@ -32,19 +32,19 @@ var History = (function (_super) {
             .map(function (e) { return e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight; })
             .distinctUntilChanged()
             .subscribe(function (autoscroll) {
-            return BotChat_1.store.dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
+            return BotChat_1.getStore().dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
         });
     };
     History.prototype.componentWillUnmount = function () {
         this.autoscrollSubscription.unsubscribe();
     };
     History.prototype.componentDidUpdate = function (prevProps, prevState) {
-        if (BotChat_1.store.getState().history.autoscroll)
+        if (BotChat_1.getStore().getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     };
     History.prototype.render = function () {
         var _this = this;
-        var state = BotChat_1.store.getState();
+        var state = BotChat_1.getStore().getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
             React.createElement("div", {className: "wc-message-group"}, state.history.activities
                 .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })

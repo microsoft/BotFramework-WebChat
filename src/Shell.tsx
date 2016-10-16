@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
-import { store, ShellAction, HistoryAction } from './BotChat';
+import { getStore, ShellAction, HistoryAction } from './BotChat';
 import { mimeTypes } from './directLineTypes';
 
 
 export class Shell extends React.Component<{}, {}> {
     textInput:any;
     componentDidMount() {
-        store.subscribe(() => 
+        getStore().subscribe(() =>
             this.forceUpdate()
         );
     }
@@ -18,7 +18,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendFile = (files: FileList) => {
-        const state = store.getState();
+        const state = getStore().getState();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
             state.connection.botConnection.postFile(file)
@@ -26,7 +26,7 @@ export class Shell extends React.Component<{}, {}> {
             .subscribe(
                 () => {
                     const path = window.URL.createObjectURL(file);
-                    store.dispatch({ type: 'Send_Message', activity: {
+                    getStore().dispatch({ type: 'Send_Message', activity: {
                         type: "message",
                         from: state.connection.user,
                         timestamp: Date.now().toString(),
@@ -45,24 +45,24 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendMessage = () => {
-        const state = store.getState();
+        const state = getStore().getState();
         console.log("shell sendMessage");
-        store.dispatch({ type: 'Pre_Send_Shell_Text' });
+        getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
         state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
         .retry(2)
         .subscribe(
             () => {
-                store.dispatch({ type: 'Send_Message', activity: {
+                getStore().dispatch({ type: 'Send_Message', activity: {
                     type: "message",
                     text: state.shell.text,
                     from: state.connection.user },
                     timestamp: Date.now().toString()
                 } as HistoryAction);
-                store.dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);
+                getStore().dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);
             },
             error => {
                 console.log("failed to post message");
-                store.dispatch({ type: 'Fail_Send_Shell_Text' } as ShellAction);
+                getStore().dispatch({ type: 'Fail_Send_Shell_Text' } as ShellAction);
             }
         );
     }
@@ -73,17 +73,17 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     onClickSend = () => {
-        const state = store.getState();
+        const state = getStore().getState();
         if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
             this.sendMessage();
     }
 
     updateMessage = (text: string) => {
-        store.dispatch({ type: 'Update_Shell_Text', text })
+        getStore().dispatch({ type: 'Update_Shell_Text', text })
     }
 
     render() {
-        const state = store.getState();
+        const state = getStore().getState();
         return (
             <div className="wc-console">
                 <label className="wc-upload">

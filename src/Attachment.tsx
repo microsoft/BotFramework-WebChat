@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Attachment, Button } from './directLineTypes';
-import { store, HistoryAction } from './BotChat';
+import { getStore, HistoryAction } from './BotChat';
 
 export const AttachmentView = (props: {
     attachment: Attachment,
     onImageLoad?: ()=> void
 }) => {
-    const state = store.getState();
+    const state = getStore().getState();
 
     const onClickButton = (type: string, value: string) => {
         switch (type) {
@@ -17,7 +17,7 @@ export const AttachmentView = (props: {
                 .subscribe(
                     () => {
                         if (type === "imBack") {
-                            store.dispatch({ type: 'Send_Message', activity: {
+                            getStore().dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
                                 from: { id: state.connection.user.id },
@@ -37,7 +37,7 @@ export const AttachmentView = (props: {
             case "signin":
                 window.open(value);
                 break;
-            
+
             default:
                 console.log("unknown button type");
             }
@@ -48,11 +48,11 @@ export const AttachmentView = (props: {
             { buttons.map(button => <li><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
         </ul>;
 
-    const imageWithOnLoad = (url: string) => 
+    const imageWithOnLoad = (url: string) =>
         <img src={ url } onLoad={ () => props.onImageLoad && props.onImageLoad() } />;
 
     const attachedImage = (images?: { url: string }[]) =>
-        images && imageWithOnLoad(images[0].url); 
+        images && imageWithOnLoad(images[0].url);
 
     switch (props.attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
@@ -121,7 +121,7 @@ export const AttachmentView = (props: {
         case "image/jpg":
         case "image/jpeg":
             return imageWithOnLoad(props.attachment.contentUrl);
-        
+
         default:
             return <span/>;
 

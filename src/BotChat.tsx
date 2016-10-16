@@ -88,7 +88,7 @@ interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message', 
+    type: 'Receive_Message' | 'Send_Message',
     activity: Activity
 } | {
     type: 'Set_Autoscroll',
@@ -114,9 +114,9 @@ const history: Reducer<HistoryState> = (
     }
 }
 
-// Visibility state of the DebugView panel 
+// Visibility state of the DebugView panel
 export enum DebugViewState {
-    disabled,   // default: panel and toggle control are both hidden 
+    disabled,   // default: panel and toggle control are both hidden
     enabled,    // panel is hidden, toggle control is visible
     visible     // panel and toggle control are both visible
 }
@@ -167,12 +167,19 @@ interface Chat {
     debug: DebugState
 }
 
-export const store = createStore(combineReducers<Chat>({
-    shell,
-    connection,
-    history,
-    debug
-}));
+export const getStore = () => {
+    var global = Function('return this')();
+    if (!global['msbotchat'])
+        global['msbotchat'] = {};
+    if (!global['msbotchat'].store)
+        global['msbotchat'].store = createStore(combineReducers<Chat>({
+            shell,
+            connection,
+            history,
+            debug
+        }));
+    return global['msbotchat'].store;
+}
 
 interface Props {
     user: { id: string, name: string },
@@ -181,7 +188,7 @@ interface Props {
     debug?: string,
     title?: string,
     allowMessagesFrom?: string[],
-    directLineDomain?: string 
+    directLineDomain?: string
 }
 
 export class UI extends React.Component<Props, {}> {
@@ -199,15 +206,15 @@ export class UI extends React.Component<Props, {}> {
             console.log("Empty or typeless backchannel message from source", event.source);
             return;
         }
- 
+
         console.log("Received backchannel message", event.data, "from", event.source);
 
         switch (event.data.type) {
             case "subscribe":
-                store.dispatch({ type: 'Subscribe_Host', host: event.source } as ConnectionAction)
+                getStore().dispatch({ type: 'Subscribe_Host', host: event.source } as ConnectionAction)
                 break;
             case "unsubscribe":
-                store.dispatch({ type: 'Unsubscribe_Host' } as ConnectionAction)
+                getStore().dispatch({ type: 'Unsubscribe_Host' } as ConnectionAction)
                 break;
             case "send":
                 if (!event.data.contents) {
@@ -219,7 +226,7 @@ export class UI extends React.Component<Props, {}> {
                 console.log("unknown message type", event.data.type);
                 return;
         }
-        const state = store.getState();
+        const state = getStore().getState();
         state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
         .retry(2)
         .subscribe(success => {
@@ -233,11 +240,11 @@ export class UI extends React.Component<Props, {}> {
         console.log("Starting BotChat", this.props);
 
         let bc = this.props.directLineDomain === "browser" ? new BrowserLine() : new DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-        store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc } as ConnectionAction);
+        getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc } as ConnectionAction);
 
-        bc.connected$.filter(connected => connected === true).subscribe(connected => { 
-            store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
-        }); 
+        bc.connected$.filter(connected => connected === true).subscribe(connected => {
+            getStore().dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
+        });
 
         const debug = this.props.debug && this.props.debug.toLowerCase();
         let debugViewState: DebugViewState = DebugViewState.disabled;
@@ -246,10 +253,10 @@ export class UI extends React.Component<Props, {}> {
         else if (debug === DebugViewState[DebugViewState.visible])
             debugViewState = DebugViewState.visible;
 
-        store.dispatch({ type: 'Set_Debug', viewState: debugViewState } as DebugAction);
+        getStore().dispatch({ type: 'Set_Debug', viewState: debugViewState } as DebugAction);
 
         bc.activities$.subscribe(
-            activity => store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
+            activity => getStore().dispatch({ type: 'Receive_Message', activity } as HistoryAction),
             error => console.log("errors", error)
         );
 
@@ -258,17 +265,17 @@ export class UI extends React.Component<Props, {}> {
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
 
-        store.subscribe(() => 
+        getStore().subscribe(() =>
             this.forceUpdate()
         );
     }
 
     onClickDebug() {
-        store.dispatch({ type: 'Toggle_Debug' } as DebugAction);
+        getStore().dispatch({ type: 'Toggle_Debug' } as DebugAction);
     }
 
     render() {
-        const state = store.getState();
+        const state = getStore().getState();
         console.log("BotChat state", state);
         return (
             <div className="wc-app">

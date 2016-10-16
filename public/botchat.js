@@ -119,7 +119,7 @@ var BotChat =
 	            return state;
 	    }
 	};
-	// Visibility state of the DebugView panel 
+	// Visibility state of the DebugView panel
 	(function (DebugViewState) {
 	    DebugViewState[DebugViewState["disabled"] = 0] = "disabled";
 	    DebugViewState[DebugViewState["enabled"] = 1] = "enabled";
@@ -147,12 +147,19 @@ var BotChat =
 	            return state;
 	    }
 	};
-	exports.store = redux_1.createStore(redux_1.combineReducers({
-	    shell: shell,
-	    connection: connection,
-	    history: history,
-	    debug: debug
-	}));
+	exports.getStore = function () {
+	    var global = Function('return this')();
+	    if (!global['msbotchat'])
+	        global['msbotchat'] = {};
+	    if (!global['msbotchat'].store)
+	        global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
+	            shell: shell,
+	            connection: connection,
+	            history: history,
+	            debug: debug
+	        }));
+	    return global['msbotchat'].store;
+	};
 	var UI = (function (_super) {
 	    __extends(UI, _super);
 	    function UI() {
@@ -170,10 +177,10 @@ var BotChat =
 	            console.log("Received backchannel message", event.data, "from", event.source);
 	            switch (event.data.type) {
 	                case "subscribe":
-	                    exports.store.dispatch({ type: 'Subscribe_Host', host: event.source });
+	                    exports.getStore().dispatch({ type: 'Subscribe_Host', host: event.source });
 	                    break;
 	                case "unsubscribe":
-	                    exports.store.dispatch({ type: 'Unsubscribe_Host' });
+	                    exports.getStore().dispatch({ type: 'Unsubscribe_Host' });
 	                    break;
 	                case "send":
 	                    if (!event.data.contents) {
@@ -185,7 +192,7 @@ var BotChat =
 	                    console.log("unknown message type", event.data.type);
 	                    return;
 	            }
-	            var state = exports.store.getState();
+	            var state = exports.getStore().getState();
 	            state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
 	                .retry(2)
 	                .subscribe(function (success) {
@@ -199,9 +206,9 @@ var BotChat =
 	        var _this = this;
 	        console.log("Starting BotChat", this.props);
 	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-	        exports.store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
+	        exports.getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
 	        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
-	            exports.store.dispatch({ type: 'Connected_To_Bot' });
+	            exports.getStore().dispatch({ type: 'Connected_To_Bot' });
 	        });
 	        var debug = this.props.debug && this.props.debug.toLowerCase();
 	        var debugViewState = DebugViewState.disabled;
@@ -209,21 +216,21 @@ var BotChat =
 	            debugViewState = DebugViewState.enabled;
 	        else if (debug === DebugViewState[DebugViewState.visible])
 	            debugViewState = DebugViewState.visible;
-	        exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
-	        bc.activities$.subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+	        exports.getStore().dispatch({ type: 'Set_Debug', viewState: debugViewState });
+	        bc.activities$.subscribe(function (activity) { return exports.getStore().dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
 	        if (this.props.allowMessagesFrom) {
 	            console.log("adding event listener for messages from hosting web page");
 	            window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
 	        }
-	        exports.store.subscribe(function () {
+	        exports.getStore().subscribe(function () {
 	            return _this.forceUpdate();
 	        });
 	    };
 	    UI.prototype.onClickDebug = function () {
-	        exports.store.dispatch({ type: 'Toggle_Debug' });
+	        exports.getStore().dispatch({ type: 'Toggle_Debug' });
 	    };
 	    UI.prototype.render = function () {
-	        var state = exports.store.getState();
+	        var state = exports.getStore().getState();
 	        console.log("BotChat state", state);
 	        return (React.createElement("div", {className: "wc-app"}, 
 	            React.createElement("div", {className: "wc-chatview-panel" + (state.debug.viewState === DebugViewState.visible ? " wc-withdebugview" : "")}, 
@@ -19550,16 +19557,16 @@ var BotChat =
 	    function History() {
 	        _super.call(this);
 	        this.onMessageClicked = function (e, activity) {
-	            if (BotChat_1.store.getState().debug.viewState === BotChat_1.DebugViewState.visible) {
+	            if (BotChat_1.getStore().getState().debug.viewState === BotChat_1.DebugViewState.visible) {
 	                e.preventDefault();
 	                e.stopPropagation();
-	                BotChat_1.store.dispatch({ type: 'Select_Activity', activity: activity });
+	                BotChat_1.getStore().dispatch({ type: 'Select_Activity', activity: activity });
 	            }
 	        };
 	    }
 	    History.prototype.componentWillMount = function () {
 	        var _this = this;
-	        BotChat_1.store.subscribe(function () {
+	        BotChat_1.getStore().subscribe(function () {
 	            return _this.forceUpdate();
 	        });
 	    };
@@ -19569,19 +19576,19 @@ var BotChat =
 	            .map(function (e) { return e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight; })
 	            .distinctUntilChanged()
 	            .subscribe(function (autoscroll) {
-	            return BotChat_1.store.dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
+	            return BotChat_1.getStore().dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
 	        });
 	    };
 	    History.prototype.componentWillUnmount = function () {
 	        this.autoscrollSubscription.unsubscribe();
 	    };
 	    History.prototype.componentDidUpdate = function (prevProps, prevState) {
-	        if (BotChat_1.store.getState().history.autoscroll)
+	        if (BotChat_1.getStore().getState().history.autoscroll)
 	            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
 	    };
 	    History.prototype.render = function () {
 	        var _this = this;
-	        var state = BotChat_1.store.getState();
+	        var state = BotChat_1.getStore().getState();
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
 	            React.createElement("div", {className: "wc-message-group"}, state.history.activities
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
@@ -19636,7 +19643,7 @@ var BotChat =
 	var React = __webpack_require__(2);
 	var BotChat_1 = __webpack_require__(1);
 	exports.AttachmentView = function (props) {
-	    var state = BotChat_1.store.getState();
+	    var state = BotChat_1.getStore().getState();
 	    var onClickButton = function (type, value) {
 	        switch (type) {
 	            case "imBack":
@@ -19645,7 +19652,7 @@ var BotChat =
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    if (type === "imBack") {
-	                        BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+	                        BotChat_1.getStore().dispatch({ type: 'Send_Message', activity: {
 	                                type: "message",
 	                                text: value,
 	                                from: { id: state.connection.user.id },
@@ -21783,14 +21790,14 @@ var BotChat =
 	        var _this = this;
 	        _super.apply(this, arguments);
 	        this.sendFile = function (files) {
-	            var state = BotChat_1.store.getState();
+	            var state = BotChat_1.getStore().getState();
 	            var _loop_1 = function(i, numFiles) {
 	                var file = files[i];
 	                state.connection.botConnection.postFile(file)
 	                    .retry(2)
 	                    .subscribe(function () {
 	                    var path = window.URL.createObjectURL(file);
-	                    BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+	                    BotChat_1.getStore().dispatch({ type: 'Send_Message', activity: {
 	                            type: "message",
 	                            from: state.connection.user,
 	                            timestamp: Date.now().toString(),
@@ -21809,22 +21816,22 @@ var BotChat =
 	            }
 	        };
 	        this.sendMessage = function () {
-	            var state = BotChat_1.store.getState();
+	            var state = BotChat_1.getStore().getState();
 	            console.log("shell sendMessage");
-	            BotChat_1.store.dispatch({ type: 'Pre_Send_Shell_Text' });
+	            BotChat_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
 	            state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
 	                .retry(2)
 	                .subscribe(function () {
-	                BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+	                BotChat_1.getStore().dispatch({ type: 'Send_Message', activity: {
 	                        type: "message",
 	                        text: state.shell.text,
 	                        from: state.connection.user },
 	                    timestamp: Date.now().toString()
 	                });
-	                BotChat_1.store.dispatch({ type: 'Post_Send_Shell_Text' });
+	                BotChat_1.getStore().dispatch({ type: 'Post_Send_Shell_Text' });
 	            }, function (error) {
 	                console.log("failed to post message");
-	                BotChat_1.store.dispatch({ type: 'Fail_Send_Shell_Text' });
+	                BotChat_1.getStore().dispatch({ type: 'Fail_Send_Shell_Text' });
 	            });
 	        };
 	        this.onKeyPress = function (e) {
@@ -21832,17 +21839,17 @@ var BotChat =
 	                _this.sendMessage();
 	        };
 	        this.onClickSend = function () {
-	            var state = BotChat_1.store.getState();
+	            var state = BotChat_1.getStore().getState();
 	            if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
 	                _this.sendMessage();
 	        };
 	        this.updateMessage = function (text) {
-	            BotChat_1.store.dispatch({ type: 'Update_Shell_Text', text: text });
+	            BotChat_1.getStore().dispatch({ type: 'Update_Shell_Text', text: text });
 	        };
 	    }
 	    Shell.prototype.componentDidMount = function () {
 	        var _this = this;
-	        BotChat_1.store.subscribe(function () {
+	        BotChat_1.getStore().subscribe(function () {
 	            return _this.forceUpdate();
 	        });
 	    };
@@ -21851,7 +21858,7 @@ var BotChat =
 	    };
 	    Shell.prototype.render = function () {
 	        var _this = this;
-	        var state = BotChat_1.store.getState();
+	        var state = BotChat_1.getStore().getState();
 	        return (React.createElement("div", {className: "wc-console"}, 
 	            React.createElement("label", {className: "wc-upload"}, 
 	                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 

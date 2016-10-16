@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Activity } from './directLineTypes';
-import { store } from './BotChat';
 
 const formatJSON = (obj: any) => {
     let json = JSON.stringify(obj, null, 2);

@@ -65,7 +65,7 @@ var history = function (state, action) {
             return state;
     }
 };
-// Visibility state of the DebugView panel 
+// Visibility state of the DebugView panel
 (function (DebugViewState) {
     DebugViewState[DebugViewState["disabled"] = 0] = "disabled";
     DebugViewState[DebugViewState["enabled"] = 1] = "enabled";
@@ -93,12 +93,19 @@ var debug = function (state, action) {
             return state;
     }
 };
-exports.store = redux_1.createStore(redux_1.combineReducers({
-    shell: shell,
-    connection: connection,
-    history: history,
-    debug: debug
-}));
+exports.getStore = function () {
+    var global = Function('return this')();
+    if (!global['msbotchat'])
+        global['msbotchat'] = {};
+    if (!global['msbotchat'].store)
+        global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
+            shell: shell,
+            connection: connection,
+            history: history,
+            debug: debug
+        }));
+    return global['msbotchat'].store;
+};
 var UI = (function (_super) {
     __extends(UI, _super);
     function UI() {
@@ -116,10 +123,10 @@ var UI = (function (_super) {
             console.log("Received backchannel message", event.data, "from", event.source);
             switch (event.data.type) {
                 case "subscribe":
-                    exports.store.dispatch({ type: 'Subscribe_Host', host: event.source });
+                    exports.getStore().dispatch({ type: 'Subscribe_Host', host: event.source });
                     break;
                 case "unsubscribe":
-                    exports.store.dispatch({ type: 'Unsubscribe_Host' });
+                    exports.getStore().dispatch({ type: 'Unsubscribe_Host' });
                     break;
                 case "send":
                     if (!event.data.contents) {
@@ -131,7 +138,7 @@ var UI = (function (_super) {
                     console.log("unknown message type", event.data.type);
                     return;
             }
-            var state = exports.store.getState();
+            var state = exports.getStore().getState();
             state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
                 .retry(2)
                 .subscribe(function (success) {
@@ -145,9 +152,9 @@ var UI = (function (_super) {
         var _this = this;
         console.log("Starting BotChat", this.props);
         var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-        exports.store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
+        exports.getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
         bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
-            exports.store.dispatch({ type: 'Connected_To_Bot' });
+            exports.getStore().dispatch({ type: 'Connected_To_Bot' });
         });
         var debug = this.props.debug && this.props.debug.toLowerCase();
         var debugViewState = DebugViewState.disabled;
@@ -155,21 +162,21 @@ var UI = (function (_super) {
             debugViewState = DebugViewState.enabled;
         else if (debug === DebugViewState[DebugViewState.visible])
             debugViewState = DebugViewState.visible;
-        exports.store.dispatch({ type: 'Set_Debug', viewState: debugViewState });
-        bc.activities$.subscribe(function (activity) { return exports.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+        exports.getStore().dispatch({ type: 'Set_Debug', viewState: debugViewState });
+        bc.activities$.subscribe(function (activity) { return exports.getStore().dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
         if (this.props.allowMessagesFrom) {
             console.log("adding event listener for messages from hosting web page");
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
-        exports.store.subscribe(function () {
+        exports.getStore().subscribe(function () {
             return _this.forceUpdate();
         });
     };
     UI.prototype.onClickDebug = function () {
-        exports.store.dispatch({ type: 'Toggle_Debug' });
+        exports.getStore().dispatch({ type: 'Toggle_Debug' });
     };
     UI.prototype.render = function () {
-        var state = exports.store.getState();
+        var state = exports.getStore().getState();
         console.log("BotChat state", state);
         return (React.createElement("div", {className: "wc-app"}, 
             React.createElement("div", {className: "wc-chatview-panel" + (state.debug.viewState === DebugViewState.visible ? " wc-withdebugview" : "")}, 

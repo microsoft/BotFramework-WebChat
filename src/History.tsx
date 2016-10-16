@@ -1,7 +1,7 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './directLineTypes';
-import { store, HistoryAction, DebugAction, DebugViewState } from './BotChat';
+import { getStore, HistoryAction, DebugAction, DebugViewState } from './BotChat';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
 
@@ -14,7 +14,7 @@ export class History extends React.Component<{}, {}> {
     }
 
     componentWillMount() {
-        store.subscribe(() => 
+        getStore().subscribe(() =>
             this.forceUpdate()
         );
     }
@@ -25,7 +25,7 @@ export class History extends React.Component<{}, {}> {
         .map(e => e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight)
         .distinctUntilChanged()
         .subscribe(autoscroll =>
-            store.dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
+            getStore().dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
         );
     }
 
@@ -34,20 +34,20 @@ export class History extends React.Component<{}, {}> {
     }
 
     componentDidUpdate(prevProps:{}, prevState:{}) {
-        if (store.getState().history.autoscroll)
+        if (getStore().getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     }
 
     onMessageClicked = (e: React.SyntheticEvent<any>, activity: Activity) => {
-        if (store.getState().debug.viewState === DebugViewState.visible) {
+        if (getStore().getState().debug.viewState === DebugViewState.visible) {
             e.preventDefault();
             e.stopPropagation();
-            store.dispatch({ type: 'Select_Activity', activity } as DebugAction)
+            getStore().dispatch({ type: 'Select_Activity', activity } as DebugAction)
         }
     }
 
     render() {
-        const state = store.getState();
+        const state = getStore().getState();
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">

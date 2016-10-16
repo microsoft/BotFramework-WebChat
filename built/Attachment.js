@@ -2,7 +2,7 @@
 var React = require('react');
 var BotChat_1 = require('./BotChat');
 exports.AttachmentView = function (props) {
-    var state = BotChat_1.store.getState();
+    var state = BotChat_1.getStore().getState();
     var onClickButton = function (type, value) {
         switch (type) {
             case "imBack":
@@ -11,7 +11,7 @@ exports.AttachmentView = function (props) {
                     .retry(2)
                     .subscribe(function () {
                     if (type === "imBack") {
-                        BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+                        BotChat_1.getStore().dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
                                 from: { id: state.connection.user.id },
