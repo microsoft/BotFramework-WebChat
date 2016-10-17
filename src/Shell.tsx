@@ -1,16 +1,56 @@
 import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
-import { getStore, ShellAction, HistoryAction } from './BotChat';
+import { getStore, getState } from './Store';
 import { mimeTypes } from './directLineTypes';
+import { HistoryAction } from './History';
 
+
+export interface ShellState {
+    text: string,
+    enableSend: boolean
+}
+
+export type ShellAction = {
+    type: 'Update_Shell_Text',
+    text: string
+} | {
+    type: 'Pre_Send_Shell_Text' | 'Fail_Send_Shell_Text' | 'Post_Send_Shell_Text';
+}
+
+export const shellReducer: Reducer<ShellState> = (
+    state: ShellState = {
+        text: '',
+        enableSend: true
+    },
+    action: ShellAction
+) => {
+    switch (action.type) {
+        case 'Update_Shell_Text':
+            return { text: action.text, enableSend: true };
+        case 'Pre_Send_Shell_Text':
+            return { text: state.text, enableSend: false }
+        case 'Fail_Send_Shell_Text':
+            return { text: state.text, enableSend: true }
+        case 'Post_Send_Shell_Text':
+            return { text: '', enableSend: true };
+        default:
+            return state;
+    }
+}
 
 export class Shell extends React.Component<{}, {}> {
     textInput:any;
+    storeUnsubscribe:any;
+
     componentDidMount() {
-        getStore().subscribe(() =>
+        this.storeUnsubscribe = getStore().subscribe(() =>
             this.forceUpdate()
         );
+    }
+
+    componentWillUnmount() {
+        this.storeUnsubscribe();
     }
 
     componentDidUpdate() {
@@ -18,7 +58,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendFile = (files: FileList) => {
-        const state = getStore().getState();
+        const state = getState();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
             state.connection.botConnection.postFile(file)
@@ -45,7 +85,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendMessage = () => {
-        const state = getStore().getState();
+        const state = getState();
         console.log("shell sendMessage");
         getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
         state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
@@ -73,7 +113,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     onClickSend = () => {
-        const state = getStore().getState();
+        const state = getState();
         if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
             this.sendMessage();
     }
@@ -83,7 +123,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     render() {
-        const state = getStore().getState();
+        const state = getState();
         return (
             <div className="wc-console">
                 <label className="wc-upload">

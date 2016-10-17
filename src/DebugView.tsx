@@ -1,5 +1,65 @@
 import * as React from 'react';
+import { Reducer } from 'redux';
 import { Activity } from './directLineTypes';
+import { getStore, getState } from './Store';
+import { HistoryAction } from './History';
+
+
+export interface DebugState {
+    selectedActivity: Activity
+}
+
+export type DebugAction = {
+    type: 'placeholder'
+} | HistoryAction;
+
+export const debugReducer: Reducer<DebugState> = (
+    state: DebugState = {
+        selectedActivity: null
+    },
+    action: DebugAction
+) => {
+    switch (action.type) {
+        case 'Select_Activity':
+            return { selectedActivity: action.selectedActivity };
+        default:
+            return state;
+    }
+}
+
+export interface DebugViewProps {
+    // TODO
+}
+
+export class DebugView extends React.Component<DebugViewProps, {}> {
+    storeUnsubscribe:any;
+
+    componentWillMount() {
+        this.storeUnsubscribe = getStore().subscribe(() =>
+            this.forceUpdate()
+        );
+    }
+
+    componentWillUnmount() {
+        this.storeUnsubscribe();
+    }
+
+    render() {
+        const state = getState();
+        return (
+            <div className="wc-chatview-panel">
+                <div className="wc-header">
+                    <span>JSON</span>
+                </div>
+                <div className="wc-debugview">
+                    <div className="wc-debugview-json">
+                        { formatJSON(state.debug.selectedActivity || {}) }
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
 
 const formatJSON = (obj: any) => {
     let json = JSON.stringify(obj, null, 2);
@@ -40,12 +100,3 @@ const formatJSON = (obj: any) => {
         })
     return <span dangerouslySetInnerHTML={ { __html: json } }/>;
 }
-
-export const DebugView = (props: {
-    activity: Activity
-}) =>
-    <div className="wc-debugview">
-        <div className="wc-debugview-json">
-            { formatJSON(props.activity || {}) }
-        </div>
-    </div>;

@@ -85,40 +85,6 @@
         bottom: 0;
     }
 
-    .wc-chatview-panel.wc-withdebugview {
-        width: 50%;
-    }
-
-    .wc-toggledebugview {
-        position: absolute;
-        width: 24px;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        cursor: pointer;
-    }
-
-    .wc-toggledebugview svg {
-        position: absolute;
-        top: 12px;
-    }
-
-    .wc-toggledebugview svg path#frame {
-        fill: #fff;
-    }
-
-    .wc-toggledebugview svg rect#panel {
-        fill: #ffa333;
-    }
-
-    .wc-debugview-panel {
-        position: absolute;
-        width: 50%;
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
-
     .wc-debugview {
         position: absolute;
         left: 0;
@@ -385,7 +351,7 @@
         max-width: 640px;
         padding: 0 4px;
         vertical-align: top;
-        white-space: nowrap;        
+        white-space: nowrap;
         width: 85%;
     }
 

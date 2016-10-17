@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { createStore, combineReducers, Reducer, Action } from 'redux';
+import { Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, mimeTypes, IBotConnection, User } from './directLineTypes';
 import { DirectLine } from './directLine';
 import { BrowserLine } from './browserLine';
-import { History } from './History';
+import { History, HistoryAction, HistoryProps } from './History';
 import { Shell } from './Shell';
-import { DebugView } from './DebugView';
+import { getStore, getState } from './Store';
 
-interface ConnectionState {
+
+export interface ConnectionState {
     connected: boolean
     botConnection: IBotConnection,
     user: User,
@@ -26,7 +27,7 @@ export type ConnectionAction = {
     host: Window
 }
 
-const connection: Reducer<ConnectionState> = (
+export const connectionReducer: Reducer<ConnectionState> = (
     state: ConnectionState = {
         connected: false,
         botConnection: undefined,
@@ -49,149 +50,19 @@ const connection: Reducer<ConnectionState> = (
     }
 }
 
-interface ShellState {
-    text: string,
-    enableSend: boolean
-}
-
-export type ShellAction = {
-    type: 'Update_Shell_Text',
-    text: string
-} | {
-    type: 'Pre_Send_Shell_Text' | 'Fail_Send_Shell_Text' | 'Post_Send_Shell_Text';
-}
-
-const shell: Reducer<ShellState> = (
-    state: ShellState = {
-        text: '',
-        enableSend: true
-    },
-    action: ShellAction
-) => {
-    switch (action.type) {
-        case 'Update_Shell_Text':
-            return { text: action.text, enableSend: true };
-        case 'Pre_Send_Shell_Text':
-            return { text: state.text, enableSend: false }
-        case 'Fail_Send_Shell_Text':
-            return { text: state.text, enableSend: true }
-        case 'Post_Send_Shell_Text':
-            return { text: '', enableSend: true };
-        default:
-            return state;
-    }
-}
-
-interface HistoryState {
-    activities: Activity[],
-    autoscroll: boolean
-}
-
-export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message',
-    activity: Activity
-} | {
-    type: 'Set_Autoscroll',
-    autoscroll: boolean
-}
-
-const history: Reducer<HistoryState> = (
-    state: HistoryState = {
-        activities: [],
-        autoscroll: true
-    },
-    action: HistoryAction
-) => {
-    switch (action.type) {
-        case 'Receive_Message':
-            return { activities: [... state.activities, action.activity], autoscroll: state.autoscroll };
-        case 'Send_Message':
-            return { activities: [... state.activities, action.activity], autoscroll: true };
-        case 'Set_Autoscroll':
-            return { activities: state.activities, autoscroll: action.autoscroll };
-        default:
-            return state;
-    }
-}
-
-// Visibility state of the DebugView panel
-export enum DebugViewState {
-    disabled,   // default: panel and toggle control are both hidden
-    enabled,    // panel is hidden, toggle control is visible
-    visible     // panel and toggle control are both visible
-}
-
-interface DebugState {
-    viewState: DebugViewState,
-    selectedActivity: Activity
-}
-
-export type DebugAction = {
-    type: 'Set_Debug',
-    viewState: DebugViewState
-} | {
-    type: 'Toggle_Debug'
-} | {
-    type: 'Select_Activity',
-    activity: Activity
-}
-
-const debug: Reducer<DebugState> = (
-    state: DebugState = {
-        viewState: DebugViewState.disabled,
-        selectedActivity: null
-    },
-    action: DebugAction
-) => {
-    switch (action.type) {
-        case 'Set_Debug':
-            return { viewState: action.viewState, selectedActivity: state.selectedActivity };
-        case 'Toggle_Debug':
-            if (state.viewState === DebugViewState.enabled)
-                return { viewState: DebugViewState.visible, selectedActivity: state.selectedActivity  };
-            else if (state.viewState === DebugViewState.visible)
-                return { viewState: DebugViewState.enabled, selectedActivity: state.selectedActivity  };
-            else
-                return { viewState: state.viewState, selectedActivity: state.selectedActivity };
-        case 'Select_Activity':
-            return { viewState: state.viewState, selectedActivity: action.activity };
-        default:
-            return state;
-    }
-}
-
-interface Chat {
-    shell: ShellState,
-    connection: ConnectionState,
-    history: HistoryState,
-    debug: DebugState
-}
-
-export const getStore = () => {
-    var global = Function('return this')();
-    if (!global['msbotchat'])
-        global['msbotchat'] = {};
-    if (!global['msbotchat'].store)
-        global['msbotchat'].store = createStore(combineReducers<Chat>({
-            shell,
-            connection,
-            history,
-            debug
-        }));
-    return global['msbotchat'].store;
-}
-
-interface Props {
+export interface UIProps {
     user: { id: string, name: string },
     secret?: string,
     token?: string,
-    debug?: string,
     title?: string,
     allowMessagesFrom?: string[],
-    directLineDomain?: string
+    directLineDomain?: string,
+    historyProps: HistoryProps
 }
 
-export class UI extends React.Component<Props, {}> {
+export class UI extends React.Component<UIProps, {}> {
+    storeUnsubscribe: any;
+
     constructor() {
         super();
     }
@@ -226,7 +97,7 @@ export class UI extends React.Component<Props, {}> {
                 console.log("unknown message type", event.data.type);
                 return;
         }
-        const state = getStore().getState();
+        const state = getState();
         state.connection.botConnection.postMessage("backchannel", state.connection.user, { backchannel: event.data })
         .retry(2)
         .subscribe(success => {
@@ -246,15 +117,6 @@ export class UI extends React.Component<Props, {}> {
             getStore().dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
 
-        const debug = this.props.debug && this.props.debug.toLowerCase();
-        let debugViewState: DebugViewState = DebugViewState.disabled;
-        if (debug === DebugViewState[DebugViewState.enabled])
-            debugViewState = DebugViewState.enabled;
-        else if (debug === DebugViewState[DebugViewState.visible])
-            debugViewState = DebugViewState.visible;
-
-        getStore().dispatch({ type: 'Set_Debug', viewState: debugViewState } as DebugAction);
-
         bc.activities$.subscribe(
             activity => getStore().dispatch({ type: 'Receive_Message', activity } as HistoryAction),
             error => console.log("errors", error)
@@ -265,39 +127,25 @@ export class UI extends React.Component<Props, {}> {
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
 
-        getStore().subscribe(() =>
+        this.storeUnsubscribe = getStore().subscribe(() =>
             this.forceUpdate()
         );
     }
 
-    onClickDebug() {
-        getStore().dispatch({ type: 'Toggle_Debug' } as DebugAction);
+    componentWillUnmount() {
+        this.storeUnsubscribe();
     }
 
     render() {
-        const state = getStore().getState();
+        const state = getState();
         console.log("BotChat state", state);
         return (
-            <div className="wc-app">
-                <div className={ "wc-chatview-panel" + (state.debug.viewState === DebugViewState.visible ? " wc-withdebugview" : "") }>
-                    <div className="wc-header">
-                        <span>{ this.props.title || "WebChat" }</span>
-                        <div className={ "wc-toggledebugview" + (state.debug.viewState !== DebugViewState.disabled ? "" : " wc-hidden") } onClick={ this.onClickDebug }>
-                            <svg width="20" height="20" viewBox="0 0 1792 1792">
-                                <rect id="panel" height="1152.159352" width="642.020858" y="384.053042" x="959.042634" />
-                                <path id="frame" d="m224,1536l608,0l0,-1152l-640,0l0,1120q0,13 9.5,22.5t22.5,9.5zm1376,-32l0,-1120l-640,0l0,1152l608,0q13,0 22.5,-9.5t9.5,-22.5zm128,-1216l0,1216q0,66 -47,113t-113,47l-1344,0q-66,0 -113,-47t-47,-113l0,-1216q0,-66 47,-113t113,-47l1344,0q66,0 113,47t47,113z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <History />
-                    <Shell />
+            <div className={ "wc-chatview-panel" }>
+                <div className="wc-header">
+                    <span>{ this.props.title || "WebChat" }</span>
                 </div>
-                <div className={ "wc-debugview-panel" + (state.debug.viewState === DebugViewState.visible ? "" : " wc-hidden") }>
-                    <div className="wc-header">
-                        <span>Debug</span>
-                    </div>
-                    <DebugView activity={ state.debug.selectedActivity }/>
-                </div>
+                <History { ...this.props.historyProps } />
+                <Shell />
             </div>
         );
     }

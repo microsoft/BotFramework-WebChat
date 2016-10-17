@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Attachment, Button } from './directLineTypes';
-import { getStore, HistoryAction } from './BotChat';
+import { HistoryAction } from './History';
+import { getStore, getState } from './Store';
+
 
 export const AttachmentView = (props: {
     attachment: Attachment,
     onImageLoad?: ()=> void
 }) => {
-    const state = getStore().getState();
+    const state = getState();
 
     const onClickButton = (type: string, value: string) => {
         switch (type) {
