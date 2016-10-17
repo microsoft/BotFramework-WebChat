@@ -24,7 +24,11 @@
             ReactDOM.render(React.createElement(BotChat.UI, {
                 secret: params['s'],
                 token: params['t'],
-                debug: params['debug']
+                debug: params['debug'],
+                user: {
+                    id: params['userid'],
+                    name: params['username']
+                }
                 // ADD MORE CONFIG HERE
             }), document.getElementById("BotChatGoesHere"));
         </script>

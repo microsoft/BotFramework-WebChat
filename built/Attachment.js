@@ -1,8 +1,8 @@
 "use strict";
 var React = require('react');
-var BotChat_1 = require('./BotChat');
+var Store_1 = require('./Store');
 exports.AttachmentView = function (props) {
-    var state = BotChat_1.store.getState();
+    var state = Store_1.getState();
     var onClickButton = function (type, value) {
         switch (type) {
             case "imBack":
@@ -11,7 +11,7 @@ exports.AttachmentView = function (props) {
                     .retry(2)
                     .subscribe(function () {
                     if (type === "imBack") {
-                        BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+                        Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
                                 from: { id: state.connection.user.id },
