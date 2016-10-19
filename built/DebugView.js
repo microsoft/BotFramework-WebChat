@@ -1,7 +1,47 @@
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var React = require('react');
+var Store_1 = require('./Store');
+exports.debugReducer = function (state, action) {
+    if (state === void 0) { state = {
+        selectedActivity: null
+    }; }
+    switch (action.type) {
+        case 'Select_Activity':
+            return { selectedActivity: action.selectedActivity };
+        default:
+            return state;
+    }
+};
+var DebugView = (function (_super) {
+    __extends(DebugView, _super);
+    function DebugView() {
+        _super.apply(this, arguments);
+    }
+    DebugView.prototype.componentWillMount = function () {
+        var _this = this;
+        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
+            return _this.forceUpdate();
+        });
+    };
+    DebugView.prototype.componentWillUnmount = function () {
+        this.storeUnsubscribe();
+    };
+    DebugView.prototype.render = function () {
+        var state = Store_1.getState();
+        return (React.createElement("div", {className: "wc-debugview"}, 
+            React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.debug.selectedActivity || {}))
+        ));
+    };
+    return DebugView;
+}(React.Component));
+exports.DebugView = DebugView;
 var formatJSON = function (obj) {
-    var json = JSON.stringify(obj, null, 2);
+    var json = JSON.stringify(obj, null, 4);
     // Hide ampersands we don't want replaced
     json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
     // Escape remaining ampersands and other HTML special characters
@@ -42,10 +82,5 @@ var formatJSON = function (obj) {
         }
     });
     return React.createElement("span", {dangerouslySetInnerHTML: { __html: json }});
-};
-exports.DebugView = function (props) {
-    return React.createElement("div", {className: "wc-debugview"}, 
-        React.createElement("div", {className: "wc-debugview-json"}, formatJSON(props.activity || {}))
-    );
 };
 //# sourceMappingURL=DebugView.js.map

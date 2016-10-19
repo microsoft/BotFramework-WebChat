@@ -1,9 +1,63 @@
 import * as React from 'react';
+import { Reducer } from 'redux';
 import { Activity } from './directLineTypes';
-import { store } from './BotChat';
+import { getStore, getState } from './Store';
+import { HistoryAction } from './History';
+
+
+export interface DebugState {
+    selectedActivity: Activity
+}
+
+export type DebugAction = {
+    type: 'placeholder'
+} | HistoryAction;
+
+export const debugReducer: Reducer<DebugState> = (
+    state: DebugState = {
+        selectedActivity: null
+    },
+    action: DebugAction
+) => {
+    switch (action.type) {
+        case 'Select_Activity':
+            return { selectedActivity: action.selectedActivity };
+        default:
+            return state;
+    }
+}
+
+export interface DebugViewProps {
+    // TODO
+}
+
+export class DebugView extends React.Component<DebugViewProps, {}> {
+    storeUnsubscribe:any;
+
+    componentWillMount() {
+        this.storeUnsubscribe = getStore().subscribe(() =>
+            this.forceUpdate()
+        );
+    }
+
+    componentWillUnmount() {
+        this.storeUnsubscribe();
+    }
+
+    render() {
+        const state = getState();
+        return (
+            <div className="wc-debugview">
+                <div className="wc-debugview-json">
+                    { formatJSON(state.debug.selectedActivity || {}) }
+                </div>
+            </div>
+        );
+    }
+}
 
 const formatJSON = (obj: any) => {
-    let json = JSON.stringify(obj, null, 2);
+    let json = JSON.stringify(obj, null, 4);
     // Hide ampersands we don't want replaced
     json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
     // Escape remaining ampersands and other HTML special characters
@@ -41,12 +95,3 @@ const formatJSON = (obj: any) => {
         })
     return <span dangerouslySetInnerHTML={ { __html: json } }/>;
 }
-
-export const DebugView = (props: {
-    activity: Activity
-}) =>
-    <div className="wc-debugview">
-        <div className="wc-debugview-json">
-            { formatJSON(props.activity || {}) }
-        </div>
-    </div>;

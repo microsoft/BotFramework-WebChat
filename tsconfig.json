@@ -11,6 +11,6 @@
         "noImplicitAny": false
     },
     "files": [
-        "src/BotChat.tsx"
+        "src/index.ts"
     ]
 }

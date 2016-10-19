@@ -5,52 +5,77 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
-var BotChat_1 = require('./BotChat');
+var Store_1 = require('./Store');
 var HistoryMessage_1 = require('./HistoryMessage');
 var rxjs_1 = require('@reactivex/rxjs');
+exports.historyReducer = function (state, action) {
+    if (state === void 0) { state = {
+        activities: [],
+        autoscroll: true,
+        selectedActivity: null
+    }; }
+    switch (action.type) {
+        case 'Receive_Message':
+            return { activities: state.activities.concat([action.activity]), autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+        case 'Send_Message':
+            return { activities: state.activities.concat([action.activity]), autoscroll: true, selectedActivity: state.selectedActivity };
+        case 'Set_Autoscroll':
+            return { activities: state.activities, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
+        case 'Select_Activity':
+            return { activities: state.activities, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
+        default:
+            return state;
+    }
+};
+var HistoryProps = (function () {
+    function HistoryProps() {
+    }
+    return HistoryProps;
+}());
+exports.HistoryProps = HistoryProps;
 var History = (function (_super) {
     __extends(History, _super);
     function History() {
         _super.call(this);
         this.onMessageClicked = function (e, activity) {
-            if (BotChat_1.store.getState().debug.viewState === BotChat_1.DebugViewState.visible) {
-                e.preventDefault();
-                e.stopPropagation();
-                BotChat_1.store.dispatch({ type: 'Select_Activity', activity: activity });
-            }
+            e.preventDefault();
+            e.stopPropagation();
+            Store_1.getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity });
         };
     }
     History.prototype.componentWillMount = function () {
         var _this = this;
-        BotChat_1.store.subscribe(function () {
+        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
             return _this.forceUpdate();
         });
     };
     History.prototype.componentDidMount = function () {
-        var autoscrollSubscription = rxjs_1.Observable
+        this.autoscrollSubscription = rxjs_1.Observable
             .fromEvent(this.scrollMe, 'scroll')
             .map(function (e) { return e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight; })
             .distinctUntilChanged()
             .subscribe(function (autoscroll) {
-            return BotChat_1.store.dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
+            return Store_1.getStore().dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
         });
     };
     History.prototype.componentWillUnmount = function () {
         this.autoscrollSubscription.unsubscribe();
+        this.storeUnsubscribe();
     };
     History.prototype.componentDidUpdate = function (prevProps, prevState) {
-        if (BotChat_1.store.getState().history.autoscroll)
+        if (Store_1.getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     };
     History.prototype.render = function () {
         var _this = this;
-        var state = BotChat_1.store.getState();
+        console.log();
+        var state = Store_1.getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
             React.createElement("div", {className: "wc-message-group"}, state.history.activities
                 .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
                 .map(function (activity) {
                 return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-                    React.createElement("div", {className: 'wc-message-content' + (state.debug.viewState === BotChat_1.DebugViewState.visible ? ' clickable' : '') + (activity === state.debug.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onMessageClicked(e, activity); }}, 
+                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
                             React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
