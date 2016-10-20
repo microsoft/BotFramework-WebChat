@@ -54,7 +54,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     componentDidUpdate() {
-        this.textInput.focus();
+        //this.textInput.focus();
     }
 
     sendFile = (files: FileList) => {
@@ -133,7 +133,7 @@ export class Shell extends React.Component<{}, {}> {
                     </svg>
                 </label>
                 <div className="wc-textbox">
-                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.shell.text } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } disabled={ !state.shell.enableSend } placeholder="Type your message..." />
+                    <input type="text" ref={ref => this.textInput = ref } value={ state.shell.text } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } disabled={ !state.shell.enableSend } placeholder="Type your message..." />
                 </div>
                 <label className="wc-send" onClick={ this.onClickSend } >
                     <svg width="27" height="18">

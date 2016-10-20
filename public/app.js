@@ -19907,7 +19907,7 @@ var BotChat =
 	        this.storeUnsubscribe();
 	    };
 	    Shell.prototype.componentDidUpdate = function () {
-	        this.textInput.focus();
+	        //this.textInput.focus();
 	    };
 	    Shell.prototype.render = function () {
 	        var _this = this;
@@ -19919,7 +19919,7 @@ var BotChat =
 	                    React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
 	                )), 
 	            React.createElement("div", {className: "wc-textbox"}, 
-	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.shell.text, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, disabled: !state.shell.enableSend, placeholder: "Type your message..."})
+	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, value: state.shell.text, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, disabled: !state.shell.enableSend, placeholder: "Type your message..."})
 	            ), 
 	            React.createElement("label", {className: "wc-send", onClick: this.onClickSend}, 
 	                React.createElement("svg", {width: "27", height: "18"}, 
