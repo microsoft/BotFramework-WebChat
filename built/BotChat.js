@@ -4,40 +4,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var React = require('react');
 var directLine_1 = require('./directLine');
 var browserLine_1 = require('./browserLine');
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');
-exports.connectionReducer = function (state, action) {
-    if (state === void 0) { state = {
-        connected: false,
-        botConnection: undefined,
-        user: undefined,
-        host: undefined
-    }; }
-    switch (action.type) {
-        case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
-        case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
-        case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
-        case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
-        default:
-            return state;
-    }
-};
 var UI = (function (_super) {
     __extends(UI, _super);
     function UI() {
@@ -107,7 +79,7 @@ var UI = (function (_super) {
             React.createElement("div", {className: "wc-header"}, 
                 React.createElement("span", null, this.props.title || "WebChat")
             ), 
-            React.createElement(History_1.History, __assign({}, this.props.historyProps)), 
+            React.createElement(History_1.History, {allowMessageSelection: this.props.allowMessageSelection}), 
             React.createElement(Shell_1.Shell, null)));
     };
     return UI;

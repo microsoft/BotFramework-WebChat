@@ -65,40 +65,12 @@ var BotChat =
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var __assign = (this && this.__assign) || Object.assign || function(t) {
-	    for (var s, i = 1, n = arguments.length; i < n; i++) {
-	        s = arguments[i];
-	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-	            t[p] = s[p];
-	    }
-	    return t;
-	};
 	var React = __webpack_require__(2);
 	var directLine_1 = __webpack_require__(4);
 	var browserLine_1 = __webpack_require__(351);
 	var History_1 = __webpack_require__(352);
-	var Shell_1 = __webpack_require__(368);
+	var Shell_1 = __webpack_require__(375);
 	var Store_1 = __webpack_require__(353);
-	exports.connectionReducer = function (state, action) {
-	    if (state === void 0) { state = {
-	        connected: false,
-	        botConnection: undefined,
-	        user: undefined,
-	        host: undefined
-	    }; }
-	    switch (action.type) {
-	        case 'Start_Connection':
-	            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
-	        case 'Connected_To_Bot':
-	            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
-	        case 'Subscribe_Host':
-	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
-	        case 'Unsubscribe_Host':
-	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
-	        default:
-	            return state;
-	    }
-	};
 	var UI = (function (_super) {
 	    __extends(UI, _super);
 	    function UI() {
@@ -168,7 +140,7 @@ var BotChat =
 	            React.createElement("div", {className: "wc-header"}, 
 	                React.createElement("span", null, this.props.title || "WebChat")
 	            ), 
-	            React.createElement(History_1.History, __assign({}, this.props.historyProps)), 
+	            React.createElement(History_1.History, {allowMessageSelection: this.props.allowMessageSelection}), 
 	            React.createElement(Shell_1.Shell, null)));
 	    };
 	    return UI;
@@ -18603,33 +18575,8 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var Store_1 = __webpack_require__(353);
-	var HistoryMessage_1 = __webpack_require__(370);
+	var HistoryMessage_1 = __webpack_require__(369);
 	var rxjs_1 = __webpack_require__(5);
-	exports.historyReducer = function (state, action) {
-	    if (state === void 0) { state = {
-	        activities: [],
-	        autoscroll: true,
-	        selectedActivity: null
-	    }; }
-	    switch (action.type) {
-	        case 'Receive_Message':
-	            return { activities: state.activities.concat([action.activity]), autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
-	        case 'Send_Message':
-	            return { activities: state.activities.concat([action.activity]), autoscroll: true, selectedActivity: state.selectedActivity };
-	        case 'Set_Autoscroll':
-	            return { activities: state.activities, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
-	        case 'Select_Activity':
-	            return { activities: state.activities, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
-	        default:
-	            return state;
-	    }
-	};
-	var HistoryProps = (function () {
-	    function HistoryProps() {
-	    }
-	    return HistoryProps;
-	}());
-	exports.HistoryProps = HistoryProps;
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History() {
@@ -18671,7 +18618,7 @@ var BotChat =
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
 	                .map(function (activity) {
 	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
+	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowMessageSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
@@ -18693,20 +18640,72 @@ var BotChat =
 
 	"use strict";
 	var redux_1 = __webpack_require__(354);
-	var History_1 = __webpack_require__(352);
-	var Shell_1 = __webpack_require__(368);
-	var DebugView_1 = __webpack_require__(369);
-	var BotChat_1 = __webpack_require__(3);
+	exports.shellReducer = function (state, action) {
+	    if (state === void 0) { state = {
+	        text: '',
+	        enableSend: true
+	    }; }
+	    switch (action.type) {
+	        case 'Update_Shell_Text':
+	            return { text: action.text, enableSend: true };
+	        case 'Pre_Send_Shell_Text':
+	            return { text: state.text, enableSend: false };
+	        case 'Fail_Send_Shell_Text':
+	            return { text: state.text, enableSend: true };
+	        case 'Post_Send_Shell_Text':
+	            return { text: '', enableSend: true };
+	        default:
+	            return state;
+	    }
+	};
+	exports.connectionReducer = function (state, action) {
+	    if (state === void 0) { state = {
+	        connected: false,
+	        botConnection: undefined,
+	        user: undefined,
+	        host: undefined
+	    }; }
+	    switch (action.type) {
+	        case 'Start_Connection':
+	            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
+	        case 'Connected_To_Bot':
+	            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
+	        case 'Subscribe_Host':
+	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
+	        case 'Unsubscribe_Host':
+	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
+	        default:
+	            return state;
+	    }
+	};
+	exports.historyReducer = function (state, action) {
+	    if (state === void 0) { state = {
+	        activities: [],
+	        autoscroll: true,
+	        selectedActivity: null
+	    }; }
+	    switch (action.type) {
+	        case 'Receive_Message':
+	            return { activities: state.activities.concat([action.activity]), autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+	        case 'Send_Message':
+	            return { activities: state.activities.concat([action.activity]), autoscroll: true, selectedActivity: state.selectedActivity };
+	        case 'Set_Autoscroll':
+	            return { activities: state.activities, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
+	        case 'Select_Activity':
+	            return { activities: state.activities, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
+	        default:
+	            return state;
+	    }
+	};
 	exports.getStore = function () {
 	    var global = Function('return this')();
 	    if (!global['msbotchat'])
 	        global['msbotchat'] = {};
 	    if (!global['msbotchat'].store)
 	        global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
-	            shell: Shell_1.shellReducer,
-	            connection: BotChat_1.connectionReducer,
-	            history: History_1.historyReducer,
-	            debug: DebugView_1.debugReducer
+	            shell: exports.shellReducer,
+	            connection: exports.connectionReducer,
+	            history: exports.historyReducer
 	        }));
 	    return global['msbotchat'].store;
 	};
@@ -18728,23 +18727,23 @@ var BotChat =
 	
 	var _createStore2 = _interopRequireDefault(_createStore);
 	
-	var _combineReducers = __webpack_require__(363);
+	var _combineReducers = __webpack_require__(364);
 	
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 	
-	var _bindActionCreators = __webpack_require__(365);
+	var _bindActionCreators = __webpack_require__(366);
 	
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 	
-	var _applyMiddleware = __webpack_require__(366);
+	var _applyMiddleware = __webpack_require__(367);
 	
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 	
-	var _compose = __webpack_require__(367);
+	var _compose = __webpack_require__(368);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
-	var _warning = __webpack_require__(364);
+	var _warning = __webpack_require__(365);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -19186,32 +19185,55 @@ var BotChat =
 /* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	
-	var _ponyfill = __webpack_require__(362);
+	var _ponyfill = __webpack_require__(363);
 	
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root = undefined; /* global window */
+	var root; /* global window */
 	
-	if (typeof global !== 'undefined') {
-		root = global;
+	
+	if (typeof self !== 'undefined') {
+	  root = self;
 	} else if (typeof window !== 'undefined') {
-		root = window;
+	  root = window;
+	} else if (typeof global !== 'undefined') {
+	  root = global;
+	} else if (true) {
+	  root = module;
+	} else {
+	  root = Function('return this')();
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(362)(module)))
 
 /***/ },
 /* 362 */
+/***/ function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 363 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19239,7 +19261,7 @@ var BotChat =
 	};
 
 /***/ },
-/* 363 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -19253,7 +19275,7 @@ var BotChat =
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _warning = __webpack_require__(364);
+	var _warning = __webpack_require__(365);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -19387,7 +19409,7 @@ var BotChat =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(293)))
 
 /***/ },
-/* 364 */
+/* 365 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19417,7 +19439,7 @@ var BotChat =
 	}
 
 /***/ },
-/* 365 */
+/* 366 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19473,7 +19495,7 @@ var BotChat =
 	}
 
 /***/ },
-/* 366 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19484,7 +19506,7 @@ var BotChat =
 	
 	exports['default'] = applyMiddleware;
 	
-	var _compose = __webpack_require__(367);
+	var _compose = __webpack_require__(368);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
@@ -19536,7 +19558,7 @@ var BotChat =
 	}
 
 /***/ },
-/* 367 */
+/* 368 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19579,237 +19601,14 @@ var BotChat =
 	}
 
 /***/ },
-/* 368 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(2);
-	var Store_1 = __webpack_require__(353);
-	exports.shellReducer = function (state, action) {
-	    if (state === void 0) { state = {
-	        text: '',
-	        enableSend: true
-	    }; }
-	    switch (action.type) {
-	        case 'Update_Shell_Text':
-	            return { text: action.text, enableSend: true };
-	        case 'Pre_Send_Shell_Text':
-	            return { text: state.text, enableSend: false };
-	        case 'Fail_Send_Shell_Text':
-	            return { text: state.text, enableSend: true };
-	        case 'Post_Send_Shell_Text':
-	            return { text: '', enableSend: true };
-	        default:
-	            return state;
-	    }
-	};
-	var Shell = (function (_super) {
-	    __extends(Shell, _super);
-	    function Shell() {
-	        var _this = this;
-	        _super.apply(this, arguments);
-	        this.sendFile = function (files) {
-	            var state = Store_1.getState();
-	            var _loop_1 = function(i, numFiles) {
-	                var file = files[i];
-	                state.connection.botConnection.postFile(file)
-	                    .retry(2)
-	                    .subscribe(function () {
-	                    var path = window.URL.createObjectURL(file);
-	                    Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
-	                            type: "message",
-	                            from: state.connection.user,
-	                            timestamp: Date.now().toString(),
-	                            attachments: [{
-	                                    contentType: "image/png",
-	                                    contentUrl: path,
-	                                    name: 'Your file here'
-	                                }]
-	                        } });
-	                }, function (error) {
-	                    console.log("failed to post file");
-	                });
-	            };
-	            for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-	                _loop_1(i, numFiles);
-	            }
-	        };
-	        this.sendMessage = function () {
-	            var state = Store_1.getState();
-	            console.log("shell sendMessage");
-	            Store_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
-	            state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
-	                .retry(2)
-	                .subscribe(function () {
-	                Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
-	                        type: "message",
-	                        text: state.shell.text,
-	                        from: state.connection.user },
-	                    timestamp: Date.now().toString()
-	                });
-	                Store_1.getStore().dispatch({ type: 'Post_Send_Shell_Text' });
-	            }, function (error) {
-	                console.log("failed to post message");
-	                Store_1.getStore().dispatch({ type: 'Fail_Send_Shell_Text' });
-	            });
-	        };
-	        this.onKeyPress = function (e) {
-	            if (e.key === 'Enter')
-	                _this.sendMessage();
-	        };
-	        this.onClickSend = function () {
-	            var state = Store_1.getState();
-	            if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
-	                _this.sendMessage();
-	        };
-	        this.updateMessage = function (text) {
-	            Store_1.getStore().dispatch({ type: 'Update_Shell_Text', text: text });
-	        };
-	    }
-	    Shell.prototype.componentDidMount = function () {
-	        var _this = this;
-	        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
-	            return _this.forceUpdate();
-	        });
-	    };
-	    Shell.prototype.componentWillUnmount = function () {
-	        this.storeUnsubscribe();
-	    };
-	    Shell.prototype.componentDidUpdate = function () {
-	        this.textInput.focus();
-	    };
-	    Shell.prototype.render = function () {
-	        var _this = this;
-	        var state = Store_1.getState();
-	        return (React.createElement("div", {className: "wc-console"}, 
-	            React.createElement("label", {className: "wc-upload"}, 
-	                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 
-	                React.createElement("svg", {width: "26", height: "18"}, 
-	                    React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
-	                )), 
-	            React.createElement("div", {className: "wc-textbox"}, 
-	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.shell.text, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, disabled: !state.shell.enableSend, placeholder: "Type your message..."})
-	            ), 
-	            React.createElement("label", {className: "wc-send", onClick: this.onClickSend}, 
-	                React.createElement("svg", {width: "27", height: "18"}, 
-	                    React.createElement("path", {d: "M 26.7862876 9.3774996 A 0.3121028 0.3121028 0 0 0 26.7862876 8.785123 L 0.4081408 0.0226012 C 0.363153 0.0000109 0.3406591 0.0000109 0.3181652 0.0000109 C 0.1372585 0.0000109 0 0.1315165 0 0.2887646 C 0 0.3270384 0.0081316 0.3668374 0.0257445 0.4066363 L 3.4448168 9.0813113 L 0.0257445 17.7556097 A 0.288143 0.288143 0 0 0 0.0126457 17.7975417 A 0.279813 0.279813 0 0 0 0.0055133 17.8603089 C 0.0055133 18.0178895 0.138422 18.1590562 0.303205 18.1590562 A 0.3049569 0.3049569 0 0 0 0.4081408 18.1400213 L 26.7862876 9.3774996 Z M 0.8130309 0.7906714 L 24.8365128 8.7876374 L 3.9846704 8.7876374 L 0.8130309 0.7906714 Z M 3.9846704 9.3749852 L 24.8365128 9.3749852 L 0.8130309 17.3719511 L 3.9846704 9.3749852 Z"})
-	                )
-	            )));
-	    };
-	    return Shell;
-	}(React.Component));
-	exports.Shell = Shell;
-
-
-/***/ },
 /* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var React = __webpack_require__(2);
-	var Store_1 = __webpack_require__(353);
-	exports.debugReducer = function (state, action) {
-	    if (state === void 0) { state = {
-	        selectedActivity: null
-	    }; }
-	    switch (action.type) {
-	        case 'Select_Activity':
-	            return { selectedActivity: action.selectedActivity };
-	        default:
-	            return state;
-	    }
-	};
-	var DebugView = (function (_super) {
-	    __extends(DebugView, _super);
-	    function DebugView() {
-	        _super.apply(this, arguments);
-	    }
-	    DebugView.prototype.componentWillMount = function () {
-	        var _this = this;
-	        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
-	            return _this.forceUpdate();
-	        });
-	    };
-	    DebugView.prototype.componentWillUnmount = function () {
-	        this.storeUnsubscribe();
-	    };
-	    DebugView.prototype.render = function () {
-	        var state = Store_1.getState();
-	        return (React.createElement("div", {className: "wc-chatview-panel"}, 
-	            React.createElement("div", {className: "wc-header"}, 
-	                React.createElement("span", null, "JSON")
-	            ), 
-	            React.createElement("div", {className: "wc-debugview"}, 
-	                React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.debug.selectedActivity || {}))
-	            )));
-	    };
-	    return DebugView;
-	}(React.Component));
-	exports.DebugView = DebugView;
-	var formatJSON = function (obj) {
-	    var json = JSON.stringify(obj, null, 2);
-	    // Hide ampersands we don't want replaced
-	    json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
-	    // Escape remaining ampersands and other HTML special characters
-	    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	    // Restore hidden ampersands
-	    json = json.replace(/\x01/g, '&');
-	    // Match all the JSON parts and add theming markup
-	    json = json.replace(/"(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, function (match) {
-	        // Default to "number"
-	        var cls = 'number';
-	        // Detect the type of the JSON part
-	        if (/^"/.test(match)) {
-	            if (/:$/.test(match)) {
-	                cls = 'key';
-	            }
-	            else {
-	                cls = 'string';
-	            }
-	        }
-	        else if (/true|false/.test(match)) {
-	            cls = 'boolean';
-	        }
-	        else if (/null/.test(match)) {
-	            cls = 'null';
-	        }
-	        if (cls === 'key') {
-	            // Color string content, not the quotes or colon delimiter
-	            var exec = /"(.*)":\s*/.exec(match);
-	            return "\"<span class=\"json-" + cls + "\">" + exec[1] + "</span>\": ";
-	        }
-	        else if (cls === 'string') {
-	            // Color string content, not the quotes
-	            var exec = /"(.*)"/.exec(match);
-	            return "\"<span class=\"json-" + cls + "\">" + exec[1] + "</span>\"";
-	        }
-	        else {
-	            return "<span class=\"json-" + cls + "\">" + match + "</span>";
-	        }
-	    });
-	    return React.createElement("span", {dangerouslySetInnerHTML: { __html: json }});
-	};
-
-
-/***/ },
-/* 370 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(371);
-	var Carousel_1 = __webpack_require__(372);
-	var FormattedText_1 = __webpack_require__(373);
+	var Attachment_1 = __webpack_require__(370);
+	var Carousel_1 = __webpack_require__(371);
+	var FormattedText_1 = __webpack_require__(372);
 	exports.HistoryMessage = function (props) {
 	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
 	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
@@ -19827,7 +19626,7 @@ var BotChat =
 
 
 /***/ },
-/* 371 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19932,7 +19731,7 @@ var BotChat =
 
 
 /***/ },
-/* 372 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19942,7 +19741,7 @@ var BotChat =
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(371);
+	var Attachment_1 = __webpack_require__(370);
 	var Carousel = (function (_super) {
 	    __extends(Carousel, _super);
 	    function Carousel(props) {
@@ -20078,7 +19877,7 @@ var BotChat =
 
 
 /***/ },
-/* 373 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20096,8 +19895,8 @@ var BotChat =
 	    return t;
 	};
 	var React = __webpack_require__(2);
-	var Marked = __webpack_require__(374);
-	var He = __webpack_require__(375);
+	var Marked = __webpack_require__(373);
+	var He = __webpack_require__(374);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
 	    function FormattedText() {
@@ -20308,7 +20107,7 @@ var BotChat =
 
 
 /***/ },
-/* 374 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -21601,7 +21400,7 @@ var BotChat =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 375 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/he v1.1.0 by @mathias | MIT license */
@@ -21945,22 +21744,116 @@ var BotChat =
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(376)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(362)(module), (function() { return this; }())))
 
 /***/ },
-/* 376 */
-/***/ function(module, exports) {
+/* 375 */
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(2);
+	var Store_1 = __webpack_require__(353);
+	var Shell = (function (_super) {
+	    __extends(Shell, _super);
+	    function Shell() {
+	        var _this = this;
+	        _super.apply(this, arguments);
+	        this.sendFile = function (files) {
+	            var state = Store_1.getState();
+	            var _loop_1 = function(i, numFiles) {
+	                var file = files[i];
+	                state.connection.botConnection.postFile(file)
+	                    .retry(2)
+	                    .subscribe(function () {
+	                    var path = window.URL.createObjectURL(file);
+	                    Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
+	                            type: "message",
+	                            from: state.connection.user,
+	                            timestamp: Date.now().toString(),
+	                            attachments: [{
+	                                    contentType: "image/png",
+	                                    contentUrl: path,
+	                                    name: 'Your file here'
+	                                }]
+	                        } });
+	                }, function (error) {
+	                    console.log("failed to post file");
+	                });
+	            };
+	            for (var i = 0, numFiles = files.length; i < numFiles; i++) {
+	                _loop_1(i, numFiles);
+	            }
+	        };
+	        this.sendMessage = function () {
+	            var state = Store_1.getState();
+	            console.log("shell sendMessage");
+	            Store_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
+	            state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
+	                .retry(2)
+	                .subscribe(function () {
+	                Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
+	                        type: "message",
+	                        text: state.shell.text,
+	                        from: state.connection.user },
+	                    timestamp: Date.now().toString()
+	                });
+	                Store_1.getStore().dispatch({ type: 'Post_Send_Shell_Text' });
+	            }, function (error) {
+	                console.log("failed to post message");
+	                Store_1.getStore().dispatch({ type: 'Fail_Send_Shell_Text' });
+	            });
+	        };
+	        this.onKeyPress = function (e) {
+	            if (e.key === 'Enter')
+	                _this.sendMessage();
+	        };
+	        this.onClickSend = function () {
+	            var state = Store_1.getState();
+	            if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
+	                _this.sendMessage();
+	        };
+	        this.updateMessage = function (text) {
+	            Store_1.getStore().dispatch({ type: 'Update_Shell_Text', text: text });
+	        };
+	    }
+	    Shell.prototype.componentDidMount = function () {
+	        var _this = this;
+	        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
+	            return _this.forceUpdate();
+	        });
+	    };
+	    Shell.prototype.componentWillUnmount = function () {
+	        this.storeUnsubscribe();
+	    };
+	    Shell.prototype.componentDidUpdate = function () {
+	        this.textInput.focus();
+	    };
+	    Shell.prototype.render = function () {
+	        var _this = this;
+	        var state = Store_1.getState();
+	        return (React.createElement("div", {className: "wc-console"}, 
+	            React.createElement("label", {className: "wc-upload"}, 
+	                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 
+	                React.createElement("svg", {width: "26", height: "18"}, 
+	                    React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
+	                )), 
+	            React.createElement("div", {className: "wc-textbox"}, 
+	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.shell.text, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, disabled: !state.shell.enableSend, placeholder: "Type your message..."})
+	            ), 
+	            React.createElement("label", {className: "wc-send", onClick: this.onClickSend}, 
+	                React.createElement("svg", {width: "27", height: "18"}, 
+	                    React.createElement("path", {d: "M 26.7862876 9.3774996 A 0.3121028 0.3121028 0 0 0 26.7862876 8.785123 L 0.4081408 0.0226012 C 0.363153 0.0000109 0.3406591 0.0000109 0.3181652 0.0000109 C 0.1372585 0.0000109 0 0.1315165 0 0.2887646 C 0 0.3270384 0.0081316 0.3668374 0.0257445 0.4066363 L 3.4448168 9.0813113 L 0.0257445 17.7556097 A 0.288143 0.288143 0 0 0 0.0126457 17.7975417 A 0.279813 0.279813 0 0 0 0.0055133 17.8603089 C 0.0055133 18.0178895 0.138422 18.1590562 0.303205 18.1590562 A 0.3049569 0.3049569 0 0 0 0.4081408 18.1400213 L 26.7862876 9.3774996 Z M 0.8130309 0.7906714 L 24.8365128 8.7876374 L 3.9846704 8.7876374 L 0.8130309 0.7906714 Z M 3.9846704 9.3749852 L 24.8365128 9.3749852 L 0.8130309 17.3719511 L 3.9846704 9.3749852 Z"})
+	                )
+	            )));
+	    };
+	    return Shell;
+	}(React.Component));
+	exports.Shell = Shell;
 
 
 /***/ }

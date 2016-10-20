@@ -8,31 +8,6 @@ var React = require('react');
 var Store_1 = require('./Store');
 var HistoryMessage_1 = require('./HistoryMessage');
 var rxjs_1 = require('@reactivex/rxjs');
-exports.historyReducer = function (state, action) {
-    if (state === void 0) { state = {
-        activities: [],
-        autoscroll: true,
-        selectedActivity: null
-    }; }
-    switch (action.type) {
-        case 'Receive_Message':
-            return { activities: state.activities.concat([action.activity]), autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
-        case 'Send_Message':
-            return { activities: state.activities.concat([action.activity]), autoscroll: true, selectedActivity: state.selectedActivity };
-        case 'Set_Autoscroll':
-            return { activities: state.activities, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
-        case 'Select_Activity':
-            return { activities: state.activities, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
-        default:
-            return state;
-    }
-};
-var HistoryProps = (function () {
-    function HistoryProps() {
-    }
-    return HistoryProps;
-}());
-exports.HistoryProps = HistoryProps;
 var History = (function (_super) {
     __extends(History, _super);
     function History() {
@@ -74,7 +49,7 @@ var History = (function (_super) {
                 .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
                 .map(function (activity) {
                 return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
+                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowMessageSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
                             React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 

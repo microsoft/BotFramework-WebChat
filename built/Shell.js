@@ -6,24 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var Store_1 = require('./Store');
-exports.shellReducer = function (state, action) {
-    if (state === void 0) { state = {
-        text: '',
-        enableSend: true
-    }; }
-    switch (action.type) {
-        case 'Update_Shell_Text':
-            return { text: action.text, enableSend: true };
-        case 'Pre_Send_Shell_Text':
-            return { text: state.text, enableSend: false };
-        case 'Fail_Send_Shell_Text':
-            return { text: state.text, enableSend: true };
-        case 'Post_Send_Shell_Text':
-            return { text: '', enableSend: true };
-        default:
-            return state;
-    }
-};
 var Shell = (function (_super) {
     __extends(Shell, _super);
     function Shell() {

@@ -1,37 +1,10 @@
 import * as React from 'react';
 import { Reducer } from 'redux';
 import { Activity } from './directLineTypes';
-import { getStore, getState } from './Store';
-import { HistoryAction } from './History';
+import { getStore, getState, HistoryAction } from './Store';
 
 
-export interface DebugState {
-    selectedActivity: Activity
-}
-
-export type DebugAction = {
-    type: 'placeholder'
-} | HistoryAction;
-
-export const debugReducer: Reducer<DebugState> = (
-    state: DebugState = {
-        selectedActivity: null
-    },
-    action: DebugAction
-) => {
-    switch (action.type) {
-        case 'Select_Activity':
-            return { selectedActivity: action.selectedActivity };
-        default:
-            return state;
-    }
-}
-
-export interface DebugViewProps {
-    // TODO
-}
-
-export class DebugView extends React.Component<DebugViewProps, {}> {
+export class DebugView extends React.Component<{}, {}> {
     storeUnsubscribe:any;
 
     componentWillMount() {
@@ -53,7 +26,7 @@ export class DebugView extends React.Component<DebugViewProps, {}> {
                 </div>
                 <div className="wc-debugview">
                     <div className="wc-debugview-json">
-                        { formatJSON(state.debug.selectedActivity || {}) }
+                        { formatJSON(state.history.selectedActivity || {}) }
                     </div>
                 </div>
             </div>

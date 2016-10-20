@@ -26,7 +26,7 @@ var App = (function (_super) {
                 React.createElement(BotChat_1.UI, __assign({}, this.props.uiProps))
             ), 
             React.createElement("div", {className: "wc-app-right-container"}, 
-                React.createElement(DebugView_1.DebugView, __assign({}, this.props.debugProps))
+                React.createElement(DebugView_1.DebugView, null)
             )));
     };
     return App;

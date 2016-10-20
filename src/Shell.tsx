@@ -1,43 +1,9 @@
 import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
-import { getStore, getState } from './Store';
+import { getStore, getState, ShellAction, HistoryAction } from './Store';
 import { mimeTypes } from './directLineTypes';
-import { HistoryAction } from './History';
 
-
-export interface ShellState {
-    text: string,
-    enableSend: boolean
-}
-
-export type ShellAction = {
-    type: 'Update_Shell_Text',
-    text: string
-} | {
-    type: 'Pre_Send_Shell_Text' | 'Fail_Send_Shell_Text' | 'Post_Send_Shell_Text';
-}
-
-export const shellReducer: Reducer<ShellState> = (
-    state: ShellState = {
-        text: '',
-        enableSend: true
-    },
-    action: ShellAction
-) => {
-    switch (action.type) {
-        case 'Update_Shell_Text':
-            return { text: action.text, enableSend: true };
-        case 'Pre_Send_Shell_Text':
-            return { text: state.text, enableSend: false }
-        case 'Fail_Send_Shell_Text':
-            return { text: state.text, enableSend: true }
-        case 'Post_Send_Shell_Text':
-            return { text: '', enableSend: true };
-        default:
-            return state;
-    }
-}
 
 export class Shell extends React.Component<{}, {}> {
     textInput:any;

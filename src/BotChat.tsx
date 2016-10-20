@@ -4,51 +4,10 @@ import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, mimeTypes, IBotConnection, User } from './directLineTypes';
 import { DirectLine } from './directLine';
 import { BrowserLine } from './browserLine';
-import { History, HistoryAction, HistoryProps } from './History';
+import { History } from './History';
 import { Shell } from './Shell';
-import { getStore, getState } from './Store';
+import { getStore, getState, HistoryAction, ConnectionAction } from './Store';
 
-
-export interface ConnectionState {
-    connected: boolean
-    botConnection: IBotConnection,
-    user: User,
-    host: Window
-}
-
-export type ConnectionAction = {
-    type: 'Start_Connection',
-    botConnection: IBotConnection,
-    user: User,
-} | {
-    type: 'Connected_To_Bot' | 'Unsubscribe_Host'
-} | {
-    type: 'Subscribe_Host',
-    host: Window
-}
-
-export const connectionReducer: Reducer<ConnectionState> = (
-    state: ConnectionState = {
-        connected: false,
-        botConnection: undefined,
-        user: undefined,
-        host: undefined
-    },
-    action: ConnectionAction
-) => {
-    switch (action.type) {
-        case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
-        case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host  };
-        case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host  };
-        case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined  };
-        default:
-            return state;
-    }
-}
 
 export interface UIProps {
     user: { id: string, name: string },
@@ -57,7 +16,7 @@ export interface UIProps {
     title?: string,
     allowMessagesFrom?: string[],
     directLineDomain?: string,
-    historyProps: HistoryProps
+    allowMessageSelection?: boolean
 }
 
 export class UI extends React.Component<UIProps, {}> {
@@ -144,7 +103,7 @@ export class UI extends React.Component<UIProps, {}> {
                 <div className="wc-header">
                     <span>{ this.props.title || "WebChat" }</span>
                 </div>
-                <History { ...this.props.historyProps } />
+                <History allowMessageSelection={ this.props.allowMessageSelection } />
                 <Shell />
             </div>
         );

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { UI, UIProps } from './BotChat';
-import { DebugView, DebugViewProps } from './DebugView';
+import { DebugView } from './DebugView';
 
 interface Props {
-    uiProps: UIProps,
-    debugProps: DebugViewProps
+    uiProps: UIProps
 }
 
 export class App extends React.Component<Props, {}> {
@@ -17,7 +16,7 @@ export class App extends React.Component<Props, {}> {
                     <UI { ...this.props.uiProps } />
                 </div>
                 <div className="wc-app-right-container">
-                    <DebugView { ...this.props.debugProps } />
+                    <DebugView />
                 </div>
             </div>
         );
