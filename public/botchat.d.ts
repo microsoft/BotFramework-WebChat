@@ -1,12 +1,6 @@
 import * as React from 'react';
 
-export interface DebugViewProps {
-}
-export declare class DebugView extends React.Component<DebugViewProps, {}> {
-}
-
-export declare class HistoryProps {
-    allowSelection: boolean;
+export declare class DebugView extends React.Component<{}, {}> {
 }
 
 export interface UIProps {
@@ -20,14 +14,13 @@ export interface UIProps {
     title?: string;
     allowMessagesFrom?: string[];
     directLineDomain?: string;
-    historyProps: HistoryProps;
+    allowMessageSelection: boolean;
 }
 export declare class UI extends React.Component<UIProps, {}> {
 }
 
 export interface AppProps {
     uiProps: UIProps;
-    debugProps: DebugViewProps;
 }
 export declare class App extends React.Component<AppProps, {}> {
 }

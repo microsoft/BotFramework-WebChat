@@ -1,33 +1,11 @@
 import * as React from 'react';
 import { Reducer } from 'redux';
-import { Severity, IConsoleEntry, IConsoleProvider } from './Console';
+import { Severity, IConsoleEntry, IConsoleProvider } from './ConsoleProvider';
 import { Subscription, Observable, Subject } from '@reactivex/rxjs';
-import { getStore, getState } from './Store';
+import { getStore, getState, ConsoleAction } from './Store';
+
 
 var console$ = new Subject<IConsoleEntry>();
-
-export interface ConsoleState {
-    autoscroll: boolean
-}
-
-export type ConsoleAction = {
-    type: 'Set_Autoscroll',
-    autoscroll: boolean
-}
-
-export const consoleReducer: Reducer<ConsoleState> = (
-    state: ConsoleState = {
-        autoscroll: true,
-    },
-    action: ConsoleAction
-) => {
-    switch (action.type) {
-        case 'Set_Autoscroll':
-            return { autoscroll: action.autoscroll };
-        default:
-            return state;
-    }
-}
 
 export class ConsoleProvider implements IConsoleProvider {
     add = (severity: Severity, message: any, ...args: any[]) => {

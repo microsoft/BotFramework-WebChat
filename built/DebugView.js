@@ -6,17 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var Store_1 = require('./Store');
-exports.debugReducer = function (state, action) {
-    if (state === void 0) { state = {
-        selectedActivity: null
-    }; }
-    switch (action.type) {
-        case 'Select_Activity':
-            return { selectedActivity: action.selectedActivity };
-        default:
-            return state;
-    }
-};
 var DebugView = (function (_super) {
     __extends(DebugView, _super);
     function DebugView() {
@@ -34,7 +23,7 @@ var DebugView = (function (_super) {
     DebugView.prototype.render = function () {
         var state = Store_1.getState();
         return (React.createElement("div", {className: "wc-debugview"}, 
-            React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.debug.selectedActivity || {}))
+            React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.history.selectedActivity || {}))
         ));
     };
     return DebugView;

@@ -4,52 +4,11 @@ import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, mimeTypes, IBotConnection, User } from './directLineTypes';
 import { DirectLine } from './directLine';
 import { BrowserLine } from './browserLine';
-import { History, HistoryAction, HistoryProps } from './History';
+import { History } from './History';
 import { Shell } from './Shell';
-import { getStore, getState } from './Store';
-import { IConsoleProvider, BuiltinConsoleProvider } from './Console';
+import { getStore, getState, HistoryAction, ConnectionAction } from './Store';
+import { IConsoleProvider, NullConsoleProvider } from './ConsoleProvider';
 
-
-export interface ConnectionState {
-    connected: boolean
-    botConnection: IBotConnection,
-    user: User,
-    host: Window
-}
-
-export type ConnectionAction = {
-    type: 'Start_Connection',
-    botConnection: IBotConnection,
-    user: User,
-} | {
-    type: 'Connected_To_Bot' | 'Unsubscribe_Host'
-} | {
-    type: 'Subscribe_Host',
-    host: Window
-}
-
-export const connectionReducer: Reducer<ConnectionState> = (
-    state: ConnectionState = {
-        connected: false,
-        botConnection: undefined,
-        user: undefined,
-        host: undefined
-    },
-    action: ConnectionAction
-) => {
-    switch (action.type) {
-        case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
-        case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host  };
-        case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host  };
-        case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined  };
-        default:
-            return state;
-    }
-}
 
 export interface UIProps {
     devConsole?: IConsoleProvider,
@@ -59,11 +18,10 @@ export interface UIProps {
     title?: string,
     allowMessagesFrom?: string[],
     directLineDomain?: string,
-    historyProps: HistoryProps
+    allowMessageSelection?: boolean
 }
 
 export class UI extends React.Component<UIProps, {}> {
-    storeUnsubscribe: any;
     devConsole: IConsoleProvider;
 
     constructor() {
@@ -111,7 +69,7 @@ export class UI extends React.Component<UIProps, {}> {
     }
 
     componentWillMount() {
-        this.devConsole = this.props.devConsole || new BuiltinConsoleProvider();
+        this.devConsole = this.props.devConsole || new NullConsoleProvider();
 
         this.devConsole.log("Starting BotChat", this.props);
 
@@ -131,22 +89,12 @@ export class UI extends React.Component<UIProps, {}> {
             console.log("adding event listener for messages from hosting web page");
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
-
-        this.storeUnsubscribe = getStore().subscribe(() =>
-            this.forceUpdate()
-        );
-    }
-
-    componentWillUnmount() {
-        this.storeUnsubscribe();
     }
 
     render() {
-        const state = getState();
-        console.log("BotChat state", state);
         return (
             <div>
-                <History { ...this.props.historyProps } />
+                <History allowMessageSelection={ this.props.allowMessageSelection } />
                 <Shell />
             </div>
         );

@@ -1,12 +1,12 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
-var Console_1 = require('./Console');
+var ConsoleProvider_1 = require('./ConsoleProvider');
 var intervalRefreshToken = 28 * 60 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain, devConsole) {
         var _this = this;
         if (domain === void 0) { domain = "https://directline.botframework.com"; }
-        if (devConsole === void 0) { devConsole = new Console_1.NullConsoleProvider(); }
+        if (devConsole === void 0) { devConsole = new ConsoleProvider_1.NullConsoleProvider(); }
         this.domain = domain;
         this.devConsole = devConsole;
         this.connected$ = new rxjs_1.BehaviorSubject(false);
@@ -14,14 +14,14 @@ var DirectLine = (function () {
             var statusCode = "" + status;
             if (statusCode.match(/^2\d\d$/))
                 return defaultSev;
-            return Console_1.Severity.error;
+            return ConsoleProvider_1.Severity.error;
         };
         this.logResponse = function (defaultSev, text, response) {
             _this.devConsole.add(_this.statusToSeverity(response.status, defaultSev), text, response.status, response.responseText);
         };
         this.logError = function (text, response) {
-            var severity = _this.statusToSeverity(response.status, Console_1.Severity.info);
-            if (severity == Console_1.Severity.error)
+            var severity = _this.statusToSeverity(response.status, ConsoleProvider_1.Severity.info);
+            if (severity == ConsoleProvider_1.Severity.error)
                 _this.devConsole.error(text, response.status, response.responseText);
         };
         this.postMessage = function (text, from, channelData) {
@@ -40,7 +40,7 @@ var DirectLine = (function () {
                     "Authorization": "BotConnector " + _this.token
                 }
             })
-                .do(function (response) { return _this.logResponse(Console_1.Severity.info, 'Response', response); })
+                .do(function (response) { return _this.logResponse(ConsoleProvider_1.Severity.info, 'Response', response); })
                 .retryWhen(function (error$) { return error$.delay(1000); })
                 .mapTo(true);
         };
@@ -56,7 +56,7 @@ var DirectLine = (function () {
                     "Authorization": "BotConnector " + _this.token
                 }
             })
-                .do(function (response) { return _this.logResponse(Console_1.Severity.info, 'Response', response); })
+                .do(function (response) { return _this.logResponse(ConsoleProvider_1.Severity.info, 'Response', response); })
                 .retryWhen(function (error$) { return error$.delay(1000); })
                 .mapTo(true);
         };

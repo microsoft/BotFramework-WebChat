@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { UI, UIProps } from './BotChat';
-import { DebugView, DebugViewProps } from './DebugView';
-import { IConsoleProvider, BuiltinConsoleProvider } from './Console';
+import { DebugView } from './DebugView';
+import { IConsoleProvider, BuiltinConsoleProvider } from './ConsoleProvider';
 import { ConsoleView, ConsoleProvider } from './ConsoleView';
 
 export interface AppProps {
-    uiProps: UIProps,
-    debugProps: DebugViewProps
+    uiProps: UIProps
 }
 
 export class App extends React.Component<AppProps, {}> {
@@ -30,7 +29,7 @@ export class App extends React.Component<AppProps, {}> {
                             <div className="wc-debugview-header">
                                 <span>JSON</span>
                             </div>
-                            <DebugView { ...this.props.debugProps } />
+                            <DebugView />
                         </div>
                     </div>
                     <div className="wc-app-consoleview-container">

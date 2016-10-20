@@ -6,6 +6,6 @@ __export(require('./DebugView'));
 __export(require('./History'));
 __export(require('./BotChat'));
 __export(require('./App'));
-__export(require('./Console'));
+__export(require('./ConsoleProvider'));
 __export(require('./ConsoleView'));
 //# sourceMappingURL=index.js.map

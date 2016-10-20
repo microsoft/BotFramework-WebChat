@@ -4,41 +4,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var React = require('react');
 var directLine_1 = require('./directLine');
 var browserLine_1 = require('./browserLine');
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');
-var Console_1 = require('./Console');
-exports.connectionReducer = function (state, action) {
-    if (state === void 0) { state = {
-        connected: false,
-        botConnection: undefined,
-        user: undefined,
-        host: undefined
-    }; }
-    switch (action.type) {
-        case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
-        case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
-        case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
-        case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
-        default:
-            return state;
-    }
-};
+var ConsoleProvider_1 = require('./ConsoleProvider');
 var UI = (function (_super) {
     __extends(UI, _super);
     function UI() {
@@ -83,7 +55,7 @@ var UI = (function (_super) {
     }
     UI.prototype.componentWillMount = function () {
         var _this = this;
-        this.devConsole = this.props.devConsole || new Console_1.BuiltinConsoleProvider();
+        this.devConsole = this.props.devConsole || new ConsoleProvider_1.NullConsoleProvider();
         this.devConsole.log("Starting BotChat", this.props);
         var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain, this.devConsole);
         Store_1.getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
@@ -95,18 +67,10 @@ var UI = (function (_super) {
             console.log("adding event listener for messages from hosting web page");
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
-        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
-            return _this.forceUpdate();
-        });
-    };
-    UI.prototype.componentWillUnmount = function () {
-        this.storeUnsubscribe();
     };
     UI.prototype.render = function () {
-        var state = Store_1.getState();
-        console.log("BotChat state", state);
         return (React.createElement("div", null, 
-            React.createElement(History_1.History, __assign({}, this.props.historyProps)), 
+            React.createElement(History_1.History, {allowMessageSelection: this.props.allowMessageSelection}), 
             React.createElement(Shell_1.Shell, null)));
     };
     return UI;

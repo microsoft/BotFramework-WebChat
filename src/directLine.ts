@@ -1,6 +1,6 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
 import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './directLineTypes';
-import { Severity, IConsoleProvider, NullConsoleProvider } from './Console';
+import { Severity, IConsoleProvider, NullConsoleProvider } from './ConsoleProvider';
 
 interface DLAttachment {
     url: string,

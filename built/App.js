@@ -37,7 +37,7 @@ var App = (function (_super) {
                         React.createElement("div", {className: "wc-debugview-header"}, 
                             React.createElement("span", null, "JSON")
                         ), 
-                        React.createElement(DebugView_1.DebugView, __assign({}, this.props.debugProps)))
+                        React.createElement(DebugView_1.DebugView, null))
                 ), 
                 React.createElement("div", {className: "wc-app-consoleview-container"}, 
                     React.createElement("div", {className: "wc-consoleview-header"}, 

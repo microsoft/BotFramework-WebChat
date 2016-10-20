@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Attachment, Button } from './directLineTypes';
-import { HistoryAction } from './History';
-import { getStore, getState } from './Store';
+import { getStore, getState, HistoryAction } from './Store';
 
 
 export const AttachmentView = (props: {

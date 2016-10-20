@@ -5,21 +5,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
-var Console_1 = require('./Console');
+var ConsoleProvider_1 = require('./ConsoleProvider');
 var rxjs_1 = require('@reactivex/rxjs');
 var Store_1 = require('./Store');
 var console$ = new rxjs_1.Subject();
-exports.consoleReducer = function (state, action) {
-    if (state === void 0) { state = {
-        autoscroll: true,
-    }; }
-    switch (action.type) {
-        case 'Set_Autoscroll':
-            return { autoscroll: action.autoscroll };
-        default:
-            return state;
-    }
-};
 var ConsoleProvider = (function () {
     function ConsoleProvider() {
         var _this = this;
@@ -37,42 +26,42 @@ var ConsoleProvider = (function () {
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            _this.add.apply(_this, [Console_1.Severity.info, message].concat(args));
+            _this.add.apply(_this, [ConsoleProvider_1.Severity.info, message].concat(args));
         };
         this.info = function (message) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            _this.add.apply(_this, [Console_1.Severity.info, message].concat(args));
+            _this.add.apply(_this, [ConsoleProvider_1.Severity.info, message].concat(args));
         };
         this.trace = function (message) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            _this.add.apply(_this, [Console_1.Severity.trace, message].concat(args));
+            _this.add.apply(_this, [ConsoleProvider_1.Severity.trace, message].concat(args));
         };
         this.debug = function (message) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            _this.add.apply(_this, [Console_1.Severity.debug, message].concat(args));
+            _this.add.apply(_this, [ConsoleProvider_1.Severity.debug, message].concat(args));
         };
         this.warn = function (message) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            _this.add.apply(_this, [Console_1.Severity.warn, message].concat(args));
+            _this.add.apply(_this, [ConsoleProvider_1.Severity.warn, message].concat(args));
         };
         this.error = function (message) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
             }
-            _this.add.apply(_this, [Console_1.Severity.error, message].concat(args));
+            _this.add.apply(_this, [ConsoleProvider_1.Severity.error, message].concat(args));
         };
     }
     return ConsoleProvider;
@@ -117,7 +106,7 @@ var ConsoleView = (function (_super) {
         var _this = this;
         return (React.createElement("div", {className: "wc-consoleview", ref: function (ref) { return _this.scrollMe = ref; }}, this.state.entries
             .map(function (entry) {
-            return React.createElement("div", {className: 'wc-consoleview-' + Console_1.Severity[entry.severity]}, textForEntry(entry));
+            return React.createElement("div", {className: 'wc-consoleview-' + ConsoleProvider_1.Severity[entry.severity]}, textForEntry(entry));
         })));
     };
     return ConsoleView;
