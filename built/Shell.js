@@ -5,21 +5,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
-var BotChat_1 = require('./BotChat');
+var Store_1 = require('./Store');
 var Shell = (function (_super) {
     __extends(Shell, _super);
     function Shell() {
         var _this = this;
         _super.apply(this, arguments);
         this.sendFile = function (files) {
-            var state = BotChat_1.store.getState();
+            var state = Store_1.getState();
             var _loop_1 = function(i, numFiles) {
                 var file = files[i];
                 state.connection.botConnection.postFile(file)
                     .retry(2)
                     .subscribe(function () {
                     var path = window.URL.createObjectURL(file);
-                    BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+                    Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
                             type: "message",
                             from: state.connection.user,
                             timestamp: Date.now().toString(),
@@ -38,22 +38,22 @@ var Shell = (function (_super) {
             }
         };
         this.sendMessage = function () {
-            var state = BotChat_1.store.getState();
+            var state = Store_1.getState();
             console.log("shell sendMessage");
-            BotChat_1.store.dispatch({ type: 'Pre_Send_Shell_Text' });
+            Store_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
             state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
                 .retry(2)
                 .subscribe(function () {
-                BotChat_1.store.dispatch({ type: 'Send_Message', activity: {
+                Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
                         type: "message",
                         text: state.shell.text,
                         from: state.connection.user },
                     timestamp: Date.now().toString()
                 });
-                BotChat_1.store.dispatch({ type: 'Post_Send_Shell_Text' });
+                Store_1.getStore().dispatch({ type: 'Post_Send_Shell_Text' });
             }, function (error) {
                 console.log("failed to post message");
-                BotChat_1.store.dispatch({ type: 'Fail_Send_Shell_Text' });
+                Store_1.getStore().dispatch({ type: 'Fail_Send_Shell_Text' });
             });
         };
         this.onKeyPress = function (e) {
@@ -61,26 +61,29 @@ var Shell = (function (_super) {
                 _this.sendMessage();
         };
         this.onClickSend = function () {
-            var state = BotChat_1.store.getState();
+            var state = Store_1.getState();
             if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
                 _this.sendMessage();
         };
         this.updateMessage = function (text) {
-            BotChat_1.store.dispatch({ type: 'Update_Shell_Text', text: text });
+            Store_1.getStore().dispatch({ type: 'Update_Shell_Text', text: text });
         };
     }
     Shell.prototype.componentDidMount = function () {
         var _this = this;
-        BotChat_1.store.subscribe(function () {
+        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
             return _this.forceUpdate();
         });
+    };
+    Shell.prototype.componentWillUnmount = function () {
+        this.storeUnsubscribe();
     };
     Shell.prototype.componentDidUpdate = function () {
         this.textInput.focus();
     };
     Shell.prototype.render = function () {
         var _this = this;
-        var state = BotChat_1.store.getState();
+        var state = Store_1.getState();
         return (React.createElement("div", {className: "wc-console"}, 
             React.createElement("label", {className: "wc-upload"}, 
                 React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 

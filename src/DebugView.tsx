@@ -1,6 +1,38 @@
 import * as React from 'react';
+import { Reducer } from 'redux';
 import { Activity } from './directLineTypes';
-import { store } from './BotChat';
+import { getStore, getState, HistoryAction } from './Store';
+
+
+export class DebugView extends React.Component<{}, {}> {
+    storeUnsubscribe:any;
+
+    componentWillMount() {
+        this.storeUnsubscribe = getStore().subscribe(() =>
+            this.forceUpdate()
+        );
+    }
+
+    componentWillUnmount() {
+        this.storeUnsubscribe();
+    }
+
+    render() {
+        const state = getState();
+        return (
+            <div className="wc-chatview-panel">
+                <div className="wc-header">
+                    <span>JSON</span>
+                </div>
+                <div className="wc-debugview">
+                    <div className="wc-debugview-json">
+                        { formatJSON(state.history.selectedActivity || {}) }
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
 
 const formatJSON = (obj: any) => {
     let json = JSON.stringify(obj, null, 2);
@@ -41,12 +73,3 @@ const formatJSON = (obj: any) => {
         })
     return <span dangerouslySetInnerHTML={ { __html: json } }/>;
 }
-
-export const DebugView = (props: {
-    activity: Activity
-}) =>
-    <div className="wc-debugview">
-        <div className="wc-debugview-json">
-            { formatJSON(props.activity || {}) }
-        </div>
-    </div>;

@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './directLineTypes'; 
+import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './directLineTypes';
 
 interface DLAttachment {
     url: string,
@@ -28,7 +28,7 @@ interface DLMessageGroup
 
 const intervalRefreshToken = 28*60*1000;
 
-export class DirectLine implements IBotConnection {    
+export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
     activities$: Observable<Activity>;
 
@@ -115,15 +115,15 @@ export class DirectLine implements IBotConnection {
             .mapTo(true)
         }
 
-    private getActivities = () => 
+    private getActivities = () =>
         new Observable<Observable<DLMessage>>((subscriber:Subscriber<Observable<DLMessage>>) =>
             this.activitiesGenerator(subscriber)
         )
-        .concatAll() 
+        .concatAll()
         .do(dlm => console.log("DL Message", dlm))
         .map(dlm => {
             if (dlm.channelData) {
-                const channelData = <Activity>dlm.channelData; 
+                const channelData = <Activity>dlm.channelData;
                 switch(channelData.type) {
                     case "message":
                         return <Message>Object.assign({}, channelData, {

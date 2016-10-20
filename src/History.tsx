@@ -1,20 +1,27 @@
 import * as React from 'react';
+import { Reducer } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './directLineTypes';
-import { store, HistoryAction, DebugAction, DebugViewState } from './BotChat';
+import { getStore, getState, HistoryAction } from './Store';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
 
-export class History extends React.Component<{}, {}> {
+
+interface Props {
+    allowMessageSelection: boolean
+}
+
+export class History extends React.Component<Props, {}> {
     scrollMe:any;
     autoscrollSubscription:Subscription;
+    storeUnsubscribe:any;
 
     constructor() {
         super();
     }
 
     componentWillMount() {
-        store.subscribe(() => 
+        this.storeUnsubscribe = getStore().subscribe(() =>
             this.forceUpdate()
         );
     }
@@ -25,29 +32,28 @@ export class History extends React.Component<{}, {}> {
         .map(e => e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight)
         .distinctUntilChanged()
         .subscribe(autoscroll =>
-            store.dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
+            getStore().dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
         );
     }
 
     componentWillUnmount() {
         this.autoscrollSubscription.unsubscribe();
+        this.storeUnsubscribe();
     }
 
     componentDidUpdate(prevProps:{}, prevState:{}) {
-        if (store.getState().history.autoscroll)
+        if (getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     }
 
     onMessageClicked = (e: React.SyntheticEvent<any>, activity: Activity) => {
-        if (store.getState().debug.viewState === DebugViewState.visible) {
-            e.preventDefault();
-            e.stopPropagation();
-            store.dispatch({ type: 'Select_Activity', activity } as DebugAction)
-        }
+        e.preventDefault();
+        e.stopPropagation();
+        getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);
     }
 
     render() {
-        const state = store.getState();
+        const state = getState();
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">
@@ -55,7 +61,7 @@ export class History extends React.Component<{}, {}> {
                     .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id))
                     .map((activity:Message) =>
                         <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
-                            <div className={ 'wc-message-content' + (state.debug.viewState === DebugViewState.visible ? ' clickable' : '') + (activity === state.debug.selectedActivity ? ' selected' : '') } onClick={ e => this.onMessageClicked(e, activity) }>
+                            <div className={ 'wc-message-content' + (this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.props.allowMessageSelection ? this.onMessageClicked(e, activity) : undefined }>
                                 <svg className="wc-message-callout">
                                     <path className="point-left" d="m0,0 h12 v10 z" />
                                     <path className="point-right" d="m0,10 v-10 h12 z" />
