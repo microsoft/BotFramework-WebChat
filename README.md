@@ -31,7 +31,7 @@ Rapidly-evolving proof of concept. Not currently supported or in any way product
 ### Directly in its own web page
 
 1. This method requires passing your Secret, and as such should only be used for local testing
-2. Start a local web server (I use http-server) and aim your browser at http://localhost:{port}?s={Secret}
+2. Start a local web server (I use http-server) and aim your browser at `http://localhost:{port}?s={Secret}`
 
 ### Embedded via IFRAME
 
