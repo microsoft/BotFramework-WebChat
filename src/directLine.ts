@@ -26,7 +26,7 @@ interface DLMessageGroup
     eTag?: string
 }
 
-const intervalRefreshToken = 28*60*1000;
+const intervalRefreshToken = 29*60*1000;
 
 export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
@@ -80,8 +80,8 @@ export class DirectLine implements IBotConnection {
         .flatMap(_ => this.getActivities());
     }
 
-    postMessage = (text: string, from: User, channelData?: any) =>
-        Observable.ajax({
+    postMessage(text: string, from: User, channelData?: any) {
+        return Observable.ajax({
             method: "POST",
             url: `${this.domain}/api/conversations/${this.conversationId}/messages`,
             body: <DLMessage>{
@@ -98,25 +98,26 @@ export class DirectLine implements IBotConnection {
 //      .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
         .retryWhen(error$ => error$.delay(1000))
         .mapTo(true);
+    }
 
-        postFile = (file: File) => {
-            const formData = new FormData();
-            formData.append('file', file);
-            return Observable.ajax({
-                method: "POST",
-                url: `${this.domain}/api/conversations/${this.conversationId}/upload`,
-                body: formData,
-                headers: {
-                    "Authorization": `BotConnector ${this.token}`
-                }
-            })
-//              .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
-            .retryWhen(error$ => error$.delay(1000))
-            .mapTo(true)
-        }
+    postFile(file: File) {
+        const formData = new FormData();
+        formData.append('file', file);
+        return Observable.ajax({
+            method: "POST",
+            url: `${this.domain}/api/conversations/${this.conversationId}/upload`,
+            body: formData,
+            headers: {
+                "Authorization": `BotConnector ${this.token}`
+            }
+        })
+//      .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
+        .retryWhen(error$ => error$.delay(1000))
+        .mapTo(true)
+    }
 
-    private getActivities = () =>
-        new Observable<Observable<DLMessage>>((subscriber:Subscriber<Observable<DLMessage>>) =>
+    private getActivities() {
+        return new Observable<Observable<DLMessage>>((subscriber:Subscriber<Observable<DLMessage>>) =>
             this.activitiesGenerator(subscriber)
         )
         .concatAll()
@@ -154,24 +155,24 @@ export class DirectLine implements IBotConnection {
                 }
             }
         });
+    }
 
-    private activitiesGenerator = (subscriber: Subscriber<Observable<DLMessage>>, watermark?: string) => {
-        this.getActivityGroup(watermark).subscribe(
-            messageGroup => {
-                const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
-                if (someMessages)
-                    subscriber.next(Observable.from(messageGroup.messages));
+    private activitiesGenerator(subscriber: Subscriber<Observable<DLMessage>>, watermark?: string) {
+        this.getActivityGroup(watermark).subscribe(messageGroup => {
+            const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+            if (someMessages)
+                subscriber.next(Observable.from(messageGroup.messages));
 
-                setTimeout(
-                    () => this.activitiesGenerator(subscriber, messageGroup && messageGroup.watermark),
-                    someMessages && messageGroup.watermark ? 0 : 3000
-                );
-            },
-            error => subscriber.error(error)
+            setTimeout(
+                () => this.activitiesGenerator(subscriber, messageGroup && messageGroup.watermark),
+                someMessages && messageGroup.watermark ? 0 : 1000
+            );
+         }, error =>
+            subscriber.error(error)
         );
     }
 
-    private getActivityGroup = (watermark = "") => {
+    private getActivityGroup(watermark = "") {
         return Observable.ajax({
             method: "GET",
             url: `${this.domain}/api/conversations/${this.conversationId}/messages?watermark=${watermark}`,
