@@ -21,14 +21,10 @@
                     params[p[0]] = p[1];
                 });
 
-            ReactDOM.render(React.createElement(BotChat.UI, {
+            ReactDOM.render(React.createElement(BotChat.App, {
                 secret: params['s'],
                 token: params['t'],
-                debug: params['debug'],
-                user: {
-                    id: params['userid'],
-                    name: params['username']
-                }
+                user: { id: 'userid', name: 'username' } // for convenient testing/demo - should normally be overwritten by below
                 // ADD MORE CONFIG HERE
             }), document.getElementById("BotChatGoesHere"));
         </script>

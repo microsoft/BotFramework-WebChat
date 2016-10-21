@@ -10,9 +10,9 @@ var browserLine_1 = require('./browserLine');
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');
-var UI = (function (_super) {
-    __extends(UI, _super);
-    function UI() {
+var Chat = (function (_super) {
+    __extends(Chat, _super);
+    function Chat() {
         var _this = this;
         _super.call(this);
         this.receiveBackchannelMessageFromHostingPage = function (event) {
@@ -52,37 +52,37 @@ var UI = (function (_super) {
             });
         };
     }
-    UI.prototype.componentWillMount = function () {
-        var _this = this;
+    Chat.prototype.componentWillMount = function () {
+        var store = Store_1.getStore();
         console.log("Starting BotChat", this.props);
         var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-        Store_1.getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
+        store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
+        if (this.props.formatOptions)
+            store.dispatch({ type: 'Set_Format_Options', options: this.props.formatOptions });
         bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
-            Store_1.getStore().dispatch({ type: 'Connected_To_Bot' });
+            store.dispatch({ type: 'Connected_To_Bot' });
         });
         bc.activities$.subscribe(function (activity) { return Store_1.getStore().dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
         if (this.props.allowMessagesFrom) {
             console.log("adding event listener for messages from hosting web page");
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
-        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
-            return _this.forceUpdate();
-        });
     };
-    UI.prototype.componentWillUnmount = function () {
-        this.storeUnsubscribe();
-    };
-    UI.prototype.render = function () {
+    Chat.prototype.render = function () {
         var state = Store_1.getState();
         console.log("BotChat state", state);
+        var header;
+        if (state.format.options.showHeader)
+            header =
+                React.createElement("div", {className: "wc-header"}, 
+                    React.createElement("span", null, this.props.title || "Chat")
+                );
         return (React.createElement("div", {className: "wc-chatview-panel"}, 
-            React.createElement("div", {className: "wc-header"}, 
-                React.createElement("span", null, this.props.title || "WebChat")
-            ), 
+            header, 
             React.createElement(History_1.History, {allowMessageSelection: this.props.allowMessageSelection}), 
             React.createElement(Shell_1.Shell, null)));
     };
-    return UI;
+    return Chat;
 }(React.Component));
-exports.UI = UI;
-//# sourceMappingURL=BotChat.js.map
+exports.Chat = Chat;
+//# sourceMappingURL=Chat.js.map

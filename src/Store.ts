@@ -1,6 +1,31 @@
 import { Store, Reducer, createStore, combineReducers } from 'redux';
 import { Activity, IBotConnection, User } from './directLineTypes';
+import { FormatOptions } from './Chat';
 
+export interface FormatState {
+    options: FormatOptions
+}
+
+export type FormatAction = {
+    type: 'Set_Format_Options',
+    options: FormatOptions
+}
+
+export const formatReducer: Reducer<FormatState> = (
+    state: FormatState = {
+        options: {
+            showHeader: true
+        }
+    },
+    action: FormatAction
+) => {
+    switch (action.type) {
+        case 'Set_Format_Options':
+            return { options: action.options };
+        default:
+            return state;
+    }
+}
 
 export interface ShellState {
     text: string,
@@ -116,6 +141,7 @@ export const historyReducer: Reducer<HistoryState> = (
 }
 
 export interface ChatState {
+    format: FormatState,
     shell: ShellState,
     connection: ConnectionState,
     history: HistoryState
@@ -128,6 +154,7 @@ export const getStore = (): Store<ChatState> => {
     if (!global['msbotchat'].store)
         global['msbotchat'].store = createStore(
             combineReducers<ChatState>({
+                format: formatReducer,
                 shell: shellReducer,
                 connection: connectionReducer,
                 history: historyReducer

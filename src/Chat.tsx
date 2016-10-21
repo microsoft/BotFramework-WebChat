@@ -6,22 +6,24 @@ import { DirectLine } from './directLine';
 import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
-import { getStore, getState, HistoryAction, ConnectionAction } from './Store';
+import { getStore, getState, FormatAction, HistoryAction, ConnectionAction } from './Store';
 
+export interface FormatOptions {
+    showHeader?: boolean
+}
 
-export interface UIProps {
+export interface ChatProps {
     user: { id: string, name: string },
     secret?: string,
     token?: string,
     title?: string,
     allowMessagesFrom?: string[],
     directLineDomain?: string,
-    allowMessageSelection?: boolean
+    allowMessageSelection?: boolean,
+    formatOptions?: FormatOptions
 }
 
-export class UI extends React.Component<UIProps, {}> {
-    storeUnsubscribe: any;
-
+export class Chat extends React.Component<ChatProps, {}> {
     constructor() {
         super();
     }
@@ -67,13 +69,17 @@ export class UI extends React.Component<UIProps, {}> {
     }
 
     componentWillMount() {
+        const store = getStore();
         console.log("Starting BotChat", this.props);
 
         let bc = this.props.directLineDomain === "browser" ? new BrowserLine() : new DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-        getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc } as ConnectionAction);
+        store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc } as ConnectionAction);
+
+        if (this.props.formatOptions)
+            store.dispatch({ type: 'Set_Format_Options', options: this.props.formatOptions } as FormatAction);
 
         bc.connected$.filter(connected => connected === true).subscribe(connected => {
-            getStore().dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
+            store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
 
         bc.activities$.subscribe(
@@ -85,24 +91,20 @@ export class UI extends React.Component<UIProps, {}> {
             console.log("adding event listener for messages from hosting web page");
             window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
         }
-
-        this.storeUnsubscribe = getStore().subscribe(() =>
-            this.forceUpdate()
-        );
-    }
-
-    componentWillUnmount() {
-        this.storeUnsubscribe();
     }
 
     render() {
         const state = getState();
         console.log("BotChat state", state);
+        let header;
+        if (state.format.options.showHeader) header =
+            <div className="wc-header">
+                <span>{ this.props.title || "Chat" }</span>
+            </div>;
+
         return (
             <div className={ "wc-chatview-panel" }>
-                <div className="wc-header">
-                    <span>{ this.props.title || "WebChat" }</span>
-                </div>
+                { header }
                 <History allowMessageSelection={ this.props.allowMessageSelection } />
                 <Shell />
             </div>

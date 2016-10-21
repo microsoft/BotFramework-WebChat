@@ -45,11 +45,34 @@ var BotChat =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(3);
+	module.exports = __webpack_require__(1);
 
 
 /***/ },
-/* 1 */,
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __assign = (this && this.__assign) || Object.assign || function(t) {
+	    for (var s, i = 1, n = arguments.length; i < n; i++) {
+	        s = arguments[i];
+	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+	            t[p] = s[p];
+	    }
+	    return t;
+	};
+	var React = __webpack_require__(2);
+	var Chat_1 = __webpack_require__(3);
+	exports.App = function (props) {
+	    return React.createElement("div", {className: "wc-app"}, 
+	        React.createElement("div", {className: "wc-app-left-container"}, 
+	            React.createElement(Chat_1.Chat, __assign({}, props))
+	        )
+	    );
+	};
+
+
+/***/ },
 /* 2 */
 /***/ function(module, exports) {
 
@@ -71,9 +94,9 @@ var BotChat =
 	var History_1 = __webpack_require__(352);
 	var Shell_1 = __webpack_require__(375);
 	var Store_1 = __webpack_require__(353);
-	var UI = (function (_super) {
-	    __extends(UI, _super);
-	    function UI() {
+	var Chat = (function (_super) {
+	    __extends(Chat, _super);
+	    function Chat() {
 	        var _this = this;
 	        _super.call(this);
 	        this.receiveBackchannelMessageFromHostingPage = function (event) {
@@ -113,39 +136,39 @@ var BotChat =
 	            });
 	        };
 	    }
-	    UI.prototype.componentWillMount = function () {
-	        var _this = this;
+	    Chat.prototype.componentWillMount = function () {
+	        var store = Store_1.getStore();
 	        console.log("Starting BotChat", this.props);
 	        var bc = this.props.directLineDomain === "browser" ? new browserLine_1.BrowserLine() : new directLine_1.DirectLine({ secret: this.props.secret, token: this.props.token }, this.props.directLineDomain);
-	        Store_1.getStore().dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
+	        store.dispatch({ type: 'Start_Connection', user: this.props.user, botConnection: bc });
+	        if (this.props.formatOptions)
+	            store.dispatch({ type: 'Set_Format_Options', options: this.props.formatOptions });
 	        bc.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
-	            Store_1.getStore().dispatch({ type: 'Connected_To_Bot' });
+	            store.dispatch({ type: 'Connected_To_Bot' });
 	        });
 	        bc.activities$.subscribe(function (activity) { return Store_1.getStore().dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
 	        if (this.props.allowMessagesFrom) {
 	            console.log("adding event listener for messages from hosting web page");
 	            window.addEventListener("message", this.receiveBackchannelMessageFromHostingPage, false);
 	        }
-	        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
-	            return _this.forceUpdate();
-	        });
 	    };
-	    UI.prototype.componentWillUnmount = function () {
-	        this.storeUnsubscribe();
-	    };
-	    UI.prototype.render = function () {
+	    Chat.prototype.render = function () {
 	        var state = Store_1.getState();
 	        console.log("BotChat state", state);
+	        var header;
+	        if (state.format.options.showHeader)
+	            header =
+	                React.createElement("div", {className: "wc-header"}, 
+	                    React.createElement("span", null, this.props.title || "Chat")
+	                );
 	        return (React.createElement("div", {className: "wc-chatview-panel"}, 
-	            React.createElement("div", {className: "wc-header"}, 
-	                React.createElement("span", null, this.props.title || "WebChat")
-	            ), 
+	            header, 
 	            React.createElement(History_1.History, {allowMessageSelection: this.props.allowMessageSelection}), 
 	            React.createElement(Shell_1.Shell, null)));
 	    };
-	    return UI;
+	    return Chat;
 	}(React.Component));
-	exports.UI = UI;
+	exports.Chat = Chat;
 
 
 /***/ },
@@ -18575,7 +18598,7 @@ var BotChat =
 	};
 	var React = __webpack_require__(2);
 	var Store_1 = __webpack_require__(353);
-	var HistoryMessage_1 = __webpack_require__(369);
+	var HistoryMessage_1 = __webpack_require__(368);
 	var rxjs_1 = __webpack_require__(5);
 	var History = (function (_super) {
 	    __extends(History, _super);
@@ -18640,6 +18663,19 @@ var BotChat =
 
 	"use strict";
 	var redux_1 = __webpack_require__(354);
+	exports.formatReducer = function (state, action) {
+	    if (state === void 0) { state = {
+	        options: {
+	            showHeader: true
+	        }
+	    }; }
+	    switch (action.type) {
+	        case 'Set_Format_Options':
+	            return { options: action.options };
+	        default:
+	            return state;
+	    }
+	};
 	exports.shellReducer = function (state, action) {
 	    if (state === void 0) { state = {
 	        text: '',
@@ -18703,6 +18739,7 @@ var BotChat =
 	        global['msbotchat'] = {};
 	    if (!global['msbotchat'].store)
 	        global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
+	            format: exports.formatReducer,
 	            shell: exports.shellReducer,
 	            connection: exports.connectionReducer,
 	            history: exports.historyReducer
@@ -18727,23 +18764,23 @@ var BotChat =
 	
 	var _createStore2 = _interopRequireDefault(_createStore);
 	
-	var _combineReducers = __webpack_require__(364);
+	var _combineReducers = __webpack_require__(363);
 	
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 	
-	var _bindActionCreators = __webpack_require__(366);
+	var _bindActionCreators = __webpack_require__(365);
 	
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 	
-	var _applyMiddleware = __webpack_require__(367);
+	var _applyMiddleware = __webpack_require__(366);
 	
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 	
-	var _compose = __webpack_require__(368);
+	var _compose = __webpack_require__(367);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
-	var _warning = __webpack_require__(365);
+	var _warning = __webpack_require__(364);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -19185,55 +19222,32 @@ var BotChat =
 /* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
-	var _ponyfill = __webpack_require__(363);
+	var _ponyfill = __webpack_require__(362);
 	
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root; /* global window */
+	var root = undefined; /* global window */
 	
-	
-	if (typeof self !== 'undefined') {
-	  root = self;
+	if (typeof global !== 'undefined') {
+		root = global;
 	} else if (typeof window !== 'undefined') {
-	  root = window;
-	} else if (typeof global !== 'undefined') {
-	  root = global;
-	} else if (true) {
-	  root = module;
-	} else {
-	  root = Function('return this')();
+		root = window;
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(362)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 362 */
-/***/ function(module, exports) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 363 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19261,7 +19275,7 @@ var BotChat =
 	};
 
 /***/ },
-/* 364 */
+/* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -19275,7 +19289,7 @@ var BotChat =
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _warning = __webpack_require__(365);
+	var _warning = __webpack_require__(364);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -19409,7 +19423,7 @@ var BotChat =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(293)))
 
 /***/ },
-/* 365 */
+/* 364 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19439,7 +19453,7 @@ var BotChat =
 	}
 
 /***/ },
-/* 366 */
+/* 365 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -19495,7 +19509,7 @@ var BotChat =
 	}
 
 /***/ },
-/* 367 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19506,7 +19520,7 @@ var BotChat =
 	
 	exports['default'] = applyMiddleware;
 	
-	var _compose = __webpack_require__(368);
+	var _compose = __webpack_require__(367);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
@@ -19558,7 +19572,7 @@ var BotChat =
 	}
 
 /***/ },
-/* 368 */
+/* 367 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19601,14 +19615,14 @@ var BotChat =
 	}
 
 /***/ },
-/* 369 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(370);
-	var Carousel_1 = __webpack_require__(371);
-	var FormattedText_1 = __webpack_require__(372);
+	var Attachment_1 = __webpack_require__(369);
+	var Carousel_1 = __webpack_require__(370);
+	var FormattedText_1 = __webpack_require__(371);
 	exports.HistoryMessage = function (props) {
 	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
 	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
@@ -19626,7 +19640,7 @@ var BotChat =
 
 
 /***/ },
-/* 370 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19731,7 +19745,7 @@ var BotChat =
 
 
 /***/ },
-/* 371 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19741,7 +19755,7 @@ var BotChat =
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(2);
-	var Attachment_1 = __webpack_require__(370);
+	var Attachment_1 = __webpack_require__(369);
 	var Carousel = (function (_super) {
 	    __extends(Carousel, _super);
 	    function Carousel(props) {
@@ -19877,7 +19891,7 @@ var BotChat =
 
 
 /***/ },
-/* 372 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19895,8 +19909,8 @@ var BotChat =
 	    return t;
 	};
 	var React = __webpack_require__(2);
-	var Marked = __webpack_require__(373);
-	var He = __webpack_require__(374);
+	var Marked = __webpack_require__(372);
+	var He = __webpack_require__(373);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
 	    function FormattedText() {
@@ -20107,7 +20121,7 @@ var BotChat =
 
 
 /***/ },
-/* 373 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -21400,7 +21414,7 @@ var BotChat =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 374 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/he v1.1.0 by @mathias | MIT license */
@@ -21744,7 +21758,23 @@ var BotChat =
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(362)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(374)(module), (function() { return this; }())))
+
+/***/ },
+/* 374 */
+/***/ function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
 
 /***/ },
 /* 375 */

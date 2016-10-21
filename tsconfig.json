@@ -11,7 +11,7 @@
         "noImplicitAny": false
     },
     "files": [
-        "src/BotChat.tsx",
-        "src/App.tsx"
+        "src/App.tsx",
+        "src/DebugView.tsx"
     ]
 }
