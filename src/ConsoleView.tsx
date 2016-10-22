@@ -85,8 +85,8 @@ export class ConsoleView extends React.Component<{}, IConsoleViewState> {
         return (
             <div className="wc-consoleview" ref={ref => this.scrollMe = ref}>
                 {this.state.entries
-                    .map((entry) =>
-                        <div className={'wc-consoleview-' + Severity[entry.severity]}>
+                    .map((entry, i) =>
+                        <div className={'wc-consoleview-' + Severity[entry.severity]} key={i}>
                             { textForEntry(entry) }
                         </div>
                     )

@@ -22250,8 +22250,8 @@ var BotChat =
 	    ConsoleView.prototype.render = function () {
 	        var _this = this;
 	        return (React.createElement("div", {className: "wc-consoleview", ref: function (ref) { return _this.scrollMe = ref; }}, this.state.entries
-	            .map(function (entry) {
-	            return React.createElement("div", {className: 'wc-consoleview-' + ConsoleProvider_1.Severity[entry.severity]}, textForEntry(entry));
+	            .map(function (entry, i) {
+	            return React.createElement("div", {className: 'wc-consoleview-' + ConsoleProvider_1.Severity[entry.severity], key: i}, textForEntry(entry));
 	        })));
 	    };
 	    return ConsoleView;
