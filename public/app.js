@@ -265,7 +265,6 @@ var BotChat =
 	                return _this.activitiesGenerator(subscriber);
 	            })
 	                .concatAll()
-	                .do(function (dlm) { return console.log("DL Message", dlm); })
 	                .map(function (dlm) {
 	                if (dlm.channelData) {
 	                    var channelData = dlm.channelData;
@@ -18804,7 +18803,6 @@ var BotChat =
 	    };
 	    History.prototype.render = function () {
 	        var _this = this;
-	        console.log();
 	        var state = Store_1.getState();
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
 	            React.createElement("div", {className: "wc-message-group"}, state.history.activities
@@ -21996,7 +21994,7 @@ var BotChat =
 	        };
 	        this.sendMessage = function () {
 	            var state = Store_1.getState();
-	            console.log("shell sendMessage");
+	            //console.log("shell sendMessage");
 	            Store_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
 	            state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
 	                .retry(2)

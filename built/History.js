@@ -43,7 +43,6 @@ var History = (function (_super) {
     };
     History.prototype.render = function () {
         var _this = this;
-        console.log();
         var state = Store_1.getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
             React.createElement("div", {className: "wc-message-group"}, state.history.activities

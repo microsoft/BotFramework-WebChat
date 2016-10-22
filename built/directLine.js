@@ -65,7 +65,6 @@ var DirectLine = (function () {
                 return _this.activitiesGenerator(subscriber);
             })
                 .concatAll()
-                .do(function (dlm) { return console.log("DL Message", dlm); })
                 .map(function (dlm) {
                 if (dlm.channelData) {
                     var channelData = dlm.channelData;

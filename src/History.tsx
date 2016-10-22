@@ -53,7 +53,6 @@ export class History extends React.Component<Props, {}> {
     }
 
     render() {
-        console.log()
         const state = getState();
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>

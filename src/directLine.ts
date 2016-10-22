@@ -146,7 +146,7 @@ export class DirectLine implements IBotConnection {
             this.activitiesGenerator(subscriber)
         )
         .concatAll()
-        .do(dlm => console.log("DL Message", dlm))
+        //.do(dlm => console.log("DL Message", dlm))
         .map(dlm => {
             if (dlm.channelData) {
                 const channelData = <Activity>dlm.channelData;

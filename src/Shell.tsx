@@ -52,7 +52,7 @@ export class Shell extends React.Component<{}, {}> {
 
     sendMessage = () => {
         const state = getState();
-        console.log("shell sendMessage");
+        //console.log("shell sendMessage");
         getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
         state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
         .retry(2)

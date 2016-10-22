@@ -39,7 +39,7 @@ var Shell = (function (_super) {
         };
         this.sendMessage = function () {
             var state = Store_1.getState();
-            console.log("shell sendMessage");
+            //console.log("shell sendMessage");
             Store_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
             state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
                 .retry(2)
