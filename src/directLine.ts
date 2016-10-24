@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './directLineTypes';
+import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './BotConnection';
 
 interface DLAttachment {
     url: string,
@@ -28,6 +28,11 @@ interface DLMessageGroup
 
 const intervalRefreshToken = 29*60*1000;
 
+export interface SecretOrToken {
+    secret?: string,
+    token?: string
+}
+
 export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
     activities$: Observable<Activity>;
@@ -36,10 +41,7 @@ export class DirectLine implements IBotConnection {
     private token: string;
 
     constructor(
-        secretOrToken: {
-            secret?: string,
-            token?: string
-        },
+        secretOrToken: SecretOrToken,
         private domain = "https://directline.botframework.com"
     ) {
         this.token = secretOrToken.secret || secretOrToken.token;

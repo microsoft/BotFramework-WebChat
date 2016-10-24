@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Reducer } from 'redux';
 //import { Timestamp } from './Timestamp';
-import { Activity, Message } from './directLineTypes';
+import { Activity, Message } from './BotConnection';
 import { getStore, getState, HistoryAction } from './Store';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
@@ -16,8 +16,8 @@ export class History extends React.Component<Props, {}> {
     autoscrollSubscription:Subscription;
     storeUnsubscribe:any;
 
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
     }
 
     componentWillMount() {

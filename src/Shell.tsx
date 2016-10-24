@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
 import { getStore, getState, ShellAction, HistoryAction } from './Store';
-import { mimeTypes } from './directLineTypes';
+import { mimeTypes } from './BotConnection';
 
 
 export class Shell extends React.Component<{}, {}> {

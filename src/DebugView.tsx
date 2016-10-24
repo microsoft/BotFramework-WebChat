@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Reducer } from 'redux';
-import { Activity } from './directLineTypes';
+import { Activity } from './BotConnection';
 import { getStore, getState, HistoryAction } from './Store';
 
 

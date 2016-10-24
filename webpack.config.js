@@ -1,9 +1,9 @@
 module.exports = {
     entry: {
-        app: ["./built/App.js"]
+        app: ["./built/BotChat.js"],
     },
     output: {
-        libraryTarget: "var",
+        libraryTarget: "umd",
         library: "BotChat",
         filename: "./public/botchat.js",
     },

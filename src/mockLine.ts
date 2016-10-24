@@ -1,5 +1,5 @@
 import { Observable } from '@reactivex/rxjs';
-import { BotConversation, BotMessage, BotMessageGroup } from './directLineTypes'; 
+import { BotConversation, BotMessage, BotMessageGroup } from './BotConnection'; 
 
 export const startConversation = () =>
     Observable.of(<BotConversation> {

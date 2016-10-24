@@ -17,8 +17,8 @@ var Marked = require('marked');
 var He = require('he');
 var FormattedText = (function (_super) {
     __extends(FormattedText, _super);
-    function FormattedText() {
-        _super.apply(this, arguments);
+    function FormattedText(props) {
+        _super.call(this, props);
     }
     FormattedText.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;

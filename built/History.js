@@ -10,8 +10,8 @@ var HistoryMessage_1 = require('./HistoryMessage');
 var rxjs_1 = require('@reactivex/rxjs');
 var History = (function (_super) {
     __extends(History, _super);
-    function History() {
-        _super.call(this);
+    function History(props) {
+        _super.call(this, props);
         this.onMessageClicked = function (e, activity) {
             e.preventDefault();
             e.stopPropagation();

@@ -1,5 +1,5 @@
 import { Store, Reducer, createStore, combineReducers } from 'redux';
-import { Activity, IBotConnection, User } from './directLineTypes';
+import { Activity, IBotConnection, User } from './BotConnection';
 import { FormatOptions } from './Chat';
 
 export interface FormatState {

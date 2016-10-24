@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Attachment } from './directLineTypes';
+import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
 
 interface Props {
@@ -25,7 +25,7 @@ export class Carousel extends React.Component<Props, State> {
     private scrollAllowInterrupt = true;
 
     constructor(props: Props) {
-        super();
+        super(props);
 
         this.state = {
             previousButtonEnabled: false,

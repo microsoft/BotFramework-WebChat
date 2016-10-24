@@ -12,6 +12,9 @@ interface State {
 }
 
 export class FormattedText extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+    }
 
     shouldComponentUpdate(nextProps: Props, nextState: State, nextContext: any): boolean {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
