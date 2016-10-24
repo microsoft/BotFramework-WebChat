@@ -24,13 +24,13 @@ Rapidly-evolving proof of concept. Not currently supported or in any way product
 
 ### As a component in your React webapp
 
-1. Include botchat.js and you will get a React component called BotChat.App
-2. For TypeScript users there is a definition file called botchat.d.ts
+1. Include public/botchat.js and you will get a React component called BotChat.App
+2. For TypeScript users there is a definition file called public/botchat.d.ts
 3. Pass in the appropriate properties (listed in botchat.d.ts)
 
 ### Directly in its own web page
 
-1. This method requires passing your Secret, and as such should only be used for local testing
+1. This method requires passing your Secret in the querystring, and as such should only be used for local testing
 2. Start a local web server (I use http-server) and aim your browser at `http://localhost:{port}?s={Secret}`
 
 ### Embedded via IFRAME
