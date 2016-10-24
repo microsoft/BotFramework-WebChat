@@ -24,53 +24,50 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendFile = (files: FileList) => {
-        const state = getState();
+        const store = getStore();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
-            state.connection.botConnection.postFile(file)
+            store.dispatch({ type: 'Send_Message', activity: {
+                type: "message",
+                from: store.getState().connection.user,
+                timestamp: Date.now().toString(),
+                attachments: [{
+                    contentType: "image/png",
+                    contentUrl: window.URL.createObjectURL(file),
+                    name: 'Your file here'
+                }]
+            }} as HistoryAction);
+            store.getState().connection.botConnection.postFile(file)
             .retry(2)
-            .subscribe(
-                () => {
-                    const path = window.URL.createObjectURL(file);
-                    getStore().dispatch({ type: 'Send_Message', activity: {
-                        type: "message",
-                        from: state.connection.user,
-                        timestamp: Date.now().toString(),
-                        attachments: [{
-                            contentType: "image/png",
-                            contentUrl: path,
-                            name: 'Your file here'
-                        }]
-                    }} as HistoryAction);
-                },
-                error => {
-                    console.log("failed to post file");
-                }
-            )
+            .subscribe(_ => {
+                console.log("success posting file");
+            }, error => {
+                console.log("failed to post file");
+            });
         }
     }
 
     sendMessage = () => {
-        const state = getState();
+        const store = getStore();
         console.log("shell sendMessage");
-        getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
+        store.dispatch({ type: 'Pre_Send_Shell_Text' });
+        const state = store.getState();
+        store.dispatch({ type: 'Send_Message', activity: {
+            type: "message",
+            text: state.shell.text,
+            from: state.connection.user },
+            timestamp: Date.now().toString()
+        } as HistoryAction);
         state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
         .retry(2)
-        .subscribe(
-            () => {
-                getStore().dispatch({ type: 'Send_Message', activity: {
-                    type: "message",
-                    text: state.shell.text,
-                    from: state.connection.user },
-                    timestamp: Date.now().toString()
-                } as HistoryAction);
-                getStore().dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);
-            },
-            error => {
-                console.log("failed to post message");
-                getStore().dispatch({ type: 'Fail_Send_Shell_Text' } as ShellAction);
-            }
-        );
+        .subscribe(_ => {
+            console.log("success posting message");
+            store.dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);
+        }, error => {
+            console.log("failed to post message");
+            // TODO: show an error under the message with "retry" link
+            store.dispatch({ type: 'Fail_Send_Shell_Text' } as ShellAction);
+        });
     }
 
     onKeyPress = (e) => {
