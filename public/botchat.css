@@ -1,18 +1,11 @@
 ﻿/* reset */
 
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-
-    body, button, input, textarea {
+    body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
         font-family: 'Segoe UI', sans-serif;
         font-size: 15px;
     }
 
-    button {
+    .wc-app button {
         background-color: #29a3ed;
         border: none;
         border-radius: 2px;
@@ -21,11 +14,11 @@
         outline: none;
     }
 
-    button:hover {
+    .wc-app button:hover {
         background-color: #3e92d2;
     }
 
-    h1, h2, h3, h4, p, ul, ol {
+    .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
         margin: 0;
         padding: 0;
     }
