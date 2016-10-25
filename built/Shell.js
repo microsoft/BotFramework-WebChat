@@ -12,48 +12,48 @@ var Shell = (function (_super) {
         var _this = this;
         _super.apply(this, arguments);
         this.sendFile = function (files) {
-            var state = Store_1.getState();
-            var _loop_1 = function(i, numFiles) {
+            var store = Store_1.getStore();
+            for (var i = 0, numFiles = files.length; i < numFiles; i++) {
                 var file = files[i];
-                state.connection.botConnection.postFile(file)
+                store.dispatch({ type: 'Send_Message', activity: {
+                        type: "message",
+                        from: store.getState().connection.user,
+                        timestamp: Date.now().toString(),
+                        attachments: [{
+                                contentType: "image/png",
+                                contentUrl: window.URL.createObjectURL(file),
+                                name: 'Your file here'
+                            }]
+                    } });
+                store.getState().connection.botConnection.postFile(file)
                     .retry(2)
-                    .subscribe(function () {
-                    var path = window.URL.createObjectURL(file);
-                    Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
-                            type: "message",
-                            from: state.connection.user,
-                            timestamp: Date.now().toString(),
-                            attachments: [{
-                                    contentType: "image/png",
-                                    contentUrl: path,
-                                    name: 'Your file here'
-                                }]
-                        } });
+                    .subscribe(function (_) {
+                    console.log("success posting file");
                 }, function (error) {
                     console.log("failed to post file");
                 });
-            };
-            for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-                _loop_1(i, numFiles);
             }
         };
         this.sendMessage = function () {
-            var state = Store_1.getState();
+            var store = Store_1.getStore();
             console.log("shell sendMessage");
-            Store_1.getStore().dispatch({ type: 'Pre_Send_Shell_Text' });
+            store.dispatch({ type: 'Pre_Send_Shell_Text' });
+            var state = store.getState();
+            store.dispatch({ type: 'Send_Message', activity: {
+                    type: "message",
+                    text: state.shell.text,
+                    from: state.connection.user },
+                timestamp: Date.now().toString()
+            });
             state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
                 .retry(2)
-                .subscribe(function () {
-                Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
-                        type: "message",
-                        text: state.shell.text,
-                        from: state.connection.user },
-                    timestamp: Date.now().toString()
-                });
-                Store_1.getStore().dispatch({ type: 'Post_Send_Shell_Text' });
+                .subscribe(function (_) {
+                console.log("success posting message");
+                store.dispatch({ type: 'Post_Send_Shell_Text' });
             }, function (error) {
                 console.log("failed to post message");
-                Store_1.getStore().dispatch({ type: 'Fail_Send_Shell_Text' });
+                // TODO: show an error under the message with "retry" link
+                store.dispatch({ type: 'Fail_Send_Shell_Text' });
             });
         };
         this.onKeyPress = function (e) {
