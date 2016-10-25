@@ -1,12 +1,5 @@
 ﻿/* reset */
 
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-
     body, button, input, textarea {
         font-family: 'Segoe UI', sans-serif;
         font-size: 15px;
