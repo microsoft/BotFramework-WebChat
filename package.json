@@ -2,7 +2,7 @@
   "name": "msbotchat",
   "version": "0.1.0",
   "description": "sample web chat app for MS bot framework ",
-  "main": "dist/botchat.js",
+  "main": "built/BotChat.js",
   "types": "public/botchat.d.ts",
   "scripts": {
     "typings": "typings install",
