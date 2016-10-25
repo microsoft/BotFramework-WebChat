@@ -23,7 +23,7 @@ export interface ChatProps {
 
 export type AppProps = ChatProps & {
     allowMessagesFrom?: string[],
-    onBackchannelMessage: (backchannel: any) => void
+    onBackchannelMessage?: (backchannel: any) => void
 }
 
 export declare const App: (props: AppProps) => {};
