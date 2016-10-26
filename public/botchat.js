@@ -186,11 +186,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    __extends(History, _super);
 	    function History(props) {
 	        _super.call(this, props);
-	        this.onMessageClicked = function (e, activity) {
-	            e.preventDefault();
-	            e.stopPropagation();
-	            Store_1.getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity });
-	        };
 	    }
 	    History.prototype.componentWillMount = function () {
 	        var _this = this;
@@ -199,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    History.prototype.componentDidMount = function () {
-	        var autoscrollSubscription = rxjs_1.Observable
+	        this.autoscrollSubscription = rxjs_1.Observable
 	            .fromEvent(this.scrollMe, 'scroll')
 	            .map(function (e) { return e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight; })
 	            .distinctUntilChanged()
@@ -214,6 +209,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    History.prototype.componentDidUpdate = function (prevProps, prevState) {
 	        if (Store_1.getState().history.autoscroll)
 	            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+	    };
+	    History.prototype.onMessageClicked = function (e, activity) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        Store_1.getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity });
 	    };
 	    History.prototype.render = function () {
 	        var _this = this;

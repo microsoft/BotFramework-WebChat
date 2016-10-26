@@ -27,7 +27,7 @@ export class History extends React.Component<Props, {}> {
     }
 
     componentDidMount() {
-        const autoscrollSubscription = Observable
+        this.autoscrollSubscription = Observable
         .fromEvent<any>(this.scrollMe, 'scroll')
         .map(e => e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight)
         .distinctUntilChanged()
@@ -46,7 +46,7 @@ export class History extends React.Component<Props, {}> {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     }
 
-    onMessageClicked = (e: React.SyntheticEvent<any>, activity: Activity) => {
+    onMessageClicked(e: React.SyntheticEvent<any>, activity: Activity) {
         e.preventDefault();
         e.stopPropagation();
         getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);
