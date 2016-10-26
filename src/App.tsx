@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Chat, ChatProps } from './Chat';
 import { Message, IBotConnection } from './BotConnection';
-import { DirectLine } from './directLine';
+import { DirectLine } from './DirectLine';
 
 export type AppProps = ChatProps & {
     allowMessagesFrom?: string[],
@@ -39,7 +39,7 @@ export const App = (props: AppProps) => {
 
     if (props.onBackchannelMessage) {
         console.log("adding event listener for messages to hosting web page");
-        this.props.botConnection.activities$.filter(activity =>
+        this.props.botConnection.activity$.filter(activity =>
             activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel
         ).subscribe((message: Message) =>
             this.props.onBackchannelMessage(message.channelData.backchannel)

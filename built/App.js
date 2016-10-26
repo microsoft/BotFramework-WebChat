@@ -36,7 +36,7 @@ exports.App = function (props) {
     }
     if (props.onBackchannelMessage) {
         console.log("adding event listener for messages to hosting web page");
-        _this.props.botConnection.activities$.filter(function (activity) {
+        _this.props.botConnection.activity$.filter(function (activity) {
             return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
         }).subscribe(function (message) {
             return _this.props.onBackchannelMessage(message.channelData.backchannel);

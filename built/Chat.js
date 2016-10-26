@@ -1,5 +1,6 @@
 "use strict";
 var React = require('react');
+//import { BrowserLine } from './BrowserLine';
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');
@@ -12,7 +13,7 @@ exports.Chat = function (props) {
     props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
         store.dispatch({ type: 'Connected_To_Bot' });
     });
-    props.botConnection.activities$.subscribe(function (activity) { return store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+    props.botConnection.activity$.subscribe(function (activity) { return store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
     var state = store.getState();
     console.log("BotChat.Chat starting state", state);
     var header;

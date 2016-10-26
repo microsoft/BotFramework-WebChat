@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, mimeTypes, IBotConnection, User } from './BotConnection';
-import { DirectLine } from './directLine';
-import { BrowserLine } from './browserLine';
+import { DirectLine } from './DirectLine';
+//import { BrowserLine } from './BrowserLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { getStore, getState, FormatAction, HistoryAction, ConnectionAction } from './Store';
@@ -33,7 +33,7 @@ export const Chat = (props: ChatProps) => {
         store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
     });
 
-    props.botConnection.activities$.subscribe(
+    props.botConnection.activity$.subscribe(
         activity => store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
         error => console.log("errors", error)
     );

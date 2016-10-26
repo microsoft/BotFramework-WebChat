@@ -35,7 +35,7 @@ export interface SecretOrToken {
 
 export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
-    activities$: Observable<Activity>;
+    activity$: Observable<Activity>;
 
     private conversationId: string;
     private token: string;
@@ -77,7 +77,7 @@ export class DirectLine implements IBotConnection {
             }
         });
 
-        this.activities$ = this.connected$
+        this.activity$ = this.connected$
         .filter(connected => connected === true)
         .flatMap(_ => this.getActivities());
     }

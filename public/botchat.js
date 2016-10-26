@@ -66,8 +66,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.App = App_1.App;
 	var Chat_1 = __webpack_require__(4);
 	exports.Chat = Chat_1.Chat;
-	var directLine_1 = __webpack_require__(375);
-	exports.DirectLine = directLine_1.DirectLine;
+	var DirectLine_1 = __webpack_require__(375);
+	exports.DirectLine = DirectLine_1.DirectLine;
 	var DebugView_1 = __webpack_require__(376);
 	exports.DebugView = DebugView_1.DebugView;
 
@@ -114,7 +114,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    if (props.onBackchannelMessage) {
 	        console.log("adding event listener for messages to hosting web page");
-	        _this.props.botConnection.activities$.filter(function (activity) {
+	        _this.props.botConnection.activity$.filter(function (activity) {
 	            return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 	        }).subscribe(function (message) {
 	            return _this.props.onBackchannelMessage(message.channelData.backchannel);
@@ -140,6 +140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var React = __webpack_require__(3);
+	//import { BrowserLine } from './BrowserLine';
 	var History_1 = __webpack_require__(5);
 	var Shell_1 = __webpack_require__(374);
 	var Store_1 = __webpack_require__(6);
@@ -152,7 +153,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	        store.dispatch({ type: 'Connected_To_Bot' });
 	    });
-	    props.botConnection.activities$.subscribe(function (activity) { return store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+	    props.botConnection.activity$.subscribe(function (activity) { return store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
 	    var state = store.getState();
 	    console.log("BotChat.Chat starting state", state);
 	    var header;
@@ -21751,7 +21752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                });
 	            }
 	        });
-	        this.activities$ = this.connected$
+	        this.activity$ = this.connected$
 	            .filter(function (connected) { return connected === true; })
 	            .flatMap(function (_) { return _this.getActivities(); });
 	    }
