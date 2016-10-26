@@ -7,6 +7,7 @@ import { DirectLine } from './DirectLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { getStore, getState, FormatAction, HistoryAction, ConnectionAction } from './Store';
+import { strings } from './Strings';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -27,7 +28,7 @@ export const Chat = (props: ChatProps) => {
     store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection } as ConnectionAction);
 
     if (props.formatOptions)
-        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
+        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions, strings: strings(this.prop.locale) } as FormatAction);
 
     props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
         store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
@@ -43,7 +44,7 @@ export const Chat = (props: ChatProps) => {
     let header;
     if (state.format.options.showHeader) header =
         <div className="wc-header">
-            <span>{ "Chat" }</span>
+            <span>{ state.format.strings.title }</span>
         </div>;
 
     return (

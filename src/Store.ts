@@ -1,27 +1,31 @@
 import { Store, Reducer, createStore, combineReducers } from 'redux';
 import { Activity, IBotConnection, User } from './BotConnection';
 import { FormatOptions } from './Chat';
+import { strings, Strings } from './Strings';
 
 export interface FormatState {
-    options: FormatOptions
+    options: FormatOptions,
+    strings: Strings
 }
 
 export type FormatAction = {
     type: 'Set_Format_Options',
-    options: FormatOptions
+    options: FormatOptions,
+    strings: Strings
 }
 
 export const formatReducer: Reducer<FormatState> = (
     state: FormatState = {
         options: {
             showHeader: true
-        }
+        },
+        strings: strings('en-us')
     },
     action: FormatAction
 ) => {
     switch (action.type) {
         case 'Set_Format_Options':
-            return { options: action.options };
+            return { options: action.options, strings: action.strings };
         default:
             return state;
     }

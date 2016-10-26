@@ -1,14 +1,16 @@
 "use strict";
 var redux_1 = require('redux');
+var Strings_1 = require('./Strings');
 exports.formatReducer = function (state, action) {
     if (state === void 0) { state = {
         options: {
             showHeader: true
-        }
+        },
+        strings: Strings_1.strings('en-us')
     }; }
     switch (action.type) {
         case 'Set_Format_Options':
-            return { options: action.options };
+            return { options: action.options, strings: action.strings };
         default:
             return state;
     }

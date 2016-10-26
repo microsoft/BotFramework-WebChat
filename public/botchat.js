@@ -68,7 +68,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Chat = Chat_1.Chat;
 	var DirectLine_1 = __webpack_require__(375);
 	exports.DirectLine = DirectLine_1.DirectLine;
-	var DebugView_1 = __webpack_require__(376);
+	var DebugView_1 = __webpack_require__(377);
 	exports.DebugView = DebugView_1.DebugView;
 
 
@@ -139,17 +139,19 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var _this = this;
 	var React = __webpack_require__(3);
 	//import { BrowserLine } from './BrowserLine';
 	var History_1 = __webpack_require__(5);
 	var Shell_1 = __webpack_require__(374);
 	var Store_1 = __webpack_require__(6);
+	var Strings_1 = __webpack_require__(378);
 	exports.Chat = function (props) {
 	    var store = Store_1.getStore();
 	    console.log("BotChat.Chat props", props);
 	    store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
 	    if (props.formatOptions)
-	        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
+	        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions, strings: Strings_1.strings(_this.prop.locale) });
 	    props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	        store.dispatch({ type: 'Connected_To_Bot' });
 	    });
@@ -160,7 +162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (state.format.options.showHeader)
 	        header =
 	            React.createElement("div", {className: "wc-header"}, 
-	                React.createElement("span", null, "Chat")
+	                React.createElement("span", null, state.format.strings.title)
 	            );
 	    return (React.createElement("div", {className: "wc-chatview-panel"}, 
 	        header, 
@@ -246,15 +248,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var redux_1 = __webpack_require__(7);
+	var Strings_1 = __webpack_require__(378);
 	exports.formatReducer = function (state, action) {
 	    if (state === void 0) { state = {
 	        options: {
 	            showHeader: true
-	        }
+	        },
+	        strings: Strings_1.strings('en-us')
 	    }; }
 	    switch (action.type) {
 	        case 'Set_Format_Options':
-	            return { options: action.options };
+	            return { options: action.options, strings: action.strings };
 	        default:
 	            return state;
 	    }
@@ -21860,7 +21864,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 376 */
+/* 376 */,
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21940,6 +21945,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    });
 	    return React.createElement("span", {dangerouslySetInnerHTML: { __html: json }});
+	};
+
+
+/***/ },
+/* 378 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var localizedStrings = {
+	    'en-us': {
+	        title: "Chat",
+	        send: "Send"
+	    }
+	};
+	// Returns strings using the "best match available"" locale
+	// e.g. if 'en-us' is the only supported English locale, then
+	// strings('en') should return localizedStrings('en-us')
+	exports.strings = function (locale) {
+	    return localizedStrings['en-us'];
 	};
 
 
