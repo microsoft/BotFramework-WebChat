@@ -5,7 +5,7 @@ export interface SecretOrToken {
     token?: string
 }
 
-export class DirectLine {
+export declare class DirectLine {
     constructor(secretOrToken: SecretOrToken, domain?: string);
 }
 
