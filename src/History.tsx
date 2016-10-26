@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Reducer } from 'redux';
+import { Reducer, Unsubscribe } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './BotConnection';
 import { getStore, getState, HistoryAction } from './Store';
@@ -12,9 +12,9 @@ interface Props {
 }
 
 export class History extends React.Component<Props, {}> {
-    scrollMe:any;
-    autoscrollSubscription:Subscription;
-    storeUnsubscribe:any;
+    scrollMe: Element;
+    autoscrollSubscription: Subscription;
+    storeUnsubscribe: Unsubscribe;
 
     constructor(props: Props) {
         super(props);
