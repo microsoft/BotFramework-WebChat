@@ -19,7 +19,7 @@ export class Shell extends React.Component<{}, {}> {
         this.storeUnsubscribe();
     }
 
-    sendFile = (files: FileList) => {
+    sendFile(files: FileList) {
         const store = getStore();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
@@ -43,7 +43,7 @@ export class Shell extends React.Component<{}, {}> {
         }
     }
 
-    sendMessage = () => {
+    sendMessage() {
         const store = getStore();
         console.log("shell sendMessage");
         store.dispatch({ type: 'Pre_Send_Shell_Text' });
@@ -66,18 +66,18 @@ export class Shell extends React.Component<{}, {}> {
         });
     }
 
-    onKeyPress = (e) => {
+    onKeyPress(e) {
         if (e.key === 'Enter')
             this.sendMessage();
     }
 
-    onClickSend = () => {
+    onClickSend() {
         const state = getState();
         if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
             this.sendMessage();
     }
 
-    updateMessage = (text: string) => {
+    updateMessage(text: string) {
         getStore().dispatch({ type: 'Update_Shell_Text', text })
     }
 
