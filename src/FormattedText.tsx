@@ -70,7 +70,6 @@ export class FormattedText extends React.Component<Props, {}> {
 class ReactRenderer implements MarkedRenderer {
 
     elements: React.ReactElement<any>[] = [];
-    elementKey = 0;
 
     constructor(private options) {
     }
@@ -85,7 +84,6 @@ class ReactRenderer implements MarkedRenderer {
      */
     addElement(element: React.ReactElement<any>) {
         const elementId = this.elements.length;
-        element.key = this.elementKey++;
         this.elements.push(element);
         return `{{${elementId}}}`;
     }
