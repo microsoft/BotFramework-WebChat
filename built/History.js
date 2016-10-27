@@ -46,9 +46,15 @@ var History = (function (_super) {
         var state = Store_1.getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
             React.createElement("div", {className: "wc-message-group"}, state.history.activities
+<<<<<<< HEAD
                 .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
                 .map(function (activity, index) {
                 return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
+=======
+                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"); })
+                .map(function (activity) {
+                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
+>>>>>>> DirectLine3 support
                     React.createElement("div", {className: 'wc-message-content' + (_this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowMessageSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 

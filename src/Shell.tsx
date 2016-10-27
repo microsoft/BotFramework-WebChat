@@ -36,10 +36,12 @@ export class Shell extends React.Component<{}, {}> {
                 }]
             }} as HistoryAction);
             this.textInput.focus();
-            store.getState().connection.botConnection.postFile(file)
-            .subscribe(_ => {
+            state = store.getState();
+            state.connection.botConnection.postFile(file, state.connection.user)
+            .retry(2)
+            .subscribe(id => {
                 console.log("success posting file");
-                store.dispatch({ type: "Send_Message_Succeed", sendId } as HistoryAction);
+                store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
             }, error => {
                 console.log("failed to post file");
                 store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
@@ -53,7 +55,6 @@ export class Shell extends React.Component<{}, {}> {
         if (state.history.input.length === 0)
             return;
         const sendId = state.history.sendCounter;
-        const input = state.history.input;
         store.dispatch({ type: 'Send_Message', activity: {
             type: "message",
             text: state.history.input,
@@ -72,9 +73,9 @@ export class Shell extends React.Component<{}, {}> {
         let state = store.getState();
         const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
         state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
-        .subscribe(_ => {
+        .subscribe(id => {
             console.log("success posting message");
-            store.dispatch({ type: "Send_Message_Succeed", sendId } as HistoryAction);
+            store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
         }, error => {
             console.log("failed to post message");
             // TODO: show an error under the message with "retry" link
