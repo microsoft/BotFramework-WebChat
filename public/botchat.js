@@ -21933,6 +21933,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(React.Component));
 	exports.DebugView = DebugView;
 	var formatJSON = function (obj) {
+	    if (!obj)
+	        return null;
 	    var json = JSON.stringify(obj, null, 2);
 	    // Hide ampersands we don't want replaced
 	    json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
