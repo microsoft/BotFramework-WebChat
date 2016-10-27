@@ -22,7 +22,7 @@ export class DebugView extends React.Component<{}, {}> {
         return (
             <div className="wc-debugview">
                 <div className="wc-debugview-json">
-                    { formatJSON(state.history.selectedActivity || null) }
+                    { formatJSON(state.history.selectedActivity) || '' }
                 </div>
             </div>
         );
