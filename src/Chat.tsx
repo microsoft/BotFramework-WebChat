@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
-import { Activity, Message, mimeTypes, IBotConnection, User } from './BotConnection';
+import { Activity, Message, IBotConnection, User } from './BotConnection';
 import { DirectLine } from './DirectLine';
 //import { BrowserLine } from './BrowserLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { getStore, getState, FormatAction, HistoryAction, ConnectionAction } from './Store';
 import { strings } from './Strings';
+
+export interface ActivityState {
+    status: "received" | "sending" | "sent" | "retry",
+    sendId?: number
+};
 
 export interface FormatOptions {
     showHeader?: boolean
