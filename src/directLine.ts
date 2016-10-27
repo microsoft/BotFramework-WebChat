@@ -36,6 +36,7 @@ export interface SecretOrToken {
 export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
     activity$: Observable<Activity>;
+    private id = 0;
 
     private conversationId: string;
     private token: string;
@@ -100,10 +101,10 @@ export class DirectLine implements IBotConnection {
         })
 //      .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
         .retryWhen(error$ => error$.delay(1000))
-        .mapTo(true);
+        .mapTo((this.id++).toString());
     }
 
-    postFile(file: File) {
+    postFile(file: File, from: User) {
         const formData = new FormData();
         formData.append('file', file);
         return Observable.ajax({
@@ -116,7 +117,7 @@ export class DirectLine implements IBotConnection {
         })
 //      .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
         .retryWhen(error$ => error$.delay(1000))
-        .mapTo(true)
+        .mapTo((this.id++).toString());
     }
 
     private getActivities() {
@@ -161,14 +162,14 @@ export class DirectLine implements IBotConnection {
     }
 
     private activitiesGenerator(subscriber: Subscriber<Observable<DLMessage>>, watermark?: string) {
-        this.getActivityGroup(watermark).subscribe(messageGroup => {
-            const someMessages = messageGroup && messageGroup.messages && messageGroup.messages.length > 0;
+        this.getActivityGroup(watermark).subscribe(activityGroup => {
+            const someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
             if (someMessages)
-                subscriber.next(Observable.from(messageGroup.messages));
+                subscriber.next(Observable.from(activityGroup.messages));
 
             setTimeout(
-                () => this.activitiesGenerator(subscriber, messageGroup && messageGroup.watermark),
-                someMessages && messageGroup.watermark ? 0 : 1000
+                () => this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark),
+                someMessages && activityGroup.watermark ? 0 : 1000
             );
          }, error =>
             subscriber.error(error)

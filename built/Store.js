@@ -37,7 +37,7 @@ exports.connectionReducer = function (state, action) {
             return state;
     }
 };
-var replace = function (a, i, o) { return a.slice(0, i).concat([
+var patch = function (a, i, o) { return a.slice(0, i).concat([
     Object.assign({}, a[i], o)
 ], a.slice(i + 1)); };
 var activityStatus = {
@@ -67,7 +67,10 @@ exports.historyReducer = function (state, action) {
             if (i === -1)
                 return state;
             return {
-                activities: replace(state.activities, i, { status: activityStatus[action.type] }),
+                activities: patch(state.activities, i, {
+                    status: activityStatus[action.type],
+                    id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+                }),
                 input: state.input, sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity
             };
         case 'Set_Autoscroll':

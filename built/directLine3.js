@@ -1,20 +1,20 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var intervalRefreshToken = 29 * 60 * 1000;
-var DirectLine = (function () {
-    function DirectLine(secretOrToken, domain) {
+var DirectLine3 = (function () {
+    function DirectLine3(secretOrToken, domain, segment) {
         var _this = this;
         if (domain === void 0) { domain = "https://directline.botframework.com"; }
         this.domain = domain;
+        this.segment = segment;
         this.connected$ = new rxjs_1.BehaviorSubject(false);
-        this.id = 0;
         this.token = secretOrToken.secret || secretOrToken.token;
         rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/api/conversations",
+            url: "https://" + this.domain + "/" + this.segment + "/conversations",
             headers: {
                 "Accept": "application/json",
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
@@ -26,9 +26,9 @@ var DirectLine = (function () {
                 rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
                     return rxjs_1.Observable.ajax({
                         method: "GET",
-                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+                        url: "https://" + _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
                         headers: {
-                            "Authorization": "BotConnector " + _this.token
+                            "Authorization": "Bearer " + _this.token
                         }
                     })
                         .retryWhen(function (error$) { return error$.delay(1000); })
@@ -41,108 +41,76 @@ var DirectLine = (function () {
         });
         this.activity$ = this.connected$
             .filter(function (connected) { return connected === true; })
-            .flatMap(function (_) { return _this.getActivities(); });
+            .flatMap(function (_) { return _this.getActivity$(); });
     }
-    DirectLine.prototype.postMessage = function (text, from, channelData) {
-        console.log("sending", text);
+    DirectLine3.prototype.postMessage = function (text, from, channelData) {
         return rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/api/conversations/" + this.conversationId + "/messages",
+            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities",
             body: {
+                type: "message",
                 text: text,
-                from: from.id,
+                from: from,
                 conversationId: this.conversationId,
                 channelData: channelData
             },
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
             .retryWhen(function (error$) { return error$.delay(1000); })
-            .mapTo((this.id++).toString());
+            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
-    DirectLine.prototype.postFile = function (file, from) {
+    DirectLine3.prototype.postFile = function (file, from) {
         var formData = new FormData();
         formData.append('file', file);
         return rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/api/conversations/" + this.conversationId + "/upload",
+            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
             body: formData,
             headers: {
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token,
+                "Content-Type": file.type,
+                "Content-Disposition": file.name
             }
         })
             .retryWhen(function (error$) { return error$.delay(1000); })
-            .mapTo((this.id++).toString());
+            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
-    DirectLine.prototype.getActivities = function () {
+    DirectLine3.prototype.getActivity$ = function () {
         var _this = this;
         return new rxjs_1.Observable(function (subscriber) {
             return _this.activitiesGenerator(subscriber);
         })
             .concatAll()
-            .do(function (dlm) { return console.log("DL Message", dlm); })
-            .map(function (dlm) {
-            if (dlm.channelData) {
-                var channelData = dlm.channelData;
-                switch (channelData.type) {
-                    case "message":
-                        return Object.assign({}, channelData, {
-                            id: dlm.id,
-                            conversation: { id: dlm.conversationId },
-                            timestamp: dlm.created,
-                            from: { id: dlm.from },
-                            channelData: null,
-                        });
-                    default:
-                        return channelData;
-                }
-            }
-            else {
-                return {
-                    type: "message",
-                    id: dlm.id,
-                    conversation: { id: dlm.conversationId },
-                    timestamp: dlm.created,
-                    from: { id: dlm.from },
-                    text: dlm.text,
-                    textFormat: "markdown",
-                    eTag: dlm.eTag,
-                    attachments: dlm.images && dlm.images.map(function (path) { return {
-                        contentType: "image/png",
-                        contentUrl: _this.domain + path,
-                        name: '2009-09-21'
-                    }; })
-                };
-            }
-        });
+            .do(function (activity) { return console.log("Activity", activity); });
     };
-    DirectLine.prototype.activitiesGenerator = function (subscriber, watermark) {
+    DirectLine3.prototype.activitiesGenerator = function (subscriber, watermark) {
         var _this = this;
         this.getActivityGroup(watermark).subscribe(function (activityGroup) {
-            var someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
+            var someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
             if (someMessages)
-                subscriber.next(rxjs_1.Observable.from(activityGroup.messages));
+                subscriber.next(rxjs_1.Observable.from(activityGroup.activities));
             setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
         }, function (error) {
             return subscriber.error(error);
         });
     };
-    DirectLine.prototype.getActivityGroup = function (watermark) {
+    DirectLine3.prototype.getActivityGroup = function (watermark) {
         if (watermark === void 0) { watermark = ""; }
         return rxjs_1.Observable.ajax({
             method: "GET",
-            url: this.domain + "/api/conversations/" + this.conversationId + "/messages?watermark=" + watermark,
+            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
             headers: {
                 "Accept": "application/json",
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
             .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response; });
     };
-    return DirectLine;
+    return DirectLine3;
 }());
-exports.DirectLine = DirectLine;
-//# sourceMappingURL=directLine.js.map
+exports.DirectLine3 = DirectLine3;
+//# sourceMappingURL=directLine3.js.map

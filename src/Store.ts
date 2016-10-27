@@ -91,8 +91,12 @@ export type HistoryAction = {
     type: 'Receive_Message' | 'Send_Message',
     activity: Activity
 } | {
-    type: 'Send_Message_Try' | 'Send_Message_Succeed' | 'Send_Message_Fail',
+    type: 'Send_Message_Try' | 'Send_Message_Fail',
     sendId: number
+} | {
+    type: 'Send_Message_Succeed'
+    sendId: number
+    id: string
 } | {
     type: 'Set_Autoscroll',
     autoscroll: boolean
@@ -101,7 +105,7 @@ export type HistoryAction = {
     selectedActivity: Activity
 }
 
-const replace = <T>(a: T[], i: number, o: any) => [
+const patch = <T>(a: T[], i: number, o: any):T[] => [
     ... a.slice(0, i), 
     Object.assign({}, a[i], o),
     ... a.slice(i + 1)
@@ -136,9 +140,12 @@ export const historyReducer: Reducer<HistoryState> = (
             const i = state.activities.findIndex(activity => activity["sendId"] === action.sendId);
             if (i === -1) return state;
             return {
-                activities: replace<Activity>(state.activities, i, { status: activityStatus[action.type] }),
+                activities: patch(state.activities, i, {
+                    status: activityStatus[action.type],
+                    id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+                }),
                 input: state.input, sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity
-                }
+            }
         case 'Set_Autoscroll':
             return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
         case 'Select_Activity':

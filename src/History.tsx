@@ -58,7 +58,7 @@ export class History extends React.Component<Props, {}> {
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">
                 { state.history.activities
-                    .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id))
+                    .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"))
                     .map((activity:Message) =>
                         <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
                             <div className={ 'wc-message-content' + (this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.props.allowMessageSelection ? this.onMessageClicked(e, activity) : undefined }>

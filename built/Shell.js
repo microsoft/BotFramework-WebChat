@@ -38,10 +38,12 @@ var Shell = (function (_super) {
                         }]
                 } });
             this_1.textInput.focus();
-            store.getState().connection.botConnection.postFile(file)
-                .subscribe(function (_) {
+            state = store.getState();
+            state.connection.botConnection.postFile(file, state.connection.user)
+                .retry(2)
+                .subscribe(function (id) {
                 console.log("success posting file");
-                store.dispatch({ type: "Send_Message_Succeed", sendId: sendId });
+                store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
             }, function (error) {
                 console.log("failed to post file");
                 store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
@@ -58,7 +60,6 @@ var Shell = (function (_super) {
         if (state.history.input.length === 0)
             return;
         var sendId = state.history.sendCounter;
-        var input = state.history.input;
         store.dispatch({ type: 'Send_Message', activity: {
                 type: "message",
                 text: state.history.input,
@@ -77,9 +78,9 @@ var Shell = (function (_super) {
         var state = store.getState();
         var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
         state.connection.botConnection.postMessage(activity.text, state.connection.user)
-            .subscribe(function (_) {
+            .subscribe(function (id) {
             console.log("success posting message");
-            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId });
+            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
         }, function (error) {
             console.log("failed to post message");
             // TODO: show an error under the message with "retry" link
