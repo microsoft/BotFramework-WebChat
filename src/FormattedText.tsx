@@ -8,15 +8,12 @@ interface Props {
     format: string
 }
 
-interface State {
-}
-
-export class FormattedText extends React.Component<Props, State> {
+export class FormattedText extends React.Component<Props, {}> {
     constructor(props: Props) {
         super(props);
     }
 
-    shouldComponentUpdate(nextProps: Props, nextState: State, nextContext: any): boolean {
+    shouldComponentUpdate(nextProps: Props, nextState: {}, nextContext: any): boolean {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
     }
 
@@ -73,6 +70,7 @@ export class FormattedText extends React.Component<Props, State> {
 class ReactRenderer implements MarkedRenderer {
 
     elements: React.ReactElement<any>[] = [];
+    elementKey = 0;
 
     constructor(private options) {
     }
@@ -87,6 +85,7 @@ class ReactRenderer implements MarkedRenderer {
      */
     addElement(element: React.ReactElement<any>) {
         const elementId = this.elements.length;
+        element.key = this.elementKey++;
         this.elements.push(element);
         return `{{${elementId}}}`;
     }

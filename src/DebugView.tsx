@@ -20,14 +20,9 @@ export class DebugView extends React.Component<{}, {}> {
     render() {
         const state = getState();
         return (
-            <div className="wc-chatview-panel">
-                <div className="wc-header">
-                    <span>JSON</span>
-                </div>
-                <div className="wc-debugview">
-                    <div className="wc-debugview-json">
-                        { formatJSON(state.history.selectedActivity || {}) }
-                    </div>
+            <div className="wc-debugview">
+                <div className="wc-debugview-json">
+                    { formatJSON(state.history.selectedActivity) || '' }
                 </div>
             </div>
         );
@@ -35,6 +30,7 @@ export class DebugView extends React.Component<{}, {}> {
 }
 
 const formatJSON = (obj: any) => {
+    if (!obj) return null;
     let json = JSON.stringify(obj, null, 2);
     // Hide ampersands we don't want replaced
     json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');

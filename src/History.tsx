@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Reducer, Unsubscribe } from 'redux';
+import { Unsubscribe } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './BotConnection';
 import { getStore, getState, HistoryAction } from './Store';
@@ -59,8 +59,8 @@ export class History extends React.Component<Props, {}> {
                 <div className="wc-message-group">
                 { state.history.activities
                     .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id))
-                    .map((activity:Message) =>
-                        <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
+                    .map((activity:Message, index) =>
+                        <div key={index} className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
                             <div className={ 'wc-message-content' + (this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.props.allowMessageSelection ? this.onMessageClicked(e, activity) : undefined }>
                                 <svg className="wc-message-callout">
                                     <path className="point-left" d="m0,0 h12 v10 z" />

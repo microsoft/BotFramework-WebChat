@@ -76,6 +76,7 @@ var ReactRenderer = (function () {
     function ReactRenderer(options) {
         this.options = options;
         this.elements = [];
+        this.elementKey = 0;
     }
     /**
      * We're being sneaky here. Marked is expecting us to render html to text and return that.
@@ -87,6 +88,7 @@ var ReactRenderer = (function () {
      */
     ReactRenderer.prototype.addElement = function (element) {
         var elementId = this.elements.length;
+        element.key = this.elementKey++;
         this.elements.push(element);
         return "{{" + elementId + "}}";
     };

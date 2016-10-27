@@ -26,6 +26,6 @@ export type AppProps = ChatProps & {
     onBackchannelMessage?: (backchannel: any) => void
 }
 
-export declare const App: (props: AppProps) => {};
-export declare const Chat: (props: ChatProps) => {};
-export declare const DebugView: () => {};
+export declare const App: (props: AppProps) => JSX.Element;
+export declare const Chat: (props: ChatProps) => JSX.Element;
+export declare const DebugView: () => JSX.Element;
