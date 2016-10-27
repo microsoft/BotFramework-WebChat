@@ -20,14 +20,9 @@ export class DebugView extends React.Component<{}, {}> {
     render() {
         const state = getState();
         return (
-            <div className="wc-chatview-panel">
-                <div className="wc-header">
-                    <span>JSON</span>
-                </div>
-                <div className="wc-debugview">
-                    <div className="wc-debugview-json">
-                        { formatJSON(state.history.selectedActivity || {}) }
-                    </div>
+            <div className="wc-debugview">
+                <div className="wc-debugview-json">
+                    { formatJSON(state.history.selectedActivity || null) }
                 </div>
             </div>
         );

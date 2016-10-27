@@ -21925,13 +21925,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DebugView.prototype.render = function () {
 	        var state = Store_1.getState();
-	        return (React.createElement("div", {className: "wc-chatview-panel"}, 
-	            React.createElement("div", {className: "wc-header"}, 
-	                React.createElement("span", null, "JSON")
-	            ), 
-	            React.createElement("div", {className: "wc-debugview"}, 
-	                React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.history.selectedActivity || {}))
-	            )));
+	        return (React.createElement("div", {className: "wc-debugview"}, 
+	            React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.history.selectedActivity || null))
+	        ));
 	    };
 	    return DebugView;
 	}(React.Component));
