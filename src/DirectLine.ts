@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, Image, IBotConnection, User, mimeTypes } from './BotConnection';
+import { Conversation, Activity, Message, Image, IBotConnection, User } from './BotConnection';
 
 interface DLAttachment {
     url: string,
@@ -83,6 +83,7 @@ export class DirectLine implements IBotConnection {
     }
 
     postMessage(text: string, from: User, channelData?: any) {
+        console.log("sending", text);
         return Observable.ajax({
             method: "POST",
             url: `${this.domain}/api/conversations/${this.conversationId}/messages`,

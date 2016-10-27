@@ -5,6 +5,7 @@ var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');
 var Strings_1 = require('./Strings');
+;
 exports.Chat = function (props) {
     var store = Store_1.getStore();
     console.log("BotChat.Chat props", props);

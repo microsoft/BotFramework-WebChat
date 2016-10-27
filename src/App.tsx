@@ -30,7 +30,7 @@ const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: Me
     });
 }
 
-function isBackchannel(activity:Activity):activity is Message {
+function isBackchannel(activity: Activity):activity is Message {
     return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 }
 

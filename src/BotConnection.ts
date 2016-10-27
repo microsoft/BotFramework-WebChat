@@ -7,8 +7,10 @@ export interface Conversation {
     streamUrl?: string
 }
 
+export type ImageType = "image/png" | "image/jpg" | "image/jpeg";
+
 export interface Image {
-    contentType: "image/png" | "image/jpg" | "image/jpeg",    
+    contentType: ImageType,    
     contentUrl: string,
     name?: string
 }
@@ -81,6 +83,7 @@ export interface User {
     id: string,
     name?: string
 }
+
 export interface Message
 {
     type: "message",
@@ -104,12 +107,6 @@ export interface Typing {
 }
 
 export type Activity = Message | Typing;
-
-export const mimeTypes = {
-    png: 'image/png',
-    jpg: 'image/jpg',
-    jpeg: 'image/jpeg'
-}
 
 export interface IBotConnection {
     connected$: BehaviorSubject<boolean>;
