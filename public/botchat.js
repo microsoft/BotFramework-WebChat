@@ -151,7 +151,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    console.log("BotChat.Chat props", props);
 	    store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
 	    if (props.formatOptions)
-	        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions, strings: Strings_1.strings(_this.prop.locale) });
+	        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
+	    store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(_this.prop.locale || window.navigator.language) });
 	    props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	        store.dispatch({ type: 'Connected_To_Bot' });
 	    });
@@ -258,7 +259,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }; }
 	    switch (action.type) {
 	        case 'Set_Format_Options':
-	            return { options: action.options, strings: action.strings };
+	            return { options: action.options, strings: state.strings };
+	        case 'Set_Localized_Strings':
+	            return { options: state.options, strings: action.strings };
 	        default:
 	            return state;
 	    }

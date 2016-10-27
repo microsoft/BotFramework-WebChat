@@ -10,7 +10,9 @@ exports.formatReducer = function (state, action) {
     }; }
     switch (action.type) {
         case 'Set_Format_Options':
-            return { options: action.options, strings: action.strings };
+            return { options: action.options, strings: state.strings };
+        case 'Set_Localized_Strings':
+            return { options: state.options, strings: action.strings };
         default:
             return state;
     }

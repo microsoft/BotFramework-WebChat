@@ -10,8 +10,10 @@ export interface FormatState {
 
 export type FormatAction = {
     type: 'Set_Format_Options',
-    options: FormatOptions,
-    strings: Strings
+    options: FormatOptions
+} | {
+    type: 'Set_Localized_Strings',
+    strings: Strings    
 }
 
 export const formatReducer: Reducer<FormatState> = (
@@ -25,7 +27,9 @@ export const formatReducer: Reducer<FormatState> = (
 ) => {
     switch (action.type) {
         case 'Set_Format_Options':
-            return { options: action.options, strings: action.strings };
+            return { options: action.options, strings: state.strings };
+        case 'Set_Localized_Strings':
+            return { options: state.options, strings: action.strings };
         default:
             return state;
     }
