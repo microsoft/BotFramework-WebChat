@@ -152,7 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var History_1 = __webpack_require__(5);
 	var Shell_1 = __webpack_require__(375);
 	var Store_1 = __webpack_require__(6);
-	var Strings_1 = __webpack_require__(23);
+	var Strings_1 = __webpack_require__(22);
 	exports.Chat = function (props) {
 	    var store = Store_1.getStore();
 	    console.log("BotChat.Chat props", props);
@@ -191,7 +191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var React = __webpack_require__(3);
 	var Store_1 = __webpack_require__(6);
-	var HistoryMessage_1 = __webpack_require__(24);
+	var HistoryMessage_1 = __webpack_require__(23);
 	var rxjs_1 = __webpack_require__(30);
 	var History = (function (_super) {
 	    __extends(History, _super);
@@ -232,8 +232,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
 	            React.createElement("div", {className: "wc-message-group"}, state.history.activities
 	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || !activity.id); })
-	                .map(function (activity, index) {
-	                return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
+	                .map(function (activity) {
+	                return React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowMessageSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
@@ -256,7 +256,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var redux_1 = __webpack_require__(7);
-	var Strings_1 = __webpack_require__(23);
+	var Strings_1 = __webpack_require__(22);
 	exports.formatReducer = function (state, action) {
 	    if (state === void 0) { state = {
 	        options: {
@@ -361,23 +361,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createStore2 = _interopRequireDefault(_createStore);
 	
-	var _combineReducers = __webpack_require__(18);
+	var _combineReducers = __webpack_require__(17);
 	
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 	
-	var _bindActionCreators = __webpack_require__(20);
+	var _bindActionCreators = __webpack_require__(19);
 	
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 	
-	var _applyMiddleware = __webpack_require__(21);
+	var _applyMiddleware = __webpack_require__(20);
 	
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 	
-	var _compose = __webpack_require__(22);
+	var _compose = __webpack_require__(21);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
-	var _warning = __webpack_require__(19);
+	var _warning = __webpack_require__(18);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -1005,55 +1005,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
-	var _ponyfill = __webpack_require__(17);
+	var _ponyfill = __webpack_require__(16);
 	
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root; /* global window */
+	var root = undefined; /* global window */
 	
-	
-	if (typeof self !== 'undefined') {
-	  root = self;
+	if (typeof global !== 'undefined') {
+		root = global;
 	} else if (typeof window !== 'undefined') {
-	  root = window;
-	} else if (typeof global !== 'undefined') {
-	  root = global;
-	} else if (true) {
-	  root = module;
-	} else {
-	  root = Function('return this')();
+		root = window;
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(16)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 16 */
-/***/ function(module, exports) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1081,7 +1058,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -1095,7 +1072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _warning = __webpack_require__(19);
+	var _warning = __webpack_require__(18);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -1229,7 +1206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1259,7 +1236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1315,7 +1292,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1326,7 +1303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports['default'] = applyMiddleware;
 	
-	var _compose = __webpack_require__(22);
+	var _compose = __webpack_require__(21);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
@@ -1378,7 +1355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1421,7 +1398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1440,14 +1417,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(3);
-	var Attachment_1 = __webpack_require__(25);
-	var Carousel_1 = __webpack_require__(26);
-	var FormattedText_1 = __webpack_require__(27);
+	var Attachment_1 = __webpack_require__(24);
+	var Carousel_1 = __webpack_require__(25);
+	var FormattedText_1 = __webpack_require__(26);
 	exports.HistoryMessage = function (props) {
 	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
 	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
@@ -1465,7 +1442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1570,7 +1547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1580,7 +1557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(3);
-	var Attachment_1 = __webpack_require__(25);
+	var Attachment_1 = __webpack_require__(24);
 	var Carousel = (function (_super) {
 	    __extends(Carousel, _super);
 	    function Carousel(props) {
@@ -1716,7 +1693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1734,8 +1711,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return t;
 	};
 	var React = __webpack_require__(3);
-	var Marked = __webpack_require__(28);
-	var He = __webpack_require__(29);
+	var Marked = __webpack_require__(27);
+	var He = __webpack_require__(28);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
 	    function FormattedText(props) {
@@ -1797,7 +1774,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function ReactRenderer(options) {
 	        this.options = options;
 	        this.elements = [];
-	        this.elementKey = 0;
 	    }
 	    /**
 	     * We're being sneaky here. Marked is expecting us to render html to text and return that.
@@ -1809,7 +1785,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    ReactRenderer.prototype.addElement = function (element) {
 	        var elementId = this.elements.length;
-	        element.key = this.elementKey++;
 	        this.elements.push(element);
 	        return "{{" + elementId + "}}";
 	    };
@@ -1948,7 +1923,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -3241,7 +3216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/he v1.1.0 by @mathias | MIT license */
@@ -3585,7 +3560,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)(module), (function() { return this; }())))
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
 
 /***/ },
 /* 30 */
@@ -21925,16 +21916,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DebugView.prototype.render = function () {
 	        var state = Store_1.getState();
-	        return (React.createElement("div", {className: "wc-debugview"}, 
-	            React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.history.selectedActivity) || '')
-	        ));
+	        return (React.createElement("div", {className: "wc-chatview-panel"}, 
+	            React.createElement("div", {className: "wc-header"}, 
+	                React.createElement("span", null, "JSON")
+	            ), 
+	            React.createElement("div", {className: "wc-debugview"}, 
+	                React.createElement("div", {className: "wc-debugview-json"}, formatJSON(state.history.selectedActivity || {}))
+	            )));
 	    };
 	    return DebugView;
 	}(React.Component));
 	exports.DebugView = DebugView;
 	var formatJSON = function (obj) {
-	    if (!obj)
-	        return null;
 	    var json = JSON.stringify(obj, null, 2);
 	    // Hide ampersands we don't want replaced
 	    json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
