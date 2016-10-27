@@ -144,4 +144,4 @@ var DirectLine = (function () {
     return DirectLine;
 }());
 exports.DirectLine = DirectLine;
-//# sourceMappingURL=DirectLine.js.map
+//# sourceMappingURL=directLine.js.map

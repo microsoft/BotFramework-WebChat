@@ -1,6 +1,6 @@
 "use strict";
 var React = require('react');
-//import { BrowserLine } from './BrowserLine';
+//import { BrowserLine } from './browserLine';
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');

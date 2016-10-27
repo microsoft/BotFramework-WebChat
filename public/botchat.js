@@ -66,8 +66,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.App = App_1.App;
 	var Chat_1 = __webpack_require__(4);
 	exports.Chat = Chat_1.Chat;
-	var DirectLine_1 = __webpack_require__(376);
-	exports.DirectLine = DirectLine_1.DirectLine;
+	var directLine_1 = __webpack_require__(376);
+	exports.DirectLine = directLine_1.DirectLine;
 	var DebugView_1 = __webpack_require__(377);
 	exports.DebugView = DebugView_1.DebugView;
 
@@ -148,7 +148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var React = __webpack_require__(3);
-	//import { BrowserLine } from './BrowserLine';
+	//import { BrowserLine } from './browserLine';
 	var History_1 = __webpack_require__(5);
 	var Shell_1 = __webpack_require__(375);
 	var Store_1 = __webpack_require__(6);

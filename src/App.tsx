@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Chat, ChatProps } from './Chat';
 import { Activity, Message, IBotConnection } from './BotConnection';
-import { DirectLine } from './DirectLine';
+import { DirectLine } from './directLine';
 
 export type AppProps = ChatProps & {
     allowMessagesFrom?: string[],
