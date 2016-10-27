@@ -1,5 +1,5 @@
 import { Observable, BehaviorSubject } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, IBotConnection, User, mimeTypes } from './directLineTypes'; 
+import { Conversation, Activity, Message, IBotConnection, User, mimeTypes } from './BotConnection'; 
 
 // An experimental feature. The idea is to allow two instances of botchat on a page, A and B
 // A sends and receives messages to and from the bot, as normal

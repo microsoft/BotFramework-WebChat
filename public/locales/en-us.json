@@ -1,0 +1,10 @@
+{
+    "title": "Chat",
+    "send": "Send"
+}
+
+
+export interface LocalizedStrings {
+    title: string,
+    send: string
+}

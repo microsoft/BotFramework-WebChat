@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Reducer } from 'redux';
-import { Activity } from './directLineTypes';
+import { Activity } from './BotConnection';
 import { getStore, getState, HistoryAction } from './Store';
 
 
@@ -20,9 +20,14 @@ export class DebugView extends React.Component<{}, {}> {
     render() {
         const state = getState();
         return (
-            <div className="wc-debugview">
-                <div className="wc-debugview-json">
-                    { formatJSON(state.history.selectedActivity || {}) }
+            <div className="wc-chatview-panel">
+                <div className="wc-header">
+                    <span>JSON</span>
+                </div>
+                <div className="wc-debugview">
+                    <div className="wc-debugview-json">
+                        { formatJSON(state.history.selectedActivity || {}) }
+                    </div>
                 </div>
             </div>
         );
@@ -30,7 +35,7 @@ export class DebugView extends React.Component<{}, {}> {
 }
 
 const formatJSON = (obj: any) => {
-    let json = JSON.stringify(obj, null, 4);
+    let json = JSON.stringify(obj, null, 2);
     // Hide ampersands we don't want replaced
     json = json.replace(/&(amp|apos|copy|gt|lt|nbsp|quot|#x?\d+|[\w\d]+);/g, '\x01');
     // Escape remaining ampersands and other HTML special characters

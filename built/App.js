@@ -1,9 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -12,40 +7,45 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+var _this = this;
 var React = require('react');
-var BotChat_1 = require('./BotChat');
-var DebugView_1 = require('./DebugView');
-var ConsoleView_1 = require('./ConsoleView');
-var App = (function (_super) {
-    __extends(App, _super);
-    function App() {
-        _super.apply(this, arguments);
-        this.devConsole = new ConsoleView_1.ConsoleProvider();
+var Chat_1 = require('./Chat');
+var receiveBackchannelMessageFromHostingPage = function (props) { return function (event) {
+    if (props.allowMessagesFrom.indexOf(event.origin) === -1) {
+        console.log("Rejecting backchannel message from unknown source", event.source);
+        return;
     }
-    App.prototype.render = function () {
-        return (React.createElement("div", {className: "wc-app"}, 
-            React.createElement("div", {className: "wc-app-left-container"}, 
-                React.createElement("div", {className: "wc-chatview-panel"}, 
-                    React.createElement("div", {className: "wc-chatview-header"}, 
-                        React.createElement("span", null, this.props.uiProps.title || "WebChat")
-                    ), 
-                    React.createElement(BotChat_1.UI, __assign({devConsole: this.devConsole}, this.props.uiProps)))
-            ), 
-            React.createElement("div", {className: "wc-app-right-container"}, 
-                React.createElement("div", {className: "wc-app-debugview-container"}, 
-                    React.createElement("div", {className: "wc-chatview-panel"}, 
-                        React.createElement("div", {className: "wc-debugview-header"}, 
-                            React.createElement("span", null, "JSON")
-                        ), 
-                        React.createElement(DebugView_1.DebugView, null))
-                ), 
-                React.createElement("div", {className: "wc-app-consoleview-container"}, 
-                    React.createElement("div", {className: "wc-consoleview-header"}, 
-                        React.createElement("span", null, "Console")
-                    ), 
-                    React.createElement(ConsoleView_1.ConsoleView, null)))));
-    };
-    return App;
-}(React.Component));
-exports.App = App;
+    if (!event.data) {
+        console.log("Empty backchannel message from source", event.source);
+        return;
+    }
+    console.log("Received backchannel message", event.data, "from", event.source);
+    props.botConnection.postMessage("backchannel", props.user, { backchannel: event.data })
+        .retry(2)
+        .subscribe(function (success) {
+        console.log("backchannel message sent to bot");
+    }, function (error) {
+        console.log("failed to send backchannel message to bot");
+    });
+}; };
+exports.App = function (props) {
+    console.log("BotChat.App props", props);
+    if (props.allowMessagesFrom) {
+        console.log("adding event listener for messages from hosting web page");
+        window.addEventListener("message", receiveBackchannelMessageFromHostingPage(props), false);
+    }
+    if (props.onBackchannelMessage) {
+        console.log("adding event listener for messages to hosting web page");
+        _this.props.botConnection.activities$.filter(function (activity) {
+            return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
+        }).subscribe(function (message) {
+            return _this.props.onBackchannelMessage(message.channelData.backchannel);
+        });
+    }
+    return (React.createElement("div", {className: "wc-app"}, 
+        React.createElement("div", {className: "wc-app-left-container"}, 
+            React.createElement(Chat_1.Chat, __assign({}, props))
+        )
+    ));
+};
 //# sourceMappingURL=App.js.map

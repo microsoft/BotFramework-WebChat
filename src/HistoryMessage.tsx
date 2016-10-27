@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Message } from './directLineTypes';
+import { Message } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';

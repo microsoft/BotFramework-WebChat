@@ -17,8 +17,8 @@ var Marked = require('marked');
 var He = require('he');
 var FormattedText = (function (_super) {
     __extends(FormattedText, _super);
-    function FormattedText() {
-        _super.apply(this, arguments);
+    function FormattedText(props) {
+        _super.call(this, props);
     }
     FormattedText.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
@@ -76,6 +76,7 @@ var ReactRenderer = (function () {
     function ReactRenderer(options) {
         this.options = options;
         this.elements = [];
+        this.elementKey = 0;
     }
     /**
      * We're being sneaky here. Marked is expecting us to render html to text and return that.
@@ -87,6 +88,7 @@ var ReactRenderer = (function () {
      */
     ReactRenderer.prototype.addElement = function (element) {
         var elementId = this.elements.length;
+        element.key = this.elementKey++;
         this.elements.push(element);
         return "{{" + elementId + "}}";
     };

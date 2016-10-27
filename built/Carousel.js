@@ -10,7 +10,7 @@ var Carousel = (function (_super) {
     __extends(Carousel, _super);
     function Carousel(props) {
         var _this = this;
-        _super.call(this);
+        _super.call(this, props);
         this.scrollAllowInterrupt = true;
         this.state = {
             previousButtonEnabled: false,

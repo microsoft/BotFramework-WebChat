@@ -1,6 +1,31 @@
 import { Store, Reducer, createStore, combineReducers } from 'redux';
-import { Activity, IBotConnection, User } from './directLineTypes';
+import { Activity, IBotConnection, User } from './BotConnection';
+import { FormatOptions } from './Chat';
 
+export interface FormatState {
+    options: FormatOptions
+}
+
+export type FormatAction = {
+    type: 'Set_Format_Options',
+    options: FormatOptions
+}
+
+export const formatReducer: Reducer<FormatState> = (
+    state: FormatState = {
+        options: {
+            showHeader: true
+        }
+    },
+    action: FormatAction
+) => {
+    switch (action.type) {
+        case 'Set_Format_Options':
+            return { options: action.options };
+        default:
+            return state;
+    }
+}
 
 export interface ShellState {
     text: string,
@@ -115,34 +140,11 @@ export const historyReducer: Reducer<HistoryState> = (
     }
 }
 
-export interface ConsoleState {
-    autoscroll: boolean
-}
-
-export type ConsoleAction = {
-    type: 'Set_Autoscroll',
-    autoscroll: boolean
-}
-
-export const consoleReducer: Reducer<ConsoleState> = (
-    state: ConsoleState = {
-        autoscroll: true,
-    },
-    action: ConsoleAction
-) => {
-    switch (action.type) {
-        case 'Set_Autoscroll':
-            return { autoscroll: action.autoscroll };
-        default:
-            return state;
-    }
-}
-
 export interface ChatState {
+    format: FormatState,
     shell: ShellState,
     connection: ConnectionState,
-    history: HistoryState,
-    console: ConsoleState
+    history: HistoryState
 }
 
 export const getStore = (): Store<ChatState> => {
@@ -152,10 +154,10 @@ export const getStore = (): Store<ChatState> => {
     if (!global['msbotchat'].store)
         global['msbotchat'].store = createStore(
             combineReducers<ChatState>({
+                format: formatReducer,
                 shell: shellReducer,
                 connection: connectionReducer,
-                history: historyReducer,
-                console: consoleReducer
+                history: historyReducer
             }));
     return global['msbotchat'].store;
 }

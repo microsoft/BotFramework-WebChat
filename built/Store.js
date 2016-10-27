@@ -1,5 +1,18 @@
 "use strict";
 var redux_1 = require('redux');
+exports.formatReducer = function (state, action) {
+    if (state === void 0) { state = {
+        options: {
+            showHeader: true
+        }
+    }; }
+    switch (action.type) {
+        case 'Set_Format_Options':
+            return { options: action.options };
+        default:
+            return state;
+    }
+};
 exports.shellReducer = function (state, action) {
     if (state === void 0) { state = {
         text: '',
@@ -57,27 +70,16 @@ exports.historyReducer = function (state, action) {
             return state;
     }
 };
-exports.consoleReducer = function (state, action) {
-    if (state === void 0) { state = {
-        autoscroll: true,
-    }; }
-    switch (action.type) {
-        case 'Set_Autoscroll':
-            return { autoscroll: action.autoscroll };
-        default:
-            return state;
-    }
-};
 exports.getStore = function () {
     var global = Function('return this')();
     if (!global['msbotchat'])
         global['msbotchat'] = {};
     if (!global['msbotchat'].store)
         global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
+            format: exports.formatReducer,
             shell: exports.shellReducer,
             connection: exports.connectionReducer,
-            history: exports.historyReducer,
-            console: exports.consoleReducer
+            history: exports.historyReducer
         }));
     return global['msbotchat'].store;
 };
