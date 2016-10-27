@@ -11,7 +11,7 @@ export const HistoryMessage = (props: {
         if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
             return <Carousel attachments={props.activity.attachments} />;
         else
-            return ( 
+            return (
                 <div>
                     { props.activity.attachments.map(attachment => <AttachmentView attachment={ attachment } />)}
                 </div>
