@@ -30,7 +30,7 @@ export const Chat = (props: ChatProps) => {
     if (props.formatOptions)
         store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
     
-    store.dispatch({ type: 'Set_Localized_Strings', strings: strings(this.prop.locale || window.navigator.language) } as FormatAction);
+    store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
 
     props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
         store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);

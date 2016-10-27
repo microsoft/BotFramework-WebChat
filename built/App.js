@@ -28,6 +28,9 @@ var receiveBackchannelMessageFromHostingPage = function (props) { return functio
         console.log("failed to send backchannel message to bot");
     });
 }; };
+function isBackchannel(activity) {
+    return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
+}
 exports.App = function (props) {
     console.log("BotChat.App props", props);
     if (props.allowMessagesFrom) {
@@ -36,10 +39,15 @@ exports.App = function (props) {
     }
     if (props.onBackchannelMessage) {
         console.log("adding event listener for messages to hosting web page");
-        _this.props.botConnection.activity$.filter(function (activity) {
-            return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
-        }).subscribe(function (message) {
-            return _this.props.onBackchannelMessage(message.channelData.backchannel);
+        props = Object.assign({}, props, {
+            botConnection: Object.assign({}, props.botConnection, {
+                activity$: props.botConnection.activity$
+                    .do(function (activity) {
+                    if (isBackchannel(activity)) {
+                        _this.props.onBackchannelMessage(activity.channelData.backchannel);
+                    }
+                }).filter(function (activity) { return !isBackchannel(activity); })
+            })
         });
     }
     return (React.createElement("div", {className: "wc-app"}, 
