@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Action, Reducer, createStore } from 'redux';
 import { Observable } from '@reactivex/rxjs';
-import { getStore, getState, ShellAction, HistoryAction } from './Store';
-import { mimeTypes } from './BotConnection';
-
+import { getStore, getState, HistoryAction } from './Store';
+import { Message, Image, ImageType } from './BotConnection';
 
 export class Shell extends React.Component<{}, {}> {
     textInput:any;
@@ -23,46 +22,63 @@ export class Shell extends React.Component<{}, {}> {
         const store = getStore();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
+            console.log("file", file);
+            let state = store.getState();
+            const sendId = state.history.sendCounter;
             store.dispatch({ type: 'Send_Message', activity: {
                 type: "message",
-                from: store.getState().connection.user,
+                from: state.connection.user,
                 timestamp: Date.now().toString(),
                 attachments: [{
-                    contentType: "image/png",
+                    contentType: file.type as ImageType,
                     contentUrl: window.URL.createObjectURL(file),
-                    name: 'Your file here'
+                    name: file.name
                 }]
             }} as HistoryAction);
+            this.textInput.focus();
             store.getState().connection.botConnection.postFile(file)
-            .retry(2)
             .subscribe(_ => {
                 console.log("success posting file");
+                store.dispatch({ type: "Send_Message_Succeed", sendId } as HistoryAction);
             }, error => {
                 console.log("failed to post file");
+                store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
             });
         }
     }
 
     sendMessage() {
         const store = getStore();
-        console.log("shell sendMessage");
-        store.dispatch({ type: 'Pre_Send_Shell_Text' });
-        const state = store.getState();
+        let state = store.getState();
+        if (state.history.input.length === 0)
+            return;
+        const sendId = state.history.sendCounter;
+        const input = state.history.input;
         store.dispatch({ type: 'Send_Message', activity: {
             type: "message",
-            text: state.shell.text,
-            from: state.connection.user },
+            text: state.history.input,
+            from: state.connection.user,
             timestamp: Date.now().toString()
-        } as HistoryAction);
-        state.connection.botConnection.postMessage(state.shell.text, state.connection.user)
-        .retry(2)
+        }} as HistoryAction);
+        this.textInput.focus();
+        this.trySendMessage(sendId);
+    }
+
+    trySendMessage(sendId: number, updateStatus = false) {
+        const store = getStore();
+        if (updateStatus) {
+            store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
+        }
+        let state = store.getState();
+        const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
+        state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
         .subscribe(_ => {
             console.log("success posting message");
-            store.dispatch({ type: 'Post_Send_Shell_Text' } as ShellAction);
+            store.dispatch({ type: "Send_Message_Succeed", sendId } as HistoryAction);
         }, error => {
             console.log("failed to post message");
             // TODO: show an error under the message with "retry" link
-            store.dispatch({ type: 'Fail_Send_Shell_Text' } as ShellAction);
+            store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
         });
     }
 
@@ -72,13 +88,11 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     onClickSend() {
-        const state = getState();
-        if (state.shell.text && state.shell.text.length > 0 && state.shell.enableSend)
-            this.sendMessage();
+        this.sendMessage();
     }
 
-    updateMessage(text: string) {
-        getStore().dispatch({ type: 'Update_Shell_Text', text })
+    updateMessage(input: string) {
+        getStore().dispatch({ type: 'Update_Input', input })
     }
 
     render() {
@@ -92,7 +106,7 @@ export class Shell extends React.Component<{}, {}> {
                     </svg>
                 </label>
                 <div className="wc-textbox">
-                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.shell.text } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } disabled={ !state.shell.enableSend } placeholder="Type your message..." />
+                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.history.input } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } placeholder="Type your message..." />
                 </div>
                 <label className="wc-send" onClick={ this.onClickSend } >
                     <svg width="27" height="18">

@@ -17,24 +17,6 @@ exports.formatReducer = function (state, action) {
             return state;
     }
 };
-exports.shellReducer = function (state, action) {
-    if (state === void 0) { state = {
-        text: '',
-        enableSend: true
-    }; }
-    switch (action.type) {
-        case 'Update_Shell_Text':
-            return { text: action.text, enableSend: true };
-        case 'Pre_Send_Shell_Text':
-            return { text: state.text, enableSend: false };
-        case 'Fail_Send_Shell_Text':
-            return { text: state.text, enableSend: true };
-        case 'Post_Send_Shell_Text':
-            return { text: '', enableSend: true };
-        default:
-            return state;
-    }
-};
 exports.connectionReducer = function (state, action) {
     if (state === void 0) { state = {
         connected: false,
@@ -55,21 +37,43 @@ exports.connectionReducer = function (state, action) {
             return state;
     }
 };
+var replace = function (a, i, o) { return a.slice(0, i).concat([
+    Object.assign({}, a[i], o)
+], a.slice(i + 1)); };
+var activityStatus = {
+    'Send_Message_Try': "sending",
+    'Send_Message_Succeed': "sent",
+    'Send_Message_Fail': "retry"
+};
 exports.historyReducer = function (state, action) {
     if (state === void 0) { state = {
         activities: [],
+        input: '',
+        sendCounter: 0,
         autoscroll: true,
         selectedActivity: null
     }; }
     switch (action.type) {
+        case 'Update_Input':
+            return { activities: state.activities, input: action.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
         case 'Receive_Message':
-            return { activities: state.activities.concat([action.activity]), autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "received" })]), input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
         case 'Send_Message':
-            return { activities: state.activities.concat([action.activity]), autoscroll: true, selectedActivity: state.selectedActivity };
+            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })]), input: '', sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity };
+        case 'Send_Message_Try':
+        case 'Send_Message_Succeed':
+        case 'Send_Message_Fail':
+            var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
+            if (i === -1)
+                return state;
+            return {
+                activities: replace(state.activities, i, { status: activityStatus[action.type] }),
+                input: state.input, sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity
+            };
         case 'Set_Autoscroll':
-            return { activities: state.activities, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
+            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
         case 'Select_Activity':
-            return { activities: state.activities, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
+            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
         default:
             return state;
     }
@@ -81,7 +85,6 @@ exports.getStore = function () {
     if (!global['msbotchat'].store)
         global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
             format: exports.formatReducer,
-            shell: exports.shellReducer,
             connection: exports.connectionReducer,
             history: exports.historyReducer
         }));

@@ -43,6 +43,7 @@ var DirectLine = (function () {
             .flatMap(function (_) { return _this.getActivities(); });
     }
     DirectLine.prototype.postMessage = function (text, from, channelData) {
+        console.log("sending", text);
         return rxjs_1.Observable.ajax({
             method: "POST",
             url: this.domain + "/api/conversations/" + this.conversationId + "/messages",
