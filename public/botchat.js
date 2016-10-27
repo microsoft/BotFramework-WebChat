@@ -21715,9 +21715,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Shell.prototype.componentWillUnmount = function () {
 	        this.storeUnsubscribe();
 	    };
-	    Shell.prototype.componentDidUpdate = function () {
-	        this.textInput.focus();
-	    };
 	    Shell.prototype.render = function () {
 	        var _this = this;
 	        var state = Store_1.getState();

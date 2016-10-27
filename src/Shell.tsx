@@ -19,10 +19,6 @@ export class Shell extends React.Component<{}, {}> {
         this.storeUnsubscribe();
     }
 
-    componentDidUpdate() {
-        this.textInput.focus();
-    }
-
     sendFile = (files: FileList) => {
         const store = getStore();
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
