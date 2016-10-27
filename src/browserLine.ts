@@ -7,21 +7,24 @@ import { Conversation, Activity, Message, IBotConnection, User, mimeTypes } from
 
 export class BrowserLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
-    activities$: Observable<Activity>;
+    activity$: Observable<Activity>;
 
     constructor() {
         this.connected$.next(true);
-        this.activities$ = this.getActivities();
+        this.activity$ = this.getActivities();
     }
 
-    postMessage = (text: string, from: User, channelData?: any) =>
-        Observable.of(true);
+    postMessage(text: string, from: User, channelData?: any) {
+        return Observable.of(true);
+    }
 
-    postFile = (file: File) =>
-        Observable.of(true);
+    postFile(file: File) {
+        return Observable.of(true);
+    }
 
-    private getActivities = () => Observable.of(<Activity>{
-        type: "message"
-    });
-
+    private getActivities() {
+        return Observable.of(<Activity>{
+            type: "message"
+        });
+    }
 }

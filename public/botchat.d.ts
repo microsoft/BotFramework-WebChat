@@ -5,7 +5,7 @@ export interface SecretOrToken {
     token?: string
 }
 
-export class DirectLine {
+export declare class DirectLine {
     constructor(secretOrToken: SecretOrToken, domain?: string);
 }
 
@@ -26,26 +26,6 @@ export type AppProps = ChatProps & {
     onBackchannelMessage?: (backchannel: any) => void
 }
 
-export declare enum Severity {
-    log,
-    info,
-    trace,
-    debug,
-    warn,
-    error
-}
-
-export interface LogProvider {
-    add(severity: Severity, message: any, ...args: any[]);
-    log(message: any, ...args: any[]);
-    info(message: any, ...args: any[]);
-    trace(message: any, ...args: any[]);
-    debug(message: any, ...args: any[]);
-    warn(message: any, ...args: any[]);
-    error(message: any, ...args: any[]);
-}
-
 export declare const App: (props: AppProps) => {};
 export declare const Chat: (props: ChatProps) => {};
 export declare const DebugView: () => {};
-export declare const LogView: () => {};

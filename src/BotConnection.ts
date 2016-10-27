@@ -113,7 +113,7 @@ export const mimeTypes = {
 
 export interface IBotConnection {
     connected$: BehaviorSubject<boolean>;
-    activities$: Observable<Activity>    
+    activity$: Observable<Activity>    
     postMessage: (text: string, from: User, channelData?: any) => Observable<boolean>,
     postFile: (file: File) => Observable<boolean>,
 }

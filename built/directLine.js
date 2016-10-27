@@ -38,7 +38,7 @@ var DirectLine = (function () {
                 });
             }
         });
-        this.activities$ = this.connected$
+        this.activity$ = this.connected$
             .filter(function (connected) { return connected === true; })
             .flatMap(function (_) { return _this.getActivities(); });
     }
@@ -143,4 +143,4 @@ var DirectLine = (function () {
     return DirectLine;
 }());
 exports.DirectLine = DirectLine;
-//# sourceMappingURL=directLine.js.map
+//# sourceMappingURL=DirectLine.js.map

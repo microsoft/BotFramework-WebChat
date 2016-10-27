@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Reducer } from 'redux';
+import { Unsubscribe } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './BotConnection';
 import { getStore, getState, HistoryAction } from './Store';
@@ -12,9 +12,9 @@ interface Props {
 }
 
 export class History extends React.Component<Props, {}> {
-    scrollMe:any;
-    autoscrollSubscription:Subscription;
-    storeUnsubscribe:any;
+    scrollMe: Element;
+    autoscrollSubscription: Subscription;
+    storeUnsubscribe: Unsubscribe;
 
     constructor(props: Props) {
         super(props);
@@ -46,7 +46,7 @@ export class History extends React.Component<Props, {}> {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     }
 
-    onMessageClicked = (e: React.SyntheticEvent<any>, activity: Activity) => {
+    onMessageClicked(e: React.SyntheticEvent<any>, activity: Activity) {
         e.preventDefault();
         e.stopPropagation();
         getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);

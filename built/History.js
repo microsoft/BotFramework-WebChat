@@ -12,11 +12,6 @@ var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
         _super.call(this, props);
-        this.onMessageClicked = function (e, activity) {
-            e.preventDefault();
-            e.stopPropagation();
-            Store_1.getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity });
-        };
     }
     History.prototype.componentWillMount = function () {
         var _this = this;
@@ -40,6 +35,11 @@ var History = (function (_super) {
     History.prototype.componentDidUpdate = function (prevProps, prevState) {
         if (Store_1.getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+    };
+    History.prototype.onMessageClicked = function (e, activity) {
+        e.preventDefault();
+        e.stopPropagation();
+        Store_1.getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity });
     };
     History.prototype.render = function () {
         var _this = this;

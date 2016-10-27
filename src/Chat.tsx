@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, mimeTypes, IBotConnection, User } from './BotConnection';
-import { DirectLine } from './directLine';
-import { BrowserLine } from './browserLine';
+import { DirectLine } from './DirectLine';
+//import { BrowserLine } from './BrowserLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { getStore, getState, FormatAction, HistoryAction, ConnectionAction } from './Store';
+import { strings } from './Strings';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -28,12 +29,14 @@ export const Chat = (props: ChatProps) => {
 
     if (props.formatOptions)
         store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
+    
+    store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
 
     props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
         store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
     });
 
-    props.botConnection.activities$.subscribe(
+    props.botConnection.activity$.subscribe(
         activity => store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
         error => console.log("errors", error)
     );
@@ -43,7 +46,7 @@ export const Chat = (props: ChatProps) => {
     let header;
     if (state.format.options.showHeader) header =
         <div className="wc-header">
-            <span>{ "Chat" }</span>
+            <span>{ state.format.strings.title }</span>
         </div>;
 
     return (
