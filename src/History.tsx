@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { Unsubscribe } from 'redux';
+import { Unsubscribe, Store } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './BotConnection';
-import { getStore, getState, HistoryAction } from './Store';
+import { HistoryAction, ChatState } from './Store';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
 
 
 interface Props {
+    store: Store<ChatState>,
     allowMessageSelection: boolean
 }
 
@@ -21,7 +22,7 @@ export class History extends React.Component<Props, {}> {
     }
 
     componentWillMount() {
-        this.storeUnsubscribe = getStore().subscribe(() =>
+        this.storeUnsubscribe = this.props.store.subscribe(() =>
             this.forceUpdate()
         );
     }
@@ -32,7 +33,7 @@ export class History extends React.Component<Props, {}> {
         .map(e => e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight)
         .distinctUntilChanged()
         .subscribe(autoscroll =>
-            getStore().dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
+            this.props.store.dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
         );
     }
 
@@ -42,18 +43,18 @@ export class History extends React.Component<Props, {}> {
     }
 
     componentDidUpdate(prevProps:{}, prevState:{}) {
-        if (getState().history.autoscroll)
+        if (this.props.store.getState().history.autoscroll)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
     }
 
     onMessageClicked(e: React.SyntheticEvent<any>, activity: Activity) {
         e.preventDefault();
         e.stopPropagation();
-        getStore().dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);
+        this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);
     }
 
     render() {
-        const state = getState();
+        const state = this.props.store.getState();
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">
@@ -66,7 +67,7 @@ export class History extends React.Component<Props, {}> {
                                     <path className="point-left" d="m0,0 h12 v10 z" />
                                     <path className="point-right" d="m0,10 v-10 h12 z" />
                                 </svg>
-                                <HistoryMessage activity={ activity }/>
+                                <HistoryMessage store={ this.props.store } activity={ activity }/>
                             </div>
                             <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
                         </div>

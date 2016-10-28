@@ -28,4 +28,3 @@ export type AppProps = ChatProps & {
 
 export declare const App: (props: AppProps) => JSX.Element;
 export declare const Chat: (props: ChatProps) => JSX.Element;
-export declare const DebugView: () => JSX.Element;
