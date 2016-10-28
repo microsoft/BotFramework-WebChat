@@ -3,17 +3,20 @@ import { Message } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
+import { ChatStore } from './Store';
+
 
 export const HistoryMessage = (props: {
+    store: ChatStore,
     activity: Message
 }) => {
     if (props.activity.attachments && props.activity.attachments.length >= 1) {
         if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
-            return <Carousel attachments={props.activity.attachments} />;
+            return <Carousel store= { props.store } attachments={props.activity.attachments} />;
         else
             return (
                 <div>
-                    { props.activity.attachments.map(attachment => <AttachmentView attachment={ attachment } />)}
+                    { props.activity.attachments.map(attachment => <AttachmentView store={ props.store } attachment={ attachment } />)}
                 </div>
             );
     } else if (props.activity.text) {

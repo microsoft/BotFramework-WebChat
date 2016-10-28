@@ -5,7 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
-var Store_1 = require('./Store');
 var Shell = (function (_super) {
     __extends(Shell, _super);
     function Shell() {
@@ -13,7 +12,7 @@ var Shell = (function (_super) {
     }
     Shell.prototype.componentDidMount = function () {
         var _this = this;
-        this.storeUnsubscribe = Store_1.getStore().subscribe(function () {
+        this.storeUnsubscribe = this.props.store.subscribe(function () {
             return _this.forceUpdate();
         });
     };
@@ -21,7 +20,7 @@ var Shell = (function (_super) {
         this.storeUnsubscribe();
     };
     Shell.prototype.sendFile = function (files) {
-        var store = Store_1.getStore();
+        var store = this.props.store;
         var _loop_1 = function(i, numFiles) {
             var file = files[i];
             console.log("file", file);
@@ -55,7 +54,7 @@ var Shell = (function (_super) {
         }
     };
     Shell.prototype.sendMessage = function () {
-        var store = Store_1.getStore();
+        var store = this.props.store;
         var state = store.getState();
         if (state.history.input.length === 0)
             return;
@@ -71,7 +70,7 @@ var Shell = (function (_super) {
     };
     Shell.prototype.trySendMessage = function (sendId, updateStatus) {
         if (updateStatus === void 0) { updateStatus = false; }
-        var store = Store_1.getStore();
+        var store = this.props.store;
         if (updateStatus) {
             store.dispatch({ type: "Send_Message_Try", sendId: sendId });
         }
@@ -95,11 +94,11 @@ var Shell = (function (_super) {
         this.sendMessage();
     };
     Shell.prototype.updateMessage = function (input) {
-        Store_1.getStore().dispatch({ type: 'Update_Input', input: input });
+        this.props.store.dispatch({ type: 'Update_Input', input: input });
     };
     Shell.prototype.render = function () {
         var _this = this;
-        var state = Store_1.getState();
+        var state = this.props.store.getState();
         return (React.createElement("div", {className: "wc-console"}, 
             React.createElement("label", {className: "wc-upload"}, 
                 React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 

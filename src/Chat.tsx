@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Reducer, Action } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, IBotConnection, User } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
-import { getStore, getState, FormatAction, HistoryAction, ConnectionAction } from './Store';
+import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { strings } from './Strings';
 
 export interface ActivityState {
@@ -22,43 +21,53 @@ export interface ChatProps {
     user: { id: string, name: string },
     botConnection: IBotConnection,
     locale?: string,
-    allowMessageSelection?: boolean,
+    onActivitySelected?: (activity: Activity) => void,
     formatOptions?: FormatOptions
 }
 
-export const Chat = (props: ChatProps) => {
-    const store = getStore();
-    console.log("BotChat.Chat props", props);
+export class Chat extends React.Component<ChatProps, {}> {
 
-    store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection } as ConnectionAction);
+    store: ChatStore;
 
-    if (props.formatOptions)
-        store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
-    
-    store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
+    constructor(props) {
+        super(props);
 
-    props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
-        store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
-    });
+        this.store = createStore();
 
-    props.botConnection.activity$.subscribe(
-        activity => store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
-        error => console.log("errors", error)
-    );
+        console.log("BotChat.Chat props", props);
 
-    const state = store.getState();
-    console.log("BotChat.Chat starting state", state);
-    let header;
-    if (state.format.options.showHeader) header =
-        <div className="wc-header">
-            <span>{ state.format.strings.title }</span>
-        </div>;
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection } as ConnectionAction);
 
-    return (
-        <div className={ "wc-chatview-panel" }>
-            { header }
-            <History allowMessageSelection={ props.allowMessageSelection } />
-            <Shell />
-        </div>
-    );
+        if (props.formatOptions)
+            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
+
+        this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
+
+        props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
+            this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
+        });
+
+        props.botConnection.activity$.subscribe(
+            activity => this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
+            error => console.log("errors", error)
+        );
+    }
+
+    render() {
+        const state = this.store.getState();
+        console.log("BotChat.Chat starting state", state);
+        let header;
+        if (state.format.options.showHeader) header =
+            <div className="wc-header">
+                <span>{ state.format.strings.title }</span>
+            </div>;
+
+        return (
+            <div className={ "wc-chatview-panel" }>
+                { header }
+                <History store={ this.store } onActivitySelected={ this.props.onActivitySelected } />
+                <Shell store={ this.store } />
+            </div>
+        );
+    }
 }

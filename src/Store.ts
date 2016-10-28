@@ -1,7 +1,10 @@
-import { Store, Reducer, createStore, combineReducers } from 'redux';
+import { Store, Reducer, createStore as reduxCreateStore, combineReducers } from 'redux';
 import { Activity, IBotConnection, User } from './BotConnection';
 import { FormatOptions } from './Chat';
 import { strings, Strings } from './Strings';
+
+
+export type ChatStore = Store<ChatState>;
 
 export interface FormatState {
     options: FormatOptions,
@@ -13,7 +16,7 @@ export type FormatAction = {
     options: FormatOptions
 } | {
     type: 'Set_Localized_Strings',
-    strings: Strings    
+    strings: Strings
 }
 
 export const formatReducer: Reducer<FormatState> = (
@@ -106,7 +109,7 @@ export type HistoryAction = {
 }
 
 const patch = <T>(a: T[], i: number, o: any):T[] => [
-    ... a.slice(0, i), 
+    ... a.slice(0, i),
     Object.assign({}, a[i], o),
     ... a.slice(i + 1)
 ];
@@ -115,7 +118,7 @@ const activityStatus = {
     'Send_Message_Try': "sending",
     'Send_Message_Succeed': "sent",
     'Send_Message_Fail': "retry"
-}  
+}
 
 export const historyReducer: Reducer<HistoryState> = (
     state: HistoryState = {
@@ -161,20 +164,10 @@ export interface ChatState {
     history: HistoryState
 }
 
-export const getStore = (): Store<ChatState> => {
-    var global = Function('return this')();
-    if (!global['msbotchat'])
-        global['msbotchat'] = {};
-    if (!global['msbotchat'].store)
-        global['msbotchat'].store = createStore(
-            combineReducers<ChatState>({
-                format: formatReducer,
-                connection: connectionReducer,
-                history: historyReducer
-            }));
-    return global['msbotchat'].store;
-}
-
-export const getState = () => {
-    return getStore().getState();
-}
+export const createStore = () =>
+    reduxCreateStore(
+        combineReducers<ChatState>({
+            format: formatReducer,
+            connection: connectionReducer,
+            history: historyReducer
+        }));

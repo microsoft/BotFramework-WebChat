@@ -81,19 +81,11 @@ exports.historyReducer = function (state, action) {
             return state;
     }
 };
-exports.getStore = function () {
-    var global = Function('return this')();
-    if (!global['msbotchat'])
-        global['msbotchat'] = {};
-    if (!global['msbotchat'].store)
-        global['msbotchat'].store = redux_1.createStore(redux_1.combineReducers({
-            format: exports.formatReducer,
-            connection: exports.connectionReducer,
-            history: exports.historyReducer
-        }));
-    return global['msbotchat'].store;
-};
-exports.getState = function () {
-    return exports.getStore().getState();
+exports.createStore = function () {
+    return redux_1.createStore(redux_1.combineReducers({
+        format: exports.formatReducer,
+        connection: exports.connectionReducer,
+        history: exports.historyReducer
+    }));
 };
 //# sourceMappingURL=Store.js.map

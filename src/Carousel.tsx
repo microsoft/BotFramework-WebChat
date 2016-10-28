@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
+import { ChatStore } from './Store';
+
 
 interface Props {
+    store: ChatStore,
     attachments: Attachment[]
 }
 
@@ -160,7 +163,7 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map(attachment =>
                             <li>
-                                <AttachmentView attachment={ attachment } onImageLoad={ () => this.resize() } />
+                                <AttachmentView store= { this.props.store } attachment={ attachment } onImageLoad={ () => this.resize() } />
                             </li>) }
                         </ul>
                     </div>

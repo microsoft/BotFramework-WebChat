@@ -20,7 +20,7 @@ var FormattedText = (function (_super) {
     function FormattedText(props) {
         _super.call(this, props);
     }
-    FormattedText.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
+    FormattedText.prototype.shouldComponentUpdate = function (nextProps) {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
     };
     FormattedText.prototype.render = function () {
