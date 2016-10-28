@@ -9,6 +9,10 @@ export declare class DirectLine {
     constructor(secretOrToken: SecretOrToken, domain?: string);
 }
 
+export declare class DirectLine3 {
+    constructor(secretOrToken: SecretOrToken, domain?: string, segment?: string);
+}
+
 export interface FormatOptions {
     showHeader?: boolean
 }
