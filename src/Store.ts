@@ -3,6 +3,9 @@ import { Activity, IBotConnection, User } from './BotConnection';
 import { FormatOptions } from './Chat';
 import { strings, Strings } from './Strings';
 
+
+export type ChatStore = Store<ChatState>;
+
 export interface FormatState {
     options: FormatOptions,
     strings: Strings

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Action, Store } from 'redux';
 import { Observable } from '@reactivex/rxjs';
-import { HistoryAction, ChatState } from './Store';
+import { HistoryAction, ChatStore } from './Store';
 import { Message, Image, ImageType } from './BotConnection';
 
 
 interface Props {
-    store: Store<ChatState>
+    store: ChatStore
 }
 
 export class Shell extends React.Component<Props, {}> {

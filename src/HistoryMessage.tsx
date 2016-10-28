@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { Store } from 'redux';
 import { Message } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
-import { ChatState } from './Store';
+import { ChatStore } from './Store';
 
 
 export const HistoryMessage = (props: {
-    store: Store<ChatState>,
+    store: ChatStore,
     activity: Message
 }) => {
     if (props.activity.attachments && props.activity.attachments.length >= 1) {

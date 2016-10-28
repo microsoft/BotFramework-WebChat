@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Store } from 'redux';
 import { Attachment, Button } from './BotConnection';
-import { HistoryAction, ChatState } from './Store';
+import { HistoryAction, ChatStore } from './Store';
 
 
 export const AttachmentView = (props: {
-    store: Store<ChatState>,
+    store: ChatStore,
     attachment: Attachment,
     onImageLoad?: ()=> void
 }) => {

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Store } from 'redux';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
-import { ChatState } from './Store';
+import { ChatStore } from './Store';
 
 
 interface Props {
-    store: Store<ChatState>,
+    store: ChatStore,
     attachments: Attachment[]
 }
 

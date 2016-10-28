@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Unsubscribe, Store } from 'redux';
+import { Unsubscribe } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './BotConnection';
-import { HistoryAction, ChatState } from './Store';
+import { HistoryAction, ChatStore } from './Store';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
 
 
 interface Props {
-    store: Store<ChatState>,
+    store: ChatStore,
     onActivitySelected: (activity: Activity) => void
 }
 

@@ -13,7 +13,7 @@ export class FormattedText extends React.Component<Props, {}> {
         super(props);
     }
 
-    shouldComponentUpdate(nextProps: Props, nextState: {}, nextContext: any): boolean {
+    shouldComponentUpdate(nextProps: Props): boolean {
         return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
     }
 

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Store } from 'redux';
 import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
 import { Activity, Message, IBotConnection, User } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
-import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatState } from './Store';
+import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { strings } from './Strings';
 
 export interface ActivityState {
@@ -28,7 +27,7 @@ export interface ChatProps {
 
 export class Chat extends React.Component<ChatProps, {}> {
 
-    store: Store<ChatState>;
+    store: ChatStore;
 
     constructor(props) {
         super(props);
