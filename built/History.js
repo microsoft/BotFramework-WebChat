@@ -49,7 +49,7 @@ var History = (function (_super) {
                 .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"); })
                 .map(function (activity, index) {
                 return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-                    React.createElement("div", {className: 'wc-message-content' + (_this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.allowMessageSelection ? _this.onMessageClicked(e, activity) : undefined; }}, 
+                    React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.props.onActivitySelected ? _this.props.onActivitySelected(activity) : undefined; }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
                             React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 

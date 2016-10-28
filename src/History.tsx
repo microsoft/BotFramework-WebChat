@@ -9,7 +9,7 @@ import { Observable, Subscription } from '@reactivex/rxjs';
 
 interface Props {
     store: Store<ChatState>,
-    allowMessageSelection: boolean
+    onActivitySelected: (activity: Activity) => void
 }
 
 export class History extends React.Component<Props, {}> {
@@ -62,7 +62,7 @@ export class History extends React.Component<Props, {}> {
                     .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"))
                     .map((activity:Message, index) =>
                         <div key={index} className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
-                            <div className={ 'wc-message-content' + (this.props.allowMessageSelection ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.props.allowMessageSelection ? this.onMessageClicked(e, activity) : undefined }>
+                            <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.props.onActivitySelected ? this.props.onActivitySelected(activity) : undefined }>
                                 <svg className="wc-message-callout">
                                     <path className="point-left" d="m0,0 h12 v10 z" />
                                     <path className="point-right" d="m0,10 v-10 h12 z" />

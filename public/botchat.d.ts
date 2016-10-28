@@ -17,7 +17,7 @@ export interface ChatProps {
     user: { id: string, name: string },
     botConnection: any,
     locale?: string,
-    allowMessageSelection?: boolean,
+    onActivitySelected?: (activity: any) => void,
     formatOptions?: FormatOptions
 }
 

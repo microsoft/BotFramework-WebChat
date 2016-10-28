@@ -22,7 +22,7 @@ export interface ChatProps {
     user: { id: string, name: string },
     botConnection: IBotConnection,
     locale?: string,
-    allowMessageSelection?: boolean,
+    onActivitySelected?: (activity: Activity) => void,
     formatOptions?: FormatOptions
 }
 
@@ -66,8 +66,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         return (
             <div className={ "wc-chatview-panel" }>
                 { header }
-                <History store={this.store} allowMessageSelection={ this.props.allowMessageSelection } />
-                <Shell store={this.store} />
+                <History store={ this.store } onActivitySelected={ this.props.onActivitySelected } />
+                <Shell store={ this.store } />
             </div>
         );
     }

@@ -38,7 +38,7 @@ var Chat = (function (_super) {
                 );
         return (React.createElement("div", {className: "wc-chatview-panel"}, 
             header, 
-            React.createElement(History_1.History, {store: this.store, allowMessageSelection: this.props.allowMessageSelection}), 
+            React.createElement(History_1.History, {store: this.store, onActivitySelected: this.props.onActivitySelected}), 
             React.createElement(Shell_1.Shell, {store: this.store})));
     };
     return Chat;
