@@ -1,8 +1,7 @@
 "use strict";
 var React = require('react');
-var Store_1 = require('./Store');
 exports.AttachmentView = function (props) {
-    var state = Store_1.getState();
+    var state = props.store.getState();
     var onClickButton = function (type, value) {
         switch (type) {
             case "imBack":
@@ -11,7 +10,7 @@ exports.AttachmentView = function (props) {
                     .retry(2)
                     .subscribe(function () {
                     if (type === "imBack") {
-                        Store_1.getStore().dispatch({ type: 'Send_Message', activity: {
+                        props.store.dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
                                 from: { id: state.connection.user.id },

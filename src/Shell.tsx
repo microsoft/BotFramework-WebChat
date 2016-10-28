@@ -1,15 +1,20 @@
 import * as React from 'react';
-import { Action, Reducer, createStore } from 'redux';
+import { Action, Store } from 'redux';
 import { Observable } from '@reactivex/rxjs';
-import { getStore, getState, HistoryAction } from './Store';
+import { HistoryAction, ChatState } from './Store';
 import { Message, Image, ImageType } from './BotConnection';
 
-export class Shell extends React.Component<{}, {}> {
+
+interface Props {
+    store: Store<ChatState>
+}
+
+export class Shell extends React.Component<Props, {}> {
     textInput:any;
     storeUnsubscribe:any;
 
     componentDidMount() {
-        this.storeUnsubscribe = getStore().subscribe(() =>
+        this.storeUnsubscribe = this.props.store.subscribe(() =>
             this.forceUpdate()
         );
     }
@@ -19,7 +24,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendFile(files: FileList) {
-        const store = getStore();
+        const store = this.props.store;
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
             console.log("file", file);
@@ -50,7 +55,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     sendMessage() {
-        const store = getStore();
+        const store = this.props.store;
         let state = store.getState();
         if (state.history.input.length === 0)
             return;
@@ -66,7 +71,7 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     trySendMessage(sendId: number, updateStatus = false) {
-        const store = getStore();
+        const store = this.props.store;
         if (updateStatus) {
             store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
         }
@@ -93,11 +98,11 @@ export class Shell extends React.Component<{}, {}> {
     }
 
     updateMessage(input: string) {
-        getStore().dispatch({ type: 'Update_Input', input })
+        this.props.store.dispatch({ type: 'Update_Input', input })
     }
 
     render() {
-        const state = getState();
+        const state = this.props.store.getState();
         return (
             <div className="wc-console">
                 <label className="wc-upload">

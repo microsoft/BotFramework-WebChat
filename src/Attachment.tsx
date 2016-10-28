@@ -1,13 +1,15 @@
 import * as React from 'react';
+import { Store } from 'redux';
 import { Attachment, Button } from './BotConnection';
-import { getStore, getState, HistoryAction } from './Store';
+import { HistoryAction, ChatState } from './Store';
 
 
 export const AttachmentView = (props: {
+    store: Store<ChatState>,
     attachment: Attachment,
     onImageLoad?: ()=> void
 }) => {
-    const state = getState();
+    const state = props.store.getState();
 
     const onClickButton = (type: string, value: string) => {
         switch (type) {
@@ -18,7 +20,7 @@ export const AttachmentView = (props: {
                 .subscribe(
                     () => {
                         if (type === "imBack") {
-                            getStore().dispatch({ type: 'Send_Message', activity: {
+                            props.store.dispatch({ type: 'Send_Message', activity: {
                                 type: "message",
                                 text: value,
                                 from: { id: state.connection.user.id },
