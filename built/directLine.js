@@ -47,11 +47,18 @@ var DirectLine = (function () {
             .flatMap(function (_) { return _this.getActivities(); });
     };
     DirectLine.prototype.end = function () {
-        if (this.tokenRefreshSubscription)
+        if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
-        clearTimeout(this.pollTimer);
-        if (this.getActivityGroupSubscription)
+            this.tokenRefreshSubscription = undefined;
+        }
+        if (this.getActivityGroupSubscription) {
             this.getActivityGroupSubscription.unsubscribe();
+            this.getActivityGroupSubscription = undefined;
+        }
+        if (this.pollTimer) {
+            clearTimeout(this.pollTimer);
+            this.pollTimer = undefined;
+        }
     };
     DirectLine.prototype.postMessage = function (text, from, channelData) {
         console.log("sending", text);

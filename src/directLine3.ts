@@ -69,11 +69,18 @@ export class DirectLine3 implements IBotConnection {
     }
 
     end() {
-        if (this.tokenRefreshSubscription)
+        if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
-        clearTimeout(this.pollTimer);
-        if (this.getActivityGroupSubscription)
+            this.tokenRefreshSubscription = undefined;
+        }
+        if (this.getActivityGroupSubscription) {
             this.getActivityGroupSubscription.unsubscribe();
+            this.getActivityGroupSubscription = undefined;
+        }
+        if (this.pollTimer) {
+            clearTimeout(this.pollTimer);
+            this.pollTimer = undefined;
+        }
     }
 
     postMessage(text: string, from: User, channelData?: any) {

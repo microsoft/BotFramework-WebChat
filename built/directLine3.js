@@ -48,11 +48,18 @@ var DirectLine3 = (function () {
             .flatMap(function (_) { return _this.getActivity$(); });
     };
     DirectLine3.prototype.end = function () {
-        if (this.tokenRefreshSubscription)
+        if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
-        clearTimeout(this.pollTimer);
-        if (this.getActivityGroupSubscription)
+            this.tokenRefreshSubscription = undefined;
+        }
+        if (this.getActivityGroupSubscription) {
             this.getActivityGroupSubscription.unsubscribe();
+            this.getActivityGroupSubscription = undefined;
+        }
+        if (this.pollTimer) {
+            clearTimeout(this.pollTimer);
+            this.pollTimer = undefined;
+        }
     };
     DirectLine3.prototype.postMessage = function (text, from, channelData) {
         return rxjs_1.Observable.ajax({
