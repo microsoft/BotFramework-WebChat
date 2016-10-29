@@ -31,6 +31,7 @@
 
     .wc-header {
         background-color: #3e92d2;
+        box-sizing: content-box;
         color: #fff;
         font-weight: 500;
         height: 35px;   /* height + padding-top = total height */
