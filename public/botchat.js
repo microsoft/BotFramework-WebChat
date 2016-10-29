@@ -21948,7 +21948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.token = secretOrToken.secret || secretOrToken.token;
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations",
+	            url: this.domain + "/" + this.segment + "/conversations",
 	            headers: {
 	                "Accept": "application/json",
 	                "Authorization": "Bearer " + this.token
@@ -21963,7 +21963,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
 	                    return rxjs_1.Observable.ajax({
 	                        method: "GET",
-	                        url: "https://" + _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
+	                        url: _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
 	                        headers: {
 	                            "Authorization": "Bearer " + _this.token
 	                        }
@@ -21983,7 +21983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    DirectLine3.prototype.postMessage = function (text, from, channelData) {
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities",
+	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities",
 	            body: {
 	                type: "message",
 	                text: text,
@@ -22004,7 +22004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        formData.append('file', file);
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
+	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
 	            body: formData,
 	            headers: {
 	                "Authorization": "Bearer " + this.token,
@@ -22038,7 +22038,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (watermark === void 0) { watermark = ""; }
 	        return rxjs_1.Observable.ajax({
 	            method: "GET",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
+	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
 	            headers: {
 	                "Accept": "application/json",
 	                "Authorization": "Bearer " + this.token
