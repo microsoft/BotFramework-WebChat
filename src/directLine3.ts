@@ -24,7 +24,7 @@ export class DirectLine3 implements IBotConnection {
         this.token = secretOrToken.secret || secretOrToken.token;
         Observable.ajax({
             method: "POST",
-            url: `https://${this.domain}/${this.segment}/conversations`,
+            url: `${this.domain}/${this.segment}/conversations`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${this.token}`
@@ -40,7 +40,7 @@ export class DirectLine3 implements IBotConnection {
                 Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
                     Observable.ajax({
                         method: "GET",
-                        url: `https://${this.domain}/${this.segment}/tokens/${this.conversationId}/refresh`,
+                        url: `${this.domain}/${this.segment}/tokens/${this.conversationId}/refresh`,
                         headers: {
                             "Authorization": `Bearer ${this.token}`
                         }
@@ -62,7 +62,7 @@ export class DirectLine3 implements IBotConnection {
     postMessage(text: string, from: User, channelData?: any) {
         return Observable.ajax({
             method: "POST",
-            url: `https://${this.domain}/${this.segment}/conversations/${this.conversationId}/activities`,
+            url: `${this.domain}/${this.segment}/conversations/${this.conversationId}/activities`,
             body: <Message>{
                 type: "message",
                 text,
@@ -85,7 +85,7 @@ export class DirectLine3 implements IBotConnection {
         formData.append('file', file);
         return Observable.ajax({
             method: "POST",
-            url: `https://${this.domain}/${this.segment}/conversations/${this.conversationId}/upload?userId=${from.id}`,
+            url: `${this.domain}/${this.segment}/conversations/${this.conversationId}/upload?userId=${from.id}`,
             body: formData,
             headers: {
                 "Authorization": `Bearer ${this.token}`,
@@ -126,7 +126,7 @@ export class DirectLine3 implements IBotConnection {
     private getActivityGroup(watermark = "") {
         return Observable.ajax({
             method: "GET",
-            url: `https://${this.domain}/${this.segment}/conversations/${this.conversationId}/activities?watermark=${watermark}`,
+            url: `${this.domain}/${this.segment}/conversations/${this.conversationId}/activities?watermark=${watermark}`,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${this.token}`
