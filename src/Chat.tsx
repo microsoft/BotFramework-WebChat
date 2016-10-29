@@ -27,9 +27,9 @@ export interface ChatProps {
 
 export class Chat extends React.Component<ChatProps, {}> {
 
-    store: ChatStore;
-    activitySubscription: Subscription;
-    connectedSubscription: Subscription;
+    private store: ChatStore;
+    private activitySubscription: Subscription;
+    private connectedSubscription: Subscription;
 
     constructor(props) {
         super(props);
@@ -49,19 +49,21 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
 
+        props.botConnection.start();
         this.activitySubscription = props.botConnection.activity$.subscribe(
-            activity => this.handleActivity(activity),
+            activity => this.handleIncomingActivity(activity),
             error => console.log("errors", error)
         );
     }
 
-    handleActivity(activity: Activity) {
+    handleIncomingActivity(activity: Activity) {
         this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
     }
 
     componentWillUnmount() {
         this.activitySubscription.unsubscribe();
         this.connectedSubscription.unsubscribe();
+        this.props.botConnection.end();
     }
 
     render() {

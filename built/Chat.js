@@ -25,14 +25,16 @@ var Chat = (function (_super) {
         this.connectedSubscription = props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
             _this.store.dispatch({ type: 'Connected_To_Bot' });
         });
-        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleActivity(activity); }, function (error) { return console.log("errors", error); });
+        props.botConnection.start();
+        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
     }
-    Chat.prototype.handleActivity = function (activity) {
+    Chat.prototype.handleIncomingActivity = function (activity) {
         this.store.dispatch({ type: 'Receive_Message', activity: activity });
     };
     Chat.prototype.componentWillUnmount = function () {
         this.activitySubscription.unsubscribe();
         this.connectedSubscription.unsubscribe();
+        this.props.botConnection.end();
     };
     Chat.prototype.render = function () {
         var state = this.store.getState();

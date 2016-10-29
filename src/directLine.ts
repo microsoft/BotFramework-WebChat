@@ -1,4 +1,4 @@
-import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject } from '@reactivex/rxjs';
+import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
 import { Conversation, Activity, Message, Image, IBotConnection, User } from './BotConnection';
 
 interface DLAttachment {
@@ -40,12 +40,20 @@ export class DirectLine implements IBotConnection {
 
     private conversationId: string;
     private token: string;
+    private secret: string;
+    private tokenRefreshSubscription: Subscription;
+    private getActivityGroupSubscription: Subscription;
+    private pollTimer: number;
 
     constructor(
         secretOrToken: SecretOrToken,
         private domain = "https://directline.botframework.com"
     ) {
+        this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+    }
+
+    start() {
         Observable.ajax({
             method: "POST",
             url: `${this.domain}/api/conversations`,
@@ -60,8 +68,8 @@ export class DirectLine implements IBotConnection {
         .subscribe(conversation => {
             this.conversationId = conversation.conversationId;
             this.connected$.next(true);
-            if (!secretOrToken.secret) {
-                Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
+            if (!this.secret) {
+                this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
                     Observable.ajax({
                         method: "GET",
                         url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
@@ -81,6 +89,14 @@ export class DirectLine implements IBotConnection {
         this.activity$ = this.connected$
         .filter(connected => connected === true)
         .flatMap(_ => this.getActivities());
+    }
+
+    end() {
+        if (this.tokenRefreshSubscription)
+            this.tokenRefreshSubscription.unsubscribe();
+        clearTimeout(this.pollTimer);
+        if (this.getActivityGroupSubscription)
+            this.getActivityGroupSubscription.unsubscribe();
     }
 
     postMessage(text: string, from: User, channelData?: any) {
@@ -162,12 +178,11 @@ export class DirectLine implements IBotConnection {
     }
 
     private activitiesGenerator(subscriber: Subscriber<Observable<DLMessage>>, watermark?: string) {
-        this.getActivityGroup(watermark).subscribe(activityGroup => {
+        this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(activityGroup => {
             const someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
             if (someMessages)
                 subscriber.next(Observable.from(activityGroup.messages));
-
-            setTimeout(
+            this.pollTimer = setTimeout(
                 () => this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark),
                 someMessages && activityGroup.watermark ? 0 : 1000
             );

@@ -3,12 +3,15 @@ var rxjs_1 = require('@reactivex/rxjs');
 var intervalRefreshToken = 29 * 60 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
-        var _this = this;
         if (domain === void 0) { domain = "https://directline.botframework.com"; }
         this.domain = domain;
         this.connected$ = new rxjs_1.BehaviorSubject(false);
         this.id = 0;
+        this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+    }
+    DirectLine.prototype.start = function () {
+        var _this = this;
         rxjs_1.Observable.ajax({
             method: "POST",
             url: this.domain + "/api/conversations",
@@ -22,8 +25,8 @@ var DirectLine = (function () {
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
             _this.connected$.next(true);
-            if (!secretOrToken.secret) {
-                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
+            if (!_this.secret) {
+                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
                     return rxjs_1.Observable.ajax({
                         method: "GET",
                         url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
@@ -42,7 +45,14 @@ var DirectLine = (function () {
         this.activity$ = this.connected$
             .filter(function (connected) { return connected === true; })
             .flatMap(function (_) { return _this.getActivities(); });
-    }
+    };
+    DirectLine.prototype.end = function () {
+        if (this.tokenRefreshSubscription)
+            this.tokenRefreshSubscription.unsubscribe();
+        clearTimeout(this.pollTimer);
+        if (this.getActivityGroupSubscription)
+            this.getActivityGroupSubscription.unsubscribe();
+    };
     DirectLine.prototype.postMessage = function (text, from, channelData) {
         console.log("sending", text);
         return rxjs_1.Observable.ajax({
@@ -120,11 +130,11 @@ var DirectLine = (function () {
     };
     DirectLine.prototype.activitiesGenerator = function (subscriber, watermark) {
         var _this = this;
-        this.getActivityGroup(watermark).subscribe(function (activityGroup) {
+        this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(function (activityGroup) {
             var someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
             if (someMessages)
                 subscriber.next(rxjs_1.Observable.from(activityGroup.messages));
-            setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
+            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
         }, function (error) {
             return subscriber.error(error);
         });

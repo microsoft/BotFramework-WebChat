@@ -109,8 +109,10 @@ export interface Typing {
 export type Activity = Message | Typing;
 
 export interface IBotConnection {
+    start();
+    end();
     connected$: BehaviorSubject<boolean>;
-    activity$: Observable<Activity>    
+    activity$: Observable<Activity>;
     postMessage: (text: string, from: User, channelData?: any) => Observable<string>,
-    postFile: (file: File, from: User) => Observable<string>,
+    postFile: (file: File, from: User) => Observable<string>
 }
