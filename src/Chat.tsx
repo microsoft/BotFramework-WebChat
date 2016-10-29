@@ -29,6 +29,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     store: ChatStore;
     activitySubscription: Subscription;
+    connectedSubscription: Subscription;
 
     constructor(props) {
         super(props);
@@ -44,7 +45,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
 
-        props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
+        this.connectedSubscription = props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
             this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
 
@@ -60,6 +61,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     componentWillUnmount() {
         this.activitySubscription.unsubscribe();
+        this.connectedSubscription.unsubscribe();
     }
 
     render() {

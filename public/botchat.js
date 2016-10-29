@@ -170,7 +170,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
 	        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
-	        props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
+	        this.connectedSubscription = props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            _this.store.dispatch({ type: 'Connected_To_Bot' });
 	        });
 	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleActivity(activity); }, function (error) { return console.log("errors", error); });
@@ -180,6 +180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    Chat.prototype.componentWillUnmount = function () {
 	        this.activitySubscription.unsubscribe();
+	        this.connectedSubscription.unsubscribe();
 	    };
 	    Chat.prototype.render = function () {
 	        var state = this.store.getState();
