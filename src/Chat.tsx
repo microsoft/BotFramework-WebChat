@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
+import { Subscription } from '@reactivex/rxjs';
 import { Activity, Message, IBotConnection, User } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
@@ -18,7 +18,7 @@ export interface FormatOptions {
 }
 
 export interface ChatProps {
-    user: { id: string, name: string },
+    user: User,
     botConnection: IBotConnection,
     locale?: string,
     onActivitySelected?: (activity: Activity) => void,
@@ -28,6 +28,7 @@ export interface ChatProps {
 export class Chat extends React.Component<ChatProps, {}> {
 
     store: ChatStore;
+    activitySubscription: Subscription;
 
     constructor(props) {
         super(props);
@@ -47,10 +48,18 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
 
-        props.botConnection.activity$.subscribe(
-            activity => this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
+        this.activitySubscription = props.botConnection.activity$.subscribe(
+            activity => this.handleActivity(activity),
             error => console.log("errors", error)
         );
+    }
+
+    handleActivity(activity: Activity) {
+        this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
+    }
+
+    componentWillUnmount() {
+        this.activitySubscription.unsubscribe();
     }
 
     render() {

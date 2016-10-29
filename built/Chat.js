@@ -25,8 +25,14 @@ var Chat = (function (_super) {
         props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
             _this.store.dispatch({ type: 'Connected_To_Bot' });
         });
-        props.botConnection.activity$.subscribe(function (activity) { return _this.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleActivity(activity); }, function (error) { return console.log("errors", error); });
     }
+    Chat.prototype.handleActivity = function (activity) {
+        this.store.dispatch({ type: 'Receive_Message', activity: activity });
+    };
+    Chat.prototype.componentWillUnmount = function () {
+        this.activitySubscription.unsubscribe();
+    };
     Chat.prototype.render = function () {
         var state = this.store.getState();
         console.log("BotChat.Chat starting state", state);

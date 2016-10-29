@@ -173,8 +173,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            _this.store.dispatch({ type: 'Connected_To_Bot' });
 	        });
-	        props.botConnection.activity$.subscribe(function (activity) { return _this.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleActivity(activity); }, function (error) { return console.log("errors", error); });
 	    }
+	    Chat.prototype.handleActivity = function (activity) {
+	        this.store.dispatch({ type: 'Receive_Message', activity: activity });
+	    };
+	    Chat.prototype.componentWillUnmount = function () {
+	        this.activitySubscription.unsubscribe();
+	    };
 	    Chat.prototype.render = function () {
 	        var state = this.store.getState();
 	        console.log("BotChat.Chat starting state", state);
@@ -21360,10 +21366,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _ponyfill = __webpack_require__(369);
@@ -21372,24 +21378,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root; /* global window */
+	var root = undefined; /* global window */
 	
-	
-	if (typeof self !== 'undefined') {
-	  root = self;
+	if (typeof global !== 'undefined') {
+		root = global;
 	} else if (typeof window !== 'undefined') {
-	  root = window;
-	} else if (typeof global !== 'undefined') {
-	  root = global;
-	} else if (true) {
-	  root = module;
-	} else {
-	  root = Function('return this')();
+		root = window;
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 369 */
@@ -21948,7 +21947,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.token = secretOrToken.secret || secretOrToken.token;
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations",
+	            url: this.domain + "/" + this.segment + "/conversations",
 	            headers: {
 	                "Accept": "application/json",
 	                "Authorization": "Bearer " + this.token
@@ -21963,7 +21962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
 	                    return rxjs_1.Observable.ajax({
 	                        method: "GET",
-	                        url: "https://" + _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
+	                        url: _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
 	                        headers: {
 	                            "Authorization": "Bearer " + _this.token
 	                        }
@@ -21983,7 +21982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    DirectLine3.prototype.postMessage = function (text, from, channelData) {
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities",
+	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities",
 	            body: {
 	                type: "message",
 	                text: text,
@@ -22004,7 +22003,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        formData.append('file', file);
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
+	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
 	            body: formData,
 	            headers: {
 	                "Authorization": "Bearer " + this.token,
@@ -22038,7 +22037,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (watermark === void 0) { watermark = ""; }
 	        return rxjs_1.Observable.ajax({
 	            method: "GET",
-	            url: "https://" + this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
+	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
 	            headers: {
 	                "Accept": "application/json",
 	                "Authorization": "Bearer " + this.token
