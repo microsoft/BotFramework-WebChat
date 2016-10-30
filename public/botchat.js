@@ -310,7 +310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(3);
 	var Attachment_1 = __webpack_require__(7);
 	var Carousel_1 = __webpack_require__(8);
-	var FormattedText_1 = __webpack_require__(9);
+	var react_formattedtext_1 = __webpack_require__(9);
 	exports.HistoryMessage = function (props) {
 	    switch (props.activity.type) {
 	        case 'message':
@@ -321,7 +321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment}); })));
 	            }
 	            else if (props.activity.text) {
-	                return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
+	                return React.createElement(react_formattedtext_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
 	            }
 	            else {
 	                return React.createElement("span", null);
@@ -601,16 +601,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return t;
 	};
-	var React = __webpack_require__(3);
 	var Marked = __webpack_require__(10);
+	var React = __webpack_require__(3);
 	var He = __webpack_require__(11);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
-	    function FormattedText(props) {
-	        _super.call(this, props);
+	    function FormattedText() {
+	        _super.apply(this, arguments);
 	    }
+	    FormattedText.prototype.getDefaultProps = function () {
+	        return {
+	            text: '',
+	            format: "markdown",
+	            markdownOptions: {
+	                gfm: true,
+	                tables: true,
+	                breaks: false,
+	                pedantic: false,
+	                sanitize: true,
+	                smartLists: true,
+	                silent: false,
+	                smartypants: true
+	            }
+	        };
+	    };
 	    FormattedText.prototype.shouldComponentUpdate = function (nextProps) {
-	        return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
+	        // I don't love this, but it is fast and it works.
+	        return JSON.stringify(this.props) !== JSON.stringify(nextProps);
 	    };
 	    FormattedText.prototype.render = function () {
 	        switch (this.props.format) {
@@ -623,31 +640,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    FormattedText.prototype.renderPlainText = function () {
-	        // TODO @eanders-MS: This is placeholder until updated to DirectLine 3.0
-	        var src = this.props.text || '';
-	        var lines = src.replace('\r', '').split('\n');
-	        var elements = lines.map(function (line) { return React.createElement("span", null, 
+	        var lines = this.props.text.replace('\r', '').split('\n');
+	        var elements = lines.map(function (line, i) { return React.createElement("span", {key: i}, 
 	            line, 
 	            React.createElement("br", null)); });
 	        return React.createElement("span", {className: "format-plain"}, elements);
 	    };
 	    FormattedText.prototype.renderXml = function () {
-	        // TODO @eanders-MS: Implement once updated to DirectLine 3.0
-	        return React.createElement("span", {className: "format-xml"});
+	        // TODO: Implement Xml renderer
+	        //return <span className="format-xml"></span>;
+	        return this.renderPlainText();
 	    };
 	    FormattedText.prototype.renderMarkdown = function () {
 	        var src = this.props.text || '';
 	        src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-	        var options = {
-	            gfm: true,
-	            tables: true,
-	            breaks: false,
-	            pedantic: false,
-	            sanitize: true,
-	            smartLists: true,
-	            silent: false,
-	            smartypants: true
-	        };
+	        var options = Object.assign({}, this.props.markdownOptions);
 	        var renderer = options.renderer = new ReactRenderer(options);
 	        var text = Marked(src, options);
 	        var elements = renderer.getElements(text);
@@ -669,10 +676,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * We're being sneaky here. Marked is expecting us to render html to text and return that.
 	     * Instead, we're generating react elements and returning their array indices as strings,
-	     * which are concatenated by Marked into the final output. We return astringified index that
-	     * is {{strongly delimited}}. This is because Marked can sometimes leak source text into the
-	     * stream, interspersed with our ids. This leaked text will be detected later and turned
-	     * into react elements.
+	     * which are concatenated by Marked into the final output. We return a stringified index that
+	     * is {{strongly delimited}}. We must do this because Marked can sometimes leak source text
+	     * into the stream, interspersed with our ids. This leaked text will be detected later and
+	     * turned into react elements.
 	     */
 	    ReactRenderer.prototype.addElement = function (element) {
 	        var elementId = this.elements.length;
@@ -21434,10 +21441,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	
 	var _ponyfill = __webpack_require__(369);
@@ -21446,17 +21453,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root = undefined; /* global window */
+	var root; /* global window */
 	
-	if (typeof global !== 'undefined') {
-		root = global;
+	
+	if (typeof self !== 'undefined') {
+	  root = self;
 	} else if (typeof window !== 'undefined') {
-		root = window;
+	  root = window;
+	} else if (typeof global !== 'undefined') {
+	  root = global;
+	} else if (true) {
+	  root = module;
+	} else {
+	  root = Function('return this')();
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
 
 /***/ },
 /* 369 */

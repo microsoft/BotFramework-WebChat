@@ -28,12 +28,12 @@
                     var p = pair.split("=");
                     params[p[0]] = p[1];
                 });
-            
+
             var secretOrToken = {secret: params['s'], token: params['t']};
             ReactDOM.render(React.createElement(BotChat.App, {
-                botConnection: params["dl3"] ? 
+                botConnection: params["dl3"] ?
                     new BotChat.DirectLine3(secretOrToken, params["dl3"], params["segment"]) :
-                    new BotChat.DirectLine(secretOrToken),
+                    new BotChat.DirectLine(secretOrToken, params["domain"]),
                 user: { id: 'userid', name: 'username' } // for convenient testing/demo - should normally be overwritten by below
                 // ADD MORE CONFIG HERE
             }), document.getElementById("BotChatGoesHere"));
