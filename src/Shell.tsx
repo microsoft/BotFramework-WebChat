@@ -22,14 +22,13 @@ export class Shell extends React.Component<Props, {}> {
         this.storeUnsubscribe();
     }
 
-    sendFile(files: FileList) {
-        const store = this.props.store;
+    sendFiles(files: FileList) {
         for (let i = 0, numFiles = files.length; i < numFiles; i++) {
             const file = files[i];
             console.log("file", file);
-            let state = store.getState();
+            let state = this.props.store.getState();
             const sendId = state.history.sendCounter;
-            store.dispatch({ type: 'Send_Message', activity: {
+            this.props.store.dispatch({ type: 'Send_Message', activity: {
                 type: "message",
                 from: state.connection.user,
                 timestamp: Date.now().toString(),
@@ -39,51 +38,47 @@ export class Shell extends React.Component<Props, {}> {
                     name: file.name
                 }]
             }} as HistoryAction);
-            this.textInput.focus();
-            state = store.getState();
+            state = this.props.store.getState();
             state.connection.botConnection.postFile(file, state.connection.user)
             .retry(2)
             .subscribe(id => {
                 console.log("success posting file");
-                store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+                this.props.store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
             }, error => {
                 console.log("failed to post file");
-                store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+                this.props.store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
             });
         }
     }
 
     sendMessage() {
-        const store = this.props.store;
-        let state = store.getState();
+        let state = this.props.store.getState();
         if (state.history.input.length === 0)
             return;
         const sendId = state.history.sendCounter;
-        store.dispatch({ type: 'Send_Message', activity: {
+        this.props.store.dispatch({ type: 'Send_Message', activity: {
             type: "message",
             text: state.history.input,
             from: state.connection.user,
             timestamp: Date.now().toString()
         }} as HistoryAction);
-        this.textInput.focus();
         this.trySendMessage(sendId);
     }
 
     trySendMessage(sendId: number, updateStatus = false) {
-        const store = this.props.store;
         if (updateStatus) {
-            store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
+            this.props.store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
         }
-        let state = store.getState();
+        let state = this.props.store.getState();
         const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
         state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
         .subscribe(id => {
             console.log("success posting message");
-            store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+            this.props.store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
         }, error => {
             console.log("failed to post message");
             // TODO: show an error under the message with "retry" link
-            store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+            this.props.store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
         });
     }
 
@@ -93,10 +88,16 @@ export class Shell extends React.Component<Props, {}> {
     }
 
     onClickSend() {
+        this.textInput.focus();
         this.sendMessage();
     }
 
-    updateMessage(input: string) {
+    onClickFile(files: FileList) {
+        this.textInput.focus();
+        this.sendFiles(files);
+    }
+
+    onChangeInput(input: string) {
         this.props.store.dispatch({ type: 'Update_Input', input })
     }
 
@@ -105,13 +106,13 @@ export class Shell extends React.Component<Props, {}> {
         return (
             <div className="wc-console">
                 <label className="wc-upload">
-                    <input type="file" accept="image/*" multiple onChange={ e => this.sendFile((e.target as any).files) } />
+                    <input type="file" accept="image/*" multiple onChange={ e => this.onClickFile((e.target as any).files) } />
                     <svg width="26" height="18">
                         <path d="M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z" />
                     </svg>
                 </label>
                 <div className="wc-textbox">
-                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.history.input } onChange={ e => this.updateMessage((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } placeholder="Type your message..." />
+                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.history.input } onChange={ e => this.onChangeInput((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } placeholder="Type your message..." />
                 </div>
                 <label className="wc-send" onClick={ () => this.onClickSend() } >
                     <svg width="27" height="18">

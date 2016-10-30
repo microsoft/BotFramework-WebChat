@@ -19,14 +19,14 @@ var Shell = (function (_super) {
     Shell.prototype.componentWillUnmount = function () {
         this.storeUnsubscribe();
     };
-    Shell.prototype.sendFile = function (files) {
-        var store = this.props.store;
+    Shell.prototype.sendFiles = function (files) {
+        var _this = this;
         var _loop_1 = function(i, numFiles) {
             var file = files[i];
             console.log("file", file);
-            var state = store.getState();
+            var state = this_1.props.store.getState();
             var sendId = state.history.sendCounter;
-            store.dispatch({ type: 'Send_Message', activity: {
+            this_1.props.store.dispatch({ type: 'Send_Message', activity: {
                     type: "message",
                     from: state.connection.user,
                     timestamp: Date.now().toString(),
@@ -36,16 +36,15 @@ var Shell = (function (_super) {
                             name: file.name
                         }]
                 } });
-            this_1.textInput.focus();
-            state = store.getState();
+            state = this_1.props.store.getState();
             state.connection.botConnection.postFile(file, state.connection.user)
                 .retry(2)
                 .subscribe(function (id) {
                 console.log("success posting file");
-                store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+                _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
             }, function (error) {
                 console.log("failed to post file");
-                store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+                _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
             });
         };
         var this_1 = this;
@@ -54,36 +53,34 @@ var Shell = (function (_super) {
         }
     };
     Shell.prototype.sendMessage = function () {
-        var store = this.props.store;
-        var state = store.getState();
+        var state = this.props.store.getState();
         if (state.history.input.length === 0)
             return;
         var sendId = state.history.sendCounter;
-        store.dispatch({ type: 'Send_Message', activity: {
+        this.props.store.dispatch({ type: 'Send_Message', activity: {
                 type: "message",
                 text: state.history.input,
                 from: state.connection.user,
                 timestamp: Date.now().toString()
             } });
-        this.textInput.focus();
         this.trySendMessage(sendId);
     };
     Shell.prototype.trySendMessage = function (sendId, updateStatus) {
+        var _this = this;
         if (updateStatus === void 0) { updateStatus = false; }
-        var store = this.props.store;
         if (updateStatus) {
-            store.dispatch({ type: "Send_Message_Try", sendId: sendId });
+            this.props.store.dispatch({ type: "Send_Message_Try", sendId: sendId });
         }
-        var state = store.getState();
+        var state = this.props.store.getState();
         var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
         state.connection.botConnection.postMessage(activity.text, state.connection.user)
             .subscribe(function (id) {
             console.log("success posting message");
-            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+            _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
         }, function (error) {
             console.log("failed to post message");
             // TODO: show an error under the message with "retry" link
-            store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+            _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
         });
     };
     Shell.prototype.onKeyPress = function (e) {
@@ -91,9 +88,14 @@ var Shell = (function (_super) {
             this.sendMessage();
     };
     Shell.prototype.onClickSend = function () {
+        this.textInput.focus();
         this.sendMessage();
     };
-    Shell.prototype.updateMessage = function (input) {
+    Shell.prototype.onClickFile = function (files) {
+        this.textInput.focus();
+        this.sendFiles(files);
+    };
+    Shell.prototype.onChangeInput = function (input) {
         this.props.store.dispatch({ type: 'Update_Input', input: input });
     };
     Shell.prototype.render = function () {
@@ -101,12 +103,12 @@ var Shell = (function (_super) {
         var state = this.props.store.getState();
         return (React.createElement("div", {className: "wc-console"}, 
             React.createElement("label", {className: "wc-upload"}, 
-                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 
+                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.onClickFile(e.target.files); }}), 
                 React.createElement("svg", {width: "26", height: "18"}, 
                     React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
                 )), 
             React.createElement("div", {className: "wc-textbox"}, 
-                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: "Type your message..."})
+                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.onChangeInput(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: "Type your message..."})
             ), 
             React.createElement("label", {className: "wc-send", onClick: function () { return _this.onClickSend(); }}, 
                 React.createElement("svg", {width: "27", height: "18"}, 
