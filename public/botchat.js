@@ -165,6 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        _super.call(this, props);
 	        this.store = Store_1.createStore();
+	        this.typingTimers = {};
 	        console.log("BotChat.Chat props", props);
 	        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
 	        if (props.formatOptions)
@@ -177,7 +178,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
 	    }
 	    Chat.prototype.handleIncomingActivity = function (activity) {
-	        this.store.dispatch({ type: 'Receive_Message', activity: activity });
+	        var _this = this;
+	        switch (activity.type) {
+	            case "message":
+	                if (activity.from.id === this.store.getState().connection.user.id)
+	                    break;
+	                if (!activity.text.endsWith("//typing")) {
+	                    this.store.dispatch({ type: 'Receive_Message', activity: activity });
+	                    break;
+	                }
+	                activity = Object.assign({}, activity, { type: 'typing' });
+	            case "typing":
+	                if (this.typingTimers[activity.from.id])
+	                    clearTimeout(this.typingTimers[activity.from.id]);
+	                this.store.dispatch({ type: 'Show_Typing', activity: activity });
+	                this.typingTimers[activity.from.id] = setTimeout(function () {
+	                    _this.typingTimers[activity.from.id] = undefined;
+	                    _this.store.dispatch({ type: 'Clear_Typing', from: activity.from });
+	                }, 3000);
+	                break;
+	        }
 	    };
 	    Chat.prototype.componentDidMount = function () {
 	        var _this = this;
@@ -190,10 +210,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.connectedSubscription.unsubscribe();
 	        this.props.botConnection.end();
 	        this.storeUnsubscribe();
+	        for (var key in this.typingTimers) {
+	            clearTimeout(this.typingTimers[key]);
+	        }
 	    };
 	    Chat.prototype.render = function () {
 	        var state = this.store.getState();
-	        console.log("BotChat.Chat starting state", state);
+	        console.log("BotChat.Chat state", state);
 	        var header;
 	        if (state.format.options.showHeader)
 	            header =
@@ -257,9 +280,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        var state = this.props.store.getState();
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
-	            React.createElement("div", {className: "wc-message-group"}, state.history.activities
-	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"); })
-	                .map(function (activity, index) {
+	            React.createElement("div", {className: "wc-message-group"}, state.history.activities.map(function (activity, index) {
 	                return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
@@ -287,17 +308,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Carousel_1 = __webpack_require__(8);
 	var FormattedText_1 = __webpack_require__(9);
 	exports.HistoryMessage = function (props) {
-	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
-	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
-	            return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments});
-	        else
-	            return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment}); })));
-	    }
-	    else if (props.activity.text) {
-	        return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
-	    }
-	    else {
-	        return React.createElement("span", null);
+	    switch (props.activity.type) {
+	        case 'message':
+	            if (props.activity.attachments && props.activity.attachments.length >= 1) {
+	                if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
+	                    return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments});
+	                else
+	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment}); })));
+	            }
+	            else if (props.activity.text) {
+	                return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
+	            }
+	            else {
+	                return React.createElement("span", null);
+	            }
+	        case 'typing':
+	            return React.createElement("div", null, "TYPING");
 	    }
 	};
 
@@ -20838,14 +20864,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return state;
 	    }
 	};
-	var patch = function (a, i, o) { return a.slice(0, i).concat([
-	    Object.assign({}, a[i], o)
-	], a.slice(i + 1)); };
-	var activityStatus = {
-	    'Send_Message_Try': "sending",
-	    'Send_Message_Succeed': "sent",
-	    'Send_Message_Fail': "retry"
-	};
 	exports.historyReducer = function (state, action) {
 	    if (state === void 0) { state = {
 	        activities: [],
@@ -20854,30 +20872,70 @@ return /******/ (function(modules) { // webpackBootstrap
 	        autoscroll: true,
 	        selectedActivity: null
 	    }; }
+	    console.log("history action", action);
 	    switch (action.type) {
 	        case 'Update_Input':
-	            return { activities: state.activities, input: action.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                input: action.input
+	            });
 	        case 'Receive_Message':
-	            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "received" })]), input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+	                    Object.assign({}, action.activity, { status: "received" })
+	                ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }))
+	            });
 	        case 'Send_Message':
-	            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })]), input: '', sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+	                    Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })
+	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+	                input: '',
+	                sendCounter: state.sendCounter + 1,
+	                autoscroll: true
+	            });
 	        case 'Send_Message_Try':
+	            var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+	            return Object.assign({}, state, {
+	                activities: [
+	                    state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }),
+	                    Object.assign({}, activity, { status: "sending", sendId: state.sendCounter })
+	                ].concat(state.activities.filter(function (activity) { return activity.type === "typing"; })),
+	                sendCounter: state.sendCounter + 1,
+	                autoscroll: true
+	            });
 	        case 'Send_Message_Succeed':
 	        case 'Send_Message_Fail':
 	            var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
 	            if (i === -1)
 	                return state;
-	            return {
-	                activities: patch(state.activities, i, {
-	                    status: activityStatus[action.type],
-	                    id: action.type === 'Send_Message_Succeed' ? action.id : undefined
-	                }),
-	                input: state.input, sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity
-	            };
+	            return Object.assign({}, state, {
+	                activities: state.activities.slice(0, i).concat([
+	                    Object.assign({}, state.activities[i], {
+	                        status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
+	                        id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+	                    })
+	                ], state.activities.slice(i + 1)),
+	                sendCounter: state.sendCounter + 1,
+	                autoscroll: true
+	            });
+	        case 'Show_Typing':
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
+	                    Object.assign({}, action.activity, { status: "received" })
+	                ])
+	            });
+	        case 'Clear_Typing':
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
+	            });
 	        case 'Set_Autoscroll':
-	            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                autoscroll: action.autoscroll
+	            });
 	        case 'Select_Activity':
-	            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
+	            return Object.assign({}, state, {
+	                selectedActivity: action.selectedActivity
+	            });
 	        default:
 	            return state;
 	    }

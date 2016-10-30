@@ -37,14 +37,6 @@ exports.connectionReducer = function (state, action) {
             return state;
     }
 };
-var patch = function (a, i, o) { return a.slice(0, i).concat([
-    Object.assign({}, a[i], o)
-], a.slice(i + 1)); };
-var activityStatus = {
-    'Send_Message_Try': "sending",
-    'Send_Message_Succeed': "sent",
-    'Send_Message_Fail': "retry"
-};
 exports.historyReducer = function (state, action) {
     if (state === void 0) { state = {
         activities: [],
@@ -53,30 +45,70 @@ exports.historyReducer = function (state, action) {
         autoscroll: true,
         selectedActivity: null
     }; }
+    console.log("history action", action);
     switch (action.type) {
         case 'Update_Input':
-            return { activities: state.activities, input: action.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+            return Object.assign({}, state, {
+                input: action.input
+            });
         case 'Receive_Message':
-            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "received" })]), input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+            return Object.assign({}, state, {
+                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+                    Object.assign({}, action.activity, { status: "received" })
+                ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }))
+            });
         case 'Send_Message':
-            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })]), input: '', sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity };
+            return Object.assign({}, state, {
+                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+                    Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })
+                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+                input: '',
+                sendCounter: state.sendCounter + 1,
+                autoscroll: true
+            });
         case 'Send_Message_Try':
+            var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+            return Object.assign({}, state, {
+                activities: [
+                    state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }),
+                    Object.assign({}, activity, { status: "sending", sendId: state.sendCounter })
+                ].concat(state.activities.filter(function (activity) { return activity.type === "typing"; })),
+                sendCounter: state.sendCounter + 1,
+                autoscroll: true
+            });
         case 'Send_Message_Succeed':
         case 'Send_Message_Fail':
             var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
             if (i === -1)
                 return state;
-            return {
-                activities: patch(state.activities, i, {
-                    status: activityStatus[action.type],
-                    id: action.type === 'Send_Message_Succeed' ? action.id : undefined
-                }),
-                input: state.input, sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity
-            };
+            return Object.assign({}, state, {
+                activities: state.activities.slice(0, i).concat([
+                    Object.assign({}, state.activities[i], {
+                        status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
+                        id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+                    })
+                ], state.activities.slice(i + 1)),
+                sendCounter: state.sendCounter + 1,
+                autoscroll: true
+            });
+        case 'Show_Typing':
+            return Object.assign({}, state, {
+                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
+                    Object.assign({}, action.activity, { status: "received" })
+                ])
+            });
+        case 'Clear_Typing':
+            return Object.assign({}, state, {
+                activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
+            });
         case 'Set_Autoscroll':
-            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
+            return Object.assign({}, state, {
+                autoscroll: action.autoscroll
+            });
         case 'Select_Activity':
-            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
+            return Object.assign({}, state, {
+                selectedActivity: action.selectedActivity
+            });
         default:
             return state;
     }

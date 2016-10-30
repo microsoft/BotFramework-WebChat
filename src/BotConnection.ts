@@ -84,25 +84,28 @@ export interface User {
     name?: string
 }
 
-export interface Message
-{
-    type: "message",
-    id?: string,
-    conversation?: { id: string },
-    timestamp?: string,
-    from?: User,
-    text?: string,
-    local?: string,
-    textFormat?: "plain" | "markdown" | "xml",
+export interface IActivity {
+    type: string,
     channelData?: any,
+    channelId?: string,
+    conversation?: { id: string },
+    eTag?: string,
+    from?: User,
+    id?: string,
+    timestamp?: string
+}
+
+export interface Message extends IActivity {
+    type: "message",
+    text?: string,
+    locale?: string,
+    textFormat?: "plain" | "markdown" | "xml",
     attachmentLayout?: "list" | "carousel",
     attachments?: Attachment[],
-    eTag?: string,
-    channelId?: string,
     entities?: any[]
 }
 
-export interface Typing {
+export interface Typing extends IActivity {
     type: "typing"
 }
 

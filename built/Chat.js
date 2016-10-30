@@ -17,6 +17,7 @@ var Chat = (function (_super) {
         var _this = this;
         _super.call(this, props);
         this.store = Store_1.createStore();
+        this.typingTimers = {};
         console.log("BotChat.Chat props", props);
         this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
         if (props.formatOptions)
@@ -29,7 +30,26 @@ var Chat = (function (_super) {
         this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
-        this.store.dispatch({ type: 'Receive_Message', activity: activity });
+        var _this = this;
+        switch (activity.type) {
+            case "message":
+                if (activity.from.id === this.store.getState().connection.user.id)
+                    break;
+                if (!activity.text.endsWith("//typing")) {
+                    this.store.dispatch({ type: 'Receive_Message', activity: activity });
+                    break;
+                }
+                activity = Object.assign({}, activity, { type: 'typing' });
+            case "typing":
+                if (this.typingTimers[activity.from.id])
+                    clearTimeout(this.typingTimers[activity.from.id]);
+                this.store.dispatch({ type: 'Show_Typing', activity: activity });
+                this.typingTimers[activity.from.id] = setTimeout(function () {
+                    _this.typingTimers[activity.from.id] = undefined;
+                    _this.store.dispatch({ type: 'Clear_Typing', from: activity.from });
+                }, 3000);
+                break;
+        }
     };
     Chat.prototype.componentDidMount = function () {
         var _this = this;
@@ -42,10 +62,13 @@ var Chat = (function (_super) {
         this.connectedSubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
+        for (var key in this.typingTimers) {
+            clearTimeout(this.typingTimers[key]);
+        }
     };
     Chat.prototype.render = function () {
         var state = this.store.getState();
-        console.log("BotChat.Chat starting state", state);
+        console.log("BotChat.Chat state", state);
         var header;
         if (state.format.options.showHeader)
             header =

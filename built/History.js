@@ -41,9 +41,7 @@ var History = (function (_super) {
         var _this = this;
         var state = this.props.store.getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
-            React.createElement("div", {className: "wc-message-group"}, state.history.activities
-                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"); })
-                .map(function (activity, index) {
+            React.createElement("div", {className: "wc-message-group"}, state.history.activities.map(function (activity, index) {
                 return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
                     React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 

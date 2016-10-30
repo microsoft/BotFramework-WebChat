@@ -32,6 +32,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private storeUnsubscribe: Unsubscribe;
     private activitySubscription: Subscription;
     private connectedSubscription: Subscription;
+    private typingTimers = {};
 
     constructor(props) {
         super(props);
@@ -56,7 +57,25 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     handleIncomingActivity(activity: Activity) {
-        this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
+        switch (activity.type) {
+            case "message":
+                if (activity.from.id === this.store.getState().connection.user.id)
+                    break;
+                if (!activity.text.endsWith("//typing")) {
+                    this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
+                    break;
+                }
+                activity = Object.assign({}, activity, { type: 'typing' });
+            case "typing":
+                if (this.typingTimers[activity.from.id])
+                    clearTimeout(this.typingTimers[activity.from.id]);
+                this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction);
+                this.typingTimers[activity.from.id] = setTimeout(() => {
+                    this.typingTimers[activity.from.id] = undefined;
+                    this.store.dispatch({ type: 'Clear_Typing', from: activity.from } as HistoryAction);
+                }, 3000);
+                break;
+        }
     }
 
     componentDidMount() {
@@ -70,11 +89,14 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.connectedSubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
+        for (let key in this.typingTimers) {
+            clearTimeout(this.typingTimers[key])
+        }
     }
 
     render() {
         const state = this.store.getState();
-        console.log("BotChat.Chat starting state", state);
+        console.log("BotChat.Chat state", state);
         let header;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
