@@ -108,7 +108,7 @@ var Shell = (function (_super) {
             React.createElement("div", {className: "wc-textbox"}, 
                 React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: "Type your message..."})
             ), 
-            React.createElement("label", {className: "wc-send", onClick: this.onClickSend}, 
+            React.createElement("label", {className: "wc-send", onClick: function () { return _this.onClickSend(); }}, 
                 React.createElement("svg", {width: "27", height: "18"}, 
                     React.createElement("path", {d: "M 26.7862876 9.3774996 A 0.3121028 0.3121028 0 0 0 26.7862876 8.785123 L 0.4081408 0.0226012 C 0.363153 0.0000109 0.3406591 0.0000109 0.3181652 0.0000109 C 0.1372585 0.0000109 0 0.1315165 0 0.2887646 C 0 0.3270384 0.0081316 0.3668374 0.0257445 0.4066363 L 3.4448168 9.0813113 L 0.0257445 17.7556097 A 0.288143 0.288143 0 0 0 0.0126457 17.7975417 A 0.279813 0.279813 0 0 0 0.0055133 17.8603089 C 0.0055133 18.0178895 0.138422 18.1590562 0.303205 18.1590562 A 0.3049569 0.3049569 0 0 0 0.4081408 18.1400213 L 26.7862876 9.3774996 Z M 0.8130309 0.7906714 L 24.8365128 8.7876374 L 3.9846704 8.7876374 L 0.8130309 0.7906714 Z M 3.9846704 9.3749852 L 24.8365128 9.3749852 L 0.8130309 17.3719511 L 3.9846704 9.3749852 Z"})
                 )
