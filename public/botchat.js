@@ -179,12 +179,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    Chat.prototype.handleIncomingActivity = function (activity) {
 	        var _this = this;
+	        var state = this.store.getState();
 	        switch (activity.type) {
 	            case "message":
-	                if (activity.from.id === this.store.getState().connection.user.id)
+	                if (activity.from.id === state.connection.user.id)
 	                    break;
 	                if (!activity.text.endsWith("//typing")) {
-	                    this.store.dispatch({ type: 'Receive_Message', activity: activity });
+	                    if (!state.history.activities.find(function (a) { return a.id === activity.id; }))
+	                        this.store.dispatch({ type: 'Receive_Message', activity: activity });
 	                    break;
 	                }
 	                activity = Object.assign({}, activity, { type: 'typing' });

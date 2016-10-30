@@ -57,12 +57,14 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     handleIncomingActivity(activity: Activity) {
+        let state = this.store.getState();
         switch (activity.type) {
             case "message":
-                if (activity.from.id === this.store.getState().connection.user.id)
+                if (activity.from.id === state.connection.user.id)
                     break;
                 if (!activity.text.endsWith("//typing")) {
-                    this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
+                    if (!state.history.activities.find(a => a.id === activity.id)) // don't allow duplicate messages
+                        this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
                     break;
                 }
                 activity = Object.assign({}, activity, { type: 'typing' });
