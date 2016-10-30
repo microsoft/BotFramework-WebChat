@@ -45,11 +45,10 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
 
+        props.botConnection.start();
         this.connectedSubscription = props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
             this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
-
-        props.botConnection.start();
         this.activitySubscription = props.botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
             error => console.log("errors", error)

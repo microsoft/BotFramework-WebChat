@@ -170,10 +170,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
 	        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
+	        props.botConnection.start();
 	        this.connectedSubscription = props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            _this.store.dispatch({ type: 'Connected_To_Bot' });
 	        });
-	        props.botConnection.start();
 	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
 	    }
 	    Chat.prototype.handleIncomingActivity = function (activity) {
