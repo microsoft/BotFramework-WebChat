@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Unsubscribe } from 'redux';
 //import { Timestamp } from './Timestamp';
 import { Activity, Message } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
-
 
 interface Props {
     store: ChatStore,
@@ -15,16 +13,9 @@ interface Props {
 export class History extends React.Component<Props, {}> {
     scrollMe: Element;
     autoscrollSubscription: Subscription;
-    storeUnsubscribe: Unsubscribe;
 
     constructor(props: Props) {
         super(props);
-    }
-
-    componentWillMount() {
-        this.storeUnsubscribe = this.props.store.subscribe(() =>
-            this.forceUpdate()
-        );
     }
 
     componentDidMount() {
@@ -39,7 +30,6 @@ export class History extends React.Component<Props, {}> {
 
     componentWillUnmount() {
         this.autoscrollSubscription.unsubscribe();
-        this.storeUnsubscribe();
     }
 
     componentDidUpdate(prevProps:{}, prevState:{}) {

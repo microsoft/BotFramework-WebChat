@@ -179,10 +179,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Chat.prototype.handleIncomingActivity = function (activity) {
 	        this.store.dispatch({ type: 'Receive_Message', activity: activity });
 	    };
+	    Chat.prototype.componentDidMount = function () {
+	        var _this = this;
+	        this.storeUnsubscribe = this.store.subscribe(function () {
+	            return _this.forceUpdate();
+	        });
+	    };
 	    Chat.prototype.componentWillUnmount = function () {
 	        this.activitySubscription.unsubscribe();
 	        this.connectedSubscription.unsubscribe();
 	        this.props.botConnection.end();
+	        this.storeUnsubscribe();
 	    };
 	    Chat.prototype.render = function () {
 	        var state = this.store.getState();
@@ -221,12 +228,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function History(props) {
 	        _super.call(this, props);
 	    }
-	    History.prototype.componentWillMount = function () {
-	        var _this = this;
-	        this.storeUnsubscribe = this.props.store.subscribe(function () {
-	            return _this.forceUpdate();
-	        });
-	    };
 	    History.prototype.componentDidMount = function () {
 	        var _this = this;
 	        this.autoscrollSubscription = rxjs_1.Observable
@@ -239,7 +240,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    History.prototype.componentWillUnmount = function () {
 	        this.autoscrollSubscription.unsubscribe();
-	        this.storeUnsubscribe();
 	    };
 	    History.prototype.componentDidUpdate = function (prevProps, prevState) {
 	        if (this.props.store.getState().history.autoscroll)
@@ -20690,18 +20690,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(3);
 	var Shell = (function (_super) {
 	    __extends(Shell, _super);
-	    function Shell() {
-	        _super.apply(this, arguments);
+	    function Shell(props) {
+	        _super.call(this, props);
 	    }
-	    Shell.prototype.componentDidMount = function () {
-	        var _this = this;
-	        this.storeUnsubscribe = this.props.store.subscribe(function () {
-	            return _this.forceUpdate();
-	        });
-	    };
-	    Shell.prototype.componentWillUnmount = function () {
-	        this.storeUnsubscribe();
-	    };
 	    Shell.prototype.sendFiles = function (files) {
 	        var _this = this;
 	        var _loop_1 = function(i, numFiles) {
@@ -22048,7 +22039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            headers: {
 	                "Authorization": "Bearer " + this.token,
 	                "Content-Type": file.type,
-	                "Content-Disposition": file.name
+	                "Content-Disposition": "filename=" + file.name
 	            }
 	        })
 	            .retryWhen(function (error$) { return error$.delay(1000); })

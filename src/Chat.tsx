@@ -7,6 +7,7 @@ import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { strings } from './Strings';
+import { Unsubscribe } from 'redux';
 
 export interface ActivityState {
     status: "received" | "sending" | "sent" | "retry",
@@ -27,14 +28,13 @@ export interface ChatProps {
 
 export class Chat extends React.Component<ChatProps, {}> {
 
-    private store: ChatStore;
+    private store = createStore();
+    private storeUnsubscribe: Unsubscribe;
     private activitySubscription: Subscription;
     private connectedSubscription: Subscription;
 
     constructor(props) {
         super(props);
-
-        this.store = createStore();
 
         console.log("BotChat.Chat props", props);
 
@@ -60,10 +60,17 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
     }
 
+    componentDidMount() {
+        this.storeUnsubscribe = this.store.subscribe(() =>
+            this.forceUpdate()
+        );
+    }
+
     componentWillUnmount() {
         this.activitySubscription.unsubscribe();
         this.connectedSubscription.unsubscribe();
         this.props.botConnection.end();
+        this.storeUnsubscribe();
     }
 
     render() {

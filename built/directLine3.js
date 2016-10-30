@@ -90,7 +90,7 @@ var DirectLine3 = (function () {
             headers: {
                 "Authorization": "Bearer " + this.token,
                 "Content-Type": file.type,
-                "Content-Disposition": file.name
+                "Content-Disposition": "filename=" + file.name
             }
         })
             .retryWhen(function (error$) { return error$.delay(1000); })

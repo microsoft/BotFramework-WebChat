@@ -12,12 +12,6 @@ var History = (function (_super) {
     function History(props) {
         _super.call(this, props);
     }
-    History.prototype.componentWillMount = function () {
-        var _this = this;
-        this.storeUnsubscribe = this.props.store.subscribe(function () {
-            return _this.forceUpdate();
-        });
-    };
     History.prototype.componentDidMount = function () {
         var _this = this;
         this.autoscrollSubscription = rxjs_1.Observable
@@ -30,7 +24,6 @@ var History = (function (_super) {
     };
     History.prototype.componentWillUnmount = function () {
         this.autoscrollSubscription.unsubscribe();
-        this.storeUnsubscribe();
     };
     History.prototype.componentDidUpdate = function (prevProps, prevState) {
         if (this.props.store.getState().history.autoscroll)

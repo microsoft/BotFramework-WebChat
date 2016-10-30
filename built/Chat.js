@@ -31,10 +31,17 @@ var Chat = (function (_super) {
     Chat.prototype.handleIncomingActivity = function (activity) {
         this.store.dispatch({ type: 'Receive_Message', activity: activity });
     };
+    Chat.prototype.componentDidMount = function () {
+        var _this = this;
+        this.storeUnsubscribe = this.store.subscribe(function () {
+            return _this.forceUpdate();
+        });
+    };
     Chat.prototype.componentWillUnmount = function () {
         this.activitySubscription.unsubscribe();
         this.connectedSubscription.unsubscribe();
         this.props.botConnection.end();
+        this.storeUnsubscribe();
     };
     Chat.prototype.render = function () {
         var state = this.store.getState();

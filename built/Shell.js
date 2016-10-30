@@ -7,18 +7,9 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var Shell = (function (_super) {
     __extends(Shell, _super);
-    function Shell() {
-        _super.apply(this, arguments);
+    function Shell(props) {
+        _super.call(this, props);
     }
-    Shell.prototype.componentDidMount = function () {
-        var _this = this;
-        this.storeUnsubscribe = this.props.store.subscribe(function () {
-            return _this.forceUpdate();
-        });
-    };
-    Shell.prototype.componentWillUnmount = function () {
-        this.storeUnsubscribe();
-    };
     Shell.prototype.sendFiles = function (files) {
         var _this = this;
         var _loop_1 = function(i, numFiles) {

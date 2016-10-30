@@ -3,23 +3,15 @@ import { Observable } from '@reactivex/rxjs';
 import { HistoryAction, ChatStore } from './Store';
 import { Message, Image, ImageType } from './BotConnection';
 
-
 interface Props {
     store: ChatStore
 }
 
 export class Shell extends React.Component<Props, {}> {
     textInput:any;
-    storeUnsubscribe:any;
 
-    componentDidMount() {
-        this.storeUnsubscribe = this.props.store.subscribe(() =>
-            this.forceUpdate()
-        );
-    }
-
-    componentWillUnmount() {
-        this.storeUnsubscribe();
+    constructor(props: Props) {
+        super(props);
     }
 
     sendFiles(files: FileList) {
