@@ -191,8 +191,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	                activity = Object.assign({}, activity, { type: 'typing' });
 	            case "typing":
-	                if (this.typingTimers[activity.from.id])
+	                if (this.typingTimers[activity.from.id]) {
 	                    clearTimeout(this.typingTimers[activity.from.id]);
+	                    this.typingTimers[activity.from.id] = undefined;
+	                }
 	                this.store.dispatch({ type: 'Show_Typing', activity: activity });
 	                this.typingTimers[activity.from.id] = setTimeout(function () {
 	                    _this.typingTimers[activity.from.id] = undefined;

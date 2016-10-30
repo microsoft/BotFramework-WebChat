@@ -69,8 +69,10 @@ export class Chat extends React.Component<ChatProps, {}> {
                 }
                 activity = Object.assign({}, activity, { type: 'typing' });
             case "typing":
-                if (this.typingTimers[activity.from.id])
+                if (this.typingTimers[activity.from.id]) {
                     clearTimeout(this.typingTimers[activity.from.id]);
+                    this.typingTimers[activity.from.id] = undefined;
+                }
                 this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction);
                 this.typingTimers[activity.from.id] = setTimeout(() => {
                     this.typingTimers[activity.from.id] = undefined;
