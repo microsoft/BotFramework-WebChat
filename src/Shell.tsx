@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Observable } from '@reactivex/rxjs';
 import { HistoryAction, ChatStore } from './Store';
-import { Message, Image, ImageType } from './BotConnection';
+import { Message, Media, MediaType } from './BotConnection';
 
 interface Props {
     store: ChatStore
@@ -25,7 +25,7 @@ export class Shell extends React.Component<Props, {}> {
                 from: state.connection.user,
                 timestamp: Date.now().toString(),
                 attachments: [{
-                    contentType: file.type as ImageType,
+                    contentType: file.type as MediaType,
                     contentUrl: window.URL.createObjectURL(file),
                     name: file.name
                 }]

@@ -429,6 +429,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case "image/png":
 	        case "image/jpg":
 	        case "image/jpeg":
+	        case "image/gif":
 	            return imageWithOnLoad(props.attachment.contentUrl);
 	        default:
 	            return React.createElement("span", null);

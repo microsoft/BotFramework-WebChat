@@ -7,10 +7,10 @@ export interface Conversation {
     streamUrl?: string
 }
 
-export type ImageType = "image/png" | "image/jpg" | "image/jpeg";
+export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif"
 
-export interface Image {
-    contentType: ImageType,    
+export interface Media {
+    contentType: MediaType,    
     contentUrl: string,
     name?: string
 }
@@ -28,7 +28,7 @@ export interface HeroCard {
         title?: string,
         subtitle?: string,
         text?: string,
-        images?: {url: string}[],
+        images?: { url: string }[],
         buttons?: Button[]
     }
 } 
@@ -39,9 +39,9 @@ export interface Thumbnail {
         title?: string,
         subtitle?: string,
         text?: string,
-        images?: {url: string}[],
+        images?: { url: string }[],
         buttons?: Button[]
-        tap: string
+        tap?: string
     }
 }
 
@@ -67,7 +67,7 @@ export interface Receipt {
     contentType: "application/vnd.microsoft.card.receipt",
     content: {
         title?: string,
-        facts?: {key: string, value: string}[],
+        facts?: { key: string, value: string }[],
         items?: ReceiptItem[],
         tap?: string,
         tax?: string,
@@ -77,7 +77,7 @@ export interface Receipt {
     }
 }    
 
-export type Attachment = Image | HeroCard | Thumbnail | Signin | Receipt;  
+export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt;  
 
 export interface User {
     id: string,

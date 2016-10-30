@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, Image, IBotConnection, User } from './BotConnection';
+import { Conversation, Activity, Message, Media, IBotConnection, User } from './BotConnection';
 import { SecretOrToken } from './DirectLine';
 
 interface ActivityGroup {
