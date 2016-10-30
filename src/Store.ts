@@ -132,7 +132,9 @@ export const historyReducer: Reducer<HistoryState> = (
             return Object.assign({}, state, { 
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
-                    Object.assign({}, action.activity, { status: "received" }),
+                    Object.assign({}, action.activity, {
+                        status: "received"
+                    }),
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
                 ]
             });
@@ -141,7 +143,10 @@ export const historyReducer: Reducer<HistoryState> = (
             return Object.assign({}, state, {
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
-                    Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter }),
+                    Object.assign({}, action.activity, {
+                        status: "sending",
+                        sendId: state.sendCounter
+                    }),
                     ... state.activities.filter(activity => activity.type === "typing"),
                 ],
                 input: '',
@@ -153,8 +158,11 @@ export const historyReducer: Reducer<HistoryState> = (
             const activity = state.activities.find(activity => activity["sendId"] === action.sendId);
             return Object.assign({}, state, {
                 activities: [
-                    state.activities.filter(activity => activity["sendId"] !== action.sendId && activity.type !== "typing"),
-                    Object.assign({}, activity, { status: "sending", sendId: state.sendCounter }),
+                    ... state.activities.filter(activity => activity["sendId"] !== action.sendId && activity.type !== "typing"),
+                    Object.assign({}, activity, {
+                        status: "sending",
+                        sendId: state.sendCounter
+                    }),
                     ... state.activities.filter(activity => activity.type === "typing")
                 ],
                 sendCounter: state.sendCounter + 1,
@@ -183,7 +191,9 @@ export const historyReducer: Reducer<HistoryState> = (
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
-                    Object.assign({}, action.activity, { status: "received" })
+                    Object.assign({}, action.activity, {
+                        status: "received"
+                    })
                 ]
             });
 

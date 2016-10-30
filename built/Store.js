@@ -54,13 +54,18 @@ exports.historyReducer = function (state, action) {
         case 'Receive_Message':
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
-                    Object.assign({}, action.activity, { status: "received" })
+                    Object.assign({}, action.activity, {
+                        status: "received"
+                    })
                 ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }))
             });
         case 'Send_Message':
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
-                    Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })
+                    Object.assign({}, action.activity, {
+                        status: "sending",
+                        sendId: state.sendCounter
+                    })
                 ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
                 input: '',
                 sendCounter: state.sendCounter + 1,
@@ -69,10 +74,12 @@ exports.historyReducer = function (state, action) {
         case 'Send_Message_Try':
             var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
             return Object.assign({}, state, {
-                activities: [
-                    state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }),
-                    Object.assign({}, activity, { status: "sending", sendId: state.sendCounter })
-                ].concat(state.activities.filter(function (activity) { return activity.type === "typing"; })),
+                activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
+                    Object.assign({}, activity, {
+                        status: "sending",
+                        sendId: state.sendCounter
+                    })
+                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
                 sendCounter: state.sendCounter + 1,
                 autoscroll: true
             });
@@ -94,7 +101,9 @@ exports.historyReducer = function (state, action) {
         case 'Show_Typing':
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
-                    Object.assign({}, action.activity, { status: "received" })
+                    Object.assign({}, action.activity, {
+                        status: "received"
+                    })
                 ])
             });
         case 'Clear_Typing':
