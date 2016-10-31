@@ -62,7 +62,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             case "message":
                 if (activity.from.id === state.connection.user.id)
                     break;
-                if (!activity.text.endsWith("//typing")) {
+                if (!(activity.text && activity.text.endsWith("//typing"))) {
                     if (!state.history.activities.find(a => a.id === activity.id)) // don't allow duplicate messages
                         this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
                     break;
@@ -115,4 +115,43 @@ export class Chat extends React.Component<ChatProps, {}> {
             </div>
         );
     }
+}
+
+export const sendMessage = (store: ChatStore, text: string) => {
+    let state = store.getState();
+    const sendId = state.history.sendCounter;
+    store.dispatch({ type: 'Send_Message', activity: {
+        type: "message",
+        text,
+        from: state.connection.user,
+        timestamp: Date.now().toString()
+    }} as HistoryAction);
+    trySendMessage(store, sendId);
+}
+
+export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = false) => {
+    if (updateStatus) {
+        store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
+    }
+    let state = store.getState();
+    const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
+    state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
+    .subscribe(id => {
+        console.log("success sending message", id);
+        store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+    }, error => {
+        console.log("failed to send message", error);
+        // TODO: show an error under the message with "retry" link
+        store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+    });
+}
+
+export const sendPostBack = (store: ChatStore, text: string) => {
+    const state = store.getState();
+    state.connection.botConnection.postMessage(text, state.connection.user)
+        .subscribe(id => {
+            console.log("success sending postBack", id)
+        }, error => {
+            console.log("failed to send postBack", error);
+        });
 }

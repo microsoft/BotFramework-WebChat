@@ -36,7 +36,7 @@ var Chat = (function (_super) {
             case "message":
                 if (activity.from.id === state.connection.user.id)
                     break;
-                if (!activity.text.endsWith("//typing")) {
+                if (!(activity.text && activity.text.endsWith("//typing"))) {
                     if (!state.history.activities.find(function (a) { return a.id === activity.id; }))
                         this.store.dispatch({ type: 'Receive_Message', activity: activity });
                     break;
@@ -87,4 +87,41 @@ var Chat = (function (_super) {
     return Chat;
 }(React.Component));
 exports.Chat = Chat;
+exports.sendMessage = function (store, text) {
+    var state = store.getState();
+    var sendId = state.history.sendCounter;
+    store.dispatch({ type: 'Send_Message', activity: {
+            type: "message",
+            text: text,
+            from: state.connection.user,
+            timestamp: Date.now().toString()
+        } });
+    exports.trySendMessage(store, sendId);
+};
+exports.trySendMessage = function (store, sendId, updateStatus) {
+    if (updateStatus === void 0) { updateStatus = false; }
+    if (updateStatus) {
+        store.dispatch({ type: "Send_Message_Try", sendId: sendId });
+    }
+    var state = store.getState();
+    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
+    state.connection.botConnection.postMessage(activity.text, state.connection.user)
+        .subscribe(function (id) {
+        console.log("success sending message", id);
+        store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+    }, function (error) {
+        console.log("failed to send message", error);
+        // TODO: show an error under the message with "retry" link
+        store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+    });
+};
+exports.sendPostBack = function (store, text) {
+    var state = store.getState();
+    state.connection.botConnection.postMessage(text, state.connection.user)
+        .subscribe(function (id) {
+        console.log("success sending postBack", id);
+    }, function (error) {
+        console.log("failed to send postBack", error);
+    });
+};
 //# sourceMappingURL=Chat.js.map

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
+import { sendMessage, sendPostBack } from './Chat';
 
 
 export const AttachmentView = (props: {
@@ -13,26 +14,10 @@ export const AttachmentView = (props: {
     const onClickButton = (type: string, value: string) => {
         switch (type) {
             case "imBack":
+                sendMessage(props.store, value);
+                break;
             case "postBack":
-                state.connection.botConnection.postMessage(value, state.connection.user)
-                .retry(2)
-                .subscribe(
-                    () => {
-                        if (type === "imBack") {
-                            props.store.dispatch({ type: 'Send_Message', activity: {
-                                type: "message",
-                                text: value,
-                                from: { id: state.connection.user.id },
-                                timestamp: Date.now().toString()
-                            }} as HistoryAction);
-                        } else {
-                            console.log("quietly posted message", value);
-                        }
-                    },
-                    error => {
-                        console.log("failed to post message");
-                    }
-                );
+                sendPostBack(props.store, value);
                 break;
 
             case "openUrl":
