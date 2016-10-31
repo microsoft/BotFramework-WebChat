@@ -22,7 +22,7 @@
   "author": "Bill Barnes",
   "license": "MIT",
   "dependencies": {
-    "@reactivex/rxjs": "^5.0.0-beta.12",
+    "@reactivex/rxjs": "5.0.0-beta.12",
     "@types/es6-shim": "^0.31.32",
     "@types/react": "^0.14.37",
     "@types/react-dom": "^0.14.17",
