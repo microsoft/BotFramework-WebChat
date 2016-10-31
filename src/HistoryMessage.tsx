@@ -8,17 +8,18 @@ import { ChatStore } from './Store';
 
 export const HistoryMessage = (props: {
     store: ChatStore,
-    activity: Activity
+    activity: Activity,
+    onImageLoad: () => void
 }) => {
     switch (props.activity.type) {
         case 'message':
             if (props.activity.attachments && props.activity.attachments.length >= 1) {
                 if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
-                    return <Carousel store= { props.store } attachments={props.activity.attachments} />;
+                    return <Carousel store= { props.store } attachments={props.activity.attachments} onImageLoad={ props.onImageLoad }/>;
                 else
                     return (
                         <div>
-                            { props.activity.attachments.map(attachment => <AttachmentView store={ props.store } attachment={ attachment } />)}
+                            { props.activity.attachments.map(attachment => <AttachmentView store={ props.store } attachment={ attachment }  onImageLoad={ props.onImageLoad }/>)}
                         </div>
                     );
             } else if (props.activity.text) {

@@ -253,7 +253,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
+	        var _this = this;
 	        _super.call(this, props);
+	        this.onImageLoad = function () {
+	            if (_this.props.store.getState().history.autoscroll)
+	                _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight;
+	        };
 	    }
 	    History.prototype.componentDidMount = function () {
 	        var _this = this;
@@ -290,7 +295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
-	                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity})), 
+	                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
 	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
 	            }))
 	        ));
@@ -316,9 +321,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case 'message':
 	            if (props.activity.attachments && props.activity.attachments.length >= 1) {
 	                if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
-	                    return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments});
+	                    return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments, onImageLoad: props.onImageLoad});
 	                else
-	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment}); })));
+	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad}); })));
 	            }
 	            else if (props.activity.text) {
 	                return React.createElement(react_formattedtext_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
@@ -375,7 +380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
 	    var imageWithOnLoad = function (url) {
-	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad && props.onImageLoad(); }});
+	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
 	    };
 	    var attachedImage = function (images) {
 	        return images && imageWithOnLoad(images[0].url);
@@ -577,6 +582,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Carousel.prototype.resize = function () {
 	        this.setItemWidth();
 	        this.manageScrollButtons();
+	        this.props.onImageLoad();
 	    };
 	    return Carousel;
 	}(React.Component));
@@ -21441,10 +21447,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _ponyfill = __webpack_require__(369);
@@ -21453,24 +21459,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root; /* global window */
+	var root = undefined; /* global window */
 	
-	
-	if (typeof self !== 'undefined') {
-	  root = self;
+	if (typeof global !== 'undefined') {
+		root = global;
 	} else if (typeof window !== 'undefined') {
-	  root = window;
-	} else if (typeof global !== 'undefined') {
-	  root = global;
-	} else if (true) {
-	  root = module;
-	} else {
-	  root = Function('return this')();
+		root = window;
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 369 */

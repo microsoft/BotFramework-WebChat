@@ -46,6 +46,11 @@ export class History extends React.Component<Props, {}> {
         }
     }
 
+    onImageLoad = () => {
+        if (this.props.store.getState().history.autoscroll)
+            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+    }
+
     render() {
         const state = this.props.store.getState();
         return (
@@ -58,7 +63,7 @@ export class History extends React.Component<Props, {}> {
                                 <path className="point-left" d="m0,0 h12 v10 z" />
                                 <path className="point-right" d="m0,10 v-10 h12 z" />
                             </svg>
-                            <HistoryMessage store={ this.props.store } activity={ activity }/>
+                            <HistoryMessage store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
                         </div>
                         <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
                     </div>

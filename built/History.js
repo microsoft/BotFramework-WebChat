@@ -10,7 +10,12 @@ var rxjs_1 = require('@reactivex/rxjs');
 var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
+        var _this = this;
         _super.call(this, props);
+        this.onImageLoad = function () {
+            if (_this.props.store.getState().history.autoscroll)
+                _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight;
+        };
     }
     History.prototype.componentDidMount = function () {
         var _this = this;
@@ -47,7 +52,7 @@ var History = (function (_super) {
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
                             React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
-                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity})), 
+                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
                     React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
             }))
         ));
