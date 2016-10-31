@@ -129,7 +129,14 @@
 /* messages */
 
     .wc-message-group {
-        clear: both;
+        display: table;
+        height: 100%;
+        width: 100%;
+    }
+
+    .wc-message-group-content {
+        display: table-cell;
+        vertical-align: bottom;
     }
 
     .wc-message {
