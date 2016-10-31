@@ -165,19 +165,62 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        _super.call(this, props);
 	        this.store = Store_1.createStore();
+	        this.typingTimers = {};
 	        console.log("BotChat.Chat props", props);
 	        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
 	        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
-	        props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
+	        props.botConnection.start();
+	        this.connectedSubscription = props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
 	            _this.store.dispatch({ type: 'Connected_To_Bot' });
 	        });
-	        props.botConnection.activity$.subscribe(function (activity) { return _this.store.dispatch({ type: 'Receive_Message', activity: activity }); }, function (error) { return console.log("errors", error); });
+	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
 	    }
+	    Chat.prototype.handleIncomingActivity = function (activity) {
+	        var _this = this;
+	        var state = this.store.getState();
+	        switch (activity.type) {
+	            case "message":
+	                if (activity.from.id === state.connection.user.id)
+	                    break;
+	                if (!(activity.text && activity.text.endsWith("//typing"))) {
+	                    if (!state.history.activities.find(function (a) { return a.id === activity.id; }))
+	                        this.store.dispatch({ type: 'Receive_Message', activity: activity });
+	                    break;
+	                }
+	                activity = Object.assign({}, activity, { type: 'typing' });
+	            case "typing":
+	                if (this.typingTimers[activity.from.id]) {
+	                    clearTimeout(this.typingTimers[activity.from.id]);
+	                    this.typingTimers[activity.from.id] = undefined;
+	                }
+	                this.store.dispatch({ type: 'Show_Typing', activity: activity });
+	                this.typingTimers[activity.from.id] = setTimeout(function () {
+	                    _this.typingTimers[activity.from.id] = undefined;
+	                    _this.store.dispatch({ type: 'Clear_Typing', from: activity.from });
+	                }, 3000);
+	                break;
+	        }
+	    };
+	    Chat.prototype.componentDidMount = function () {
+	        var _this = this;
+	        this.storeUnsubscribe = this.store.subscribe(function () {
+	            return _this.forceUpdate();
+	        });
+	    };
+	    Chat.prototype.componentWillUnmount = function () {
+	        this.activitySubscription.unsubscribe();
+	        this.connectedSubscription.unsubscribe();
+	        this.props.botConnection.end();
+	        this.storeUnsubscribe();
+	        for (var key in this.typingTimers) {
+	            clearTimeout(this.typingTimers[key]);
+	        }
+	    };
 	    Chat.prototype.render = function () {
 	        var state = this.store.getState();
-	        console.log("BotChat.Chat starting state", state);
+	        console.log("BotChat.Chat state", state);
 	        var header;
 	        if (state.format.options.showHeader)
 	            header =
@@ -192,6 +235,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Chat;
 	}(React.Component));
 	exports.Chat = Chat;
+	exports.sendMessage = function (store, text) {
+	    var state = store.getState();
+	    var sendId = state.history.sendCounter;
+	    store.dispatch({ type: 'Send_Message', activity: {
+	            type: "message",
+	            text: text,
+	            from: state.connection.user,
+	            timestamp: Date.now().toString()
+	        } });
+	    exports.trySendMessage(store, sendId);
+	};
+	exports.trySendMessage = function (store, sendId, updateStatus) {
+	    if (updateStatus === void 0) { updateStatus = false; }
+	    if (updateStatus) {
+	        store.dispatch({ type: "Send_Message_Try", sendId: sendId });
+	    }
+	    var state = store.getState();
+	    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
+	    state.connection.botConnection.postMessage(activity.text, state.connection.user)
+	        .subscribe(function (id) {
+	        console.log("success sending message", id);
+	        store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+	    }, function (error) {
+	        console.log("failed to send message", error);
+	        // TODO: show an error under the message with "retry" link
+	        store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+	    });
+	};
+	exports.sendPostBack = function (store, text) {
+	    var state = store.getState();
+	    state.connection.botConnection.postMessage(text, state.connection.user)
+	        .subscribe(function (id) {
+	        console.log("success sending postBack", id);
+	    }, function (error) {
+	        console.log("failed to send postBack", error);
+	    });
+	};
 
 
 /***/ },
@@ -210,14 +290,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
-	        _super.call(this, props);
-	    }
-	    History.prototype.componentWillMount = function () {
 	        var _this = this;
-	        this.storeUnsubscribe = this.props.store.subscribe(function () {
-	            return _this.forceUpdate();
-	        });
-	    };
+	        _super.call(this, props);
+	        this.onImageLoad = function () {
+	            if (_this.props.store.getState().history.autoscroll)
+	                _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight;
+	        };
+	    }
 	    History.prototype.componentDidMount = function () {
 	        var _this = this;
 	        this.autoscrollSubscription = rxjs_1.Observable
@@ -230,7 +309,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    History.prototype.componentWillUnmount = function () {
 	        this.autoscrollSubscription.unsubscribe();
-	        this.storeUnsubscribe();
 	    };
 	    History.prototype.componentDidUpdate = function (prevProps, prevState) {
 	        if (this.props.store.getState().history.autoscroll)
@@ -248,15 +326,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        var state = this.props.store.getState();
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
-	            React.createElement("div", {className: "wc-message-group"}, state.history.activities
-	                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"); })
-	                .map(function (activity, index) {
+	            React.createElement("div", {className: "wc-message-group"}, state.history.activities.map(function (activity, index) {
 	                return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
-	                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity})), 
+	                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
 	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
 	            }))
 	        ));
@@ -276,19 +352,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(3);
 	var Attachment_1 = __webpack_require__(7);
 	var Carousel_1 = __webpack_require__(8);
-	var FormattedText_1 = __webpack_require__(9);
+	var react_formattedtext_1 = __webpack_require__(9);
 	exports.HistoryMessage = function (props) {
-	    if (props.activity.attachments && props.activity.attachments.length >= 1) {
-	        if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
-	            return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments});
-	        else
-	            return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment}); })));
-	    }
-	    else if (props.activity.text) {
-	        return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
-	    }
-	    else {
-	        return React.createElement("span", null);
+	    switch (props.activity.type) {
+	        case 'message':
+	            if (props.activity.attachments && props.activity.attachments.length >= 1) {
+	                if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
+	                    return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments, onImageLoad: props.onImageLoad});
+	                else
+	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad}); })));
+	            }
+	            else if (props.activity.text) {
+	                return React.createElement(react_formattedtext_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
+	            }
+	            else {
+	                return React.createElement("span", null);
+	            }
+	        case 'typing':
+	            return React.createElement("div", null, "TYPING");
 	    }
 	};
 
@@ -299,29 +380,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var React = __webpack_require__(3);
+	var Chat_1 = __webpack_require__(4);
 	exports.AttachmentView = function (props) {
 	    var state = props.store.getState();
 	    var onClickButton = function (type, value) {
 	        switch (type) {
 	            case "imBack":
+	                Chat_1.sendMessage(props.store, value);
+	                break;
 	            case "postBack":
-	                state.connection.botConnection.postMessage(value, state.connection.user)
-	                    .retry(2)
-	                    .subscribe(function () {
-	                    if (type === "imBack") {
-	                        props.store.dispatch({ type: 'Send_Message', activity: {
-	                                type: "message",
-	                                text: value,
-	                                from: { id: state.connection.user.id },
-	                                timestamp: Date.now().toString()
-	                            } });
-	                    }
-	                    else {
-	                        console.log("quietly posted message", value);
-	                    }
-	                }, function (error) {
-	                    console.log("failed to post message");
-	                });
+	                Chat_1.sendPostBack(props.store, value);
 	                break;
 	            case "openUrl":
 	            case "signin":
@@ -336,7 +404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
 	    var imageWithOnLoad = function (url) {
-	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad && props.onImageLoad(); }});
+	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
 	    };
 	    var attachedImage = function (images) {
 	        return images && imageWithOnLoad(images[0].url);
@@ -390,6 +458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case "image/png":
 	        case "image/jpg":
 	        case "image/jpeg":
+	        case "image/gif":
 	            return imageWithOnLoad(props.attachment.contentUrl);
 	        default:
 	            return React.createElement("span", null);
@@ -537,6 +606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Carousel.prototype.resize = function () {
 	        this.setItemWidth();
 	        this.manageScrollButtons();
+	        this.props.onImageLoad();
 	    };
 	    return Carousel;
 	}(React.Component));
@@ -561,16 +631,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return t;
 	};
-	var React = __webpack_require__(3);
 	var Marked = __webpack_require__(10);
+	var React = __webpack_require__(3);
 	var He = __webpack_require__(11);
 	var FormattedText = (function (_super) {
 	    __extends(FormattedText, _super);
-	    function FormattedText(props) {
-	        _super.call(this, props);
+	    function FormattedText() {
+	        _super.apply(this, arguments);
 	    }
+	    FormattedText.prototype.getDefaultProps = function () {
+	        return {
+	            text: '',
+	            format: "markdown",
+	            markdownOptions: {
+	                gfm: true,
+	                tables: true,
+	                breaks: false,
+	                pedantic: false,
+	                sanitize: true,
+	                smartLists: true,
+	                silent: false,
+	                smartypants: true
+	            }
+	        };
+	    };
 	    FormattedText.prototype.shouldComponentUpdate = function (nextProps) {
-	        return this.props.text !== nextProps.text || this.props.format !== nextProps.format;
+	        // I don't love this, but it is fast and it works.
+	        return JSON.stringify(this.props) !== JSON.stringify(nextProps);
 	    };
 	    FormattedText.prototype.render = function () {
 	        switch (this.props.format) {
@@ -583,31 +670,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    FormattedText.prototype.renderPlainText = function () {
-	        // TODO @eanders-MS: This is placeholder until updated to DirectLine 3.0
-	        var src = this.props.text || '';
-	        var lines = src.replace('\r', '').split('\n');
-	        var elements = lines.map(function (line) { return React.createElement("span", null, 
+	        var lines = this.props.text.replace('\r', '').split('\n');
+	        var elements = lines.map(function (line, i) { return React.createElement("span", {key: i}, 
 	            line, 
 	            React.createElement("br", null)); });
 	        return React.createElement("span", {className: "format-plain"}, elements);
 	    };
 	    FormattedText.prototype.renderXml = function () {
-	        // TODO @eanders-MS: Implement once updated to DirectLine 3.0
-	        return React.createElement("span", {className: "format-xml"});
+	        // TODO: Implement Xml renderer
+	        //return <span className="format-xml"></span>;
+	        return this.renderPlainText();
 	    };
 	    FormattedText.prototype.renderMarkdown = function () {
 	        var src = this.props.text || '';
 	        src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-	        var options = {
-	            gfm: true,
-	            tables: true,
-	            breaks: false,
-	            pedantic: false,
-	            sanitize: true,
-	            smartLists: true,
-	            silent: false,
-	            smartypants: true
-	        };
+	        var options = Object.assign({}, this.props.markdownOptions);
 	        var renderer = options.renderer = new ReactRenderer(options);
 	        var text = Marked(src, options);
 	        var elements = renderer.getElements(text);
@@ -629,10 +706,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * We're being sneaky here. Marked is expecting us to render html to text and return that.
 	     * Instead, we're generating react elements and returning their array indices as strings,
-	     * which are concatenated by Marked into the final output. We return astringified index that
-	     * is {{strongly delimited}}. This is because Marked can sometimes leak source text into the
-	     * stream, interspersed with our ids. This leaked text will be detected later and turned
-	     * into react elements.
+	     * which are concatenated by Marked into the final output. We return a stringified index that
+	     * is {{strongly delimited}}. We must do this because Marked can sometimes leak source text
+	     * into the stream, interspersed with our ids. This leaked text will be detected later and
+	     * turned into react elements.
 	     */
 	    ReactRenderer.prototype.addElement = function (element) {
 	        var elementId = this.elements.length;
@@ -20679,28 +20756,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(3);
+	var Chat_1 = __webpack_require__(4);
 	var Shell = (function (_super) {
 	    __extends(Shell, _super);
-	    function Shell() {
-	        _super.apply(this, arguments);
+	    function Shell(props) {
+	        _super.call(this, props);
 	    }
-	    Shell.prototype.componentDidMount = function () {
+	    Shell.prototype.sendFiles = function (files) {
 	        var _this = this;
-	        this.storeUnsubscribe = this.props.store.subscribe(function () {
-	            return _this.forceUpdate();
-	        });
-	    };
-	    Shell.prototype.componentWillUnmount = function () {
-	        this.storeUnsubscribe();
-	    };
-	    Shell.prototype.sendFile = function (files) {
-	        var store = this.props.store;
 	        var _loop_1 = function(i, numFiles) {
 	            var file = files[i];
 	            console.log("file", file);
-	            var state = store.getState();
+	            var state = this_1.props.store.getState();
 	            var sendId = state.history.sendCounter;
-	            store.dispatch({ type: 'Send_Message', activity: {
+	            this_1.props.store.dispatch({ type: 'Send_Message', activity: {
 	                    type: "message",
 	                    from: state.connection.user,
 	                    timestamp: Date.now().toString(),
@@ -20710,16 +20779,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            name: file.name
 	                        }]
 	                } });
-	            this_1.textInput.focus();
-	            state = store.getState();
+	            state = this_1.props.store.getState();
 	            state.connection.botConnection.postFile(file, state.connection.user)
 	                .retry(2)
 	                .subscribe(function (id) {
 	                console.log("success posting file");
-	                store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+	                _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
 	            }, function (error) {
 	                console.log("failed to post file");
-	                store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+	                _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
 	            });
 	        };
 	        var this_1 = this;
@@ -20727,47 +20795,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _loop_1(i, numFiles);
 	        }
 	    };
-	    Shell.prototype.sendMessage = function () {
-	        var store = this.props.store;
-	        var state = store.getState();
-	        if (state.history.input.length === 0)
-	            return;
-	        var sendId = state.history.sendCounter;
-	        store.dispatch({ type: 'Send_Message', activity: {
-	                type: "message",
-	                text: state.history.input,
-	                from: state.connection.user,
-	                timestamp: Date.now().toString()
-	            } });
-	        this.textInput.focus();
-	        this.trySendMessage(sendId);
-	    };
-	    Shell.prototype.trySendMessage = function (sendId, updateStatus) {
-	        if (updateStatus === void 0) { updateStatus = false; }
-	        var store = this.props.store;
-	        if (updateStatus) {
-	            store.dispatch({ type: "Send_Message_Try", sendId: sendId });
-	        }
-	        var state = store.getState();
-	        var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
-	        state.connection.botConnection.postMessage(activity.text, state.connection.user)
-	            .subscribe(function (id) {
-	            console.log("success posting message");
-	            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-	        }, function (error) {
-	            console.log("failed to post message");
-	            // TODO: show an error under the message with "retry" link
-	            store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-	        });
-	    };
 	    Shell.prototype.onKeyPress = function (e) {
-	        if (e.key === 'Enter')
-	            this.sendMessage();
+	        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickSend = function () {
-	        this.sendMessage();
+	        this.textInput.focus();
+	        if (this.textInput.value.length >= 0)
+	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
-	    Shell.prototype.updateMessage = function (input) {
+	    Shell.prototype.onClickFile = function (files) {
+	        this.textInput.focus();
+	        this.sendFiles(files);
+	    };
+	    Shell.prototype.onChangeInput = function (input) {
 	        this.props.store.dispatch({ type: 'Update_Input', input: input });
 	    };
 	    Shell.prototype.render = function () {
@@ -20775,14 +20816,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var state = this.props.store.getState();
 	        return (React.createElement("div", {className: "wc-console"}, 
 	            React.createElement("label", {className: "wc-upload"}, 
-	                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.sendFile(e.target.files); }}), 
+	                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.onClickFile(e.target.files); }}), 
 	                React.createElement("svg", {width: "26", height: "18"}, 
 	                    React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
 	                )), 
 	            React.createElement("div", {className: "wc-textbox"}, 
-	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.updateMessage(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: "Type your message..."})
+	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.onChangeInput(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: "Type your message..."})
 	            ), 
-	            React.createElement("label", {className: "wc-send", onClick: this.onClickSend}, 
+	            React.createElement("label", {className: "wc-send", onClick: function () { return _this.onClickSend(); }}, 
 	                React.createElement("svg", {width: "27", height: "18"}, 
 	                    React.createElement("path", {d: "M 26.7862876 9.3774996 A 0.3121028 0.3121028 0 0 0 26.7862876 8.785123 L 0.4081408 0.0226012 C 0.363153 0.0000109 0.3406591 0.0000109 0.3181652 0.0000109 C 0.1372585 0.0000109 0 0.1315165 0 0.2887646 C 0 0.3270384 0.0081316 0.3668374 0.0257445 0.4066363 L 3.4448168 9.0813113 L 0.0257445 17.7556097 A 0.288143 0.288143 0 0 0 0.0126457 17.7975417 A 0.279813 0.279813 0 0 0 0.0055133 17.8603089 C 0.0055133 18.0178895 0.138422 18.1590562 0.303205 18.1590562 A 0.3049569 0.3049569 0 0 0 0.4081408 18.1400213 L 26.7862876 9.3774996 Z M 0.8130309 0.7906714 L 24.8365128 8.7876374 L 3.9846704 8.7876374 L 0.8130309 0.7906714 Z M 3.9846704 9.3749852 L 24.8365128 9.3749852 L 0.8130309 17.3719511 L 3.9846704 9.3749852 Z"})
 	                )
@@ -20836,14 +20877,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return state;
 	    }
 	};
-	var patch = function (a, i, o) { return a.slice(0, i).concat([
-	    Object.assign({}, a[i], o)
-	], a.slice(i + 1)); };
-	var activityStatus = {
-	    'Send_Message_Try': "sending",
-	    'Send_Message_Succeed': "sent",
-	    'Send_Message_Fail': "retry"
-	};
 	exports.historyReducer = function (state, action) {
 	    if (state === void 0) { state = {
 	        activities: [],
@@ -20852,30 +20885,79 @@ return /******/ (function(modules) { // webpackBootstrap
 	        autoscroll: true,
 	        selectedActivity: null
 	    }; }
+	    console.log("history action", action);
 	    switch (action.type) {
 	        case 'Update_Input':
-	            return { activities: state.activities, input: action.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                input: action.input
+	            });
 	        case 'Receive_Message':
-	            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "received" })]), input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+	                    Object.assign({}, action.activity, {
+	                        status: "received"
+	                    })
+	                ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }))
+	            });
 	        case 'Send_Message':
-	            return { activities: state.activities.concat([Object.assign({}, action.activity, { status: "sending", sendId: state.sendCounter })]), input: '', sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+	                    Object.assign({}, action.activity, {
+	                        status: "sending",
+	                        sendId: state.sendCounter
+	                    })
+	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+	                input: '',
+	                sendCounter: state.sendCounter + 1,
+	                autoscroll: true
+	            });
 	        case 'Send_Message_Try':
+	            var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
+	                    Object.assign({}, activity, {
+	                        status: "sending",
+	                        sendId: state.sendCounter
+	                    })
+	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+	                sendCounter: state.sendCounter + 1,
+	                autoscroll: true
+	            });
 	        case 'Send_Message_Succeed':
 	        case 'Send_Message_Fail':
 	            var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
 	            if (i === -1)
 	                return state;
-	            return {
-	                activities: patch(state.activities, i, {
-	                    status: activityStatus[action.type],
-	                    id: action.type === 'Send_Message_Succeed' ? action.id : undefined
-	                }),
-	                input: state.input, sendCounter: state.sendCounter + 1, autoscroll: true, selectedActivity: state.selectedActivity
-	            };
+	            return Object.assign({}, state, {
+	                activities: state.activities.slice(0, i).concat([
+	                    Object.assign({}, state.activities[i], {
+	                        status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
+	                        id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+	                    })
+	                ], state.activities.slice(i + 1)),
+	                sendCounter: state.sendCounter + 1,
+	                autoscroll: true
+	            });
+	        case 'Show_Typing':
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
+	                    Object.assign({}, action.activity, {
+	                        status: "received"
+	                    })
+	                ])
+	            });
+	        case 'Clear_Typing':
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
+	            });
 	        case 'Set_Autoscroll':
-	            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: action.autoscroll, selectedActivity: state.selectedActivity };
+	            return Object.assign({}, state, {
+	                autoscroll: action.autoscroll
+	            });
 	        case 'Select_Activity':
-	            return { activities: state.activities, input: state.input, sendCounter: state.sendCounter, autoscroll: state.autoscroll, selectedActivity: action.selectedActivity };
+	            return Object.assign({}, state, {
+	                selectedActivity: action.selectedActivity
+	            });
 	        default:
 	            return state;
 	    }
@@ -21360,10 +21442,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _ponyfill = __webpack_require__(369);
@@ -21372,24 +21454,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root; /* global window */
+	var root = undefined; /* global window */
 	
-	
-	if (typeof self !== 'undefined') {
-	  root = self;
+	if (typeof global !== 'undefined') {
+		root = global;
 	} else if (typeof window !== 'undefined') {
-	  root = window;
-	} else if (typeof global !== 'undefined') {
-	  root = global;
-	} else if (true) {
-	  root = module;
-	} else {
-	  root = Function('return this')();
+		root = window;
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 369 */
@@ -21787,12 +21862,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var intervalRefreshToken = 29 * 60 * 1000;
 	var DirectLine = (function () {
 	    function DirectLine(secretOrToken, domain) {
-	        var _this = this;
 	        if (domain === void 0) { domain = "https://directline.botframework.com"; }
 	        this.domain = domain;
 	        this.connected$ = new rxjs_1.BehaviorSubject(false);
 	        this.id = 0;
+	        this.secret = secretOrToken.secret;
 	        this.token = secretOrToken.secret || secretOrToken.token;
+	    }
+	    DirectLine.prototype.start = function () {
+	        var _this = this;
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: this.domain + "/api/conversations",
@@ -21806,8 +21884,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            .subscribe(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
 	            _this.connected$.next(true);
-	            if (!secretOrToken.secret) {
-	                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
+	            if (!_this.secret) {
+	                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
 	                    return rxjs_1.Observable.ajax({
 	                        method: "GET",
 	                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
@@ -21826,7 +21904,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.activity$ = this.connected$
 	            .filter(function (connected) { return connected === true; })
 	            .flatMap(function (_) { return _this.getActivities(); });
-	    }
+	    };
+	    DirectLine.prototype.end = function () {
+	        if (this.tokenRefreshSubscription) {
+	            this.tokenRefreshSubscription.unsubscribe();
+	            this.tokenRefreshSubscription = undefined;
+	        }
+	        if (this.getActivityGroupSubscription) {
+	            this.getActivityGroupSubscription.unsubscribe();
+	            this.getActivityGroupSubscription = undefined;
+	        }
+	        if (this.pollTimer) {
+	            clearTimeout(this.pollTimer);
+	            this.pollTimer = undefined;
+	        }
+	    };
 	    DirectLine.prototype.postMessage = function (text, from, channelData) {
 	        console.log("sending", text);
 	        return rxjs_1.Observable.ajax({
@@ -21904,11 +21996,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DirectLine.prototype.activitiesGenerator = function (subscriber, watermark) {
 	        var _this = this;
-	        this.getActivityGroup(watermark).subscribe(function (activityGroup) {
+	        this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(function (activityGroup) {
 	            var someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
 	            if (someMessages)
 	                subscriber.next(rxjs_1.Observable.from(activityGroup.messages));
-	            setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
+	            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
 	        }, function (error) {
 	            return subscriber.error(error);
 	        });
@@ -21940,12 +22032,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var intervalRefreshToken = 29 * 60 * 1000;
 	var DirectLine3 = (function () {
 	    function DirectLine3(secretOrToken, domain, segment) {
-	        var _this = this;
 	        if (domain === void 0) { domain = "https://directline.botframework.com"; }
 	        this.domain = domain;
 	        this.segment = segment;
 	        this.connected$ = new rxjs_1.BehaviorSubject(false);
+	        this.secret = secretOrToken.secret;
 	        this.token = secretOrToken.secret || secretOrToken.token;
+	    }
+	    DirectLine3.prototype.start = function () {
+	        var _this = this;
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: this.domain + "/" + this.segment + "/conversations",
@@ -21958,9 +22053,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .subscribe(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
+	            _this.token = conversation.token;
 	            _this.connected$.next(true);
-	            if (!secretOrToken.secret) {
-	                rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
+	            if (!_this.secret) {
+	                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
 	                    return rxjs_1.Observable.ajax({
 	                        method: "GET",
 	                        url: _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
@@ -21979,7 +22075,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.activity$ = this.connected$
 	            .filter(function (connected) { return connected === true; })
 	            .flatMap(function (_) { return _this.getActivity$(); });
-	    }
+	    };
+	    DirectLine3.prototype.end = function () {
+	        if (this.tokenRefreshSubscription) {
+	            this.tokenRefreshSubscription.unsubscribe();
+	            this.tokenRefreshSubscription = undefined;
+	        }
+	        if (this.getActivityGroupSubscription) {
+	            this.getActivityGroupSubscription.unsubscribe();
+	            this.getActivityGroupSubscription = undefined;
+	        }
+	        if (this.pollTimer) {
+	            clearTimeout(this.pollTimer);
+	            this.pollTimer = undefined;
+	        }
+	    };
 	    DirectLine3.prototype.postMessage = function (text, from, channelData) {
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
@@ -22007,9 +22117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
 	            body: formData,
 	            headers: {
-	                "Authorization": "Bearer " + this.token,
-	                "Content-Type": file.type,
-	                "Content-Disposition": file.name
+	                "Authorization": "Bearer " + this.token
 	            }
 	        })
 	            .retryWhen(function (error$) { return error$.delay(1000); })
@@ -22025,11 +22133,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DirectLine3.prototype.activitiesGenerator = function (subscriber, watermark) {
 	        var _this = this;
-	        this.getActivityGroup(watermark).subscribe(function (activityGroup) {
+	        this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(function (activityGroup) {
 	            var someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
 	            if (someMessages)
 	                subscriber.next(rxjs_1.Observable.from(activityGroup.activities));
-	            setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
+	            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
 	        }, function (error) {
 	            return subscriber.error(error);
 	        });

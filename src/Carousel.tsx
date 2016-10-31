@@ -6,7 +6,8 @@ import { ChatStore } from './Store';
 
 interface Props {
     store: ChatStore,
-    attachments: Attachment[]
+    attachments: Attachment[],
+    onImageLoad: () => void
 }
 
 interface State {
@@ -180,5 +181,6 @@ export class Carousel extends React.Component<Props, State> {
     resize() {
         this.setItemWidth();
         this.manageScrollButtons();
+        this.props.onImageLoad();
     }
 }

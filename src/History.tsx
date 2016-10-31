@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Unsubscribe } from 'redux';
 //import { Timestamp } from './Timestamp';
-import { Activity, Message } from './BotConnection';
+import { Activity } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { HistoryMessage } from './HistoryMessage';
 import { Observable, Subscription } from '@reactivex/rxjs';
-
 
 interface Props {
     store: ChatStore,
@@ -15,16 +13,9 @@ interface Props {
 export class History extends React.Component<Props, {}> {
     scrollMe: Element;
     autoscrollSubscription: Subscription;
-    storeUnsubscribe: Unsubscribe;
 
     constructor(props: Props) {
         super(props);
-    }
-
-    componentWillMount() {
-        this.storeUnsubscribe = this.props.store.subscribe(() =>
-            this.forceUpdate()
-        );
     }
 
     componentDidMount() {
@@ -39,7 +30,6 @@ export class History extends React.Component<Props, {}> {
 
     componentWillUnmount() {
         this.autoscrollSubscription.unsubscribe();
-        this.storeUnsubscribe();
     }
 
     componentDidUpdate(prevProps:{}, prevState:{}) {
@@ -56,26 +46,28 @@ export class History extends React.Component<Props, {}> {
         }
     }
 
+    onImageLoad = () => {
+        if (this.props.store.getState().history.autoscroll)
+            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+    }
+
     render() {
         const state = this.props.store.getState();
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">
-                { state.history.activities
-                    .filter(activity => activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"))
-                    .map((activity:Message, index) =>
-                        <div key={index} className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
-                            <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
-                                <svg className="wc-message-callout">
-                                    <path className="point-left" d="m0,0 h12 v10 z" />
-                                    <path className="point-right" d="m0,10 v-10 h12 z" />
-                                </svg>
-                                <HistoryMessage store={ this.props.store } activity={ activity }/>
-                            </div>
-                            <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
+                { state.history.activities.map((activity:Activity, index) =>
+                    <div key={index} className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
+                        <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
+                            <svg className="wc-message-callout">
+                                <path className="point-left" d="m0,0 h12 v10 z" />
+                                <path className="point-right" d="m0,10 v-10 h12 z" />
+                            </svg>
+                            <HistoryMessage store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
                         </div>
-                    )
-                }
+                        <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
+                    </div>
+                ) }
                 </div>
             </div>
         );

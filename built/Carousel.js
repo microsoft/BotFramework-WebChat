@@ -134,6 +134,7 @@ var Carousel = (function (_super) {
     Carousel.prototype.resize = function () {
         this.setItemWidth();
         this.manageScrollButtons();
+        this.props.onImageLoad();
     };
     return Carousel;
 }(React.Component));

@@ -7,10 +7,10 @@ export interface Conversation {
     streamUrl?: string
 }
 
-export type ImageType = "image/png" | "image/jpg" | "image/jpeg";
+export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif"
 
-export interface Image {
-    contentType: ImageType,    
+export interface Media {
+    contentType: MediaType,    
     contentUrl: string,
     name?: string
 }
@@ -28,7 +28,7 @@ export interface HeroCard {
         title?: string,
         subtitle?: string,
         text?: string,
-        images?: {url: string}[],
+        images?: { url: string }[],
         buttons?: Button[]
     }
 } 
@@ -39,9 +39,9 @@ export interface Thumbnail {
         title?: string,
         subtitle?: string,
         text?: string,
-        images?: {url: string}[],
+        images?: { url: string }[],
         buttons?: Button[]
-        tap: string
+        tap?: string
     }
 }
 
@@ -67,7 +67,7 @@ export interface Receipt {
     contentType: "application/vnd.microsoft.card.receipt",
     content: {
         title?: string,
-        facts?: {key: string, value: string}[],
+        facts?: { key: string, value: string }[],
         items?: ReceiptItem[],
         tap?: string,
         tax?: string,
@@ -77,40 +77,45 @@ export interface Receipt {
     }
 }    
 
-export type Attachment = Image | HeroCard | Thumbnail | Signin | Receipt;  
+export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt;  
 
 export interface User {
     id: string,
     name?: string
 }
 
-export interface Message
-{
-    type: "message",
-    id?: string,
-    conversation?: { id: string },
-    timestamp?: string,
-    from?: User,
-    text?: string,
-    local?: string,
-    textFormat?: "plain" | "markdown" | "xml",
+export interface IActivity {
+    type: string,
     channelData?: any,
+    channelId?: string,
+    conversation?: { id: string },
+    eTag?: string,
+    from?: User,
+    id?: string,
+    timestamp?: string
+}
+
+export interface Message extends IActivity {
+    type: "message",
+    text?: string,
+    locale?: string,
+    textFormat?: "plain" | "markdown" | "xml",
     attachmentLayout?: "list" | "carousel",
     attachments?: Attachment[],
-    eTag?: string,
-    channelId?: string,
     entities?: any[]
 }
 
-export interface Typing {
+export interface Typing extends IActivity {
     type: "typing"
 }
 
 export type Activity = Message | Typing;
 
 export interface IBotConnection {
+    start();
+    end();
     connected$: BehaviorSubject<boolean>;
-    activity$: Observable<Activity>    
+    activity$: Observable<Activity>;
     postMessage: (text: string, from: User, channelData?: any) => Observable<string>,
-    postFile: (file: File, from: User) => Observable<string>,
+    postFile: (file: File, from: User) => Observable<string>
 }

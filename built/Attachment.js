@@ -1,28 +1,15 @@
 "use strict";
 var React = require('react');
+var Chat_1 = require('./Chat');
 exports.AttachmentView = function (props) {
     var state = props.store.getState();
     var onClickButton = function (type, value) {
         switch (type) {
             case "imBack":
+                Chat_1.sendMessage(props.store, value);
+                break;
             case "postBack":
-                state.connection.botConnection.postMessage(value, state.connection.user)
-                    .retry(2)
-                    .subscribe(function () {
-                    if (type === "imBack") {
-                        props.store.dispatch({ type: 'Send_Message', activity: {
-                                type: "message",
-                                text: value,
-                                from: { id: state.connection.user.id },
-                                timestamp: Date.now().toString()
-                            } });
-                    }
-                    else {
-                        console.log("quietly posted message", value);
-                    }
-                }, function (error) {
-                    console.log("failed to post message");
-                });
+                Chat_1.sendPostBack(props.store, value);
                 break;
             case "openUrl":
             case "signin":
@@ -37,7 +24,7 @@ exports.AttachmentView = function (props) {
             React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
         ); })); };
     var imageWithOnLoad = function (url) {
-        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad && props.onImageLoad(); }});
+        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
     };
     var attachedImage = function (images) {
         return images && imageWithOnLoad(images[0].url);
@@ -91,6 +78,7 @@ exports.AttachmentView = function (props) {
         case "image/png":
         case "image/jpg":
         case "image/jpeg":
+        case "image/gif":
             return imageWithOnLoad(props.attachment.contentUrl);
         default:
             return React.createElement("span", null);

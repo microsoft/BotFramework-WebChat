@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable, Subscriber, Subject } from '@reactivex/rxjs';
+import { Subscription } from '@reactivex/rxjs';
 import { Activity, Message, IBotConnection, User } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
@@ -7,6 +7,7 @@ import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { strings } from './Strings';
+import { Unsubscribe } from 'redux';
 
 export interface ActivityState {
     status: "received" | "sending" | "sent" | "retry",
@@ -18,7 +19,7 @@ export interface FormatOptions {
 }
 
 export interface ChatProps {
-    user: { id: string, name: string },
+    user: User,
     botConnection: IBotConnection,
     locale?: string,
     onActivitySelected?: (activity: Activity) => void,
@@ -27,12 +28,14 @@ export interface ChatProps {
 
 export class Chat extends React.Component<ChatProps, {}> {
 
-    store: ChatStore;
+    private store = createStore();
+    private storeUnsubscribe: Unsubscribe;
+    private activitySubscription: Subscription;
+    private connectedSubscription: Subscription;
+    private typingTimers = {};
 
     constructor(props) {
         super(props);
-
-        this.store = createStore();
 
         console.log("BotChat.Chat props", props);
 
@@ -43,19 +46,61 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
 
-        props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
+        props.botConnection.start();
+        this.connectedSubscription = props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
             this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
         });
-
-        props.botConnection.activity$.subscribe(
-            activity => this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction),
+        this.activitySubscription = props.botConnection.activity$.subscribe(
+            activity => this.handleIncomingActivity(activity),
             error => console.log("errors", error)
         );
     }
 
+    handleIncomingActivity(activity: Activity) {
+        let state = this.store.getState();
+        switch (activity.type) {
+            case "message":
+                if (activity.from.id === state.connection.user.id)
+                    break;
+                if (!(activity.text && activity.text.endsWith("//typing"))) {
+                    if (!state.history.activities.find(a => a.id === activity.id)) // don't allow duplicate messages
+                        this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
+                    break;
+                }
+                activity = Object.assign({}, activity, { type: 'typing' });
+            case "typing":
+                if (this.typingTimers[activity.from.id]) {
+                    clearTimeout(this.typingTimers[activity.from.id]);
+                    this.typingTimers[activity.from.id] = undefined;
+                }
+                this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction);
+                this.typingTimers[activity.from.id] = setTimeout(() => {
+                    this.typingTimers[activity.from.id] = undefined;
+                    this.store.dispatch({ type: 'Clear_Typing', from: activity.from } as HistoryAction);
+                }, 3000);
+                break;
+        }
+    }
+
+    componentDidMount() {
+        this.storeUnsubscribe = this.store.subscribe(() =>
+            this.forceUpdate()
+        );
+    }
+
+    componentWillUnmount() {
+        this.activitySubscription.unsubscribe();
+        this.connectedSubscription.unsubscribe();
+        this.props.botConnection.end();
+        this.storeUnsubscribe();
+        for (let key in this.typingTimers) {
+            clearTimeout(this.typingTimers[key])
+        }
+    }
+
     render() {
         const state = this.store.getState();
-        console.log("BotChat.Chat starting state", state);
+        console.log("BotChat.Chat state", state);
         let header;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
@@ -70,4 +115,43 @@ export class Chat extends React.Component<ChatProps, {}> {
             </div>
         );
     }
+}
+
+export const sendMessage = (store: ChatStore, text: string) => {
+    let state = store.getState();
+    const sendId = state.history.sendCounter;
+    store.dispatch({ type: 'Send_Message', activity: {
+        type: "message",
+        text,
+        from: state.connection.user,
+        timestamp: Date.now().toString()
+    }} as HistoryAction);
+    trySendMessage(store, sendId);
+}
+
+export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = false) => {
+    if (updateStatus) {
+        store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
+    }
+    let state = store.getState();
+    const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
+    state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
+    .subscribe(id => {
+        console.log("success sending message", id);
+        store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+    }, error => {
+        console.log("failed to send message", error);
+        // TODO: show an error under the message with "retry" link
+        store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+    });
+}
+
+export const sendPostBack = (store: ChatStore, text: string) => {
+    const state = store.getState();
+    state.connection.botConnection.postMessage(text, state.connection.user)
+        .subscribe(id => {
+            console.log("success sending postBack", id)
+        }, error => {
+            console.log("failed to send postBack", error);
+        });
 }

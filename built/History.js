@@ -10,14 +10,13 @@ var rxjs_1 = require('@reactivex/rxjs');
 var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
-        _super.call(this, props);
-    }
-    History.prototype.componentWillMount = function () {
         var _this = this;
-        this.storeUnsubscribe = this.props.store.subscribe(function () {
-            return _this.forceUpdate();
-        });
-    };
+        _super.call(this, props);
+        this.onImageLoad = function () {
+            if (_this.props.store.getState().history.autoscroll)
+                _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight;
+        };
+    }
     History.prototype.componentDidMount = function () {
         var _this = this;
         this.autoscrollSubscription = rxjs_1.Observable
@@ -30,7 +29,6 @@ var History = (function (_super) {
     };
     History.prototype.componentWillUnmount = function () {
         this.autoscrollSubscription.unsubscribe();
-        this.storeUnsubscribe();
     };
     History.prototype.componentDidUpdate = function (prevProps, prevState) {
         if (this.props.store.getState().history.autoscroll)
@@ -48,15 +46,13 @@ var History = (function (_super) {
         var _this = this;
         var state = this.props.store.getState();
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
-            React.createElement("div", {className: "wc-message-group"}, state.history.activities
-                .filter(function (activity) { return activity.type === "message" && (activity.from.id != state.connection.user.id || activity["status"] != "received"); })
-                .map(function (activity, index) {
+            React.createElement("div", {className: "wc-message-group"}, state.history.activities.map(function (activity, index) {
                 return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
                     React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
                             React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
-                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity})), 
+                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
                     React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
             }))
         ));
