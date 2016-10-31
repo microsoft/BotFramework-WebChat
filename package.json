@@ -24,14 +24,11 @@
   "dependencies": {
     "@reactivex/rxjs": "^5.0.0-beta.12",
     "@types/es6-shim": "^0.31.32",
-    "@types/he": "^0.5.29",
-    "@types/marked": "0.0.28",
     "@types/react": "^0.14.37",
     "@types/react-dom": "^0.14.17",
     "@types/redux": "^3.5.30",
-    "he": "^1.1.0",
-    "marked": "^0.3.6",
     "promise": "^7.1.1",
+    "react-formattedtext": "git+https://github.com/fuselabs/react-formattedtext",
     "redux": "^3.6.0"
   },
   "devDependencies": {
