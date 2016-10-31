@@ -60,8 +60,8 @@ export class History extends React.Component<Props, {}> {
                     <div key={index} className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
                         <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
                             <svg className="wc-message-callout">
-                                <path className="point-left" d="m0,0 h12 v10 z" />
-                                <path className="point-right" d="m0,10 v-10 h12 z" />
+                                <path className="point-left" d="m0,6 l6 6 v-12 z" />
+                                <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                             </svg>
                             <HistoryMessage store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
                         </div>
