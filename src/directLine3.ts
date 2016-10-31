@@ -112,9 +112,7 @@ export class DirectLine3 implements IBotConnection {
             url: `${this.domain}/${this.segment}/conversations/${this.conversationId}/upload?userId=${from.id}`,
             body: formData,
             headers: {
-                "Authorization": `Bearer ${this.token}`,
-                "Content-Type": file.type,
-                "Content-Disposition": `filename=${file.name}`
+                "Authorization": `Bearer ${this.token}`
             }
         })
 //      .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))

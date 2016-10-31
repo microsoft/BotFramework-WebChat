@@ -22122,9 +22122,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
 	            body: formData,
 	            headers: {
-	                "Authorization": "Bearer " + this.token,
-	                "Content-Type": file.type,
-	                "Content-Disposition": "filename=" + file.name
+	                "Authorization": "Bearer " + this.token
 	            }
 	        })
 	            .retryWhen(function (error$) { return error$.delay(1000); })
