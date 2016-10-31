@@ -140,11 +140,11 @@
     }
 
     .wc-message svg.wc-message-callout {
-        height: 8px;
+        height: 22px;
         position: absolute;
         stroke: none;
-        top: 0;
-        width: 12px;
+        top: 12px;
+        width: 6px;
     }
 
     .wc-message-content {
@@ -362,7 +362,7 @@
 
     .wc-message-from-me {
         float: right;
-        margin-right: 12px;
+        margin-right: 6px;
     }
 
     .wc-message-from-me .wc-message-from {
@@ -383,14 +383,14 @@
     }
 
     .wc-message-from-me svg.wc-message-callout {
-        right: -10px;
+        right: -6px;
     }
 
 /* from bot */
 
     .wc-message-from-bot {
         float: left;
-        margin-left: 12px;
+        margin-left: 6px;
     }
 
     .wc-message-from-bot .wc-message-content {
@@ -407,7 +407,7 @@
     }
 
     .wc-message-from-bot svg.wc-message-callout {
-        left: -12px;
+        left: -6px;
     }
 
 /* console */
