@@ -184,7 +184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            case "message":
 	                if (activity.from.id === state.connection.user.id)
 	                    break;
-	                if (!activity.text.endsWith("//typing")) {
+	                if (!(activity.text && activity.text.endsWith("//typing"))) {
 	                    if (!state.history.activities.find(function (a) { return a.id === activity.id; }))
 	                        this.store.dispatch({ type: 'Receive_Message', activity: activity });
 	                    break;
@@ -235,6 +235,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Chat;
 	}(React.Component));
 	exports.Chat = Chat;
+	exports.sendMessage = function (store, text) {
+	    var state = store.getState();
+	    var sendId = state.history.sendCounter;
+	    store.dispatch({ type: 'Send_Message', activity: {
+	            type: "message",
+	            text: text,
+	            from: state.connection.user,
+	            timestamp: Date.now().toString()
+	        } });
+	    exports.trySendMessage(store, sendId);
+	};
+	exports.trySendMessage = function (store, sendId, updateStatus) {
+	    if (updateStatus === void 0) { updateStatus = false; }
+	    if (updateStatus) {
+	        store.dispatch({ type: "Send_Message_Try", sendId: sendId });
+	    }
+	    var state = store.getState();
+	    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
+	    state.connection.botConnection.postMessage(activity.text, state.connection.user)
+	        .subscribe(function (id) {
+	        console.log("success sending message", id);
+	        store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+	    }, function (error) {
+	        console.log("failed to send message", error);
+	        // TODO: show an error under the message with "retry" link
+	        store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+	    });
+	};
+	exports.sendPostBack = function (store, text) {
+	    var state = store.getState();
+	    state.connection.botConnection.postMessage(text, state.connection.user)
+	        .subscribe(function (id) {
+	        console.log("success sending postBack", id);
+	    }, function (error) {
+	        console.log("failed to send postBack", error);
+	    });
+	};
 
 
 /***/ },
@@ -343,29 +380,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var React = __webpack_require__(3);
+	var Chat_1 = __webpack_require__(4);
 	exports.AttachmentView = function (props) {
 	    var state = props.store.getState();
 	    var onClickButton = function (type, value) {
 	        switch (type) {
 	            case "imBack":
+	                Chat_1.sendMessage(props.store, value);
+	                break;
 	            case "postBack":
-	                state.connection.botConnection.postMessage(value, state.connection.user)
-	                    .retry(2)
-	                    .subscribe(function () {
-	                    if (type === "imBack") {
-	                        props.store.dispatch({ type: 'Send_Message', activity: {
-	                                type: "message",
-	                                text: value,
-	                                from: { id: state.connection.user.id },
-	                                timestamp: Date.now().toString()
-	                            } });
-	                    }
-	                    else {
-	                        console.log("quietly posted message", value);
-	                    }
-	                }, function (error) {
-	                    console.log("failed to post message");
-	                });
+	                Chat_1.sendPostBack(props.store, value);
 	                break;
 	            case "openUrl":
 	            case "signin":
@@ -20732,6 +20756,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(3);
+	var Chat_1 = __webpack_require__(4);
 	var Shell = (function (_super) {
 	    __extends(Shell, _super);
 	    function Shell(props) {
@@ -20770,44 +20795,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _loop_1(i, numFiles);
 	        }
 	    };
-	    Shell.prototype.sendMessage = function () {
-	        var state = this.props.store.getState();
-	        if (state.history.input.length === 0)
-	            return;
-	        var sendId = state.history.sendCounter;
-	        this.props.store.dispatch({ type: 'Send_Message', activity: {
-	                type: "message",
-	                text: state.history.input,
-	                from: state.connection.user,
-	                timestamp: Date.now().toString()
-	            } });
-	        this.trySendMessage(sendId);
-	    };
-	    Shell.prototype.trySendMessage = function (sendId, updateStatus) {
-	        var _this = this;
-	        if (updateStatus === void 0) { updateStatus = false; }
-	        if (updateStatus) {
-	            this.props.store.dispatch({ type: "Send_Message_Try", sendId: sendId });
-	        }
-	        var state = this.props.store.getState();
-	        var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
-	        state.connection.botConnection.postMessage(activity.text, state.connection.user)
-	            .subscribe(function (id) {
-	            console.log("success posting message");
-	            _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-	        }, function (error) {
-	            console.log("failed to post message");
-	            // TODO: show an error under the message with "retry" link
-	            _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-	        });
-	    };
 	    Shell.prototype.onKeyPress = function (e) {
-	        if (e.key === 'Enter')
-	            this.sendMessage();
+	        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickSend = function () {
 	        this.textInput.focus();
-	        this.sendMessage();
+	        if (this.textInput.value.length >= 0)
+	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickFile = function (files) {
 	        this.textInput.focus();

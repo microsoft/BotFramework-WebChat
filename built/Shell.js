@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var Chat_1 = require('./Chat');
 var Shell = (function (_super) {
     __extends(Shell, _super);
     function Shell(props) {
@@ -43,44 +44,14 @@ var Shell = (function (_super) {
             _loop_1(i, numFiles);
         }
     };
-    Shell.prototype.sendMessage = function () {
-        var state = this.props.store.getState();
-        if (state.history.input.length === 0)
-            return;
-        var sendId = state.history.sendCounter;
-        this.props.store.dispatch({ type: 'Send_Message', activity: {
-                type: "message",
-                text: state.history.input,
-                from: state.connection.user,
-                timestamp: Date.now().toString()
-            } });
-        this.trySendMessage(sendId);
-    };
-    Shell.prototype.trySendMessage = function (sendId, updateStatus) {
-        var _this = this;
-        if (updateStatus === void 0) { updateStatus = false; }
-        if (updateStatus) {
-            this.props.store.dispatch({ type: "Send_Message_Try", sendId: sendId });
-        }
-        var state = this.props.store.getState();
-        var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
-        state.connection.botConnection.postMessage(activity.text, state.connection.user)
-            .subscribe(function (id) {
-            console.log("success posting message");
-            _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-        }, function (error) {
-            console.log("failed to post message");
-            // TODO: show an error under the message with "retry" link
-            _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-        });
-    };
     Shell.prototype.onKeyPress = function (e) {
-        if (e.key === 'Enter')
-            this.sendMessage();
+        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+            Chat_1.sendMessage(this.props.store, this.textInput.value);
     };
     Shell.prototype.onClickSend = function () {
         this.textInput.focus();
-        this.sendMessage();
+        if (this.textInput.value.length >= 0)
+            Chat_1.sendMessage(this.props.store, this.textInput.value);
     };
     Shell.prototype.onClickFile = function (files) {
         this.textInput.focus();

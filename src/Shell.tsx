@@ -2,13 +2,14 @@ import * as React from 'react';
 import { Observable } from '@reactivex/rxjs';
 import { HistoryAction, ChatStore } from './Store';
 import { Message, Media, MediaType } from './BotConnection';
+import { sendMessage, trySendMessage } from './Chat';
 
 interface Props {
     store: ChatStore
 }
 
 export class Shell extends React.Component<Props, {}> {
-    textInput:any;
+    textInput: HTMLInputElement;
 
     constructor(props: Props) {
         super(props);
@@ -43,45 +44,15 @@ export class Shell extends React.Component<Props, {}> {
         }
     }
 
-    sendMessage() {
-        let state = this.props.store.getState();
-        if (state.history.input.length === 0)
-            return;
-        const sendId = state.history.sendCounter;
-        this.props.store.dispatch({ type: 'Send_Message', activity: {
-            type: "message",
-            text: state.history.input,
-            from: state.connection.user,
-            timestamp: Date.now().toString()
-        }} as HistoryAction);
-        this.trySendMessage(sendId);
-    }
-
-    trySendMessage(sendId: number, updateStatus = false) {
-        if (updateStatus) {
-            this.props.store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
-        }
-        let state = this.props.store.getState();
-        const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
-        state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
-        .subscribe(id => {
-            console.log("success posting message");
-            this.props.store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
-        }, error => {
-            console.log("failed to post message");
-            // TODO: show an error under the message with "retry" link
-            this.props.store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
-        });
-    }
-
     onKeyPress(e) {
-        if (e.key === 'Enter')
-            this.sendMessage();
+        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+            sendMessage(this.props.store, this.textInput.value);
     }
 
     onClickSend() {
         this.textInput.focus();
-        this.sendMessage();
+        if (this.textInput.value.length >= 0)
+            sendMessage(this.props.store, this.textInput.value);
     }
 
     onClickFile(files: FileList) {
