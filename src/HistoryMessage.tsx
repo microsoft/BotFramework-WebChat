@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Activity } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
-import { FormattedText } from 'react-formattedtext';
+import { FormattedText } from './FormattedText';
 import { ChatStore } from './Store';
 
 

@@ -326,15 +326,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        var state = this.props.store.getState();
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
-	            React.createElement("div", {className: "wc-message-group"}, state.history.activities.map(function (activity, index) {
-	                return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
-	                        React.createElement("svg", {className: "wc-message-callout"}, 
-	                            React.createElement("path", {className: "point-left", d: "m0,0 h12 v10 z"}), 
-	                            React.createElement("path", {className: "point-right", d: "m0,10 v-10 h12 z"})), 
-	                        React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
-	                    React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
-	            }))
+	            React.createElement("div", {className: "wc-message-group"}, 
+	                React.createElement("div", {className: "wc-message-group-content"}, state.history.activities.map(function (activity, index) {
+	                    return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
+	                        React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
+	                            React.createElement("svg", {className: "wc-message-callout"}, 
+	                                React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
+	                                React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
+	                            React.createElement(HistoryMessage_1.HistoryMessage, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+	                        React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
+	                }))
+	            )
 	        ));
 	    };
 	    return History;
@@ -352,7 +354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(3);
 	var Attachment_1 = __webpack_require__(7);
 	var Carousel_1 = __webpack_require__(8);
-	var react_formattedtext_1 = __webpack_require__(9);
+	var FormattedText_1 = __webpack_require__(9);
 	exports.HistoryMessage = function (props) {
 	    switch (props.activity.type) {
 	        case 'message':
@@ -363,7 +365,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad}); })));
 	            }
 	            else if (props.activity.text) {
-	                return React.createElement(react_formattedtext_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
+	                return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
 	            }
 	            else {
 	                return React.createElement("span", null);
@@ -679,7 +681,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    FormattedText.prototype.renderXml = function () {
 	        // TODO: Implement Xml renderer
 	        //return <span className="format-xml"></span>;
-	        return this.renderPlainText();
+	        return this.renderMarkdown();
 	    };
 	    FormattedText.prototype.renderMarkdown = function () {
 	        var src = this.props.text || '';
@@ -21442,10 +21444,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	
 	var _ponyfill = __webpack_require__(369);
@@ -21454,17 +21456,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root = undefined; /* global window */
+	var root; /* global window */
 	
-	if (typeof global !== 'undefined') {
-		root = global;
+	
+	if (typeof self !== 'undefined') {
+	  root = self;
 	} else if (typeof window !== 'undefined') {
-		root = window;
+	  root = window;
+	} else if (typeof global !== 'undefined') {
+	  root = global;
+	} else if (true) {
+	  root = module;
+	} else {
+	  root = Function('return this')();
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
 
 /***/ },
 /* 369 */
