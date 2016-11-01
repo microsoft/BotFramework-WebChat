@@ -11,6 +11,8 @@ export declare class DirectLine {
 
 export declare class DirectLine3 {
     constructor(secretOrToken: SecretOrToken, domain?: string, segment?: string);
+    start();
+    end();
 }
 
 export interface FormatOptions {

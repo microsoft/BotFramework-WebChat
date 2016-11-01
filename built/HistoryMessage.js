@@ -2,7 +2,7 @@
 var React = require('react');
 var Attachment_1 = require('./Attachment');
 var Carousel_1 = require('./Carousel');
-var react_formattedtext_1 = require('react-formattedtext');
+var FormattedText_1 = require('./FormattedText');
 exports.HistoryMessage = function (props) {
     switch (props.activity.type) {
         case 'message':
@@ -13,7 +13,7 @@ exports.HistoryMessage = function (props) {
                     return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad}); })));
             }
             else if (props.activity.text) {
-                return React.createElement(react_formattedtext_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
+                return React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat});
             }
             else {
                 return React.createElement("span", null);
