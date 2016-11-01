@@ -17,30 +17,16 @@ var React = require('react');
 var He = require('he');
 var FormattedText = (function (_super) {
     __extends(FormattedText, _super);
-    function FormattedText() {
-        _super.apply(this, arguments);
+    function FormattedText(props) {
+        _super.call(this, props);
     }
-    FormattedText.prototype.getDefaultProps = function () {
-        return {
-            text: '',
-            format: "markdown",
-            markdownOptions: {
-                gfm: true,
-                tables: true,
-                breaks: false,
-                pedantic: false,
-                sanitize: true,
-                smartLists: true,
-                silent: false,
-                smartypants: true
-            }
-        };
-    };
     FormattedText.prototype.shouldComponentUpdate = function (nextProps) {
         // I don't love this, but it is fast and it works.
         return JSON.stringify(this.props) !== JSON.stringify(nextProps);
     };
     FormattedText.prototype.render = function () {
+        if (!this.props.text || this.props.text === '')
+            return React.createElement("span", null);
         switch (this.props.format) {
             case "plain":
                 return this.renderPlainText();
@@ -65,7 +51,16 @@ var FormattedText = (function (_super) {
     FormattedText.prototype.renderMarkdown = function () {
         var src = this.props.text || '';
         src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-        var options = Object.assign({}, this.props.markdownOptions);
+        var options = Object.assign({}, {
+            gfm: true,
+            tables: true,
+            breaks: false,
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            silent: false,
+            smartypants: true
+        }, this.props.markdownOptions);
         var renderer = options.renderer = new ReactRenderer(options);
         var text = Marked(src, options);
         var elements = renderer.getElements(text);

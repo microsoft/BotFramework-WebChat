@@ -95,12 +95,14 @@ export interface IActivity {
     timestamp?: string
 }
 
+export type AttachmentLayout = "list" | "carousel";
+
 export interface Message extends IActivity {
     type: "message",
     text?: string,
     locale?: string,
     textFormat?: "plain" | "markdown" | "xml",
-    attachmentLayout?: "list" | "carousel",
+    attachmentLayout?: AttachmentLayout,
     attachments?: Attachment[],
     entities?: any[]
 }

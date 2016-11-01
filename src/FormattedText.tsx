@@ -11,21 +11,8 @@ export interface IFormattedTextProps {
 
 export class FormattedText extends React.Component<IFormattedTextProps, {}> {
 
-    getDefaultProps(): IFormattedTextProps {
-        return {
-            text: '',
-            format: "markdown",
-            markdownOptions: {
-                gfm: true,
-                tables: true,
-                breaks: false,
-                pedantic: false,
-                sanitize: true,
-                smartLists: true,
-                silent: false,
-                smartypants: true
-            }
-        }
+    constructor(props: IFormattedTextProps) {
+        super(props);
     }
 
     shouldComponentUpdate(nextProps: IFormattedTextProps): boolean {
@@ -34,6 +21,9 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
     }
 
     render() {
+        if (!this.props.text || this.props.text === '')
+            return <span/>;
+
         switch (this.props.format) {
             case "plain":
                 return this.renderPlainText();
@@ -59,7 +49,16 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
     private renderMarkdown() {
         let src = this.props.text || '';
         src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-        const options: MarkedOptions = Object.assign({}, this.props.markdownOptions);
+        const options: MarkedOptions = Object.assign({}, {
+            gfm: true,
+            tables: true,
+            breaks: false,
+            pedantic: false,
+            sanitize: true,
+            smartLists: true,
+            silent: false,
+            smartypants: true
+        } as MarkedOptions, this.props.markdownOptions);
         const renderer = options.renderer = new ReactRenderer(options);
         const text = Marked(src, options);
         const elements = renderer.getElements(text);
