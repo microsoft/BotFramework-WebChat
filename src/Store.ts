@@ -83,7 +83,6 @@ export interface HistoryState {
     activities: Activity[],
     input: string,
     sendCounter: number,
-    autoscroll: boolean,
     selectedActivity: Activity
 }
 
@@ -101,9 +100,6 @@ export type HistoryAction = {
     sendId: number
     id: string
 } | {
-    type: 'Set_Autoscroll',
-    autoscroll: boolean
-} | {
     type: 'Select_Activity',
     selectedActivity: Activity
 } | {
@@ -116,7 +112,6 @@ export const historyReducer: Reducer<HistoryState> = (
         activities: [],
         input: '',
         sendCounter: 0,
-        autoscroll: true,
         selectedActivity: null
     },
     action: HistoryAction
@@ -200,11 +195,6 @@ export const historyReducer: Reducer<HistoryState> = (
         case 'Clear_Typing':
             return Object.assign({}, state, { 
                 activities: state.activities.filter(activity => activity.from.id !== action.from.id || activity.type !== "typing")
-            });
-
-        case 'Set_Autoscroll':
-            return Object.assign({}, state, {
-                autoscroll: action.autoscroll
             });
 
         case 'Select_Activity':

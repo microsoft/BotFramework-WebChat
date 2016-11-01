@@ -38,7 +38,7 @@ export class DirectLine3 implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         })
-//      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
+        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
         .retryWhen(error$ => error$.delay(1000))
         .subscribe(conversation => {

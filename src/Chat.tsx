@@ -59,15 +59,20 @@ export class Chat extends React.Component<ChatProps, {}> {
     handleIncomingActivity(activity: Activity) {
         let state = this.store.getState();
         switch (activity.type) {
+
             case "message":
                 if (activity.from.id === state.connection.user.id)
                     break;
-                if (!(activity.text && activity.text.endsWith("//typing"))) {
+
+                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET 
+                if (activity.text && activity.text.endsWith("//typing"))
+                    activity = Object.assign({}, activity, { type: 'typing' });
+                else {
                     if (!state.history.activities.find(a => a.id === activity.id)) // don't allow duplicate messages
                         this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
                     break;
                 }
-                activity = Object.assign({}, activity, { type: 'typing' });
+
             case "typing":
                 if (this.typingTimers[activity.from.id]) {
                     clearTimeout(this.typingTimers[activity.from.id]);

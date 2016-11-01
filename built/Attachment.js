@@ -24,7 +24,7 @@ exports.AttachmentView = function (props) {
             React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
         ); })); };
     var imageWithOnLoad = function (url) {
-        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
+        return React.createElement("img", {src: url, onLoad: function () { console.log("local onImageLoad"); props.onImageLoad(); }});
     };
     var attachedImage = function (images) {
         return images && imageWithOnLoad(images[0].url);

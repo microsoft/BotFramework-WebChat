@@ -42,7 +42,6 @@ exports.historyReducer = function (state, action) {
         activities: [],
         input: '',
         sendCounter: 0,
-        autoscroll: true,
         selectedActivity: null
     }; }
     console.log("history action", action);
@@ -109,10 +108,6 @@ exports.historyReducer = function (state, action) {
         case 'Clear_Typing':
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
-            });
-        case 'Set_Autoscroll':
-            return Object.assign({}, state, {
-                autoscroll: action.autoscroll
             });
         case 'Select_Activity':
             return Object.assign({}, state, {

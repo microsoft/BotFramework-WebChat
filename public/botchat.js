@@ -184,12 +184,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            case "message":
 	                if (activity.from.id === state.connection.user.id)
 	                    break;
-	                if (!(activity.text && activity.text.endsWith("//typing"))) {
+	                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET 
+	                if (activity.text && activity.text.endsWith("//typing"))
+	                    activity = Object.assign({}, activity, { type: 'typing' });
+	                else {
 	                    if (!state.history.activities.find(function (a) { return a.id === activity.id; }))
 	                        this.store.dispatch({ type: 'Receive_Message', activity: activity });
 	                    break;
 	                }
-	                activity = Object.assign({}, activity, { type: 'typing' });
 	            case "typing":
 	                if (this.typingTimers[activity.from.id]) {
 	                    clearTimeout(this.typingTimers[activity.from.id]);
@@ -286,33 +288,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var React = __webpack_require__(3);
 	var HistoryMessage_1 = __webpack_require__(6);
-	var rxjs_1 = __webpack_require__(13);
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
 	        var _this = this;
 	        _super.call(this, props);
+	        this.scrollToBottom = true;
 	        this.onImageLoad = function () {
-	            if (_this.props.store.getState().history.autoscroll)
-	                _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight;
+	            _this.autoscroll();
 	        };
 	    }
-	    History.prototype.componentDidMount = function () {
-	        var _this = this;
-	        this.autoscrollSubscription = rxjs_1.Observable
-	            .fromEvent(this.scrollMe, 'scroll')
-	            .map(function (e) { return e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight; })
-	            .distinctUntilChanged()
-	            .subscribe(function (autoscroll) {
-	            return _this.props.store.dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
-	        });
+	    History.prototype.componentWillUpdate = function () {
+	        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
 	    };
-	    History.prototype.componentWillUnmount = function () {
-	        this.autoscrollSubscription.unsubscribe();
-	    };
-	    History.prototype.componentDidUpdate = function (prevProps, prevState) {
-	        if (this.props.store.getState().history.autoscroll)
-	            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+	    History.prototype.componentDidUpdate = function () {
+	        this.autoscroll();
 	    };
 	    History.prototype.onActivitySelected = function (e, activity) {
 	        if (this.props.onActivitySelected) {
@@ -321,6 +311,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity });
 	            this.props.onActivitySelected(activity);
 	        }
+	    };
+	    History.prototype.autoscroll = function () {
+	        if (this.scrollToBottom)
+	            this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
 	    };
 	    History.prototype.render = function () {
 	        var _this = this;
@@ -359,7 +353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    switch (props.activity.type) {
 	        case 'message':
 	            if (props.activity.attachments && props.activity.attachments.length >= 1) {
-	                if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
+	                if (props.activity.attachmentLayout === 'carousel')
 	                    return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.activity.attachments, onImageLoad: props.onImageLoad});
 	                else
 	                    return (React.createElement("div", null, props.activity.attachments.map(function (attachment) { return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad}); })));
@@ -406,7 +400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
 	    var imageWithOnLoad = function (url) {
-	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
+	        return React.createElement("img", {src: url, onLoad: function () { console.log("local onImageLoad"); props.onImageLoad(); }});
 	    };
 	    var attachedImage = function (images) {
 	        return images && imageWithOnLoad(images[0].url);
@@ -20884,7 +20878,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        activities: [],
 	        input: '',
 	        sendCounter: 0,
-	        autoscroll: true,
 	        selectedActivity: null
 	    }; }
 	    console.log("history action", action);
@@ -20951,10 +20944,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case 'Clear_Typing':
 	            return Object.assign({}, state, {
 	                activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
-	            });
-	        case 'Set_Autoscroll':
-	            return Object.assign({}, state, {
-	                autoscroll: action.autoscroll
 	            });
 	        case 'Select_Activity':
 	            return Object.assign({}, state, {
@@ -21444,10 +21433,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _ponyfill = __webpack_require__(369);
@@ -21456,24 +21445,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root; /* global window */
+	var root = undefined; /* global window */
 	
-	
-	if (typeof self !== 'undefined') {
-	  root = self;
+	if (typeof global !== 'undefined') {
+		root = global;
 	} else if (typeof window !== 'undefined') {
-	  root = window;
-	} else if (typeof global !== 'undefined') {
-	  root = global;
-	} else if (true) {
-	  root = module;
-	} else {
-	  root = Function('return this')();
+		root = window;
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 369 */
@@ -22058,6 +22040,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                "Authorization": "Bearer " + this.token
 	            }
 	        })
+	            .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
 	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .subscribe(function (conversation) {

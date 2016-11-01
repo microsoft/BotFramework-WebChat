@@ -36,12 +36,14 @@ var Chat = (function (_super) {
             case "message":
                 if (activity.from.id === state.connection.user.id)
                     break;
-                if (!(activity.text && activity.text.endsWith("//typing"))) {
+                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET 
+                if (activity.text && activity.text.endsWith("//typing"))
+                    activity = Object.assign({}, activity, { type: 'typing' });
+                else {
                     if (!state.history.activities.find(function (a) { return a.id === activity.id; }))
                         this.store.dispatch({ type: 'Receive_Message', activity: activity });
                     break;
                 }
-                activity = Object.assign({}, activity, { type: 'typing' });
             case "typing":
                 if (this.typingTimers[activity.from.id]) {
                     clearTimeout(this.typingTimers[activity.from.id]);

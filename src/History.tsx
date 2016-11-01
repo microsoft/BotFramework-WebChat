@@ -11,30 +11,19 @@ interface Props {
 }
 
 export class History extends React.Component<Props, {}> {
-    scrollMe: Element;
-    autoscrollSubscription: Subscription;
+    scrollMe: HTMLElement;
+    scrollToBottom = true;
 
     constructor(props: Props) {
         super(props);
     }
 
-    componentDidMount() {
-        this.autoscrollSubscription = Observable
-        .fromEvent<any>(this.scrollMe, 'scroll')
-        .map(e => e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight)
-        .distinctUntilChanged()
-        .subscribe(autoscroll =>
-            this.props.store.dispatch({ type: 'Set_Autoscroll', autoscroll } as HistoryAction)
-        );
+    componentWillUpdate() {
+        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
     }
 
-    componentWillUnmount() {
-        this.autoscrollSubscription.unsubscribe();
-    }
-
-    componentDidUpdate(prevProps:{}, prevState:{}) {
-        if (this.props.store.getState().history.autoscroll)
-            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+    componentDidUpdate() {
+        this.autoscroll();
     }
 
     onActivitySelected(e: React.SyntheticEvent<any>, activity: Activity) {
@@ -47,8 +36,12 @@ export class History extends React.Component<Props, {}> {
     }
 
     onImageLoad = () => {
-        if (this.props.store.getState().history.autoscroll)
-            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+        this.autoscroll();
+    }
+
+    autoscroll() {
+        if (this.scrollToBottom)
+            this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
     render() {

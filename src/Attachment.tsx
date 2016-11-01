@@ -36,7 +36,7 @@ export const AttachmentView = (props: {
         </ul>;
 
     const imageWithOnLoad = (url: string) =>
-        <img src={ url } onLoad={ () => props.onImageLoad() } />;
+        <img src={ url } onLoad={ () => {console.log("local onImageLoad");props.onImageLoad();} } />;
 
     const attachedImage = (images?: { url: string }[]) =>
         images && imageWithOnLoad(images[0].url);

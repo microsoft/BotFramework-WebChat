@@ -14,7 +14,7 @@ export const HistoryMessage = (props: {
     switch (props.activity.type) {
         case 'message':
             if (props.activity.attachments && props.activity.attachments.length >= 1) {
-                if (props.activity.attachmentLayout === 'carousel' && props.activity.attachments.length > 1)
+                if (props.activity.attachmentLayout === 'carousel')
                     return <Carousel store= { props.store } attachments={props.activity.attachments} onImageLoad={ props.onImageLoad }/>;
                 else
                     return (

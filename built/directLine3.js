@@ -20,6 +20,7 @@ var DirectLine3 = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
+            .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
             .retryWhen(function (error$) { return error$.delay(1000); })
             .subscribe(function (conversation) {

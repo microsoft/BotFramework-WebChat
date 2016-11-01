@@ -6,33 +6,21 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var HistoryMessage_1 = require('./HistoryMessage');
-var rxjs_1 = require('@reactivex/rxjs');
 var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
         var _this = this;
         _super.call(this, props);
+        this.scrollToBottom = true;
         this.onImageLoad = function () {
-            if (_this.props.store.getState().history.autoscroll)
-                _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight;
+            _this.autoscroll();
         };
     }
-    History.prototype.componentDidMount = function () {
-        var _this = this;
-        this.autoscrollSubscription = rxjs_1.Observable
-            .fromEvent(this.scrollMe, 'scroll')
-            .map(function (e) { return e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight; })
-            .distinctUntilChanged()
-            .subscribe(function (autoscroll) {
-            return _this.props.store.dispatch({ type: 'Set_Autoscroll', autoscroll: autoscroll });
-        });
+    History.prototype.componentWillUpdate = function () {
+        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
     };
-    History.prototype.componentWillUnmount = function () {
-        this.autoscrollSubscription.unsubscribe();
-    };
-    History.prototype.componentDidUpdate = function (prevProps, prevState) {
-        if (this.props.store.getState().history.autoscroll)
-            this.scrollMe.scrollTop = this.scrollMe.scrollHeight;
+    History.prototype.componentDidUpdate = function () {
+        this.autoscroll();
     };
     History.prototype.onActivitySelected = function (e, activity) {
         if (this.props.onActivitySelected) {
@@ -41,6 +29,10 @@ var History = (function (_super) {
             this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity });
             this.props.onActivitySelected(activity);
         }
+    };
+    History.prototype.autoscroll = function () {
+        if (this.scrollToBottom)
+            this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     };
     History.prototype.render = function () {
         var _this = this;
