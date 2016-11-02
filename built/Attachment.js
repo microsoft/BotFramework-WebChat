@@ -63,7 +63,6 @@ exports.AttachmentView = function (props) {
                         return React.createElement("tr", null, 
                             React.createElement("td", null, 
                                 item.image && imageWithOnLoad(item.image.url), 
-                                " /> }", 
                                 React.createElement("span", null, item.title)), 
                             React.createElement("td", null, item.price));
                     })), 
@@ -71,7 +70,7 @@ exports.AttachmentView = function (props) {
                         React.createElement("tr", null, 
                             React.createElement("td", null, "Tax"), 
                             React.createElement("td", null, props.attachment.content.tax)), 
-                        React.createElement("tr", null, 
+                        React.createElement("tr", {className: "total"}, 
                             React.createElement("td", null, "Total"), 
                             React.createElement("td", null, props.attachment.content.total))))
             ));

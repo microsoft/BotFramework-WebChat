@@ -40,13 +40,15 @@ var History = (function (_super) {
         return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
             React.createElement("div", {className: "wc-message-group"}, 
                 React.createElement("div", {className: "wc-message-group-content"}, state.history.activities.map(function (activity, index) {
-                    return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-                        React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
-                            React.createElement("svg", {className: "wc-message-callout"}, 
-                                React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
-                                React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-                            React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
-                        React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
+                    return React.createElement("div", {key: index, className: "wc-message-wrapper"}, 
+                        React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
+                            React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
+                                React.createElement("svg", {className: "wc-message-callout"}, 
+                                    React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
+                                    React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
+                                React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+                            React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id))
+                    );
                 }))
             )
         ));

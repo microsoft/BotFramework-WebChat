@@ -8,7 +8,7 @@ exports.CarouselOrList = function (props) {
         if (props.attachmentLayout === 'carousel')
             return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.attachments, onImageLoad: props.onImageLoad});
         else
-            return (React.createElement("div", null, 
+            return (React.createElement("div", {className: "wc-list"}, 
                 " ", 
                 props.attachments.map(function (attachment) {
                     return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
