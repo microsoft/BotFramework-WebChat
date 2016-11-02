@@ -80,7 +80,6 @@ var DirectLine3 = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
     DirectLine3.prototype.postFile = function (file, from) {
@@ -95,7 +94,6 @@ var DirectLine3 = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
     DirectLine3.prototype.getActivity$ = function () {
@@ -128,7 +126,6 @@ var DirectLine3 = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response; });
     };
     return DirectLine3;

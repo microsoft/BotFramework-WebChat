@@ -57,7 +57,6 @@ export class DirectLine3 implements IBotConnection {
                             "Authorization": `Bearer ${this.token}`
                         }
                     })
-//                    .retryWhen(error$ => error$.delay(1000))
                     .map(ajaxResponse => <string>ajaxResponse.response)
                 ).subscribe(token => {
                     console.log("refreshing token", token, "at", new Date())
@@ -104,7 +103,6 @@ export class DirectLine3 implements IBotConnection {
             }
         })
 //      .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
-        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => ajaxResponse.response.id as string);
     }
 
@@ -121,7 +119,6 @@ export class DirectLine3 implements IBotConnection {
             }
         })
 //      .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
-        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => ajaxResponse.response.id as string);
     }
 
@@ -161,7 +158,6 @@ export class DirectLine3 implements IBotConnection {
             }
         })
 //      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
-        .retryWhen(error$ => error$.delay(1000))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup);
     }
 }
