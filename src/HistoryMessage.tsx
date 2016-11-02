@@ -16,7 +16,7 @@ export const CarouselOrList = (props: {
             return <Carousel store= { props.store } attachments={props.attachments} onImageLoad={ props.onImageLoad }/>;
         else
             return (
-                <div> { props.attachments.map(attachment => 
+                <div className="wc-list"> { props.attachments.map(attachment => 
                     <AttachmentView store={ props.store } attachment={ attachment } onImageLoad={ props.onImageLoad }/>
                 ) } </div>
             );

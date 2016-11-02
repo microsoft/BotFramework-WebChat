@@ -310,6 +310,15 @@
         margin-left: 10px;
         width: 100px;
     }
+/* list */
+
+    .wc-list > .wc-card {
+        margin-top: 8px;
+    }
+    
+    .wc-list > .wc-card:first-child {
+        margin-top: 0;
+    }
 
 /* carousel */
 
