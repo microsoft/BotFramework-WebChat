@@ -352,13 +352,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return (React.createElement("div", {className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; }}, 
 	            React.createElement("div", {className: "wc-message-group"}, 
 	                React.createElement("div", {className: "wc-message-group-content"}, state.history.activities.map(function (activity, index) {
-	                    return React.createElement("div", {key: index, className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-	                        React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
-	                            React.createElement("svg", {className: "wc-message-callout"}, 
-	                                React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
-	                                React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-	                            React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
-	                        React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
+	                    return React.createElement("div", {key: index, className: "wc-message-wrapper"}, 
+	                        React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
+	                            React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
+	                                React.createElement("svg", {className: "wc-message-callout"}, 
+	                                    React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
+	                                    React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
+	                                React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+	                            React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id))
+	                    );
 	                }))
 	            )
 	        ));
@@ -384,7 +386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (props.attachmentLayout === 'carousel')
 	            return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.attachments, onImageLoad: props.onImageLoad});
 	        else
-	            return (React.createElement("div", null, 
+	            return (React.createElement("div", {className: "wc-list"}, 
 	                " ", 
 	                props.attachments.map(function (attachment) {
 	                    return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
@@ -475,7 +477,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        return React.createElement("tr", null, 
 	                            React.createElement("td", null, 
 	                                item.image && imageWithOnLoad(item.image.url), 
-	                                " /> }", 
 	                                React.createElement("span", null, item.title)), 
 	                            React.createElement("td", null, item.price));
 	                    })), 
@@ -483,7 +484,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        React.createElement("tr", null, 
 	                            React.createElement("td", null, "Tax"), 
 	                            React.createElement("td", null, props.attachment.content.tax)), 
-	                        React.createElement("tr", null, 
+	                        React.createElement("tr", {className: "total"}, 
 	                            React.createElement("td", null, "Total"), 
 	                            React.createElement("td", null, props.attachment.content.total))))
 	            ));
