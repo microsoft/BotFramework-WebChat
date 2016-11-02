@@ -31,6 +31,7 @@
 
     .wc-header {
         background-color: #3e92d2;
+        box-shadow: 0 1px rgba(0,0,0,0.2);
         box-sizing: content-box;
         color: #fff;
         font-weight: 500;
@@ -41,6 +42,7 @@
         position: absolute;
         right: 0;
         top: 0;
+        z-index: 1;
     }
 
     .wc-time {
