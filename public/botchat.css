@@ -309,6 +309,10 @@
         line-height: 2.25;
     }
 
+    .wc-card.receipt tfoot .total {
+        font-weight: bold;
+    }
+
     .wc-card.thumbnail img {
         float: right;
         margin-left: 10px;

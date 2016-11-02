@@ -95,7 +95,7 @@ export const AttachmentView = (props: {
                                 <td>Tax</td>
                                 <td>{ props.attachment.content.tax }</td>
                             </tr>
-                            <tr>
+                            <tr className="total">
                                 <td>Total</td>
                                 <td>{ props.attachment.content.total }</td>
                             </tr>
