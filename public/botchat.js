@@ -292,7 +292,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } });
 	        state = store.getState();
 	        state.connection.botConnection.postFile(file, state.connection.user)
-	            .retry(2)
 	            .subscribe(function (id) {
 	            console.log("success posting file");
 	            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });

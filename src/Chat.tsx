@@ -179,7 +179,6 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
         }} as HistoryAction);
         state = store.getState();
         state.connection.botConnection.postFile(file, state.connection.user)
-        .retry(2)
         .subscribe(id => {
             console.log("success posting file");
             store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
