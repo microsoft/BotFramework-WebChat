@@ -6,16 +6,16 @@
     }
 
     .wc-app button {
-        background-color: #29a3ed;
+        background-color: transparent;
         border: none;
-        border-radius: 2px;
-        color: #fff;
+        border-top: 1px solid #d2dde5;
         cursor: pointer;
         outline: none;
     }
 
     .wc-app button:hover {
         background-color: #3e92d2;
+        color: #fff;
     }
 
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
@@ -31,16 +31,18 @@
 
     .wc-header {
         background-color: #3e92d2;
+        box-shadow: 0 1px rgba(0,0,0,0.2);
         box-sizing: content-box;
         color: #fff;
         font-weight: 500;
-        height: 35px;   /* height + padding-top = total height */
+        height: 30px;   /* height + padding-top = total height */
         left: 0;
         letter-spacing: 0.5px;
-        padding: 10px 15px 0 15px;
+        padding: 8px 8px 0 8px;
         position: absolute;
         right: 0;
         top: 0;
+        z-index: 1;
     }
 
     .wc-time {
@@ -56,7 +58,7 @@
         padding: 10px;
         position: absolute;
         right: 0;
-        top: 45px;  /* from wc-header total height */
+        top: 38px;  /* from wc-header total height */
     }
 
     .wc-console {
@@ -139,9 +141,29 @@
         vertical-align: bottom;
     }
 
-    .wc-message {
+    .wc-message-wrapper {
+        animation: animationFrames 2s;
+        animation-iteration-count: 1;
         clear: both;
         margin-bottom: 10px;
+        overflow: hidden;
+        /*transition: max-height 2s ease-in-out;*/
+    }
+
+    @keyframes animationFrames{
+        0% {
+            /*max-height: 0;*/
+            opacity: 0;
+        }
+        20% {
+            opacity: 1;
+        }
+        100% {
+            /*max-height: 2000px;*/
+        }
+    }
+
+    .wc-message {
         max-width: 80%;
         position: relative;
     }
@@ -222,11 +244,11 @@
 
     ul.wc-card-buttons {
         clear: both;
+        margin: 0 -8px -8px -8px;
     }
 
     ul.wc-card-buttons li {
         list-style-type: none;
-        margin-top: 8px;
         text-align: center;
     }
 
@@ -289,10 +311,28 @@
         line-height: 2.25;
     }
 
+    .wc-card.receipt tfoot .total {
+        font-weight: bold;
+    }
+
     .wc-card.thumbnail img {
         float: right;
         margin-left: 10px;
         width: 100px;
+    }
+
+    .wc-card.signin h1 {
+        margin: 10px 24px 16px 14px;
+    }
+
+/* list */
+
+    .wc-list > .wc-card {
+        margin-top: 8px;
+    }
+
+    .wc-list > .wc-card:first-child {
+        margin-top: 0;
     }
 
 /* carousel */
@@ -377,12 +417,12 @@
     }
 
     .wc-message-from-me .wc-message-content {
-        background-color: #808c95;
+        background-color: #3E92D2;
         color: #fff;
     }
 
     .wc-message-from-me svg.wc-message-callout path {
-        fill: #808c95;
+        fill: #3E92D2;
     }
 
     .wc-message-from-me svg.wc-message-callout path.point-left {
@@ -481,4 +521,18 @@
 
     .format-markdown code {
         white-space: pre-wrap;
+    }
+
+/* browser scrollbar customization */
+
+    .wc-app ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .wc-app ::-webkit-scrollbar * {
+        background-color: transparent;
+    }
+
+    .wc-app ::-webkit-scrollbar-thumb {
+        background-color: #DBDEE1;
     }
