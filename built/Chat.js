@@ -126,4 +126,35 @@ exports.sendPostBack = function (store, text) {
         console.log("failed to send postBack", error);
     });
 };
+exports.sendFiles = function (store, files) {
+    var _loop_1 = function(i, numFiles) {
+        var file = files[i];
+        console.log("file", file);
+        var state = store.getState();
+        var sendId = state.history.sendCounter;
+        store.dispatch({ type: 'Send_Message', activity: {
+                type: "message",
+                from: state.connection.user,
+                timestamp: Date.now().toString(),
+                attachments: [{
+                        contentType: file.type,
+                        contentUrl: window.URL.createObjectURL(file),
+                        name: file.name
+                    }]
+            } });
+        state = store.getState();
+        state.connection.botConnection.postFile(file, state.connection.user)
+            .retry(2)
+            .subscribe(function (id) {
+            console.log("success posting file");
+            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+        }, function (error) {
+            console.log("failed to post file");
+            store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+        });
+    };
+    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
+        _loop_1(i, numFiles);
+    }
+};
 //# sourceMappingURL=Chat.js.map
