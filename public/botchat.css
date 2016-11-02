@@ -520,3 +520,17 @@
     .format-markdown code {
         white-space: pre-wrap;
     }
+
+/* browser scrollbar customization */
+
+    .wc-app ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .wc-app ::-webkit-scrollbar * {
+        background-color: transparent;
+    }
+
+    .wc-app ::-webkit-scrollbar-thumb {
+        background-color: #DBDEE1;
+    }
