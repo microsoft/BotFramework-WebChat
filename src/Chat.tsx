@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subscription } from '@reactivex/rxjs';
-import { Activity, Message, IBotConnection, User } from './BotConnection';
+import { Activity, Message, IBotConnection, User, MediaType } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
@@ -159,4 +159,33 @@ export const sendPostBack = (store: ChatStore, text: string) => {
         }, error => {
             console.log("failed to send postBack", error);
         });
+}
+
+export const sendFiles = (store: ChatStore, files: FileList) => {
+    for (let i = 0, numFiles = files.length; i < numFiles; i++) {
+        const file = files[i];
+        console.log("file", file);
+        let state = store.getState();
+        const sendId = state.history.sendCounter;
+        store.dispatch({ type: 'Send_Message', activity: {
+            type: "message",
+            from: state.connection.user,
+            timestamp: Date.now().toString(),
+            attachments: [{
+                contentType: file.type as MediaType,
+                contentUrl: window.URL.createObjectURL(file),
+                name: file.name
+            }]
+        }} as HistoryAction);
+        state = store.getState();
+        state.connection.botConnection.postFile(file, state.connection.user)
+        .retry(2)
+        .subscribe(id => {
+            console.log("success posting file");
+            store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+        }, error => {
+            console.log("failed to post file");
+            store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+        });
+    }
 }

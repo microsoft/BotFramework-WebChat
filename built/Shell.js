@@ -11,39 +11,6 @@ var Shell = (function (_super) {
     function Shell(props) {
         _super.call(this, props);
     }
-    Shell.prototype.sendFiles = function (files) {
-        var _this = this;
-        var _loop_1 = function(i, numFiles) {
-            var file = files[i];
-            console.log("file", file);
-            var state = this_1.props.store.getState();
-            var sendId = state.history.sendCounter;
-            this_1.props.store.dispatch({ type: 'Send_Message', activity: {
-                    type: "message",
-                    from: state.connection.user,
-                    timestamp: Date.now().toString(),
-                    attachments: [{
-                            contentType: file.type,
-                            contentUrl: window.URL.createObjectURL(file),
-                            name: file.name
-                        }]
-                } });
-            state = this_1.props.store.getState();
-            state.connection.botConnection.postFile(file, state.connection.user)
-                .retry(2)
-                .subscribe(function (id) {
-                console.log("success posting file");
-                _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-            }, function (error) {
-                console.log("failed to post file");
-                _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-            });
-        };
-        var this_1 = this;
-        for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-            _loop_1(i, numFiles);
-        }
-    };
     Shell.prototype.onKeyPress = function (e) {
         if (e.key === 'Enter' && this.textInput.value.length > 0)
             Chat_1.sendMessage(this.props.store, this.textInput.value);
@@ -55,7 +22,7 @@ var Shell = (function (_super) {
     };
     Shell.prototype.onClickFile = function (files) {
         this.textInput.focus();
-        this.sendFiles(files);
+        Chat_1.sendFiles(this.props.store, files);
     };
     Shell.prototype.onChangeInput = function (input) {
         this.props.store.dispatch({ type: 'Update_Input', input: input });
