@@ -2519,12 +2519,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    Shell.prototype.onKeyPress = function (e) {
-	        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+	        if (e.key === 'Enter' && this.textInput.value.length > 0)
 	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickSend = function () {
 	        this.textInput.focus();
-	        if (this.textInput.value.length >= 0)
+	        if (this.textInput.value.length > 0)
 	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickFile = function (files) {

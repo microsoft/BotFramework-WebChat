@@ -45,13 +45,13 @@ export class Shell extends React.Component<Props, {}> {
     }
 
     onKeyPress(e) {
-        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+        if (e.key === 'Enter' && this.textInput.value.length > 0)
             sendMessage(this.props.store, this.textInput.value);
     }
 
     onClickSend() {
         this.textInput.focus();
-        if (this.textInput.value.length >= 0)
+        if (this.textInput.value.length > 0)
             sendMessage(this.props.store, this.textInput.value);
     }
 
