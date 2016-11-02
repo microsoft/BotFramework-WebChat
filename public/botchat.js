@@ -274,6 +274,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	        console.log("failed to send postBack", error);
 	    });
 	};
+	exports.sendFiles = function (store, files) {
+	    var _loop_1 = function(i, numFiles) {
+	        var file = files[i];
+	        console.log("file", file);
+	        var state = store.getState();
+	        var sendId = state.history.sendCounter;
+	        store.dispatch({ type: 'Send_Message', activity: {
+	                type: "message",
+	                from: state.connection.user,
+	                timestamp: Date.now().toString(),
+	                attachments: [{
+	                        contentType: file.type,
+	                        contentUrl: window.URL.createObjectURL(file),
+	                        name: file.name
+	                    }]
+	            } });
+	        state = store.getState();
+	        state.connection.botConnection.postFile(file, state.connection.user)
+	            .retry(2)
+	            .subscribe(function (id) {
+	            console.log("success posting file");
+	            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+	        }, function (error) {
+	            console.log("failed to post file");
+	            store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+	        });
+	    };
+	    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
+	        _loop_1(i, numFiles);
+	    }
+	};
 
 
 /***/ },
@@ -287,7 +318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(3);
-	var HistoryMessage_1 = __webpack_require__(6);
+	var ActivityView_1 = __webpack_require__(6);
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
@@ -327,7 +358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            React.createElement("svg", {className: "wc-message-callout"}, 
 	                                React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
 	                                React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-	                            React.createElement(HistoryMessage_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+	                            React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
 	                        React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
 	                }))
 	            )
@@ -367,12 +398,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ActivityView = function (props) {
 	    switch (props.activity.type) {
 	        case 'message':
-	            var text = props.activity.text ?
-	                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}) :
-	                React.createElement("span", null);
-	            console.log("text", text);
 	            return (React.createElement("div", null, 
-	                text, 
+	                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}), 
 	                React.createElement(exports.CarouselOrList, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
 	        case 'typing':
 	            return React.createElement("div", null, "TYPING");
@@ -2524,51 +2551,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function Shell(props) {
 	        _super.call(this, props);
 	    }
-	    Shell.prototype.sendFiles = function (files) {
-	        var _this = this;
-	        var _loop_1 = function(i, numFiles) {
-	            var file = files[i];
-	            console.log("file", file);
-	            var state = this_1.props.store.getState();
-	            var sendId = state.history.sendCounter;
-	            this_1.props.store.dispatch({ type: 'Send_Message', activity: {
-	                    type: "message",
-	                    from: state.connection.user,
-	                    timestamp: Date.now().toString(),
-	                    attachments: [{
-	                            contentType: file.type,
-	                            contentUrl: window.URL.createObjectURL(file),
-	                            name: file.name
-	                        }]
-	                } });
-	            state = this_1.props.store.getState();
-	            state.connection.botConnection.postFile(file, state.connection.user)
-	                .retry(2)
-	                .subscribe(function (id) {
-	                console.log("success posting file");
-	                _this.props.store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-	            }, function (error) {
-	                console.log("failed to post file");
-	                _this.props.store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-	            });
-	        };
-	        var this_1 = this;
-	        for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-	            _loop_1(i, numFiles);
-	        }
-	    };
 	    Shell.prototype.onKeyPress = function (e) {
-	        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+	        if (e.key === 'Enter' && this.textInput.value.length > 0)
 	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickSend = function () {
 	        this.textInput.focus();
-	        if (this.textInput.value.length >= 0)
+	        if (this.textInput.value.length > 0)
 	            Chat_1.sendMessage(this.props.store, this.textInput.value);
 	    };
 	    Shell.prototype.onClickFile = function (files) {
 	        this.textInput.focus();
-	        this.sendFiles(files);
+	        Chat_1.sendFiles(this.props.store, files);
 	    };
 	    Shell.prototype.onChangeInput = function (input) {
 	        this.props.store.dispatch({ type: 'Update_Input', input: input });
@@ -22026,6 +22020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	var rxjs_1 = __webpack_require__(32);
 	var intervalRefreshToken = 29 * 60 * 1000;
+	var timeout = 10 * 1000;
 	var DirectLine3 = (function () {
 	    function DirectLine3(secretOrToken, domain, segment) {
 	        if (domain === void 0) { domain = "https://directline.botframework.com"; }
@@ -22040,6 +22035,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: this.domain + "/" + this.segment + "/conversations",
+	            timeout: timeout,
 	            headers: {
 	                "Accept": "application/json",
 	                "Authorization": "Bearer " + this.token
@@ -22047,7 +22043,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        })
 	            .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
-	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .subscribe(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
 	            _this.token = conversation.token;
@@ -22057,11 +22052,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return rxjs_1.Observable.ajax({
 	                        method: "GET",
 	                        url: _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
+	                        timeout: timeout,
 	                        headers: {
 	                            "Authorization": "Bearer " + _this.token
 	                        }
 	                    })
-	                        .retryWhen(function (error$) { return error$.delay(1000); })
 	                        .map(function (ajaxResponse) { return ajaxResponse.response; });
 	                }).subscribe(function (token) {
 	                    console.log("refreshing token", token, "at", new Date());
@@ -22098,12 +22093,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                conversationId: this.conversationId,
 	                channelData: channelData
 	            },
+	            timeout: timeout,
 	            headers: {
 	                "Content-Type": "application/json",
 	                "Authorization": "Bearer " + this.token
 	            }
 	        })
-	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
 	    };
 	    DirectLine3.prototype.postFile = function (file, from) {
@@ -22113,11 +22108,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            method: "POST",
 	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
 	            body: formData,
+	            timeout: timeout,
 	            headers: {
 	                "Authorization": "Bearer " + this.token
 	            }
 	        })
-	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
 	    };
 	    DirectLine3.prototype.getActivity$ = function () {
@@ -22144,12 +22139,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return rxjs_1.Observable.ajax({
 	            method: "GET",
 	            url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
+	            timeout: timeout,
 	            headers: {
 	                "Accept": "application/json",
 	                "Authorization": "Bearer " + this.token
 	            }
 	        })
-	            .retryWhen(function (error$) { return error$.delay(1000); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; });
 	    };
 	    return DirectLine3;

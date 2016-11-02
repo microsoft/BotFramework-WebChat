@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable } from '@reactivex/rxjs';
 import { HistoryAction, ChatStore } from './Store';
 import { Message, Media, MediaType } from './BotConnection';
-import { sendMessage, trySendMessage } from './Chat';
+import { sendMessage, trySendMessage, sendFiles } from './Chat';
 
 interface Props {
     store: ChatStore
@@ -15,49 +15,20 @@ export class Shell extends React.Component<Props, {}> {
         super(props);
     }
 
-    sendFiles(files: FileList) {
-        for (let i = 0, numFiles = files.length; i < numFiles; i++) {
-            const file = files[i];
-            console.log("file", file);
-            let state = this.props.store.getState();
-            const sendId = state.history.sendCounter;
-            this.props.store.dispatch({ type: 'Send_Message', activity: {
-                type: "message",
-                from: state.connection.user,
-                timestamp: Date.now().toString(),
-                attachments: [{
-                    contentType: file.type as MediaType,
-                    contentUrl: window.URL.createObjectURL(file),
-                    name: file.name
-                }]
-            }} as HistoryAction);
-            state = this.props.store.getState();
-            state.connection.botConnection.postFile(file, state.connection.user)
-            .retry(2)
-            .subscribe(id => {
-                console.log("success posting file");
-                this.props.store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
-            }, error => {
-                console.log("failed to post file");
-                this.props.store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
-            });
-        }
-    }
-
     onKeyPress(e) {
-        if (e.key === 'Enter' && this.textInput.value.length >= 0)
+        if (e.key === 'Enter' && this.textInput.value.length > 0)
             sendMessage(this.props.store, this.textInput.value);
     }
 
     onClickSend() {
         this.textInput.focus();
-        if (this.textInput.value.length >= 0)
+        if (this.textInput.value.length > 0)
             sendMessage(this.props.store, this.textInput.value);
     }
 
     onClickFile(files: FileList) {
         this.textInput.focus();
-        this.sendFiles(files);
+        sendFiles(this.props.store, files);
     }
 
     onChangeInput(input: string) {
