@@ -535,6 +535,10 @@
         white-space: pre-wrap;
     }
 
+    .format-markdown+div {
+        margin-top: 8px;
+    }
+
 /* browser scrollbar customization */
 
     .wc-app ::-webkit-scrollbar {
