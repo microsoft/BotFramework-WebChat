@@ -140,8 +140,8 @@
     }
 
     .wc-message-wrapper {
-        /*animation: animationFrames 2s;*/
-        /*animation-iteration-count: 1;*/
+        animation: animationFrames 2s;
+        animation-iteration-count: 1;
         clear: both;
         margin-bottom: 10px;
         overflow: hidden;
@@ -150,10 +150,14 @@
 
     @keyframes animationFrames{
         0% {
-            max-height: 0;
+            /*max-height: 0;*/
+            opacity: 0;
+        }
+        20% {
+            opacity: 1;
         }
         100% {
-            max-height: 2000px;
+            /*max-height: 2000px;*/
         }
     }
 
@@ -315,7 +319,7 @@
     .wc-list > .wc-card {
         margin-top: 8px;
     }
-    
+
     .wc-list > .wc-card:first-child {
         margin-top: 0;
     }
