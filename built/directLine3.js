@@ -1,6 +1,7 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var intervalRefreshToken = 29 * 60 * 1000;
+var timeout = 10 * 1000;
 var DirectLine3 = (function () {
     function DirectLine3(secretOrToken, domain, segment) {
         if (domain === void 0) { domain = "https://directline.botframework.com"; }
@@ -15,6 +16,7 @@ var DirectLine3 = (function () {
         rxjs_1.Observable.ajax({
             method: "POST",
             url: this.domain + "/" + this.segment + "/conversations",
+            timeout: timeout,
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Bearer " + this.token
@@ -22,7 +24,6 @@ var DirectLine3 = (function () {
         })
             .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
             _this.token = conversation.token;
@@ -32,11 +33,11 @@ var DirectLine3 = (function () {
                     return rxjs_1.Observable.ajax({
                         method: "GET",
                         url: _this.domain + "/" + _this.segment + "/tokens/" + _this.conversationId + "/refresh",
+                        timeout: timeout,
                         headers: {
                             "Authorization": "Bearer " + _this.token
                         }
                     })
-                        .retryWhen(function (error$) { return error$.delay(1000); })
                         .map(function (ajaxResponse) { return ajaxResponse.response; });
                 }).subscribe(function (token) {
                     console.log("refreshing token", token, "at", new Date());
@@ -73,12 +74,12 @@ var DirectLine3 = (function () {
                 conversationId: this.conversationId,
                 channelData: channelData
             },
+            timeout: timeout,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
     DirectLine3.prototype.postFile = function (file, from) {
@@ -88,11 +89,11 @@ var DirectLine3 = (function () {
             method: "POST",
             url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
             body: formData,
+            timeout: timeout,
             headers: {
                 "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
     DirectLine3.prototype.getActivity$ = function () {
@@ -119,12 +120,12 @@ var DirectLine3 = (function () {
         return rxjs_1.Observable.ajax({
             method: "GET",
             url: this.domain + "/" + this.segment + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
+            timeout: timeout,
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response; });
     };
     return DirectLine3;
