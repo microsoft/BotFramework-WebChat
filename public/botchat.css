@@ -6,16 +6,16 @@
     }
 
     .wc-app button {
-        background-color: #29a3ed;
+        background-color: transparent;
         border: none;
-        border-radius: 2px;
-        color: #fff;
+        border-top: 1px solid #d2dde5;
         cursor: pointer;
         outline: none;
     }
 
     .wc-app button:hover {
         background-color: #3e92d2;
+        color: #fff;
     }
 
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
@@ -242,11 +242,11 @@
 
     ul.wc-card-buttons {
         clear: both;
+        margin: 0 -8px -8px -8px;
     }
 
     ul.wc-card-buttons li {
         list-style-type: none;
-        margin-top: 8px;
         text-align: center;
     }
 
@@ -318,6 +318,11 @@
         margin-left: 10px;
         width: 100px;
     }
+
+    .wc-card.signin h1 {
+        margin: 10px 24px 16px 14px;
+    }
+
 /* list */
 
     .wc-list > .wc-card {
