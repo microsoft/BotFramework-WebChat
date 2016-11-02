@@ -139,9 +139,25 @@
         vertical-align: bottom;
     }
 
-    .wc-message {
+    .wc-message-wrapper {
+        /*animation: animationFrames 2s;*/
+        /*animation-iteration-count: 1;*/
         clear: both;
         margin-bottom: 10px;
+        overflow: hidden;
+        /*transition: max-height 2s ease-in-out;*/
+    }
+
+    @keyframes animationFrames{
+        0% {
+            max-height: 0;
+        }
+        100% {
+            max-height: 2000px;
+        }
+    }
+
+    .wc-message {
         max-width: 80%;
         position: relative;
     }

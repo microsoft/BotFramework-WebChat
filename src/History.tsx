@@ -51,7 +51,8 @@ export class History extends React.Component<Props, {}> {
                 <div className="wc-message-group">
                     <div className="wc-message-group-content">
                     { state.history.activities.map((activity:Activity, index) =>
-                        <div key={index} className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
+                        <div key={index} className="wc-message-wrapper">
+                        <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
                             <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
                                 <svg className="wc-message-callout">
                                     <path className="point-left" d="m0,6 l6 6 v-12 z" />
@@ -60,6 +61,7 @@ export class History extends React.Component<Props, {}> {
                                 <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
                             </div>
                             <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
+                            </div>
                         </div>
                     ) }
                     </div>
