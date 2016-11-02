@@ -8,6 +8,7 @@ interface ActivityGroup {
 }
 
 const intervalRefreshToken = 29*60*1000;
+const timeout = 10*1000;
 
 export class DirectLine3 implements IBotConnection {
     connected$ = new BehaviorSubject(false);
@@ -33,6 +34,7 @@ export class DirectLine3 implements IBotConnection {
         Observable.ajax({
             method: "POST",
             url: `${this.domain}/${this.segment}/conversations`,
+            timeout,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${this.token}`
@@ -40,7 +42,7 @@ export class DirectLine3 implements IBotConnection {
         })
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
-        .retryWhen(error$ => error$.delay(1000))
+//        .retryWhen(error$ => error$.delay(1000))
         .subscribe(conversation => {
             this.conversationId = conversation.conversationId;
             this.token = conversation.token;
@@ -50,11 +52,12 @@ export class DirectLine3 implements IBotConnection {
                     Observable.ajax({
                         method: "GET",
                         url: `${this.domain}/${this.segment}/tokens/${this.conversationId}/refresh`,
+                        timeout,
                         headers: {
                             "Authorization": `Bearer ${this.token}`
                         }
                     })
-                    .retryWhen(error$ => error$.delay(1000))
+//                    .retryWhen(error$ => error$.delay(1000))
                     .map(ajaxResponse => <string>ajaxResponse.response)
                 ).subscribe(token => {
                     console.log("refreshing token", token, "at", new Date())
@@ -94,6 +97,7 @@ export class DirectLine3 implements IBotConnection {
                 conversationId: this.conversationId,
                 channelData
             },
+            timeout,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${this.token}`
@@ -111,6 +115,7 @@ export class DirectLine3 implements IBotConnection {
             method: "POST",
             url: `${this.domain}/${this.segment}/conversations/${this.conversationId}/upload?userId=${from.id}`,
             body: formData,
+            timeout,
             headers: {
                 "Authorization": `Bearer ${this.token}`
             }
@@ -149,6 +154,7 @@ export class DirectLine3 implements IBotConnection {
         return Observable.ajax({
             method: "GET",
             url: `${this.domain}/${this.segment}/conversations/${this.conversationId}/activities?watermark=${watermark}`,
+            timeout,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${this.token}`
