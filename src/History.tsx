@@ -2,8 +2,7 @@ import * as React from 'react';
 //import { Timestamp } from './Timestamp';
 import { Activity } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
-import { ActivityView } from './HistoryMessage';
-import { Observable, Subscription } from '@reactivex/rxjs';
+import { ActivityView } from './ActivityView';
 
 interface Props {
     store: ChatStore,

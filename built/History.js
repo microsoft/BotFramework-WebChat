@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
-var HistoryMessage_1 = require('./HistoryMessage');
+var ActivityView_1 = require('./ActivityView');
 var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
@@ -45,7 +45,7 @@ var History = (function (_super) {
                             React.createElement("svg", {className: "wc-message-callout"}, 
                                 React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
                                 React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-                            React.createElement(HistoryMessage_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+                            React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
                         React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
                 }))
             )

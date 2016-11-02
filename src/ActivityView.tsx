@@ -31,13 +31,9 @@ export const ActivityView = (props: {
 }) => {
     switch (props.activity.type) {
         case 'message':
-            let text = props.activity.text ?
-                <FormattedText text={ props.activity.text } format={ props.activity.textFormat } /> :
-                <span/>;
-            console.log("text", text);
             return (
                 <div>
-                    { text }
+                    <FormattedText text={ props.activity.text } format={ props.activity.textFormat }/>
                     <CarouselOrList store={ props.store } attachments={ props.activity.attachments } attachmentLayout={ props.activity.attachmentLayout } onImageLoad= { props.onImageLoad }/>
                 </div>
             );

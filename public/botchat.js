@@ -287,7 +287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(3);
-	var HistoryMessage_1 = __webpack_require__(6);
+	var ActivityView_1 = __webpack_require__(378);
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
@@ -327,7 +327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            React.createElement("svg", {className: "wc-message-callout"}, 
 	                                React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
 	                                React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-	                            React.createElement(HistoryMessage_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+	                            React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
 	                        React.createElement("div", {className: "wc-message-from"}, activity.from.id === state.connection.user.id ? 'you' : activity.from.id));
 	                }))
 	            )
@@ -341,46 +341,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var React = __webpack_require__(3);
-	var Attachment_1 = __webpack_require__(7);
-	var Carousel_1 = __webpack_require__(8);
-	var FormattedText_1 = __webpack_require__(9);
-	exports.CarouselOrList = function (props) {
-	    if (props.attachments && props.attachments.length >= 1) {
-	        if (props.attachmentLayout === 'carousel')
-	            return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.attachments, onImageLoad: props.onImageLoad});
-	        else
-	            return (React.createElement("div", null, 
-	                " ", 
-	                props.attachments.map(function (attachment) {
-	                    return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
-	                }), 
-	                " "));
-	    }
-	    else
-	        return React.createElement("span", null);
-	};
-	exports.ActivityView = function (props) {
-	    switch (props.activity.type) {
-	        case 'message':
-	            var text = props.activity.text ?
-	                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}) :
-	                React.createElement("span", null);
-	            console.log("text", text);
-	            return (React.createElement("div", null, 
-	                text, 
-	                React.createElement(exports.CarouselOrList, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
-	        case 'typing':
-	            return React.createElement("div", null, "TYPING");
-	    }
-	};
-
-
-/***/ },
+/* 6 */,
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -22155,6 +22116,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return DirectLine3;
 	}());
 	exports.DirectLine3 = DirectLine3;
+
+
+/***/ },
+/* 378 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(3);
+	var Attachment_1 = __webpack_require__(7);
+	var Carousel_1 = __webpack_require__(8);
+	var FormattedText_1 = __webpack_require__(9);
+	exports.CarouselOrList = function (props) {
+	    if (props.attachments && props.attachments.length >= 1) {
+	        if (props.attachmentLayout === 'carousel')
+	            return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.attachments, onImageLoad: props.onImageLoad});
+	        else
+	            return (React.createElement("div", null, 
+	                " ", 
+	                props.attachments.map(function (attachment) {
+	                    return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
+	                }), 
+	                " "));
+	    }
+	    else
+	        return React.createElement("span", null);
+	};
+	exports.ActivityView = function (props) {
+	    switch (props.activity.type) {
+	        case 'message':
+	            return (React.createElement("div", null, 
+	                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}), 
+	                React.createElement(exports.CarouselOrList, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
+	        case 'typing':
+	            return React.createElement("div", null, "TYPING");
+	    }
+	};
 
 
 /***/ }

@@ -28,4 +28,4 @@ exports.ActivityView = function (props) {
             return React.createElement("div", null, "TYPING");
     }
 };
-//# sourceMappingURL=HistoryMessage.js.map
+//# sourceMappingURL=ActivityView.js.map
