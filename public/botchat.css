@@ -34,10 +34,10 @@
         box-sizing: content-box;
         color: #fff;
         font-weight: 500;
-        height: 35px;   /* height + padding-top = total height */
+        height: 30px;   /* height + padding-top = total height */
         left: 0;
         letter-spacing: 0.5px;
-        padding: 10px 15px 0 15px;
+        padding: 8px 8px 0 8px;
         position: absolute;
         right: 0;
         top: 0;
@@ -56,7 +56,7 @@
         padding: 10px;
         position: absolute;
         right: 0;
-        top: 45px;  /* from wc-header total height */
+        top: 38px;  /* from wc-header total height */
     }
 
     .wc-console {
@@ -415,12 +415,12 @@
     }
 
     .wc-message-from-me .wc-message-content {
-        background-color: #808c95;
+        background-color: #3E92D2;
         color: #fff;
     }
 
     .wc-message-from-me svg.wc-message-callout path {
-        fill: #808c95;
+        fill: #3E92D2;
     }
 
     .wc-message-from-me svg.wc-message-callout path.point-left {
