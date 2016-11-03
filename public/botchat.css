@@ -199,6 +199,14 @@
         max-width: 100%;
     }
 
+    .wc-message-content video {
+        max-width: 100%;
+    }
+
+    .wc-message-content video+h1 {
+        margin-top: 11px;
+    }
+
     .wc-message-from {
         color: #999;
         font-size: 11px;
