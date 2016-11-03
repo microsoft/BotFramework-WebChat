@@ -37,8 +37,10 @@ export class Shell extends React.Component<Props, {}> {
 
     render() {
         const state = this.props.store.getState();
+        let className = 'wc-console';
+        if (state.history.input.length > 0) className += ' has-text';
         return (
-            <div className="wc-console">
+            <div className={className}>
                 <label className="wc-upload">
                     <input type="file" accept="image/*" multiple onChange={ e => this.onClickFile((e.target as any).files) } />
                     <svg width="26" height="18">

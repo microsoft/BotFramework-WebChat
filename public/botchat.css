@@ -511,6 +511,10 @@
         right: 0;
     }
 
+    .wc-console.has-text .wc-send svg {
+        fill: #3A96DD;
+    }
+
 /* animation */
 
     .wc-animate-scroll {
