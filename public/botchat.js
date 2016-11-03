@@ -2570,7 +2570,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Shell.prototype.render = function () {
 	        var _this = this;
 	        var state = this.props.store.getState();
-	        return (React.createElement("div", {className: "wc-console"}, 
+	        var className = 'wc-console';
+	        if (state.history.input.length > 0)
+	            className += ' has-text';
+	        return (React.createElement("div", {className: className}, 
 	            React.createElement("label", {className: "wc-upload"}, 
 	                React.createElement("input", {type: "file", accept: "image/*", multiple: true, onChange: function (e) { return _this.onClickFile(e.target.files); }}), 
 	                React.createElement("svg", {width: "26", height: "18"}, 
