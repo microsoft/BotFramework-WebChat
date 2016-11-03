@@ -412,7 +412,7 @@
         max-width: 640px;
         padding: 0 4px;
         vertical-align: top;
-        white-space: nowrap;
+        white-space: normal;
         width: 85%;
     }
 
