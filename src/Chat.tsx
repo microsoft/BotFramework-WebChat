@@ -123,6 +123,8 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export const sendMessage = (store: ChatStore, text: string) => {
+    if (!text || typeof text !== 'string' || text.trim().length === 0)
+        return;
     let state = store.getState();
     const sendId = state.history.sendCounter;
     store.dispatch({ type: 'Send_Message', activity: {

@@ -1,6 +1,10 @@
 "use strict";
 var React = require('react');
 var Chat_1 = require('./Chat');
+var nonEmpty = function (value, template) {
+    if (typeof value === 'string' && value.length > 0)
+        return template;
+};
 exports.AttachmentView = function (props) {
     var state = props.store.getState();
     var onClickButton = function (type, value) {
@@ -79,6 +83,10 @@ exports.AttachmentView = function (props) {
         case "image/jpeg":
         case "image/gif":
             return imageWithOnLoad(props.attachment.contentUrl);
+        case "video/mp4":
+            return (React.createElement("div", {className: 'wc-card video'}, 
+                React.createElement("video", {src: props.attachment.contentUrl, poster: props.attachment.thumbnailUrl, controls: true}), 
+                nonEmpty(props.attachment.name, React.createElement("h1", null, props.attachment.name))));
         default:
             return React.createElement("span", null);
     }

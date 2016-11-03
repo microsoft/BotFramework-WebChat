@@ -90,6 +90,8 @@ var Chat = (function (_super) {
 }(React.Component));
 exports.Chat = Chat;
 exports.sendMessage = function (store, text) {
+    if (!text || typeof text !== 'string' || text.trim().length === 0)
+        return;
     var state = store.getState();
     var sendId = state.history.sendCounter;
     store.dispatch({ type: 'Send_Message', activity: {
