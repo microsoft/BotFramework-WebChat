@@ -6,16 +6,19 @@
     }
 
     .wc-app button {
-        background-color: transparent;
+        background-color: #0063B1;
         border: none;
-        border-top: 1px solid #d2dde5;
+        border-radius: 2px;
+        color: #fff;
         cursor: pointer;
         outline: none;
+        transition: color .2s ease, background-color .2s ease;
     }
-
+    
     .wc-app button:hover {
-        background-color: #3e92d2;
+        background-color: #3A96DD;
         color: #fff;
+        transition: color .2s ease, background-color .2s ease;
     }
 
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
@@ -30,7 +33,7 @@
     }
 
     .wc-header {
-        background-color: #3e92d2;
+        background-color: #3A96DD;
         box-shadow: 0 1px rgba(0,0,0,0.2);
         box-sizing: content-box;
         color: #fff;
@@ -212,8 +215,17 @@
     }
 
     .wc-card button {
+        background-color: transparent;
+        border: none;
+        border-top: 1px solid #d2dde5;
+        color: #3A96DD;
         height: 42px;
         width: 100%;
+    }
+
+    .wc-card button:hover {
+        background-color: transparent;
+        color: #0063B1;
     }
 
     .wc-card h1 {
@@ -417,12 +429,12 @@
     }
 
     .wc-message-from-me .wc-message-content {
-        background-color: #3E92D2;
+        background-color: #3A96DD;
         color: #fff;
     }
 
     .wc-message-from-me svg.wc-message-callout path {
-        fill: #3E92D2;
+        fill: #3A96DD;
     }
 
     .wc-message-from-me svg.wc-message-callout path.point-left {
@@ -437,7 +449,7 @@
 
     .wc-message-from-bot {
         float: left;
-        margin-left: 6px;
+        margin-left: 8px;
     }
 
     .wc-message-from-bot .wc-message-content {
@@ -499,17 +511,27 @@
         right: 0;
     }
 
+    .wc-console.has-text .wc-send svg {
+        fill: #3A96DD;
+    }
+
 /* animation */
 
     .wc-animate-scroll {
+        left: 0;
+        position: absolute;
         transition: left .8s ease;
     }
 
     .wc-animate-scroll-rapid {
+        left: 0;
+        position: absolute;
         transition: left .4s ease;
     }
 
     .wc-animate-scroll-near {
+        left: 0;
+        position: absolute;
         transition: left .5s ease-in-out;
     }
 
@@ -521,6 +543,10 @@
 
     .format-markdown code {
         white-space: pre-wrap;
+    }
+
+    .format-markdown+div {
+        margin-top: 8px;
     }
 
 /* browser scrollbar customization */
