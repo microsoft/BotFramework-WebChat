@@ -114,11 +114,10 @@ export const AttachmentView = (props: {
             return imageWithOnLoad(props.attachment.contentUrl);
 
         case "video/mp4":
-            let h1 = nonEmpty(props.attachment.name, <h1>{ props.attachment.name }</h1>);
             return (
                 <div className='wc-card video'>
                     <video src={ props.attachment.contentUrl } poster={ props.attachment.thumbnailUrl } controls />
-                    { h1 }                    
+                    { nonEmpty(props.attachment.name, <h1>{ props.attachment.name }</h1>) }                    
                 </div>
             );
 
