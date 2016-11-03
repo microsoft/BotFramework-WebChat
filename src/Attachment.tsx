@@ -3,6 +3,9 @@ import { Attachment, Button } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { sendMessage, sendPostBack } from './Chat';
 
+const nonEmpty = (value: string, template: JSX.Element): JSX.Element => {
+    if (typeof value === 'string' && value.length > 0) return template;
+}
 
 export const AttachmentView = (props: {
     store: ChatStore,
@@ -109,6 +112,14 @@ export const AttachmentView = (props: {
         case "image/jpeg":
         case "image/gif":
             return imageWithOnLoad(props.attachment.contentUrl);
+
+        case "video/mp4":
+            return (
+                <div className='wc-card video'>
+                    <video src={ props.attachment.contentUrl } poster={ props.attachment.thumbnailUrl } controls />
+                    { nonEmpty(props.attachment.name, <h1>{ props.attachment.name }</h1>) }                    
+                </div>
+            );
 
         default:
             return <span/>;

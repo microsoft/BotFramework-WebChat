@@ -77,7 +77,14 @@ export interface Receipt {
     }
 }    
 
-export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt;  
+export interface Video {
+    contentType: "video/mp4",
+    contentUrl: string,
+    name?: string,
+    thumbnailUrl?: string
+}
+
+export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | Video;
 
 export interface User {
     id: string,
