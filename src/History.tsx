@@ -59,7 +59,7 @@ export class History extends React.Component<Props, {}> {
                                 </svg>
                                 <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
                             </div>
-                            <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.id }</div>
+                            <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '' }</div>
                             </div>
                         </div>
                     ) }
