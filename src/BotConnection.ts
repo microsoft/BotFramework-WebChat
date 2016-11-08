@@ -7,7 +7,7 @@ export interface Conversation {
     streamUrl?: string
 }
 
-export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif" | "video/mp4"
+export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif" | "audio/mpeg" | "audio/mp4" | "video/mp4"
 
 export interface Media {
     contentType: MediaType,    
@@ -77,6 +77,19 @@ export interface Receipt {
     }
 }    
 
+export interface AudioCard {
+    contentType: "application/vnd.microsoft.card.audio",
+    content: {
+        title?: string,
+        subtitle?: string,
+        text?: string,
+        media?: { url: string, profile?: string }[],
+        buttons?: Button[],
+        autoloop?: boolean,
+        autostart?: boolean
+    }
+}
+
 export interface VideoCard {
     contentType: "application/vnd.microsoft.card.video",
     content: {
@@ -91,7 +104,7 @@ export interface VideoCard {
     }
 }
 
-export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | VideoCard;
+export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | AudioCard | VideoCard;
 
 export interface User {
     id: string,
