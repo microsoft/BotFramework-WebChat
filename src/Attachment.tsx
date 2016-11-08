@@ -12,6 +12,10 @@ export const AttachmentView = (props: {
     attachment: Attachment,
     onImageLoad?: ()=> void
 }) => {
+    if (!props.attachment) return;
+
+    const att = props.attachment;
+    
     const state = props.store.getState();
 
     const onClickButton = (type: string, value: string) => {
@@ -41,39 +45,58 @@ export const AttachmentView = (props: {
     const imageWithOnLoad = (url: string) =>
         <img src={ url } onLoad={ () => {console.log("local onImageLoad");props.onImageLoad();} } />;
 
+    const videoWithOnLoad = (videoUrl: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
+        <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ () => {console.log("local onVideoLoad");props.onImageLoad();} } />;
+
     const attachedImage = (images?: { url: string }[]) =>
         images && imageWithOnLoad(images[0].url);
 
-    switch (props.attachment.contentType) {
+    switch (att.contentType) {
         case "application/vnd.microsoft.card.hero":
             return (
                 <div className='wc-card hero'>
-                    { attachedImage(props.attachment.content.images) }
-                    <h1>{ props.attachment.content.title }</h1>
-                    <h2>{ props.attachment.content.subtitle }</h2>
-                    <p>{ props.attachment.content.text }</p>
-                    { buttons(props.attachment.content.buttons) }
+                    { attachedImage(att.content.images) }
+                    <h1>{ att.content.title }</h1>
+                    <h2>{ att.content.subtitle }</h2>
+                    <p>{ att.content.text }</p>
+                    { buttons(att.content.buttons) }
                 </div>
             );
 
         case "application/vnd.microsoft.card.thumbnail":
             return (
                 <div className='wc-card thumbnail'>
-                    <h1>{ props.attachment.content.title }</h1>
+                    <h1>{ att.content.title }</h1>
                     <p>
-                        { attachedImage(props.attachment.content.images) }
-                        <h2>{ props.attachment.content.subtitle }</h2>
-                        { props.attachment.content.text }
+                        { attachedImage(att.content.images) }
+                        <h2>{ att.content.subtitle }</h2>
+                        { att.content.text }
                     </p>
-                    { buttons(props.attachment.content.buttons) }
+                    { buttons(att.content.buttons) }
+                </div>
+            );
+
+        case "application/vnd.microsoft.card.video":
+
+            var thumbnail: string;
+
+            if (att.content.image) thumbnail = att.content.image.url;
+            
+            return (
+                <div className='wc-card video'>
+                    { videoWithOnLoad(att.content.media[0].url, thumbnail, att.content.autostart, att.content.autoloop) }
+                    <h1>{ att.content.title }</h1>
+                    <h2>{ att.content.subtitle }</h2>
+                    <p>{ att.content.text }</p>
+                    { buttons(att.content.buttons) }
                 </div>
             );
 
         case "application/vnd.microsoft.card.signin":
             return (
                 <div className='wc-card signin'>
-                    <h1>{ props.attachment.content.text }</h1>
-                    { buttons(props.attachment.content.buttons) }
+                    <h1>{ att.content.text }</h1>
+                    { buttons(att.content.buttons) }
                 </div>
             );
 
@@ -83,11 +106,11 @@ export const AttachmentView = (props: {
                     <table>
                         <thead>
                             <tr>
-                                <th colSpan={ 2 }>{ props.attachment.content.title }</th>
+                                <th colSpan={ 2 }>{ att.content.title }</th>
                             </tr>
-                            { props.attachment.content.facts && props.attachment.content.facts.map(fact => <tr><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
+                            { att.content.facts && att.content.facts.map(fact => <tr><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
                         </thead>
-                        <tbody>{ props.attachment.content.items && props.attachment.content.items.map(item =>
+                        <tbody>{ att.content.items && att.content.items.map(item =>
                             <tr>
                                 <td>{ item.image && imageWithOnLoad(item.image.url) }<span>{ item.title }</span></td>
                                 <td>{ item.price }</td>
@@ -96,11 +119,11 @@ export const AttachmentView = (props: {
                         <tfoot>
                             <tr>
                                 <td>Tax</td>
-                                <td>{ props.attachment.content.tax }</td>
+                                <td>{ att.content.tax }</td>
                             </tr>
                             <tr className="total">
                                 <td>Total</td>
-                                <td>{ props.attachment.content.total }</td>
+                                <td>{ att.content.total }</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -111,15 +134,10 @@ export const AttachmentView = (props: {
         case "image/jpg":
         case "image/jpeg":
         case "image/gif":
-            return imageWithOnLoad(props.attachment.contentUrl);
+            return imageWithOnLoad(att.contentUrl);
 
         case "video/mp4":
-            return (
-                <div className='wc-card video'>
-                    <video src={ props.attachment.contentUrl } poster={ props.attachment.thumbnailUrl } controls />
-                    { nonEmpty(props.attachment.name, <h1>{ props.attachment.name }</h1>) }                    
-                </div>
-            );
+            return videoWithOnLoad(att.contentUrl);
 
         default:
             return <span/>;
