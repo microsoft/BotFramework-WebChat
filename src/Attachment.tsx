@@ -45,6 +45,9 @@ export const AttachmentView = (props: {
     const imageWithOnLoad = (url: string) =>
         <img src={ url } onLoad={ () => {console.log("local onImageLoad");props.onImageLoad();} } />;
 
+    const audio = (audioUrl: string, autoPlay?:boolean, loop?: boolean) =>
+        <audio src={ audioUrl } autoPlay={ autoPlay } controls loop={ loop } />;
+
     const videoWithOnLoad = (videoUrl: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
         <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ () => {console.log("local onVideoLoad");props.onImageLoad();} } />;
 
@@ -85,6 +88,18 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card video'>
                     { videoWithOnLoad(attachment.content.media[0].url, thumbnail, attachment.content.autostart, attachment.content.autoloop) }
+                    <h1>{ attachment.content.title }</h1>
+                    <h2>{ attachment.content.subtitle }</h2>
+                    <p>{ attachment.content.text }</p>
+                    { buttons(attachment.content.buttons) }
+                </div>
+            );
+
+        case "application/vnd.microsoft.card.audio":
+
+            return (
+                <div className='wc-card audio'>
+                    { audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop) }
                     <h1>{ attachment.content.title }</h1>
                     <h2>{ attachment.content.subtitle }</h2>
                     <p>{ attachment.content.text }</p>
@@ -135,6 +150,10 @@ export const AttachmentView = (props: {
         case "image/jpeg":
         case "image/gif":
             return imageWithOnLoad(attachment.contentUrl);
+
+        case "audio/mpeg":
+        case "audio/mp4":
+            return audio(attachment.contentUrl);
 
         case "video/mp4":
             return videoWithOnLoad(attachment.contentUrl);

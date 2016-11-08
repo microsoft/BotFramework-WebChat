@@ -26,6 +26,10 @@
         padding: 0;
     }
 
+    .wc-app audio, .wc-app video {
+        display: block;
+    }
+
 /* docking */
 
     .wc-hidden {
@@ -152,11 +156,11 @@
         max-width: 100%;
     }
 
-    .wc-message-content video {
+    .wc-message-content audio, .wc-message-content video {
         max-width: 100%;
     }
 
-    .wc-message-content video+h1 {
+    .wc-message-content audio+h1, .wc-message-content video+h1 {
         margin-top: 11px;
     }
 
