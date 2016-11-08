@@ -9,7 +9,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 var _this = this;
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Chat_1 = require('./Chat');
+require('core-js/shim');
+exports.App = function (props, container) {
+    ReactDOM.render(React.createElement(AppContainer, props), container);
+};
 var receiveBackchannelMessageFromHostingPage = function (props) { return function (event) {
     if (props.allowMessagesFrom.indexOf(event.origin) === -1) {
         console.log("Rejecting backchannel message from unknown source", event.source);
@@ -31,7 +36,7 @@ var receiveBackchannelMessageFromHostingPage = function (props) { return functio
 function isBackchannel(activity) {
     return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 }
-exports.App = function (props) {
+var AppContainer = function (props) {
     console.log("BotChat.App props", props);
     if (props.allowMessagesFrom) {
         console.log("adding event listener for messages from hosting web page");
@@ -41,8 +46,7 @@ exports.App = function (props) {
         console.log("adding event listener for messages to hosting web page");
         props = Object.assign({}, props, {
             botConnection: Object.assign({}, props.botConnection, {
-                activity$: props.botConnection.activity$
-                    .do(function (activity) {
+                activity$: props.botConnection.activity$.do(function (activity) {
                     if (isBackchannel(activity)) {
                         _this.props.onBackchannelMessage(activity.channelData.backchannel);
                     }

@@ -4,10 +4,11 @@
         "target": "es5",
         "outDir": "./built/",
         "jsx": "react",
-        "sourceMap": true,
-        "types": [
-            "es6-shim"
+        "lib": [
+            "dom",
+            "es6"
         ],
+        "sourceMap": true,
         "noImplicitAny": false
     },
     "files": [

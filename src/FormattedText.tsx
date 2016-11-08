@@ -22,7 +22,7 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
 
     render() {
         if (!this.props.text || this.props.text === '')
-            return <span/>;
+            return null;
 
         switch (this.props.format) {
             case "plain":

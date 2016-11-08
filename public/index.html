@@ -15,8 +15,6 @@
     </head>
     <body>
         <div id="BotChatGoesHere"></div>
-        <script src="https://unpkg.com/react@15.3.2/dist/react.min.js">"></script>
-        <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.min.js">"></script>
         <script src="botchat.js"></script>
         <script>
             var params = {};
@@ -30,13 +28,13 @@
                 });
 
             var secretOrToken = {secret: params['s'], token: params['t']};
-            ReactDOM.render(React.createElement(BotChat.App, {
-                botConnection: params["dl3"] ?
-                    new BotChat.DirectLine3(secretOrToken, params["dl3"], params["segment"]) :
-                    new BotChat.DirectLine(secretOrToken, params["domain"]),
+            BotChat.App({
+                botConnection: params["dl3"]
+                    ? new BotChat.DirectLine3(secretOrToken, params["dl3"], params["segment"])
+                    : new BotChat.DirectLine(secretOrToken, params["domain"]),
                 user: { id: 'userid', name: 'username' } // for convenient testing/demo - should normally be overwritten by below
                 // ADD MORE CONFIG HERE
-            }), document.getElementById("BotChatGoesHere"));
+            }, document.getElementById("BotChatGoesHere"));
         </script>
     </body>
 </html>

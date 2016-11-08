@@ -1,12 +1,18 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { Chat, ChatProps } from './Chat';
 import { Activity, Message, IBotConnection } from './BotConnection';
 import { DirectLine } from './directLine';
+import 'core-js/shim';
 
 export type AppProps = ChatProps & {
     allowMessagesFrom?: string[],
-    onBackchannelMessage: (backchannel: any) => void
+    onBackchannelMessage?: (backchannel: any) => void
 }
+
+export const App = (props: AppProps, container: HTMLElement) => {
+    ReactDOM.render(React.createElement(AppContainer, props), container);
+} 
 
 const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: MessageEvent) => {
     if (props.allowMessagesFrom.indexOf(event.origin) === -1) {
@@ -34,7 +40,7 @@ function isBackchannel(activity: Activity):activity is Message {
     return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 }
 
-export const App = (props: AppProps) => {
+const AppContainer = (props: AppProps) => {
     console.log("BotChat.App props", props);
     if (props.allowMessagesFrom) {
         console.log("adding event listener for messages from hosting web page");
@@ -45,8 +51,7 @@ export const App = (props: AppProps) => {
         console.log("adding event listener for messages to hosting web page");
         props = Object.assign({}, props, {
             botConnection: Object.assign({}, props.botConnection, {
-                activity$: props.botConnection.activity$
-                    .do(activity => {
+                activity$: props.botConnection.activity$.do(activity => {
                         if (isBackchannel(activity)) {
                             this.props.onBackchannelMessage(activity.channelData.backchannel);
                         }

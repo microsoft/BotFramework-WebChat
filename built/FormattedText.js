@@ -26,7 +26,7 @@ var FormattedText = (function (_super) {
     };
     FormattedText.prototype.render = function () {
         if (!this.props.text || this.props.text === '')
-            return React.createElement("span", null);
+            return null;
         switch (this.props.format) {
             case "plain":
                 return this.renderPlainText();

@@ -22,14 +22,15 @@
   "author": "Bill Barnes",
   "license": "MIT",
   "dependencies": {
+    "core-js": "^2.4.1",
     "he": "^1.1.0",
     "marked": "^0.3.6",
-    "promise": "^7.1.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
     "redux": "^3.6.0"
   },
   "devDependencies": {
     "@reactivex/rxjs": "5.0.0-beta.12",
-    "@types/es6-shim": "^0.31.32",
     "@types/he": "^0.5.29",
     "@types/marked": "0.0.28",
     "@types/react": "^0.14.37",
