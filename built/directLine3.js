@@ -26,7 +26,7 @@ var DirectLine3 = (function () {
             .map(function (ajaxResponse) { return ajaxResponse.response; })
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
-            _this.token = conversation.token;
+            _this.token = _this.secret || conversation.token;
             _this.connected$.next(true);
             if (!_this.secret) {
                 _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {

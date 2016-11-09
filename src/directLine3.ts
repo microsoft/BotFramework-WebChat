@@ -45,7 +45,7 @@ export class DirectLine3 implements IBotConnection {
 //        .retryWhen(error$ => error$.delay(1000))
         .subscribe(conversation => {
             this.conversationId = conversation.conversationId;
-            this.token = conversation.token;
+            this.token = this.secret || conversation.token;
             this.connected$.next(true);
             if (!this.secret) {
                 this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>

@@ -6,6 +6,9 @@ var nonEmpty = function (value, template) {
         return template;
 };
 exports.AttachmentView = function (props) {
+    if (!props.attachment)
+        return;
+    var attachment = props.attachment;
     var state = props.store.getState();
     var onClickButton = function (type, value) {
         switch (type) {
@@ -30,40 +33,63 @@ exports.AttachmentView = function (props) {
     var imageWithOnLoad = function (url) {
         return React.createElement("img", {src: url, onLoad: function () { console.log("local onImageLoad"); props.onImageLoad(); }});
     };
+    var audio = function (audioUrl, autoPlay, loop) {
+        return React.createElement("audio", {src: audioUrl, autoPlay: autoPlay, controls: true, loop: loop});
+    };
+    var videoWithOnLoad = function (videoUrl, thumbnailUrl, autoPlay, loop) {
+        return React.createElement("video", {src: videoUrl, poster: thumbnailUrl, autoPlay: autoPlay, controls: true, loop: loop, onLoadedMetadata: function () { console.log("local onVideoLoad"); props.onImageLoad(); }});
+    };
     var attachedImage = function (images) {
         return images && imageWithOnLoad(images[0].url);
     };
-    switch (props.attachment.contentType) {
+    switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
             return (React.createElement("div", {className: 'wc-card hero'}, 
-                attachedImage(props.attachment.content.images), 
-                React.createElement("h1", null, props.attachment.content.title), 
-                React.createElement("h2", null, props.attachment.content.subtitle), 
-                React.createElement("p", null, props.attachment.content.text), 
-                buttons(props.attachment.content.buttons)));
+                attachedImage(attachment.content.images), 
+                React.createElement("h1", null, attachment.content.title), 
+                React.createElement("h2", null, attachment.content.subtitle), 
+                React.createElement("p", null, attachment.content.text), 
+                buttons(attachment.content.buttons)));
         case "application/vnd.microsoft.card.thumbnail":
             return (React.createElement("div", {className: 'wc-card thumbnail'}, 
-                React.createElement("h1", null, props.attachment.content.title), 
+                React.createElement("h1", null, attachment.content.title), 
                 React.createElement("p", null, 
-                    attachedImage(props.attachment.content.images), 
-                    React.createElement("h2", null, props.attachment.content.subtitle), 
-                    props.attachment.content.text), 
-                buttons(props.attachment.content.buttons)));
+                    attachedImage(attachment.content.images), 
+                    React.createElement("h2", null, attachment.content.subtitle), 
+                    attachment.content.text), 
+                buttons(attachment.content.buttons)));
+        case "application/vnd.microsoft.card.video":
+            var thumbnail;
+            if (attachment.content.image)
+                thumbnail = attachment.content.image.url;
+            return (React.createElement("div", {className: 'wc-card video'}, 
+                videoWithOnLoad(attachment.content.media[0].url, thumbnail, attachment.content.autostart, attachment.content.autoloop), 
+                React.createElement("h1", null, attachment.content.title), 
+                React.createElement("h2", null, attachment.content.subtitle), 
+                React.createElement("p", null, attachment.content.text), 
+                buttons(attachment.content.buttons)));
+        case "application/vnd.microsoft.card.audio":
+            return (React.createElement("div", {className: 'wc-card audio'}, 
+                audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop), 
+                React.createElement("h1", null, attachment.content.title), 
+                React.createElement("h2", null, attachment.content.subtitle), 
+                React.createElement("p", null, attachment.content.text), 
+                buttons(attachment.content.buttons)));
         case "application/vnd.microsoft.card.signin":
             return (React.createElement("div", {className: 'wc-card signin'}, 
-                React.createElement("h1", null, props.attachment.content.text), 
-                buttons(props.attachment.content.buttons)));
+                React.createElement("h1", null, attachment.content.text), 
+                buttons(attachment.content.buttons)));
         case "application/vnd.microsoft.card.receipt":
             return (React.createElement("div", {className: 'wc-card receipt'}, 
                 React.createElement("table", null, 
                     React.createElement("thead", null, 
                         React.createElement("tr", null, 
-                            React.createElement("th", {colSpan: 2}, props.attachment.content.title)
+                            React.createElement("th", {colSpan: 2}, attachment.content.title)
                         ), 
-                        props.attachment.content.facts && props.attachment.content.facts.map(function (fact) { return React.createElement("tr", null, 
+                        attachment.content.facts && attachment.content.facts.map(function (fact) { return React.createElement("tr", null, 
                             React.createElement("th", null, fact.key), 
                             React.createElement("th", null, fact.value)); })), 
-                    React.createElement("tbody", null, props.attachment.content.items && props.attachment.content.items.map(function (item) {
+                    React.createElement("tbody", null, attachment.content.items && attachment.content.items.map(function (item) {
                         return React.createElement("tr", null, 
                             React.createElement("td", null, 
                                 item.image && imageWithOnLoad(item.image.url), 
@@ -73,20 +99,21 @@ exports.AttachmentView = function (props) {
                     React.createElement("tfoot", null, 
                         React.createElement("tr", null, 
                             React.createElement("td", null, "Tax"), 
-                            React.createElement("td", null, props.attachment.content.tax)), 
+                            React.createElement("td", null, attachment.content.tax)), 
                         React.createElement("tr", {className: "total"}, 
                             React.createElement("td", null, "Total"), 
-                            React.createElement("td", null, props.attachment.content.total))))
+                            React.createElement("td", null, attachment.content.total))))
             ));
         case "image/png":
         case "image/jpg":
         case "image/jpeg":
         case "image/gif":
-            return imageWithOnLoad(props.attachment.contentUrl);
+            return imageWithOnLoad(attachment.contentUrl);
+        case "audio/mpeg":
+        case "audio/mp4":
+            return audio(attachment.contentUrl);
         case "video/mp4":
-            return (React.createElement("div", {className: 'wc-card video'}, 
-                React.createElement("video", {src: props.attachment.contentUrl, poster: props.attachment.thumbnailUrl, controls: true}), 
-                nonEmpty(props.attachment.name, React.createElement("h1", null, props.attachment.name))));
+            return videoWithOnLoad(attachment.contentUrl);
         default:
             return React.createElement("span", null);
     }
