@@ -27,7 +27,7 @@
                     params[p[0]] = p[1];
                 });
 
-            var secretOrToken = {secret: params['s'], token: params['t']};
+            var secretOrToken = { secret: params['s'], token: params['t'] };
             BotChat.App({
                 botConnection: params["dl3"]
                     ? new BotChat.DirectLine3(secretOrToken, params["dl3"], params["segment"])
