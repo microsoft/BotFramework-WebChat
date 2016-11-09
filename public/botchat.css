@@ -514,6 +514,14 @@
         margin-top: 8px;
     }
 
+    .format-markdown ol {
+        padding-left: 30px;  /* numbers are right-aligned to the period */
+    }
+
+    .format-markdown ul {
+        padding-left: 33px;
+    }
+
 /* browser scrollbar customization */
 
     .wc-app ::-webkit-scrollbar {
