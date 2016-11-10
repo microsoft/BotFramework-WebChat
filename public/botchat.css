@@ -140,8 +140,8 @@
         border-radius: 2px;
         box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
         padding: 8px;
-        word-wrap: break-word;
-    }
+        word-break: break-word;
+      }
 
     .wc-message-content.clickable {
         cursor: pointer;
@@ -512,6 +512,14 @@
 
     .format-markdown+div {
         margin-top: 8px;
+    }
+
+    .format-markdown ol {
+        padding-left: 30px;  /* numbers are right-aligned to the period */
+    }
+
+    .format-markdown ul {
+        padding-left: 33px;
     }
 
 /* browser scrollbar customization */
