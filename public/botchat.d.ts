@@ -19,11 +19,16 @@ export interface FormatOptions {
     showHeader?: boolean
 }
 
+export interface User {
+    id: string,
+    name?: string
+}
+
 export interface ChatProps {
-    user: { id: string, name: string },
+    user: User,
     botConnection: any,
     locale?: string,
-    onActivitySelected?: (activity: any) => void,
+    selectedActivity?: any,
     formatOptions?: FormatOptions
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subscription } from '@reactivex/rxjs';
+import { Subscription, BehaviorSubject } from '@reactivex/rxjs';
 import { Activity, Message, IBotConnection, User, MediaType } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
@@ -18,11 +18,16 @@ export interface FormatOptions {
     showHeader?: boolean
 }
 
+export type ActivityOrID = {
+    activity?: Activity
+    id?: string
+}
+
 export interface ChatProps {
     user: User,
     botConnection: IBotConnection,
     locale?: string,
-    onActivitySelected?: (activity: Activity) => void,
+    selectedActivity?: BehaviorSubject<ActivityOrID>,
     formatOptions?: FormatOptions
 }
 
@@ -32,14 +37,15 @@ export class Chat extends React.Component<ChatProps, {}> {
     private storeUnsubscribe: Unsubscribe;
     private activitySubscription: Subscription;
     private connectedSubscription: Subscription;
+    private selectedActivitySubscription: Subscription;
     private typingTimers = {};
 
-    constructor(props) {
+    constructor(props: ChatProps) {
         super(props);
 
         console.log("BotChat.Chat props", props);
 
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection } as ConnectionAction);
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
 
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
@@ -54,9 +60,20 @@ export class Chat extends React.Component<ChatProps, {}> {
             activity => this.handleIncomingActivity(activity),
             error => console.log("errors", error)
         );
+
+        if (props.selectedActivity) {
+            this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
+                this.store.dispatch({
+                    type: 'Select_Activity',
+                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
+                } as HistoryAction);
+            })
+        } else {
+            this.selectActivity = null; // doing this here saves us a ternary branch when calling <History> in render()
+        }
     }
 
-    handleIncomingActivity(activity: Activity) {
+    private handleIncomingActivity(activity: Activity) {
         let state = this.store.getState();
         switch (activity.type) {
 
@@ -82,9 +99,14 @@ export class Chat extends React.Component<ChatProps, {}> {
                 this.typingTimers[activity.from.id] = setTimeout(() => {
                     this.typingTimers[activity.from.id] = undefined;
                     this.store.dispatch({ type: 'Clear_Typing', from: activity.from } as HistoryAction);
+                    updateSelectedActivity(this.store);
                 }, 3000);
                 break;
         }
+    }
+
+    private selectActivity(activity: Activity) {
+        this.props.selectedActivity.next({ activity });
     }
 
     componentDidMount() {
@@ -96,6 +118,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     componentWillUnmount() {
         this.activitySubscription.unsubscribe();
         this.connectedSubscription.unsubscribe();
+        this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
         for (let key in this.typingTimers) {
@@ -115,11 +138,17 @@ export class Chat extends React.Component<ChatProps, {}> {
         return (
             <div className={ "wc-chatview-panel" }>
                 { header }
-                <History store={ this.store } onActivitySelected={ this.props.onActivitySelected } />
+                <History store={ this.store } selectActivity={ this.selectActivity } />
                 <Shell store={ this.store } />
             </div>
         );
     }
+}
+
+export const updateSelectedActivity = (store: ChatStore) => { 
+    const state = store.getState();
+    if (state.connection.selectedActivity)
+        state.connection.selectedActivity.next(state.history.selectedActivity);
 }
 
 export const sendMessage = (store: ChatStore, text: string) => {
@@ -136,6 +165,19 @@ export const sendMessage = (store: ChatStore, text: string) => {
     trySendMessage(store, sendId);
 }
 
+const sendMessageSucceed = (store: ChatStore, sendId: number) => (id: string) => {
+    console.log("success sending message", id);
+    store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+    updateSelectedActivity(store);
+}
+
+const sendMessageFail = (store: ChatStore, sendId: number) => (error) => {
+    console.log("failed to send message", error);
+    // TODO: show an error under the message with "retry" link
+    store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+    updateSelectedActivity(store);
+}
+
 export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = false) => {
     if (updateStatus) {
         store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
@@ -143,24 +185,20 @@ export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = 
     let state = store.getState();
     const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
     state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
-    .subscribe(id => {
-        console.log("success sending message", id);
-        store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
-    }, error => {
-        console.log("failed to send message", error);
-        // TODO: show an error under the message with "retry" link
-        store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
-    });
+    .subscribe(
+        sendMessageSucceed(store, sendId),
+        sendMessageFail(store, sendId)
+    );
 }
 
 export const sendPostBack = (store: ChatStore, text: string) => {
     const state = store.getState();
     state.connection.botConnection.postMessage(text, state.connection.user)
-        .subscribe(id => {
-            console.log("success sending postBack", id)
-        }, error => {
-            console.log("failed to send postBack", error);
-        });
+    .subscribe(id => {
+        console.log("success sending postBack", id)
+    }, error => {
+        console.log("failed to send postBack", error);
+    });
 }
 
 export const sendFiles = (store: ChatStore, files: FileList) => {
@@ -181,12 +219,9 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
         }} as HistoryAction);
         state = store.getState();
         state.connection.botConnection.postFile(file, state.connection.user)
-        .subscribe(id => {
-            console.log("success posting file");
-            store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
-        }, error => {
-            console.log("failed to post file");
-            store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
-        });
+        .subscribe(
+            sendMessageSucceed(store, sendId),
+            sendMessageFail(store, sendId)
+        );
     }
 }

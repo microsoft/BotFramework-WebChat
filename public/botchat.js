@@ -21548,7 +21548,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.store = Store_1.createStore();
 	        this.typingTimers = {};
 	        console.log("BotChat.Chat props", props);
-	        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
+	        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
 	        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
@@ -21557,6 +21557,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.store.dispatch({ type: 'Connected_To_Bot' });
 	        });
 	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
+	        if (props.selectedActivity) {
+	            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
+	                _this.store.dispatch({
+	                    type: 'Select_Activity',
+	                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
+	                });
+	            });
+	        }
+	        else {
+	            this.selectActivity = null; // doing this here saves us a ternary branch when calling <History> in render()
+	        }
 	    }
 	    Chat.prototype.handleIncomingActivity = function (activity) {
 	        var _this = this;
@@ -21582,9 +21593,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.typingTimers[activity.from.id] = setTimeout(function () {
 	                    _this.typingTimers[activity.from.id] = undefined;
 	                    _this.store.dispatch({ type: 'Clear_Typing', from: activity.from });
+	                    exports.updateSelectedActivity(_this.store);
 	                }, 3000);
 	                break;
 	        }
+	    };
+	    Chat.prototype.selectActivity = function (activity) {
+	        this.props.selectedActivity.next({ activity: activity });
 	    };
 	    Chat.prototype.componentDidMount = function () {
 	        var _this = this;
@@ -21595,6 +21610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Chat.prototype.componentWillUnmount = function () {
 	        this.activitySubscription.unsubscribe();
 	        this.connectedSubscription.unsubscribe();
+	        this.selectedActivitySubscription.unsubscribe();
 	        this.props.botConnection.end();
 	        this.storeUnsubscribe();
 	        for (var key in this.typingTimers) {
@@ -21612,12 +21628,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	                );
 	        return (React.createElement("div", {className: "wc-chatview-panel"}, 
 	            header, 
-	            React.createElement(History_1.History, {store: this.store, onActivitySelected: this.props.onActivitySelected}), 
+	            React.createElement(History_1.History, {store: this.store, selectActivity: this.selectActivity}), 
 	            React.createElement(Shell_1.Shell, {store: this.store})));
 	    };
 	    return Chat;
 	}(React.Component));
 	exports.Chat = Chat;
+	exports.updateSelectedActivity = function (store) {
+	    var state = store.getState();
+	    if (state.connection.selectedActivity)
+	        state.connection.selectedActivity.next(state.history.selectedActivity);
+	};
 	exports.sendMessage = function (store, text) {
 	    if (!text || typeof text !== 'string' || text.trim().length === 0)
 	        return;
@@ -21631,6 +21652,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } });
 	    exports.trySendMessage(store, sendId);
 	};
+	var sendMessageSucceed = function (store, sendId) { return function (id) {
+	    console.log("success sending message", id);
+	    store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+	    exports.updateSelectedActivity(store);
+	}; };
+	var sendMessageFail = function (store, sendId) { return function (error) {
+	    console.log("failed to send message", error);
+	    // TODO: show an error under the message with "retry" link
+	    store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+	    exports.updateSelectedActivity(store);
+	}; };
 	exports.trySendMessage = function (store, sendId, updateStatus) {
 	    if (updateStatus === void 0) { updateStatus = false; }
 	    if (updateStatus) {
@@ -21639,14 +21671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var state = store.getState();
 	    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
 	    state.connection.botConnection.postMessage(activity.text, state.connection.user)
-	        .subscribe(function (id) {
-	        console.log("success sending message", id);
-	        store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-	    }, function (error) {
-	        console.log("failed to send message", error);
-	        // TODO: show an error under the message with "retry" link
-	        store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-	    });
+	        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
 	};
 	exports.sendPostBack = function (store, text) {
 	    var state = store.getState();
@@ -21658,7 +21683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	};
 	exports.sendFiles = function (store, files) {
-	    var _loop_1 = function(i, numFiles) {
+	    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
 	        var file = files[i];
 	        console.log("file", file);
 	        var state = store.getState();
@@ -21675,16 +21700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } });
 	        state = store.getState();
 	        state.connection.botConnection.postFile(file, state.connection.user)
-	            .subscribe(function (id) {
-	            console.log("success posting file");
-	            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-	        }, function (error) {
-	            console.log("failed to post file");
-	            store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-	        });
-	    };
-	    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-	        _loop_1(i, numFiles);
+	            .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
 	    }
 	};
 
@@ -21704,12 +21720,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
-	        var _this = this;
 	        _super.call(this, props);
 	        this.scrollToBottom = true;
-	        this.onImageLoad = function () {
-	            _this.autoscroll();
-	        };
 	    }
 	    History.prototype.componentWillUpdate = function () {
 	        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
@@ -21717,11 +21729,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    History.prototype.componentDidUpdate = function () {
 	        this.autoscroll();
 	    };
-	    History.prototype.onActivitySelected = function (activity) {
-	        if (this.props.onActivitySelected) {
-	            this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity });
-	            this.props.onActivitySelected(activity);
-	        }
+	    History.prototype.selectActivity = function (activity) {
+	        if (this.props.selectActivity)
+	            this.props.selectActivity(activity);
+	    };
+	    History.prototype.onImageLoad = function () {
+	        this.autoscroll();
 	    };
 	    History.prototype.autoscroll = function () {
 	        if (this.scrollToBottom)
@@ -21739,13 +21752,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (index === activities.length - 1 || (index + 1 < activities.length && _this.suitableInterval(activity, activities[index + 1]))) {
 	                timeLine = " at " + (new Date(activity.timestamp)).toLocaleTimeString();
 	            }
-	            return (React.createElement("div", {key: index, className: "wc-message-wrapper" + (_this.props.onActivitySelected ? ' clickable' : ''), onClick: function (e) { return _this.onActivitySelected(activity); }}, 
+	            return (React.createElement("div", {key: index, className: "wc-message-wrapper" + (_this.props.selectActivity ? ' clickable' : ''), onClick: function (e) { return _this.selectActivity(activity); }}, 
 	                React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
 	                    React.createElement("div", {className: 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '')}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-	                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+	                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: function () { return _this.onImageLoad; }})), 
 	                    React.createElement("div", {className: "wc-message-from"}, 
 	                        activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '', 
 	                        timeLine))
@@ -21835,7 +21848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
 	    var imageWithOnLoad = function (url) {
-	        return React.createElement("img", {src: url, onLoad: function () { console.log("local onImageLoad"); props.onImageLoad(); }});
+	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
 	    };
 	    var audio = function (audioUrl, autoPlay, loop) {
 	        return React.createElement("audio", {src: audioUrl, autoPlay: autoPlay, controls: true, loop: loop});
@@ -24044,18 +24057,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (state === void 0) { state = {
 	        connected: false,
 	        botConnection: undefined,
+	        selectedActivity: undefined,
 	        user: undefined,
 	        host: undefined
 	    }; }
 	    switch (action.type) {
 	        case 'Start_Connection':
-	            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
+	            return Object.assign({}, state, {
+	                connected: false,
+	                botConnection: action.botConnection,
+	                user: action.user,
+	                selectedActivity: action.selectedActivity
+	            });
 	        case 'Connected_To_Bot':
-	            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
+	            return Object.assign({}, state, {
+	                connected: true
+	            });
 	        case 'Subscribe_Host':
-	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
+	            return Object.assign({}, state, {
+	                host: action.host
+	            });
 	        case 'Unsubscribe_Host':
-	            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
+	            return Object.assign({}, state, {
+	                host: undefined
+	            });
 	        default:
 	            return state;
 	    }
@@ -24094,32 +24119,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	                autoscroll: true
 	            });
 	        case 'Send_Message_Try':
-	            var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
-	            return Object.assign({}, state, {
-	                activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
-	                    Object.assign({}, activity, {
-	                        status: "sending",
-	                        sendId: state.sendCounter
-	                    })
-	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-	                sendCounter: state.sendCounter + 1,
-	                autoscroll: true
-	            });
+	            {
+	                var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+	                var newActivity = Object.assign({}, activity, {
+	                    status: "sending",
+	                    sendId: state.sendCounter
+	                });
+	                return Object.assign({}, state, {
+	                    activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
+	                        newActivity
+	                    ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+	                    sendCounter: state.sendCounter + 1,
+	                    autoscroll: true,
+	                    selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+	                });
+	            }
 	        case 'Send_Message_Succeed':
-	        case 'Send_Message_Fail':
+	        case 'Send_Message_Fail': {
 	            var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
 	            if (i === -1)
 	                return state;
+	            var activity = state.activities[i];
+	            var newActivity = Object.assign({}, activity, {
+	                status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
+	                id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+	            });
 	            return Object.assign({}, state, {
 	                activities: state.activities.slice(0, i).concat([
-	                    Object.assign({}, state.activities[i], {
-	                        status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
-	                        id: action.type === 'Send_Message_Succeed' ? action.id : undefined
-	                    })
+	                    newActivity
 	                ], state.activities.slice(i + 1)),
 	                sendCounter: state.sendCounter + 1,
-	                autoscroll: true
+	                autoscroll: true,
+	                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
 	            });
+	        }
 	        case 'Show_Typing':
 	            return Object.assign({}, state, {
 	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
@@ -24128,11 +24161,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    })
 	                ])
 	            });
-	        case 'Clear_Typing':
+	        case 'Clear_Typing': {
+	            var activities = state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; });
 	            return Object.assign({}, state, {
-	                activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
+	                activities: activities,
+	                selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
 	            });
+	        }
 	        case 'Select_Activity':
+	            if (action.selectedActivity === state.selectedActivity)
+	                return state;
 	            return Object.assign({}, state, {
 	                selectedActivity: action.selectedActivity
 	            });

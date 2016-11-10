@@ -1,8 +1,8 @@
 import { Store, Reducer, createStore as reduxCreateStore, combineReducers } from 'redux';
 import { Activity, IBotConnection, User } from './BotConnection';
-import { FormatOptions } from './Chat';
+import { FormatOptions, ActivityOrID } from './Chat';
 import { strings, Strings } from './Strings';
-
+import { BehaviorSubject } from '@reactivex/rxjs';
 
 export type ChatStore = Store<ChatState>;
 
@@ -41,6 +41,7 @@ export const formatReducer: Reducer<FormatState> = (
 export interface ConnectionState {
     connected: boolean
     botConnection: IBotConnection,
+    selectedActivity: BehaviorSubject<ActivityOrID>,
     user: User,
     host: Window
 }
@@ -49,6 +50,7 @@ export type ConnectionAction = {
     type: 'Start_Connection',
     botConnection: IBotConnection,
     user: User,
+    selectedActivity: BehaviorSubject<ActivityOrID>
 } | {
     type: 'Connected_To_Bot' | 'Unsubscribe_Host'
 } | {
@@ -60,6 +62,7 @@ export const connectionReducer: Reducer<ConnectionState> = (
     state: ConnectionState = {
         connected: false,
         botConnection: undefined,
+        selectedActivity: undefined,
         user: undefined,
         host: undefined
     },
@@ -67,13 +70,24 @@ export const connectionReducer: Reducer<ConnectionState> = (
 ) => {
     switch (action.type) {
         case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
+            return Object.assign({}, state, {
+                connected: false,
+                botConnection: action.botConnection,
+                user: action.user,
+                selectedActivity: action.selectedActivity
+            });
         case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host  };
+            return Object.assign({}, state, {
+                connected: true
+            });
         case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host  };
+            return Object.assign({}, state, {
+                host: action.host
+            });
         case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined  };
+            return Object.assign({}, state, {
+                host: undefined
+            });
         default:
             return state;
     }
@@ -150,37 +164,43 @@ export const historyReducer: Reducer<HistoryState> = (
             });
 
         case 'Send_Message_Try':
+        {
             const activity = state.activities.find(activity => activity["sendId"] === action.sendId);
+            const newActivity = Object.assign({}, activity, {
+                status: "sending",
+                sendId: state.sendCounter
+            });
             return Object.assign({}, state, {
                 activities: [
                     ... state.activities.filter(activity => activity["sendId"] !== action.sendId && activity.type !== "typing"),
-                    Object.assign({}, activity, {
-                        status: "sending",
-                        sendId: state.sendCounter
-                    }),
+                    newActivity,
                     ... state.activities.filter(activity => activity.type === "typing")
                 ],
                 sendCounter: state.sendCounter + 1,
-                autoscroll: true
+                autoscroll: true,
+                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
-
+        }
         case 'Send_Message_Succeed':
-        case 'Send_Message_Fail':
+        case 'Send_Message_Fail': {
             const i = state.activities.findIndex(activity => activity["sendId"] === action.sendId);
             if (i === -1) return state;
+            const activity = state.activities[i];
+            const newActivity = Object.assign({}, activity, {
+                status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
+                id: action.type === 'Send_Message_Succeed' ? action.id : undefined                        
+            })
             return Object.assign({}, state, {
                 activities: [
                     ... state.activities.slice(0, i),
-                    Object.assign({}, state.activities[i], {
-                        status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
-                        id: action.type === 'Send_Message_Succeed' ? action.id : undefined                        
-                    }),
+                    newActivity,
                     ... state.activities.slice(i + 1)
                 ],
                 sendCounter: state.sendCounter + 1,
-                autoscroll: true
+                autoscroll: true,
+                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
-
+        }
         case 'Show_Typing':
             return Object.assign({}, state, { 
                 activities: [
@@ -188,16 +208,19 @@ export const historyReducer: Reducer<HistoryState> = (
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
                     Object.assign({}, action.activity, {
                         status: "received"
-                    })
-                ]
+                    })                ]
             });
 
-        case 'Clear_Typing':
+        case 'Clear_Typing': {
+            const activities = state.activities.filter(activity => activity.from.id !== action.from.id || activity.type !== "typing")
             return Object.assign({}, state, { 
-                activities: state.activities.filter(activity => activity.from.id !== action.from.id || activity.type !== "typing")
+                activities,
+                selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
             });
-
+        }
         case 'Select_Activity':
+            if (action.selectedActivity === state.selectedActivity)
+                return state;
             return Object.assign({}, state, {
                 selectedActivity: action.selectedActivity
             });

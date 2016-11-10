@@ -6,7 +6,7 @@
         "jsx": "react",
         "lib": [
             "dom",
-            "es6"
+            "es2016"
         ],
         "sourceMap": true,
         "noImplicitAny": false

@@ -43,7 +43,7 @@ export const AttachmentView = (props: {
         </ul>;
 
     const imageWithOnLoad = (url: string) =>
-        <img src={ url } onLoad={ () => {console.log("local onImageLoad");props.onImageLoad();} } />;
+        <img src={ url } onLoad={ () => props.onImageLoad() } />;
 
     const audio = (audioUrl: string, autoPlay?:boolean, loop?: boolean) =>
         <audio src={ audioUrl } autoPlay={ autoPlay } controls loop={ loop } />;

@@ -6,7 +6,7 @@ import { ActivityView } from './ActivityView';
 
 interface Props {
     store: ChatStore,
-    onActivitySelected: (activity: Activity) => void
+    selectActivity?: (activity: Activity) => void
 }
 
 export class History extends React.Component<Props, {}> {
@@ -25,14 +25,12 @@ export class History extends React.Component<Props, {}> {
         this.autoscroll();
     }
 
-    onActivitySelected(activity: Activity) {
-        if (this.props.onActivitySelected) {
-            this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);
-            this.props.onActivitySelected(activity);
-        }
+    selectActivity(activity: Activity) {
+        if (this.props.selectActivity)
+            this.props.selectActivity(activity);
     }
 
-    onImageLoad = () => {
+    onImageLoad() {
         this.autoscroll();
     }
 
@@ -55,14 +53,14 @@ export class History extends React.Component<Props, {}> {
                 timeLine = ` at ${(new Date(activity.timestamp)).toLocaleTimeString()}`;
             }
             return (
-                <div key={ index } className={ "wc-message-wrapper" + (this.props.onActivitySelected ? ' clickable' : '') } onClick={ e => this.onActivitySelected(activity) }>
+                <div key={ index } className={ "wc-message-wrapper" + (this.props.selectActivity ? ' clickable' : '') } onClick={ e => this.selectActivity(activity) }>
                     <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
                         <div className={ 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '') }>
                             <svg className="wc-message-callout">
                                 <path className="point-left" d="m0,6 l6 6 v-12 z" />
                                 <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                             </svg>
-                            <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
+                            <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ () => this.onImageLoad }/>
                         </div>
                         <div className="wc-message-from">
                             { activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '' }

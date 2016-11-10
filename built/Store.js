@@ -21,18 +21,30 @@ exports.connectionReducer = function (state, action) {
     if (state === void 0) { state = {
         connected: false,
         botConnection: undefined,
+        selectedActivity: undefined,
         user: undefined,
         host: undefined
     }; }
     switch (action.type) {
         case 'Start_Connection':
-            return { connected: false, botConnection: action.botConnection, user: action.user, host: state.host };
+            return Object.assign({}, state, {
+                connected: false,
+                botConnection: action.botConnection,
+                user: action.user,
+                selectedActivity: action.selectedActivity
+            });
         case 'Connected_To_Bot':
-            return { connected: true, botConnection: state.botConnection, user: state.user, host: state.host };
+            return Object.assign({}, state, {
+                connected: true
+            });
         case 'Subscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: action.host };
+            return Object.assign({}, state, {
+                host: action.host
+            });
         case 'Unsubscribe_Host':
-            return { connected: state.connected, botConnection: state.botConnection, user: state.user, host: undefined };
+            return Object.assign({}, state, {
+                host: undefined
+            });
         default:
             return state;
     }
@@ -71,32 +83,40 @@ exports.historyReducer = function (state, action) {
                 autoscroll: true
             });
         case 'Send_Message_Try':
-            var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
-            return Object.assign({}, state, {
-                activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
-                    Object.assign({}, activity, {
-                        status: "sending",
-                        sendId: state.sendCounter
-                    })
-                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-                sendCounter: state.sendCounter + 1,
-                autoscroll: true
-            });
+            {
+                var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+                var newActivity = Object.assign({}, activity, {
+                    status: "sending",
+                    sendId: state.sendCounter
+                });
+                return Object.assign({}, state, {
+                    activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
+                        newActivity
+                    ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+                    sendCounter: state.sendCounter + 1,
+                    autoscroll: true,
+                    selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+                });
+            }
         case 'Send_Message_Succeed':
-        case 'Send_Message_Fail':
+        case 'Send_Message_Fail': {
             var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
             if (i === -1)
                 return state;
+            var activity = state.activities[i];
+            var newActivity = Object.assign({}, activity, {
+                status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
+                id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+            });
             return Object.assign({}, state, {
                 activities: state.activities.slice(0, i).concat([
-                    Object.assign({}, state.activities[i], {
-                        status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
-                        id: action.type === 'Send_Message_Succeed' ? action.id : undefined
-                    })
+                    newActivity
                 ], state.activities.slice(i + 1)),
                 sendCounter: state.sendCounter + 1,
-                autoscroll: true
+                autoscroll: true,
+                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
+        }
         case 'Show_Typing':
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
@@ -105,11 +125,16 @@ exports.historyReducer = function (state, action) {
                     })
                 ])
             });
-        case 'Clear_Typing':
+        case 'Clear_Typing': {
+            var activities = state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; });
             return Object.assign({}, state, {
-                activities: state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; })
+                activities: activities,
+                selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
             });
+        }
         case 'Select_Activity':
+            if (action.selectedActivity === state.selectedActivity)
+                return state;
             return Object.assign({}, state, {
                 selectedActivity: action.selectedActivity
             });

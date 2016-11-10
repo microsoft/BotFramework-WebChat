@@ -9,12 +9,8 @@ var ActivityView_1 = require('./ActivityView');
 var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
-        var _this = this;
         _super.call(this, props);
         this.scrollToBottom = true;
-        this.onImageLoad = function () {
-            _this.autoscroll();
-        };
     }
     History.prototype.componentWillUpdate = function () {
         this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
@@ -22,11 +18,12 @@ var History = (function (_super) {
     History.prototype.componentDidUpdate = function () {
         this.autoscroll();
     };
-    History.prototype.onActivitySelected = function (activity) {
-        if (this.props.onActivitySelected) {
-            this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity });
-            this.props.onActivitySelected(activity);
-        }
+    History.prototype.selectActivity = function (activity) {
+        if (this.props.selectActivity)
+            this.props.selectActivity(activity);
+    };
+    History.prototype.onImageLoad = function () {
+        this.autoscroll();
     };
     History.prototype.autoscroll = function () {
         if (this.scrollToBottom)
@@ -44,13 +41,13 @@ var History = (function (_super) {
             if (index === activities.length - 1 || (index + 1 < activities.length && _this.suitableInterval(activity, activities[index + 1]))) {
                 timeLine = " at " + (new Date(activity.timestamp)).toLocaleTimeString();
             }
-            return (React.createElement("div", {key: index, className: "wc-message-wrapper" + (_this.props.onActivitySelected ? ' clickable' : ''), onClick: function (e) { return _this.onActivitySelected(activity); }}, 
+            return (React.createElement("div", {key: index, className: "wc-message-wrapper" + (_this.props.selectActivity ? ' clickable' : ''), onClick: function (e) { return _this.selectActivity(activity); }}, 
                 React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
                     React.createElement("div", {className: 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '')}, 
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
                             React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
+                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: function () { return _this.onImageLoad; }})), 
                     React.createElement("div", {className: "wc-message-from"}, 
                         activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '', 
                         timeLine))

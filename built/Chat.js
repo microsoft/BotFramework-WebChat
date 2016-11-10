@@ -19,7 +19,7 @@ var Chat = (function (_super) {
         this.store = Store_1.createStore();
         this.typingTimers = {};
         console.log("BotChat.Chat props", props);
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection });
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
@@ -28,6 +28,17 @@ var Chat = (function (_super) {
             _this.store.dispatch({ type: 'Connected_To_Bot' });
         });
         this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
+        if (props.selectedActivity) {
+            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
+                _this.store.dispatch({
+                    type: 'Select_Activity',
+                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
+                });
+            });
+        }
+        else {
+            this.selectActivity = null; // doing this here saves us a ternary branch when calling <History> in render()
+        }
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
         var _this = this;
@@ -53,9 +64,13 @@ var Chat = (function (_super) {
                 this.typingTimers[activity.from.id] = setTimeout(function () {
                     _this.typingTimers[activity.from.id] = undefined;
                     _this.store.dispatch({ type: 'Clear_Typing', from: activity.from });
+                    exports.updateSelectedActivity(_this.store);
                 }, 3000);
                 break;
         }
+    };
+    Chat.prototype.selectActivity = function (activity) {
+        this.props.selectedActivity.next({ activity: activity });
     };
     Chat.prototype.componentDidMount = function () {
         var _this = this;
@@ -66,6 +81,7 @@ var Chat = (function (_super) {
     Chat.prototype.componentWillUnmount = function () {
         this.activitySubscription.unsubscribe();
         this.connectedSubscription.unsubscribe();
+        this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
         for (var key in this.typingTimers) {
@@ -83,12 +99,17 @@ var Chat = (function (_super) {
                 );
         return (React.createElement("div", {className: "wc-chatview-panel"}, 
             header, 
-            React.createElement(History_1.History, {store: this.store, onActivitySelected: this.props.onActivitySelected}), 
+            React.createElement(History_1.History, {store: this.store, selectActivity: this.selectActivity}), 
             React.createElement(Shell_1.Shell, {store: this.store})));
     };
     return Chat;
 }(React.Component));
 exports.Chat = Chat;
+exports.updateSelectedActivity = function (store) {
+    var state = store.getState();
+    if (state.connection.selectedActivity)
+        state.connection.selectedActivity.next(state.history.selectedActivity);
+};
 exports.sendMessage = function (store, text) {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
@@ -102,6 +123,17 @@ exports.sendMessage = function (store, text) {
         } });
     exports.trySendMessage(store, sendId);
 };
+var sendMessageSucceed = function (store, sendId) { return function (id) {
+    console.log("success sending message", id);
+    store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+    exports.updateSelectedActivity(store);
+}; };
+var sendMessageFail = function (store, sendId) { return function (error) {
+    console.log("failed to send message", error);
+    // TODO: show an error under the message with "retry" link
+    store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+    exports.updateSelectedActivity(store);
+}; };
 exports.trySendMessage = function (store, sendId, updateStatus) {
     if (updateStatus === void 0) { updateStatus = false; }
     if (updateStatus) {
@@ -110,14 +142,7 @@ exports.trySendMessage = function (store, sendId, updateStatus) {
     var state = store.getState();
     var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
     state.connection.botConnection.postMessage(activity.text, state.connection.user)
-        .subscribe(function (id) {
-        console.log("success sending message", id);
-        store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-    }, function (error) {
-        console.log("failed to send message", error);
-        // TODO: show an error under the message with "retry" link
-        store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-    });
+        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
 };
 exports.sendPostBack = function (store, text) {
     var state = store.getState();
@@ -129,7 +154,7 @@ exports.sendPostBack = function (store, text) {
     });
 };
 exports.sendFiles = function (store, files) {
-    var _loop_1 = function(i, numFiles) {
+    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
         var file = files[i];
         console.log("file", file);
         var state = store.getState();
@@ -146,16 +171,7 @@ exports.sendFiles = function (store, files) {
             } });
         state = store.getState();
         state.connection.botConnection.postFile(file, state.connection.user)
-            .subscribe(function (id) {
-            console.log("success posting file");
-            store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
-        }, function (error) {
-            console.log("failed to post file");
-            store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
-        });
-    };
-    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-        _loop_1(i, numFiles);
+            .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
     }
 };
 //# sourceMappingURL=Chat.js.map

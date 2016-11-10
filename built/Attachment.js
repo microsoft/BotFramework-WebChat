@@ -31,7 +31,7 @@ exports.AttachmentView = function (props) {
             React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
         ); })); };
     var imageWithOnLoad = function (url) {
-        return React.createElement("img", {src: url, onLoad: function () { console.log("local onImageLoad"); props.onImageLoad(); }});
+        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
     };
     var audio = function (audioUrl, autoPlay, loop) {
         return React.createElement("audio", {src: audioUrl, autoPlay: autoPlay, controls: true, loop: loop});
