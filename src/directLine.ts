@@ -1,42 +1,22 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
 import { Conversation, Activity, Message, Media, IBotConnection, User } from './BotConnection';
 
-interface DLAttachment {
-    url: string,
-    contentType: string
-}
-
-interface DLMessage
-{
-    id?: string,
-    conversationId?: string,
-    created?: string,
-    from?: string,
-    text?: string,
-    channelData?: Activity | any,
-    images?: string[],
-    attachments?: DLAttachment[];
-    eTag?: string;
-}
-
-interface DLMessageGroup
-{
-    messages: DLMessage[],
-    watermark?: string,
-    eTag?: string
-}
-
-const intervalRefreshToken = 29*60*1000;
-
 export interface SecretOrToken {
     secret?: string,
     token?: string
 }
 
+interface ActivityGroup {
+    activities: Activity[],
+    watermark: string
+}
+
+const intervalRefreshToken = 29*60*1000;
+const timeout = 10*1000;
+
 export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
     activity$: Observable<Activity>;
-    private id = 0;
 
     private conversationId: string;
     private token: string;
@@ -47,37 +27,44 @@ export class DirectLine implements IBotConnection {
 
     constructor(
         secretOrToken: SecretOrToken,
-        private domain = "https://directline.botframework.com"
+        private domain = "https://directline.botframework.com/v3/directline",
+        private segment?: string // DEPRECATED will be removed before release
     ) {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+        if (segment) {
+            console.log("Support for 'segment' is deprecated and will be removed before release. Please use default domain or pass entire path in domain")
+            this.domain += `/${segment}`;
+        }
     }
 
     start() {
         Observable.ajax({
             method: "POST",
-            url: `${this.domain}/api/conversations`,
+            url: `${this.domain}/conversations`,
+            timeout,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${this.token}`
+                "Authorization": `Bearer ${this.token}`
             }
         })
-//      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse))
+        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
-        .retryWhen(error$ => error$.delay(1000))
+//        .retryWhen(error$ => error$.delay(1000))
         .subscribe(conversation => {
             this.conversationId = conversation.conversationId;
+            this.token = this.secret || conversation.token;
             this.connected$.next(true);
             if (!this.secret) {
                 this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
                     Observable.ajax({
                         method: "GET",
-                        url: `${this.domain}/api/tokens/${this.conversationId}/renew`,
+                        url: `${this.domain}/tokens/${this.conversationId}/refresh`,
+                        timeout,
                         headers: {
-                            "Authorization": `BotConnector ${this.token}`
+                            "Authorization": `Bearer ${this.token}`
                         }
                     })
-                    .retryWhen(error$ => error$.delay(1000))
                     .map(ajaxResponse => <string>ajaxResponse.response)
                 ).subscribe(token => {
                     console.log("refreshing token", token, "at", new Date())
@@ -88,7 +75,7 @@ export class DirectLine implements IBotConnection {
 
         this.activity$ = this.connected$
         .filter(connected => connected === true)
-        .flatMap(_ => this.getActivities());
+        .flatMap(_ => this.getActivity$());
     }
 
     end() {
@@ -107,24 +94,24 @@ export class DirectLine implements IBotConnection {
     }
 
     postMessage(text: string, from: User, channelData?: any) {
-        console.log("sending", text);
         return Observable.ajax({
             method: "POST",
-            url: `${this.domain}/api/conversations/${this.conversationId}/messages`,
-            body: <DLMessage>{
+            url: `${this.domain}/conversations/${this.conversationId}/activities`,
+            body: <Message>{
+                type: "message",
                 text,
-                from: from.id,
+                from,
                 conversationId: this.conversationId,
                 channelData
             },
+            timeout,
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `BotConnector ${this.token}`
+                "Authorization": `Bearer ${this.token}`
             }
         })
 //      .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
-        .retryWhen(error$ => error$.delay(1000))
-        .mapTo((this.id++).toString());
+        .map(ajaxResponse => ajaxResponse.response.id as string);
     }
 
     postFile(file: File, from: User) {
@@ -132,63 +119,33 @@ export class DirectLine implements IBotConnection {
         formData.append('file', file);
         return Observable.ajax({
             method: "POST",
-            url: `${this.domain}/api/conversations/${this.conversationId}/upload`,
+            url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${from.id}`,
             body: formData,
+            timeout,
             headers: {
-                "Authorization": `BotConnector ${this.token}`
+                "Authorization": `Bearer ${this.token}`
             }
         })
 //      .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
-        .retryWhen(error$ => error$.delay(1000))
-        .mapTo((this.id++).toString());
+        .map(ajaxResponse => ajaxResponse.response.id as string);
     }
 
-    private getActivities() {
-        return new Observable<Observable<DLMessage>>((subscriber:Subscriber<Observable<DLMessage>>) =>
+    private getActivity$() {
+        return new Observable<Observable<Activity>>((subscriber:Subscriber<Observable<Activity>>) =>
             this.activitiesGenerator(subscriber)
         )
         .concatAll()
-        .do(dlm => console.log("DL Message", dlm))
-        .map(dlm => {
-            if (dlm.channelData) {
-                const channelData = <Activity>dlm.channelData;
-                switch(channelData.type) {
-                    case "message":
-                        return <Message>Object.assign({}, channelData, {
-                            id: dlm.id,
-                            conversation: { id: dlm.conversationId },
-                            timestamp: dlm.created,
-                            from: { id: dlm.from },
-                            channelData: null,
-                        });
-                    default:
-                        return channelData;
-                }
-            } else {
-                return <Message>{
-                    type: "message",
-                    id: dlm.id,
-                    conversation: { id: dlm.conversationId },
-                    timestamp: dlm.created,
-                    from: { id: dlm.from },
-                    text: dlm.text,
-                    textFormat: "markdown",
-                    eTag: dlm.eTag,
-                    attachments: dlm.images && dlm.images.map(path => <Media>{
-                        contentType: "image/png",
-                        contentUrl: this.domain + path,
-                        name: '2009-09-21'
-                    })
-                }
-            }
-        });
+        .do(activity => console.log("Activity", activity));
     }
 
-    private activitiesGenerator(subscriber: Subscriber<Observable<DLMessage>>, watermark?: string) {
+    private activitiesGenerator(
+        subscriber: Subscriber<Observable<Activity>>,
+        watermark?: string)
+    {
         this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(activityGroup => {
-            const someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
+            const someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
             if (someMessages)
-                subscriber.next(Observable.from(activityGroup.messages));
+                subscriber.next(Observable.from(activityGroup.activities));
             this.pollTimer = setTimeout(
                 () => this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark),
                 someMessages && activityGroup.watermark ? 0 : 1000
@@ -201,14 +158,14 @@ export class DirectLine implements IBotConnection {
     private getActivityGroup(watermark = "") {
         return Observable.ajax({
             method: "GET",
-            url: `${this.domain}/api/conversations/${this.conversationId}/messages?watermark=${watermark}`,
+            url: `${this.domain}/conversations/${this.conversationId}/activities?watermark=${watermark}`,
+            timeout,
             headers: {
                 "Accept": "application/json",
-                "Authorization": `BotConnector ${this.token}`
+                "Authorization": `Bearer ${this.token}`
             }
         })
-//      .do(ajaxResponse => console.log("get messages ajaxResponse", ajaxResponse))
-        .retryWhen(error$ => error$.delay(1000))
-        .map(ajaxResponse => ajaxResponse.response as DLMessageGroup);
+//      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
+        .map(ajaxResponse => ajaxResponse.response as ActivityGroup);
     }
 }

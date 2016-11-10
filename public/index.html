@@ -29,9 +29,7 @@
 
             var secretOrToken = { secret: params['s'], token: params['t'] };
             BotChat.App({
-                botConnection: params["dl3"]
-                    ? new BotChat.DirectLine3(secretOrToken, params["dl3"], params["segment"])
-                    : new BotChat.DirectLine(secretOrToken, params["domain"]),
+                botConnection: new BotChat.DirectLine(secretOrToken, params["domain"]),
                 user: { id: 'userid', name: 'username' } // for convenient testing/demo - should normally be overwritten by below
                 // ADD MORE CONFIG HERE
             }, document.getElementById("BotChatGoesHere"));

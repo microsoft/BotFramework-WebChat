@@ -1,40 +1,48 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var intervalRefreshToken = 29 * 60 * 1000;
+var timeout = 10 * 1000;
 var DirectLine = (function () {
-    function DirectLine(secretOrToken, domain) {
-        if (domain === void 0) { domain = "https://directline.botframework.com"; }
+    function DirectLine(secretOrToken, domain, segment // DEPRECATED will be removed before release
+        ) {
+        if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
         this.domain = domain;
+        this.segment = segment;
         this.connected$ = new rxjs_1.BehaviorSubject(false);
-        this.id = 0;
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+        if (segment) {
+            console.log("Support for 'segment' is deprecated and will be removed before release. Please use default domain or pass entire path in domain");
+            this.domain += "/" + segment;
+        }
     }
     DirectLine.prototype.start = function () {
         var _this = this;
         rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/api/conversations",
+            url: this.domain + "/conversations",
+            timeout: timeout,
             headers: {
                 "Accept": "application/json",
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
+            .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
+            _this.token = _this.secret || conversation.token;
             _this.connected$.next(true);
             if (!_this.secret) {
                 _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
                     return rxjs_1.Observable.ajax({
                         method: "GET",
-                        url: _this.domain + "/api/tokens/" + _this.conversationId + "/renew",
+                        url: _this.domain + "/tokens/" + _this.conversationId + "/refresh",
+                        timeout: timeout,
                         headers: {
-                            "Authorization": "BotConnector " + _this.token
+                            "Authorization": "Bearer " + _this.token
                         }
                     })
-                        .retryWhen(function (error$) { return error$.delay(1000); })
                         .map(function (ajaxResponse) { return ajaxResponse.response; });
                 }).subscribe(function (token) {
                     console.log("refreshing token", token, "at", new Date());
@@ -44,7 +52,7 @@ var DirectLine = (function () {
         });
         this.activity$ = this.connected$
             .filter(function (connected) { return connected === true; })
-            .flatMap(function (_) { return _this.getActivities(); });
+            .flatMap(function (_) { return _this.getActivity$(); });
     };
     DirectLine.prototype.end = function () {
         if (this.tokenRefreshSubscription) {
@@ -61,86 +69,52 @@ var DirectLine = (function () {
         }
     };
     DirectLine.prototype.postMessage = function (text, from, channelData) {
-        console.log("sending", text);
         return rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/api/conversations/" + this.conversationId + "/messages",
+            url: this.domain + "/conversations/" + this.conversationId + "/activities",
             body: {
+                type: "message",
                 text: text,
-                from: from.id,
+                from: from,
                 conversationId: this.conversationId,
                 channelData: channelData
             },
+            timeout: timeout,
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
-            .mapTo((this.id++).toString());
+            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
     DirectLine.prototype.postFile = function (file, from) {
         var formData = new FormData();
         formData.append('file', file);
         return rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/api/conversations/" + this.conversationId + "/upload",
+            url: this.domain + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
             body: formData,
+            timeout: timeout,
             headers: {
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
-            .mapTo((this.id++).toString());
+            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
-    DirectLine.prototype.getActivities = function () {
+    DirectLine.prototype.getActivity$ = function () {
         var _this = this;
         return new rxjs_1.Observable(function (subscriber) {
             return _this.activitiesGenerator(subscriber);
         })
             .concatAll()
-            .do(function (dlm) { return console.log("DL Message", dlm); })
-            .map(function (dlm) {
-            if (dlm.channelData) {
-                var channelData = dlm.channelData;
-                switch (channelData.type) {
-                    case "message":
-                        return Object.assign({}, channelData, {
-                            id: dlm.id,
-                            conversation: { id: dlm.conversationId },
-                            timestamp: dlm.created,
-                            from: { id: dlm.from },
-                            channelData: null,
-                        });
-                    default:
-                        return channelData;
-                }
-            }
-            else {
-                return {
-                    type: "message",
-                    id: dlm.id,
-                    conversation: { id: dlm.conversationId },
-                    timestamp: dlm.created,
-                    from: { id: dlm.from },
-                    text: dlm.text,
-                    textFormat: "markdown",
-                    eTag: dlm.eTag,
-                    attachments: dlm.images && dlm.images.map(function (path) { return {
-                        contentType: "image/png",
-                        contentUrl: _this.domain + path,
-                        name: '2009-09-21'
-                    }; })
-                };
-            }
-        });
+            .do(function (activity) { return console.log("Activity", activity); });
     };
     DirectLine.prototype.activitiesGenerator = function (subscriber, watermark) {
         var _this = this;
         this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(function (activityGroup) {
-            var someMessages = activityGroup && activityGroup.messages && activityGroup.messages.length > 0;
+            var someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
             if (someMessages)
-                subscriber.next(rxjs_1.Observable.from(activityGroup.messages));
+                subscriber.next(rxjs_1.Observable.from(activityGroup.activities));
             _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
         }, function (error) {
             return subscriber.error(error);
@@ -150,13 +124,13 @@ var DirectLine = (function () {
         if (watermark === void 0) { watermark = ""; }
         return rxjs_1.Observable.ajax({
             method: "GET",
-            url: this.domain + "/api/conversations/" + this.conversationId + "/messages?watermark=" + watermark,
+            url: this.domain + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
+            timeout: timeout,
             headers: {
                 "Accept": "application/json",
-                "Authorization": "BotConnector " + this.token
+                "Authorization": "Bearer " + this.token
             }
         })
-            .retryWhen(function (error$) { return error$.delay(1000); })
             .map(function (ajaxResponse) { return ajaxResponse.response; });
     };
     return DirectLine;

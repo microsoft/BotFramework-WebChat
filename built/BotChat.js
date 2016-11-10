@@ -5,6 +5,5 @@ var Chat_1 = require('./Chat');
 exports.Chat = Chat_1.Chat;
 var directLine_1 = require('./directLine');
 exports.DirectLine = directLine_1.DirectLine;
-var directLine3_1 = require('./directLine3');
-exports.DirectLine3 = directLine3_1.DirectLine3;
+exports.DirectLine3 = directLine_1.DirectLine;
 //# sourceMappingURL=BotChat.js.map
