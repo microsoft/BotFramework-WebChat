@@ -98,7 +98,7 @@ exports.sendMessage = function (store, text) {
             type: "message",
             text: text,
             from: state.connection.user,
-            timestamp: Date.now().toString()
+            timestamp: (new Date()).toISOString()
         } });
     exports.trySendMessage(store, sendId);
 };
@@ -137,7 +137,7 @@ exports.sendFiles = function (store, files) {
         store.dispatch({ type: 'Send_Message', activity: {
                 type: "message",
                 from: state.connection.user,
-                timestamp: Date.now().toString(),
+                timestamp: (new Date()).toISOString(),
                 attachments: [{
                         contentType: file.type,
                         contentUrl: window.URL.createObjectURL(file),

@@ -131,7 +131,7 @@ export const sendMessage = (store: ChatStore, text: string) => {
         type: "message",
         text,
         from: state.connection.user,
-        timestamp: Date.now().toString()
+        timestamp: (new Date()).toISOString()
     }} as HistoryAction);
     trySendMessage(store, sendId);
 }
@@ -172,7 +172,7 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
         store.dispatch({ type: 'Send_Message', activity: {
             type: "message",
             from: state.connection.user,
-            timestamp: Date.now().toString(),
+            timestamp: (new Date()).toISOString(),
             attachments: [{
                 contentType: file.type as MediaType,
                 contentUrl: window.URL.createObjectURL(file),

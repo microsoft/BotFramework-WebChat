@@ -43,32 +43,46 @@ export class History extends React.Component<Props, {}> {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
+    suitableInterval(current: Activity, next: Activity) {
+        return Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
+    }
+
     render() {
         const state = this.props.store.getState();
+        const activities = state.history.activities;
+
+        const wrappedActivities = activities.map((activity: Activity, index) => {
+            let timeLine: String;
+            if (index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1]))) {
+                timeLine = ` at ${(new Date(activity.timestamp)).toLocaleTimeString()}`;
+            }
+            return (
+                <div key={index} className="wc-message-wrapper">
+                    <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
+                        <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
+                            <svg className="wc-message-callout">
+                                <path className="point-left" d="m0,6 l6 6 v-12 z" />
+                                <path className="point-right" d="m6,6 l-6 6 v-12 z" />
+                            </svg>
+                            <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
+                        </div>
+                        <div className="wc-message-from">
+                            { activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '' }
+                            { timeLine }
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
                 <div className="wc-message-group">
                     <div className="wc-message-group-content">
-                    { state.history.activities.map((activity:Activity, index) =>
-                        <div key={index} className="wc-message-wrapper">
-                        <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
-                            <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
-                                <svg className="wc-message-callout">
-                                    <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                                    <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                                </svg>
-                                <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.onImageLoad }/>
-                            </div>
-                            <div className="wc-message-from">{ activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '' }</div>
-                            </div>
-                        </div>
-                    ) }
+                        { wrappedActivities }
                     </div>
                 </div>
             </div>
         );
     }
 }
-
-// <Timestamp timestamp={ messagegroup.timestamp } />
-// { activities.map(activity => <HistoryMessage message={ activity } actions={ this.props.actions }/>) }
