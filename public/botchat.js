@@ -21717,10 +21717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    History.prototype.componentDidUpdate = function () {
 	        this.autoscroll();
 	    };
-	    History.prototype.onActivitySelected = function (e, activity) {
+	    History.prototype.onActivitySelected = function (activity) {
 	        if (this.props.onActivitySelected) {
-	            e.preventDefault();
-	            e.stopPropagation();
 	            this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity });
 	            this.props.onActivitySelected(activity);
 	        }
@@ -21741,9 +21739,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (index === activities.length - 1 || (index + 1 < activities.length && _this.suitableInterval(activity, activities[index + 1]))) {
 	                timeLine = " at " + (new Date(activity.timestamp)).toLocaleTimeString();
 	            }
-	            return (React.createElement("div", {key: index, className: "wc-message-wrapper"}, 
+	            return (React.createElement("div", {key: index, className: "wc-message-wrapper" + (_this.props.onActivitySelected ? ' clickable' : ''), onClick: function (e) { return _this.onActivitySelected(activity); }}, 
 	                React.createElement("div", {className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot')}, 
-	                    React.createElement("div", {className: 'wc-message-content' + (_this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : ''), onClick: function (e) { return _this.onActivitySelected(e, activity); }}, 
+	                    React.createElement("div", {className: 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '')}, 
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 

@@ -25,10 +25,8 @@ export class History extends React.Component<Props, {}> {
         this.autoscroll();
     }
 
-    onActivitySelected(e: React.SyntheticEvent<any>, activity: Activity) {
+    onActivitySelected(activity: Activity) {
         if (this.props.onActivitySelected) {
-            e.preventDefault();
-            e.stopPropagation();
             this.props.store.dispatch({ type: 'Select_Activity', selectedActivity: activity } as HistoryAction);
             this.props.onActivitySelected(activity);
         }
@@ -57,9 +55,9 @@ export class History extends React.Component<Props, {}> {
                 timeLine = ` at ${(new Date(activity.timestamp)).toLocaleTimeString()}`;
             }
             return (
-                <div key={index} className="wc-message-wrapper">
+                <div key={ index } className={ "wc-message-wrapper" + (this.props.onActivitySelected ? ' clickable' : '') } onClick={ e => this.onActivitySelected(activity) }>
                     <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
-                        <div className={ 'wc-message-content' + (this.props.onActivitySelected ? ' clickable' : '') + (activity === state.history.selectedActivity ? ' selected' : '') } onClick={ e => this.onActivitySelected(e, activity) }>
+                        <div className={ 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '') }>
                             <svg className="wc-message-callout">
                                 <path className="point-left" d="m0,6 l6 6 v-12 z" />
                                 <path className="point-right" d="m6,6 l-6 6 v-12 z" />
