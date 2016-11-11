@@ -81,7 +81,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 if (activity.from.id === state.connection.user.id)
                     break;
 
-                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET 
+                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET
                 if (activity.text && activity.text.endsWith("//typing"))
                     activity = Object.assign({}, activity, { type: 'typing' });
                 else {
@@ -138,17 +138,17 @@ export class Chat extends React.Component<ChatProps, {}> {
         return (
             <div className={ "wc-chatview-panel" }>
                 { header }
-                <History store={ this.store } selectActivity={ this.selectActivity } />
+                <History store={ this.store } selectActivity={ activity => this.selectActivity(activity) } />
                 <Shell store={ this.store } />
             </div>
         );
     }
 }
 
-export const updateSelectedActivity = (store: ChatStore) => { 
+export const updateSelectedActivity = (store: ChatStore) => {
     const state = store.getState();
     if (state.connection.selectedActivity)
-        state.connection.selectedActivity.next(state.history.selectedActivity);
+        state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
 }
 
 export const sendMessage = (store: ChatStore, text: string) => {
