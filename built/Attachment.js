@@ -115,7 +115,7 @@ exports.AttachmentView = function (props) {
         case "video/mp4":
             return videoWithOnLoad(attachment.contentUrl);
         default:
-            return React.createElement("span", null);
+            return React.createElement("span", null, "[Unknown]");
     }
 };
 //# sourceMappingURL=Attachment.js.map

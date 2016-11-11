@@ -159,7 +159,7 @@ export const AttachmentView = (props: {
             return videoWithOnLoad(attachment.contentUrl);
 
         default:
-            return <span/>;
+            return <span>[Unknown]</span>;
 
     }
 }
