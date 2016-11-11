@@ -32465,7 +32465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
 	                    return rxjs_1.Observable.ajax({
 	                        method: "GET",
-	                        url: _this.domain + "/tokens/" + _this.conversationId + "/refresh",
+	                        url: _this.domain + "/tokens/refresh",
 	                        timeout: timeout,
 	                        headers: {
 	                            "Authorization": "Bearer " + _this.token

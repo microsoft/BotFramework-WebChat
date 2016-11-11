@@ -59,7 +59,7 @@ export class DirectLine implements IBotConnection {
                 this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
                     Observable.ajax({
                         method: "GET",
-                        url: `${this.domain}/tokens/${this.conversationId}/refresh`,
+                        url: `${this.domain}/tokens/refresh`,
                         timeout,
                         headers: {
                             "Authorization": `Bearer ${this.token}`
