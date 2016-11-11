@@ -21575,7 +21575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            case "message":
 	                if (activity.from.id === state.connection.user.id)
 	                    break;
-	                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET 
+	                // 'typing' activity only available with WebSockets, so this allows us to test with polling GET
 	                if (activity.text && activity.text.endsWith("//typing"))
 	                    activity = Object.assign({}, activity, { type: 'typing' });
 	                else {
@@ -21617,6 +21617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    Chat.prototype.render = function () {
+	        var _this = this;
 	        var state = this.store.getState();
 	        console.log("BotChat.Chat state", state);
 	        var header;
@@ -21627,7 +21628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                );
 	        return (React.createElement("div", {className: "wc-chatview-panel"}, 
 	            header, 
-	            React.createElement(History_1.History, {store: this.store, selectActivity: this.selectActivity}), 
+	            React.createElement(History_1.History, {store: this.store, selectActivity: function (activity) { return _this.selectActivity(activity); }}), 
 	            React.createElement(Shell_1.Shell, {store: this.store})));
 	    };
 	    return Chat;
@@ -21636,7 +21637,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.updateSelectedActivity = function (store) {
 	    var state = store.getState();
 	    if (state.connection.selectedActivity)
-	        state.connection.selectedActivity.next(state.history.selectedActivity);
+	        state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
 	};
 	exports.sendMessage = function (store, text) {
 	    if (!text || typeof text !== 'string' || text.trim().length === 0)
