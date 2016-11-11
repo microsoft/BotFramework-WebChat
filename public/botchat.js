@@ -21861,6 +21861,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    switch (attachment.contentType) {
 	        case "application/vnd.microsoft.card.hero":
+	            if (!attachment.content)
+	                return null;
 	            return (React.createElement("div", {className: 'wc-card hero'}, 
 	                attachedImage(attachment.content.images), 
 	                React.createElement("h1", null, attachment.content.title), 
@@ -21868,6 +21870,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                React.createElement("p", null, attachment.content.text), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.thumbnail":
+	            if (!attachment.content)
+	                return null;
 	            return (React.createElement("div", {className: 'wc-card thumbnail'}, 
 	                React.createElement("h1", null, attachment.content.title), 
 	                React.createElement("p", null, 
@@ -21876,16 +21880,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    attachment.content.text), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.video":
-	            var thumbnail;
-	            if (attachment.content.image)
-	                thumbnail = attachment.content.image.url;
+	            if (!attachment.content || !attachment.content.media)
+	                return null;
 	            return (React.createElement("div", {className: 'wc-card video'}, 
-	                videoWithOnLoad(attachment.content.media[0].url, thumbnail, attachment.content.autostart, attachment.content.autoloop), 
+	                videoWithOnLoad(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop), 
 	                React.createElement("h1", null, attachment.content.title), 
 	                React.createElement("h2", null, attachment.content.subtitle), 
 	                React.createElement("p", null, attachment.content.text), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.audio":
+	            if (!attachment.content || !attachment.content.media)
+	                return null;
 	            return (React.createElement("div", {className: 'wc-card audio'}, 
 	                audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop), 
 	                React.createElement("h1", null, attachment.content.title), 
@@ -21893,10 +21898,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                React.createElement("p", null, attachment.content.text), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.signin":
+	            if (!attachment.content)
+	                return null;
 	            return (React.createElement("div", {className: 'wc-card signin'}, 
 	                React.createElement("h1", null, attachment.content.text), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.receipt":
+	            if (!attachment.content)
+	                return null;
 	            return (React.createElement("div", {className: 'wc-card receipt'}, 
 	                React.createElement("table", null, 
 	                    React.createElement("thead", null, 
