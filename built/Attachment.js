@@ -40,7 +40,7 @@ exports.AttachmentView = function (props) {
         return React.createElement("video", {src: videoUrl, poster: thumbnailUrl, autoPlay: autoPlay, controls: true, loop: loop, onLoadedMetadata: function () { console.log("local onVideoLoad"); props.onImageLoad(); }});
     };
     var attachedImage = function (images) {
-        return images && imageWithOnLoad(images[0].url);
+        return images && images.length > 0 && imageWithOnLoad(images[0].url);
     };
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
@@ -63,7 +63,7 @@ exports.AttachmentView = function (props) {
                     attachment.content.text), 
                 buttons(attachment.content.buttons)));
         case "application/vnd.microsoft.card.video":
-            if (!attachment.content || !attachment.content.media)
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (React.createElement("div", {className: 'wc-card video'}, 
                 videoWithOnLoad(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop), 
@@ -72,7 +72,7 @@ exports.AttachmentView = function (props) {
                 React.createElement("p", null, attachment.content.text), 
                 buttons(attachment.content.buttons)));
         case "application/vnd.microsoft.card.audio":
-            if (!attachment.content || !attachment.content.media)
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (React.createElement("div", {className: 'wc-card audio'}, 
                 audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop), 

@@ -52,7 +52,7 @@ export const AttachmentView = (props: {
         <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ () => {console.log("local onVideoLoad");props.onImageLoad();} } />;
 
     const attachedImage = (images?: { url: string }[]) =>
-        images && imageWithOnLoad(images[0].url);
+        images && images.length > 0 && imageWithOnLoad(images[0].url);
 
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
@@ -84,7 +84,7 @@ export const AttachmentView = (props: {
             );
 
         case "application/vnd.microsoft.card.video":
-            if (!attachment.content || !attachment.content.media)
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
                 <div className='wc-card video'>
@@ -97,7 +97,7 @@ export const AttachmentView = (props: {
             );
 
         case "application/vnd.microsoft.card.audio":
-            if (!attachment.content || !attachment.content.media)
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
                 <div className='wc-card audio'>
