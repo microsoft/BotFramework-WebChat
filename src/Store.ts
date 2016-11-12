@@ -43,6 +43,7 @@ export interface ConnectionState {
     botConnection: IBotConnection,
     selectedActivity: BehaviorSubject<ActivityOrID>,
     user: User,
+    bot: User,
     host: Window
 }
 
@@ -50,6 +51,7 @@ export type ConnectionAction = {
     type: 'Start_Connection',
     botConnection: IBotConnection,
     user: User,
+    bot: User,
     selectedActivity: BehaviorSubject<ActivityOrID>
 } | {
     type: 'Connected_To_Bot' | 'Unsubscribe_Host'
@@ -64,6 +66,7 @@ export const connectionReducer: Reducer<ConnectionState> = (
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
+        bot: undefined,
         host: undefined
     },
     action: ConnectionAction
@@ -74,6 +77,7 @@ export const connectionReducer: Reducer<ConnectionState> = (
                 connected: false,
                 botConnection: action.botConnection,
                 user: action.user,
+                bot: action.bot,
                 selectedActivity: action.selectedActivity
             });
         case 'Connected_To_Bot':
@@ -159,8 +163,7 @@ export const historyReducer: Reducer<HistoryState> = (
                     ... state.activities.filter(activity => activity.type === "typing"),
                 ],
                 input: '',
-                sendCounter: state.sendCounter + 1,
-                autoscroll: true
+                sendCounter: state.sendCounter + 1
             });
 
         case 'Send_Message_Try':
@@ -177,7 +180,6 @@ export const historyReducer: Reducer<HistoryState> = (
                     ... state.activities.filter(activity => activity.type === "typing")
                 ],
                 sendCounter: state.sendCounter + 1,
-                autoscroll: true,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }
@@ -197,7 +199,6 @@ export const historyReducer: Reducer<HistoryState> = (
                     ... state.activities.slice(i + 1)
                 ],
                 sendCounter: state.sendCounter + 1,
-                autoscroll: true,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }

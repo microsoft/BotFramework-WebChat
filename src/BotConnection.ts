@@ -108,7 +108,8 @@ export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | Audio
 
 export interface User {
     id: string,
-    name?: string
+    name?: string,
+    iconUrl?: string
 }
 
 export interface IActivity {

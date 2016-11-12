@@ -23,6 +23,7 @@ exports.connectionReducer = function (state, action) {
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
+        bot: undefined,
         host: undefined
     }; }
     switch (action.type) {
@@ -31,6 +32,7 @@ exports.connectionReducer = function (state, action) {
                 connected: false,
                 botConnection: action.botConnection,
                 user: action.user,
+                bot: action.bot,
                 selectedActivity: action.selectedActivity
             });
         case 'Connected_To_Bot':
@@ -79,8 +81,7 @@ exports.historyReducer = function (state, action) {
                     })
                 ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
                 input: '',
-                sendCounter: state.sendCounter + 1,
-                autoscroll: true
+                sendCounter: state.sendCounter + 1
             });
         case 'Send_Message_Try':
             {
@@ -94,7 +95,6 @@ exports.historyReducer = function (state, action) {
                         newActivity
                     ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
                     sendCounter: state.sendCounter + 1,
-                    autoscroll: true,
                     selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
                 });
             }
@@ -113,7 +113,6 @@ exports.historyReducer = function (state, action) {
                     newActivity
                 ], state.activities.slice(i + 1)),
                 sendCounter: state.sendCounter + 1,
-                autoscroll: true,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }

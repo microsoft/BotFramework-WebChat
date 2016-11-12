@@ -27,11 +27,26 @@
                     params[p[0]] = p[1];
                 });
 
-            var secretOrToken = { secret: params['s'], token: params['t'] };
+            const botConnection = new BotChat.DirectLine({
+                secret: params['s'],
+                token: params['t']
+                }, params["domain"]
+            );
+
+            const user = {
+                id: params['userid'] || 'userid',
+                name: params["username"] || 'username'
+                };
+            
+            const bot = {
+                id: params['botid'] || 'botid',
+                name: params["botname"] || 'botname'
+            };
+
             BotChat.App({
-                botConnection: new BotChat.DirectLine(secretOrToken, params["domain"]),
-                user: { id: 'userid', name: 'username' } // for convenient testing/demo - should normally be overwritten by below
-                // ADD MORE CONFIG HERE
+                botConnection,
+                user,
+                bot
             }, document.getElementById("BotChatGoesHere"));
         </script>
     </body>

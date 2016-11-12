@@ -25,6 +25,7 @@ export type ActivityOrID = {
 
 export interface ChatProps {
     user: User,
+    bot: User,
     botConnection: IBotConnection,
     locale?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
@@ -45,7 +46,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         console.log("BotChat.Chat props", props);
 
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
 
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);

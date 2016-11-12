@@ -21547,7 +21547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.store = Store_1.createStore();
 	        this.typingTimers = {};
 	        console.log("BotChat.Chat props", props);
-	        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
+	        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
 	        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
@@ -21760,7 +21760,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
 	                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: function () { return _this.onImageLoad; }})), 
 	                    React.createElement("div", {className: "wc-message-from"}, 
-	                        activity.from.id === state.connection.user.id ? 'you' : activity.from.name || activity.from.id || '', 
+	                        activity.from.name || activity.from.id, 
 	                        timeLine))
 	            ));
 	        });
@@ -24071,6 +24071,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        botConnection: undefined,
 	        selectedActivity: undefined,
 	        user: undefined,
+	        bot: undefined,
 	        host: undefined
 	    }; }
 	    switch (action.type) {
@@ -24079,6 +24080,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                connected: false,
 	                botConnection: action.botConnection,
 	                user: action.user,
+	                bot: action.bot,
 	                selectedActivity: action.selectedActivity
 	            });
 	        case 'Connected_To_Bot':
@@ -24127,8 +24129,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    })
 	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
 	                input: '',
-	                sendCounter: state.sendCounter + 1,
-	                autoscroll: true
+	                sendCounter: state.sendCounter + 1
 	            });
 	        case 'Send_Message_Try':
 	            {
@@ -24142,7 +24143,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        newActivity
 	                    ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
 	                    sendCounter: state.sendCounter + 1,
-	                    autoscroll: true,
 	                    selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
 	                });
 	            }
@@ -24161,7 +24161,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    newActivity
 	                ], state.activities.slice(i + 1)),
 	                sendCounter: state.sendCounter + 1,
-	                autoscroll: true,
 	                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
 	            });
 	        }

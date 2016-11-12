@@ -19,7 +19,7 @@ var Chat = (function (_super) {
         this.store = Store_1.createStore();
         this.typingTimers = {};
         console.log("BotChat.Chat props", props);
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
