@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subscription, BehaviorSubject } from '@reactivex/rxjs';
-import { Activity, Message, IBotConnection, User, MediaType } from './BotConnection';
+import { Activity, Message, Attachment, IBotConnection, User, MediaType } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
@@ -203,26 +203,28 @@ export const sendPostBack = (store: ChatStore, text: string) => {
 }
 
 export const sendFiles = (store: ChatStore, files: FileList) => {
+    const attachments: Attachment[] = [];
     for (let i = 0, numFiles = files.length; i < numFiles; i++) {
         const file = files[i];
-        console.log("file", file);
-        let state = store.getState();
-        const sendId = state.history.sendCounter;
-        store.dispatch({ type: 'Send_Message', activity: {
-            type: "message",
-            from: state.connection.user,
-            timestamp: (new Date()).toISOString(),
-            attachments: [{
-                contentType: file.type as MediaType,
-                contentUrl: window.URL.createObjectURL(file),
-                name: file.name
-            }]
-        }} as HistoryAction);
-        state = store.getState();
-        state.connection.botConnection.postFile(file, state.connection.user)
-        .subscribe(
-            sendMessageSucceed(store, sendId),
-            sendMessageFail(store, sendId)
-        );
+        attachments.push({
+            contentType: file.type as MediaType,
+            contentUrl: window.URL.createObjectURL(file),
+            name: file.name
+        });
     }
+
+    let state = store.getState();
+    const sendId = state.history.sendCounter;
+    store.dispatch({ type: 'Send_Message', activity: {
+        type: "message",
+        from: state.connection.user,
+        timestamp: (new Date()).toISOString(),
+        attachments
+    }} as HistoryAction);
+    state = store.getState();
+    state.connection.botConnection.postFiles(files, state.connection.user)
+    .subscribe(
+        sendMessageSucceed(store, sendId),
+        sendMessageFail(store, sendId)
+    );
 }

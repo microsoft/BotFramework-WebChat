@@ -87,9 +87,10 @@ var DirectLine = (function () {
         })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
-    DirectLine.prototype.postFile = function (file, from) {
+    DirectLine.prototype.postFiles = function (files, from) {
         var formData = new FormData();
-        formData.append('file', file);
+        for (var i = 0, numFiles = files.length; i < numFiles; i++)
+            formData.append('file', files[i]);
         return rxjs_1.Observable.ajax({
             method: "POST",
             url: this.domain + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,

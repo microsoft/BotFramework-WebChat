@@ -114,9 +114,10 @@ export class DirectLine implements IBotConnection {
         .map(ajaxResponse => ajaxResponse.response.id as string);
     }
 
-    postFile(file: File, from: User) {
+    postFiles(files: FileList, from: User) {
         const formData = new FormData();
-        formData.append('file', file);
+        for (let i = 0, numFiles = files.length; i < numFiles; i++)
+            formData.append('file', files[i]);
         return Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${from.id}`,

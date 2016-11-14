@@ -155,24 +155,25 @@ exports.sendPostBack = function (store, text) {
     });
 };
 exports.sendFiles = function (store, files) {
+    var attachments = [];
     for (var i = 0, numFiles = files.length; i < numFiles; i++) {
         var file = files[i];
-        console.log("file", file);
-        var state = store.getState();
-        var sendId = state.history.sendCounter;
-        store.dispatch({ type: 'Send_Message', activity: {
-                type: "message",
-                from: state.connection.user,
-                timestamp: (new Date()).toISOString(),
-                attachments: [{
-                        contentType: file.type,
-                        contentUrl: window.URL.createObjectURL(file),
-                        name: file.name
-                    }]
-            } });
-        state = store.getState();
-        state.connection.botConnection.postFile(file, state.connection.user)
-            .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+        attachments.push({
+            contentType: file.type,
+            contentUrl: window.URL.createObjectURL(file),
+            name: file.name
+        });
     }
+    var state = store.getState();
+    var sendId = state.history.sendCounter;
+    store.dispatch({ type: 'Send_Message', activity: {
+            type: "message",
+            from: state.connection.user,
+            timestamp: (new Date()).toISOString(),
+            attachments: attachments
+        } });
+    state = store.getState();
+    state.connection.botConnection.postFiles(files, state.connection.user)
+        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
 };
 //# sourceMappingURL=Chat.js.map
