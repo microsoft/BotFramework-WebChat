@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subscription, BehaviorSubject } from '@reactivex/rxjs';
-import { Activity, Message, Attachment, IBotConnection, User, MediaType } from './BotConnection';
+import { Activity, Media, IBotConnection, User, MediaType } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
@@ -157,12 +157,16 @@ export const sendMessage = (store: ChatStore, text: string) => {
         return;
     let state = store.getState();
     const sendId = state.history.sendCounter;
-    store.dispatch({ type: 'Send_Message', activity: {
-        type: "message",
-        text,
-        from: state.connection.user,
-        timestamp: (new Date()).toISOString()
-    }} as HistoryAction);
+    store.dispatch({
+        type: 'Send_Message',
+        activity: {
+            type: "message",
+            text,
+            from: state.connection.user,
+            timestamp: (new Date()).toISOString(),
+            sendId
+        }
+    } as HistoryAction);
     trySendMessage(store, sendId);
 }
 
@@ -185,8 +189,15 @@ export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = 
     }
     let state = store.getState();
     const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
-    state.connection.botConnection.postMessage((activity as Message).text, state.connection.user)
-    .subscribe(
+    if (!activity) {
+        console.log("activity not found");
+        return;
+    }
+    
+    (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
+        ? state.connection.botConnection.postMessageWithAttachments(activity)
+        : state.connection.botConnection.postActivity(activity)
+    ).subscribe(
         sendMessageSucceed(store, sendId),
         sendMessageFail(store, sendId)
     );
@@ -194,7 +205,12 @@ export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = 
 
 export const sendPostBack = (store: ChatStore, text: string) => {
     const state = store.getState();
-    state.connection.botConnection.postMessage(text, state.connection.user)
+    state.connection.botConnection.postActivity({
+        type: "message",
+        text,
+        from: state.connection.user,
+        timestamp: (new Date()).toISOString()
+    })
     .subscribe(id => {
         console.log("success sending postBack", id)
     }, error => {
@@ -202,8 +218,8 @@ export const sendPostBack = (store: ChatStore, text: string) => {
     });
 }
 
-export const sendFiles = (store: ChatStore, files: FileList) => {
-    const attachments: Attachment[] = [];
+const attachmentsFromFiles = (files: FileList) => {
+    const attachments: Media[] = [];
     for (let i = 0, numFiles = files.length; i < numFiles; i++) {
         const file = files[i];
         attachments.push({
@@ -212,19 +228,21 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
             name: file.name
         });
     }
+    return attachments;
+}
 
+export const sendFiles = (store: ChatStore, files: FileList) => {
     let state = store.getState();
     const sendId = state.history.sendCounter;
-    store.dispatch({ type: 'Send_Message', activity: {
-        type: "message",
-        from: state.connection.user,
-        timestamp: (new Date()).toISOString(),
-        attachments
-    }} as HistoryAction);
-    state = store.getState();
-    state.connection.botConnection.postFiles(files, state.connection.user)
-    .subscribe(
-        sendMessageSucceed(store, sendId),
-        sendMessageFail(store, sendId)
-    );
+    store.dispatch({
+        type: 'Send_Message',
+        activity: {
+            type: "message",
+            attachments: attachmentsFromFiles(files),
+            from: state.connection.user,
+            timestamp: (new Date()).toISOString(),
+            sendId
+        }
+    } as HistoryAction);
+    trySendMessage(store, sendId);
 }

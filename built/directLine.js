@@ -68,40 +68,43 @@ var DirectLine = (function () {
             this.pollTimer = undefined;
         }
     };
-    DirectLine.prototype.postMessage = function (text, from, channelData) {
-        return rxjs_1.Observable.ajax({
-            method: "POST",
-            url: this.domain + "/conversations/" + this.conversationId + "/activities",
-            body: {
-                type: "message",
-                text: text,
-                from: from,
-                channelData: channelData
-            },
-            timeout: timeout,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + this.token
-            }
+    DirectLine.prototype.postMessageWithAttachments = function (message) {
+        var _this = this;
+        var formData = new FormData();
+        formData.append('activity', new Blob([JSON.stringify(Object.assign({}, message, { attachments: undefined }))], { type: 'application/vnd.microsoft.activity' }));
+        return rxjs_1.Observable.from(message.attachments || [])
+            .flatMap(function (media) {
+            return rxjs_1.Observable.ajax({
+                method: "GET",
+                url: media.contentUrl,
+                responseType: 'arraybuffer'
+            })
+                .do(function (ajaxResponse) {
+                return formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name);
+            });
+        })
+            .count()
+            .flatMap(function (count) {
+            return rxjs_1.Observable.ajax({
+                method: "POST",
+                url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,
+                body: formData,
+                timeout: timeout,
+                headers: {
+                    "Authorization": "Bearer " + _this.token
+                }
+            });
         })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; });
     };
-    DirectLine.prototype.postFiles = function (files, from) {
-        var formData = new FormData();
-        for (var i = 0, numFiles = files.length; i < numFiles; i++)
-            formData.append('file', files[i]);
-        formData.append('activity', new Blob([JSON.stringify({
-                type: "message",
-                from: from,
-            })], {
-            type: 'application/vnd.microsoft.activity'
-        }));
+    DirectLine.prototype.postActivity = function (activity) {
         return rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
-            body: formData,
+            url: this.domain + "/conversations/" + this.conversationId + "/activities",
+            body: activity,
             timeout: timeout,
             headers: {
+                "Content-Type": "application/json",
                 "Authorization": "Bearer " + this.token
             }
         })

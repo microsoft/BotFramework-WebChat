@@ -93,48 +93,50 @@ export class DirectLine implements IBotConnection {
         }
     }
 
-    postMessage(text: string, from: User, channelData?: any) {
+    postMessageWithAttachments(message: Message) {
+        const formData = new FormData();
+
+        formData.append('activity', new Blob([JSON.stringify(
+            Object.assign({}, message, { attachments: undefined })
+        )], { type: 'application/vnd.microsoft.activity' }));
+
+        return Observable.from(message.attachments || [])
+        .flatMap((media: Media) => 
+            Observable.ajax({
+                method: "GET",
+                url: media.contentUrl,
+                responseType: 'arraybuffer'
+            })
+            .do(ajaxResponse =>
+                formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name)
+            )
+        )
+        .count()
+        .flatMap(count =>
+            Observable.ajax({
+                method: "POST",
+                url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${message.from.id}`,
+                body: formData,
+                timeout,
+                headers: {
+                    "Authorization": `Bearer ${this.token}`
+                }
+            })
+        )
+        .map(ajaxResponse => ajaxResponse.response.id as string);
+    }
+
+    postActivity(activity: Activity) {
         return Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations/${this.conversationId}/activities`,
-            body: <Message>{
-                type: "message",
-                text,
-                from,
-                channelData
-            },
+            body: activity,
             timeout,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${this.token}`
             }
         })
-//      .do(ajaxResponse => console.log("post message ajaxResponse", ajaxResponse))
-        .map(ajaxResponse => ajaxResponse.response.id as string);
-    }
-
-    postFiles(files: FileList, from: User) {
-        const formData = new FormData();
-
-        for (let i = 0, numFiles = files.length; i < numFiles; i++)
-            formData.append('file', files[i]);
-
-        formData.append('activity', new Blob([JSON.stringify({
-            type: "message",
-            from,
-        })], {
-            type: 'application/vnd.microsoft.activity'
-        }));
-        return Observable.ajax({
-            method: "POST",
-            url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${from.id}`,
-            body: formData,
-            timeout,
-            headers: {
-                "Authorization": `Bearer ${this.token}`
-            }
-        })
-//      .do(ajaxResponse => console.log("post file ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response.id as string);
     }
 

@@ -146,6 +146,6 @@ export interface IBotConnection {
     end();
     connected$: BehaviorSubject<boolean>;
     activity$: Observable<Activity>;
-    postMessage: (text: string, from: User, channelData?: any) => Observable<string>,
-    postFiles: (file: FileList, from: User) => Observable<string>
+    postMessageWithAttachments: (message: Activity) => Observable<string>,
+    postActivity: (activity: Activity) => Observable<string>,
 }

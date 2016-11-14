@@ -21644,12 +21644,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	    var state = store.getState();
 	    var sendId = state.history.sendCounter;
-	    store.dispatch({ type: 'Send_Message', activity: {
+	    store.dispatch({
+	        type: 'Send_Message',
+	        activity: {
 	            type: "message",
 	            text: text,
 	            from: state.connection.user,
-	            timestamp: (new Date()).toISOString()
-	        } });
+	            timestamp: (new Date()).toISOString(),
+	            sendId: sendId
+	        }
+	    });
 	    exports.trySendMessage(store, sendId);
 	};
 	var sendMessageSucceed = function (store, sendId) { return function (id) {
@@ -21670,19 +21674,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var state = store.getState();
 	    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
-	    state.connection.botConnection.postMessage(activity.text, state.connection.user)
-	        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+	    if (!activity) {
+	        console.log("activity not found");
+	        return;
+	    }
+	    (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
+	        ? state.connection.botConnection.postMessageWithAttachments(activity)
+	        : state.connection.botConnection.postActivity(activity)).subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
 	};
 	exports.sendPostBack = function (store, text) {
 	    var state = store.getState();
-	    state.connection.botConnection.postMessage(text, state.connection.user)
+	    state.connection.botConnection.postActivity({
+	        type: "message",
+	        text: text,
+	        from: state.connection.user,
+	        timestamp: (new Date()).toISOString()
+	    })
 	        .subscribe(function (id) {
 	        console.log("success sending postBack", id);
 	    }, function (error) {
 	        console.log("failed to send postBack", error);
 	    });
 	};
-	exports.sendFiles = function (store, files) {
+	var attachmentsFromFiles = function (files) {
 	    var attachments = [];
 	    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
 	        var file = files[i];
@@ -21692,17 +21706,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	            name: file.name
 	        });
 	    }
+	    return attachments;
+	};
+	exports.sendFiles = function (store, files) {
 	    var state = store.getState();
 	    var sendId = state.history.sendCounter;
-	    store.dispatch({ type: 'Send_Message', activity: {
+	    store.dispatch({
+	        type: 'Send_Message',
+	        activity: {
 	            type: "message",
+	            attachments: attachmentsFromFiles(files),
 	            from: state.connection.user,
 	            timestamp: (new Date()).toISOString(),
-	            attachments: attachments
-	        } });
-	    state = store.getState();
-	    state.connection.botConnection.postFiles(files, state.connection.user)
-	        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+	            sendId: sendId
+	        }
+	    });
+	    exports.trySendMessage(store, sendId);
 	};
 
 
@@ -32508,40 +32527,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.pollTimer = undefined;
 	        }
 	    };
-	    DirectLine.prototype.postMessage = function (text, from, channelData) {
-	        return rxjs_1.Observable.ajax({
-	            method: "POST",
-	            url: this.domain + "/conversations/" + this.conversationId + "/activities",
-	            body: {
-	                type: "message",
-	                text: text,
-	                from: from,
-	                channelData: channelData
-	            },
-	            timeout: timeout,
-	            headers: {
-	                "Content-Type": "application/json",
-	                "Authorization": "Bearer " + this.token
-	            }
+	    DirectLine.prototype.postMessageWithAttachments = function (message) {
+	        var _this = this;
+	        var formData = new FormData();
+	        formData.append('activity', new Blob([JSON.stringify(Object.assign({}, message, { attachments: undefined }))], { type: 'application/vnd.microsoft.activity' }));
+	        return rxjs_1.Observable.from(message.attachments || [])
+	            .flatMap(function (media) {
+	            return rxjs_1.Observable.ajax({
+	                method: "GET",
+	                url: media.contentUrl,
+	                responseType: 'arraybuffer'
+	            })
+	                .do(function (ajaxResponse) {
+	                return formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name);
+	            });
+	        })
+	            .count()
+	            .flatMap(function (count) {
+	            return rxjs_1.Observable.ajax({
+	                method: "POST",
+	                url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,
+	                body: formData,
+	                timeout: timeout,
+	                headers: {
+	                    "Authorization": "Bearer " + _this.token
+	                }
+	            });
 	        })
 	            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
 	    };
-	    DirectLine.prototype.postFiles = function (files, from) {
-	        var formData = new FormData();
-	        for (var i = 0, numFiles = files.length; i < numFiles; i++)
-	            formData.append('file', files[i]);
-	        formData.append('activity', new Blob([JSON.stringify({
-	                type: "message",
-	                from: from,
-	            })], {
-	            type: 'application/vnd.microsoft.activity'
-	        }));
+	    DirectLine.prototype.postActivity = function (activity) {
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
-	            url: this.domain + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,
-	            body: formData,
+	            url: this.domain + "/conversations/" + this.conversationId + "/activities",
+	            body: activity,
 	            timeout: timeout,
 	            headers: {
+	                "Content-Type": "application/json",
 	                "Authorization": "Bearer " + this.token
 	            }
 	        })

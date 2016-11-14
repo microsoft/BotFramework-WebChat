@@ -116,12 +116,16 @@ exports.sendMessage = function (store, text) {
         return;
     var state = store.getState();
     var sendId = state.history.sendCounter;
-    store.dispatch({ type: 'Send_Message', activity: {
+    store.dispatch({
+        type: 'Send_Message',
+        activity: {
             type: "message",
             text: text,
             from: state.connection.user,
-            timestamp: (new Date()).toISOString()
-        } });
+            timestamp: (new Date()).toISOString(),
+            sendId: sendId
+        }
+    });
     exports.trySendMessage(store, sendId);
 };
 var sendMessageSucceed = function (store, sendId) { return function (id) {
@@ -142,19 +146,29 @@ exports.trySendMessage = function (store, sendId, updateStatus) {
     }
     var state = store.getState();
     var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
-    state.connection.botConnection.postMessage(activity.text, state.connection.user)
-        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+    if (!activity) {
+        console.log("activity not found");
+        return;
+    }
+    (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
+        ? state.connection.botConnection.postMessageWithAttachments(activity)
+        : state.connection.botConnection.postActivity(activity)).subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
 };
 exports.sendPostBack = function (store, text) {
     var state = store.getState();
-    state.connection.botConnection.postMessage(text, state.connection.user)
+    state.connection.botConnection.postActivity({
+        type: "message",
+        text: text,
+        from: state.connection.user,
+        timestamp: (new Date()).toISOString()
+    })
         .subscribe(function (id) {
         console.log("success sending postBack", id);
     }, function (error) {
         console.log("failed to send postBack", error);
     });
 };
-exports.sendFiles = function (store, files) {
+var attachmentsFromFiles = function (files) {
     var attachments = [];
     for (var i = 0, numFiles = files.length; i < numFiles; i++) {
         var file = files[i];
@@ -164,16 +178,21 @@ exports.sendFiles = function (store, files) {
             name: file.name
         });
     }
+    return attachments;
+};
+exports.sendFiles = function (store, files) {
     var state = store.getState();
     var sendId = state.history.sendCounter;
-    store.dispatch({ type: 'Send_Message', activity: {
+    store.dispatch({
+        type: 'Send_Message',
+        activity: {
             type: "message",
+            attachments: attachmentsFromFiles(files),
             from: state.connection.user,
             timestamp: (new Date()).toISOString(),
-            attachments: attachments
-        } });
-    state = store.getState();
-    state.connection.botConnection.postFiles(files, state.connection.user)
-        .subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+            sendId: sendId
+        }
+    });
+    exports.trySendMessage(store, sendId);
 };
 //# sourceMappingURL=Chat.js.map
