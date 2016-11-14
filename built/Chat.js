@@ -10,7 +10,6 @@ var History_1 = require('./History');
 var Shell_1 = require('./Shell');
 var Store_1 = require('./Store');
 var Strings_1 = require('./Strings');
-;
 var Chat = (function (_super) {
     __extends(Chat, _super);
     function Chat(props) {
@@ -115,52 +114,50 @@ exports.sendMessage = function (store, text) {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     var state = store.getState();
-    var sendId = state.history.sendCounter;
+    var clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
     store.dispatch({
         type: 'Send_Message',
         activity: {
             type: "message",
             text: text,
             from: state.connection.user,
-            timestamp: (new Date()).toISOString(),
-            sendId: sendId
+            timestamp: (new Date()).toISOString()
         }
     });
-    exports.trySendMessage(store, sendId);
+    exports.trySendMessage(store, clientActivityId);
 };
-var sendMessageSucceed = function (store, sendId) { return function (id) {
+var sendMessageSucceed = function (store, clientActivityId) { return function (id) {
     console.log("success sending message", id);
-    store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+    store.dispatch({ type: "Send_Message_Succeed", clientActivityId: clientActivityId, id: id });
     exports.updateSelectedActivity(store);
 }; };
-var sendMessageFail = function (store, sendId) { return function (error) {
+var sendMessageFail = function (store, clientActivityId) { return function (error) {
     console.log("failed to send message", error);
     // TODO: show an error under the message with "retry" link
-    store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+    store.dispatch({ type: "Send_Message_Fail", clientActivityId: clientActivityId });
     exports.updateSelectedActivity(store);
 }; };
-exports.trySendMessage = function (store, sendId, updateStatus) {
+exports.trySendMessage = function (store, clientActivityId, updateStatus) {
     if (updateStatus === void 0) { updateStatus = false; }
     if (updateStatus) {
-        store.dispatch({ type: "Send_Message_Try", sendId: sendId });
+        store.dispatch({ type: "Send_Message_Try", clientActivityId: clientActivityId });
     }
     var state = store.getState();
-    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
+    var activity = state.history.activities.find(function (activity) { return activity.channelData && activity.channelData.clientActivityId === clientActivityId; });
     if (!activity) {
         console.log("activity not found");
         return;
     }
     (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
         ? state.connection.botConnection.postMessageWithAttachments(activity)
-        : state.connection.botConnection.postActivity(activity)).subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+        : state.connection.botConnection.postActivity(activity)).subscribe(sendMessageSucceed(store, clientActivityId), sendMessageFail(store, clientActivityId));
 };
 exports.sendPostBack = function (store, text) {
     var state = store.getState();
     state.connection.botConnection.postActivity({
         type: "message",
         text: text,
-        from: state.connection.user,
-        timestamp: (new Date()).toISOString()
+        from: state.connection.user
     })
         .subscribe(function (id) {
         console.log("success sending postBack", id);
@@ -182,17 +179,15 @@ var attachmentsFromFiles = function (files) {
 };
 exports.sendFiles = function (store, files) {
     var state = store.getState();
-    var sendId = state.history.sendCounter;
+    var clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
     store.dispatch({
         type: 'Send_Message',
         activity: {
             type: "message",
             attachments: attachmentsFromFiles(files),
-            from: state.connection.user,
-            timestamp: (new Date()).toISOString(),
-            sendId: sendId
+            from: state.connection.user
         }
     });
-    exports.trySendMessage(store, sendId);
+    exports.trySendMessage(store, clientActivityId);
 };
 //# sourceMappingURL=Chat.js.map

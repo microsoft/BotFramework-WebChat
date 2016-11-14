@@ -9,11 +9,6 @@ import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore }
 import { strings } from './Strings';
 import { Unsubscribe } from 'redux';
 
-export interface ActivityState {
-    status: "received" | "sending" | "sent" | "retry",
-    sendId?: number
-};
-
 export interface FormatOptions {
     showHeader?: boolean
 }
@@ -156,39 +151,38 @@ export const sendMessage = (store: ChatStore, text: string) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     let state = store.getState();
-    const sendId = state.history.sendCounter;
+    const clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
     store.dispatch({
         type: 'Send_Message',
         activity: {
             type: "message",
             text,
             from: state.connection.user,
-            timestamp: (new Date()).toISOString(),
-            sendId
+            timestamp: (new Date()).toISOString()
         }
     } as HistoryAction);
-    trySendMessage(store, sendId);
+    trySendMessage(store, clientActivityId);
 }
 
-const sendMessageSucceed = (store: ChatStore, sendId: number) => (id: string) => {
+const sendMessageSucceed = (store: ChatStore, clientActivityId: string) => (id: string) => {
     console.log("success sending message", id);
-    store.dispatch({ type: "Send_Message_Succeed", sendId, id } as HistoryAction);
+    store.dispatch({ type: "Send_Message_Succeed", clientActivityId, id } as HistoryAction);
     updateSelectedActivity(store);
 }
 
-const sendMessageFail = (store: ChatStore, sendId: number) => (error) => {
+const sendMessageFail = (store: ChatStore, clientActivityId: string) => (error) => {
     console.log("failed to send message", error);
     // TODO: show an error under the message with "retry" link
-    store.dispatch({ type: "Send_Message_Fail", sendId } as HistoryAction);
+    store.dispatch({ type: "Send_Message_Fail", clientActivityId } as HistoryAction);
     updateSelectedActivity(store);
 }
 
-export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = false) => {
+export const trySendMessage = (store: ChatStore, clientActivityId: string, updateStatus = false) => {
     if (updateStatus) {
-        store.dispatch({ type: "Send_Message_Try", sendId } as HistoryAction);
+        store.dispatch({ type: "Send_Message_Try", clientActivityId } as HistoryAction);
     }
     let state = store.getState();
-    const activity = state.history.activities.find(activity => activity["sendId"] === sendId);
+    const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
     if (!activity) {
         console.log("activity not found");
         return;
@@ -198,8 +192,8 @@ export const trySendMessage = (store: ChatStore, sendId: number, updateStatus = 
         ? state.connection.botConnection.postMessageWithAttachments(activity)
         : state.connection.botConnection.postActivity(activity)
     ).subscribe(
-        sendMessageSucceed(store, sendId),
-        sendMessageFail(store, sendId)
+        sendMessageSucceed(store, clientActivityId),
+        sendMessageFail(store, clientActivityId)
     );
 }
 
@@ -208,8 +202,7 @@ export const sendPostBack = (store: ChatStore, text: string) => {
     state.connection.botConnection.postActivity({
         type: "message",
         text,
-        from: state.connection.user,
-        timestamp: (new Date()).toISOString()
+        from: state.connection.user
     })
     .subscribe(id => {
         console.log("success sending postBack", id)
@@ -233,16 +226,14 @@ const attachmentsFromFiles = (files: FileList) => {
 
 export const sendFiles = (store: ChatStore, files: FileList) => {
     let state = store.getState();
-    const sendId = state.history.sendCounter;
+    const clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
     store.dispatch({
         type: 'Send_Message',
         activity: {
             type: "message",
             attachments: attachmentsFromFiles(files),
-            from: state.connection.user,
-            timestamp: (new Date()).toISOString(),
-            sendId
+            from: state.connection.user
         }
     } as HistoryAction);
-    trySendMessage(store, sendId);
+    trySendMessage(store, clientActivityId);
 }

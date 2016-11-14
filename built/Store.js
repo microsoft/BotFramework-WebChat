@@ -55,7 +55,8 @@ exports.historyReducer = function (state, action) {
     if (state === void 0) { state = {
         activities: [],
         input: '',
-        sendCounter: 0,
+        clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
+        clientActivityCounter: 0,
         selectedActivity: null
     }; }
     console.log("history action", action);
@@ -76,31 +77,39 @@ exports.historyReducer = function (state, action) {
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
                     Object.assign({}, action.activity, {
+                        timestamp: (new Date()).toISOString(),
                         status: "sending",
-                        sendId: state.sendCounter
+                        channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
                     })
                 ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
                 input: '',
-                sendCounter: state.sendCounter + 1
+                clientActivityCounter: state.clientActivityCounter + 1
             });
         case 'Send_Message_Try':
             {
-                var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+                var activity = state.activities.find(function (activity) {
+                    return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
+                });
                 var newActivity = Object.assign({}, activity, {
                     status: "sending",
-                    sendId: state.sendCounter
+                    clientActivityCounter: state.clientActivityCounter
                 });
                 return Object.assign({}, state, {
-                    activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
+                    activities: state.activities.filter(function (activity) {
+                        return activity.type !== "typing" &&
+                            (!activity.channelData || activity.channelData.clientActivityId !== action.clientActivityId);
+                    }).concat([
                         newActivity
                     ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-                    sendCounter: state.sendCounter + 1,
+                    clientActivityCounter: state.clientActivityCounter + 1,
                     selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
                 });
             }
         case 'Send_Message_Succeed':
         case 'Send_Message_Fail': {
-            var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
+            var i = state.activities.findIndex(function (activity) {
+                return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
+            });
             if (i === -1)
                 return state;
             var activity = state.activities[i];
@@ -112,7 +121,7 @@ exports.historyReducer = function (state, action) {
                 activities: state.activities.slice(0, i).concat([
                     newActivity
                 ], state.activities.slice(i + 1)),
-                sendCounter: state.sendCounter + 1,
+                clientActivityCounter: state.clientActivityCounter + 1,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }

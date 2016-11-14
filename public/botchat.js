@@ -21538,7 +21538,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Shell_1 = __webpack_require__(183);
 	var Store_1 = __webpack_require__(184);
 	var Strings_1 = __webpack_require__(205);
-	;
 	var Chat = (function (_super) {
 	    __extends(Chat, _super);
 	    function Chat(props) {
@@ -21643,52 +21642,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!text || typeof text !== 'string' || text.trim().length === 0)
 	        return;
 	    var state = store.getState();
-	    var sendId = state.history.sendCounter;
+	    var clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
 	    store.dispatch({
 	        type: 'Send_Message',
 	        activity: {
 	            type: "message",
 	            text: text,
 	            from: state.connection.user,
-	            timestamp: (new Date()).toISOString(),
-	            sendId: sendId
+	            timestamp: (new Date()).toISOString()
 	        }
 	    });
-	    exports.trySendMessage(store, sendId);
+	    exports.trySendMessage(store, clientActivityId);
 	};
-	var sendMessageSucceed = function (store, sendId) { return function (id) {
+	var sendMessageSucceed = function (store, clientActivityId) { return function (id) {
 	    console.log("success sending message", id);
-	    store.dispatch({ type: "Send_Message_Succeed", sendId: sendId, id: id });
+	    store.dispatch({ type: "Send_Message_Succeed", clientActivityId: clientActivityId, id: id });
 	    exports.updateSelectedActivity(store);
 	}; };
-	var sendMessageFail = function (store, sendId) { return function (error) {
+	var sendMessageFail = function (store, clientActivityId) { return function (error) {
 	    console.log("failed to send message", error);
 	    // TODO: show an error under the message with "retry" link
-	    store.dispatch({ type: "Send_Message_Fail", sendId: sendId });
+	    store.dispatch({ type: "Send_Message_Fail", clientActivityId: clientActivityId });
 	    exports.updateSelectedActivity(store);
 	}; };
-	exports.trySendMessage = function (store, sendId, updateStatus) {
+	exports.trySendMessage = function (store, clientActivityId, updateStatus) {
 	    if (updateStatus === void 0) { updateStatus = false; }
 	    if (updateStatus) {
-	        store.dispatch({ type: "Send_Message_Try", sendId: sendId });
+	        store.dispatch({ type: "Send_Message_Try", clientActivityId: clientActivityId });
 	    }
 	    var state = store.getState();
-	    var activity = state.history.activities.find(function (activity) { return activity["sendId"] === sendId; });
+	    var activity = state.history.activities.find(function (activity) { return activity.channelData && activity.channelData.clientActivityId === clientActivityId; });
 	    if (!activity) {
 	        console.log("activity not found");
 	        return;
 	    }
 	    (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
 	        ? state.connection.botConnection.postMessageWithAttachments(activity)
-	        : state.connection.botConnection.postActivity(activity)).subscribe(sendMessageSucceed(store, sendId), sendMessageFail(store, sendId));
+	        : state.connection.botConnection.postActivity(activity)).subscribe(sendMessageSucceed(store, clientActivityId), sendMessageFail(store, clientActivityId));
 	};
 	exports.sendPostBack = function (store, text) {
 	    var state = store.getState();
 	    state.connection.botConnection.postActivity({
 	        type: "message",
 	        text: text,
-	        from: state.connection.user,
-	        timestamp: (new Date()).toISOString()
+	        from: state.connection.user
 	    })
 	        .subscribe(function (id) {
 	        console.log("success sending postBack", id);
@@ -21710,18 +21707,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	exports.sendFiles = function (store, files) {
 	    var state = store.getState();
-	    var sendId = state.history.sendCounter;
+	    var clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
 	    store.dispatch({
 	        type: 'Send_Message',
 	        activity: {
 	            type: "message",
 	            attachments: attachmentsFromFiles(files),
-	            from: state.connection.user,
-	            timestamp: (new Date()).toISOString(),
-	            sendId: sendId
+	            from: state.connection.user
 	        }
 	    });
-	    exports.trySendMessage(store, sendId);
+	    exports.trySendMessage(store, clientActivityId);
 	};
 
 
@@ -24123,7 +24118,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (state === void 0) { state = {
 	        activities: [],
 	        input: '',
-	        sendCounter: 0,
+	        clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
+	        clientActivityCounter: 0,
 	        selectedActivity: null
 	    }; }
 	    console.log("history action", action);
@@ -24144,31 +24140,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return Object.assign({}, state, {
 	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
 	                    Object.assign({}, action.activity, {
+	                        timestamp: (new Date()).toISOString(),
 	                        status: "sending",
-	                        sendId: state.sendCounter
+	                        channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
 	                    })
 	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
 	                input: '',
-	                sendCounter: state.sendCounter + 1
+	                clientActivityCounter: state.clientActivityCounter + 1
 	            });
 	        case 'Send_Message_Try':
 	            {
-	                var activity = state.activities.find(function (activity) { return activity["sendId"] === action.sendId; });
+	                var activity = state.activities.find(function (activity) {
+	                    return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
+	                });
 	                var newActivity = Object.assign({}, activity, {
 	                    status: "sending",
-	                    sendId: state.sendCounter
+	                    clientActivityCounter: state.clientActivityCounter
 	                });
 	                return Object.assign({}, state, {
-	                    activities: state.activities.filter(function (activity) { return activity["sendId"] !== action.sendId && activity.type !== "typing"; }).concat([
+	                    activities: state.activities.filter(function (activity) {
+	                        return activity.type !== "typing" &&
+	                            (!activity.channelData || activity.channelData.clientActivityId !== action.clientActivityId);
+	                    }).concat([
 	                        newActivity
 	                    ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-	                    sendCounter: state.sendCounter + 1,
+	                    clientActivityCounter: state.clientActivityCounter + 1,
 	                    selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
 	                });
 	            }
 	        case 'Send_Message_Succeed':
 	        case 'Send_Message_Fail': {
-	            var i = state.activities.findIndex(function (activity) { return activity["sendId"] === action.sendId; });
+	            var i = state.activities.findIndex(function (activity) {
+	                return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
+	            });
 	            if (i === -1)
 	                return state;
 	            var activity = state.activities[i];
@@ -24180,7 +24184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                activities: state.activities.slice(0, i).concat([
 	                    newActivity
 	                ], state.activities.slice(i + 1)),
-	                sendCounter: state.sendCounter + 1,
+	                clientActivityCounter: state.clientActivityCounter + 1,
 	                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
 	            });
 	        }
