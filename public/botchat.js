@@ -32516,7 +32516,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                type: "message",
 	                text: text,
 	                from: from,
-	                conversationId: this.conversationId,
 	                channelData: channelData
 	            },
 	            timeout: timeout,
@@ -32531,6 +32530,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var formData = new FormData();
 	        for (var i = 0, numFiles = files.length; i < numFiles; i++)
 	            formData.append('file', files[i]);
+	        formData.append('activity', new Blob([JSON.stringify({
+	                type: "message",
+	                from: from,
+	            })], {
+	            type: 'application/vnd.microsoft.activity'
+	        }));
 	        return rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: this.domain + "/conversations/" + this.conversationId + "/upload?userId=" + from.id,

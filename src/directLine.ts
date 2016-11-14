@@ -101,7 +101,6 @@ export class DirectLine implements IBotConnection {
                 type: "message",
                 text,
                 from,
-                conversationId: this.conversationId,
                 channelData
             },
             timeout,
@@ -116,8 +115,16 @@ export class DirectLine implements IBotConnection {
 
     postFiles(files: FileList, from: User) {
         const formData = new FormData();
+
         for (let i = 0, numFiles = files.length; i < numFiles; i++)
             formData.append('file', files[i]);
+
+        formData.append('activity', new Blob([JSON.stringify({
+            type: "message",
+            from,
+        })], {
+            type: 'application/vnd.microsoft.activity'
+        }));
         return Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${from.id}`,
