@@ -100,7 +100,8 @@ export const connectionReducer: Reducer<ConnectionState> = (
 export interface HistoryState {
     activities: Activity[],
     input: string,
-    sendCounter: number,
+    clientActivityBase: string,
+    clientActivityCounter: number,
     selectedActivity: Activity
 }
 
@@ -112,10 +113,10 @@ export type HistoryAction = {
     activity: Activity
 } | {
     type: 'Send_Message_Try' | 'Send_Message_Fail',
-    sendId: number
+    clientActivityId: string
 } | {
     type: 'Send_Message_Succeed'
-    sendId: number
+    clientActivityId: string
     id: string
 } | {
     type: 'Select_Activity',
@@ -129,7 +130,8 @@ export const historyReducer: Reducer<HistoryState> = (
     state: HistoryState = {
         activities: [],
         input: '',
-        sendCounter: 0,
+        clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
+        clientActivityCounter: 0,
         selectedActivity: null
     },
     action: HistoryAction
@@ -157,35 +159,43 @@ export const historyReducer: Reducer<HistoryState> = (
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
                     Object.assign({}, action.activity, {
+                        timestamp: (new Date()).toISOString(),
                         status: "sending",
-                        sendId: state.sendCounter
+                        channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
                     }),
                     ... state.activities.filter(activity => activity.type === "typing"),
                 ],
                 input: '',
-                sendCounter: state.sendCounter + 1
+                clientActivityCounter: state.clientActivityCounter + 1
             });
 
         case 'Send_Message_Try':
         {
-            const activity = state.activities.find(activity => activity["sendId"] === action.sendId);
+            const activity = state.activities.find(activity =>
+                activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
+            );
             const newActivity = Object.assign({}, activity, {
                 status: "sending",
-                sendId: state.sendCounter
+                clientActivityCounter: state.clientActivityCounter
             });
             return Object.assign({}, state, {
                 activities: [
-                    ... state.activities.filter(activity => activity["sendId"] !== action.sendId && activity.type !== "typing"),
+                    ... state.activities.filter(activity =>
+                        activity.type !== "typing" &&
+                        (!activity.channelData || activity.channelData.clientActivityId !== action.clientActivityId)
+                    ),
                     newActivity,
                     ... state.activities.filter(activity => activity.type === "typing")
                 ],
-                sendCounter: state.sendCounter + 1,
+                clientActivityCounter: state.clientActivityCounter + 1,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }
         case 'Send_Message_Succeed':
         case 'Send_Message_Fail': {
-            const i = state.activities.findIndex(activity => activity["sendId"] === action.sendId);
+            const i = state.activities.findIndex(activity =>
+                activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
+            );
             if (i === -1) return state;
             const activity = state.activities[i];
             const newActivity = Object.assign({}, activity, {
@@ -198,7 +208,7 @@ export const historyReducer: Reducer<HistoryState> = (
                     newActivity,
                     ... state.activities.slice(i + 1)
                 ],
-                sendCounter: state.sendCounter + 1,
+                clientActivityCounter: state.clientActivityCounter + 1,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }
