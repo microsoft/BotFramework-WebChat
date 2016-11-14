@@ -21959,10 +21959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case "video/mp4":
 	            return videoWithOnLoad(attachment.contentUrl);
 	        default:
-	            return React.createElement("span", null, 
-	                "[File of type '", 
-	                attachment.contentType, 
-	                "']");
+	            return React.createElement("span", null, state.format.strings.unknownFile.replace('%1', attachment.contentType));
 	    }
 	};
 
@@ -25268,7 +25265,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var localizedStrings = {
 	    'en-us': {
 	        title: "Chat",
-	        send: "Send"
+	        send: "Send",
+	        unknownFile: "[File of type '%1']"
 	    }
 	};
 	// Returns strings using the "best match available"" locale

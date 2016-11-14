@@ -1,6 +1,7 @@
 export interface Strings {
     title: string,
-    send: string
+    send: string,
+    unknownFile: string
 }
 
 interface LocalizedStrings {
@@ -10,7 +11,8 @@ interface LocalizedStrings {
 const localizedStrings: LocalizedStrings = {
     'en-us': {
         title: "Chat",
-        send: "Send"
+        send: "Send",
+        unknownFile: "[File of type '%1']"
     }
 }
 

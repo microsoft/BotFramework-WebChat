@@ -2,7 +2,8 @@
 var localizedStrings = {
     'en-us': {
         title: "Chat",
-        send: "Send"
+        send: "Send",
+        unknownFile: "[File of type '%1']"
     }
 };
 // Returns strings using the "best match available"" locale

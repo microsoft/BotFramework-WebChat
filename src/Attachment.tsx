@@ -165,7 +165,6 @@ export const AttachmentView = (props: {
             return videoWithOnLoad(attachment.contentUrl);
 
         default:
-            return <span>[File of type '{ (attachment as any).contentType }']</span>;
-
+            return <span>{ state.format.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
     }
 }
