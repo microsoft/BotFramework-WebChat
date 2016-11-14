@@ -65,7 +65,25 @@ exports.historyReducer = function (state, action) {
             return Object.assign({}, state, {
                 input: action.input
             });
+        case 'Receive_Sent_Message': {
+            var i = state.activities.findIndex(function (activity) {
+                return activity.channelData && action.activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId;
+            });
+            if (i !== -1) {
+                var activity = state.activities[i];
+                return Object.assign({}, state, {
+                    activities: state.activities.slice(0, i).concat([
+                        action.activity
+                    ], state.activities.slice(i + 1)),
+                    selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
+                });
+            }
+        }
         case 'Receive_Message':
+            if (state.activities.find(function (a) { return a.id === action.activity.id; })) {
+                // don't allow duplicate messages
+                return state;
+            }
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
                     Object.assign({}, action.activity, {

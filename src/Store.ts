@@ -109,7 +109,7 @@ export type HistoryAction = {
     type: 'Update_Input',
     input: string
 } | {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing'
+    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
     type: 'Send_Message_Try' | 'Send_Message_Fail',
@@ -142,8 +142,28 @@ export const historyReducer: Reducer<HistoryState> = (
             return Object.assign({}, state, {
                 input: action.input
             });
-
+        case 'Receive_Sent_Message': {
+            const i = state.activities.findIndex(activity =>
+                activity.channelData && action.activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
+            );
+            if (i !== -1) {
+                const activity = state.activities[i];
+                return Object.assign({}, state, {
+                    activities: [
+                        ... state.activities.slice(0, i),
+                        action.activity,
+                        ... state.activities.slice(i + 1)
+                    ],
+                    selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
+                });
+            }
+            // else fall through and treat this as a new message
+        }
         case 'Receive_Message':
+            if (state.activities.find(a => a.id === action.activity.id)) {
+                 // don't allow duplicate messages
+                 return state;
+            }
             return Object.assign({}, state, { 
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
