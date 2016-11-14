@@ -54,7 +54,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         });
         this.activitySubscription = props.botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
-            error => console.log("errors", error)
+            error => console.log("activity$ error", error) // THIS IS WHERE WE WILL CHANGE THE APP STATE
         );
 
         if (props.selectedActivity) {

@@ -23,6 +23,7 @@ export class DirectLine implements IBotConnection {
     private secret: string;
     private tokenRefreshSubscription: Subscription;
     private getActivityGroupSubscription: Subscription;
+    private watermark: string = '';
     private pollTimer: number;
 
     constructor(
@@ -148,33 +149,39 @@ export class DirectLine implements IBotConnection {
         .do(activity => console.log("Activity", activity));
     }
 
-    private activitiesGenerator(
-        subscriber: Subscriber<Observable<Activity>>,
-        watermark?: string)
-    {
-        this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(activityGroup => {
+    private activitiesGenerator(subscriber: Subscriber<Observable<Activity>>) {
+        this.getActivityGroupSubscription = this.getActivityGroup().subscribe(activityGroup => {
+            this.watermark = activityGroup.watermark;
             const someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
             if (someMessages)
                 subscriber.next(Observable.from(activityGroup.activities));
             this.pollTimer = setTimeout(
-                () => this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark),
-                someMessages && activityGroup.watermark ? 0 : 1000
+                () => this.activitiesGenerator(subscriber),
+                someMessages && this.watermark ? 0 : 1000
             );
          }, error =>
             subscriber.error(error)
         );
     }
 
-    private getActivityGroup(watermark = "") {
+    private getActivityGroup() {
         return Observable.ajax({
             method: "GET",
-            url: `${this.domain}/conversations/${this.conversationId}/activities?watermark=${watermark}`,
+            url: `${this.domain}/conversations/${this.conversationId}/activities?watermark=${this.watermark}`,
             timeout,
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${this.token}`
             }
         })
+        .retryWhen(error$ =>
+            error$
+            .mergeMap(error => {
+                console.log("getActivity error", error);
+                return error.status === 403 ? Observable.throw(error) : Observable.of(error)
+            })
+            .delay(5 * 1000)
+        )
 //      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup);
     }

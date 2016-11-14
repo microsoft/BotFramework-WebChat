@@ -9,6 +9,7 @@ var DirectLine = (function () {
         this.domain = domain;
         this.segment = segment;
         this.connected$ = new rxjs_1.BehaviorSubject(false);
+        this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
         if (segment) {
@@ -118,27 +119,35 @@ var DirectLine = (function () {
             .concatAll()
             .do(function (activity) { return console.log("Activity", activity); });
     };
-    DirectLine.prototype.activitiesGenerator = function (subscriber, watermark) {
+    DirectLine.prototype.activitiesGenerator = function (subscriber) {
         var _this = this;
-        this.getActivityGroupSubscription = this.getActivityGroup(watermark).subscribe(function (activityGroup) {
+        this.getActivityGroupSubscription = this.getActivityGroup().subscribe(function (activityGroup) {
+            _this.watermark = activityGroup.watermark;
             var someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
             if (someMessages)
                 subscriber.next(rxjs_1.Observable.from(activityGroup.activities));
-            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber, activityGroup && activityGroup.watermark); }, someMessages && activityGroup.watermark ? 0 : 1000);
+            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber); }, someMessages && _this.watermark ? 0 : 1000);
         }, function (error) {
             return subscriber.error(error);
         });
     };
-    DirectLine.prototype.getActivityGroup = function (watermark) {
-        if (watermark === void 0) { watermark = ""; }
+    DirectLine.prototype.getActivityGroup = function () {
         return rxjs_1.Observable.ajax({
             method: "GET",
-            url: this.domain + "/conversations/" + this.conversationId + "/activities?watermark=" + watermark,
+            url: this.domain + "/conversations/" + this.conversationId + "/activities?watermark=" + this.watermark,
             timeout: timeout,
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Bearer " + this.token
             }
+        })
+            .retryWhen(function (error$) {
+            return error$
+                .mergeMap(function (error) {
+                console.log("getActivity error", error);
+                return error.status === 403 ? rxjs_1.Observable.throw(error) : rxjs_1.Observable.of(error);
+            })
+                .delay(5 * 1000);
         })
             .map(function (ajaxResponse) { return ajaxResponse.response; });
     };

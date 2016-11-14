@@ -26,7 +26,8 @@ var Chat = (function (_super) {
         this.connectedSubscription = props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
             _this.store.dispatch({ type: 'Connected_To_Bot' });
         });
-        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("errors", error); });
+        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
+        );
         if (props.selectedActivity) {
             this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
                 _this.store.dispatch({
