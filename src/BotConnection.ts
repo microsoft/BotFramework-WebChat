@@ -155,10 +155,16 @@ export interface Typing extends IActivity {
 
 export type Activity = Message | Typing;
 
+export enum ConnectionStatus {
+    Connecting,
+    Online,
+    Offline
+} 
+
 export interface IBotConnection {
     start();
     end();
-    connected$: BehaviorSubject<boolean>;
+    connectionStatus$: BehaviorSubject<ConnectionStatus>;
     activity$: Observable<Activity>;
     postMessageWithAttachments: (message: Activity) => Observable<string>,
     postActivity: (activity: Activity) => Observable<string>,

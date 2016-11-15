@@ -1,5 +1,6 @@
 "use strict";
 var redux_1 = require('redux');
+var BotConnection_1 = require('./BotConnection');
 var Strings_1 = require('./Strings');
 exports.formatReducer = function (state, action) {
     if (state === void 0) { state = {
@@ -19,34 +20,35 @@ exports.formatReducer = function (state, action) {
 };
 exports.connectionReducer = function (state, action) {
     if (state === void 0) { state = {
-        connected: false,
+        connectionStatus: BotConnection_1.ConnectionStatus.Connecting,
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
-        bot: undefined,
-        host: undefined
+        bot: undefined
     }; }
     switch (action.type) {
         case 'Start_Connection':
             return Object.assign({}, state, {
-                connected: false,
+                connectionStatus: false,
                 botConnection: action.botConnection,
                 user: action.user,
                 bot: action.bot,
                 selectedActivity: action.selectedActivity
             });
-        case 'Connected_To_Bot':
+        case 'Connection_Change':
             return Object.assign({}, state, {
-                connected: true
+                connectionStatus: action.connectionStatus
             });
-        case 'Subscribe_Host':
-            return Object.assign({}, state, {
-                host: action.host
-            });
-        case 'Unsubscribe_Host':
-            return Object.assign({}, state, {
-                host: undefined
-            });
+        /*      experimental backchannel support
+                case 'Subscribe_Host':
+                    return Object.assign({}, state, {
+                        host: action.host
+                    });
+                case 'Unsubscribe_Host':
+                    return Object.assign({}, state, {
+                        host: undefined
+                    });
+        */
         default:
             return state;
     }

@@ -5,7 +5,7 @@ import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
 import { ChatStore } from './Store';
 
-export const CarouselOrList = (props: {
+const Attachments = (props: {
     store: ChatStore,
     attachmentLayout: AttachmentLayout,
     attachments: Attachment[],
@@ -34,7 +34,7 @@ export const ActivityView = (props: {
             return (
                 <div>
                     <FormattedText text={ props.activity.text } format={ props.activity.textFormat }/>
-                    <CarouselOrList store={ props.store } attachments={ props.activity.attachments } attachmentLayout={ props.activity.attachmentLayout } onImageLoad= { props.onImageLoad }/>
+                    <Attachments store={ props.store } attachments={ props.activity.attachments } attachmentLayout={ props.activity.attachmentLayout } onImageLoad= { props.onImageLoad }/>
                 </div>
             );
                     

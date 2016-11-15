@@ -23,8 +23,8 @@ var Chat = (function (_super) {
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
         props.botConnection.start();
-        this.connectedSubscription = props.botConnection.connected$.filter(function (connected) { return connected === true; }).subscribe(function (connected) {
-            _this.store.dispatch({ type: 'Connected_To_Bot' });
+        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
+            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
         });
         this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
         );
@@ -34,10 +34,11 @@ var Chat = (function (_super) {
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
                 });
+                _this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
             });
         }
         else {
-            this.selectActivity = null; // doing this here saves us a ternary branch when calling <History> in render()
+            this.selectActivityCallback = null;
         }
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
@@ -82,7 +83,7 @@ var Chat = (function (_super) {
     };
     Chat.prototype.componentWillUnmount = function () {
         this.activitySubscription.unsubscribe();
-        this.connectedSubscription.unsubscribe();
+        this.connectionStatusSubscription.unsubscribe();
         this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
@@ -91,7 +92,6 @@ var Chat = (function (_super) {
         }
     };
     Chat.prototype.render = function () {
-        var _this = this;
         var state = this.store.getState();
         console.log("BotChat.Chat state", state);
         var header;
@@ -102,7 +102,7 @@ var Chat = (function (_super) {
                 );
         return (React.createElement("div", {className: "wc-chatview-panel"}, 
             header, 
-            React.createElement(History_1.History, {store: this.store, selectActivity: function (activity) { return _this.selectActivity(activity); }}), 
+            React.createElement(History_1.History, {store: this.store, selectActivity: this.selectActivityCallback}), 
             React.createElement(Shell_1.Shell, {store: this.store})));
     };
     return Chat;

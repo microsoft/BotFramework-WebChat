@@ -3,7 +3,7 @@ var React = require('react');
 var Attachment_1 = require('./Attachment');
 var Carousel_1 = require('./Carousel');
 var FormattedText_1 = require('./FormattedText');
-exports.CarouselOrList = function (props) {
+var Attachments = function (props) {
     if (props.attachments && props.attachments.length >= 1) {
         if (props.attachmentLayout === 'carousel')
             return React.createElement(Carousel_1.Carousel, {store: props.store, attachments: props.attachments, onImageLoad: props.onImageLoad});
@@ -23,7 +23,7 @@ exports.ActivityView = function (props) {
         case 'message':
             return (React.createElement("div", null, 
                 React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}), 
-                React.createElement(exports.CarouselOrList, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
+                React.createElement(Attachments, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
         case 'typing':
             return React.createElement("div", null, "TYPING");
     }
