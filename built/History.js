@@ -10,8 +10,13 @@ var Chat_1 = require('./Chat');
 var History = (function (_super) {
     __extends(History, _super);
     function History(props) {
+        var _this = this;
         _super.call(this, props);
         this.scrollToBottom = true;
+        this.onImageLoad = function () {
+            console.log("onImageLoad");
+            _this.autoscroll();
+        };
     }
     History.prototype.componentWillUpdate = function () {
         this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
@@ -22,9 +27,6 @@ var History = (function (_super) {
     History.prototype.selectActivity = function (activity) {
         if (this.props.selectActivity)
             this.props.selectActivity(activity);
-    };
-    History.prototype.onImageLoad = function () {
-        this.autoscroll();
     };
     History.prototype.autoscroll = function () {
         if (this.scrollToBottom)
@@ -73,7 +75,7 @@ var History = (function (_super) {
                         React.createElement("svg", {className: "wc-message-callout"}, 
                             React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
                             React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: function () { return _this.onImageLoad; }})), 
+                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
                     React.createElement("div", {className: "wc-message-from"}, timeLine))
             ));
         });
