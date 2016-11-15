@@ -104,7 +104,21 @@ export interface VideoCard {
     }
 }
 
-export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | AudioCard | VideoCard;
+export interface AnimationCard {
+    contentType: "application/vnd.microsoft.card.animation",
+    content: {
+        title?: string,
+        subtitle?: string,
+        text?: string,
+        media?: { url: string, profile?: string }[],
+        buttons?: Button[],
+        image?: { url: string, alt?: string },
+        autoloop?: boolean,
+        autostart?: boolean
+    }
+}
+
+export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | AudioCard | VideoCard | AnimationCard;
 
 export interface User {
     id: string,

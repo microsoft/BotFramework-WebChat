@@ -2,6 +2,7 @@ export interface Strings {
     title: string,
     send: string,
     unknownFile: string,
+    unknownCard: string,
     receiptTax: string,
     receiptTotal: string
     messageRetry: string,
@@ -19,6 +20,7 @@ const localizedStrings: LocalizedStrings = {
         title: "Chat",
         send: "Send",
         unknownFile: "[File of type '%1']",
+        unknownCard: "[Unknown Card '%1']",
         receiptTax: "Tax",
         receiptTotal: "Total",
         messageRetry: "retry",
