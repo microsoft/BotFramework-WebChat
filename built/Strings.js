@@ -4,6 +4,7 @@ var localizedStrings = {
         title: "Chat",
         send: "Send",
         unknownFile: "[File of type '%1']",
+        unknownCard: "[Unknown Card '%1']",
         receiptTax: "Tax",
         receiptTotal: "Total",
         messageRetry: "retry",

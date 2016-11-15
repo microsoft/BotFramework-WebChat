@@ -31,11 +31,7 @@ export class History extends React.Component<Props, {}> {
             this.props.selectActivity(activity);
     }
 
-    onImageLoad() {
-        this.autoscroll();
-    }
-
-    autoscroll() {
+    autoscroll = () => {
         if (this.scrollToBottom)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
@@ -86,7 +82,7 @@ export class History extends React.Component<Props, {}> {
                                 <path className="point-left" d="m0,6 l6 6 v-12 z" />
                                 <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                             </svg>
-                            <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ () => this.onImageLoad }/>
+                            <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.autoscroll }/>
                         </div>
                         <div className="wc-message-from">{ timeLine }</div>
                     </div>

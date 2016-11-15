@@ -21739,8 +21739,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var History = (function (_super) {
 	    __extends(History, _super);
 	    function History(props) {
+	        var _this = this;
 	        _super.call(this, props);
 	        this.scrollToBottom = true;
+	        this.onImageLoad = function () {
+	            console.log("onImageLoad");
+	            _this.autoscroll();
+	        };
 	    }
 	    History.prototype.componentWillUpdate = function () {
 	        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
@@ -21751,9 +21756,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    History.prototype.selectActivity = function (activity) {
 	        if (this.props.selectActivity)
 	            this.props.selectActivity(activity);
-	    };
-	    History.prototype.onImageLoad = function () {
-	        this.autoscroll();
 	    };
 	    History.prototype.autoscroll = function () {
 	        if (this.scrollToBottom)
@@ -21802,7 +21804,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        React.createElement("svg", {className: "wc-message-callout"}, 
 	                            React.createElement("path", {className: "point-left", d: "m0,6 l6 6 v-12 z"}), 
 	                            React.createElement("path", {className: "point-right", d: "m6,6 l-6 6 v-12 z"})), 
-	                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: function () { return _this.onImageLoad; }})), 
+	                        React.createElement(ActivityView_1.ActivityView, {store: _this.props.store, activity: activity, onImageLoad: _this.onImageLoad})), 
 	                    React.createElement("div", {className: "wc-message-from"}, timeLine))
 	            ));
 	        });
@@ -21889,8 +21891,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button) { return React.createElement("li", null, 
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
-	    var imageWithOnLoad = function (url) {
-	        return React.createElement("img", {src: url, onLoad: function () { return props.onImageLoad(); }});
+	    var imageWithOnLoad = function (url, thumbnailUrl, autoPlay, loop) {
+	        return React.createElement("img", {src: url, autoPlay: autoPlay, loop: loop, poster: thumbnailUrl, onLoad: function () { return props.onImageLoad(); }});
 	    };
 	    var audio = function (audioUrl, autoPlay, loop) {
 	        return React.createElement("audio", {src: audioUrl, autoPlay: autoPlay, controls: true, loop: loop});
@@ -21900,6 +21902,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    var attachedImage = function (images) {
 	        return images && images.length > 0 && imageWithOnLoad(images[0].url);
+	    };
+	    var isGifMedia = function (url) {
+	        return url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
+	    };
+	    var isUnsupportedCardContentType = function (contentType) {
+	        var searchPattern = new RegExp('^application/vnd\.microsoft\.card\.', 'i');
+	        return searchPattern.test(contentType);
 	    };
 	    switch (attachment.contentType) {
 	        case "application/vnd.microsoft.card.hero":
@@ -21926,6 +21935,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return null;
 	            return (React.createElement("div", {className: 'wc-card video'}, 
 	                videoWithOnLoad(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop), 
+	                React.createElement("h1", null, attachment.content.title), 
+	                React.createElement("h2", null, attachment.content.subtitle), 
+	                React.createElement("p", null, attachment.content.text), 
+	                buttons(attachment.content.buttons)));
+	        case "application/vnd.microsoft.card.animation":
+	            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
+	                return null;
+	            var contentFunction = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad;
+	            return (React.createElement("div", {className: 'wc-card animation'}, 
+	                contentFunction(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop), 
 	                React.createElement("h1", null, attachment.content.title), 
 	                React.createElement("h2", null, attachment.content.subtitle), 
 	                React.createElement("p", null, attachment.content.text), 
@@ -21983,7 +22002,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case "video/mp4":
 	            return videoWithOnLoad(attachment.contentUrl);
 	        default:
-	            return React.createElement("span", null, state.format.strings.unknownFile.replace('%1', attachment.contentType));
+	            if (isUnsupportedCardContentType(attachment['contentType'])) {
+	                return React.createElement("span", null, state.format.strings.unknownCard.replace('%1', attachment.contentType));
+	            }
+	            else {
+	                return React.createElement("span", null, state.format.strings.unknownFile.replace('%1', attachment.contentType));
+	            }
 	    }
 	};
 
@@ -25278,6 +25302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        title: "Chat",
 	        send: "Send",
 	        unknownFile: "[File of type '%1']",
+	        unknownCard: "[Unknown Card '%1']",
 	        receiptTax: "Tax",
 	        receiptTotal: "Total",
 	        messageRetry: "retry",
