@@ -5,3 +5,5 @@ node_modules
 /Web.config
 /local
 /.vscode
+
+npm-debug.log

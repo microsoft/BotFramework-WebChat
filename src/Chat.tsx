@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subscription, BehaviorSubject } from '@reactivex/rxjs';
-import { Activity, Media, IBotConnection, User, MediaType } from './BotConnection';
+import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
@@ -32,9 +32,10 @@ export class Chat extends React.Component<ChatProps, {}> {
     private store = createStore();
     private storeUnsubscribe: Unsubscribe;
     private activitySubscription: Subscription;
-    private connectedSubscription: Subscription;
+    private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private typingTimers = {};
+    private selectActivityCallback: (activity:Activity) => void;
 
     constructor(props: ChatProps) {
         super(props);
@@ -49,9 +50,10 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
 
         props.botConnection.start();
-        this.connectedSubscription = props.botConnection.connected$.filter(connected => connected === true).subscribe(connected => {
-            this.store.dispatch({ type: 'Connected_To_Bot' } as ConnectionAction);
-        });
+        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
+            this.store.dispatch({ type: 'Connection_Change', connectionStatus } as ConnectionAction)
+        );
+
         this.activitySubscription = props.botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
             error => console.log("activity$ error", error) // THIS IS WHERE WE WILL CHANGE THE APP STATE
@@ -63,9 +65,10 @@ export class Chat extends React.Component<ChatProps, {}> {
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
                 } as HistoryAction);
+            this.selectActivityCallback = activity => this.selectActivity(activity)
             })
         } else {
-            this.selectActivity = null; // doing this here saves us a ternary branch when calling <History> in render()
+            this.selectActivityCallback = null;
         }
     }
 
@@ -113,7 +116,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     componentWillUnmount() {
         this.activitySubscription.unsubscribe();
-        this.connectedSubscription.unsubscribe();
+        this.connectionStatusSubscription.unsubscribe();
         this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
@@ -134,7 +137,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         return (
             <div className={ "wc-chatview-panel" }>
                 { header }
-                <History store={ this.store } selectActivity={ activity => this.selectActivity(activity) } />
+                <History store={ this.store } selectActivity={ this.selectActivityCallback } />
                 <Shell store={ this.store } />
             </div>
         );

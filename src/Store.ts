@@ -1,5 +1,5 @@
 import { Store, Reducer, createStore as reduxCreateStore, combineReducers } from 'redux';
-import { Activity, IBotConnection, User } from './BotConnection';
+import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
 import { FormatOptions, ActivityOrID } from './Chat';
 import { strings, Strings } from './Strings';
 import { BehaviorSubject } from '@reactivex/rxjs';
@@ -39,12 +39,14 @@ export const formatReducer: Reducer<FormatState> = (
 }
 
 export interface ConnectionState {
-    connected: boolean
+    connectionStatus: ConnectionStatus,
     botConnection: IBotConnection,
     selectedActivity: BehaviorSubject<ActivityOrID>,
     user: User,
     bot: User,
+/*  experimental backchannel support
     host: Window
+*/
 }
 
 export type ConnectionAction = {
@@ -54,36 +56,44 @@ export type ConnectionAction = {
     bot: User,
     selectedActivity: BehaviorSubject<ActivityOrID>
 } | {
-    type: 'Connected_To_Bot' | 'Unsubscribe_Host'
+    type: 'Connection_Change',
+    connectionStatus: ConnectionStatus
+/*  experimental backchannel support
+} | {
+    type: 'Unsubscribe_Host'
 } | {
     type: 'Subscribe_Host',
     host: Window
+*/
 }
 
 export const connectionReducer: Reducer<ConnectionState> = (
     state: ConnectionState = {
-        connected: false,
+        connectionStatus: ConnectionStatus.Connecting,
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
-        bot: undefined,
+        bot: undefined
+/*      experimental backchannel support
         host: undefined
+*/
     },
     action: ConnectionAction
 ) => {
     switch (action.type) {
         case 'Start_Connection':
             return Object.assign({}, state, {
-                connected: false,
+                connectionStatus: false,
                 botConnection: action.botConnection,
                 user: action.user,
                 bot: action.bot,
                 selectedActivity: action.selectedActivity
             });
-        case 'Connected_To_Bot':
+        case 'Connection_Change':
             return Object.assign({}, state, {
-                connected: true
+                connectionStatus: action.connectionStatus
             });
+/*      experimental backchannel support
         case 'Subscribe_Host':
             return Object.assign({}, state, {
                 host: action.host
@@ -92,6 +102,7 @@ export const connectionReducer: Reducer<ConnectionState> = (
             return Object.assign({}, state, {
                 host: undefined
             });
+*/
         default:
             return state;
     }

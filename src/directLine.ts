@@ -1,5 +1,5 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
-import { Conversation, Activity, Message, Media, IBotConnection, User } from './BotConnection';
+import { Conversation, Activity, Message, Media, IBotConnection, ConnectionStatus, User } from './BotConnection';
 
 export interface SecretOrToken {
     secret?: string,
@@ -15,7 +15,7 @@ const intervalRefreshToken = 29*60*1000;
 const timeout = 5*1000;
 
 export class DirectLine implements IBotConnection {
-    connected$ = new BehaviorSubject(false);
+    connectionStatus$ = new BehaviorSubject(ConnectionStatus.Connecting);
     activity$: Observable<Activity>;
 
     private conversationId: string;
@@ -46,32 +46,55 @@ export class DirectLine implements IBotConnection {
         })
         .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
-//        .retryWhen(error$ => error$.delay(1000))
+        .retryWhen(error$ =>
+            error$
+            .mergeMap(error =>
+                error.status >= 400 && error.status <= 599
+                ? Observable.throw(error)
+                : Observable.of(error)
+            )
+            .delay(5 * 1000)
+        )
         .subscribe(conversation => {
             this.conversationId = conversation.conversationId;
             this.token = this.secret || conversation.token;
-            this.connected$.next(true);
+            this.connectionStatus$.next(ConnectionStatus.Online);
+  
             if (!this.secret) {
-                this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
-                    Observable.ajax({
+                this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken)
+                .flatMap(_ =>
+                    this.connectionStatus$
+                    .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
+                    .flatMap(_ => Observable.ajax({
                         method: "POST",
                         url: `${this.domain}/tokens/refresh`,
                         timeout,
                         headers: {
                             "Authorization": `Bearer ${this.token}`
                         }
-                    })
+                    }))
                     .map(ajaxResponse => <string>ajaxResponse.response.token)
+                    .retryWhen(error$ => error$
+                        .mergeMap(error => {
+                            if (error.status === 403) {
+                                this.connectionStatus$.next(ConnectionStatus.Offline);
+                                return Observable.throw(error);
+                            } else {
+                                return Observable.of(error);
+                            }
+                        })
+                        .delay(5 * 1000)
+                    )
                 ).subscribe(token => {
                     console.log("refreshing token", token, "at", new Date())
                     this.token = token;
                 })
             }
+        }, error => {
+            this.connectionStatus$.next(ConnectionStatus.Offline);
         });
 
-        this.activity$ = this.connected$
-        .filter(connected => connected === true)
-        .flatMap(_ => this.getActivity$());
+        this.activity$ = this.getActivity$();
     }
 
     end() {
@@ -96,7 +119,9 @@ export class DirectLine implements IBotConnection {
             Object.assign({}, message, { attachments: undefined })
         )], { type: 'application/vnd.microsoft.activity' }));
 
-        return Observable.from(message.attachments || [])
+        return this.connectionStatus$
+        .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
+        .flatMap(_ => Observable.from(message.attachments || []))
         .flatMap((media: Media) => 
             Observable.ajax({
                 method: "GET",
@@ -108,17 +133,15 @@ export class DirectLine implements IBotConnection {
             )
         )
         .count()
-        .flatMap(count =>
-            Observable.ajax({
-                method: "POST",
-                url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${message.from.id}`,
-                body: formData,
-                timeout,
-                headers: {
-                    "Authorization": `Bearer ${this.token}`
-                }
-            })
-        )
+        .flatMap(_ => Observable.ajax({
+            method: "POST",
+            url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${message.from.id}`,
+            body: formData,
+            timeout,
+            headers: {
+                "Authorization": `Bearer ${this.token}`
+            }
+        }))
         .map(ajaxResponse => ajaxResponse.response.id as string)
         .catch(error => {
             console.log("postMessageWithAttachments error", error);
@@ -129,7 +152,9 @@ export class DirectLine implements IBotConnection {
 }
 
     postActivity(activity: Activity) {
-        return Observable.ajax({
+        return this.connectionStatus$
+        .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
+        .flatMap(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations/${this.conversationId}/activities`,
             body: activity,
@@ -138,7 +163,7 @@ export class DirectLine implements IBotConnection {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${this.token}`
             }
-        })
+        }))
         .map(ajaxResponse => ajaxResponse.response.id as string)
         .catch(error =>
             error.status >= 400 && error.status < 500
@@ -171,7 +196,9 @@ export class DirectLine implements IBotConnection {
     }
 
     private getActivityGroup() {
-        return Observable.ajax({
+        return this.connectionStatus$
+        .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
+        .flatMap(_ => Observable.ajax({
             method: "GET",
             url: `${this.domain}/conversations/${this.conversationId}/activities?watermark=${this.watermark}`,
             timeout,
@@ -179,16 +206,18 @@ export class DirectLine implements IBotConnection {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${this.token}`
             }
-        })
+        }))
 //      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
-        .retryWhen(error$ =>
-            error$
-            .mergeMap(error =>
-                error.status === 403
-                ? Observable.throw(error)
-                : Observable.of(error)
-            )
+        .retryWhen(error$ => error$
+            .mergeMap(error => {
+                if (error.status === 403) {
+                    this.connectionStatus$.next(ConnectionStatus.Offline);
+                    return Observable.throw(error);
+                } else {
+                    return Observable.of(error);
+                }
+            })
             .delay(5 * 1000)
         );
     }

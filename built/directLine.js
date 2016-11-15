@@ -1,12 +1,13 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
+var BotConnection_1 = require('./BotConnection');
 var intervalRefreshToken = 29 * 60 * 1000;
 var timeout = 5 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
         if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
         this.domain = domain;
-        this.connected$ = new rxjs_1.BehaviorSubject(false);
+        this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
         this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
@@ -24,30 +25,53 @@ var DirectLine = (function () {
         })
             .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
+            .retryWhen(function (error$) {
+            return error$
+                .mergeMap(function (error) {
+                return error.status >= 400 && error.status <= 599
+                    ? rxjs_1.Observable.throw(error)
+                    : rxjs_1.Observable.of(error);
+            })
+                .delay(5 * 1000);
+        })
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
             _this.token = _this.secret || conversation.token;
-            _this.connected$.next(true);
+            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Online);
             if (!_this.secret) {
-                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
-                    return rxjs_1.Observable.ajax({
+                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
+                    .flatMap(function (_) {
+                    return _this.connectionStatus$
+                        .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+                        .flatMap(function (_) { return rxjs_1.Observable.ajax({
                         method: "POST",
                         url: _this.domain + "/tokens/refresh",
                         timeout: timeout,
                         headers: {
                             "Authorization": "Bearer " + _this.token
                         }
+                    }); })
+                        .map(function (ajaxResponse) { return ajaxResponse.response.token; })
+                        .retryWhen(function (error$) { return error$
+                        .mergeMap(function (error) {
+                        if (error.status === 403) {
+                            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+                            return rxjs_1.Observable.throw(error);
+                        }
+                        else {
+                            return rxjs_1.Observable.of(error);
+                        }
                     })
-                        .map(function (ajaxResponse) { return ajaxResponse.response.token; });
+                        .delay(5 * 1000); });
                 }).subscribe(function (token) {
                     console.log("refreshing token", token, "at", new Date());
                     _this.token = token;
                 });
             }
+        }, function (error) {
+            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
         });
-        this.activity$ = this.connected$
-            .filter(function (connected) { return connected === true; })
-            .flatMap(function (_) { return _this.getActivity$(); });
+        this.activity$ = this.getActivity$();
     };
     DirectLine.prototype.end = function () {
         if (this.tokenRefreshSubscription) {
@@ -67,7 +91,9 @@ var DirectLine = (function () {
         var _this = this;
         var formData = new FormData();
         formData.append('activity', new Blob([JSON.stringify(Object.assign({}, message, { attachments: undefined }))], { type: 'application/vnd.microsoft.activity' }));
-        return rxjs_1.Observable.from(message.attachments || [])
+        return this.connectionStatus$
+            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+            .flatMap(function (_) { return rxjs_1.Observable.from(message.attachments || []); })
             .flatMap(function (media) {
             return rxjs_1.Observable.ajax({
                 method: "GET",
@@ -79,17 +105,15 @@ var DirectLine = (function () {
             });
         })
             .count()
-            .flatMap(function (count) {
-            return rxjs_1.Observable.ajax({
-                method: "POST",
-                url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,
-                body: formData,
-                timeout: timeout,
-                headers: {
-                    "Authorization": "Bearer " + _this.token
-                }
-            });
-        })
+            .flatMap(function (_) { return rxjs_1.Observable.ajax({
+            method: "POST",
+            url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,
+            body: formData,
+            timeout: timeout,
+            headers: {
+                "Authorization": "Bearer " + _this.token
+            }
+        }); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; })
             .catch(function (error) {
             console.log("postMessageWithAttachments error", error);
@@ -99,16 +123,19 @@ var DirectLine = (function () {
         });
     };
     DirectLine.prototype.postActivity = function (activity) {
-        return rxjs_1.Observable.ajax({
+        var _this = this;
+        return this.connectionStatus$
+            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+            .flatMap(function (_) { return rxjs_1.Observable.ajax({
             method: "POST",
-            url: this.domain + "/conversations/" + this.conversationId + "/activities",
+            url: _this.domain + "/conversations/" + _this.conversationId + "/activities",
             body: activity,
             timeout: timeout,
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + this.token
+                "Authorization": "Bearer " + _this.token
             }
-        })
+        }); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; })
             .catch(function (error) {
             return error.status >= 400 && error.status < 500
@@ -137,25 +164,30 @@ var DirectLine = (function () {
         });
     };
     DirectLine.prototype.getActivityGroup = function () {
-        return rxjs_1.Observable.ajax({
+        var _this = this;
+        return this.connectionStatus$
+            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+            .flatMap(function (_) { return rxjs_1.Observable.ajax({
             method: "GET",
-            url: this.domain + "/conversations/" + this.conversationId + "/activities?watermark=" + this.watermark,
+            url: _this.domain + "/conversations/" + _this.conversationId + "/activities?watermark=" + _this.watermark,
             timeout: timeout,
             headers: {
                 "Accept": "application/json",
-                "Authorization": "Bearer " + this.token
+                "Authorization": "Bearer " + _this.token
+            }
+        }); })
+            .map(function (ajaxResponse) { return ajaxResponse.response; })
+            .retryWhen(function (error$) { return error$
+            .mergeMap(function (error) {
+            if (error.status === 403) {
+                _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+                return rxjs_1.Observable.throw(error);
+            }
+            else {
+                return rxjs_1.Observable.of(error);
             }
         })
-            .map(function (ajaxResponse) { return ajaxResponse.response; })
-            .retryWhen(function (error$) {
-            return error$
-                .mergeMap(function (error) {
-                return error.status === 403
-                    ? rxjs_1.Observable.throw(error)
-                    : rxjs_1.Observable.of(error);
-            })
-                .delay(5 * 1000);
-        });
+            .delay(5 * 1000); });
     };
     return DirectLine;
 }());
