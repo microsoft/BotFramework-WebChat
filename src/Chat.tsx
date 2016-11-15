@@ -184,7 +184,7 @@ export const trySendMessage = (store: ChatStore, clientActivityId: string, updat
     let state = store.getState();
     const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
     if (!activity) {
-        console.log("activity not found");
+        console.log("trySendMessage: activity not found");
         return;
     }
     

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Activity } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { ActivityView } from './ActivityView';
+import { trySendMessage } from './Chat';
 
 interface Props {
     store: ChatStore,
@@ -43,15 +44,40 @@ export class History extends React.Component<Props, {}> {
         return Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
     }
 
+    onClickRetry(e: React.SyntheticEvent<HTMLAnchorElement>, activity: Activity) {
+        e.preventDefault();
+        e.stopPropagation();
+        trySendMessage(this.props.store, activity.channelData.clientActivityId, true);
+    }
+
     render() {
         const state = this.props.store.getState();
         const activities = state.history.activities;
 
         const wrappedActivities = activities.map((activity: Activity, index) => {
-            let timeLine: String;
-            if (index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1]))) {
-                timeLine = ` at ${(new Date(activity.timestamp)).toLocaleTimeString()}`;
-            }
+            let timeLine;
+            switch (activity.id) {
+                case undefined:
+                    timeLine = <span>{ state.format.strings.messageSending }</span>;
+                    break;
+                case null:
+                    timeLine = <span>{ state.format.strings.messageFailed }</span>;
+                    break;
+                case "retry":
+                    timeLine =
+                        <span>
+                            { state.format.strings.messageFailed }
+                            { ' ' }
+                            <a href="." onClick={ e => this.onClickRetry(e, activity) }>{ state.format.strings.messageRetry }</a>
+                        </span>;
+                    break;
+                default:
+                    let sent: string;
+                    if (index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1])))
+                        sent = state.format.strings.timeSent.replace('%1', (new Date(activity.timestamp)).toLocaleTimeString());
+                    timeLine = <span>{ activity.from.name || activity.from.id }{ sent }</span>;
+                    break;
+            } 
             return (
                 <div key={ index } className={ "wc-message-wrapper" + (this.props.selectActivity ? ' clickable' : '') } onClick={ e => this.selectActivity(activity) }>
                     <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
@@ -62,10 +88,7 @@ export class History extends React.Component<Props, {}> {
                             </svg>
                             <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ () => this.onImageLoad }/>
                         </div>
-                        <div className="wc-message-from">
-                            { activity.from.name || activity.from.id }
-                            { timeLine }
-                        </div>
+                        <div className="wc-message-from">{ timeLine }</div>
                     </div>
                 </div>
             );

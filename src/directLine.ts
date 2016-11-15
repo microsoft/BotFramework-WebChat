@@ -12,7 +12,7 @@ interface ActivityGroup {
 }
 
 const intervalRefreshToken = 29*60*1000;
-const timeout = 10*1000;
+const timeout = 5*1000;
 
 export class DirectLine implements IBotConnection {
     connected$ = new BehaviorSubject(false);
@@ -124,8 +124,14 @@ export class DirectLine implements IBotConnection {
                 }
             })
         )
-        .map(ajaxResponse => ajaxResponse.response.id as string);
-    }
+        .map(ajaxResponse => ajaxResponse.response.id as string)
+        .catch(error => {
+            console.log("postMessageWithAttachments error", error);
+            return error.status >= 400 && error.status < 500
+            ? Observable.throw(error)
+            : Observable.of("retry")
+        });
+}
 
     postActivity(activity: Activity) {
         return Observable.ajax({
@@ -138,7 +144,12 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         })
-        .map(ajaxResponse => ajaxResponse.response.id as string);
+        .map(ajaxResponse => ajaxResponse.response.id as string)
+        .catch(error =>
+            error.status >= 400 && error.status < 500
+            ? Observable.throw(error)
+            : Observable.of("retry")
+        );
     }
 
     private getActivity$() {
@@ -174,15 +185,16 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         })
+//      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
+        .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
         .retryWhen(error$ =>
             error$
-            .mergeMap(error => {
-                console.log("getActivity error", error);
-                return error.status === 403 ? Observable.throw(error) : Observable.of(error)
-            })
+            .mergeMap(error =>
+                error.status === 403
+                ? Observable.throw(error)
+                : Observable.of(error)
+            )
             .delay(5 * 1000)
-        )
-//      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
-        .map(ajaxResponse => ajaxResponse.response as ActivityGroup);
+        );
     }
 }

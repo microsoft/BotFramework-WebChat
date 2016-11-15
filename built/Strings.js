@@ -3,7 +3,13 @@ var localizedStrings = {
     'en-us': {
         title: "Chat",
         send: "Send",
-        unknownFile: "[File of type '%1']"
+        unknownFile: "[File of type '%1']",
+        receiptTax: "Tax",
+        receiptTotal: "Total",
+        messageRetry: "retry",
+        messageFailed: "couldn't send",
+        messageSending: "sending",
+        timeSent: " at %1",
     }
 };
 // Returns strings using the "best match available"" locale

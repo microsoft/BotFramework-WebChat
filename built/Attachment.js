@@ -107,10 +107,10 @@ exports.AttachmentView = function (props) {
                     })), 
                     React.createElement("tfoot", null, 
                         React.createElement("tr", null, 
-                            React.createElement("td", null, "Tax"), 
+                            React.createElement("td", null, state.format.strings.receiptTax), 
                             React.createElement("td", null, attachment.content.tax)), 
                         React.createElement("tr", {className: "total"}, 
-                            React.createElement("td", null, "Total"), 
+                            React.createElement("td", null, state.format.strings.receiptTotal), 
                             React.createElement("td", null, attachment.content.total))))
             ));
         case "image/png":

@@ -167,9 +167,7 @@ export const historyReducer: Reducer<HistoryState> = (
             return Object.assign({}, state, { 
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
-                    Object.assign({}, action.activity, {
-                        status: "received"
-                    }),
+                    action.activity,
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
                 ]
             });
@@ -180,7 +178,6 @@ export const historyReducer: Reducer<HistoryState> = (
                     ... state.activities.filter(activity => activity.type !== "typing"),
                     Object.assign({}, action.activity, {
                         timestamp: (new Date()).toISOString(),
-                        status: "sending",
                         channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
                     }),
                     ... state.activities.filter(activity => activity.type === "typing"),
@@ -194,20 +191,13 @@ export const historyReducer: Reducer<HistoryState> = (
             const activity = state.activities.find(activity =>
                 activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
             );
-            const newActivity = Object.assign({}, activity, {
-                status: "sending",
-                clientActivityCounter: state.clientActivityCounter
-            });
+            const newActivity = activity.id === undefined ? activity : Object.assign({}, activity, { id: undefined });
             return Object.assign({}, state, {
                 activities: [
-                    ... state.activities.filter(activity =>
-                        activity.type !== "typing" &&
-                        (!activity.channelData || activity.channelData.clientActivityId !== action.clientActivityId)
-                    ),
+                    ... state.activities.filter(activityT => activityT.type !== "typing" && activityT !== activity),
                     newActivity,
                     ... state.activities.filter(activity => activity.type === "typing")
                 ],
-                clientActivityCounter: state.clientActivityCounter + 1,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             });
         }
@@ -219,8 +209,7 @@ export const historyReducer: Reducer<HistoryState> = (
             if (i === -1) return state;
             const activity = state.activities[i];
             const newActivity = Object.assign({}, activity, {
-                status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
-                id: action.type === 'Send_Message_Succeed' ? action.id : undefined                        
+                id: action.type === 'Send_Message_Succeed' ? action.id : null                        
             })
             return Object.assign({}, state, {
                 activities: [
@@ -237,9 +226,8 @@ export const historyReducer: Reducer<HistoryState> = (
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
-                    Object.assign({}, action.activity, {
-                        status: "received"
-                    })                ]
+                    action.activity
+                ]
             });
 
         case 'Clear_Typing': {

@@ -148,7 +148,7 @@ exports.trySendMessage = function (store, clientActivityId, updateStatus) {
     var state = store.getState();
     var activity = state.history.activities.find(function (activity) { return activity.channelData && activity.channelData.clientActivityId === clientActivityId; });
     if (!activity) {
-        console.log("activity not found");
+        console.log("trySendMessage: activity not found");
         return;
     }
     (activity.type === 'message' && activity.attachments && activity.attachments.length > 0

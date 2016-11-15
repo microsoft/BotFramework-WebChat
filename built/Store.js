@@ -86,9 +86,7 @@ exports.historyReducer = function (state, action) {
             }
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
-                    Object.assign({}, action.activity, {
-                        status: "received"
-                    })
+                    action.activity
                 ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }))
             });
         case 'Send_Message':
@@ -96,7 +94,6 @@ exports.historyReducer = function (state, action) {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
                     Object.assign({}, action.activity, {
                         timestamp: (new Date()).toISOString(),
-                        status: "sending",
                         channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
                     })
                 ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
@@ -105,22 +102,15 @@ exports.historyReducer = function (state, action) {
             });
         case 'Send_Message_Try':
             {
-                var activity = state.activities.find(function (activity) {
+                var activity_1 = state.activities.find(function (activity) {
                     return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
                 });
-                var newActivity = Object.assign({}, activity, {
-                    status: "sending",
-                    clientActivityCounter: state.clientActivityCounter
-                });
+                var newActivity = activity_1.id === undefined ? activity_1 : Object.assign({}, activity_1, { id: undefined });
                 return Object.assign({}, state, {
-                    activities: state.activities.filter(function (activity) {
-                        return activity.type !== "typing" &&
-                            (!activity.channelData || activity.channelData.clientActivityId !== action.clientActivityId);
-                    }).concat([
+                    activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
                         newActivity
                     ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-                    clientActivityCounter: state.clientActivityCounter + 1,
-                    selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+                    selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity
                 });
             }
         case 'Send_Message_Succeed':
@@ -132,8 +122,7 @@ exports.historyReducer = function (state, action) {
                 return state;
             var activity = state.activities[i];
             var newActivity = Object.assign({}, activity, {
-                status: action.type === 'Send_Message_Succeed' ? "sent" : "retry",
-                id: action.type === 'Send_Message_Succeed' ? action.id : undefined
+                id: action.type === 'Send_Message_Succeed' ? action.id : null
             });
             return Object.assign({}, state, {
                 activities: state.activities.slice(0, i).concat([
@@ -146,9 +135,7 @@ exports.historyReducer = function (state, action) {
         case 'Show_Typing':
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
-                    Object.assign({}, action.activity, {
-                        status: "received"
-                    })
+                    action.activity
                 ])
             });
         case 'Clear_Typing': {

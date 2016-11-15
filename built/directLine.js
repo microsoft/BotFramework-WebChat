@@ -1,7 +1,7 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var intervalRefreshToken = 29 * 60 * 1000;
-var timeout = 10 * 1000;
+var timeout = 5 * 1000;
 var DirectLine = (function () {
     function DirectLine(secretOrToken, domain, segment // DEPRECATED will be removed before release
         ) {
@@ -96,7 +96,13 @@ var DirectLine = (function () {
                 }
             });
         })
-            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
+            .map(function (ajaxResponse) { return ajaxResponse.response.id; })
+            .catch(function (error) {
+            console.log("postMessageWithAttachments error", error);
+            return error.status >= 400 && error.status < 500
+                ? rxjs_1.Observable.throw(error)
+                : rxjs_1.Observable.of("retry");
+        });
     };
     DirectLine.prototype.postActivity = function (activity) {
         return rxjs_1.Observable.ajax({
@@ -109,7 +115,12 @@ var DirectLine = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
-            .map(function (ajaxResponse) { return ajaxResponse.response.id; });
+            .map(function (ajaxResponse) { return ajaxResponse.response.id; })
+            .catch(function (error) {
+            return error.status >= 400 && error.status < 500
+                ? rxjs_1.Observable.throw(error)
+                : rxjs_1.Observable.of("retry");
+        });
     };
     DirectLine.prototype.getActivity$ = function () {
         var _this = this;
@@ -141,15 +152,16 @@ var DirectLine = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
+            .map(function (ajaxResponse) { return ajaxResponse.response; })
             .retryWhen(function (error$) {
             return error$
                 .mergeMap(function (error) {
-                console.log("getActivity error", error);
-                return error.status === 403 ? rxjs_1.Observable.throw(error) : rxjs_1.Observable.of(error);
+                return error.status === 403
+                    ? rxjs_1.Observable.throw(error)
+                    : rxjs_1.Observable.of(error);
             })
                 .delay(5 * 1000);
-        })
-            .map(function (ajaxResponse) { return ajaxResponse.response; });
+        });
     };
     return DirectLine;
 }());
