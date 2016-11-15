@@ -28,15 +28,10 @@ export class DirectLine implements IBotConnection {
 
     constructor(
         secretOrToken: SecretOrToken,
-        private domain = "https://directline.botframework.com/v3/directline",
-        private segment?: string // DEPRECATED will be removed before release
+        private domain = "https://directline.botframework.com/v3/directline"
     ) {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
-        if (segment) {
-            console.log("Support for 'segment' is deprecated and will be removed before release. Please use default domain or pass entire path in domain")
-            this.domain += `/${segment}`;
-        }
     }
 
     start() {
@@ -59,14 +54,14 @@ export class DirectLine implements IBotConnection {
             if (!this.secret) {
                 this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(_ =>
                     Observable.ajax({
-                        method: "GET",
+                        method: "POST",
                         url: `${this.domain}/tokens/refresh`,
                         timeout,
                         headers: {
                             "Authorization": `Bearer ${this.token}`
                         }
                     })
-                    .map(ajaxResponse => <string>ajaxResponse.response)
+                    .map(ajaxResponse => <string>ajaxResponse.response.token)
                 ).subscribe(token => {
                     console.log("refreshing token", token, "at", new Date())
                     this.token = token;

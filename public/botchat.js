@@ -32502,19 +32502,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var intervalRefreshToken = 29 * 60 * 1000;
 	var timeout = 5 * 1000;
 	var DirectLine = (function () {
-	    function DirectLine(secretOrToken, domain, segment // DEPRECATED will be removed before release
-	        ) {
+	    function DirectLine(secretOrToken, domain) {
 	        if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
 	        this.domain = domain;
-	        this.segment = segment;
 	        this.connected$ = new rxjs_1.BehaviorSubject(false);
 	        this.watermark = '';
 	        this.secret = secretOrToken.secret;
 	        this.token = secretOrToken.secret || secretOrToken.token;
-	        if (segment) {
-	            console.log("Support for 'segment' is deprecated and will be removed before release. Please use default domain or pass entire path in domain");
-	            this.domain += "/" + segment;
-	        }
 	    }
 	    DirectLine.prototype.start = function () {
 	        var _this = this;
@@ -32536,14 +32530,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (!_this.secret) {
 	                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken).flatMap(function (_) {
 	                    return rxjs_1.Observable.ajax({
-	                        method: "GET",
+	                        method: "POST",
 	                        url: _this.domain + "/tokens/refresh",
 	                        timeout: timeout,
 	                        headers: {
 	                            "Authorization": "Bearer " + _this.token
 	                        }
 	                    })
-	                        .map(function (ajaxResponse) { return ajaxResponse.response; });
+	                        .map(function (ajaxResponse) { return ajaxResponse.response.token; });
 	                }).subscribe(function (token) {
 	                    console.log("refreshing token", token, "at", new Date());
 	                    _this.token = token;
