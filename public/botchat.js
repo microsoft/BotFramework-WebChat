@@ -89,7 +89,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Chat_1 = __webpack_require__(174);
 	__webpack_require__(207);
 	/*
-	// experimental backchannel support
+	//  experimental backchannel support
+	& {
+	    allowMessagesFrom?: string[],
+	    onBackchannelMessage?: (backchannel: any) => void
+	}
+	
 	function isBackchannel(activity: Activity):activity is Message {
 	    return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 	}
@@ -130,7 +135,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            window.addEventListener("message", receiveBackchannelMessageFromHostingPage(props), false);
 	    
 	            props.botConnection.activity$ = props.botConnection.activity$
-	                .do(activity => console.log("backchannel filter", activity))
 	                .do(activity => {
 	                    if (props.onBackchannelMessage && isBackchannel(activity) && activity.from.id !== props.user.id)
 	                        props.onBackchannelMessage(activity.channelData.backchannel);
