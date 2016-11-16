@@ -11,62 +11,48 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Chat_1 = require('./Chat');
 require('core-js/shim');
-/* & {
-//  experimental backchannel support
-    allowMessagesFrom?: string[],
-    onBackchannelMessage?: (backchannel: any) => void
+// experimental backchannel support 
+function isBackchannel(activity) {
+    return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 }
-*/
-/*
-// experimental backchannel support
-function isBackchannel(activity: Activity, user: User):activity is Message {
-    return activity.type === "message" && activity.from.id !== user.id && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
-}
-
-const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: MessageEvent) => {
+var receiveBackchannelMessageFromHostingPage = function (props) { return function (event) {
     if (props.allowMessagesFrom.indexOf(event.origin) === -1) {
         console.log("Rejecting backchannel message from unknown source", event.source);
         return;
     }
-
     if (!event.data) {
         console.log("Empty backchannel message from source", event.source);
         return;
     }
-
     console.log("Received backchannel message", event.data, "from", event.source);
-
-    props.botConnection.postMessage("backchannel", props.user, { backchannel: event.data })
-    .retry(2)
-    .subscribe(success => {
+    props.botConnection.postActivity({
+        type: "message",
+        text: "backchannel",
+        from: props.user,
+        channelData: { backchannel: event.data }
+    })
+        .subscribe(function (success) {
         console.log("backchannel message sent to bot");
-    }, error => {
+    }, function (error) {
         console.log("failed to send backchannel message to bot");
     });
-}
-*/
+}; };
+// end experimental backchannel support 
 exports.App = function (props, container) {
     console.log("BotChat.App props", props);
-    /*
-        // experimental backchannel support
-        if (props.allowMessagesFrom) {
-            console.log("adding event listener for messages from hosting web page");
-            window.addEventListener("message", receiveBackchannelMessageFromHostingPage(props), false);
-        }
-    
-        if (props.onBackchannelMessage) {
-            console.log("adding event listener for messages to hosting web page");
-            props = Object.assign({}, props, {
-                botConnection: Object.assign({}, props.botConnection, {
-                    activity$: props.botConnection.activity$.do(activity => {
-                            if (isBackchannel(activity, props.user)) {
-                                this.props.onBackchannelMessage(activity.channelData.backchannel);
-                            }
-                        }).filter(activity => !isBackchannel(activity, props.user))
-                })
-            });
-        }
-    */
+    // experimental backchannel support
+    if (props.allowMessagesFrom) {
+        console.log("adding event listener for messages from hosting web page");
+        window.addEventListener("message", receiveBackchannelMessageFromHostingPage(props), false);
+        props.botConnection.activity$ = props.botConnection.activity$
+            .do(function (activity) { return console.log("backchannel filter", activity); })
+            .do(function (activity) {
+            if (props.onBackchannelMessage && isBackchannel(activity) && activity.from.id !== props.user.id)
+                props.onBackchannelMessage(activity.channelData.backchannel);
+        })
+            .filter(function (activity) { return !isBackchannel(activity); });
+    }
+    // end experimental backchannel support
     ReactDOM.render(React.createElement(AppContainer, props), container);
 };
 var AppContainer = function (props) {

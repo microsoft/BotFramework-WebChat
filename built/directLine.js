@@ -7,10 +7,11 @@ var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
         if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
         this.domain = domain;
-        this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
         this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+        this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
+        this.activity$ = this.getActivity$();
     }
     DirectLine.prototype.start = function () {
         var _this = this;
@@ -71,7 +72,6 @@ var DirectLine = (function () {
         }, function (error) {
             _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
         });
-        this.activity$ = this.getActivity$();
     };
     DirectLine.prototype.end = function () {
         if (this.tokenRefreshSubscription) {
