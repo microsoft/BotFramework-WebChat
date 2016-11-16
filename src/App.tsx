@@ -7,13 +7,15 @@ import 'core-js/shim';
 
 export type AppProps = ChatProps
 & {
+/*
 //  experimental backchannel support 
     allowMessagesFrom?: string[],
     onBackchannelMessage?: (backchannel: any) => void
-// end experimental backchannel support 
+// end experimental backchannel support
+*/ 
 }
 
-
+/*
 // experimental backchannel support 
 function isBackchannel(activity: Activity):activity is Message {
     return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
@@ -45,11 +47,11 @@ const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: Me
     });
 }
 // end experimental backchannel support 
-
+*/
 
 export const App = (props: AppProps, container: HTMLElement) => {
     console.log("BotChat.App props", props);
-
+/*
     // experimental backchannel support
     if (props.allowMessagesFrom) {
         console.log("adding event listener for messages from hosting web page");
@@ -65,6 +67,7 @@ export const App = (props: AppProps, container: HTMLElement) => {
             .filter(activity => !isBackchannel(activity));
     }
     // end experimental backchannel support
+*/
     ReactDOM.render(React.createElement(AppContainer, props), container);
 } 
 
