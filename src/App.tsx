@@ -13,7 +13,7 @@ export type AppProps = ChatProps
     onBackchannelMessage?: (backchannel: any) => void
 }
 
-function isBackchannel(activity: Activity):activity is Message {
+function isBackchannel(activity: Activity): activity is Message {
     return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 }
 
