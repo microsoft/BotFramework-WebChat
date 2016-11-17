@@ -84,25 +84,30 @@ In this scenario you will host two web pages, one for WebChat and one for the pa
 
 In this scenario you will include a JavaScript file which embeds its own copy of React, which will run in a DOM element.  
 
-1. Include [public/botchat.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.js) and you will get an object called BotChat
+1. Include [public/botchat.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.js) and you will get an object called `BotChat`
 2. For TypeScript users there is a type definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
-3. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-4. Create an instance of BotChat.DirectLine using your Direct Line Secret or Token
-5. Call BotChat.App with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
+3. Incorporate [public/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.css) into your website deployment 
+4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
+5. Create an instance of `BotChat.DirectLine` using your Direct Line Secret or Token
+6. Call `BotChat.App` with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
 
 #### Inline in your React website
 
 In this scenario you will incorporate WebChat's multiple JavaScript files into your React webapp. 
 
 1. Incorporate the files in the [/built](https://github.com/Microsoft/BotFramework-WebChat/blob/master/built) folder into your build process
-2. For TypeScript users there is a definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
-3. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-4. Create an instance of BotChat.DirectLine using your Direct Line Secret or Token
-4. Call the Chat React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
+2. Incorporate [public/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.css) into your website deployment
+3. For TypeScript users there is a definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
+4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
+5. Create an instance of `DirectLine` using your Direct Line Secret or Token
+6. Call the `Chat` React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
 
 ## Misc. notes
 
-* To enable logging, set `window["botchatDebug"] = true` 
+To see WebChat logging:
+
+* When IFRAMEd, set `window.frames["{iframe_id}"].botchatDebug = true` from the browser console
+* Otherwise set `window.botchatDebug = true` or `var botchatDebug = true` from the browser console       
 
 ## Copyright & License
 
