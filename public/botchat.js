@@ -32622,10 +32622,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.tokenRefreshSubscription.unsubscribe();
 	            this.tokenRefreshSubscription = undefined;
 	        }
-	        if (this.getActivityGroupSubscription) {
-	            this.getActivityGroupSubscription.unsubscribe();
-	            this.getActivityGroupSubscription = undefined;
-	        }
 	    };
 	    DirectLine.prototype.postMessageWithAttachments = function (message) {
 	        var _this = this;

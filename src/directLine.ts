@@ -107,10 +107,6 @@ export class DirectLine implements IBotConnection {
             this.tokenRefreshSubscription.unsubscribe();
             this.tokenRefreshSubscription = undefined;
         }
-        if (this.getActivityGroupSubscription) {
-            this.getActivityGroupSubscription.unsubscribe();
-            this.getActivityGroupSubscription = undefined;
-        }
     }
 
     postMessageWithAttachments(message: Message) {
