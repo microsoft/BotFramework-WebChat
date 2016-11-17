@@ -27,7 +27,7 @@ exports.AttachmentView = function (props) {
         }
     };
     var buttons = function (buttons) { return buttons &&
-        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button) { return React.createElement("li", null, 
+        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button, index) { return React.createElement("li", {key: index}, 
             React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
         ); })); };
     var imageWithOnLoad = function (url, thumbnailUrl, autoPlay, loop) {

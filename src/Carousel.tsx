@@ -162,8 +162,8 @@ export class Carousel extends React.Component<Props, State> {
                 </button>
                 <div className="wc-carousel-scroll-outer">
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
-                        <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map(attachment =>
-                            <li>
+                        <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
+                            <li key={ index }>
                                 <AttachmentView store= { this.props.store } attachment={ attachment } onImageLoad={ () => this.resize() } />
                             </li>) }
                         </ul>

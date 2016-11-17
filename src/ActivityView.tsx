@@ -16,8 +16,8 @@ const Attachments = (props: {
             return <Carousel store= { props.store } attachments={props.attachments} onImageLoad={ props.onImageLoad }/>;
         else
             return (
-                <div className="wc-list"> { props.attachments.map(attachment => 
-                    <AttachmentView store={ props.store } attachment={ attachment } onImageLoad={ props.onImageLoad }/>
+                <div className="wc-list"> { props.attachments.map((attachment, index) => 
+                    <AttachmentView key={ index } store={ props.store } attachment={ attachment } onImageLoad={ props.onImageLoad }/>
                 ) } </div>
             );
     } else
