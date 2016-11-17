@@ -103,7 +103,11 @@ In this scenario you will incorporate WebChat's multiple JavaScript files into y
 4. Create an instance of BotChat.DirectLine using your Direct Line Secret or Token
 4. Call the Chat React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
 
-# Copyright & License
+## Misc. notes
+
+* To enable logging, set `window["botchatDebug"] = true` 
+
+## Copyright & License
 
 © 2016 Microsoft Corporation
 
