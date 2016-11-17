@@ -73,7 +73,6 @@ export class DirectLine implements IBotConnection {
     private RefreshToken() {
         this.tokenRefreshSubscription = this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-        .flatMap(_ => Observable.timer(intervalRefreshToken, intervalRefreshToken))
         .flatMap(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/tokens/refresh`,
@@ -82,6 +81,7 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         }))
+        .take(1)
         .map(ajaxResponse => <string>ajaxResponse.response.token)
         .retryWhen(error$ => error$
             .mergeMap(error =>
@@ -90,7 +90,9 @@ export class DirectLine implements IBotConnection {
                 : Observable.of(error)
             )
             .delay(5 * 1000)
-        ).subscribe(token => {
+        )
+        .repeatWhen(completed => completed.delay(intervalRefreshToken))
+        .subscribe(token => {
             konsole.log("refreshing token", token, "at", new Date())
             this.token = token;
         }, error => {
@@ -178,29 +180,6 @@ export class DirectLine implements IBotConnection {
     }
 
     private getActivity$() {
-        return new Observable<Observable<Activity>>((subscriber:Subscriber<Observable<Activity>>) =>
-            this.activitiesGenerator(subscriber)
-        )
-        .concatAll()
-        .do(activity => konsole.log("Activity", activity));
-    }
-
-    private activitiesGenerator(subscriber: Subscriber<Observable<Activity>>) {
-        this.getActivityGroupSubscription = this.getActivityGroup().subscribe(activityGroup => {
-            this.watermark = activityGroup.watermark;
-            const someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
-            if (someMessages)
-                subscriber.next(Observable.from(activityGroup.activities));
-            this.pollTimer = setTimeout(
-                () => this.activitiesGenerator(subscriber),
-                someMessages && this.watermark ? 0 : 1000
-            );
-         }, error =>
-            subscriber.error(error)
-        );
-    }
-
-    private getActivityGroup() {
         return this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
         .flatMap(_ => Observable.ajax({
@@ -212,8 +191,14 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         }))
+        .take(1)
 //      .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
+        .flatMap<Activity>(activityGroup => {
+            this.watermark = activityGroup.watermark;
+            return Observable.from(activityGroup.activities);
+        })
+        .repeatWhen(completed => completed.delay(1000))
         .retryWhen(error$ => error$
             .mergeMap(error => {
                 if (error.status === 403) {

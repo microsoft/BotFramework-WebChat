@@ -21545,6 +21545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _super.call(this, props);
 	        this.store = Store_1.createStore();
 	        this.typingTimers = {};
+	        this.selectActivityCallback = null;
 	        exports.konsole.log("BotChat.Chat props", props);
 	        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 	        if (props.formatOptions)
@@ -21554,19 +21555,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
 	            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
 	        });
-	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
-	        );
+	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
 	        if (props.selectedActivity) {
+	            this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
 	            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
 	                _this.store.dispatch({
 	                    type: 'Select_Activity',
 	                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
 	                });
-	                _this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
 	            });
-	        }
-	        else {
-	            this.selectActivityCallback = null;
 	        }
 	    }
 	    Chat.prototype.handleIncomingActivity = function (activity) {
@@ -32591,7 +32588,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        this.tokenRefreshSubscription = this.connectionStatus$
 	            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-	            .flatMap(function (_) { return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken); })
 	            .flatMap(function (_) { return rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: _this.domain + "/tokens/refresh",
@@ -32600,6 +32596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                "Authorization": "Bearer " + _this.token
 	            }
 	        }); })
+	            .take(1)
 	            .map(function (ajaxResponse) { return ajaxResponse.response.token; })
 	            .retryWhen(function (error$) { return error$
 	            .mergeMap(function (error) {
@@ -32607,7 +32604,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                ? rxjs_1.Observable.throw(error)
 	                : rxjs_1.Observable.of(error);
 	        })
-	            .delay(5 * 1000); }).subscribe(function (token) {
+	            .delay(5 * 1000); })
+	            .repeatWhen(function (completed) { return completed.delay(intervalRefreshToken); })
+	            .subscribe(function (token) {
 	            Chat_1.konsole.log("refreshing token", token, "at", new Date());
 	            _this.token = token;
 	        }, function (error) {
@@ -32690,26 +32689,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DirectLine.prototype.getActivity$ = function () {
 	        var _this = this;
-	        return new rxjs_1.Observable(function (subscriber) {
-	            return _this.activitiesGenerator(subscriber);
-	        })
-	            .concatAll()
-	            .do(function (activity) { return Chat_1.konsole.log("Activity", activity); });
-	    };
-	    DirectLine.prototype.activitiesGenerator = function (subscriber) {
-	        var _this = this;
-	        this.getActivityGroupSubscription = this.getActivityGroup().subscribe(function (activityGroup) {
-	            _this.watermark = activityGroup.watermark;
-	            var someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
-	            if (someMessages)
-	                subscriber.next(rxjs_1.Observable.from(activityGroup.activities));
-	            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber); }, someMessages && _this.watermark ? 0 : 1000);
-	        }, function (error) {
-	            return subscriber.error(error);
-	        });
-	    };
-	    DirectLine.prototype.getActivityGroup = function () {
-	        var _this = this;
 	        return this.connectionStatus$
 	            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
 	            .flatMap(function (_) { return rxjs_1.Observable.ajax({
@@ -32721,7 +32700,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                "Authorization": "Bearer " + _this.token
 	            }
 	        }); })
+	            .take(1)
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
+	            .flatMap(function (activityGroup) {
+	            _this.watermark = activityGroup.watermark;
+	            return rxjs_1.Observable.from(activityGroup.activities);
+	        })
+	            .repeatWhen(function (completed) { return completed.delay(1000); })
 	            .retryWhen(function (error$) { return error$
 	            .mergeMap(function (error) {
 	            if (error.status === 403) {

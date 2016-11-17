@@ -35,7 +35,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private typingTimers = {};
-    private selectActivityCallback: (activity:Activity) => void;
+    private selectActivityCallback: (activity:Activity) => void = null;
 
     constructor(props: ChatProps) {
         super(props);
@@ -56,19 +56,17 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.activitySubscription = props.botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
-            error => konsole.log("activity$ error", error) // THIS IS WHERE WE WILL CHANGE THE APP STATE
+            error => konsole.log("activity$ error", error)
         );
 
         if (props.selectedActivity) {
+            this.selectActivityCallback = activity => this.selectActivity(activity);
             this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
                 this.store.dispatch({
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
                 } as HistoryAction);
-            this.selectActivityCallback = activity => this.selectActivity(activity)
-            })
-        } else {
-            this.selectActivityCallback = null;
+            });
         }
     }
 

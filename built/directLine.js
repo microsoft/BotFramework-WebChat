@@ -47,7 +47,6 @@ var DirectLine = (function () {
         var _this = this;
         this.tokenRefreshSubscription = this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-            .flatMap(function (_) { return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken); })
             .flatMap(function (_) { return rxjs_1.Observable.ajax({
             method: "POST",
             url: _this.domain + "/tokens/refresh",
@@ -56,6 +55,7 @@ var DirectLine = (function () {
                 "Authorization": "Bearer " + _this.token
             }
         }); })
+            .take(1)
             .map(function (ajaxResponse) { return ajaxResponse.response.token; })
             .retryWhen(function (error$) { return error$
             .mergeMap(function (error) {
@@ -63,7 +63,9 @@ var DirectLine = (function () {
                 ? rxjs_1.Observable.throw(error)
                 : rxjs_1.Observable.of(error);
         })
-            .delay(5 * 1000); }).subscribe(function (token) {
+            .delay(5 * 1000); })
+            .repeatWhen(function (completed) { return completed.delay(intervalRefreshToken); })
+            .subscribe(function (token) {
             Chat_1.konsole.log("refreshing token", token, "at", new Date());
             _this.token = token;
         }, function (error) {
@@ -146,26 +148,6 @@ var DirectLine = (function () {
     };
     DirectLine.prototype.getActivity$ = function () {
         var _this = this;
-        return new rxjs_1.Observable(function (subscriber) {
-            return _this.activitiesGenerator(subscriber);
-        })
-            .concatAll()
-            .do(function (activity) { return Chat_1.konsole.log("Activity", activity); });
-    };
-    DirectLine.prototype.activitiesGenerator = function (subscriber) {
-        var _this = this;
-        this.getActivityGroupSubscription = this.getActivityGroup().subscribe(function (activityGroup) {
-            _this.watermark = activityGroup.watermark;
-            var someMessages = activityGroup && activityGroup.activities && activityGroup.activities.length > 0;
-            if (someMessages)
-                subscriber.next(rxjs_1.Observable.from(activityGroup.activities));
-            _this.pollTimer = setTimeout(function () { return _this.activitiesGenerator(subscriber); }, someMessages && _this.watermark ? 0 : 1000);
-        }, function (error) {
-            return subscriber.error(error);
-        });
-    };
-    DirectLine.prototype.getActivityGroup = function () {
-        var _this = this;
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
             .flatMap(function (_) { return rxjs_1.Observable.ajax({
@@ -177,7 +159,13 @@ var DirectLine = (function () {
                 "Authorization": "Bearer " + _this.token
             }
         }); })
+            .take(1)
             .map(function (ajaxResponse) { return ajaxResponse.response; })
+            .flatMap(function (activityGroup) {
+            _this.watermark = activityGroup.watermark;
+            return rxjs_1.Observable.from(activityGroup.activities);
+        })
+            .repeatWhen(function (completed) { return completed.delay(1000); })
             .retryWhen(function (error$) { return error$
             .mergeMap(function (error) {
             if (error.status === 403) {
