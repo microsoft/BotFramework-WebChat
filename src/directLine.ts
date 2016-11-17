@@ -72,6 +72,7 @@ export class DirectLine implements IBotConnection {
     private RefreshToken() {
         this.tokenRefreshSubscription = this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
+        .flatMap(_ => Observable.timer(intervalRefreshToken, intervalRefreshToken))
         .flatMap(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/tokens/refresh`,
@@ -81,7 +82,6 @@ export class DirectLine implements IBotConnection {
             }
         }))
         .map(ajaxResponse => <string>ajaxResponse.response.token)
-        .repeatWhen(completed => completed.delay(intervalRefreshToken)) 
         .retryWhen(error$ => error$
             .mergeMap(error =>
                 error.status === 403

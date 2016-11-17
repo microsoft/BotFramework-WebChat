@@ -46,6 +46,7 @@ var DirectLine = (function () {
         var _this = this;
         this.tokenRefreshSubscription = this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+            .flatMap(function (_) { return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken); })
             .flatMap(function (_) { return rxjs_1.Observable.ajax({
             method: "POST",
             url: _this.domain + "/tokens/refresh",
@@ -55,7 +56,6 @@ var DirectLine = (function () {
             }
         }); })
             .map(function (ajaxResponse) { return ajaxResponse.response.token; })
-            .repeatWhen(function (completed) { return completed.delay(intervalRefreshToken); })
             .retryWhen(function (error$) { return error$
             .mergeMap(function (error) {
             return error.status === 403
