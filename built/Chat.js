@@ -136,7 +136,6 @@ var sendMessageSucceed = function (store, clientActivityId) { return function (i
 }; };
 var sendMessageFail = function (store, clientActivityId) { return function (error) {
     console.log("failed to send message", error);
-    // TODO: show an error under the message with "retry" link
     store.dispatch({ type: "Send_Message_Fail", clientActivityId: clientActivityId });
     exports.updateSelectedActivity(store);
 }; };

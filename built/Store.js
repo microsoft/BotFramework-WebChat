@@ -82,10 +82,8 @@ exports.historyReducer = function (state, action) {
             }
         }
         case 'Receive_Message':
-            if (state.activities.find(function (a) { return a.id === action.activity.id; })) {
-                // don't allow duplicate messages
-                return state;
-            }
+            if (state.activities.find(function (a) { return a.id === action.activity.id; }))
+                return state; // don't allow duplicate messages
             return Object.assign({}, state, {
                 activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
                     action.activity
@@ -102,19 +100,18 @@ exports.historyReducer = function (state, action) {
                 input: '',
                 clientActivityCounter: state.clientActivityCounter + 1
             });
-        case 'Send_Message_Try':
-            {
-                var activity_1 = state.activities.find(function (activity) {
-                    return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
-                });
-                var newActivity = activity_1.id === undefined ? activity_1 : Object.assign({}, activity_1, { id: undefined });
-                return Object.assign({}, state, {
-                    activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
-                        newActivity
-                    ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-                    selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity
-                });
-            }
+        case 'Send_Message_Try': {
+            var activity_1 = state.activities.find(function (activity) {
+                return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
+            });
+            var newActivity = activity_1.id === undefined ? activity_1 : Object.assign({}, activity_1, { id: undefined });
+            return Object.assign({}, state, {
+                activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
+                    newActivity
+                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+                selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity
+            });
+        }
         case 'Send_Message_Succeed':
         case 'Send_Message_Fail': {
             var i = state.activities.findIndex(function (activity) {
@@ -123,6 +120,8 @@ exports.historyReducer = function (state, action) {
             if (i === -1)
                 return state;
             var activity = state.activities[i];
+            if (activity.id && activity.id != "retry")
+                return state;
             var newActivity = Object.assign({}, activity, {
                 id: action.type === 'Send_Message_Succeed' ? action.id : null
             });
