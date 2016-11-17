@@ -24,9 +24,7 @@ export class DirectLine implements IBotConnection {
     private secret: string;
     private conversationSubscription: Subscription;
     private tokenRefreshSubscription: Subscription;
-    private getActivityGroupSubscription: Subscription;
-    private watermark: string = '';
-    private pollTimer: number;
+    private watermark = '';
 
     constructor(
         secretOrToken: SecretOrToken,
@@ -112,10 +110,6 @@ export class DirectLine implements IBotConnection {
         if (this.getActivityGroupSubscription) {
             this.getActivityGroupSubscription.unsubscribe();
             this.getActivityGroupSubscription = undefined;
-        }
-        if (this.pollTimer) {
-            clearTimeout(this.pollTimer);
-            this.pollTimer = undefined;
         }
     }
 

@@ -32626,10 +32626,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.getActivityGroupSubscription.unsubscribe();
 	            this.getActivityGroupSubscription = undefined;
 	        }
-	        if (this.pollTimer) {
-	            clearTimeout(this.pollTimer);
-	            this.pollTimer = undefined;
-	        }
 	    };
 	    DirectLine.prototype.postMessageWithAttachments = function (message) {
 	        var _this = this;
