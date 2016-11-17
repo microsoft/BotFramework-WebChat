@@ -32588,7 +32588,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	        this.tokenRefreshSubscription = this.connectionStatus$
 	            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-	            .flatMap(function (_) { return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken); })
 	            .flatMap(function (_) { return rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: _this.domain + "/tokens/refresh",
@@ -32597,6 +32596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                "Authorization": "Bearer " + _this.token
 	            }
 	        }); })
+	            .take(1)
 	            .map(function (ajaxResponse) { return ajaxResponse.response.token; })
 	            .retryWhen(function (error$) { return error$
 	            .mergeMap(function (error) {
@@ -32604,7 +32604,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                ? rxjs_1.Observable.throw(error)
 	                : rxjs_1.Observable.of(error);
 	        })
-	            .delay(5 * 1000); }).subscribe(function (token) {
+	            .delay(5 * 1000); })
+	            .repeatWhen(function (completed) { return completed.delay(intervalRefreshToken); })
+	            .subscribe(function (token) {
 	            Chat_1.konsole.log("refreshing token", token, "at", new Date());
 	            _this.token = token;
 	        }, function (error) {
@@ -32699,7 +32701,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }); })
 	            .take(1)
-	            .do(function (ajaxResponse) { return Chat_1.konsole.log("getActivityGroup ajaxResponse", ajaxResponse); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
 	            .flatMap(function (activityGroup) {
 	            _this.watermark = activityGroup.watermark;

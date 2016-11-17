@@ -73,7 +73,6 @@ export class DirectLine implements IBotConnection {
     private RefreshToken() {
         this.tokenRefreshSubscription = this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-        .flatMap(_ => Observable.timer(intervalRefreshToken, intervalRefreshToken))
         .flatMap(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/tokens/refresh`,
@@ -82,6 +81,7 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         }))
+        .take(1)
         .map(ajaxResponse => <string>ajaxResponse.response.token)
         .retryWhen(error$ => error$
             .mergeMap(error =>
@@ -90,7 +90,9 @@ export class DirectLine implements IBotConnection {
                 : Observable.of(error)
             )
             .delay(5 * 1000)
-        ).subscribe(token => {
+        )
+        .repeatWhen(completed => completed.delay(intervalRefreshToken))
+        .subscribe(token => {
             konsole.log("refreshing token", token, "at", new Date())
             this.token = token;
         }, error => {
@@ -190,7 +192,7 @@ export class DirectLine implements IBotConnection {
             }
         }))
         .take(1)
-        .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
+//      .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
         .flatMap<Activity>(activityGroup => {
             this.watermark = activityGroup.watermark;
