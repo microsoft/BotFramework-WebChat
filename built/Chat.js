@@ -17,6 +17,7 @@ var Chat = (function (_super) {
         _super.call(this, props);
         this.store = Store_1.createStore();
         this.typingTimers = {};
+        this.selectActivityCallback = null;
         exports.konsole.log("BotChat.Chat props", props);
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
         if (props.formatOptions)
@@ -26,19 +27,15 @@ var Chat = (function (_super) {
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
             return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
         });
-        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
-        );
+        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
         if (props.selectedActivity) {
+            this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
             this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
                 _this.store.dispatch({
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
                 });
-                _this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
             });
-        }
-        else {
-            this.selectActivityCallback = null;
         }
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
