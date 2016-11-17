@@ -149,10 +149,12 @@ export const historyReducer: Reducer<HistoryState> = (
 ) => {
     console.log("history action", action);
     switch (action.type) {
+
         case 'Update_Input':
             return Object.assign({}, state, {
                 input: action.input
             });
+
         case 'Receive_Sent_Message': {
             const i = state.activities.findIndex(activity =>
                 activity.channelData && action.activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
@@ -171,10 +173,8 @@ export const historyReducer: Reducer<HistoryState> = (
             // else fall through and treat this as a new message
         }
         case 'Receive_Message':
-            if (state.activities.find(a => a.id === action.activity.id)) {
-                 // don't allow duplicate messages
-                 return state;
-            }
+            if (state.activities.find(a => a.id === action.activity.id)) return state; // don't allow duplicate messages
+
             return Object.assign({}, state, { 
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
@@ -197,8 +197,7 @@ export const historyReducer: Reducer<HistoryState> = (
                 clientActivityCounter: state.clientActivityCounter + 1
             });
 
-        case 'Send_Message_Try':
-        {
+        case 'Send_Message_Try': {
             const activity = state.activities.find(activity =>
                 activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
             );
@@ -218,7 +217,10 @@ export const historyReducer: Reducer<HistoryState> = (
                 activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
             );
             if (i === -1) return state;
+
             const activity = state.activities[i];
+            if (activity.id && activity.id != "retry") return state;
+
             const newActivity = Object.assign({}, activity, {
                 id: action.type === 'Send_Message_Succeed' ? action.id : null                        
             })
@@ -249,8 +251,7 @@ export const historyReducer: Reducer<HistoryState> = (
             });
         }
         case 'Select_Activity':
-            if (action.selectedActivity === state.selectedActivity)
-                return state;
+            if (action.selectedActivity === state.selectedActivity) return state;
             return Object.assign({}, state, {
                 selectedActivity: action.selectedActivity
             });

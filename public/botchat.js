@@ -95,7 +95,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onBackchannelMessage?: (backchannel: any) => void
 	}
 	
-	function isBackchannel(activity: Activity):activity is Message {
+	function isBackchannel(activity: Activity): activity is Message {
 	    return activity.type === "message" && activity.text === "backchannel" && activity.channelData && activity.channelData.backchannel;
 	}
 	
@@ -21664,7 +21664,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}; };
 	var sendMessageFail = function (store, clientActivityId) { return function (error) {
 	    console.log("failed to send message", error);
-	    // TODO: show an error under the message with "retry" link
 	    store.dispatch({ type: "Send_Message_Fail", clientActivityId: clientActivityId });
 	    exports.updateSelectedActivity(store);
 	}; };
@@ -24189,10 +24188,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	        case 'Receive_Message':
-	            if (state.activities.find(function (a) { return a.id === action.activity.id; })) {
-	                // don't allow duplicate messages
-	                return state;
-	            }
+	            if (state.activities.find(function (a) { return a.id === action.activity.id; }))
+	                return state; // don't allow duplicate messages
 	            return Object.assign({}, state, {
 	                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
 	                    action.activity
@@ -24209,19 +24206,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	                input: '',
 	                clientActivityCounter: state.clientActivityCounter + 1
 	            });
-	        case 'Send_Message_Try':
-	            {
-	                var activity_1 = state.activities.find(function (activity) {
-	                    return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
-	                });
-	                var newActivity = activity_1.id === undefined ? activity_1 : Object.assign({}, activity_1, { id: undefined });
-	                return Object.assign({}, state, {
-	                    activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
-	                        newActivity
-	                    ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-	                    selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity
-	                });
-	            }
+	        case 'Send_Message_Try': {
+	            var activity_1 = state.activities.find(function (activity) {
+	                return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
+	            });
+	            var newActivity = activity_1.id === undefined ? activity_1 : Object.assign({}, activity_1, { id: undefined });
+	            return Object.assign({}, state, {
+	                activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
+	                    newActivity
+	                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
+	                selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity
+	            });
+	        }
 	        case 'Send_Message_Succeed':
 	        case 'Send_Message_Fail': {
 	            var i = state.activities.findIndex(function (activity) {
@@ -24230,6 +24226,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (i === -1)
 	                return state;
 	            var activity = state.activities[i];
+	            if (activity.id && activity.id != "retry")
+	                return state;
 	            var newActivity = Object.assign({}, activity, {
 	                id: action.type === 'Send_Message_Succeed' ? action.id : null
 	            });
@@ -32550,7 +32548,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    DirectLine.prototype.start = function () {
 	        var _this = this;
-	        rxjs_1.Observable.ajax({
+	        this.conversationSubscription = rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: this.domain + "/conversations",
 	            timeout: timeout,
@@ -32559,56 +32557,56 @@ return /******/ (function(modules) { // webpackBootstrap
 	                "Authorization": "Bearer " + this.token
 	            }
 	        })
-	            .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
-	            .retryWhen(function (error$) {
-	            return error$
-	                .mergeMap(function (error) {
-	                return error.status >= 400 && error.status <= 599
-	                    ? rxjs_1.Observable.throw(error)
-	                    : rxjs_1.Observable.of(error);
-	            })
-	                .delay(5 * 1000);
+	            .retryWhen(function (error$) { return error$
+	            .mergeMap(function (error) {
+	            return error.status >= 400 && error.status <= 599
+	                ? rxjs_1.Observable.throw(error)
+	                : rxjs_1.Observable.of(error);
 	        })
+	            .delay(5 * 1000); })
 	            .subscribe(function (conversation) {
 	            _this.conversationId = conversation.conversationId;
 	            _this.token = _this.secret || conversation.token;
 	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Online);
-	            if (!_this.secret) {
-	                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
-	                    .flatMap(function (_) {
-	                    return _this.connectionStatus$
-	                        .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-	                        .flatMap(function (_) { return rxjs_1.Observable.ajax({
-	                        method: "POST",
-	                        url: _this.domain + "/tokens/refresh",
-	                        timeout: timeout,
-	                        headers: {
-	                            "Authorization": "Bearer " + _this.token
-	                        }
-	                    }); })
-	                        .map(function (ajaxResponse) { return ajaxResponse.response.token; })
-	                        .retryWhen(function (error$) { return error$
-	                        .mergeMap(function (error) {
-	                        if (error.status === 403) {
-	                            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
-	                            return rxjs_1.Observable.throw(error);
-	                        }
-	                        else {
-	                            return rxjs_1.Observable.of(error);
-	                        }
-	                    })
-	                        .delay(5 * 1000); });
-	                }).subscribe(function (token) {
-	                    console.log("refreshing token", token, "at", new Date());
-	                    _this.token = token;
-	                });
+	            if (!_this.secret)
+	                _this.RefreshToken();
+	        }, function (error) {
+	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+	        });
+	    };
+	    DirectLine.prototype.RefreshToken = function () {
+	        var _this = this;
+	        this.tokenRefreshSubscription = this.connectionStatus$
+	            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+	            .flatMap(function (_) { return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken); })
+	            .flatMap(function (_) { return rxjs_1.Observable.ajax({
+	            method: "POST",
+	            url: _this.domain + "/tokens/refresh",
+	            timeout: timeout,
+	            headers: {
+	                "Authorization": "Bearer " + _this.token
 	            }
+	        }); })
+	            .map(function (ajaxResponse) { return ajaxResponse.response.token; })
+	            .retryWhen(function (error$) { return error$
+	            .mergeMap(function (error) {
+	            return error.status === 403
+	                ? rxjs_1.Observable.throw(error)
+	                : rxjs_1.Observable.of(error);
+	        })
+	            .delay(5 * 1000); }).subscribe(function (token) {
+	            console.log("refreshing token", token, "at", new Date());
+	            _this.token = token;
 	        }, function (error) {
 	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
 	        });
 	    };
 	    DirectLine.prototype.end = function () {
+	        if (this.conversationSubscription) {
+	            this.conversationSubscription.unsubscribe();
+	            this.conversationSubscription = undefined;
+	        }
 	        if (this.tokenRefreshSubscription) {
 	            this.tokenRefreshSubscription.unsubscribe();
 	            this.tokenRefreshSubscription = undefined;

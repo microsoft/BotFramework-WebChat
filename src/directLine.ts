@@ -21,6 +21,7 @@ export class DirectLine implements IBotConnection {
     private conversationId: string;
     private token: string;
     private secret: string;
+    private conversationSubscription: Subscription;
     private tokenRefreshSubscription: Subscription;
     private getActivityGroupSubscription: Subscription;
     private watermark: string = '';
@@ -37,7 +38,7 @@ export class DirectLine implements IBotConnection {
     }
 
     public start() {
-        Observable.ajax({
+        this.conversationSubscription = Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations`,
             timeout,
@@ -46,10 +47,9 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         })
-        .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
+//      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
-        .retryWhen(error$ =>
-            error$
+        .retryWhen(error$ => error$
             .mergeMap(error =>
                 error.status >= 400 && error.status <= 599
                 ? Observable.throw(error)
@@ -62,42 +62,46 @@ export class DirectLine implements IBotConnection {
             this.token = this.secret || conversation.token;
             this.connectionStatus$.next(ConnectionStatus.Online);
   
-            if (!this.secret) {
-                this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken)
-                .flatMap(_ =>
-                    this.connectionStatus$
-                    .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-                    .flatMap(_ => Observable.ajax({
-                        method: "POST",
-                        url: `${this.domain}/tokens/refresh`,
-                        timeout,
-                        headers: {
-                            "Authorization": `Bearer ${this.token}`
-                        }
-                    }))
-                    .map(ajaxResponse => <string>ajaxResponse.response.token)
-                    .retryWhen(error$ => error$
-                        .mergeMap(error => {
-                            if (error.status === 403) {
-                                this.connectionStatus$.next(ConnectionStatus.Offline);
-                                return Observable.throw(error);
-                            } else {
-                                return Observable.of(error);
-                            }
-                        })
-                        .delay(5 * 1000)
-                    )
-                ).subscribe(token => {
-                    console.log("refreshing token", token, "at", new Date())
-                    this.token = token;
-                })
+            if (!this.secret)
+                this.RefreshToken();
+        }, error => {
+            this.connectionStatus$.next(ConnectionStatus.Offline);
+        });
+    }
+
+    private RefreshToken() {
+        this.tokenRefreshSubscription = this.connectionStatus$
+        .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
+        .flatMap(_ => Observable.timer(intervalRefreshToken, intervalRefreshToken))
+        .flatMap(_ => Observable.ajax({
+            method: "POST",
+            url: `${this.domain}/tokens/refresh`,
+            timeout,
+            headers: {
+                "Authorization": `Bearer ${this.token}`
             }
+        }))
+        .map(ajaxResponse => <string>ajaxResponse.response.token)
+        .retryWhen(error$ => error$
+            .mergeMap(error =>
+                error.status === 403
+                ? Observable.throw(error)
+                : Observable.of(error)
+            )
+            .delay(5 * 1000)
+        ).subscribe(token => {
+            console.log("refreshing token", token, "at", new Date())
+            this.token = token;
         }, error => {
             this.connectionStatus$.next(ConnectionStatus.Offline);
         });
     }
 
     public end() {
+        if (this.conversationSubscription) {
+            this.conversationSubscription.unsubscribe();
+            this.conversationSubscription = undefined;
+        }
         if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
             this.tokenRefreshSubscription = undefined;

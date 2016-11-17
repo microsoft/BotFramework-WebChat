@@ -175,7 +175,6 @@ const sendMessageSucceed = (store: ChatStore, clientActivityId: string) => (id: 
 
 const sendMessageFail = (store: ChatStore, clientActivityId: string) => (error) => {
     console.log("failed to send message", error);
-    // TODO: show an error under the message with "retry" link
     store.dispatch({ type: "Send_Message_Fail", clientActivityId } as HistoryAction);
     updateSelectedActivity(store);
 }

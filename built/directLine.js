@@ -15,7 +15,7 @@ var DirectLine = (function () {
     }
     DirectLine.prototype.start = function () {
         var _this = this;
-        rxjs_1.Observable.ajax({
+        this.conversationSubscription = rxjs_1.Observable.ajax({
             method: "POST",
             url: this.domain + "/conversations",
             timeout: timeout,
@@ -24,56 +24,56 @@ var DirectLine = (function () {
                 "Authorization": "Bearer " + this.token
             }
         })
-            .do(function (ajaxResponse) { return console.log("conversation ajaxResponse", ajaxResponse.response); })
             .map(function (ajaxResponse) { return ajaxResponse.response; })
-            .retryWhen(function (error$) {
-            return error$
-                .mergeMap(function (error) {
-                return error.status >= 400 && error.status <= 599
-                    ? rxjs_1.Observable.throw(error)
-                    : rxjs_1.Observable.of(error);
-            })
-                .delay(5 * 1000);
+            .retryWhen(function (error$) { return error$
+            .mergeMap(function (error) {
+            return error.status >= 400 && error.status <= 599
+                ? rxjs_1.Observable.throw(error)
+                : rxjs_1.Observable.of(error);
         })
+            .delay(5 * 1000); })
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
             _this.token = _this.secret || conversation.token;
             _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Online);
-            if (!_this.secret) {
-                _this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
-                    .flatMap(function (_) {
-                    return _this.connectionStatus$
-                        .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-                        .flatMap(function (_) { return rxjs_1.Observable.ajax({
-                        method: "POST",
-                        url: _this.domain + "/tokens/refresh",
-                        timeout: timeout,
-                        headers: {
-                            "Authorization": "Bearer " + _this.token
-                        }
-                    }); })
-                        .map(function (ajaxResponse) { return ajaxResponse.response.token; })
-                        .retryWhen(function (error$) { return error$
-                        .mergeMap(function (error) {
-                        if (error.status === 403) {
-                            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
-                            return rxjs_1.Observable.throw(error);
-                        }
-                        else {
-                            return rxjs_1.Observable.of(error);
-                        }
-                    })
-                        .delay(5 * 1000); });
-                }).subscribe(function (token) {
-                    console.log("refreshing token", token, "at", new Date());
-                    _this.token = token;
-                });
+            if (!_this.secret)
+                _this.RefreshToken();
+        }, function (error) {
+            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+        });
+    };
+    DirectLine.prototype.RefreshToken = function () {
+        var _this = this;
+        this.tokenRefreshSubscription = this.connectionStatus$
+            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+            .flatMap(function (_) { return rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken); })
+            .flatMap(function (_) { return rxjs_1.Observable.ajax({
+            method: "POST",
+            url: _this.domain + "/tokens/refresh",
+            timeout: timeout,
+            headers: {
+                "Authorization": "Bearer " + _this.token
             }
+        }); })
+            .map(function (ajaxResponse) { return ajaxResponse.response.token; })
+            .retryWhen(function (error$) { return error$
+            .mergeMap(function (error) {
+            return error.status === 403
+                ? rxjs_1.Observable.throw(error)
+                : rxjs_1.Observable.of(error);
+        })
+            .delay(5 * 1000); }).subscribe(function (token) {
+            console.log("refreshing token", token, "at", new Date());
+            _this.token = token;
         }, function (error) {
             _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
         });
     };
     DirectLine.prototype.end = function () {
+        if (this.conversationSubscription) {
+            this.conversationSubscription.unsubscribe();
+            this.conversationSubscription = undefined;
+        }
         if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
             this.tokenRefreshSubscription = undefined;
