@@ -1,5 +1,6 @@
 import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
 import { Conversation, Activity, Message, Media, IBotConnection, ConnectionStatus, User } from './BotConnection';
+import { konsole } from './Chat';
 
 export interface SecretOrToken {
     secret?: string,
@@ -47,7 +48,7 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         })
-//      .do(ajaxResponse => console.log("conversation ajaxResponse", ajaxResponse.response))
+//      .do(ajaxResponse => konsole.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
         .retryWhen(error$ => error$
             .mergeMap(error =>
@@ -90,7 +91,7 @@ export class DirectLine implements IBotConnection {
             )
             .delay(5 * 1000)
         ).subscribe(token => {
-            console.log("refreshing token", token, "at", new Date())
+            konsole.log("refreshing token", token, "at", new Date())
             this.token = token;
         }, error => {
             this.connectionStatus$.next(ConnectionStatus.Offline);
@@ -148,7 +149,7 @@ export class DirectLine implements IBotConnection {
         }))
         .map(ajaxResponse => ajaxResponse.response.id as string)
         .catch(error => {
-            console.log("postMessageWithAttachments error", error);
+            konsole.log("postMessageWithAttachments error", error);
             return error.status >= 400 && error.status < 500
             ? Observable.throw(error)
             : Observable.of("retry")
@@ -181,7 +182,7 @@ export class DirectLine implements IBotConnection {
             this.activitiesGenerator(subscriber)
         )
         .concatAll()
-        .do(activity => console.log("Activity", activity));
+        .do(activity => konsole.log("Activity", activity));
     }
 
     private activitiesGenerator(subscriber: Subscriber<Observable<Activity>>) {
@@ -211,7 +212,7 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         }))
-//      .do(ajaxResponse => console.log("getActivityGroup ajaxResponse", ajaxResponse))
+//      .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
         .retryWhen(error$ => error$
             .mergeMap(error => {

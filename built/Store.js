@@ -1,6 +1,7 @@
 "use strict";
 var redux_1 = require('redux');
 var BotConnection_1 = require('./BotConnection');
+var Chat_1 = require('./Chat');
 var Strings_1 = require('./Strings');
 exports.formatReducer = function (state, action) {
     if (state === void 0) { state = {
@@ -61,7 +62,7 @@ exports.historyReducer = function (state, action) {
         clientActivityCounter: 0,
         selectedActivity: null
     }; }
-    console.log("history action", action);
+    Chat_1.konsole.log("history action", action);
     switch (action.type) {
         case 'Update_Input':
             return Object.assign({}, state, {
