@@ -15,8 +15,8 @@ const intervalRefreshToken = 29*60*1000;
 const timeout = 5*1000;
 
 export class DirectLine implements IBotConnection {
-    connectionStatus$ = new BehaviorSubject(ConnectionStatus.Connecting);
-    activity$: Observable<Activity>;
+    public connectionStatus$: BehaviorSubject<ConnectionStatus>;
+    public activity$: Observable<Activity>;
 
     private conversationId: string;
     private token: string;
@@ -32,9 +32,11 @@ export class DirectLine implements IBotConnection {
     ) {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+        this.connectionStatus$ = new BehaviorSubject(ConnectionStatus.Connecting);
+        this.activity$ = this.getActivity$();
     }
 
-    start() {
+    public start() {
         Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations`,
@@ -93,11 +95,9 @@ export class DirectLine implements IBotConnection {
         }, error => {
             this.connectionStatus$.next(ConnectionStatus.Offline);
         });
-
-        this.activity$ = this.getActivity$();
     }
 
-    end() {
+    public end() {
         if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
             this.tokenRefreshSubscription = undefined;

@@ -162,10 +162,10 @@ export enum ConnectionStatus {
 } 
 
 export interface IBotConnection {
-    start();
-    end();
-    connectionStatus$: BehaviorSubject<ConnectionStatus>;
-    activity$: Observable<Activity>;
-    postMessageWithAttachments: (message: Activity) => Observable<string>,
-    postActivity: (activity: Activity) => Observable<string>,
+    connectionStatus$: BehaviorSubject<ConnectionStatus>,
+    activity$: Observable<Activity>,
+    start(): void,
+    end(): void,
+    postMessageWithAttachments(message: Activity): Observable<string>,
+    postActivity(activity: Activity): Observable<string>
 }
