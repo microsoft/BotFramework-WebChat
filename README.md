@@ -37,7 +37,6 @@ See more detailed instructions below.
 Not a formal one yet, sorry. Here are some notable upcoming features:
 
 * DirectLine 3.0 WebSocket support for retrieving messages 
-* Configurable logging
 * Improved styling
 * Simple UI customization
 
