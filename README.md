@@ -39,12 +39,10 @@ Not a formal one yet, sorry. Here are some notable upcoming features:
 * DirectLine 3.0 WebSocket support for retrieving messages 
 * Improved styling
 * Simple UI customization
+* npm package(s)
+* CDN
 
 Feel free to suggest features by filing an [issue](issues) (please make sure one doesn't already exist).
-
-### *Do you have a CDN?*
-
-Not yet.
 
 ## Getting WebChat up and running
 
