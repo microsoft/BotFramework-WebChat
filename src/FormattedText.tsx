@@ -74,6 +74,7 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
 
 class ReactRenderer implements MarkedRenderer {
 
+    key: number = 0;
     elements: React.ReactElement<any>[] = [];
 
     constructor(private options) {
@@ -118,14 +119,14 @@ class ReactRenderer implements MarkedRenderer {
             while (next > 0) {
                 let subst = text.substr(0, next);
                 subst = He.unescape(subst);
-                elements.push(<span>{subst}</span>);
+                elements.push(<span key={this.key++}>{subst}</span>);
                 text = text.substr(next);
                 next = text.indexOf('{{');
             }
             // Return remainder leak sequence
             if (len == text.length) {
                 text = He.unescape(text);
-                elements.push(<span>{text}</span>);
+                elements.push(<span key={this.key++}>{text}</span>);
                 break;
             }
         }
@@ -135,42 +136,42 @@ class ReactRenderer implements MarkedRenderer {
     /// MarkedRenderer overrides
 
     code(code: string, language: string): string {
-        return this.addElement(<pre><code>{He.unescape(code)}</code></pre>);
+        return this.addElement(<pre key={this.key++}><code>{He.unescape(code)}</code></pre>);
     }
 
     blockquote(quote: string): string {
-        return this.addElement(<blockquote>{this.getElements(quote)}</blockquote>);
+        return this.addElement(<blockquote key={this.key++}>{this.getElements(quote)}</blockquote>);
     }
 
     html(html: string): string {
-        return this.addElement(<span>{html}</span>);
+        return this.addElement(<span key={this.key++}>{html}</span>);
     }
 
     heading(text: string, level: number, raw: string): string {
         const HeadingTag = `h${level}`;
-        return this.addElement(<HeadingTag>{this.getElements(text)}</HeadingTag>);
+        return this.addElement(<HeadingTag key={this.key++}>{this.getElements(text)}</HeadingTag>);
     }
 
     hr(): string {
-        return this.addElement(<hr />)
+        return this.addElement(<hr key={this.key++} />)
     }
 
     list(body: string, ordered: boolean): string {
         const ListTag = ordered ? "ol" : "ul";
-        return this.addElement(<ListTag>{this.getElements(body)}</ListTag>);
+        return this.addElement(<ListTag key={this.key++}>{this.getElements(body)}</ListTag>);
     }
 
     listitem(text: string): string {
-        return this.addElement(<li>{this.getElements(text)}</li>);
+        return this.addElement(<li key={this.key++}>{this.getElements(text)}</li>);
     }
 
     paragraph(text: string): string {
-        return this.addElement(<p>{this.getElements(text)}</p>);
+        return this.addElement(<p key={this.key++}>{this.getElements(text)}</p>);
     }
 
     table(header: string, body: string): string {
         return this.addElement(
-            <table>
+            <table key={this.key++}>
                 <thead>
                     {this.getElements(header)}
                 </thead>
@@ -181,7 +182,7 @@ class ReactRenderer implements MarkedRenderer {
     }
 
     tablerow(content: string): string {
-        return this.addElement(<tr>{this.getElements(content)}</tr>);
+        return this.addElement(<tr key={this.key++}>{this.getElements(content)}</tr>);
     }
 
     tablecell(content: string, flags: {
@@ -193,27 +194,27 @@ class ReactRenderer implements MarkedRenderer {
         var inlineStyle = {
             textAlign: flags.align
         }
-        return this.addElement(<CellTag style={inlineStyle}>{this.getElements(content)}</CellTag>);
+        return this.addElement(<CellTag key={this.key++} style={inlineStyle}>{this.getElements(content)}</CellTag>);
     }
 
     strong(text: string): string {
-        return this.addElement(<strong>{this.getElements(text)}</strong>);
+        return this.addElement(<strong key={this.key++}>{this.getElements(text)}</strong>);
     }
 
     em(text: string): string {
-        return this.addElement(<em>{this.getElements(text)}</em>);
+        return this.addElement(<em key={this.key++}>{this.getElements(text)}</em>);
     }
 
     codespan(code: string): string {
-        return this.addElement(<code>{code}</code>);
+        return this.addElement(<code key={this.key++}>{code}</code>);
     }
 
     br(): string {
-        return this.addElement(<br />);
+        return this.addElement(<br key={this.key++} />);
     }
 
     del(text: string): string {
-        return this.addElement(<del>{this.getElements(text)}</del>);
+        return this.addElement(<del key={this.key++}>{this.getElements(text)}</del>);
     }
 
     link(href: string, title: string, text: string): string {
@@ -227,7 +228,7 @@ class ReactRenderer implements MarkedRenderer {
                 return '';
             }
         }
-        return this.addElement(<a {...{ href: href, title: title }}>{this.getElements(text)}</a>);
+        return this.addElement(<a key={this.key++} {...{ href: href, title: title }}>{this.getElements(text)}</a>);
     }
 
     image(href: string, title: string, text: string): string {
@@ -241,10 +242,10 @@ class ReactRenderer implements MarkedRenderer {
                 return '';
             }
         }
-        return this.addElement(<img {...{ src: href, title: title, alt: text }} />);
+        return this.addElement(<img key={this.key++} {...{ src: href, title: title, alt: text }} />);
     }
 
     text(text: string): string {
-        return this.addElement(<span>{He.unescape(text)}</span>);
+        return this.addElement(<span key={this.key++}>{He.unescape(text)}</span>);
     }
 }

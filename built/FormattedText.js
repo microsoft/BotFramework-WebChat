@@ -77,6 +77,7 @@ exports.FormattedText = FormattedText;
 var ReactRenderer = (function () {
     function ReactRenderer(options) {
         this.options = options;
+        this.key = 0;
         this.elements = [];
     }
     /**
@@ -118,14 +119,14 @@ var ReactRenderer = (function () {
             while (next > 0) {
                 var subst = text.substr(0, next);
                 subst = He.unescape(subst);
-                elements.push(React.createElement("span", null, subst));
+                elements.push(React.createElement("span", {key: this.key++}, subst));
                 text = text.substr(next);
                 next = text.indexOf('{{');
             }
             // Return remainder leak sequence
             if (len == text.length) {
                 text = He.unescape(text);
-                elements.push(React.createElement("span", null, text));
+                elements.push(React.createElement("span", {key: this.key++}, text));
                 break;
             }
         }
@@ -133,40 +134,40 @@ var ReactRenderer = (function () {
     };
     /// MarkedRenderer overrides
     ReactRenderer.prototype.code = function (code, language) {
-        return this.addElement(React.createElement("pre", null, 
+        return this.addElement(React.createElement("pre", {key: this.key++}, 
             React.createElement("code", null, He.unescape(code))
         ));
     };
     ReactRenderer.prototype.blockquote = function (quote) {
-        return this.addElement(React.createElement("blockquote", null, this.getElements(quote)));
+        return this.addElement(React.createElement("blockquote", {key: this.key++}, this.getElements(quote)));
     };
     ReactRenderer.prototype.html = function (html) {
-        return this.addElement(React.createElement("span", null, html));
+        return this.addElement(React.createElement("span", {key: this.key++}, html));
     };
     ReactRenderer.prototype.heading = function (text, level, raw) {
         var HeadingTag = "h" + level;
-        return this.addElement(React.createElement(HeadingTag, null, this.getElements(text)));
+        return this.addElement(React.createElement(HeadingTag, {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.hr = function () {
-        return this.addElement(React.createElement("hr", null));
+        return this.addElement(React.createElement("hr", {key: this.key++}));
     };
     ReactRenderer.prototype.list = function (body, ordered) {
         var ListTag = ordered ? "ol" : "ul";
-        return this.addElement(React.createElement(ListTag, null, this.getElements(body)));
+        return this.addElement(React.createElement(ListTag, {key: this.key++}, this.getElements(body)));
     };
     ReactRenderer.prototype.listitem = function (text) {
-        return this.addElement(React.createElement("li", null, this.getElements(text)));
+        return this.addElement(React.createElement("li", {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.paragraph = function (text) {
-        return this.addElement(React.createElement("p", null, this.getElements(text)));
+        return this.addElement(React.createElement("p", {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.table = function (header, body) {
-        return this.addElement(React.createElement("table", null, 
+        return this.addElement(React.createElement("table", {key: this.key++}, 
             React.createElement("thead", null, this.getElements(header)), 
             React.createElement("tbody", null, this.getElements(body))));
     };
     ReactRenderer.prototype.tablerow = function (content) {
-        return this.addElement(React.createElement("tr", null, this.getElements(content)));
+        return this.addElement(React.createElement("tr", {key: this.key++}, this.getElements(content)));
     };
     ReactRenderer.prototype.tablecell = function (content, flags) {
         var CellTag = flags.header ? "th" : "td";
@@ -174,22 +175,22 @@ var ReactRenderer = (function () {
         var inlineStyle = {
             textAlign: flags.align
         };
-        return this.addElement(React.createElement(CellTag, {style: inlineStyle}, this.getElements(content)));
+        return this.addElement(React.createElement(CellTag, {key: this.key++, style: inlineStyle}, this.getElements(content)));
     };
     ReactRenderer.prototype.strong = function (text) {
-        return this.addElement(React.createElement("strong", null, this.getElements(text)));
+        return this.addElement(React.createElement("strong", {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.em = function (text) {
-        return this.addElement(React.createElement("em", null, this.getElements(text)));
+        return this.addElement(React.createElement("em", {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.codespan = function (code) {
-        return this.addElement(React.createElement("code", null, code));
+        return this.addElement(React.createElement("code", {key: this.key++}, code));
     };
     ReactRenderer.prototype.br = function () {
-        return this.addElement(React.createElement("br", null));
+        return this.addElement(React.createElement("br", {key: this.key++}));
     };
     ReactRenderer.prototype.del = function (text) {
-        return this.addElement(React.createElement("del", null, this.getElements(text)));
+        return this.addElement(React.createElement("del", {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.link = function (href, title, text) {
         if (this.options.sanitize) {
@@ -203,7 +204,7 @@ var ReactRenderer = (function () {
                 return '';
             }
         }
-        return this.addElement(React.createElement("a", __assign({}, { href: href, title: title }), this.getElements(text)));
+        return this.addElement(React.createElement("a", __assign({key: this.key++}, { href: href, title: title }), this.getElements(text)));
     };
     ReactRenderer.prototype.image = function (href, title, text) {
         if (this.options.sanitize) {
@@ -217,10 +218,10 @@ var ReactRenderer = (function () {
                 return '';
             }
         }
-        return this.addElement(React.createElement("img", __assign({}, { src: href, title: title, alt: text })));
+        return this.addElement(React.createElement("img", __assign({key: this.key++}, { src: href, title: title, alt: text })));
     };
     ReactRenderer.prototype.text = function (text) {
-        return this.addElement(React.createElement("span", null, He.unescape(text)));
+        return this.addElement(React.createElement("span", {key: this.key++}, He.unescape(text)));
     };
     return ReactRenderer;
 }());
