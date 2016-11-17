@@ -149,10 +149,12 @@ export const historyReducer: Reducer<HistoryState> = (
 ) => {
     console.log("history action", action);
     switch (action.type) {
+
         case 'Update_Input':
             return Object.assign({}, state, {
                 input: action.input
             });
+
         case 'Receive_Sent_Message': {
             const i = state.activities.findIndex(activity =>
                 activity.channelData && action.activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
@@ -218,7 +220,7 @@ export const historyReducer: Reducer<HistoryState> = (
 
             const activity = state.activities[i];
             if (activity.id && activity.id != "retry") return state;
-            
+
             const newActivity = Object.assign({}, activity, {
                 id: action.type === 'Send_Message_Succeed' ? action.id : null                        
             })
