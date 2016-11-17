@@ -1,6 +1,6 @@
 # Microsoft Bot Framework WebChat
 
-React component implementing a chat interface for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3) API.
+React component implementing a chat interface for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API.
 
 Used by the Bot Framework developer portal, [Emulator](https://github.com/Microsoft/BotFramework-Emulator), and WebChat channel.
 
@@ -59,7 +59,7 @@ Not yet.
 
 1. If you haven't already, [register your bot](https://dev.botframework.com/bots/new).
 2. Add a DirectLine channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
-3. For testing you can use your Direct Line Secret as a security token, but for production you will likely want to exchange that Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3).
+3. For testing you can use your Direct Line Secret as a security token, but for production you will likely want to exchange that Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 
 ### 3. Decide how to run WebChat
 
@@ -78,7 +78,7 @@ This is a quick and dirty method, perfect for testing. It requires embedding you
 In this scenario you will host two web pages, one for WebChat and one for the page which embeds it. They could be hosted by the same web server, or two entirely different web servers. 
 
 1. Serve the botchat in its own standalone web page, as described above
-2. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3).
+2. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 3. In a second web page, embed the botchat via `<iframe src="http://{host}:{port}?[s={Direct Line Secret}|t={Direct Line Token}]" width="320" height="500"/>`
 
 (An example of this approach is [botchattest](https://github.com/billba/botchattest))
@@ -89,7 +89,7 @@ In this scenario you will include a JavaScript file which embeds its own copy of
 
 1. Include [public/botchat.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.js) and you will get an object called BotChat
 2. For TypeScript users there is a type definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
-3. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3).
+3. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 4. Create an instance of BotChat.DirectLine using your Direct Line Secret or Token
 5. Call BotChat.App with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
 
@@ -99,7 +99,7 @@ In this scenario you will incorporate WebChat's multiple JavaScript files into y
 
 1. Incorporate the files in the [/built](https://github.com/Microsoft/BotFramework-WebChat/blob/master/built) folder into your build process
 2. For TypeScript users there is a definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
-3. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3).
+3. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 4. Create an instance of BotChat.DirectLine using your Direct Line Secret or Token
 4. Call the Chat React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
 
