@@ -101,16 +101,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: MessageEvent) => {
 	    if (props.allowMessagesFrom.indexOf(event.origin) === -1) {
-	        console.log("Rejecting backchannel message from unknown source", event.source);
+	        konsole.log("Rejecting backchannel message from unknown source", event.source);
 	        return;
 	    }
 	
 	    if (!event.data) {
-	        console.log("Empty backchannel message from source", event.source);
+	        konsole.log("Empty backchannel message from source", event.source);
 	        return;
 	    }
 	
-	    console.log("Received backchannel message", event.data, "from", event.source);
+	    konsole.log("Received backchannel message", event.data, "from", event.source);
 	
 	    props.botConnection.postActivity({
 	        type: "message",
@@ -119,19 +119,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        channelData: { backchannel: event.data }
 	    })
 	    .subscribe(success => {
-	        console.log("backchannel message sent to bot");
+	        konsole.log("backchannel message sent to bot");
 	    }, error => {
-	        console.log("failed to send backchannel message to bot");
+	        konsole.log("failed to send backchannel message to bot");
 	    });
 	}
 	// end experimental backchannel support
 	*/
 	exports.App = function (props, container) {
-	    console.log("BotChat.App props", props);
+	    Chat_1.konsole.log("BotChat.App props", props);
 	    /*
 	        // experimental backchannel support
 	        if (props.allowMessagesFrom) {
-	            console.log("adding event listener for messages from hosting web page");
+	            konsole.log("adding event listener for messages from hosting web page");
 	            window.addEventListener("message", receiveBackchannelMessageFromHostingPage(props), false);
 	    
 	            props.botConnection.activity$ = props.botConnection.activity$
@@ -21545,7 +21545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _super.call(this, props);
 	        this.store = Store_1.createStore();
 	        this.typingTimers = {};
-	        console.log("BotChat.Chat props", props);
+	        exports.konsole.log("BotChat.Chat props", props);
 	        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
@@ -21554,7 +21554,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
 	            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
 	        });
-	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
+	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
 	        );
 	        if (props.selectedActivity) {
 	            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
@@ -21621,7 +21621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    Chat.prototype.render = function () {
 	        var state = this.store.getState();
-	        console.log("BotChat.Chat state", state);
+	        exports.konsole.log("BotChat.Chat state", state);
 	        var header;
 	        if (state.format.options.showHeader)
 	            header =
@@ -21658,12 +21658,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    exports.trySendMessage(store, clientActivityId);
 	};
 	var sendMessageSucceed = function (store, clientActivityId) { return function (id) {
-	    console.log("success sending message", id);
+	    exports.konsole.log("success sending message", id);
 	    store.dispatch({ type: "Send_Message_Succeed", clientActivityId: clientActivityId, id: id });
 	    exports.updateSelectedActivity(store);
 	}; };
 	var sendMessageFail = function (store, clientActivityId) { return function (error) {
-	    console.log("failed to send message", error);
+	    exports.konsole.log("failed to send message", error);
 	    store.dispatch({ type: "Send_Message_Fail", clientActivityId: clientActivityId });
 	    exports.updateSelectedActivity(store);
 	}; };
@@ -21675,7 +21675,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var state = store.getState();
 	    var activity = state.history.activities.find(function (activity) { return activity.channelData && activity.channelData.clientActivityId === clientActivityId; });
 	    if (!activity) {
-	        console.log("trySendMessage: activity not found");
+	        exports.konsole.log("trySendMessage: activity not found");
 	        return;
 	    }
 	    (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
@@ -21690,9 +21690,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        from: state.connection.user
 	    })
 	        .subscribe(function (id) {
-	        console.log("success sending postBack", id);
+	        exports.konsole.log("success sending postBack", id);
 	    }, function (error) {
-	        console.log("failed to send postBack", error);
+	        exports.konsole.log("failed to send postBack", error);
 	    });
 	};
 	var attachmentsFromFiles = function (files) {
@@ -21719,6 +21719,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    });
 	    exports.trySendMessage(store, clientActivityId);
+	};
+	exports.konsole = {
+	    log: function (message) {
+	        var optionalParams = [];
+	        for (var _i = 1; _i < arguments.length; _i++) {
+	            optionalParams[_i - 1] = arguments[_i];
+	        }
+	        if (window["botchatDebug"] === true && message)
+	            console.log.apply(console, [message].concat(optionalParams));
+	    }
 	};
 
 
@@ -21879,7 +21889,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                window.open(value);
 	                break;
 	            default:
-	                console.log("unknown button type");
+	                Chat_1.konsole.log("unknown button type");
 	        }
 	    };
 	    var buttons = function (buttons) { return buttons &&
@@ -21893,7 +21903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return React.createElement("audio", {src: audioUrl, autoPlay: autoPlay, controls: true, loop: loop});
 	    };
 	    var videoWithOnLoad = function (videoUrl, thumbnailUrl, autoPlay, loop) {
-	        return React.createElement("video", {src: videoUrl, poster: thumbnailUrl, autoPlay: autoPlay, controls: true, loop: loop, onLoadedMetadata: function () { console.log("local onVideoLoad"); props.onImageLoad(); }});
+	        return React.createElement("video", {src: videoUrl, poster: thumbnailUrl, autoPlay: autoPlay, controls: true, loop: loop, onLoadedMetadata: function () { Chat_1.konsole.log("local onVideoLoad"); props.onImageLoad(); }});
 	    };
 	    var attachedImage = function (images) {
 	        return images && images.length > 0 && imageWithOnLoad(images[0].url);
@@ -24107,6 +24117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	var redux_1 = __webpack_require__(185);
 	var BotConnection_1 = __webpack_require__(205);
+	var Chat_1 = __webpack_require__(174);
 	var Strings_1 = __webpack_require__(206);
 	exports.formatReducer = function (state, action) {
 	    if (state === void 0) { state = {
@@ -24167,7 +24178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        clientActivityCounter: 0,
 	        selectedActivity: null
 	    }; }
-	    console.log("history action", action);
+	    Chat_1.konsole.log("history action", action);
 	    switch (action.type) {
 	        case 'Update_Input':
 	            return Object.assign({}, state, {
@@ -32534,6 +32545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	var rxjs_1 = __webpack_require__(499);
 	var BotConnection_1 = __webpack_require__(205);
+	var Chat_1 = __webpack_require__(174);
 	var intervalRefreshToken = 29 * 60 * 1000;
 	var timeout = 5 * 1000;
 	var DirectLine = (function () {
@@ -32596,7 +32608,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                : rxjs_1.Observable.of(error);
 	        })
 	            .delay(5 * 1000); }).subscribe(function (token) {
-	            console.log("refreshing token", token, "at", new Date());
+	            Chat_1.konsole.log("refreshing token", token, "at", new Date());
 	            _this.token = token;
 	        }, function (error) {
 	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
@@ -32649,7 +32661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }); })
 	            .map(function (ajaxResponse) { return ajaxResponse.response.id; })
 	            .catch(function (error) {
-	            console.log("postMessageWithAttachments error", error);
+	            Chat_1.konsole.log("postMessageWithAttachments error", error);
 	            return error.status >= 400 && error.status < 500
 	                ? rxjs_1.Observable.throw(error)
 	                : rxjs_1.Observable.of("retry");
@@ -32682,7 +32694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return _this.activitiesGenerator(subscriber);
 	        })
 	            .concatAll()
-	            .do(function (activity) { return console.log("Activity", activity); });
+	            .do(function (activity) { return Chat_1.konsole.log("Activity", activity); });
 	    };
 	    DirectLine.prototype.activitiesGenerator = function (subscriber) {
 	        var _this = this;

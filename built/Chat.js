@@ -17,7 +17,7 @@ var Chat = (function (_super) {
         _super.call(this, props);
         this.store = Store_1.createStore();
         this.typingTimers = {};
-        console.log("BotChat.Chat props", props);
+        exports.konsole.log("BotChat.Chat props", props);
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
@@ -26,7 +26,7 @@ var Chat = (function (_super) {
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
             return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
         });
-        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return console.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
+        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); } // THIS IS WHERE WE WILL CHANGE THE APP STATE
         );
         if (props.selectedActivity) {
             this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
@@ -93,7 +93,7 @@ var Chat = (function (_super) {
     };
     Chat.prototype.render = function () {
         var state = this.store.getState();
-        console.log("BotChat.Chat state", state);
+        exports.konsole.log("BotChat.Chat state", state);
         var header;
         if (state.format.options.showHeader)
             header =
@@ -130,12 +130,12 @@ exports.sendMessage = function (store, text) {
     exports.trySendMessage(store, clientActivityId);
 };
 var sendMessageSucceed = function (store, clientActivityId) { return function (id) {
-    console.log("success sending message", id);
+    exports.konsole.log("success sending message", id);
     store.dispatch({ type: "Send_Message_Succeed", clientActivityId: clientActivityId, id: id });
     exports.updateSelectedActivity(store);
 }; };
 var sendMessageFail = function (store, clientActivityId) { return function (error) {
-    console.log("failed to send message", error);
+    exports.konsole.log("failed to send message", error);
     store.dispatch({ type: "Send_Message_Fail", clientActivityId: clientActivityId });
     exports.updateSelectedActivity(store);
 }; };
@@ -147,7 +147,7 @@ exports.trySendMessage = function (store, clientActivityId, updateStatus) {
     var state = store.getState();
     var activity = state.history.activities.find(function (activity) { return activity.channelData && activity.channelData.clientActivityId === clientActivityId; });
     if (!activity) {
-        console.log("trySendMessage: activity not found");
+        exports.konsole.log("trySendMessage: activity not found");
         return;
     }
     (activity.type === 'message' && activity.attachments && activity.attachments.length > 0
@@ -162,9 +162,9 @@ exports.sendPostBack = function (store, text) {
         from: state.connection.user
     })
         .subscribe(function (id) {
-        console.log("success sending postBack", id);
+        exports.konsole.log("success sending postBack", id);
     }, function (error) {
-        console.log("failed to send postBack", error);
+        exports.konsole.log("failed to send postBack", error);
     });
 };
 var attachmentsFromFiles = function (files) {
@@ -191,5 +191,15 @@ exports.sendFiles = function (store, files) {
         }
     });
     exports.trySendMessage(store, clientActivityId);
+};
+exports.konsole = {
+    log: function (message) {
+        var optionalParams = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            optionalParams[_i - 1] = arguments[_i];
+        }
+        if (window["botchatDebug"] === true && message)
+            console.log.apply(console, [message].concat(optionalParams));
+    }
 };
 //# sourceMappingURL=Chat.js.map

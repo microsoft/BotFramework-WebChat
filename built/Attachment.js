@@ -23,7 +23,7 @@ exports.AttachmentView = function (props) {
                 window.open(value);
                 break;
             default:
-                console.log("unknown button type");
+                Chat_1.konsole.log("unknown button type");
         }
     };
     var buttons = function (buttons) { return buttons &&
@@ -37,7 +37,7 @@ exports.AttachmentView = function (props) {
         return React.createElement("audio", {src: audioUrl, autoPlay: autoPlay, controls: true, loop: loop});
     };
     var videoWithOnLoad = function (videoUrl, thumbnailUrl, autoPlay, loop) {
-        return React.createElement("video", {src: videoUrl, poster: thumbnailUrl, autoPlay: autoPlay, controls: true, loop: loop, onLoadedMetadata: function () { console.log("local onVideoLoad"); props.onImageLoad(); }});
+        return React.createElement("video", {src: videoUrl, poster: thumbnailUrl, autoPlay: autoPlay, controls: true, loop: loop, onLoadedMetadata: function () { Chat_1.konsole.log("local onVideoLoad"); props.onImageLoad(); }});
     };
     var attachedImage = function (images) {
         return images && images.length > 0 && imageWithOnLoad(images[0].url);

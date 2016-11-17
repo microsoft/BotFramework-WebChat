@@ -1,6 +1,7 @@
 "use strict";
 var rxjs_1 = require('@reactivex/rxjs');
 var BotConnection_1 = require('./BotConnection');
+var Chat_1 = require('./Chat');
 var intervalRefreshToken = 29 * 60 * 1000;
 var timeout = 5 * 1000;
 var DirectLine = (function () {
@@ -63,7 +64,7 @@ var DirectLine = (function () {
                 : rxjs_1.Observable.of(error);
         })
             .delay(5 * 1000); }).subscribe(function (token) {
-            console.log("refreshing token", token, "at", new Date());
+            Chat_1.konsole.log("refreshing token", token, "at", new Date());
             _this.token = token;
         }, function (error) {
             _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
@@ -116,7 +117,7 @@ var DirectLine = (function () {
         }); })
             .map(function (ajaxResponse) { return ajaxResponse.response.id; })
             .catch(function (error) {
-            console.log("postMessageWithAttachments error", error);
+            Chat_1.konsole.log("postMessageWithAttachments error", error);
             return error.status >= 400 && error.status < 500
                 ? rxjs_1.Observable.throw(error)
                 : rxjs_1.Observable.of("retry");
@@ -149,7 +150,7 @@ var DirectLine = (function () {
             return _this.activitiesGenerator(subscriber);
         })
             .concatAll()
-            .do(function (activity) { return console.log("Activity", activity); });
+            .do(function (activity) { return Chat_1.konsole.log("Activity", activity); });
     };
     DirectLine.prototype.activitiesGenerator = function (subscriber) {
         var _this = this;

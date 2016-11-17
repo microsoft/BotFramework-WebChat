@@ -1,6 +1,6 @@
 import { Store, Reducer, createStore as reduxCreateStore, combineReducers } from 'redux';
 import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
-import { FormatOptions, ActivityOrID } from './Chat';
+import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, Strings } from './Strings';
 import { BehaviorSubject } from '@reactivex/rxjs';
 
@@ -147,7 +147,7 @@ export const historyReducer: Reducer<HistoryState> = (
     },
     action: HistoryAction
 ) => {
-    console.log("history action", action);
+    konsole.log("history action", action);
     switch (action.type) {
 
         case 'Update_Input':

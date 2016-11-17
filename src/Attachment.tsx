@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
-import { sendMessage, sendPostBack } from './Chat';
+import { sendMessage, sendPostBack, konsole } from './Chat';
 
 const nonEmpty = (value: string, template: JSX.Element): JSX.Element => {
     if (typeof value === 'string' && value.length > 0) return template;
@@ -33,7 +33,7 @@ export const AttachmentView = (props: {
                 break;
 
             default:
-                console.log("unknown button type");
+                konsole.log("unknown button type");
             }
     }
 
@@ -49,7 +49,7 @@ export const AttachmentView = (props: {
         <audio src={ audioUrl } autoPlay={ autoPlay } controls loop={ loop } />;
 
     const videoWithOnLoad = (videoUrl: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
-        <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ () => {console.log("local onVideoLoad");props.onImageLoad();} } />;
+        <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ () => {konsole.log("local onVideoLoad");props.onImageLoad();} } />;
 
     const attachedImage = (images?: { url: string }[]) =>
         images && images.length > 0 && imageWithOnLoad(images[0].url);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Chat, ChatProps } from './Chat';
+import { Chat, ChatProps, konsole } from './Chat';
 import { Activity, Message, User, IBotConnection } from './BotConnection';
 import { DirectLine } from './directLine';
 import 'core-js/shim';
@@ -19,16 +19,16 @@ function isBackchannel(activity: Activity): activity is Message {
 
 const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: MessageEvent) => {
     if (props.allowMessagesFrom.indexOf(event.origin) === -1) {
-        console.log("Rejecting backchannel message from unknown source", event.source);
+        konsole.log("Rejecting backchannel message from unknown source", event.source);
         return;
     }
 
     if (!event.data) {
-        console.log("Empty backchannel message from source", event.source);
+        konsole.log("Empty backchannel message from source", event.source);
         return;
     }
 
-    console.log("Received backchannel message", event.data, "from", event.source);
+    konsole.log("Received backchannel message", event.data, "from", event.source);
 
     props.botConnection.postActivity({
         type: "message",
@@ -37,20 +37,20 @@ const receiveBackchannelMessageFromHostingPage = (props: AppProps) => (event: Me
         channelData: { backchannel: event.data }
     })
     .subscribe(success => {
-        console.log("backchannel message sent to bot");
+        konsole.log("backchannel message sent to bot");
     }, error => {
-        console.log("failed to send backchannel message to bot");
+        konsole.log("failed to send backchannel message to bot");
     });
 }
 // end experimental backchannel support 
 */
 
 export const App = (props: AppProps, container: HTMLElement) => {
-    console.log("BotChat.App props", props);
+    konsole.log("BotChat.App props", props);
 /*
     // experimental backchannel support
     if (props.allowMessagesFrom) {
-        console.log("adding event listener for messages from hosting web page");
+        konsole.log("adding event listener for messages from hosting web page");
         window.addEventListener("message", receiveBackchannelMessageFromHostingPage(props), false);
 
         props.botConnection.activity$ = props.botConnection.activity$

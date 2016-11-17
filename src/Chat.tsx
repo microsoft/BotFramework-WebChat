@@ -40,7 +40,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     constructor(props: ChatProps) {
         super(props);
 
-        console.log("BotChat.Chat props", props);
+        konsole.log("BotChat.Chat props", props);
 
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
 
@@ -56,7 +56,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.activitySubscription = props.botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
-            error => console.log("activity$ error", error) // THIS IS WHERE WE WILL CHANGE THE APP STATE
+            error => konsole.log("activity$ error", error) // THIS IS WHERE WE WILL CHANGE THE APP STATE
         );
 
         if (props.selectedActivity) {
@@ -127,7 +127,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     render() {
         const state = this.store.getState();
-        console.log("BotChat.Chat state", state);
+        konsole.log("BotChat.Chat state", state);
         let header;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
@@ -168,13 +168,13 @@ export const sendMessage = (store: ChatStore, text: string) => {
 }
 
 const sendMessageSucceed = (store: ChatStore, clientActivityId: string) => (id: string) => {
-    console.log("success sending message", id);
+    konsole.log("success sending message", id);
     store.dispatch({ type: "Send_Message_Succeed", clientActivityId, id } as HistoryAction);
     updateSelectedActivity(store);
 }
 
 const sendMessageFail = (store: ChatStore, clientActivityId: string) => (error) => {
-    console.log("failed to send message", error);
+    konsole.log("failed to send message", error);
     store.dispatch({ type: "Send_Message_Fail", clientActivityId } as HistoryAction);
     updateSelectedActivity(store);
 }
@@ -186,7 +186,7 @@ export const trySendMessage = (store: ChatStore, clientActivityId: string, updat
     let state = store.getState();
     const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
     if (!activity) {
-        console.log("trySendMessage: activity not found");
+        konsole.log("trySendMessage: activity not found");
         return;
     }
     
@@ -207,9 +207,9 @@ export const sendPostBack = (store: ChatStore, text: string) => {
         from: state.connection.user
     })
     .subscribe(id => {
-        console.log("success sending postBack", id)
+        konsole.log("success sending postBack", id)
     }, error => {
-        console.log("failed to send postBack", error);
+        konsole.log("failed to send postBack", error);
     });
 }
 
@@ -238,4 +238,11 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
         }
     } as HistoryAction);
     trySendMessage(store, clientActivityId);
+}
+
+export const konsole = {
+    log: (message?: any, ... optionalParams: any[]) => {
+        if (window["botchatDebug"] === true && message)
+            console.log(message, ... optionalParams);
+    }
 }
