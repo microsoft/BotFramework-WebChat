@@ -21837,8 +21837,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        else
 	            return (React.createElement("div", {className: "wc-list"}, 
 	                " ", 
-	                props.attachments.map(function (attachment) {
-	                    return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
+	                props.attachments.map(function (attachment, index) {
+	                    return React.createElement(Attachment_1.AttachmentView, {key: index, store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
 	                }), 
 	                " "));
 	    }
@@ -21890,7 +21890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    var buttons = function (buttons) { return buttons &&
-	        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button) { return React.createElement("li", null, 
+	        React.createElement("ul", {className: "wc-card-buttons"}, buttons.map(function (button, index) { return React.createElement("li", {key: index}, 
 	            React.createElement("button", {onClick: function () { return onClickButton(button.type, button.value); }}, button.title)
 	        ); })); };
 	    var imageWithOnLoad = function (url, thumbnailUrl, autoPlay, loop) {
@@ -22138,8 +22138,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ), 
 	            React.createElement("div", {className: "wc-carousel-scroll-outer"}, 
 	                React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
-	                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment) {
-	                        return React.createElement("li", null, 
+	                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment, index) {
+	                        return React.createElement("li", {key: index}, 
 	                            React.createElement(Attachment_1.AttachmentView, {store: _this.props.store, attachment: attachment, onImageLoad: function () { return _this.resize(); }})
 	                        );
 	                    }))

@@ -10,8 +10,8 @@ var Attachments = function (props) {
         else
             return (React.createElement("div", {className: "wc-list"}, 
                 " ", 
-                props.attachments.map(function (attachment) {
-                    return React.createElement(Attachment_1.AttachmentView, {store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
+                props.attachments.map(function (attachment, index) {
+                    return React.createElement(Attachment_1.AttachmentView, {key: index, store: props.store, attachment: attachment, onImageLoad: props.onImageLoad});
                 }), 
                 " "));
     }
