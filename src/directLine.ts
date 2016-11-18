@@ -20,11 +20,12 @@ export class DirectLine implements IBotConnection {
     public activity$: Observable<Activity>;
 
     private conversationId: string;
-    private token: string;
     private secret: string;
+    private token: string;
+    private watermark = '';
+
     private conversationSubscription: Subscription;
     private tokenRefreshSubscription: Subscription;
-    private watermark = '';
 
     constructor(
         secretOrToken: SecretOrToken,
@@ -36,8 +37,20 @@ export class DirectLine implements IBotConnection {
         this.activity$ = this.getActivity$();
     }
 
-    public start() {
-        this.conversationSubscription = Observable.ajax({
+    start() {
+        this.conversationSubscription = this.startConversation()
+        .subscribe(conversation => {
+            this.conversationId = conversation.conversationId;
+            this.token = this.secret || conversation.token;
+            this.connectionStatus$.next(ConnectionStatus.Online);
+  
+            if (!this.secret)
+                this.refreshTokenLoop();
+        });
+    }
+
+    private startConversation() {
+        return Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations`,
             timeout,
@@ -49,29 +62,31 @@ export class DirectLine implements IBotConnection {
 //      .do(ajaxResponse => konsole.log("conversation ajaxResponse", ajaxResponse.response))
         .map(ajaxResponse => <Conversation>ajaxResponse.response)
         .retryWhen(error$ => error$
-            .mergeMap(error =>
-                error.status >= 400 && error.status <= 599
-                ? Observable.throw(error)
-                : Observable.of(error)
-            )
+            .mergeMap(error => {
+                if (error.status >= 400 && error.status <= 599) {
+                    this.connectionStatus$.next(ConnectionStatus.Offline);
+                    return Observable.throw(error);
+                } else {
+                    return Observable.of(error);
+                }
+            })
             .delay(5 * 1000)
         )
-        .subscribe(conversation => {
-            this.conversationId = conversation.conversationId;
-            this.token = this.secret || conversation.token;
-            this.connectionStatus$.next(ConnectionStatus.Online);
-  
-            if (!this.secret)
-                this.RefreshToken();
-        }, error => {
-            this.connectionStatus$.next(ConnectionStatus.Offline);
+    }
+
+    private refreshTokenLoop() {
+        this.tokenRefreshSubscription = Observable.timer(intervalRefreshToken, intervalRefreshToken)
+        .flatMap(_ => this.refreshToken())
+        .subscribe(token => {
+            konsole.log("refreshing token", token, "at", new Date());
+            this.token = token;
         });
     }
 
-    private RefreshToken() {
-        this.tokenRefreshSubscription = this.connectionStatus$
+    private refreshToken() {
+        return this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-        .flatMap(_ => Observable.ajax({
+        .flatMap<AjaxResponse>(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/tokens/refresh`,
             timeout,
@@ -79,26 +94,21 @@ export class DirectLine implements IBotConnection {
                 "Authorization": `Bearer ${this.token}`
             }
         }))
-        .take(1)
         .map(ajaxResponse => <string>ajaxResponse.response.token)
         .retryWhen(error$ => error$
-            .mergeMap(error =>
-                error.status === 403
-                ? Observable.throw(error)
-                : Observable.of(error)
-            )
+            .mergeMap(error => {
+                if (error.status === 403) {
+                    this.connectionStatus$.next(ConnectionStatus.Offline);
+                    return Observable.throw(error);
+                } else {
+                    return Observable.of(error);
+                }
+            })
             .delay(5 * 1000)
         )
-        .repeatWhen(completed => completed.delay(intervalRefreshToken))
-        .subscribe(token => {
-            konsole.log("refreshing token", token, "at", new Date())
-            this.token = token;
-        }, error => {
-            this.connectionStatus$.next(ConnectionStatus.Offline);
-        });
     }
 
-    public end() {
+    end() {
         if (this.conversationSubscription) {
             this.conversationSubscription.unsubscribe();
             this.conversationSubscription = undefined;
@@ -146,7 +156,7 @@ export class DirectLine implements IBotConnection {
             ? Observable.throw(error)
             : Observable.of("retry")
         });
-}
+    }
 
     postActivity(activity: Activity) {
         return this.connectionStatus$

@@ -32558,7 +32558,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    DirectLine.prototype.start = function () {
 	        var _this = this;
-	        this.conversationSubscription = rxjs_1.Observable.ajax({
+	        this.conversationSubscription = this.startConversation()
+	            .subscribe(function (conversation) {
+	            _this.conversationId = conversation.conversationId;
+	            _this.token = _this.secret || conversation.token;
+	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Online);
+	            if (!_this.secret)
+	                _this.refreshTokenLoop();
+	        });
+	    };
+	    DirectLine.prototype.startConversation = function () {
+	        var _this = this;
+	        return rxjs_1.Observable.ajax({
 	            method: "POST",
 	            url: this.domain + "/conversations",
 	            timeout: timeout,
@@ -32570,24 +32581,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	            .map(function (ajaxResponse) { return ajaxResponse.response; })
 	            .retryWhen(function (error$) { return error$
 	            .mergeMap(function (error) {
-	            return error.status >= 400 && error.status <= 599
-	                ? rxjs_1.Observable.throw(error)
-	                : rxjs_1.Observable.of(error);
+	            if (error.status >= 400 && error.status <= 599) {
+	                _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+	                return rxjs_1.Observable.throw(error);
+	            }
+	            else {
+	                return rxjs_1.Observable.of(error);
+	            }
 	        })
-	            .delay(5 * 1000); })
-	            .subscribe(function (conversation) {
-	            _this.conversationId = conversation.conversationId;
-	            _this.token = _this.secret || conversation.token;
-	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Online);
-	            if (!_this.secret)
-	                _this.RefreshToken();
-	        }, function (error) {
-	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+	            .delay(5 * 1000); });
+	    };
+	    DirectLine.prototype.refreshTokenLoop = function () {
+	        var _this = this;
+	        this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
+	            .flatMap(function (_) { return _this.refreshToken(); })
+	            .subscribe(function (token) {
+	            Chat_1.konsole.log("refreshing token", token, "at", new Date());
+	            _this.token = token;
 	        });
 	    };
-	    DirectLine.prototype.RefreshToken = function () {
+	    DirectLine.prototype.refreshToken = function () {
 	        var _this = this;
-	        this.tokenRefreshSubscription = this.connectionStatus$
+	        return this.connectionStatus$
 	            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
 	            .flatMap(function (_) { return rxjs_1.Observable.ajax({
 	            method: "POST",
@@ -32597,22 +32612,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	                "Authorization": "Bearer " + _this.token
 	            }
 	        }); })
-	            .take(1)
 	            .map(function (ajaxResponse) { return ajaxResponse.response.token; })
 	            .retryWhen(function (error$) { return error$
 	            .mergeMap(function (error) {
-	            return error.status === 403
-	                ? rxjs_1.Observable.throw(error)
-	                : rxjs_1.Observable.of(error);
+	            if (error.status === 403) {
+	                _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+	                return rxjs_1.Observable.throw(error);
+	            }
+	            else {
+	                return rxjs_1.Observable.of(error);
+	            }
 	        })
-	            .delay(5 * 1000); })
-	            .repeatWhen(function (completed) { return completed.delay(intervalRefreshToken); })
-	            .subscribe(function (token) {
-	            Chat_1.konsole.log("refreshing token", token, "at", new Date());
-	            _this.token = token;
-	        }, function (error) {
-	            _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
-	        });
+	            .delay(5 * 1000); });
 	    };
 	    DirectLine.prototype.end = function () {
 	        if (this.conversationSubscription) {
