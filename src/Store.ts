@@ -243,13 +243,12 @@ export const historyReducer: Reducer<HistoryState> = (
                 ]
             });
 
-        case 'Clear_Typing': {
-            const activities = state.activities.filter(activity => activity.id !== action.id)
+        case 'Clear_Typing':
             return Object.assign({}, state, { 
-                activities,
-                selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
+                activities: state.activities.filter(activity => activity.id !== action.id),
+                selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
             });
-        }
+
         case 'Select_Activity':
             if (action.selectedActivity === state.selectedActivity) return state;
             return Object.assign({}, state, {

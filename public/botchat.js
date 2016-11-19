@@ -21577,7 +21577,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
 	        this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
-	            return _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+	            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+	            exports.updateSelectedActivity(_this.store);
 	        })
 	            .delay(3000)
 	            .subscribe(function (activity) {
@@ -24271,13 +24272,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    action.activity
 	                ])
 	            });
-	        case 'Clear_Typing': {
-	            var activities = state.activities.filter(function (activity) { return activity.id !== action.id; });
+	        case 'Clear_Typing':
 	            return Object.assign({}, state, {
-	                activities: activities,
-	                selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
+	                activities: state.activities.filter(function (activity) { return activity.id !== action.id; }),
+	                selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
 	            });
-	        }
 	        case 'Select_Activity':
 	            if (action.selectedActivity === state.selectedActivity)
 	                return state;

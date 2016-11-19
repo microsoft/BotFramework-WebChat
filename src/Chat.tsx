@@ -63,9 +63,10 @@ export class Chat extends React.Component<ChatProps, {}> {
             error => konsole.log("activity$ error", error)
         );
 
-        this.typingActivitySubscription = this.typingActivity$.do(activity =>
+        this.typingActivitySubscription = this.typingActivity$.do(activity => {
             this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction)
-        )
+            updateSelectedActivity(this.store);
+        })
         .delay(3000)
         .subscribe(activity => {
             this.store.dispatch({ type: 'Clear_Typing', id: activity.id } as HistoryAction);

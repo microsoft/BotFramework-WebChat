@@ -29,7 +29,8 @@ var Chat = (function (_super) {
         });
         this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
         this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
-            return _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+            exports.updateSelectedActivity(_this.store);
         })
             .delay(3000)
             .subscribe(function (activity) {
