@@ -34,8 +34,9 @@ See more detailed instructions below.
 
 ### *Do you have a roadmap?*
 
-Not a formal one yet, sorry. Here are some notable upcoming features:
+Not the most formal one you'll ever see, but:
 
+* Unit tests
 * DirectLine 3.0 WebSocket support for retrieving messages 
 * Improved styling
 * Simple UI customization
