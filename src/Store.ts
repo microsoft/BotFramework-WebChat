@@ -134,7 +134,7 @@ export type HistoryAction = {
     selectedActivity: Activity
 } | {
     type: 'Clear_Typing',
-    from: User
+    id: string
 }
 
 export const historyReducer: Reducer<HistoryState> = (
@@ -244,7 +244,7 @@ export const historyReducer: Reducer<HistoryState> = (
             });
 
         case 'Clear_Typing': {
-            const activities = state.activities.filter(activity => activity.from.id !== action.from.id || activity.type !== "typing")
+            const activities = state.activities.filter(activity => activity.id !== action.id)
             return Object.assign({}, state, { 
                 activities,
                 selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null

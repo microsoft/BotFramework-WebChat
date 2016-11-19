@@ -141,7 +141,7 @@ exports.historyReducer = function (state, action) {
                 ])
             });
         case 'Clear_Typing': {
-            var activities = state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; });
+            var activities = state.activities.filter(function (activity) { return activity.id !== action.id; });
             return Object.assign({}, state, {
                 activities: activities,
                 selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
