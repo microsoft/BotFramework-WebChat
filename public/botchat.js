@@ -21849,7 +21849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    switch (props.activity.type) {
 	        case 'message':
 	            return (React.createElement("div", null, 
-	                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}), 
+	                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat, onImageLoad: props.onImageLoad}), 
 	                React.createElement(Attachments, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
 	        case 'typing':
 	            return React.createElement("div", null, "TYPING");
@@ -22228,7 +22228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            silent: false,
 	            smartypants: true
 	        }, this.props.markdownOptions);
-	        var renderer = options.renderer = new ReactRenderer(options);
+	        var renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
 	        var text = Marked(src, options);
 	        var elements = renderer.getElements(text);
 	        /*// debug
@@ -22242,8 +22242,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(React.Component));
 	exports.FormattedText = FormattedText;
 	var ReactRenderer = (function () {
-	    function ReactRenderer(options) {
+	    function ReactRenderer(options, onImageLoad) {
 	        this.options = options;
+	        this.onImageLoad = onImageLoad;
 	        this.key = 0;
 	        this.elements = [];
 	    }
@@ -22374,6 +22375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.addElement(React.createElement("a", __assign({key: this.key++}, { href: href, title: title }), this.getElements(text)));
 	    };
 	    ReactRenderer.prototype.image = function (href, title, text) {
+	        var _this = this;
 	        if (this.options.sanitize) {
 	            try {
 	                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
@@ -22385,7 +22387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return '';
 	            }
 	        }
-	        return this.addElement(React.createElement("img", __assign({key: this.key++}, { src: href, title: title, alt: text })));
+	        return this.addElement(React.createElement("img", __assign({key: this.key++, onLoad: function () { return _this.onImageLoad(); }}, { src: href, title: title, alt: text })));
 	    };
 	    ReactRenderer.prototype.text = function (text) {
 	        return this.addElement(React.createElement("span", {key: this.key++}, He.unescape(text)));
