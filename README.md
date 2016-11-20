@@ -1,6 +1,6 @@
 # Microsoft Bot Framework WebChat
 
-React component implementing a chat interface for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API.
+Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API.
 
 Used by the Bot Framework developer portal, [Emulator](https://github.com/Microsoft/BotFramework-Emulator), and WebChat channel.
 
