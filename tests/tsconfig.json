@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2015",
+        "outDir": "../test",
+        "jsx": "react",
+        "lib": [
+            "dom",
+            "es2017"
+        ],
+        "noImplicitAny": false
+    },
+    "include": [
+        "./*.ts"
+    ]
+}

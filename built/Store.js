@@ -3,7 +3,7 @@ var redux_1 = require('redux');
 var BotConnection_1 = require('./BotConnection');
 var Chat_1 = require('./Chat');
 var Strings_1 = require('./Strings');
-exports.formatReducer = function (state, action) {
+exports.format = function (state, action) {
     if (state === void 0) { state = {
         options: {
             showHeader: true
@@ -19,7 +19,7 @@ exports.formatReducer = function (state, action) {
             return state;
     }
 };
-exports.connectionReducer = function (state, action) {
+exports.connection = function (state, action) {
     if (state === void 0) { state = {
         connectionStatus: BotConnection_1.ConnectionStatus.Connecting,
         botConnection: undefined,
@@ -54,7 +54,7 @@ exports.connectionReducer = function (state, action) {
             return state;
     }
 };
-exports.historyReducer = function (state, action) {
+exports.history = function (state, action) {
     if (state === void 0) { state = {
         activities: [],
         input: '',
@@ -157,9 +157,9 @@ exports.historyReducer = function (state, action) {
 };
 exports.createStore = function () {
     return redux_1.createStore(redux_1.combineReducers({
-        format: exports.formatReducer,
-        connection: exports.connectionReducer,
-        history: exports.historyReducer
+        format: exports.format,
+        connection: exports.connection,
+        history: exports.history
     }));
 };
 //# sourceMappingURL=Store.js.map

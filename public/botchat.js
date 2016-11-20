@@ -21741,7 +21741,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var _i = 1; _i < arguments.length; _i++) {
 	            optionalParams[_i - 1] = arguments[_i];
 	        }
-	        if (window["botchatDebug"] === true && message)
+	        if (typeof (window) !== 'undefined' && window["botchatDebug"] === true && message)
 	            console.log.apply(console, [message].concat(optionalParams));
 	    }
 	};
@@ -42190,7 +42190,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var BotConnection_1 = __webpack_require__(556);
 	var Chat_1 = __webpack_require__(180);
 	var Strings_1 = __webpack_require__(557);
-	exports.formatReducer = function (state, action) {
+	exports.format = function (state, action) {
 	    if (state === void 0) { state = {
 	        options: {
 	            showHeader: true
@@ -42206,7 +42206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return state;
 	    }
 	};
-	exports.connectionReducer = function (state, action) {
+	exports.connection = function (state, action) {
 	    if (state === void 0) { state = {
 	        connectionStatus: BotConnection_1.ConnectionStatus.Connecting,
 	        botConnection: undefined,
@@ -42241,7 +42241,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return state;
 	    }
 	};
-	exports.historyReducer = function (state, action) {
+	exports.history = function (state, action) {
 	    if (state === void 0) { state = {
 	        activities: [],
 	        input: '',
@@ -42344,9 +42344,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	exports.createStore = function () {
 	    return redux_1.createStore(redux_1.combineReducers({
-	        format: exports.formatReducer,
-	        connection: exports.connectionReducer,
-	        history: exports.historyReducer
+	        format: exports.format,
+	        connection: exports.connection,
+	        history: exports.history
 	    }));
 	};
 

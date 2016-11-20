@@ -193,7 +193,7 @@ exports.konsole = {
         for (var _i = 1; _i < arguments.length; _i++) {
             optionalParams[_i - 1] = arguments[_i];
         }
-        if (window["botchatDebug"] === true && message)
+        if (typeof (window) !== 'undefined' && window["botchatDebug"] === true && message)
             console.log.apply(console, [message].concat(optionalParams));
     }
 };

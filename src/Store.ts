@@ -19,7 +19,7 @@ export type FormatAction = {
     strings: Strings
 }
 
-export const formatReducer: Reducer<FormatState> = (
+export const format: Reducer<FormatState> = (
     state: FormatState = {
         options: {
             showHeader: true
@@ -67,7 +67,7 @@ export type ConnectionAction = {
 */
 }
 
-export const connectionReducer: Reducer<ConnectionState> = (
+export const connection: Reducer<ConnectionState> = (
     state: ConnectionState = {
         connectionStatus: ConnectionStatus.Connecting,
         botConnection: undefined,
@@ -137,7 +137,7 @@ export type HistoryAction = {
     id: string
 }
 
-export const historyReducer: Reducer<HistoryState> = (
+export const history: Reducer<HistoryState> = (
     state: HistoryState = {
         activities: [],
         input: '',
@@ -269,7 +269,7 @@ export interface ChatState {
 export const createStore = () =>
     reduxCreateStore(
         combineReducers<ChatState>({
-            format: formatReducer,
-            connection: connectionReducer,
-            history: historyReducer
+            format,
+            connection,
+            history
         }));
