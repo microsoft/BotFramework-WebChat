@@ -13,7 +13,9 @@
     "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
     "start": "http-server -p 8000",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "tsc -p tests",
+    "test": "mocha test/tests",
+    "foo": "mocha test/tests"
   },
   "repository": {
     "type": "git",
@@ -31,12 +33,20 @@
   },
   "devDependencies": {
     "@reactivex/rxjs": "5.0.0-beta.12",
+    "@types/chai": "^3.4.34",
+    "@types/chai-subset": "^1.0.29",
+    "@types/deep-freeze": "0.0.29",
     "@types/he": "^0.5.29",
     "@types/marked": "0.0.28",
+    "@types/mocha": "^2.2.33",
     "@types/react": "^0.14.37",
     "@types/react-dom": "^0.14.17",
     "@types/redux": "^3.5.30",
+    "chai": "^3.5.0",
+    "chai-subset": "^1.3.0",
+    "deep-freeze": "0.0.1",
     "http-server": "^0.9.0",
+    "mocha": "^3.1.2",
     "npm-run-all": "^3.1.0",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^0.8.2",

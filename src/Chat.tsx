@@ -244,7 +244,7 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
 
 export const konsole = {
     log: (message?: any, ... optionalParams: any[]) => {
-        if (window["botchatDebug"] === true && message)
+        if (typeof(window) !== 'undefined' && window["botchatDebug"] === true && message)
             console.log(message, ... optionalParams);
     }
 }
