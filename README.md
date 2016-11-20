@@ -20,17 +20,17 @@ WebChat is a [React](https://facebook.github.io/react/) component built in [Type
 * Inline in your non-React webapp, customized to your needs    
 * Inline in your React webapp, customized to your needs
 
-See more detailed instructions below.
+See more detailed instructions [below](#getting-webchat-up-and-running).
 
 ### *How do I customize it?*
 
-* Follow the below instructions to install and build
+* Follow the [below instructions](#1-install-and-build) to install and build
 * Customize the visuals by altering the [public/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.css) file
 * Or go farther and change the HTML/JSX and/or TypeScript 
 
 ### *How do I contribute to it?*
 
-* File [issues](issues) and submit [pull requests](pulls)!
+* File [issues](issues/) and submit [pull requests](pulls/)!
 
 ### *Do you have a roadmap?*
 
@@ -45,9 +45,16 @@ Not the most formal one you'll ever see, but:
 
 Feel free to suggest features by filing an [issue](issues) (please make sure one doesn't already exist).
 
+### How can I help?
+
+* Add localized strings (see [below](#to-add-localized-strings))
+* Report any unreported [issues](issues/)
+* Propose new [features](features/)
+* Fix an outstanding [issue](issues/) and submit a [pull request](pulls/)
+
 ## Getting WebChat up and running
 
-### 1. Install & build
+### 1. Install and build
 
 1. Clone this repo
 2. `npm install`
@@ -65,7 +72,7 @@ Feel free to suggest features by filing an [issue](issues) (please make sure one
 
 1. Head over to the [Bot Framework developer portal](https://dev.botframework.com/bots) and add the WebChat channel to your bot. You don't need this repo or any of the information on this page.
 
-#### As a standalone own web page, for quick and easy testing
+#### As a standalone web page, for quick and easy testing
 
 This is a quick and dirty method, perfect for testing. It requires embedding your Direct Line Secret in the web page or querystring, and as such should primarily be used for local testing.
 
@@ -75,7 +82,7 @@ This is a quick and dirty method, perfect for testing. It requires embedding you
 
 In this scenario you will host two web pages, one for WebChat and one for the page which embeds it. They could be hosted by the same web server, or two entirely different web servers. 
 
-1. Serve the botchat in its own standalone web page, as described above
+1. Serve the botchat in its own standalone web page, as described [above](#as-a-standalone-web-page-for-quick-and-easy-testing)
 2. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 3. In a second web page, embed the botchat via `<iframe src="http://{host}:{port}?[s={Direct Line Secret}|t={Direct Line Token}]" width="320" height="500"/>`
 
@@ -105,10 +112,18 @@ In this scenario you will incorporate WebChat's multiple JavaScript files into y
 
 ## Misc. notes
 
-To see WebChat logging:
+### To see WebChat logging
 
 * When IFRAMEd, set `window.frames["{iframe_id}"].botchatDebug = true` from the browser console
 * Otherwise set `window.botchatDebug = true` or `var botchatDebug = true` from the browser console       
+
+### To add localized strings
+
+In [src/Strings.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/src/Strings.ts) :
+* Add one or more locales (with associated localized strings) to `localizedStrings`
+* Add logic to map the requested locale to the support locale in `strings`
+* If you just adding a new locale for an existing set of strings, just update `strings` to return the existing locale's strings  
+* ... and please help the community by submitting a [pull request](pulls/)! 
 
 ## Copyright & License
 
