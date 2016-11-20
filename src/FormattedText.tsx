@@ -4,8 +4,9 @@ import * as He from 'he';
 
 
 export interface IFormattedTextProps {
-    text?: string,
-    format?: string,
+    text: string,
+    format: string,
+    onImageLoad: ()=> void,
     markdownOptions?: MarkedOptions
 }
 
@@ -59,7 +60,7 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
             silent: false,
             smartypants: true
         } as MarkedOptions, this.props.markdownOptions);
-        const renderer = options.renderer = new ReactRenderer(options);
+        const renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
         const text = Marked(src, options);
         const elements = renderer.getElements(text);
         /*// debug
@@ -77,7 +78,7 @@ class ReactRenderer implements MarkedRenderer {
     key: number = 0;
     elements: React.ReactElement<any>[] = [];
 
-    constructor(private options) {
+    constructor(private options: MarkedOptions, private onImageLoad: () => void) {
     }
 
     /**
@@ -242,7 +243,7 @@ class ReactRenderer implements MarkedRenderer {
                 return '';
             }
         }
-        return this.addElement(<img key={this.key++} {...{ src: href, title: title, alt: text }} />);
+        return this.addElement(<img key={this.key++} onLoad={ () => this.onImageLoad() } {...{ src: href, title: title, alt: text }} />);
     }
 
     text(text: string): string {

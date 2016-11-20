@@ -61,7 +61,7 @@ var FormattedText = (function (_super) {
             silent: false,
             smartypants: true
         }, this.props.markdownOptions);
-        var renderer = options.renderer = new ReactRenderer(options);
+        var renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
         var text = Marked(src, options);
         var elements = renderer.getElements(text);
         /*// debug
@@ -75,8 +75,9 @@ var FormattedText = (function (_super) {
 }(React.Component));
 exports.FormattedText = FormattedText;
 var ReactRenderer = (function () {
-    function ReactRenderer(options) {
+    function ReactRenderer(options, onImageLoad) {
         this.options = options;
+        this.onImageLoad = onImageLoad;
         this.key = 0;
         this.elements = [];
     }
@@ -207,6 +208,7 @@ var ReactRenderer = (function () {
         return this.addElement(React.createElement("a", __assign({key: this.key++}, { href: href, title: title }), this.getElements(text)));
     };
     ReactRenderer.prototype.image = function (href, title, text) {
+        var _this = this;
         if (this.options.sanitize) {
             try {
                 var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
@@ -218,7 +220,7 @@ var ReactRenderer = (function () {
                 return '';
             }
         }
-        return this.addElement(React.createElement("img", __assign({key: this.key++}, { src: href, title: title, alt: text })));
+        return this.addElement(React.createElement("img", __assign({key: this.key++, onLoad: function () { return _this.onImageLoad(); }}, { src: href, title: title, alt: text })));
     };
     ReactRenderer.prototype.text = function (text) {
         return this.addElement(React.createElement("span", {key: this.key++}, He.unescape(text)));
