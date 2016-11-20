@@ -30,7 +30,7 @@ See more detailed instructions [below](#getting-webchat-up-and-running).
 
 ### *How do I contribute to it?*
 
-* File [issues](issues/) and submit [pull requests](pulls/)!
+* File [issues](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit [pull requests](https://github.com/Microsoft/BotFramework-WebChat/pulls)!
 
 ### *Do you have a roadmap?*
 
@@ -43,14 +43,14 @@ Not the most formal one you'll ever see, but:
 * npm package(s)
 * CDN
 
-Feel free to suggest features by filing an [issue](issues) (please make sure one doesn't already exist).
+Feel free to suggest features by filing an [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) (please make sure one doesn't already exist).
 
 ### How can I help?
 
 * Add localized strings (see [below](#to-add-localized-strings))
-* Report any unreported [issues](issues/)
-* Propose new [features](features/)
-* Fix an outstanding [issue](issues/) and submit a [pull request](pulls/)
+* Report any unreported [issues](https://github.com/Microsoft/BotFramework-WebChat/issues)
+* Propose new [features](https://github.com/Microsoft/BotFramework-WebChat/issues)
+* Fix an outstanding [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls)
 
 ## Getting WebChat up and running
 
@@ -123,7 +123,7 @@ In [src/Strings.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/maste
 * Add one or more locales (with associated localized strings) to `localizedStrings`
 * Add logic to map the requested locale to the support locale in `strings`
 * If you just adding a new locale for an existing set of strings, just update `strings` to return the existing locale's strings  
-* ... and please help the community by submitting a [pull request](pulls/)! 
+* ... and please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls)! 
 
 ## Copyright & License
 
