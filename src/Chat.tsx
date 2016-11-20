@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subscription, BehaviorSubject } from '@reactivex/rxjs';
+import { Subscription, BehaviorSubject, Observable, Subject } from '@reactivex/rxjs';
 import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
@@ -31,11 +31,15 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private store = createStore();
     private storeUnsubscribe: Unsubscribe;
+    
     private activitySubscription: Subscription;
+    private typingActivitySubscription: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
-    private typingTimers = {};
-    private selectActivityCallback: (activity:Activity) => void = null;
+
+    private selectActivityCallback: (activity: Activity) => void;
+
+    private typingActivity$ = new Subject<Activity>();
 
     constructor(props: ChatProps) {
         super(props);
@@ -58,6 +62,16 @@ export class Chat extends React.Component<ChatProps, {}> {
             activity => this.handleIncomingActivity(activity),
             error => konsole.log("activity$ error", error)
         );
+
+        this.typingActivitySubscription = this.typingActivity$.do(activity => {
+            this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction)
+            updateSelectedActivity(this.store);
+        })
+        .delay(3000)
+        .subscribe(activity => {
+            this.store.dispatch({ type: 'Clear_Typing', id: activity.id } as HistoryAction);
+            updateSelectedActivity(this.store);
+        });
 
         if (props.selectedActivity) {
             this.selectActivityCallback = activity => this.selectActivity(activity);
@@ -88,16 +102,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 }
 
             case "typing":
-                if (this.typingTimers[activity.from.id]) {
-                    clearTimeout(this.typingTimers[activity.from.id]);
-                    this.typingTimers[activity.from.id] = undefined;
-                }
-                this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction);
-                this.typingTimers[activity.from.id] = setTimeout(() => {
-                    this.typingTimers[activity.from.id] = undefined;
-                    this.store.dispatch({ type: 'Clear_Typing', from: activity.from } as HistoryAction);
-                    updateSelectedActivity(this.store);
-                }, 3000);
+                this.typingActivity$.next(activity);
                 break;
         }
     }
@@ -114,13 +119,12 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     componentWillUnmount() {
         this.activitySubscription.unsubscribe();
+        this.typingActivitySubscription.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
-        this.selectedActivitySubscription.unsubscribe();
+        if (this.selectedActivitySubscription)
+            this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
-        for (let key in this.typingTimers) {
-            clearTimeout(this.typingTimers[key])
-        }
     }
 
     render() {

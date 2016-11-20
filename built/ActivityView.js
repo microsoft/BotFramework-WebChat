@@ -22,7 +22,7 @@ exports.ActivityView = function (props) {
     switch (props.activity.type) {
         case 'message':
             return (React.createElement("div", null, 
-                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat}), 
+                React.createElement(FormattedText_1.FormattedText, {text: props.activity.text, format: props.activity.textFormat, onImageLoad: props.onImageLoad}), 
                 React.createElement(Attachments, {store: props.store, attachments: props.activity.attachments, attachmentLayout: props.activity.attachmentLayout, onImageLoad: props.onImageLoad})));
         case 'typing':
             return React.createElement("div", null, "TYPING");
