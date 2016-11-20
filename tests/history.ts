@@ -2,8 +2,6 @@ import { expect, use } from 'chai';
 import chaiSubset = require('chai-subset');
 import { history, HistoryState, HistoryAction } from '../src/Store';
 
-var window;
-
 use(chaiSubset);
 
 describe('history', () => {
@@ -11,6 +9,6 @@ describe('history', () => {
         expect(history(undefined, { type: undefined })).to.containSubset({
             activities: [],
             selectedActivity: null
-        })
+        });
     });
 })
