@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var rxjs_1 = require('@reactivex/rxjs');
 //import { BrowserLine } from './browserLine';
 var History_1 = require('./History');
 var Shell_1 = require('./Shell');
@@ -16,8 +17,7 @@ var Chat = (function (_super) {
         var _this = this;
         _super.call(this, props);
         this.store = Store_1.createStore();
-        this.typingTimers = {};
-        this.selectActivityCallback = null;
+        this.typingActivity$ = new rxjs_1.Subject();
         exports.konsole.log("BotChat.Chat props", props);
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
         if (props.formatOptions)
@@ -28,6 +28,15 @@ var Chat = (function (_super) {
             return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
         });
         this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
+        this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
+            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+            exports.updateSelectedActivity(_this.store);
+        })
+            .delay(3000)
+            .subscribe(function (activity) {
+            _this.store.dispatch({ type: 'Clear_Typing', id: activity.id });
+            exports.updateSelectedActivity(_this.store);
+        });
         if (props.selectedActivity) {
             this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
             this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
@@ -39,7 +48,6 @@ var Chat = (function (_super) {
         }
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
-        var _this = this;
         var state = this.store.getState();
         switch (activity.type) {
             case "message":
@@ -56,16 +64,7 @@ var Chat = (function (_super) {
                     break;
                 }
             case "typing":
-                if (this.typingTimers[activity.from.id]) {
-                    clearTimeout(this.typingTimers[activity.from.id]);
-                    this.typingTimers[activity.from.id] = undefined;
-                }
-                this.store.dispatch({ type: 'Show_Typing', activity: activity });
-                this.typingTimers[activity.from.id] = setTimeout(function () {
-                    _this.typingTimers[activity.from.id] = undefined;
-                    _this.store.dispatch({ type: 'Clear_Typing', from: activity.from });
-                    exports.updateSelectedActivity(_this.store);
-                }, 3000);
+                this.typingActivity$.next(activity);
                 break;
         }
     };
@@ -80,13 +79,12 @@ var Chat = (function (_super) {
     };
     Chat.prototype.componentWillUnmount = function () {
         this.activitySubscription.unsubscribe();
+        this.typingActivitySubscription.unsubscribe();
         this.connectionStatusSubscription.unsubscribe();
-        this.selectedActivitySubscription.unsubscribe();
+        if (this.selectedActivitySubscription)
+            this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
         this.storeUnsubscribe();
-        for (var key in this.typingTimers) {
-            clearTimeout(this.typingTimers[key]);
-        }
     };
     Chat.prototype.render = function () {
         var state = this.store.getState();

@@ -140,13 +140,11 @@ exports.historyReducer = function (state, action) {
                     action.activity
                 ])
             });
-        case 'Clear_Typing': {
-            var activities = state.activities.filter(function (activity) { return activity.from.id !== action.from.id || activity.type !== "typing"; });
+        case 'Clear_Typing':
             return Object.assign({}, state, {
-                activities: activities,
-                selectedActivity: activities.includes(state.selectedActivity) ? state.selectedActivity : null
+                activities: state.activities.filter(function (activity) { return activity.id !== action.id; }),
+                selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
             });
-        }
         case 'Select_Activity':
             if (action.selectedActivity === state.selectedActivity)
                 return state;
