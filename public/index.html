@@ -30,7 +30,7 @@
             const botConnection = new BotChat.DirectLine({
                 secret: params['s'],
                 token: params['t']
-                }, params["domain"]
+                }, params["domain"] //the domain should be the DL url https://directline.botframework.com/v3/directline
             );
 
             const user = {
@@ -47,7 +47,7 @@
                 botConnection,
                 user,
                 bot,
-//              allowMessagesFrom: ['http://localhost:8080']
+//              allowMessagesFrom: ['https://directline.botframework.com/v3/directline'] 
             }, document.getElementById("BotChatGoesHere"));
         </script>
     </body>
