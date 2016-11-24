@@ -39954,7 +39954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                break;
 	            case "openUrl":
 	            case "signin":
-	                window.open(value, "_blank");
+	                window.open(value);
 	                break;
 	            default:
 	                Chat_1.konsole.log("unknown button type");
@@ -40443,7 +40443,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return '';
 	            }
 	        }
-	        return this.addElement(React.createElement("a", __assign({key: this.key++}, { href: href, title: title }), this.getElements(text)));
+	        return this.addElement(React.createElement("a", __assign({key: this.key++}, { href: href, title: title, target: '_blank' }), this.getElements(text)));
 	    };
 	    ReactRenderer.prototype.image = function (href, title, text) {
 	        var _this = this;
