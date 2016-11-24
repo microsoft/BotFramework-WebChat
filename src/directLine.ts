@@ -195,7 +195,8 @@ export class DirectLine implements IBotConnection {
 //      .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
         .flatMap<Activity>(activityGroup => {
-            this.watermark = activityGroup.watermark;
+            if (activityGroup.watermark)
+                this.watermark = activityGroup.watermark;
             return Observable.from(activityGroup.activities);
         })
         .repeatWhen(completed => completed.delay(1000))
