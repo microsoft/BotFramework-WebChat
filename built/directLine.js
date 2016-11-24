@@ -165,7 +165,8 @@ var DirectLine = (function () {
             .take(1)
             .map(function (ajaxResponse) { return ajaxResponse.response; })
             .flatMap(function (activityGroup) {
-            _this.watermark = activityGroup.watermark;
+            if (activityGroup.watermark)
+                _this.watermark = activityGroup.watermark;
             return rxjs_1.Observable.from(activityGroup.activities);
         })
             .repeatWhen(function (completed) { return completed.delay(1000); })
