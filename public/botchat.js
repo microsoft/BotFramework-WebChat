@@ -39954,7 +39954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                break;
 	            case "openUrl":
 	            case "signin":
-	                window.open(value);
+	                window.open(value, "_blank");
 	                break;
 	            default:
 	                Chat_1.konsole.log("unknown button type");
