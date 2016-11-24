@@ -29,7 +29,7 @@ export const AttachmentView = (props: {
 
             case "openUrl":
             case "signin":
-                window.open(value, "_blank");
+                window.open(value);
                 break;
 
             default:

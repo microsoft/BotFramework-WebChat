@@ -20,7 +20,7 @@ exports.AttachmentView = function (props) {
                 break;
             case "openUrl":
             case "signin":
-                window.open(value, "_blank");
+                window.open(value);
                 break;
             default:
                 Chat_1.konsole.log("unknown button type");

@@ -229,7 +229,7 @@ class ReactRenderer implements MarkedRenderer {
                 return '';
             }
         }
-        return this.addElement(<a key={this.key++} {...{ href: href, title: title }}>{this.getElements(text)}</a>);
+        return this.addElement(<a key={this.key++} {...{ href, title, target: '_blank' }}>{this.getElements(text)}</a>);
     }
 
     image(href: string, title: string, text: string): string {
@@ -243,7 +243,7 @@ class ReactRenderer implements MarkedRenderer {
                 return '';
             }
         }
-        return this.addElement(<img key={this.key++} onLoad={ () => this.onImageLoad() } {...{ src: href, title: title, alt: text }} />);
+        return this.addElement(<img key={this.key++} onLoad={ () => this.onImageLoad() } {...{ src: href, title, alt: text }} />);
     }
 
     text(text: string): string {
