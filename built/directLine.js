@@ -8,11 +8,11 @@ var DirectLine = (function () {
     function DirectLine(secretOrToken, domain) {
         if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
         this.domain = domain;
+        this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
+        this.activity$ = this.getActivity$();
         this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
-        this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
-        this.activity$ = this.getActivity$();
     }
     DirectLine.prototype.start = function () {
         var _this = this;
@@ -99,27 +99,32 @@ var DirectLine = (function () {
         formData.append('activity', new Blob([JSON.stringify(Object.assign({}, message, { attachments: undefined }))], { type: 'application/vnd.microsoft.activity' }));
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-            .flatMap(function (_) { return rxjs_1.Observable.from(message.attachments || [])
-            .flatMap(function (media) {
-            return rxjs_1.Observable.ajax({
-                method: "GET",
-                url: media.contentUrl,
-                responseType: 'arraybuffer'
+            .flatMap(function (_) {
+            return rxjs_1.Observable.from(message.attachments || [])
+                .flatMap(function (media) {
+                return rxjs_1.Observable.ajax({
+                    method: "GET",
+                    url: media.contentUrl,
+                    responseType: 'arraybuffer'
+                })
+                    .do(function (ajaxResponse) {
+                    return formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name);
+                });
             })
-                .do(function (ajaxResponse) {
-                return formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name);
-            });
-        }); })
-            .flatMap(function (_) { return rxjs_1.Observable.ajax({
-            method: "POST",
-            url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,
-            body: formData,
-            timeout: timeout,
-            headers: {
-                "Authorization": "Bearer " + _this.token
-            }
-        }); })
-            .map(function (ajaxResponse) { return ajaxResponse.response.id; })
+                .count();
+        })
+            .flatMap(function (_) {
+            return rxjs_1.Observable.ajax({
+                method: "POST",
+                url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,
+                body: formData,
+                timeout: timeout,
+                headers: {
+                    "Authorization": "Bearer " + _this.token
+                }
+            })
+                .map(function (ajaxResponse) { return ajaxResponse.response.id; });
+        })
             .catch(function (error) {
             Chat_1.konsole.log("postMessageWithAttachments error", error);
             return error.status >= 400 && error.status < 500
