@@ -99,7 +99,7 @@ var DirectLine = (function () {
         formData.append('activity', new Blob([JSON.stringify(Object.assign({}, message, { attachments: undefined }))], { type: 'application/vnd.microsoft.activity' }));
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
-            .flatMap(function (_) { return rxjs_1.Observable.from(message.attachments || []); })
+            .flatMap(function (_) { return rxjs_1.Observable.from(message.attachments || [])
             .flatMap(function (media) {
             return rxjs_1.Observable.ajax({
                 method: "GET",
@@ -109,8 +109,7 @@ var DirectLine = (function () {
                 .do(function (ajaxResponse) {
                 return formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name);
             });
-        })
-            .count()
+        }); })
             .flatMap(function (_) { return rxjs_1.Observable.ajax({
             method: "POST",
             url: _this.domain + "/conversations/" + _this.conversationId + "/upload?userId=" + message.from.id,

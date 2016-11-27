@@ -128,18 +128,18 @@ export class DirectLine implements IBotConnection {
 
         return this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-        .flatMap(_ => Observable.from(message.attachments || []))
-        .flatMap((media: Media) => 
-            Observable.ajax({
-                method: "GET",
-                url: media.contentUrl,
-                responseType: 'arraybuffer'
-            })
-            .do(ajaxResponse =>
-                formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name)
+        .flatMap(_ => Observable.from(message.attachments || [])
+            .flatMap((media: Media) =>
+                Observable.ajax({
+                    method: "GET",
+                    url: media.contentUrl,
+                    responseType: 'arraybuffer'
+                })
+                .do(ajaxResponse =>
+                    formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name)
+                )
             )
         )
-        .count()
         .flatMap(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${message.from.id}`,
