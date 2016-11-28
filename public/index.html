@@ -27,26 +27,26 @@
                     params[p[0]] = p[1];
                 });
 
-            const botConnection = new BotChat.DirectLine({
+            var botConnection = new BotChat.DirectLine({
                 secret: params['s'],
                 token: params['t']
                 }, params["domain"]
             );
 
-            const user = {
+            var user = {
                 id: params['userid'] || 'userid',
                 name: params["username"] || 'username'
                 };
             
-            const bot = {
+            var bot = {
                 id: params['botid'] || 'botid',
                 name: params["botname"] || 'botname'
             };
 
             BotChat.App({
-                botConnection,
-                user,
-                bot,
+                botConnection: botConnection,
+                user: user,
+                bot: bot,
 //              allowMessagesFrom: ['http://localhost:8080']
             }, document.getElementById("BotChatGoesHere"));
         </script>
