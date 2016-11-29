@@ -219,10 +219,11 @@ class ReactRenderer implements MarkedRenderer {
     }
 
     link(href: string, title: string, text: string): string {
+        href = He.unescape(href);
         if (this.options.sanitize) {
             try {
-                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
-                if (!(prot.startsWith('http://') || prot.startsWith('https://'))) {
+                var prot = href.toLowerCase();
+                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
                     return '';
                 }
             } catch (e) {
@@ -233,10 +234,11 @@ class ReactRenderer implements MarkedRenderer {
     }
 
     image(href: string, title: string, text: string): string {
+        href = He.unescape(href);
         if (this.options.sanitize) {
             try {
-                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
-                if (!(prot.startsWith('http://') || prot.startsWith('https://'))) {
+                var prot = href.toLowerCase();
+                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
                     return '';
                 }
             } catch (e) {

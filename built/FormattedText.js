@@ -194,10 +194,11 @@ var ReactRenderer = (function () {
         return this.addElement(React.createElement("del", {key: this.key++}, this.getElements(text)));
     };
     ReactRenderer.prototype.link = function (href, title, text) {
+        href = He.unescape(href);
         if (this.options.sanitize) {
             try {
-                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
-                if (!(prot.startsWith('http://') || prot.startsWith('https://'))) {
+                var prot = href.toLowerCase();
+                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
                     return '';
                 }
             }
@@ -209,10 +210,11 @@ var ReactRenderer = (function () {
     };
     ReactRenderer.prototype.image = function (href, title, text) {
         var _this = this;
+        href = He.unescape(href);
         if (this.options.sanitize) {
             try {
-                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
-                if (!(prot.startsWith('http://') || prot.startsWith('https://'))) {
+                var prot = href.toLowerCase();
+                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
                     return '';
                 }
             }
