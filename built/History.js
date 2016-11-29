@@ -13,13 +13,25 @@ var History = (function (_super) {
         var _this = this;
         _super.call(this, props);
         this.scrollToBottom = true;
+        this.atBottomThreshold = 80;
         this.autoscroll = function () {
-            if (_this.scrollToBottom)
+            if (_this.scrollToBottom && (_this.scrollMe.scrollHeight > _this.scrollMe.offsetHeight))
                 _this.scrollMe.scrollTop = _this.scrollMe.scrollHeight - _this.scrollMe.offsetHeight;
         };
+        this.scrollEventListener = function () { return _this.checkBottom(); };
+        this.resizeListener = function () { return _this.checkBottom(); };
     }
-    History.prototype.componentWillUpdate = function () {
-        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
+    History.prototype.componentDidMount = function () {
+        this.scrollMe.addEventListener('scroll', this.scrollEventListener);
+        window.addEventListener('resize', this.resizeListener);
+    };
+    History.prototype.componentWillUnmount = function () {
+        this.scrollMe.removeEventListener('scroll', this.scrollEventListener);
+        window.removeEventListener('resize', this.resizeListener);
+    };
+    History.prototype.checkBottom = function () {
+        var offBottom = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight - this.scrollMe.scrollTop;
+        this.scrollToBottom = offBottom <= this.atBottomThreshold;
     };
     History.prototype.componentDidUpdate = function () {
         this.autoscroll();
