@@ -40411,35 +40411,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ReactRenderer.prototype.del = function (text) {
 	        return this.addElement(React.createElement("del", {key: this.key++}, this.getElements(text)));
 	    };
-	    ReactRenderer.prototype.link = function (href, title, text) {
-	        href = He.unescape(href);
-	        if (this.options.sanitize) {
-	            try {
+	    ReactRenderer.prototype.unescapeAndSanitizeLink = function (href) {
+	        try {
+	            href = He.unescape(href);
+	            if (this.options.sanitize) {
 	                var prot = href.toLowerCase();
 	                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
-	                    return '';
+	                    return null;
 	                }
 	            }
-	            catch (e) {
-	                return '';
-	            }
 	        }
+	        catch (e) {
+	            return null;
+	        }
+	        return href;
+	    };
+	    ReactRenderer.prototype.link = function (href, title, text) {
+	        href = this.unescapeAndSanitizeLink(href);
+	        if (!href)
+	            return '';
 	        return this.addElement(React.createElement("a", __assign({key: this.key++}, { href: href, title: title, target: '_blank' }), this.getElements(text)));
 	    };
 	    ReactRenderer.prototype.image = function (href, title, text) {
 	        var _this = this;
-	        href = He.unescape(href);
-	        if (this.options.sanitize) {
-	            try {
-	                var prot = href.toLowerCase();
-	                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
-	                    return '';
-	                }
-	            }
-	            catch (e) {
-	                return '';
-	            }
-	        }
+	        href = this.unescapeAndSanitizeLink(href);
+	        if (!href)
+	            return '';
 	        return this.addElement(React.createElement("img", __assign({key: this.key++, onLoad: function () { return _this.onImageLoad(); }}, { src: href, title: title, alt: text })));
 	    };
 	    ReactRenderer.prototype.text = function (text) {
