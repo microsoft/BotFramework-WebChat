@@ -13,13 +13,29 @@ interface Props {
 export class History extends React.Component<Props, {}> {
     scrollMe: HTMLElement;
     scrollToBottom = true;
+    atBottomThreshold = 80;
+    scrollEventListener: () => void;
+    resizeListener: () => void;
 
     constructor(props: Props) {
         super(props);
+        this.scrollEventListener = () => this.checkBottom();
+        this.resizeListener = () => this.checkBottom();
     }
 
-    componentWillUpdate() {
-        this.scrollToBottom = this.scrollMe.scrollTop + this.scrollMe.offsetHeight >= this.scrollMe.scrollHeight;
+    componentDidMount() {
+        this.scrollMe.addEventListener('scroll', this.scrollEventListener);
+        window.addEventListener('resize', this.resizeListener);
+    }
+
+    componentWillUnmount() {
+        this.scrollMe.removeEventListener('scroll', this.scrollEventListener);
+        window.removeEventListener('resize', this.resizeListener);
+    }
+
+    checkBottom() {
+        const offBottom = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight - this.scrollMe.scrollTop; 
+        this.scrollToBottom = offBottom <= this.atBottomThreshold;
     }
 
     componentDidUpdate() {
@@ -32,7 +48,7 @@ export class History extends React.Component<Props, {}> {
     }
 
     autoscroll = () => {
-        if (this.scrollToBottom)
+        if (this.scrollToBottom && (this.scrollMe.scrollHeight > this.scrollMe.offsetHeight))
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 

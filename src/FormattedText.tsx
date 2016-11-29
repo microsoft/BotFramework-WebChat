@@ -218,31 +218,32 @@ class ReactRenderer implements MarkedRenderer {
         return this.addElement(<del key={this.key++}>{this.getElements(text)}</del>);
     }
 
-    link(href: string, title: string, text: string): string {
-        if (this.options.sanitize) {
-            try {
-                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
-                if (!(prot.startsWith('http://') || prot.startsWith('https://'))) {
-                    return '';
+    unescapeAndSanitizeLink(href: string) {
+        try {
+            href = He.unescape(href);
+            if (this.options.sanitize) {
+                const prot = href.toLowerCase();
+                if (!(prot.startsWith('http:') || prot.startsWith('https:'))) {
+                    return null;
                 }
-            } catch (e) {
-                return '';
             }
+        } catch (e) {
+            return null;
         }
+        return href;
+    }
+
+    link(href: string, title: string, text: string): string {
+        href = this.unescapeAndSanitizeLink(href);
+        if (!href)
+            return '';
         return this.addElement(<a key={this.key++} {...{ href, title, target: '_blank' }}>{this.getElements(text)}</a>);
     }
 
     image(href: string, title: string, text: string): string {
-        if (this.options.sanitize) {
-            try {
-                var prot = decodeURIComponent(He.unescape(href)).toLowerCase();
-                if (!(prot.startsWith('http://') || prot.startsWith('https://'))) {
-                    return '';
-                }
-            } catch (e) {
-                return '';
-            }
-        }
+        href = this.unescapeAndSanitizeLink(href);
+        if (!href)
+            return '';
         return this.addElement(<img key={this.key++} onLoad={ () => this.onImageLoad() } {...{ src: href, title, alt: text }} />);
     }
 
