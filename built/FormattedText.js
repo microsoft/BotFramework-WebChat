@@ -62,7 +62,7 @@ var FormattedText = (function (_super) {
             smartypants: true
         }, this.props.markdownOptions);
         var renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
-        var text = Marked(src, options);
+        var text = Marked.parse(src, options);
         var elements = renderer.getElements(text);
         /*// debug
         const remaining = renderer.elements.filter(el => !!el);
