@@ -9,6 +9,7 @@ export interface Strings {
     messageFailed: string,
     messageSending: string,
     timeSent: string,
+    consolePlaceholder: string
 }
 
 interface LocalizedStrings {
@@ -27,6 +28,7 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "couldn't send",
         messageSending: "sending",
         timeSent: " at %1",
+        consolePlaceholder: "Type your message..."
     }
 }
 

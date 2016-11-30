@@ -47,7 +47,7 @@ export class Shell extends React.Component<Props, {}> {
                     </svg>
                 </label>
                 <div className="wc-textbox">
-                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.history.input } onChange={ e => this.onChangeInput((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } placeholder="Type your message..." />
+                    <input type="text" ref={ref => this.textInput = ref } autoFocus value={ state.history.input } onChange={ e => this.onChangeInput((e.target as any).value) } onKeyPress = { e => this.onKeyPress(e) } placeholder={ state.format.strings.consolePlaceholder } />
                 </div>
                 <label className="wc-send" onClick={ () => this.onClickSend() } >
                     <svg width="27" height="18">
