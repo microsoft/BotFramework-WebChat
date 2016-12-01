@@ -3304,30 +3304,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Set.prototype.keys
 	Set.prototype != null && typeof Set.prototype.keys === 'function' && isNative(Set.prototype.keys);
 	
+	var setItem;
+	var getItem;
+	var removeItem;
+	var getItemIDs;
+	var addRoot;
+	var removeRoot;
+	var getRootIDs;
+	
 	if (canUseCollections) {
 	  var itemMap = new Map();
 	  var rootIDSet = new Set();
 	
-	  var setItem = function (id, item) {
+	  setItem = function (id, item) {
 	    itemMap.set(id, item);
 	  };
-	  var getItem = function (id) {
+	  getItem = function (id) {
 	    return itemMap.get(id);
 	  };
-	  var removeItem = function (id) {
+	  removeItem = function (id) {
 	    itemMap['delete'](id);
 	  };
-	  var getItemIDs = function () {
+	  getItemIDs = function () {
 	    return Array.from(itemMap.keys());
 	  };
 	
-	  var addRoot = function (id) {
+	  addRoot = function (id) {
 	    rootIDSet.add(id);
 	  };
-	  var removeRoot = function (id) {
+	  removeRoot = function (id) {
 	    rootIDSet['delete'](id);
 	  };
-	  var getRootIDs = function () {
+	  getRootIDs = function () {
 	    return Array.from(rootIDSet.keys());
 	  };
 	} else {
@@ -3343,31 +3351,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return parseInt(key.substr(1), 10);
 	  };
 	
-	  var setItem = function (id, item) {
+	  setItem = function (id, item) {
 	    var key = getKeyFromID(id);
 	    itemByKey[key] = item;
 	  };
-	  var getItem = function (id) {
+	  getItem = function (id) {
 	    var key = getKeyFromID(id);
 	    return itemByKey[key];
 	  };
-	  var removeItem = function (id) {
+	  removeItem = function (id) {
 	    var key = getKeyFromID(id);
 	    delete itemByKey[key];
 	  };
-	  var getItemIDs = function () {
+	  getItemIDs = function () {
 	    return Object.keys(itemByKey).map(getIDFromKey);
 	  };
 	
-	  var addRoot = function (id) {
+	  addRoot = function (id) {
 	    var key = getKeyFromID(id);
 	    rootByKey[key] = true;
 	  };
-	  var removeRoot = function (id) {
+	  removeRoot = function (id) {
 	    var key = getKeyFromID(id);
 	    delete rootByKey[key];
 	  };
-	  var getRootIDs = function () {
+	  getRootIDs = function () {
 	    return Object.keys(rootByKey).map(getIDFromKey);
 	  };
 	}
@@ -4148,7 +4156,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	'use strict';
 	
-	module.exports = '15.4.0';
+	module.exports = '15.4.1';
 
 /***/ },
 /* 33 */
@@ -5553,6 +5561,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return '.' + inst._rootNodeID;
 	};
 	
+	function isInteractive(tag) {
+	  return tag === 'button' || tag === 'input' || tag === 'select' || tag === 'textarea';
+	}
+	
+	function shouldPreventMouseEvent(name, type, props) {
+	  switch (name) {
+	    case 'onClick':
+	    case 'onClickCapture':
+	    case 'onDoubleClick':
+	    case 'onDoubleClickCapture':
+	    case 'onMouseDown':
+	    case 'onMouseDownCapture':
+	    case 'onMouseMove':
+	    case 'onMouseMoveCapture':
+	    case 'onMouseUp':
+	    case 'onMouseUpCapture':
+	      return !!(props.disabled && isInteractive(type));
+	    default:
+	      return false;
+	  }
+	}
+	
 	/**
 	 * This is a unified interface for event plugins to be installed and configured.
 	 *
@@ -5621,7 +5651,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {?function} The stored callback.
 	   */
 	  getListener: function (inst, registrationName) {
+	    // TODO: shouldPreventMouseEvent is DOM-specific and definitely should not
+	    // live here; needs to be moved to a better place soon
 	    var bankForRegistrationName = listenerBank[registrationName];
+	    if (shouldPreventMouseEvent(registrationName, inst._currentElement.type, inst._currentElement.props)) {
+	      return null;
+	    }
 	    var key = getDictionaryKey(inst);
 	    return bankForRegistrationName && bankForRegistrationName[key];
 	  },
@@ -19711,18 +19746,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return tag === 'button' || tag === 'input' || tag === 'select' || tag === 'textarea';
 	}
 	
-	function shouldPreventMouseEvent(inst) {
-	  if (inst) {
-	    var disabled = inst._currentElement && inst._currentElement.props.disabled;
-	
-	    if (disabled) {
-	      return isInteractive(inst._tag);
-	    }
-	  }
-	
-	  return false;
-	}
-	
 	var SimpleEventPlugin = {
 	
 	  eventTypes: eventTypes,
@@ -19793,10 +19816,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      case 'topMouseDown':
 	      case 'topMouseMove':
 	      case 'topMouseUp':
-	        // Disabled elements should not respond to mouse events
-	        if (shouldPreventMouseEvent(targetInst)) {
-	          return null;
-	        }
+	      // TODO: Disabled elements should not respond to mouse events
 	      /* falls through */
 	      case 'topMouseOut':
 	      case 'topMouseOver':
@@ -21158,7 +21178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	'use strict';
 	
-	module.exports = '15.4.0';
+	module.exports = '15.4.1';
 
 /***/ },
 /* 174 */
@@ -40312,7 +40332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            smartypants: true
 	        }, this.props.markdownOptions);
 	        var renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
-	        var text = Marked(src, options);
+	        var text = Marked.parse(src, options);
 	        var elements = renderer.getElements(text);
 	        /*// debug
 	        const remaining = renderer.elements.filter(el => !!el);
@@ -42179,7 +42199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    React.createElement("path", {d: "M 19.9603965 4.789052 m -2 0 a 2 2 0 0 1 4 0 a 2 2 0 0 1 -4 0 z M 8.3168322 4.1917918 L 2.49505 15.5342575 L 22.455446 15.5342575 L 17.465347 8.5643945 L 14.4158421 11.1780931 L 8.3168322 4.1917918 Z M 1.04 1 L 1.04 17 L 24.96 17 L 24.96 1 L 1.04 1 Z M 1.0352753 0 L 24.9647247 0 C 25.5364915 0 26 0.444957 26 0.9934084 L 26 17.006613 C 26 17.5552514 25.5265266 18 24.9647247 18 L 1.0352753 18 C 0.4635085 18 0 17.5550644 0 17.006613 L 0 0.9934084 C 0 0.44477 0.4734734 0 1.0352753 0 Z"})
 	                )), 
 	            React.createElement("div", {className: "wc-textbox"}, 
-	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.onChangeInput(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: "Type your message..."})
+	                React.createElement("input", {type: "text", ref: function (ref) { return _this.textInput = ref; }, autoFocus: true, value: state.history.input, onChange: function (e) { return _this.onChangeInput(e.target.value); }, onKeyPress: function (e) { return _this.onKeyPress(e); }, placeholder: state.format.strings.consolePlaceholder})
 	            ), 
 	            React.createElement("label", {className: "wc-send", onClick: function () { return _this.onClickSend(); }}, 
 	                React.createElement("svg", {width: "27", height: "18"}, 
@@ -43409,6 +43429,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        messageFailed: "couldn't send",
 	        messageSending: "sending",
 	        timeSent: " at %1",
+	        consolePlaceholder: "Type your message..."
 	    }
 	};
 	// Returns strings using the "best match available"" locale
