@@ -13,9 +13,7 @@
     "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
     "start": "http-server -p 8000",
-    "pretest": "tsc -p tests",
-    "test": "mocha test/tests",
-    "foo": "mocha test/tests"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
