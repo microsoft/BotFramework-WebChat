@@ -35,13 +35,15 @@ export class DirectLine implements IBotConnection {
         this.token = secretOrToken.secret || secretOrToken.token;
     }
 
+    getConversationId() { return this.conversationId; }
+
     start() {
         this.conversationSubscription = this.startConversation()
         .subscribe(conversation => {
             this.conversationId = conversation.conversationId;
             this.token = this.secret || conversation.token;
             this.connectionStatus$.next(ConnectionStatus.Online);
-  
+
             if (!this.secret)
                 this.refreshTokenLoop();
         });

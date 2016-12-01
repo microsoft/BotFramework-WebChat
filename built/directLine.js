@@ -14,6 +14,7 @@ var DirectLine = (function () {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
     }
+    DirectLine.prototype.getConversationId = function () { return this.conversationId; };
     DirectLine.prototype.start = function () {
         var _this = this;
         this.conversationSubscription = this.startConversation()
