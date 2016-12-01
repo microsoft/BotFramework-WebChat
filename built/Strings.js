@@ -11,6 +11,7 @@ var localizedStrings = {
         messageFailed: "couldn't send",
         messageSending: "sending",
         timeSent: " at %1",
+        consolePlaceholder: "Type your message..."
     }
 };
 // Returns strings using the "best match available"" locale

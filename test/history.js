@@ -1,8 +1,10 @@
-import { expect, use } from 'chai';
-import chaiSubset = require('chai-subset');
-import { history, HistoryState, HistoryAction } from '../src/Store';
+"use strict";
 
-use(chaiSubset);
+const chai = require('chai');
+const expect = chai.expect;
+const history = require('../built/Store.js').history;
+
+chai.use(require('chai-subset'));
 
 describe('history', () => {
     it('should start with an empty history', () => {
@@ -11,4 +13,4 @@ describe('history', () => {
             selectedActivity: null
         });
     });
-})
+});
