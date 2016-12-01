@@ -61,7 +61,7 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
             smartypants: true
         } as MarkedOptions, this.props.markdownOptions);
         const renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
-        const text = Marked(src, options);
+        const text = Marked.parse(src, options);
         const elements = renderer.getElements(text);
         /*// debug
         const remaining = renderer.elements.filter(el => !!el);
