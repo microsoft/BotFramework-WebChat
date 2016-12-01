@@ -7,7 +7,6 @@ export interface SecretOrToken {
 
 export declare class DirectLine {
     constructor(secretOrToken: SecretOrToken, domain?: string);
-    getConversationId(): string;
     start();
     end();
 }
