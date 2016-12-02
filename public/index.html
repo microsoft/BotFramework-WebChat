@@ -24,7 +24,7 @@
                 .split("&")
                 .forEach(function (pair) {
                     var p = pair.split("=");
-                    params[p[0]] = p[1];
+                    params[p[0]] = decodeURIComponent(p[1]);
                 });
 
             var botConnection = new BotChat.DirectLine({
