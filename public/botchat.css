@@ -294,6 +294,7 @@
 
     .wc-card.thumbnail img {
         float: right;
+        margin-bottom: 10px;
         margin-left: 10px;
         width: 100px;
     }
