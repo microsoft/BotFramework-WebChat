@@ -242,9 +242,9 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
     trySendMessage(store, clientActivityId);
 }
 
-export const full = (value: any, elementType: string, elementProps?: React.Attributes ) => {
+export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
     if (typeof value === 'string' && value.length === 0) return;
-    return React.createElement(elementType, elementProps, value);
+    return renderer(value);
 }
 
 export const konsole = {

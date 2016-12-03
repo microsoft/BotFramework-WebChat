@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
-import { sendMessage, sendPostBack, full, konsole } from './Chat';
+import { sendMessage, sendPostBack, renderIfNonempty, konsole } from './Chat';
 
 export const AttachmentView = (props: {
     store: ChatStore,
@@ -66,9 +66,9 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card hero'>
                     { attachedImage(attachment.content.images) }
-                    { full(attachment.content.title, 'h1') }
-                    { full(attachment.content.subtitle, 'h2') }
-                    { full(attachment.content.text, 'p') }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -78,10 +78,10 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card thumbnail'>
-                    { full(attachment.content.title, 'h1') }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
                     { attachedImage(attachment.content.images) }
-                    { full(attachment.content.subtitle, 'h2') }
-                    { full(attachment.content.text, 'p') }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -92,9 +92,9 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card video'>
                     { videoWithOnLoad(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
-                    { full(attachment.content.title, 'h1') }
-                    { full(attachment.content.subtitle, 'h2') }
-                    { full(attachment.content.text, 'p') }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -109,9 +109,9 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card animation'>
                     { contentFunction(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
-                    { full(attachment.content.title, 'h1') }
-                    { full(attachment.content.subtitle, 'h2') }
-                    { full(attachment.content.text, 'p') }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -122,9 +122,9 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card audio'>
                     { audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop) }
-                    { full(attachment.content.title, 'h1') }
-                    { full(attachment.content.subtitle, 'h2') }
-                    { full(attachment.content.text, 'p') }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -134,7 +134,7 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card signin'>
-                    { full(attachment.content.text, 'h1') }
+                    { renderIfNonempty(attachment.content.text, text => <h1>{text}</h1>) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -149,10 +149,10 @@ export const AttachmentView = (props: {
                             <tr>
                                 <th colSpan={ 2 }>{ attachment.content.title }</th>
                             </tr>
-                            { attachment.content.facts && attachment.content.facts.map(fact => <tr><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
+                            { attachment.content.facts && attachment.content.facts.map((fact, i) => <tr key={'fact' + i}><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
                         </thead>
-                        <tbody>{ attachment.content.items && attachment.content.items.map(item =>
-                            <tr>
+                        <tbody>{ attachment.content.items && attachment.content.items.map((item, i) =>
+                            <tr key={'item' + i}>
                                 <td>{ item.image && imageWithOnLoad(item.image.url) }<span>{ item.title }</span></td>
                                 <td>{ item.price }</td>
                             </tr>) }
