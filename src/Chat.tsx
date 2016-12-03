@@ -242,6 +242,11 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
     trySendMessage(store, clientActivityId);
 }
 
+export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
+    if (typeof value === 'string' && value.length === 0) return;
+    return renderer(value);
+}
+
 export const konsole = {
     log: (message?: any, ... optionalParams: any[]) => {
         if (typeof(window) !== 'undefined' && window["botchatDebug"] === true && message)
