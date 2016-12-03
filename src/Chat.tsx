@@ -46,42 +46,10 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
-
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
 
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
-
-        props.botConnection.start();
-        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
-            this.store.dispatch({ type: 'Connection_Change', connectionStatus } as ConnectionAction)
-        );
-
-        this.activitySubscription = props.botConnection.activity$.subscribe(
-            activity => this.handleIncomingActivity(activity),
-            error => konsole.log("activity$ error", error)
-        );
-
-        this.typingActivitySubscription = this.typingActivity$.do(activity => {
-            this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction)
-            updateSelectedActivity(this.store);
-        })
-        .delay(3000)
-        .subscribe(activity => {
-            this.store.dispatch({ type: 'Clear_Typing', id: activity.id } as HistoryAction);
-            updateSelectedActivity(this.store);
-        });
-
-        if (props.selectedActivity) {
-            this.selectActivityCallback = activity => this.selectActivity(activity);
-            this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
-                this.store.dispatch({
-                    type: 'Select_Activity',
-                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
-                } as HistoryAction);
-            });
-        }
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -112,15 +80,49 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     componentDidMount() {
+        let props = this.props;
+
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
+
+        props.botConnection.start();
+        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
+            this.store.dispatch({ type: 'Connection_Change', connectionStatus } as ConnectionAction)
+        );
+
+        this.activitySubscription = props.botConnection.activity$.subscribe(
+            activity => this.handleIncomingActivity(activity),
+            error => konsole.log("activity$ error", error)
+        );
+
+        this.typingActivitySubscription = this.typingActivity$.do(activity => {
+            this.store.dispatch({ type: 'Show_Typing', activity } as HistoryAction)
+            updateSelectedActivity(this.store);
+        })
+        .delay(3000)
+        .subscribe(activity => {
+            this.store.dispatch({ type: 'Clear_Typing', id: activity.id } as HistoryAction);
+            updateSelectedActivity(this.store);
+        });
+
+        if (props.selectedActivity) {
+            this.selectActivityCallback = activity => this.selectActivity(activity);
+            this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
+                this.store.dispatch({
+                    type: 'Select_Activity',
+                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
+                } as HistoryAction);
+            });
+        }
+
         this.storeUnsubscribe = this.store.subscribe(() =>
             this.forceUpdate()
         );
     }
 
     componentWillUnmount() {
+        this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         this.typingActivitySubscription.unsubscribe();
-        this.connectionStatusSubscription.unsubscribe();
         if (this.selectedActivitySubscription)
             this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
