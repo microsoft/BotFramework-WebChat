@@ -156,8 +156,12 @@ export const history: Reducer<HistoryState> = (
             });
 
         case 'Receive_Sent_Message': {
+            if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
+                // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
+                return state;
+            }
             const i = state.activities.findIndex(activity =>
-                activity.channelData && action.activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
+                activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
             );
             if (i !== -1) {
                 const activity = state.activities[i];

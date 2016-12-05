@@ -69,8 +69,12 @@ exports.history = function (state, action) {
                 input: action.input
             });
         case 'Receive_Sent_Message': {
+            if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
+                // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
+                return state;
+            }
             var i = state.activities.findIndex(function (activity) {
-                return activity.channelData && action.activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId;
+                return activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId;
             });
             if (i !== -1) {
                 var activity = state.activities[i];
