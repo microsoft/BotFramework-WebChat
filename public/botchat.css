@@ -7,17 +7,11 @@
 
     .wc-app button {
         background-color: #0063B1;
-        border: none;
-        border-radius: 2px;
+        border: 1px solid #ccc;
+        border-radius: 1px;
         color: #fff;
         cursor: pointer;
         outline: none;
-        transition: color .2s ease, background-color .2s ease;
-    }
-    
-    .wc-app button:hover {
-        background-color: #3A96DD;
-        color: #fff;
         transition: color .2s ease, background-color .2s ease;
     }
 
@@ -181,16 +175,22 @@
 
     .wc-card button {
         background-color: transparent;
-        border: none;
-        border-top: 1px solid #d2dde5;
         color: #3A96DD;
-        height: 42px;
+        min-height: 32px;
         width: 100%;
+        padding: 0 16px;
     }
 
     .wc-card button:hover {
         background-color: transparent;
-        color: #0063B1;
+        border-color: #3A96DD;
+        color: #3A96DD;
+    }
+
+    .wc-card button:active {
+        background-color: #3A96DD;
+        border-color: #3A96DD;
+        color: white;
     }
 
     .wc-card h1 {
@@ -221,12 +221,14 @@
 
     ul.wc-card-buttons {
         clear: both;
-        margin: 0 -8px -8px -8px;
+        display: table;
     }
 
     ul.wc-card-buttons li {
         list-style-type: none;
         text-align: center;
+        float: left;
+        margin: 2px;
     }
 
     .wc-card.hero img {
