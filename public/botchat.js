@@ -21542,38 +21542,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Chat = (function (_super) {
 	    __extends(Chat, _super);
 	    function Chat(props) {
-	        var _this = this;
 	        _super.call(this, props);
 	        this.store = Store_1.createStore();
 	        this.typingActivity$ = new rxjs_1.Subject();
 	        exports.konsole.log("BotChat.Chat props", props);
-	        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 	        if (props.formatOptions)
 	            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
 	        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
-	        props.botConnection.start();
-	        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
-	            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
-	        });
-	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
-	        this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
-	            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
-	            exports.updateSelectedActivity(_this.store);
-	        })
-	            .delay(3000)
-	            .subscribe(function (activity) {
-	            _this.store.dispatch({ type: 'Clear_Typing', id: activity.id });
-	            exports.updateSelectedActivity(_this.store);
-	        });
-	        if (props.selectedActivity) {
-	            this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
-	            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
-	                _this.store.dispatch({
-	                    type: 'Select_Activity',
-	                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
-	                });
-	            });
-	        }
 	    }
 	    Chat.prototype.handleIncomingActivity = function (activity) {
 	        var state = this.store.getState();
@@ -21601,14 +21576,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    Chat.prototype.componentDidMount = function () {
 	        var _this = this;
+	        var props = this.props;
+	        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
+	        props.botConnection.start();
+	        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
+	            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
+	        });
+	        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
+	        this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
+	            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+	            exports.updateSelectedActivity(_this.store);
+	        })
+	            .delay(3000)
+	            .subscribe(function (activity) {
+	            _this.store.dispatch({ type: 'Clear_Typing', id: activity.id });
+	            exports.updateSelectedActivity(_this.store);
+	        });
+	        if (props.selectedActivity) {
+	            this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
+	            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
+	                _this.store.dispatch({
+	                    type: 'Select_Activity',
+	                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
+	                });
+	            });
+	        }
 	        this.storeUnsubscribe = this.store.subscribe(function () {
 	            return _this.forceUpdate();
 	        });
 	    };
 	    Chat.prototype.componentWillUnmount = function () {
+	        this.connectionStatusSubscription.unsubscribe();
 	        this.activitySubscription.unsubscribe();
 	        this.typingActivitySubscription.unsubscribe();
-	        this.connectionStatusSubscription.unsubscribe();
 	        if (this.selectedActivitySubscription)
 	            this.selectedActivitySubscription.unsubscribe();
 	        this.props.botConnection.end();
@@ -21714,6 +21714,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    });
 	    exports.trySendMessage(store, clientActivityId);
+	};
+	exports.renderIfNonempty = function (value, renderer) {
+	    if (typeof value === 'string' && value.length === 0)
+	        return;
+	    return renderer(value);
 	};
 	exports.konsole = {
 	    log: function (message) {
@@ -39927,10 +39932,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	var React = __webpack_require__(3);
 	var Chat_1 = __webpack_require__(174);
-	var nonEmpty = function (value, template) {
-	    if (typeof value === 'string' && value.length > 0)
-	        return template;
-	};
 	exports.AttachmentView = function (props) {
 	    if (!props.attachment)
 	        return;
@@ -39981,28 +39982,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return null;
 	            return (React.createElement("div", {className: 'wc-card hero'}, 
 	                attachedImage(attachment.content.images), 
-	                React.createElement("h1", null, attachment.content.title), 
-	                React.createElement("h2", null, attachment.content.subtitle), 
-	                React.createElement("p", null, attachment.content.text), 
+	                Chat_1.renderIfNonempty(attachment.content.title, function (title) { return React.createElement("h1", null, title); }), 
+	                Chat_1.renderIfNonempty(attachment.content.subtitle, function (subtitle) { return React.createElement("h2", null, subtitle); }), 
+	                Chat_1.renderIfNonempty(attachment.content.text, function (text) { return React.createElement("p", null, text); }), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.thumbnail":
 	            if (!attachment.content)
 	                return null;
 	            return (React.createElement("div", {className: 'wc-card thumbnail'}, 
-	                React.createElement("h1", null, attachment.content.title), 
-	                React.createElement("p", null, 
-	                    attachedImage(attachment.content.images), 
-	                    React.createElement("h2", null, attachment.content.subtitle), 
-	                    attachment.content.text), 
+	                Chat_1.renderIfNonempty(attachment.content.title, function (title) { return React.createElement("h1", null, title); }), 
+	                attachedImage(attachment.content.images), 
+	                Chat_1.renderIfNonempty(attachment.content.subtitle, function (subtitle) { return React.createElement("h2", null, subtitle); }), 
+	                Chat_1.renderIfNonempty(attachment.content.text, function (text) { return React.createElement("p", null, text); }), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.video":
 	            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
 	                return null;
 	            return (React.createElement("div", {className: 'wc-card video'}, 
 	                videoWithOnLoad(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop), 
-	                React.createElement("h1", null, attachment.content.title), 
-	                React.createElement("h2", null, attachment.content.subtitle), 
-	                React.createElement("p", null, attachment.content.text), 
+	                Chat_1.renderIfNonempty(attachment.content.title, function (title) { return React.createElement("h1", null, title); }), 
+	                Chat_1.renderIfNonempty(attachment.content.subtitle, function (subtitle) { return React.createElement("h2", null, subtitle); }), 
+	                Chat_1.renderIfNonempty(attachment.content.text, function (text) { return React.createElement("p", null, text); }), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.animation":
 	            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
@@ -40010,24 +40010,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var contentFunction = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad;
 	            return (React.createElement("div", {className: 'wc-card animation'}, 
 	                contentFunction(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop), 
-	                React.createElement("h1", null, attachment.content.title), 
-	                React.createElement("h2", null, attachment.content.subtitle), 
-	                React.createElement("p", null, attachment.content.text), 
+	                Chat_1.renderIfNonempty(attachment.content.title, function (title) { return React.createElement("h1", null, title); }), 
+	                Chat_1.renderIfNonempty(attachment.content.subtitle, function (subtitle) { return React.createElement("h2", null, subtitle); }), 
+	                Chat_1.renderIfNonempty(attachment.content.text, function (text) { return React.createElement("p", null, text); }), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.audio":
 	            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
 	                return null;
 	            return (React.createElement("div", {className: 'wc-card audio'}, 
 	                audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop), 
-	                React.createElement("h1", null, attachment.content.title), 
-	                React.createElement("h2", null, attachment.content.subtitle), 
-	                React.createElement("p", null, attachment.content.text), 
+	                Chat_1.renderIfNonempty(attachment.content.title, function (title) { return React.createElement("h1", null, title); }), 
+	                Chat_1.renderIfNonempty(attachment.content.subtitle, function (subtitle) { return React.createElement("h2", null, subtitle); }), 
+	                Chat_1.renderIfNonempty(attachment.content.text, function (text) { return React.createElement("p", null, text); }), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.signin":
 	            if (!attachment.content)
 	                return null;
 	            return (React.createElement("div", {className: 'wc-card signin'}, 
-	                React.createElement("h1", null, attachment.content.text), 
+	                Chat_1.renderIfNonempty(attachment.content.text, function (text) { return React.createElement("h1", null, text); }), 
 	                buttons(attachment.content.buttons)));
 	        case "application/vnd.microsoft.card.receipt":
 	            if (!attachment.content)
@@ -40038,11 +40038,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        React.createElement("tr", null, 
 	                            React.createElement("th", {colSpan: 2}, attachment.content.title)
 	                        ), 
-	                        attachment.content.facts && attachment.content.facts.map(function (fact) { return React.createElement("tr", null, 
+	                        attachment.content.facts && attachment.content.facts.map(function (fact, i) { return React.createElement("tr", {key: 'fact' + i}, 
 	                            React.createElement("th", null, fact.key), 
 	                            React.createElement("th", null, fact.value)); })), 
-	                    React.createElement("tbody", null, attachment.content.items && attachment.content.items.map(function (item) {
-	                        return React.createElement("tr", null, 
+	                    React.createElement("tbody", null, attachment.content.items && attachment.content.items.map(function (item, i) {
+	                        return React.createElement("tr", {key: 'item' + i}, 
 	                            React.createElement("td", null, 
 	                                item.image && imageWithOnLoad(item.image.url), 
 	                                React.createElement("span", null, item.title)), 
