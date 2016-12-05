@@ -14,38 +14,13 @@ var Strings_1 = require('./Strings');
 var Chat = (function (_super) {
     __extends(Chat, _super);
     function Chat(props) {
-        var _this = this;
         _super.call(this, props);
         this.store = Store_1.createStore();
         this.typingActivity$ = new rxjs_1.Subject();
         exports.konsole.log("BotChat.Chat props", props);
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
         if (props.formatOptions)
             this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
         this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
-        props.botConnection.start();
-        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
-            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
-        });
-        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
-        this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
-            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
-            exports.updateSelectedActivity(_this.store);
-        })
-            .delay(3000)
-            .subscribe(function (activity) {
-            _this.store.dispatch({ type: 'Clear_Typing', id: activity.id });
-            exports.updateSelectedActivity(_this.store);
-        });
-        if (props.selectedActivity) {
-            this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
-            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
-                _this.store.dispatch({
-                    type: 'Select_Activity',
-                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
-                });
-            });
-        }
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
         var state = this.store.getState();
@@ -73,14 +48,39 @@ var Chat = (function (_super) {
     };
     Chat.prototype.componentDidMount = function () {
         var _this = this;
+        var props = this.props;
+        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
+        props.botConnection.start();
+        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
+            return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
+        });
+        this.activitySubscription = props.botConnection.activity$.subscribe(function (activity) { return _this.handleIncomingActivity(activity); }, function (error) { return exports.konsole.log("activity$ error", error); });
+        this.typingActivitySubscription = this.typingActivity$.do(function (activity) {
+            _this.store.dispatch({ type: 'Show_Typing', activity: activity });
+            exports.updateSelectedActivity(_this.store);
+        })
+            .delay(3000)
+            .subscribe(function (activity) {
+            _this.store.dispatch({ type: 'Clear_Typing', id: activity.id });
+            exports.updateSelectedActivity(_this.store);
+        });
+        if (props.selectedActivity) {
+            this.selectActivityCallback = function (activity) { return _this.selectActivity(activity); };
+            this.selectedActivitySubscription = props.selectedActivity.subscribe(function (activityOrID) {
+                _this.store.dispatch({
+                    type: 'Select_Activity',
+                    selectedActivity: activityOrID.activity || _this.store.getState().history.activities.find(function (activity) { return activity.id === activityOrID.id; })
+                });
+            });
+        }
         this.storeUnsubscribe = this.store.subscribe(function () {
             return _this.forceUpdate();
         });
     };
     Chat.prototype.componentWillUnmount = function () {
+        this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
         this.typingActivitySubscription.unsubscribe();
-        this.connectionStatusSubscription.unsubscribe();
         if (this.selectedActivitySubscription)
             this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
@@ -186,6 +186,11 @@ exports.sendFiles = function (store, files) {
         }
     });
     exports.trySendMessage(store, clientActivityId);
+};
+exports.renderIfNonempty = function (value, renderer) {
+    if (typeof value === 'string' && value.length === 0)
+        return;
+    return renderer(value);
 };
 exports.konsole = {
     log: function (message) {

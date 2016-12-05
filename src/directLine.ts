@@ -41,7 +41,7 @@ export class DirectLine implements IBotConnection {
             this.conversationId = conversation.conversationId;
             this.token = this.secret || conversation.token;
             this.connectionStatus$.next(ConnectionStatus.Online);
-  
+
             if (!this.secret)
                 this.refreshTokenLoop();
         });

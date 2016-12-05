@@ -6,7 +6,7 @@ export interface SecretOrToken {
 }
 
 export declare class DirectLine {
-    constructor(secretOrToken: SecretOrToken, domain?: string); // segment is DEPRECATED and will be removed before release
+    constructor(secretOrToken: SecretOrToken, domain?: string);
     start();
     end();
 }
