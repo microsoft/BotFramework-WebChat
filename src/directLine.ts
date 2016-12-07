@@ -84,7 +84,7 @@ export class DirectLine implements IBotConnection {
     private refreshToken() {
         return this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-        .flatMap<AjaxResponse>(_ => Observable.ajax({
+        .flatMap(_ => Observable.ajax({
             method: "POST",
             url: `${this.domain}/tokens/refresh`,
             timeout,
@@ -196,7 +196,7 @@ export class DirectLine implements IBotConnection {
         .take(1)
 //      .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
         .map(ajaxResponse => ajaxResponse.response as ActivityGroup)
-        .flatMap<Activity>(activityGroup => {
+        .flatMap(activityGroup => {
             if (activityGroup.watermark)
                 this.watermark = activityGroup.watermark;
             return Observable.from(activityGroup.activities);
