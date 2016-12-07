@@ -223,7 +223,7 @@ export const history: Reducer<HistoryState> = (
             if (i === -1) return state;
 
             const activity = state.activities[i];
-            if (activity.id && activity.id != "retry") return state;
+            if (activity.id != "retry") return state;
 
             const newActivity = Object.assign({}, activity, {
                 id: action.type === 'Send_Message_Succeed' ? action.id : null                        
