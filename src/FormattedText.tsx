@@ -55,7 +55,7 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
             tables: true,
             breaks: false,
             pedantic: false,
-            sanitize: true,
+            sanitize: false,
             smartLists: true,
             silent: false,
             smartypants: true
