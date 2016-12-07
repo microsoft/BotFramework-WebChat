@@ -125,7 +125,7 @@ exports.history = function (state, action) {
             if (i === -1)
                 return state;
             var activity = state.activities[i];
-            if (activity.id && activity.id != "retry")
+            if (activity.id != "retry")
                 return state;
             var newActivity = Object.assign({}, activity, {
                 id: action.type === 'Send_Message_Succeed' ? action.id : null
