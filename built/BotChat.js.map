@@ -1,1 +1,1 @@
-{"version":3,"file":"BotChat.js","sourceRoot":"","sources":["../src/BotChat.ts"],"names":[],"mappings":";AAAA,oBAA8B,OAAO,CAAC;AAA7B,wBAA6B;AACtC,qBAA+C,QAAQ,CAAC;AAA/C,2BAA+C;AACxD,2BAAqE,cAAc,CAAC;AAA5D,6CAAU;AAAE,8CAAgD;AACnC"}
+{"version":3,"file":"BotChat.js","sourceRoot":"","sources":["../src/BotChat.ts"],"names":[],"mappings":";AAAA,6BAAsC;AAA7B,oBAAA,GAAG,CAAA;AACZ,+BAAwD;AAA/C,sBAAA,IAAI,CAAA;AACb,2CAAoF;AAA5D,kCAAA,UAAU,CAAA;AAAE,mCAAA,UAAU,CAAe"}

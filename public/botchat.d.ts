@@ -6,7 +6,7 @@ export interface SecretOrToken {
 }
 
 export declare class DirectLine {
-    constructor(secretOrToken: SecretOrToken, domain?: string);
+    constructor(secretOrToken: SecretOrToken, domain?: string, webSocket?: boolean);
     start();
     end();
 }

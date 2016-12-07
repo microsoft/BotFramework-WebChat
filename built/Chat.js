@@ -4,23 +4,24 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var React = require('react');
-var rxjs_1 = require('@reactivex/rxjs');
+var React = require("react");
+var rxjs_1 = require("@reactivex/rxjs");
 //import { BrowserLine } from './browserLine';
-var History_1 = require('./History');
-var Shell_1 = require('./Shell');
-var Store_1 = require('./Store');
-var Strings_1 = require('./Strings');
+var History_1 = require("./History");
+var Shell_1 = require("./Shell");
+var Store_1 = require("./Store");
+var Strings_1 = require("./Strings");
 var Chat = (function (_super) {
     __extends(Chat, _super);
     function Chat(props) {
-        _super.call(this, props);
-        this.store = Store_1.createStore();
-        this.typingActivity$ = new rxjs_1.Subject();
+        var _this = _super.call(this, props) || this;
+        _this.store = Store_1.createStore();
+        _this.typingActivity$ = new rxjs_1.Subject();
         exports.konsole.log("BotChat.Chat props", props);
         if (props.formatOptions)
-            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
-        this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
+            _this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions });
+        _this.store.dispatch({ type: 'Set_Localized_Strings', strings: Strings_1.strings(props.locale || window.navigator.language) });
+        return _this;
     }
     Chat.prototype.handleIncomingActivity = function (activity) {
         var state = this.store.getState();
@@ -92,13 +93,12 @@ var Chat = (function (_super) {
         var header;
         if (state.format.options.showHeader)
             header =
-                React.createElement("div", {className: "wc-header"}, 
-                    React.createElement("span", null, state.format.strings.title)
-                );
-        return (React.createElement("div", {className: "wc-chatview-panel"}, 
-            header, 
-            React.createElement(History_1.History, {store: this.store, selectActivity: this.selectActivityCallback}), 
-            React.createElement(Shell_1.Shell, {store: this.store})));
+                React.createElement("div", { className: "wc-header" },
+                    React.createElement("span", null, state.format.strings.title));
+        return (React.createElement("div", { className: "wc-chatview-panel" },
+            header,
+            React.createElement(History_1.History, { store: this.store, selectActivity: this.selectActivityCallback }),
+            React.createElement(Shell_1.Shell, { store: this.store })));
     };
     return Chat;
 }(React.Component));

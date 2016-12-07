@@ -1,18 +1,22 @@
 "use strict";
-var rxjs_1 = require('@reactivex/rxjs');
-var BotConnection_1 = require('./BotConnection');
-var Chat_1 = require('./Chat');
+var rxjs_1 = require("@reactivex/rxjs");
+var BotConnection_1 = require("./BotConnection");
+var Chat_1 = require("./Chat");
 var intervalRefreshToken = 29 * 60 * 1000;
 var timeout = 5 * 1000;
 var DirectLine = (function () {
-    function DirectLine(secretOrToken, domain) {
+    function DirectLine(secretOrToken, domain, webSocket) {
         if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
+        if (webSocket === void 0) { webSocket = false; }
         this.domain = domain;
+        this.webSocket = webSocket;
         this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
-        this.activity$ = this.getActivity$();
         this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
+        this.activity$ = (webSocket && WebSocket !== undefined) ?
+            this.getWebSocketActivity$() :
+            this.getGetPollingActivity$();
     }
     DirectLine.prototype.start = function () {
         var _this = this;
@@ -20,6 +24,7 @@ var DirectLine = (function () {
             .subscribe(function (conversation) {
             _this.conversationId = conversation.conversationId;
             _this.token = _this.secret || conversation.token;
+            _this.streamUrl = conversation.streamUrl;
             _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Online);
             if (!_this.secret)
                 _this.refreshTokenLoop();
@@ -153,7 +158,7 @@ var DirectLine = (function () {
                 : rxjs_1.Observable.of("retry");
         });
     };
-    DirectLine.prototype.getActivity$ = function () {
+    DirectLine.prototype.getGetPollingActivity$ = function () {
         var _this = this;
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
@@ -185,6 +190,82 @@ var DirectLine = (function () {
             }
         })
             .delay(5 * 1000); });
+    };
+    /**
+     * Gets an observable of streamURL by requestings a new one from the conversation APIs.
+     * @return An Observable of stream url.
+     */
+    DirectLine.prototype.getWebSocketStreamURL$ = function () {
+        var _this = this;
+        return this.connectionStatus$
+            .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
+            .flatMap(function (_) {
+            if (_this.streamUrl) {
+                var copy = _this.streamUrl;
+                _this.streamUrl = null;
+                return rxjs_1.Observable.of(copy);
+            }
+            else {
+                return rxjs_1.Observable.ajax({
+                    method: "GET",
+                    url: _this.domain + "/conversations/" + _this.conversationId,
+                    timeout: timeout,
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer " + _this.token
+                    }
+                }) // Takes one result
+                    .take(1)
+                    .map(function (result) { return result.response.streamUrl; });
+            }
+        })
+            .retryWhen(function (error$) { return error$
+            .mergeMap(function (error) {
+            if (error.status === 403) {
+                _this.connectionStatus$.next(BotConnection_1.ConnectionStatus.Offline);
+                return rxjs_1.Observable.throw(error);
+            }
+            else {
+                return rxjs_1.Observable.of(error);
+            }
+        })
+            .delay(timeout); });
+    };
+    /**
+     * Gets an Observable of activity from the Web Socket connectivity of direct line.
+     * @return An Observable of activity.
+     */
+    DirectLine.prototype.getWebSocketActivity$ = function () {
+        var _this = this;
+        // From the Web Socket stream URL
+        return this.getWebSocketStreamURL$()
+            .flatMap(function (url) {
+            // Use a result selector to prevent crash from incoming empty message (it could also helps in timeout detection)
+            var ws$ = rxjs_1.Observable.webSocket({
+                url: url,
+                resultSelector: function (e) { return ({
+                    type: e.data ? "ACTIVITY" : "PING",
+                    message: e.data ? JSON.parse(e.data) : null
+                }); }
+            });
+            // timeout seconds ping for keep alive even if already in the browser.
+            rxjs_1.Observable.interval(timeout)
+                .timeInterval()
+                .subscribe(function (_) { ws$.next({}); });
+            return ws$;
+        })
+            .retryWhen(function (error$) { return error$
+            .mergeMap(function (error) {
+            return rxjs_1.Observable.of(error);
+        })
+            .delay(timeout); })
+            .filter(function (data) { return data.type == "ACTIVITY"; })
+            .map(function (data) { return data.message; })
+            .flatMap(function (activityGroup) {
+            if (activityGroup.watermark)
+                _this.watermark = activityGroup.watermark;
+            return rxjs_1.Observable.from(activityGroup.activities);
+        });
     };
     return DirectLine;
 }());
