@@ -21550,14 +21550,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var __assign = (this && this.__assign) || Object.assign || function(t) {
-	    for (var s, i = 1, n = arguments.length; i < n; i++) {
-	        s = arguments[i];
-	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-	            t[p] = s[p];
-	    }
-	    return t;
-	};
 	var React = __webpack_require__(3);
 	var rxjs_1 = __webpack_require__(181);
 	//import { BrowserLine } from './browserLine';
@@ -21581,18 +21573,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var state = this.store.getState();
 	        switch (activity.type) {
 	            case "message":
-	                if (activity.from.id === state.connection.user.id) {
-	                    this.store.dispatch({ type: 'Receive_Sent_Message', activity: activity });
-	                    break;
-	                }
-	                else if (activity.text && activity.text.endsWith("//typing")) {
-	                    // 'typing' activity only available with WebSockets, so this allows us to test with polling GET
-	                    activity = __assign({}, activity, { type: 'typing' });
-	                }
-	                else {
-	                    this.store.dispatch({ type: 'Receive_Message', activity: activity });
-	                    break;
-	                }
+	                this.store.dispatch({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity: activity });
+	                break;
 	            case "typing":
 	                this.typingActivity$.next(activity);
 	                break;
