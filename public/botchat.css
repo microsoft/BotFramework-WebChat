@@ -159,6 +159,7 @@
     }
 
     .wc-message-from {
+        clear: both;
         color: #999;
         font-size: 11px;
         margin-top: 5px;
@@ -392,7 +393,7 @@
         margin-right: 6px;
     }
 
-    .wc-message-from-me .wc-message-from {
+    .wc-message-from-me.wc-message-from {
         text-align: right;
     }
 
