@@ -273,7 +273,7 @@ export class DirectLine implements IBotConnection {
                     url: url,
                     resultSelector: e => ({
                         type: e.data ? "ACTIVITY" : "PING",
-                        message: e.data ? JSON.parse(e.data) : null
+                        activityGroup: e.data ? JSON.parse(e.data) : null
                     })
                 });
 
