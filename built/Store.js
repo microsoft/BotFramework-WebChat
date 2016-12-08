@@ -1,8 +1,8 @@
 "use strict";
-var redux_1 = require('redux');
-var BotConnection_1 = require('./BotConnection');
-var Chat_1 = require('./Chat');
-var Strings_1 = require('./Strings');
+var redux_1 = require("redux");
+var BotConnection_1 = require("./BotConnection");
+var Chat_1 = require("./Chat");
+var Strings_1 = require("./Strings");
 exports.format = function (state, action) {
     if (state === void 0) { state = {
         options: {

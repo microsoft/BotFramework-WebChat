@@ -90,9 +90,12 @@ export class History extends React.Component<Props, {}> {
                     timeLine = <span>{ activity.from.name || activity.from.id }{ sent }</span>;
                     break;
             } 
+
+            const who = activity.from.id === state.connection.user.id ? 'me' : 'bot';
+
             return (
                 <div key={ index } className={ "wc-message-wrapper" + (this.props.selectActivity ? ' clickable' : '') } onClick={ e => this.selectActivity(activity) }>
-                    <div className={ 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') }>
+                    <div className={ 'wc-message wc-message-from-' + who }>
                         <div className={ 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '') }>
                             <svg className="wc-message-callout">
                                 <path className="point-left" d="m0,6 l6 6 v-12 z" />
@@ -100,8 +103,8 @@ export class History extends React.Component<Props, {}> {
                             </svg>
                             <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.autoscroll }/>
                         </div>
-                        <div className="wc-message-from">{ timeLine }</div>
                     </div>
+                    <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
                 </div>
             );
         });

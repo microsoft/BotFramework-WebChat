@@ -50,7 +50,7 @@ Feel free to suggest features by filing an [issue](https://github.com/Microsoft/
 * Add localized strings (see [below](#to-add-localized-strings))
 * Report any unreported [issues](https://github.com/Microsoft/BotFramework-WebChat/issues)
 * Propose new [features](https://github.com/Microsoft/BotFramework-WebChat/issues)
-* Fix an outstanding [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls)
+* Fix an outstanding [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) *(please only commit source code, non-generated files)*
 
 ## Getting WebChat up and running
 
