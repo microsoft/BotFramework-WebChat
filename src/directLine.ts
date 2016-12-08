@@ -279,7 +279,6 @@ export class DirectLine implements IBotConnection {
 
                 // Ping the server with empty messages to see if we're still connected to it.
                 Observable.interval(timeout)
-                    .timeInterval()
                     .subscribe(_ => { ws$.next({}) });
 
                 return ws$;                
