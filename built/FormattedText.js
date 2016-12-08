@@ -51,16 +51,7 @@ var FormattedText = (function (_super) {
     FormattedText.prototype.renderMarkdown = function () {
         var src = this.props.text || '';
         src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-        var options = Object.assign({}, {
-            gfm: true,
-            tables: true,
-            breaks: false,
-            pedantic: false,
-            sanitize: false,
-            smartLists: true,
-            silent: false,
-            smartypants: true
-        }, this.props.markdownOptions);
+        var options = __assign({ gfm: true, tables: true, breaks: false, pedantic: false, sanitize: false, smartLists: true, silent: false, smartypants: true }, this.props.markdownOptions);
         var renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
         var text = Marked.parse(src, options);
         var elements = renderer.getElements(text);

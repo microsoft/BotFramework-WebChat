@@ -62,7 +62,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     break;
                 } else if (activity.text && activity.text.endsWith("//typing")) {
                     // 'typing' activity only available with WebSockets, so this allows us to test with polling GET
-                    activity = Object.assign({}, activity, { type: 'typing' });
+                    activity = { ... activity, type: 'typing' };
                     // fall through to "typing" case 
                 } else {
                     this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
