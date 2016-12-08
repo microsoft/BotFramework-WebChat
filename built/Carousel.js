@@ -4,20 +4,20 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var React = require('react');
-var Attachment_1 = require('./Attachment');
+var React = require("react");
+var Attachment_1 = require("./Attachment");
 var Carousel = (function (_super) {
     __extends(Carousel, _super);
     function Carousel(props) {
-        var _this = this;
-        _super.call(this, props);
-        this.scrollAllowInterrupt = true;
-        this.state = {
+        var _this = _super.call(this, props) || this;
+        _this.scrollAllowInterrupt = true;
+        _this.state = {
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
-        this.resizeListener = function () { return _this.resize(); };
-        this.scrollEventListener = function () { return _this.onScroll(); };
+        _this.resizeListener = function () { return _this.resize(); };
+        _this.scrollEventListener = function () { return _this.onScroll(); };
+        return _this;
     }
     Carousel.prototype.clearScrollTimers = function () {
         clearInterval(this.scrollStartTimer);
@@ -110,26 +110,19 @@ var Carousel = (function (_super) {
     };
     Carousel.prototype.render = function () {
         var _this = this;
-        return (React.createElement("div", {className: "wc-carousel"}, 
-            React.createElement("button", {disabled: !this.state.previousButtonEnabled, className: "scroll previous", onClick: function () { return _this.scrollBy(-1); }}, 
-                React.createElement("svg", null, 
-                    React.createElement("path", {d: "M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z"})
-                )
-            ), 
-            React.createElement("div", {className: "wc-carousel-scroll-outer"}, 
-                React.createElement("div", {className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; }}, 
-                    React.createElement("ul", {ref: function (ul) { return _this.ul = ul; }}, this.props.attachments.map(function (attachment, index) {
-                        return React.createElement("li", {key: index}, 
-                            React.createElement(Attachment_1.AttachmentView, {store: _this.props.store, attachment: attachment, onImageLoad: function () { return _this.resize(); }})
-                        );
-                    }))
-                )
-            ), 
-            React.createElement("button", {disabled: !this.state.nextButtonEnabled, className: "scroll next", onClick: function () { return _this.scrollBy(1); }}, 
-                React.createElement("svg", null, 
-                    React.createElement("path", {d: "M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"})
-                )
-            )));
+        return (React.createElement("div", { className: "wc-carousel" },
+            React.createElement("button", { disabled: !this.state.previousButtonEnabled, className: "scroll previous", onClick: function () { return _this.scrollBy(-1); } },
+                React.createElement("svg", null,
+                    React.createElement("path", { d: "M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" }))),
+            React.createElement("div", { className: "wc-carousel-scroll-outer" },
+                React.createElement("div", { className: "wc-carousel-scroll", ref: function (div) { return _this.scrollDiv = div; } },
+                    React.createElement("ul", { ref: function (ul) { return _this.ul = ul; } }, this.props.attachments.map(function (attachment, index) {
+                        return React.createElement("li", { key: index },
+                            React.createElement(Attachment_1.AttachmentView, { store: _this.props.store, attachment: attachment, onImageLoad: function () { return _this.resize(); } }));
+                    })))),
+            React.createElement("button", { disabled: !this.state.nextButtonEnabled, className: "scroll next", onClick: function () { return _this.scrollBy(1); } },
+                React.createElement("svg", null,
+                    React.createElement("path", { d: "M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z" })))));
     };
     Carousel.prototype.resize = function () {
         this.setItemWidth();

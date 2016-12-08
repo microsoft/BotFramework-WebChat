@@ -7,10 +7,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Chat_1 = require('./Chat');
-require('core-js/shim');
+var React = require("react");
+var ReactDOM = require("react-dom");
+var Chat_1 = require("./Chat");
+require("core-js/shim");
 /*
 //  experimental backchannel support
 & {
@@ -70,10 +70,8 @@ exports.App = function (props, container) {
     ReactDOM.render(React.createElement(AppContainer, props), container);
 };
 var AppContainer = function (props) {
-    return React.createElement("div", {className: "wc-app"}, 
-        React.createElement("div", {className: "wc-app-left-container"}, 
-            React.createElement(Chat_1.Chat, __assign({}, props))
-        )
-    );
+    return React.createElement("div", { className: "wc-app" },
+        React.createElement("div", { className: "wc-app-left-container" },
+            React.createElement(Chat_1.Chat, __assign({}, props))));
 };
 //# sourceMappingURL=App.js.map
