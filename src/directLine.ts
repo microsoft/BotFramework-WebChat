@@ -131,15 +131,14 @@ export class DirectLine implements IBotConnection {
 
     postMessageWithAttachments(message: Message) {
         const formData = new FormData();
+        const { attachments, ... newMessage } = message;
 
-        formData.append('activity', new Blob([JSON.stringify(
-            Object.assign({}, message, { attachments: undefined })
-        )], { type: 'application/vnd.microsoft.activity' }));
+        formData.append('activity', new Blob([JSON.stringify(newMessage)], { type: 'application/vnd.microsoft.activity' }));
 
         return this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
         .flatMap(_ =>
-            Observable.from(message.attachments || [])
+            Observable.from(attachments || [])
             .flatMap((media: Media) =>
                 Observable.ajax({
                     method: "GET",

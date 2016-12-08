@@ -77,14 +77,15 @@ var History = (function (_super) {
                         sent);
                     break;
             }
+            var who = activity.from.id === state.connection.user.id ? 'me' : 'bot';
             return (React.createElement("div", { key: index, className: "wc-message-wrapper" + (_this.props.selectActivity ? ' clickable' : ''), onClick: function (e) { return _this.selectActivity(activity); } },
-                React.createElement("div", { className: 'wc-message wc-message-from-' + (activity.from.id === state.connection.user.id ? 'me' : 'bot') },
+                React.createElement("div", { className: 'wc-message wc-message-from-' + who },
                     React.createElement("div", { className: 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '') },
                         React.createElement("svg", { className: "wc-message-callout" },
                             React.createElement("path", { className: "point-left", d: "m0,6 l6 6 v-12 z" }),
                             React.createElement("path", { className: "point-right", d: "m6,6 l-6 6 v-12 z" })),
-                        React.createElement(ActivityView_1.ActivityView, { store: _this.props.store, activity: activity, onImageLoad: _this.autoscroll })),
-                    React.createElement("div", { className: "wc-message-from" }, timeLine))));
+                        React.createElement(ActivityView_1.ActivityView, { store: _this.props.store, activity: activity, onImageLoad: _this.autoscroll }))),
+                React.createElement("div", { className: 'wc-message-from wc-message-from-' + who }, timeLine)));
         });
         return (React.createElement("div", { className: "wc-message-groups", ref: function (ref) { return _this.scrollMe = ref; } },
             React.createElement("div", { className: "wc-message-group" },

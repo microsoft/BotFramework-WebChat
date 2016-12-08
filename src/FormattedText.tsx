@@ -50,7 +50,7 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
     private renderMarkdown() {
         let src = this.props.text || '';
         src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-        const options: MarkedOptions = Object.assign({}, {
+        const options: MarkedOptions = {
             gfm: true,
             tables: true,
             breaks: false,
@@ -58,8 +58,9 @@ export class FormattedText extends React.Component<IFormattedTextProps, {}> {
             sanitize: false,
             smartLists: true,
             silent: false,
-            smartypants: true
-        } as MarkedOptions, this.props.markdownOptions);
+            smartypants: true,
+            ... this.props.markdownOptions
+        };
         const renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
         const text = Marked.parse(src, options);
         const elements = renderer.getElements(text);

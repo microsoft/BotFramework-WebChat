@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var redux_1 = require("redux");
 var BotConnection_1 = require("./BotConnection");
 var Chat_1 = require("./Chat");
@@ -29,27 +37,9 @@ exports.connection = function (state, action) {
     }; }
     switch (action.type) {
         case 'Start_Connection':
-            return Object.assign({}, state, {
-                connectionStatus: false,
-                botConnection: action.botConnection,
-                user: action.user,
-                bot: action.bot,
-                selectedActivity: action.selectedActivity
-            });
+            return __assign({}, state, { botConnection: action.botConnection, user: action.user, bot: action.bot, selectedActivity: action.selectedActivity });
         case 'Connection_Change':
-            return Object.assign({}, state, {
-                connectionStatus: action.connectionStatus
-            });
-        /*      experimental backchannel support
-                case 'Subscribe_Host':
-                    return Object.assign({}, state, {
-                        host: action.host
-                    });
-                case 'Unsubscribe_Host':
-                    return Object.assign({}, state, {
-                        host: undefined
-                    });
-        */
+            return __assign({}, state, { connectionStatus: action.connectionStatus });
         default:
             return state;
     }
@@ -65,9 +55,7 @@ exports.history = function (state, action) {
     Chat_1.konsole.log("history action", action);
     switch (action.type) {
         case 'Update_Input':
-            return Object.assign({}, state, {
-                input: action.input
-            });
+            return __assign({}, state, { input: action.input });
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
@@ -78,44 +66,29 @@ exports.history = function (state, action) {
             });
             if (i !== -1) {
                 var activity = state.activities[i];
-                return Object.assign({}, state, {
-                    activities: state.activities.slice(0, i).concat([
+                return __assign({}, state, { activities: state.activities.slice(0, i).concat([
                         action.activity
-                    ], state.activities.slice(i + 1)),
-                    selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
-                });
+                    ], state.activities.slice(i + 1)), selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity });
             }
         }
         case 'Receive_Message':
             if (state.activities.find(function (a) { return a.id === action.activity.id; }))
                 return state; // don't allow duplicate messages
-            return Object.assign({}, state, {
-                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+            return __assign({}, state, { activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
                     action.activity
-                ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }))
-            });
+                ], state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; })) });
         case 'Send_Message':
-            return Object.assign({}, state, {
-                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
-                    Object.assign({}, action.activity, {
-                        timestamp: (new Date()).toISOString(),
-                        channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
-                    })
-                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-                input: '',
-                clientActivityCounter: state.clientActivityCounter + 1
-            });
+            return __assign({}, state, { activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat([
+                    __assign({}, action.activity, { timestamp: (new Date()).toISOString(), channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter } })
+                ], state.activities.filter(function (activity) { return activity.type === "typing"; })), input: '', clientActivityCounter: state.clientActivityCounter + 1 });
         case 'Send_Message_Try': {
             var activity_1 = state.activities.find(function (activity) {
                 return activity.channelData && activity.channelData.clientActivityId === action.clientActivityId;
             });
-            var newActivity = activity_1.id === undefined ? activity_1 : Object.assign({}, activity_1, { id: undefined });
-            return Object.assign({}, state, {
-                activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
+            var newActivity = activity_1.id === undefined ? activity_1 : __assign({}, activity_1, { id: undefined });
+            return __assign({}, state, { activities: state.activities.filter(function (activityT) { return activityT.type !== "typing" && activityT !== activity_1; }).concat([
                     newActivity
-                ], state.activities.filter(function (activity) { return activity.type === "typing"; })),
-                selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity
-            });
+                ], state.activities.filter(function (activity) { return activity.type === "typing"; })), selectedActivity: state.selectedActivity === activity_1 ? newActivity : state.selectedActivity });
         }
         case 'Send_Message_Succeed':
         case 'Send_Message_Fail': {
@@ -127,34 +100,21 @@ exports.history = function (state, action) {
             var activity = state.activities[i];
             if (activity.id != "retry")
                 return state;
-            var newActivity = Object.assign({}, activity, {
-                id: action.type === 'Send_Message_Succeed' ? action.id : null
-            });
-            return Object.assign({}, state, {
-                activities: state.activities.slice(0, i).concat([
+            var newActivity = __assign({}, activity, { id: action.type === 'Send_Message_Succeed' ? action.id : null });
+            return __assign({}, state, { activities: state.activities.slice(0, i).concat([
                     newActivity
-                ], state.activities.slice(i + 1)),
-                clientActivityCounter: state.clientActivityCounter + 1,
-                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
-            });
+                ], state.activities.slice(i + 1)), clientActivityCounter: state.clientActivityCounter + 1, selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity });
         }
         case 'Show_Typing':
-            return Object.assign({}, state, {
-                activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
+            return __assign({}, state, { activities: state.activities.filter(function (activity) { return activity.type !== "typing"; }).concat(state.activities.filter(function (activity) { return activity.from.id !== action.activity.from.id && activity.type === "typing"; }), [
                     action.activity
-                ])
-            });
+                ]) });
         case 'Clear_Typing':
-            return Object.assign({}, state, {
-                activities: state.activities.filter(function (activity) { return activity.id !== action.id; }),
-                selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
-            });
+            return __assign({}, state, { activities: state.activities.filter(function (activity) { return activity.id !== action.id; }), selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity });
         case 'Select_Activity':
             if (action.selectedActivity === state.selectedActivity)
                 return state;
-            return Object.assign({}, state, {
-                selectedActivity: action.selectedActivity
-            });
+            return __assign({}, state, { selectedActivity: action.selectedActivity });
         default:
             return state;
     }

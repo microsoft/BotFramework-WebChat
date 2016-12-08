@@ -1,4 +1,13 @@
 "use strict";
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 var rxjs_1 = require("@reactivex/rxjs");
 var BotConnection_1 = require("./BotConnection");
 var Chat_1 = require("./Chat");
@@ -101,11 +110,12 @@ var DirectLine = (function () {
     DirectLine.prototype.postMessageWithAttachments = function (message) {
         var _this = this;
         var formData = new FormData();
-        formData.append('activity', new Blob([JSON.stringify(Object.assign({}, message, { attachments: undefined }))], { type: 'application/vnd.microsoft.activity' }));
+        var attachments = message.attachments, newMessage = __rest(message, ["attachments"]);
+        formData.append('activity', new Blob([JSON.stringify(newMessage)], { type: 'application/vnd.microsoft.activity' }));
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
             .flatMap(function (_) {
-            return rxjs_1.Observable.from(message.attachments || [])
+            return rxjs_1.Observable.from(attachments || [])
                 .flatMap(function (media) {
                 return rxjs_1.Observable.ajax({
                     method: "GET",
