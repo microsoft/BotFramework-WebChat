@@ -246,8 +246,7 @@ export class DirectLine implements IBotConnection {
                             "Accept": "application/json",
                             "Authorization": `Bearer ${this.token}`
                         }
-                    })
-                    .take(1)                    
+                    })                 
                     .map(result => result.response.streamUrl);
                 }
             })            
@@ -272,10 +271,10 @@ export class DirectLine implements IBotConnection {
                 // which will crash JSON.parse(). This custom resultSelector avoids the problem.
                 var ws$ = Observable.webSocket({
                     url: url,
-                    resultSelector: e => ({                 
-                        type: e.data ? "ACTIVITY" : "PING",
-                        message: e.data ? JSON.parse(e.data) : null
-                    })
+                    resultSelector: e => ({
+                            type: e.data ? "ACTIVITY" : "PING",
+                            message: e.data ? JSON.parse(e.data) : null
+                        })
                 });
 
                 // Ping the server with empty messages to see if we're still connected to it.
