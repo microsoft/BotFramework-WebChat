@@ -57,17 +57,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         switch (activity.type) {
 
             case "message":
-                if (activity.from.id === state.connection.user.id) {
-                    this.store.dispatch({ type: 'Receive_Sent_Message', activity } as HistoryAction);
-                    break;
-                } else if (activity.text && activity.text.endsWith("//typing")) {
-                    // 'typing' activity only available with WebSockets, so this allows us to test with polling GET
-                    activity = { ... activity, type: 'typing' };
-                    // fall through to "typing" case 
-                } else {
-                    this.store.dispatch({ type: 'Receive_Message', activity } as HistoryAction);
-                    break;
-                }
+                this.store.dispatch({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity } as HistoryAction);
+                break;
 
             case "typing":
                 this.typingActivity$.next(activity);
