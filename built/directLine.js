@@ -15,8 +15,8 @@ var DirectLine = (function () {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
         this.activity$ = (webSocket && WebSocket !== undefined) ?
-            this.getWebSocketActivity$() :
-            this.getGetPollingActivity$();
+            this.webSocketActivity$() :
+            this.pollingGetActivity$();
     }
     DirectLine.prototype.start = function () {
         var _this = this;
@@ -158,7 +158,7 @@ var DirectLine = (function () {
                 : rxjs_1.Observable.of("retry");
         });
     };
-    DirectLine.prototype.getGetPollingActivity$ = function () {
+    DirectLine.prototype.pollingGetActivity$ = function () {
         var _this = this;
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
@@ -191,11 +191,7 @@ var DirectLine = (function () {
         })
             .delay(5 * 1000); });
     };
-    /**
-     * Gets an observable of streamURL by requestings a new one from the conversation APIs.
-     * @return An Observable of stream url.
-     */
-    DirectLine.prototype.getWebSocketStreamURL$ = function () {
+    DirectLine.prototype.webSocketURL$ = function () {
         var _this = this;
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
@@ -214,7 +210,7 @@ var DirectLine = (function () {
                         "Accept": "application/json",
                         "Authorization": "Bearer " + _this.token
                     }
-                }) // Takes one result
+                })
                     .take(1)
                     .map(function (result) { return result.response.streamUrl; });
             }
@@ -231,16 +227,12 @@ var DirectLine = (function () {
         })
             .delay(timeout); });
     };
-    /**
-     * Gets an Observable of activity from the Web Socket connectivity of direct line.
-     * @return An Observable of activity.
-     */
-    DirectLine.prototype.getWebSocketActivity$ = function () {
+    DirectLine.prototype.webSocketActivity$ = function () {
         var _this = this;
-        // From the Web Socket stream URL
-        return this.getWebSocketStreamURL$()
+        return this.webSocketURL$()
             .flatMap(function (url) {
-            // Use a result selector to prevent crash from incoming empty message (it could also helps in timeout detection)
+            // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
+            // which will crash JSON.parse(). This custom resultSelector avoids the problem.
             var ws$ = rxjs_1.Observable.webSocket({
                 url: url,
                 resultSelector: function (e) { return ({
@@ -248,7 +240,7 @@ var DirectLine = (function () {
                     message: e.data ? JSON.parse(e.data) : null
                 }); }
             });
-            // timeout seconds ping for keep alive even if already in the browser.
+            // Ping the server with empty messages to see if we're still connected to it.
             rxjs_1.Observable.interval(timeout)
                 .timeInterval()
                 .subscribe(function (_) { ws$.next({}); });
@@ -260,7 +252,7 @@ var DirectLine = (function () {
         })
             .delay(timeout); })
             .filter(function (data) { return data.type == "ACTIVITY"; })
-            .map(function (data) { return data.message; })
+            .map(function (data) { return data.activityGroup; })
             .flatMap(function (activityGroup) {
             if (activityGroup.watermark)
                 _this.watermark = activityGroup.watermark;

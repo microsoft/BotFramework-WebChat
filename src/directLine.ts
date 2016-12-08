@@ -14,7 +14,7 @@ interface ActivityGroup {
 
 interface WebSocketResponse {
     type: string;
-    message: ActivityGroup; 
+    activityGroup: ActivityGroup; 
 }
 
 
@@ -42,8 +42,8 @@ export class DirectLine implements IBotConnection {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
         this.activity$ = (webSocket && WebSocket !== undefined) ?
-            this.getWebSocketActivity$() :        
-            this.getGetPollingActivity$();
+            this.webSocketActivity$() :        
+            this.pollingGetActivity$();
     }
 
     start() {
@@ -193,7 +193,7 @@ export class DirectLine implements IBotConnection {
         );
     }
 
-    private getGetPollingActivity$() {
+    private pollingGetActivity$() {
         return this.connectionStatus$
         .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
         .flatMap(_ => Observable.ajax({
@@ -227,18 +227,12 @@ export class DirectLine implements IBotConnection {
         );
     }
 
-    /**
-     * Gets an observable of streamURL by requestings a new one from the conversation APIs. 
-     * @return An Observable of stream url.
-     */
-    private getWebSocketStreamURL$(): Observable<string> {
+    private webSocketURL$(): Observable<string> {
         return this.connectionStatus$
-            // If connection is OK
             .filter(connectionStatus => connectionStatus === ConnectionStatus.Online)
-            // Create an Ajax observable
             .flatMap(_ => {
                 if (this.streamUrl) {
-                    var copy = this.streamUrl;
+                    const copy = this.streamUrl;
                     this.streamUrl = null;
 
                     return Observable.of(copy);
@@ -252,9 +246,8 @@ export class DirectLine implements IBotConnection {
                             "Accept": "application/json",
                             "Authorization": `Bearer ${this.token}`
                         }
-                    })// Takes one result
-                    .take(1)
-                    // Extracts the stream URL
+                    })
+                    .take(1)                    
                     .map(result => result.response.streamUrl);
                 }
             })            
@@ -272,16 +265,11 @@ export class DirectLine implements IBotConnection {
             );
     }
 
-    /**
-     * Gets an Observable of activity from the Web Socket connectivity of direct line.
-     * @return An Observable of activity.
-     */
-    private getWebSocketActivity$(): Observable<Activity> {
-        // From the Web Socket stream URL
-        return this.getWebSocketStreamURL$()
-            // Create an observable Web Socket
+    private webSocketActivity$(): Observable<Activity> {
+        return this.webSocketURL$()
             .flatMap<string, WebSocketResponse>(url => {
-                // Use a result selector to prevent crash from incoming empty message (it could also helps in timeout detection)
+                // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
+                // which will crash JSON.parse(). This custom resultSelector avoids the problem.
                 var ws$ = Observable.webSocket({
                     url: url,
                     resultSelector: e => ({                 
@@ -290,24 +278,20 @@ export class DirectLine implements IBotConnection {
                     })
                 });
 
-                // timeout seconds ping for keep alive even if already in the browser.
+                // Ping the server with empty messages to see if we're still connected to it.
                 Observable.interval(timeout)
                     .timeInterval()
                     .subscribe(_ => { ws$.next({}) });
 
                 return ws$;                
             })
-            // Retry the full connection + grabbing the socket URL in case of issue (reset the connection) 
             .retryWhen(error$ => error$
                 .mergeMap(error => {
                     return Observable.of(error);
                 }) 
-                .delay(timeout))
-            // Only deals with activity message (discard the ping)
+                .delay(timeout))            
             .filter(data => data.type == "ACTIVITY")
-            // Maps to activity group
-            .map(data => data.message)
-            // Creates observable of activityfor the client as well as updating the watermark           
+            .map(data => data.activityGroup)           
             .flatMap(activityGroup => {
                 if (activityGroup.watermark)
                     this.watermark = activityGroup.watermark;
