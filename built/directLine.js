@@ -23,9 +23,9 @@ var DirectLine = (function () {
         this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
-        this.activity$ = (webSocket && WebSocket !== undefined) ?
-            this.webSocketActivity$() :
-            this.pollingGetActivity$();
+        this.activity$ = webSocket && WebSocket !== undefined
+            ? this.webSocketActivity$()
+            : this.pollingGetActivity$();
     }
     DirectLine.prototype.start = function () {
         var _this = this;
@@ -65,7 +65,7 @@ var DirectLine = (function () {
     };
     DirectLine.prototype.refreshTokenLoop = function () {
         var _this = this;
-        this.tokenRefreshSubscription = rxjs_1.Observable.timer(intervalRefreshToken, intervalRefreshToken)
+        this.tokenRefreshSubscription = rxjs_1.Observable.interval(intervalRefreshToken)
             .flatMap(function (_) { return _this.refreshToken(); })
             .subscribe(function (token) {
             Chat_1.konsole.log("refreshing token", token, "at", new Date());
@@ -183,11 +183,7 @@ var DirectLine = (function () {
         }); })
             .take(1)
             .map(function (ajaxResponse) { return ajaxResponse.response; })
-            .flatMap(function (activityGroup) {
-            if (activityGroup.watermark)
-                _this.watermark = activityGroup.watermark;
-            return rxjs_1.Observable.from(activityGroup.activities);
-        })
+            .flatMap(function (activityGroup) { return _this.observableFromActivityGroup(activityGroup); })
             .repeatWhen(function (completed) { return completed.delay(1000); })
             .retryWhen(function (error$) { return error$
             .mergeMap(function (error) {
@@ -201,15 +197,20 @@ var DirectLine = (function () {
         })
             .delay(5 * 1000); });
     };
+    DirectLine.prototype.observableFromActivityGroup = function (activityGroup) {
+        if (activityGroup.watermark)
+            this.watermark = activityGroup.watermark;
+        return rxjs_1.Observable.from(activityGroup.activities);
+    };
     DirectLine.prototype.webSocketURL$ = function () {
         var _this = this;
         return this.connectionStatus$
             .filter(function (connectionStatus) { return connectionStatus === BotConnection_1.ConnectionStatus.Online; })
             .flatMap(function (_) {
             if (_this.streamUrl) {
-                var copy = _this.streamUrl;
+                var streamUrl = _this.streamUrl;
                 _this.streamUrl = null;
-                return rxjs_1.Observable.of(copy);
+                return rxjs_1.Observable.of(streamUrl);
             }
             else {
                 return rxjs_1.Observable.ajax({
@@ -221,7 +222,6 @@ var DirectLine = (function () {
                         "Authorization": "Bearer " + _this.token
                     }
                 })
-                    .take(1)
                     .map(function (result) { return result.response.streamUrl; });
             }
         })
@@ -240,34 +240,16 @@ var DirectLine = (function () {
     DirectLine.prototype.webSocketActivity$ = function () {
         var _this = this;
         return this.webSocketURL$()
-            .flatMap(function (url) {
+            .map(function (url) { return rxjs_1.Observable.webSocket({ url: url,
             // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
             // which will crash JSON.parse(). This custom resultSelector avoids the problem.
-            var ws$ = rxjs_1.Observable.webSocket({
-                url: url,
-                resultSelector: function (e) { return ({
-                    type: e.data ? "ACTIVITY" : "PING",
-                    message: e.data ? JSON.parse(e.data) : null
-                }); }
-            });
-            // Ping the server with empty messages to see if we're still connected to it.
-            rxjs_1.Observable.interval(timeout)
-                .timeInterval()
-                .subscribe(function (_) { ws$.next({}); });
-            return ws$;
-        })
-            .retryWhen(function (error$) { return error$
-            .mergeMap(function (error) {
-            return rxjs_1.Observable.of(error);
-        })
-            .delay(timeout); })
-            .filter(function (data) { return data.type == "ACTIVITY"; })
-            .map(function (data) { return data.activityGroup; })
-            .flatMap(function (activityGroup) {
-            if (activityGroup.watermark)
-                _this.watermark = activityGroup.watermark;
-            return rxjs_1.Observable.from(activityGroup.activities);
-        });
+            resultSelector: function (message) { return message.data && JSON.parse(message.data); }
+        }); })
+            .do(function (ws$) { return rxjs_1.Observable.interval(timeout).subscribe(function (_) { return ws$.next({}); }); })
+            .flatMap(function (ws$) { return ws$; })
+            .retryWhen(function (error$) { return error$.delay(timeout); })
+            .filter(function (activityGroup) { return !!activityGroup; })
+            .flatMap(function (activityGroup) { return _this.observableFromActivityGroup(activityGroup); });
     };
     return DirectLine;
 }());
