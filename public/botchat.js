@@ -49685,6 +49685,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.tokenRefreshSubscription.unsubscribe();
 	            this.tokenRefreshSubscription = undefined;
 	        }
+	        if (this.webSocketPingSubscription) {
+	            this.webSocketPingSubscription.unsubscribe();
+	            this.webSocketPingSubscription = undefined;
+	        }
 	    };
 	    DirectLine.prototype.postMessageWithAttachments = function (message) {
 	        var _this = this;
@@ -49818,14 +49822,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    DirectLine.prototype.webSocketActivity$ = function () {
 	        var _this = this;
+	        // Chrome is pretty bad at noticing when a WebSocket connection is broken.
+	        // If we periodically ping the server with empty messages, it helps Chrome 
+	        // realize the connection is broken, and close the socket. This throws an
+	        // error, and that give us the opportunity to attempt to reconnect.
+	        this.webSocketPingSubscription = rxjs_1.Observable.interval(timeout).subscribe(function (_) {
+	            if (_this.wss)
+	                _this.wss.next({});
+	        });
 	        return this.webSocketURL$()
-	            .map(function (url) { return rxjs_1.Observable.webSocket({ url: url,
-	            // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
-	            // which will crash JSON.parse(). This custom resultSelector avoids the problem.
-	            resultSelector: function (message) { return message.data && JSON.parse(message.data); }
-	        }); })
-	            .do(function (ws$) { return rxjs_1.Observable.interval(timeout).subscribe(function (_) { return ws$.next({}); }); })
-	            .flatMap(function (ws$) { return ws$; })
+	            .flatMap(function (url) {
+	            return _this.wss = rxjs_1.Observable.webSocket({ url: url,
+	                // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
+	                // which will crash JSON.parse(). This custom resultSelector avoids the problem.
+	                resultSelector: function (message) { return message.data && JSON.parse(message.data); }
+	            });
+	        })
 	            .retryWhen(function (error$) { return error$.delay(timeout); })
 	            .filter(function (activityGroup) { return !!activityGroup; })
 	            .flatMap(function (activityGroup) { return _this.observableFromActivityGroup(activityGroup); });

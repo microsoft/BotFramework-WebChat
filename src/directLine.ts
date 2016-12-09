@@ -24,9 +24,11 @@ export class DirectLine implements IBotConnection {
     private token: string;
     private watermark = '';
     private streamUrl: string;
+    private wss: any; // WebSocketSubject<ActivityGroup>
 
     private conversationSubscription: Subscription;
     private tokenRefreshSubscription: Subscription;
+    private webSocketPingSubscription: Subscription;
 
     constructor(
         secretOrToken: SecretOrToken,
@@ -120,6 +122,10 @@ export class DirectLine implements IBotConnection {
         if (this.tokenRefreshSubscription) {
             this.tokenRefreshSubscription.unsubscribe();
             this.tokenRefreshSubscription = undefined;
+        }
+        if (this.webSocketPingSubscription) {
+            this.webSocketPingSubscription.unsubscribe();
+            this.webSocketPingSubscription = undefined;
         }
     }
 
@@ -260,15 +266,21 @@ export class DirectLine implements IBotConnection {
     }
 
     private webSocketActivity$(): Observable<Activity> {
+        // Chrome is pretty bad at noticing when a WebSocket connection is broken.
+        // If we periodically ping the server with empty messages, it helps Chrome 
+        // realize the connection is broken, and close the socket. This throws an
+        // error, and that give us the opportunity to attempt to reconnect.
+        this.webSocketPingSubscription = Observable.interval(timeout).subscribe(_ => {
+            if (this.wss) this.wss.next({} as ActivityGroup);
+        });
+
         return this.webSocketURL$()
-        .map(url => Observable.webSocket<ActivityGroup>({ url,
+        .flatMap(url => {
+            return this.wss = Observable.webSocket<ActivityGroup>({ url,
             // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
             // which will crash JSON.parse(). This custom resultSelector avoids the problem.
             resultSelector: (message: MessageEvent) => message.data && JSON.parse(message.data)
-        }))
-        // Ping the server with empty messages to see if we're still connected to it.
-        .do(ws$ => Observable.interval(timeout).subscribe(_ => ws$.next({} as ActivityGroup)))
-        .flatMap(ws$ => ws$)
+        })})
         .retryWhen(error$ => error$.delay(timeout))
         .filter(activityGroup => !!activityGroup)
         .flatMap(activityGroup => this.observableFromActivityGroup(activityGroup))
