@@ -1,4 +1,4 @@
-import { Observable, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
+import { Observable, Observer, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
 import { Conversation, Activity, Message, Media, IBotConnection, ConnectionStatus, User } from './BotConnection';
 import { konsole } from './Chat';
 
@@ -24,7 +24,6 @@ export class DirectLine implements IBotConnection {
     private token: string;
     private watermark = '';
     private streamUrl: string;
-    private wss: any; // WebSocketSubject<ActivityGroup>
 
     private conversationSubscription: Subscription;
     private tokenRefreshSubscription: Subscription;
@@ -266,23 +265,30 @@ export class DirectLine implements IBotConnection {
     }
 
     private webSocketActivity$(): Observable<Activity> {
+        let ws: WebSocket;
+
         // Chrome is pretty bad at noticing when a WebSocket connection is broken.
         // If we periodically ping the server with empty messages, it helps Chrome 
-        // realize the connection is broken, and close the socket. This throws an
+        // realize when connection breaks, and close the socket. We then throw an
         // error, and that give us the opportunity to attempt to reconnect.
-        this.webSocketPingSubscription = Observable.interval(timeout).subscribe(_ => {
-            if (this.wss) this.wss.next({} as ActivityGroup);
-        });
+        this.webSocketPingSubscription = Observable.interval(timeout)
+        .subscribe(_ => ws && ws.send(null));
 
         return this.webSocketURL$()
-        .flatMap(url => {
-            return this.wss = Observable.webSocket<ActivityGroup>({ url,
-            // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
-            // which will crash JSON.parse(). This custom resultSelector avoids the problem.
-            resultSelector: (message: MessageEvent) => message.data && JSON.parse(message.data)
-        })})
+        .flatMap(url =>
+            Observable.create((observer: Observer<ActivityGroup>) => {
+                ws = new WebSocket(url);
+
+                ws.onclose = close => {
+                    konsole.log("WebSocket close", close);
+                    ws = null;
+                    observer.error(close);
+                }
+
+                ws.onmessage = message => message.data && observer.next(JSON.parse(message.data));
+            }) as Observable<ActivityGroup>
+        )
         .retryWhen(error$ => error$.delay(timeout))
-        .filter(activityGroup => !!activityGroup)
         .flatMap(activityGroup => this.observableFromActivityGroup(activityGroup))
     }
 }
