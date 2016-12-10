@@ -2,9 +2,11 @@ import { Observable, Observer, Subscriber, AjaxResponse, AjaxRequest, BehaviorSu
 import { Conversation, Activity, Message, Media, IBotConnection, ConnectionStatus, User } from './BotConnection';
 import { konsole } from './Chat';
 
-export interface SecretOrToken {
+export interface DirectLineOptions {
     secret?: string,
     token?: string
+    domain?: string,
+    webSocket?: boolean
 }
 
 interface ActivityGroup {
@@ -32,22 +34,13 @@ export class DirectLine implements IBotConnection {
     private tokenRefreshSubscription: Subscription;
     private webSocketPingSubscription: Subscription;
 
-    constructor(
-        secretOrToken: SecretOrToken,
-        options?: {
-            domain?: string,
-            webSocket?: boolean
-        }
-    ) {
-        this.secret = secretOrToken.secret;
-        this.token = secretOrToken.secret || secretOrToken.token;
-
-        if (options) {
-            if (options.domain)
-                this.domain = options.domain;
-            if (options.webSocket)
-                this.webSocket = options.webSocket;
-        }
+    constructor(options: DirectLineOptions) {
+        this.secret = options.secret;
+        this.token = options.secret || options.token;
+        if (options.domain)
+            this.domain = options.domain;
+        if (options.webSocket)
+            this.webSocket = options.webSocket;
 
         this.activity$ = this.webSocket && WebSocket !== undefined
             ? this.webSocketActivity$()
