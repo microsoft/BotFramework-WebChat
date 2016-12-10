@@ -1,12 +1,14 @@
 import * as React from 'react';
 
-export interface SecretOrToken {
+export interface DirectLineOptions {
     secret?: string,
     token?: string
+    domain?: string,
+    webSocket?: boolean
 }
 
 export declare class DirectLine {
-    constructor(secretOrToken: SecretOrToken, options?: { domain?: string, webSocket?: boolean });
+    constructor(options: DirectLineOptions);
     start();
     end();
 }
