@@ -236,6 +236,7 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
+    if (value === undefined) return;
     if (typeof value === 'string' && value.length === 0) return;
     return renderer(value);
 }
