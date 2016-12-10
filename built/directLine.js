@@ -243,24 +243,26 @@ var DirectLine = (function () {
     };
     DirectLine.prototype.webSocketActivity$ = function () {
         var _this = this;
+        var ws;
         // Chrome is pretty bad at noticing when a WebSocket connection is broken.
         // If we periodically ping the server with empty messages, it helps Chrome 
-        // realize the connection is broken, and close the socket. This throws an
+        // realize when connection breaks, and close the socket. We then throw an
         // error, and that give us the opportunity to attempt to reconnect.
-        this.webSocketPingSubscription = rxjs_1.Observable.interval(timeout).subscribe(function (_) {
-            if (_this.wss)
-                _this.wss.next({});
-        });
+        this.webSocketPingSubscription = rxjs_1.Observable.interval(timeout)
+            .subscribe(function (_) { return ws && ws.send(null); });
         return this.webSocketURL$()
             .flatMap(function (url) {
-            return _this.wss = rxjs_1.Observable.webSocket({ url: url,
-                // Observable.webSocket runs JSON.parse() on all incoming messages, but DirectLine sends us empty WebSocket messages, 
-                // which will crash JSON.parse(). This custom resultSelector avoids the problem.
-                resultSelector: function (message) { return message.data && JSON.parse(message.data); }
+            return rxjs_1.Observable.create(function (observer) {
+                ws = new WebSocket(url);
+                ws.onclose = function (close) {
+                    Chat_1.konsole.log("WebSocket close", close);
+                    ws = null;
+                    observer.error(close);
+                };
+                ws.onmessage = function (message) { return message.data && observer.next(JSON.parse(message.data)); };
             });
         })
             .retryWhen(function (error$) { return error$.delay(timeout); })
-            .filter(function (activityGroup) { return !!activityGroup; })
             .flatMap(function (activityGroup) { return _this.observableFromActivityGroup(activityGroup); });
     };
     return DirectLine;
