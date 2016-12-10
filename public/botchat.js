@@ -21724,6 +21724,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    exports.trySendMessage(store, clientActivityId);
 	};
 	exports.renderIfNonempty = function (value, renderer) {
+	    if (value === undefined)
+	        return;
 	    if (typeof value === 'string' && value.length === 0)
 	        return;
 	    return renderer(value);
