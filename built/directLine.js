@@ -14,16 +14,20 @@ var Chat_1 = require("./Chat");
 var intervalRefreshToken = 29 * 60 * 1000;
 var timeout = 5 * 1000;
 var DirectLine = (function () {
-    function DirectLine(secretOrToken, domain, webSocket) {
-        if (domain === void 0) { domain = "https://directline.botframework.com/v3/directline"; }
-        if (webSocket === void 0) { webSocket = false; }
-        this.domain = domain;
-        this.webSocket = webSocket;
+    function DirectLine(secretOrToken, options) {
         this.connectionStatus$ = new rxjs_1.BehaviorSubject(BotConnection_1.ConnectionStatus.Connecting);
+        this.domain = "https://directline.botframework.com/v3/directline";
+        this.webSocket = false;
         this.watermark = '';
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
-        this.activity$ = webSocket && WebSocket !== undefined
+        if (options) {
+            if (options.domain)
+                this.domain = options.domain;
+            if (options.webSocket)
+                this.webSocket = options.webSocket;
+        }
+        this.activity$ = this.webSocket && WebSocket !== undefined
             ? this.webSocketActivity$()
             : this.pollingGetActivity$();
     }
