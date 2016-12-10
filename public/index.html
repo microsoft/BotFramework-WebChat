@@ -31,8 +31,10 @@
             var botConnection = new BotChat.DirectLine({
                 secret: params['s'],
                 token: params['t']
-                }, params["domain"]
-            );
+            }, {
+                domain: params['domain'],
+                webSocket: params['webSocket']
+            });
 
             var user = {
                 id: params['userid'] || 'userid',

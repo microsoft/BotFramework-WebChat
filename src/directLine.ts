@@ -35,8 +35,8 @@ export class DirectLine implements IBotConnection {
     constructor(
         secretOrToken: SecretOrToken,
         options?: {
-            domain: string,
-            webSocket: boolean
+            domain?: string,
+            webSocket?: boolean
         }
     ) {
         this.secret = secretOrToken.secret;
