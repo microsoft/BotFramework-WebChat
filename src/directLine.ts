@@ -19,6 +19,9 @@ export class DirectLine implements IBotConnection {
     public connectionStatus$ = new BehaviorSubject(ConnectionStatus.Connecting);
     public activity$:Observable<Activity>;
 
+    private domain = "https://directline.botframework.com/v3/directline";
+    private webSocket = false;
+
     private conversationId: string;
     private secret: string;
     private token: string;
@@ -31,12 +34,22 @@ export class DirectLine implements IBotConnection {
 
     constructor(
         secretOrToken: SecretOrToken,
-        private domain = "https://directline.botframework.com/v3/directline",
-        private webSocket = false
+        options?: {
+            domain: string,
+            webSocket: boolean
+        }
     ) {
         this.secret = secretOrToken.secret;
         this.token = secretOrToken.secret || secretOrToken.token;
-        this.activity$ = webSocket && WebSocket !== undefined
+
+        if (options) {
+            if (options.domain)
+                this.domain = options.domain;
+            if (options.webSocket)
+                this.webSocket = options.webSocket;
+        }
+
+        this.activity$ = this.webSocket && WebSocket !== undefined
             ? this.webSocketActivity$()
             : this.pollingGetActivity$();
     }
