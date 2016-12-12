@@ -4,6 +4,7 @@ import { Activity } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { ActivityView } from './ActivityView';
 import { trySendMessage } from './Chat';
+import { Strings } from './Strings';
 
 interface Props {
     store: ChatStore,
@@ -56,58 +57,22 @@ export class History extends React.Component<Props, {}> {
         return Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
     }
 
-    onClickRetry(e: React.SyntheticEvent<HTMLAnchorElement>, activity: Activity) {
-        e.preventDefault();
-        e.stopPropagation();
-        trySendMessage(this.props.store, activity.channelData.clientActivityId, true);
-    }
-
     render() {
         const state = this.props.store.getState();
         const activities = state.history.activities;
 
-        const wrappedActivities = activities.map((activity: Activity, index) => {
-            let timeLine;
-            switch (activity.id) {
-                case undefined:
-                    timeLine = <span>{ state.format.strings.messageSending }</span>;
-                    break;
-                case null:
-                    timeLine = <span>{ state.format.strings.messageFailed }</span>;
-                    break;
-                case "retry":
-                    timeLine =
-                        <span>
-                            { state.format.strings.messageFailed }
-                            { ' ' }
-                            <a href="." onClick={ e => this.onClickRetry(e, activity) }>{ state.format.strings.messageRetry }</a>
-                        </span>;
-                    break;
-                default:
-                    let sent: string;
-                    if (index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1])))
-                        sent = state.format.strings.timeSent.replace('%1', (new Date(activity.timestamp)).toLocaleTimeString());
-                    timeLine = <span>{ activity.from.name || activity.from.id }{ sent }</span>;
-                    break;
-            } 
-
-            const who = activity.from.id === state.connection.user.id ? 'me' : 'bot';
-
-            return (
-                <div key={ index } className={ "wc-message-wrapper" + (this.props.selectActivity ? ' clickable' : '') } onClick={ e => this.selectActivity(activity) }>
-                    <div className={ 'wc-message wc-message-from-' + who }>
-                        <div className={ 'wc-message-content' + (activity === state.history.selectedActivity ? ' selected' : '') }>
-                            <svg className="wc-message-callout">
-                                <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                                <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                            </svg>
-                            <ActivityView store={ this.props.store } activity={ activity } onImageLoad={ this.autoscroll }/>
-                        </div>
-                    </div>
-                    <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
-                </div>
-            );
-        });
+        const wrappedActivities = activities.map((activity, index) => 
+            <Message 
+                key={'message' + index} 
+                store={this.props.store}
+                activity={activity}
+                showTimestamp={index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1]))}
+                onClick = {e => this.selectActivity(activity)}
+                selected={activity === state.history.selectedActivity}
+                fromMe={activity.from.id === state.connection.user.id}
+                strings ={state.format.strings}
+                autoscroll={this.autoscroll}
+            />);
 
         return (
             <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
@@ -116,6 +81,73 @@ export class History extends React.Component<Props, {}> {
                         { wrappedActivities }
                     </div>
                 </div>
+            </div>
+        );
+    }
+}
+
+interface MessageProps {
+    activity: Activity;
+    autoscroll: () => void;
+    fromMe: boolean;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+    selected: boolean;
+    showTimestamp: boolean;
+    store: ChatStore;
+    strings: Strings;
+}
+
+export class Message extends React.Component<MessageProps, {}> {
+
+    constructor(props: MessageProps) {
+        super(props);
+    }
+
+    onClickRetry(e: React.SyntheticEvent<HTMLAnchorElement>) {
+        e.preventDefault();
+        e.stopPropagation();
+        trySendMessage(this.props.store, this.props.activity.channelData.clientActivityId, true);
+    }
+
+    render () {
+        let timeLine: JSX.Element;
+        switch (this.props.activity.id) {
+            case undefined:
+                timeLine = <span>{ this.props.strings.messageSending }</span>;
+                break;
+            case null:
+                timeLine = <span>{ this.props.strings.messageFailed }</span>;
+                break;
+            case "retry":
+                timeLine =
+                    <span>
+                        { this.props.strings.messageFailed }
+                        { ' ' }
+                        <a href="." onClick={ this.onClickRetry }>{ this.props.strings.messageRetry }</a>
+                    </span>;
+                break;
+            default:
+                let sent: string;
+                if (this.props.showTimestamp)
+                    sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                break;
+        } 
+
+        const who = this.props.fromMe ? 'me' : 'bot';
+
+        return (
+            <div className={ "wc-message-wrapper" + (this.props.onClick ? ' clickable' : '') } onClick={ this.props.onClick }>
+                <div className={ 'wc-message wc-message-from-' + who }>
+                    <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
+                        <svg className="wc-message-callout">
+                            <path className="point-left" d="m0,6 l6 6 v-12 z" />
+                            <path className="point-right" d="m6,6 l-6 6 v-12 z" />
+                        </svg>
+                        <ActivityView store={ this.props.store } activity={ this.props.activity } onImageLoad={ this.props.autoscroll }/>
+                    </div>
+                </div>
+                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
             </div>
         );
     }
