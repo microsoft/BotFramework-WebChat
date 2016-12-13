@@ -62,16 +62,16 @@ export class History extends React.Component<Props, {}> {
         const activities = state.history.activities;
 
         const wrappedActivities = activities.map((activity, index) => 
-            <Message 
-                key={'message' + index} 
-                store={this.props.store}
-                activity={activity}
-                showTimestamp={index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1]))}
-                onClick = {e => this.selectActivity(activity)}
-                selected={activity === state.history.selectedActivity}
-                fromMe={activity.from.id === state.connection.user.id}
-                strings ={state.format.strings}
-                autoscroll={this.autoscroll}
+            <WrappedActivity 
+                key={ 'message' + index } 
+                store={ this.props.store }
+                activity={ activity }
+                showTimestamp={ index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1])) }
+                onClick={ e => this.selectActivity(activity) }
+                selected={ activity === state.history.selectedActivity }
+                fromMe={ activity.from.id === state.connection.user.id }
+                strings={ state.format.strings }
+                autoscroll={ this.autoscroll }
             />);
 
         return (
@@ -86,7 +86,7 @@ export class History extends React.Component<Props, {}> {
     }
 }
 
-interface MessageProps {
+interface WrappedActivityProps {
     activity: Activity;
     autoscroll: () => void;
     fromMe: boolean;
@@ -97,9 +97,9 @@ interface MessageProps {
     strings: Strings;
 }
 
-export class Message extends React.Component<MessageProps, {}> {
+export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
-    constructor(props: MessageProps) {
+    constructor(props: WrappedActivityProps) {
         super(props);
     }
 
