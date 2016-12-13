@@ -24,7 +24,7 @@ export const format: Reducer<FormatState> = (
         options: {
             showHeader: true
         },
-        strings: strings('en-us')
+        strings: strings(window.navigator.language)
     },
     action: FormatAction
 ) => {
