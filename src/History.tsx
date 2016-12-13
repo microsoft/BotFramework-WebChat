@@ -6,41 +6,16 @@ import { ActivityView } from './ActivityView';
 import { trySendMessage } from './Chat';
 import { Strings } from './Strings';
 
-interface Props {
+interface HistoryProps {
     store: ChatStore,
     selectActivity?: (activity: Activity) => void
 }
 
-export class History extends React.Component<Props, {}> {
+export class History extends React.Component<HistoryProps, {}> {
     scrollMe: HTMLElement;
-    scrollToBottom = true;
-    atBottomThreshold = 80;
-    scrollEventListener: () => void;
-    resizeListener: () => void;
 
-    constructor(props: Props) {
+    constructor(props: HistoryProps) {
         super(props);
-        this.scrollEventListener = () => this.checkBottom();
-        this.resizeListener = () => this.checkBottom();
-    }
-
-    componentDidMount() {
-        this.scrollMe.addEventListener('scroll', this.scrollEventListener);
-        window.addEventListener('resize', this.resizeListener);
-    }
-
-    componentWillUnmount() {
-        this.scrollMe.removeEventListener('scroll', this.scrollEventListener);
-        window.removeEventListener('resize', this.resizeListener);
-    }
-
-    checkBottom() {
-        const offBottom = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight - this.scrollMe.scrollTop; 
-        this.scrollToBottom = offBottom <= this.atBottomThreshold;
-    }
-
-    componentDidUpdate() {
-        this.autoscroll();
     }
 
     selectActivity(activity: Activity) {
@@ -49,7 +24,7 @@ export class History extends React.Component<Props, {}> {
     }
 
     autoscroll = () => {
-        if (this.scrollToBottom && (this.scrollMe.scrollHeight > this.scrollMe.offsetHeight))
+        if (this.scrollMe.scrollHeight > this.scrollMe.offsetHeight)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
@@ -74,7 +49,7 @@ export class History extends React.Component<Props, {}> {
             />);
 
         return (
-            <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
+            <div className="wc-message-groups" ref={ ref => { if (ref) this.scrollMe = ref } }>
                 <div className="wc-message-group">
                     <div className="wc-message-group-content">
                         { wrappedActivities }
@@ -105,6 +80,10 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         e.preventDefault();
         e.stopPropagation();
         trySendMessage(this.props.store, this.props.activity.channelData.clientActivityId, true);
+    }
+
+    componentDidMount() {
+        this.props.autoscroll();
     }
 
     render () {
