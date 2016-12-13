@@ -70,7 +70,6 @@ export class History extends React.Component<Props, {}> {
                 onClick={ e => this.selectActivity(activity) }
                 selected={ activity === state.history.selectedActivity }
                 fromMe={ activity.from.id === state.connection.user.id }
-                strings={ state.format.strings }
                 autoscroll={ this.autoscroll }
             />);
 
@@ -94,7 +93,6 @@ interface WrappedActivityProps {
     selected: boolean;
     showTimestamp: boolean;
     store: ChatStore;
-    strings: Strings;
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -110,26 +108,28 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     }
 
     render () {
+        const strings = this.props.store.getState().format.strings;
+
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
-                timeLine = <span>{ this.props.strings.messageSending }</span>;
+                timeLine = <span>{ strings.messageSending }</span>;
                 break;
             case null:
-                timeLine = <span>{ this.props.strings.messageFailed }</span>;
+                timeLine = <span>{ strings.messageFailed }</span>;
                 break;
             case "retry":
                 timeLine =
                     <span>
-                        { this.props.strings.messageFailed }
+                        { strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ this.onClickRetry }>{ this.props.strings.messageRetry }</a>
+                        <a href="." onClick={ this.onClickRetry }>{ strings.messageRetry }</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
-                    sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                    sent = strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
         } 
