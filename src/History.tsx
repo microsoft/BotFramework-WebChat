@@ -123,7 +123,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                     <span>
                         { strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ this.onClickRetry }>{ strings.messageRetry }</a>
+                        <a href="." onClick={ e => this.onClickRetry(e) }>{ strings.messageRetry }</a>
                     </span>;
                 break;
             default:

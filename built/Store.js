@@ -16,7 +16,7 @@ exports.format = function (state, action) {
         options: {
             showHeader: true
         },
-        strings: Strings_1.strings('en-us')
+        strings: Strings_1.strings(window.navigator.language)
     }; }
     switch (action.type) {
         case 'Set_Format_Options':
@@ -98,7 +98,7 @@ exports.history = function (state, action) {
             if (i === -1)
                 return state;
             var activity = state.activities[i];
-            if (activity.id != "retry")
+            if (activity.id && activity.id != "retry")
                 return state;
             var newActivity = __assign({}, activity, { id: action.type === 'Send_Message_Succeed' ? action.id : null });
             return __assign({}, state, { activities: state.activities.slice(0, i).concat([

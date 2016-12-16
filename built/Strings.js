@@ -12,12 +12,28 @@ var localizedStrings = {
         messageSending: "sending",
         timeSent: " at %1",
         consolePlaceholder: "Type your message..."
+    },
+    'de-de': {
+        title: "Chat",
+        send: "Senden",
+        unknownFile: "[Datei vom Typ '%1']",
+        unknownCard: "[Unbekannte Card '%1']",
+        receiptTax: "MwSt.",
+        receiptTotal: "Gesamtbetrag",
+        messageRetry: "wiederholen",
+        messageFailed: "konnte nicht senden",
+        messageSending: "sendet",
+        timeSent: " am %1",
+        consolePlaceholder: "Verfasse eine Nachricht..."
     }
 };
 // Returns strings using the "best match available"" locale
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
 exports.strings = function (locale) {
+    if (locale == "de" || locale == "de-de" || locale == "de-ch") {
+        return localizedStrings['de-de'];
+    }
     return localizedStrings['en-us'];
 };
 //# sourceMappingURL=Strings.js.map
