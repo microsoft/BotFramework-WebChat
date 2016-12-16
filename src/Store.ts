@@ -210,7 +210,7 @@ export const history: Reducer<HistoryState> = (
             if (i === -1) return state;
 
             const activity = state.activities[i];
-            if (activity.id != "retry") return state;
+            if (activity.id && activity.id != "retry") return state;
 
             const newActivity = {
                 ... activity,
