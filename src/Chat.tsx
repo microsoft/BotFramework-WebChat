@@ -75,7 +75,6 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
 
-        props.botConnection.start();
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
             this.store.dispatch({ type: 'Connection_Change', connectionStatus } as ConnectionAction)
         );

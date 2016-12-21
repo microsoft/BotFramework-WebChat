@@ -41,7 +41,6 @@ var Chat = (function (_super) {
         var _this = this;
         var props = this.props;
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
-        props.botConnection.start();
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(function (connectionStatus) {
             return _this.store.dispatch({ type: 'Connection_Change', connectionStatus: connectionStatus });
         });
