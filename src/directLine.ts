@@ -33,6 +33,7 @@ export class DirectLine implements IBotConnection {
     private conversationId: string;
     private secret: string;
     private token: string;
+    private tag: string;
     private watermark = '';
     private streamUrl: string;
 
