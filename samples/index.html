@@ -1,11 +1,13 @@
 ﻿<!DOCTYPE html>
 <!-- 
-    This is a sample HTML file which shows how to embed an instance of WebChat.
-    You will need to build 
+    This is a sample HTML file which shows how to embed an instance of WebChat. Useful for testing.
+    1. Build the project: "npm run build"
+    2. Start a web server: "npm run start"
+    3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
 
     For ease of testing, several parameters can be set in the query string:
-        * secret = Direct Line secret, or
-        * token = Direct Line token (obtained by calling Direct Line's Generate Token)
+        * s = Direct Line secret, or
+        * t = Direct Line token (obtained by calling Direct Line's Generate Token)
         * domain = optionally, the URL of an alternate Direct Line endpoint
         * webSocket = whether to use WebSocket to receive messages (defaults to false)
         * userid, username = id (and optionally name) of bot user
