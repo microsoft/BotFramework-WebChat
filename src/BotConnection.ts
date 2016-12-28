@@ -123,7 +123,8 @@ export type Attachment = Media | HeroCard | Thumbnail | Signin | Receipt | Audio
 export interface User {
     id: string,
     name?: string,
-    iconUrl?: string
+    iconUrl?: string,
+    tag?: string
 }
 
 export interface IActivity {

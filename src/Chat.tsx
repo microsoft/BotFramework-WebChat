@@ -70,6 +70,14 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.props.selectedActivity.next({ activity });
     }
 
+    private sendTag(props: ChatProps) {
+        if ( typeof props.bot.tag != 'undefined' && props.bot.tag != '') {
+            sendMessage(this.store, props.bot.tag);
+            props.bot.tag = null;
+        }
+        
+    }
+
     componentDidMount() {
         let props = this.props;
 
@@ -107,6 +115,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.storeUnsubscribe = this.store.subscribe(() =>
             this.forceUpdate()
         );
+
+        this.sendTag(props);
     }
 
     componentWillUnmount() {
