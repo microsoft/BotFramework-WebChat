@@ -1,3 +1,5 @@
+
+
 import * as React from 'react';
 
 export interface DirectLineOptions {
@@ -9,7 +11,8 @@ export interface DirectLineOptions {
 
 export declare class DirectLine {
     constructor(options: DirectLineOptions);
-    start();
+    activity$: any;         // Observable<Activity>
+    connectionStatus$: any; // BehaviorSubject<ConnectionStatus>
     end();
 }
 
@@ -36,4 +39,4 @@ export type AppProps = ChatProps & {
 }
 
 export declare const App: (props: AppProps, container: HTMLElement) => void;
-export declare const Chat: (props: ChatProps) => JSX.Element;
+export declare class Chat extends React.Component<ChatProps, {}> {};
