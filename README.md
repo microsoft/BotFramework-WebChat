@@ -77,7 +77,7 @@ Feel free to suggest features by filing an [issue](https://github.com/Microsoft/
 This is a quick and dirty method, perfect for testing. It requires embedding your Direct Line Secret in the web page or querystring, and as such should primarily be used for local testing.
 
 0. Build
-1. Start a local web server using `npm run start` and aim your browser at `http://localhost:8000/sample?s={Direct Line Secret}`
+1. Start a local web server using `npm run start` and aim your browser at `http://localhost:8000/samples?s={Direct Line Secret}`
 
 #### Embedded via IFRAME
 
