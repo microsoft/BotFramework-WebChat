@@ -5,6 +5,9 @@ node_modules
 /Web.config
 /local
 /.vscode
-
 npm-debug.log
 test/src
+npm/dist
+cdn
+webpacked
+built

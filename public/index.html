@@ -1,4 +1,16 @@
 ﻿<!DOCTYPE html>
+<!-- 
+    This is a sample HTML file which shows how to embed an instance of WebChat.
+    You will need to build 
+
+    For ease of testing, several parameters can be set in the query string:
+        * secret = Direct Line secret, or
+        * token = Direct Line token (obtained by calling Direct Line's Generate Token)
+        * domain = optionally, the URL of an alternate Direct Line endpoint
+        * webSocket = whether to use WebSocket to receive messages (defaults to false)
+        * userid, username = id (and optionally name) of bot user
+        * botid, botname = id (and optionally name) of bot
+-->
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -12,11 +24,11 @@
                 overflow: hidden;
             }
         </style>
-        <link href="botchat.css" rel="stylesheet" />
+        <link href="../static/botchat.css" rel="stylesheet" />
     </head>
     <body>
         <div id="BotChatGoesHere"></div>
-        <script src="botchat.js"></script>
+        <script src="../webpacked/botchat.js"></script>
         <script>
             var params = {};
             location

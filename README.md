@@ -25,7 +25,7 @@ See more detailed instructions [below](#getting-webchat-up-and-running).
 ### *How do I customize it?*
 
 * Follow the [below instructions](#1-install-and-build) to install and build
-* Customize the visuals by altering the [public/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.css) file
+* Customize the visuals by altering the [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) file
 * Or go farther and change the HTML/JSX and/or TypeScript 
 
 ### *How do I contribute to it?*
@@ -76,6 +76,7 @@ Feel free to suggest features by filing an [issue](https://github.com/Microsoft/
 
 This is a quick and dirty method, perfect for testing. It requires embedding your Direct Line Secret in the web page or querystring, and as such should primarily be used for local testing.
 
+0. Build
 1. Start a local web server using `npm run start` and aim your browser at `http://localhost:8000?s={Direct Line Secret}`
 
 #### Embedded via IFRAME
@@ -92,9 +93,10 @@ In this scenario you will host two web pages, one for WebChat and one for the pa
 
 In this scenario you will include a JavaScript file which embeds its own copy of React, which will run in a DOM element.  
 
-1. Include [public/botchat.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.js) and you will get an object called `BotChat`
-2. For TypeScript users there is a type definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
-3. Incorporate [public/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.css) into your website deployment 
+0. Build
+1. Include `webpacked/botchat.js` and you will get an object called `BotChat`
+2. For TypeScript users there is a type definition file called [static/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.d.ts).
+3. Incorporate [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) into your website deployment 
 4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 5. Create an instance of `BotChat.DirectLine` using your Direct Line Secret or Token
 6. Call `BotChat.App` with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
@@ -103,9 +105,10 @@ In this scenario you will include a JavaScript file which embeds its own copy of
 
 In this scenario you will incorporate WebChat's multiple JavaScript files into your React webapp. 
 
+0. Build
 1. Incorporate the files in the [/built](https://github.com/Microsoft/BotFramework-WebChat/blob/master/built) folder into your build process
-2. Incorporate [public/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.css) into your website deployment
-3. For TypeScript users there is a definition file called [public/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/botchat.d.ts).
+2. Incorporate [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) into your website deployment
+3. For TypeScript users there is a definition file called [static/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.d.ts).
 4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 5. Create an instance of `DirectLine` using your Direct Line Secret or Token
 6. Call the `Chat` React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [public/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/public/index.html). 
