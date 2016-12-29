@@ -42,6 +42,19 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "sendet",
         timeSent: " am %1",
         consolePlaceholder: "Verfasse eine Nachricht..."
+    },
+    'pl-pl': {
+        title: "Chat",
+        send: "Wyślij",
+        unknownFile: "[Plik typu '%1']",
+        unknownCard: "[Nieznana karta '%1']",
+        receiptTax: "Podatek",
+        receiptTotal: "Razem",
+        messageRetry: "wyślij ponownie",
+        messageFailed: "wysłanie nieudane",
+        messageSending: "wysyłanie",
+        timeSent: " o %1",
+        consolePlaceholder: "Wpisz swoją wiadomość..."
     }
 }
 
@@ -53,6 +66,10 @@ export const strings = (locale: string) => {
     if(locale=="de" || locale=="de-de" || locale=="de-ch")
     {
         return localizedStrings['de-de'];
+    }
+    if(locale=='pl' || locale=='pl-pl')
+    {
+        return localizedStrings['pl-pl'];
     }
     return localizedStrings['en-us'];
 }
