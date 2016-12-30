@@ -27,7 +27,7 @@ export class Carousel extends React.Component<Props, State> {
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
     private resizeListener = () => this.resize();
-    private scrollEventListener: () => void;
+    private scrollEventListener =() => this.onScroll();
     private scrollAllowInterrupt = true;
 
     constructor(props: Props) {
@@ -37,8 +37,6 @@ export class Carousel extends React.Component<Props, State> {
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
-
-        this.scrollEventListener = () => this.onScroll();
     }
 
     private clearScrollTimers() {
