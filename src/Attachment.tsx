@@ -1,41 +1,23 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
-import { HistoryAction, ChatStore } from './Store';
-import { sendMessage, sendPostBack, renderIfNonempty, konsole } from './Chat';
+import { renderIfNonempty, konsole } from './Chat';
+import { FormatOptions } from './Chat';
+import { Strings } from './Strings';
 
 export const AttachmentView = (props: {
-    store: ChatStore,
+    options: FormatOptions,
+    strings: Strings,
     attachment: Attachment,
-    onImageLoad?: ()=> void
+    onClickButton: (type: string, value: string) => void,
+    onImageLoad: ()=> void
 }) => {
     if (!props.attachment) return;
 
     const attachment = props.attachment;
-    
-    const state = props.store.getState();
-
-    const onClickButton = (type: string, value: string) => {
-        switch (type) {
-            case "imBack":
-                sendMessage(props.store, value);
-                break;
-            case "postBack":
-                sendPostBack(props.store, value);
-                break;
-
-            case "openUrl":
-            case "signin":
-                window.open(value);
-                break;
-
-            default:
-                konsole.log("unknown button type");
-            }
-    }
 
     const buttons = (buttons?: Button[]) => buttons &&
         <ul className="wc-card-buttons">
-            { buttons.map((button, index) => <li key={ index }><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
+            { buttons.map((button, index) => <li key={ index }><button onClick={ () => props.onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
         </ul>;
 
     const imageWithOnLoad = (url: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
@@ -159,11 +141,11 @@ export const AttachmentView = (props: {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td>{ state.format.strings.receiptTax }</td>
+                                <td>{ props.strings.receiptTax }</td>
                                 <td>{ attachment.content.tax }</td>
                             </tr>
                             <tr className="total">
-                                <td>{ state.format.strings.receiptTotal }</td>
+                                <td>{ props.strings.receiptTotal }</td>
                                 <td>{ attachment.content.total }</td>
                             </tr>
                         </tfoot>
@@ -186,10 +168,10 @@ export const AttachmentView = (props: {
 
         default:
             if(isUnsupportedCardContentType(attachment['contentType'])) {
-                return <span>{ state.format.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;    
+                return <span>{ props.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;    
             }
             else {
-                return <span>{ state.format.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
+                return <span>{ props.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
             }
             
     }

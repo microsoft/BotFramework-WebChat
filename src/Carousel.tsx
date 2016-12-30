@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
-import { ChatStore } from './Store';
-
+import { FormatOptions } from './Chat';
+import { Strings } from './Strings';
 
 interface Props {
-    store: ChatStore,
+    options: FormatOptions,
+    strings: Strings,
     attachments: Attachment[],
-    onImageLoad: () => void
+    onClickButton: (type: string, value: string) => void,    
+    onImageLoad: ()=> void
 }
 
 interface State {
@@ -24,8 +26,8 @@ export class Carousel extends React.Component<Props, State> {
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private resizeListener: () => void;
-    private scrollEventListener: () => void;
+    private resizeListener = () => this.resize();
+    private scrollEventListener =() => this.onScroll();
     private scrollAllowInterrupt = true;
 
     constructor(props: Props) {
@@ -35,10 +37,6 @@ export class Carousel extends React.Component<Props, State> {
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
-
-        this.resizeListener = () => this.resize();
-
-        this.scrollEventListener = () => this.onScroll();
     }
 
     private clearScrollTimers() {
@@ -164,7 +162,13 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
                             <li key={ index }>
-                                <AttachmentView store= { this.props.store } attachment={ attachment } onImageLoad={ () => this.resize() } />
+                                <AttachmentView
+                                    attachment={ attachment }
+                                    options={ this.props.options }
+                                    strings={ this.props.strings }
+                                    onClickButton={ this.props.onClickButton }
+                                    onImageLoad={ () => this.resize() }
+                                    />
                             </li>) }
                         </ul>
                     </div>
