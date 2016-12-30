@@ -1,6 +1,6 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
-import { Activity } from './BotConnection';
+import { Activity, User } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { ActivityView } from './ActivityView';
 import { sendMessage, sendPostBack, trySendMessage, FormatOptions } from './Chat';
@@ -43,76 +43,95 @@ export class History extends React.Component<Props, {}> {
         this.autoscroll();
     }
 
-    selectActivity(activity: Activity) {
-        if (this.props.selectActivity)
-            this.props.selectActivity(activity);
-    }
-
     autoscroll = () => {
         if (this.scrollToBottom && (this.scrollMe.scrollHeight > this.scrollMe.offsetHeight))
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
-    suitableInterval(current: Activity, next: Activity) {
-        return Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
+    onClickRetry(e: React.MouseEvent<HTMLAnchorElement>, activity: Activity) {
+        // Since this is a click on an anchor, we need to stop it
+        // from trying to actually follow a (nonexistant) link
+        e.preventDefault();
+        e.stopPropagation();
+        trySendMessage(this.props.store)(activity.channelData.clientActivityId, true);
     }
 
     render() {
         const state = this.props.store.getState();
-        const activities = state.history.activities;
 
-        const wrappedActivities = activities.map((activity, index) => 
-            <WrappedActivity 
-                key={ 'message' + index }
+        return <HistoryView
+                activities={ state.history.activities }
+                selectedActivity={ state.history.selectedActivity }
+                user={ state.connection.user }
                 options={ state.format.options }
                 strings={ state.format.strings }
-                sendMessage = { sendMessage(this.props.store) }
-                sendPostBack = { sendPostBack(this.props.store) }
-                trySendMessage = { trySendMessage(this.props.store) }
-                activity={ activity }
-                showTimestamp={ index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1])) }
-                onClick={ e => this.selectActivity(activity) }
-                selected={ activity === state.history.selectedActivity }
-                fromMe={ activity.from.id === state.connection.user.id }
+                sendMessage={ sendMessage(this.props.store) }
+                sendPostBack={ sendPostBack(this.props.store) }
+                onClickActivity={ this.props.selectActivity }
+                onClickRetry={ (e, activity) => this.onClickRetry(e, activity) }
                 autoscroll={ this.autoscroll }
-            />);
-
-        return (
-            <div className="wc-message-groups" ref={ ref => this.scrollMe = ref }>
-                <div className="wc-message-group">
-                    <div className="wc-message-group-content">
-                        { wrappedActivities }
-                    </div>
-                </div>
-            </div>
-        );
+                setScroll={ div => this.scrollMe = div }
+            />;
     }
 }
 
-interface WrappedActivityProps {
-    activity: Activity,
-    autoscroll: () => void,
-    fromMe: boolean,
-    onClick?: React.MouseEventHandler<HTMLDivElement>,
-    selected: boolean,
-    showTimestamp: boolean,
+const suitableInterval = (current: Activity, next: Activity) =>
+    Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
+
+const HistoryView = (props: {
+    activities: Activity[],
+    selectedActivity: Activity,
+    user: User,
     options: FormatOptions,
     strings: Strings,
     sendMessage: (value: string) => void,
     sendPostBack: (value: string) => void,
-    trySendMessage: (clientActivityId: string, updateStatus: boolean) => void
+    onClickActivity: (activity: Activity) => void,
+    onClickRetry: (e: React.MouseEvent<HTMLAnchorElement>, activity: Activity) => void,
+    autoscroll: () => void,
+    setScroll: (div: HTMLDivElement) => void
+}) => 
+    <div className="wc-message-groups" ref={ props.setScroll }>
+        <div className="wc-message-group">
+            <div className="wc-message-group-content">
+                { props.activities.map((activity, index) => 
+                    <WrappedActivity 
+                        key={ 'message' + index }
+                        activity={ activity }
+                        showTimestamp={ index === props.activities.length - 1 || (index + 1 < props.activities.length && suitableInterval(activity, props.activities[index + 1])) }
+                        selected={ activity === props.selectedActivity }
+                        fromMe={ activity.from.id === props.user.id }
+                        options={ props.options }
+                        strings={ props.strings }
+                        sendMessage={ props.sendMessage }
+                        sendPostBack={ props.sendPostBack }
+                        onClickActivity={ props.onClickActivity && (() => props.onClickActivity(activity)) }
+                        onClickRetry={ e => props.onClickRetry(e, activity) }
+                        autoscroll={ props.autoscroll }
+                    />
+                ) }
+            </div>
+        </div>
+    </div>;
+
+interface WrappedActivityProps {
+    activity: Activity,
+    showTimestamp: boolean,
+    selected: boolean,
+    fromMe: boolean,
+    options: FormatOptions,
+    strings: Strings,
+    sendMessage: (value: string) => void,
+    sendPostBack: (value: string) => void,
+    onClickActivity: React.MouseEventHandler<HTMLDivElement>,
+    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
+    autoscroll: () => void,
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
     constructor(props: WrappedActivityProps) {
         super(props);
-    }
-
-    onClickRetry(e: React.SyntheticEvent<HTMLAnchorElement>) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.props.trySendMessage(this.props.activity.channelData.clientActivityId, true);
     }
 
     render () {
@@ -129,7 +148,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                     <span>
                         { this.props.strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ e => this.onClickRetry(e) }>{ this.props.strings.messageRetry }</a>
+                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.strings.messageRetry }</a>
                     </span>;
                 break;
             default:
@@ -143,7 +162,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const who = this.props.fromMe ? 'me' : 'bot';
 
         return (
-            <div className={ "wc-message-wrapper" + (this.props.onClick ? ' clickable' : '') } onClick={ this.props.onClick }>
+            <div className={ "wc-message-wrapper" + (this.props.onClickActivity ? ' clickable' : '') } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who }>
                     <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
                         <svg className="wc-message-callout">

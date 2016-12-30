@@ -52,7 +52,7 @@ export class Shell extends React.Component<Props, {}> {
                     onChangeText={ () => this.onChangeText() }
                     onChangeFile={ () => this.onChangeFile() }
                     onClickSend={ () => this.onClickSend() }
-                    onKeyPress={ (e) => this.onKeyPress(e) }
+                    onKeyPress={ e => this.onKeyPress(e) }
                 />;
     }
 }
