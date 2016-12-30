@@ -220,7 +220,7 @@ const attachmentsFromFiles = (files: FileList) => {
     return attachments;
 }
 
-export const sendFiles = (store: ChatStore, files: FileList) => {
+export const sendFiles = (store: ChatStore) => (files: FileList) => {
     let state = store.getState();
     const clientActivityId = state.history.clientActivityBase + state.history.clientActivityCounter;
     store.dispatch({
