@@ -3,7 +3,6 @@ import { Activity, Attachment, AttachmentLayout } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
-import { ChatStore } from './Store';
 import { FormatOptions } from './Chat';
 import { Strings } from './Strings';
 

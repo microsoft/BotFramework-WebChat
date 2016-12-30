@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
-import { ChatStore } from './Store';
 import { FormatOptions } from './Chat';
 import { Strings } from './Strings';
 

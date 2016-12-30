@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
-import { HistoryAction, ChatStore } from './Store';
 import { sendMessage, sendPostBack, renderIfNonempty, konsole } from './Chat';
 import { FormatOptions } from './Chat';
 import { Strings } from './Strings';
