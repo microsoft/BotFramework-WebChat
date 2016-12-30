@@ -6,7 +6,7 @@ import { FormatOptions } from './Chat';
 import { Strings } from './Strings';
 
 export const AttachmentView = (props: {
-    formatOptions: FormatOptions,
+    options: FormatOptions,
     strings: Strings,
     attachment: Attachment,
     sendMessage: (value: string) => void,

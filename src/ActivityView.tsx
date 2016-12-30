@@ -18,7 +18,7 @@ const Attachments = (props: {
         else
             return (
                 <div className="wc-list"> { props.attachments.map((attachment, index) =>
-                    <AttachmentView key={ index } formatOptions= { props.store.getState().format.options } strings={ props.store.getState().format.strings }attachment={ attachment } sendMessage={ sendMessage(props.store) } sendPostBack = { sendPostBack(props.store) } onImageLoad={ props.onImageLoad } />
+                    <AttachmentView key={ index } options={ props.store.getState().format.options } strings={ props.store.getState().format.strings }attachment={ attachment } sendMessage={ sendMessage(props.store) } sendPostBack = { sendPostBack(props.store) } onImageLoad={ props.onImageLoad } />
                 ) } </div>
             );
     } else
