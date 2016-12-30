@@ -17,12 +17,12 @@ export class Shell extends React.Component<Props, {}> {
 
     onKeyPress(e) {
         if (e.key === 'Enter')
-            sendMessage(this.props.store, this.textInput.value);
+            sendMessage(this.props.store)(this.textInput.value);
     }
 
     onClickSend() {
         this.textInput.focus();
-        sendMessage(this.props.store, this.textInput.value);
+        sendMessage(this.props.store)(this.textInput.value);
     }
 
     onClickFile(e: HTMLInputElement) {

@@ -4,6 +4,7 @@ import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
 import { ChatStore } from './Store';
+import { sendMessage, sendPostBack } from './Chat';
 
 const Attachments = (props: {
     store: ChatStore,
@@ -17,7 +18,7 @@ const Attachments = (props: {
         else
             return (
                 <div className="wc-list"> { props.attachments.map((attachment, index) =>
-                    <AttachmentView key={ index } store={ props.store } attachment={ attachment } onImageLoad={ props.onImageLoad }/>
+                    <AttachmentView key={ index } format= { props.store.getState().format } attachment={ attachment } sendMessage={ sendMessage(props.store) } sendPostBack = { sendPostBack(props.store) } onImageLoad={ props.onImageLoad } />
                 ) } </div>
             );
     } else

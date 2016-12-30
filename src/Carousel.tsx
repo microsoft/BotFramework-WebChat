@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { ChatStore } from './Store';
-
+import { sendMessage, sendPostBack } from './Chat';
 
 interface Props {
     store: ChatStore,
@@ -24,7 +24,7 @@ export class Carousel extends React.Component<Props, State> {
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private resizeListener: () => void;
+    private resizeListener = () => this.resize();
     private scrollEventListener: () => void;
     private scrollAllowInterrupt = true;
 
@@ -35,8 +35,6 @@ export class Carousel extends React.Component<Props, State> {
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
-
-        this.resizeListener = () => this.resize();
 
         this.scrollEventListener = () => this.onScroll();
     }
@@ -164,7 +162,7 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
                             <li key={ index }>
-                                <AttachmentView store= { this.props.store } attachment={ attachment } onImageLoad={ () => this.resize() } />
+                                <AttachmentView format= { this.props.store.getState().format } attachment={ attachment } sendMessage={ sendMessage(this.props.store) } sendPostBack = { sendPostBack(this.props.store) } onImageLoad={ () => this.resize() } />
                             </li>) }
                         </ul>
                     </div>

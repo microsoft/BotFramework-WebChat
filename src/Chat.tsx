@@ -144,7 +144,7 @@ export const updateSelectedActivity = (store: ChatStore) => {
         state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
 }
 
-export const sendMessage = (store: ChatStore, text: string) => {
+export const sendMessage = (store: ChatStore) => (text: string) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     let state = store.getState();
@@ -193,7 +193,7 @@ export const trySendMessage = (store: ChatStore, clientActivityId: string, updat
     );
 }
 
-export const sendPostBack = (store: ChatStore, text: string) => {
+export const sendPostBack = (store: ChatStore) => (text: string) => {
     const state = store.getState();
     state.connection.botConnection.postActivity({
         type: "message",
