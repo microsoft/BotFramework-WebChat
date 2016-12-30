@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Activity } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { ActivityView } from './ActivityView';
-import { trySendMessage } from './Chat';
+import { sendMessage, sendPostBack, trySendMessage, FormatOptions } from './Chat';
 import { Strings } from './Strings';
 
 interface Props {
@@ -63,8 +63,12 @@ export class History extends React.Component<Props, {}> {
 
         const wrappedActivities = activities.map((activity, index) => 
             <WrappedActivity 
-                key={ 'message' + index } 
-                store={ this.props.store }
+                key={ 'message' + index }
+                options={ state.format.options }
+                strings={ state.format.strings }
+                sendMessage = { sendMessage(this.props.store) }
+                sendPostBack = { sendPostBack(this.props.store) }
+                trySendMessage = { trySendMessage(this.props.store) }
                 activity={ activity }
                 showTimestamp={ index === activities.length - 1 || (index + 1 < activities.length && this.suitableInterval(activity, activities[index + 1])) }
                 onClick={ e => this.selectActivity(activity) }
@@ -86,13 +90,17 @@ export class History extends React.Component<Props, {}> {
 }
 
 interface WrappedActivityProps {
-    activity: Activity;
-    autoscroll: () => void;
-    fromMe: boolean;
-    onClick?: React.MouseEventHandler<HTMLDivElement>;
-    selected: boolean;
-    showTimestamp: boolean;
-    store: ChatStore;
+    activity: Activity,
+    autoscroll: () => void,
+    fromMe: boolean,
+    onClick?: React.MouseEventHandler<HTMLDivElement>,
+    selected: boolean,
+    showTimestamp: boolean,
+    options: FormatOptions,
+    strings: Strings,
+    sendMessage: (value: string) => void,
+    sendPostBack: (value: string) => void,
+    trySendMessage: (clientActivityId: string, updateStatus: boolean) => void
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -104,32 +112,30 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     onClickRetry(e: React.SyntheticEvent<HTMLAnchorElement>) {
         e.preventDefault();
         e.stopPropagation();
-        trySendMessage(this.props.store, this.props.activity.channelData.clientActivityId, true);
+        this.props.trySendMessage(this.props.activity.channelData.clientActivityId, true);
     }
 
     render () {
-        const strings = this.props.store.getState().format.strings;
-
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
-                timeLine = <span>{ strings.messageSending }</span>;
+                timeLine = <span>{ this.props.strings.messageSending }</span>;
                 break;
             case null:
-                timeLine = <span>{ strings.messageFailed }</span>;
+                timeLine = <span>{ this.props.strings.messageFailed }</span>;
                 break;
             case "retry":
                 timeLine =
                     <span>
-                        { strings.messageFailed }
+                        { this.props.strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ e => this.onClickRetry(e) }>{ strings.messageRetry }</a>
+                        <a href="." onClick={ e => this.onClickRetry(e) }>{ this.props.strings.messageRetry }</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
-                    sent = strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                    sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
         } 
@@ -144,7 +150,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
-                        <ActivityView store={ this.props.store } activity={ this.props.activity } onImageLoad={ this.props.autoscroll }/>
+                        <ActivityView options={ this.props.options} strings={ this.props.strings } activity={ this.props.activity } sendMessage={ this.props.sendMessage } sendPostBack={ this.props.sendPostBack } onImageLoad={ this.props.autoscroll }/>
                     </div>
                 </div>
                 <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>

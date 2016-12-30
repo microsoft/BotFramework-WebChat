@@ -158,7 +158,7 @@ export const sendMessage = (store: ChatStore) => (text: string) => {
             timestamp: (new Date()).toISOString()
         }
     } as HistoryAction);
-    trySendMessage(store, clientActivityId);
+    trySendMessage(store)(clientActivityId);
 }
 
 const sendMessageSucceed = (store: ChatStore, clientActivityId: string) => (id: string) => {
@@ -173,7 +173,7 @@ const sendMessageFail = (store: ChatStore, clientActivityId: string) => (error) 
     updateSelectedActivity(store);
 }
 
-export const trySendMessage = (store: ChatStore, clientActivityId: string, updateStatus = false) => {
+export const trySendMessage = (store: ChatStore) => (clientActivityId: string, updateStatus = false) => {
     if (updateStatus) {
         store.dispatch({ type: "Send_Message_Try", clientActivityId } as HistoryAction);
     }
@@ -231,7 +231,7 @@ export const sendFiles = (store: ChatStore, files: FileList) => {
             from: state.connection.user
         }
     } as HistoryAction);
-    trySendMessage(store, clientActivityId);
+    trySendMessage(store)(clientActivityId);
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {

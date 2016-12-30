@@ -2,12 +2,16 @@ import * as React from 'react';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { ChatStore } from './Store';
-import { sendMessage, sendPostBack } from './Chat';
+import { FormatOptions } from './Chat';
+import { Strings } from './Strings';
 
 interface Props {
-    store: ChatStore,
+    options: FormatOptions,
+    strings: Strings,
     attachments: Attachment[],
-    onImageLoad: () => void
+    sendMessage: (value: string) => void,
+    sendPostBack: (value: string) => void,
+    onImageLoad: ()=> void
 }
 
 interface State {
@@ -162,7 +166,7 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
                             <li key={ index }>
-                                <AttachmentView options={ this.props.store.getState().format.options } strings={ this.props.store.getState().format.strings } attachment={ attachment } sendMessage={ sendMessage(this.props.store) } sendPostBack = { sendPostBack(this.props.store) } onImageLoad={ () => this.resize() } />
+                                <AttachmentView options={ this.props.options } strings={ this.props.strings } attachment={ attachment } sendMessage={ this.props.sendMessage } sendPostBack= { this.props.sendPostBack } onImageLoad={ () => this.resize() } />
                             </li>) }
                         </ul>
                     </div>
