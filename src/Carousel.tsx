@@ -162,7 +162,7 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
                             <li key={ index }>
-                                <AttachmentView format= { this.props.store.getState().format } attachment={ attachment } sendMessage={ sendMessage(this.props.store) } sendPostBack = { sendPostBack(this.props.store) } onImageLoad={ () => this.resize() } />
+                                <AttachmentView formatOptions= { this.props.store.getState().format.options } strings={ this.props.store.getState().format.strings } attachment={ attachment } sendMessage={ sendMessage(this.props.store) } sendPostBack = { sendPostBack(this.props.store) } onImageLoad={ () => this.resize() } />
                             </li>) }
                         </ul>
                     </div>
