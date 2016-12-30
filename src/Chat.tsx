@@ -144,7 +144,7 @@ export const updateSelectedActivity = (store: ChatStore) => {
         state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
 }
 
-export const sendMessage = (store: ChatStore) => (text: string) => {
+export const sendMessage = (store: ChatStore, text: string) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     let state = store.getState();
@@ -158,7 +158,7 @@ export const sendMessage = (store: ChatStore) => (text: string) => {
             timestamp: (new Date()).toISOString()
         }
     } as HistoryAction);
-    trySendMessage(store)(clientActivityId);
+    trySendMessage(store, clientActivityId);
 }
 
 const sendMessageSucceed = (store: ChatStore, clientActivityId: string) => (id: string) => {
@@ -173,7 +173,7 @@ const sendMessageFail = (store: ChatStore, clientActivityId: string) => (error) 
     updateSelectedActivity(store);
 }
 
-export const trySendMessage = (store: ChatStore) => (clientActivityId: string, updateStatus = false) => {
+export const trySendMessage = (store: ChatStore, clientActivityId: string, updateStatus = false) => {
     if (updateStatus) {
         store.dispatch({ type: "Send_Message_Try", clientActivityId } as HistoryAction);
     }
@@ -193,7 +193,7 @@ export const trySendMessage = (store: ChatStore) => (clientActivityId: string, u
     );
 }
 
-export const sendPostBack = (store: ChatStore) => (text: string) => {
+export const sendPostBack = (store: ChatStore, text: string) => {
     const state = store.getState();
     state.connection.botConnection.postActivity({
         type: "message",
@@ -231,7 +231,7 @@ export const sendFiles = (store: ChatStore) => (files: FileList) => {
             from: state.connection.user
         }
     } as HistoryAction);
-    trySendMessage(store)(clientActivityId);
+    trySendMessage(store, clientActivityId);
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
-import { sendMessage, sendPostBack, renderIfNonempty, konsole } from './Chat';
+import { renderIfNonempty, konsole } from './Chat';
 import { FormatOptions } from './Chat';
 import { Strings } from './Strings';
 
@@ -8,36 +8,16 @@ export const AttachmentView = (props: {
     options: FormatOptions,
     strings: Strings,
     attachment: Attachment,
-    sendMessage: (value: string) => void,
-    sendPostBack: (value: string) => void,
+    onClickButton: (type: string, value: string) => void,
     onImageLoad: ()=> void
 }) => {
     if (!props.attachment) return;
 
     const attachment = props.attachment;
 
-    const onClickButton = (type: string, value: string) => {
-        switch (type) {
-            case "imBack":
-                props.sendMessage(value);
-                break;
-            case "postBack":
-                props.sendPostBack(value);
-                break;
-
-            case "openUrl":
-            case "signin":
-                window.open(value);
-                break;
-
-            default:
-                konsole.log("unknown button type");
-            }
-    }
-
     const buttons = (buttons?: Button[]) => buttons &&
         <ul className="wc-card-buttons">
-            { buttons.map((button, index) => <li key={ index }><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
+            { buttons.map((button, index) => <li key={ index }><button onClick={ () => props.onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
         </ul>;
 
     const imageWithOnLoad = (url: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>

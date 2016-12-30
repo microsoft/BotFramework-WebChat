@@ -8,8 +8,7 @@ interface Props {
     options: FormatOptions,
     strings: Strings,
     attachments: Attachment[],
-    sendMessage: (value: string) => void,
-    sendPostBack: (value: string) => void,
+    onClickButton: (type: string, value: string) => void,    
     onImageLoad: ()=> void
 }
 
@@ -165,7 +164,13 @@ export class Carousel extends React.Component<Props, State> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
                             <li key={ index }>
-                                <AttachmentView options={ this.props.options } strings={ this.props.strings } attachment={ attachment } sendMessage={ this.props.sendMessage } sendPostBack= { this.props.sendPostBack } onImageLoad={ () => this.resize() } />
+                                <AttachmentView
+                                    attachment={ attachment }
+                                    options={ this.props.options }
+                                    strings={ this.props.strings }
+                                    onClickButton={ this.props.onClickButton }
+                                    onImageLoad={ () => this.resize() }
+                                    />
                             </li>) }
                         </ul>
                     </div>

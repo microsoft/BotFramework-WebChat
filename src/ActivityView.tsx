@@ -11,37 +11,57 @@ const Attachments = (props: {
     strings: Strings,
     attachmentLayout: AttachmentLayout,
     attachments: Attachment[],
-    sendMessage: (value: string) => void,
-    sendPostBack: (value: string) => void,
+    onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
-    if (props.attachments && props.attachments.length >= 1) {
-        if (props.attachmentLayout === 'carousel')
-            return <Carousel options={ props.options } strings={ props.strings } attachments={props.attachments} sendMessage={ props.sendMessage } sendPostBack={ props.sendPostBack } onImageLoad={ props.onImageLoad }/>;
-        else
-            return (
-                <div className="wc-list"> { props.attachments.map((attachment, index) =>
-                    <AttachmentView key={ index } options={ props.options } strings={ props.strings } attachment={ attachment } sendMessage={ props.sendMessage } sendPostBack={ props.sendPostBack } onImageLoad={ props.onImageLoad } />
-                ) } </div>
-            );
-    } else
-        return <span/>
+    if (!props.attachments || props.attachments.length == 0)
+        return null;
+    return props.attachmentLayout === 'carousel' ?
+        <Carousel
+            attachments={props.attachments}
+            options={ props.options }
+            strings={ props.strings }
+            onClickButton={ props.onClickButton }
+            onImageLoad={ props.onImageLoad }
+        />
+    : 
+        <div className="wc-list">
+            { props.attachments.map((attachment, index) =>
+                <AttachmentView
+                    key={ index }
+                    attachment={ attachment }
+                    options={ props.options }
+                    strings={ props.strings }
+                    onClickButton={ props.onClickButton }
+                    onImageLoad={ props.onImageLoad }
+                />
+            ) }
+        </div>
 }
 
 export const ActivityView = (props: {
     options: FormatOptions,
     strings: Strings,
     activity: Activity,
-    sendMessage: (value: string) => void,
-    sendPostBack: (value: string) => void,
+    onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
     switch (props.activity.type) {
         case 'message':
             return (
                 <div>
-                    <FormattedText text={ props.activity.text } format={ props.activity.textFormat } onImageLoad={ props.onImageLoad }/>
-                    <Attachments options={ props.options } strings={ props.strings } attachments={ props.activity.attachments } attachmentLayout={ props.activity.attachmentLayout } sendMessage={ props.sendMessage } sendPostBack={ props.sendPostBack } onImageLoad={ props.onImageLoad }/>
+                    <FormattedText
+                        text={ props.activity.text }
+                        format={ props.activity.textFormat }
+                        onImageLoad={ props.onImageLoad }
+                    />
+                    <Attachments
+                        attachments={ props.activity.attachments }
+                        attachmentLayout={ props.activity.attachmentLayout } 
+                        options={ props.options }
+                        strings={ props.strings } onClickButton={ props.onClickButton }
+                        onImageLoad={ props.onImageLoad }
+                    />
                 </div>
             );
 

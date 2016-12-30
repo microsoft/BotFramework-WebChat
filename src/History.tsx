@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Activity, User } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, trySendMessage, FormatOptions } from './Chat';
+import { sendMessage, sendPostBack, trySendMessage, FormatOptions, konsole } from './Chat';
 import { Strings } from './Strings';
 
 interface Props {
@@ -53,7 +53,26 @@ export class History extends React.Component<Props, {}> {
         // from trying to actually follow a (nonexistant) link
         e.preventDefault();
         e.stopPropagation();
-        trySendMessage(this.props.store)(activity.channelData.clientActivityId, true);
+        trySendMessage(this.props.store, activity.channelData.clientActivityId, true);
+    }
+
+    onClickButton(type: string, value: string) {
+        switch (type) {
+            case "imBack":
+                sendMessage(this.props.store, value);
+                break;
+            case "postBack":
+                sendPostBack(this.props.store, value);
+                break;
+
+            case "openUrl":
+            case "signin":
+                window.open(value);
+                break;
+
+            default:
+                konsole.log("unknown button type", type);
+            }
     }
 
     render() {
@@ -65,8 +84,7 @@ export class History extends React.Component<Props, {}> {
                 user={ state.connection.user }
                 options={ state.format.options }
                 strings={ state.format.strings }
-                sendMessage={ sendMessage(this.props.store) }
-                sendPostBack={ sendPostBack(this.props.store) }
+                onClickButton={ (type, value) => this.onClickButton(type, value) }
                 onClickActivity={ this.props.selectActivity }
                 onClickRetry={ (e, activity) => this.onClickRetry(e, activity) }
                 autoscroll={ this.autoscroll }
@@ -84,8 +102,7 @@ const HistoryView = (props: {
     user: User,
     options: FormatOptions,
     strings: Strings,
-    sendMessage: (value: string) => void,
-    sendPostBack: (value: string) => void,
+    onClickButton: (type: string, value: string) => void,
     onClickActivity: (activity: Activity) => void,
     onClickRetry: (e: React.MouseEvent<HTMLAnchorElement>, activity: Activity) => void,
     autoscroll: () => void,
@@ -103,8 +120,7 @@ const HistoryView = (props: {
                         fromMe={ activity.from.id === props.user.id }
                         options={ props.options }
                         strings={ props.strings }
-                        sendMessage={ props.sendMessage }
-                        sendPostBack={ props.sendPostBack }
+                        onClickButton={ props.onClickButton }
                         onClickActivity={ props.onClickActivity && (() => props.onClickActivity(activity)) }
                         onClickRetry={ e => props.onClickRetry(e, activity) }
                         autoscroll={ props.autoscroll }
@@ -121,8 +137,7 @@ interface WrappedActivityProps {
     fromMe: boolean,
     options: FormatOptions,
     strings: Strings,
-    sendMessage: (value: string) => void,
-    sendPostBack: (value: string) => void,
+    onClickButton: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
     autoscroll: () => void,
@@ -169,7 +184,13 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
-                        <ActivityView options={ this.props.options} strings={ this.props.strings } activity={ this.props.activity } sendMessage={ this.props.sendMessage } sendPostBack={ this.props.sendPostBack } onImageLoad={ this.props.autoscroll }/>
+                        <ActivityView
+                            activity={ this.props.activity }
+                            options={ this.props.options}
+                            strings={ this.props.strings }
+                            onClickButton={ this.props.onClickButton }
+                            onImageLoad={ this.props.autoscroll }
+                        />
                     </div>
                 </div>
                 <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>

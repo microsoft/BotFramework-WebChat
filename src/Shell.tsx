@@ -18,7 +18,7 @@ export class Shell extends React.Component<Props, {}> {
     }
 
     sendMessage() {
-        sendMessage(this.props.store)(this.textInput.value);
+        sendMessage(this.props.store, this.textInput.value);
     }
 
     onKeyPress(e) {
@@ -43,17 +43,19 @@ export class Shell extends React.Component<Props, {}> {
 
     render() {
         const state = this.props.store.getState();
-        return <ShellView
-                    options={ state.format.options }
-                    strings={ state.format.strings }
-                    input={ state.history.input }
-                    setTextInput={ input => this.textInput = input }
-                    setFileInput={ input => this.fileInput = input}
-                    onChangeText={ () => this.onChangeText() }
-                    onChangeFile={ () => this.onChangeFile() }
-                    onClickSend={ () => this.onClickSend() }
-                    onKeyPress={ e => this.onKeyPress(e) }
-                />;
+        return (
+            <ShellView
+                options={ state.format.options }
+                strings={ state.format.strings }
+                input={ state.history.input }
+                setTextInput={ input => this.textInput = input }
+                setFileInput={ input => this.fileInput = input}
+                onChangeText={ () => this.onChangeText() }
+                onChangeFile={ () => this.onChangeFile() }
+                onClickSend={ () => this.onClickSend() }
+                onKeyPress={ e => this.onKeyPress(e) }
+            />
+        );
     }
 }
 
@@ -79,7 +81,15 @@ const ShellView = (props: {
                 </svg>
             </label>
             <div className="wc-textbox">
-                <input type="text" ref={ props.setTextInput } autoFocus value={ props.input } onChange={ props.onChangeText } onKeyPress = { props.onKeyPress } placeholder={ props.strings.consolePlaceholder } />
+                <input
+                    type="text"
+                    ref={ props.setTextInput }
+                    autoFocus
+                    value={ props.input }
+                    onChange={ props.onChangeText }
+                    onKeyPress={ props.onKeyPress }
+                    placeholder={ props.strings.consolePlaceholder }
+                />
             </div>
             <label className="wc-send" onClick={ props.onClickSend } >
                 <svg width="27" height="18">
