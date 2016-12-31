@@ -12,39 +12,32 @@ interface Props {
 }
 
 export class History extends React.Component<Props, {}> {
-    scrollMe: HTMLElement;
+    scrollMe: HTMLDivElement;
     scrollToBottom = true;
-    atBottomThreshold = 80;
-    scrollEventListener: () => void;
-    resizeListener: () => void;
+    resizeListener = () => this.autoscroll();
 
     constructor(props: Props) {
         super(props);
-        this.scrollEventListener = () => this.checkBottom();
-        this.resizeListener = () => this.checkBottom();
     }
 
     componentDidMount() {
-        this.scrollMe.addEventListener('scroll', this.scrollEventListener);
         window.addEventListener('resize', this.resizeListener);
     }
 
     componentWillUnmount() {
-        this.scrollMe.removeEventListener('scroll', this.scrollEventListener);
         window.removeEventListener('resize', this.resizeListener);
     }
 
-    checkBottom() {
-        const offBottom = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight - this.scrollMe.scrollTop; 
-        this.scrollToBottom = offBottom <= this.atBottomThreshold;
+    componentWillUpdate() {
+        this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= 1);
     }
 
     componentDidUpdate() {
         this.autoscroll();
     }
 
-    autoscroll = () => {
-        if (this.scrollToBottom && (this.scrollMe.scrollHeight > this.scrollMe.offsetHeight))
+    autoscroll() {
+        if (this.scrollToBottom)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
@@ -87,7 +80,7 @@ export class History extends React.Component<Props, {}> {
                 onClickButton={ (type, value) => this.onClickButton(type, value) }
                 onClickActivity={ this.props.selectActivity }
                 onClickRetry={ (e, activity) => this.onClickRetry(e, activity) }
-                autoscroll={ this.autoscroll }
+                onImageLoad={ () => this.autoscroll() }
                 setScroll={ div => this.scrollMe = div }
             />;
     }
@@ -105,7 +98,7 @@ const HistoryView = (props: {
     onClickButton: (type: string, value: string) => void,
     onClickActivity: (activity: Activity) => void,
     onClickRetry: (e: React.MouseEvent<HTMLAnchorElement>, activity: Activity) => void,
-    autoscroll: () => void,
+    onImageLoad: () => void,
     setScroll: (div: HTMLDivElement) => void
 }) => 
     <div className="wc-message-groups" ref={ props.setScroll }>
@@ -123,7 +116,7 @@ const HistoryView = (props: {
                         onClickButton={ props.onClickButton }
                         onClickActivity={ props.onClickActivity && (() => props.onClickActivity(activity)) }
                         onClickRetry={ e => props.onClickRetry(e, activity) }
-                        autoscroll={ props.autoscroll }
+                        onImageLoad={ props.onImageLoad }
                     />
                 ) }
             </div>
@@ -140,7 +133,7 @@ interface WrappedActivityProps {
     onClickButton: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
-    autoscroll: () => void,
+    onImageLoad: () => void,
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -189,7 +182,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             options={ this.props.options}
                             strings={ this.props.strings }
                             onClickButton={ this.props.onClickButton }
-                            onImageLoad={ this.props.autoscroll }
+                            onImageLoad={ this.props.onImageLoad }
                         />
                     </div>
                 </div>
