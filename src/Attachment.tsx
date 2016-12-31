@@ -9,7 +9,7 @@ export const AttachmentView = (props: {
     strings: Strings,
     attachment: Attachment,
     onClickButton: (type: string, value: string) => void,
-    onImageLoad: ()=> void
+    onImageLoad: () => void
 }) => {
     if (!props.attachment) return;
 
@@ -21,13 +21,13 @@ export const AttachmentView = (props: {
         </ul>;
 
     const imageWithOnLoad = (url: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
-        <img src={ url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ () => props.onImageLoad() } />;
+        <img src={ url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ props.onImageLoad } />;
 
     const audio = (audioUrl: string, autoPlay?:boolean, loop?: boolean) =>
         <audio src={ audioUrl } autoPlay={ autoPlay } controls loop={ loop } />;
 
     const videoWithOnLoad = (videoUrl: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
-        <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ () => {konsole.log("local onVideoLoad");props.onImageLoad();} } />;
+        <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ props.onImageLoad } />;
 
     const attachedImage = (images?: { url: string }[]) =>
         images && images.length > 0 && imageWithOnLoad(images[0].url);

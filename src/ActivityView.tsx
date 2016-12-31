@@ -59,7 +59,8 @@ export const ActivityView = (props: {
                         attachments={ props.activity.attachments }
                         attachmentLayout={ props.activity.attachmentLayout } 
                         options={ props.options }
-                        strings={ props.strings } onClickButton={ props.onClickButton }
+                        strings={ props.strings }
+                        onClickButton={ props.onClickButton }
                         onImageLoad={ props.onImageLoad }
                     />
                 </div>
