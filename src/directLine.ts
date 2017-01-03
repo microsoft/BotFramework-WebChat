@@ -1,4 +1,4 @@
-import { Observable, Observer, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from '@reactivex/rxjs';
+import { Observable, Observer, Subscriber, AjaxResponse, AjaxRequest, BehaviorSubject, Subscription } from 'rxjs';
 import { Conversation, Activity, Message, Media, IBotConnection, ConnectionStatus, User } from './BotConnection';
 import { konsole } from './Chat';
 

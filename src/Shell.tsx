@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from '@reactivex/rxjs';
+import { Observable } from 'rxjs';
 import { HistoryAction, ChatStore } from './Store';
 import { Message, Media, MediaType } from './BotConnection';
 import { sendMessage, trySendMessage, sendFiles, FormatOptions } from './Chat';

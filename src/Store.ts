@@ -2,7 +2,7 @@ import { Store, Reducer, createStore as reduxCreateStore, combineReducers } from
 import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, Strings } from './Strings';
-import { BehaviorSubject } from '@reactivex/rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 export type ChatStore = Store<ChatState>;
 
