@@ -1,4 +1,4 @@
-import { Observable, BehaviorSubject } from '@reactivex/rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface Conversation {
     conversationId: string,

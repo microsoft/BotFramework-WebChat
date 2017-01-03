@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subscription, BehaviorSubject, Observable, Subject } from '@reactivex/rxjs';
+import { Subscription, BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
 import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
