@@ -22,14 +22,15 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
-    "rxjs": "5.0.2",
     "core-js": "^2.4.1",
     "he": "^1.1.0",
     "marked": "^0.3.6",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-redux": "^5.0.1",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "redux-observable": "^0.12.2",
+    "rxjs": "5.0.2"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
