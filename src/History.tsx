@@ -41,11 +41,9 @@ export class History extends React.Component<Props, {}> {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
-    onClickRetry(e: React.MouseEvent<HTMLAnchorElement>, activity: Activity) {
+    onClickRetry(activity: Activity) {
         // Since this is a click on an anchor, we need to stop it
         // from trying to actually follow a (nonexistant) link
-        e.preventDefault();
-        e.stopPropagation();
         trySendMessage(this.props.store, activity.channelData.clientActivityId, true);
     }
 
@@ -97,7 +95,7 @@ const HistoryView = (props: {
     strings: Strings,
     onClickButton: (type: string, value: string) => void,
     onClickActivity: (activity: Activity) => void,
-    onClickRetry: (e: React.MouseEvent<HTMLAnchorElement>, activity: Activity) => void,
+    onClickRetry: (activity: Activity) => void,
     onImageLoad: () => void,
     setScroll: (div: HTMLDivElement) => void
 }) => 
@@ -115,7 +113,11 @@ const HistoryView = (props: {
                         strings={ props.strings }
                         onClickButton={ props.onClickButton }
                         onClickActivity={ props.onClickActivity && (() => props.onClickActivity(activity)) }
-                        onClickRetry={ e => props.onClickRetry(e, activity) }
+                        onClickRetry={ e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            props.onClickRetry(activity)
+                        },
                         onImageLoad={ props.onImageLoad }
                     />
                 ) }
