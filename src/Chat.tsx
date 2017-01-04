@@ -64,7 +64,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     componentDidMount() {
         let props = this.props;
 
-        this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
+        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
             this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
@@ -117,15 +117,12 @@ export class Chat extends React.Component<ChatProps, {}> {
 export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
-    dispatch({
-        type: 'Send_Message',
-        activity: {
-            type: "message",
-            text,
-            from,
-            timestamp: (new Date()).toISOString()
-        }
-    });
+    dispatch({ type: 'Send_Message', activity: {
+        type: "message",
+        text,
+        from,
+        timestamp: (new Date()).toISOString()
+    }});
 }
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, from: User) => {
@@ -155,20 +152,16 @@ const attachmentsFromFiles = (files: FileList) => {
 }
 
 export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, from: User) => {
-    dispatch({
-        type: 'Send_Message',
-        activity: {
-            type: "message",
-            attachments: attachmentsFromFiles(files),
-            from
-        }
-    });
+    dispatch({ type: 'Send_Message', activity: {
+        type: "message",
+        attachments: attachmentsFromFiles(files),
+        from
+    }});
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
-    if (value === undefined) return;
-    if (typeof value === 'string' && value.length === 0) return;
-    return renderer(value);
+    if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
+        return renderer(value);
 }
 
 export const konsole = {
