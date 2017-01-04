@@ -77,7 +77,6 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     render() {
-        console.log("rendering History");
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
                 <div className="wc-message-group">

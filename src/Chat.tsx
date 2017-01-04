@@ -7,7 +7,7 @@ import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { strings } from './Strings';
-import { Unsubscribe, Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 import { Provider } from 'react-redux';
 
 export interface FormatOptions {
@@ -31,7 +31,6 @@ export interface ChatProps {
 export class Chat extends React.Component<ChatProps, {}> {
 
     private store = createStore();
-    private storeUnsubscribe: Unsubscribe;
     
     private activitySubscription: Subscription;
     private connectionStatusSubscription: Subscription;
@@ -43,9 +42,9 @@ export class Chat extends React.Component<ChatProps, {}> {
         konsole.log("BotChat.Chat props", props);
 
         if (props.formatOptions)
-            this.store.dispatch({ type: 'Set_Format_Options', options: props.formatOptions } as FormatAction);
+            this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
 
-        this.store.dispatch({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) } as FormatAction);
+        this.store.dispatch<FormatAction>({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) });
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -68,7 +67,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity } as ConnectionAction);
 
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
-            this.store.dispatch({ type: 'Connection_Change', connectionStatus } as ConnectionAction)
+            this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
         );
 
         this.activitySubscription = props.botConnection.activity$.subscribe(
@@ -78,16 +77,12 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         if (props.selectedActivity) {
             this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
-                this.store.dispatch({
+                this.store.dispatch<HistoryAction>({
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
-                } as HistoryAction);
+                });
             });
         }
-
-        this.storeUnsubscribe = this.store.subscribe(() =>
-            this.forceUpdate()
-        );
     }
 
     componentWillUnmount() {
@@ -96,7 +91,6 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (this.selectedActivitySubscription)
             this.selectedActivitySubscription.unsubscribe();
         this.props.botConnection.end();
-        this.storeUnsubscribe();
     }
 
     render() {
@@ -120,7 +114,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
-export const sendMessage = (dispatch: Dispatch<any>, text: string, from: User) => {
+export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     dispatch({
@@ -131,7 +125,7 @@ export const sendMessage = (dispatch: Dispatch<any>, text: string, from: User) =
             from,
             timestamp: (new Date()).toISOString()
         }
-    } as HistoryAction);
+    });
 }
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, from: User) => {
@@ -160,7 +154,7 @@ const attachmentsFromFiles = (files: FileList) => {
     return attachments;
 }
 
-export const sendFiles = (dispatch: Dispatch<any>, files: FileList, from: User) => {
+export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, from: User) => {
     dispatch({
         type: 'Send_Message',
         activity: {
@@ -168,7 +162,7 @@ export const sendFiles = (dispatch: Dispatch<any>, files: FileList, from: User) 
             attachments: attachmentsFromFiles(files),
             from
         }
-    } as HistoryAction);
+    });
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
