@@ -284,7 +284,7 @@ const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatS
         const clientActivityId = action.clientActivityId;
         const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
         if (!activity) {
-            console.log("trySendMessage: activity not found");
+            konsole.log("trySendMessage: activity not found");
             return Observable.empty<HistoryAction>();
         }
 
