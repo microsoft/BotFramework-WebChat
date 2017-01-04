@@ -168,6 +168,5 @@ export interface IBotConnection {
     connectionStatus$: BehaviorSubject<ConnectionStatus>,
     activity$: Observable<Activity>,
     end(): void,
-    postMessageWithAttachments(message: Message): Observable<string>,
     postActivity(activity: Activity): Observable<string>
 }

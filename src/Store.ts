@@ -1,10 +1,11 @@
-import { Store, Reducer, createStore as reduxCreateStore, combineReducers } from 'redux';
 import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs';
 
-export type ChatStore = Store<ChatState>;
+// Reducers - perform state transformations
+
+import { Reducer } from 'redux';
 
 export interface FormatState {
     options: FormatOptions,
@@ -62,7 +63,7 @@ export type ConnectionAction = {
 
 export const connection: Reducer<ConnectionState> = (
     state: ConnectionState = {
-        connectionStatus: ConnectionStatus.Connecting,
+        connectionStatus: ConnectionStatus.Uninitialized,
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
@@ -104,7 +105,7 @@ export type HistoryAction = {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
-    type: 'Send_Message_Try' | 'Send_Message_Fail',
+    type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
     clientActivityId: string
 } | {
     type: 'Send_Message_Succeed'
@@ -187,7 +188,7 @@ export const history: Reducer<HistoryState> = (
                 clientActivityCounter: state.clientActivityCounter + 1
             };
 
-        case 'Send_Message_Try': {
+        case 'Send_Message_Retry': {
             const activity = state.activities.find(activity =>
                 activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
             );
@@ -262,10 +263,81 @@ export interface ChatState {
     history: HistoryState
 }
 
+// Epics - chain actions together with async operations
+
+import { MiddlewareAPI, applyMiddleware } from 'redux';
+import { Epic } from 'redux-observable';
+import { Observable } from 'rxjs';
+
+const sendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
+    action$.ofType('Send_Message')
+    .map(action => {
+        const state = store.getState();
+        const clientActivityId = state.history.clientActivityBase + (state.history.clientActivityCounter - 1);
+        return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
+    });
+
+const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
+    action$.ofType('Send_Message_Try')
+    .flatMap(action => {
+        const state = store.getState();
+        const clientActivityId = action.clientActivityId;
+        const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
+        if (!activity) {
+            console.log("trySendMessage: activity not found");
+            return Observable.empty<HistoryAction>();
+        }
+
+        return state.connection.botConnection.postActivity(activity)
+        .map(id => ({ type: 'Send_Message_Succeed', clientActivityId, id } as HistoryAction))
+        .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
+    });
+
+const retrySendMessage: Epic<HistoryAction> = (action$) =>
+    action$.ofType('Send_Message_Retry')
+    .map(action => ({type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
+
+const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
+    action$.filter(action => [
+        'Send_Message_Succeed',
+        'Send_Message_Fail',
+        'Send_Message_Fail',
+        'Show_Typing',
+        'Clear_Typing'
+        ].includes(action.type)
+    )
+    .map(action => {
+        const state = store.getState();
+        if (state.connection.selectedActivity)
+            state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
+        return {type: null} as HistoryAction;
+    });
+
+const showTyping: Epic<HistoryAction> = (action$) =>
+    action$.ofType('Show_Typing')
+    .delay(3000)
+    .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
+
+// Now we put it all together into a store with middleware
+
+import { Store, createStore as reduxCreateStore, combineReducers } from 'redux';
+import { combineEpics, createEpicMiddleware } from 'redux-observable';
+
 export const createStore = () =>
     reduxCreateStore(
         combineReducers<ChatState>({
             format,
             connection,
             history
-        }));
+        }),
+        applyMiddleware(createEpicMiddleware(combineEpics(
+            updateSelectedActivity,
+            sendMessage,
+            trySendMessage,
+            retrySendMessage,
+            showTyping
+        )))
+    );
+
+export type ChatStore = Store<ChatState>;
+
