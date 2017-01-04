@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Observable } from '@reactivex/rxjs';
+import { Observable } from 'rxjs';
 import { HistoryAction, ChatState } from './Store';
-import { Message, Media, MediaType, User } from './BotConnection';
-import { sendMessage, trySendMessage, sendFiles, FormatOptions, SendMessageProps } from './Chat';
+import { Message, Media, MediaType, User, IBotConnection } from './BotConnection';
+import { sendMessage, sendFiles, FormatOptions } from './Chat';
 import { Strings } from './Strings';
 import { Dispatch, connect } from 'react-redux';
 
@@ -10,20 +10,9 @@ interface Props {
     inputText: string,
     options: FormatOptions,
     strings: Strings,
-    clientActivityId: string,
     user: User,
     dispatch: Dispatch<any>
 }
-
-export const Shell = connect(
-    (state: ChatState) => ({
-        inputText: state.history.input,
-        options: state.format.options,
-        strings: state.format.strings,
-        clientActivityId: state.history.clientActivityBase + state.history.clientActivityCounter,
-        user: state.connection.user
-    })
-)(ShellContainer);
 
 class ShellContainer extends React.Component<Props, {}> {
     private textInput: HTMLInputElement;
@@ -34,7 +23,7 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private sendMessage() {
-        sendMessage(this.props.dispatch, this.props.inputText, this.props.clientActivityId, this.props.user);
+        sendMessage(this.props.dispatch, this.props.inputText, this.props.user);
     }
 
     private onChangeText() {
@@ -53,7 +42,7 @@ class ShellContainer extends React.Component<Props, {}> {
 
     private onChangeFile() {
         this.textInput.focus();
-        sendFiles(this.props.dispatch, this.fileInput.files, this.props.clientActivityId, this.props.user);
+        sendFiles(this.props.dispatch, this.fileInput.files, this.props.user);
         this.fileInput.value = null;
     }
 
@@ -89,3 +78,12 @@ class ShellContainer extends React.Component<Props, {}> {
         );
     }
 }
+
+export const Shell = connect(
+    (state: ChatState) => ({
+        inputText: state.history.input,
+        options: state.format.options,
+        strings: state.format.strings,
+        user: state.connection.user,
+    })
+)(ShellContainer);

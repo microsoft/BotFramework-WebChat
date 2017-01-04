@@ -1,4 +1,4 @@
-import { Observable, BehaviorSubject } from '@reactivex/rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface Conversation {
     conversationId: string,
@@ -168,6 +168,5 @@ export interface IBotConnection {
     connectionStatus$: BehaviorSubject<ConnectionStatus>,
     activity$: Observable<Activity>,
     end(): void,
-    postMessageWithAttachments(message: Message): Observable<string>,
     postActivity(activity: Activity): Observable<string>
 }
