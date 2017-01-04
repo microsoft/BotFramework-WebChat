@@ -284,7 +284,7 @@ const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatS
         const clientActivityId = action.clientActivityId;
         const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
         if (!activity) {
-            console.log("trySendMessage: activity not found");
+            konsole.log("trySendMessage: activity not found");
             return Observable.empty<HistoryAction>();
         }
 
@@ -295,7 +295,7 @@ const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatS
 
 const retrySendMessage: Epic<HistoryAction> = (action$) =>
     action$.ofType('Send_Message_Retry')
-    .map(action => ({type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
+    .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
 const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
     action$.filter(action => [
@@ -310,7 +310,7 @@ const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareA
         const state = store.getState();
         if (state.connection.selectedActivity)
             state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
-        return {type: null} as HistoryAction;
+        return { type: null } as HistoryAction;
     });
 
 const showTyping: Epic<HistoryAction> = (action$) =>
