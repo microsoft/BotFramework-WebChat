@@ -168,13 +168,35 @@ export class DirectLine implements IBotConnection {
             this.tokenRefreshSubscription.unsubscribe();
     }
 
-    // There are two ways to send activities to Direct Line
-    // 1. For messages with attachments that are local files (e.g. an image to upload) we use this
-    // 2. For the rest, we use postActivity
-    // Technically we could use this for all activities, but postActivity is much lighter weight
-    // So, since WebChat is partially a reference implementation of Direct Line, we do both.
+    postActivity(activity: Activity) {
+        // Use postMessageWithAttachments for messages with attachments that are local files (e.g. an image to upload)
+        // Technically we could use it for *all* activities, but postActivity is much lighter weight
+        // So, since WebChat is partially a reference implementation of Direct Line, we implement both.
+        if (activity.type === "message" && activity.attachments && activity.attachments.length > 0)
+            return this.postMessageWithAttachments(activity);
+            
+        // If we're not connected to the bot, get connected
+        // Will throw an error if we are not connected
+        konsole.log("postActivity", activity);
+        return this.checkConnection(true)
+        .flatMap(_ =>
+            Observable.ajax({
+                method: "POST",
+                url: `${this.domain}/conversations/${this.conversationId}/activities`,
+                body: activity,
+                timeout,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.token}`
+                }
+            })
+            .map(ajaxResponse => ajaxResponse.response.id as string)
+            .catch(error => this.catchPostError(error))
+        )
+        .catch(error => this.catchExpiredToken(error));
+    }
 
-    postMessageWithAttachments(message: Message) {
+    private postMessageWithAttachments(message: Message) {
         let formData: FormData;
         const { attachments, ... newMessage } = message;
 
@@ -214,28 +236,6 @@ export class DirectLine implements IBotConnection {
             .catch(error => this.catchPostError(error))
         )
         .catch(error => this.catchPostError(error));
-    }
-
-    postActivity(activity: Activity) {
-        // If we're not connected to the bot, get connected
-        // Will throw an error if we are not connected
-        konsole.log("postActivity", activity);
-        return this.checkConnection(true)
-        .flatMap(_ =>
-            Observable.ajax({
-                method: "POST",
-                url: `${this.domain}/conversations/${this.conversationId}/activities`,
-                body: activity,
-                timeout,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${this.token}`
-                }
-            })
-            .map(ajaxResponse => ajaxResponse.response.id as string)
-            .catch(error => this.catchPostError(error))
-        )
-        .catch(error => this.catchExpiredToken(error));
     }
 
     private catchPostError(error: any) {

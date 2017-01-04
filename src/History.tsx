@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Activity, User } from './BotConnection';
 import { HistoryAction, ChatStore } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, trySendMessage, FormatOptions, konsole } from './Chat';
+import { sendMessage, sendPostBack, FormatOptions, konsole } from './Chat';
 import { Strings } from './Strings';
 
 interface Props {
@@ -46,7 +46,7 @@ export class History extends React.Component<Props, {}> {
         // from trying to actually follow a (nonexistant) link
         e.preventDefault();
         e.stopPropagation();
-        trySendMessage(this.props.store, activity.channelData.clientActivityId, true);
+        this.props.store.dispatch<HistoryAction>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
     }
 
     onClickButton(type: string, value: string) {

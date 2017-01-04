@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { HistoryAction, ChatStore } from './Store';
 import { Message, Media, MediaType } from './BotConnection';
-import { sendMessage, trySendMessage, sendFiles, FormatOptions } from './Chat';
+import { sendMessage, sendFiles, FormatOptions } from './Chat';
 import { Strings } from './Strings';
 
 interface Props {
