@@ -171,7 +171,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const who = this.props.fromMe ? 'me' : 'bot';
 
         return (
-            <div className={ "wc-message-wrapper" + (this.props.onClickActivity ? ' clickable' : '') } onClick={ this.props.onClickActivity }>
+            <div data-activity-id={this.props.activity.id} className={ "wc-message-wrapper" + (this.props.onClickActivity ? ' clickable' : '') } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who }>
                     <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
                         <svg className="wc-message-callout">
