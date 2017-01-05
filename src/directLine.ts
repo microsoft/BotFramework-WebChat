@@ -166,6 +166,7 @@ export class DirectLine implements IBotConnection {
     end() {
         if (this.tokenRefreshSubscription)
             this.tokenRefreshSubscription.unsubscribe();
+        this.connectionStatus$.next(ConnectionStatus.Ended);
     }
 
     postActivity(activity: Activity) {
