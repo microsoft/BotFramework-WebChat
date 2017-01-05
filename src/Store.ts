@@ -298,13 +298,12 @@ const retrySendMessage: Epic<HistoryAction> = (action$) =>
     .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
 const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
-    action$.filter(action => [
+    action$.ofType(
         'Send_Message_Succeed',
         'Send_Message_Fail',
         'Send_Message_Fail',
         'Show_Typing',
         'Clear_Typing'
-        ].includes(action.type)
     )
     .map(action => {
         const state = store.getState();
