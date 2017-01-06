@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Attachment } from './BotConnection';
 import { AttachmentView } from './Attachment';
-import { FormatOptions } from './Chat';
-import { Strings } from './Strings';
+import { FormatState } from './Store';
 
 interface Props {
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState,
     attachments: Attachment[],
     onClickButton: (type: string, value: string) => void,    
     onImageLoad: ()=> void
@@ -164,8 +162,7 @@ export class Carousel extends React.Component<Props, State> {
                             <li key={ index }>
                                 <AttachmentView
                                     attachment={ attachment }
-                                    options={ this.props.options }
-                                    strings={ this.props.strings }
+                                    format={ this.props.format }
                                     onClickButton={ this.props.onClickButton }
                                     onImageLoad={ () => this.resize() }
                                     />
