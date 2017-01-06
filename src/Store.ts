@@ -8,20 +8,22 @@ import { BehaviorSubject } from 'rxjs';
 import { Reducer } from 'redux';
 
 export interface FormatState {
+    locale: string,
     options: FormatOptions,
     strings: Strings
 }
 
 export type FormatAction = {
     type: 'Set_Format_Options',
-    options: FormatOptions
+    options: FormatOptions,
 } | {
-    type: 'Set_Localized_Strings',
-    strings: Strings
+    type: 'Set_Locale',
+    locale: string
 }
 
 export const format: Reducer<FormatState> = (
     state: FormatState = {
+        locale: window.navigator.language,
         options: {
             showHeader: true
         },
@@ -31,9 +33,16 @@ export const format: Reducer<FormatState> = (
 ) => {
     switch (action.type) {
         case 'Set_Format_Options':
-            return { options: action.options, strings: state.strings };
-        case 'Set_Localized_Strings':
-            return { options: state.options, strings: action.strings };
+            return {
+                options: action.options,
+                ... state
+            };
+        case 'Set_Locale':
+            return {
+                locale: action.locale,
+                strings: strings(action.locale),
+                ... state
+            };
         default:
             return state;
     }

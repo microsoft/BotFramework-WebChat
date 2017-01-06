@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Attachment, Button } from './BotConnection';
 import { renderIfNonempty, konsole } from './Chat';
-import { FormatOptions } from './Chat';
-import { Strings } from './Strings';
+import { FormatState } from './Store';
 
 export const AttachmentView = (props: {
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState;
     attachment: Attachment,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
@@ -141,11 +139,11 @@ export const AttachmentView = (props: {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td>{ props.strings.receiptTax }</td>
+                                <td>{ props.format.strings.receiptTax }</td>
                                 <td>{ attachment.content.tax }</td>
                             </tr>
                             <tr className="total">
-                                <td>{ props.strings.receiptTotal }</td>
+                                <td>{ props.format.strings.receiptTotal }</td>
                                 <td>{ attachment.content.total }</td>
                             </tr>
                         </tfoot>
@@ -168,10 +166,10 @@ export const AttachmentView = (props: {
 
         default:
             if(isUnsupportedCardContentType(attachment['contentType'])) {
-                return <span>{ props.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;    
+                return <span>{ props.format.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;    
             }
             else {
-                return <span>{ props.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
+                return <span>{ props.format.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
             }
             
     }

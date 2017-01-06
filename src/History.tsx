@@ -1,16 +1,14 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
 import { Activity, User, IBotConnection } from './BotConnection';
-import { HistoryAction, ChatState } from './Store';
+import { HistoryAction, ChatState, FormatState } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, FormatOptions, konsole, ActivityOrID } from './Chat';
-import { Strings } from './Strings';
+import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs';
 
 interface Props {
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState
     activities: Activity[],
     selectedActivity: Activity
     user: User,
@@ -56,10 +54,10 @@ class HistoryContainer extends React.Component<Props, {}> {
     private onClickButton(type: string, value: string) {
         switch (type) {
             case "imBack":
-                sendMessage(this.props.dispatch, value, this.props.user);
+                sendMessage(this.props.dispatch, value, this.props.user, this.props.format.locale);
                 break;
             case "postBack":
-                sendPostBack(this.props.botConnection, value, this.props.user);
+                sendPostBack(this.props.botConnection, value, this.props.user, this.props.format.locale);
                 break;
 
             case "openUrl":
@@ -88,8 +86,7 @@ class HistoryContainer extends React.Component<Props, {}> {
                                 showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                                 selected={ activity === this.props.selectedActivity }
                                 fromMe={ activity.from.id === this.props.user.id }
-                                options={ this.props.options }
-                                strings={ this.props.strings }
+                                format={ this.props.format }
                                 onClickButton={ (type, value) => this.onClickButton(type, value) }
                                 onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
                                 onClickRetry={ e => {
@@ -110,11 +107,10 @@ class HistoryContainer extends React.Component<Props, {}> {
 }
 
 export const History = connect(
-    (state: ChatState) => ({
-        options: state.format.options,
-        strings: state.format.strings,
+    (state: ChatState): Partial<Props> => ({
         activities: state.history.activities,
         selectedActivity: state.history.selectedActivity,
+        format: state.format,
         user: state.connection.user,
         botConnection: state.connection.botConnection,
         selectedActivitySubject: state.connection.selectedActivity
@@ -129,8 +125,7 @@ interface WrappedActivityProps {
     showTimestamp: boolean,
     selected: boolean,
     fromMe: boolean,
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState,
     onClickButton: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
@@ -147,23 +142,23 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
-                timeLine = <span>{ this.props.strings.messageSending }</span>;
+                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
                 break;
             case null:
-                timeLine = <span>{ this.props.strings.messageFailed }</span>;
+                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
                 break;
             case "retry":
                 timeLine =
                     <span>
-                        { this.props.strings.messageFailed }
+                        { this.props.format.strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.strings.messageRetry }</a>
+                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
-                    sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
         } 
@@ -180,8 +175,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         </svg>
                         <ActivityView
                             activity={ this.props.activity }
-                            options={ this.props.options}
-                            strings={ this.props.strings }
+                            format={ this.props.format }
                             onClickButton={ this.props.onClickButton }
                             onImageLoad={ this.props.onImageLoad }
                         />
