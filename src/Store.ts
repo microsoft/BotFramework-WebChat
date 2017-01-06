@@ -7,16 +7,37 @@ import { BehaviorSubject } from 'rxjs';
 
 import { Reducer } from 'redux';
 
+export enum Actions {
+    // Format
+    SetFormatOptions,
+    SetLocalizedStrings,
+    // Connection
+    StartConnection,
+    ConnectionChange,
+    // History
+    UpdateInput,
+    ReceiveMessage,
+    ReceiveSentMessage,
+    ShowTyping,
+    ClearTyping,
+    SendMessage,
+    SendMessageTry,
+    SendMessageRetry,
+    SendMessageFail,
+    SendMessageSucceed,
+    SelectActivity,
+}
+
 export interface FormatState {
     options: FormatOptions,
     strings: Strings
 }
 
 export type FormatAction = {
-    type: 'Set_Format_Options',
+    type: Actions.SetFormatOptions,
     options: FormatOptions
 } | {
-    type: 'Set_Localized_Strings',
+    type: Actions.SetLocalizedStrings,
     strings: Strings
 }
 
@@ -30,9 +51,9 @@ export const format: Reducer<FormatState> = (
     action: FormatAction
 ) => {
     switch (action.type) {
-        case 'Set_Format_Options':
+        case Actions.SetFormatOptions:
             return { options: action.options, strings: state.strings };
-        case 'Set_Localized_Strings':
+        case Actions.SetLocalizedStrings:
             return { options: state.options, strings: action.strings };
         default:
             return state;
@@ -51,13 +72,13 @@ export interface ConnectionState {
 }
 
 export type ConnectionAction = {
-    type: 'Start_Connection',
+    type: Actions.StartConnection,
     botConnection: IBotConnection,
     user: User,
     bot: User,
     selectedActivity: BehaviorSubject<ActivityOrID>
 } | {
-    type: 'Connection_Change',
+    type: Actions.ConnectionChange,
     connectionStatus: ConnectionStatus
 }
 
@@ -72,7 +93,7 @@ export const connection: Reducer<ConnectionState> = (
     action: ConnectionAction
 ) => {
     switch (action.type) {
-        case 'Start_Connection':
+        case Actions.StartConnection:
             return {
                 ... state,
                 botConnection: action.botConnection,
@@ -80,7 +101,7 @@ export const connection: Reducer<ConnectionState> = (
                 bot: action.bot,
                 selectedActivity: action.selectedActivity
             };
-        case 'Connection_Change':
+        case Actions.ConnectionChange:
             return {
                 ... state,
                 connectionStatus: action.connectionStatus
@@ -99,23 +120,23 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Update_Input',
+    type: Actions.UpdateInput,
     input: string
 } | {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
+    type: Actions.ReceiveMessage | Actions.SendMessage | Actions.ShowTyping | Actions.ReceiveSentMessage
     activity: Activity
 } | {
-    type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
+    type: Actions.SendMessageTry | Actions.SendMessageFail| Actions.SendMessageRetry,
     clientActivityId: string
 } | {
-    type: 'Send_Message_Succeed'
+    type: Actions.SendMessageSucceed
     clientActivityId: string
     id: string
 } | {
-    type: 'Select_Activity',
+    type: Actions.SelectActivity,
     selectedActivity: Activity
 } | {
-    type: 'Clear_Typing',
+    type: Actions.ClearTyping,
     id: string
 }
 
@@ -132,13 +153,13 @@ export const history: Reducer<HistoryState> = (
     konsole.log("history action", action);
     switch (action.type) {
 
-        case 'Update_Input':
+        case Actions.UpdateInput:
             return {
                 ... state,
                 input: action.input
             };
 
-        case 'Receive_Sent_Message': {
+        case Actions.ReceiveSentMessage: {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
                 return state;
@@ -160,7 +181,7 @@ export const history: Reducer<HistoryState> = (
             }
             // else fall through and treat this as a new message
         }
-        case 'Receive_Message':
+        case Actions.ReceiveMessage:
             if (state.activities.find(a => a.id === action.activity.id)) return state; // don't allow duplicate messages
 
             return {
@@ -172,7 +193,7 @@ export const history: Reducer<HistoryState> = (
                 ]
             };
 
-        case 'Send_Message':
+        case Actions.SendMessage:
             return {
                 ... state,
                 activities: [
@@ -188,7 +209,7 @@ export const history: Reducer<HistoryState> = (
                 clientActivityCounter: state.clientActivityCounter + 1
             };
 
-        case 'Send_Message_Retry': {
+        case Actions.SendMessageRetry: {
             const activity = state.activities.find(activity =>
                 activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
             );
@@ -203,8 +224,8 @@ export const history: Reducer<HistoryState> = (
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             };
         }
-        case 'Send_Message_Succeed':
-        case 'Send_Message_Fail': {
+        case Actions.SendMessageSucceed:
+        case Actions.SendMessageFail: {
             const i = state.activities.findIndex(activity =>
                 activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
             );
@@ -215,7 +236,7 @@ export const history: Reducer<HistoryState> = (
 
             const newActivity = {
                 ... activity,
-                id: action.type === 'Send_Message_Succeed' ? action.id : null                        
+                id: action.type === Actions.SendMessageSucceed ? action.id : null                        
             };
             return {
                 ... state,
@@ -228,7 +249,7 @@ export const history: Reducer<HistoryState> = (
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             };
         }
-        case 'Show_Typing':
+        case Actions.ShowTyping:
             return {
                 ... state, 
                 activities: [
@@ -238,14 +259,14 @@ export const history: Reducer<HistoryState> = (
                 ]
             };
 
-        case 'Clear_Typing':
+        case Actions.ClearTyping:
             return {
                 ... state, 
                 activities: state.activities.filter(activity => activity.id !== action.id),
                 selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
             };
 
-        case 'Select_Activity':
+        case Actions.SelectActivity:
             if (action.selectedActivity === state.selectedActivity) return state;
             return {
                 ... state,
@@ -270,15 +291,15 @@ import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 
 const sendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
-    action$.ofType('Send_Message')
+    action$.ofType(Actions.SendMessage)
     .map(action => {
         const state = store.getState();
         const clientActivityId = state.history.clientActivityBase + (state.history.clientActivityCounter - 1);
-        return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
+        return ({ type: Actions.SendMessageTry, clientActivityId } as HistoryAction);
     });
 
 const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
-    action$.ofType('Send_Message_Try')
+    action$.ofType(Actions.SendMessageTry)
     .flatMap(action => {
         const state = store.getState();
         const clientActivityId = action.clientActivityId;
@@ -289,21 +310,20 @@ const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatS
         }
 
         return state.connection.botConnection.postActivity(activity)
-        .map(id => ({ type: 'Send_Message_Succeed', clientActivityId, id } as HistoryAction))
-        .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
+        .map(id => ({ type: Actions.SendMessageSucceed, clientActivityId, id } as HistoryAction))
+        .catch(error => Observable.of({ type: Actions.SendMessageFail, clientActivityId } as HistoryAction))
     });
 
 const retrySendMessage: Epic<HistoryAction> = (action$) =>
-    action$.ofType('Send_Message_Retry')
-    .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
+    action$.ofType(Actions.SendMessageRetry)
+    .map(action => ({ type: Actions.SendMessageTry, clientActivityId: action.clientActivityId } as HistoryAction));
 
 const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
     action$.ofType(
-        'Send_Message_Succeed',
-        'Send_Message_Fail',
-        'Send_Message_Fail',
-        'Show_Typing',
-        'Clear_Typing'
+        Actions.SendMessageSucceed,
+        Actions.SendMessageFail,
+        Actions.ShowTyping,
+        Actions.ClearTyping
     )
     .map(action => {
         const state = store.getState();
@@ -313,9 +333,9 @@ const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareA
     });
 
 const showTyping: Epic<HistoryAction> = (action$) =>
-    action$.ofType('Show_Typing')
+    action$.ofType(Actions.ShowTyping)
     .delay(3000)
-    .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
+    .map(action => ({ type: Actions.ClearTyping, id: action.activity.id } as HistoryAction));
 
 // Now we put it all together into a store with middleware
 
