@@ -2,7 +2,6 @@ import * as Marked from 'marked';
 import * as React from 'react';
 import * as He from 'he';
 
-
 export interface IFormattedTextProps {
     text: string,
     format: string,
@@ -10,69 +9,50 @@ export interface IFormattedTextProps {
     markdownOptions?: MarkedOptions
 }
 
-export class FormattedText extends React.Component<IFormattedTextProps, {}> {
+export const FormattedText = (props: IFormattedTextProps) => {
+    if (!props.text || props.text === '')
+        return null;
 
-    constructor(props: IFormattedTextProps) {
-        super(props);
-    }
-
-    shouldComponentUpdate(nextProps: IFormattedTextProps): boolean {
-        // I don't love this, but it is fast and it works.
-        return JSON.stringify(this.props) !== JSON.stringify(nextProps);
-    }
-
-    render() {
-        if (!this.props.text || this.props.text === '')
-            return null;
-
-        switch (this.props.format) {
-            case "plain":
-                return this.renderPlainText();
-            case "xml":
-                return this.renderXml();
-            default:
-                return this.renderMarkdown();
-        }
-    }
-
-    private renderPlainText() {
-        const lines = this.props.text.replace('\r', '').split('\n');
-        const elements = lines.map((line, i) => <span key={i}>{line}<br /></span>);
-        return <span className="format-plain">{elements}</span>;
-    }
-
-    private renderXml() {
-        // TODO: Implement Xml renderer
-        //return <span className="format-xml"></span>;
-        return this.renderMarkdown();
-    }
-
-    private renderMarkdown() {
-        let src = this.props.text || '';
-        src = src.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-        const options: MarkedOptions = {
-            gfm: true,
-            tables: true,
-            breaks: false,
-            pedantic: false,
-            sanitize: false,
-            smartLists: true,
-            silent: false,
-            smartypants: true,
-            ... this.props.markdownOptions
-        };
-        const renderer = options.renderer = new ReactRenderer(options, this.props.onImageLoad);
-        const text = Marked.parse(src, options);
-        const elements = renderer.getElements(text);
-        /*// debug
-        const remaining = renderer.elements.filter(el => !!el);
-        if (remaining.length) {
-            console.warn(`There were ${remaining.length} unused markdown elements!`);
-        }*/
-        return <span className="format-markdown">{elements}</span>;
+    switch (props.format) {
+        case "plain":
+            return renderPlainText(props.text);
+        default:
+            return renderMarkdown(props.text, props.markdownOptions, props.onImageLoad);
     }
 }
 
+const renderPlainText = (text: string) => {
+    const lines = text.replace('\r', '').split('\n');
+    const elements = lines.map((line, i) => <span key={i}>{line}<br /></span>);
+    return <span className="format-plain">{elements}</span>;
+}
+
+const renderMarkdown = (
+    text: string,
+    markdownOptions: MarkedOptions,
+    onImageLoad: () => void
+) => {
+    const src = text.replace(/<br\s*\/?>/ig, '\r\n\r\n');
+    const options: MarkedOptions = {
+        gfm: true,
+        tables: true,
+        breaks: false,
+        pedantic: false,
+        sanitize: false,
+        smartLists: true,
+        silent: false,
+        smartypants: true,
+        ... markdownOptions
+    };
+    const renderer = options.renderer = new ReactRenderer(options, onImageLoad);
+    const elements = renderer.getElements(Marked.parse(src, options));
+    /*// debug
+    const remaining = renderer.elements.filter(el => !!el);
+    if (remaining.length) {
+        console.warn(`There were ${remaining.length} unused markdown elements!`);
+    }*/
+    return <span className="format-markdown">{elements}</span>;
+}
 
 class ReactRenderer implements MarkedRenderer {
 
