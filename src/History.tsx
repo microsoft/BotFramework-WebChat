@@ -1,7 +1,7 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
 import { Activity, User, IBotConnection } from './BotConnection';
-import { HistoryAction, ChatState } from './Store';
+import { HistoryAction, ChatState, Actions } from './Store';
 import { ActivityView } from './ActivityView';
 import { sendMessage, sendPostBack, FormatOptions, konsole, ActivityOrID } from './Chat';
 import { Strings } from './Strings';
@@ -50,7 +50,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private onClickRetry(activity: Activity) {
-        this.props.dispatch<HistoryAction>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
+        this.props.dispatch<HistoryAction>({ type: Actions.SendMessageRetry, clientActivityId: activity.channelData.clientActivityId });
     }
 
     private onClickButton(type: string, value: string) {
