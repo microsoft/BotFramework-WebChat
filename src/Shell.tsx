@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
-import { HistoryAction, ChatState, Actions } from './Store';
+import { HistoryAction, ChatState } from './Store';
 import { Message, Media, MediaType, User, IBotConnection } from './BotConnection';
 import { sendMessage, sendFiles, FormatOptions } from './Chat';
 import { Strings } from './Strings';
@@ -27,7 +27,7 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private onChangeText() {
-        this.props.dispatch<HistoryAction>({ type: Actions.UpdateInput, input: this.textInput.value })
+        this.props.dispatch<HistoryAction>({ type: 'Update_Input', input: this.textInput.value })
     }
 
     private onKeyPress(e) {

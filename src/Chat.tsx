@@ -5,7 +5,7 @@ import { DirectLine } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
-import { createStore, FormatAction, HistoryAction, ConnectionAction, Actions } from './Store';
+import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { strings } from './Strings';
 import { Dispatch } from 'redux';
 import { Provider } from 'react-redux';
@@ -42,9 +42,9 @@ export class Chat extends React.Component<ChatProps, {}> {
         konsole.log("BotChat.Chat props", props);
 
         if (props.formatOptions)
-            this.store.dispatch<FormatAction>({ type: Actions.SetFormatOptions, options: props.formatOptions });
+            this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
 
-        this.store.dispatch<FormatAction>({ type: Actions.SetLocalizedStrings, strings: strings(props.locale || window.navigator.language) });
+        this.store.dispatch<FormatAction>({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) });
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -52,11 +52,11 @@ export class Chat extends React.Component<ChatProps, {}> {
         switch (activity.type) {
 
             case "message":
-                this.store.dispatch<HistoryAction>({ type: activity.from.id === state.connection.user.id ? Actions.ReceiveSentMessage : Actions.ReceiveMessage, activity });
+                this.store.dispatch<HistoryAction>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
                 break;
 
             case "typing":
-                this.store.dispatch<HistoryAction>({ type: Actions.ShowTyping, activity });
+                this.store.dispatch<HistoryAction>({ type: 'Show_Typing', activity });
                 break;
         }
     }
@@ -64,10 +64,10 @@ export class Chat extends React.Component<ChatProps, {}> {
     componentDidMount() {
         let props = this.props;
 
-        this.store.dispatch<ConnectionAction>({ type: Actions.StartConnection, user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
+        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
-            this.store.dispatch<ConnectionAction>({ type: Actions.ConnectionChange, connectionStatus })
+            this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
         );
 
         this.activitySubscription = props.botConnection.activity$.subscribe(
@@ -78,7 +78,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (props.selectedActivity) {
             this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
                 this.store.dispatch<HistoryAction>({
-                    type: Actions.SelectActivity,
+                    type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
                 });
             });
@@ -117,7 +117,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
-    dispatch({ type: Actions.SendMessage, activity: {
+    dispatch({ type: 'Send_Message', activity: {
         type: "message",
         text,
         from,
@@ -152,7 +152,7 @@ const attachmentsFromFiles = (files: FileList) => {
 }
 
 export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, from: User) => {
-    dispatch({ type: Actions.SendMessage, activity: {
+    dispatch({ type: 'Send_Message', activity: {
         type: "message",
         attachments: attachmentsFromFiles(files),
         from
