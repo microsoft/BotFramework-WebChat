@@ -71,7 +71,6 @@
     "npm-run-all": "^3.1.2",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^1.3.3",
-    "typescwebpackript": "^2.1.4",
-    "": "^1.14.0"
+    "typescwebpackript": "^2.1.4"
   }
 }
