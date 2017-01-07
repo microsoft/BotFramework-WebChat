@@ -4,6 +4,9 @@
   "description": "sample web chat app for MS bot framework ",
   "main": "built/BotChat.js",
   "types": "public/botchat.d.ts",
+  "engines": {
+    "node": "4.1.1"
+  },
   "scripts": {
     "build": "tsc && webpack",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
