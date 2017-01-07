@@ -17,7 +17,7 @@
     "start": "http-server -p $PORT",
     "publish": "node ./bin/publish.js",
     "test": "mocha test",
-    "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
