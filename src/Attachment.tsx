@@ -138,14 +138,20 @@ export const AttachmentView = (props: {
                             </tr>) }
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <td>{ props.format.strings.receiptTax }</td>
-                                <td>{ attachment.content.tax }</td>
-                            </tr>
-                            <tr className="total">
-                                <td>{ props.format.strings.receiptTotal }</td>
-                                <td>{ attachment.content.total }</td>
-                            </tr>
+                            { renderIfNonempty(
+                                attachment.content.tax,
+                                tax => <tr>
+                                    <td>{ props.format.strings.receiptTax }</td>
+                                    <td>{ attachment.content.tax }</td>
+                                </tr>)
+                            }
+                            { renderIfNonempty(
+                                attachment.content.total,
+                                total => <tr className="total">
+                                    <td>{ props.format.strings.receiptTotal }</td>
+                                    <td>{ attachment.content.total }</td>
+                                </tr>)
+                            }
                         </tfoot>
                     </table>
                 </div>
