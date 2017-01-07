@@ -14,7 +14,7 @@
     "webpack-watch": "webpack -w",
     "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
-    "start": "http-server -p process.env.PORT",
+    "start": "http-server -p $PORT",
     "publish": "node ./bin/publish.js",
     "test": "mocha test",
     "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
