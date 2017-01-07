@@ -11,9 +11,10 @@
     "webpack-watch": "webpack -w",
     "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
-    "start": "http-server -p 8000",
+    "start": "http-server -p 5000",
     "publish": "node ./bin/publish.js",
-    "test": "mocha test"
+    "test": "mocha test",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress"
   },
   "repository": {
     "type": "git",
