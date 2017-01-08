@@ -3,6 +3,8 @@ import { Attachment, Button } from './BotConnection';
 import { renderIfNonempty, konsole } from './Chat';
 import { FormatState } from './Store';
 
+const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
+
 export const AttachmentView = (props: {
     format: FormatState;
     attachment: Attachment,
@@ -30,14 +32,8 @@ export const AttachmentView = (props: {
     const attachedImage = (images?: { url: string }[]) =>
         images && images.length > 0 && imageWithOnLoad(images[0].url);
 
-    const isGifMedia = (url: string): boolean => {
-        return url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
-    }
-
-    const isUnsupportedCardContentType = (contentType: string): boolean => {
-        let searchPattern = new RegExp('^application/vnd\.microsoft\.card\.', 'i');
-        return searchPattern.test(contentType); 
-    }
+    const isGifMedia = (url: string) =>
+        url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
 
     const title = (title: string) => renderIfNonempty(title, title => <h1>{ title }</h1>);
     const subtitle = (subtitle: string) => renderIfNonempty(subtitle, subtitle => <h2>{ subtitle }</h2>);
@@ -88,7 +84,7 @@ export const AttachmentView = (props: {
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;            
 
-            let contentFunction = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad; 
+            const contentFunction = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad; 
 
             return (
                 <div className='wc-card animation'>
@@ -175,12 +171,14 @@ export const AttachmentView = (props: {
             return videoWithOnLoad(attachment.contentUrl);
 
         default:
-            if(isUnsupportedCardContentType(attachment['contentType'])) {
-                return <span>{ props.format.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;    
-            }
-            else {
-                return <span>{ props.format.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
-            }
-            
-    }
+            return (
+                <span>{
+                    (regExpCard.test((attachment as any).contentType)
+                        ? props.format.strings.unknownCard
+                        : props.format.strings.unknownFile
+                    ).replace('%1', (attachment as any).contentType)
+                }
+                </span>
+            );
+    }        
 }
