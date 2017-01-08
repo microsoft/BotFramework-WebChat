@@ -6,9 +6,7 @@ import { DirectLine } from './directLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
-import { strings } from './Strings';
-import { Dispatch } from 'redux';
-import { Provider } from 'react-redux';
+import { Dispatch, Provider } from 'react-redux';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -41,10 +39,10 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        if (props.formatOptions)
-            this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
+        const locale = props.locale || window.navigator.language;
 
-        this.store.dispatch<FormatAction>({ type: 'Set_Localized_Strings', strings: strings(props.locale || window.navigator.language) });
+        this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
+        this.store.dispatch<FormatAction>({ type: 'Set_Locale', locale });
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -114,22 +112,24 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
-export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User) => {
+export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User, locale: string) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     dispatch({ type: 'Send_Message', activity: {
         type: "message",
         text,
         from,
+        locale,
         timestamp: (new Date()).toISOString()
     }});
 }
 
-export const sendPostBack = (botConnection: IBotConnection, text: string, from: User) => {
+export const sendPostBack = (botConnection: IBotConnection, text: string, from: User, locale: string) => {
     botConnection.postActivity({
         type: "message",
         text,
-        from
+        from,
+        locale
     })
     .subscribe(id => {
         konsole.log("success sending postBack", id)
@@ -151,11 +151,12 @@ const attachmentsFromFiles = (files: FileList) => {
     return attachments;
 }
 
-export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, from: User) => {
+export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, from: User, locale: string) => {
     dispatch({ type: 'Send_Message', activity: {
         type: "message",
         attachments: attachmentsFromFiles(files),
-        from
+        from,
+        locale
     }});
 }
 

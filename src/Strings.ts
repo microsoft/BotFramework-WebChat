@@ -61,15 +61,14 @@ const localizedStrings: LocalizedStrings = {
 // Returns strings using the "best match available"" locale
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
-export const strings = (locale: string) => {
-    
-    if(locale=="de" || locale=="de-de" || locale=="de-ch")
-    {
-        return localizedStrings['de-de'];
-    }
-    if(locale=='pl' || locale=='pl-pl')
-    {
-        return localizedStrings['pl-pl'];
-    }
-    return localizedStrings['en-us'];
+
+export const strings = (locale: string) => {    
+    if (locale.startsWith('de'))
+        locale = 'de-de';
+    else if (locale.startsWith('pl'))
+        locale = 'pl-pl';
+    else
+        locale = 'en-us';
+
+    return localizedStrings[locale];
 }

@@ -3,14 +3,12 @@ import { Activity, Attachment, AttachmentLayout } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
-import { FormatOptions } from './Chat';
-import { Strings } from './Strings';
+import { FormatState } from './Store';
 
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
@@ -35,8 +33,7 @@ const Attachments = (props: {
 }
 
 interface Props {
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState,
     activity: Activity,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
@@ -48,7 +45,7 @@ export class ActivityView extends React.Component<Props, {}> {
     }
 
     shouldComponentUpdate(nextProps: Props) {
-        return this.props.activity !== nextProps.activity || this.props.options !== nextProps.options || this.props.strings !== nextProps.strings;
+        return this.props.activity !== nextProps.activity || this.props.format !== nextProps.format;
     }
 
     render() {
