@@ -41,7 +41,7 @@ export const AttachmentView = (props: {
 
     const title = (title: string) => renderIfNonempty(title, title => <h1>{ title }</h1>);
     const subtitle = (subtitle: string) => renderIfNonempty(subtitle, subtitle => <h2>{ subtitle }</h2>);
-    const cardText = (cardText: string) => renderIfNonempty(cardText, cardText => <p>{ cardText }</p>);
+    const text = (text: string) => renderIfNonempty(text, text => <p>{ text }</p>);
 
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
@@ -52,7 +52,7 @@ export const AttachmentView = (props: {
                     { attachedImage(attachment.content.images) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
-                    { cardText(attachment.content.text) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -65,7 +65,7 @@ export const AttachmentView = (props: {
                     { title(attachment.content.title) }
                     { attachedImage(attachment.content.images) }
                     { subtitle(attachment.content.subtitle) }
-                    { cardText(attachment.content.text) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -78,7 +78,7 @@ export const AttachmentView = (props: {
                     { videoWithOnLoad(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
-                    { cardText(attachment.content.text) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -95,7 +95,7 @@ export const AttachmentView = (props: {
                     { contentFunction(attachment.content.media[0].url, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
-                    { cardText(attachment.content.text) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -108,7 +108,7 @@ export const AttachmentView = (props: {
                     { audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
-                    { cardText(attachment.content.text) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
@@ -118,7 +118,7 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card signin'>
-                    { cardText(attachment.content.text) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons) }
                 </div>
             );
