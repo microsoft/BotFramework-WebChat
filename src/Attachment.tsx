@@ -39,6 +39,16 @@ export const AttachmentView = (props: {
         return searchPattern.test(contentType); 
     }
 
+    const imageWithActionWithOnLoad = (image: {url: string, tap?: Button}, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) => {
+        if (!image.tap)
+            return imageWithOnLoad(image.url);
+
+        return <img src={ image.url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ props.onImageLoad } onClick={ () => props.onClickButton(image.tap.type, image.tap.value) } />;
+    }
+
+    const attachedImageWithAction = (images?: {url: string, tap?: Button}[]) =>
+        images && images.length > 0 && imageWithActionWithOnLoad(images[0]);
+
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
             if (!attachment.content)
@@ -154,6 +164,20 @@ export const AttachmentView = (props: {
                             }
                         </tfoot>
                     </table>
+                </div>
+            );
+
+        // only supported for 'skype' channel.
+        case "application/vnd.microsoft.card.flex":
+            if (!attachment.content)
+                return null;
+            return (
+                <div className='wc-card flex'>
+                    { attachedImageWithAction(attachment.content.images) }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
