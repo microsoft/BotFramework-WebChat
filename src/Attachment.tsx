@@ -223,7 +223,8 @@ export const AttachmentView = (props: {
             return <Media type='video' src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
-            const unknown = regExpCard.test((attachment as any).contentType) ? props.format.strings.unknownCard : props.format.strings.unknownFile;
-            return <span>{ unknown.replace('%1', (attachment as any).contentType) }</span>;
+            const contentType = (attachment as any).contentType;
+            const unknown = regExpCard.test(contentType) ? props.format.strings.unknownCard : props.format.strings.unknownFile;
+            return <span>{ unknown.replace('%1', contentType) }</span>;
     }        
 }
