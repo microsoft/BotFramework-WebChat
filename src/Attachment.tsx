@@ -172,7 +172,10 @@ export const AttachmentView = (props: {
                         </thead>
                         <tbody>{ attachment.content.items && attachment.content.items.map((item, i) =>
                             <tr key={'item' + i}>
-                                <td><Media src={ item.image.url } onLoad={ props.onImageLoad } /><span>{ item.title }</span></td>
+                                <td>
+                                    { item.image && <Media src={ item.image.url } onLoad={ props.onImageLoad } /> }
+                                    <span>{ item.title }</span>
+                                </td>
                                 <td>{ item.price }</td>
                             </tr>) }
                         </tbody>
