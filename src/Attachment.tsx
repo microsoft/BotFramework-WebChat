@@ -13,15 +13,26 @@ const buttons = (
         { buttons.map((button, index) => <li key={ index }><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
     </ul>;
 
-const imageWithOnLoad = (
-    url: string,
-    onImageLoad: () => void,
-    onClick?: () => void,       // Enables FlexCards in Emulator
-    thumbnailUrl?: string,
+const Media = (props: {
+    src: string,
+    type?: 'image' | 'video' | 'audio',   // defaults to 'image'
+    poster?: string,
     autoPlay?:boolean,
-    loop?: boolean
-) =>
-    <img src={ url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ onImageLoad } onClick = { onClick }/>;
+    loop?: boolean,
+    onLoad?: () => void,
+    onClick?: () => void,
+}) => {
+    console.log("Media", props);
+    const { type, ... mediaProps } = props;
+    switch (type) {
+        case 'video':
+            return <video controls {... mediaProps } />;
+        case 'audio':
+            return <audio controls { ... mediaProps } />;
+        default:
+            return <img { ... mediaProps } />;
+    }
+}
 
 const attachedImage = (
     images: { url: string,  tap?: Button }[],
@@ -32,28 +43,11 @@ const attachedImage = (
         return null;
     const image = images[0];
     const tap = onClickButton && image.tap;
-    return imageWithOnLoad(image.url, onImageLoad, tap && (() => onClickButton(tap.type, tap.value)));
+    return <Media src={ image.url } onLoad={ onImageLoad } onClick={ tap && (() => onClickButton(tap.type, tap.value)) } />;
  }
 
-const audio = (
-    audioUrl: string,
-    autoPlay?:boolean,
-    loop?: boolean
-) =>
-    <audio src={ audioUrl } autoPlay={ autoPlay } controls loop={ loop } />;
-
-const videoWithOnLoad = (
-    videoUrl: string,
-    onImageLoad: () => void,
-    onClick?: () => void,
-    thumbnailUrl?: string,
-    autoPlay?:boolean,
-    loop?: boolean
-) =>
-    <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ onImageLoad } />;
-
-const isGifMedia = (url: string) =>
-    url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
+const mediaType = (url: string) =>
+    url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'video' : 'image';
 
 const title = (title: string) => renderIfNonempty(title, title => <h1>{ title }</h1>);
 const subtitle = (subtitle: string) => renderIfNonempty(subtitle, subtitle => <h2>{ subtitle }</h2>);
@@ -101,7 +95,13 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card video'>
-                    { videoWithOnLoad(attachment.content.media[0].url, props.onImageLoad, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
+                    <Media 
+                        src={ attachment.content.media[0].url }
+                        onLoad={ props.onImageLoad }
+                        poster={ attachment.content.image && attachment.content.image.url }
+                        autoPlay={ attachment.content.autostart }
+                        loop={ attachment.content.autoloop }
+                    />
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
@@ -113,10 +113,16 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.animation":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;            
-            const media = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad; 
             return (
                 <div className='wc-card animation'>
-                    { media(attachment.content.media[0].url, props.onImageLoad, undefined, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
+                    <Media 
+                        type={ mediaType(attachment.content.media[0].url) }
+                        src={ attachment.content.media[0].url }
+                        onLoad={ props.onImageLoad }
+                        poster={ attachment.content.image && attachment.content.image.url }
+                        autoPlay={ attachment.content.autostart }
+                        loop={ attachment.content.autoloop }
+                    />
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
@@ -129,7 +135,12 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card audio'>
-                    { audio(attachment.content.media[0].url, attachment.content.autostart, attachment.content.autoloop) }
+                    <Media
+                        type='audio'
+                        src={ attachment.content.media[0].url }
+                        autoPlay={ attachment.content.autostart }
+                        loop={ attachment.content.autoloop }
+                    />
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
@@ -161,7 +172,7 @@ export const AttachmentView = (props: {
                         </thead>
                         <tbody>{ attachment.content.items && attachment.content.items.map((item, i) =>
                             <tr key={'item' + i}>
-                                <td>{ imageWithOnLoad(item.image.url, props.onImageLoad) }<span>{ item.title }</span></td>
+                                <td><Media src={ item.image.url } onLoad={ props.onImageLoad } /><span>{ item.title }</span></td>
                                 <td>{ item.price }</td>
                             </tr>) }
                         </tbody>
@@ -203,14 +214,14 @@ export const AttachmentView = (props: {
         case "image/jpg":
         case "image/jpeg":
         case "image/gif":
-            return imageWithOnLoad(attachment.contentUrl, props.onImageLoad);
+            return <Media src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         case "audio/mpeg":
         case "audio/mp4":
-            return audio(attachment.contentUrl);
+            return <Media type='audio' src={ attachment.contentUrl } />;
 
         case "video/mp4":
-            return videoWithOnLoad(attachment.contentUrl, props.onImageLoad);
+            return <Media type='video' src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
             const unknown = regExpCard.test((attachment as any).contentType) ? props.format.strings.unknownCard : props.format.strings.unknownFile;
