@@ -53,10 +53,7 @@ export interface ConnectionState {
     botConnection: IBotConnection,
     selectedActivity: BehaviorSubject<ActivityOrID>,
     user: User,
-    bot: User,
-/*  experimental backchannel support
-    host: Window
-*/
+    bot: User
 }
 
 export type ConnectionAction = {
