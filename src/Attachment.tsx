@@ -214,6 +214,6 @@ export const AttachmentView = (props: {
 
         default:
             const unknown = regExpCard.test((attachment as any).contentType) ? props.format.strings.unknownCard : props.format.strings.unknownFile;
-            return <span>{ unknown..replace('%1', (attachment as any).contentType) }</span>;
+            return <span>{ unknown.replace('%1', (attachment as any).contentType) }</span>;
     }        
 }
