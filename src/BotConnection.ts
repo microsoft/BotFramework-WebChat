@@ -84,10 +84,7 @@ export interface FlexCard {
         title?: string,
         subtitle?: string,
         text?: string,
-        images?: { 
-            url: string,
-            tap?: Button 
-        }[],
+        images?: { url: string, tap?: Button }[],
         buttons?: Button[],
         aspect?: string
     }
