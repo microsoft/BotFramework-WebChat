@@ -23,7 +23,7 @@ export type FormatAction = {
 export const format: Reducer<FormatState> = (
     state: FormatState = {
         options: {
-            showHeader: true
+            showHeader: false
         },
         strings: strings(window.navigator.language)
     },

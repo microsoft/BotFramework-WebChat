@@ -49,8 +49,23 @@ body .wc-app,
   visibility: hidden;
 }
 
+.wc-add {
+  height: 95px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  line-height: 1.5;
+}
+
+.wc-add img{
+  height: 100%;
+  width: 100%;
+}
+
 .wc-header {
-  background-color: #ff633f;;
+  background-color: #ff633f;
   box-shadow: 0 1px rgba(0, 0, 0, 0.2);
   box-sizing: content-box;
   text-align: center;
@@ -82,7 +97,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 38px;
+  top: 100px;
   /* from wc-header total height */
 }
 

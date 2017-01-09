@@ -18,7 +18,7 @@ interface LocalizedStrings {
 
 const localizedStrings: LocalizedStrings = {
     'en-us': {
-        title: "Chat",
+        title: "WizeBot",
         send: "Send",
         unknownFile: "[File of type '%1']",
         unknownCard: "[Unknown Card '%1']",
@@ -31,7 +31,7 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Type your message..."
     },
     'de-de': {
-        title: "Chat",
+        title: "WizeBot",
         send: "Senden",
         unknownFile: "[Datei vom Typ '%1']",
         unknownCard: "[Unbekannte Card '%1']",
@@ -44,7 +44,7 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Verfasse eine Nachricht..."
     },
     'pl-pl': {
-        title: "Chat",
+        title: "WizeBot",
         send: "Wyślij",
         unknownFile: "[Plik typu '%1']",
         unknownCard: "[Nieznana karta '%1']",
