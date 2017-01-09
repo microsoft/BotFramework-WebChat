@@ -102,8 +102,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                 <span>{ state.format.strings.title }</span>
             </div>;
 
-        let add_url = "https://academy.wizeline.com/ai/";
-        let img_src = "https://cdn.webadictos.com/media/2016/11/academia-de-inteligencia-artificial-en-mexico_2.png";
+        let add_url = "http://www.chron.com/";
+        let img_src = "https://www.crafthouston.org/wordpress/wp-content/uploads/2012/01/houstonchron-logo.jpg";
         let add = <div className="wc-add"><a href={add_url} target="_blank" title="Click here for more info"><img src={img_src} /></a></div>
 
         return (
