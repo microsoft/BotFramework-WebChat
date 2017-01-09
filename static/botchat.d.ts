@@ -33,10 +33,7 @@ export interface ChatProps {
     formatOptions?: FormatOptions
 }
 
-export type AppProps = ChatProps & {
-    allowMessagesFrom?: string[],
-    onBackchannelMessage?: (backchannel: any) => void
-}
+export type AppProps = ChatProps;
 
 export declare const App: (props: AppProps, container: HTMLElement) => void;
 export declare class Chat extends React.Component<ChatProps, {}> {};
