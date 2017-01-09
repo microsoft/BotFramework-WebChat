@@ -22,8 +22,7 @@ const Media = (props: {
     onLoad?: () => void,
     onClick?: () => void,
 }) => {
-    console.log("Media", props);
-    const { type, ... mediaProps } = props;
+    const { type, ... mediaProps } = props; // this allows us to keep 'type' out of the final HTML
     switch (type) {
         case 'video':
             return <video controls {... mediaProps } />;
