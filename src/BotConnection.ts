@@ -77,7 +77,7 @@ export interface Receipt {
     }
 }  
 
-// only supported for 'skype' channel.
+// Deprecated format for Skype channels. For testing legacy bots in Emulator only.
 export interface FlexCard {
     contentType: "application/vnd.microsoft.card.flex",
     content: {

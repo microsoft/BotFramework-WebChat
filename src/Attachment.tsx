@@ -33,6 +33,7 @@ const Media = (props: {
     }
 }
 
+// 'tap' is a deprecated field for Skype channels. For testing legacy bots in Emulator only.
 const attachedImage = (
     images: { url: string,  tap?: Button }[],
     onImageLoad: () => void,
@@ -199,7 +200,7 @@ export const AttachmentView = (props: {
                 </div>
             );
 
-        // FlexCard is specific to Skype channels. Used by Emulator ony.
+        // Deprecated format for Skype channels. For testing legacy bots in Emulator only.
         case "application/vnd.microsoft.card.flex":
             if (!attachment.content)
                 return null;
