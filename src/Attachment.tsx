@@ -46,7 +46,7 @@ const attachedImage = (
  }
 
 const mediaType = (url: string) =>
-    url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'video' : 'image';
+    url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'image' : 'video';
 
 const title = (title: string) => renderIfNonempty(title, title => <h1>{ title }</h1>);
 const subtitle = (subtitle: string) => renderIfNonempty(subtitle, subtitle => <h2>{ subtitle }</h2>);
@@ -94,7 +94,8 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card video'>
-                    <Media 
+                    <Media
+                        type='video'
                         src={ attachment.content.media[0].url }
                         onLoad={ props.onImageLoad }
                         poster={ attachment.content.image && attachment.content.image.url }
