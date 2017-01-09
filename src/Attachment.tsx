@@ -13,17 +13,44 @@ const buttons = (
         { buttons.map((button, index) => <li key={ index }><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
     </ul>;
 
-const imageWithOnLoad = (url: string, onImageLoad: () => void, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
-    <img src={ url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ onImageLoad } />;
+const imageWithOnLoad = (
+    url: string,
+    onImageLoad: () => void,
+    onClick?: () => void,       // Enables FlexCards in Emulator
+    thumbnailUrl?: string,
+    autoPlay?:boolean,
+    loop?: boolean
+) =>
+    <img src={ url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ onImageLoad } onClick = { onClick }/>;
 
-const audio = (audioUrl: string, autoPlay?:boolean, loop?: boolean) =>
+const attachedImage = (
+    images: { url: string,  tap?: Button }[],
+    onImageLoad: () => void,
+    onClickButton?: (type: string, value: string) => void   // Enables FlexCards in Emulator
+ ) => {
+    if (!images || images.length === 0)
+        return null;
+    const image = images[0];
+    const tap = onClickButton && image.tap;
+    return imageWithOnLoad(image.url, onImageLoad, tap && (() => onClickButton(tap.type, tap.value)));
+ }
+
+const audio = (
+    audioUrl: string,
+    autoPlay?:boolean,
+    loop?: boolean
+) =>
     <audio src={ audioUrl } autoPlay={ autoPlay } controls loop={ loop } />;
 
-const videoWithOnLoad = (videoUrl: string, onImageLoad: () => void, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
+const videoWithOnLoad = (
+    videoUrl: string,
+    onImageLoad: () => void,
+    onClick?: () => void,
+    thumbnailUrl?: string,
+    autoPlay?:boolean,
+    loop?: boolean
+) =>
     <video src={ videoUrl } poster={ thumbnailUrl } autoPlay={ autoPlay } controls loop={ loop } onLoadedMetadata={ onImageLoad } />;
-
-const attachedImage = (images: { url: string }[], onImageLoad: () => void, ) =>
-    images && images.length > 0 && imageWithOnLoad(images[0].url, onImageLoad);
 
 const isGifMedia = (url: string) =>
     url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
@@ -89,7 +116,7 @@ export const AttachmentView = (props: {
             const media = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad; 
             return (
                 <div className='wc-card animation'>
-                    { media(attachment.content.media[0].url, props.onImageLoad, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
+                    { media(attachment.content.media[0].url, props.onImageLoad, undefined, attachment.content.image ? attachment.content.image.url : null, attachment.content.autostart, attachment.content.autoloop) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
@@ -155,6 +182,20 @@ export const AttachmentView = (props: {
                             }
                         </tfoot>
                     </table>
+                </div>
+            );
+
+        // FlexCard is specific to Skype channels. Used by Emulator ony.
+        case "application/vnd.microsoft.card.flex":
+            if (!attachment.content)
+                return null;
+            return (
+                <div className='wc-card flex'>
+                    { attachedImage(attachment.content.images, props.onImageLoad, props.onClickButton) }
+                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
+                    { buttons(attachment.content.buttons, props.onClickButton) }
                 </div>
             );
 
