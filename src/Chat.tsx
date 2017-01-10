@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
-import { DirectLine } from './directLine';
+import { DirectLine, DirectLineOptions } from './directLine';
 //import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
@@ -20,7 +20,8 @@ export type ActivityOrID = {
 export interface ChatProps {
     user: User,
     bot: User,
-    botConnection: IBotConnection,
+    botConnection?: IBotConnection,
+    directLine?: DirectLineOptions,
     locale?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     formatOptions?: FormatOptions
@@ -29,6 +30,8 @@ export interface ChatProps {
 export class Chat extends React.Component<ChatProps, {}> {
 
     private store = createStore();
+
+    private botConnection: IBotConnection;
     
     private activitySubscription: Subscription;
     private connectionStatusSubscription: Subscription;
@@ -60,15 +63,20 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     componentDidMount() {
-        let props = this.props;
+        const props = this.props;
 
-        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
+        const botConnection = this.props.directLine
+            ? (this.botConnection = new DirectLine(this.props.directLine))
+            : this.props.botConnection
+            ;
 
-        this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
+        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
+
+        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>
             this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
         );
 
-        this.activitySubscription = props.botConnection.activity$.subscribe(
+        this.activitySubscription = botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
             error => konsole.log("activity$ error", error)
         );
@@ -88,7 +96,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.activitySubscription.unsubscribe();
         if (this.selectedActivitySubscription)
             this.selectedActivitySubscription.unsubscribe();
-        this.props.botConnection.end();
+        if (this.botConnection)
+            this.botConnection.end();
     }
 
     render() {

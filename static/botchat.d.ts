@@ -27,7 +27,8 @@ export interface User {
 
 export interface ChatProps {
     user: User,
-    botConnection: any,
+    botConnection?: any,
+    directLine?: DirectLineOptions,
     locale?: string,
     selectedActivity?: any,
     formatOptions?: FormatOptions

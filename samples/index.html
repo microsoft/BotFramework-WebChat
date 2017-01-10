@@ -9,7 +9,7 @@
         * s = Direct Line secret, or
         * t = Direct Line token (obtained by calling Direct Line's Generate Token)
         * domain = optionally, the URL of an alternate Direct Line endpoint
-        * webSocket = whether to use WebSocket to receive messages (defaults to false)
+        * webSocket = set to 'true' to use WebSocket to receive messages (currently defaults to false)
         * userid, username = id (and optionally name) of bot user
         * botid, botname = id (and optionally name) of bot
 -->
@@ -42,13 +42,6 @@
                     params[p[0]] = decodeURIComponent(p[1]);
                 });
 
-            var botConnection = new BotChat.DirectLine({
-                secret: params['s'],
-                token: params['t'],
-                domain: params['domain'],
-                webSocket: params['webSocket']
-            });
-
             var user = {
                 id: params['userid'] || 'userid',
                 name: params["username"] || 'username'
@@ -60,10 +53,14 @@
             };
 
             BotChat.App({
-                botConnection: botConnection,
+                directLine: {
+                    secret: params['s'],
+                    token: params['t'],
+                    domain: params['domain'],
+                    webSocket: params['webSocket']
+                },
                 user: user,
-                bot: bot,
-//              allowMessagesFrom: ['http://localhost:8080']
+                bot: bot
             }, document.getElementById("BotChatGoesHere"));
         </script>
     </body>
