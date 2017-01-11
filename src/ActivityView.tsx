@@ -3,70 +3,72 @@ import { Activity, Attachment, AttachmentLayout } from './BotConnection';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
-import { FormatOptions } from './Chat';
-import { Strings } from './Strings';
+import { FormatState } from './Store';
 
 const Attachments = (props: {
-    options: FormatOptions,
-    strings: Strings,
-    attachmentLayout: AttachmentLayout,
     attachments: Attachment[],
+    attachmentLayout: AttachmentLayout,
+    format: FormatState,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
-    if (!props.attachments || props.attachments.length == 0)
+    const { attachments, attachmentLayout, ... otherProps } = props;
+    if (!attachments || attachments.length == 0)
         return null;
-    return props.attachmentLayout === 'carousel' ?
+    return attachmentLayout === 'carousel' ?
         <Carousel
-            attachments={props.attachments}
-            options={ props.options }
-            strings={ props.strings }
-            onClickButton={ props.onClickButton }
-            onImageLoad={ props.onImageLoad }
+            attachments={ attachments }
+            { ... otherProps }
         />
     : 
         <div className="wc-list">
-            { props.attachments.map((attachment, index) =>
+            { attachments.map((attachment, index) =>
                 <AttachmentView
                     key={ index }
                     attachment={ attachment }
-                    options={ props.options }
-                    strings={ props.strings }
-                    onClickButton={ props.onClickButton }
-                    onImageLoad={ props.onImageLoad }
+                    { ... otherProps }
                 />
             ) }
         </div>
 }
 
-export const ActivityView = (props: {
-    options: FormatOptions,
-    strings: Strings,
+interface Props {
+    format: FormatState,
     activity: Activity,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
-}) => {
-    switch (props.activity.type) {
-        case 'message':
-            return (
-                <div>
-                    <FormattedText
-                        text={ props.activity.text }
-                        format={ props.activity.textFormat }
-                        onImageLoad={ props.onImageLoad }
-                    />
-                    <Attachments
-                        attachments={ props.activity.attachments }
-                        attachmentLayout={ props.activity.attachmentLayout } 
-                        options={ props.options }
-                        strings={ props.strings }
-                        onClickButton={ props.onClickButton }
-                        onImageLoad={ props.onImageLoad }
-                    />
-                </div>
-            );
+}
 
-        case 'typing':
-            return <div>TYPING</div>;
+export class ActivityView extends React.Component<Props, {}> {
+    constructor(props: Props) {
+        super(props)
+    }
+
+    shouldComponentUpdate(nextProps: Props) {
+        return this.props.activity !== nextProps.activity || this.props.format !== nextProps.format;
+    }
+
+    render() {
+        const { activity, ... otherProps } = this.props;
+        switch (activity.type) {
+            case 'message':
+                return (
+                    <div>
+                        <FormattedText
+                            text={ activity.text }
+                            format={ activity.textFormat }
+                            onImageLoad={ otherProps.onImageLoad }
+                        />
+                        <Attachments
+                            attachments={ activity.attachments }
+                            attachmentLayout={ activity.attachmentLayout }
+                            { ... otherProps }
+                        />
+                    </div>
+                );
+
+            case 'typing':
+                return <div>TYPING</div>;
+        }
     }
 }

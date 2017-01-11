@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
-import { HistoryAction, ChatState } from './Store';
+import { HistoryAction, ChatState, FormatState } from './Store';
 import { Message, Media, MediaType, User, IBotConnection } from './BotConnection';
-import { sendMessage, sendFiles, FormatOptions } from './Chat';
-import { Strings } from './Strings';
+import { sendMessage, sendFiles } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 
 interface Props {
     inputText: string,
-    options: FormatOptions,
-    strings: Strings,
+    format: FormatState,
     user: User,
     dispatch: Dispatch<any>
 }
@@ -23,7 +21,7 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private sendMessage() {
-        sendMessage(this.props.dispatch, this.props.inputText, this.props.user);
+        sendMessage(this.props.dispatch, this.props.inputText, this.props.user, this.props.format.locale);
     }
 
     private onChangeText() {
@@ -42,7 +40,7 @@ class ShellContainer extends React.Component<Props, {}> {
 
     private onChangeFile() {
         this.textInput.focus();
-        sendFiles(this.props.dispatch, this.fileInput.files, this.props.user);
+        sendFiles(this.props.dispatch, this.fileInput.files, this.props.user, this.props.format.locale);
         this.fileInput.value = null;
     }
 
@@ -66,7 +64,7 @@ class ShellContainer extends React.Component<Props, {}> {
                         value={ this.props.inputText }
                         onChange={ () => this.onChangeText() }
                         onKeyPress={ e => this.onKeyPress(e) }
-                        placeholder={ this.props.strings.consolePlaceholder }
+                        placeholder={ this.props.format.strings.consolePlaceholder }
                     />
                 </div>
                 <label className="wc-send" onClick={ () => this.onClickSend() } >
@@ -80,10 +78,9 @@ class ShellContainer extends React.Component<Props, {}> {
 }
 
 export const Shell = connect(
-    (state: ChatState) => ({
+    (state: ChatState): Partial<Props> => ({
         inputText: state.history.input,
-        options: state.format.options,
-        strings: state.format.strings,
+        format: state.format,
         user: state.connection.user,
     })
 )(ShellContainer);
