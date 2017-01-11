@@ -20,7 +20,9 @@ module.exports = {
             compressor: {
                 warnings: false
             }
-        })
+        }),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.DedupePlugin()
     ],
 
     resolve: {
