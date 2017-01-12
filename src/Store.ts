@@ -307,7 +307,6 @@ const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareA
     action$.ofType(
         'Send_Message_Succeed',
         'Send_Message_Fail',
-        'Send_Message_Fail',
         'Show_Typing',
         'Clear_Typing'
     )
