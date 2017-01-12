@@ -37,4 +37,5 @@ export interface ChatProps {
 export type AppProps = ChatProps;
 
 export declare const App: (props: AppProps, container: HTMLElement) => void;
-export declare class Chat extends React.Component<ChatProps, {}> {};
+export declare class Chat extends React.Component<ChatProps, {}> {}
+
