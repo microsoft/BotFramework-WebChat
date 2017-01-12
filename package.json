@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat",
-  "version": "0.4.0",
+  "version": "0.4.3",
   "description": "Embeddable web chat control for the Microsoft Bot Framework",
   "main": "built/BotChat.js",
   "types": "botchat.d.ts",
