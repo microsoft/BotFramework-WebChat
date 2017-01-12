@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
 import { DirectLine, DirectLineOptions } from './directLine';
-//import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
