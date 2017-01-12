@@ -75,7 +75,7 @@ const localizedStrings: LocalizedStrings = {
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
 
-export const strings = (locale: string) => {    
+export const strings = (locale: string) => {
     if (locale.startsWith('de'))
         locale = 'de-de';
     else if (locale.startsWith('pl'))

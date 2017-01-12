@@ -7,7 +7,9 @@ node_modules
 /.vscode
 npm-debug.log
 test/src
-npm/dist
+npm
 cdn
 webpacked
 built
+botchat.js
+botchat.js.map
