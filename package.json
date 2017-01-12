@@ -29,7 +29,8 @@
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-observable": "^0.12.2",
-    "rxjs": "^5.0.3"
+    "rxjs": "^5.0.3",
+    "tslib": "^1.5.0"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
