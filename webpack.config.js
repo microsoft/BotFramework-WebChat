@@ -7,7 +7,7 @@ module.exports = {
     output: {
         libraryTarget: "umd",
         library: "BotChat",
-        filename: "./webpacked/botchat.js",
+        filename: "./botchat.js",
     },
 
     // Enable sourcemaps for debugging webpack's output.
