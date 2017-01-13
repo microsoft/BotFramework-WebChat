@@ -55,6 +55,19 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "wysyłanie",
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość..."
+    },
+	'ru-ru': {
+        title: "Чат",
+        send: "Послать",
+        unknownFile: "[Неизвестный тип '%1']",
+        unknownCard: "[Неизвестная карта '%1']",
+        receiptTax: "Такса",
+        receiptTotal: "Всего",
+        messageRetry: "Повторить",
+        messageFailed: "невозможно отправить",
+        messageSending: "отправка",
+        timeSent: " в %1",
+        consolePlaceholder: "Введите ваше сообщение..."
     }
 }
 
@@ -62,11 +75,13 @@ const localizedStrings: LocalizedStrings = {
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
 
-export const strings = (locale: string) => {    
+export const strings = (locale: string) => {
     if (locale.startsWith('de'))
         locale = 'de-de';
     else if (locale.startsWith('pl'))
         locale = 'pl-pl';
+    else if (locale.startsWith('ru'))
+        locale = 'ru-ru';
     else
         locale = 'en-us';
 

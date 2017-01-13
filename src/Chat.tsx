@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
 import { DirectLine, DirectLineOptions } from './directLine';
-//import { BrowserLine } from './browserLine';
 import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
@@ -42,7 +41,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        const locale = props.locale || window.navigator.language;
+        const locale = props.locale || window.navigator["userLanguage"] || window.navigator.language || 'en';
 
         this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
         this.store.dispatch<FormatAction>({ type: 'Set_Locale', locale });

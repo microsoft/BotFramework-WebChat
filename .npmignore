@@ -1,0 +1,13 @@
+bin
+built/*.js.map
+node_modules
+samples
+src
+test
+tsconfig.json
+*.config.js
+*.js.map
+.gitattributes
+.gitignore
+.npmignore
+.vscode
