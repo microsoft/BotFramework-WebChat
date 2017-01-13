@@ -1,9 +1,9 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
-import { Activity, User, IBotConnection } from './BotConnection';
+import { Activity, User, IBotConnection, Message } from './BotConnection';
 import { HistoryAction, ChatState, FormatState } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
+import { sendMessage, sendPostBack, konsole, ActivityOrID, measureInnerHeight } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs';
 
@@ -19,6 +19,7 @@ interface Props {
 
 class HistoryContainer extends React.Component<Props, {}> {
     private scrollMe: HTMLDivElement;
+    private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
     private resizeListener = () => this.autoscroll();
 
@@ -43,6 +44,9 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private autoscroll() {
+        const vAlignBottomPadding = Math.max(0, measureInnerHeight(this.scrollMe) - this.scrollContent.offsetHeight);
+        this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
+
         if (this.scrollToBottom)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
@@ -77,29 +81,27 @@ class HistoryContainer extends React.Component<Props, {}> {
     render() {
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
-                <div className="wc-message-group">
-                    <div className="wc-message-group-content">
-                        { this.props.activities.map((activity, index) => 
-                            <WrappedActivity 
-                                key={ 'message' + index }
-                                activity={ activity }
-                                showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                                selected={ activity === this.props.selectedActivity }
-                                fromMe={ activity.from.id === this.props.user.id }
-                                format={ this.props.format }
-                                onClickButton={ (type, value) => this.onClickButton(type, value) }
-                                onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
-                                onClickRetry={ e => {
-                                    // Since this is a click on an anchor, we need to stop it
-                                    // from trying to actually follow a (nonexistant) link
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    this.onClickRetry(activity)
-                                } }
-                                onImageLoad={ () => this.autoscroll() }
-                            />
-                        ) }
-                    </div>
+                <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
+                    { this.props.activities.map((activity, index) => 
+                        <WrappedActivity 
+                            key={ 'message' + index }
+                            activity={ activity }
+                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                            selected={ activity === this.props.selectedActivity }
+                            fromMe={ activity.from.id === this.props.user.id }
+                            format={ this.props.format }
+                            onClickButton={ (type, value) => this.onClickButton(type, value) }
+                            onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
+                            onClickRetry={ e => {
+                                // Since this is a click on an anchor, we need to stop it
+                                // from trying to actually follow a (nonexistant) link
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.onClickRetry(activity)
+                            } }
+                            onImageLoad={ () => this.autoscroll() }
+                        />
+                    ) }
                 </div>
             </div>
         )
@@ -164,9 +166,13 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         } 
 
         const who = this.props.fromMe ? 'me' : 'bot';
+        
+        let classNames = ['wc-message-wrapper'];
+        if (this.props.onClickActivity) classNames.push('clickable');
+        classNames.push((this.props.activity as Message).attachmentLayout);
 
         return (
-            <div data-activity-id={this.props.activity.id} className={ "wc-message-wrapper" + (this.props.onClickActivity ? ' clickable' : '') } onClick={ this.props.onClickActivity }>
+            <div data-activity-id={this.props.activity.id} className={ classNames.join(' ') } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who }>
                     <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
                         <svg className="wc-message-callout">
