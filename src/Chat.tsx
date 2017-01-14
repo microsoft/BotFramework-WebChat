@@ -168,12 +168,20 @@ export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, fr
     }});
 }
 
-export const measureInnerHeight = (el: HTMLElement) : number => {
-    var x = window.getComputedStyle(el);
-    var paddingTop = parseInt(x.getPropertyValue('padding-top'));
-    var paddingBottom = parseInt(x.getPropertyValue('padding-bottom'));
-    return el.offsetHeight - paddingTop - paddingBottom;
-}
+export const measure = { 
+    innerHeight: (el: HTMLElement) : number => {
+        var s = window.getComputedStyle(el);
+        var paddingTop = parseInt(s.getPropertyValue('padding-top'));
+        var paddingBottom = parseInt(s.getPropertyValue('padding-bottom'));
+        return el.offsetHeight - paddingTop - paddingBottom;
+    },
+    outerWidth: (el: HTMLElement) : number => {
+        var s = window.getComputedStyle(el);
+        var marginLeft = parseInt(s.getPropertyValue('margin-left'));
+        var marginRight = parseInt(s.getPropertyValue('margin-right'));
+        return el.offsetWidth + marginLeft + marginRight;
+    }
+};
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
     if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))

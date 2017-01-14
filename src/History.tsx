@@ -1,9 +1,9 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
-import { Activity, User, IBotConnection, Message } from './BotConnection';
+import { Activity, User, IBotConnection } from './BotConnection';
 import { HistoryAction, ChatState, FormatState } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, konsole, ActivityOrID, measureInnerHeight } from './Chat';
+import { sendMessage, sendPostBack, konsole, ActivityOrID, measure } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs';
 
@@ -44,7 +44,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private autoscroll() {
-        const vAlignBottomPadding = Math.max(0, measureInnerHeight(this.scrollMe) - this.scrollContent.offsetHeight);
+        const vAlignBottomPadding = Math.max(0, measure.innerHeight(this.scrollMe) - this.scrollContent.offsetHeight);
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
         if (this.scrollToBottom)
@@ -83,7 +83,7 @@ class HistoryContainer extends React.Component<Props, {}> {
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
                 <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
                     { this.props.activities.map((activity, index) => 
-                        <WrappedActivity 
+                        <ActivityView
                             key={ 'message' + index }
                             activity={ activity }
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
@@ -121,74 +121,3 @@ export const History = connect(
 
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
-
-interface WrappedActivityProps {
-    activity: Activity,
-    showTimestamp: boolean,
-    selected: boolean,
-    fromMe: boolean,
-    format: FormatState,
-    onClickButton: (type: string, value: string) => void,
-    onClickActivity: React.MouseEventHandler<HTMLDivElement>,
-    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
-    onImageLoad: () => void,
-}
-
-export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
-
-    constructor(props: WrappedActivityProps) {
-        super(props);
-    }
-
-    render () {
-        let timeLine: JSX.Element;
-        switch (this.props.activity.id) {
-            case undefined:
-                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
-                break;
-            case null:
-                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
-                break;
-            case "retry":
-                timeLine =
-                    <span>
-                        { this.props.format.strings.messageFailed }
-                        { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
-                    </span>;
-                break;
-            default:
-                let sent: string;
-                if (this.props.showTimestamp)
-                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
-                break;
-        } 
-
-        const who = this.props.fromMe ? 'me' : 'bot';
-        
-        let classNames = ['wc-message-wrapper'];
-        if (this.props.onClickActivity) classNames.push('clickable');
-        classNames.push((this.props.activity as Message).attachmentLayout);
-
-        return (
-            <div data-activity-id={this.props.activity.id} className={ classNames.join(' ') } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who }>
-                    <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
-                        <svg className="wc-message-callout">
-                            <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                            <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                        </svg>
-                        <ActivityView
-                            activity={ this.props.activity }
-                            format={ this.props.format }
-                            onClickButton={ this.props.onClickButton }
-                            onImageLoad={ this.props.onImageLoad }
-                        />
-                    </div>
-                </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
-            </div>
-        );
-    }
-}

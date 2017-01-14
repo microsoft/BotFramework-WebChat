@@ -171,7 +171,7 @@
         border: 1px solid #d2dde5;
         font-size: 13px;
         padding: 8px;
-        max-width: 302px;
+        width: 302px;
     }
 
     .wc-card button {
@@ -370,10 +370,10 @@
 
     .wc-carousel-scroll > ul > li {
         display: inline-block;
-        max-width: 320px;
         padding: 0 4px;
         vertical-align: top;
         white-space: normal;
+        width: 320px;
     }
 
     .wc-carousel-scroll > ul > li:last-child {
