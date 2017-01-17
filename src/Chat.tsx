@@ -103,7 +103,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             </div>;
 
         let add_url = "http://www.chron.com/";
-        let img_src = "http://www.hearstmediahouston.com/img/logo.png";
+        let img_src = "https://upload.wikimedia.org/wikipedia/commons/7/70/Houston_Chronicle_Logo_2016.svg";
         let add = <div className="wc-add"><a href={add_url} target="_blank" title="Click here for more info"><img src={img_src} /></a></div>
 
         return (

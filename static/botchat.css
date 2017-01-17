@@ -61,10 +61,14 @@ body .wc-app,
   top: 0;
   z-index: 1;
   line-height: 1.5;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .wc-add img{
-  height: 100%;
+  max-height: 85px;
   width: 100%;
 }
 
