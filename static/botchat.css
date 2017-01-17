@@ -226,7 +226,7 @@ body .wc-app,
 
 .wc-card button {
   background-color: transparent;
-  color: #3A96DD;
+  color: #0084ff;
   min-height: 32px;
   width: 100%;
   padding: 0 16px;
@@ -234,13 +234,13 @@ body .wc-app,
 
 .wc-card button:hover {
   background-color: transparent;
-  border: 1px solid #3A96DD;
-  color: #3A96DD;
+  border: 1px solid #0084ff;
+  color: #0084ff;
 }
 
 .wc-card button:active {
-  background-color: #3A96DD;
-  border-color: #3A96DD;
+  background-color: #0084ff;
+  border-color: #0084ff;
   color: white;
 }
 

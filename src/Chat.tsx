@@ -122,11 +122,20 @@ export class Chat extends React.Component<ChatProps, {}> {
 export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
+    let postback;
+    try {
+        postback = JSON.parse(text);
+        text = postback.text;
+        delete postback.text;
+    } catch(e) {
+        // Error occurs
+    }
     dispatch({ type: 'Send_Message', activity: {
         type: "message",
         text,
         from,
-        timestamp: (new Date()).toISOString()
+        timestamp: (new Date()).toISOString(),
+        postback
     }});
 }
 

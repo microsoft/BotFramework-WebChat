@@ -18,8 +18,8 @@ export interface Media {
 export interface Button {
     type: "imBack" | "postBack" | "openUrl" | "signin",
     title: string,
-    value: string
-    image?: string,
+    value: string,
+    image?: string
 }
 
 export interface HeroCard {
