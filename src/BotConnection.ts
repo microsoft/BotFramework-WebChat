@@ -7,7 +7,7 @@ export interface Conversation {
     streamUrl?: string
 }
 
-export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif" | "audio/mpeg" | "audio/mp4" | "video/mp4"
+export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif" | "audio/mpeg" | "audio/mp4" | "video/mp4";
 
 export interface Media {
     contentType: MediaType,    
@@ -169,17 +169,18 @@ export interface Typing extends IActivity {
 export type Activity = Message | Typing;
 
 export enum ConnectionStatus {
-    Uninitialized,              // the status when DirectLine object when first created/constructed
+    Uninitialized,              // the status when the DirectLine object is first created/constructed
     Connecting,                 // currently trying to connect to the conversation
     Online,                     // successfully connected to the converstaion. Connection is healthy so far as we know.
     ExpiredToken,               // last operation errored out with an expired token. Possibly waiting for someone to supply a new one.
     FailedToConnect,            // the initial attempt to connect to the conversation failed. No recovery possible.
     Ended                       // the bot ended the conversation
-} 
+}
 
 export interface IBotConnection {
     connectionStatus$: BehaviorSubject<ConnectionStatus>,
     activity$: Observable<Activity>,
+    reconnect(conversation: Conversation): void,
     end(): void,
     postActivity(activity: Activity): Observable<string>
 }
