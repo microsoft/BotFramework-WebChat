@@ -11,7 +11,7 @@ export declare class DirectLine {
     constructor(options: DirectLineOptions);
     activity$: any;         // Observable<Activity>
     connectionStatus$: any; // BehaviorSubject<ConnectionStatus>
-    reconnect(conversation: any)
+    reconnect(conversation: any);
     end();
 }
 
