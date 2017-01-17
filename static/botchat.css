@@ -17,13 +17,17 @@ body .wc-app,
 }
 
 .wc-app button {
-  background-color: #0063B1;
-  border: 1px solid #ccc;
-  border-radius: 1px;
-  color: #fff;
-  cursor: pointer;
+  border: 0px;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: 0px;
+  text-align: center;
+  color: #0084ff;
   outline: none;
   transition: color .2s ease, background-color .2s ease;
+  cursor: pointer;
 }
 
 .wc-app h1,
@@ -215,9 +219,9 @@ body .wc-app,
 
 .wc-card {
   background-color: #fff;
-  border: 1px solid #d2dde5;
+  /*border: 1px solid #d2dde5;*/
   font-size: 13px;
-  padding: 8px;
+  /*padding: 8px;*/
 }
 
 .wc-card button {
@@ -230,7 +234,7 @@ body .wc-app,
 
 .wc-card button:hover {
   background-color: transparent;
-  border-color: #3A96DD;
+  border: 1px solid #3A96DD;
   color: #3A96DD;
 }
 
@@ -241,15 +245,24 @@ body .wc-app,
 }
 
 .wc-card h1 {
-  font-size: 15px;
-  font-weight: 700;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  color: #4d4d4d;
 }
 
 .wc-card h2 {
-  color: #808c95;
-  font-size: inherit;
-  font-weight: normal;
   margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.38;
+  color: #8e8e8e;
 }
 
 .wc-card p {
@@ -272,7 +285,8 @@ body .wc-app,
 
 ul.wc-card-buttons {
   clear: both;
-  display: table;
+  display: flex;
+  flex-direction: column;
 }
 
 ul.wc-card-buttons li {
