@@ -36,9 +36,16 @@ export const AttachmentView = (props: {
         return url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
     }
 
+    const attachImage = (payload?: string[]) =>(
+       payload  &&
+        <div className={'logos'}>
+          {payload[0] ? <img className={'star-image'} src={payload[0]} /> : null }
+          {payload[1] ? <img className={'yelp-logo'} src={payload[1]} />  : null }
+        </div>);
+
     const isUnsupportedCardContentType = (contentType: string): boolean => {
         let searchPattern = new RegExp('^application/vnd\.microsoft\.card\.', 'i');
-        return searchPattern.test(contentType); 
+        return searchPattern.test(contentType);
     }
 
     switch (attachment.contentType) {
@@ -50,6 +57,7 @@ export const AttachmentView = (props: {
                     { attachedImage(attachment.content.images) }
                     { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
                     { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { attachImage(attachment.content.payload) }
                     { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
@@ -84,9 +92,9 @@ export const AttachmentView = (props: {
 
         case "application/vnd.microsoft.card.animation":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
-                return null;            
+                return null;
 
-            let contentFunction = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad; 
+            let contentFunction = isGifMedia(attachment.content.media[0].url) ? imageWithOnLoad : videoWithOnLoad;
 
             return (
                 <div className='wc-card animation'>
@@ -168,11 +176,11 @@ export const AttachmentView = (props: {
 
         default:
             if(isUnsupportedCardContentType(attachment['contentType'])) {
-                return <span>{ props.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;    
+                return <span>{ props.strings.unknownCard.replace('%1', (attachment as any).contentType) }</span>;
             }
             else {
                 return <span>{ props.strings.unknownFile.replace('%1', (attachment as any).contentType) }</span>;
             }
-            
+
     }
 }

@@ -8,7 +8,7 @@ interface Props {
     options: FormatOptions,
     strings: Strings,
     attachments: Attachment[],
-    onClickButton: (type: string, value: string) => void,    
+    onClickButton: (type: string, value: string) => void,
     onImageLoad: ()=> void
 }
 
@@ -151,6 +151,7 @@ export class Carousel extends React.Component<Props, State> {
     }
 
     render() {
+        console.log(this.props.attachments)
         return (
             <div className="wc-carousel">
                 <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>

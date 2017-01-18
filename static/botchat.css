@@ -225,7 +225,23 @@ body .wc-app,
   background-color: #fff;
   /*border: 1px solid #d2dde5;*/
   font-size: 13px;
+  display: flex;
+  flex-direction: column;
   /*padding: 8px;*/
+}
+
+.logos {
+  display: flex;
+}
+
+.star-image{
+  width: 136px;
+  height: 24px;
+}
+
+.yelp-logo {
+  width: 53px;
+  height: 26px;
 }
 
 .wc-card button {
@@ -302,6 +318,7 @@ ul.wc-card-buttons li {
 
 .wc-card.hero img {
   display: block;
+  max-height: 140px;
   margin-bottom: 11px;
 }
 
@@ -433,6 +450,8 @@ ul.wc-card-buttons li {
 
 .wc-carousel-scroll {
   /* allow horizontal scrolling but hide the scrollbar */
+  width: 266px;
+  min-height: 390px;
   overflow-x: scroll;
   overflow-y: hidden;
 }

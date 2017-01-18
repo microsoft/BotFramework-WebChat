@@ -24,7 +24,7 @@ const Attachments = (props: {
             onClickButton={ props.onClickButton }
             onImageLoad={ props.onImageLoad }
         />
-    : 
+    :
         <div className="wc-list">
             { props.attachments.map((attachment, index) =>
                 <AttachmentView
@@ -57,7 +57,7 @@ export const ActivityView = (props: {
                     />
                     <Attachments
                         attachments={ props.activity.attachments }
-                        attachmentLayout={ props.activity.attachmentLayout } 
+                        attachmentLayout={ props.activity.attachmentLayout }
                         options={ props.options }
                         strings={ props.strings }
                         onClickButton={ props.onClickButton }

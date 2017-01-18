@@ -10,7 +10,7 @@ export interface Conversation {
 export type MediaType = "image/png" | "image/jpg" | "image/jpeg" | "image/gif" | "audio/mpeg" | "audio/mp4" | "video/mp4"
 
 export interface Media {
-    contentType: MediaType,    
+    contentType: MediaType,
     contentUrl: string,
     name?: string
 }
@@ -28,10 +28,11 @@ export interface HeroCard {
         title?: string,
         subtitle?: string,
         text?: string,
+        payload?: string[], 
         images?: { url: string }[],
         buttons?: Button[]
     }
-} 
+}
 
 export interface Thumbnail {
     contentType: "application/vnd.microsoft.card.thumbnail",
@@ -75,7 +76,7 @@ export interface Receipt {
         total?: string,
         buttons?: Button[]
     }
-}    
+}
 
 export interface AudioCard {
     contentType: "application/vnd.microsoft.card.audio",
@@ -162,7 +163,7 @@ export enum ConnectionStatus {
     ExpiredToken,               // last operation errored out with an expired token. Possibly waiting for someone to supply a new one.
     FailedToConnect,            // the initial attempt to connect to the conversation failed. No recovery possible.
     Ended                       // the bot ended the conversation
-} 
+}
 
 export interface IBotConnection {
     connectionStatus$: BehaviorSubject<ConnectionStatus>,
