@@ -242,6 +242,7 @@ body .wc-app,
 .yelp-logo {
   width: 53px;
   height: 26px;
+  padding-left: 20px;
 }
 
 .wc-card button {
@@ -451,7 +452,7 @@ ul.wc-card-buttons li {
 .wc-carousel-scroll {
   /* allow horizontal scrolling but hide the scrollbar */
   width: 266px;
-  min-height: 390px;
+  min-height: 340px;
   overflow-x: scroll;
   overflow-y: hidden;
 }
@@ -598,6 +599,10 @@ ul.wc-card-buttons li {
   bottom: 0;
   left: 50px;
   right: 50px;
+}
+
+.no-star {
+  margin-bottom: 40px;
 }
 
 .wc-send {

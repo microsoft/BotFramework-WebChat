@@ -151,7 +151,6 @@ export class Carousel extends React.Component<Props, State> {
     }
 
     render() {
-        console.log(this.props.attachments)
         return (
             <div className="wc-carousel">
                 <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
