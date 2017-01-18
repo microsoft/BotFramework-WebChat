@@ -175,7 +175,18 @@ export const AttachmentView = (props: {
                             <tr key={'item' + i}>
                                 <td>
                                     { item.image && <Media src={ item.image.url } onLoad={ props.onImageLoad } /> }
-                                    <span>{ item.title }</span>
+                                    { renderIfNonempty(
+                                        item.title,
+                                        title => <div className="title">
+                                            { item.title }
+                                        </div>)
+                                    }
+                                    { renderIfNonempty(
+                                        item.subtitle,
+                                        subtitle => <div className="subtitle">
+                                            { item.subtitle }
+                                        </div>)
+                                    }
                                 </td>
                                 <td>{ item.price }</td>
                             </tr>) }
@@ -197,6 +208,7 @@ export const AttachmentView = (props: {
                             }
                         </tfoot>
                     </table>
+                    { buttons(attachment.content.buttons, props.onClickButton) }
                 </div>
             );
 
