@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Activity, User, IBotConnection, Message } from './BotConnection';
 import { HistoryAction, ChatState, FormatState } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, konsole, ActivityOrID, measure } from './Chat';
+import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs';
 
@@ -119,6 +119,26 @@ export const History = connect(
     })
 )(HistoryContainer)
 
+const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
+    const s = window.getComputedStyle(el);
+    const result: { [key: string]: number } = {};
+    stylePropertyNames.forEach(name => result[name] = parseInt(s.getPropertyValue(name)));
+    return result;
+}
+
+const measure = { 
+    innerHeight: (el: HTMLElement) : number => {
+        const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
+        const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
+        return el.offsetHeight - values[paddingTop] - values[paddingBottom];
+    },
+    outerWidth: (el: HTMLElement) : number => {
+        const marginLeft = 'margin-left', marginRight = 'margin-right';
+        const values = getComputedStyleValues(el, [marginLeft, marginRight]);
+        return el.offsetWidth + values[marginLeft] + values[marginRight];
+    }
+};
+
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
@@ -168,14 +188,16 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         const who = this.props.fromMe ? 'me' : 'bot';
 
-        let classNames = ['wc-message-wrapper'];
-        if (this.props.onClickActivity) classNames.push('clickable');
-        classNames.push((this.props.activity as Message).attachmentLayout);
+        const wrapperClassNames = ['wc-message-wrapper', (this.props.activity as Message).attachmentLayout || 'list'];
+        if (this.props.onClickActivity) wrapperClassNames.push('clickable');
+
+        const contentClassNames = ['wc-message-content']
+        if (this.props.selected) contentClassNames.push('selected');
 
         return (
-            <div data-activity-id={this.props.activity.id} className={ classNames.join(' ') } onClick={ this.props.onClickActivity }>
+            <div data-activity-id={this.props.activity.id} className={ wrapperClassNames.join(' ') } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                    <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
+                    <div className={ contentClassNames.join(' ') }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
@@ -185,10 +207,9 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             format={ this.props.format }
                             onClickButton={ this.props.onClickButton }
                             onImageLoad={ this.props.onImageLoad }
-                            calcOverflow={
+                            measureParentHorizontalOverflow={
                                 () => {
-                                    var offsetParent = this.messageDiv.offsetParent as HTMLElement;
-                                    return measure.outerWidth(this.messageDiv) - offsetParent.offsetWidth;
+                                    return measure.outerWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth;
                                 }
                             }
                         />
