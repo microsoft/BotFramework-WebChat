@@ -44,7 +44,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private autoscroll() {
-        const vAlignBottomPadding = Math.max(0, measure.innerHeight(this.scrollMe) - this.scrollContent.offsetHeight);
+        const vAlignBottomPadding = Math.max(0, measureInnerHeight(this.scrollMe) - this.scrollContent.offsetHeight);
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
         if (this.scrollToBottom)
@@ -126,17 +126,16 @@ const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) =
     return result;
 }
 
-const measure = { 
-    innerHeight: (el: HTMLElement) : number => {
-        const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
-        const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
-        return el.offsetHeight - values[paddingTop] - values[paddingBottom];
-    },
-    outerWidth: (el: HTMLElement) : number => {
-        const marginLeft = 'margin-left', marginRight = 'margin-right';
-        const values = getComputedStyleValues(el, [marginLeft, marginRight]);
-        return el.offsetWidth + values[marginLeft] + values[marginRight];
-    }
+const measureInnerHeight = (el: HTMLElement): number => {
+    const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
+    const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
+    return el.offsetHeight - values[paddingTop] - values[paddingBottom];
+};
+
+const measureOuterWidth = (el: HTMLElement): number => {
+    const marginLeft = 'margin-left', marginRight = 'margin-right';
+    const values = getComputedStyleValues(el, [marginLeft, marginRight]);
+    return el.offsetWidth + values[marginLeft] + values[marginRight];
 };
 
 const suitableInterval = (current: Activity, next: Activity) =>
@@ -209,7 +208,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             onImageLoad={ this.props.onImageLoad }
                             measureParentHorizontalOverflow={
                                 () => {
-                                    return measure.outerWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth;
+                                    return measureOuterWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth;
                                 }
                             }
                         />
