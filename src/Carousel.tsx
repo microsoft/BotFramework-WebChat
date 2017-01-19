@@ -5,7 +5,7 @@ import { FormatState } from './Store';
 
 interface Props {
     format: FormatState,
-    calcOverflow: () => number,
+    measureParentHorizontalOverflow: () => number,
     attachments: Attachment[],
     onClickButton: (type: string, value: string) => void,    
     onImageLoad: ()=> void
@@ -127,7 +127,7 @@ export class Carousel extends React.Component<Props, State> {
 
         //capture ComputedStyle every millisecond
         this.scrollSyncTimer = setInterval(() => {
-            var num = parseFloat(getComputedStyle(this.animateDiv).left);
+            const num = parseFloat(getComputedStyle(this.animateDiv).left);
             this.scrollDiv.scrollLeft = num;
         }, 1);
 
@@ -185,9 +185,11 @@ export class Carousel extends React.Component<Props, State> {
         //remove the style width so that the actual content can be measured 
         this.root.style.width = '';
 
-        var overflow = this.props.calcOverflow();
-        if (overflow > 0) {
-            this.root.style.width = (this.root.offsetWidth - overflow) + 'px';
+        if (this.props.measureParentHorizontalOverflow) {
+            const overflow = this.props.measureParentHorizontalOverflow();
+            if (overflow > 0) {
+                this.root.style.width = (this.root.offsetWidth - overflow) + 'px';
+            }
         }
 
         this.setItemWidth();
