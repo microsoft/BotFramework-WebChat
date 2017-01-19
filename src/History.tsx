@@ -130,13 +130,13 @@ const measureInnerHeight = (el: HTMLElement): number => {
     const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
     const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
     return el.offsetHeight - values[paddingTop] - values[paddingBottom];
-};
+}
 
 const measureOuterWidth = (el: HTMLElement): number => {
     const marginLeft = 'margin-left', marginRight = 'margin-right';
     const values = getComputedStyleValues(el, [marginLeft, marginRight]);
     return el.offsetWidth + values[marginLeft] + values[marginRight];
-};
+}
 
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
