@@ -15,7 +15,7 @@
     "clean": "rm -rf built",
     "minify": "webpack --optimize-minimize --optimize-dedupe",
     "start": "http-server -p $PORT",
-    "dev": "http-server -p 9000",
+    "dev": "npm run watch & http-server -p 9000",
     "publish": "node ./bin/publish.js",
     "test": "mocha test",
     "postinstall": "npm run build"

@@ -65,6 +65,7 @@ body .wc-app,
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0px 10px;
 }
 
 .wc-add img{
@@ -495,8 +496,8 @@ ul.wc-card-buttons li {
 .wc-message-from-me .wc-message-content {
   background-color: #ff633f;
   border-radius: 8px;
+  background-color: #ff633f;
   border: solid 1px #e63109;
-  box-shadow: 0 2px 50px 0 rgba(255, 88, 50, 0.2), 0 5px 20px 0 rgba(255, 88, 50, 0.3);
   color: #fff;
   font-size: 16px;
   font-weight: normal;

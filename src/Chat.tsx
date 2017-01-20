@@ -67,7 +67,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection: props.botConnection, selectedActivity: props.selectedActivity });
 
         this.connectionStatusSubscription = props.botConnection.connectionStatus$.subscribe(connectionStatus =>
-            this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
+            this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus });
         );
 
         this.activitySubscription = props.botConnection.activity$.subscribe(
@@ -96,6 +96,10 @@ export class Chat extends React.Component<ChatProps, {}> {
     render() {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
+
+        // Trying to get a welcome message
+        sendPostBack(this.props.botConnection, "hi", this.props.user);
+
         let header;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
