@@ -275,7 +275,7 @@ import { MiddlewareAPI, applyMiddleware } from 'redux';
 import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 
-const sendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
+const sendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
     .map(action => {
         const state = store.getState();
@@ -283,7 +283,7 @@ const sendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatStat
         return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
     });
 
-const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
+const trySendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
     .flatMap(action => {
         const state = store.getState();
@@ -299,11 +299,11 @@ const trySendMessage: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatS
         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
     });
 
-const retrySendMessage: Epic<HistoryAction> = (action$) =>
+const retrySendMessage: Epic<HistoryAction, ChatState> = (action$) =>
     action$.ofType('Send_Message_Retry')
     .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
-const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareAPI<ChatState>) =>
+const updateSelectedActivity: Epic<HistoryAction, ChatState> = (action$, store) =>
     action$.ofType(
         'Send_Message_Succeed',
         'Send_Message_Fail',
@@ -317,7 +317,7 @@ const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareA
         return { type: null } as HistoryAction;
     });
 
-const showTyping: Epic<HistoryAction> = (action$) =>
+const showTyping: Epic<HistoryAction, ChatState> = (action$) =>
     action$.ofType('Show_Typing')
     .delay(3000)
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
