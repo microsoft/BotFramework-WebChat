@@ -8,7 +8,7 @@ import { FormatState } from './Store';
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
-    measureParentHorizontalOverflow: () => number,
+    measureParentHorizontalOverflow?: () => number,
     format: FormatState,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
@@ -36,7 +36,7 @@ const Attachments = (props: {
 interface Props {
     format: FormatState,
     activity: Activity,
-    measureParentHorizontalOverflow: () => number,
+    measureParentHorizontalOverflow?: () => number,
     onClickButton: (type: string, value: string) => void,
     onImageLoad: () => void
 }

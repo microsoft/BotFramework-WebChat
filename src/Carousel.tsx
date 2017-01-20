@@ -5,7 +5,7 @@ import { FormatState } from './Store';
 
 interface Props {
     format: FormatState,
-    measureParentHorizontalOverflow: () => number,
+    measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
     onClickButton: (type: string, value: string) => void,    
     onImageLoad: ()=> void
