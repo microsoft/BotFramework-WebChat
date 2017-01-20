@@ -10,7 +10,7 @@
     "tsc-watch": "tsc -w",
     "webpack-watch": "webpack -w",
     "clean": "rm -rf built",
-    "publish": "tsc && webpack --config webpack.production.config.js",
+    "prepublish": "tsc && webpack --config webpack.production.config.js",
     "start": "http-server -p 8000",
     "test": "mocha test"
   },
