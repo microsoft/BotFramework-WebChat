@@ -187,16 +187,22 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         const who = this.props.fromMe ? 'me' : 'bot';
 
-        const wrapperClassNames = ['wc-message-wrapper', (this.props.activity as Message).attachmentLayout || 'list'];
-        if (this.props.onClickActivity) wrapperClassNames.push('clickable');
+        const wrapperClassName = [
+            'wc-message-wrapper',
+            (this.props.activity as Message).attachmentLayout || 'list',
+            this.props.onClickActivity ? 'clickable' : ''
+        ].join(' ');
 
-        const contentClassNames = ['wc-message-content']
-        if (this.props.selected) contentClassNames.push('selected');
+        const contentClassName = [
+            'wc-message-content',
+            this.props.selected ? 'selected' : ''
+        ].join(' ');
+        
 
         return (
-            <div data-activity-id={this.props.activity.id} className={ wrapperClassNames.join(' ') } onClick={ this.props.onClickActivity }>
+            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                    <div className={ contentClassNames.join(' ') }>
+                    <div className={ contentClassName }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
@@ -206,11 +212,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             format={ this.props.format }
                             onClickButton={ this.props.onClickButton }
                             onImageLoad={ this.props.onImageLoad }
-                            measureParentHorizontalOverflow={
-                                () => {
-                                    return measureOuterWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth;
-                                }
-                            }
+                            measureParentHorizontalOverflow={ () => measureOuterWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth }
                         />
                     </div>
                 </div>
