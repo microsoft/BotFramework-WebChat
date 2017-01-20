@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 
 export interface DirectLineOptions {
@@ -13,6 +11,7 @@ export declare class DirectLine {
     constructor(options: DirectLineOptions);
     activity$: any;         // Observable<Activity>
     connectionStatus$: any; // BehaviorSubject<ConnectionStatus>
+    reconnect(conversation: any);
     end();
 }
 
