@@ -51,6 +51,8 @@
                 id: params['botid'] || 'botid',
                 name: params["botname"] || 'botname'
             };
+            
+            window['botchatDebug'] = params['debug'];
 
             BotChat.App({
                 directLine: {
@@ -60,7 +62,8 @@
                     webSocket: params['webSocket']
                 },
                 user: user,
-                bot: bot
+                bot: bot,
+                locale: params['locale'],
             }, document.getElementById("BotChatGoesHere"));
         </script>
     </body>

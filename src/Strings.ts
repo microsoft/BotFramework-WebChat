@@ -71,6 +71,8 @@ const localizedStrings: LocalizedStrings = {
     }
 }
 
+export const defaultStrings = localizedStrings['en-us'];
+
 // Returns strings using the "best match available"" locale
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')

@@ -41,10 +41,13 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        const locale = props.locale || window.navigator["userLanguage"] || window.navigator.language || 'en';
+        this.store.dispatch<FormatAction>({
+            type: 'Set_Locale',
+            locale: props.locale || window.navigator["userLanguage"] || window.navigator.language || 'en'
+        });
 
-        this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
-        this.store.dispatch<FormatAction>({ type: 'Set_Locale', locale });
+        if (props.formatOptions)
+            this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
     }
 
     private handleIncomingActivity(activity: Activity) {

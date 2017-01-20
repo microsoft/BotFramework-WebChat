@@ -1,6 +1,6 @@
 import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
-import { strings, Strings } from './Strings';
+import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs';
 
 // Reducers - perform state transformations
@@ -23,25 +23,25 @@ export type FormatAction = {
 
 export const format: Reducer<FormatState> = (
     state: FormatState = {
-        locale: window.navigator.language,
+        locale: 'en-us',
         options: {
             showHeader: true
         },
-        strings: strings(window.navigator.language)
+        strings: defaultStrings
     },
     action: FormatAction
 ) => {
     switch (action.type) {
         case 'Set_Format_Options':
             return {
+                ... state,
                 options: action.options,
-                ... state
             };
         case 'Set_Locale':
             return {
+                ... state,
                 locale: action.locale,
                 strings: strings(action.locale),
-                ... state
             };
         default:
             return state;
