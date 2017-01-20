@@ -62,6 +62,10 @@
         top: 38px;  /* from wc-header total height */
     }
 
+    .wc-message-group-content {
+        overflow: hidden;
+    }
+
     .wc-console {
         border: 5px solid #dbdee1;
         bottom: 0;
@@ -84,23 +88,13 @@
 
 /* messages */
 
-    .wc-message-group {
-        display: table;
-        height: 100%;
-        width: 100%;
-    }
-
-    .wc-message-group-content {
-        display: table-cell;
-        vertical-align: bottom;
-    }
-
     .wc-message-wrapper {
         animation: animationFrames 2s;
         animation-iteration-count: 1;
         clear: both;
         margin-bottom: 10px;
         overflow: hidden;
+        position: relative;
         /*transition: max-height 2s ease-in-out;*/
     }
 
@@ -120,6 +114,11 @@
     .wc-message {
         max-width: 80%;
         position: relative;
+    }
+
+    .wc-message-wrapper.carousel .wc-message {
+        max-width: none;
+        padding-right: 8px;
     }
 
     .wc-message svg.wc-message-callout {
@@ -172,6 +171,7 @@
         border: 1px solid #d2dde5;
         font-size: 13px;
         padding: 8px;
+        width: 302px;
     }
 
     .wc-card button {
@@ -378,11 +378,10 @@
 
     .wc-carousel-scroll > ul > li {
         display: inline-block;
-        max-width: 640px;
         padding: 0 4px;
         vertical-align: top;
         white-space: normal;
-        width: 85%;
+        width: 320px;
     }
 
     .wc-carousel-scroll > ul > li:last-child {

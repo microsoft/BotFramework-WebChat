@@ -5,6 +5,7 @@ import { FormatState } from './Store';
 
 interface Props {
     format: FormatState,
+    measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
     onClickButton: (type: string, value: string) => void,    
     onImageLoad: ()=> void
@@ -16,9 +17,9 @@ interface State {
 }
 
 export class Carousel extends React.Component<Props, State> {
-
     private itemWidth: number;
     private ul: HTMLUListElement
+    private root: HTMLDivElement;
     private scrollDiv: HTMLDivElement;
     private scrollStartTimer: number;
     private scrollSyncTimer: number;
@@ -126,7 +127,7 @@ export class Carousel extends React.Component<Props, State> {
 
         //capture ComputedStyle every millisecond
         this.scrollSyncTimer = setInterval(() => {
-            var num = parseFloat(getComputedStyle(this.animateDiv).left);
+            const num = parseFloat(getComputedStyle(this.animateDiv).left);
             this.scrollDiv.scrollLeft = num;
         }, 1);
 
@@ -150,7 +151,7 @@ export class Carousel extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="wc-carousel">
+            <div className="wc-carousel" ref={ div => this.root = div }>
                 <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
@@ -180,6 +181,17 @@ export class Carousel extends React.Component<Props, State> {
     }
 
     resize() {
+
+        //remove the style width so that the actual content can be measured 
+        this.root.style.width = '';
+
+        if (this.props.measureParentHorizontalOverflow) {
+            const overflow = this.props.measureParentHorizontalOverflow();
+            if (overflow > 0) {
+                this.root.style.width = (this.root.offsetWidth - overflow) + 'px';
+            }
+        }
+
         this.setItemWidth();
         this.manageScrollButtons();
         this.props.onImageLoad();
