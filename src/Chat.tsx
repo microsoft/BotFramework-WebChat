@@ -178,7 +178,7 @@ export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Eleme
 
 export const konsole = {
     log: (message?: any, ... optionalParams: any[]) => {
-        if (typeof(window) !== 'undefined' && window["botchatDebug"] === true && message)
+        if (typeof(window) !== 'undefined' && window["botchatDebug"] && message)
             console.log(message, ... optionalParams);
     }
 }
