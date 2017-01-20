@@ -70,7 +70,7 @@ export class ActivityView extends React.Component<Props, {}> {
                 );
 
             case 'typing':
-                return <div className="wc-typing"></div>;
+                return <div className="wc-typing"/>;
         }
     }
 }
