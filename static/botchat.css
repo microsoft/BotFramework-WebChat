@@ -183,7 +183,6 @@ body .wc-app,
 
 .wc-message-content {
   border-radius: 2px;
-  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
   padding: 8px;
   word-break: break-word;
 }
@@ -230,19 +229,19 @@ body .wc-app,
   /*padding: 8px;*/
 }
 
-.logos {
+.wc-rating {
   display: flex;
+  justify-content: space-around;
 }
 
-.star-image{
-  width: 136px;
-  height: 24px !important;
-}
-
-.yelp-logo {
+.wc-rating img {
   width: 53px;
-  height: 26px !important;
-  padding-left: 20px;
+  height: 26px;
+}
+
+.star-image {
+  width: 136px !important;
+  height: 24px !important;
 }
 
 .wc-card button {
@@ -254,15 +253,13 @@ body .wc-app,
 }
 
 .wc-card button:hover {
-  background-color: transparent;
-  border: 1px solid #0084ff;
+  background-color: #f5f5f5;
   color: #0084ff;
 }
 
 .wc-card button:active {
-  background-color: #0084ff;
-  border-color: #0084ff;
-  color: white;
+  background-color: #e6e6e6;
+  color: #0084ff;
 }
 
 .wc-card h1 {
@@ -283,8 +280,14 @@ body .wc-app,
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
-  height: 25px;
+  text-overflow: clip;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: hidden;
+  height: 30px;
   color: #8e8e8e;
+  -webkit-font-smoothing: antialiased;
+  moz-osx-font-smoothing: grayscale;
 }
 
 .wc-card p {
@@ -319,10 +322,11 @@ ul.wc-card-buttons li {
   margin: 2px;
 }
 
-.wc-card.hero img {
+.wc-card.hero>img {
   display: block;
   height: 140px;
   margin-bottom: 11px;
+  border-radius: 2px;
 }
 
 .wc-card.receipt table {
@@ -525,13 +529,10 @@ ul.wc-card-buttons li {
 
 .wc-message-from-bot {
   float: left;
-  margin-left: 8px;
+  margin-left: 40px;
 }
 
 .wc-message-from-bot .wc-message-content {
-  border-radius: 8px;
-  background-color: #ffffff;
-  border: solid 1px #cccccc;
   color: #4d4d4d;
   font-size: 16px;
   font-weight: normal;
@@ -603,7 +604,7 @@ ul.wc-card-buttons li {
 }
 
 .no-star {
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .wc-send {
@@ -642,6 +643,12 @@ ul.wc-card-buttons li {
 
 
 /* text formats */
+.wc-message-from-bot .wc-message-content .format-markdown>p {
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  padding: 4px;
+}
 
 .format-markdown>p {
   margin-bottom: 0px;

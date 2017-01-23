@@ -38,9 +38,9 @@ export const AttachmentView = (props: {
 
     const attachImage = (payload?: string[]) =>(
        payload &&
-        <div className={'logos'}>
+        <div className={'wc-rating'}>
           {payload[0] ? <img className={'star-image'} src={payload[0]} /> : <div className={'no-star'}> </div> }
-          {payload[1] ? <img className={'yelp-logo'} src={payload[1]} />  : <div className={'no-star'}> </div> }
+          {payload[1] ? <img src={payload[1]} />  : <div className={'no-star'}> </div> }
         </div>
       );
 
@@ -71,7 +71,7 @@ export const AttachmentView = (props: {
                 <div className='wc-card thumbnail'>
                     { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
                     { attachedImage(attachment.content.images) }
-                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2 alt={subtitle}>{subtitle}</h2>) }
                     { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>
