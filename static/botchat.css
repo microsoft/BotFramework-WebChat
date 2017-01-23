@@ -222,8 +222,9 @@ body .wc-app,
 
 .wc-card {
   background-color: #fff;
-  /*border: 1px solid #d2dde5;*/
+  border: 1px solid #d2dde5;
   font-size: 13px;
+  border-radius: 8px
   display: flex;
   flex-direction: column;
   /*padding: 8px;*/
@@ -235,7 +236,6 @@ body .wc-app,
 }
 
 .wc-rating img {
-  width: 53px;
   height: 26px;
 }
 
@@ -326,7 +326,7 @@ ul.wc-card-buttons li {
   display: block;
   height: 140px;
   margin-bottom: 11px;
-  border-radius: 2px;
+  border-radius: 8px 8px 0 0;
 }
 
 .wc-card.receipt table {
