@@ -319,7 +319,7 @@ ul.wc-card-buttons li {
   list-style-type: none;
   text-align: center;
   float: left;
-  margin: 2px;
+  margin-top: 2px;
 }
 
 .wc-card.hero>img {
