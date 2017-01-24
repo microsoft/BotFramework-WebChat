@@ -22,7 +22,6 @@ interface Props {
 class HistoryContainer extends React.Component<Props, {}> {
     private scrollMe: HTMLDivElement;
     private scrollToBottom = true;
-    private count = 0;
     private resizeListener = () => this.autoscroll();
 
     constructor(props: Props) {
