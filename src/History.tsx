@@ -82,8 +82,8 @@ class HistoryContainer extends React.Component<Props, {}> {
       console.log(this.count);
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
-                <div id='panel' className="wc-message-group">
-                    <div id= {this.count.toString()} className="wc-message-group-content">
+                <div className="wc-message-group">
+                    <div className="wc-message-group-content">
                         { this.props.activities.map((activity, index) =>
                             <WrappedActivity
                                 key={ 'message' + index }
