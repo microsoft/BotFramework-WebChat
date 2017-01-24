@@ -45,9 +45,9 @@ export const AttachmentView = (props: {
               {rating_image ? <img className={'star-image'} src={rating_image} /> : <div className={'no-star'}> </div> }
               {logo ? <img src={logo} />  : <div className={'no-star'}> </div> }
               </div>
-          );
-        }
-      };
+        );
+      }
+    };
 
     const isUnsupportedCardContentType = (contentType: string): boolean => {
         let searchPattern = new RegExp('^application/vnd\.microsoft\.card\.', 'i');

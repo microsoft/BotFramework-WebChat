@@ -252,12 +252,12 @@ body .wc-app,
 }
 
 .wizeline-branded {
-  margin-top: 4px;
+  margin-top: 6px;
   position: absolute;
-  bottom: 27px;
+  bottom: 40px;
   left: 12px;
   display: flex;
-  height: 40px;
+  height: 20px;
 }
 
 .wizeline-branded-font {
