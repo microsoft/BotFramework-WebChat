@@ -188,7 +188,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         />
                     </div>
                 </div>
-                { this.props.fromMe && <div className={ `wc-message wc-message-from-${who}` }>{ timeLine }</div> }
+                { this.props.fromMe && <div className={ `wc-message-from wc-message-from-${who}` }>{ timeLine }</div> }
             </div>
         );
     }
