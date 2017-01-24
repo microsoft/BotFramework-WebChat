@@ -317,8 +317,10 @@ body .wc-app,
   font-style: normal;
   font-stretch: normal;
   line-height: 1;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.4px;
   color: #4d4d4d;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wc-card h2 {
