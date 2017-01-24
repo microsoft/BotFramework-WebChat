@@ -163,7 +163,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 break;
             default:
                 let sent: string;
-                if (this.props.showTimestamp )
+                if (this.props.showTimestamp)
                     sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
@@ -188,7 +188,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         />
                     </div>
                 </div>
-                { this.props.fromMe && <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> }
+                { this.props.fromMe && <div className={ `wc-message wc-message-from-${who}` }>{ timeLine }</div> }
             </div>
         );
     }
