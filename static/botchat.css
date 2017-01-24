@@ -209,14 +209,16 @@ body .wc-app,
 
 .wc-list .wc-card .wc-card-buttons li > button:hover {
   color: #4d4d4d !important;
-  background-color: #f5f5f5;
-  border-radius: 2px;
+  border-radius: 4px;
+	background-color: #e6e6e6;
+	border: solid 1px #999999;
 }
 
 .wc-list .wc-card .wc-card-buttons li > button:active {
-  background-color: #e6e6e6;
-  color: #4d4d4d !important;
-  border-radius: 2px;
+  color: #ffffff !important;
+  border-radius: 4px;
+	background-color: #ff633f;
+	border: solid 1px #e63109;
 }
 
 .wc-message-content.clickable {
@@ -360,7 +362,7 @@ ul.wc-card-buttons li {
   margin-top: 2px;
 }
 
-li .wc-card.hero ul li {
+li .wc-card.hero ul li button{
   height: 44px;
 }
 
