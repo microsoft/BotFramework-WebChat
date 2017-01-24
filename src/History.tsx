@@ -1,11 +1,11 @@
 import * as React from 'react';
 //import { Timestamp } from './Timestamp';
-import { Activity, User, IBotConnection, Message } from './BotConnection';
+import { Activity, User, IBotConnection, Message } from 'botframework-directlinejs';
 import { HistoryAction, ChatState, FormatState } from './Store';
 import { ActivityView } from './ActivityView';
 import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
 import { Dispatch, connect } from 'react-redux';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 interface Props {
     format: FormatState

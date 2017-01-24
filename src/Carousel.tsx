@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Attachment } from './BotConnection';
+import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
 

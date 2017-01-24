@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Attachment, Button } from './BotConnection';
+import { Attachment, Button } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole } from './Chat';
 import { FormatState } from './Store';
 

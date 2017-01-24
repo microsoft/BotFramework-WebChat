@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 import { HistoryAction, ChatState, FormatState } from './Store';
-import { Message, Media, MediaType, User, IBotConnection } from './BotConnection';
+import { User } from 'botframework-directlinejs';
 import { sendMessage, sendFiles } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 
