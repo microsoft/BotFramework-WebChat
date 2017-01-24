@@ -163,10 +163,9 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 break;
             default:
                 let sent: string;
-                if (this.props.showTimestamp && this.props.fromMe ){
+                if (this.props.showTimestamp )
                     sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                    timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
-                  }
+                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
         }
 
@@ -174,7 +173,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         return (
             <div className={ "wc-message-wrapper" + (this.props.onClickActivity ? ' clickable' : '') } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who }>
+                <div className={ `wc-message wc-message-from-${who}` }>
                     <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
@@ -189,7 +188,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         />
                     </div>
                 </div>
-                { this.props.fromMe ? <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> : null}
+                { this.props.fromMe && <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> }
             </div>
         );
     }

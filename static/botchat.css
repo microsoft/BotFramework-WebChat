@@ -202,7 +202,7 @@ body .wc-app,
   margin-left: 4px;
 }
 
-.wc-list .wc-card .wc-card-buttons li>button {
+.wc-list .wc-card .wc-card-buttons li > button {
   color: #4d4d4d !important;
 }
 
@@ -344,7 +344,7 @@ ul.wc-card-buttons li {
   margin-top: 2px;
 }
 
-.wc-card.hero>img {
+.wc-card.hero > img {
   display: block;
   height: 140px;
   width: 266px;
@@ -666,14 +666,14 @@ ul.wc-card-buttons li {
 
 
 /* text formats */
-.wc-message-from-bot .wc-message-content .format-markdown>p {
+.wc-message-from-bot .wc-message-content .format-markdown > p {
   border-radius: 8px;
   background-color: #ffffff;
   border: solid 1px #cccccc;
   padding: 4px;
 }
 
-.format-markdown>p {
+.format-markdown > p {
   margin-bottom: 0px;
 }
 
