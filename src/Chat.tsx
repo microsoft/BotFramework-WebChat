@@ -96,6 +96,10 @@ export class Chat extends React.Component<ChatProps, {}> {
     render() {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
+
+        // Trying to get a welcome message
+        sendPostBack(this.props.botConnection, "hi", this.props.user);
+
         let header;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
@@ -138,7 +142,7 @@ export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, fro
     let postback;
     try {
         postback = JSON.parse(text);
-        text = postback.text;
+        text = postback.text || text;
         delete postback.text;
     } catch(e) {
         // Error occurs
