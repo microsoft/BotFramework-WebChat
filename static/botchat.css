@@ -194,14 +194,12 @@ body .wc-app,
 .wc-list .wc-card .wc-card-buttons {
   display: inline-block;
   background-color: #f5f5f5;
-  color: #4d4d4d !important;
 }
 
 .wc-list .wc-card .wc-card-buttons li {
   border: solid 1px #999999;
   border-radius: 4px;
   margin-left: 4px;
-  color: #4d4d4d !important;
 }
 
 .wc-list .wc-card .wc-card-buttons li>button {
