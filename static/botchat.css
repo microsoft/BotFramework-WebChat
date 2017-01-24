@@ -305,7 +305,6 @@ body .wc-app,
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
-  text-overflow: clip;
   text-overflow: ellipsis;
   white-space: normal;
   overflow: hidden;

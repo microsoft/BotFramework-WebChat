@@ -49,7 +49,6 @@ class HistoryContainer extends React.Component<Props, {}> {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
-
     private onClickRetry(activity: Activity) {
         this.props.dispatch<HistoryAction>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
     }
@@ -78,7 +77,6 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     render() {
-      console.log(this.count);
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
                 <div className="wc-message-group">
