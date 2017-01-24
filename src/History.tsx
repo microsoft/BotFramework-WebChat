@@ -22,6 +22,7 @@ interface Props {
 class HistoryContainer extends React.Component<Props, {}> {
     private scrollMe: HTMLDivElement;
     private scrollToBottom = true;
+    private count = 0;
     private resizeListener = () => this.autoscroll();
 
     constructor(props: Props) {
@@ -42,7 +43,6 @@ class HistoryContainer extends React.Component<Props, {}> {
 
     componentDidUpdate() {
         this.autoscroll();
-        this.goBottom();
     }
 
     private autoscroll() {
@@ -50,9 +50,6 @@ class HistoryContainer extends React.Component<Props, {}> {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
     }
 
-    private goBottom() {
-        document.getElementById('bottom').scrollIntoView();
-    }
 
     private onClickRetry(activity: Activity) {
         this.props.dispatch<HistoryAction>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
@@ -82,10 +79,11 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     render() {
+      console.log(this.count);
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
-                <div className="wc-message-group">
-                    <div className="wc-message-group-content">
+                <div id='panel' className="wc-message-group">
+                    <div id= {this.count.toString()} className="wc-message-group-content">
                         { this.props.activities.map((activity, index) =>
                             <WrappedActivity
                                 key={ 'message' + index }
@@ -107,9 +105,9 @@ class HistoryContainer extends React.Component<Props, {}> {
                                 onImageLoad={ () => this.autoscroll() }
                             />
                         ) }
-                        <div id='bottom'> </div>
                     </div>
                 </div>
+                <p className='wizeline'> Powered by Wizeline </p>
             </div>
         )
     }
@@ -168,9 +166,10 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 break;
             default:
                 let sent: string;
-                if (this.props.showTimestamp)
+                if (this.props.showTimestamp && this.props.fromMe ){
                     sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                    timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                  }
                 break;
         }
 
@@ -193,7 +192,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         />
                     </div>
                 </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                { this.props.fromMe ? <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> : null}
             </div>
         );
     }
