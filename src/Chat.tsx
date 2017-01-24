@@ -129,7 +129,7 @@ export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, fro
     let postback;
     try {
         postback = JSON.parse(text);
-        text = postback.text;
+        text = postback.text || text;
         delete postback.text;
     } catch(e) {
         // Error occurs
