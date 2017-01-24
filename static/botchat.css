@@ -253,10 +253,16 @@ body .wc-app,
 
 .wizeline-branded {
   margin-top: 4px;
-  font-size: 10px;
   position: absolute;
-  bottom: 50px;
+  bottom: -83px;
   left: 12px;
+  display: flex;
+}
+
+.wizeline-branded-font {
+  font-size: 10px;
+  margin-right: 4px;
+  color: #b3b3b3;
 }
 
 /* cards */
