@@ -153,32 +153,50 @@ export class Carousel extends React.Component<Props, State> {
     render() {
         return (
             <div className="wc-carousel">
-                <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
-                    <svg>
-                        <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
-                    </svg>
-                </button>
-                <div className="wc-carousel-scroll-outer">
-                    <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
-                        <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
-                            <li key={ index }>
-                                <AttachmentView
-                                    attachment={ attachment }
-                                    options={ this.props.options }
-                                    strings={ this.props.strings }
-                                    onClickButton={ this.props.onClickButton }
-                                    onImageLoad={ () => this.resize() }
-                                    />
-                            </li>) }
-                        </ul>
-                    </div>
-                </div>
-                <button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
-                    <svg>
-                        <path d="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z" />
-                    </svg>
-                </button>
-            </div >
+				<button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
+					<svg>
+						<g id="scroll-prev" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+					 		<g fill="#cccccc" id="Houston-Chronicle---Chat-Window" transform="rotate(179.454345703125 20,20.000000000000004)">
+								<g id="ic_circle_right">
+									<path id="Shape" d="m20,40c-11,0 -20,-9 -20,-20c0,-11 9,-20 20,-20c11,0 20,9 20,20c0,11 -9,20 -20,20zm0,-36.66667c-9.16667,0 -16.66667,7.5 -16.66667,16.66667c0,9.16667 7.5,16.66667 16.66667,16.66667c9.16667,0 16.66667,-7.5 16.66667,-16.66667c0,-9.16667 -7.5,-16.66667 -16.66667,-16.66667z"/>
+									<path id="Shape" d="m26.66667,21.66667c-0.5,0 -0.83334,-0.16667 -1.16667,-0.5l-5,-5c-0.66667,-0.66667 -0.66667,-1.66667 0,-2.33334c0.66667,-0.66666 1.66667,-0.66666 2.33333,0l5,5c0.66667,0.66667 0.66667,1.66667 0,2.33334c-0.33333,0.33333 -0.66666,0.5 -1.16666,0.5z"/>
+									<path id="Shape" d="m21.66667,26.66667c-0.5,0 -0.83334,-0.16667 -1.16667,-0.5c-0.66667,-0.66667 -0.66667,-1.66667 0,-2.33334l5,-5c0.66667,-0.66666 1.66667,-0.66666 2.33333,0c0.66667,0.66667 0.66667,1.66667 0,2.33334l-5,5c-0.33333,0.33333 -0.66666,0.5 -1.16666,0.5z"/>
+									<path id="Shape" d="m26.66667,21.66667l-13.33334,0c-1,0 -1.66666,-0.66667 -1.66666,-1.66667c0,-1 0.66666,-1.66667 1.66666,-1.66667l13.33334,0c1,0 1.66666,0.66667 1.66666,1.66667c0,1 -0.66666,1.66667 -1.66666,1.66667z"/>
+								</g>
+							</g>
+						</g>
+					</svg>
+				</button>
+				<div className="wc-carousel-scroll-outer">
+					<div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
+						<ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
+							<li key={ index }>
+								<AttachmentView
+									attachment={ attachment }
+									options={ this.props.options }
+									strings={ this.props.strings }
+									onClickButton={ this.props.onClickButton }
+									onImageLoad={ () => this.resize() }
+									/>
+							</li>) }
+						</ul>
+					</div>
+				</div>
+				<button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
+					<svg>
+						<g id="scroll-next" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+							<g id="Houston-Chronicle---Chat-Wrindow" transform="translate(-322.000000, -1541.000000)" fill="#cccccc">
+								<g id="ic_circle_right" transform="translate(322.000000, 1541.000000)">
+									<path d="M20,40 C9,40 0,31 0,20 C0,9 9,0 20,0 C31,0 40,9 40,20 C40,31 31,40 20,40 Z M20,3.33333333 C10.8333333,3.33333333 3.33333333,10.8333333 3.33333333,20 C3.33333333,29.1666667 10.8333333,36.6666667 20,36.6666667 C29.1666667,36.6666667 36.6666667,29.1666667 36.6666667,20 C36.6666667,10.8333333 29.1666667,3.33333333 20,3.33333333 Z" id="Shape"/>
+									<path d="M26.6666667,21.6666667 C26.1666667,21.6666667 25.8333333,21.5 25.5,21.1666667 L20.5,16.1666667 C19.8333333,15.5 19.8333333,14.5 20.5,13.8333333 C21.1666667,13.1666667 22.1666667,13.1666667 22.8333333,13.8333333 L27.8333333,18.8333333 C28.5,19.5 28.5,20.5 27.8333333,21.1666667 C27.5,21.5 27.1666667,21.6666667 26.6666667,21.6666667 Z" id="Shape"/>
+									<path d="M21.6666667,26.6666667 C21.1666667,26.6666667 20.8333333,26.5 20.5,26.1666667 C19.8333333,25.5 19.8333333,24.5 20.5,23.8333333 L25.5,18.8333333 C26.1666667,18.1666667 27.1666667,18.1666667 27.8333333,18.8333333 C28.5,19.5 28.5,20.5 27.8333333,21.1666667 L22.8333333,26.1666667 C22.5,26.5 22.1666667,26.6666667 21.6666667,26.6666667 Z" id="Shape"/>
+									<path d="M26.6666667,21.6666667 L13.3333333,21.6666667 C12.3333333,21.6666667 11.6666667,21 11.6666667,20 C11.6666667,19 12.3333333,18.3333333 13.3333333,18.3333333 L26.6666667,18.3333333 C27.6666667,18.3333333 28.3333333,19 28.3333333,20 C28.3333333,21 27.6666667,21.6666667 26.6666667,21.6666667 Z" id="Shape"/>
+								</g>
+							</g>
+						</g>
+					</svg>
+				</button>
+			</div >
         )
     }
 

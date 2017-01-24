@@ -476,33 +476,34 @@ li .wc-card.hero ul li button{
 }
 
 .wc-carousel button.scroll {
-  background-color: #d2dde5;
-  height: 28px;
+  background-color: transparent;
+  height: 40px;
   overflow: hidden;
   padding: 0;
   position: absolute;
   top: 50%;
-  width: 28px;
+  width: 40px;
 }
 
 .wc-carousel button.scroll:disabled {
   display: none;
 }
 
-.wc-carousel button.scroll:hover {
-  background-color: #808c95;
+.wc-carousel button.scroll:hover svg path{
+  /*background-color: #808c95;*/
+  fill: #919191;
 }
 
 .wc-carousel button.scroll svg {
-  fill: #fff;
+  fill: #919191;
 }
 
 .wc-carousel button.scroll.previous {
-  left: -16px;
+  left: -22px;
 }
 
 .wc-carousel button.scroll.next {
-  right: -16px;
+  right: -22px;
 }
 
 .wc-carousel-scroll-outer {
