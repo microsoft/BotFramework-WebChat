@@ -31,7 +31,7 @@ export interface ChatProps {
 export class Chat extends React.Component<ChatProps, {}> {
 
     private store = createStore();
-    
+
     private activitySubscription: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
@@ -113,6 +113,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     { header }
                     <History />
                     <Shell />
+                    <span className='wizeline-branded'> Powered by Wizeline </span>
                 </div>
             </Provider>
         );

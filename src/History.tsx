@@ -104,7 +104,6 @@ class HistoryContainer extends React.Component<Props, {}> {
                         ) }
                     </div>
                 </div>
-                <p className='wizeline'> Powered by Wizeline </p>
             </div>
         )
     }
