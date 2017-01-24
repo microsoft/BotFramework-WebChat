@@ -36,13 +36,18 @@ export const AttachmentView = (props: {
         return url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
     }
 
-    const attachImage = (payload?: string[]) =>(
-       payload &&
-        <div className={'wc-rating'}>
-          {payload[0] ? <img className={'star-image'} src={payload[0]} /> : <div className={'no-star'}> </div> }
-          {payload[1] ? <img src={payload[1]} />  : <div className={'no-star'}> </div> }
-        </div>
-      );
+    const attachImage = (payload?: string[]) => {
+      if (payload) {
+        const rating_image = payload[0];
+        const logo = payload[1];
+        return (
+            <div className={'wc-rating'}>
+              {rating_image ? <img className={'star-image'} src={rating_image} /> : <div className={'no-star'}> </div> }
+              {logo ? <img src={logo} />  : <div className={'no-star'}> </div> }
+              </div>
+          );
+        }
+      };
 
     const isUnsupportedCardContentType = (contentType: string): boolean => {
         let searchPattern = new RegExp('^application/vnd\.microsoft\.card\.', 'i');
