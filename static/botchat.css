@@ -262,7 +262,7 @@ body .wc-app,
 }
 
 .wizeline-branded-font {
-  font-size: 10px;
+  font-size: 8px;
   margin-right: 4px;
   color: #b3b3b3;
 }
@@ -584,7 +584,7 @@ li .wc-card.hero ul li button{
 
 .wc-message-from-bot {
   float: left;
-  margin-left: 40px;
+  margin-left: 20px;
 }
 
 .wc-message-from-bot .wc-message-content {
