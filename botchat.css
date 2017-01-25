@@ -149,6 +149,10 @@
         max-width: 100%;
     }
 
+    .wc-message-content .video iframe {
+        border: 0;
+    }
+
     .wc-message-content audio, .wc-message-content video {
         max-width: 100%;
     }
