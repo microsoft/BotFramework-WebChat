@@ -142,8 +142,12 @@ export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, fro
     let postback;
     try {
         postback = JSON.parse(text);
-        text = postback.text || text;
-        delete postback.text;
+        if (isNaN(postback)) {
+            text = postback.text || text;
+            delete postback.text;
+        } else {
+            postback = undefined;
+        }
     } catch(e) {
         // Error occurs
     }
