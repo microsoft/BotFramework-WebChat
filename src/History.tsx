@@ -144,7 +144,6 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     }
 
     render () {
-        console.log(this.props.activity.from.name);
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
