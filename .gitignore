@@ -4,9 +4,10 @@ node_modules
 /botchat.sln
 /Web.config
 /local
-/.vscode
+**/.vscode
 npm-debug.log
 test/src
+test/mock_dl/index.js*
 npm
 cdn
 webpacked
