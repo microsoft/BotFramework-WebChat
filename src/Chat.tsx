@@ -105,7 +105,6 @@ export class Chat extends React.Component<ChatProps, {}> {
             <div className="wc-header">
                 <span>{ state.format.strings.title }</span>
             </div>;
-
         let add_url = "http://www.chron.com/";
         let img_src = "https://upload.wikimedia.org/wikipedia/commons/7/70/Houston_Chronicle_Logo_2016.svg";
         let add = <div className="wc-add"><a href={add_url} target="_blank" title="Click here for more info"><img src={img_src} /></a></div>
@@ -117,6 +116,20 @@ export class Chat extends React.Component<ChatProps, {}> {
                     { header }
                     <History />
                     <Shell />
+                    <div className='wizeline-branded'>
+                      <span className='wizeline-span'> <p className='wizeline-branded-font'>Powered by</p>
+                        <svg className='wizeline-logo'>
+                          <polygon id="Shape" fill="#B3B3B3" points="6.31057143 13 4.63542857 13 3.93342857 5.837 3.13485714 13 1.48014286 13 0 0 1.94814286 0 2.57028571 8.19742857 3.32985714 0 4.83042857 0 5.473 8.19742857 6.21214286 0 8.02285714 0"/>
+                          <rect id="Rectangle-path" fill="#B3B3B3" x="10.79" y="0" width="2.00571429" height="13"/>
+                          <polygon id="Shape" fill="#B3B3B3" points="17.9177143 11.0871429 20.2335714 11.0871429 20.2335714 13 15.717 13 15.717 12.3165714 18.1498571 1.91285714 15.8525714 1.91285714 15.8525714 0 20.3505714 0 20.3505714 0.683428571"/>
+                          <polygon id="Shape" fill="#B3B3B3" points="23.3498571 13 23.3498571 0 27.5562857 0 27.5562857 1.87385714 25.3555714 1.87385714 25.3555714 5.42657143 26.8171429 5.42657143 26.8171429 7.202 25.3555714 7.202 25.3555714 11.0667143 27.5562857 11.0667143 27.5562857 13"/>
+                          <polygon id="Shape" fill="#CCCCCC" points="30.8675714 13 30.8675714 0 32.2697143 0 32.2697143 11.6535714 34.8994286 11.6535714 34.8994286 13"/>
+                          <rect id="Rectangle-path" fill="#CCCCCC" x="38.2292857" y="0" width="1.42071429" height="13"/>
+                          <polygon id="Shape" fill="#CCCCCC" points="47.5577143 13 45.357 6.422 44.733 4.33271429 44.733 13 43.4088571 13 43.4088571 0 44.6754286 0 46.6811429 6.67642857 47.2642857 8.78428571 47.2642857 0 48.5884286 0 48.5884286 13"/>
+                          <polygon id="Shape" fill="#CCCCCC" points="52.3287143 13 52.3287143 0 56.4571429 0 56.4571429 1.30742857 53.7308571 1.30742857 53.7308571 5.642 55.6975714 5.642 55.6975714 6.91042857 53.7308571 6.91042857 53.7308571 11.6925714 56.4571429 11.6925714 56.4571429 13"/>
+                        </svg>
+                      </span>
+                    </div>
                 </div>
             </Provider>
         );

@@ -106,7 +106,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 100px;
+  top: 150px;
   /* from wc-header total height */
 }
 
@@ -261,9 +261,17 @@ body .wc-app,
   height: 20px;
 }
 
+.wizeline-logo{
+  width: 100px;
+}
+
+.wizeline-span {
+    display: flex;
+}
+
 .wizeline-branded-font {
   font-size: 8px;
-  margin-right: 4px;
+  margin-right: 4px !important;
   color: #b3b3b3;
 }
 
