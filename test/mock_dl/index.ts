@@ -146,7 +146,7 @@ const postMessage = (req: express.Request, res: express.Response) => {
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
     switch(cmd){
-        case 'carousel':
+        case 'animation':
             sendActivity(res, {
                 type:   "message",
                 timestamp: new Date().toUTCString(),
@@ -154,8 +154,15 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                 text: "",
                 attachments: [{ "contentType": "application/vnd.microsoft.card.animation", "content": { "title": "title", "subtitle": "animation", "text": "No buttons, No Image, Autoloop, Autostart, Sharable", "media": [{ "url": "http://i.imgur.com/wJTZIPB.gif", "profile": "animation"} ],"shareable": true, "autoloop": true, "autostart": true } } ],
             });
+            return;
         default:
-            res.send("Message receipt: " + req.body.text);             
+            sendActivity(res,{
+                type: "message",
+                timestamp: new Date().toUTCString(),
+                channelId: "webchat",
+                text: "Message receipt: " + req.body.text
+            });
+            return;
     }
 }
 
