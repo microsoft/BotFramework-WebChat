@@ -1,7 +1,7 @@
-import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
+import { Activity, IBotConnection, User, ConnectionStatus } from 'botframework-directlinejs';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 // Reducers - perform state transformations
 
@@ -273,7 +273,17 @@ export interface ChatState {
 
 import { MiddlewareAPI, applyMiddleware } from 'redux';
 import { Epic } from 'redux-observable';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mapTo';
+import 'rxjs/add/operator/mergeMap';
+
+import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/of';
+
 
 const sendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
