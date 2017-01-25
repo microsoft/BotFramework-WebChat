@@ -1,7 +1,6 @@
 export { App, AppProps } from './App';
 export { Chat, ChatProps, FormatOptions } from './Chat';
-export { DirectLineOptions, DirectLine } from './directLine';
-export { IBotConnection } from './BotConnection';
+export { DirectLine } from 'botframework-directlinejs';
 // below are shims for compatibility with old browsers (IE 10 being the main culprit)
 import 'core-js/modules/es6.string.starts-with';
 import 'core-js/modules/es6.array.find';

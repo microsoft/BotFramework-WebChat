@@ -1,8 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Chat, ChatProps, konsole } from './Chat';
-import { Activity, Message, User, IBotConnection } from './BotConnection';
-import { DirectLine } from './directLine';
 
 export type AppProps = ChatProps;
 

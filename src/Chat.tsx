@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
-import { Activity, Media, IBotConnection, User, MediaType, ConnectionStatus } from './BotConnection';
-import { DirectLine, DirectLineOptions } from './directLine';
+
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+
+import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
