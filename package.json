@@ -21,7 +21,6 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^3.5.4",
     "core-js": "^2.4.1",
     "he": "^1.1.0",
     "marked": "^0.3.6",
@@ -31,7 +30,6 @@
     "redux": "^3.6.0",
     "redux-observable": "^0.13.0",
     "remote": "^0.2.6",
-    "restify": "^4.3.0",
     "rxjs": "^5.0.3",
     "tslib": "^1.5.0"
   },
