@@ -49,12 +49,42 @@ body .wc-app,
 
 /* docking */
 
+.top-buttons {
+  display: flex;
+  min-height: 25px;
+  justify-content: space-around;
+  align-content: center;
+  top: 85px;
+  position: absolute;
+  background-color: #fff;
+  left: 0;
+  right: 0;
+}
+
+.top-buttons a:first-child {
+  border-right: 1px solid #cccccc;
+}
+
+.top-buttons a:last-child {
+  margin-left: 3px;
+}
+
+.top-buttons a {
+  text-decoration: none;
+  color: #0083ff;
+  display: flex;
+  font-size: 16px;
+  width: 50%;
+  justify-content: center;
+}
+
+
 .wc-hidden {
   visibility: hidden;
 }
 
 .wc-add {
-  height: 95px;
+  height: 85px;
   left: 0;
   position: absolute;
   right: 0;
@@ -69,7 +99,7 @@ body .wc-app,
 }
 
 .wc-add img{
-  max-height: 85px;
+  height: 85px;
   width: 100%;
 }
 
@@ -106,7 +136,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 100px;
+  top: 120px;
   /* from wc-header total height */
 }
 

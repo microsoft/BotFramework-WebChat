@@ -105,9 +105,22 @@ export class Chat extends React.Component<ChatProps, {}> {
             <div className="wc-header">
                 <span>{ state.format.strings.title }</span>
             </div>;
+        const linkButtons = (
+          <div className='top-buttons'>
+            <a href="http://www.houstonchronicle.com/" target="_blank" title="Go to Houston Chronicle"> Houston Chronicle</a>
+            <a href="http://www.houstonchronicle.com/entertainment/top-100-restaurants/" target="_blank" title="Go to Top 100 Restaurants"> Top 100 Restaurants </a>
+          </div>
+        );
         let add_url = "http://www.chron.com/";
         let img_src = "https://upload.wikimedia.org/wikipedia/commons/7/70/Houston_Chronicle_Logo_2016.svg";
-        let add = <div className="wc-add"><a href={add_url} target="_blank" title="Click here for more info"><img src={img_src} /></a></div>
+        let add = (
+          <div>
+            <div className="wc-add">
+              <a href={add_url} target="_blank" title="Click here for more info"><img src={img_src} /></a>
+            </div>
+            { linkButtons }
+          </div>
+        );
 
         return (
             <Provider store={ this.store }>
