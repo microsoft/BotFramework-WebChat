@@ -34,6 +34,7 @@
         <script src="../webpacked/botchat.js"></script>
         <script>
             var params = {};
+            var rand = Math.floor(Math.random() * (1000 - 1));
             location
                 .search
                 .substring(1)
@@ -51,8 +52,8 @@
             });
 
             var user = {
-                id: params['userid'] || 'userid',
-                name: params["username"] || 'username'
+                id: params['userid'] || `${new Date().getTime().toString()}${rand}`,
+                name: params["username"] || `chronuser-${new Date().getTime().toString()}${rand}`
                 };
             
             var bot = {
