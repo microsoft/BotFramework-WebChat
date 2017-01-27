@@ -44,8 +44,8 @@ const Vimeo = (props: {
     embedId: string,
     autoPlay?: boolean,
     loop?: boolean
-}) => {
-    return <iframe
+}) =>
+    <iframe
         type="text/html"
         src={ new URI()
             .domain(VIMEO_DOMAIN)
@@ -63,7 +63,6 @@ const Vimeo = (props: {
             .toString()
         }
     />;
-}
 
 const Video = (props: {
     src: string,
