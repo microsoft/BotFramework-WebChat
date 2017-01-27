@@ -107,12 +107,12 @@ export class Chat extends React.Component<ChatProps, {}> {
             </div>;
         const linkButtons = (
           <div className='top-buttons'>
-            <a href="http://www.chron.com/" target="_blank" title="Go to Chron"> Chron </a>
+            <a href="http://www.chron.com/" target="_blank" title="Go to Chron"> Chron</a>
             <a href="http://www.houstonchronicle.com/entertainment/top-100-restaurants/" target="_blank" title="Go to Top 100 Restaurants"> Top 100 Restaurants </a>
           </div>
         );
         let add_url = "http://www.chron.com/";
-        let img_src = "https://upload.wikimedia.org/wikipedia/commons/7/70/Houston_Chronicle_Logo_2016.svg";
+        let img_src = "/static/assets/HereHOUyou.svg";
         let add = (
           <div>
             <div className="wc-add">

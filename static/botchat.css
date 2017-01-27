@@ -92,7 +92,7 @@ body .wc-app,
   top: 0;
   z-index: 1;
   line-height: 1.5;
-  background-color: #fff;
+  background-color: black;
   display: flex;
   align-items: center;
   justify-content: center;
