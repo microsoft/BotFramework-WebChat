@@ -1,9 +1,14 @@
 import * as React from 'react';
+import * as URI from 'urijs';
+
 import { Attachment, Button } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole } from './Chat';
 import { FormatState } from './Store';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
+
+const YOUTUBE_DOMAIN = "youtube.com";
+const YOUTUBE_SHORT_DOMAIN = "youtu.be";
 
 const buttons = (
     buttons: Button[],
@@ -12,6 +17,54 @@ const buttons = (
     <ul className="wc-card-buttons">
         { buttons.map((button, index) => <li key={ index }><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
     </ul>;
+
+const Youtube = (props: {
+    embedId: string,
+    autoPlay?: boolean,
+    loop?: boolean
+}) => {
+    const embedUrlQuery = {
+        "modestbranding": 1,
+        "loop": props.loop ? 1 : 0,
+        "autoplay": props.autoPlay ? 1 : 0
+    }
+
+    const embedUrl = new URI()
+                    .domain(YOUTUBE_DOMAIN)
+                    .subdomain("")
+                    .port("")
+                    .segment(["embed", props.embedId])
+                    .search(embedUrlQuery)
+                    .toString();
+
+    return <iframe type="text/html" src={ embedUrl }></iframe>
+}
+
+const Video = (props: {
+    src: string,
+    poster?: string,
+    autoPlay?:boolean,
+    loop?: boolean,
+    onLoad?: () => void,
+    onClick?: () => void,
+}) => {
+    const src = new URI(props.src);
+    const domain = src.domain();
+
+    switch (domain) {
+        case YOUTUBE_DOMAIN:
+        case YOUTUBE_SHORT_DOMAIN:
+            const youtubeProps = {
+                embedId: domain === YOUTUBE_DOMAIN ? src.search(true).v : src.filename(),
+                ...props
+            }
+
+            return <Youtube {...youtubeProps }/>
+
+        default:
+            return <video controls { ... props } />
+    }
+}
 
 const Media = (props: {
     src: string,
@@ -25,7 +78,7 @@ const Media = (props: {
     const { type, ... mediaProps } = props; // this allows us to keep 'type' out of the final HTML
     switch (type) {
         case 'video':
-            return <video controls {... mediaProps } />;
+            return <Video { ... mediaProps } />
         case 'audio':
             return <audio controls { ... mediaProps } />;
         default:
