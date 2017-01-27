@@ -73,7 +73,7 @@ body .wc-app,
   text-decoration: none;
   color: #0083ff;
   display: flex;
-  font-size: 16px;
+  font-size: 12px;
   width: 50%;
   justify-content: center;
   padding: 4px;
@@ -137,7 +137,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 120px;
+  top: 125px;
   /* from wc-header total height */
 }
 
