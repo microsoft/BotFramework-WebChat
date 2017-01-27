@@ -727,6 +727,10 @@ li .wc-card.hero ul li button{
   display: none;
 }
 
+.wc-upload svg {
+  fill: #0083ff;
+}
+
 .wc-textbox {
   bottom: 0;
   left: 50px;
