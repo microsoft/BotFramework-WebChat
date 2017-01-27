@@ -22,23 +22,22 @@ const Youtube = (props: {
     embedId: string,
     autoPlay?: boolean,
     loop?: boolean
-}) => {
-    const embedUrlQuery = {
-        "modestbranding": 1,
-        "loop": props.loop ? 1 : 0,
-        "autoplay": props.autoPlay ? 1 : 0
-    }
-
-    const embedUrl = new URI()
-                    .domain(YOUTUBE_DOMAIN)
-                    .subdomain("")
-                    .port("")
-                    .segment(["embed", props.embedId])
-                    .search(embedUrlQuery)
-                    .toString();
-
-    return <iframe type="text/html" src={ embedUrl }></iframe>
-}
+}) =>
+    <iframe
+        type="text/html"
+        src={ new URI()
+            .domain(YOUTUBE_DOMAIN)
+            .subdomain("")
+            .port("")
+            .segment(["embed", props.embedId])
+            .search({
+                "modestbranding": 1,
+                "loop": props.loop ? 1 : 0,
+                "autoplay": props.autoPlay ? 1 : 0
+            })
+            .toString()
+        }
+    />;
 
 const Video = (props: {
     src: string,
@@ -54,12 +53,10 @@ const Video = (props: {
     switch (domain) {
         case YOUTUBE_DOMAIN:
         case YOUTUBE_SHORT_DOMAIN:
-            const youtubeProps = {
-                embedId: domain === YOUTUBE_DOMAIN ? src.search(true).v : src.filename(),
-                ...props
-            }
-
-            return <Youtube {...youtubeProps }/>
+            return <Youtube
+                embedId={ domain === YOUTUBE_DOMAIN ? src.search(true).v : src.filename() }
+                { ... props }
+            />;
 
         default:
             return <video controls { ... props } />
@@ -75,20 +72,21 @@ const Media = (props: {
     onLoad?: () => void,
     onClick?: () => void,
 }) => {
-    const { type, ... mediaProps } = props; // this allows us to keep 'type' out of the final HTML
-    switch (type) {
+    switch (props.type) {
         case 'video':
-            return <Video { ... mediaProps } />
+            return <Video { ... props } />
         case 'audio':
-            return <audio controls { ... mediaProps } />;
+            return <audio controls { ... props } />;
         default:
-            return <img { ... mediaProps } />;
+            return <img { ... props } />;
     }
 }
 
-// 'tap' is a deprecated field for Skype channels. For testing legacy bots in Emulator only.
 const attachedImage = (
-    images: { url: string,  tap?: Button }[],
+    images: {
+        url: string,
+        tap?: Button // deprecated field for Skype channels. For testing legacy bots in Emulator only.
+    }[],
     onImageLoad: () => void,
     onClickButton?: (type: string, value: string) => void   // Enables FlexCards in Emulator
  ) => {
