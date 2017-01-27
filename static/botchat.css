@@ -393,6 +393,7 @@ ul.wc-card-quick-reply li {
   letter-spacing: -0.4px;
   color: #4d4d4d;
   text-overflow: ellipsis;
+  overflow: hidden;
   white-space: nowrap;
 }
 
