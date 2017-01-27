@@ -9,6 +9,7 @@ const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
 const YOUTUBE_DOMAIN = "youtube.com";
 const YOUTUBE_SHORT_DOMAIN = "youtu.be";
+const VIMEO_DOMAIN = "vimeo.com";
 
 const buttons = (
     buttons: Button[],
@@ -39,6 +40,31 @@ const Youtube = (props: {
         }
     />;
 
+const Vimeo = (props: {
+    embedId: string,
+    autoPlay?: boolean,
+    loop?: boolean
+}) => {
+    return <iframe
+        type="text/html"
+        src={ new URI()
+            .domain(VIMEO_DOMAIN)
+            .subdomain("player")
+            .port("")
+            .segment(["video", props.embedId])
+            .search({
+                "title": 0,
+                "byline": 0,
+                "portrait": 0,
+                "badge": 0,
+                "autoplay": props.autoPlay ? 1 : 0,
+                "loop": props.loop ? 1 : 0
+            })
+            .toString()
+        }
+    />;
+}
+
 const Video = (props: {
     src: string,
     poster?: string,
@@ -57,6 +83,9 @@ const Video = (props: {
                 embedId={ domain === YOUTUBE_DOMAIN ? src.search(true).v : src.filename() }
                 { ... props }
             />;
+
+        case VIMEO_DOMAIN:
+            return <Vimeo embedId={ src.filename() } { ...props } />
 
         default:
             return <video controls { ... props } />
