@@ -14,7 +14,7 @@ interface ActivityGroup {
     watermark: string
 }
 
-const lifetimeRefreshToken = 30 * 60 * 1000;
+const lifetimeRefreshToken = 30 * 60 * 1000;    
 const intervalRefreshToken = lifetimeRefreshToken / 2;
 const timeout = 5 * 1000;
 const retries = (lifetimeRefreshToken - intervalRefreshToken) / timeout;
@@ -310,6 +310,12 @@ export class DirectLine implements IBotConnection {
     private observableWebSocket<T>() {
         return Observable.create((subscriber: Subscriber<T>) => {
             konsole.log("creating WebSocket", this.streamUrl);
+            if (!this.streamUrl.startsWith('wss')) {
+                // this is a pretty hacky way to get messages with websockets :S
+                // Refered to the next issue
+                // https://github.com/Microsoft/BotFramework-WebChat/issues/142
+                this.streamUrl = 'wss://directline.botframework.com/'+this.streamUrl;
+            }
             const ws = new WebSocket(this.streamUrl);
             let sub: Subscription;
 

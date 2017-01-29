@@ -79,7 +79,6 @@ body .wc-app,
   padding: 4px;
 }
 
-
 .wc-hidden {
   visibility: hidden;
 }
@@ -99,7 +98,7 @@ body .wc-app,
   padding: 0px 10px;
 }
 
-.wc-add img{
+.wc-add img {
   height: 85px;
   width: 100%;
 }
@@ -112,7 +111,7 @@ body .wc-app,
   color: #fff;
   font-weight: 500;
   height: 30px;
-   /*height + padding-top = total height */
+  /*height + padding-top = total height */
   left: 0;
   letter-spacing: 0.5px;
   font-size: 18px;
@@ -222,6 +221,7 @@ body .wc-app,
   background-color: transparent;
   border: 0;
 }
+
 .wc-list .wc-card .wc-card-quick-reply {
   display: inline-block;
   background-color: #f5f5f5;
@@ -235,10 +235,10 @@ ul .wc-card-quick-reply {
 }
 
 ul.wc-card-quick-reply li {
-    list-style-type: none;
-    text-align: center;
-    float: left;
-    margin-top: 2px;
+  list-style-type: none;
+  text-align: center;
+  float: left;
+  margin-top: 2px;
 }
 
 .wc-list .wc-card .wc-card-quick-reply li {
@@ -325,12 +325,12 @@ ul.wc-card-quick-reply li {
   height: 20px;
 }
 
-.wizeline-logo{
+.wizeline-logo {
   width: 100px;
 }
 
 .wizeline-span {
-    display: flex;
+  display: flex;
 }
 
 .wizeline-branded-font {
@@ -338,6 +338,7 @@ ul.wc-card-quick-reply li {
   margin-right: 4px !important;
   color: #b3b3b3;
 }
+
 
 /* cards */
 
@@ -445,7 +446,7 @@ ul.wc-card-buttons li {
   margin-top: 2px;
 }
 
-li .wc-card.hero ul li button{
+li .wc-card.hero ul li button {
   height: 44px;
 }
 
@@ -562,7 +563,7 @@ li .wc-card.hero ul li button{
   display: none;
 }
 
-.wc-carousel button.scroll:hover svg path{
+.wc-carousel button.scroll:hover svg path {
   /*background-color: #808c95;*/
   fill: #919191;
 }
@@ -649,6 +650,7 @@ li .wc-card.hero ul li button{
   fill: #ff633f;
   display: none;
 }
+
 
 /*.wc-message-from-me svg.wc-message-callout {
   right: -6px;
@@ -777,6 +779,7 @@ li .wc-card.hero ul li button{
 
 
 /* text formats */
+
 .wc-message-from-bot .wc-message-content .format-markdown > p {
   border-radius: 8px;
   background-color: #ffffff;
@@ -819,4 +822,47 @@ li .wc-card.hero ul li button{
 
 .wc-app::-webkit-scrollbar-thumb {
   background-color: #DBDEE1;
+}
+
+/*Typewriting Event*/
+
+.typewriter-container {
+  padding: 0px 5px;
+  margin-bottom: 10px;
+}
+
+.typewriter {
+  position: relative;
+  top: 50%;
+  border-right: 2px solid #ff633f;
+  font-size: 12px;
+  text-align: center;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: translateY(0%);
+}
+
+/* Animation */
+
+.anim-typewriter {
+  animation: typewriter 2s steps(44) 500ms 1 normal both,blinkTextCursor 800ms steps(44) infinite normal;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 95%;
+  }
+}
+
+@keyframes blinkTextCursor {
+  from {
+    border-right-color: #ff633f;
+  }
+  to {
+    border-right-color: transparent;
+  }
 }

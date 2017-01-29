@@ -67,6 +67,10 @@ export const ActivityView = (props: {
             );
 
         case 'typing':
-            return <div>TYPING</div>;
+            return (
+                <div className="typewriter-container">
+                    <p className="typewriter anim-typewriter">Typing...</p>
+                </div>
+            );
     }
 }
