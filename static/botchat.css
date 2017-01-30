@@ -188,6 +188,7 @@ body .wc-app,
   animation-iteration-count: 1;
   clear: both;
   overflow: hidden;
+  padding: 0px 20px;
   /*transition: max-height 2s ease-in-out;*/
 }
 
@@ -667,7 +668,6 @@ li .wc-card.hero ul li button {
 
 .wc-message-from-bot {
   float: left;
-  margin-left: 20px;
 }
 
 .wc-message-from-bot .wc-message-content {
