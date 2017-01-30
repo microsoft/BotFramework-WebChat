@@ -114,6 +114,14 @@ In this scenario you will incorporate WebChat's multiple JavaScript files into y
 5. Create an instance of `DirectLine` using your Direct Line Secret or Token
 6. Call the `Chat` React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/index.html). 
 
+#### Using the Backchannel
+NOTE: The provided backchannel sample requires a bot which can send and receive specific event messages. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot. 
+
+Backchannel is a way to send activities of type "event" (which are ignored by the actual webchat) between the page that hosts webchat and your bot web service. The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of activity name "buttonClicked". This highlights the ability for a bot to communicate with a page that embeds the bot through WebChat. In other words, our bot can:
+
+* Send events to a page that hosts an instance of WebChat - demonstrated by the bot sending an activity of type "event" and of name "changeBackground", which changes the background color of the parent page. 
+* Listen for events from the page that hosts an instance of WebChat - demonstrated by the bot responding "I see you clicked that button" when it receives an event named buttonClicked.
+
 ## Misc. notes
 
 ### To see WebChat logging
