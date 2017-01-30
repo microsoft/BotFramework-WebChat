@@ -112,7 +112,7 @@
     }
 
     .wc-message {
-        max-width: 80%;
+        max-width: 90%;
         position: relative;
     }
 
@@ -176,6 +176,10 @@
         font-size: 13px;
         padding: 8px;
         width: 302px;
+    }
+
+    .wc-narrow .wc-card {
+        width: 216px;
     }
 
     .wc-card button {
@@ -386,6 +390,10 @@
         vertical-align: top;
         white-space: normal;
         width: 320px;
+    }
+
+    .wc-narrow .wc-carousel-scroll > ul > li {
+        width: 232px;
     }
 
     .wc-carousel-scroll > ul > li:last-child {
