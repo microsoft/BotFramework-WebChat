@@ -464,6 +464,7 @@ li .wc-card.hero ul li button {
   width: 266px;
   margin-bottom: 11px;
   border-radius: 8px 8px 0 0;
+  background-color: #000;
 }
 
 .wc-card.receipt table {
