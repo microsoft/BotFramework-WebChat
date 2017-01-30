@@ -77,7 +77,7 @@ Feel free to suggest features by filing an [issue](https://github.com/Microsoft/
 This is a quick and dirty method, perfect for testing. It requires embedding your Direct Line Secret in the web page or querystring, and as such should primarily be used for local testing.
 
 0. Build
-1. Start a local web server using `npm run start` and aim your browser at `http://localhost:8000/samples?s={Direct Line Secret}`
+1. Start a local web server using `npm run start` and aim your browser at `http://localhost:8000/samples/standalone?s={Direct Line Secret}`
 
 #### Embedded via IFRAME
 
@@ -85,7 +85,7 @@ In this scenario you will host two web pages, one for WebChat and one for the pa
 
 1. Serve the botchat in its own standalone web page, as described [above](#as-a-standalone-web-page-for-quick-and-easy-testing)
 2. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-3. In a second web page, embed the botchat via `<iframe src="http://{host}:{port}/samples?[s={Direct Line Secret}|t={Direct Line Token}]" width="320" height="500"/>`
+3. In a second web page, embed the botchat via `<iframe src="http://{host}:{port}/samples/standalone?[s={Direct Line Secret}|t={Direct Line Token}]" width="320" height="500"/>`
 4. You will probably want to customize the supplied sample index.html page
 
 (An example of this approach is [botchattest](https://github.com/billba/botchattest))
@@ -100,7 +100,7 @@ In this scenario you will include a JavaScript file which embeds its own copy of
 3. Incorporate [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) into your website deployment 
 4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 5. Create an instance of `BotChat.DirectLine` using your Direct Line Secret or Token
-6. Call `BotChat.App` with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/index.html). 
+6. Call `BotChat.App` with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/standalone/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/standalone/index.html). 
 
 #### Inline in your React website
 
@@ -112,10 +112,10 @@ In this scenario you will incorporate WebChat's multiple JavaScript files into y
 3. For TypeScript users there is a definition file called [static/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.d.ts).
 4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
 5. Create an instance of `DirectLine` using your Direct Line Secret or Token
-6. Call the `Chat` React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/index.html). 
+6. Call the `Chat` React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/standalone/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/standalone/index.html). 
 
 #### Using the Backchannel
-NOTE: The provided backchannel sample requires a bot which can send and receive specific event messages. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot. 
+NOTE: The provided backchannel [sample]((https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/standalone/index.html) requires a bot which can send and receive specific event messages. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot. 
 
 Backchannel is a way to send activities of type "event" (which are ignored by the actual webchat) between the page that hosts webchat and your bot web service. The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of activity name "buttonClicked". This highlights the ability for a bot to communicate with a page that embeds the bot through WebChat. In other words, our bot can:
 
