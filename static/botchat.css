@@ -49,27 +49,64 @@ body .wc-app,
 
 /* docking */
 
+.top-buttons {
+  display: flex;
+  min-height: 25px;
+  justify-content: space-around;
+  align-content: center;
+  top: 75px;
+  position: absolute;
+  background-color: #fff;
+  left: 0;
+  right: 0;
+}
+
+.top-buttons a:first-child {
+  border-right: 1px solid #cccccc;
+  text-align: center;
+}
+
+.top-buttons a:nth-child(2) {
+  border-right: 1px solid #cccccc;
+  text-align: center;
+}
+
+.top-buttons a:last-child {
+  text-align: center;
+}
+
+.top-buttons a {
+  text-decoration: none;
+  color: #0083ff;
+  display: flex;
+  font-size: 12px;
+  width: 50%;
+  justify-content: center;
+  padding: 2px;
+  margin: 5px;
+}
+
 .wc-hidden {
   visibility: hidden;
 }
 
 .wc-add {
-  height: 95px;
+  height: 75px;
   left: 0;
   position: absolute;
   right: 0;
   top: 0;
   z-index: 1;
   line-height: 1.5;
-  background-color: #fff;
+  background-color: black;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0px 10px;
 }
 
-.wc-add img{
-  max-height: 85px;
+.wc-add img {
+  height: 85px;
   width: 100%;
 }
 
@@ -81,7 +118,7 @@ body .wc-app,
   color: #fff;
   font-weight: 500;
   height: 30px;
-   /*height + padding-top = total height */
+  /*height + padding-top = total height */
   left: 0;
   letter-spacing: 0.5px;
   font-size: 18px;
@@ -106,7 +143,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 100px;
+  top: 110px;
   /* from wc-header total height */
 }
 
@@ -151,8 +188,8 @@ body .wc-app,
   animation: animationFrames 2s;
   animation-iteration-count: 1;
   clear: both;
-  margin-bottom: 10px;
   overflow: hidden;
+  padding: 0px 20px;
   /*transition: max-height 2s ease-in-out;*/
 }
 
@@ -184,9 +221,78 @@ body .wc-app,
 
 .wc-message-content {
   border-radius: 2px;
-  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
-  padding: 8px;
+  padding: 3px;
   word-break: break-word;
+}
+
+.wc-list .wc-card {
+  background-color: transparent;
+  border: 0;
+}
+
+.wc-list .wc-card .wc-card-quick-reply {
+  display: inline-block;
+  background-color: #f5f5f5;
+  margin-bottom: 10px;
+}
+
+ul .wc-card-quick-reply {
+  clear: both;
+  display: flex;
+  flex-direction: column;
+}
+
+ul.wc-card-quick-reply li {
+  list-style-type: none;
+  text-align: center;
+  float: left;
+  margin-top: 2px;
+}
+
+.wc-list .wc-card .wc-card-quick-reply li {
+  border: solid 1px #999999;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.wc-list .wc-card .wc-card-quick-reply li > button {
+  color: #4d4d4d !important;
+}
+
+.wc-list .wc-card .wc-card-quick-reply li > button:hover {
+  color: #4d4d4d !important;
+  border-radius: 4px;
+  background-color: #e6e6e6;
+  border: solid 1px #999999;
+}
+
+.wc-list .wc-card .wc-card-buttons {
+  background-color: #f5f5f5;
+  margin-bottom: 10px;
+}
+
+.wc-list .wc-card .wc-card-buttons li {
+  border: solid 1px #999999;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.wc-list .wc-card .wc-card-buttons li > button {
+  color: #4d4d4d !important;
+}
+
+.wc-list .wc-card .wc-card-buttons li > button:hover {
+  color: #4d4d4d !important;
+  border-radius: 4px;
+  background-color: #e6e6e6;
+  border: solid 1px #999999;
+}
+
+.wc-list .wc-card .wc-card-buttons li > button:active {
+  color: #ffffff !important;
+  border-radius: 4px;
+  background-color: #ff633f;
+  border: solid 1px #e63109;
 }
 
 .wc-message-content.clickable {
@@ -216,7 +322,29 @@ body .wc-app,
   clear: both;
   color: #999;
   font-size: 11px;
-  margin-top: 5px;
+}
+
+.wizeline-branded {
+  margin-top: 6px;
+  position: absolute;
+  bottom: 40px;
+  left: 12px;
+  display: flex;
+  height: 20px;
+}
+
+.wizeline-logo {
+  width: 100px;
+}
+
+.wizeline-span {
+  display: flex;
+}
+
+.wizeline-branded-font {
+  font-size: 8px;
+  margin-right: 4px !important;
+  color: #b3b3b3;
 }
 
 
@@ -224,26 +352,26 @@ body .wc-app,
 
 .wc-card {
   background-color: #fff;
-  /*border: 1px solid #d2dde5;*/
+  border: 1px solid #d2dde5;
   font-size: 13px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   /*padding: 8px;*/
 }
 
-.logos {
+.wc-rating {
   display: flex;
+  justify-content: space-around;
 }
 
-.star-image{
-  width: 136px;
-  height: 24px;
-}
-
-.yelp-logo {
-  width: 53px;
+.wc-rating img {
   height: 26px;
-  padding-left: 20px;
+}
+
+.star-image {
+  width: 136px !important;
+  height: 24px !important;
 }
 
 .wc-card button {
@@ -255,15 +383,13 @@ body .wc-app,
 }
 
 .wc-card button:hover {
-  background-color: transparent;
-  border: 1px solid #0084ff;
+  background-color: #f5f5f5;
   color: #0084ff;
 }
 
 .wc-card button:active {
-  background-color: #0084ff;
-  border-color: #0084ff;
-  color: white;
+  background-color: #e6e6e6;
+  color: #0084ff;
 }
 
 .wc-card h1 {
@@ -273,8 +399,11 @@ body .wc-app,
   font-style: normal;
   font-stretch: normal;
   line-height: 1;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.4px;
   color: #4d4d4d;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .wc-card h2 {
@@ -284,7 +413,13 @@ body .wc-app,
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: hidden;
+  height: 30px;
   color: #8e8e8e;
+  -webkit-font-smoothing: antialiased;
+  moz-osx-font-smoothing: grayscale;
 }
 
 .wc-card p {
@@ -303,6 +438,7 @@ body .wc-app,
 
 .wc-card p h2 {
   margin-left: 0;
+  height: 25px;
 }
 
 ul.wc-card-buttons {
@@ -315,13 +451,19 @@ ul.wc-card-buttons li {
   list-style-type: none;
   text-align: center;
   float: left;
-  margin: 2px;
+  margin-top: 2px;
 }
 
-.wc-card.hero img {
+li .wc-card.hero ul li button {
+  height: 44px;
+}
+
+.wc-card.hero > img {
   display: block;
-  max-height: 140px;
+  height: 140px;
+  width: 266px;
   margin-bottom: 11px;
+  border-radius: 8px 8px 0 0;
 }
 
 .wc-card.receipt table {
@@ -416,33 +558,34 @@ ul.wc-card-buttons li {
 }
 
 .wc-carousel button.scroll {
-  background-color: #d2dde5;
-  height: 28px;
+  background-color: transparent;
+  height: 40px;
   overflow: hidden;
   padding: 0;
   position: absolute;
   top: 50%;
-  width: 28px;
+  width: 40px;
 }
 
 .wc-carousel button.scroll:disabled {
   display: none;
 }
 
-.wc-carousel button.scroll:hover {
-  background-color: #808c95;
+.wc-carousel button.scroll:hover svg path {
+  /*background-color: #808c95;*/
+  fill: #919191;
 }
 
 .wc-carousel button.scroll svg {
-  fill: #fff;
+  fill: #919191;
 }
 
 .wc-carousel button.scroll.previous {
-  left: -16px;
+  left: -22px;
 }
 
 .wc-carousel button.scroll.next {
-  right: -16px;
+  right: -22px;
 }
 
 .wc-carousel-scroll-outer {
@@ -453,7 +596,6 @@ ul.wc-card-buttons li {
 .wc-carousel-scroll {
   /* allow horizontal scrolling but hide the scrollbar */
   width: 266px;
-  min-height: 340px;
   overflow-x: scroll;
   overflow-y: hidden;
 }
@@ -487,6 +629,7 @@ ul.wc-card-buttons li {
 .wc-message-from-me {
   float: right;
   margin-right: 6px;
+  margin-bottom: 10px;
 }
 
 .wc-message-from-me.wc-message-from {
@@ -516,6 +659,7 @@ ul.wc-card-buttons li {
   display: none;
 }
 
+
 /*.wc-message-from-me svg.wc-message-callout {
   right: -6px;
 }*/
@@ -525,13 +669,9 @@ ul.wc-card-buttons li {
 
 .wc-message-from-bot {
   float: left;
-  margin-left: 8px;
 }
 
 .wc-message-from-bot .wc-message-content {
-  border-radius: 8px;
-  background-color: #ffffff;
-  border: solid 1px #cccccc;
   color: #4d4d4d;
   font-size: 16px;
   font-weight: normal;
@@ -596,6 +736,10 @@ ul.wc-card-buttons li {
   display: none;
 }
 
+.wc-upload svg {
+  fill: #0083ff;
+}
+
 .wc-textbox {
   bottom: 0;
   left: 50px;
@@ -603,7 +747,7 @@ ul.wc-card-buttons li {
 }
 
 .no-star {
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .wc-send {
@@ -643,8 +787,16 @@ ul.wc-card-buttons li {
 
 /* text formats */
 
-.format-markdown>p {
+.wc-message-from-bot .wc-message-content .format-markdown > p {
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  padding: 9px 8px 7px 8px;
+}
+
+.format-markdown > p {
   margin-bottom: 0px;
+  padding: 9px 8px 7px 8px;
 }
 
 .format-markdown code {
@@ -677,4 +829,47 @@ ul.wc-card-buttons li {
 
 .wc-app::-webkit-scrollbar-thumb {
   background-color: #DBDEE1;
+}
+
+/*Typewriting Event*/
+
+.typewriter-container {
+  padding: 0px 5px;
+  margin-bottom: 10px;
+}
+
+.typewriter {
+  position: relative;
+  top: 50%;
+  border-right: 2px solid #ff633f;
+  font-size: 12px;
+  text-align: center;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: translateY(0%);
+}
+
+/* Animation */
+
+.anim-typewriter {
+  animation: typewriter 2s steps(44) 500ms 1 normal both,blinkTextCursor 800ms steps(44) infinite normal;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 95%;
+  }
+}
+
+@keyframes blinkTextCursor {
+  from {
+    border-right-color: #ff633f;
+  }
+  to {
+    border-right-color: transparent;
+  }
 }

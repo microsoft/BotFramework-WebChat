@@ -34,6 +34,8 @@
         <script src="../webpacked/botchat.js"></script>
         <script>
             var params = {};
+            // rand number to avoid collions between miliseconds gotten from date.
+            var rand = Math.floor(Math.random() * (1000 - 1));
             location
                 .search
                 .substring(1)
@@ -51,13 +53,13 @@
             });
 
             var user = {
-                id: params['userid'] || 'userid',
-                name: params["username"] || 'username'
-                };
+                id: params['userid'] || `${new Date().getTime().toString()}${rand}`,
+                name: params['username'] || `chronuser-${new Date().getTime().toString()}${rand}`
+            };
             
             var bot = {
                 id: params['botid'] || 'botid',
-                name: params["botname"] || 'botname'
+                name: params['botname'] || 'botname'
             };
 
             BotChat.App({
@@ -65,8 +67,7 @@
                 user: user,
                 bot: bot,
 //              allowMessagesFrom: ['http://localhost:8080']
-            }, document.getElementById("BotChatGoesHere"));
-            window.botchatDebug = true;
+            }, document.getElementById('BotChatGoesHere'));
         </script>
     </body>
 </html>

@@ -15,10 +15,32 @@ export const AttachmentView = (props: {
 
     const attachment = props.attachment;
 
-    const buttons = (buttons?: Button[]) => buttons &&
-        <ul className="wc-card-buttons">
+    const buttonType = (button) => {
+      const reply = button.search("true");
+      return reply;
+    }
+
+    const buttons = (buttons?: Button[]) => {
+        const replyPosition = buttonType(buttons[0].value);
+        if (replyPosition != -1) {
+          return (
+            <ul className="wc-card-quick-reply">
+              { buttons.map(
+                  (button, index) =>
+                    <li key={ index }>
+                      <button onClick={ () => props.onClickButton(button.type, button.value) }>{ button.title }</button>
+                    </li>
+                  )
+                }
+            </ul>
+          ) ;
+        }
+        return (
+          <ul className="wc-card-buttons">
             { buttons.map((button, index) => <li key={ index }><button onClick={ () => props.onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
-        </ul>;
+          </ul>
+        ) ;
+      }
 
     const imageWithOnLoad = (url: string, thumbnailUrl?: string, autoPlay?:boolean, loop?: boolean) =>
         <img src={ url } autoPlay = { autoPlay } loop = { loop } poster = { thumbnailUrl } onLoad={ props.onImageLoad } />;
@@ -36,13 +58,17 @@ export const AttachmentView = (props: {
         return url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif';
     }
 
-    const attachImage = (payload?: string[]) =>(
-       payload &&
-        <div className={'logos'}>
-          {payload[0] ? <img className={'star-image'} src={payload[0]} /> : <div className={'no-star'}> </div> }
-          {payload[1] ? <img className={'yelp-logo'} src={payload[1]} />  : <div className={'no-star'}> </div> }
-        </div>
-      );
+    const attachImage = (payload?: string[]) => {
+      if (payload) {
+        const [ rating_image, logo ] = payload;
+        return (
+            <div className={'wc-rating'}>
+              {rating_image ? <img className={'star-image'} src={rating_image} /> : <div className={'no-star'}> </div> }
+              {logo ? <img src={logo} />  : <div className={'no-star'}> </div> }
+              </div>
+        );
+      }
+    };
 
     const isUnsupportedCardContentType = (contentType: string): boolean => {
         let searchPattern = new RegExp('^application/vnd\.microsoft\.card\.', 'i');
@@ -71,7 +97,7 @@ export const AttachmentView = (props: {
                 <div className='wc-card thumbnail'>
                     { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
                     { attachedImage(attachment.content.images) }
-                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
+                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2 alt={subtitle}>{subtitle}</h2>) }
                     { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
                     { buttons(attachment.content.buttons) }
                 </div>

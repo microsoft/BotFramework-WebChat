@@ -314,7 +314,7 @@ const updateSelectedActivity: Epic<HistoryAction> = (action$, store: MiddlewareA
 
 const showTyping: Epic<HistoryAction> = (action$) =>
     action$.ofType('Show_Typing')
-    .delay(3000)
+    .delay(4000)
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
 
 // Now we put it all together into a store with middleware

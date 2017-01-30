@@ -81,8 +81,8 @@ class HistoryContainer extends React.Component<Props, {}> {
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
                 <div className="wc-message-group">
                     <div className="wc-message-group-content">
-                        { this.props.activities.map((activity, index) => 
-                            <WrappedActivity 
+                        { this.props.activities.map((activity, index) =>
+                            <WrappedActivity
                                 key={ 'message' + index }
                                 activity={ activity }
                                 showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
@@ -144,6 +144,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     }
 
     render () {
+
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
@@ -163,16 +164,16 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
-                    sent = this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                    sent = "sent " + this.props.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                timeLine = <span> { sent }</span>;
                 break;
-        } 
+        }
 
         const who = this.props.fromMe ? 'me' : 'bot';
 
         return (
             <div className={ "wc-message-wrapper" + (this.props.onClickActivity ? ' clickable' : '') } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who }>
+                <div className={ `wc-message wc-message-from-${who}` }>
                     <div className={ 'wc-message-content' + (this.props.selected ? ' selected' : '') }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
@@ -187,7 +188,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         />
                     </div>
                 </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                { this.props.fromMe && <div className={ `wc-message-from wc-message-from-${who}` }>{ timeLine }</div> }
             </div>
         );
     }

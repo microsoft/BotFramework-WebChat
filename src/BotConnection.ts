@@ -19,6 +19,7 @@ export interface Button {
     type: "imBack" | "postBack" | "openUrl" | "signin",
     title: string,
     value: string,
+    reply: string,
     image?: string
 }
 
@@ -28,7 +29,7 @@ export interface HeroCard {
         title?: string,
         subtitle?: string,
         text?: string,
-        payload?: string[], 
+        payload?: string[],
         images?: { url: string }[],
         buttons?: Button[]
     }
