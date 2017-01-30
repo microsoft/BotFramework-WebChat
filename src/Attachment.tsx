@@ -21,11 +21,17 @@ export const AttachmentView = (props: {
     }
 
     const buttons = (buttons?: Button[]) => {
-        let replyPosition = buttonType(buttons[0].value);
+        const replyPosition = buttonType(buttons[0].value);
         if (replyPosition != -1) {
           return (
             <ul className="wc-card-quick-reply">
-              { buttons.map((button, index) => <li key={ index }><button onClick={ () => props.onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
+              { buttons.map(
+                  (button, index) =>
+                    <li key={ index }>
+                      <button onClick={ () => props.onClickButton(button.type, button.value) }>{ button.title }</button>
+                    </li>
+                  )
+                }
             </ul>
           ) ;
         }
@@ -54,7 +60,7 @@ export const AttachmentView = (props: {
 
     const attachImage = (payload?: string[]) => {
       if (payload) {
-        const [ rating_image, logo] = payload;
+        const [ rating_image, logo ] = payload;
         return (
             <div className={'wc-rating'}>
               {rating_image ? <img className={'star-image'} src={rating_image} /> : <div className={'no-star'}> </div> }
