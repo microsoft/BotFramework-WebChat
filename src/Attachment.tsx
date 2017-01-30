@@ -298,9 +298,9 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card flex'>
                     { attachedImage(attachment.content.images, props.onImageLoad, props.onClickButton) }
-                    { renderIfNonempty(attachment.content.title, title => <h1>{title}</h1>) }
-                    { renderIfNonempty(attachment.content.subtitle, subtitle => <h2>{subtitle}</h2>) }
-                    { renderIfNonempty(attachment.content.text, text => <p>{text}</p>) }
+                    { title(attachment.content.title) }
+                    { subtitle(attachment.content.subtitle) }
+                    { text(attachment.content.text) }
                     { buttons(attachment.content.buttons, props.onClickButton) }
                 </div>
             );
