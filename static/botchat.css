@@ -63,10 +63,16 @@ body .wc-app,
 
 .top-buttons a:first-child {
   border-right: 1px solid #cccccc;
+  text-align: center;
+}
+
+.top-buttons a:nth-child(2) {
+  border-right: 1px solid #cccccc;
+  text-align: center;
 }
 
 .top-buttons a:last-child {
-  margin-left: 3px;
+  text-align: center;
 }
 
 .top-buttons a {

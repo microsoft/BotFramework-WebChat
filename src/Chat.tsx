@@ -107,8 +107,9 @@ export class Chat extends React.Component<ChatProps, {}> {
             </div>;
         const linkButtons = (
           <div className='top-buttons'>
-            <a href="http://www.chron.com/" target="_blank" title="Go to Chron"> Chron</a>
-            <a href="http://www.houstonchronicle.com/entertainment/top-100-restaurants/" target="_blank" title="Go to Top 100 Restaurants"> Top 100 Restaurants </a>
+            <a href="http://houstonweather.chron.com" target="_blank" title="Go to Weather"> Weather</a>
+            <a href="http://www.houstonchronicle.com/entertainment/top-100-restaurants/" target="_blank" title="Go to Restaurants"> Restaurants </a>
+            <a href="http://www.chron.com/events" target="_blank" title="Go to Events"> Events </a>
           </div>
         );
         let add_url = "http://www.chron.com/";
