@@ -82,7 +82,8 @@ body .wc-app,
   font-size: 12px;
   width: 50%;
   justify-content: center;
-  padding: 4px;
+  padding: 2px;
+  margin: 5px;
 }
 
 .wc-hidden {
@@ -142,7 +143,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 115px;
+  top: 120px;
   /* from wc-header total height */
 }
 
