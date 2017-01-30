@@ -63,8 +63,8 @@ class ShellContainer extends React.Component<Props, {}> {
 
         return (
             <div className={className}>
-                <label className="wc-upload">
-                    <a alt="Click for HELP" id="button-help" onClick={ () => this.postbackHelp() }>
+                <label title="Click for HELP!" className="wc-upload">
+                    <a alt="Click for HELP!" id="button-help" onClick={ () => this.postbackHelp() }>
                         <svg width="30" height="30" id="button-svg">
                           <path d="M22.6666667,2.66666667 L1.33333333,2.66666667 C0.533333333,2.66666667 0,2.13333333 0,1.33333333 C0,0.533333333 0.533333333,0 1.33333333,0 L22.6666667,0 C23.4666667,0 24,0.533333333 24,1.33333333 C24,2.13333333 23.4666667,2.66666667 22.6666667,2.66666667 Z" />
                           <path d="M22.6666667,24 L1.33333333,24 C0.533333333,24 0,23.4666667 0,22.6666667 C0,21.8666667 0.533333333,21.3333333 1.33333333,21.3333333 L22.6666667,21.3333333 C23.4666667,21.3333333 24,21.8666667 24,22.6666667 C24,23.4666667 23.4666667,24 22.6666667,24 Z" />
