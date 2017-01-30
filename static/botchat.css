@@ -54,7 +54,7 @@ body .wc-app,
   min-height: 25px;
   justify-content: space-around;
   align-content: center;
-  top: 85px;
+  top: 75px;
   position: absolute;
   background-color: #fff;
   left: 0;
@@ -91,7 +91,7 @@ body .wc-app,
 }
 
 .wc-add {
-  height: 85px;
+  height: 75px;
   left: 0;
   position: absolute;
   right: 0;
@@ -143,7 +143,7 @@ body .wc-app,
   padding: 10px;
   position: absolute;
   right: 0;
-  top: 120px;
+  top: 110px;
   /* from wc-header total height */
 }
 
