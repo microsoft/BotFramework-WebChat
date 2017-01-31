@@ -78,7 +78,7 @@ class ShellContainer extends React.Component<Props, {}> {
 
 export const Shell = connect(
     (state: ChatState): Partial<Props> => ({
-        inputText: state.history.input,
+        inputText: state.shell.input,
         format: state.format,
         user: state.connection.user,
     })
