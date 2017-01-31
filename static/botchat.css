@@ -399,6 +399,10 @@ ul.wc-card-quick-reply li {
   color: #0084ff;
 }
 
+.wc-card-buttons li:last-child button{
+  border-radius: 0 0 8px 8px;
+}
+
 .wc-card h1 {
   margin-bottom: 5px;
   font-size: 14px;
