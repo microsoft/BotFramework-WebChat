@@ -250,20 +250,30 @@ ul.wc-card-quick-reply li {
 }
 
 .wc-list .wc-card .wc-card-quick-reply li {
-  border: solid 1px #999999;
   border-radius: 4px;
-  margin-left: 4px;
+  margin-right: 8px;
+}
+
+.wc-list .wc-card .wc-card-quick-reply li:last-child {
+  margin-right: 0px;
 }
 
 .wc-list .wc-card .wc-card-quick-reply li > button {
-  color: #4d4d4d !important;
+  color: #4d4d4d;
+  border-radius: 4px;
+  border: solid 1px #999999;
 }
 
 .wc-list .wc-card .wc-card-quick-reply li > button:hover {
-  color: #4d4d4d !important;
-  border-radius: 4px;
+  color: #4d4d4d;
   background-color: #e6e6e6;
   border: solid 1px #999999;
+}
+
+.wc-list .wc-card .wc-card-quick-reply li > button:active {
+  color: #ffffff;
+  background-color: #ff633f;
+  border: solid 1px #e63109;
 }
 
 .wc-list .wc-card .wc-card-buttons {
@@ -272,25 +282,23 @@ ul.wc-card-quick-reply li {
 }
 
 .wc-list .wc-card .wc-card-buttons li {
-  border: solid 1px #999999;
   border-radius: 4px;
-  margin-left: 4px;
 }
 
 .wc-list .wc-card .wc-card-buttons li > button {
-  color: #4d4d4d !important;
+  color: #4d4d4d;
+  border: solid 1px #999999;
+  border-radius: 4px;
 }
 
 .wc-list .wc-card .wc-card-buttons li > button:hover {
-  color: #4d4d4d !important;
-  border-radius: 4px;
+  color: #4d4d4d;
   background-color: #e6e6e6;
   border: solid 1px #999999;
 }
 
 .wc-list .wc-card .wc-card-buttons li > button:active {
-  color: #ffffff !important;
-  border-radius: 4px;
+  color: #ffffff;
   background-color: #ff633f;
   border: solid 1px #e63109;
 }
@@ -832,6 +840,7 @@ li .wc-card.hero ul li button {
   background-color: #DBDEE1;
 }
 
+
 /*Typewriting Event*/
 
 .typewriter-container {
@@ -851,10 +860,11 @@ li .wc-card.hero ul li button {
   transform: translateY(0%);
 }
 
+
 /* Animation */
 
 .anim-typewriter {
-  animation: typewriter 2s steps(44) 500ms 1 normal both,blinkTextCursor 800ms steps(44) infinite normal;
+  animation: typewriter 2s steps(44) 500ms 1 normal both, blinkTextCursor 800ms steps(44) infinite normal;
 }
 
 @keyframes typewriter {
