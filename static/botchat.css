@@ -190,6 +190,7 @@ body .wc-app,
   clear: both;
   overflow: hidden;
   padding: 0px 20px;
+  margin: 1px 0px;
   /*transition: max-height 2s ease-in-out;*/
 }
 
@@ -233,7 +234,6 @@ body .wc-app,
 .wc-list .wc-card .wc-card-quick-reply {
   display: inline-block;
   background-color: #f5f5f5;
-  margin-bottom: 10px;
 }
 
 ul .wc-card-quick-reply {
@@ -278,7 +278,6 @@ ul.wc-card-quick-reply li {
 
 .wc-list .wc-card .wc-card-buttons {
   background-color: #f5f5f5;
-  margin-bottom: 10px;
 }
 
 .wc-list .wc-card .wc-card-buttons li {
@@ -637,20 +636,13 @@ li .wc-card.hero ul li button {
 
 .wc-message-from-me {
   float: right;
-  margin-right: 6px;
-  margin-bottom: 10px;
 }
 
-.wc-message-from-me.wc-message-from {
+.wc-message-from-me .wc-message-from {
   text-align: right;
 }
 
 .wc-message-from-me .wc-message-content {
-  background-color: #ff633f;
-  border-radius: 8px;
-  background-color: #ff633f;
-  border: solid 1px #e63109;
-  color: #fff;
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -668,10 +660,9 @@ li .wc-card.hero ul li button {
   display: none;
 }
 
-
-/*.wc-message-from-me svg.wc-message-callout {
+.wc-message-from-me svg.wc-message-callout {
   right: -6px;
-}*/
+}
 
 
 /* from bot */
@@ -800,7 +791,13 @@ li .wc-card.hero ul li button {
   border-radius: 8px;
   background-color: #ffffff;
   border: solid 1px #cccccc;
-  padding: 9px 8px 7px 8px;
+}
+
+.wc-message-from-me .wc-message-content .format-markdown > p {
+  background-color: #ff633f;
+  color: #fff;
+  border-radius: 8px;
+  border: solid 1px #e63109;
 }
 
 .format-markdown > p {
