@@ -64,7 +64,12 @@ class HistoryContainer extends React.Component<Props, {}> {
                 sendPostBack(this.props.botConnection, value, this.props.user, this.props.format.locale);
                 break;
 
+            case "call":
             case "openUrl":
+            case "playAudio":
+            case "playVideo":
+            case "showImage":
+            case "downloadFile":
             case "signin":
                 window.open(value);
                 break;
@@ -82,8 +87,8 @@ class HistoryContainer extends React.Component<Props, {}> {
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
                 <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
-                    { this.props.activities.map((activity, index) => 
-                        <WrappedActivity 
+                    { this.props.activities.map((activity, index) =>
+                        <WrappedActivity
                             key={ 'message' + index }
                             activity={ activity }
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
@@ -183,7 +188,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                     sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
-        } 
+        }
 
         const who = this.props.fromMe ? 'me' : 'bot';
 
@@ -197,7 +202,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             'wc-message-content',
             this.props.selected ? 'selected' : ''
         ].join(' ');
-        
+
 
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
