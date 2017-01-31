@@ -374,7 +374,7 @@ const showTyping: Epic<ChatActions, ChatState> = (action$) =>
 const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Update_Input')
     .map(_ => store.getState())
-    .filter(state => state.shell.sendTyping == true)
+    .filter(state => state.shell.sendTyping)
     .throttleTime(3000)
     .do(_ => konsole.log("sending typing"))
     .flatMap(state => 
