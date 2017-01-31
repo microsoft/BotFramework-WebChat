@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import { History } from './History';
 import { Shell } from './Shell';
-import { createStore, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
+import { createStore, ShellAction, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
 
 export interface FormatOptions {
@@ -26,6 +26,7 @@ export interface ChatProps {
     directLine?: DirectLineOptions,
     locale?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
+    sendTyping?: boolean,
     formatOptions?: FormatOptions
 }
 
@@ -51,6 +52,9 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         if (props.formatOptions)
             this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
+        
+        if (props.sendTyping)
+            this.store.dispatch<ShellAction>({ type: 'Set_Send_Typing' });        
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -62,7 +66,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                 break;
 
             case "typing":
-                this.store.dispatch<HistoryAction>({ type: 'Show_Typing', activity });
+                if (activity.from.id !== state.connection.user.id)
+                    this.store.dispatch<HistoryAction>({ type: 'Show_Typing', activity });
                 break;
         }
     }

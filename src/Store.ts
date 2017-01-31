@@ -7,6 +7,52 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Reducer } from 'redux';
 
+export interface ShellState {
+    sendTyping: boolean
+    input: string
+}
+
+export type ShellAction = {
+    type: 'Update_Input',
+    input: string
+} | {
+    type: 'Set_Send_Typing'
+} | {
+    type: 'Send_Message',
+    activity: Activity
+}
+
+export const shell: Reducer<ShellState> = (
+    state: ShellState = {
+        input: '',
+        sendTyping: false
+    },
+    action: ShellAction
+) => {
+    switch (action.type) {
+        case 'Update_Input':
+            return {
+                ... state,
+                input: action.input
+            };
+        
+        case 'Send_Message':
+            return {
+                ... state,
+                input: ''
+            };
+        
+        case 'Set_Send_Typing':
+            return {
+                ... state,
+                sendTyping: true
+            };
+            
+        default:
+            return state;
+    }
+}
+
 export interface FormatState {
     locale: string,
     options: FormatOptions,
@@ -98,16 +144,12 @@ export const connection: Reducer<ConnectionState> = (
 
 export interface HistoryState {
     activities: Activity[],
-    input: string,
     clientActivityBase: string,
     clientActivityCounter: number,
     selectedActivity: Activity
 }
 
 export type HistoryAction = {
-    type: 'Update_Input',
-    input: string
-} | {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
@@ -128,7 +170,6 @@ export type HistoryAction = {
 export const history: Reducer<HistoryState> = (
     state: HistoryState = {
         activities: [],
-        input: '',
         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
         clientActivityCounter: 0,
         selectedActivity: null
@@ -137,13 +178,6 @@ export const history: Reducer<HistoryState> = (
 ) => {
     konsole.log("history action", action);
     switch (action.type) {
-
-        case 'Update_Input':
-            return {
-                ... state,
-                input: action.input
-            };
-
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
@@ -190,7 +224,6 @@ export const history: Reducer<HistoryState> = (
                     },
                     ... state.activities.filter(activity => activity.type === "typing"),
                 ],
-                input: '',
                 clientActivityCounter: state.clientActivityCounter + 1
             };
 
@@ -263,7 +296,10 @@ export const history: Reducer<HistoryState> = (
     }
 }
 
+export type ChatActions = ShellAction | FormatAction | ConnectionAction | HistoryAction;
+
 export interface ChatState {
+    shell: ShellState,
     format: FormatState,
     connection: ConnectionState,
     history: HistoryState
@@ -277,15 +313,18 @@ import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/throttleTime';
 
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 
 
-const sendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
+const sendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
     .map(action => {
         const state = store.getState();
@@ -293,7 +332,7 @@ const sendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
         return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
     });
 
-const trySendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
+const trySendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
     .flatMap(action => {
         const state = store.getState();
@@ -309,11 +348,11 @@ const trySendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
     });
 
-const retrySendMessage: Epic<HistoryAction, ChatState> = (action$) =>
+const retrySendMessage: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Send_Message_Retry')
     .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
-const updateSelectedActivity: Epic<HistoryAction, ChatState> = (action$, store) =>
+const updateSelectedActivity: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType(
         'Send_Message_Succeed',
         'Send_Message_Fail',
@@ -327,10 +366,25 @@ const updateSelectedActivity: Epic<HistoryAction, ChatState> = (action$, store) 
         return { type: null } as HistoryAction;
     });
 
-const showTyping: Epic<HistoryAction, ChatState> = (action$) =>
+const showTyping: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Show_Typing')
     .delay(3000)
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
+
+const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Update_Input')
+    .map(_ => store.getState())
+    .filter(state => state.shell.sendTyping)
+    .throttleTime(3000)
+    .do(_ => konsole.log("sending typing"))
+    .flatMap(state => 
+        state.connection.botConnection.postActivity({
+            type: 'typing',
+            from: state.connection.user
+        })
+        .mapTo({ type: null } as ShellAction)
+        .catch(error => Observable.of({ type: null } as ShellAction))
+    );
 
 // Now we put it all together into a store with middleware
 
@@ -340,6 +394,7 @@ import { combineEpics, createEpicMiddleware } from 'redux-observable';
 export const createStore = () =>
     reduxCreateStore(
         combineReducers<ChatState>({
+            shell,
             format,
             connection,
             history
@@ -349,7 +404,8 @@ export const createStore = () =>
             sendMessage,
             trySendMessage,
             retrySendMessage,
-            showTyping
+            showTyping,
+            sendTyping
         )))
     );
 
