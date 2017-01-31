@@ -376,7 +376,7 @@ const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
     .map(_ => store.getState())
     .filter(state => state.shell.sendTyping == true)
     .throttleTime(3000)
-    .do(_ => console.log("sending typing"))
+    .do(_ => konsole.log("sending typing"))
     .flatMap(state => 
         state.connection.botConnection.postActivity({
             type: 'typing',
