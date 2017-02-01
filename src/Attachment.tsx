@@ -13,44 +13,24 @@ const YOUTUBE_WWW_SHORT_DOMAIN = "www.youtu.be";
 const VIMEO_DOMAIN = "vimeo.com";
 const VIMEO_WWW_DOMAIN = "www.vimeo.com";
 
-interface VideoEmbedQuery {
-    loop?: number;
-    autoplay?: number;
-    modestbranding?: number;
-    title?: number;
-    byline?: number;
-    portait?: number;
-    badge?: number;
-    [propName: string]: number;
+interface QueryParams {
+    [propName: string]: string;
 }
 
-export const queryParams = (
-    src: string
-) => {
-    const queryObject = {};
+export const queryParams = (src: string) =>
+    src
+    .substr(1)
+    .split('&')
+    .reduce((previous, current) => {
+        const keyValue = current.split('=');
+        previous[decodeURIComponent(keyValue[0])] = decodeURIComponent(keyValue[1]);
+        return previous;
+    }, {} as QueryParams);
 
-    src.substr(1)
-        .split('&')
-        .forEach(field => {
-            const keyValue = field.split('=');
-            queryObject[decodeURIComponent(keyValue[0])] = decodeURIComponent(keyValue[1]);
-        });
-
-    return queryObject;
-}
-
-const buildUrl = (
-    src: string,
-    query: VideoEmbedQuery,
-) => {
-    return [
-        src,
-        '?',
-        Object.keys(query)
-            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
-            .join('&')
-    ].join('');
-}
+const queryString = (query: QueryParams) =>
+    Object.keys(query)
+    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
+    .join('&');
 
 const buttons = (
     buttons: Button[],
@@ -67,16 +47,11 @@ const Youtube = (props: {
 }) =>
     <iframe
         type="text/html"
-        src={
-            buildUrl(
-                `https://${YOUTUBE_DOMAIN}/embed/${props.embedId}`,
-                {
-                    modestbranding: 1,
-                    loop: props.loop ? 1 : 0,
-                    autoplay: props.autoPlay ? 1 : 0
-                }
-            )
-        }
+        src={ `https://${YOUTUBE_DOMAIN}/embed/${props.embedId}?${queryString({
+            modestbranding: '1',
+            loop: props.loop ? '1' : '0',
+            autoplay: props.autoPlay ? '1' : '0'
+        })}` }
     />;
 
 const Vimeo = (props: {
@@ -86,19 +61,14 @@ const Vimeo = (props: {
 }) =>
     <iframe
         type="text/html"
-        src={
-            buildUrl(
-                `https://player.${VIMEO_DOMAIN}/video/${props.embedId}`,
-                {
-                    title: 0,
-                    byline: 0,
-                    portrait: 0,
-                    badge: 0,
-                    autoplay: props.autoPlay ? 1 : 0,
-                    loop: props.loop ? 1 : 0
-                }
-            )
-        }
+        src={ `https://player.${VIMEO_DOMAIN}/video/${props.embedId}?${queryString({
+            title: '0',
+            byline: '0',
+            portrait: '0',
+            badge: '0',
+            autoplay: props.autoPlay ? '1' : '0',
+            loop: props.loop ? '1' : '0'
+        })}` }
     />;
 
 const Video = (props: {
