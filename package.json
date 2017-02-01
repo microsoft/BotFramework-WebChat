@@ -31,8 +31,7 @@
     "redux": "^3.6.0",
     "redux-observable": "^0.13.0",
     "rxjs": "^5.0.3",
-    "tslib": "^1.5.0",
-    "urijs": "^1.18.4"
+    "tslib": "^1.5.0"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
