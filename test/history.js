@@ -2,7 +2,7 @@
 
 const chai = require('chai');
 const expect = chai.expect;
-const history = require('../built/Store.js').history;
+const { history } = require('../built/Store.js');
 
 chai.use(require('chai-subset'));
 
