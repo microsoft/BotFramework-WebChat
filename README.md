@@ -37,11 +37,8 @@ See more detailed instructions [below](#getting-webchat-up-and-running).
 Not the most formal one you'll ever see, but:
 
 * Unit tests
-* DirectLine 3.0 WebSocket support for retrieving messages 
 * Improved styling
 * Simple UI customization
-* npm package(s)
-* CDN
 
 Feel free to suggest features by filing an [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) (please make sure one doesn't already exist).
 
@@ -95,7 +92,7 @@ In this scenario you will host two web pages, one for WebChat and one for the pa
 In this scenario you will include a JavaScript file which embeds its own copy of React, which will run in a DOM element.  
 
 0. Build
-1. Include `webpacked/botchat.js` and you will get an object called `BotChat`
+1. Include `botchat.js` and you will get an object called `BotChat`
 2. For TypeScript users there is a type definition file called [static/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.d.ts).
 3. Incorporate [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) into your website deployment 
 4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
