@@ -21,7 +21,7 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
-    "botframework-directlinejs": "^0.6.4",
+    "botframework-directlinejs": "^0.7.0",
     "core-js": "^2.4.1",
     "he": "^1.1.0",
     "marked": "^0.3.6",

@@ -32,15 +32,7 @@
         <div id="BotChatGoesHere"></div>
         <script src="../../botchat.js"></script>
         <script>
-            var params = {};
-            location
-                .search
-                .substring(1)
-                .split("&")
-                .forEach(function (pair) {
-                    var p = pair.split("=");
-                    params[p[0]] = decodeURIComponent(p[1]);
-                });
+            var params = BotChat.queryParams(location.search);
 
             var user = {
                 id: params['userid'] || 'userid',
@@ -59,7 +51,7 @@
                     secret: params['s'],
                     token: params['t'],
                     domain: params['domain'],
-                    webSocket: params['webSocket']
+                    webSocket: params['webSocket'] // defaults to true
                 },
                 user: user,
                 bot: bot,

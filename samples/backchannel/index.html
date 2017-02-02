@@ -47,15 +47,7 @@ For ease of testing, several parameters can be set in the query string:
 
 	<script src="../../botchat.js"></script>
 	<script>
-            var params = {};
-            location
-                .search
-                .substring(1)
-                .split("&")
-                .forEach(function (pair) {
-                    var p = pair.split("=");
-                    params[p[0]] = decodeURIComponent(p[1]);
-                });
+            var params = BotChat.queryParams(location.search);
 
             var user = {
                 id: params['userid'] || 'userid',
@@ -67,11 +59,13 @@ For ease of testing, several parameters can be set in the query string:
                 name: params["botname"] || 'botname'
             };
 
+            window['botchatDebug'] = params['debug'];
+
             var botConnection = new BotChat.DirectLine({
                 secret: params['s'],
                 token: params['t'],
                 domain: params['domain'],
-                webSocket: params['webSocket']
+                webSocket: params['webSocket'] // defaults to true
             });
 
             BotChat.App({
