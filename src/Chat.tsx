@@ -54,7 +54,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
         
         if (props.sendTyping)
-            this.store.dispatch<ShellAction>({ type: 'Set_Send_Typing' });        
+            this.store.dispatch<ShellAction>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });        
     }
 
     private handleIncomingActivity(activity: Activity) {

@@ -16,7 +16,8 @@ export type ShellAction = {
     type: 'Update_Input',
     input: string
 } | {
-    type: 'Set_Send_Typing'
+    type: 'Set_Send_Typing',
+    sendTyping: boolean
 } | {
     type: 'Send_Message',
     activity: Activity
@@ -45,7 +46,7 @@ export const shell: Reducer<ShellState> = (
         case 'Set_Send_Typing':
             return {
                 ... state,
-                sendTyping: true
+                sendTyping: action.sendTyping
             };
             
         default:
