@@ -477,7 +477,7 @@
         width: 100%;
     }
 
-    .wc-upload input {
+    #wc-upload-input {
         display: none;
     }
 
