@@ -308,7 +308,7 @@ export interface ChatState {
 
 // Epics - chain actions together with async operations
 
-import { MiddlewareAPI, applyMiddleware } from 'redux';
+import { applyMiddleware } from 'redux';
 import { Epic } from 'redux-observable';
 import { Observable } from 'rxjs/Observable';
 
