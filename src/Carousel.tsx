@@ -96,8 +96,10 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         }
 
         //the width of the li is measured on demand in case CSS has resized it
-        const itemWidth = this.scrollDiv.querySelector('li').offsetWidth;
+        const firstItem = this.scrollDiv.querySelector('.wc-carousel-item') as HTMLElement;
+        if (!firstItem) return;
 
+        const itemWidth = firstItem.offsetWidth;
         const unit = increment * itemWidth;
         const scrollLeft = this.scrollDiv.scrollLeft;
         let dest = scrollLeft + unit;
@@ -197,7 +199,7 @@ class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
     render() {
         return (
             <ul>{this.props.attachments.map((attachment, index) =>
-                <li key={ index }>
+                <li key={ index } className="wc-carousel-item">
                     <AttachmentView
                         attachment={ attachment }
                         format={ this.props.format }
