@@ -3,22 +3,20 @@ import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
 
-interface Props {
+interface CarouselProps {
     format: FormatState,
     measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
-    onClickButton: (type: string, value: string) => void,    
+    onClickButton: (type: string, value: string) => void,
     onImageLoad: ()=> void
 }
 
-interface State {
+interface CarouselState {
     previousButtonEnabled: boolean;
     nextButtonEnabled: boolean;
 }
 
-export class Carousel extends React.Component<Props, State> {
-    private itemWidth: number;
-    private ul: HTMLUListElement
+export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private root: HTMLDivElement;
     private scrollDiv: HTMLDivElement;
     private scrollStartTimer: number;
@@ -29,7 +27,7 @@ export class Carousel extends React.Component<Props, State> {
     private scrollEventListener =() => this.onScroll();
     private scrollAllowInterrupt = true;
 
-    constructor(props: Props) {
+    constructor(props: CarouselProps) {
         super(props);
 
         this.state = {
@@ -58,7 +56,7 @@ export class Carousel extends React.Component<Props, State> {
         const nextEnabled = this.scrollDiv.scrollLeft < max;
 
         //TODO: both buttons may become disabled when the container is wide, and will not become re-enabled unless a resize event calls manageScrollButtons()
-        const newState: State = {
+        const newState: CarouselState = {
             previousButtonEnabled: previousEnabled,
             nextButtonEnabled: nextEnabled
         };
@@ -66,14 +64,7 @@ export class Carousel extends React.Component<Props, State> {
         this.setState(newState);
     }
 
-    private setItemWidth(didMount: boolean = false) {
-        const li = this.ul.firstChild as HTMLLIElement;
-        this.itemWidth = li.offsetWidth;
-    }
-
     private componentDidMount() {
-        this.setItemWidth(true);
-
         this.manageScrollButtons();
 
         this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
@@ -104,7 +95,12 @@ export class Carousel extends React.Component<Props, State> {
             this.clearScrollTimers();
         }
 
-        const unit = increment * this.itemWidth;
+        //the width of the li is measured on demand in case CSS has resized it
+        const firstItem = this.scrollDiv.querySelector('.wc-carousel-item') as HTMLElement;
+        if (!firstItem) return;
+
+        const itemWidth = firstItem.offsetWidth;
+        const unit = increment * itemWidth;
         const scrollLeft = this.scrollDiv.scrollLeft;
         let dest = scrollLeft + unit;
 
@@ -115,7 +111,7 @@ export class Carousel extends React.Component<Props, State> {
         if (scrollLeft == dest) return;
 
         //use proper easing curve when distance is small
-        if (Math.abs(dest - scrollLeft) < this.itemWidth) {
+        if (Math.abs(dest - scrollLeft) < itemWidth) {
             easingClassName = 'wc-animate-scroll-near';
             this.scrollAllowInterrupt = false;
         }
@@ -152,23 +148,17 @@ export class Carousel extends React.Component<Props, State> {
     render() {
         return (
             <div className="wc-carousel" ref={ div => this.root = div }>
-                <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={() => this.scrollBy(-1) }>
+                <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={ () => this.scrollBy(-1) }>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
                     </svg>
                 </button>
                 <div className="wc-carousel-scroll-outer">
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
-                        <ul ref={ ul => this.ul = ul }>{ this.props.attachments.map((attachment, index) =>
-                            <li key={ index }>
-                                <AttachmentView
-                                    attachment={ attachment }
-                                    format={ this.props.format }
-                                    onClickButton={ this.props.onClickButton }
-                                    onImageLoad={ () => this.resize() }
-                                    />
-                            </li>) }
-                        </ul>
+                        <CarouselAttachments
+                            {... this.props}
+                            onImageLoad = { () => this.resize() }
+                        />
                     </div>
                 </div>
                 <button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
@@ -192,8 +182,32 @@ export class Carousel extends React.Component<Props, State> {
             }
         }
 
-        this.setItemWidth();
         this.manageScrollButtons();
         this.props.onImageLoad();
+    }
+}
+
+interface CarouselAttachmentProps {
+    format: FormatState
+    attachments: Attachment[]
+    onClickButton: (type: string, value: string) => void
+    onImageLoad: ()=> void
+}
+
+class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
+
+    render() {
+        return (
+            <ul>{this.props.attachments.map((attachment, index) =>
+                <li key={ index } className="wc-carousel-item">
+                    <AttachmentView
+                        attachment={ attachment }
+                        format={ this.props.format }
+                        onClickButton={ this.props.onClickButton }
+                        onImageLoad={ () => this.props.onImageLoad() }
+                    />
+                </li>
+            )}</ul>
+        );
     }
 }
