@@ -7,7 +7,7 @@ interface CarouselProps {
     format: FormatState,
     measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onImageLoad: ()=> void
 }
 
@@ -190,7 +190,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
 interface CarouselAttachmentProps {
     format: FormatState
     attachments: Attachment[]
-    onClickButton: (type: string, value: string) => void
+    onCardAction: (type: string, value: string) => void
     onImageLoad: ()=> void
 }
 
@@ -203,7 +203,7 @@ class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
                     <AttachmentView
                         attachment={ attachment }
                         format={ this.props.format }
-                        onClickButton={ this.props.onClickButton }
+                        onCardAction={ this.props.onCardAction }
                         onImageLoad={ () => this.props.onImageLoad() }
                     />
                 </li>

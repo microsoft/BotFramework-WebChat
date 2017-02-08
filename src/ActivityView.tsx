@@ -10,7 +10,7 @@ const Attachments = (props: {
     attachmentLayout: AttachmentLayout,
     measureParentHorizontalOverflow?: () => number,
     format: FormatState,
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
     const { attachments, attachmentLayout, ... otherProps } = props;
@@ -37,7 +37,7 @@ interface Props {
     format: FormatState,
     activity: Activity,
     measureParentHorizontalOverflow?: () => number,
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }
 
