@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Attachment, Button } from 'botframework-directlinejs';
+import { Attachment, CardAction } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole } from './Chat';
 import { FormatState } from './Store';
 
@@ -31,14 +31,6 @@ const queryString = (query: QueryParams) =>
     Object.keys(query)
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
     .join('&');
-
-const buttons = (
-    buttons: Button[],
-    onClickButton: (type: string, value: string) => void
-) => buttons &&
-    <ul className="wc-card-buttons">
-        { buttons.map((button, index) => <li key={ index }><button onClick={ () => onClickButton(button.type, button.value) }>{ button.title }</button></li>) }
-    </ul>;
 
 const Youtube = (props: {
     embedId: string,
@@ -77,7 +69,7 @@ const Video = (props: {
     autoPlay?:boolean,
     loop?: boolean,
     onLoad?: () => void,
-    onClick?: () => void,
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }) => {
     const url = document.createElement('a');
     url.href = props.src;
@@ -111,7 +103,7 @@ const Media = (props: {
     autoPlay?:boolean,
     loop?: boolean,
     onLoad?: () => void,
-    onClick?: () => void,
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }) => {
     switch (props.type) {
         case 'video':
@@ -123,21 +115,6 @@ const Media = (props: {
     }
 }
 
-const attachedImage = (
-    images: {
-        url: string,
-        tap?: Button // deprecated field for Skype channels. For testing legacy bots in Emulator only.
-    }[],
-    onImageLoad: () => void,
-    onClickButton?: (type: string, value: string) => void   // Enables FlexCards in Emulator
- ) => {
-    if (!images || images.length === 0)
-        return null;
-    const image = images[0];
-    const tap = onClickButton && image.tap;
-    return <Media src={ image.url } onLoad={ onImageLoad } onClick={ tap && (() => onClickButton(tap.type, tap.value)) } />;
- }
-
 const mediaType = (url: string) =>
     url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'image' : 'video';
 
@@ -148,24 +125,43 @@ const text = (text: string) => renderIfNonempty(text, text => <p>{ text }</p>);
 export const AttachmentView = (props: {
     format: FormatState;
     attachment: Attachment,
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
     if (!props.attachment) return;
 
     const attachment = props.attachment;
 
+    const onCardAction = (cardAction: CardAction) => cardAction &&
+        (e => {
+            props.onCardAction(cardAction.type, cardAction.value);
+            e.stopPropagation();
+        });
+
+    const buttons = (buttons: CardAction[]) => buttons &&
+        <ul className="wc-card-buttons">
+            { buttons.map((button, index) => <li key={ index }><button onClick={ onCardAction(button) }>{ button.title }</button></li>) }
+        </ul>;
+
+    const attachedImage = (
+        images: {
+            url: string,
+            tap?: CardAction // deprecated field for Skype channels. For testing legacy bots in Emulator only.
+        }[]
+    ) => images && images.length > 0 &&
+        <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } />;
+
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
             if (!attachment.content)
                 return null;
             return (
-                <div className='wc-card hero'>
-                    { attachedImage(attachment.content.images, props.onImageLoad) }
+                <div className='wc-card hero' onClick={ onCardAction(attachment.content.tap) }>
+                    { attachedImage(attachment.content.images) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -173,12 +169,12 @@ export const AttachmentView = (props: {
             if (!attachment.content)
                 return null;
             return (
-                <div className='wc-card thumbnail'>
+                <div className='wc-card thumbnail' onClick={ onCardAction(attachment.content.tap) }>
                     { title(attachment.content.title) }
-                    { attachedImage(attachment.content.images, props.onImageLoad) }
+                    { attachedImage(attachment.content.images) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -198,7 +194,7 @@ export const AttachmentView = (props: {
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -219,7 +215,7 @@ export const AttachmentView = (props: {
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -237,7 +233,7 @@ export const AttachmentView = (props: {
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -247,7 +243,7 @@ export const AttachmentView = (props: {
             return (
                 <div className='wc-card signin'>
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -255,7 +251,7 @@ export const AttachmentView = (props: {
             if (!attachment.content)
                 return null;
             return (
-                <div className='wc-card receipt'>
+                <div className='wc-card receipt' onClick={ onCardAction(attachment.content.tap) }>
                     <table>
                         <thead>
                             <tr>
@@ -264,7 +260,7 @@ export const AttachmentView = (props: {
                             { attachment.content.facts && attachment.content.facts.map((fact, i) => <tr key={'fact' + i}><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
                         </thead>
                         <tbody>{ attachment.content.items && attachment.content.items.map((item, i) =>
-                            <tr key={'item' + i}>
+                            <tr key={'item' + i} onClick={ onCardAction(item.tap) }>
                                 <td>
                                     { item.image && <Media src={ item.image.url } onLoad={ props.onImageLoad } /> }
                                     { renderIfNonempty(
@@ -300,7 +296,7 @@ export const AttachmentView = (props: {
                             }
                         </tfoot>
                     </table>
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 
@@ -310,11 +306,11 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <div className='wc-card flex'>
-                    { attachedImage(attachment.content.images, props.onImageLoad, props.onClickButton) }
+                    { attachedImage(attachment.content.images) }
                     { title(attachment.content.title) }
                     { subtitle(attachment.content.subtitle) }
                     { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons, props.onClickButton) }
+                    { buttons(attachment.content.buttons) }
                 </div>
             );
 

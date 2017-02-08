@@ -55,7 +55,7 @@ class HistoryContainer extends React.Component<Props, {}> {
         this.props.dispatch<HistoryAction>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
     }
 
-    private onClickButton(type: string, value: string) {
+    private onCardAction(type: string, value: string) {
         switch (type) {
             case "imBack":
                 sendMessage(this.props.dispatch, value, this.props.user, this.props.format.locale);
@@ -95,7 +95,7 @@ class HistoryContainer extends React.Component<Props, {}> {
                             selected={ activity === this.props.selectedActivity }
                             fromMe={ activity.from.id === this.props.user.id }
                             format={ this.props.format }
-                            onClickButton={ (type, value) => this.onClickButton(type, value) }
+                            onCardAction={ (type, value) => this.onCardAction(type, value) }
                             onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
                             onClickRetry={ e => {
                                 // Since this is a click on an anchor, we need to stop it
@@ -152,7 +152,7 @@ interface WrappedActivityProps {
     selected: boolean,
     fromMe: boolean,
     format: FormatState,
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
     onImageLoad: () => void,
@@ -215,7 +215,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         <ActivityView
                             activity={ this.props.activity }
                             format={ this.props.format }
-                            onClickButton={ this.props.onClickButton }
+                            onCardAction={ this.props.onCardAction }
                             onImageLoad={ this.props.onImageLoad }
                             measureParentHorizontalOverflow={ () => measureOuterWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth }
                         />
