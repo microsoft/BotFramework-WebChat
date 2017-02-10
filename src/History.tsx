@@ -76,6 +76,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private largeWidth() {
+        //any value arbitrarily larger than the chat width
         return this.props.format.chatWidth * 2;
     }
 
@@ -90,9 +91,13 @@ class HistoryContainer extends React.Component<Props, {}> {
         this.forceUpdate();
     }
 
+    private getMaxMessageContentWidth() {
+        if (isNaN(this.props.format.chatWidth) || isNaN(this.maxMessagePadding)) return;
+        return this.props.format.chatWidth - this.maxMessagePadding;
+    }
+
     render() {
 
-        const maxMessageContentWidth = this.scrollMe ? this.scrollMe.offsetWidth / 2 : 0;
         let temp: JSX.Element;
 
         if (this.props.format.chatWidth && this.maxMessagePadding == undefined) {
@@ -126,7 +131,7 @@ class HistoryContainer extends React.Component<Props, {}> {
                             fromMe={ activity.from.id === this.props.user.id }
                             format={ {
                                 ... this.props.format,
-                                maxMessageContentWidth: this.props.format.chatWidth - this.maxMessagePadding
+                                maxMessageContentWidth: this.getMaxMessageContentWidth()
                             } }
                             onCardAction={ (type, value) => this.onCardAction(type, value) }
                             onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
