@@ -8,7 +8,6 @@ import { FormatState } from './Store';
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
-    measureParentHorizontalOverflow?: () => number,
     format: FormatState,
     onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
@@ -36,7 +35,6 @@ const Attachments = (props: {
 interface Props {
     format: FormatState,
     activity: Activity,
-    measureParentHorizontalOverflow?: () => number,
     onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }

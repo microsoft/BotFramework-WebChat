@@ -57,7 +57,8 @@ export const shell: Reducer<ShellState> = (
 export interface FormatState {
     locale: string,
     options: FormatOptions,
-    strings: Strings
+    strings: Strings,
+    maxMessageContentWidth?: number
 }
 
 export type FormatAction = {

@@ -5,25 +5,24 @@ import { FormatState } from './Store';
 
 interface CarouselProps {
     format: FormatState,
-    measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
     onCardAction: (type: string, value: string) => void,
     onImageLoad: ()=> void
 }
 
 interface CarouselState {
+    contentWidth: number;
     previousButtonEnabled: boolean;
     nextButtonEnabled: boolean;
 }
 
-export class Carousel extends React.Component<CarouselProps, CarouselState> {
+export class Carousel extends React.Component<CarouselProps, Partial<CarouselState>> {
     private root: HTMLDivElement;
     private scrollDiv: HTMLDivElement;
     private scrollStartTimer: number;
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private resizeListener = () => this.resize();
     private scrollEventListener =() => this.onScroll();
     private scrollAllowInterrupt = true;
 
@@ -31,6 +30,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         super(props);
 
         this.state = {
+            contentWidth: null,
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
@@ -50,33 +50,51 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         this.scrollAllowInterrupt = true;
     }
 
-    private manageScrollButtons() {
+    private getScrollButtonState(maxScrollLeft: number): Partial<CarouselState> {
         const previousEnabled = this.scrollDiv.scrollLeft > 0;
-        const max = this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
-        const nextEnabled = this.scrollDiv.scrollLeft < max;
+        const nextEnabled = this.scrollDiv.scrollLeft < maxScrollLeft;
 
-        //TODO: both buttons may become disabled when the container is wide, and will not become re-enabled unless a resize event calls manageScrollButtons()
-        const newState: CarouselState = {
+        return {
             previousButtonEnabled: previousEnabled,
             nextButtonEnabled: nextEnabled
         };
+    }
 
+    private manageScrollButtons() {
+        const newState = this.getScrollButtonState(this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
         this.setState(newState);
     }
 
-    private componentDidMount() {
+    componentDidMount() {
         this.manageScrollButtons();
 
         this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
 
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
-
-        window.addEventListener('resize', this.resizeListener);
     }
 
-    private componentWillUnmount() {
+    componentDidUpdate() {
+        //after the attachments have been rendered, we can now measure their actual width
+        if (this.props.format.maxMessageContentWidth && !this.state.contentWidth) {
+
+            this.root.style.width = '';
+            var actualContentWidth = this.root.offsetWidth;
+
+            const newState = this.getScrollButtonState(this.props.format.maxMessageContentWidth);
+            newState.contentWidth = actualContentWidth;
+
+            this.setState(newState);
+        }
+    }
+
+    componentWillReceiveProps(nextProps: CarouselProps) {
+        if (this.props.format.maxMessageContentWidth != nextProps.format.maxMessageContentWidth) {
+            this.setState({ contentWidth: null });
+        }
+    }
+
+    componentWillUnmount() {
         this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
-        window.removeEventListener('resize', this.resizeListener);
     }
 
     private onScroll() {
@@ -146,8 +164,15 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 
     render() {
+
+        const style: React.CSSProperties = {};
+
+        if (this.state.contentWidth && this.state.contentWidth > this.props.format.maxMessageContentWidth) {
+            style.width = this.props.format.maxMessageContentWidth;
+        }
+
         return (
-            <div className="wc-carousel" ref={ div => this.root = div }>
+            <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
                 <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={ () => this.scrollBy(-1) }>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
@@ -157,7 +182,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
                         <CarouselAttachments
                             {... this.props}
-                            onImageLoad = { () => this.resize() }
+                            onImageLoad = { () => this.props.onImageLoad() }
                         />
                     </div>
                 </div>
@@ -168,22 +193,6 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                 </button>
             </div >
         )
-    }
-
-    resize() {
-
-        //remove the style width so that the actual content can be measured 
-        this.root.style.width = '';
-
-        if (this.props.measureParentHorizontalOverflow) {
-            const overflow = this.props.measureParentHorizontalOverflow();
-            if (overflow > 0) {
-                this.root.style.width = (this.root.offsetWidth - overflow) + 'px';
-            }
-        }
-
-        this.manageScrollButtons();
-        this.props.onImageLoad();
     }
 }
 
