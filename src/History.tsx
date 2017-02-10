@@ -18,21 +18,13 @@ interface Props {
 }
 
 class HistoryContainer extends React.Component<Props, {}> {
+    private maxMessagePadding: number;
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
-    private resizeListener = () => this.autoscroll();
 
     constructor(props: Props) {
         super(props);
-    }
-
-    componentDidMount() {
-        window.addEventListener('resize', this.resizeListener);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.resizeListener);
     }
 
     componentWillUpdate() {
@@ -44,7 +36,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private autoscroll() {
-        const vAlignBottomPadding = Math.max(0, measureInnerHeight(this.scrollMe) - this.scrollContent.offsetHeight);
+        const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
         if (this.scrollToBottom)
@@ -83,10 +75,48 @@ class HistoryContainer extends React.Component<Props, {}> {
         this.props.selectedActivitySubject.next({ activity });
     }
 
+    private largeWidth() {
+        return this.props.format.chatWidth * 2;
+    }
+
+    private measureMessage(measurableActivity: WrappedActivity) {
+        if (!measurableActivity) return;
+
+        const max = (measurableActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - (measurePaddedWidth(measurableActivity.messageDiv) - this.largeWidth());
+        this.maxMessagePadding = this.props.format.chatWidth - max;
+        
+        konsole.log('history measureMessage ' + this.maxMessagePadding);
+
+        this.forceUpdate();
+    }
+
     render() {
+
+        const maxMessageContentWidth = this.scrollMe ? this.scrollMe.offsetWidth / 2 : 0;
+        let temp: JSX.Element;
+
+        if (this.props.format.chatWidth && this.maxMessagePadding == undefined) {
+            temp = (
+                <WrappedActivity 
+                    ref = { wa => this.measureMessage(wa) }
+                    activity = { { id: '', type: 'message', from: { id: '' }, attachmentLayout: 'carousel' } }
+                    format = { null }
+                    fromMe = { false }
+                    onCardAction = { null }
+                    onClickActivity = { null }
+                    onClickRetry = { null }
+                    onImageLoad = { null }
+                    selected = { false }
+                    showTimestamp = { false }
+                    children = { <div style={ { width: this.largeWidth() } } >&nbsp;</div> }
+                />
+            );
+        }
+
         return (
-            <div className="wc-message-groups" ref={ div => this.scrollMe = div }>
+            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
+                    { temp }
                     { this.props.activities.map((activity, index) =>
                         <WrappedActivity
                             key={ 'message' + index }
@@ -94,7 +124,10 @@ class HistoryContainer extends React.Component<Props, {}> {
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                             selected={ activity === this.props.selectedActivity }
                             fromMe={ activity.from.id === this.props.user.id }
-                            format={ this.props.format }
+                            format={ {
+                                ... this.props.format,
+                                maxMessageContentWidth: this.props.format.chatWidth - this.maxMessagePadding
+                            } }
                             onCardAction={ (type, value) => this.onCardAction(type, value) }
                             onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
                             onClickRetry={ e => {
@@ -131,16 +164,16 @@ const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) =
     return result;
 }
 
-const measureInnerHeight = (el: HTMLElement): number => {
+const measurePaddedHeight = (el: HTMLElement): number => {
     const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
     const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
     return el.offsetHeight - values[paddingTop] - values[paddingBottom];
 }
 
-const measureOuterWidth = (el: HTMLElement): number => {
-    const marginLeft = 'margin-left', marginRight = 'margin-right';
-    const values = getComputedStyleValues(el, [marginLeft, marginRight]);
-    return el.offsetWidth + values[marginLeft] + values[marginRight];
+const measurePaddedWidth = (el: HTMLElement): number => {
+    const paddingLeft = 'padding-left', paddingRight = 'padding-right';
+    const values = getComputedStyleValues(el, [paddingLeft, paddingRight]);
+    return el.offsetWidth + values[paddingLeft] + values[paddingRight];
 }
 
 const suitableInterval = (current: Activity, next: Activity) =>
@@ -159,7 +192,7 @@ interface WrappedActivityProps {
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
-    private messageDiv: HTMLDivElement;
+    public messageDiv: HTMLDivElement;
 
     constructor(props: WrappedActivityProps) {
         super(props);
@@ -217,8 +250,8 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             format={ this.props.format }
                             onCardAction={ this.props.onCardAction }
                             onImageLoad={ this.props.onImageLoad }
-                            measureParentHorizontalOverflow={ () => measureOuterWidth(this.messageDiv) - (this.messageDiv.offsetParent as HTMLElement).offsetWidth }
                         />
+                        { this.props.children }
                     </div>
                 </div>
                 <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>

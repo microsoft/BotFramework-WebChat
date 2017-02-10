@@ -58,6 +58,8 @@ export interface FormatState {
     locale: string,
     options: FormatOptions,
     strings: Strings,
+    chatHeight?: number,
+    chatWidth?: number,
     maxMessageContentWidth?: number
 }
 
@@ -67,6 +69,10 @@ export type FormatAction = {
 } | {
     type: 'Set_Locale',
     locale: string
+} | {
+    type: 'Set_Size',
+    width: number,
+    height: number
 }
 
 export const format: Reducer<FormatState> = (
@@ -90,6 +96,12 @@ export const format: Reducer<FormatState> = (
                 ... state,
                 locale: action.locale,
                 strings: strings(action.locale),
+            };
+        case 'Set_Size':
+            return {
+                ... state,
+                chatWidth: action.width,
+                chatHeight: action.height
             };
         default:
             return state;

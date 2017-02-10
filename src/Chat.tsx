@@ -27,7 +27,9 @@ export interface ChatProps {
     locale?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
-    formatOptions?: FormatOptions
+    formatOptions?: FormatOptions,
+    height?: number,
+    width?: number
 }
 
 export class Chat extends React.Component<ChatProps, {}> {
@@ -39,6 +41,9 @@ export class Chat extends React.Component<ChatProps, {}> {
     private activitySubscription: Subscription;
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
+
+    private chatviewPanel: HTMLElement;
+    private resizeListener: () => void;
 
     constructor(props: ChatProps) {
         super(props);
@@ -72,6 +77,13 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
+    private isChatFullWindow() {
+        return this.chatviewPanel.offsetWidth == document.body.offsetWidth
+            && this.chatviewPanel.offsetHeight == document.body.offsetHeight
+            && this.chatviewPanel.offsetTop == 0
+            && this.chatviewPanel.offsetLeft == 0;
+    }
+
     componentDidMount() {
         const props = this.props;
 
@@ -79,6 +91,26 @@ export class Chat extends React.Component<ChatProps, {}> {
             ? (this.botConnection = new DirectLine(this.props.directLine))
             : this.props.botConnection
             ;
+
+        this.store.dispatch<FormatAction>({ 
+            type: 'Set_Size', 
+            width: this.props.width || this.chatviewPanel.offsetWidth, 
+            height: this.props.height || this.chatviewPanel.offsetHeight }
+        );
+
+        if (this.isChatFullWindow()) {
+
+            this.resizeListener = () => {
+
+                this.store.dispatch<FormatAction>({ 
+                    type: 'Set_Size', 
+                    width: this.chatviewPanel.offsetWidth, 
+                    height: this.chatviewPanel.offsetHeight }
+                );
+            };
+
+            window.addEventListener('resize', this.resizeListener);
+        }
 
         this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
 
@@ -108,6 +140,8 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.selectedActivitySubscription.unsubscribe();
         if (this.botConnection)
             this.botConnection.end();
+        if (this.resizeListener)
+            window.removeEventListener('resize', this.resizeListener);
     }
 
     render() {
@@ -121,7 +155,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         return (
             <Provider store={ this.store }>
-                <div className={ "wc-chatview-panel" }>
+                <div className={ "wc-chatview-panel" } ref={ div => this.chatviewPanel = div }>
                     { header }
                     <History />
                     <Shell />
