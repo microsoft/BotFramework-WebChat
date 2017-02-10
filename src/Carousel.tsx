@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
+import { konsole } from './Chat';
 
 interface CarouselProps {
     format: FormatState,
@@ -50,9 +51,9 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
         this.scrollAllowInterrupt = true;
     }
 
-    private getScrollButtonState(maxScrollLeft: number): Partial<CarouselState> {
+    private getScrollButtonState(): Partial<CarouselState> {
         const previousEnabled = this.scrollDiv.scrollLeft > 0;
-        const nextEnabled = this.scrollDiv.scrollLeft < maxScrollLeft;
+        const nextEnabled = this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
 
         return {
             previousButtonEnabled: previousEnabled,
@@ -61,7 +62,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 
     private manageScrollButtons() {
-        const newState = this.getScrollButtonState(this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
+        const newState = this.getScrollButtonState();
         this.setState(newState);
     }
 
@@ -74,21 +75,38 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 
     componentDidUpdate() {
-        //after the attachments have been rendered, we can now measure their actual width
-        if (this.props.format.maxMessageContentWidth && !this.state.contentWidth) {
+        
+        konsole.log('carousel componentDidUpdate');
 
-            this.root.style.width = '';
-            var actualContentWidth = this.root.offsetWidth;
+        if (this.props.format.maxMessageContentWidth) {
+        
+            //after the attachments have been rendered, we can now measure their actual width
+            if (!this.state.contentWidth) {
 
-            const newState = this.getScrollButtonState(this.props.format.maxMessageContentWidth);
-            newState.contentWidth = actualContentWidth;
+                this.root.style.width = '';
+                var actualContentWidth = this.root.offsetWidth;
 
-            this.setState(newState);
+                this.setState({ contentWidth: actualContentWidth });
+                
+            } else {
+                //compare scroll state to desired scroll state
+
+                var desiredButtonState = this.getScrollButtonState();
+                if (desiredButtonState.nextButtonEnabled != this.state.nextButtonEnabled
+                    || desiredButtonState.previousButtonEnabled != this.state.previousButtonEnabled) {
+                        this.setState(desiredButtonState);
+                    }
+            }
         }
     }
 
     componentWillReceiveProps(nextProps: CarouselProps) {
+
+        konsole.log('carousel componentWillReceiveProps');
+
         if (this.props.format.maxMessageContentWidth != nextProps.format.maxMessageContentWidth) {
+
+            //this will invalidate the saved measurement, in componentDidUpdate a new measurement will be triggered
             this.setState({ contentWidth: null });
         }
     }
