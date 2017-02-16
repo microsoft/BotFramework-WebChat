@@ -18,7 +18,7 @@ Now decide how you'd like to use WebChat.
 
 Add a WebChat channel to your registered bot, and paste in the supplied `<iframe>` code, which points at a WebChat instance hosted by Microsoft. That was easy, you're done! Please be aware that the version of said WebChat instance may lag behind the latest release.
 
-* Like using IFRAME but want more options, or to run the latest release, or a custom build? Read on.
+* Want more options, or to run the latest release, or a custom build? Read on.
 
 ### Easy: In your non-React website, run WebChat inline
 
@@ -52,7 +52,7 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
 * Go to the next level with [Advanced WebChat](#advanced-webchat)
 * Running WebChat inline may not work for some web pages. Read on for a solution.
 
-### Medium: In any website IFRAME your WebChat instance
+### Easyish: In any website, IFRAME your WebChat instance
 
 You can isolate your instance of WebChat by running it inside an IFRAME. This involves creating two web pages:
 
@@ -65,7 +65,7 @@ Add a DirectLine (**not WebChat**) channel, and generate a Direct Line Secret. M
 
 Add WebChat to your React project via `npm install botframework-webchat`
 
-Include the Chat component in your React app, e.g.:
+Include the `Chat` component in your React app, e.g.:
 
 ```typescript
 Import { Chat } from 'botframework-webchat`; 
@@ -88,7 +88,17 @@ const YourApp = () => {
 
 ### Hard: In your React website, incorporate a custom build of the WebChat component
 
-The simplest approach is to clone (or fork) this repo, [alter it](#customizing-webchat), [build it](#building-webchat), then reference your local build in your project's `package.json` as follows: `'botframework-webchat`: `file:/path/to/your/repo`. Running `npm install` will copy your local repo to `node_modules`, and `import`/`require` references will resolve correctly. Note: using this approach, `npm install` will not automatically copy subsequent updates to your repo.
+The simplest approach is to clone (or fork) this repo, [alter it](#customizing-webchat), [build it](#building-webchat), then reference your local build in your project's `package.json` as follows:
+
+```javascript
+dependencies: [
+    ...
+    `'botframework-webchat`: `file:/path/to/your/repo`
+    ...
+]
+```
+
+Running `npm install` will copy your local repo to `node_modules`, and `import`/`require` references will resolve correctly.
 
 You may also wish to go so far as to publish your repo as its own full-fledged, versioned npm package using `npm version` and `npm publish`, either privately or publicly.
 
@@ -104,9 +114,9 @@ Different projects have different build strategies, yours may vary considerably 
 
 `npm run build`/`watch`/`prepublish` build the following:
 
-* `/built/*.js` files corresponding to the TypeScript sources in `/src/*.js` - `/built/BotChat.js` is the start
-* `/build/*.js.map` sourcemaps
-* `/botchat.js` webpacked file containing all dependencies (React, Redux, RxJS, polyfills, etc.)
+* `/built/*.js` files compiled from the TypeScript sources in `/src/*.js` - `/built/BotChat.js` is the root
+* `/build/*.js.map` sourcemaps for easier debugging
+* `/botchat.js` webpacked UMD file containing all dependencies (React, Redux, RxJS, polyfills, etc.)
 
 The following files are static (not built) but key:
 
@@ -121,7 +131,7 @@ The most obvious place to start is by altering `/botchat.css` to match the look 
 
 ### Strings
 
-You can alter or add localized strings. In `/src/Strings.ts`:
+You can alter or add localized strings in `/src/Strings.ts`:
 
 * Add one or more locales (with associated localized strings) to `localizedStrings`
 * Add logic to map the requested locale to the supported locale in `strings`
