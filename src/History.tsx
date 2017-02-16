@@ -18,7 +18,6 @@ interface Props {
 }
 
 class HistoryContainer extends React.Component<Props, {}> {
-    private maxMessagePadding: number;
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
@@ -75,48 +74,68 @@ class HistoryContainer extends React.Component<Props, {}> {
         this.props.selectedActivitySubject.next({ activity });
     }
 
-    private largeWidth() {
-        return this.props.format.chatWidth * 2;
-    }
-
-    private measureMessage(measurableActivity: WrappedActivity) {
+    private measureMessage(measurableActivity: WrappedActivity, largeWidth: number) {
         if (!measurableActivity) return;
 
-        const max = (measurableActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - (measurePaddedWidth(measurableActivity.messageDiv) - this.largeWidth());
-        this.maxMessagePadding = this.props.format.chatWidth - max;
-        
-        konsole.log('history measureMessage ' + this.maxMessagePadding);
+        //measure the message padding by subtracting the known large width
+        const paddedWidth = measurePaddedWidth(measurableActivity.messageDiv) - largeWidth;
 
-        this.forceUpdate();
+        //subtract the padding from the offsetParent's width to get the width of the content
+        const maxContentWidth = (measurableActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - paddedWidth;
+        
+        //subtract the content width from the chat width to get the margin.
+        //Next time we need to get the content width (in a resize) we only will need to use this margin to get the maximum content width
+        const contentMargin = this.props.format.chatWidth - maxContentWidth;
+        
+        konsole.log('history measureMessage ' + contentMargin);
+
+        this.props.dispatch<FormatAction>({ 
+            type: 'Set_Measurements',
+            contentMargin: contentMargin }
+        );
+    }
+
+    private measurableMessage() {
+
+        //only measure when we don't have the measurement
+        if (this.props.format.maxMessageContentMargin != undefined) return;
+
+        //can't measure unless we have the chat width
+        if (!this.props.format.chatWidth) return;
+
+        //any value arbitrarily larger than the chat width
+        const largeWidth = this.props.format.chatWidth * 2;
+        
+        //by setting the width larger than the chat itself, we are able to find the largest possible message content size
+        const tempStyle: React.CSSProperties = { width: largeWidth };
+
+        //create a fake Activity object with carousel layout
+        const tempActivity: Activity = { id: '', type: 'message', from: { id: '' }, attachmentLayout: 'carousel' };
+
+        return (
+            <WrappedActivity 
+                ref = { x => this.measureMessage(x, largeWidth) }
+                activity = { tempActivity }
+                format = { null }
+                fromMe = { false }
+                onCardAction = { null }
+                onClickActivity = { null }
+                onClickRetry = { null }
+                onImageLoad = { null }
+                selected = { false }
+                showTimestamp = { false }
+                children = { <div style={ tempStyle } >&nbsp;</div> }
+            />
+        );
+        
     }
 
     render() {
 
-        const maxMessageContentWidth = this.scrollMe ? this.scrollMe.offsetWidth / 2 : 0;
-        let temp: JSX.Element;
-
-        if (this.props.format.chatWidth && this.maxMessagePadding == undefined) {
-            temp = (
-                <WrappedActivity 
-                    ref = { wa => this.measureMessage(wa) }
-                    activity = { { id: '', type: 'message', from: { id: '' }, attachmentLayout: 'carousel' } }
-                    format = { null }
-                    fromMe = { false }
-                    onCardAction = { null }
-                    onClickActivity = { null }
-                    onClickRetry = { null }
-                    onImageLoad = { null }
-                    selected = { false }
-                    showTimestamp = { false }
-                    children = { <div style={ { width: this.largeWidth() } } >&nbsp;</div> }
-                />
-            );
-        }
-
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
-                    { temp }
+                    { this.measurableMessage() }
                     { this.props.activities.map((activity, index) =>
                         <WrappedActivity
                             key={ 'message' + index }
@@ -124,10 +143,7 @@ class HistoryContainer extends React.Component<Props, {}> {
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                             selected={ activity === this.props.selectedActivity }
                             fromMe={ activity.from.id === this.props.user.id }
-                            format={ {
-                                ... this.props.format,
-                                maxMessageContentWidth: this.props.format.chatWidth - this.maxMessagePadding
-                            } }
+                            format={ this.props.format }
                             onCardAction={ (type, value) => this.onCardAction(type, value) }
                             onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
                             onClickRetry={ e => {

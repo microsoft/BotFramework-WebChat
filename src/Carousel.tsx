@@ -75,7 +75,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
         
         konsole.log('carousel componentDidUpdate');
 
-        if (this.props.format.maxMessageContentWidth) {
+        if (this.props.format.maxMessageContentMargin) {
         
             //after the attachments have been rendered, we can now measure their actual width
             if (!this.state.contentWidth) {
@@ -101,7 +101,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
 
         konsole.log('carousel componentWillReceiveProps');
 
-        if (this.props.format.maxMessageContentWidth != nextProps.format.maxMessageContentWidth) {
+        if (this.props.format.chatWidth != nextProps.format.chatWidth) {
 
             //this will invalidate the saved measurement, in componentDidUpdate a new measurement will be triggered
             this.setState({ contentWidth: null });
@@ -178,12 +178,18 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
         }, 1);
     }
 
+    private getMaxMessageContentWidth() {
+        if (isNaN(this.props.format.chatWidth) || isNaN(this.props.format.maxMessageContentMargin)) return;
+        return this.props.format.chatWidth - this.props.format.maxMessageContentMargin;
+    }
+
     render() {
 
         const style: React.CSSProperties = {};
+        const maxMessageContentWidth = this.getMaxMessageContentWidth();
 
-        if (this.state.contentWidth && this.state.contentWidth > this.props.format.maxMessageContentWidth) {
-            style.width = this.props.format.maxMessageContentWidth;
+        if (this.state.contentWidth && maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
+            style.width = maxMessageContentWidth;
         }
 
         return (
