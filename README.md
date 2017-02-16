@@ -4,135 +4,233 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
 
 Used by the Bot Framework developer portal, [Emulator](https://github.com/Microsoft/BotFramework-Emulator), WebChat channel, and [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/)
 
-You can easily play with a recent build using [botchattest](https://botchattest.herokuapp.com)
+WebChat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, WebChat is built in [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
 
-## FAQ
+You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com).
 
-### *How is it made?*
+## How to add WebChat to your website
 
-WebChat is a [React](https://facebook.github.io/react/) component built in [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
+If you haven't already, start by [registering your bot](https://dev.botframework.com/bots/new).
 
-### *How can I use it?*
+Now decide how you'd like to use WebChat.
 
-* As an IFRAME in any website using the standard Bot Framework WebChat channel. In this case you don't need this repo or any of the information in it.
-* As a standalone website, primarily for testing purposes
-* As an IFRAME in any website, pointed at an instance hosted by you, customized to your needs
-* Inline in your non-React webapp, customized to your needs    
-* Inline in your React webapp, customized to your needs
+### Easiest: In any website, IFRAME the standard WebChat channel
 
-See more detailed instructions [below](#getting-webchat-up-and-running).
+Add a WebChat channel to your registered bot, and paste in the supplied `<iframe>` code, which points at a WebChat instance hosted by Microsoft. That was easy, you're done! Please be aware that the version of said WebChat instance may lag behind the latest release.
 
-### *How do I customize it?*
+* Want more options, or to run the latest release, or a custom build? Read on.
 
-* Follow the [below instructions](#1-install-and-build) to install and build
-* Customize the visuals by altering the [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) file
-* Or go farther and change the HTML/JSX and/or TypeScript 
+### Easy: In your non-React website, run WebChat inline
 
-### *How do I contribute to it?*
+Add a DirectLine (**not WebChat**) channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
 
-* File [issues](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit [pull requests](https://github.com/Microsoft/BotFramework-WebChat/pulls)!
+Include `botchat.css` and `botchat.js` in your website, e.g.:
 
-### *Do you have a roadmap?*
+```HTML
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://unpkg.com/botframework-webchat/botchat.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="bot"/>
+    <script src="https://unpkg.com/botframework-webchat/botchat.js"/>
+    <script>
+      BotChat.App({
+        directLine: { secret: direct_line_secret },
+        user: { id: 'userid' }
+      }, document.getElementById("bot"));
+    </script>
+  </body>
+</head
+```
 
-Not the most formal one you'll ever see, but:
+* `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
+* You can reference a specific release like this: `https://unpkg.com/botframework-webchat/botchat.js@v0.8.3`. Make sure you version the `botchat.css` and `botchat.js` files together.
+* Don't want to depend on a CDN? Download the files and serve them up from your own website.
+* Want to run a custom build of WebChat? Clone this repo, [alter it](#customizing-webchat), [build it](#building-webchat) and reference your built `botchat.css` and `botchat.js` files.
+* Go to the next level with [Advanced WebChat](#advanced-webchat)
+* Running WebChat inline may not work for some web pages. Read on for a solution.
 
-* Unit tests
-* Improved styling
-* Simple UI customization
+### Easyish: In any website, IFRAME your WebChat instance
 
-Feel free to suggest features by filing an [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) (please make sure one doesn't already exist).
+You can isolate your instance of WebChat by running it inside an IFRAME. This involves creating two web pages:
 
-### How can I help?
+1. One running a WebChat instance, as shown above.
+2. The hosting page, adding `<iframe src="/path/to/your/webchat/instance" height="height" width="width" />`
 
-* Add localized strings (see [below](#to-add-localized-strings))
+### Medium: In your React website, incorporate the WebChat React component
+
+Add a DirectLine (**not WebChat**) channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
+
+Add WebChat to your React project via `npm install botframework-webchat`
+
+Include the `Chat` component in your React app, e.g.:
+
+```typescript
+Import { Chat } from 'botframework-webchat`; 
+
+...
+
+const YourApp = () => {
+    <div>
+        <YourComponent />
+        <Chat directLine={{ secret: direct_line_secret }} user={ 'userid' }/>
+        <YourOtherComponent />
+    </div>
+}
+
+...
+```
+
+* Go to the next level with [Advanced WebChat](#advanced-webchat)
+* Want to run a custom build of WebChat in your React app? Read on.
+
+### Hard: In your React website, incorporate a custom build of the WebChat component
+
+The simplest approach is to clone (or fork) this repo, [alter it](#customizing-webchat), [build it](#building-webchat), then reference your local build in your project's `package.json` as follows:
+
+```javascript
+dependencies: [
+    ...
+    `'botframework-webchat`: `file:/path/to/your/repo`
+    ...
+]
+```
+
+Running `npm install` will copy your local repo to `node_modules`, and `import`/`require` references will resolve correctly.
+
+You may also wish to go so far as to publish your repo as its own full-fledged, versioned npm package using `npm version` and `npm publish`, either privately or publicly.
+
+Different projects have different build strategies, yours may vary considerably from the above.
+
+* Go to the next level with [Advanced WebChat](#advanced-webchat)
+
+## Building WebChat
+
+1. Clone (or fork) this repo
+2. `npm install`
+3. `npm run build` (to build on every change `npm run watch`, to build production `npm run prepublish`)
+
+`npm run build`/`watch`/`prepublish` build the following:
+
+* `/built/*.js` files compiled from the TypeScript sources in `/src/*.js` - `/built/BotChat.js` is the root
+* `/build/*.js.map` sourcemaps for easier debugging
+* `/botchat.js` webpacked UMD file containing all dependencies (React, Redux, RxJS, polyfills, etc.)
+
+The following files are static (not built) but key:
+
+* `/botchat.css`
+* `/botchat.d.ts` (for TypeScript users)
+
+## Customizing WebChat
+
+### Styling
+
+The most obvious place to start is by altering `/botchat.css` to match the look of your site.
+
+### Strings
+
+You can alter or add localized strings in `/src/Strings.ts`:
+
+* Add one or more locales (with associated localized strings) to `localizedStrings`
+* Add logic to map the requested locale to the supported locale in `strings`
+* Please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
+
+### Behaviors
+
+Behavioral customization will require changing the TypeScript files in `/src`. A full description of the architecture of WebChat is beyond the scope of this document, but as a start it's helpful to understand that `Chat` is the top-level React component, and `App` creates a React application consists solely of Chat.
+
+### Contributing
+
+If you feel your change might benefit the community, please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
+
+## Advanced WebChat
+
+### Direct Line and DirectLineJS
+
+WebChat communicates with your bot using a the [Direct Line 3.0](https://docs.botframework.com/en-us/restapi/directline3/) protocol. The implementation of this protocol is called [DirectLineJS](https://github.com/microsoft/botframework-directlinejs) and can be installed and used independently of WebChat if you want to create your own user experience.
+
+#### Direct Line fundamentals
+
+WebChat exchanges *activities* with the bot. The most common activity type is 'message', but there is also 'typing', and 'event'. For more information on how to use 'event' activities, see [The Backchannel](#the-backchannel).
+
+#### Named Direct Line endpoint
+
+If you wish to point to a specific URL for Direct Line (such as a region-specific endpoint), pass it to DirectLine as `domain: direct_line_url`.
+
+#### Secrets versus Tokens
+
+If you don't want to publish your Direct Line Secret (which lets anyone put your bot on their website), exchange that Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/) and pass it to DirectLine as `token: direct_line_token`. If you do choose to pass a Token instead of a Secret, you may need to handle scenarios where WebChat has become disconnected from the bot and needs a fresh token to reconnect. See the DirectLineJS [reconnect](https://github.com/microsoft/botframework-directlinejs#reconnect-to-a-conversation) documentation for a few more details on how to do this.
+
+#### WebSocket
+
+DirectLineJS defaults to WebSocket for receiving messages from the bot. If WebSocket is not available, it will use GET polling. You can force it to use GET polling by passing `webSocket: false` in the options you pass to DirectLine.
+
+Note: the standard WebChat channel does not currently use WebSocket, which is a compelling reason to use one of the above approaches.
+
+### Typing
+
+WebChat currently defaults to *not* sending 'typing' activities to the bot when the user is typing. If your bot would find it useful to receive these, pass `sendTyping: true` in the options to `App`/`Chat`. In the future this feature may be enabled by default, so set `sendTyping: false` if you want to make sure to disable it.
+
+### User identity
+
+You can supply WebChat with the id (and, optionally, a friendly name) of the current user by passing `user: { id: user_id, name: user_name }` to `App`/`Chat`. This object is passed with every activity sent from WebChat to the bot, which means it is not available to the bot *before* any activities are sent. See [The Backchannel](#the-backchannel) to find out how your web page can programatically send non-message activities to the bot.
+
+### The Backchannel
+
+WebChat can either create its own instance of DirectLine (as shown in `/samples/standalone`), or it can share one with the hosting page (as shown in `/samples/backchannel`). In the shared case, WebChat and/or the page can send and/or receive activities. If they are type 'event', WebChat will not display them. This is how the backchannel works.
+
+NOTE: The provided backchannel sample requires a bot which can send and receive specific event activities. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot. 
+
+The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of name "buttonClicked". This highlights the ability for a bot to communicate with the page that embeds WebChat. 
+
+In the sample above, the web page creates a DirectLine object:
+
+```typescript
+var botConnection = new BotChat.DirectLine(...);
+```
+
+It shares this when creating the WebChat instance:
+
+```typescript
+BotChat.App({
+    botConnection: botConnection,
+    user: user
+    ...
+}, document.getElementById("BotChatGoesHere"));
+```
+
+It notifies the bot upon the click of a button on the web page:
+
+```typescript
+const postButtonMessage = () => {
+    botConnection
+        .postActivity({ type: "event", value: "", from: { id: "me" }, name: "buttonClicked" })
+        .subscribe(id => console.log("success"));
+    }
+```
+
+Note the creation of an activity of type 'event' and how it is sent with `postActivity`. Also note that the name and value of the event can be anything defined by the developer. It is simply a contract between the web page and the bot.+
+
+The client JavaScript also listens for a specific event from the bot:
+
+```typescript
+botConnection.activity$
+    .filter(activity => activity.type === "event" && activity.name === "changeBackground")
+    .subscribe(activity => changeBackgroundColor(activity.value))
+```
+
+The bot, in this example, can request the page to change the background color via a specific event type message with the content "changeBackground". The web page can respond to this in any way it wants, including ignoring it. In this case it cooperates by changing the background color as passed in the value field of the activity.
+
+Essentially the backchannel allows client and server to exchange any data needed, from requesting the client's timezone to reading a GPS location or what the user is doing on a web page. The bot can even "guide" the user by automatically filling out parts of a form and so on. The backchannel closes the gap between client JavaScript and bots.
+
+## You can contribute to WebChat!
+
+* Add localized strings (see [above](#strings))
 * Report any unreported [issues](https://github.com/Microsoft/BotFramework-WebChat/issues)
 * Propose new [features](https://github.com/Microsoft/BotFramework-WebChat/issues)
 * Fix an outstanding [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) *(please only commit source code, non-generated files)*
-
-## Getting WebChat up and running
-
-### 1. Install and build
-
-1. Clone this repo
-2. `npm install`
-3. `npm run build` (to build on every change `npm run watch`, to build minified `npm run minify`)
-
-### 2. Obtain security credentials for your bot
-
-1. If you haven't already, [register your bot](https://dev.botframework.com/bots/new).
-2. Add a DirectLine channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
-3. For testing you can use your Direct Line Secret as a security token, but for production you will likely want to exchange that Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-
-### 3. Decide how to run WebChat
-
-#### Using the WebChat channel 
-
-1. Head over to the [Bot Framework developer portal](https://dev.botframework.com/bots) and add the WebChat channel to your bot. You don't need this repo or any of the information on this page.
-
-#### As a standalone web page, for quick and easy testing
-
-This is a quick and dirty method, perfect for testing. It requires embedding your Direct Line Secret in the web page or querystring, and as such should primarily be used for local testing.
-
-0. Build
-1. Start a local web server using `npm run start` and aim your browser at `http://localhost:8000/samples/standalone?s={Direct Line Secret}`
-
-#### Embedded via IFRAME
-
-In this scenario you will host two web pages, one for WebChat and one for the page which embeds it. They could be hosted by the same web server, or two entirely different web servers. 
-
-1. Serve the botchat in its own standalone web page, as described [above](#as-a-standalone-web-page-for-quick-and-easy-testing)
-2. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-3. In a second web page, embed the botchat via `<iframe src="http://{host}:{port}/samples/standalone?[s={Direct Line Secret}|t={Direct Line Token}]" width="320" height="500"/>`
-4. You will probably want to customize the supplied sample index.html page
-
-(An example of this approach is [botchattest](https://github.com/billba/botchattest))
-
-#### Inline in your non-React website
-
-In this scenario you will include a JavaScript file which embeds its own copy of React, which will run in a DOM element.  
-
-0. Build
-1. Include `botchat.js` and you will get an object called `BotChat`
-2. For TypeScript users there is a type definition file called [static/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.d.ts).
-3. Incorporate [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) into your website deployment 
-4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-5. Create an instance of `BotChat.DirectLine` using your Direct Line Secret or Token
-6. Call `BotChat.App` with the DOM element where you want your chat instance, your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/standalone/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/standalone/index.html). 
-
-#### Inline in your React website
-
-In this scenario you will incorporate WebChat's multiple JavaScript files into your React webapp. 
-
-0. Build
-1. Incorporate the files in the [/built](https://github.com/Microsoft/BotFramework-WebChat/blob/master/built) folder into your build process
-2. Incorporate [static/botchat.css](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.css) into your website deployment
-3. For TypeScript users there is a definition file called [static/botchat.d.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/static/botchat.d.ts).
-4. Optionally, on your web server, exchange the Direct Line Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/).
-5. Create an instance of `DirectLine` using your Direct Line Secret or Token
-6. Call the `Chat` React component with your DirectLine instance, user and bot identities, and other properties as demonstrated in [samples/standalone/index.html](https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/standalone/index.html). 
-
-#### Using the Backchannel
-NOTE: The provided backchannel [sample]((https://github.com/Microsoft/BotFramework-WebChat/blob/master/samples/standalone/index.html) requires a bot which can send and receive specific event messages. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot. 
-
-Backchannel is a way to send activities of type "event" (which are ignored by the actual webchat) between the page that hosts webchat and your bot web service. The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of activity name "buttonClicked". This highlights the ability for a bot to communicate with a page that embeds the bot through WebChat. In other words, our bot can:
-
-* Send events to a page that hosts an instance of WebChat - demonstrated by the bot sending an activity of type "event" and of name "changeBackground", which changes the background color of the parent page. 
-* Listen for events from the page that hosts an instance of WebChat - demonstrated by the bot responding "I see you clicked that button" when it receives an event named buttonClicked.
-
-## Misc. notes
-
-### To see WebChat logging
-
-* When IFRAMEd, set `window.frames["{iframe_id}"].botchatDebug = true` from the browser console
-* Otherwise set `window.botchatDebug = true` or `var botchatDebug = true` from the browser console       
-
-### To add localized strings
-
-In [src/Strings.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/src/Strings.ts) :
-* Add one or more locales (with associated localized strings) to `localizedStrings`
-* Add logic to map the requested locale to the support locale in `strings`
-* If you just adding a new locale for an existing set of strings, just update `strings` to return the existing locale's strings  
-* ... and please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls)! 
 
 ## Copyright & License
 
