@@ -173,7 +173,7 @@ WebChat can either create its own instance of DirectLine (as shown in `/samples/
 
 NOTE: The provided backchannel sample requires a bot which can send and receive specific event activities. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot. 
 
-The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of activity name "buttonClicked". This highlights the ability for a bot to communicate with a page that embeds the bot through WebChat. 
+The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of name "buttonClicked". This highlights the ability for a bot to communicate with the page that embeds WebChat. 
 
 In the sample above, the web page creates a DirectLine object:
 
