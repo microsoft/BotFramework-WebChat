@@ -41,11 +41,23 @@ interface Props {
 
 export class ActivityView extends React.Component<Props, {}> {
     constructor(props: Props) {
-        super(props)
+        super(props);
     }
 
     shouldComponentUpdate(nextProps: Props) {
-        return this.props.activity !== nextProps.activity || this.props.format !== nextProps.format;
+        // most common case
+        if (this.props.activity == nextProps.activity && this.props.format == nextProps.format)
+            {
+            console.log("scu false");
+            return false;
+            }
+        // if we're resizing, the only activities that might change are carousels
+        var update = /*return */ this.props.activity.type == 'message'
+                && this.props.activity.attachmentLayout == 'carousel'
+                && (this.props.format.chatHeight != nextProps.format.chatHeight
+                    || this.props.format.chatWidth != nextProps.format.chatWidth);
+        console.log("scu", update, nextProps);
+        return update;
     }
 
     render() {
