@@ -4,7 +4,7 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
 
 Used by the Bot Framework developer portal, [Emulator](https://github.com/Microsoft/BotFramework-Emulator), WebChat channel, and [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/)
 
-WebChat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, WebChat is built in [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
+WebChat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, WebChat is built with [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
 
 You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com).
 
@@ -16,7 +16,7 @@ Now decide how you'd like to use WebChat.
 
 ### Easiest: In any website, IFRAME the standard WebChat channel
 
-Add a WebChat channel to your registered bot, and paste in the supplied `<iframe>` code, which points at a WebChat instance hosted by Microsoft. That was easy, you're done! Please be aware that the version of said WebChat instance may lag behind the latest release.
+Add a WebChat channel to your registered bot, and paste in the supplied `<iframe>` code, which points at a WebChat instance hosted by Microsoft. That was easy, you're done! Please be aware that the version of its WebChat instance may lag behind the latest release.
 
 * Want more options, or to run the latest release, or a custom build? Read on.
 
@@ -48,7 +48,7 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
 * You can reference a specific release like this: `https://unpkg.com/botframework-webchat/botchat.js@v0.8.3`. Make sure you version the `botchat.css` and `botchat.js` files together.
 * Don't want to depend on a CDN? Download the files and serve them up from your own website.
-* Want to run a custom build of WebChat? Clone this repo, [alter it](#customizing-webchat), [build it](#building-webchat) and reference your built `botchat.css` and `botchat.js` files.
+* Want to run a custom build of WebChat? Clone this repo, [alter it](#customizing-webchat), [build it](#building-webchat), and reference your built `botchat.css` and `botchat.js` files.
 * Go to the next level with [Advanced WebChat](#advanced-webchat)
 * Running WebChat inline may not work for some web pages. Read on for a solution.
 
@@ -56,7 +56,7 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
 
 You can isolate your instance of WebChat by running it inside an IFRAME. This involves creating two web pages:
 
-1. One running a WebChat instance, as shown above.
+1. Your WebChat instance, as shown above.
 2. The hosting page, adding `<iframe src="/path/to/your/webchat/instance" height="height" width="width" />`
 
 ### Medium: In your React website, incorporate the WebChat React component
@@ -68,7 +68,7 @@ Add WebChat to your React project via `npm install botframework-webchat`
 Include the `Chat` component in your React app, e.g.:
 
 ```typescript
-Import { Chat } from 'botframework-webchat`; 
+Import { Chat } from 'botframework-webchat';
 
 ...
 
@@ -91,18 +91,18 @@ const YourApp = () => {
 The simplest approach is to clone (or fork) this repo, [alter it](#customizing-webchat), [build it](#building-webchat), then reference your local build in your project's `package.json` as follows:
 
 ```javascript
-dependencies: [
+dependencies: {
     ...
-    `'botframework-webchat`: `file:/path/to/your/repo`
+    'botframework-webchat': 'file:/path/to/your/repo'
     ...
-]
+}
 ```
 
-Running `npm install` will copy your local repo to `node_modules`, and `import`/`require` references will resolve correctly.
+Running `npm install` will copy your local repo to `node_modules`, and `import`/`require` references to `'botframework-webchat'` will resolve correctly.
 
 You may also wish to go so far as to publish your repo as its own full-fledged, versioned npm package using `npm version` and `npm publish`, either privately or publicly.
 
-Different projects have different build strategies, yours may vary considerably from the above.
+Different projects have different build strategies, yours may vary considerably from the above. If you come up with a different integration approach that you feel would have broad application, please consider filing a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) for this README.
 
 * Go to the next level with [Advanced WebChat](#advanced-webchat)
 
@@ -139,17 +139,25 @@ You can alter or add localized strings in `/src/Strings.ts`:
 
 ### Behaviors
 
-Behavioral customization will require changing the TypeScript files in `/src`. A full description of the architecture of WebChat is beyond the scope of this document, but as a start it's helpful to understand that `Chat` is the top-level React component, and `App` creates a React application consists solely of Chat.
+Behavioral customization will require changing the TypeScript files in `/src`. A full description of the architecture of WebChat is beyond the scope of this document, but here are a few starters:
+
+### Architecture
+
+* `Chat` is the top-level React component
+* `App` creates a React application consists solely of `Chat`
+* `Chat` largely follows the Redux architecture layed out in [this video series](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
+* To handle async side effects of Redux actions, `Chat` uses Epics from [redux-observable](https://redux-observable.js.org) - here's a [video introduction](https://www.youtube.com/watch?v=sF5-V-Szo0c)
+* Underlying `redux-observable` (and also [DirectLineJS](https://github.com/microsoft/botframework-directlinejs)) is the `RxJS` library, which implements the Observable pattern for wrangling async. For better or for worse, a minimal grasp of `RxJS` is key to understanding WebChat's plumbing.
 
 ### Contributing
 
-If you feel your change might benefit the community, please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
+If you feel your change might benefit the community, please submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
 
 ## Advanced WebChat
 
 ### Direct Line and DirectLineJS
 
-WebChat communicates with your bot using a the [Direct Line 3.0](https://docs.botframework.com/en-us/restapi/directline3/) protocol. The implementation of this protocol is called [DirectLineJS](https://github.com/microsoft/botframework-directlinejs) and can be installed and used independently of WebChat if you want to create your own user experience.
+WebChat communicates with your bot using the [Direct Line 3.0](https://docs.botframework.com/en-us/restapi/directline3/) protocol. WebChat's implementation of this protocol is called [DirectLineJS](https://github.com/microsoft/botframework-directlinejs) and can be installed and used independently of WebChat if you want to create your own user experience.
 
 #### Direct Line fundamentals
 
@@ -176,6 +184,10 @@ WebChat currently defaults to *not* sending 'typing' activities to the bot when 
 ### User identity
 
 You can supply WebChat with the id (and, optionally, a friendly name) of the current user by passing `user: { id: user_id, name: user_name }` to `App`/`Chat`. This object is passed with every activity sent from WebChat to the bot, which means it is not available to the bot *before* any activities are sent. See [The Backchannel](#the-backchannel) to find out how your web page can programatically send non-message activities to the bot.
+
+### Replacing DirectLineJS
+
+You can give WebChat any object that matches the signature of DirectLineJS by passing `directLine: your_directline_replacement` to `App`/`Chat`.
 
 ### The Backchannel
 
@@ -211,7 +223,7 @@ const postButtonMessage = () => {
     }
 ```
 
-Note the creation of an activity of type 'event' and how it is sent with `postActivity`. Also note that the name and value of the event can be anything defined by the developer. It is simply a contract between the web page and the bot.+
+Note the creation of an activity of type 'event' and how it is sent with `postActivity`. Also note that the name and value of the event can be anything defined by the developer. It is simply a contract between the web page and the bot.
 
 The client JavaScript also listens for a specific event from the bot:
 
@@ -221,7 +233,7 @@ botConnection.activity$
     .subscribe(activity => changeBackgroundColor(activity.value))
 ```
 
-The bot, in this example, can request the page to change the background color via a specific event type message with the content "changeBackground". The web page can respond to this in any way it wants, including ignoring it. In this case it cooperates by changing the background color as passed in the value field of the activity.
+The bot, in this example, can request the page to change the background color via a specific event with `name: 'changeBackground'`. The web page can respond to this in any way it wants, including ignoring it. In this case it cooperates by changing the background color as passed in the `value` field of the event.
 
 Essentially the backchannel allows client and server to exchange any data needed, from requesting the client's timezone to reading a GPS location or what the user is doing on a web page. The bot can even "guide" the user by automatically filling out parts of a form and so on. The backchannel closes the gap between client JavaScript and bots.
 
