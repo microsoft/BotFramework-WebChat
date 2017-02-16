@@ -24,7 +24,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private scrollEventListener =() => this.onScroll();
+    private scrollEventListener = () => this.onScroll();
     private scrollAllowInterrupt = true;
 
     constructor(props: CarouselProps) {
@@ -52,12 +52,9 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 
     private getScrollButtonState(): Partial<CarouselState> {
-        const previousEnabled = this.scrollDiv.scrollLeft > 0;
-        const nextEnabled = this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
-
         return {
-            previousButtonEnabled: previousEnabled,
-            nextButtonEnabled: nextEnabled
+            previousButtonEnabled: this.scrollDiv.scrollLeft > 0,
+            nextButtonEnabled: this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
         };
     }
 
