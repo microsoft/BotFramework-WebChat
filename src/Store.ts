@@ -299,6 +299,8 @@ export const history: Reducer<HistoryState> = (
 
 export type ChatActions = ShellAction | FormatAction | ConnectionAction | HistoryAction;
 
+const nullAction = { type: null } as ChatActions;
+
 export interface ChatState {
     shell: ShellState,
     format: FormatState,
@@ -317,7 +319,6 @@ import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/throttleTime';
 
@@ -364,7 +365,7 @@ const updateSelectedActivity: Epic<ChatActions, ChatState> = (action$, store) =>
         const state = store.getState();
         if (state.connection.selectedActivity)
             state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
-        return { type: null } as HistoryAction;
+        return nullAction;
     });
 
 const showTyping: Epic<ChatActions, ChatState> = (action$) =>
@@ -383,8 +384,8 @@ const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
             type: 'typing',
             from: state.connection.user
         })
-        .mapTo({ type: null } as ShellAction)
-        .catch(error => Observable.of({ type: null } as ShellAction))
+        .map(_ => nullAction)
+        .catch(error => Observable.of(nullAction))
     );
 
 // Now we put it all together into a store with middleware
