@@ -42,7 +42,7 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
       }, document.getElementById("bot"));
     </script>
   </body>
-</head
+</html>
 ```
 
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
