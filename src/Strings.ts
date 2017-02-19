@@ -73,7 +73,7 @@ const localizedStrings: LocalizedStrings = {
         title: "Tērzēšana",
         send: "Sūtīt",
         unknownFile: "[Nezināms tips '%1']",
-        unknownCard: "[Nezināms kartīte '%1']",
+        unknownCard: "[Nezināma kartīte '%1']",
         receiptTax: "Nodoklis",
         receiptTotal: "Kopsumma",
         messageRetry: "Mēģināt vēlreiz",
