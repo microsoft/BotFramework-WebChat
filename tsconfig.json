@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "declaration": true,
         "importHelpers": true,
         "jsx": "react",
         "lib": [
