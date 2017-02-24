@@ -3,7 +3,7 @@ import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
 
-interface CarouselProps {
+export interface CarouselProps {
     format: FormatState,
     measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
@@ -11,7 +11,7 @@ interface CarouselProps {
     onImageLoad: ()=> void
 }
 
-interface CarouselState {
+export interface CarouselState {
     previousButtonEnabled: boolean;
     nextButtonEnabled: boolean;
 }
@@ -187,7 +187,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 }
 
-interface CarouselAttachmentProps {
+export interface CarouselAttachmentProps {
     format: FormatState
     attachments: Attachment[]
     onCardAction: (type: string, value: string) => void
