@@ -34,7 +34,7 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
   </head>
   <body>
     <div id="bot"/>
-    <script src="https://unpkg.com/botframework-webchat/botchat.js"/>
+    <script src="https://unpkg.com/botframework-webchat/botchat.js"></script>
     <script>
       BotChat.App({
         directLine: { secret: direct_line_secret },
