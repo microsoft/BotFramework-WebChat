@@ -59,13 +59,13 @@ For ease of testing, several parameters can be set in the query string:
                 name: params["botname"] || 'botname'
             };
 
-            window['botchatDebug'] = params['debug'];
+            window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
             var botConnection = new BotChat.DirectLine({
                 secret: params['s'],
                 token: params['t'],
                 domain: params['domain'],
-                webSocket: params['webSocket'] // defaults to true
+                webSocket: params['webSocket'] && params['webSocket'] === "true" // defaults to true
             });
 
             BotChat.App({
