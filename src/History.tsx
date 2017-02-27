@@ -195,7 +195,7 @@ const measurePaddedWidth = (el: HTMLElement): number => {
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
-interface WrappedActivityProps {
+export interface WrappedActivityProps {
     activity: Activity,
     showTimestamp: boolean,
     selected: boolean,

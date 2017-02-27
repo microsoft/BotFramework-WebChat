@@ -32,19 +32,19 @@ const Attachments = (props: {
         </div>
 }
 
-interface Props {
+export interface ActivityViewProps {
     format: FormatState,
     activity: Activity,
     onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }
 
-export class ActivityView extends React.Component<Props, {}> {
-    constructor(props: Props) {
+export class ActivityView extends React.Component<ActivityViewProps, {}> {
+    constructor(props: ActivityViewProps) {
         super(props)
     }
 
-    shouldComponentUpdate(nextProps: Props) {
+    shouldComponentUpdate(nextProps: ActivityViewProps) {
         return this.props.activity !== nextProps.activity || this.props.format !== nextProps.format;
     }
 

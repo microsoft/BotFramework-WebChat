@@ -4,14 +4,14 @@ import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
 import { konsole } from './Chat';
 
-interface CarouselProps {
+export interface CarouselProps {
     format: FormatState,
     attachments: Attachment[],
     onCardAction: (type: string, value: string) => void,
     onImageLoad: ()=> void
 }
 
-interface CarouselState {
+export interface CarouselState {
     contentWidth: number;
     previousButtonEnabled: boolean;
     nextButtonEnabled: boolean;
@@ -24,6 +24,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
+    private resizeListener = () => this.resize();
     private scrollEventListener =() => this.onScroll();
     private scrollAllowInterrupt = true;
 
@@ -220,7 +221,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 }
 
-interface CarouselAttachmentProps {
+export interface CarouselAttachmentProps {
     format: FormatState
     attachments: Attachment[]
     onCardAction: (type: string, value: string) => void
