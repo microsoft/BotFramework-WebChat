@@ -51,7 +51,7 @@
                     secret: params['s'],
                     token: params['t'],
                     domain: params['domain'],
-                    webSocket: params['webSocket'] // defaults to true
+                    webSocket: params['webSocket'] && params['webSocket'] === "true" // defaults to true
                 },
                 user: user,
                 bot: bot,
