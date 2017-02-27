@@ -59,7 +59,7 @@ For ease of testing, several parameters can be set in the query string:
                 name: params["botname"] || 'botname'
             };
 
-            window['botchatDebug'] = params['debug'];
+            window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
             var botConnection = new BotChat.DirectLine({
                 secret: params['s'],

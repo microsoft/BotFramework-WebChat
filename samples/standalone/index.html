@@ -44,7 +44,7 @@
                 name: params["botname"] || 'botname'
             };
             
-            window['botchatDebug'] = params['debug'];
+            window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
             BotChat.App({
                 directLine: {
