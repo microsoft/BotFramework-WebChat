@@ -28,8 +28,7 @@ export interface ChatProps {
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
-    height?: number,
-    width?: number
+    resize?: 'none' | 'window' | 'detect'
 }
 
 export class Chat extends React.Component<ChatProps, {}> {
@@ -43,6 +42,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private selectedActivitySubscription: Subscription;
 
     private chatviewPanel: HTMLElement;
+    private windowResizeListener: (ev: UIEvent) => any;
 
     constructor(props: ChatProps) {
         super(props);
@@ -76,6 +76,14 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
+    private setSize() {
+        this.store.dispatch<FormatAction>({
+            type: 'Set_Size',
+            width: this.chatviewPanel.offsetWidth,
+            height: this.chatviewPanel.offsetHeight
+        });
+    }
+
     componentDidMount() {
         const props = this.props;
 
@@ -84,11 +92,14 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
-        this.store.dispatch<FormatAction>({ 
-            type: 'Set_Size', 
-            width: this.props.width || this.chatviewPanel.offsetWidth, 
-            height: this.props.height || this.chatviewPanel.offsetHeight }
-        );
+        this.setSize();
+
+        if (this.props.resize === 'window') {
+
+            this.windowResizeListener = (ev: UIEvent) => { this.setSize() };
+
+            window.addEventListener('resize', this.windowResizeListener);
+        }
 
         this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
 
@@ -118,6 +129,8 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.selectedActivitySubscription.unsubscribe();
         if (this.botConnection)
             this.botConnection.end();
+        if (this.windowResizeListener)
+            window.removeEventListener('resize', this.windowResizeListener);
     }
 
     render() {
@@ -135,15 +148,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     { header }
                     <History />
                     <Shell />
-                    <ResizeDetector
-                        observeResize={
-                            (height, width) => this.store.dispatch<FormatAction>({
-                                type: 'Set_Size',
-                                height: height,
-                                width: width
-                            })
-                        }
-                    />
+                    { this.props.resize === 'detect' ? <ResizeDetector onresize={ () => this.setSize() } /> : null }
                 </div>
             </Provider>
         );
@@ -211,7 +216,7 @@ export const konsole = {
 }
 
 interface ResizeDetectorProps {
-	observeResize: (height: number, width: number) => void;
+	onresize: () => void;
 }
 
 //note: container of this element must have CSS position of either absolute or relative
@@ -221,5 +226,5 @@ const ResizeDetector = (props: ResizeDetectorProps) => {
 
     const style: React.CSSProperties = { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' };
 
-    return <iframe style={style} ref={frame => frame.contentWindow.onresize = () => { props.observeResize(frame.clientHeight, frame.clientWidth) }} ></iframe>;
+    return <iframe style={style} ref={frame => frame.contentWindow.onresize = () => { props.onresize() }} ></iframe>;
 }
