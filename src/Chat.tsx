@@ -28,8 +28,7 @@ export interface ChatProps {
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
-    height?: number,
-    width?: number
+    resize?: 'none' | 'window' | 'detect'
 }
 
 export class Chat extends React.Component<ChatProps, {}> {
@@ -43,7 +42,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private selectedActivitySubscription: Subscription;
 
     private chatviewPanel: HTMLElement;
-    private resizeListener: () => void;
+    private windowResizeListener: (ev: UIEvent) => any;
 
     constructor(props: ChatProps) {
         super(props);
@@ -77,11 +76,12 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
-    private isChatFullWindow() {
-        return this.chatviewPanel.offsetWidth == document.body.offsetWidth
-            && this.chatviewPanel.offsetHeight == document.body.offsetHeight
-            && this.chatviewPanel.offsetTop == 0
-            && this.chatviewPanel.offsetLeft == 0;
+    private setSize() {
+        this.store.dispatch<FormatAction>({
+            type: 'Set_Size',
+            width: this.chatviewPanel.offsetWidth,
+            height: this.chatviewPanel.offsetHeight
+        });
     }
 
     componentDidMount() {
@@ -92,24 +92,13 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
-        this.store.dispatch<FormatAction>({ 
-            type: 'Set_Size', 
-            width: this.props.width || this.chatviewPanel.offsetWidth, 
-            height: this.props.height || this.chatviewPanel.offsetHeight }
-        );
+        this.setSize();
 
-        if (this.isChatFullWindow()) {
+        if (this.props.resize === 'window') {
 
-            this.resizeListener = () => {
+            this.windowResizeListener = (ev: UIEvent) => { this.setSize() };
 
-                this.store.dispatch<FormatAction>({ 
-                    type: 'Set_Size', 
-                    width: this.chatviewPanel.offsetWidth, 
-                    height: this.chatviewPanel.offsetHeight }
-                );
-            };
-
-            window.addEventListener('resize', this.resizeListener);
+            window.addEventListener('resize', this.windowResizeListener);
         }
 
         this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
@@ -140,8 +129,8 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.selectedActivitySubscription.unsubscribe();
         if (this.botConnection)
             this.botConnection.end();
-        if (this.resizeListener)
-            window.removeEventListener('resize', this.resizeListener);
+        if (this.windowResizeListener)
+            window.removeEventListener('resize', this.windowResizeListener);
     }
 
     render() {
@@ -155,10 +144,11 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         return (
             <Provider store={ this.store }>
-                <div className={ "wc-chatview-panel" } ref={ div => this.chatviewPanel = div }>
+                <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
                     <History />
                     <Shell />
+                    { this.props.resize === 'detect' ? <ResizeDetector onresize={ () => this.setSize() } /> : null }
                 </div>
             </Provider>
         );
@@ -223,4 +213,18 @@ export const konsole = {
         if (typeof(window) !== 'undefined' && window["botchatDebug"] && message)
             console.log(message, ... optionalParams);
     }
+}
+
+interface ResizeDetectorProps {
+	onresize: () => void;
+}
+
+//note: container of this element must have CSS position of either absolute or relative
+const ResizeDetector = (props: ResizeDetectorProps) => {
+
+    //adapted to React from https://github.com/developit/simple-element-resize-detector
+
+    const style: React.CSSProperties = { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' };
+
+    return <iframe style={style} ref={frame => frame.contentWindow.onresize = () => { props.onresize() }} ></iframe>;
 }

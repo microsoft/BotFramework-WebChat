@@ -6,6 +6,7 @@ node_modules
 /local
 /.vscode
 npm-debug.log
+debug.log
 test/src
 npm
 cdn
