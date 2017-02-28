@@ -42,7 +42,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private selectedActivitySubscription: Subscription;
 
     private chatviewPanel: HTMLElement;
-    private windowResizeListener: (ev: UIEvent) => any;
+    private resizeListener = () => this.setSize();
 
     constructor(props: ChatProps) {
         super(props);
@@ -94,12 +94,8 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.setSize();
 
-        if (this.props.resize === 'window') {
-
-            this.windowResizeListener = (ev: UIEvent) => { this.setSize() };
-
-            window.addEventListener('resize', this.windowResizeListener);
-        }
+        if (this.props.resize === 'window')
+            window.addEventListener('resize', this.resizeListener);
 
         this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
 
@@ -129,18 +125,22 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.selectedActivitySubscription.unsubscribe();
         if (this.botConnection)
             this.botConnection.end();
-        if (this.windowResizeListener)
-            window.removeEventListener('resize', this.windowResizeListener);
+        window.removeEventListener('resize', this.resizeListener);
     }
 
     render() {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
-        let header;
+
+        let header: JSX.Element;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
                 <span>{ state.format.strings.title }</span>
             </div>;
+
+        let resize: JSX.Element;
+        if (this.props.resize === 'detect') resize =
+            <ResizeDetector onresize={ this.resizeListener } />;
 
         return (
             <Provider store={ this.store }>
@@ -148,7 +148,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     { header }
                     <History />
                     <Shell />
-                    { this.props.resize === 'detect' ? <ResizeDetector onresize={ () => this.setSize() } /> : null }
+                    { resize }
                 </div>
             </Provider>
         );
@@ -215,16 +215,12 @@ export const konsole = {
     }
 }
 
-interface ResizeDetectorProps {
-	onresize: () => void;
-}
-
-//note: container of this element must have CSS position of either absolute or relative
-const ResizeDetector = (props: ResizeDetectorProps) => {
-
-    //adapted to React from https://github.com/developit/simple-element-resize-detector
-
-    const style: React.CSSProperties = { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' };
-
-    return <iframe style={style} ref={frame => frame.contentWindow.onresize = () => { props.onresize() }} ></iframe>;
-}
+// note: container of this element must have CSS position of either absolute or relative
+const ResizeDetector = (props: {
+    onresize: () => void
+}) =>
+    // adapted to React from https://github.com/developit/simple-element-resize-detector
+    <iframe
+        style={ { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' } }
+        ref={ frame => frame.contentWindow.onresize = props.onresize }
+    />;
