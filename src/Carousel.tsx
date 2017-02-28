@@ -24,7 +24,6 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private resizeListener = () => this.resize();
     private scrollEventListener =() => this.onScroll();
     private scrollAllowInterrupt = true;
 
