@@ -43,7 +43,6 @@ export class Chat extends React.Component<ChatProps, {}> {
     private selectedActivitySubscription: Subscription;
 
     private chatviewPanel: HTMLElement;
-    private resizeListener: () => void;
 
     constructor(props: ChatProps) {
         super(props);
@@ -77,13 +76,6 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
-    private isChatFullWindow() {
-        return this.chatviewPanel.offsetWidth == document.body.offsetWidth
-            && this.chatviewPanel.offsetHeight == document.body.offsetHeight
-            && this.chatviewPanel.offsetTop == 0
-            && this.chatviewPanel.offsetLeft == 0;
-    }
-
     componentDidMount() {
         const props = this.props;
 
@@ -97,20 +89,6 @@ export class Chat extends React.Component<ChatProps, {}> {
             width: this.props.width || this.chatviewPanel.offsetWidth, 
             height: this.props.height || this.chatviewPanel.offsetHeight }
         );
-
-        if (this.isChatFullWindow()) {
-
-            this.resizeListener = () => {
-
-                this.store.dispatch<FormatAction>({ 
-                    type: 'Set_Size', 
-                    width: this.chatviewPanel.offsetWidth, 
-                    height: this.chatviewPanel.offsetHeight }
-                );
-            };
-
-            window.addEventListener('resize', this.resizeListener);
-        }
 
         this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
 
@@ -140,8 +118,6 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.selectedActivitySubscription.unsubscribe();
         if (this.botConnection)
             this.botConnection.end();
-        if (this.resizeListener)
-            window.removeEventListener('resize', this.resizeListener);
     }
 
     render() {
@@ -155,10 +131,19 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         return (
             <Provider store={ this.store }>
-                <div className={ "wc-chatview-panel" } ref={ div => this.chatviewPanel = div }>
+                <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
                     <History />
                     <Shell />
+                    <ResizeDetector
+                        observeResize={
+                            (height, width) => this.store.dispatch<FormatAction>({
+                                type: 'Set_Size',
+                                height: height,
+                                width: width
+                            })
+                        }
+                    />
                 </div>
             </Provider>
         );
@@ -223,4 +208,18 @@ export const konsole = {
         if (typeof(window) !== 'undefined' && window["botchatDebug"] && message)
             console.log(message, ... optionalParams);
     }
+}
+
+interface ResizeDetectorProps {
+	observeResize: (height: number, width: number) => void;
+}
+
+//note: container of this element must have CSS position of either absolute or relative
+const ResizeDetector = (props: ResizeDetectorProps) => {
+
+    //adapted to React from https://github.com/developit/simple-element-resize-detector
+
+    const style: React.CSSProperties = { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' };
+
+    return <iframe style={style} ref={frame => frame.contentWindow.onresize = () => { props.observeResize(frame.clientHeight, frame.clientWidth) }} ></iframe>;
 }
