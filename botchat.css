@@ -5,7 +5,7 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-app button {
-  background-color: #0063B1;
+  background-color: #0063b1;
   border: 1px solid #ccc;
   border-radius: 1px;
   color: #fff;
@@ -29,7 +29,7 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-header {
-  background-color: #3A96DD;
+  background-color: #3a96dd;
   box-shadow: 0 1px rgba(0, 0, 0, 0.2);
   box-sizing: content-box;
   color: #fff;
@@ -174,7 +174,7 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 
 .wc-card button {
   background-color: transparent;
-  color: #3A96DD;
+  color: #3a96dd;
   min-height: 32px;
   width: 100%;
   padding: 0 16px;
@@ -182,14 +182,14 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 
 .wc-card button:hover {
   background-color: transparent;
-  border-color: #3A96DD;
-  color: #3A96DD;
+  border-color: #3a96dd;
+  color: #3a96dd;
 }
 
 .wc-card button:active {
-  background-color: #3A96DD;
-  border-color: #3A96DD;
-  color: white;
+  background-color: #3a96dd;
+  border-color: #3a96dd;
+  color: #fff;
 }
 
 .wc-card h1 {
@@ -405,12 +405,12 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-message-from-me .wc-message-content {
-  background-color: #3A96DD;
+  background-color: #3a96dd;
   color: #fff;
 }
 
 .wc-message-from-me svg.wc-message-callout path {
-  fill: #3A96DD;
+  fill: #3a96dd;
 }
 
 .wc-message-from-me svg.wc-message-callout path.point-left {
@@ -458,7 +458,7 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-console svg {
-  fill: #8A8A8A;
+  fill: #8a8a8a;
   margin: 11px;
 }
 
@@ -486,7 +486,7 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-console.has-text .wc-send svg {
-  fill: #3A96DD;
+  fill: #3a96dd;
 }
 
 /* animation */
@@ -547,5 +547,5 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-app ::-webkit-scrollbar-thumb {
-  background-color: #DBDEE1;
+  background-color: #dbdee1;
 }

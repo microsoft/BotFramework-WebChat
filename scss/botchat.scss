@@ -1,3 +1,4 @@
+@import "colors";
 @import "card-size";
 
 /* reset */
@@ -8,10 +9,10 @@
     }
 
     .wc-app button {
-        background-color: #0063B1;
-        border: 1px solid #ccc;
+        background-color: $c06;
+        border: 1px solid $c05;
         border-radius: 1px;
-        color: #fff;
+        color: $c01;
         cursor: pointer;
         outline: none;
         transition: color .2s ease, background-color .2s ease;
@@ -33,10 +34,10 @@
     }
 
     .wc-header {
-        background-color: #3A96DD;
-        box-shadow: 0 1px rgba(0,0,0,0.2);
+        background-color: $c_brand;
+        box-shadow: 0 1px $c_shadow;
         box-sizing: content-box;
-        color: #fff;
+        color: $c01;
         font-weight: 500;
         height: 30px;   /* height + padding-top = total height */
         left: 0;
@@ -49,7 +50,7 @@
     }
 
     .wc-time {
-        color: #999;
+        color: $c_textLight;
         margin-bottom: 10px;
     }
 
@@ -69,7 +70,7 @@
     }
 
     .wc-console {
-        border: 5px solid #dbdee1;
+        border: 5px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
         height: 50px;
@@ -133,7 +134,7 @@
 
     .wc-message-content {
         border-radius: 2px;
-        box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+        box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 8px;
         word-break: break-word;
       }
@@ -143,7 +144,7 @@
     }
 
     .wc-message-content.selected {
-        box-shadow: 0px 1px 1px 0px #ffa333
+        box-shadow: 0px 1px 1px 0px $c12;
     }
 
     .wc-message-content img {
@@ -165,7 +166,7 @@
 
     .wc-message-from {
         clear: both;
-        color: #999;
+        color: $c_textLight;
         font-size: 11px;
         margin-top: 5px;
     }
@@ -174,12 +175,12 @@
 
     .wc-card {
 
-        background-color: #fff;
+        background-color: $c01;
         font-size: 13px;
 
         button {
             background-color: transparent;
-            color: #3A96DD;
+            color: $c_brand;
             min-height: 32px;
             width: 100%;
             padding: 0 16px;
@@ -187,14 +188,14 @@
 
         button:hover {
             background-color: transparent;
-            border-color: #3A96DD;
-            color: #3A96DD;
+            border-color: $c_brand;
+            color: $c_brand;
         }
 
         button:active {
-            background-color: #3A96DD;
-            border-color: #3A96DD;
-            color: white;
+            background-color: $c_brand;
+            border-color: $c_brand;
+            color: $c01;
         }
 
         h1 {
@@ -203,7 +204,7 @@
         }
 
         h2 {
-            color: #808c95;
+            color: $c_textHeading;
             font-size: inherit;
             font-weight: normal;
             margin-bottom: 8px;
@@ -255,7 +256,7 @@
         }
 
         &.receipt th {
-            color: #808c95;
+            color: $c_textHeading;
             font-size: inherit;
             font-weight: normal;
             line-height: 1.75;
@@ -291,7 +292,7 @@
         }
 
         &.receipt tbody tr, &.receipt tfoot tr {
-            border-top: 1px solid #d2dde5;
+            border-top: 1px solid $c11;
         }
 
         &.receipt tbody tr:first-child, &.receipt tfoot tr:first-child {
@@ -337,7 +338,7 @@
     }
 
     .wc-carousel button.scroll {
-        background-color: #d2dde5;
+        background-color: $c11;
         height: 28px;
         overflow: hidden;
         padding: 0;
@@ -351,11 +352,11 @@
     }
 
     .wc-carousel button.scroll:hover {
-        background-color:  #808c95;
+        background-color:  $c08;
     }
 
     .wc-carousel button.scroll svg {
-        fill: #fff;
+        fill: $c01;
     }
 
     .wc-carousel button.scroll.previous {
@@ -410,12 +411,12 @@
     }
 
     .wc-message-from-me .wc-message-content {
-        background-color: #3A96DD;
-        color: #fff;
+        background-color: $c_messageFromMe;
+        color: $c01;
     }
 
     .wc-message-from-me svg.wc-message-callout path {
-        fill: #3A96DD;
+        fill: $c_messageFromMe;
     }
 
     .wc-message-from-me svg.wc-message-callout path.point-left {
@@ -434,12 +435,12 @@
     }
 
     .wc-message-from-bot .wc-message-content {
-        background-color: #eceff1;
-        color: #000;
+        background-color: $c_messageFromThem;
+        color: $c00;
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
-        fill: #eceff1;
+        fill: $c_messageFromThem;
     }
 
     .wc-message-from-bot svg.wc-message-callout path.point-right {
@@ -465,7 +466,7 @@
     }
 
     .wc-console svg {
-        fill: #8A8A8A;
+        fill: $c03;
         margin: 11px;
     }
 
@@ -493,7 +494,7 @@
     }
 
     .wc-console.has-text .wc-send svg {
-        fill: #3A96DD;
+        fill: $c07;
     }
 
 /* animation */
@@ -556,5 +557,5 @@
     }
 
     .wc-app ::-webkit-scrollbar-thumb {
-        background-color: #DBDEE1;
+        background-color: $c_chrome;
     }
