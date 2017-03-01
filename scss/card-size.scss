@@ -1,0 +1,9 @@
+@mixin card-size($cardWidth, $borderWidth, $padding) {
+
+    .wc-card {
+        border: $borderWidth solid #d2dde5;
+        padding: $padding;
+        width: $cardWidth - 2 * ($padding + $borderWidth);
+    }
+    
+}

@@ -1,0 +1,7 @@
+@import "card-size";
+
+@media (max-width: 450px) {
+  
+  @include card-size(216px, 1px, 8px);
+
+}
