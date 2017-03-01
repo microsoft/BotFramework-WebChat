@@ -1,8 +1,14 @@
+var fs = require('fs');
 var sass = require('node-sass');
 
-var result = sass.renderSync({
-  file: process.argv[2],
-  outputStyle: 'expanded'
-});
+function compile(fileNameWithoutExtension) {
+  var result = sass.renderSync({
+    file: './scss/' + fileNameWithoutExtension + '.scss',
+    outputStyle: 'expanded'
+  });
 
-process.stdout.write(result.css.toString('utf8'));
+  fs.writeFileSync('./' + fileNameWithoutExtension + '.css', result.css);
+}
+
+var args  = process.argv.slice(2);
+args.forEach(compile);

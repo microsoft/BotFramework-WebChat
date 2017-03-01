@@ -312,10 +312,17 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   margin: 10px 24px 16px 14px;
 }
 
+/* alternate card sizes */
 .wc-card {
   border: 1px solid #d2dde5;
   padding: 8px;
   width: 302px;
+}
+
+.wc-narrow .wc-card {
+  border: 1px solid #d2dde5;
+  padding: 8px;
+  width: 198px;
 }
 
 /* list */

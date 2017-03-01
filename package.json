@@ -5,7 +5,7 @@
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
   "scripts": {
-    "build-css": "node ./scss/compile.js ./scss/botchat.scss > ./botchat.css && node ./scss/compile.js ./scss/botchat-fullscreen.scss > ./botchat-fullscreen.css",
+    "build-css": "node ./scss/compile.js botchat botchat-fullscreen",
     "build": "tsc && webpack",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
     "tsc-watch": "tsc -w",
