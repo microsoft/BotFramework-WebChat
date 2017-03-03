@@ -58,9 +58,9 @@ export interface FormatState {
     locale: string,
     options: FormatOptions,
     strings: Strings,
-    chatHeight?: number,
-    chatWidth?: number,
-    maxMessageContentMargin?: number
+    chatHeight: number,
+    chatWidth: number,
+    carouselMargin: number
 }
 
 export type FormatAction = {
@@ -75,7 +75,7 @@ export type FormatAction = {
     height: number
 } | {
     type: 'Set_Measurements',
-    contentMargin: number
+    carouselMargin: number
 }
 
 export const format: Reducer<FormatState> = (
@@ -84,7 +84,10 @@ export const format: Reducer<FormatState> = (
         options: {
             showHeader: true
         },
-        strings: defaultStrings
+        strings: defaultStrings,
+        chatHeight: undefined,
+        chatWidth: undefined,
+        carouselMargin: undefined
     },
     action: FormatAction
 ) => {
@@ -109,7 +112,7 @@ export const format: Reducer<FormatState> = (
         case 'Set_Measurements':
             return {
                 ... state,
-                maxMessageContentMargin: action.contentMargin
+                carouselMargin: action.carouselMargin
             };
         default:
             return state;

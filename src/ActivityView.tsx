@@ -45,19 +45,8 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
     }
 
     shouldComponentUpdate(nextProps: ActivityViewProps) {
-        // most common case
-        if (this.props.activity == nextProps.activity && this.props.format == nextProps.format)
-            {
-            console.log("scu false");
-            return false;
-            }
-        // if we're resizing, the only activities that might change are carousels
-        var update = /*return */ this.props.activity.type == 'message'
-                && this.props.activity.attachmentLayout == 'carousel'
-                && (this.props.format.chatHeight != nextProps.format.chatHeight
-                    || this.props.format.chatWidth != nextProps.format.chatWidth);
-        console.log("scu", update, nextProps);
-        return update;
+        // if the activity changed, re-render
+        return this.props.activity != nextProps.activity || this.props.format != nextProps.format;
     }
 
     render() {

@@ -85,19 +85,18 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     componentDidMount() {
-        const props = this.props;
+        // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
+        this.setSize();
 
         const botConnection = this.props.directLine
             ? (this.botConnection = new DirectLine(this.props.directLine))
             : this.props.botConnection
             ;
 
-        this.setSize();
-
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
 
-        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: props.user, bot: props.bot, botConnection, selectedActivity: props.selectedActivity });
+        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>
             this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
@@ -108,8 +107,8 @@ export class Chat extends React.Component<ChatProps, {}> {
             error => konsole.log("activity$ error", error)
         );
 
-        if (props.selectedActivity) {
-            this.selectedActivitySubscription = props.selectedActivity.subscribe(activityOrID => {
+        if (this.props.selectedActivity) {
+            this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
                 this.store.dispatch<HistoryAction>({
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
@@ -128,10 +127,16 @@ export class Chat extends React.Component<ChatProps, {}> {
         window.removeEventListener('resize', this.resizeListener);
     }
 
+    // At startup we do three render passes:
+    // 1. To determine the dimensions of the chat panel (nothing needs to actually render here, so we don't)
+    // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
+    // 3. (this is also the normal re-render case) To render without the mock activity
+
     render() {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
 
+        // only render real stuff after we know our dimensions
         let header: JSX.Element;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
