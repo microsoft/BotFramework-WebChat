@@ -17,7 +17,7 @@ export interface CarouselState {
     nextButtonEnabled: boolean;
 }
 
-export class Carousel extends React.Component<CarouselProps, Partial<CarouselState>> {
+export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private root: HTMLDivElement;
     private scrollDiv: HTMLDivElement;
     private scrollStartTimer: number;
@@ -31,7 +31,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
         super(props);
 
         this.state = {
-            // contentWidth is automatically set to undefined
+            contentWidth: undefined,
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
@@ -51,7 +51,7 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
         this.scrollAllowInterrupt = true;
     }
 
-    private getScrollButtonState(): Partial<CarouselState> {
+    private getScrollButtonState() {
         return {
             previousButtonEnabled: this.scrollDiv.scrollLeft > 0,
             nextButtonEnabled: this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
