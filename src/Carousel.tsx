@@ -8,7 +8,7 @@ export interface CarouselProps {
     format: FormatState,
     attachments: Attachment[],
     onCardAction: (type: string, value: string) => void,
-    onImageLoad: ()=> void
+    onImageLoad: () => void
 }
 
 export interface CarouselState {
@@ -17,21 +17,21 @@ export interface CarouselState {
     nextButtonEnabled: boolean;
 }
 
-export class Carousel extends React.Component<CarouselProps, Partial<CarouselState>> {
+export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private root: HTMLDivElement;
     private scrollDiv: HTMLDivElement;
     private scrollStartTimer: number;
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private scrollEventListener =() => this.onScroll();
+    private scrollEventListener = () => this.onScroll();
     private scrollAllowInterrupt = true;
 
     constructor(props: CarouselProps) {
         super(props);
 
         this.state = {
-            contentWidth: null,
+            contentWidth: undefined,
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
@@ -51,19 +51,15 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
         this.scrollAllowInterrupt = true;
     }
 
-    private getScrollButtonState(): Partial<CarouselState> {
-        const previousEnabled = this.scrollDiv.scrollLeft > 0;
-        const nextEnabled = this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
-
+    private getScrollButtonState() {
         return {
-            previousButtonEnabled: previousEnabled,
-            nextButtonEnabled: nextEnabled
+            previousButtonEnabled: this.scrollDiv.scrollLeft > 0,
+            nextButtonEnabled: this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
         };
     }
 
     private manageScrollButtons() {
-        const newState = this.getScrollButtonState();
-        this.setState(newState);
+        this.setState(this.getScrollButtonState());
     }
 
     componentDidMount() {
@@ -75,22 +71,15 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 
     componentDidUpdate() {
-        
         konsole.log('carousel componentDidUpdate');
 
-        if (this.props.format.maxMessageContentMargin) {
-        
+        if (this.props.format.carouselMargin != undefined) {
             //after the attachments have been rendered, we can now measure their actual width
-            if (!this.state.contentWidth) {
-
+            if (this.state.contentWidth == undefined) {
                 this.root.style.width = '';
-                var actualContentWidth = this.root.offsetWidth;
-
-                this.setState({ contentWidth: actualContentWidth });
-                
+                this.setState({ contentWidth: this.root.offsetWidth });
             } else {
                 //compare scroll state to desired scroll state
-
                 var desiredButtonState = this.getScrollButtonState();
                 if (desiredButtonState.nextButtonEnabled != this.state.nextButtonEnabled
                     || desiredButtonState.previousButtonEnabled != this.state.previousButtonEnabled) {
@@ -101,13 +90,11 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 
     componentWillReceiveProps(nextProps: CarouselProps) {
-
         konsole.log('carousel componentWillReceiveProps');
 
         if (this.props.format.chatWidth != nextProps.format.chatWidth) {
-
             //this will invalidate the saved measurement, in componentDidUpdate a new measurement will be triggered
-            this.setState({ contentWidth: null });
+            this.setState({ contentWidth: undefined });
         }
     }
 
@@ -182,32 +169,28 @@ export class Carousel extends React.Component<CarouselProps, Partial<CarouselSta
     }
 
     private getMaxMessageContentWidth() {
-        if (isNaN(this.props.format.chatWidth) || isNaN(this.props.format.maxMessageContentMargin)) return;
-        return this.props.format.chatWidth - this.props.format.maxMessageContentMargin;
+        if (this.props.format.chatWidth != undefined && this.props.format.carouselMargin != undefined)
+            return this.props.format.chatWidth - this.props.format.carouselMargin;
     }
 
     render() {
-
-        const style: React.CSSProperties = {};
+        let style: React.CSSProperties;
         const maxMessageContentWidth = this.getMaxMessageContentWidth();
 
-        if (this.state.contentWidth && maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
-            style.width = maxMessageContentWidth;
+        if (maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
+            style = { width: maxMessageContentWidth }
         }
 
         return (
             <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
-                <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={ () => this.scrollBy(-1) }>
+                <button disabled={ !this.state.previousButtonEnabled } className="scroll previous" onClick={ () => this.scrollBy(-1) }>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
                     </svg>
                 </button>
                 <div className="wc-carousel-scroll-outer">
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
-                        <CarouselAttachments
-                            {... this.props}
-                            onImageLoad = { () => this.props.onImageLoad() }
-                        />
+                        <CarouselAttachments { ... this.props }/>
                     </div>
                 </div>
                 <button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
@@ -224,23 +207,23 @@ export interface CarouselAttachmentProps {
     format: FormatState
     attachments: Attachment[]
     onCardAction: (type: string, value: string) => void
-    onImageLoad: ()=> void
+    onImageLoad: () => void
 }
 
 class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
 
+    shouldComponentUpdate(nextProps: CarouselAttachmentProps) {
+        return this.props.attachments != this.props.attachments || this.props.format != nextProps.format;
+    }
+
     render() {
+        const { attachments, ... props } = this.props;
         return (
-            <ul>{this.props.attachments.map((attachment, index) =>
+            <ul>{ this.props.attachments.map((attachment, index) =>
                 <li key={ index } className="wc-carousel-item">
-                    <AttachmentView
-                        attachment={ attachment }
-                        format={ this.props.format }
-                        onCardAction={ this.props.onCardAction }
-                        onImageLoad={ () => this.props.onImageLoad() }
-                    />
+                    <AttachmentView attachment={ attachment } { ... props }/>
                 </li>
-            )}</ul>
+            ) }</ul>
         );
     }
 }

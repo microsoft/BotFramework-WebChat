@@ -45,7 +45,8 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
     }
 
     shouldComponentUpdate(nextProps: ActivityViewProps) {
-        return this.props.activity !== nextProps.activity || this.props.format !== nextProps.format;
+        // if the activity changed, re-render
+        return this.props.activity != nextProps.activity || this.props.format != nextProps.format;
     }
 
     render() {
