@@ -1,0 +1,7 @@
+{
+    "files": [
+        "commands_map.ts",
+        "server_content.ts",
+        "interfaces_sdk.ts"
+    ]
+}

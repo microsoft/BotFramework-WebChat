@@ -1,57 +1,56 @@
 "use strict";
-let commands = require('./commands');
-var Nightmare = require('nightmare');
+let commands = require('./commands_map');
+let config = require('./mock_dl_server_config');
+let Nightmare = require('nightmare');
+let assert = require('assert');
 let vo = require('vo');
-var assert = require('assert');
+
 let nightmare = Nightmare({
 	show: true,
 	executionTimeout: 5000
 });
 
 /*
- * 1. Run webserver /public 
+ * 1. Run npm test in "/" 
  * 
- * 2. Run npm test in /  (home folder)
- * npm reads package.json / scripts section
- * "test" : "mocha" execute all files from test folder
+ * 2. Executes concurrently webserver from mock_dl (index.js)
  * 
- * Defining test cases
+ * 3. And later mocha tests are being executed from this file. 
+ * 
+ * Note: if it is needed to change index.js, so index.ts must be 
+ * updated and compiled. (use: npm run build-test)
  *  
 */
-describe('Nightmare Testings', function () {
+describe('Nightmare UI Tests', function () {
 	let keys = Object.keys(commands);
 	this.timeout(keys.length * 20000);
 
-	it('evaluates every single command described in commands.js', function (done) {
-		let domain = "http://localhost:3000/mock";
-		let url = "http://localhost:3000?domain=" + domain;
+	it('evaluates each command described in commands_map.js', function (done) {
+		let host = "http://localhost:" + config["port"].toString();
+		let domain = host + "/mock";
+		let url = host + "?domain=" +  domain;
 		let results = [];
 
 		let testAllCommands = function* () {
-			for (var i = 0; i < keys.length; i++) {
+			for (let i = 0; i < keys.length; i++) {
 				console.log("Evaluating: " + keys[i]);
 
-				//Starting app.js and then reload the page.
+				let testUrl = `${url}&t=${keys[i]}/ui`;
+
+				//Starting server and reload the page.
 				if (i == 0) {
-					var result = yield nightmare.goto(url);
+					let result = yield nightmare.goto(testUrl);
 				}
 
-				if ((keys.length - 1) != i) {
-					var result = yield nightmare.goto(url)
-						.wait(5000)
-						.type('.wc-textbox input', keys[i])
-						.click('.wc-send')
-						.wait(4000)
-						.evaluate(commands[keys[i]])
-				}
-				else {
-					var result = yield nightmare.goto(url)
-						.wait(5000)
-						.type('.wc-textbox input', keys[i])
-						.click('.wc-send')
-						.wait(4000)
-						.evaluate(commands[keys[i]])
-						.end()
+				let result = yield nightmare.goto(testUrl)
+					.wait(5000)
+					.type('.wc-textbox input', keys[i])
+					.click('.wc-send')
+					.wait(4000)
+					.evaluate(commands[keys[i]].client)
+
+				if ((keys.length - 1) == i) {
+					result.end()
 				}
 
 				console.log(result);
