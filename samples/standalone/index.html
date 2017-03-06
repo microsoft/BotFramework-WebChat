@@ -26,21 +26,13 @@
                 overflow: hidden;
             }
         </style>
-        <link href="botchat.css" rel="stylesheet" />
+        <link href="../../botchat.css" rel="stylesheet" />
     </head>
     <body>
         <div id="BotChatGoesHere"></div>
-        <script src="botchat.js"></script>
+        <script src="../../botchat.js"></script>
         <script>
-            var params = {};
-            location
-                .search
-                .substring(1)
-                .split("&")
-                .forEach(function (pair) {
-                    var p = pair.split("=");
-                    params[p[0]] = decodeURIComponent(p[1]);
-                });
+            var params = BotChat.queryParams(location.search);
 
             var user = {
                 id: params['userid'] || 'userid',
@@ -52,18 +44,19 @@
                 name: params["botname"] || 'botname'
             };
             
-            window['botchatDebug'] = params['debug'];
+            window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
             BotChat.App({
                 directLine: {
                     secret: params['s'],
                     token: params['t'],
                     domain: params['domain'],
-                    webSocket: params['webSocket']
+                    webSocket: params['webSocket'] && params['webSocket'] === "true" // defaults to true
                 },
                 user: user,
                 bot: bot,
                 locale: params['locale'],
+                // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
             }, document.getElementById("BotChatGoesHere"));
         </script>
     </body>

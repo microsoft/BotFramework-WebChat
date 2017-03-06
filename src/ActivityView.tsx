@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Activity, Attachment, AttachmentLayout } from './BotConnection';
+import { Activity, Attachment, AttachmentLayout } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
@@ -8,9 +8,8 @@ import { FormatState } from './Store';
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
-    measureParentHorizontalOverflow?: () => number,
     format: FormatState,
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
     const { attachments, attachmentLayout, ... otherProps } = props;
@@ -33,21 +32,21 @@ const Attachments = (props: {
         </div>
 }
 
-interface Props {
+export interface ActivityViewProps {
     format: FormatState,
     activity: Activity,
-    measureParentHorizontalOverflow?: () => number,
-    onClickButton: (type: string, value: string) => void,
+    onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }
 
-export class ActivityView extends React.Component<Props, {}> {
-    constructor(props: Props) {
+export class ActivityView extends React.Component<ActivityViewProps, {}> {
+    constructor(props: ActivityViewProps) {
         super(props)
     }
 
-    shouldComponentUpdate(nextProps: Props) {
-        return this.props.activity !== nextProps.activity || this.props.format !== nextProps.format;
+    shouldComponentUpdate(nextProps: ActivityViewProps) {
+        // if the activity changed, re-render
+        return this.props.activity != nextProps.activity || this.props.format != nextProps.format;
     }
 
     render() {

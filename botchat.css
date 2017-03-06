@@ -149,6 +149,10 @@
         max-width: 100%;
     }
 
+    .wc-message-content .video iframe {
+        border: 0;
+    }
+
     .wc-message-content audio, .wc-message-content video {
         max-width: 100%;
     }
@@ -381,7 +385,6 @@
         padding: 0 4px;
         vertical-align: top;
         white-space: normal;
-        width: 320px;
     }
 
     .wc-carousel-scroll > ul > li:last-child {
@@ -473,7 +476,7 @@
         width: 100%;
     }
 
-    .wc-upload input {
+    #wc-upload-input {
         display: none;
     }
 

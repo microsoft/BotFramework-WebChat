@@ -1,16 +1,66 @@
-import { Activity, IBotConnection, User, ConnectionStatus } from './BotConnection';
+import { Activity, IBotConnection, User, ConnectionStatus } from 'botframework-directlinejs';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 // Reducers - perform state transformations
 
 import { Reducer } from 'redux';
 
+export interface ShellState {
+    sendTyping: boolean
+    input: string
+}
+
+export type ShellAction = {
+    type: 'Update_Input',
+    input: string
+} | {
+    type: 'Set_Send_Typing',
+    sendTyping: boolean
+} | {
+    type: 'Send_Message',
+    activity: Activity
+}
+
+export const shell: Reducer<ShellState> = (
+    state: ShellState = {
+        input: '',
+        sendTyping: false
+    },
+    action: ShellAction
+) => {
+    switch (action.type) {
+        case 'Update_Input':
+            return {
+                ... state,
+                input: action.input
+            };
+        
+        case 'Send_Message':
+            return {
+                ... state,
+                input: ''
+            };
+        
+        case 'Set_Send_Typing':
+            return {
+                ... state,
+                sendTyping: action.sendTyping
+            };
+            
+        default:
+            return state;
+    }
+}
+
 export interface FormatState {
     locale: string,
     options: FormatOptions,
-    strings: Strings
+    strings: Strings,
+    chatHeight: number,
+    chatWidth: number,
+    carouselMargin: number
 }
 
 export type FormatAction = {
@@ -19,6 +69,13 @@ export type FormatAction = {
 } | {
     type: 'Set_Locale',
     locale: string
+} | {
+    type: 'Set_Size',
+    width: number,
+    height: number
+} | {
+    type: 'Set_Measurements',
+    carouselMargin: number
 }
 
 export const format: Reducer<FormatState> = (
@@ -27,7 +84,10 @@ export const format: Reducer<FormatState> = (
         options: {
             showHeader: true
         },
-        strings: defaultStrings
+        strings: defaultStrings,
+        chatHeight: undefined,
+        chatWidth: undefined,
+        carouselMargin: undefined
     },
     action: FormatAction
 ) => {
@@ -42,6 +102,17 @@ export const format: Reducer<FormatState> = (
                 ... state,
                 locale: action.locale,
                 strings: strings(action.locale),
+            };
+        case 'Set_Size':
+            return {
+                ... state,
+                chatWidth: action.width,
+                chatHeight: action.height
+            };
+        case 'Set_Measurements':
+            return {
+                ... state,
+                carouselMargin: action.carouselMargin
             };
         default:
             return state;
@@ -98,16 +169,12 @@ export const connection: Reducer<ConnectionState> = (
 
 export interface HistoryState {
     activities: Activity[],
-    input: string,
     clientActivityBase: string,
     clientActivityCounter: number,
     selectedActivity: Activity
 }
 
 export type HistoryAction = {
-    type: 'Update_Input',
-    input: string
-} | {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
@@ -128,7 +195,6 @@ export type HistoryAction = {
 export const history: Reducer<HistoryState> = (
     state: HistoryState = {
         activities: [],
-        input: '',
         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
         clientActivityCounter: 0,
         selectedActivity: null
@@ -137,13 +203,6 @@ export const history: Reducer<HistoryState> = (
 ) => {
     konsole.log("history action", action);
     switch (action.type) {
-
-        case 'Update_Input':
-            return {
-                ... state,
-                input: action.input
-            };
-
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
@@ -190,7 +249,6 @@ export const history: Reducer<HistoryState> = (
                     },
                     ... state.activities.filter(activity => activity.type === "typing"),
                 ],
-                input: '',
                 clientActivityCounter: state.clientActivityCounter + 1
             };
 
@@ -263,7 +321,12 @@ export const history: Reducer<HistoryState> = (
     }
 }
 
+export type ChatActions = ShellAction | FormatAction | ConnectionAction | HistoryAction;
+
+const nullAction = { type: null } as ChatActions;
+
 export interface ChatState {
+    shell: ShellState,
     format: FormatState,
     connection: ConnectionState,
     history: HistoryState
@@ -271,11 +334,23 @@ export interface ChatState {
 
 // Epics - chain actions together with async operations
 
-import { MiddlewareAPI, applyMiddleware } from 'redux';
+import { applyMiddleware } from 'redux';
 import { Epic } from 'redux-observable';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
-const sendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/throttleTime';
+
+import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/of';
+
+
+const sendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
     .map(action => {
         const state = store.getState();
@@ -283,7 +358,7 @@ const sendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
         return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
     });
 
-const trySendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
+const trySendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
     .flatMap(action => {
         const state = store.getState();
@@ -299,11 +374,11 @@ const trySendMessage: Epic<HistoryAction, ChatState> = (action$, store) =>
         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
     });
 
-const retrySendMessage: Epic<HistoryAction, ChatState> = (action$) =>
+const retrySendMessage: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Send_Message_Retry')
     .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
-const updateSelectedActivity: Epic<HistoryAction, ChatState> = (action$, store) =>
+const updateSelectedActivity: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType(
         'Send_Message_Succeed',
         'Send_Message_Fail',
@@ -314,13 +389,28 @@ const updateSelectedActivity: Epic<HistoryAction, ChatState> = (action$, store) 
         const state = store.getState();
         if (state.connection.selectedActivity)
             state.connection.selectedActivity.next({ activity: state.history.selectedActivity });
-        return { type: null } as HistoryAction;
+        return nullAction;
     });
 
-const showTyping: Epic<HistoryAction, ChatState> = (action$) =>
+const showTyping: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Show_Typing')
     .delay(3000)
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
+
+const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Update_Input')
+    .map(_ => store.getState())
+    .filter(state => state.shell.sendTyping)
+    .throttleTime(3000)
+    .do(_ => konsole.log("sending typing"))
+    .flatMap(state => 
+        state.connection.botConnection.postActivity({
+            type: 'typing',
+            from: state.connection.user
+        })
+        .map(_ => nullAction)
+        .catch(error => Observable.of(nullAction))
+    );
 
 // Now we put it all together into a store with middleware
 
@@ -330,6 +420,7 @@ import { combineEpics, createEpicMiddleware } from 'redux-observable';
 export const createStore = () =>
     reduxCreateStore(
         combineReducers<ChatState>({
+            shell,
             format,
             connection,
             history
@@ -339,7 +430,8 @@ export const createStore = () =>
             sendMessage,
             trySendMessage,
             retrySendMessage,
-            showTyping
+            showTyping,
+            sendTyping
         )))
     );
 
