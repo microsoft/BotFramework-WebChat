@@ -35,7 +35,8 @@ var commands_map: CommandValuesMap = {
     },
     "animation": {
         client: function () {
-            return document.querySelectorAll('img')[0].src == "http://i.imgur.com/wJTZIPB.gif";
+            var source = document.querySelectorAll('img')[0].src;
+            return source.indexOf("surface_anim.gif") >= 0;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.ani_card);
