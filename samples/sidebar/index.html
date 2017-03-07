@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <!-- 
-    This is a sample HTML file which shows how to embed an instance of WebChat. Useful for testing.
+    This is a sample HTML file which shows how to embed a sidebar instance of WebChat.
     1. Build the project: "npm run build"
     2. Start a web server: "npm run start"
     3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
@@ -17,18 +17,59 @@
     <head>
         <meta charset="UTF-8" />
         <title>Bot Chat</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-            }
-        </style>
         <link href="../../botchat.css" rel="stylesheet" />
+        <style>
+            .example p {
+                width: 300px;
+            }
+
+            .wc-chatview-panel {
+                border: 1px solid #333;
+                float: right;
+                height: 600px;
+                width: 460px;
+                margin: 20px 320px;
+            }
+
+            .wc-wide .wc-chatview-panel {
+                width: 768px;
+            }
+
+            .wc-narrow .wc-chatview-panel {
+                width: 320px;
+            }
+
+        </style>
+
+        <script>
+
+            function toggleClassName(className) {
+                var BotChatGoesHere = document.getElementById('BotChatGoesHere');
+
+                ['wc-narrow', 'wc-normal', 'wc-wide'].forEach(function (c) { BotChatGoesHere.classList.remove(c) });
+
+                BotChatGoesHere.classList.add(className);
+            }
+
+        </script>
+
     </head>
     <body>
+
+        <section class="example">
+            <p>
+                This example app hosts the WebChat control as a sidebar on the page, and may be resized with these toggle buttons:
+            </p>
+            <p>
+                <button onclick="toggleClassName('wc-narrow')">narrow</button>
+                <button onclick="toggleClassName('wc-normal')">normal</button>
+                <button onclick="toggleClassName('wc-wide')">wide</button>
+            </p>
+            <p>
+                Important: you will need to set the <b>resize</b> option to <b>'detect'</b> when instantiating the WebChat. 
+            </p>
+        </section>
+
         <div id="BotChatGoesHere"></div>
         <script src="../../botchat.js"></script>
         <script>
@@ -56,6 +97,7 @@
                 user: user,
                 bot: bot,
                 locale: params['locale'],
+                resize: 'detect'
                 // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
             }, document.getElementById("BotChatGoesHere"));
         </script>
