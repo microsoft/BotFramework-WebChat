@@ -3,7 +3,7 @@ var sass = require('node-sass');
 
 function compile(fileNameWithoutExtension) {
   var result = sass.renderSync({
-    file: './scss/' + fileNameWithoutExtension + '.scss',
+    file: './src/scss/' + fileNameWithoutExtension + '.scss',
     outputStyle: 'expanded'
   });
 
