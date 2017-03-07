@@ -20,9 +20,9 @@ export interface CarouselState {
 export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private root: HTMLDivElement;
     private scrollDiv: HTMLDivElement;
-    private scrollStartTimer: number;
-    private scrollSyncTimer: number;
-    private scrollDurationTimer: number;
+    private scrollStartTimer: NodeJS.Timer;
+    private scrollSyncTimer: NodeJS.Timer;
+    private scrollDurationTimer: NodeJS.Timer;
     private animateDiv: HTMLDivElement;
     private scrollEventListener = () => this.onScroll();
     private scrollAllowInterrupt = true;

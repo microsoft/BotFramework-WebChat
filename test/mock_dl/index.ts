@@ -236,13 +236,17 @@ const getMessages = (req: express.Request, res: express.Response) => {
 }
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + "/../../samples/index.html"));
+    res.sendFile(path.join(__dirname + "/../test.html"));
 });
 app.get('/botchat.js', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat.js"));
 });
 app.get('/botchat.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat.css"));
+});
+app.get('/assets/:file', function(req, res){
+    var file = req.params["file"];
+    res.sendFile(path.join(__dirname + "/../assets/" + file));    
 });
 
 let config = require('../mock_dl_server_config');
