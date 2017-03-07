@@ -57,7 +57,10 @@ export const shell: Reducer<ShellState> = (
 export interface FormatState {
     locale: string,
     options: FormatOptions,
-    strings: Strings
+    strings: Strings,
+    chatHeight: number,
+    chatWidth: number,
+    carouselMargin: number
 }
 
 export type FormatAction = {
@@ -66,6 +69,13 @@ export type FormatAction = {
 } | {
     type: 'Set_Locale',
     locale: string
+} | {
+    type: 'Set_Size',
+    width: number,
+    height: number
+} | {
+    type: 'Set_Measurements',
+    carouselMargin: number
 }
 
 export const format: Reducer<FormatState> = (
@@ -74,7 +84,10 @@ export const format: Reducer<FormatState> = (
         options: {
             showHeader: true
         },
-        strings: defaultStrings
+        strings: defaultStrings,
+        chatHeight: undefined,
+        chatWidth: undefined,
+        carouselMargin: undefined
     },
     action: FormatAction
 ) => {
@@ -89,6 +102,17 @@ export const format: Reducer<FormatState> = (
                 ... state,
                 locale: action.locale,
                 strings: strings(action.locale),
+            };
+        case 'Set_Size':
+            return {
+                ... state,
+                chatWidth: action.width,
+                chatHeight: action.height
+            };
+        case 'Set_Measurements':
+            return {
+                ... state,
+                carouselMargin: action.carouselMargin
             };
         default:
             return state;

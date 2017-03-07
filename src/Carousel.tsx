@@ -2,16 +2,17 @@ import * as React from 'react';
 import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
+import { konsole } from './Chat';
 
 export interface CarouselProps {
     format: FormatState,
-    measureParentHorizontalOverflow?: () => number,
     attachments: Attachment[],
     onCardAction: (type: string, value: string) => void,
-    onImageLoad: ()=> void
+    onImageLoad: () => void
 }
 
 export interface CarouselState {
+    contentWidth: number;
     previousButtonEnabled: boolean;
     nextButtonEnabled: boolean;
 }
@@ -23,14 +24,14 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private resizeListener = () => this.resize();
-    private scrollEventListener =() => this.onScroll();
+    private scrollEventListener = () => this.onScroll();
     private scrollAllowInterrupt = true;
 
     constructor(props: CarouselProps) {
         super(props);
 
         this.state = {
+            contentWidth: undefined,
             previousButtonEnabled: false,
             nextButtonEnabled: false
         };
@@ -50,33 +51,55 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         this.scrollAllowInterrupt = true;
     }
 
-    private manageScrollButtons() {
-        const previousEnabled = this.scrollDiv.scrollLeft > 0;
-        const max = this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
-        const nextEnabled = this.scrollDiv.scrollLeft < max;
-
-        //TODO: both buttons may become disabled when the container is wide, and will not become re-enabled unless a resize event calls manageScrollButtons()
-        const newState: CarouselState = {
-            previousButtonEnabled: previousEnabled,
-            nextButtonEnabled: nextEnabled
+    private getScrollButtonState() {
+        return {
+            previousButtonEnabled: this.scrollDiv.scrollLeft > 0,
+            nextButtonEnabled: this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
         };
-
-        this.setState(newState);
     }
 
-    private componentDidMount() {
+    private manageScrollButtons() {
+        this.setState(this.getScrollButtonState());
+    }
+
+    componentDidMount() {
         this.manageScrollButtons();
 
         this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
 
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
-
-        window.addEventListener('resize', this.resizeListener);
     }
 
-    private componentWillUnmount() {
+    componentDidUpdate() {
+        konsole.log('carousel componentDidUpdate');
+
+        if (this.props.format.carouselMargin != undefined) {
+            //after the attachments have been rendered, we can now measure their actual width
+            if (this.state.contentWidth == undefined) {
+                this.root.style.width = '';
+                this.setState({ contentWidth: this.root.offsetWidth });
+            } else {
+                //compare scroll state to desired scroll state
+                var desiredButtonState = this.getScrollButtonState();
+                if (desiredButtonState.nextButtonEnabled != this.state.nextButtonEnabled
+                    || desiredButtonState.previousButtonEnabled != this.state.previousButtonEnabled) {
+                        this.setState(desiredButtonState);
+                    }
+            }
+        }
+    }
+
+    componentWillReceiveProps(nextProps: CarouselProps) {
+        konsole.log('carousel componentWillReceiveProps');
+
+        if (this.props.format.chatWidth != nextProps.format.chatWidth) {
+            //this will invalidate the saved measurement, in componentDidUpdate a new measurement will be triggered
+            this.setState({ contentWidth: undefined });
+        }
+    }
+
+    componentWillUnmount() {
         this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
-        window.removeEventListener('resize', this.resizeListener);
     }
 
     private onScroll() {
@@ -145,20 +168,29 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         }, 1);
     }
 
+    private getMaxMessageContentWidth() {
+        if (this.props.format.chatWidth != undefined && this.props.format.carouselMargin != undefined)
+            return this.props.format.chatWidth - this.props.format.carouselMargin;
+    }
+
     render() {
+        let style: React.CSSProperties;
+        const maxMessageContentWidth = this.getMaxMessageContentWidth();
+
+        if (maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
+            style = { width: maxMessageContentWidth }
+        }
+
         return (
-            <div className="wc-carousel" ref={ div => this.root = div }>
-                <button disabled={!this.state.previousButtonEnabled} className="scroll previous" onClick={ () => this.scrollBy(-1) }>
+            <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
+                <button disabled={ !this.state.previousButtonEnabled } className="scroll previous" onClick={ () => this.scrollBy(-1) }>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
                     </svg>
                 </button>
                 <div className="wc-carousel-scroll-outer">
                     <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
-                        <CarouselAttachments
-                            {... this.props}
-                            onImageLoad = { () => this.resize() }
-                        />
+                        <CarouselAttachments { ... this.props }/>
                     </div>
                 </div>
                 <button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
@@ -169,45 +201,29 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
             </div >
         )
     }
-
-    resize() {
-
-        //remove the style width so that the actual content can be measured 
-        this.root.style.width = '';
-
-        if (this.props.measureParentHorizontalOverflow) {
-            const overflow = this.props.measureParentHorizontalOverflow();
-            if (overflow > 0) {
-                this.root.style.width = (this.root.offsetWidth - overflow) + 'px';
-            }
-        }
-
-        this.manageScrollButtons();
-        this.props.onImageLoad();
-    }
 }
 
 export interface CarouselAttachmentProps {
     format: FormatState
     attachments: Attachment[]
     onCardAction: (type: string, value: string) => void
-    onImageLoad: ()=> void
+    onImageLoad: () => void
 }
 
 class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
 
+    shouldComponentUpdate(nextProps: CarouselAttachmentProps) {
+        return this.props.attachments != this.props.attachments || this.props.format != nextProps.format;
+    }
+
     render() {
+        const { attachments, ... props } = this.props;
         return (
-            <ul>{this.props.attachments.map((attachment, index) =>
+            <ul>{ this.props.attachments.map((attachment, index) =>
                 <li key={ index } className="wc-carousel-item">
-                    <AttachmentView
-                        attachment={ attachment }
-                        format={ this.props.format }
-                        onCardAction={ this.props.onCardAction }
-                        onImageLoad={ () => this.props.onImageLoad() }
-                    />
+                    <AttachmentView attachment={ attachment } { ... props }/>
                 </li>
-            )}</ul>
+            ) }</ul>
         );
     }
 }

@@ -1,0 +1,16 @@
+$card_narrow: 216px;
+$card_normal: 320px;
+$card_wide: 416px;
+
+$card_borderWidth: 1px;
+$card_padding: 8px;
+
+@mixin card-size($cardWidth) {
+
+    .wc-card {
+        border: $card_borderWidth solid #d2dde5;
+        padding: $card_padding;
+        width: $cardWidth - 2 * ($card_padding + $card_borderWidth);
+    }
+    
+}

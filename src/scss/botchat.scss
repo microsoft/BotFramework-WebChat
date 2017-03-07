@@ -1,4 +1,7 @@
-﻿/* reset */
+@import "colors";
+@import "card-size";
+
+/* reset */
 
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
         font-family: 'Segoe UI', sans-serif;
@@ -6,10 +9,10 @@
     }
 
     .wc-app button {
-        background-color: #0063B1;
-        border: 1px solid #ccc;
+        background-color: $c06;
+        border: 1px solid $c05;
         border-radius: 1px;
-        color: #fff;
+        color: $c01;
         cursor: pointer;
         outline: none;
         transition: color .2s ease, background-color .2s ease;
@@ -31,10 +34,10 @@
     }
 
     .wc-header {
-        background-color: #3A96DD;
-        box-shadow: 0 1px rgba(0,0,0,0.2);
+        background-color: $c_brand;
+        box-shadow: 0 1px $c_shadow;
         box-sizing: content-box;
-        color: #fff;
+        color: $c01;
         font-weight: 500;
         height: 30px;   /* height + padding-top = total height */
         left: 0;
@@ -47,7 +50,7 @@
     }
 
     .wc-time {
-        color: #999;
+        color: $c_textLight;
         margin-bottom: 10px;
     }
 
@@ -67,7 +70,7 @@
     }
 
     .wc-console {
-        border: 5px solid #dbdee1;
+        border: 5px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
         height: 50px;
@@ -112,7 +115,6 @@
     }
 
     .wc-message {
-        max-width: 80%;
         position: relative;
     }
 
@@ -131,7 +133,7 @@
 
     .wc-message-content {
         border-radius: 2px;
-        box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+        box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 8px;
         word-break: break-word;
       }
@@ -141,7 +143,7 @@
     }
 
     .wc-message-content.selected {
-        box-shadow: 0px 1px 1px 0px #ffa333
+        box-shadow: 0px 1px 1px 0px $c12;
     }
 
     .wc-message-content img {
@@ -163,7 +165,7 @@
 
     .wc-message-from {
         clear: both;
-        color: #999;
+        color: $c_textLight;
         font-size: 11px;
         margin-top: 5px;
     }
@@ -171,151 +173,165 @@
 /* cards */
 
     .wc-card {
-        background-color: #fff;
-        border: 1px solid #d2dde5;
+
+        background-color: $c01;
         font-size: 13px;
-        padding: 8px;
-        width: 302px;
+
+        button {
+            background-color: transparent;
+            color: $c_brand;
+            min-height: 32px;
+            width: 100%;
+            padding: 0 16px;
+        }
+
+        button:hover {
+            background-color: transparent;
+            border-color: $c_brand;
+            color: $c_brand;
+        }
+
+        button:active {
+            background-color: $c_brand;
+            border-color: $c_brand;
+            color: $c01;
+        }
+
+        h1 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: $c_textHeading;
+            font-size: inherit;
+            font-weight: normal;
+            margin-bottom: 8px;
+        }
+
+        p {
+            padding-bottom: 10px;
+        }
+
+        h1, h2, p {
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+
+        p h2 {
+            /* don't double indent */
+            margin-left: 0;
+        }
+
+        ul.wc-card-buttons {
+            clear: both;
+            display: table;
+        }
+
+        ul.wc-card-buttons li {
+            list-style-type: none;
+            text-align: center;
+            float: left;
+            margin: 2px;
+        }
+
+        &.hero img {
+            display: block;
+            margin-bottom: 11px;
+        }
+
+        &.receipt table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        &.receipt th, &.receipt td {
+            text-align: right;
+            vertical-align: top;
+        }
+
+        &.receipt th:first-child, &.receipt td:first-child {
+            text-align: left;
+        }
+
+        &.receipt th {
+            color: $c_textHeading;
+            font-size: inherit;
+            font-weight: normal;
+            line-height: 1.75;
+        }
+
+        &.receipt thead tr:last-child th {
+            padding-bottom: 16px;
+        }
+
+        &.receipt th[colspan="2"] {
+            color: inherit;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        &.receipt td {
+            padding: 4px 8px 0 8px;
+        }
+
+        &.receipt td img {
+            float: left;
+            margin: 5px 8px 8px 0;
+            max-height: 50px;
+            max-width: 50px;
+        }
+
+        &.receipt div.title {
+            font-weight: bolder;
+        }
+
+        &.receipt div.subtitle {
+            font-weight: lighter;
+        }
+
+        &.receipt tbody tr, &.receipt tfoot tr {
+            border-top: 1px solid $c11;
+        }
+
+        &.receipt tbody tr:first-child, &.receipt tfoot tr:first-child {
+            border-top-width: 2px;
+        }
+
+        &.receipt tfoot td {
+            line-height: 2.25;
+        }
+
+        &.receipt tfoot .total {
+            font-weight: bold;
+        }
+
+        &.thumbnail img {
+            float: right;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            width: 100px;
+        }
+
+        &.signin h1 {
+            margin: 10px 24px 16px 14px;
+        }
     }
 
-    .wc-card button {
-        background-color: transparent;
-        color: #3A96DD;
-        min-height: 32px;
-        width: 100%;
-        padding: 0 16px;
+/* alternate chat sizes */
+
+    .wc-message {
+        max-width: 85%;
     }
 
-    .wc-card button:hover {
-        background-color: transparent;
-        border-color: #3A96DD;
-        color: #3A96DD;
+    @include card-size($card_normal);
+
+    .wc-wide {
+        @include card-size($card_wide);
     }
 
-    .wc-card button:active {
-        background-color: #3A96DD;
-        border-color: #3A96DD;
-        color: white;
-    }
-
-    .wc-card h1 {
-        font-size: 15px;
-        font-weight: 700;
-    }
-
-    .wc-card h2 {
-        color: #808c95;
-        font-size: inherit;
-        font-weight: normal;
-        margin-bottom: 8px;
-    }
-
-    .wc-card p {
-        padding-bottom: 10px;
-    }
-
-    .wc-card h1, .wc-card h2, .wc-card p {
-        margin-left: 8px;
-        margin-right: 8px;
-    }
-
-    /* don't double indent */
-    .wc-card p h2 {
-        margin-left: 0;
-    }
-
-    ul.wc-card-buttons {
-        clear: both;
-        display: table;
-    }
-
-    ul.wc-card-buttons li {
-        list-style-type: none;
-        text-align: center;
-        float: left;
-        margin: 2px;
-    }
-
-    .wc-card.hero img {
-        display: block;
-        margin-bottom: 11px;
-    }
-
-    .wc-card.receipt table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    .wc-card.receipt th, .wc-card.receipt td {
-        text-align: right;
-        vertical-align: top;
-    }
-
-    .wc-card.receipt th:first-child, .wc-card.receipt td:first-child {
-        text-align: left;
-    }
-
-    .wc-card.receipt th {
-        color: #808c95;
-        font-size: inherit;
-        font-weight: normal;
-        line-height: 1.75;
-    }
-
-    .wc-card.receipt thead tr:last-child th {
-        padding-bottom: 16px;
-    }
-
-    .wc-card.receipt th[colspan="2"] {
-        color: inherit;
-        font-size: 15px;
-        font-weight: 700;
-    }
-
-    .wc-card.receipt td {
-        padding: 4px 8px 0 8px;
-    }
-
-    .wc-card.receipt td img {
-        float: left;
-        margin: 5px 8px 8px 0;
-        max-height: 50px;
-        max-width: 50px;
-    }
-
-    .wc-card.receipt div.title {
-        font-weight: bolder;
-    }
-
-    .wc-card.receipt div.subtitle {
-        font-weight: lighter;
-    }
-
-    .wc-card.receipt tbody tr, .wc-card.receipt tfoot tr {
-        border-top: 1px solid #d2dde5;
-    }
-
-    .wc-card.receipt tbody tr:first-child, .wc-card.receipt tfoot tr:first-child {
-        border-top-width: 2px;
-    }
-
-    .wc-card.receipt tfoot td {
-        line-height: 2.25;
-    }
-
-    .wc-card.receipt tfoot .total {
-        font-weight: bold;
-    }
-
-    .wc-card.thumbnail img {
-        float: right;
-        margin-bottom: 10px;
-        margin-left: 10px;
-        width: 100px;
-    }
-
-    .wc-card.signin h1 {
-        margin: 10px 24px 16px 14px;
+    .wc-narrow {
+        @include card-size($card_narrow);
     }
 
 /* list */
@@ -335,7 +351,7 @@
     }
 
     .wc-carousel button.scroll {
-        background-color: #d2dde5;
+        background-color: $c11;
         height: 28px;
         overflow: hidden;
         padding: 0;
@@ -349,11 +365,11 @@
     }
 
     .wc-carousel button.scroll:hover {
-        background-color:  #808c95;
+        background-color:  $c08;
     }
 
     .wc-carousel button.scroll svg {
-        fill: #fff;
+        fill: $c01;
     }
 
     .wc-carousel button.scroll.previous {
@@ -408,12 +424,12 @@
     }
 
     .wc-message-from-me .wc-message-content {
-        background-color: #3A96DD;
-        color: #fff;
+        background-color: $c_messageFromMe;
+        color: $c01;
     }
 
     .wc-message-from-me svg.wc-message-callout path {
-        fill: #3A96DD;
+        fill: $c_messageFromMe;
     }
 
     .wc-message-from-me svg.wc-message-callout path.point-left {
@@ -432,12 +448,12 @@
     }
 
     .wc-message-from-bot .wc-message-content {
-        background-color: #eceff1;
-        color: #000;
+        background-color: $c_messageFromThem;
+        color: $c00;
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
-        fill: #eceff1;
+        fill: $c_messageFromThem;
     }
 
     .wc-message-from-bot svg.wc-message-callout path.point-right {
@@ -463,7 +479,7 @@
     }
 
     .wc-console svg {
-        fill: #8A8A8A;
+        fill: $c03;
         margin: 11px;
     }
 
@@ -491,7 +507,7 @@
     }
 
     .wc-console.has-text .wc-send svg {
-        fill: #3A96DD;
+        fill: $c07;
     }
 
 /* animation */
@@ -554,5 +570,5 @@
     }
 
     .wc-app ::-webkit-scrollbar-thumb {
-        background-color: #DBDEE1;
+        background-color: $c_chrome;
     }
