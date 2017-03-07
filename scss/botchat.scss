@@ -115,7 +115,6 @@
     }
 
     .wc-message {
-        max-width: 80%;
         position: relative;
     }
 
@@ -319,12 +318,20 @@
         }
     }
 
-/* alternate card sizes */
+/* alternate chat sizes */
 
-    @include card-size(320px, 1px, 8px);
+    .wc-message {
+        max-width: 85%;
+    }
+
+    @include card-size($card_normal);
+
+    .wc-wide {
+        @include card-size($card_wide);
+    }
 
     .wc-narrow {
-        @include card-size(216px, 1px, 8px);
+        @include card-size($card_narrow);
     }
 
 /* list */

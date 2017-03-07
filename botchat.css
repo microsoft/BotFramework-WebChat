@@ -110,7 +110,6 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 }
 
 .wc-message {
-  max-width: 80%;
   position: relative;
 }
 
@@ -312,11 +311,21 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   margin: 10px 24px 16px 14px;
 }
 
-/* alternate card sizes */
+/* alternate chat sizes */
+.wc-message {
+  max-width: 85%;
+}
+
 .wc-card {
   border: 1px solid #d2dde5;
   padding: 8px;
   width: 302px;
+}
+
+.wc-wide .wc-card {
+  border: 1px solid #d2dde5;
+  padding: 8px;
+  width: 398px;
 }
 
 .wc-narrow .wc-card {
