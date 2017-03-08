@@ -1,5 +1,4 @@
 import * as React from 'react';
-//import { Timestamp } from './Timestamp';
 import { Activity, User, IBotConnection, Message } from 'botframework-directlinejs';
 import { HistoryAction, ChatState, FormatState } from './Store';
 import { ActivityView } from './ActivityView';
