@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat",
-  "version": "0.9.0",
+  "version": "0.10.1",
   "description": "Embeddable web chat control for the Microsoft Bot Framework",
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
@@ -22,7 +22,7 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
-    "botframework-directlinejs": "^0.9.0",
+    "botframework-directlinejs": "^0.9.2",
     "core-js": "^2.4.1",
     "he": "^1.1.0",
     "marked": "^0.3.6",
