@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Embeddable web chat control for the Microsoft Bot Framework",
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
@@ -11,7 +11,7 @@
     "tsc-watch": "tsc -w",
     "webpack-watch": "webpack -w",
     "clean": "rm -rf built",
-    "prepublish": "tsc && webpack --config webpack.production.config.js",
+    "prepublish": "tsc && npm run build-css && webpack --config webpack.production.config.js",
     "start": "http-server -p 8000",
     "test": "mocha test"
   },
