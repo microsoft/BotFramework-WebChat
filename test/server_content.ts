@@ -182,6 +182,15 @@ export var car_card: DirectLineActivity = {
     attachments: [car_attach1, car_attach2, car_attach3, car_attach4]
 }
 
+export var smallcar_card: DirectLineActivity = {
+    type: "message",
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachmentLayout: "carousel",
+    attachments: [car_attach1, car_attach2]
+}
+
 /*
  * Activity for Markdown
  * 

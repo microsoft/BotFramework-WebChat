@@ -5,7 +5,7 @@ node_modules
 /Web.config
 /local
 **/.vscode
-npm-debug.log
+npm-debug.log*
 debug.log
 test/src
 test/mock_dl/index.js*

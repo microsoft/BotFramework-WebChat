@@ -6,12 +6,12 @@ interface ISendActivity {
     (res: express.Response, activity: server_content.DirectLineActivity): void;
 }
 
-interface CommandValues{
+interface CommandValues {
     client: () => void,
     server?: (res: express.Response, sendActivity: ISendActivity) => void
 }
 
-interface CommandValuesMap{
+interface CommandValuesMap {
     [key: string]: CommandValues
 }
 
@@ -27,8 +27,8 @@ interface CommandValuesMap{
  * updated and compiled. (use: npm run build-test)
  *  
 */
-var commands_map: CommandValuesMap = {
-    "hi": { 
+var commands_map: CommandValuesMap = {    
+    "hi": {
         client: function () {
             return document.querySelectorAll('span.format-markdown')[2].innerHTML.indexOf('hi') != -1;
         }
@@ -50,6 +50,81 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.car_card);
         }
     },
+    "carousel-to-right": {
+        client: async function () {
+            var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
+            
+            // Carousel made of 4 cards.
+            // 2-Clicks are needed to move all carousel to right.
+            // Note: Electron browser width size must not be changed. 
+            right_arrow.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 500);
+            });
+            right_arrow.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 500);
+            });
+
+            // Validates if the right_arrow button is disabled.             
+            return right_arrow.getAttribute('disabled') != null;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.car_card);
+        }
+    },
+    "carousel-to-left": {
+        client: async function () {
+            // One-Click to the right
+            var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;
+            right_arrow.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 500);
+            });
+            
+            // One-click to the left
+            var left_arrow = document.querySelectorAll(".scroll.previous")[0] as HTMLButtonElement;
+            left_arrow.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 1000);
+            });
+            
+            return left_arrow.getAttribute('disabled') != null;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.car_card);
+        }
+    },
+    "carousel-fit-width": {
+        client: function () {
+            var left_arrow = document.querySelectorAll(".scroll.previous")[0] as HTMLButtonElement;
+            var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
+            return left_arrow.getAttribute('disabled') != null && right_arrow.getAttribute('disabled') != null;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.smallcar_card);
+        }
+    },
+    "carousel-scroll": {
+        client: async function () {
+            var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
+            
+            // Scrolling the carousel simulating touch action
+            var car_items = document.querySelectorAll('.wc-carousel-item').length;
+            for(var i=0; i<car_items; i++){
+                var element = document.querySelectorAll('.wc-carousel-item')[i];
+                element.scrollIntoView();
+                await new Promise((resolve) => {
+                    setTimeout(resolve, 300);
+                }); 
+            }
+
+            return right_arrow.getAttribute('disabled') != null;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.car_card);
+        }
+    },    
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;

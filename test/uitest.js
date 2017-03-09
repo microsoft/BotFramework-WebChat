@@ -7,7 +7,7 @@ let vo = require('vo');
 
 let nightmare = Nightmare({
 	show: true,
-	executionTimeout: 5000
+	executionTimeout: 6000
 });
 
 /*
@@ -43,10 +43,10 @@ describe('Nightmare UI Tests', function () {
 				}
 
 				let result = yield nightmare.goto(testUrl)
-					.wait(5000)
+					.wait(2000)
 					.type('.wc-textbox input', keys[i])
 					.click('.wc-send')
-					.wait(4000)
+					.wait(3000)
 					.evaluate(commands[keys[i]].client)
 
 				if ((keys.length - 1) == i) {
