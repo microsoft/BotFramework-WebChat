@@ -1,6 +1,7 @@
 @import "colors";
 @import "card-size";
 
+$actionsHeight: 40px;
 $consoleHeight: 50px;
 
 $headerPaddingBottom: 0;
@@ -8,6 +9,8 @@ $headerPaddingLeft: 8px;
 $headerPaddingRight: 8px;
 $headerPaddingTop: 8px;
 $headerTotalHeight: 38px;
+
+$actionTransition: .2s cubic-bezier(0,0,.5,1);
 
 /* reset */
 
@@ -65,16 +68,62 @@ $headerTotalHeight: 38px;
     .wc-message-groups {
         bottom: $consoleHeight;
         left: 0;
+        transform: translateY(0);
         overflow-x: hidden;
         overflow-y: scroll;
         padding: 10px;
         position: absolute;
         right: 0;
         top: $headerTotalHeight;
+        transition: transform $actionTransition;
     }
 
     .wc-message-group-content {
         overflow: hidden;
+    }
+
+    .wc-actions {
+        bottom: $consoleHeight;
+        height: 0;
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        transition: height $actionTransition;
+    }
+
+    .show-actions {
+        .wc-message-groups {
+            transform: translateY(-$actionsHeight);
+        }
+        .wc-actions {
+            height: $actionsHeight;
+        }
+    }
+
+    .wc-suggested-actions > li {
+        display: inline-block;
+
+        button {
+            background-color: transparent;
+            color: $c_brand;
+            min-height: 32px;
+            width: 100%;
+            padding: 0 16px;
+        }
+
+        button:hover {
+            background-color: transparent;
+            border-color: $c_brand;
+            color: $c_brand;
+        }
+
+        button:active {
+            background-color: $c_brand;
+            border-color: $c_brand;
+            color: $c01;
+        }
+
     }
 
     .wc-console {
@@ -90,6 +139,7 @@ $headerTotalHeight: 38px;
 /* views */
 
     .wc-chatview-panel {
+        overflow: hidden;
         position: absolute;
         right: 0;
         left: 0;

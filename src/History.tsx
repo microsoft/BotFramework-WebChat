@@ -5,6 +5,7 @@ import { ActivityView } from './ActivityView';
 import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { SuggestedActions } from "./SuggestedActions";
 
 interface Props {
     format: FormatState
@@ -101,6 +102,13 @@ class HistoryContainer extends React.Component<Props, {}> {
         this.props.selectedActivitySubject.next({ activity });
     }
 
+    private suggestedActions() {
+        if (!this.props.activities || this.props.activities.length === 0) return;
+        const lastActivity = this.props.activities[this.props.activities.length - 1] as Message;
+        if (!lastActivity || !lastActivity.suggestedActions || lastActivity.suggestedActions.length === 0) return;
+        return lastActivity.suggestedActions;
+    }
+
     // In order to do their cool horizontal scrolling thing, Carousels need to know how wide they can be.
     // So, at startup, we create this mock Carousel activity and measure it. 
     private measurableCarousel = () =>
@@ -162,10 +170,25 @@ class HistoryContainer extends React.Component<Props, {}> {
             }
         }
 
+        const actions = this.suggestedActions();
+        const classNames = [];
+
+        if (actions) {
+            classNames.push('show-actions');
+        }
+
         return (
-            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
-                <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
-                    { content }
+            <div className={ classNames.join(' ') }>
+                <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
+                    <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
+                        { content }
+                    </div>
+                </div>
+                <div className="wc-actions">
+                    <SuggestedActions 
+                        actions={ actions }
+                        onCardAction={ (type, value) => this.onCardAction(type, value) }
+                     />
                 </div>
             </div>
         );
