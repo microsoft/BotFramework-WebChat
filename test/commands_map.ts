@@ -52,19 +52,21 @@ var commands_map: CommandValuesMap = {
     },
     "carousel-to-right": {
         client: async function () {
+
+            async function rightArrowClick(){
+                right_arrow.click();
+                await new Promise((resolve) => {
+                    setTimeout(resolve, 1000);
+                });
+            }
+
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
             
             // Carousel made of 4 cards.
             // 2-Clicks are needed to move all carousel to right.
             // Note: Electron browser width size must not be changed. 
-            right_arrow.click();
-            await new Promise((resolve) => {
-                setTimeout(resolve, 500);
-            });
-            right_arrow.click();
-            await new Promise((resolve) => {
-                setTimeout(resolve, 500);
-            });
+            await rightArrowClick();
+            await rightArrowClick();
 
             // Validates if the right_arrow button is disabled.             
             return right_arrow.getAttribute('disabled') != null;
