@@ -4,6 +4,10 @@ import { AttachmentView } from './Attachment';
 import { FormatState } from './Store';
 import { konsole } from './Chat';
 
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/Observable/fromEvent';
+
 export interface CarouselProps {
     format: FormatState,
     attachments: Attachment[],
@@ -24,8 +28,9 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
-    private scrollEventListener = () => this.onScroll();
     private scrollAllowInterrupt = true;
+
+    private scrollSubscription: Subscription;
 
     constructor(props: CarouselProps) {
         super(props);
@@ -65,7 +70,10 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     componentDidMount() {
         this.manageScrollButtons();
 
-        this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
+        this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(event => {
+            this.manageScrollButtons();
+            console.log("scroll event");
+        });
 
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
     }
@@ -99,11 +107,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 
     componentWillUnmount() {
-        this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
-    }
-
-    private onScroll() {
-        this.manageScrollButtons();
+        this.scrollSubscription.unsubscribe();
     }
 
     private scrollBy(increment: number) {
