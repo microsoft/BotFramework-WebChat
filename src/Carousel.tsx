@@ -92,15 +92,12 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     componentDidUpdate() {
         konsole.log('carousel componentDidUpdate');
 
-        if (this.props.format.carouselMargin != undefined) {
-            //after the attachments have been rendered, we can now measure their actual width
-            if (this.state.contentWidth == undefined) {
-                console.log("measuring contentWidth");
-                this.root.style.width = '';
-                this.setState({ contentWidth: this.root.offsetWidth });
-            } else {
-                this.manageScrollButtons();
-            }
+        if (this.state.contentWidth == undefined) {
+            console.log("measuring contentWidth");
+            this.root.style.width = '';
+            this.setState({ contentWidth: this.root.offsetWidth });
+        } else {
+            this.manageScrollButtons();
         }
     }
 
@@ -176,17 +173,13 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         }, 1);
     }
 
-    private getMaxMessageContentWidth() {
-        if (this.props.format.chatWidth != undefined && this.props.format.carouselMargin != undefined)
-            return this.props.format.chatWidth - this.props.format.carouselMargin;
-    }
-
     render() {
         let style: React.CSSProperties;
-        const maxMessageContentWidth = this.getMaxMessageContentWidth();
-
-        if (maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
-            style = { width: maxMessageContentWidth }
+        if (this.props.format.chatWidth != undefined) {
+            const maxMessageContentWidth = this.props.format.chatWidth - this.props.format.carouselMargin;
+            if (this.state.contentWidth > maxMessageContentWidth) {
+                style = { width: maxMessageContentWidth }
+            }
         }
 
         return (
