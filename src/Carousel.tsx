@@ -7,6 +7,7 @@ import { konsole } from './Chat';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/Observable/fromEvent';
+import 'rxjs/add/Observable/merge';
 
 export interface CarouselProps {
     format: FormatState,
@@ -31,6 +32,8 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private scrollAllowInterrupt = true;
 
     private scrollSubscription: Subscription;
+    private previousButton: HTMLButtonElement;
+    private nextButton: HTMLButtonElement;
 
     constructor(props: CarouselProps) {
         super(props);
@@ -75,6 +78,14 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
             console.log("scroll event");
         });
 
+        Observable.merge(
+            Observable.fromEvent<UIEvent>(this.previousButton, 'click').map(_ => -1),
+            Observable.fromEvent<UIEvent>(this.nextButton, 'click').map(_ => 1)
+        ).subscribe(delta => {
+            console.log("scroll button", delta);
+            this.scrollBy(delta);
+        });
+
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
     }
 
@@ -88,7 +99,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                 this.setState({ contentWidth: this.root.offsetWidth });
             } else {
                 //compare scroll state to desired scroll state
-                var desiredButtonState = this.getScrollButtonState();
+                const desiredButtonState = this.getScrollButtonState();
                 if (desiredButtonState.nextButtonEnabled != this.state.nextButtonEnabled
                     || desiredButtonState.previousButtonEnabled != this.state.previousButtonEnabled) {
                         this.setState(desiredButtonState);
@@ -111,7 +122,6 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 
     private scrollBy(increment: number) {
-
         if (!this.scrollAllowInterrupt) return;
 
         let easingClassName = 'wc-animate-scroll';
@@ -187,7 +197,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
 
         return (
             <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
-                <button disabled={ !this.state.previousButtonEnabled } className="scroll previous" onClick={ () => this.scrollBy(-1) }>
+                <button disabled={ !this.state.previousButtonEnabled } className="scroll previous" ref={ button => this.previousButton = button}>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
                     </svg>
@@ -197,7 +207,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                         <CarouselAttachments { ... this.props }/>
                     </div>
                 </div>
-                <button disabled={ !this.state.nextButtonEnabled } className="scroll next" onClick={ () => this.scrollBy(1) }>
+                <button disabled={ !this.state.nextButtonEnabled } className="scroll next" ref={ button => this.nextButton = button}>
                     <svg>
                         <path d="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z" />
                     </svg>
