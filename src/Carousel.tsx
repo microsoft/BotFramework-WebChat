@@ -59,23 +59,23 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         this.scrollAllowInterrupt = true;
     }
 
-    private getScrollButtonState() {
-        return {
-            previousButtonEnabled: this.scrollDiv.scrollLeft > 0,
-            nextButtonEnabled: this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
-        };
-    }
-
-    private manageScrollButtons() {
-        this.setState(this.getScrollButtonState());
+    private manageScrollButtons(forceUpdate = false) {
+        const previousButtonEnabled = this.scrollDiv.scrollLeft > 0,
+        const nextButtonEnabled =this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
+        if (forceUpdate
+            || nextButtonEnabled != this.state.nextButtonEnabled
+            || previousButtonEnabled != this.state.previousButtonEnabled) {
+                console.log("change button state");
+                this.setState({ previousButtonEnabled, nextButtonEnabled });
+            }
     }
 
     componentDidMount() {
-        this.manageScrollButtons();
+        konsole.log('carousel componentDidUpdate');
+        this.manageScrollButtons(true);
 
         this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(event => {
             this.manageScrollButtons();
-            console.log("scroll event");
         });
 
         Observable.merge(
@@ -95,15 +95,11 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         if (this.props.format.carouselMargin != undefined) {
             //after the attachments have been rendered, we can now measure their actual width
             if (this.state.contentWidth == undefined) {
+                console.log("measuring contentWidth");
                 this.root.style.width = '';
                 this.setState({ contentWidth: this.root.offsetWidth });
             } else {
-                //compare scroll state to desired scroll state
-                const desiredButtonState = this.getScrollButtonState();
-                if (desiredButtonState.nextButtonEnabled != this.state.nextButtonEnabled
-                    || desiredButtonState.previousButtonEnabled != this.state.previousButtonEnabled) {
-                        this.setState(desiredButtonState);
-                    }
+                this.manageScrollButtons();
             }
         }
     }
@@ -137,9 +133,8 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         if (!firstItem) return;
 
         const itemWidth = firstItem.offsetWidth;
-        const unit = increment * itemWidth;
         const scrollLeft = this.scrollDiv.scrollLeft;
-        let dest = scrollLeft + unit;
+        let dest = scrollLeft + increment * itemWidth;
 
         //don't exceed boundaries
         dest = Math.max(dest, 0);
@@ -160,8 +155,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
 
         //capture ComputedStyle every millisecond
         this.scrollSyncTimer = setInterval(() => {
-            const num = parseFloat(getComputedStyle(this.animateDiv).left);
-            this.scrollDiv.scrollLeft = num;
+            this.scrollDiv.scrollLeft = parseFloat(getComputedStyle(this.animateDiv).left);
         }, 1);
 
         //don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
@@ -231,6 +225,7 @@ class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
     }
 
     render() {
+        console.log("rendering carouselAttachment");
         const { attachments, ... props } = this.props;
         return (
             <ul>{ this.props.attachments.map((attachment, index) =>
