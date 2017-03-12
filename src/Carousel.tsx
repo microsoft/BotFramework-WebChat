@@ -61,7 +61,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
 
     private manageScrollButtons(forceUpdate = false) {
         const previousButtonEnabled = this.scrollDiv.scrollLeft > 0;
-        const nextButtonEnabled = this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
+        const nextButtonEnabled = this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
         if (forceUpdate
             || nextButtonEnabled != this.state.nextButtonEnabled
             || previousButtonEnabled != this.state.previousButtonEnabled) {
