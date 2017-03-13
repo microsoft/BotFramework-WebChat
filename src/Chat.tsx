@@ -9,6 +9,7 @@ import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, ShellAction, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
+import { strings, defaultStrings, Strings } from './Strings';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -25,6 +26,7 @@ export interface ChatProps {
     botConnection?: IBotConnection,
     directLine?: DirectLineOptions,
     locale?: string,
+    strings?: Strings,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,

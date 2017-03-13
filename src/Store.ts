@@ -71,7 +71,7 @@ export type FormatAction = {
     locale: string
 } | {
     type: 'Set_Strings',
-    strings: object
+    strings: Strings
 } | {
     type: 'Set_Size',
     width: number,
