@@ -1,70 +1,77 @@
+﻿<!DOCTYPE html>
+<!-- 
+    This is a sample HTML file which shows how to embed a full-window instance of WebChat.
+    1. Build the project: "npm run build"
+    2. Start a web server: "npm run start"
+    3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.3/dialog-polyfill.min.css">
-<link href="https://webchat.botframework.com/css/botchat.css" rel="stylesheet" />
-<style>
-    #BotChatElement {
-        height: 90vh;
-    }
+    For ease of testing, several parameters can be set in the query string:
+        * s = Direct Line secret, or
+        * t = Direct Line token (obtained by calling Direct Line's Generate Token)
+        * domain = optionally, the URL of an alternate Direct Line endpoint
+        * webSocket = set to 'true' to use WebSocket to receive messages (currently defaults to false)
+        * userid, username = id (and optionally name) of bot user
+        * botid, botname = id (and optionally name) of bot
+-->
+<html>
 
+<head>
+    <meta charset="UTF-8" />
+    <title>Bot Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.3/dialog-polyfill.min.css">
+    <link href="../../botchat.css" rel="stylesheet" />
+    <link href="../../botchat-popup.css" rel="stylesheet" />
 
-    .mdl-dialog {
-        width: 60vw;
-    }
+</head>
 
+<body>
+    <button id="show-dialog" type="button" class="mdl-button  mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+        <i class="material-icons">chat</i>&nbsp;Dites-nous</button>
+    <dialog class="mdl-dialog">
+        <!-- Colored FAB button with ripple -->
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored close">
+        <i class="material-icons">close</i>
+        </button>
+        <div id="BotChatGoesHere"></div>
+    </dialog> 
+    <script src="../../botchat.js"></script>
+    <script>
+        var params = BotChat.queryParams(location.search);
 
-    .close {
-        z-index: 2;
-        position: absolute;
-        right: -10px;
-        top: -10px;
-    }
+        var user = {
+            id: params['userid'] || 'userid',
+            name: params["username"] || 'username'
+        };
 
+        var bot = {
+            id: params['botid'] || 'botid',
+            name: params["botname"] || 'botname'
+        };
 
-    #show-dialog {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-    }
-</style>
-<button id="show-dialog" type="button" class="mdl-button  mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-    <i class="material-icons">chat</i>&nbsp;Dites-nous</button>
-<dialog class="mdl-dialog">
-    <!-- Colored FAB button with ripple -->
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored close">
-  <i class="material-icons">close</i>
-</button>
-    <div id="BotChatElement"></div>
-</dialog>
-<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.3/dialog-polyfill.min.js"></script>
-<!-- script src="https://webchat.botframework.com/scripts/botchat.js"></script -->
-<script src="/botchat.js"></script>
-<script>
-    var model = {
-        "userId": Math.floor(Math.random() * 100000) + "@" + window.location.host,
-        "userName": "You",
-        "botId": "salesucation",
-        "botIconUrl": "//bot-framework.azureedge.net/bot-icons-v1/bot-framework-default-4.png",
-        "botName": "Salesucation",
-        "secret": "goddCYki1ps.cwA.K0I.En1clNm6KhHPfN9wzEOnU04pZRUpIgRNpx0EK4i2OEA",
-        "iconUrl": "//bot-framework.azureedge.net/bot-icons-v1/bot-framework-default-4.png",
-        "directLineUrl": "https://directline.botframework.com/v3/directline"
-    };
+        window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
-</script>
-<script>
-    BotChat.App({
-        directLine: {
-            secret: model.secret,
-            token: model.token,
-            domain: model.directLineUrl,
-            webSocket: false
-        },
-        user: { id: model.userId, name: model.userName },
-        bot: {
-            id: model.botId, name: model.botName, locale: "fr",
+        BotChat.App({
+            directLine: {
+                secret: params['s'],
+                token: params['t'],
+                domain: params['domain'],
+                webSocket: params['webSocket'] && params['webSocket'] === "true" // defaults to true
+            },
+            user: user,
+            bot: bot,
+            locale: 'fr',
             strings: {
                 title: "Dites-nous",
                 send: "Envoyer",
@@ -73,24 +80,27 @@
                 receiptTax: "Impôt",
                 receiptTotal: "Total",
                 messageRetry: "recommencez",
-                messageFailed: "Impossible d&#39;envoyer",
+                messageFailed: "Impossible d'envoyer",
                 messageSending: "envoi",
                 timeSent: " à %1",
                 consolePlaceholder: "Saisissez votre message ..."
             }
+            // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
+        }, document.getElementById("BotChatGoesHere"));
+        var dialog = document.querySelector('dialog');
+        var showDialogButton = document.querySelector('#show-dialog');
+        if (!dialog.showModal) {
+            dialogPolyfill.registerDialog(dialog);
         }
-    }, document.getElementById("BotChatElement"));
-    var dialog = document.querySelector('dialog');
-    var showDialogButton = document.querySelector('#show-dialog');
-    if (!dialog.showModal) {
-        dialogPolyfill.registerDialog(dialog);
-    }
-    showDialogButton.addEventListener('click', function () {
-        dialog.showModal();
-        document.querySelector('.wc-textbox input').focus();
-    });
-    dialog.querySelector('.close').addEventListener('click', function () {
-        dialog.close();
-    });
+        showDialogButton.addEventListener('click', function () {
+            dialog.showModal();
+            document.querySelector('.wc-textbox input').focus();
+        });
+        dialog.querySelector('.close').addEventListener('click', function () {
+            dialog.close();
+        });
 
-</script>
+    </script>
+</body>
+
+</html>

@@ -34,30 +34,41 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     componentDidUpdate() {
-        if (this.props.format.carouselMargin == undefined) {
-            // After our initial render we need to measure the carousel width
+        if (this.carouselActivity != null) {
+            if (this.carouselActivity.messageDiv.offsetParent != null &&
+                this.props.format.carouselMargin == undefined) {
+                // After our initial render we need to measure the carousel width
 
-            // Measure the message padding by subtracting the known large width
-            const paddedWidth = measurePaddedWidth(this.carouselActivity.messageDiv) - this.largeWidth;
+                // Measure the message padding by subtracting the known large width
+                const paddedWidth = measurePaddedWidth(this.carouselActivity.messageDiv) - this.largeWidth;
 
-            // Subtract the padding from the offsetParent's width to get the width of the content
-            const maxContentWidth = (this.carouselActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - paddedWidth;
-            
-            // Subtract the content width from the chat width to get the margin.
-            // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
-            const carouselMargin = this.props.format.chatWidth - maxContentWidth;
-            
-            konsole.log('history measureMessage ' + carouselMargin);
+                // Subtract the padding from the offsetParent's width to get the width of the content
+                const maxContentWidth = (this.carouselActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - paddedWidth;
 
-            // Finally, save it away in the Store, which will force another re-render
-            this.props.dispatch<FormatAction>({ 
-                type: 'Set_Measurements',
-                carouselMargin
-            });
+                // Subtract the content width from the chat width to get the margin.
+                // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
+                const carouselMargin = this.props.format.chatWidth - maxContentWidth;
 
-            this.carouselActivity = null; // After the re-render this activity doesn't exist
+                konsole.log('history measureMessage ' + carouselMargin);
+
+                // Finally, save it away in the Store, which will force another re-render
+                this.props.dispatch<FormatAction>({
+                    type: 'Set_Measurements',
+                    carouselMargin
+                });
+
+                this.carouselActivity = null; // After the re-render this activity doesn't exist
+            }
+            else{
+                const carouselMargin = 0;
+                this.props.dispatch<FormatAction>({
+                    type: 'Set_Measurements',
+                    carouselMargin
+                });
+                
+            }
+
         }
-
         this.autoscroll();
     }
 
@@ -95,7 +106,7 @@ class HistoryContainer extends React.Component<Props, {}> {
 
             default:
                 konsole.log("unknown button type", type);
-            }
+        }
     }
 
     private onSelectActivity(activity: Activity) {
@@ -106,24 +117,24 @@ class HistoryContainer extends React.Component<Props, {}> {
     // So, at startup, we create this mock Carousel activity and measure it. 
     private measurableCarousel = () =>
         // find the largest possible message size by forcing a width larger than the chat itself
-        <WrappedActivity 
-            ref={ x => this.carouselActivity = x }
-            activity={ {
+        <WrappedActivity
+            ref={x => this.carouselActivity = x}
+            activity={{
                 type: 'message',
                 id: '',
                 from: { id: '' },
                 attachmentLayout: 'carousel'
-            } }
-            format={ null }
-            fromMe={ false }
-            onCardAction={ null }
-            onClickActivity={ null }
-            onClickRetry={ null }
-            onImageLoad={ null }
-            selected={ false }
-            showTimestamp={ false }
+            }}
+            format={null}
+            fromMe={false}
+            onCardAction={null}
+            onClickActivity={null}
+            onClickRetry={null}
+            onImageLoad={null}
+            selected={false}
+            showTimestamp={false}
         >
-            <div style={ { width: this.largeWidth } }>&nbsp;</div>
+            <div style={{ width: this.largeWidth }}>&nbsp;</div>
         </WrappedActivity>;
 
     // At startup we do three render passes:
@@ -138,35 +149,35 @@ class HistoryContainer extends React.Component<Props, {}> {
             if (this.props.format.carouselMargin === undefined) {
                 // For measuring carousels we need a width known to be larger than the chat itself
                 this.largeWidth = this.props.format.chatWidth * 2;
-                content = <this.measurableCarousel/>;
+                content = <this.measurableCarousel />;
             } else {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
-                        key={ 'message' + index }
-                        activity={ activity }
-                        showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                        selected={ activity === this.props.selectedActivity }
-                        fromMe={ activity.from.id === this.props.user.id }
-                        format={ this.props.format }
-                        onCardAction={ (type, value) => this.onCardAction(type, value) }
-                        onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
-                        onClickRetry={ e => {
+                        key={'message' + index}
+                        activity={activity}
+                        showTimestamp={index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1]))}
+                        selected={activity === this.props.selectedActivity}
+                        fromMe={activity.from.id === this.props.user.id}
+                        format={this.props.format}
+                        onCardAction={(type, value) => this.onCardAction(type, value)}
+                        onClickActivity={this.props.selectedActivitySubject && (() => this.onSelectActivity(activity))}
+                        onClickRetry={e => {
                             // Since this is a click on an anchor, we need to stop it
                             // from trying to actually follow a (nonexistant) link
                             e.preventDefault();
                             e.stopPropagation();
                             this.onClickRetry(activity)
-                        } }
-                        onImageLoad={ () => this.autoscroll() }
+                        }}
+                        onImageLoad={() => this.autoscroll()}
                     />
                 );
             }
         }
 
         return (
-            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
-                <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
-                    { content }
+            <div className="wc-message-groups" ref={div => this.scrollMe = div || this.scrollMe}>
+                <div className="wc-message-group-content" ref={div => this.scrollContent = div}>
+                    {content}
                 </div>
             </div>
         );
@@ -225,28 +236,28 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         super(props);
     }
 
-    render () {
+    render() {
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
-                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
+                timeLine = <span>{this.props.format.strings.messageSending}</span>;
                 break;
             case null:
-                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
+                timeLine = <span>{this.props.format.strings.messageFailed}</span>;
                 break;
             case "retry":
                 timeLine =
                     <span>
-                        { this.props.format.strings.messageFailed }
-                        { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
+                        {this.props.format.strings.messageFailed}
+                        {' '}
+                        <a href="." onClick={this.props.onClickRetry}>{this.props.format.strings.messageRetry}</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
                     sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                timeLine = <span>{this.props.activity.from.name || this.props.activity.from.id}{sent}</span>;
                 break;
         }
 
@@ -265,23 +276,23 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
 
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                    <div className={ contentClassName }>
+            <div data-activity-id={this.props.activity.id} className={wrapperClassName} onClick={this.props.onClickActivity}>
+                <div className={'wc-message wc-message-from-' + who} ref={div => this.messageDiv = div}>
+                    <div className={contentClassName}>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
                         <ActivityView
-                            activity={ this.props.activity }
-                            format={ this.props.format }
-                            onCardAction={ this.props.onCardAction }
-                            onImageLoad={ this.props.onImageLoad }
+                            activity={this.props.activity}
+                            format={this.props.format}
+                            onCardAction={this.props.onCardAction}
+                            onImageLoad={this.props.onImageLoad}
                         />
-                        { this.props.children }
+                        {this.props.children}
                     </div>
                 </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                <div className={'wc-message-from wc-message-from-' + who}>{timeLine}</div>
             </div>
         );
     }
