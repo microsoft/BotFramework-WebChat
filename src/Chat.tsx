@@ -9,6 +9,7 @@ import { History } from './History';
 import { Shell } from './Shell';
 import { createStore, ShellAction, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
+import { strings, defaultStrings, Strings } from './Strings';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -25,6 +26,7 @@ export interface ChatProps {
     botConnection?: IBotConnection,
     directLine?: DirectLineOptions,
     locale?: string,
+    strings?: Strings,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
@@ -48,11 +50,16 @@ export class Chat extends React.Component<ChatProps, {}> {
         super(props);
 
         konsole.log("BotChat.Chat props", props);
-
         this.store.dispatch<FormatAction>({
             type: 'Set_Locale',
             locale: props.locale || window.navigator["userLanguage"] || window.navigator.language || 'en'
         });
+        if(typeof(props['strings']) != "undefined"){
+            this.store.dispatch<FormatAction>({
+                type: 'Set_Strings',
+                strings: props.strings
+            });
+        }
 
         if (props.formatOptions)
             this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });

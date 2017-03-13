@@ -70,6 +70,9 @@ export type FormatAction = {
     type: 'Set_Locale',
     locale: string
 } | {
+    type: 'Set_Strings',
+    strings: Strings
+} | {
     type: 'Set_Size',
     width: number,
     height: number
@@ -102,6 +105,11 @@ export const format: Reducer<FormatState> = (
                 ... state,
                 locale: action.locale,
                 strings: strings(action.locale),
+            };
+        case 'Set_Strings':
+            return {
+                ... state,
+                strings: action.strings,
             };
         case 'Set_Size':
             return {
