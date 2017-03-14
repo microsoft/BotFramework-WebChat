@@ -188,8 +188,8 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
                     </svg>
                 </button>
-                <div className="wc-carousel-scroll-outer">
-                    <div className="wc-carousel-scroll" ref={ div => this.scrollDiv = div }>
+                <div className="wc-hscroll-outer">
+                    <div className="wc-hscroll" ref={ div => this.scrollDiv = div }>
                         <CarouselAttachments { ... this.props }/>
                     </div>
                 </div>

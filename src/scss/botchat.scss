@@ -82,54 +82,54 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
         overflow: hidden;
     }
 
-    .wc-actions {
+    .wc-suggested-actions {
         bottom: $consoleHeight;
         height: 0;
         left: 0;
         overflow: hidden;
+        padding: 2px 3px;
         position: absolute;
         right: 0;
         transition: height $actionTransition;
+
+        ul {
+            background-color: #f9f9f9;
+            height: $actionsHeight;
+        }
+
+        li {
+            display: inline-block;
+            margin: 2px;
+
+            button {
+                background-color: #fff;
+                color: $c_brand;
+                min-height: 32px;
+                width: 100%;
+                padding: 0 16px;
+            }
+
+            button:hover {
+                background-color: #fff;
+                border-color: $c_brand;
+                color: $c_brand;
+            }
+
+            button:active {
+                background-color: $c_brand;
+                border-color: $c_brand;
+                color: $c01;
+            }
+        }
     }
 
     .show-actions {
         .wc-message-groups {
             transform: translateY(-$actionsHeight);
         }
-        .wc-actions {
+        .wc-suggested-actions {
             height: $actionsHeight;
         }
-    }
-
-    ul.wc-suggested-actions {
-        background-color: #f9f9f9;
-        padding: 2px 3px;
-    }
-
-    .wc-suggested-actions > li {
-        display: inline-block;
-        margin: 2px;
-
-        button {
-            background-color: #fff;
-            color: $c_brand;
-            min-height: 32px;
-            width: 100%;
-            padding: 0 16px;
-        }
-
-        button:hover {
-            background-color: #fff;
-            border-color: $c_brand;
-            color: $c_brand;
-        }
-
-        button:active {
-            background-color: $c_brand;
-            border-color: $c_brand;
-            color: $c01;
-        }
-
     }
 
     .wc-console {
@@ -408,6 +408,29 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
         margin-top: 0;
     }
 
+/* horizontal scroll */
+
+    .wc-hscroll-outer {
+        /* allow horizontal scrolling but hide the scrollbar */
+        overflow: hidden;
+    }
+
+    .wc-hscroll {
+        /* allow horizontal scrolling but hide the scrollbar */
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .wc-hscroll > ul {
+        white-space: nowrap;
+    }
+
+    .wc-hscroll > ul > li {
+        display: inline-block;
+        vertical-align: top;
+        white-space: normal;
+    }
+
 /* carousel */
 
     .wc-carousel {
@@ -444,30 +467,15 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
         right: -16px;
     }
 
-    .wc-carousel-scroll-outer {
-        /* allow horizontal scrolling but hide the scrollbar */
-        overflow: hidden;
-    }
-
-    .wc-carousel-scroll {
-        /* allow horizontal scrolling but hide the scrollbar */
-        overflow-x: scroll;
-        overflow-y: hidden;
-    }
-
-    .wc-carousel-scroll > ul {
+    .wc-carousel .wc-hscroll > ul {
         margin-left: -4px;
-        white-space: nowrap;
     }
 
-    .wc-carousel-scroll > ul > li {
-        display: inline-block;
+    .wc-carousel .wc-hscroll > ul > li {
         padding: 0 4px;
-        vertical-align: top;
-        white-space: normal;
     }
 
-    .wc-carousel-scroll > ul > li:last-child {
+    .wc-carousel .wc-hscroll > ul > li:last-child {
         padding-right: 0;
     }
 
