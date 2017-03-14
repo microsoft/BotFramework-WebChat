@@ -1,17 +1,15 @@
 import * as React from 'react';
 import { CardAction } from 'botframework-directlinejs';
+import { HScroll } from './HScroll';
 
 export interface Props {
     onCardAction: (type: string, value: string) => void;
     actions: CardAction[];
 }
 
-export interface State {
-}
+export class SuggestedActions extends React.Component<Props, {}> {
 
-export class SuggestedActions extends React.Component<Props, State> {
-
-    private scrollDiv: HTMLDivElement;
+    private hscroll: HScroll;
 
     constructor(props: Props) {
         super(props);
@@ -37,30 +35,17 @@ export class SuggestedActions extends React.Component<Props, State> {
         if (!this.props.actions) return null;
 
         return (
-            <div className="wc-suggested-actions wc-hscroll-outer">
-                <div className="wc-hscroll" ref={ div => this.mount(div) }>
+            <div className="wc-suggested-actions">
+                <HScroll ref={ hscroll => this.hscroll = hscroll }
+                    prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
+                    nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
+                >
                     <ul>
                         { this.props.actions.map((action, index) => <li key={ index }><button onClick={ e => this.actionClick(e, action) }>{ action.title }</button></li>) }
                     </ul>
-                </div>
+                </HScroll>
             </div>
         );
     }
 
-    componentDidUpdate() {
-        if (!this.scrollDiv) return;
-        this.scrollDiv.scrollLeft = 0;
-    }
-
-    mount(div: HTMLDivElement) {
-        if (this.scrollDiv) return;
-        
-        this.scrollDiv = div;
-
-        //this.manageScrollButtons();
-
-        //this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
-
-        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
-    }
 }

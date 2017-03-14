@@ -83,18 +83,18 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     }
 
     .wc-suggested-actions {
+        background-color: #f9f9f9;
         bottom: $consoleHeight;
         height: 0;
         left: 0;
         overflow: hidden;
-        padding: 2px 3px;
         position: absolute;
         right: 0;
         transition: height $actionTransition;
 
         ul {
-            background-color: #f9f9f9;
             height: $actionsHeight;
+            padding: 2px 3px;
         }
 
         li {
@@ -120,6 +120,41 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
                 border-color: $c_brand;
                 color: $c01;
             }
+        }
+
+        button.scroll {
+            background-color: $c11;
+            height: $actionsHeight;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            top: 0;
+            width: 28px;
+        }
+        
+        button.scroll:disabled {
+            display: none;
+        }
+
+        button.scroll:hover {
+            background-color:  $c08;
+        }
+
+        button.scroll svg {
+            fill: $c01;
+
+            //TODO: use proper svg coords in the path data
+            path {
+                transform: translateY(6px);
+            }
+        }
+
+        button.scroll.previous {
+            left: 0;
+        }
+
+        button.scroll.next {
+            right: 0;
         }
     }
 
@@ -435,53 +470,53 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
 
     .wc-carousel {
         position: relative;
-    }
 
-    .wc-carousel button.scroll {
-        background-color: $c11;
-        height: 28px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        top: 50%;
-        width: 28px;
-    }
+        button.scroll {
+            background-color: $c11;
+            height: 28px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            top: 50%;
+            width: 28px;
+        }
 
-    .wc-carousel button.scroll:disabled {
-        display: none;
-    }
+        button.scroll:disabled {
+            display: none;
+        }
 
-    .wc-carousel button.scroll:hover {
-        background-color:  $c08;
-    }
+        button.scroll:hover {
+            background-color:  $c08;
+        }
 
-    .wc-carousel button.scroll svg {
-        fill: $c01;
-    }
+        button.scroll svg {
+            fill: $c01;
+        }
 
-    .wc-carousel button.scroll.previous {
-        left: -16px;
-    }
+        button.scroll.previous {
+            left: -16px;
+        }
 
-    .wc-carousel button.scroll.next {
-        right: -16px;
-    }
+        button.scroll.next {
+            right: -16px;
+        }
 
-    .wc-carousel .wc-hscroll > ul {
-        margin-left: -4px;
-    }
+        .wc-hscroll > ul {
+            margin-left: -4px;
+        }
 
-    .wc-carousel .wc-hscroll > ul > li {
-        padding: 0 4px;
-    }
+        .wc-hscroll > ul > li {
+            padding: 0 4px;
+        }
 
-    .wc-carousel .wc-hscroll > ul > li:last-child {
-        padding-right: 0;
-    }
+        .wc-hscroll > ul > li:last-child {
+            padding-right: 0;
+        }
 
-    .wc-carousel li p {
-        min-height: 4em;
-        white-space: normal;
+        li p {
+            min-height: 4em;
+            white-space: normal;
+        }
     }
 
 /* from me */

@@ -171,25 +171,19 @@ class HistoryContainer extends React.Component<Props, {}> {
         }
 
         const actions = this.suggestedActions();
-        const classNames = [];
-
-        if (actions) {
-            classNames.push('show-actions');
-        }
+        const className = actions ? 'show-actions' : '';
 
         return (
-            <div className={ classNames.join(' ') }>
+            <div className={ className }>
                 <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
                     <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
                         { content }
                     </div>
                 </div>
-                <div className="wc-actions">
-                    <SuggestedActions 
-                        actions={ actions }
-                        onCardAction={ (type, value) => this.onCardAction(type, value) }
-                     />
-                </div>
+                <SuggestedActions
+                    actions={ actions }
+                    onCardAction={ (type, value) => this.onCardAction(type, value) }
+                />
             </div>
         );
     }
