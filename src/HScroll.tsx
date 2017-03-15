@@ -14,10 +14,6 @@ export interface HScrollProps {
 export class HScroll extends React.Component<HScrollProps, {}> {
     private prevButton: HTMLButtonElement;
     private nextButton: HTMLButtonElement;
-    
-    private prevButtonDisabled = true;
-    private nextButtonDisabled = true;
-
     private scrollDiv: HTMLDivElement;
     private animateDiv: HTMLDivElement;
 
@@ -46,17 +42,8 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     private updateScrollButtons() {
-        const prevButtonDisabled = !(this.scrollDiv && this.scrollDiv.scrollLeft > 0);
-        if (prevButtonDisabled != this.prevButtonDisabled) {
-            this.prevButtonDisabled = prevButtonDisabled;
-            this.prevButton.disabled = prevButtonDisabled;
-        }
-
-        const nextButtonDisabled = !(this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
-        if (nextButtonDisabled != this.nextButtonDisabled) {
-            this.nextButtonDisabled = nextButtonDisabled;
-            this.nextButton.disabled = nextButtonDisabled;
-        }
+        this.prevButton.disabled = !(this.scrollDiv && this.scrollDiv.scrollLeft > 0);
+        this.nextButton.disabled = !(this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
     }
 
     componentDidMount() {
