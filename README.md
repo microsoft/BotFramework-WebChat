@@ -39,7 +39,8 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
       BotChat.App({
         directLine: { secret: direct_line_secret },
         user: { id: 'userid' },
-        bot: { id: 'botid' }
+        bot: { id: 'botid' },
+        resize: 'detect'
       }, document.getElementById("bot"));
     </script>
   </body>
@@ -105,8 +106,6 @@ You may also wish to go so far as to publish your repo as its own full-fledged, 
 
 Different projects have different build strategies, yours may vary considerably from the above. If you come up with a different integration approach that you feel would have broad application, please consider filing a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) for this README.
 
-* Go to the next level with [Advanced WebChat](#advanced-webchat)
-
 ## Building WebChat
 
 1. Clone (or fork) this repo
@@ -119,14 +118,18 @@ This builds the following:
 * `/built/*.d.ts` declarations for TypeScript users - `/built/BotChat.d.ts` is the root
 * `/built/*.js.map` sourcemaps for easier debugging
 * `/botchat.js` webpacked UMD file containing all dependencies (React, Redux, RxJS, polyfills, etc.)
-
-`/botchat.css` is currently static, but in the future it may be built
+* `/botchat.css` base stylesheet
+* `/botchat-fullwindow.css` media query stylesheet for a full-window experience
 
 ## Customizing WebChat
 
 ### Styling
 
-The most obvious place to start is by altering `/botchat.css` to match the look of your site.
+In the `/src/scss/` folder you will find the source files for generating `/botchat.css`. Run `npm run build-css` to compile once you've made your changes. For basic branding, change `colors.scss` to match your color scheme. For advanced styling, change `botchat.scss`.
+
+#### Card Sizes / Responsiveness
+
+WebChat strives to use responsive design when possible. As part of this, WebChat cards come in 3 sizes: narrow (216px), normal (320px) and wide (416px). In a full-window chat, these sizes are invoked by a CSS media query in the `/botchat-fullwindow.css` style sheet. You may customize this style sheet for the media query breakpoints in your own application. Or, if your WebChat implementation is not a full-window experience, you can manually invoke card sizes by adding the CSS classes `wc-narrow` and `wc-wide` to the HTML element containing your chat.
 
 ### Strings
 
