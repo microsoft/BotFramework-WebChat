@@ -9,8 +9,6 @@ export interface Props {
 
 export class SuggestedActions extends React.Component<Props, {}> {
 
-    private hscroll: HScroll;
-
     constructor(props: Props) {
         super(props);
     }
@@ -36,7 +34,7 @@ export class SuggestedActions extends React.Component<Props, {}> {
 
         return (
             <div className="wc-suggested-actions">
-                <HScroll ref={ hscroll => this.hscroll = hscroll }
+                <HScroll
                     prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
                     nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
                     scrollUnit="page"
