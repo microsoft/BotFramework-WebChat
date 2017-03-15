@@ -14,7 +14,7 @@ const Attachments = (props: {
     onImageLoad: () => void
 }) => {
     const { attachments, attachmentLayout, ... otherProps } = props;
-    if (!attachments || attachments.length == 0)
+    if (!attachments || attachments.length === 0)
         return null;
     return attachmentLayout === 'carousel' ?
         <Carousel
@@ -48,13 +48,13 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
 
     shouldComponentUpdate(nextProps: ActivityViewProps) {
         // if the activity changed, re-render
-        return this.props.activity != nextProps.activity
+        return this.props.activity !== nextProps.activity
         // if the format changed, re-render
-            || this.props.format != nextProps.format
+            || this.props.format !== nextProps.format
         // if it's a carousel and the size changed, re-render
-            || (this.props.activity.type == 'message'
-                && this.props.activity.attachmentLayout == 'carousel'
-                && this.props.size != nextProps.size);
+            || (this.props.activity.type === 'message'
+                && this.props.activity.attachmentLayout === 'carousel'
+                && this.props.size !== nextProps.size);
     }
 
     render() {

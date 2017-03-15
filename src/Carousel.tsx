@@ -41,9 +41,9 @@ export class Carousel extends React.Component<CarouselProps, {}> {
     }
 
     shouldComponentUpdate(nextProps: CarouselProps) {
-        return this.props.attachments != nextProps.attachments
-            || this.props.format != nextProps.format
-            || this.props.size != nextProps.size;
+        return this.props.attachments !== nextProps.attachments
+            || this.props.format !== nextProps.format
+            || this.props.size !== nextProps.size;
     }
 
     render() {
