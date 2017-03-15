@@ -20,7 +20,7 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private sendMessage() {
-        sendMessage(this.props.dispatch, this.props.inputText, this.props.user, this.props.format.locale);
+        sendMessage(this.props.dispatch, this.props.inputText, this.props.user, this.props.format.locale, this.props.format.messageTextFormat);
     }
 
     private onChangeText() {

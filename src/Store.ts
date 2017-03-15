@@ -56,6 +56,7 @@ export const shell: Reducer<ShellState> = (
 
 export interface FormatState {
     locale: string,
+    messageTextFormat: string,
     options: FormatOptions,
     strings: Strings,
     chatHeight: number,
@@ -76,11 +77,15 @@ export type FormatAction = {
 } | {
     type: 'Set_Measurements',
     carouselMargin: number
+} | {
+    type: 'Set_Text_Format_Option',
+    messageTextFormat: string
 }
 
 export const format: Reducer<FormatState> = (
     state: FormatState = {
         locale: 'en-us',
+        messageTextFormat: 'plain',
         options: {
             showHeader: true
         },
@@ -114,6 +119,11 @@ export const format: Reducer<FormatState> = (
                 ... state,
                 carouselMargin: action.carouselMargin
             };
+        case 'Set_Text_Format_Option':
+            return {
+                ... state,
+                messageTextFormat: action.messageTextFormat
+            }
         default:
             return state;
     }

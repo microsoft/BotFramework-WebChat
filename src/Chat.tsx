@@ -25,6 +25,7 @@ export interface ChatProps {
     botConnection?: IBotConnection,
     directLine?: DirectLineOptions,
     locale?: string,
+    messageTextFormat?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
@@ -56,6 +57,9 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         if (props.formatOptions)
             this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
+
+        if (props.messageTextFormat)
+            this.store.dispatch<FormatAction>({ type: 'Set_Text_Format_Option', messageTextFormat: props.messageTextFormat })
         
         if (props.sendTyping)
             this.store.dispatch<ShellAction>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });        
@@ -160,7 +164,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
-export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User, locale: string) => {
+export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User, locale: string, messageTextFormat: string) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     dispatch({ type: 'Send_Message', activity: {
@@ -168,6 +172,7 @@ export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, fro
         text,
         from,
         locale,
+        messageTextFormat,
         timestamp: (new Date()).toISOString()
     }});
 }
