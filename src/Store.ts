@@ -58,8 +58,6 @@ export interface FormatState {
     locale: string,
     options: FormatOptions,
     strings: Strings,
-    chatHeight: number,
-    chatWidth: number,
     carouselMargin: number
 }
 
@@ -69,10 +67,6 @@ export type FormatAction = {
 } | {
     type: 'Set_Locale',
     locale: string
-} | {
-    type: 'Set_Size',
-    width: number,
-    height: number
 } | {
     type: 'Set_Measurements',
     carouselMargin: number
@@ -85,8 +79,6 @@ export const format: Reducer<FormatState> = (
             showHeader: true
         },
         strings: defaultStrings,
-        chatHeight: undefined,
-        chatWidth: undefined,
         carouselMargin: undefined
     },
     action: FormatAction
@@ -103,12 +95,6 @@ export const format: Reducer<FormatState> = (
                 locale: action.locale,
                 strings: strings(action.locale),
             };
-        case 'Set_Size':
-            return {
-                ... state,
-                chatWidth: action.width,
-                chatHeight: action.height
-            };
         case 'Set_Measurements':
             return {
                 ... state,
@@ -118,6 +104,37 @@ export const format: Reducer<FormatState> = (
             return state;
     }
 }
+
+export interface SizeState {
+    height: number,
+    width: number,
+}
+
+export type SizeAction = {
+    type: 'Set_Size',
+    width: number,
+    height: number
+}
+
+export const size: Reducer<SizeState> = (
+    state: SizeState = {
+        width: undefined,
+        height: undefined
+    },
+    action: SizeAction
+) => {
+    switch (action.type) {
+        case 'Set_Size':
+            return {
+                ... state,
+                width: action.width,
+                height: action.height
+            };
+        default:
+            return state;
+    }
+}
+
 
 export interface ConnectionState {
     connectionStatus: ConnectionStatus,
@@ -321,13 +338,14 @@ export const history: Reducer<HistoryState> = (
     }
 }
 
-export type ChatActions = ShellAction | FormatAction | ConnectionAction | HistoryAction;
+export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction;
 
 const nullAction = { type: null } as ChatActions;
 
 export interface ChatState {
     shell: ShellState,
     format: FormatState,
+    size: SizeState,
     connection: ConnectionState,
     history: HistoryState
 }
@@ -422,6 +440,7 @@ export const createStore = () =>
         combineReducers<ChatState>({
             shell,
             format,
+            size,
             connection,
             history
         }),
