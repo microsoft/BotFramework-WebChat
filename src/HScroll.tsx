@@ -114,14 +114,14 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         document.body.appendChild(this.animateDiv);
 
         //capture ComputedStyle every millisecond
-        this.scrollSyncTimer = setInterval(() => {
+        this.scrollSyncTimer = window.setInterval(() => {
             const num = parseFloat(getComputedStyle(this.animateDiv).left);
             this.scrollDiv.scrollLeft = num;
         }, 1);
 
         //don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
         //we accomplish this by calling 'this.animateDiv.style.left' off this thread, using setTimeout
-        this.scrollStartTimer = setTimeout(() => {
+        this.scrollStartTimer = window.setTimeout(() => {
             this.animateDiv.style.left = dest + 'px';
 
             let duration = 1000 * parseFloat(getComputedStyle(this.animateDiv).transitionDuration);
@@ -130,7 +130,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                 duration += 50;
 
                 //stop capturing
-                this.scrollDurationTimer = setTimeout(() => this.clearScrollTimers(), duration);
+                this.scrollDurationTimer = window.setTimeout(() => this.clearScrollTimers(), duration);
             } else {
                 this.clearScrollTimers();
             }
