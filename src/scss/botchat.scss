@@ -92,33 +92,37 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
         right: 0;
         transition: height $actionTransition;
 
-        ul {
+        .wc-hscroll > ul {
             height: $actionsHeight;
             padding: 2px 3px;
-        }
 
-        li {
-            display: inline-block;
-            margin: 2px;
+            > li {
+                display: inline-block;
+                margin: 2px;
+                max-width: 40%;
 
-            button {
-                background-color: #fff;
-                color: $c_brand;
-                min-height: 32px;
-                width: 100%;
-                padding: 0 16px;
-            }
+                button {
+                    background-color: #fff;
+                    color: $c_brand;
+                    min-height: 32px;
+                    overflow: hidden;
+                    padding: 0 16px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    width: 100%;
+                }
 
-            button:hover {
-                background-color: #fff;
-                border-color: $c_brand;
-                color: $c_brand;
-            }
+                button:hover {
+                    background-color: #fff;
+                    border-color: $c_brand;
+                    color: $c_brand;
+                }
 
-            button:active {
-                background-color: $c_brand;
-                border-color: $c_brand;
-                color: $c01;
+                button:active {
+                    background-color: $c_brand;
+                    border-color: $c_brand;
+                    color: $c01;
+                }
             }
         }
 
@@ -651,7 +655,7 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     .wc-animate-scroll-near {
         left: 0;
         position: absolute;
-        transition: left .5s ease-in-out;
+        transition: left .3s ease-in-out;
     }
 
 /* text formats */

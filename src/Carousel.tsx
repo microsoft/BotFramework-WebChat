@@ -28,7 +28,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         };
     }
 
-    checkit() {
+    private trySetContentWidth() {
 
         if (this.props.format.carouselMargin != undefined) {
             //after the attachments have been rendered, we can now measure their actual width
@@ -42,13 +42,11 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 
     componentDidMount() {
-        konsole.log('carousel componentDidMount');
-        this.checkit();
+        this.trySetContentWidth();
     }
 
     componentDidUpdate() {
-        konsole.log('carousel componentDidUpdate');
-        this.checkit();
+        this.trySetContentWidth();
     }
 
     componentWillReceiveProps(nextProps: CarouselProps) {
@@ -78,6 +76,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                 <HScroll ref={ hscroll => this.hscroll = hscroll }
                     prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
                     nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
+                    scrollUnit="item"
                 >
                     <CarouselAttachments { ... this.props }/>
                 </HScroll>
@@ -95,13 +94,8 @@ export interface CarouselAttachmentProps {
 
 class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
 
-    componentDidUpdate() {
-        console.log('CarouselAttachments componentDidUpdate');
-        //this.manageScrollButtons();
-    }
-
     shouldComponentUpdate(nextProps: CarouselAttachmentProps) {
-        return this.props.attachments !== this.props.attachments;
+        return this.props.attachments !== this.props.attachments || this.props.format !== this.props.format;
     }
 
     render() {

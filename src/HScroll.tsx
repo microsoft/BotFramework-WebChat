@@ -2,6 +2,7 @@ import * as React from 'react';
 import { konsole } from './Chat';
 
 export interface HScrollProps {
+    scrollUnit: 'page' | 'item';
     prevSvgPathData: string;
     nextSvgPathData: string;
 }
@@ -15,7 +16,6 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     private scrollDurationTimer: number;
     private animateDiv: HTMLDivElement;
     private scrollEventListener = () => this.onScroll();
-    private scrollAllowInterrupt = true;
 
     constructor(props: HScrollProps) {
         super(props);
@@ -32,7 +32,6 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.scrollStartTimer = null;
         this.scrollSyncTimer = null;
         this.scrollDurationTimer = null;
-        this.scrollAllowInterrupt = true;
     }
 
     private getScrollButtonState() {
@@ -51,7 +50,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.nextButton.disabled = !desiredButtonState.nextButtonEnabled;
     }
 
-    mount(scrollDiv: HTMLDivElement) {
+    mountScrollDiv(scrollDiv: HTMLDivElement) {
         if (this.scrollDiv) return;
 
         this.scrollDiv = scrollDiv;
@@ -78,13 +77,31 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
     }
 
+    private scrollAmount(direction: number) {
+
+        switch (this.props.scrollUnit) {
+            case 'item':
+                
+                //TODO: this can be improved by finding the actual item in the viewport, instead of the first item, because they may not have the same width.
+                //the width of the li is measured on demand in case CSS has resized it
+                const firstItem = this.scrollDiv.querySelector('ul > li') as HTMLElement;
+                if (!firstItem) return 0;
+                
+                return direction * firstItem.offsetWidth;
+
+            case 'page':
+            default:
+
+                //todo: use a good page size. This can be improved by finding the next clipped item.
+                return direction * (this.scrollDiv.offsetWidth - 70);
+        }
+    }
+
     private onScroll() {
         this.manageScrollButtons();
     }
 
     private scrollBy(direction: number) {
-
-        if (!this.scrollAllowInterrupt) return;
 
         let easingClassName = 'wc-animate-scroll';
 
@@ -94,10 +111,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
             this.clearScrollTimers();
         }
 
-        //todo: use a good page size
-        const itemWidth = this.scrollDiv.offsetWidth;
-
-        const unit = direction * itemWidth;
+        const unit = this.scrollAmount(direction);
         const scrollLeft = this.scrollDiv.scrollLeft;
         let dest = scrollLeft + unit;
 
@@ -108,9 +122,8 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         if (scrollLeft == dest) return;
 
         //use proper easing curve when distance is small
-        if (Math.abs(dest - scrollLeft) < itemWidth) {
+        if (Math.abs(dest - scrollLeft) < 60) {
             easingClassName = 'wc-animate-scroll-near';
-            this.scrollAllowInterrupt = false;
         }
 
         this.animateDiv = document.createElement('div');
@@ -152,7 +165,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     </svg>
                 </button>
                 <div className="wc-hscroll-outer">
-                    <div className="wc-hscroll" ref={ div => this.mount(div) }>
+                    <div className="wc-hscroll" ref={ div => this.mountScrollDiv(div) }>
                         { this.props.children }
                     </div>
                 </div>
