@@ -3,17 +3,18 @@ import { Activity, Attachment, AttachmentLayout } from 'botframework-directlinej
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
-import { FormatState } from './Store';
+import { FormatState, SizeState } from './Store';
 
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
     format: FormatState,
+    size: SizeState,
     onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
 }) => {
     const { attachments, attachmentLayout, ... otherProps } = props;
-    if (!attachments || attachments.length == 0)
+    if (!attachments || attachments.length === 0)
         return null;
     return attachmentLayout === 'carousel' ?
         <Carousel
@@ -34,6 +35,7 @@ const Attachments = (props: {
 
 export interface ActivityViewProps {
     format: FormatState,
+    size: SizeState,
     activity: Activity,
     onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
@@ -46,7 +48,13 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
 
     shouldComponentUpdate(nextProps: ActivityViewProps) {
         // if the activity changed, re-render
-        return this.props.activity != nextProps.activity || this.props.format != nextProps.format;
+        return this.props.activity !== nextProps.activity
+        // if the format changed, re-render
+            || this.props.format !== nextProps.format
+        // if it's a carousel and the size changed, re-render
+            || (this.props.activity.type === 'message'
+                && this.props.activity.attachmentLayout === 'carousel'
+                && this.props.size !== nextProps.size);
     }
 
     render() {

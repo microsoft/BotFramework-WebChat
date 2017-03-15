@@ -8,7 +8,6 @@ export interface Props {
 }
 
 export class SuggestedActions extends React.Component<Props, {}> {
-
     constructor(props: Props) {
         super(props);
     }
@@ -24,7 +23,6 @@ export class SuggestedActions extends React.Component<Props, {}> {
     }
 
     shouldComponentUpdate(nextProps: Props) {
-
         //update only when there are actions. We want the old actions to remain displayed as it animates down.
         return !!nextProps.actions;
     }

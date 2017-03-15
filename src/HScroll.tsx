@@ -1,8 +1,12 @@
 import * as React from 'react';
 import { konsole } from './Chat';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/Observable/fromEvent';
+import 'rxjs/add/Observable/merge';
 
 export interface HScrollProps {
-    scrollUnit: 'page' | 'item';
+    scrollUnit?: 'page' | 'item'; // defaults to page
     prevSvgPathData: string;
     nextSvgPathData: string;
 }
@@ -11,11 +15,14 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     private prevButton: HTMLButtonElement;
     private nextButton: HTMLButtonElement;
     private scrollDiv: HTMLDivElement;
+    private animateDiv: HTMLDivElement;
+
     private scrollStartTimer: number;
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
-    private animateDiv: HTMLDivElement;
-    private scrollEventListener = () => this.onScroll();
+
+    private scrollSubscription: Subscription;
+    private clickSubscription: Subscription;
 
     constructor(props: HScrollProps) {
         super(props);
@@ -34,71 +41,46 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.scrollDurationTimer = null;
     }
 
-    private getScrollButtonState() {
-        return {
-            previousButtonEnabled: this.scrollDiv.scrollLeft > 0,
-            nextButtonEnabled: this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
-        };
-    }
-
-    public manageScrollButtons() {
-        if (!this.prevButton || !this.nextButton || !this.scrollDiv) return;
-        
-        var desiredButtonState = this.getScrollButtonState();
-
-        this.prevButton.disabled = !desiredButtonState.previousButtonEnabled;
-        this.nextButton.disabled = !desiredButtonState.nextButtonEnabled;
-    }
-
-    mountScrollDiv(scrollDiv: HTMLDivElement) {
-        if (this.scrollDiv) return;
-
-        this.scrollDiv = scrollDiv;
-
-        this.manageScrollButtons();
-
-        this.scrollDiv.addEventListener('scroll', this.scrollEventListener);
-
-        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
+    public updateScrollButtons() {
+        this.prevButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft <= 0;
+        this.nextButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft >= this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
     }
 
     componentDidMount() {
-        this.manageScrollButtons();
+        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
+
+        this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(_ => {
+            this.updateScrollButtons();
+        });
+
+        this.clickSubscription = Observable.merge(
+            Observable.fromEvent<UIEvent>(this.prevButton, 'click').map(_ => -1),
+            Observable.fromEvent<UIEvent>(this.nextButton, 'click').map(_ => 1)
+        ).subscribe(delta => {
+            this.scrollBy(this.scrollAmount(delta));
+        });
     }
 
     componentDidUpdate() {
-        if (!this.scrollDiv) return;
-        this.scrollDiv.scrollLeft = 0;
-
-        this.manageScrollButtons();
+        this.updateScrollButtons();
     }
 
     componentWillUnmount() {
-        this.scrollDiv.removeEventListener('scroll', this.scrollEventListener);
+        this.scrollSubscription.unsubscribe();
+        this.clickSubscription.unsubscribe();
     }
 
     private scrollAmount(direction: number) {
-
-        switch (this.props.scrollUnit) {
-            case 'item':
-                
-                //TODO: this can be improved by finding the actual item in the viewport, instead of the first item, because they may not have the same width.
-                //the width of the li is measured on demand in case CSS has resized it
-                const firstItem = this.scrollDiv.querySelector('ul > li') as HTMLElement;
-                if (!firstItem) return 0;
-                
-                return direction * firstItem.offsetWidth;
-
-            case 'page':
-            default:
-
-                //todo: use a good page size. This can be improved by finding the next clipped item.
-                return direction * (this.scrollDiv.offsetWidth - 70);
+        if (this.props.scrollUnit == 'item') {
+            // TODO: this can be improved by finding the actual item in the viewport,
+            // instead of the first item, because they may not have the same width.
+            // the width of the li is measured on demand in case CSS has resized it
+            const firstItem = this.scrollDiv.querySelector('ul > li') as HTMLElement;
+            return firstItem ? direction * firstItem.offsetWidth : 0;
+        } else {
+            // TODO: use a good page size. This can be improved by finding the next clipped item.
+            return direction * (this.scrollDiv.offsetWidth - 70);
         }
-    }
-
-    private onScroll() {
-        this.manageScrollButtons();
     }
 
     private scrollBy(direction: number) {
@@ -156,22 +138,21 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     render() {
-
         return (
             <div>
-                <button ref={ button => this.prevButton = this.prevButton || button } className="scroll previous" onClick={ () => this.scrollBy(-1) }>
+                <button ref={ button => this.prevButton = button } className="scroll previous" disabled>
                     <svg>
-                        <path d={ this.props.prevSvgPathData } />
+                        <path d={ this.props.prevSvgPathData }/>
                     </svg>
                 </button>
                 <div className="wc-hscroll-outer">
-                    <div className="wc-hscroll" ref={ div => this.mountScrollDiv(div) }>
+                    <div className="wc-hscroll" ref={ div => this.scrollDiv = div }>
                         { this.props.children }
                     </div>
                 </div>
-                <button ref={ button => this.nextButton = this.nextButton || button } className="scroll next" onClick={ () => this.scrollBy(1) }>
+                <button ref={ button => this.nextButton = button } className="scroll next" disabled>
                     <svg>
-                        <path d={ this.props.nextSvgPathData } />
+                        <path d={ this.props.nextSvgPathData }/>
                     </svg>
                 </button>
             </div >
