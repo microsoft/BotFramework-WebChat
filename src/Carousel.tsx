@@ -24,7 +24,7 @@ export class Carousel extends React.Component<CarouselProps, {}> {
     private updateContentWidth() {
         //after the attachments have been rendered, we can now measure their actual width
         const width = this.props.size.width - this.props.format.carouselMargin;
-        if (this.root.offsetWidth > width) {
+        if (this.root.offsetWidth != width) {
             // the content width is bigger than the space allotted, so we'll clip it to force scrolling
             this.root.style.width = width.toString() + "px";
             // since we're scrolling, we need to show scroll buttons
