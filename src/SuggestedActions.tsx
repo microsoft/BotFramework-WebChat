@@ -37,11 +37,9 @@ export class SuggestedActions extends React.Component<Props, {}> {
                     nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
                     scrollUnit="page"
                 >
-                    <ul>{ this.props.actions.map((action, index) =>
-                        <li key={ index }>
-                            <button onClick={ e => this.actionClick(e, action) }>{ action.title }</button>
-                        </li>)
-                    }</ul>
+                    <ul>
+                        { this.props.actions.map((action, index) => <li key={ index }><button onClick={ e => this.actionClick(e, action) } title={ action.title } >{ action.title }</button></li>) }
+                    </ul>
                 </HScroll>
             </div>
         );
