@@ -18,7 +18,6 @@ export interface CarouselState {
 
 export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private root: HTMLDivElement;
-    private hscroll: HScroll;
 
     constructor(props: CarouselProps) {
         super(props);
@@ -26,7 +25,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         this.state = { rootStyle: undefined };
     }
 
-    private trySetContentWidth() {
+    private updateContentWidth() {
         //after the attachments have been rendered, we can now measure their actual width
         if (!this.state.rootStyle) {
             const width = this.props.format.chatWidth - this.props.format.carouselMargin;
@@ -38,11 +37,11 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 
     componentDidMount() {
-        this.trySetContentWidth();
+        this.updateContentWidth();
     }
 
     componentDidUpdate() {
-        this.trySetContentWidth();
+        this.updateContentWidth();
     }
 
     componentWillReceiveProps(nextProps: CarouselProps) {
@@ -57,7 +56,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     render() {
         return (
             <div className="wc-carousel" ref={ div => this.root = div } style={ this.state.rootStyle }>
-                <HScroll ref={ hscroll => this.hscroll = hscroll }
+                <HScroll
                     prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
                     nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
                     scrollUnit="item"
@@ -83,7 +82,6 @@ class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
     }
 
     render() {
-        console.log("render CarouselAttachments");
         const { attachments, ... props } = this.props;
         return (
             <ul>{ this.props.attachments.map((attachment, index) =>

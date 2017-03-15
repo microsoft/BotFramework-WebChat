@@ -9,12 +9,15 @@ export interface HScrollProps {
     scrollUnit?: 'page' | 'item'; // defaults to page
     prevSvgPathData: string;
     nextSvgPathData: string;
-    children?: React.ReactNode
 }
 
 export class HScroll extends React.Component<HScrollProps, {}> {
-    private prevScrollButton: ScrollControl;
-    private nextScrollButton: ScrollControl;
+    private prevButton: HTMLButtonElement;
+    private nextButton: HTMLButtonElement;
+    
+    private prevButtonDisabled = true;
+    private nextButtonDisabled = true;
+
     private scrollDiv: HTMLDivElement;
     private animateDiv: HTMLDivElement;
 
@@ -42,19 +45,37 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.scrollDurationTimer = null;
     }
 
+    private updateScrollButtons() {
+        const prevButtonDisabled = !(this.scrollDiv && this.scrollDiv.scrollLeft > 0);
+        if (prevButtonDisabled != this.prevButtonDisabled) {
+            this.prevButtonDisabled = prevButtonDisabled;
+            this.prevButton.disabled = prevButtonDisabled;
+        }
+
+        const nextButtonDisabled = !(this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
+        if (nextButtonDisabled != this.nextButtonDisabled) {
+            this.nextButtonDisabled = nextButtonDisabled;
+            this.nextButton.disabled = nextButtonDisabled;
+        }
+    }
+
     componentDidMount() {
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
 
-        this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(event => {
-            this.setState({});
+        this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(_ => {
+            this.updateScrollButtons();
         });
 
         this.clickSubscription = Observable.merge(
-            Observable.fromEvent<UIEvent>(this.prevScrollButton.button, 'click').map(_ => -1),
-            Observable.fromEvent<UIEvent>(this.nextScrollButton.button, 'click').map(_ => 1)
+            Observable.fromEvent<UIEvent>(this.prevButton, 'click').map(_ => -1),
+            Observable.fromEvent<UIEvent>(this.nextButton, 'click').map(_ => 1)
         ).subscribe(delta => {
             this.scrollBy(delta);
         });
+    }
+
+    componentDidUpdate() {
+        this.updateScrollButtons();
     }
 
     componentWillUnmount() {
@@ -130,56 +151,24 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     render() {
-        console.log("rendering HScroll");
         return (
             <div>
-                <ScrollControl
-                    ref={ scrollButton => this.prevScrollButton = scrollButton }
-                    className="scroll previous"
-                    svgPathData={ this.props.prevSvgPathData }
-                    disabled={ !(this.scrollDiv && this.scrollDiv.scrollLeft > 0) }
-                />
+                <button ref={ button => this.prevButton = button } className="scroll previous" disabled>
+                    <svg>
+                        <path d={ this.props.prevSvgPathData }/>
+                    </svg>
+                </button>
                 <div className="wc-hscroll-outer">
                     <div className="wc-hscroll" ref={ div => this.scrollDiv = div }>
                         { this.props.children }
                     </div>
                 </div>
-                <ScrollControl
-                    ref={ scrollButton => this.nextScrollButton = scrollButton }
-                    className="scroll next"
-                    svgPathData={ this.props.nextSvgPathData }
-                    disabled={ !(this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth) }
-                />
+                <button ref={ button => this.nextButton = button } className="scroll next" disabled>
+                    <svg>
+                        <path d={ this.props.nextSvgPathData }/>
+                    </svg>
+                </button>
             </div >
-        )
-    }
-}
-
-interface ScrollControlProps {
-    disabled: boolean,
-    svgPathData: string,
-    className: string
-}
-
-class ScrollControl extends React.Component<ScrollControlProps, {}> {
-    public button: HTMLButtonElement;
-
-    constructor(props: ScrollControlProps) {
-        super(props);
-    }
-
-    shouldComponentUpdate(nextProps: ScrollControlProps) {
-        return this.props.disabled !== nextProps.disabled;
-    }
-
-    render() {
-        console.log("render scroll control");
-        return (
-            <button ref={ button => this.button = button } className={ this.props.className } disabled={ this.props.disabled }>
-                <svg>
-                    <path d={ this.props.svgPathData } />
-                </svg>
-            </button>
         )
     }
 }
