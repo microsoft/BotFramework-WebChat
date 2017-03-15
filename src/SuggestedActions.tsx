@@ -42,7 +42,7 @@ export class SuggestedActions extends React.Component<Props, {}> {
                     scrollUnit="page"
                 >
                     <ul>
-                        { this.props.actions.map((action, index) => <li key={ index }><button onClick={ e => this.actionClick(e, action) }>{ action.title }</button></li>) }
+                        { this.props.actions.map((action, index) => <li key={ index }><button onClick={ e => this.actionClick(e, action) } title={ action.title } >{ action.title }</button></li>) }
                     </ul>
                 </HScroll>
             </div>
