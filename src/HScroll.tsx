@@ -41,7 +41,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.scrollDurationTimer = null;
     }
 
-    private updateScrollButtons() {
+    public updateScrollButtons() {
         this.prevButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft <= 0;
         this.nextButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft >= this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
     }
