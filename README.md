@@ -76,8 +76,9 @@ Import { Chat } from 'botframework-webchat';
 
 const YourApp = () => {
     <div>
+        <link href="https://unpkg.com/botframework-webchat/botchat.css" rel="stylesheet" />
         <YourComponent />
-        <Chat directLine={{ secret: direct_line_secret }} user={ 'userid' }/>
+        <Chat directLine={{ secret: direct_line_secret }} user={{ id: 'user_id', name: 'user_name' }}/>
         <YourOtherComponent />
     </div>
 }
