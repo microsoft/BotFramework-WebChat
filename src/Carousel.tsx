@@ -72,13 +72,9 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
 
     componentDidMount() {
         konsole.log('carousel componentDidUpdate');
-        // Once we've rendered the attachments, we can figure out whether they're larger than the available area
-        // and thus will scroll and should display one or both < > buttons.
         this.manageScrollButtons(true);
 
         this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(event => {
-            console.log("scroll event");
-            // Every time we scroll we need to redetermine whether to display one or both < > buttons
             this.manageScrollButtons();
         });
 
@@ -178,7 +174,6 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     }
 
     render() {
-        // Make the attachments scroll if they're wider than the available space
         let style: React.CSSProperties;
         if (this.props.format.chatWidth != undefined) {
             const maxMessageContentWidth = this.props.format.chatWidth - this.props.format.carouselMargin;
