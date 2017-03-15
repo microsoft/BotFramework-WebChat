@@ -13,7 +13,7 @@ export interface CarouselProps {
 }
 
 export interface CarouselState {
-    contentWidth: number;
+    rootStyle: React.CSSProperties;
 }
 
 export class Carousel extends React.Component<CarouselProps, CarouselState> {
@@ -23,21 +23,19 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     constructor(props: CarouselProps) {
         super(props);
 
-        this.state = {
-            contentWidth: undefined
-        };
+        this.state = { rootStyle: undefined };
     }
 
     private trySetContentWidth() {
-
-        if (this.props.format.carouselMargin != undefined) {
-            //after the attachments have been rendered, we can now measure their actual width
-            if (this.state.contentWidth == undefined) {
-                this.root.style.width = '';
-                this.setState({ contentWidth: this.root.offsetWidth });
-            } else {
-                this.hscroll.manageScrollButtons();
+        //after the attachments have been rendered, we can now measure their actual width
+        if (!this.state.rootStyle) {
+            const width = this.props.format.chatWidth - this.props.format.carouselMargin;
+            if (this.root.offsetWidth > width) {
+                // the content width is bigger than the space allotted, so we'll clip it to force scrolling
+                this.setState({ rootStyle: { width } });
             }
+        } else {
+            this.hscroll.manageScrollButtons();
         }
     }
 
@@ -54,25 +52,13 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
 
         if (this.props.format.chatWidth != nextProps.format.chatWidth) {
             //this will invalidate the saved measurement, in componentDidUpdate a new measurement will be triggered
-            this.setState({ contentWidth: undefined });
+            this.setState({ rootStyle: undefined });
         }
-    }
-
-    private getMaxMessageContentWidth() {
-        if (this.props.format.chatWidth != undefined && this.props.format.carouselMargin != undefined)
-            return this.props.format.chatWidth - this.props.format.carouselMargin;
     }
 
     render() {
-        let style: React.CSSProperties;
-        const maxMessageContentWidth = this.getMaxMessageContentWidth();
-
-        if (maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
-            style = { width: maxMessageContentWidth }
-        }
-
         return (
-            <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
+            <div className="wc-carousel" ref={ div => this.root = div } style={ this.state.rootStyle }>
                 <HScroll ref={ hscroll => this.hscroll = hscroll }
                     prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
                     nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
