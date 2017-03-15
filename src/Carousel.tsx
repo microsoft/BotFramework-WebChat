@@ -34,8 +34,6 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                 // the content width is bigger than the space allotted, so we'll clip it to force scrolling
                 this.setState({ rootStyle: { width } });
             }
-        } else {
-            this.hscroll.manageScrollButtons();
         }
     }
 
