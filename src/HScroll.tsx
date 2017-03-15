@@ -9,11 +9,12 @@ export interface HScrollProps {
     scrollUnit?: 'page' | 'item'; // defaults to page
     prevSvgPathData: string;
     nextSvgPathData: string;
+    children?: React.ReactNode
 }
 
 export class HScroll extends React.Component<HScrollProps, {}> {
-    private prevButton: HTMLButtonElement;
-    private nextButton: HTMLButtonElement;
+    private prevScrollButton: ScrollControl;
+    private nextScrollButton: ScrollControl;
     private scrollDiv: HTMLDivElement;
     private animateDiv: HTMLDivElement;
 
@@ -45,16 +46,13 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
 
         this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(event => {
-            console.log("scroll event");
-            // Every time we scroll we need to redetermine whether to display one or both < > buttons
-            this.forceUpdate();
+            this.setState({});
         });
 
         this.clickSubscription = Observable.merge(
-            Observable.fromEvent<UIEvent>(this.prevButton, 'click').map(_ => -1),
-            Observable.fromEvent<UIEvent>(this.nextButton, 'click').map(_ => 1)
+            Observable.fromEvent<UIEvent>(this.prevScrollButton.button, 'click').map(_ => -1),
+            Observable.fromEvent<UIEvent>(this.nextScrollButton.button, 'click').map(_ => 1)
         ).subscribe(delta => {
-            console.log("scroll button", delta);
             this.scrollBy(delta);
         });
     }
@@ -132,27 +130,56 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     render() {
-        const prevButtonEnabled = this.scrollDiv && this.scrollDiv.scrollLeft > 0;
-        const nextButtonEnabled = this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
-
+        console.log("rendering HScroll");
         return (
             <div>
-                <button ref={ button => this.prevButton = button } className="scroll previous" disabled={ !prevButtonEnabled }>
-                    <svg>
-                        <path d={ this.props.prevSvgPathData } />
-                    </svg>
-                </button>
+                <ScrollControl
+                    ref={ scrollButton => this.prevScrollButton = scrollButton }
+                    className="scroll previous"
+                    svgPathData={ this.props.prevSvgPathData }
+                    disabled={ !(this.scrollDiv && this.scrollDiv.scrollLeft > 0) }
+                />
                 <div className="wc-hscroll-outer">
                     <div className="wc-hscroll" ref={ div => this.scrollDiv = div }>
                         { this.props.children }
                     </div>
                 </div>
-                <button ref={ button => this.nextButton = button } className="scroll next" disabled={ !nextButtonEnabled }>
-                    <svg>
-                        <path d={ this.props.nextSvgPathData } />
-                    </svg>
-                </button>
+                <ScrollControl
+                    ref={ scrollButton => this.nextScrollButton = scrollButton }
+                    className="scroll next"
+                    svgPathData={ this.props.nextSvgPathData }
+                    disabled={ !(this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth) }
+                />
             </div >
+        )
+    }
+}
+
+interface ScrollControlProps {
+    disabled: boolean,
+    svgPathData: string,
+    className: string
+}
+
+class ScrollControl extends React.Component<ScrollControlProps, {}> {
+    public button: HTMLButtonElement;
+
+    constructor(props: ScrollControlProps) {
+        super(props);
+    }
+
+    shouldComponentUpdate(nextProps: ScrollControlProps) {
+        return this.props.disabled !== nextProps.disabled;
+    }
+
+    render() {
+        console.log("render scroll control");
+        return (
+            <button ref={ button => this.button = button } className={ this.props.className } disabled={ this.props.disabled }>
+                <svg>
+                    <path d={ this.props.svgPathData } />
+                </svg>
+            </button>
         )
     }
 }

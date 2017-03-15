@@ -79,10 +79,11 @@ export interface CarouselAttachmentProps {
 class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
 
     shouldComponentUpdate(nextProps: CarouselAttachmentProps) {
-        return this.props.attachments !== this.props.attachments || this.props.format !== this.props.format;
+        return this.props.attachments !== nextProps.attachments || this.props.format !== nextProps.format;
     }
 
     render() {
+        console.log("render CarouselAttachments");
         const { attachments, ... props } = this.props;
         return (
             <ul>{ this.props.attachments.map((attachment, index) =>
