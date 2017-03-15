@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import { History } from './History';
 import { Shell } from './Shell';
-import { createStore, ShellAction, FormatAction, HistoryAction, ConnectionAction, ChatStore } from './Store';
+import { createStore, ChatActions, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
 
 export interface FormatOptions {
@@ -49,16 +49,17 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        this.store.dispatch<FormatAction>({
+        this.store.dispatch<ChatActions>({
             type: 'Set_Locale',
             locale: props.locale || window.navigator["userLanguage"] || window.navigator.language || 'en'
         });
 
         if (props.formatOptions)
-            this.store.dispatch<FormatAction>({ type: 'Set_Format_Options', options: props.formatOptions });
+            this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions
+     });
         
         if (props.sendTyping)
-            this.store.dispatch<ShellAction>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });        
+            this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });        
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -66,18 +67,18 @@ export class Chat extends React.Component<ChatProps, {}> {
         switch (activity.type) {
 
             case "message":
-                this.store.dispatch<HistoryAction>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
+                this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
                 break;
 
             case "typing":
                 if (activity.from.id !== state.connection.user.id)
-                    this.store.dispatch<HistoryAction>({ type: 'Show_Typing', activity });
+                    this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity });
                 break;
         }
     }
 
     private setSize() {
-        this.store.dispatch<FormatAction>({
+        this.store.dispatch<ChatActions>({
             type: 'Set_Size',
             width: this.chatviewPanel.offsetWidth,
             height: this.chatviewPanel.offsetHeight
@@ -96,10 +97,10 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
 
-        this.store.dispatch<ConnectionAction>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>
-            this.store.dispatch<ConnectionAction>({ type: 'Connection_Change', connectionStatus })
+            this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
         );
 
         this.activitySubscription = botConnection.activity$.subscribe(
@@ -109,7 +110,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         if (this.props.selectedActivity) {
             this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
-                this.store.dispatch<HistoryAction>({
+                this.store.dispatch<ChatActions>({
                     type: 'Select_Activity',
                     selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
                 });
@@ -160,7 +161,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
-export const sendMessage = (dispatch: Dispatch<HistoryAction>, text: string, from: User, locale: string) => {
+export const sendMessage = (dispatch: Dispatch<ChatActions>, text: string, from: User, locale: string) => {
     if (!text || typeof text !== 'string' || text.trim().length === 0)
         return;
     dispatch({ type: 'Send_Message', activity: {
@@ -199,7 +200,7 @@ const attachmentsFromFiles = (files: FileList) => {
     return attachments;
 }
 
-export const sendFiles = (dispatch: Dispatch<HistoryAction>, files: FileList, from: User, locale: string) => {
+export const sendFiles = (dispatch: Dispatch<ChatActions>, files: FileList, from: User, locale: string) => {
     dispatch({ type: 'Send_Message', activity: {
         type: "message",
         attachments: attachmentsFromFiles(files),
