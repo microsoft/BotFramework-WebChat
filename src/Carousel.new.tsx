@@ -30,14 +30,14 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private scrollAllowInterrupt = true;
 
     private scrollSubscription: Subscription;
-    private previousButton: HTMLButtonElement;
-    private nextButton: HTMLButtonElement;
 
     constructor(props: CarouselProps) {
         super(props);
-        console.log("creating carousel", props);
+
         this.state = {
-            contentWidth: undefined
+            contentWidth: undefined,
+            previousButtonEnabled: false,
+            nextButtonEnabled: false
         };
     }
 
@@ -55,13 +55,23 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         this.scrollAllowInterrupt = true;
     }
 
+    private manageScrollButtons(forceUpdate = false) {
+        const previousButtonEnabled = this.scrollDiv.scrollLeft > 0,
+        const nextButtonEnabled =this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth
+        if (forceUpdate
+            || nextButtonEnabled != this.state.nextButtonEnabled
+            || previousButtonEnabled != this.state.previousButtonEnabled) {
+                console.log("change button state");
+                this.setState({ previousButtonEnabled, nextButtonEnabled });
+            }
+    }
+
     componentDidMount() {
-        konsole.log('carousel componentDidMount');
+        konsole.log('carousel componentDidUpdate');
+        this.manageScrollButtons(true);
 
         this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(event => {
-            console.log("scroll event");
-            // Every time we scroll we need to redetermine whether to display one or both < > buttons
-            this.forceUpdate();
+            this.manageScrollButtons();
         });
 
         Observable.merge(
@@ -73,21 +83,21 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         });
 
         this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
-
-        // Once we've rendered the attachments, we can figure out whether they're larger than the available area
-        // and thus will scroll and should display one or both < > buttons.
-        this.measureWidth();
-    }
-
-    measureWidth() {
-        this.root.style.width = '';
-        this.setState({ contentWidth: this.root.offsetWidth });
     }
 
     componentDidUpdate() {
         konsole.log('carousel componentDidUpdate');
-        if (this.state.contentWidth == undefined)
-            this.measureWidth();
+
+        if (this.props.format.carouselMargin != undefined) {
+            //after the attachments have been rendered, we can now measure their actual width
+            if (this.state.contentWidth == undefined) {
+                console.log("measuring contentWidth");
+                this.root.style.width = '';
+                this.setState({ contentWidth: this.root.offsetWidth });
+            } else {
+                this.manageScrollButtons();
+            }
+        }
     }
 
     componentWillReceiveProps(nextProps: CarouselProps) {
@@ -162,23 +172,49 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
         }, 1);
     }
 
+    private getMaxMessageContentWidth() {
+        if (this.props.format.chatWidth != undefined && this.props.format.carouselMargin != undefined)
+            return this.props.format.chatWidth - this.props.format.carouselMargin;
+    }
+
     render() {
-        // Make the attachments scroll if they're wider than the available space
         let style: React.CSSProperties;
-        if (this.props.format.chatWidth != undefined) {
-            const maxMessageContentWidth = this.props.format.chatWidth - this.props.format.carouselMargin;
-            if (this.state.contentWidth > maxMessageContentWidth) {
-                style = { width: maxMessageContentWidth }
-            }
+        const maxMessageContentWidth = this.getMaxMessageContentWidth();
+
+        if (maxMessageContentWidth && this.state.contentWidth > maxMessageContentWidth) {
+            style = { width: maxMessageContentWidth }
         }
 
-        const previousButtonEnabled = this.scrollDiv && this.scrollDiv.scrollLeft > 0;
-        const nextButtonEnabled = this.scrollDiv && this.scrollDiv.scrollLeft < this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
-        console.log("previous, next", previousButtonEnabled, nextButtonEnabled);
-
         return (
-            <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
-                <button disabled={ !previousButtonEnabled } className="scroll previous" ref={ button => this.previousButton = button}>
+        <div className="wc-carousel" ref={ div => this.root = div } style={ style }>
+            <CarouselButtons buttons={{ previous: false, next: false}} {... this.props}/>
+        </div>
+        )
+    }
+}
+
+export interface CarouselButtonsProps {
+    buttons: { previous: boolean, next : boolean },
+    format: FormatState
+    attachments: Attachment[]
+    onCardAction: (type: string, value: string) => void
+    onImageLoad: () => void
+}
+
+class CarouselButtons extends React.Component<CarouselButtonsProps, {}> {
+    public previousButton: HTMLButtonElement;
+    public nextButton: HTMLButtonElement;
+    public scrollDiv: HTMLDivElement;
+
+    shouldComponentUpdate(nextProps: CarouselAttachmentProps) {
+        return this.props.buttons != this.props.buttons;
+    }
+
+    render() {
+        console.log("rendering carouselButtons");
+        return (
+            <div>
+                <button disabled={ !this.props.buttons.previous } className="scroll previous" ref={ button => this.previousButton = button}>
                     <svg>
                         <path d="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" />
                     </svg>
@@ -188,13 +224,13 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
                         <CarouselAttachments { ... this.props }/>
                     </div>
                 </div>
-                <button disabled={ !nextButtonEnabled } className="scroll next" ref={ button => this.nextButton = button}>
+                <button disabled={ !this.props.buttons.next } className="scroll next" ref={ button => this.nextButton = button}>
                     <svg>
                         <path d="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z" />
                     </svg>
                 </button>
-            </div >
-        )
+            </div>
+        );
     }
 }
 
