@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
-import { FormatState } from './Store';
+import { FormatState, SizeState } from './Store';
 import { HScroll } from './HScroll';
 import { konsole } from './Chat';
 
 export interface CarouselProps {
     format: FormatState,
+    size: SizeState,
     attachments: Attachment[],
     onCardAction: (type: string, value: string) => void,
     onImageLoad: () => void
@@ -28,7 +29,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     private updateContentWidth() {
         //after the attachments have been rendered, we can now measure their actual width
         if (!this.state.rootStyle) {
-            const width = this.props.format.chatWidth - this.props.format.carouselMargin;
+            const width = this.props.size.width - this.props.format.carouselMargin;
             if (this.root.offsetWidth > width) {
                 // the content width is bigger than the space allotted, so we'll clip it to force scrolling
                 this.setState({ rootStyle: { width } });
@@ -47,7 +48,7 @@ export class Carousel extends React.Component<CarouselProps, CarouselState> {
     componentWillReceiveProps(nextProps: CarouselProps) {
         konsole.log('carousel componentWillReceiveProps');
 
-        if (this.props.format.chatWidth != nextProps.format.chatWidth) {
+        if (this.props.size.width != nextProps.size.width) {
             //this will invalidate the saved measurement, in componentDidUpdate a new measurement will be triggered
             this.setState({ rootStyle: undefined });
         }
@@ -82,6 +83,7 @@ class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
     }
 
     render() {
+        konsole.log("rendering CarouselAttachments");
         const { attachments, ... props } = this.props;
         return (
             <ul>{ this.props.attachments.map((attachment, index) =>
