@@ -145,8 +145,46 @@ var commands_map: CommandValuesMap = {
     },
     "suggested-actions":{
         client: function () {
-            var ul_object = document.querySelectorAll('ul')[0]; 
-            return ul_object.childNodes[0].textContent == "Blue" && ul_object.childNodes[1].textContent == "Red" && ul_object.childNodes[2].textContent == "Green";
+            var ul_object = document.querySelectorAll('ul')[0];
+            var show_actions_length = document.querySelectorAll('.show-actions').length;
+
+            // Validating if the the 3 buttons are displayed and suggested actions are visibile  
+            return ul_object.childNodes[0].textContent == "Blue" && 
+                   ul_object.childNodes[1].textContent == "Red" && 
+                   ul_object.childNodes[2].textContent == "Green" && 
+                   show_actions_length == 1;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.suggested_actions_card);
+        }        
+    },
+    "suggested-actions-away":{
+        client: async function () {
+            var green_button = document.querySelectorAll('button[title="Green"]')[0] as HTMLButtonElement;
+            green_button.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 2000);
+            });
+
+            // Validating suggested actions went away
+            var show_actions_length = document.querySelectorAll('.show-actions').length;
+            return show_actions_length == 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.suggested_actions_card);
+        }        
+    },
+    "suggested-actions-click":{
+        client: async function () {
+            var red_button = document.querySelectorAll('button[title="Red"]')[0] as HTMLButtonElement;
+            red_button.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 2000);
+            });
+            
+            // Getting response from bot
+            var response_text = document.querySelectorAll('span[class="format-markdown"]')[3].childNodes[0].childNodes[0].textContent;
+            return response_text == "echo: Red";
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
