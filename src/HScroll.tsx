@@ -57,7 +57,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
             Observable.fromEvent<UIEvent>(this.prevButton, 'click').map(_ => -1),
             Observable.fromEvent<UIEvent>(this.nextButton, 'click').map(_ => 1)
         ).subscribe(delta => {
-            this.scrollBy(this.scrollAmount(delta));
+            this.scrollBy(delta);
         });
     }
 
