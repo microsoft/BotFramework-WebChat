@@ -1,9 +1,10 @@
 import * as server_content from './server_content';
+import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
 import * as express from 'express';
 declare let module: any;
 
 interface ISendActivity {
-    (res: express.Response, activity: server_content.DirectLineActivity): void;
+    (res: express.Response, activity: dl.Message): void;
 }
 
 interface CommandValues {
@@ -14,7 +15,6 @@ interface CommandValues {
 interface CommandValuesMap {
     [key: string]: CommandValues
 }
-
 
 /*
  * 1. Add command following CommandValues interface 
@@ -27,7 +27,7 @@ interface CommandValuesMap {
  * updated and compiled. (use: npm run build-test)
  *  
 */
-var commands_map: CommandValuesMap = {    
+var commands_map: CommandValuesMap = {
     "hi": {
         client: function () {
             return document.querySelectorAll('span.format-markdown')[2].innerHTML.indexOf('hi') != -1;
@@ -142,6 +142,15 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.si_card);
         }
+    },
+    "suggested-actions":{
+        client: function () {
+            var ul_object = document.querySelectorAll('ul')[0]; 
+            return ul_object.childNodes[0].textContent == "Blue" && ul_object.childNodes[1].textContent == "Red" && ul_object.childNodes[2].textContent == "Green";
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.suggested_actions_card);
+        }        
     },
     /*
     * Add your commands to test here  
