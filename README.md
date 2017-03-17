@@ -147,7 +147,7 @@ Behavioral customization will require changing the TypeScript files in `/src`. A
 
 * `Chat` is the top-level React component
 * `App` creates a React application consists solely of `Chat`
-* `Chat` largely follows the Redux architecture layed out in [this video series](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
+* `Chat` largely follows the Redux architecture laid out in [this video series](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
 * To handle async side effects of Redux actions, `Chat` uses `Epic` from [redux-observable](https://redux-observable.js.org) - here's a [video introduction](https://www.youtube.com/watch?v=sF5-V-Szo0c)
 * Underlying `redux-observable` (and also [DirectLineJS](https://github.com/microsoft/botframework-directlinejs)) is the `RxJS` library, which implements the Observable pattern for wrangling async. A minimal grasp of `RxJS` is key to understanding WebChat's plumbing.
 
@@ -185,7 +185,7 @@ WebChat currently defaults to *not* sending 'typing' activities to the bot when 
 
 ### User identity
 
-You can supply WebChat with the id (and, optionally, a friendly name) of the current user by passing `user: { id: user_id, name: user_name }` to `App`/`Chat`. This object is passed with every activity sent from WebChat to the bot, which means it is not available to the bot *before* any activities are sent. See [The Backchannel](#the-backchannel) to find out how your web page can programatically send non-message activities to the bot.
+You can supply WebChat with the id (and, optionally, a friendly name) of the current user by passing `user: { id: user_id, name: user_name }` to `App`/`Chat`. This object is passed with every activity sent from WebChat to the bot, which means it is not available to the bot *before* any activities are sent. See [The Backchannel](#the-backchannel) to find out how your web page can programmatically send non-message activities to the bot.
 
 ### Replacing DirectLineJS
 
@@ -237,7 +237,7 @@ botConnection.activity$
 
 The bot, in this example, can request the page to change the background color via a specific event with `name: 'changeBackground'`. The web page can respond to this in any way it wants, including ignoring it. In this case it cooperates by changing the background color as passed in the `value` field of the event.
 
-Essentially the backchannel allows client and server to exchange any data needed, from requesting the client's timezone to reading a GPS location or what the user is doing on a web page. The bot can even "guide" the user by automatically filling out parts of a form and so on. The backchannel closes the gap between client JavaScript and bots.
+Essentially the backchannel allows client and server to exchange any data needed, from requesting the client's time zone to reading a GPS location or what the user is doing on a web page. The bot can even "guide" the user by automatically filling out parts of a form and so on. The backchannel closes the gap between client JavaScript and bots.
 
 ## You can contribute to WebChat!
 
