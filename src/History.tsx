@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Activity, User, Message } from 'botframework-directlinejs';
-import { ChatActions, ChatState, FormatState, SizeState } from './Store';
+import { Activity, Message } from 'botframework-directlinejs';
+import { FormatState, SizeState } from './Store';
 import { ActivityView } from './ActivityView';
-import { konsole, ActivityOrID } from './Chat';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { SuggestedActions } from "./SuggestedActions";
+import { konsole } from './Chat';
 
 export interface HistoryProps {
     format: FormatState,
