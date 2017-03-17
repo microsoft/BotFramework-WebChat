@@ -1,24 +1,24 @@
 import * as React from 'react';
-import { Activity, User, IBotConnection, Message } from 'botframework-directlinejs';
+import { Activity, User, Message } from 'botframework-directlinejs';
 import { ChatActions, ChatState, FormatState, SizeState } from './Store';
 import { ActivityView } from './ActivityView';
-import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
-import { Dispatch, connect } from 'react-redux';
+import { konsole, ActivityOrID } from './Chat';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { SuggestedActions } from "./SuggestedActions";
 
-interface Props {
+export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
-    selectedActivity: Activity
-    user: User,
-    botConnection: IBotConnection,
-    selectedActivitySubject: BehaviorSubject<ActivityOrID>,
-    dispatch: Dispatch<any>
+    isFromMe: (activity: Activity) => boolean,
+    isSelected: (activity: Activity) => boolean,
+    onCardAction: (type: string, value: string) => void,
+    onClickActivity: (activity: Activity) => () => void,
+    setMeasurements: (carouselMargin: number) => void,
+    onClickRetry: (activity: Activity) => void
 }
 
-class HistoryContainer extends React.Component<Props, {}> {
+export class History extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
@@ -26,7 +26,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     private carouselActivity: WrappedActivity;
     private largeWidth;
 
-    constructor(props: Props) {
+    constructor(props: HistoryProps) {
         super(props);
     }
 
@@ -51,10 +51,7 @@ class HistoryContainer extends React.Component<Props, {}> {
             konsole.log('history measureMessage ' + carouselMargin);
 
             // Finally, save it away in the Store, which will force another re-render
-            this.props.dispatch<ChatActions>({ 
-                type: 'Set_Measurements',
-                carouselMargin
-            });
+            this.props.setMeasurements(carouselMargin)
 
             this.carouselActivity = null; // After the re-render this activity doesn't exist
         }
@@ -68,46 +65,6 @@ class HistoryContainer extends React.Component<Props, {}> {
 
         if (this.scrollToBottom)
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
-    }
-
-    private onClickRetry(activity: Activity) {
-        this.props.dispatch<ChatActions>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
-    }
-
-    private onCardAction(type: string, value: string) {
-        switch (type) {
-            case "imBack":
-                sendMessage(this.props.dispatch, value, this.props.user, this.props.format.locale);
-                break;
-
-            case "postBack":
-                sendPostBack(this.props.botConnection, value, this.props.user, this.props.format.locale);
-                break;
-
-            case "call":
-            case "openUrl":
-            case "playAudio":
-            case "playVideo":
-            case "showImage":
-            case "downloadFile":
-            case "signin":
-                window.open(value);
-                break;
-
-            default:
-                konsole.log("unknown button type", type);
-            }
-    }
-
-    private onSelectActivity(activity: Activity) {
-        this.props.selectedActivitySubject.next({ activity });
-    }
-
-    private suggestedActions() {
-        if (!this.props.activities || this.props.activities.length === 0) return;
-        const lastActivity = this.props.activities[this.props.activities.length - 1] as Message;
-        if (!lastActivity || !lastActivity.suggestedActions || lastActivity.suggestedActions.length === 0) return;
-        return lastActivity.suggestedActions;
     }
 
     // In order to do their cool horizontal scrolling thing, Carousels need to know how wide they can be.
@@ -151,21 +108,19 @@ class HistoryContainer extends React.Component<Props, {}> {
             } else {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
+                        { ... this.props }
                         key={ 'message' + index }
                         activity={ activity }
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                        selected={ activity === this.props.selectedActivity }
-                        fromMe={ activity.from.id === this.props.user.id }
-                        format={ this.props.format }
-                        size={ this.props.size }
-                        onCardAction={ (type, value) => this.onCardAction(type, value) }
-                        onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
+                        selected={ this.props.isSelected(activity) }
+                        fromMe={ this.props.isFromMe(activity) }
+                        onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
                             // from trying to actually follow a (nonexistant) link
                             e.preventDefault();
                             e.stopPropagation();
-                            this.onClickRetry(activity)
+                            this.props.onClickRetry(activity)
                         } }
                         onImageLoad={ () => this.autoscroll() }
                     />
@@ -173,36 +128,15 @@ class HistoryContainer extends React.Component<Props, {}> {
             }
         }
 
-        const actions = this.suggestedActions();
-        const className = actions ? 'show-actions' : '';
-
         return (
-            <div className={ className }>
-                <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
-                    <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
-                        { content }
-                    </div>
+            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
+                <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
+                    { content }
                 </div>
-                <SuggestedActions
-                    actions={ actions }
-                    onCardAction={ (type, value) => this.onCardAction(type, value) }
-                />
             </div>
         );
     }
 }
-
-export const History = connect(
-    (state: ChatState): Partial<Props> => ({
-        activities: state.history.activities,
-        selectedActivity: state.history.selectedActivity,
-        format: state.format,
-        size: state.size,
-        user: state.connection.user,
-        botConnection: state.connection.botConnection,
-        selectedActivitySubject: state.connection.selectedActivity
-    })
-)(HistoryContainer)
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
     const s = window.getComputedStyle(el);
@@ -284,7 +218,6 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             this.props.selected ? 'selected' : ''
         ].join(' ');
 
-
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
@@ -293,13 +226,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
-                        <ActivityView
-                            activity={ this.props.activity }
-                            format={ this.props.format }
-                            size={ this.props.size }
-                            onCardAction={ this.props.onCardAction }
-                            onImageLoad={ this.props.onImageLoad }
-                        />
+                        <ActivityView { ... this.props }/>
                         { this.props.children }
                     </div>
                 </div>
