@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Activity, Message } from 'botframework-directlinejs';
-import { FormatState, SizeState } from './Store';
+import { Activity, Message, User } from 'botframework-directlinejs';
+import { ChatState, FormatState, SizeState } from './Store';
+import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
-import { konsole } from './Chat';
+import { konsole, doCardAction, sendMessage } from './Chat';
 
 export interface HistoryProps {
     format: FormatState,
@@ -10,13 +11,14 @@ export interface HistoryProps {
     activities: Activity[],
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
-    onCardAction: (type: string, value: string) => void,
+    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void;
+    sendMessage: (text: string, from: User, locale: string) => void,
     onClickActivity: (activity: Activity) => () => void,
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void
 }
 
-export class History extends React.Component<HistoryProps, {}> {
+export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
@@ -112,6 +114,7 @@ export class History extends React.Component<HistoryProps, {}> {
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
+                        onCardAction={ this.props.doCardAction(this.props.sendMessage) }
                         onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
@@ -135,6 +138,29 @@ export class History extends React.Component<HistoryProps, {}> {
         );
     }
 }
+
+export const History = connect(
+    (state: ChatState): Partial<HistoryProps> => ({
+        format: state.format,
+        size: state.size,
+        activities: state.history.activities,
+        isFromMe: (activity: Activity) => activity.from.id === state.connection.user.id,
+        isSelected: (activity: Activity) => activity === state.history.selectedActivity,
+        onClickActivity: (activity: Activity) => state.connection.selectedActivity && (() => state.connection.selectedActivity.next({ activity })),
+        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
+    }),
+    (dispatch: Dispatch<any>): Partial<HistoryProps> => ({
+        setMeasurements: (carouselMargin: number) => dispatch<ChatActions>({ 
+            type: 'Set_Measurements',
+            carouselMargin
+        }),
+        onClickRetry: (activity: Activity) => dispatch<ChatActions>({
+            type: 'Send_Message_Retry',
+            clientActivityId: activity.channelData.clientActivityId
+        }),
+        sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
+    })
+)(HistoryView);
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
     const s = window.getComputedStyle(el);

@@ -1,14 +1,25 @@
 import * as React from 'react';
-import { CardAction } from 'botframework-directlinejs';
+import { Activity, CardAction, User } from 'botframework-directlinejs';
+import { ChatState } from './Store';
+import { Dispatch, connect } from 'react-redux';
 import { HScroll } from './HScroll';
+import { konsole, doCardAction, sendMessage } from './Chat';
 
-export interface Props {
-    onCardAction: (type: string, value: string) => void;
-    actions: CardAction[];
+export interface SuggestedActionsProps {
+    actions: CardAction[],
+    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void,
+    sendMessage: (value: string, user: User, locale: string) => void,
+    children: React.ReactNode
 }
 
-export class SuggestedActions extends React.Component<Props, {}> {
-    constructor(props: Props) {
+const SuggestedActionsContainer = (props: SuggestedActionsProps) => 
+    <div className={ props.actions ? 'show-actions' : '' }>
+        { props.children }
+        <SuggestedActionsView { ... props }/>
+    </div>;
+
+export class SuggestedActionsView extends React.Component<SuggestedActionsProps, {}> {
+    constructor(props: SuggestedActionsProps) {
         super(props);
     }
 
@@ -16,13 +27,13 @@ export class SuggestedActions extends React.Component<Props, {}> {
         
         //click is only valid if there are props.actions
         if (this.props.actions) {
-            this.props.onCardAction(cardAction.type, cardAction.value);
+            this.props.doCardAction(this.props.sendMessage)(cardAction.type, cardAction.value);
         }
     
         e.stopPropagation();
     }
 
-    shouldComponentUpdate(nextProps: Props) {
+    shouldComponentUpdate(nextProps: SuggestedActionsProps) {
         //update only when there are actions. We want the old actions to remain displayed as it animates down.
         return !!nextProps.actions;
     }
@@ -46,3 +57,22 @@ export class SuggestedActions extends React.Component<Props, {}> {
     }
 
 }
+
+export function suggestedActions(activities: Activity[]) {
+    if (!activities || activities.length === 0)
+        return;
+    const lastActivity = activities[activities.length - 1];
+    if (!lastActivity || lastActivity.type !== 'message' || !lastActivity.suggestedActions || lastActivity.suggestedActions.length === 0)
+        return;
+    return lastActivity.suggestedActions;
+}
+
+export const SuggestedActions = connect(
+    (state: ChatState): Partial<SuggestedActionsProps> => ({
+        actions: suggestedActions(state.history.activities),
+        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
+    }),
+    (dispatch: Dispatch<any>): Partial<SuggestedActionsProps> => ({
+        sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
+    })
+)(SuggestedActionsContainer);

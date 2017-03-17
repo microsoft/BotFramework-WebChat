@@ -5,7 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
-import { Slider } from './Slider';
+import { History } from './History';
+import { SuggestedActions } from './SuggestedActions';
 import { Shell } from './Shell';
 import { createStore, ChatActions, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
@@ -152,13 +153,49 @@ export class Chat extends React.Component<ChatProps, {}> {
             <Provider store={ this.store }>
                 <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
-                    <Slider />
+                    <SuggestedActions>
+                        <History/>
+                    </SuggestedActions>
                     <Shell />
                     { resize }
                 </div>
             </Provider>
         );
     }
+}
+
+export const doCardAction = (
+    botConnection: IBotConnection,
+    user: User,
+    locale: string
+) => (
+    sendMessage: (value: string, user: User, locale: string) => void,
+) => (
+    type: string,
+    value: string
+)  => {
+    switch (type) {
+        case "imBack":
+            sendMessage(value, user, locale);
+            break;
+
+        case "postBack":
+            sendPostBack(botConnection, value, user, locale);
+            break;
+
+        case "call":
+        case "openUrl":
+        case "playAudio":
+        case "playVideo":
+        case "showImage":
+        case "downloadFile":
+        case "signin":
+            window.open(value);
+            break;
+
+        default:
+            konsole.log("unknown button type", type);
+        }
 }
 
 export const sendMessage = (dispatch: Dispatch<ChatActions>, text: string, from: User, locale: string) => {
