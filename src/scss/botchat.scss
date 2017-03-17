@@ -1,6 +1,17 @@
 @import "colors";
 @import "card-size";
 
+$actionsHeight: 40px;
+$consoleHeight: 50px;
+
+$headerPaddingBottom: 0;
+$headerPaddingLeft: 8px;
+$headerPaddingRight: 8px;
+$headerPaddingTop: 8px;
+$headerTotalHeight: 38px;
+
+$actionTransition: .2s cubic-bezier(0,0,.5,1);
+
 /* reset */
 
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
@@ -39,10 +50,10 @@
         box-sizing: content-box;
         color: $c01;
         font-weight: 500;
-        height: 30px;   /* height + padding-top = total height */
+        height: $headerTotalHeight - $headerPaddingTop - $headerPaddingBottom;
         left: 0;
         letter-spacing: 0.5px;
-        padding: 8px 8px 0 8px;
+        padding: $headerPaddingTop $headerPaddingRight $headerPaddingBottom $headerPaddingLeft;
         position: absolute;
         right: 0;
         top: 0;
@@ -55,25 +66,116 @@
     }
 
     .wc-message-groups {
-        bottom: 50px;
+        bottom: $consoleHeight;
         left: 0;
+        transform: translateY(0);
         overflow-x: hidden;
         overflow-y: scroll;
         padding: 10px;
         position: absolute;
         right: 0;
-        top: 38px;  /* from wc-header total height */
+        top: $headerTotalHeight;
+        transition: transform $actionTransition;
     }
 
     .wc-message-group-content {
         overflow: hidden;
     }
 
+    .wc-suggested-actions {
+        background-color: #f9f9f9;
+        bottom: $consoleHeight;
+        height: 0;
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        transition: height $actionTransition;
+
+        .wc-hscroll > ul {
+            height: $actionsHeight;
+            padding: 2px 3px;
+
+            > li {
+                display: inline-block;
+                margin: 2px;
+                max-width: 40%;
+
+                button {
+                    background-color: #fff;
+                    color: $c_brand;
+                    min-height: 32px;
+                    overflow: hidden;
+                    padding: 0 16px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    width: 100%;
+                }
+
+                button:hover {
+                    background-color: #fff;
+                    border-color: $c_brand;
+                    color: $c_brand;
+                }
+
+                button:active {
+                    background-color: $c_brand;
+                    border-color: $c_brand;
+                    color: $c01;
+                }
+            }
+        }
+
+        button.scroll {
+            background-color: $c11;
+            height: $actionsHeight;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            top: 0;
+            width: 28px;
+        }
+        
+        button.scroll:disabled {
+            display: none;
+        }
+
+        button.scroll:hover {
+            background-color:  $c08;
+        }
+
+        button.scroll svg {
+            fill: $c01;
+
+            //TODO: use proper svg coords in the path data
+            path {
+                transform: translateY(6px);
+            }
+        }
+
+        button.scroll.previous {
+            left: 0;
+        }
+
+        button.scroll.next {
+            right: 0;
+        }
+    }
+
+    .show-actions {
+        .wc-message-groups {
+            transform: translateY(-$actionsHeight);
+        }
+        .wc-suggested-actions {
+            height: $actionsHeight;
+        }
+    }
+
     .wc-console {
         border: 5px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
-        height: 50px;
+        height: $consoleHeight;
         left: 0;
         position: absolute;
         right: 0;
@@ -82,6 +184,7 @@
 /* views */
 
     .wc-chatview-panel {
+        overflow: hidden;
         position: absolute;
         right: 0;
         left: 0;
@@ -344,72 +447,80 @@
         margin-top: 0;
     }
 
-/* carousel */
+/* horizontal scroll */
 
-    .wc-carousel {
-        position: relative;
-    }
-
-    .wc-carousel button.scroll {
-        background-color: $c11;
-        height: 28px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        top: 50%;
-        width: 28px;
-    }
-
-    .wc-carousel button.scroll:disabled {
-        display: none;
-    }
-
-    .wc-carousel button.scroll:hover {
-        background-color:  $c08;
-    }
-
-    .wc-carousel button.scroll svg {
-        fill: $c01;
-    }
-
-    .wc-carousel button.scroll.previous {
-        left: -16px;
-    }
-
-    .wc-carousel button.scroll.next {
-        right: -16px;
-    }
-
-    .wc-carousel-scroll-outer {
+    .wc-hscroll-outer {
         /* allow horizontal scrolling but hide the scrollbar */
         overflow: hidden;
     }
 
-    .wc-carousel-scroll {
+    .wc-hscroll {
         /* allow horizontal scrolling but hide the scrollbar */
         overflow-x: scroll;
         overflow-y: hidden;
     }
 
-    .wc-carousel-scroll > ul {
-        margin-left: -4px;
+    .wc-hscroll > ul {
         white-space: nowrap;
     }
 
-    .wc-carousel-scroll > ul > li {
+    .wc-hscroll > ul > li {
         display: inline-block;
-        padding: 0 4px;
         vertical-align: top;
         white-space: normal;
     }
 
-    .wc-carousel-scroll > ul > li:last-child {
-        padding-right: 0;
-    }
+/* carousel */
 
-    .wc-carousel li p {
-        min-height: 4em;
-        white-space: normal;
+    .wc-carousel {
+        position: relative;
+
+        button.scroll {
+            background-color: $c11;
+            height: 28px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            top: 50%;
+            width: 28px;
+        }
+
+        button.scroll:disabled {
+            display: none;
+        }
+
+        button.scroll:hover {
+            background-color:  $c08;
+        }
+
+        button.scroll svg {
+            fill: $c01;
+        }
+
+        button.scroll.previous {
+            left: -16px;
+        }
+
+        button.scroll.next {
+            right: -16px;
+        }
+
+        .wc-hscroll > ul {
+            margin-left: -4px;
+        }
+
+        .wc-hscroll > ul > li {
+            padding: 0 4px;
+        }
+
+        .wc-hscroll > ul > li:last-child {
+            padding-right: 0;
+        }
+
+        li p {
+            min-height: 4em;
+            white-space: normal;
+        }
     }
 
 /* from me */
@@ -492,6 +603,16 @@
         width: 100%;
     }
 
+    .wc-send svg {
+        height: 18px;
+        width: 27px;
+    }
+
+    .wc-upload svg {
+        height: 18px;
+        width: 26px;
+    }
+
     #wc-upload-input {
         display: none;
     }
@@ -534,7 +655,7 @@
     .wc-animate-scroll-near {
         left: 0;
         position: absolute;
-        transition: left .5s ease-in-out;
+        transition: left .3s ease-in-out;
     }
 
 /* text formats */

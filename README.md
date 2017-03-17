@@ -77,7 +77,7 @@ Import { Chat } from 'botframework-webchat';
 const YourApp = () => {
     <div>
         <YourComponent />
-        <Chat directLine={{ secret: direct_line_secret }} user={ 'userid' }/>
+        <Chat directLine={{ secret: direct_line_secret }} user={{ id: 'user_id', name: 'user_name' }}/>
         <YourOtherComponent />
     </div>
 }

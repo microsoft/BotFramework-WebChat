@@ -1,0 +1,16 @@
+{
+    "files": [
+        "commands_map.ts",
+        "server_content.ts",
+        "interfaces_sdk.ts"
+    ],
+    "compilerOptions": {
+        "module": "none",
+        "target": "es2015",
+        "lib": [
+            "es2015",
+            "es2015.promise",
+            "dom"
+        ]
+    }
+}
