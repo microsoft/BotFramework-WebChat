@@ -56,7 +56,6 @@ export const shell: Reducer<ShellState> = (
 
 export interface FormatState {
     locale: string,
-    textFormat: string,
     options: FormatOptions,
     strings: Strings,
     chatHeight: number,
@@ -82,7 +81,6 @@ export type FormatAction = {
 export const format: Reducer<FormatState> = (
     state: FormatState = {
         locale: 'en-us',
-        textFormat: 'plain',
         options: {
             showHeader: true
         },
