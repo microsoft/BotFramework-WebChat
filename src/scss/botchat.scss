@@ -162,7 +162,7 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
         }
     }
 
-    .show-actions {
+    .wc-message-pane.show-actions {
         .wc-message-groups {
             transform: translateY(-$actionsHeight);
         }
