@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import { History } from './History';
-import { SuggestedActions } from './MessagePane';
+import { MessagePane } from './MessagePane';
 import { Shell } from './Shell';
 import { createStore, ChatActions, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
@@ -151,9 +151,9 @@ export class Chat extends React.Component<ChatProps, {}> {
             <Provider store={ this.store }>
                 <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
-                    <SuggestedActions>
+                    <MessagePane>
                         <History/>
-                    </SuggestedActions>
+                    </MessagePane>
                     <Shell />
                     { resize }
                 </div>

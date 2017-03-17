@@ -12,14 +12,13 @@ export interface MessagePaneProps {
     children: React.ReactNode
 }
 
-const MessagePane = (props: MessagePaneProps) => {
+const MessagePaneView = (props: MessagePaneProps) =>
     <div className={ classList('wc-message-pane', props.actions && 'show-actions' ) }>
         { props.children }
-        <SuggestedActionsView { ... props }/>
-    </div>
-};
+        <SuggestedActions { ... props }/>
+    </div>;
 
-export class SuggestedActionsView extends React.Component<MessagePaneProps, {}> {
+class SuggestedActions extends React.Component<MessagePaneProps, {}> {
     constructor(props: MessagePaneProps) {
         super(props);
     }
@@ -59,7 +58,7 @@ export class SuggestedActionsView extends React.Component<MessagePaneProps, {}> 
 
 }
 
-export function suggestedActions(activities: Activity[]) {
+function suggestedActions(activities: Activity[]) {
     if (!activities || activities.length === 0)
         return;
     const lastActivity = activities[activities.length - 1];
@@ -68,7 +67,7 @@ export function suggestedActions(activities: Activity[]) {
     return lastActivity.suggestedActions;
 }
 
-export const SuggestedActions = connect(
+export const MessagePane = connect(
     (state: ChatState): Partial<MessagePaneProps> => ({
         actions: suggestedActions(state.history.activities),
         doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
@@ -76,4 +75,4 @@ export const SuggestedActions = connect(
     (dispatch: Dispatch<any>): Partial<MessagePaneProps> => ({
         sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
     })
-)(MessagePane);
+)(MessagePaneView);
