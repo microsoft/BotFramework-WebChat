@@ -246,6 +246,8 @@ Essentially the backchannel allows client and server to exchange any data needed
 * Propose new [features](https://github.com/Microsoft/BotFramework-WebChat/issues)
 * Fix an outstanding [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) *(please only commit source code, non-generated files)*
 
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
 ## Copyright & License
 
 © 2016 Microsoft Corporation
