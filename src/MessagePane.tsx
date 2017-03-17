@@ -18,7 +18,7 @@ const MessagePaneView = (props: MessagePaneProps) =>
         <SuggestedActions { ... props }/>
     </div>;
 
-export class SuggestedActions extends React.Component<MessagePaneProps, {}> {
+class SuggestedActions extends React.Component<MessagePaneProps, {}> {
     constructor(props: MessagePaneProps) {
         super(props);
     }
@@ -58,7 +58,7 @@ export class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 
 }
 
-export function suggestedActions(activities: Activity[]) {
+function suggestedActions(activities: Activity[]) {
     if (!activities || activities.length === 0)
         return;
     const lastActivity = activities[activities.length - 1];
