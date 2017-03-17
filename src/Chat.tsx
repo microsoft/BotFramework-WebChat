@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import { History } from './History';
+import { SuggestedActions } from './MessagePane';
 import { Shell } from './Shell';
 import { createStore, ChatActions, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
@@ -150,13 +151,49 @@ export class Chat extends React.Component<ChatProps, {}> {
             <Provider store={ this.store }>
                 <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
-                    <History />
+                    <SuggestedActions>
+                        <History/>
+                    </SuggestedActions>
                     <Shell />
                     { resize }
                 </div>
             </Provider>
         );
     }
+}
+
+export const doCardAction = (
+    botConnection: IBotConnection,
+    user: User,
+    locale: string
+) => (
+    sendMessage: (value: string, user: User, locale: string) => void,
+) => (
+    type: string,
+    value: string
+)  => {
+    switch (type) {
+        case "imBack":
+            sendMessage(value, user, locale);
+            break;
+
+        case "postBack":
+            sendPostBack(botConnection, value, user, locale);
+            break;
+
+        case "call":
+        case "openUrl":
+        case "playAudio":
+        case "playVideo":
+        case "showImage":
+        case "downloadFile":
+        case "signin":
+            window.open(value);
+            break;
+
+        default:
+            konsole.log("unknown button type", type);
+        }
 }
 
 export const sendMessage = (dispatch: Dispatch<ChatActions>, text: string, from: User, locale: string) => {
@@ -211,6 +248,10 @@ export const sendFiles = (dispatch: Dispatch<ChatActions>, files: FileList, from
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
     if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
         return renderer(value);
+}
+
+export const classList = (...args:(string | boolean)[]) => {
+    return args.filter(Boolean).join(' ');
 }
 
 export const konsole = {
