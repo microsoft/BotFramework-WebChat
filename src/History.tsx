@@ -76,7 +76,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     private onCardAction(type: string, value: string) {
         switch (type) {
             case "imBack":
-                sendMessage(this.props.dispatch, value, this.props.user, this.props.format.locale, this.props.format.messageTextFormat);
+                sendMessage(this.props.dispatch, value, this.props.user, this.props.format.locale);
                 break;
 
             case "postBack":
