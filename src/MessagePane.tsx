@@ -3,23 +3,24 @@ import { Activity, CardAction, User } from 'botframework-directlinejs';
 import { ChatState } from './Store';
 import { Dispatch, connect } from 'react-redux';
 import { HScroll } from './HScroll';
-import { konsole, doCardAction, sendMessage } from './Chat';
+import { konsole, classList, doCardAction, sendMessage } from './Chat';
 
-export interface SuggestedActionsProps {
+export interface MessagePaneProps {
     actions: CardAction[],
     doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void,
     sendMessage: (value: string, user: User, locale: string) => void,
     children: React.ReactNode
 }
 
-const SuggestedActionsContainer = (props: SuggestedActionsProps) => 
-    <div className={ props.actions ? 'show-actions' : '' }>
+const MessagePane = (props: MessagePaneProps) => {
+    <div className={ classList('wc-message-pane', props.actions && 'show-actions' ) }>
         { props.children }
         <SuggestedActionsView { ... props }/>
-    </div>;
+    </div>
+};
 
-export class SuggestedActionsView extends React.Component<SuggestedActionsProps, {}> {
-    constructor(props: SuggestedActionsProps) {
+export class SuggestedActionsView extends React.Component<MessagePaneProps, {}> {
+    constructor(props: MessagePaneProps) {
         super(props);
     }
 
@@ -33,7 +34,7 @@ export class SuggestedActionsView extends React.Component<SuggestedActionsProps,
         e.stopPropagation();
     }
 
-    shouldComponentUpdate(nextProps: SuggestedActionsProps) {
+    shouldComponentUpdate(nextProps: MessagePaneProps) {
         //update only when there are actions. We want the old actions to remain displayed as it animates down.
         return !!nextProps.actions;
     }
@@ -68,11 +69,11 @@ export function suggestedActions(activities: Activity[]) {
 }
 
 export const SuggestedActions = connect(
-    (state: ChatState): Partial<SuggestedActionsProps> => ({
+    (state: ChatState): Partial<MessagePaneProps> => ({
         actions: suggestedActions(state.history.activities),
         doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
     }),
-    (dispatch: Dispatch<any>): Partial<SuggestedActionsProps> => ({
+    (dispatch: Dispatch<any>): Partial<MessagePaneProps> => ({
         sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
     })
-)(SuggestedActionsContainer);
+)(MessagePane);

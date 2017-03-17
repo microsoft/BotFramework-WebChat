@@ -3,7 +3,7 @@ import { Activity, Message, User } from 'botframework-directlinejs';
 import { ChatState, FormatState, SizeState } from './Store';
 import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
-import { konsole, doCardAction, sendMessage } from './Chat';
+import { konsole, classList, doCardAction, sendMessage } from './Chat';
 
 export interface HistoryProps {
     format: FormatState,
@@ -231,16 +231,16 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         const who = this.props.fromMe ? 'me' : 'bot';
 
-        const wrapperClassName = [
+        const wrapperClassName = classList(
             'wc-message-wrapper',
             (this.props.activity as Message).attachmentLayout || 'list',
-            this.props.onClickActivity ? 'clickable' : ''
-        ].join(' ');
+            this.props.onClickActivity && 'clickable'
+        );
 
-        const contentClassName = [
+        const contentClassName = classList(
             'wc-message-content',
-            this.props.selected ? 'selected' : ''
-        ].join(' ');
+            this.props.selected && 'selected'
+        );
 
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>

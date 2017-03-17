@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import { History } from './History';
-import { SuggestedActions } from './SuggestedActions';
+import { SuggestedActions } from './MessagePane';
 import { Shell } from './Shell';
 import { createStore, ChatActions, ChatStore } from './Store';
 import { Dispatch, Provider } from 'react-redux';
@@ -249,6 +249,10 @@ export const sendFiles = (dispatch: Dispatch<ChatActions>, files: FileList, from
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
     if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
         return renderer(value);
+}
+
+export const classList = (...args:(string | boolean)[]) => {
+    return args.filter(Boolean).join(' ');
 }
 
 export const konsole = {
