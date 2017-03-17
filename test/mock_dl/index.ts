@@ -244,6 +244,9 @@ app.get('/botchat.js', function (req, res) {
 app.get('/botchat.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat.css"));
 });
+app.get('/botchat-fullwindow.css', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../../botchat-fullwindow.css"));
+});
 app.get('/assets/:file', function(req, res){
     var file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));    
