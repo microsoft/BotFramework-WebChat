@@ -11,7 +11,5 @@ export const App = (props: AppProps, container: HTMLElement) => {
 
 const AppContainer = (props: AppProps) =>
     <div className="wc-app">
-        <div className="wc-app-left-container">
-            <Chat { ...props } />
-        </div>
+        <Chat { ...props } />
     </div>;

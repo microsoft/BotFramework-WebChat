@@ -1,14 +1,15 @@
 import * as React from 'react';
-//import { Timestamp } from './Timestamp';
 import { Activity, User, IBotConnection, Message } from 'botframework-directlinejs';
-import { HistoryAction, ChatState, FormatState } from './Store';
+import { ChatActions, ChatState, FormatState, SizeState } from './Store';
 import { ActivityView } from './ActivityView';
 import { sendMessage, sendPostBack, konsole, ActivityOrID } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { SuggestedActions } from "./SuggestedActions";
 
 interface Props {
-    format: FormatState
+    format: FormatState,
+    size: SizeState,
     activities: Activity[],
     selectedActivity: Activity
     user: User,
@@ -45,12 +46,12 @@ class HistoryContainer extends React.Component<Props, {}> {
             
             // Subtract the content width from the chat width to get the margin.
             // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
-            const carouselMargin = this.props.format.chatWidth - maxContentWidth;
+            const carouselMargin = this.props.size.width - maxContentWidth;
             
             konsole.log('history measureMessage ' + carouselMargin);
 
             // Finally, save it away in the Store, which will force another re-render
-            this.props.dispatch<FormatAction>({ 
+            this.props.dispatch<ChatActions>({ 
                 type: 'Set_Measurements',
                 carouselMargin
             });
@@ -70,7 +71,7 @@ class HistoryContainer extends React.Component<Props, {}> {
     }
 
     private onClickRetry(activity: Activity) {
-        this.props.dispatch<HistoryAction>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
+        this.props.dispatch<ChatActions>({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId });
     }
 
     private onCardAction(type: string, value: string) {
@@ -102,6 +103,13 @@ class HistoryContainer extends React.Component<Props, {}> {
         this.props.selectedActivitySubject.next({ activity });
     }
 
+    private suggestedActions() {
+        if (!this.props.activities || this.props.activities.length === 0) return;
+        const lastActivity = this.props.activities[this.props.activities.length - 1] as Message;
+        if (!lastActivity || !lastActivity.suggestedActions || lastActivity.suggestedActions.length === 0) return;
+        return lastActivity.suggestedActions;
+    }
+
     // In order to do their cool horizontal scrolling thing, Carousels need to know how wide they can be.
     // So, at startup, we create this mock Carousel activity and measure it. 
     private measurableCarousel = () =>
@@ -115,6 +123,7 @@ class HistoryContainer extends React.Component<Props, {}> {
                 attachmentLayout: 'carousel'
             } }
             format={ null }
+            size={ null }
             fromMe={ false }
             onCardAction={ null }
             onClickActivity={ null }
@@ -134,10 +143,10 @@ class HistoryContainer extends React.Component<Props, {}> {
     render() {
         konsole.log("History props", this);
         let content;
-        if (this.props.format.chatWidth !== undefined) {
+        if (this.props.size.width !== undefined) {
             if (this.props.format.carouselMargin === undefined) {
                 // For measuring carousels we need a width known to be larger than the chat itself
-                this.largeWidth = this.props.format.chatWidth * 2;
+                this.largeWidth = this.props.size.width * 2;
                 content = <this.measurableCarousel/>;
             } else {
                 content = this.props.activities.map((activity, index) =>
@@ -148,6 +157,7 @@ class HistoryContainer extends React.Component<Props, {}> {
                         selected={ activity === this.props.selectedActivity }
                         fromMe={ activity.from.id === this.props.user.id }
                         format={ this.props.format }
+                        size={ this.props.size }
                         onCardAction={ (type, value) => this.onCardAction(type, value) }
                         onClickActivity={ this.props.selectedActivitySubject && (() => this.onSelectActivity(activity)) }
                         onClickRetry={ e => {
@@ -163,11 +173,20 @@ class HistoryContainer extends React.Component<Props, {}> {
             }
         }
 
+        const actions = this.suggestedActions();
+        const className = actions ? 'show-actions' : '';
+
         return (
-            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
-                <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
-                    { content }
+            <div className={ className }>
+                <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
+                    <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
+                        { content }
+                    </div>
                 </div>
+                <SuggestedActions
+                    actions={ actions }
+                    onCardAction={ (type, value) => this.onCardAction(type, value) }
+                />
             </div>
         );
     }
@@ -178,6 +197,7 @@ export const History = connect(
         activities: state.history.activities,
         selectedActivity: state.history.selectedActivity,
         format: state.format,
+        size: state.size,
         user: state.connection.user,
         botConnection: state.connection.botConnection,
         selectedActivitySubject: state.connection.selectedActivity
@@ -212,6 +232,7 @@ export interface WrappedActivityProps {
     selected: boolean,
     fromMe: boolean,
     format: FormatState,
+    size: SizeState,
     onCardAction: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
@@ -275,6 +296,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         <ActivityView
                             activity={ this.props.activity }
                             format={ this.props.format }
+                            size={ this.props.size }
                             onCardAction={ this.props.onCardAction }
                             onImageLoad={ this.props.onImageLoad }
                         />
