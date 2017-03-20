@@ -30,7 +30,7 @@ interface CommandValuesMap {
 var commands_map: CommandValuesMap = {
     "hi": {
         client: function () {
-            return document.querySelectorAll('span.format-markdown')[2].innerHTML.indexOf('hi') != -1;
+            return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('hi') != -1;
         }
     },
     "animation": {
