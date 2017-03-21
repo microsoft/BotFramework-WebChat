@@ -118,7 +118,7 @@ class ReactRenderer implements MarkedRenderer {
     /// MarkedRenderer overrides
 
     code(code: string, language: string): string {
-        return this.addElement(<pre key={this.key++}><code>{He.unescape(code)}</code></pre>);
+        return this.addElement(<code key={this.key++}>{He.unescape(code)}</code>);
     }
 
     blockquote(quote: string): string {
@@ -188,7 +188,7 @@ class ReactRenderer implements MarkedRenderer {
     }
 
     codespan(code: string): string {
-        return this.addElement(<code key={this.key++}>{code}</code>);
+        return this.addElement(<code key={this.key++}>{He.unescape(code)}</code>);
     }
 
     br(): string {
