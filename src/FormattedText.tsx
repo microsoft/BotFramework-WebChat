@@ -41,7 +41,7 @@ const renderMarkdown = (
         sanitize: false,
         smartLists: true,
         silent: false,
-        smartypants: true,
+        smartypants: false,
         ... markdownOptions
     };
     const renderer = options.renderer = new ReactRenderer(options, onImageLoad);
