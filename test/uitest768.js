@@ -5,8 +5,12 @@ let Nightmare = require('nightmare');
 let assert = require('assert');
 let vo = require('vo');
 
+// Device Information
+let device = "ipad";
+let width = config["width-tests"][device];
+
 let nightmare = Nightmare({
-	show: true,
+	show: true,	
 	executionTimeout: 6000
 });
 
@@ -21,7 +25,7 @@ let nightmare = Nightmare({
  * updated and compiled. (use: npm run build-test)
  *  
 */
-describe('Nightmare UI Tests', function () {
+describe('Nightmare UI ' + device + ' Tests', function () {
 	let keys = Object.keys(commands);
 	this.timeout(keys.length * 20000);
 
@@ -37,13 +41,15 @@ describe('Nightmare UI Tests', function () {
 
 				let testUrl = `${url}&t=${keys[i]}/ui`;
 				let result = "";
-
+				
 				//Starting server and reload the page.
 				if (i == 0) {
-					result = yield nightmare.goto(testUrl);
+					result = yield nightmare.goto(testUrl)
+												.viewport(width, 768);
 				}
 
 				result = yield nightmare.goto(testUrl)
+					.viewport(width, 768)
 					.wait(2000)
 					.type('.wc-textbox input', keys[i])
 					.click('.wc-send')
@@ -52,7 +58,7 @@ describe('Nightmare UI Tests', function () {
 
 				if ((keys.length - 1) == i) {
 					console.log(result);
-					results.push(result);
+					results.push(result);					
 					yield nightmare.end();
 				}
 				else{

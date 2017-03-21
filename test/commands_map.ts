@@ -41,7 +41,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.ani_card);
         }
-    },
+    },    
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
@@ -63,8 +63,9 @@ var commands_map: CommandValuesMap = {
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
             
             // Carousel made of 4 cards.
-            // 2-Clicks are needed to move all carousel to right.
+            // 3-Clicks are needed to move all carousel to right.
             // Note: Electron browser width size must not be changed. 
+            await rightArrowClick();
             await rightArrowClick();
             await rightArrowClick();
 
@@ -183,7 +184,7 @@ var commands_map: CommandValuesMap = {
             });
             
             // Getting response from bot
-            var response_text = document.querySelectorAll('span[class="format-markdown"]')[3].childNodes[0].childNodes[0].textContent;
+            var response_text = document.querySelectorAll('span[class="format-markdown"]')[1].childNodes[0].childNodes[0].textContent;
             return response_text == "echo: Red";
         },
         server: function (res, sendActivity) {

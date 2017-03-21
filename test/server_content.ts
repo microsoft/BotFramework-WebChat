@@ -153,7 +153,7 @@ export var smallcar_card: dl.Message = {
     channelId: "webchat",
     text: "",
     attachmentLayout: "carousel",
-    attachments: [car_attach1, car_attach2]
+    attachments: [car_attach1]
 }
 
 /*
