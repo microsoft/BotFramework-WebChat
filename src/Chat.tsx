@@ -5,11 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
-import { History } from './History';
-import { MessagePane } from './MessagePane';
-import { Shell } from './Shell';
-import { createStore, ChatActions, ChatStore } from './Store';
-import { Dispatch, Provider } from 'react-redux';
+import { createStore, ChatActions } from './Store';
+import { Provider } from 'react-redux';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -31,6 +28,30 @@ export interface ChatProps {
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect'
 }
+
+export const sendMessage = (text: string, from: User, locale: string) => ({
+    type: 'Send_Message',
+    activity: {
+        type: "message",
+        text,
+        from,
+        locale,
+        textFormat: 'plain',
+        timestamp: (new Date()).toISOString()
+    }} as ChatActions);
+
+export const sendFiles = (files: FileList, from: User, locale: string) => ({
+    type: 'Send_Message',
+    activity: {
+        type: "message",
+        attachments: attachmentsFromFiles(files),
+        from,
+        locale
+    }} as ChatActions);
+
+import { History } from './History';
+import { MessagePane } from './MessagePane';
+import { Shell } from './Shell';
 
 export class Chat extends React.Component<ChatProps, {}> {
 
@@ -164,7 +185,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
 export const doCardAction = (
     botConnection: IBotConnection,
-    user: User,
+    from: User,
     locale: string
 ) => (
     sendMessage: (value: string, user: User, locale: string) => void,
@@ -174,11 +195,12 @@ export const doCardAction = (
 )  => {
     switch (type) {
         case "imBack":
-            sendMessage(value, user, locale);
+            if (value && typeof value === 'string')
+                sendMessage(value, from, locale);
             break;
 
         case "postBack":
-            sendPostBack(botConnection, value, user, locale);
+            sendPostBack(botConnection, value, from, locale);
             break;
 
         case "call":
@@ -194,19 +216,6 @@ export const doCardAction = (
         default:
             konsole.log("unknown button type", type);
         }
-}
-
-export const sendMessage = (dispatch: Dispatch<ChatActions>, text: string, from: User, locale: string) => {
-    if (!text || typeof text !== 'string' || text.trim().length === 0)
-        return;
-    dispatch({ type: 'Send_Message', activity: {
-        type: "message",
-        text,
-        from,
-        locale,
-        textFormat: 'plain',
-        timestamp: (new Date()).toISOString()
-    }});
 }
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, from: User, locale: string) => {
@@ -234,15 +243,6 @@ const attachmentsFromFiles = (files: FileList) => {
         });
     }
     return attachments;
-}
-
-export const sendFiles = (dispatch: Dispatch<ChatActions>, files: FileList, from: User, locale: string) => {
-    dispatch({ type: 'Send_Message', activity: {
-        type: "message",
-        attachments: attachmentsFromFiles(files),
-        from,
-        locale
-    }});
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
