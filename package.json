@@ -7,9 +7,10 @@
   "scripts": {
     "build-test": "tsc -p ./test/mock_dl && tsc -p ./test",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
-    "build-css": "node ./src/scss/compile.js botchat botchat-fullwindow",
+    "build-css": "node-sass ./src/scss/ -o .",
+    "build-css-watch": "node-sass ./src/scss/ -o . -w",
     "build": "tsc && npm run build-css && webpack",
-    "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
+    "watch": "npm-run-all -p -r -l tsc-watch webpack-watch build-css-watch",
     "tsc-watch": "tsc -w",
     "webpack-watch": "webpack -w",
     "clean": "rm -rf built",
