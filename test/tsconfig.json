@@ -2,7 +2,7 @@
     "files": [
         "commands_map.ts",
         "server_content.ts",
-        "interfaces_sdk.ts"
+        "../node_modules/botframework-directlinejs/built/directLine.d.ts"
     ],
     "compilerOptions": {
         "module": "none",

@@ -81,6 +81,19 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "Nosūtīšana",
         timeSent: " %1",
         consolePlaceholder: "Ierakstiet savu ziņu..."
+    },
+    'pt-br': {
+        title: "Bate-papo",
+        send: "Enviar",
+        unknownFile: "[Arquivo do tipo '%1']",
+        unknownCard: "[Cartão desconhecido '%1']",
+        receiptTax: "Imposto",
+        receiptTotal: "Total",
+        messageRetry: "repedit",
+        messageFailed: "não pude enviar",
+        messageSending: "enviando",
+        timeSent: " às %1",
+        consolePlaceholder: "Digite sua mensagem..."
     }
 }
 
@@ -99,6 +112,8 @@ export const strings = (locale: string) => {
         locale = 'ru-ru';
     else if (locale.startsWith('lv'))
         locale = 'lv-lv';
+    else if (locale.startsWith('pt'))
+        locale = 'pt-br';
     else
         locale = 'en-us';
 
