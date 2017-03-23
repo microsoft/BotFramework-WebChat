@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { HistoryAction, ChatState, FormatState } from './Store';
+import { ChatActions, ChatState, FormatState } from './Store';
 import { User } from 'botframework-directlinejs';
 import { sendMessage, sendFiles } from './Chat';
 import { Dispatch, connect } from 'react-redux';
@@ -8,7 +8,9 @@ interface Props {
     inputText: string,
     format: FormatState,
     user: User,
-    dispatch: Dispatch<any>
+    sendMessage: (inputText: string, from: User, locale: string) => void,
+    sendFiles: (files: FileList, from: User, locale: string) => void,
+    onChangeText: (inputText: string) => void
 }
 
 class ShellContainer extends React.Component<Props, {}> {
@@ -20,11 +22,8 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private sendMessage() {
-        sendMessage(this.props.dispatch, this.props.inputText, this.props.user, this.props.format.locale);
-    }
-
-    private onChangeText() {
-        this.props.dispatch<HistoryAction>({ type: 'Update_Input', input: this.textInput.value })
+        if (this.props.inputText.trim().length > 0)
+            this.props.sendMessage(this.props.inputText, this.props.user, this.props.format.locale);
     }
 
     private onKeyPress(e) {
@@ -39,7 +38,7 @@ class ShellContainer extends React.Component<Props, {}> {
 
     private onChangeFile() {
         this.textInput.focus();
-        sendFiles(this.props.dispatch, this.fileInput.files, this.props.user, this.props.format.locale);
+        this.props.sendFiles(this.fileInput.files, this.props.user, this.props.format.locale);
         this.fileInput.value = null;
     }
 
@@ -61,7 +60,7 @@ class ShellContainer extends React.Component<Props, {}> {
                         ref={ input => this.textInput = input }
                         autoFocus
                         value={ this.props.inputText }
-                        onChange={ () => this.onChangeText() }
+                        onChange={ _ => this.props.onChangeText(this.textInput.value) }
                         onKeyPress={ e => this.onKeyPress(e) }
                         placeholder={ this.props.format.strings.consolePlaceholder }
                     />
@@ -76,10 +75,15 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 }
 
+
 export const Shell = connect(
     (state: ChatState): Partial<Props> => ({
         inputText: state.shell.input,
         format: state.format,
         user: state.connection.user,
-    })
+    }), {
+        sendMessage,
+        sendFiles,
+        onChangeText: (input: string) => ({ type: 'Update_Input', input } as ChatActions)
+    }
 )(ShellContainer);

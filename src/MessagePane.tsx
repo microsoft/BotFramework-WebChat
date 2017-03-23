@@ -71,8 +71,7 @@ export const MessagePane = connect(
     (state: ChatState): Partial<MessagePaneProps> => ({
         actions: suggestedActions(state.history.activities),
         doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
-    }),
-    (dispatch: Dispatch<any>): Partial<MessagePaneProps> => ({
-        sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
-    })
+    }), {
+        sendMessage
+    }
 )(MessagePaneView);

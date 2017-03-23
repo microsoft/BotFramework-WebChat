@@ -148,18 +148,11 @@ export const History = connect(
         isSelected: (activity: Activity) => activity === state.history.selectedActivity,
         onClickActivity: (activity: Activity) => state.connection.selectedActivity && (() => state.connection.selectedActivity.next({ activity })),
         doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
-    }),
-    (dispatch: Dispatch<any>): Partial<HistoryProps> => ({
-        setMeasurements: (carouselMargin: number) => dispatch<ChatActions>({ 
-            type: 'Set_Measurements',
-            carouselMargin
-        }),
-        onClickRetry: (activity: Activity) => dispatch<ChatActions>({
-            type: 'Send_Message_Retry',
-            clientActivityId: activity.channelData.clientActivityId
-        }),
-        sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
-    })
+    }), {
+        setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
+        onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        sendMessage
+    }
 )(HistoryView);
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {

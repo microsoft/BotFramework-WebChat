@@ -13,7 +13,7 @@ export interface CarouselProps {
     onImageLoad: () => void
 }
 
-export class Carousel extends React.Component<CarouselProps, {}> {
+export class Carousel extends React.PureComponent<CarouselProps, {}> {
     private root: HTMLDivElement;
     private hscroll: HScroll;
 
@@ -45,12 +45,6 @@ export class Carousel extends React.Component<CarouselProps, {}> {
         this.updateContentWidth();
     }
 
-    shouldComponentUpdate(nextProps: CarouselProps) {
-        return this.props.attachments !== nextProps.attachments
-            || this.props.format !== nextProps.format
-            || this.props.size !== nextProps.size;
-    }
-
     render() {
         return (
             <div className="wc-carousel" ref={ div => this.root = div }>
@@ -73,12 +67,7 @@ export interface CarouselAttachmentProps {
     onImageLoad: () => void
 }
 
-class CarouselAttachments extends React.Component<CarouselAttachmentProps, {}> {
-
-    shouldComponentUpdate(nextProps: CarouselAttachmentProps) {
-        return this.props.attachments !== nextProps.attachments || this.props.format !== nextProps.format;
-    }
-
+class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {}> {
     render() {
         konsole.log("rendering CarouselAttachments");
         const { attachments, ... props } = this.props;
