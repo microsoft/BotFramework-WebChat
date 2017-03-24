@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
-import { ChatState, TrackedActivity, HistoryAction } from './Store';
+import { ChatActions, ChatState, TrackedMessage } from './Store';
 import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
 import { konsole, classList, doCardAction, sendMessage } from './Chat';
 
 export interface MessagePaneProps {
-    activityWithActions: Message,
-    onClickSuggestedActions: (activity: TrackedActivity) => any,
+    activityWithSuggestedActions: Message,
+    takeSuggestedAction: (trackedMessage: TrackedMessage) => any,
     doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void,
     sendMessage: (value: string, user: User, locale: string) => void,
     children: React.ReactNode
 }
 
-const MessagePaneView = (props: MessagePaneProps) => 
-    <div className={ classList('wc-message-pane', props.activityWithActions && 'show-actions' ) }>
+const MessagePaneView = (props: MessagePaneProps) =>
+    <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
         { props.children }
         <SuggestedActions { ... props }/>
     </div>;
@@ -27,9 +27,9 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
     actionClick(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
 
         //click is only valid if there are props.actions
-        if (this.props.activityWithActions) {
+        if (this.props.activityWithSuggestedActions) {
 
-            this.props.onClickSuggestedActions(this.props.activityWithActions);
+            this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
 
             this.props.doCardAction(this.props.sendMessage)(cardAction.type, cardAction.value);
         }
@@ -39,23 +39,30 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 
     shouldComponentUpdate(nextProps: MessagePaneProps) {
         //update only when there are actions. We want the old actions to remain displayed as it animates down.
-        return !!nextProps.activityWithActions;
+        return !!nextProps.activityWithSuggestedActions;
+    }
+
+    content() {
+        if (!this.props.activityWithSuggestedActions) return null;
+
+        return (
+            <HScroll
+                prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
+                nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
+                scrollUnit="page"
+            >
+                <ul>
+                    { this.props.activityWithSuggestedActions.suggestedActions.map((action, index) => <li key={ index }><button onClick={ e => this.actionClick(e, action) } title={ action.title } >{ action.title }</button></li>) }
+                </ul>
+            </HScroll>
+        );
     }
 
     render() {
-        if (!this.props.activityWithActions) return null;
-
         return (
+            //need to have a .wc-suggested-actions element present so that it is animatable
             <div className="wc-suggested-actions">
-                <HScroll
-                    prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
-                    nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
-                    scrollUnit="page"
-                >
-                    <ul>
-                        { this.props.activityWithActions.suggestedActions.map((action, index) => <li key={ index }><button onClick={ e => this.actionClick(e, action) } title={ action.title } >{ action.title }</button></li>) }
-                    </ul>
-                </HScroll>
+                { this.content() }
             </div>
         );
     }
@@ -66,24 +73,25 @@ function activityWithSuggestedActions(activities: Activity[]) {
     if (!activities || activities.length === 0)
         return;
     const lastActivity = activities[activities.length - 1];
-    if (!lastActivity 
-        || lastActivity.type !== 'message' 
-        || !lastActivity.suggestedActions 
-        || lastActivity.suggestedActions.length === 0 
-        || (lastActivity as TrackedActivity).clicked)
-        return;
+    if (
+        !lastActivity
+        || lastActivity.type !== 'message'
+        || !lastActivity.suggestedActions
+        || lastActivity.suggestedActions.length === 0
+        || (lastActivity as TrackedMessage).suggestedActionTaken
+    ) return;
     return lastActivity;
 }
 
 export const MessagePane = connect(
     (state: ChatState): Partial<MessagePaneProps> => ({
-        activityWithActions: activityWithSuggestedActions(state.history.activities),
+        activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
         doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
     }),
     {
-        onClickSuggestedActions: (activity: TrackedActivity) => {
-            return { type: 'Clicked_SuggestedActions', clickedActivity: activity } as HistoryAction;
+        takeSuggestedAction: (trackedMessage: TrackedMessage) => {
+            return { type: 'Take_SuggestedActions', trackedMessage } as ChatActions;
         },
-        sendMessage: sendMessage
+        sendMessage
     }
 )(MessagePaneView);

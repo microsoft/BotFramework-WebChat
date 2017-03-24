@@ -184,8 +184,8 @@ export const connection: Reducer<ConnectionState> = (
     }
 }
 
-export interface TrackedActivity extends Message {
-    clicked?: boolean
+export interface TrackedMessage extends Message {
+    suggestedActionTaken?: boolean
 }
 
 export interface HistoryState {
@@ -209,8 +209,8 @@ export type HistoryAction = {
     type: 'Select_Activity',
     selectedActivity: Activity
 } | {
-    type: 'Clicked_SuggestedActions',
-    clickedActivity: TrackedActivity
+    type: 'Take_SuggestedActions',
+    trackedMessage: TrackedMessage
 } | {
     type: 'Clear_Typing',
     id: string
@@ -340,13 +340,22 @@ export const history: Reducer<HistoryState> = (
                 selectedActivity: action.selectedActivity
             };
 
-        case 'Clicked_SuggestedActions':
-
-            action.clickedActivity.clicked = true;
-
-            return {
-                ... state
+        case 'Take_SuggestedActions':
+            const i = state.activities.findIndex(activity => activity === action.trackedMessage);
+            const activity = state.activities[i];
+            const newActivity = {
+                ... activity,
+                suggestedActionTaken: true
             };
+            return {
+                ... state,
+                activities: [
+                    ... state.activities.slice(0, i),
+                    newActivity,
+                    ... state.activities.slice(i + 1)
+                ],
+                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+            }
 
         default:
             return state;
