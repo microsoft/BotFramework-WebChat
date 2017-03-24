@@ -1,4 +1,4 @@
-import { Activity, IBotConnection, User, ConnectionStatus } from 'botframework-directlinejs';
+import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botframework-directlinejs';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -184,6 +184,10 @@ export const connection: Reducer<ConnectionState> = (
     }
 }
 
+export interface TrackedActivity extends Message {
+    clicked?: boolean
+}
+
 export interface HistoryState {
     activities: Activity[],
     clientActivityBase: string,
@@ -204,6 +208,9 @@ export type HistoryAction = {
 } | {
     type: 'Select_Activity',
     selectedActivity: Activity
+} | {
+    type: 'Clicked_SuggestedActions',
+    clickedActivity: TrackedActivity
 } | {
     type: 'Clear_Typing',
     id: string
@@ -331,6 +338,14 @@ export const history: Reducer<HistoryState> = (
             return {
                 ... state,
                 selectedActivity: action.selectedActivity
+            };
+
+        case 'Clicked_SuggestedActions':
+
+            action.clickedActivity.clicked = true;
+
+            return {
+                ... state
             };
 
         default:
