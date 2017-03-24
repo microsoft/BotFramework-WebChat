@@ -62,6 +62,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     componentDidUpdate() {
+        this.scrollDiv.scrollLeft = 0;
         this.updateScrollButtons();
     }
 
