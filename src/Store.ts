@@ -184,10 +184,6 @@ export const connection: Reducer<ConnectionState> = (
     }
 }
 
-export interface TrackedMessage extends Message {
-    suggestedActionTaken?: boolean
-}
-
 export interface HistoryState {
     activities: Activity[],
     clientActivityBase: string,
@@ -209,12 +205,18 @@ export type HistoryAction = {
     type: 'Select_Activity',
     selectedActivity: Activity
 } | {
-    type: 'Take_SuggestedActions',
-    trackedMessage: TrackedMessage
+    type: 'Take_SuggestedAction',
+    message: Message
 } | {
     type: 'Clear_Typing',
     id: string
 }
+
+const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
+    ... array.slice(0, i),
+    item,
+    ... array.slice(i + 1)
+];
 
 export const history: Reducer<HistoryState> = (
     state: HistoryState = {
@@ -239,11 +241,7 @@ export const history: Reducer<HistoryState> = (
                 const activity = state.activities[i];
                 return {
                     ... state,
-                    activities: [
-                        ... state.activities.slice(0, i),
-                        action.activity,
-                        ... state.activities.slice(i + 1)
-                    ],
+                    activities: copyArrayWithUpdatedItem(state.activities, i, activity),
                     selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
                 };
             }
@@ -307,11 +305,7 @@ export const history: Reducer<HistoryState> = (
             };
             return {
                 ... state,
-                activities: [
-                    ... state.activities.slice(0, i),
-                    newActivity,
-                    ... state.activities.slice(i + 1)
-                ],
+                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
                 clientActivityCounter: state.clientActivityCounter + 1,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             };
@@ -340,20 +334,16 @@ export const history: Reducer<HistoryState> = (
                 selectedActivity: action.selectedActivity
             };
 
-        case 'Take_SuggestedActions':
-            const i = state.activities.findIndex(activity => activity === action.trackedMessage);
+        case 'Take_SuggestedAction':
+            const i = state.activities.findIndex(activity => activity === action.message);
             const activity = state.activities[i];
             const newActivity = {
                 ... activity,
-                suggestedActionTaken: true
+                suggestedActions: undefined
             };
             return {
                 ... state,
-                activities: [
-                    ... state.activities.slice(0, i),
-                    newActivity,
-                    ... state.activities.slice(i + 1)
-                ],
+                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             }
 
