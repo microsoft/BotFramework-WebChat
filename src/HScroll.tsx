@@ -59,6 +59,8 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         ).subscribe(delta => {
             this.scrollBy(delta);
         });
+
+        this.updateScrollButtons();
     }
 
     componentDidUpdate() {
