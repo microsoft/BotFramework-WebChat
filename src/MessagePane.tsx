@@ -27,6 +27,10 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
     }
 
     actionClick(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
+
+        //"stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
+        if (!this.props.activityWithSuggestedActions) return;
+        
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
         this.props.doCardAction(this.props.sendMessage)(cardAction.type, cardAction.value);
         e.stopPropagation();
