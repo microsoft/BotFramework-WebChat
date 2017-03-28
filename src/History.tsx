@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { Activity, Message, User } from 'botframework-directlinejs';
+import { Activity, Message, User, IBotConnection } from 'botframework-directlinejs';
 import { ChatState, FormatState, SizeState } from './Store';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
-import { konsole, classList, doCardAction, sendMessage } from './Chat';
+import { konsole, classList, doCardAction, sendMessage, ActivityOrID } from './Chat';
 
 export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
-    isFromMe: (activity: Activity) => boolean,
-    isSelected: (activity: Activity) => boolean,
-    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void;
+    selectedActivity: Activity,
+    botConnection: IBotConnection,
+    connectionSelectedActivity: BehaviorSubject<ActivityOrID>,
+    user: User,
     sendMessage: (text: string, from: User, locale: string) => void,
-    onClickActivity: (activity: Activity) => () => void,
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void
 }
@@ -112,10 +113,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         key={ 'message' + index }
                         activity={ activity }
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                        selected={ this.props.isSelected(activity) }
-                        fromMe={ this.props.isFromMe(activity) }
-                        onCardAction={ this.props.doCardAction(this.props.sendMessage) }
-                        onClickActivity={ this.props.onClickActivity(activity) }
+                        selected={ activity === this.props.selectedActivity }
+                        fromMe={ activity.from.id === this.props.user.id }
+                        onCardAction={ doCardAction(this.props.botConnection, this.props.user, this.props.format.locale)(this.props.sendMessage) }
+                        onClickActivity={ this.props.connectionSelectedActivity && (() => this.props.connectionSelectedActivity.next({ activity })) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
                             // from trying to actually follow a (nonexistant) link
@@ -144,10 +145,9 @@ export const History = connect(
         format: state.format,
         size: state.size,
         activities: state.history.activities,
-        isFromMe: (activity: Activity) => activity.from.id === state.connection.user.id,
-        isSelected: (activity: Activity) => activity === state.history.selectedActivity,
-        onClickActivity: (activity: Activity) => state.connection.selectedActivity && (() => state.connection.selectedActivity.next({ activity })),
-        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
+        selectedActivity: state.history.selectedActivity,
+        botConnection: state.connection.botConnection,
+        user: state.connection.user
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
+import { Activity, CardAction, User, Message, IBotConnection } from 'botframework-directlinejs';
 import { ChatActions, ChatState } from './Store';
 import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
@@ -7,8 +7,10 @@ import { konsole, classList, doCardAction, sendMessage } from './Chat';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
+    user: User,
+    botConnection: IBotConnection,
+    locale: string,
     takeSuggestedAction: (message: Message) => any,
-    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void,
     sendMessage: (value: string, user: User, locale: string) => void,
     children: React.ReactNode
 }
@@ -32,7 +34,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         if (!this.props.activityWithSuggestedActions) return;
         
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
-        this.props.doCardAction(this.props.sendMessage)(cardAction.type, cardAction.value);
+        doCardAction(this.props.botConnection, this.props.user, this.props.locale)(this.props.sendMessage)(cardAction.type, cardAction.value);
         e.stopPropagation();
     }
 
@@ -77,7 +79,9 @@ function activityWithSuggestedActions(activities: Activity[]) {
 export const MessagePane = connect(
     (state: ChatState): Partial<MessagePaneProps> => ({
         activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
-        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
+        botConnection: state.connection.botConnection,
+        user: state.connection.user,
+        locale: state.format.locale
     }),
     {
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
