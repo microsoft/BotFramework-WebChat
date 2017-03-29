@@ -10,13 +10,15 @@ export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
-    selectedActivity: Activity,
-    botConnection: IBotConnection,
-    connectionSelectedActivity: BehaviorSubject<ActivityOrID>,
-    user: User,
+
     sendMessage: (text: string, from: User, locale: string) => void,
     setMeasurements: (carouselMargin: number) => void,
-    onClickRetry: (activity: Activity) => void
+    onClickRetry: (activity: Activity) => void,
+
+    isFromMe: (activity: Activity) => boolean,
+    isSelected: (activity: Activity) => boolean,
+    onClickActivity: (activity: Activity) => void,
+    doCardAction: (type: string, value: string) => void
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -113,10 +115,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         key={ 'message' + index }
                         activity={ activity }
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                        selected={ activity === this.props.selectedActivity }
-                        fromMe={ activity.from.id === this.props.user.id }
-                        onCardAction={ doCardAction(this.props.botConnection, this.props.user, this.props.format.locale)(this.props.sendMessage) }
-                        onClickActivity={ this.props.connectionSelectedActivity && (() => this.props.connectionSelectedActivity.next({ activity })) }
+                        selected={ this.props.isSelected(activity) }
+                        fromMe={ this.props.isFromMe(activity) }
+                        onCardAction={ this.props.doCardAction }
+                        onClickActivity={ () => this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
                             // from trying to actually follow a (nonexistant) link
@@ -141,18 +143,35 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 }
 
 export const History = connect(
-    (state: ChatState): Partial<HistoryProps> => ({
+    (state: ChatState) => ({
+        // passed down to HistoryView
         format: state.format,
         size: state.size,
         activities: state.history.activities,
+        // only used to create helper functions below 
+        connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
         botConnection: state.connection.botConnection,
         user: state.connection.user
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        // only used to create helper functions below 
         sendMessage
-    }
+    }, (stateProps: any, dispatchProps: any) => ({
+        // from stateProps
+        format: stateProps.format,
+        size: stateProps.size,
+        activities: stateProps.activities,
+        // from dispatchProps
+        setMeasurements: dispatchProps.setMeasurements,
+        onClickRetry: dispatchProps.onClickRetry,
+        // helper functions
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+        isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
+        isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
+        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
+    })
 )(HistoryView);
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
