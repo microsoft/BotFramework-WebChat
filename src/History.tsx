@@ -17,7 +17,7 @@ export interface HistoryProps {
 
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
-    onClickActivity: (activity: Activity) => void,
+    onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
     doCardAction: (type: string, value: string) => void
 }
 
@@ -118,7 +118,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
                         onCardAction={ this.props.doCardAction }
-                        onClickActivity={ () => this.props.onClickActivity(activity) }
+                        onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
                             // from trying to actually follow a (nonexistant) link
