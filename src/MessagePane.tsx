@@ -50,7 +50,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
                 nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
                 scrollUnit="page"
             >
-                <ul>{ this.props.activityWithSuggestedActions.suggestedActions.map((action, index) =>
+                <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
                         <button onClick={ e => this.actionClick(e, action) } title={ action.title }>
                             { action.title }
@@ -69,7 +69,7 @@ function activityWithSuggestedActions(activities: Activity[]) {
     const lastActivity = activities[activities.length - 1];
     if (lastActivity.type === 'message'
         && lastActivity.suggestedActions
-        && lastActivity.suggestedActions.length > 0
+        && lastActivity.suggestedActions.actions.length > 0
     )
         return lastActivity;
 }
