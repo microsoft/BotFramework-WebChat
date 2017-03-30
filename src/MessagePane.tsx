@@ -7,10 +7,12 @@ import { konsole, classList, doCardAction, sendMessage } from './Chat';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
+
     takeSuggestedAction: (message: Message) => any,
-    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void,
-    sendMessage: (value: string, user: User, locale: string) => void,
-    children: React.ReactNode
+
+    children: React.ReactNode,
+
+    doCardAction: (type: string, value: string) => void
 }
 
 const MessagePaneView = (props: MessagePaneProps) =>
@@ -32,7 +34,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         if (!this.props.activityWithSuggestedActions) return;
         
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
-        this.props.doCardAction(this.props.sendMessage)(cardAction.type, cardAction.value);
+        this.props.doCardAction(cardAction.type, cardAction.value);
         e.stopPropagation();
     }
 
@@ -75,12 +77,25 @@ function activityWithSuggestedActions(activities: Activity[]) {
 }
 
 export const MessagePane = connect(
-    (state: ChatState): Partial<MessagePaneProps> => ({
+    (state: ChatState) => ({
+        // passed down to MessagePaneView
         activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
-        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
-    }),
-    {
+        // only used to create helper functions below 
+        botConnection: state.connection.botConnection,
+        user: state.connection.user,
+        locale: state.format.locale
+    }), {
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
+        // only used to create helper functions below 
         sendMessage
-    }
+    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+        // from stateProps
+        activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
+        // from dispatchProps
+        takeSuggestedAction: dispatchProps.takeSuggestedAction,
+        // from ownProps
+        children: ownProps.children,
+        // helper functions
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
+    })
 )(MessagePaneView);

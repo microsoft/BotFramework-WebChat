@@ -3,14 +3,16 @@ import { ChatActions, ChatState, FormatState } from './Store';
 import { User } from 'botframework-directlinejs';
 import { sendMessage, sendFiles } from './Chat';
 import { Dispatch, connect } from 'react-redux';
+import { Strings } from './Strings';
 
 interface Props {
     inputText: string,
-    format: FormatState,
-    user: User,
-    sendMessage: (inputText: string, from: User, locale: string) => void,
-    sendFiles: (files: FileList, from: User, locale: string) => void,
+    strings: Strings,
+
     onChangeText: (inputText: string) => void
+
+    sendMessage: (inputText: string) => void,
+    sendFiles: (files: FileList) => void,
 }
 
 class ShellContainer extends React.Component<Props, {}> {
@@ -23,7 +25,7 @@ class ShellContainer extends React.Component<Props, {}> {
 
     private sendMessage() {
         if (this.props.inputText.trim().length > 0)
-            this.props.sendMessage(this.props.inputText, this.props.user, this.props.format.locale);
+            this.props.sendMessage(this.props.inputText);
     }
 
     private onKeyPress(e) {
@@ -38,7 +40,7 @@ class ShellContainer extends React.Component<Props, {}> {
 
     private onChangeFile() {
         this.textInput.focus();
-        this.props.sendFiles(this.fileInput.files, this.props.user, this.props.format.locale);
+        this.props.sendFiles(this.fileInput.files);
         this.fileInput.value = null;
     }
 
@@ -57,12 +59,13 @@ class ShellContainer extends React.Component<Props, {}> {
                 <div className="wc-textbox">
                     <input
                         type="text"
+                        id="wc-shellinput"
                         ref={ input => this.textInput = input }
                         autoFocus
                         value={ this.props.inputText }
                         onChange={ _ => this.props.onChangeText(this.textInput.value) }
                         onKeyPress={ e => this.onKeyPress(e) }
-                        placeholder={ this.props.format.strings.consolePlaceholder }
+                        placeholder={ this.props.strings.consolePlaceholder }
                     />
                 </div>
                 <label className="wc-send" onClick={ () => this.onClickSend() } >
@@ -75,15 +78,28 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 }
 
-
 export const Shell = connect(
-    (state: ChatState): Partial<Props> => ({
+    (state: ChatState) => ({
+        // passed down to ShellContainer
         inputText: state.shell.input,
-        format: state.format,
+        strings: state.format.strings,
+        // only used to create helper functions below 
+        locale: state.format.locale,
         user: state.connection.user,
     }), {
+        // passed down to ShellContainer
+        onChangeText: (input: string) => ({ type: 'Update_Input', input } as ChatActions),
+        // only used to create helper functions below 
         sendMessage,
-        sendFiles,
-        onChangeText: (input: string) => ({ type: 'Update_Input', input } as ChatActions)
-    }
+        sendFiles
+    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+        // from stateProps
+        inputText: stateProps.inputText,
+        strings: stateProps.strings,
+        // from dispatchProps
+        onChangeText: dispatchProps.onChangeText,
+        // helper functions
+        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
+        sendFile: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale)
+    })
 )(ShellContainer);

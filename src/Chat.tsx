@@ -186,8 +186,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 export const doCardAction = (
     botConnection: IBotConnection,
     from: User,
-    locale: string
-) => (
+    locale: string,
     sendMessage: (value: string, user: User, locale: string) => void,
 ) => (
     type: string,
@@ -216,6 +215,10 @@ export const doCardAction = (
         default:
             konsole.log("unknown button type", type);
         }
+
+    // HUGE HACK - set focus back to input after clicking on an action
+    // React makes this hard to do well, so we just do an end run around them
+    document.getElementById("wc-shellinput").focus();
 }
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, from: User, locale: string) => {

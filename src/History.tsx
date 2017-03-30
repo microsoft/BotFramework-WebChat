@@ -9,13 +9,15 @@ export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+
+    sendMessage: (text: string, from: User, locale: string) => void,
+    setMeasurements: (carouselMargin: number) => void,
+    onClickRetry: (activity: Activity) => void,
+
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
-    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void;
-    sendMessage: (text: string, from: User, locale: string) => void,
-    onClickActivity: (activity: Activity) => () => void,
-    setMeasurements: (carouselMargin: number) => void,
-    onClickRetry: (activity: Activity) => void
+    onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
+    doCardAction: (type: string, value: string) => void
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -114,7 +116,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
-                        onCardAction={ this.props.doCardAction(this.props.sendMessage) }
+                        onCardAction={ this.props.doCardAction }
                         onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
@@ -140,19 +142,35 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 }
 
 export const History = connect(
-    (state: ChatState): Partial<HistoryProps> => ({
+    (state: ChatState) => ({
+        // passed down to HistoryView
         format: state.format,
         size: state.size,
         activities: state.history.activities,
-        isFromMe: (activity: Activity) => activity.from.id === state.connection.user.id,
-        isSelected: (activity: Activity) => activity === state.history.selectedActivity,
-        onClickActivity: (activity: Activity) => state.connection.selectedActivity && (() => state.connection.selectedActivity.next({ activity })),
-        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
+        // only used to create helper functions below 
+        connectionSelectedActivity: state.connection.selectedActivity,
+        selectedActivity: state.history.selectedActivity,
+        botConnection: state.connection.botConnection,
+        user: state.connection.user
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        // only used to create helper functions below 
         sendMessage
-    }
+    }, (stateProps: any, dispatchProps: any) => ({
+        // from stateProps
+        format: stateProps.format,
+        size: stateProps.size,
+        activities: stateProps.activities,
+        // from dispatchProps
+        setMeasurements: dispatchProps.setMeasurements,
+        onClickRetry: dispatchProps.onClickRetry,
+        // helper functions
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+        isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
+        isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
+        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
+    })
 )(HistoryView);
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
