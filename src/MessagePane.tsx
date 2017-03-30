@@ -11,6 +11,7 @@ export interface MessagePaneProps {
     takeSuggestedAction: (message: Message) => any,
 
     children: React.ReactNode,
+    setFocus: () => void,
 
     doCardAction: (type: string, value: string) => void
 }
@@ -35,6 +36,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
         this.props.doCardAction(cardAction.type, cardAction.value);
+        this.props.setFocus();
         e.stopPropagation();
     }
 
@@ -95,6 +97,7 @@ export const MessagePane = connect(
         takeSuggestedAction: dispatchProps.takeSuggestedAction,
         // from ownProps
         children: ownProps.children,
+        setFocus: ownProps.setFocus,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
     })

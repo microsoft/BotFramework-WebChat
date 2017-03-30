@@ -14,6 +14,8 @@ export interface HistoryProps {
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
 
+    setFocus: () => void,
+
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
@@ -99,6 +101,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
+    private doCardAction(type: string, value: string) {
+        this.props.setFocus();
+        return this.props.doCardAction(type, value);
+    }
+
     render() {
         konsole.log("History props", this);
         let content;
@@ -116,7 +123,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
-                        onCardAction={ this.props.doCardAction }
+                        onCardAction={ (type: string, value: string) => this.doCardAction(type, value) }
                         onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
@@ -157,7 +164,7 @@ export const History = connect(
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
         // only used to create helper functions below 
         sendMessage
-    }, (stateProps: any, dispatchProps: any) => ({
+    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
         // from stateProps
         format: stateProps.format,
         size: stateProps.size,
@@ -165,6 +172,8 @@ export const History = connect(
         // from dispatchProps
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
+        // from ownProps
+        setFocus: ownProps.setFocus,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
