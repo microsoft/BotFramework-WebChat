@@ -58,16 +58,29 @@ const localizedStrings: LocalizedStrings = {
     },
 	'ru-ru': {
         title: "Чат",
-        send: "Послать",
+        send: "Отправить",
         unknownFile: "[Неизвестный тип '%1']",
         unknownCard: "[Неизвестная карта '%1']",
-        receiptTax: "Такса",
-        receiptTotal: "Всего",
-        messageRetry: "Повторить",
-        messageFailed: "невозможно отправить",
+        receiptTax: "Налог",
+        receiptTotal: "Итого",
+        messageRetry: "повторить",
+        messageFailed: "не удалось отправить",
         messageSending: "отправка",
         timeSent: " в %1",
         consolePlaceholder: "Введите ваше сообщение..."
+    },
+    'nl-nl': {
+        title: "Chat",
+        send: "Verstuur",
+        unknownFile: "[Bestand van het type '%1']",
+        unknownCard: "[Onbekende kaart '%1']",
+        receiptTax: "BTW",
+        receiptTotal: "Totaal",
+        messageRetry: "opnieuw",
+        messageFailed: "versturen mislukt",
+        messageSending: "versturen",
+        timeSent: " om %1",
+        consolePlaceholder: "Typ je bericht..."
     },
     'lv-lv': {
         title: "Tērzēšana",
@@ -110,6 +123,8 @@ export const strings = (locale: string) => {
         locale = 'pl-pl';
     else if (locale.startsWith('ru'))
         locale = 'ru-ru';
+    else if (locale.startsWith('nl'))
+        locale = 'nl-nl';
     else if (locale.startsWith('lv'))
         locale = 'lv-lv';
     else if (locale.startsWith('pt'))
