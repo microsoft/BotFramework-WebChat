@@ -59,7 +59,7 @@ class ShellContainer extends React.Component<Props, {}> {
                 <div className="wc-textbox">
                     <input
                         type="text"
-                        id="wc-shellinput"
+                        className="wc-shellinput"
                         ref={ input => this.textInput = input }
                         autoFocus
                         value={ this.props.inputText }

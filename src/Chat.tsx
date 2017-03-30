@@ -153,6 +153,12 @@ export class Chat extends React.Component<ChatProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
+    private setFocus() {
+        // HUGE HACK - set focus back to input after clicking on an action
+        // React makes this hard to do well, so we just do an end run around them
+        (this.chatviewPanel.querySelector(".wc-shellinput") as HTMLInputElement).focus();
+    }
+
     render() {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
@@ -172,8 +178,8 @@ export class Chat extends React.Component<ChatProps, {}> {
             <Provider store={ this.store }>
                 <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
-                    <MessagePane>
-                        <History/>
+                    <MessagePane setFocus={ () => this.setFocus() }>
+                        <History setFocus={ () => this.setFocus() }/>
                     </MessagePane>
                     <Shell />
                     { resize }
@@ -215,10 +221,6 @@ export const doCardAction = (
         default:
             konsole.log("unknown button type", type);
         }
-
-    // HUGE HACK - set focus back to input after clicking on an action
-    // React makes this hard to do well, so we just do an end run around them
-    document.getElementById("wc-shellinput").focus();
 }
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, from: User, locale: string) => {
