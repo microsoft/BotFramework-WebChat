@@ -84,12 +84,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 attachmentLayout: 'carousel'
             } }
             format={ null }
-            size={ null }
             fromMe={ false }
-            onCardAction={ null }
             onClickActivity={ null }
             onClickRetry={ null }
-            onImageLoad={ null }
             selected={ false }
             showTimestamp={ false }
         >
@@ -117,13 +114,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } else {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
-                        { ... this.props }
+                        format={ this.props.format }
                         key={ 'message' + index }
                         activity={ activity }
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
-                        onCardAction={ (type: string, value: string) => this.doCardAction(type, value) }
                         onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
@@ -132,8 +128,15 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             e.stopPropagation();
                             this.props.onClickRetry(activity)
                         } }
-                        onImageLoad={ () => this.autoscroll() }
-                    />
+                    >
+                        <ActivityView
+                            format={ this.props.format }
+                            size={ this.props.size }
+                            activity={ activity }
+                            onCardAction={ (type: string, value: string) => this.doCardAction(type, value) }
+                            onImageLoad={ () => this.autoscroll() }
+                        />
+                    </WrappedActivity>
                 );
             }
         }
@@ -210,11 +213,8 @@ export interface WrappedActivityProps {
     selected: boolean,
     fromMe: boolean,
     format: FormatState,
-    size: SizeState,
-    onCardAction: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
-    onImageLoad: () => void,
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -270,7 +270,6 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
-                        <ActivityView { ... this.props }/>
                         { this.props.children }
                     </div>
                 </div>
