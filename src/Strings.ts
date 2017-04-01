@@ -107,6 +107,19 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " às %1",
         consolePlaceholder: "Digite sua mensagem..."
+    },
+    'fr-fr': {
+        title: "Chat",
+        send: "Envoyer",
+        unknownFile: "[Fichier de type '%1']",
+        unknownCard: "[Carte inconnue '%1']",
+        receiptTax: "Taxe",
+        receiptTotal: "Total",
+        messageRetry: "reéssayer",
+        messageFailed: "envoi impossible",
+        messageSending: "envoi",
+        timeSent: " à %1",
+        consolePlaceholder: "Écrivez votre message..."
     }
 }
 
@@ -129,6 +142,8 @@ export const strings = (locale: string) => {
         locale = 'lv-lv';
     else if (locale.startsWith('pt'))
         locale = 'pt-br';
+    else if (locale.startsWith('fr'))
+        locale = 'fr-fr';
     else
         locale = 'en-us';
 
