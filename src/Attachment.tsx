@@ -115,6 +115,21 @@ const Media = (props: {
     }
 }
 
+const Unknown = (props: {
+    format: FormatState,
+    contentType: string,
+    contentUrl: string,
+    name: string
+}) => {
+    if (regExpCard.test(props.contentType)) {
+        return <span>{ props.format.strings.unknownCard.replace('%1', props.contentType) }</span>;
+    } else if (props.contentUrl) {
+        return <span><a href={ props.contentUrl } title={ props.contentUrl } target='_blank'>{ props.name || props.format.strings.unknownFile.replace('%1', props.contentType) }</a></span>;
+    } else {
+        return <span>{ props.format.strings.unknownFile.replace('%1', props.contentType) }</span>;
+    }
+}
+
 const mediaType = (url: string) =>
     url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'image' : 'video';
 
@@ -201,10 +216,10 @@ export const AttachmentView = (props: {
 
         case "application/vnd.microsoft.card.animation":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
-                return null;            
+                return null;
             return (
                 <div className='wc-card animation'>
-                    <Media 
+                    <Media
                         type={ mediaType(attachment.content.media[0].url) }
                         src={ attachment.content.media[0].url }
                         onLoad={ props.onImageLoad }
@@ -328,8 +343,6 @@ export const AttachmentView = (props: {
             return <Media type='video' src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
-            const contentType = (attachment as any).contentType;
-            const unknown = regExpCard.test(contentType) ? props.format.strings.unknownCard : props.format.strings.unknownFile;
-            return <span>{ unknown.replace('%1', contentType) }</span>;
-    }        
+            return <Unknown format={ props.format } contentType={ (attachment as any).contentType } contentUrl={ (attachment as any).contentUrl } name={ (attachment as any).name } />;
+    }
 }

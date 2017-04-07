@@ -9,13 +9,17 @@ export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+
+    sendMessage: (text: string, from: User, locale: string) => void,
+    setMeasurements: (carouselMargin: number) => void,
+    onClickRetry: (activity: Activity) => void,
+
+    setFocus: () => void,
+
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
-    doCardAction: (sendMessage: (text: string, from: User, locale: string) => void) => (type: string, value: string) => void;
-    sendMessage: (text: string, from: User, locale: string) => void,
-    onClickActivity: (activity: Activity) => () => void,
-    setMeasurements: (carouselMargin: number) => void,
-    onClickRetry: (activity: Activity) => void
+    onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
+    doCardAction: (type: string, value: string) => void
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -80,12 +84,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 attachmentLayout: 'carousel'
             } }
             format={ null }
-            size={ null }
             fromMe={ false }
-            onCardAction={ null }
             onClickActivity={ null }
             onClickRetry={ null }
-            onImageLoad={ null }
             selected={ false }
             showTimestamp={ false }
         >
@@ -96,6 +97,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 1. To determine the dimensions of the chat panel (not much needs to actually render here)
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
+
+    private doCardAction(type: string, value: string) {
+        this.props.setFocus();
+        return this.props.doCardAction(type, value);
+    }
 
     render() {
         konsole.log("History props", this);
@@ -108,13 +114,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } else {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
-                        { ... this.props }
+                        format={ this.props.format }
                         key={ 'message' + index }
                         activity={ activity }
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
-                        onCardAction={ this.props.doCardAction(this.props.sendMessage) }
                         onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
@@ -123,8 +128,15 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             e.stopPropagation();
                             this.props.onClickRetry(activity)
                         } }
-                        onImageLoad={ () => this.autoscroll() }
-                    />
+                    >
+                        <ActivityView
+                            format={ this.props.format }
+                            size={ this.props.size }
+                            activity={ activity }
+                            onCardAction={ (type: string, value: string) => this.doCardAction(type, value) }
+                            onImageLoad={ () => this.autoscroll() }
+                        />
+                    </WrappedActivity>
                 );
             }
         }
@@ -140,25 +152,36 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 }
 
 export const History = connect(
-    (state: ChatState): Partial<HistoryProps> => ({
+    (state: ChatState) => ({
+        // passed down to HistoryView
         format: state.format,
         size: state.size,
         activities: state.history.activities,
-        isFromMe: (activity: Activity) => activity.from.id === state.connection.user.id,
-        isSelected: (activity: Activity) => activity === state.history.selectedActivity,
-        onClickActivity: (activity: Activity) => state.connection.selectedActivity && (() => state.connection.selectedActivity.next({ activity })),
-        doCardAction: doCardAction(state.connection.botConnection, state.connection.user, state.format.locale),
-    }),
-    (dispatch: Dispatch<any>): Partial<HistoryProps> => ({
-        setMeasurements: (carouselMargin: number) => dispatch<ChatActions>({ 
-            type: 'Set_Measurements',
-            carouselMargin
-        }),
-        onClickRetry: (activity: Activity) => dispatch<ChatActions>({
-            type: 'Send_Message_Retry',
-            clientActivityId: activity.channelData.clientActivityId
-        }),
-        sendMessage: (value: string, user: User, locale: string) => sendMessage(dispatch, value, user, locale)
+        // only used to create helper functions below 
+        connectionSelectedActivity: state.connection.selectedActivity,
+        selectedActivity: state.history.selectedActivity,
+        botConnection: state.connection.botConnection,
+        user: state.connection.user
+    }), {
+        setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
+        onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        // only used to create helper functions below 
+        sendMessage
+    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+        // from stateProps
+        format: stateProps.format,
+        size: stateProps.size,
+        activities: stateProps.activities,
+        // from dispatchProps
+        setMeasurements: dispatchProps.setMeasurements,
+        onClickRetry: dispatchProps.onClickRetry,
+        // from ownProps
+        setFocus: ownProps.setFocus,
+        // helper functions
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+        isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
+        isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
+        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
     })
 )(HistoryView);
 
@@ -190,11 +213,8 @@ export interface WrappedActivityProps {
     selected: boolean,
     fromMe: boolean,
     format: FormatState,
-    size: SizeState,
-    onCardAction: (type: string, value: string) => void,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
-    onImageLoad: () => void,
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -250,7 +270,6 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
-                        <ActivityView { ... this.props }/>
                         { this.props.children }
                     </div>
                 </div>

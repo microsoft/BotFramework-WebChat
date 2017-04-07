@@ -1,4 +1,4 @@
-import { Activity, IBotConnection, User, ConnectionStatus } from 'botframework-directlinejs';
+import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botframework-directlinejs';
 import { FormatOptions, ActivityOrID, konsole } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -205,9 +205,18 @@ export type HistoryAction = {
     type: 'Select_Activity',
     selectedActivity: Activity
 } | {
+    type: 'Take_SuggestedAction',
+    message: Message
+} | {
     type: 'Clear_Typing',
     id: string
 }
+
+const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
+    ... array.slice(0, i),
+    item,
+    ... array.slice(i + 1)
+];
 
 export const history: Reducer<HistoryState> = (
     state: HistoryState = {
@@ -232,11 +241,7 @@ export const history: Reducer<HistoryState> = (
                 const activity = state.activities[i];
                 return {
                     ... state,
-                    activities: [
-                        ... state.activities.slice(0, i),
-                        action.activity,
-                        ... state.activities.slice(i + 1)
-                    ],
+                    activities: copyArrayWithUpdatedItem(state.activities, i, activity),
                     selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
                 };
             }
@@ -300,11 +305,7 @@ export const history: Reducer<HistoryState> = (
             };
             return {
                 ... state,
-                activities: [
-                    ... state.activities.slice(0, i),
-                    newActivity,
-                    ... state.activities.slice(i + 1)
-                ],
+                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
                 clientActivityCounter: state.clientActivityCounter + 1,
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             };
@@ -332,6 +333,19 @@ export const history: Reducer<HistoryState> = (
                 ... state,
                 selectedActivity: action.selectedActivity
             };
+
+        case 'Take_SuggestedAction':
+            const i = state.activities.findIndex(activity => activity === action.message);
+            const activity = state.activities[i];
+            const newActivity = {
+                ... activity,
+                suggestedActions: undefined
+            };
+            return {
+                ... state,
+                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
+                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+            }
 
         default:
             return state;

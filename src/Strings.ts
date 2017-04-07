@@ -56,18 +56,31 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość..."
     },
-	'ru-ru': {
+    'ru-ru': {
         title: "Чат",
-        send: "Послать",
+        send: "Отправить",
         unknownFile: "[Неизвестный тип '%1']",
         unknownCard: "[Неизвестная карта '%1']",
-        receiptTax: "Такса",
-        receiptTotal: "Всего",
-        messageRetry: "Повторить",
-        messageFailed: "невозможно отправить",
+        receiptTax: "Налог",
+        receiptTotal: "Итого",
+        messageRetry: "повторить",
+        messageFailed: "не удалось отправить",
         messageSending: "отправка",
         timeSent: " в %1",
         consolePlaceholder: "Введите ваше сообщение..."
+    },
+    'nl-nl': {
+        title: "Chat",
+        send: "Verstuur",
+        unknownFile: "[Bestand van het type '%1']",
+        unknownCard: "[Onbekende kaart '%1']",
+        receiptTax: "BTW",
+        receiptTotal: "Totaal",
+        messageRetry: "opnieuw",
+        messageFailed: "versturen mislukt",
+        messageSending: "versturen",
+        timeSent: " om %1",
+        consolePlaceholder: "Typ je bericht..."
     },
     'lv-lv': {
         title: "Tērzēšana",
@@ -94,6 +107,32 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " às %1",
         consolePlaceholder: "Digite sua mensagem..."
+    },
+    'fr-fr': {
+        title: "Chat",
+        send: "Envoyer",
+        unknownFile: "[Fichier de type '%1']",
+        unknownCard: "[Carte inconnue '%1']",
+        receiptTax: "Taxe",
+        receiptTotal: "Total",
+        messageRetry: "reéssayer",
+        messageFailed: "envoi impossible",
+        messageSending: "envoi",
+        timeSent: " à %1",
+        consolePlaceholder: "Écrivez votre message..."
+    },
+    'es-es': {
+        title: "Chat",
+        send: "Enviar",
+        unknownFile: "[Archivo de tipo '%1']",
+        unknownCard: "[Tarjeta desconocida '%1']",
+        receiptTax: "Impuestos",
+        receiptTotal: "Total",
+        messageRetry: "reintentar",
+        messageFailed: "no enviado",
+        messageSending: "enviando",
+        timeSent: " a las %1",
+        consolePlaceholder: "Escribe tu mensaje..."
     }
 }
 
@@ -110,10 +149,16 @@ export const strings = (locale: string) => {
         locale = 'pl-pl';
     else if (locale.startsWith('ru'))
         locale = 'ru-ru';
+    else if (locale.startsWith('nl'))
+        locale = 'nl-nl';
     else if (locale.startsWith('lv'))
         locale = 'lv-lv';
     else if (locale.startsWith('pt'))
         locale = 'pt-br';
+    else if (locale.startsWith('fr'))
+        locale = 'fr-fr';
+    else if (locale.startsWith('es'))
+        locale = 'es-es';
     else
         locale = 'en-us';
 
