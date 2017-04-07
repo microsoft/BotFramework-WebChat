@@ -56,7 +56,7 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość..."
     },
-	'ru-ru': {
+    'ru-ru': {
         title: "Чат",
         send: "Отправить",
         unknownFile: "[Неизвестный тип '%1']",
@@ -120,6 +120,19 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "envoi",
         timeSent: " à %1",
         consolePlaceholder: "Écrivez votre message..."
+    },
+    'es-es': {
+        title: "Chat",
+        send: "Enviar",
+        unknownFile: "[Archivo de tipo '%1']",
+        unknownCard: "[Tarjeta desconocida '%1']",
+        receiptTax: "Impuestos",
+        receiptTotal: "Total",
+        messageRetry: "reintentar",
+        messageFailed: "no enviado",
+        messageSending: "enviando",
+        timeSent: " a las %1",
+        consolePlaceholder: "Escribe tu mensaje..."
     }
 }
 
@@ -144,6 +157,8 @@ export const strings = (locale: string) => {
         locale = 'pt-br';
     else if (locale.startsWith('fr'))
         locale = 'fr-fr';
+    else if (locale.startsWith('es'))
+        locale = 'es-es';
     else
         locale = 'en-us';
 
