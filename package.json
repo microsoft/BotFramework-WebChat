@@ -9,12 +9,12 @@
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
     "build-css": "node-sass ./src/scss/ -o .",
     "build-css-watch": "node-sass ./src/scss/ -o . -w",
-    "build": "tsc && npm run build-css && webpack",
+    "build": "tsc && npm run build-css && webpack --progress",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch build-css-watch",
     "tsc-watch": "tsc -w",
-    "webpack-watch": "webpack -w",
+    "webpack-watch": "webpack --progress --watch",
     "clean": "rm -rf built",
-    "prepublish": "tsc && npm run build-css && webpack --config webpack.production.config.js",
+    "prepublish": "tsc && npm run build-css && webpack --progress --config webpack.production.config.js",
     "start": "http-server -p 8000",
     "test": "concurrently  \"node test/mock_dl/index.js\" \"mocha test\" "
   },
@@ -27,15 +27,15 @@
   "dependencies": {
     "botframework-directlinejs": "^0.9.6",
     "core-js": "^2.4.1",
-    "he": "^1.1.0",
+    "he": "^1.1.1",
     "marked": "^0.3.6",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-redux": "^5.0.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.3",
     "redux": "^3.6.0",
     "redux-observable": "^0.13.0",
-    "rxjs": "^5.0.3",
-    "tslib": "^1.5.0"
+    "rxjs": "^5.3.0",
+    "tslib": "^1.6.0"
   },
   "devDependencies": {
     "@types/body-parser": "0.0.33",
@@ -45,9 +45,10 @@
     "@types/express": "^4.0.35",
     "@types/he": "^0.5.29",
     "@types/marked": "0.0.28",
-    "@types/react": "^15.0.14",
+    "@types/react": "^15.0.21",
     "@types/react-dom": "^0.14.23",
     "@types/react-redux": "^4.4.38",
+    "awesome-typescript-loader": "^3.1.2",
     "body-parser": "^1.16.0",
     "chai": "^3.5.0",
     "chai-subset": "^1.4.0",
@@ -63,10 +64,9 @@
     "nodemon": "^1.11.0",
     "npm-run-all": "^3.1.2",
     "remote": "^0.2.6",
-    "source-map-loader": "^0.1.5",
-    "ts-loader": "^1.3.3",
-    "typescript": "^2.1.5",
+    "source-map-loader": "^0.2.1",
+    "typescript": "^2.2.2",
     "vo": "^4.0.2",
-    "webpack": "^1.14.0"
+    "webpack": "^2.3.3"
   }
 }
