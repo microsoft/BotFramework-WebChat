@@ -1,4 +1,5 @@
 import * as Marked from 'marked';
+import * as MarkdownIt from 'markdown-it';
 import * as React from 'react';
 import * as He from 'he';
 
@@ -45,6 +46,7 @@ const renderMarkdown = (
         ... markdownOptions
     };
     const renderer = options.renderer = new ReactRenderer(options, onImageLoad);
+    //const mit = new MarkdownIt();
     const elements = renderer.getElements(Marked.parse(src, options));
     /*// debug
     const remaining = renderer.elements.filter(el => !!el);
