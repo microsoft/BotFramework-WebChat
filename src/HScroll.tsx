@@ -2,8 +2,8 @@ import * as React from 'react';
 import { konsole } from './Chat';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/Observable/fromEvent';
-import 'rxjs/add/Observable/merge';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/merge';
 
 export interface HScrollProps {
     scrollUnit?: 'page' | 'item'; // defaults to page
