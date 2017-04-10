@@ -100,6 +100,6 @@ export const Shell = connect(
         onChangeText: dispatchProps.onChangeText,
         // helper functions
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
-        sendFile: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale)
+        sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale)
     })
 )(ShellContainer);
