@@ -27,7 +27,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollToBottom = true;
 
     private carouselActivity: WrappedActivity;
-    private largeWidth;
+    private largeWidth: number;
 
     constructor(props: HistoryProps) {
         super(props);

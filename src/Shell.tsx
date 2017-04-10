@@ -28,7 +28,7 @@ class ShellContainer extends React.Component<Props, {}> {
             this.props.sendMessage(this.props.inputText);
     }
 
-    private onKeyPress(e) {
+    private onKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === 'Enter')
             this.sendMessage();
     }
