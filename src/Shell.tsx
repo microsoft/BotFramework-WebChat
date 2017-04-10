@@ -92,7 +92,7 @@ export const Shell = connect(
         // only used to create helper functions below 
         sendMessage,
         sendFiles
-    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+    }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
         strings: stateProps.strings,
@@ -100,6 +100,6 @@ export const Shell = connect(
         onChangeText: dispatchProps.onChangeText,
         // helper functions
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
-        sendFile: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale)
+        sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale)
     })
 )(ShellContainer);
