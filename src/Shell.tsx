@@ -92,7 +92,7 @@ export const Shell = connect(
         // only used to create helper functions below 
         sendMessage,
         sendFiles
-    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+    }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
         strings: stateProps.strings,
