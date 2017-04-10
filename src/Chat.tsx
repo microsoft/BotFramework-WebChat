@@ -73,7 +73,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         this.store.dispatch<ChatActions>({
             type: 'Set_Locale',
-            locale: props.locale || window.navigator["userLanguage"] || window.navigator.language || 'en'
+            locale: props.locale || (window.navigator as any)["userLanguage"] || window.navigator.language || 'en'
         });
 
         if (props.formatOptions)
@@ -261,7 +261,7 @@ export const classList = (...args:(string | boolean)[]) => {
 
 export const konsole = {
     log: (message?: any, ... optionalParams: any[]) => {
-        if (typeof(window) !== 'undefined' && window["botchatDebug"] && message)
+        if (typeof(window) !== 'undefined' && (window as any)["botchatDebug"] && message)
             console.log(message, ... optionalParams);
     }
 }
