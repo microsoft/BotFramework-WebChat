@@ -24,7 +24,7 @@ export type ShellAction = {
 }
 
 export const shell: Reducer<ShellState> = (
-    state = {
+    state: ShellState = {
         input: '',
         sendTyping: false
     },
@@ -73,7 +73,7 @@ export type FormatAction = {
 }
 
 export const format: Reducer<FormatState> = (
-    state = {
+    state: FormatState = {
         locale: 'en-us',
         options: {
             showHeader: true
@@ -117,7 +117,7 @@ export type SizeAction = {
 }
 
 export const size: Reducer<SizeState> = (
-    state = {
+    state: SizeState = {
         width: undefined,
         height: undefined
     },
@@ -156,7 +156,7 @@ export type ConnectionAction = {
 }
 
 export const connection: Reducer<ConnectionState> = (
-    state = {
+    state: ConnectionState = {
         connectionStatus: ConnectionStatus.Uninitialized,
         botConnection: undefined,
         selectedActivity: undefined,
@@ -219,7 +219,7 @@ const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
 ];
 
 export const history: Reducer<HistoryState> = (
-    state = {
+    state: HistoryState = {
         activities: [],
         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
         clientActivityCounter: 0,
