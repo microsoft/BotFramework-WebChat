@@ -144,11 +144,8 @@ const postMessage = (req: express.Request, res: express.Response) => {
     processCommand(req, res, req.body.text, id);
 }
 
-// Getting testing commands from map and server config
+// Getting testing commands from map 
 let commands = require('../commands_map');
-let config = require('../mock_dl_server_config');
-let current_uitests = 0;
-let uitests_files = Object.keys(config["width-tests"]).length + 1;       //Adding uitest file
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
     if (commands[cmd] && commands[cmd].server) {
@@ -157,22 +154,11 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
     else {
         switch (cmd) {
             case 'end':
-                current_uitests++;
-                if(uitests_files <= current_uitests){
-                    setTimeout(
-                        () => {
-                            process.exitCode = 0;
-                            process.exit();
-                        }, 3000);
-                }
-                else{
-                    sendActivity(res, {
-                        type: "message",
-                        timestamp: new Date().toUTCString(),
-                        channelId: "webchat",
-                        text: "echo: " + req.body.text
-                    });                    
-                }
+                setTimeout(
+                    () => {
+                        process.exitCode = 0;
+                        process.exit();
+                    }, 3000);
                 return;
             default:
                 sendActivity(res, {
@@ -265,6 +251,8 @@ app.get('/assets/:file', function(req, res){
     var file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));    
 });
+
+let config = require('../mock_dl_server_config');
 
 // Running Web Server and DirectLine Client on port
 app.listen(process.env.port || process.env.PORT || config["port"], () => {

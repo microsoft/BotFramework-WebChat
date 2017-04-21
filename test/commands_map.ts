@@ -8,7 +8,7 @@ interface ISendActivity {
 }
 
 interface CommandValues {
-    client: () => (boolean | Promise<boolean>),
+    client: () => void,
     server?: (res: express.Response, sendActivity: ISendActivity) => void
 }
 
@@ -49,43 +49,51 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
         }
-    },    
+    },
     "carousel-to-right": {
-        client: () => new Promise((resolve) => {
-            var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
+        client: async function () {
 
+            async function rightArrowClick(){
+                right_arrow.click();
+                await new Promise((resolve) => {
+                    setTimeout(resolve, 1000);
+                });
+            }
+
+            var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
+            
             // Carousel made of 4 cards.
             // 3-Clicks are needed to move all carousel to right.
-            // Note: Electron browser width size must not be changed.             
-            right_arrow.click();
-            setTimeout(() => {
-                right_arrow.click();
-                setTimeout(() => {
-                    right_arrow.click();
-                    setTimeout(() => {
-                        resolve(right_arrow.getAttribute('disabled') != null);
-                    }, 2000);
-                }, 500);
-            }, 500);
-        }),
+            // Note: Electron browser width size must not be changed. 
+            await rightArrowClick();
+            await rightArrowClick();
+            await rightArrowClick();
+
+            // Validates if the right_arrow button is disabled.             
+            return right_arrow.getAttribute('disabled') != null;
+        },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
         }
     },
     "carousel-to-left": {
-        client: () => new Promise((resolve) => {
-            var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;            
+        client: async function () {
             // One-Click to the right
+            var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;
             right_arrow.click();
-            setTimeout(() => {                
-                // One-click to the left
-                var left_arrow = document.querySelectorAll(".scroll.previous")[0] as HTMLButtonElement;
-                left_arrow.click();                
-                setTimeout(() => {
-                    resolve(left_arrow.getAttribute('disabled') != null);
-                }, 800);
-            }, 500);
-        }),
+            await new Promise((resolve) => {
+                setTimeout(resolve, 500);
+            });
+            
+            // One-click to the left
+            var left_arrow = document.querySelectorAll(".scroll.previous")[0] as HTMLButtonElement;
+            left_arrow.click();
+            await new Promise((resolve) => {
+                setTimeout(resolve, 1000);
+            });
+            
+            return left_arrow.getAttribute('disabled') != null;
+        },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
         }
@@ -101,23 +109,25 @@ var commands_map: CommandValuesMap = {
         }
     },
     "carousel-scroll": {
-        client: () => new Promise((resolve) => {
+        client: async function () {
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
-
+            
             // Scrolling the carousel simulating touch action
             var car_items = document.querySelectorAll('.wc-carousel-item').length;
-            for (var i = 0; i < car_items; i++) {
-                    var element = document.querySelectorAll('.wc-carousel-item')[i];
-                    element.scrollIntoView();
+            for(var i=0; i<car_items; i++){
+                var element = document.querySelectorAll('.wc-carousel-item')[i];
+                element.scrollIntoView();
+                await new Promise((resolve) => {
+                    setTimeout(resolve, 300);
+                }); 
             }
-            setTimeout(() => {
-                resolve(right_arrow.getAttribute('disabled') != null);
-            }, 500);
-        }),
+
+            return right_arrow.getAttribute('disabled') != null;
+        },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
         }
-    },
+    },    
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;
@@ -134,50 +144,52 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.si_card);
         }
     },
-    "suggested-actions": {
+    "suggested-actions":{
         client: function () {
             var ul_object = document.querySelectorAll('ul')[0];
             var show_actions_length = document.querySelectorAll('.show-actions').length;
 
             // Validating if the the 3 buttons are displayed and suggested actions are visibile  
-            return ul_object.childNodes[0].textContent == "Blue" &&
-                ul_object.childNodes[1].textContent == "Red" &&
-                ul_object.childNodes[2].textContent == "Green" &&
-                show_actions_length == 1;
+            return ul_object.childNodes[0].textContent == "Blue" && 
+                   ul_object.childNodes[1].textContent == "Red" && 
+                   ul_object.childNodes[2].textContent == "Green" && 
+                   show_actions_length == 1;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
-        }
-    },    
-    "suggested-actions-away": {
-        client: () => new Promise((resolve) => {
+        }        
+    },
+    "suggested-actions-away":{
+        client: async function () {
             var green_button = document.querySelectorAll('button[title="Green"]')[0] as HTMLButtonElement;
             green_button.click();
-            setTimeout(() => {
-                var show_actions_length = document.querySelectorAll('.show-actions').length;                
-                resolve(show_actions_length == 0);
-            }, 2000);            
-        }),
+            await new Promise((resolve) => {
+                setTimeout(resolve, 2000);
+            });
+
+            // Validating suggested actions went away
+            var show_actions_length = document.querySelectorAll('.show-actions').length;
+            return show_actions_length == 0;
+        },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
-        }
+        }        
     },
-    "suggested-actions-click": {
-        client: () => new Promise((resolve) => {
+    "suggested-actions-click":{
+        client: async function () {
             var red_button = document.querySelectorAll('button[title="Red"]')[0] as HTMLButtonElement;
             red_button.click();
-            setTimeout(() => {
-                // Waiting more time
-                setTimeout(() => {
-                    // Getting for bot response
-                    var response_text = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('Red') != -1;
-                    resolve(response_text);
-                }, 2000);
-            }, 2000); 
-        }),
+            await new Promise((resolve) => {
+                setTimeout(resolve, 2000);
+            });
+            
+            // Getting response from bot
+            var response_text = document.querySelectorAll('span[class="format-markdown"]')[1].childNodes[0].childNodes[0].textContent;
+            return response_text == "echo: Red";
+        },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
-        }
+        }        
     },
     /*
     * Add your commands to test here  

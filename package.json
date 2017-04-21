@@ -25,6 +25,7 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
+    "@types/markdown-it": "0.0.2",
     "@types/react-redux": "^4.4.38",
     "@types/redux": "^3.6.0",
     "botframework-directlinejs": "^0.9.6",
