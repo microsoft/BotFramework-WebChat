@@ -36,13 +36,14 @@ describe('Nightmare UI Tests', function () {
 				console.log("Evaluating: " + keys[i]);
 
 				let testUrl = `${url}&t=${keys[i]}/ui`;
+				let result = "";
 
 				//Starting server and reload the page.
 				if (i == 0) {
-					let result = yield nightmare.goto(testUrl);
+					result = yield nightmare.goto(testUrl);
 				}
 
-				let result = yield nightmare.goto(testUrl)
+				result = yield nightmare.goto(testUrl)
 					.wait(2000)
 					.type('.wc-textbox input', keys[i])
 					.click('.wc-send')
@@ -50,11 +51,14 @@ describe('Nightmare UI Tests', function () {
 					.evaluate(commands[keys[i]].client)
 
 				if ((keys.length - 1) == i) {
-					result.end()
+					console.log(result);
+					results.push(result);
+					yield nightmare.end();
 				}
-
-				console.log(result);
-				results.push(result);
+				else{
+					console.log(result);
+					results.push(result);
+				}
 			}
 			return results;
 		}
