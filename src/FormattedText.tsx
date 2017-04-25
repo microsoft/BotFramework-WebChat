@@ -41,7 +41,7 @@ export const FormattedText = (props: IFormattedTextProps) => {
         case "plain":
             return renderPlainText(props.text);
         default:
-            return renderMarkdown(props.text, props.markdownOptions, props.onImageLoad);
+            return renderMarkdown(props.text, props.onImageLoad);
     }
 }
 
@@ -51,14 +51,13 @@ const renderPlainText = (text: string) => {
     return <span className="format-plain">{elements}</span>;
 }
 
+const markdownIt = new MarkdownIt({ html: true, linkify: true, typographer: true });
+
 const renderMarkdown = (
     text: string,
-    markdownOptions: MarkdownItOptions,
     onImageLoad: () => void
 ) => {
     const src = text.replace(/<br\s*\/?>/ig, '\r\n\r\n');
-    markdownOptions = markdownOptions == null ? {html: true, linkify: true, typographer: true} : markdownOptions; 
-    const md = new MarkdownIt(markdownOptions);
-    const elements = md.render(src);
-    return  <div className="format-markdown" dangerouslySetInnerHTML={{__html: elements}} />;
+    const __html = markdownIt.render(src);
+    return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }

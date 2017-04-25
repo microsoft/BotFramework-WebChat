@@ -6,7 +6,7 @@ var width_tests = {
     "desktop": 1024
 };
 
-module.exports = {    
+module.exports = {
     "port": 3000,
     "width-tests": width_tests
 }

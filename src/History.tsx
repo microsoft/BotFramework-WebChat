@@ -10,7 +10,6 @@ export interface HistoryProps {
     size: SizeState,
     activities: Activity[],
 
-    sendMessage: (text: string, from: User, locale: string) => void,
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
 
@@ -28,7 +27,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollToBottom = true;
 
     private carouselActivity: WrappedActivity;
-    private largeWidth;
+    private largeWidth: number;
 
     constructor(props: HistoryProps) {
         super(props);
@@ -167,7 +166,7 @@ export const History = connect(
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
         // only used to create helper functions below 
         sendMessage
-    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+    }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
         format: stateProps.format,
         size: stateProps.size,

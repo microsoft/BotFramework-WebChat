@@ -148,7 +148,7 @@ export const AttachmentView = (props: {
     const attachment = props.attachment;
 
     const onCardAction = (cardAction: CardAction) => cardAction &&
-        (e => {
+        ((e: React.MouseEvent<HTMLElement>) => {
             props.onCardAction(cardAction.type, cardAction.value);
             e.stopPropagation();
         });

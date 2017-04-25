@@ -90,7 +90,7 @@ export const MessagePane = connect(
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
         // only used to create helper functions below 
         sendMessage
-    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+    }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
         // from stateProps
         activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
         // from dispatchProps
