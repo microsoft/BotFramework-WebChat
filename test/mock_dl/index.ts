@@ -148,7 +148,7 @@ const postMessage = (req: express.Request, res: express.Response) => {
 let commands = require('../commands_map');
 let config = require('../mock_dl_server_config');
 let current_uitests = 0;
-let uitests_files = Object.keys(config["width-tests"]).length + 1;       //Adding uitest file
+let uitests_files = Object.keys(config["width-tests"]).length;
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
     if (commands[cmd] && commands[cmd].server) {
