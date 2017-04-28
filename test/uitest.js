@@ -22,13 +22,25 @@ describe('nightmare UI tests', function () {
 		let tab = "\t";
 		let results = [];
 
+		let isTrueColor = "\x1b[32m";
+		let isFalseColor = "\x1b[31m";
+		let deviceColor = "\x1b[36m%s\x1b[0m";
+		let resultToConsole = function (result) {
+			result ? console.log(isTrueColor, `${tab}${tab}${result}`) :
+				console.log(isFalseColor, `${tab}${tab}${result}`);
+		}
+		let deviceToConsole = function(device, width){
+				console.log(deviceColor, `${tab}${device} (width: ${width}px)`);
+		}
+
+		//Testing devices and commands 
 		let testAllCommands = function* () {
 			for (let device in devices) {
 				let width = devices[device];
-				console.log('\x1b[36m%s\x1b[0m', tab + device + " (width: " + width + "px)");
+				deviceToConsole(device, width);
 
 				for (let cmd_index = 0; cmd_index < keys.length; cmd_index++) {
-					console.log(tab + tab + "Command: " + keys[cmd_index]);
+					console.log(`${tab}${tab}Command: ${keys[cmd_index]}`);
 
 					let testUrl = `${url}&t=${keys[cmd_index]}/ui`;
 					let result = "";
@@ -47,7 +59,7 @@ describe('nightmare UI tests', function () {
 						.wait(3000)
 						.evaluate(commands[keys[cmd_index]].client)
 
-					result ? console.log("\x1b[32m", tab + tab + result) : console.log("\x1b[31m", tab + tab + result);
+					resultToConsole(result);
 					results.push(result);
 				}
 			}
