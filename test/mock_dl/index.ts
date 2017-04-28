@@ -158,20 +158,20 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
         switch (cmd) {
             case 'end':
                 current_uitests++;
-                if(uitests_files <= current_uitests){
+                if (uitests_files <= current_uitests) {
                     setTimeout(
                         () => {
                             process.exitCode = 0;
                             process.exit();
                         }, 3000);
                 }
-                else{
+                else {
                     sendActivity(res, {
                         type: "message",
                         timestamp: new Date().toUTCString(),
                         channelId: "webchat",
                         text: "echo: " + req.body.text
-                    });                    
+                    });
                 }
                 return;
             default:
@@ -261,9 +261,9 @@ app.get('/botchat.css', function (req, res) {
 app.get('/botchat-fullwindow.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat-fullwindow.css"));
 });
-app.get('/assets/:file', function(req, res){
+app.get('/assets/:file', function (req, res) {
     var file = req.params["file"];
-    res.sendFile(path.join(__dirname + "/../assets/" + file));    
+    res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
 
 // Running Web Server and DirectLine Client on port

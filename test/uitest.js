@@ -46,13 +46,13 @@ describe('nightmare UI tests', function () {
 						.click('.wc-send')
 						.wait(3000)
 						.evaluate(commands[keys[cmd_index]].client)
-					
-					result? console.log("\x1b[32m", tab + tab + result): console.log("\x1b[31m", tab + tab + result);
+
+					result ? console.log("\x1b[32m", tab + tab + result) : console.log("\x1b[31m", tab + tab + result);
 					results.push(result);
 				}
 			}
-				yield nightmare.end();
-				return results;			
+			yield nightmare.end();
+			return results;
 		}
 
 		vo(testAllCommands)(function (err, results) {

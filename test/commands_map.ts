@@ -41,7 +41,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.ani_card);
         }
-    },    
+    },
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
@@ -49,7 +49,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
         }
-    },    
+    },
     "carousel-to-right": {
         client: () => new Promise((resolve) => {
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
@@ -74,13 +74,13 @@ var commands_map: CommandValuesMap = {
     },
     "carousel-to-left": {
         client: () => new Promise((resolve) => {
-            var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;            
+            var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;
             // One-Click to the right
             right_arrow.click();
-            setTimeout(() => {                
+            setTimeout(() => {
                 // One-click to the left
                 var left_arrow = document.querySelectorAll(".scroll.previous")[0] as HTMLButtonElement;
-                left_arrow.click();                
+                left_arrow.click();
                 setTimeout(() => {
                     resolve(left_arrow.getAttribute('disabled') != null);
                 }, 800);
@@ -107,8 +107,8 @@ var commands_map: CommandValuesMap = {
             // Scrolling the carousel simulating touch action
             var car_items = document.querySelectorAll('.wc-carousel-item').length;
             for (var i = 0; i < car_items; i++) {
-                    var element = document.querySelectorAll('.wc-carousel-item')[i];
-                    element.scrollIntoView();
+                var element = document.querySelectorAll('.wc-carousel-item')[i];
+                element.scrollIntoView();
             }
             setTimeout(() => {
                 resolve(right_arrow.getAttribute('disabled') != null);
@@ -148,15 +148,15 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
         }
-    },    
+    },
     "suggested-actions-away": {
         client: () => new Promise((resolve) => {
             var green_button = document.querySelectorAll('button[title="Green"]')[0] as HTMLButtonElement;
             green_button.click();
             setTimeout(() => {
-                var show_actions_length = document.querySelectorAll('.show-actions').length;                
+                var show_actions_length = document.querySelectorAll('.show-actions').length;
                 resolve(show_actions_length == 0);
-            }, 2000);            
+            }, 2000);
         }),
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
@@ -173,7 +173,7 @@ var commands_map: CommandValuesMap = {
                     var response_text = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('Red') != -1;
                     resolve(response_text);
                 }, 2000);
-            }, 2000); 
+            }, 2000);
         }),
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
