@@ -189,15 +189,19 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
+export interface IDoCardAction {
+    (type: string, value: string): void;
+}
+
 export const doCardAction = (
     botConnection: IBotConnection,
     from: User,
     locale: string,
     sendMessage: (value: string, user: User, locale: string) => void,
-) => (
+): IDoCardAction => (
     type: string,
     value: string
-)  => {
+) => {
     switch (type) {
         case "imBack":
             if (value && typeof value === 'string')
