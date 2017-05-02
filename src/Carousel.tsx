@@ -4,12 +4,13 @@ import { AttachmentView } from './Attachment';
 import { FormatState, SizeState } from './Store';
 import { HScroll } from './HScroll';
 import { konsole } from './Chat';
+import { IDoCardAction } from './Chat';
 
 export interface CarouselProps {
     format: FormatState,
     size: SizeState,
     attachments: Attachment[],
-    onCardAction: (type: string, value: string) => void,
+    onCardAction: IDoCardAction,
     onImageLoad: () => void
 }
 
@@ -61,9 +62,9 @@ export class Carousel extends React.PureComponent<CarouselProps, {}> {
 }
 
 export interface CarouselAttachmentProps {
-    format: FormatState
-    attachments: Attachment[]
-    onCardAction: (type: string, value: string) => void
+    format: FormatState,
+    attachments: Attachment[],
+    onCardAction: IDoCardAction,
     onImageLoad: () => void
 }
 
