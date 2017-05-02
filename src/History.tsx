@@ -3,7 +3,7 @@ import { Activity, Message, User } from 'botframework-directlinejs';
 import { ChatState, FormatState, SizeState } from './Store';
 import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
-import { konsole, classList, doCardAction, sendMessage } from './Chat';
+import { konsole, classList, doCardAction, IDoCardAction, sendMessage } from './Chat';
 
 export interface HistoryProps {
     format: FormatState,
@@ -18,7 +18,7 @@ export interface HistoryProps {
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
-    doCardAction: (type: string, value: string) => void
+    doCardAction: IDoCardAction
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
