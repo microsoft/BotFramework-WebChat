@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions } from 'botframework-directlinejs';
+import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
 import { createStore, ChatActions } from './Store';
 import { Provider } from 'react-redux';
 
@@ -190,7 +190,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export interface IDoCardAction {
-    (type: string, value: string): void;
+    (type: CardActionTypes, value: string): void;
 }
 
 export const doCardAction = (
@@ -199,8 +199,8 @@ export const doCardAction = (
     locale: string,
     sendMessage: (value: string, user: User, locale: string) => void,
 ): IDoCardAction => (
-    type: string,
-    value: string
+    type,
+    value
 ) => {
     switch (type) {
         case "imBack":
