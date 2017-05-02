@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Attachment, CardAction } from 'botframework-directlinejs';
-import { renderIfNonempty, konsole } from './Chat';
+import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
@@ -140,7 +140,7 @@ const text = (text: string) => renderIfNonempty(text, text => <p>{ text }</p>);
 export const AttachmentView = (props: {
     format: FormatState;
     attachment: Attachment,
-    onCardAction: (type: string, value: string) => void,
+    onCardAction: IDoCardAction,
     onImageLoad: () => void
 }) => {
     if (!props.attachment) return;
