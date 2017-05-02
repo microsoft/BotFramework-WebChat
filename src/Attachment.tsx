@@ -1,9 +1,8 @@
 import * as React from 'react';
 
 import { Attachment, CardAction } from 'botframework-directlinejs';
-import { renderIfNonempty, konsole } from './Chat';
+import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
-import { IDoCardAction } from './Chat';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 

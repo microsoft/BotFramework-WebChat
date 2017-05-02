@@ -3,8 +3,7 @@ import { Attachment } from 'botframework-directlinejs';
 import { AttachmentView } from './Attachment';
 import { FormatState, SizeState } from './Store';
 import { HScroll } from './HScroll';
-import { konsole } from './Chat';
-import { IDoCardAction } from './Chat';
+import { konsole, IDoCardAction } from './Chat';
 
 export interface CarouselProps {
     format: FormatState,
