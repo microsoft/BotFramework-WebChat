@@ -14,6 +14,7 @@
         "sourceMap": true
     },
     "files": [
-        "src/BotChat.ts"
+        "src/BotChat.ts",
+        "node_modules/speech-sdk-js/speech.browser.sdk.d.ts"
     ]
 }
