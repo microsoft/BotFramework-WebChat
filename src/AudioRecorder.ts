@@ -30,8 +30,6 @@ export class AudioRecorder {
     private onAudioFlowing: Action;
     private readonly bufferLen = 4096;
 
-
-    //todo: add on audio active
     constructor(source: GainNode, onAudioFlowing: Action = null) {
         this.input = source;
         this.context = source.context;
@@ -55,7 +53,6 @@ export class AudioRecorder {
             if (!this.recording)
                 return;
 
-            // Todo, probably buffer here while websocket connects.
             let inputL = e.inputBuffer.getChannelData(0);
             let length = Math.floor(inputL.length / 3);
             let result = new Float32Array(length);

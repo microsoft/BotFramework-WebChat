@@ -1,9 +1,7 @@
 
 import { AudioRecorder } from './AudioRecorder'
 import { konsole } from './Chat';
-
-let SR = require('speech-sdk-js/speech.browser.sdk').Speech as typeof Speech;
-let CM = require('speech-sdk-js/speech.browser.sdk').Common as typeof Common;
+import * as CognitiveSpeech from "microsoft-speech-browser-sdk/Speech.Browser.Sdk"
 
 export type Action = () => void
 export type Func<T, TResult> = (item: T) => TResult;
@@ -157,31 +155,31 @@ export module SpeechRecognition {
 
         constructor(properties: ICognitiveServicesSpeechRecognizerProperties = {}) {
             this.properties = properties;
-            const recognitionMode = SR.RecognitionMode.Interactive;
-            const format = SR.SpeechResultFormat.Simple;
+            const recognitionMode = CognitiveSpeech.RecognitionMode.Interactive;
+            const format = CognitiveSpeech.SpeechResultFormat.Simple;
             const locale = properties.locale || 'en-US';
 
-            let recognizerConfig = new SR.RecognizerConfig(
-                new SR.SpeechConfig(
-                    new SR.Context(
-                        new SR.OS(navigator.userAgent, "Browser", null),
-                        new SR.Device("WebChat", "WebChat", "1.0.00000"))),
+            let recognizerConfig = new CognitiveSpeech.RecognizerConfig(
+                new CognitiveSpeech.SpeechConfig(
+                    new CognitiveSpeech.Context(
+                        new CognitiveSpeech.OS(navigator.userAgent, "Browser", null),
+                        new CognitiveSpeech.Device("WebChat", "WebChat", "1.0.00000"))),
                                 recognitionMode,        // Speech.RecognitionMode.Interactive  (Options - Interactive/Conversation/Dictation>)
                                 locale,                 // Supported laguages are specific to each recognition mode. Refer to docs.
                                 format);                // Speech.SpeechResultFormat.Simple (Options - Simple/Detailed)
 
             let authentication;
             if (properties.subscriptionKey) {
-                authentication = new SR.CognitiveSubscriptionKeyAuthentication(properties.subscriptionKey);
+                authentication = new CognitiveSpeech.CognitiveSubscriptionKeyAuthentication(properties.subscriptionKey);
             } else if (properties.fetchCallback && properties.fetchOnExpiryCallback) {
-                authentication = new SR.CognitiveTokenAuthentication(
+                authentication = new CognitiveSpeech.CognitiveTokenAuthentication(
                     (authFetchEventId: string) => {
-                        let d = new CM.Deferred<string>();
+                        let d = new CognitiveSpeech.Deferred<string>();
                         this.properties.fetchCallback(authFetchEventId).then(value => d.Resolve(value), err => d.Reject(err));
                         return d.Promise();    
                     },
                     (authFetchEventId: string) => {
-                        let d = new CM.Deferred<string>();
+                        let d = new CognitiveSpeech.Deferred<string>();
                         this.properties.fetchOnExpiryCallback(authFetchEventId).then(value => d.Resolve(value), err => d.Reject(err));
                         return d.Promise();    
                     });
@@ -189,7 +187,7 @@ export module SpeechRecognition {
                 throw 'Error: The CognitiveServicesSpeechRecognizer requires either a subscriptionKey or a fetchCallback and fetchOnExpiryCallback.';
             }
 
-            this.actualRecognizer = SR.Browser.Recognizer.Create(recognizerConfig, authentication);
+            this.actualRecognizer = CognitiveSpeech.CreateRecognizer(recognizerConfig, authentication);
         }
 
         public warmup() {
@@ -219,7 +217,7 @@ export module SpeechRecognition {
                         this.log('SpeechStartDetectedEvent');
                         break;
                     case 'SpeechHypothesisEvent':
-                        let hypothesisEvent = event as Speech.SpeechHypothesisEvent;
+                        let hypothesisEvent = event as CognitiveSpeech.SpeechHypothesisEvent;
                         this.log('SpeechHypothesisEvent: ' + hypothesisEvent.Result.Text);
                         if (this.onIntermediateResult) {
                             this.onIntermediateResult(hypothesisEvent.Result.Text);
@@ -230,8 +228,8 @@ export module SpeechRecognition {
                         break;
                     case 'SpeechSimplePhraseEvent':
                         this.log('SpeechSimplePhraseEvent');
-                        let simplePhraseEvent = event as Speech.SpeechSimplePhraseEvent;
-                        if (SR.RecognitionStatus[simplePhraseEvent.Result.RecognitionStatus] as any === SR.RecognitionStatus.Success) {
+                        let simplePhraseEvent = event as CognitiveSpeech.SpeechSimplePhraseEvent;
+                        if (CognitiveSpeech.RecognitionStatus[simplePhraseEvent.Result.RecognitionStatus] as any === CognitiveSpeech.RecognitionStatus.Success) {
                             if (this.onFinalResult) {
                                 this.onFinalResult(simplePhraseEvent.Result.DisplayText);
                             }
