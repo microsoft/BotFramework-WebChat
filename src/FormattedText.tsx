@@ -30,7 +30,6 @@ const markdownIt = new MarkdownIt({ html: true, linkify: true, typographer: true
 //configure MarkdownIt to open links in new tab
 //from https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 
-markdownIt
 // Remember old renderer, if overriden, or proxy to default renderer
 var defaultRender = markdownIt.renderer.rules.link_open || function(tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
