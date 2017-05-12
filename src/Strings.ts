@@ -133,6 +133,19 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " a las %1",
         consolePlaceholder: "Escribe tu mensaje..."
+    },
+    'el-gr': {
+        title: "Συνομιλία",
+        send: "Αποστολή",
+        unknownFile: "[Αρχείο τύπου '%1']",
+        unknownCard: "[Αγνωστη Κάρτα '%1']",
+        receiptTax: "ΦΠΑ",
+        receiptTotal: "Σύνολο",
+        messageRetry: "δοκιμή",
+        messageFailed: "αποτυχία",
+        messageSending: "αποστολή",
+        timeSent: " την %1",
+        consolePlaceholder: "Πληκτρολόγηση μηνύματος..."
     }
 }
 
@@ -159,6 +172,8 @@ export const strings = (locale: string) => {
         locale = 'fr-fr';
     else if (locale.startsWith('es'))
         locale = 'es-es';
+    else if (locale.startsWith('el'))
+        locale = 'el-gr';
     else
         locale = 'en-us';
 
