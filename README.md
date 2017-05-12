@@ -6,7 +6,7 @@ Used by the Bot Framework developer portal, [Emulator](https://github.com/Micros
 
 WebChat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, WebChat is built with [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
 
-You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com).
+You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com). If you wish to play with speech support, you can use the [speech](https://github.com/Microsoft/BotFramework-WebChat/tree/speech) branch.
 
 ## How to add WebChat to your website
 

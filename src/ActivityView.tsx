@@ -4,13 +4,14 @@ import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { FormattedText } from './FormattedText';
 import { FormatState, SizeState } from './Store';
+import { IDoCardAction } from './Chat';
 
 const Attachments = (props: {
     attachments: Attachment[],
     attachmentLayout: AttachmentLayout,
     format: FormatState,
     size: SizeState,
-    onCardAction: (type: string, value: string) => void,
+    onCardAction: IDoCardAction,
     onImageLoad: () => void
 }) => {
     const { attachments, attachmentLayout, ... otherProps } = props;
@@ -37,7 +38,7 @@ export interface ActivityViewProps {
     format: FormatState,
     size: SizeState,
     activity: Activity,
-    onCardAction: (type: string, value: string) => void,
+    onCardAction: IDoCardAction,
     onImageLoad: () => void
 }
 

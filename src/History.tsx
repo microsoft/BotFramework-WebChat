@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Activity, Message, User } from 'botframework-directlinejs';
+import { Activity, Message, User, CardActionTypes } from 'botframework-directlinejs';
 import { ChatState, FormatState, SizeState } from './Store';
 import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
-import { konsole, classList, doCardAction, sendMessage } from './Chat';
+import { konsole, classList, doCardAction, IDoCardAction, sendMessage } from './Chat';
 
 export interface HistoryProps {
     format: FormatState,
@@ -18,7 +18,7 @@ export interface HistoryProps {
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
-    doCardAction: (type: string, value: string) => void
+    doCardAction: IDoCardAction
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -97,7 +97,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
-    private doCardAction(type: string, value: string) {
+    private doCardAction(type: CardActionTypes, value: string) {
         this.props.setFocus();
         return this.props.doCardAction(type, value);
     }
@@ -132,7 +132,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             format={ this.props.format }
                             size={ this.props.size }
                             activity={ activity }
-                            onCardAction={ (type: string, value: string) => this.doCardAction(type, value) }
+                            onCardAction={ (type: CardActionTypes, value: string) => this.doCardAction(type, value) }
                             onImageLoad={ () => this.autoscroll() }
                         />
                     </WrappedActivity>

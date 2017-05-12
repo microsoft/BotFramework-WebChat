@@ -3,7 +3,7 @@ import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
 import { ChatActions, ChatState } from './Store';
 import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
-import { konsole, classList, doCardAction, sendMessage } from './Chat';
+import { konsole, classList, doCardAction, IDoCardAction, sendMessage } from './Chat';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
@@ -13,7 +13,7 @@ export interface MessagePaneProps {
     children: React.ReactNode,
     setFocus: () => void,
 
-    doCardAction: (type: string, value: string) => void
+    doCardAction: IDoCardAction
 }
 
 const MessagePaneView = (props: MessagePaneProps) =>
