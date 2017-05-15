@@ -77,7 +77,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         });
 
         if (props.formatOptions)
-            this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });
+            this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });       
         if (props.sendTyping)
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
     }
@@ -85,7 +85,7 @@ export class Chat extends React.Component<ChatProps, {}> {
     private handleIncomingActivity(activity: Activity) {
         let state = this.store.getState();
         switch (activity.type) {
-
+            
             case "message":
                 this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
                 break;
@@ -190,7 +190,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export interface IDoCardAction {
-    (type: CardActionTypes, value: string): void;
+    (type: CardActionTypes, value: string | object): void;
 }
 
 export const doCardAction = (
@@ -200,16 +200,20 @@ export const doCardAction = (
     sendMessage: (value: string, user: User, locale: string) => void,
 ): IDoCardAction => (
     type,
-    value
+    actionValue
 ) => {
+
+    const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
+    const value = (typeof actionValue === 'object')? actionValue as object : undefined;
+
     switch (type) {
         case "imBack":
-            if (value && typeof value === 'string')
-                sendMessage(value, from, locale);
+            if (typeof text === 'string')
+                sendMessage(text, from, locale);
             break;
 
         case "postBack":
-            sendPostBack(botConnection, value, from, locale);
+            sendPostBack(botConnection, text, value, from, locale);
             break;
 
         case "call":
@@ -219,7 +223,7 @@ export const doCardAction = (
         case "showImage":
         case "downloadFile":
         case "signin":
-            window.open(value);
+            window.open(text);
             break;
 
         default:
@@ -227,10 +231,11 @@ export const doCardAction = (
         }
 }
 
-export const sendPostBack = (botConnection: IBotConnection, text: string, from: User, locale: string) => {
+export const sendPostBack = (botConnection: IBotConnection, text: string, value: object, from: User, locale: string) => {
     botConnection.postActivity({
         type: "message",
         text,
+        value,
         from,
         locale
     })
