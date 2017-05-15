@@ -1,5 +1,6 @@
 import * as server_content from './server_content';
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import * as Nightmare from 'nightmare';
 import * as express from 'express';
 declare let module: any;
 
@@ -9,7 +10,8 @@ interface ISendActivity {
 
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
-    server?: (res: express.Response, sendActivity: ISendActivity) => void
+    server?: (res: express.Response, sendActivity: ISendActivity) => void,
+    do?: (nightmare: Nightmare) => any
 }
 
 interface CommandValuesMap {
@@ -126,6 +128,18 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.mar_card);
         }
     },
+    "markdown-link": {
+        do: function (nightmare) {
+            nightmare.click('a')
+                .wait(4000)
+        },
+        client: function () {
+            return window.location.href.indexOf("localhost") !== -1;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.mar_card);
+        }
+    },
     "signin": {
         client: function () {
             return document.querySelectorAll('button')[0].textContent == "Signin";
@@ -180,13 +194,14 @@ var commands_map: CommandValuesMap = {
         }
     },
     /*
-    * Add your commands to test here  
+     ** Add your commands to test here **  
     "command": {
         client: function () { JavaScript evaluation syntax },
         server: function (res, sendActivity) {
             sendActivity(res, sever_content DirectLineActivity);
         }
-    }*/
+    }
+    */
     "end": {
         client: function () { return true; }
     }

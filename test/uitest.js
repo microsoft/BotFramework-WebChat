@@ -10,6 +10,13 @@ let nightmare = Nightmare({
 	executionTimeout: 6000
 });
 
+Nightmare.prototype.do = function(doFn){
+	if(doFn) {
+		doFn(this);
+	}
+	return this;
+}
+
 describe('nightmare UI tests', function () {
 	let devices = config["width-tests"];
 	let keys = Object.keys(commands);
@@ -57,6 +64,7 @@ describe('nightmare UI tests', function () {
 						.type('.wc-textbox input', keys[cmd_index])
 						.click('.wc-send')
 						.wait(3000)
+						.do(commands[keys[cmd_index]].do)
 						.evaluate(commands[keys[cmd_index]].client)
 
 					resultToConsole(result);
