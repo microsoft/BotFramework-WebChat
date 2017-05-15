@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Attachment, CardAction } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
+import { AdaptiveCardContainer } from './AdaptiveCardContainer';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
@@ -313,6 +314,13 @@ export const AttachmentView = (props: {
                     </table>
                     { buttons(attachment.content.buttons) }
                 </div>
+            );
+
+        case "application/vnd.microsoft.card.adaptive":
+            if (!attachment.content)
+                return null;
+            return (
+                <AdaptiveCardContainer content={ attachment.content } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } />
             );
 
         // Deprecated format for Skype channels. For testing legacy bots in Emulator only.

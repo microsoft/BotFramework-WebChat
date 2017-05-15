@@ -424,7 +424,7 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
 /* alternate chat sizes */
 
     .wc-message {
-        max-width: 85%;
+        max-width: 91%;
     }
 
     @include card-size($card_normal);
@@ -436,6 +436,16 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     .wc-narrow {
         @include card-size($card_narrow);
     }
+
+/* adaptive card adjustments from wc-card */
+    .wc-adaptive-card {
+
+        p {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
 
 /* list */
 
@@ -517,9 +527,17 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
             padding-right: 0;
         }
 
-        li p {
-            min-height: 4em;
-            white-space: normal;
+        li {
+
+            p {
+                min-height: 4em;
+                white-space: normal;
+            }
+
+            .wc-adaptive-card p {
+                min-height: initial;
+            }
+            
         }
     }
 
@@ -626,9 +644,9 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     .wc-send {
         right: 0;
     }
-
+    
     .wc-console.has-text .wc-send svg {
-        fill: $c07;
+        fill: $c07; 
     }
 
 /* animation */
