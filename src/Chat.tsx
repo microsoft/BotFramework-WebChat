@@ -26,7 +26,8 @@ export interface ChatProps {
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
-    resize?: 'none' | 'window' | 'detect'
+    resize?: 'none' | 'window' | 'detect',
+    setFocusOnCardActionClick?: boolean, // defaults to true
 }
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
@@ -54,7 +55,9 @@ import { MessagePane } from './MessagePane';
 import { Shell } from './Shell';
 
 export class Chat extends React.Component<ChatProps, {}> {
-
+    public static defaultProps: Partial<ChatProps> = {
+         setFocusOnCardActionClick: true
+    };
     private store = createStore();
 
     private botConnection: IBotConnection;
@@ -176,10 +179,14 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         return (
             <Provider store={ this.store }>
+
                 <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
                     <MessagePane setFocus={ () => this.setFocus() }>
-                        <History setFocus={ () => this.setFocus() }/>
+                        <History
+                          setFocusOnCardActionClick={this.props.setFocusOnCardActionClick}
+                          setFocus={ () => this.setFocus() }
+                        />
                     </MessagePane>
                     <Shell />
                     { resize }
