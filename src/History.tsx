@@ -97,7 +97,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
-    private doCardAction(type: CardActionTypes, value: string) {
+    private doCardAction(type: CardActionTypes, value: string | object) {
         this.props.setFocus();
         return this.props.doCardAction(type, value);
     }
@@ -132,7 +132,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             format={ this.props.format }
                             size={ this.props.size }
                             activity={ activity }
-                            onCardAction={ (type: CardActionTypes, value: string) => this.doCardAction(type, value) }
+                            onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                             onImageLoad={ () => this.autoscroll() }
                         />
                     </WrappedActivity>
