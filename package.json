@@ -44,6 +44,7 @@
     "@types/deep-freeze": "0.0.29",
     "@types/express": "^4.0.35",
     "@types/markdown-it": "0.0.2",
+    "@types/nightmare": "^1.6.30",
     "@types/react-dom": "^0.14.23",
     "@types/react-redux": "^4.4.38",
     "awesome-typescript-loader": "^3.1.2",
