@@ -1,0 +1,176 @@
+@import "colors";
+
+$hostConfig: (
+  supportsInteractivity: true,
+  strongSeparation: (
+    spacing: 40px,
+    lineThickness: 1px,
+    lineColor: rgb(238, 238, 238)
+  ),
+  fontFamily: "Segoe UI",
+  fontSizes: (
+    small: 12px,
+    normal: 14px,
+    medium: 17px,
+    large: 21px,
+    extraLarge: 26px
+  ),
+  fontWeights: (
+    lighter: 200px,
+    normal: 400px,
+    bolder: 600px
+  ),
+  colors: (
+    dark: (
+      normal: rgb(51, 51, 51),
+      subtle: rgba(51, 51, 0, 238)
+    ),
+    light: (
+      normal: rgb(255, 255, 255),
+      subtle: rgb(136, 255, 255)
+    ),
+    accent: (
+      normal: rgb(46, 137, 252),
+      subtle: rgba(46, 137, 1, 136)
+    ),
+    attention: (
+      normal: rgb(255, 216, 0),
+      subtle: rgba(255, 216, 0, 221)
+    ),
+    good: (
+      normal: rgb(0, 255, 0),
+      subtle: rgba(0, 255, 0, 221)
+    ),
+    warning: (
+      normal: rgb(255, 0, 0),
+      subtle: rgba(255, 0, 0, 221)
+    )
+  ),
+  imageSizes: (
+    small: 40px,
+    medium: 80px,
+    large: 160px
+  ),
+  actions: (
+    maxActions: 5px,
+    separation: (
+      spacing: 8px
+    ),
+    buttonSpacing: 20px,
+    stretch: false,
+    showCard: (
+      actionMode: "inlineEdgeToEdge",
+      inlineTopMargin: 16px,
+      backgroundColor: rgba(0, 0, 0, 8),
+      padding: (
+        top: 8px,
+        right: 8px,
+        bottom: 8px,
+        left: 8px
+      )
+    ),
+    actionsOrientation: "horizontal",
+    actionAlignment: "left"
+  ),
+  adaptiveCard: (
+    backgroundColor: rgb(255, 255, 255),
+    padding: (
+      left: 8px,
+      top: 8px,
+      right: 8px,
+      bottom: 8px
+    )
+  ),
+  container: (
+    separation: (
+      spacing: 8px
+    ),
+    normal: (
+      backgroundColor: rgb(255, 255, 255),
+    ),
+    emphasis: (
+      backgroundColor: rgb(238, 238, 238),
+      borderColor: rgb(170, 170, 170),
+      borderThickness: (
+        top: 1px,
+        right: 1px,
+        bottom: 1px,
+        left: 1px
+      ),
+      padding: (
+        top: 10px,
+        right: 10px,
+        bottom: 10px,
+        left: 10px
+      )
+    )
+  ),
+  textBlock: (
+    color: "dark",
+    separations: (
+      small: (
+        spacing: 8px
+      ),
+      normal: (
+        spacing: 8px
+      ),
+      medium: (
+        spacing: 8px
+      ),
+      large: (
+        spacing: 8px
+      ),
+      extraLarge: (
+        spacing: 8px
+      )
+    )
+  ),
+  image: (
+    size: "medium",
+    separation: (
+      spacing: 8px
+    )
+  ),
+  imageSet: (
+    imageSize: "medium",
+    separation: (
+      spacing: 8px
+    )
+  ),
+  factSet: (
+    separation: (
+      spacing: 8px
+    ),
+    title: (
+      color: "dark",
+      size: "normal",
+      isSubtle: false,
+      weight: "bolder",
+      wrap: true,
+      maxWidth: 150px
+    ),
+    value: (
+      color: "dark",
+      size: "normal",
+      isSubtle: false,
+      weight: "normal",
+      wrap: true
+    ),
+    spacing: 10px
+  ),
+  input: (
+    separation: (
+      spacing: 8px
+    )
+  ),
+  columnSet: (
+    separation: (
+      spacing: 8px
+    )
+  ),
+  column: (
+    separation: (
+      spacing: 8px
+    )
+  )
+);
