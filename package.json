@@ -7,7 +7,7 @@
   "scripts": {
     "build-test": "tsc -p ./test/mock_dl && tsc -p ./test",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
-    "build-css": "node-sass ./src/scss/ -o .",
+    "build-css": "node-sass ./src/scss/ -o . && rm -rf ./includes/",
     "build-css-watch": "node-sass ./src/scss/ -o . -w",
     "build": "tsc && npm run build-css && webpack --progress",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch build-css-watch",
