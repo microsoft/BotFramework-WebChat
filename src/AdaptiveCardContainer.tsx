@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 export interface Props {
     content: any,
     onImageLoad: () => any,
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void,
     onCardAction: IDoCardAction
 }
 
@@ -15,6 +16,10 @@ class LinkedAdaptiveCard extends AdaptiveCards.AdaptiveCard {
     constructor(public adaptiveCardContainer: AdaptiveCardContainer){
         super();
     }
+}
+
+export interface BotFrameworkCardAction extends CardAction {
+    __isBotFrameworkCardAction: boolean
 }
 
 function getLinkedAdaptiveCard(action: AdaptiveCards.Action) {
@@ -32,8 +37,13 @@ AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalActi
 
     } else if (action instanceof AdaptiveCards.SubmitAction) {
         const linkedAdaptiveCard = getLinkedAdaptiveCard(action);
-        if (linkedAdaptiveCard) {
-            linkedAdaptiveCard.adaptiveCardContainer.onCardAction('postBack', action.data);
+        if (linkedAdaptiveCard && action.data) {
+            if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
+                const cardAction = (action.data as BotFrameworkCardAction);
+                linkedAdaptiveCard.adaptiveCardContainer.onCardAction(cardAction.type, cardAction.value);
+            } else {
+                linkedAdaptiveCard.adaptiveCardContainer.onCardAction('postBack', action.data);
+            }
         }
 
     } else if (action instanceof AdaptiveCards.HttpAction) {
@@ -59,7 +69,7 @@ AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalActi
 };
 
 export class AdaptiveCardContainer extends React.Component<Props, {}> {
-    private div: HTMLDivElement;
+    private div: HTMLDivElement;    
 
     constructor(props: Props) {
         super(props);
@@ -67,6 +77,22 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
 
     public onCardAction: IDoCardAction = (type, value) => {
         this.props.onCardAction(type, value);
+    }
+
+    private onClick(e: React.MouseEvent<HTMLElement>) {
+        if (!this.props.onClick) return;
+
+        //do not allow form elements to trigger a parent click event
+        switch ((e.target as HTMLElement).tagName) {
+            case 'BUTTON':
+            case 'INPUT':
+            case 'LABEL':
+            case 'TEXTAREA':
+            case 'SELECT':
+                break;
+            default:
+                this.props.onClick(e);
+        }
     }
 
     componentDidMount() {
@@ -89,7 +115,7 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
 
     render() {
         return (
-            <div className="wc-card wc-adaptive-card" ref={div => this.div = div} />
+            <div className="wc-card wc-adaptive-card" ref={div => this.div = div} onClick={ e => this.onClick(e) } />
         )
     }
 }

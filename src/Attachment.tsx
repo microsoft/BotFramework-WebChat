@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import * as CardBuilder from './CardBuilder';
 import { Attachment, CardAction } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
@@ -169,17 +169,10 @@ export const AttachmentView = (props: {
 
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
-            if (!attachment.content)
-                return null;
-            return (
-                <div className='wc-card hero' onClick={ onCardAction(attachment.content.tap) }>
-                    { attachedImage(attachment.content.images) }
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
-            );
+            const card  = CardBuilder.AdaptiveHero(attachment);
+            return card ? ( 
+                <AdaptiveCardContainer content={ card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
+            ) : null;
 
         case "application/vnd.microsoft.card.thumbnail":
             if (!attachment.content)

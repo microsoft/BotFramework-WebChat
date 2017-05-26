@@ -48,15 +48,15 @@ $hostConfig: (
   ),
   imageSizes: (
     small: 40px,
-    medium: 80px,
-    large: 160px
+    medium: 64px,
+    large: 96px
   ),
   actions: (
-    maxActions: 5px,
+    maxActions: 100,
     separation: (
       spacing: 8px
     ),
-    buttonSpacing: 20px,
+    buttonSpacing: 8px,
     stretch: false,
     showCard: (
       actionMode: "inlineEdgeToEdge",
@@ -69,7 +69,7 @@ $hostConfig: (
         left: 8px
       )
     ),
-    actionsOrientation: "horizontal",
+    actionsOrientation: "vertical",
     actionAlignment: "left"
   ),
   adaptiveCard: (
