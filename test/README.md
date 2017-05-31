@@ -1,10 +1,10 @@
 # Automation test framework for Web Chat by using Direct Line API
 
-> ## Disclaimer : The target audience for this document is towards to Web Chat and Direct Line API contributors. Although Direct Line API is underneath the Bot Framework, but to test bots locally, please use the [Microsoft Bot Emulator](https://github.com/Microsoft/BotFramework-Emulator) instead.
+> ## Disclaimer: The target audience for this document is towards to Web Chat and Direct Line API contributors. Although Direct Line API is underneath the Bot Framework, but to test bots locally, please use the [Microsoft Bot Emulator](https://github.com/Microsoft/BotFramework-Emulator) instead.
 
-## Overview of the test framework eco-system
+## Overview of the test framework ecosystem
 
-The test framework is comprised of two major components in the implementation :
+The test framework is comprised of two major components in the implementation:
 
 * A Web Chat channel hosting bot application.
 * A mock service and client objects which communicates with bot through the Web Chat channel via __DirectLine API__.
@@ -24,7 +24,7 @@ The test framework is comprised of two major components in the implementation :
 └───────────────┘         └─────────────┘            └─────────────────────┘
 </pre>
 
-The workflow of the mock service actually spins up __Web Chat__ with __Direct Line API__.  While mock service side-loads __commands_map.server__ object which will overwrite the default __Direct Line API__ behaviors with current implement.
+The workflow of the mock service spins up __Web Chat__ with __Direct Line API__.  While mock service side-loads __commands_map.server__ object which will overwrite the default __Direct Line API__ behaviors with current implement.
 
 Meanwhile, __uitest.js__ will run [Nightmare.js](http://www.Nightmare.js.org/) with [Mocha.js](https://mochajs.org/) tests in __commands_map.client__ instead.
 
@@ -50,7 +50,7 @@ There are some __npm__ commands to help setup test environment quickly (from the
 
 > * Always __"npm run build-test"__ to build test framework prior any testing processes.
 > * Keep in mind that if mock server and [Nightmare.js](http://www.Nightmare.js.org/) / [Mocha.js](https://mochajs.org/) tests are both running separately, the mock server will occupied one terminal (process), tests will run from another terminal (process). If mock server is interrupted, closed, killed, or force closed, the tests will fail intermediately.
-> * Although __"npm run build-test-watch"__ will monitor file-system changes to perform automatic rebuilds, but watch system will also occupid a process thread on it's own.
+> * Although __"npm run build-test-watch"__ will monitor file-system changes to perform automatic rebuilds, but watch system will also occupied a process thread on its own.
 > * While running [Nightmare.js](http://www.Nightmare.js.org/), press Ctrl + C a couple of times to cancel it at any time during the process.
 
 ## Quick hands-on example
@@ -78,7 +78,7 @@ Meanwhile in the __commands_map.ts__ world :
 
 "hello world": {
     client: function () {
-        // UI TEST : looking for bot returns "Hello Bot World" in the messag, and verify the action.
+        // UI TEST : looking for bot returns "Hello Bot World" in the message, and verify the action.
         return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('Hello Bot World') != -1;
     },
     server: function (res, sendActivity) {
@@ -94,13 +94,13 @@ At this point, save your changes, run __npm run build-test__ then __npm_test__ e
 
 ## Other useful implementation details
 
-In the __BotFramework-WebChat__ repo, key component files inside of the /test folders are :
+In the __BotFramework-WebChat__ repo, key component files inside of the /test folders are:
 
 > ### /test/Mock_dl/index.ts
 
 This file will be the mock service itself runs on [Node.js](https://nodejs.org/). It will load __commands_map__ object into itself to communicate through the __Direct Line API__ to the __Web Chat__ instance.
 
-The mock server default port is 3000. To resoulve a port conflict, change listening port from __/test/mock_dl_server_config.js__.
+The mock server default port is 3000. To resolve a port conflict, change listening port from __/test/mock_dl_server_config.js__.
 
 ```Javascript
 module.exports = {
@@ -167,7 +167,7 @@ The __server_content.ts__ file contains [Rich Cards](https://docs.microsoft.com/
 
 > ### test.html
 
-The __test.html__ is the HTML presentation of the Web Chat. Loading a Web Chat client is simplying as following :
+The __test.html__ is the HTML presentation of the Web Chat. Loading a Web Chat client is simply as following:
 
 ```Javascript
 <link href="botchat.css" rel="stylesheet" />
