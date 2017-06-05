@@ -20,6 +20,11 @@ const timeout = 60 * 1000;
 const conversationId = "mockversation";
 const expires_in = 1800;
 const streamUrl = "http://nostreamsupport";
+const simpleCard = {
+    "$schema":"https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "body": []
+};
 
 const get_token = (req: express.Request) =>
     (req.headers["authorization"] || "works/all").split(" ")[1];
@@ -195,15 +200,20 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                     // prints all available Adaptive Cards json files inside of ./test/cards/ folder
                     fs.readdir('./test/cards/',(err, files) => {
                         let renderList = '';
-                        files.forEach(fileName => {
-                            fileName = fileName.substr(0, fileName.lastIndexOf('.')) || fileName;
-                            renderList += '<li>' + fileName + '</li>';
-                        });  
+                        if (err) {
+                            renderList = 'Missing Adaptive cards json files in ./test/cards/ folder';
+                        } else {
+                            files.forEach(fileName => {
+                                fileName = fileName.substr(0, fileName.lastIndexOf('.')) || fileName;
+                                renderList += '<li>' + fileName + '</li>';
+                            });
+                            renderList = '<ul>' + renderList + '</ul>';
+                        }
                         sendActivity(res, {
                             type: "message",
                             timestamp: new Date().toUTCString(),
                             channelId: "webchat",
-                            text: '<ul>' + renderList + '</ul>'
+                            text: renderList
                         });
                     })
                     return;
@@ -266,26 +276,42 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
 });
 
 const getMessages = (req: express.Request, res: express.Response) => {
-    if (queue.length > 0) {
-        let msg = queue.shift();
-        let id = messageId++;
-        msg.id = id.toString();
-        msg.from = { id: "id", name: "name" };
-        res.send({
-            activities: [msg],
-            watermark: id
-        });
-    } else {
-        res.send({
-            activities: [],
-            watermark: messageId
-        })
+    if (queue) {
+        if (queue.length > 0) {
+            let msg = queue.shift();
+            let id = messageId++;
+            msg.id = id.toString();
+            msg.from = { id: "id", name: "name" };
+            res.send({
+                activities: [msg],
+                watermark: id
+            });
+        } else {
+            res.send({
+                activities: [],
+                watermark: messageId
+            })
+        }
     }
 }
 
 const getJson = (fsName: string) => {
-    let fsJson = fs.readFileSync('./test/cards/' + fsName +'.json');
-    return JSON.parse(fsJson.toString('utf-8'));
+    let fsJson;
+    try {
+        fsJson = fs.readFileSync('./test/cards/' + fsName +'.json');
+        fsJson = JSON.parse(fsJson.toString('utf-8'));
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            simpleCard.body[0] = {
+                "type": "TextBlock",
+                "text": "Can't find '" + fsName + "' card in Adaptive Cards directory"
+            };
+            fsJson = simpleCard;
+        } else {
+            throw err;
+        }
+    }
+    return fsJson;
 }
 
 app.get('/', function (req, res) {
