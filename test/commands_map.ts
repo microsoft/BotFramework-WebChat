@@ -195,14 +195,6 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
-    // CHRIS : TODO : taking out
-    // "cards": {
-    //     client: () => new Promise((resolve) => {
-    //     }),
-    //     server: function (res, sendActivity) {
-    //         sendActivity(res, server_content.adaptive_cards);
-    //     }
-    // },
     "adaptive-cards": {
         client: () => new Promise((resolve) => {
         }),
