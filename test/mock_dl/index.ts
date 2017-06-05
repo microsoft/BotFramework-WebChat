@@ -5,6 +5,7 @@ import bodyParser = require('body-parser');
 import * as path from 'path';
 
 const app = express();
+const fs = require('fs');
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -150,38 +151,71 @@ let config = require('../mock_dl_server_config');
 let current_uitests = 0;
 let uitests_files = Object.keys(config["width-tests"]).length;
 
-const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-    if (commands[cmd] && commands[cmd].server) {
-        commands[cmd].server(res, sendActivity);
+const subsetCmds = (cmd: string) => {
+    let cardsCmdExists = /card[ \t]([^ ]*)/g.exec(cmd);
+
+    if (cardsCmdExists) {
+        if (cardsCmdExists.length > 0) {
+            return getJson(cardsCmdExists[1]);
+        }
+        return null;
     }
-    else {
-        switch (cmd) {
-            case 'end':
-                current_uitests++;
-                if (uitests_files <= current_uitests) {
-                    setTimeout(
-                        () => {
-                            process.exitCode = 0;
-                            process.exit();
-                        }, 3000);
-                }
-                else {
+}
+
+const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
+    let adaptiveCardsJson = subsetCmds(cmd);
+
+    if (adaptiveCardsJson) {
+        commands['adaptive-cards'].server(res, sendActivity, adaptiveCardsJson);
+    } else {
+        if (commands[cmd] && commands[cmd].server) {
+            commands[cmd].server(res, sendActivity);
+        }
+        else {
+            switch (cmd) {
+                case 'end':
+                    current_uitests++;
+                    if (uitests_files <= current_uitests) {
+                        setTimeout(
+                            () => {
+                                process.exitCode = 0;
+                                process.exit();
+                            }, 3000);
+                    }
+                    else {
+                        sendActivity(res, {
+                            type: "message",
+                            timestamp: new Date().toUTCString(),
+                            channelId: "webchat",
+                            text: "echo: " + req.body.text
+                        });
+                    }
+                    return;
+                case 'cards':
+                    // prints all available Adaptive Cards json files inside of ./test/cards/ folder
+                    fs.readdir('./test/cards/',(err, files) => {
+                        let renderList = '';
+                        files.forEach(fileName => {
+                            fileName = fileName.substr(0, fileName.lastIndexOf('.')) || fileName;
+                            renderList += '<li>' + fileName + '</li>';
+                        });  
+                        sendActivity(res, {
+                            type: "message",
+                            timestamp: new Date().toUTCString(),
+                            channelId: "webchat",
+                            text: '<ul>' + renderList + '</ul>'
+                        });
+                    })
+                    return;
+                default:
                     sendActivity(res, {
                         type: "message",
                         timestamp: new Date().toUTCString(),
                         channelId: "webchat",
                         text: "echo: " + req.body.text
                     });
-                }
-                return;
-            default:
-                sendActivity(res, {
-                    type: "message",
-                    timestamp: new Date().toUTCString(),
-                    channelId: "webchat",
-                    text: "echo: " + req.body.text
-                });
-                return;
+                    return;
+            }
         }
     }
 }
@@ -249,6 +283,11 @@ const getMessages = (req: express.Request, res: express.Response) => {
     }
 }
 
+const getJson = (fsName: string) => {
+    let fsJson = fs.readFileSync('./test/cards/' + fsName +'.json');
+    return JSON.parse(fsJson);
+}
+
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + "/../test.html"));
 });
@@ -265,7 +304,6 @@ app.get('/assets/:file', function (req, res) {
     var file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
-
 // Running Web Server and DirectLine Client on port
 app.listen(process.env.port || process.env.PORT || config["port"], () => {
     console.log('listening on ' + config["port"]);
