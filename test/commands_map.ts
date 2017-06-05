@@ -4,15 +4,13 @@ import * as Nightmare from 'nightmare';
 import * as express from 'express';
 declare let module: any;
 
-interface jsonObj {}
-
 interface ISendActivity {
     (res: express.Response, activity: dl.Message): void;
 }
 
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
-    server?: (res: express.Response, sendActivity: ISendActivity, json: jsonObj) => void,
+    server?: (res: express.Response, sendActivity: ISendActivity, json: JSON) => void,
     do?: (nightmare: Nightmare) => any
 }
 

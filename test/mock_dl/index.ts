@@ -3,9 +3,9 @@ require('dotenv').config();
 import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
+import * as fs from 'fs';
 
 const app = express();
-const fs = require('fs');
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -285,7 +285,7 @@ const getMessages = (req: express.Request, res: express.Response) => {
 
 const getJson = (fsName: string) => {
     let fsJson = fs.readFileSync('./test/cards/' + fsName +'.json');
-    return JSON.parse(fsJson);
+    return JSON.parse(fsJson.toString('utf-8'));
 }
 
 app.get('/', function (req, res) {
