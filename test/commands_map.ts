@@ -10,7 +10,7 @@ interface ISendActivity {
 
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
-    server?: (res: express.Response, sendActivity: ISendActivity) => void,
+    server?: (res: express.Response, sendActivity: ISendActivity, json: JSON) => void,
     do?: (nightmare: Nightmare) => any
 }
 
@@ -191,6 +191,15 @@ var commands_map: CommandValuesMap = {
         }),
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
+        }
+    },
+    "adaptive-cards": {
+        client: () => new Promise((resolve) => {
+        }),
+        server: function (res, sendActivity, json) {
+            let tempJson = server_content.adaptive_cards;
+            tempJson.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
+            sendActivity(res, tempJson);
         }
     },
     /*
