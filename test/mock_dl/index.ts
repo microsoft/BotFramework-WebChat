@@ -161,17 +161,17 @@ const subsetCmds = (cmd: string) => {
 
     if (cardsCmdExists) {
         if (cardsCmdExists.length > 0) {
-            return getJson(cardsCmdExists[1]);
+            return [cardsCmdExists[1], getJson(cardsCmdExists[1])];
         }
         return null;
     }
 }
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-    let adaptiveCardsJson = subsetCmds(cmd);
+    let adaptiveCardObj = subsetCmds(cmd);
 
-    if (adaptiveCardsJson) {
-        commands['adaptive-cards'].server(res, sendActivity, adaptiveCardsJson);
+    if (adaptiveCardObj) {
+        commands['card ' + adaptiveCardObj[0]].server(res, sendActivity, adaptiveCardObj[1]);
     } else {
         if (commands[cmd] && commands[cmd].server) {
             commands[cmd].server(res, sendActivity);

@@ -193,9 +193,10 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
-    "adaptive-cards": {
-        client: () => new Promise((resolve) => {
-        }),
+    "card weather": {
+        client: function () {
+            return document.querySelectorAll('.wc-adaptive-card').length > 0;
+        },
         server: function (res, sendActivity, json) {
             let tempJson = server_content.adaptive_cards;
             tempJson.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
