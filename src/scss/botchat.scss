@@ -312,10 +312,6 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
             margin-bottom: 8px;
         }
 
-        p {
-            padding-bottom: 10px;
-        }
-
         h1, h2, p {
             margin-left: 8px;
             margin-right: 8px;
@@ -336,11 +332,6 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
             text-align: center;
             float: left;
             margin: 2px;
-        }
-
-        &.hero img {
-            display: block;
-            margin-bottom: 11px;
         }
 
         &.receipt table {

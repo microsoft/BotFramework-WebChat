@@ -1,4 +1,4 @@
-import { CardAction, HeroCard } from 'botframework-directlinejs';
+import { Attachment, CardAction, HeroCard, Thumbnail } from 'botframework-directlinejs';
 import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
@@ -6,12 +6,11 @@ interface IVersionedCard extends AdaptiveCardSchema.ICard {
     version: string;
 }
 
-class AdaptiveCardBuilder {
+export class AdaptiveCardBuilder {
     public container: AdaptiveCardSchema.IContainer;
     public card: AdaptiveCardSchema.ICard;
 
     constructor() {
-
         this.container = {
             type: "Container",
             items: []
@@ -24,18 +23,33 @@ class AdaptiveCardBuilder {
         } as IVersionedCard;
     }
 
-    addItems(elements: AdaptiveCardSchema.ICardElement[]) {
-        this.container.items.push.apply(this.container.items, elements);
+    addColumnSet(sizes: number[], container = this.container) {
+        const columnSet: AdaptiveCardSchema.IColumnSet = {
+            type: 'ColumnSet',
+            columns: sizes.map((size): AdaptiveCardSchema.IColumn => {
+                return {
+                    type: 'Column',
+                    size: size.toString(),
+                    items: []
+                }
+            })
+        };
+        container.items.push(columnSet);
+        return columnSet.columns;
     }
 
-    addTextBlock(text: string, template: Partial<AdaptiveCardSchema.ITextBlock>) {
+    addItems(elements: AdaptiveCardSchema.ICardElement[], container = this.container) {
+        container.items.push.apply(container.items, elements);
+    }
+
+    addTextBlock(text: string, template: Partial<AdaptiveCardSchema.ITextBlock>, container = this.container) {
         if (typeof text !== undefined) {
-            var textblock: AdaptiveCardSchema.ITextBlock = {
+            const textblock: AdaptiveCardSchema.ITextBlock = {
                 type: "TextBlock",
                 text: text,
                 ...template
             };
-            this.container.items.push(textblock);
+            container.items.push(textblock);
         }
     }
 
@@ -51,29 +65,36 @@ class AdaptiveCardBuilder {
             });
         }
     }
+
+    addCommon(content: ICommonContent) {
+        this.addTextBlock(content.title, { size: "medium", weight: "bolder" });
+        this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true, separation: "none" } as any); //TODO remove "as any" because separation is not defined
+        this.addTextBlock(content.text, { wrap: true });
+        this.addButtons(content.buttons);
+    }
+
+    addImage(url: string, container = this.container) {
+        var image: AdaptiveCardSchema.IImage = {
+            type: "Image",
+            url: url,
+            size: "stretch"
+        };
+        container.items.push(image);
+    }
+
 }
 
-export const AdaptiveHero = (attachment: HeroCard) => {
-    const content = attachment.content;
+export interface ICommonContent {
+    title?: string,
+    subtitle?: string,
+    text?: string,
+    buttons?: CardAction[]
+}
+
+export const buildCommonCard = (content: ICommonContent): AdaptiveCardSchema.ICard => {
     if (!content) return null;
 
     const cardBuilder = new AdaptiveCardBuilder();
-
-    //add images to top of hero card
-    if (content.images) {
-        cardBuilder.addItems(content.images.map((image): AdaptiveCardSchema.IImage => {
-            return {
-                type: "Image",
-                url: image.url,
-                size: "stretch"
-            }
-        }));
-    }
-
-    cardBuilder.addTextBlock(content.title, { size: "medium", weight: "bolder" });
-    cardBuilder.addTextBlock(content.subtitle, { isSubtle: true, wrap: true });
-    cardBuilder.addTextBlock(content.text, { wrap: true });
-    cardBuilder.addButtons(content.buttons);
-
+    cardBuilder.addCommon(content)
     return cardBuilder.card;
-}
+};

@@ -1,19 +1,20 @@
 import * as React from 'react';
 import * as AdaptiveCards from "microsoft-adaptivecards";
 import { CardAction } from "botframework-directlinejs/built/directLine";
-import { IDoCardAction, konsole } from "./Chat";
+import { classList, IDoCardAction, konsole } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
 import { Observable } from 'rxjs/Observable';
 
 export interface Props {
-    content: any,
-    onImageLoad: () => any,
+    card: any,
+    onImageLoad?: () => any,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void,
-    onCardAction: IDoCardAction
+    onCardAction: IDoCardAction,
+    className?: string
 }
 
 class LinkedAdaptiveCard extends AdaptiveCards.AdaptiveCard {
-    constructor(public adaptiveCardContainer: AdaptiveCardContainer){
+    constructor(public adaptiveCardContainer: AdaptiveCardContainer) {
         super();
     }
 }
@@ -69,7 +70,7 @@ AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalActi
 };
 
 export class AdaptiveCardContainer extends React.Component<Props, {}> {
-    private div: HTMLDivElement;    
+    private div: HTMLDivElement;
 
     constructor(props: Props) {
         super(props);
@@ -96,15 +97,23 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
     }
 
     componentDidMount() {
+
+        //lazy-config the first time through
+        if (!adaptiveCardsConfiguration.configured) {
+            adaptiveCardsConfiguration.configFromJsonInCss();
+        }
+
         var adaptiveCard = new LinkedAdaptiveCard(this);
-        adaptiveCard.parse(this.props.content);
+        adaptiveCard.parse(this.props.card);
         const renderedCard = adaptiveCard.render();
 
-        var imgs = renderedCard.querySelectorAll('img');
-        if (imgs && imgs.length > 0) {
-            Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
-                img.addEventListener('load', this.props.onImageLoad);
-            });
+        if (this.props.onImageLoad) {
+            var imgs = renderedCard.querySelectorAll('img');
+            if (imgs && imgs.length > 0) {
+                Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
+                    img.addEventListener('load', this.props.onImageLoad);
+                });
+            }
         }
 
         this.div.appendChild(renderedCard);
@@ -114,8 +123,61 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
     }
 
     render() {
+
+        var className = classList(
+            'wc-card',
+            'wc-adaptive-card',
+            this.props.className
+        );
+
         return (
-            <div className="wc-card wc-adaptive-card" ref={div => this.div = div} onClick={ e => this.onClick(e) } />
+            <div className={className} ref={div => this.div = div} onClick={e => this.onClick(e)}>
+                {this.props.children}
+            </div>
         )
     }
 }
+
+class AdaptiveCardsConfiguration {
+
+    public configured = false;
+
+    private getJsonEmbeddedInCssContent(cssId: string) {
+        const element = document.createElement('a');  //any element tagname will work
+        element.id = cssId;
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        const style = window.getComputedStyle(element);
+        const content = style.content;
+        document.body.removeChild(element);
+        return content.slice(1, -1).replace(/\\"/g, '"');
+    }
+
+    public configFromJsonInCss() {
+        const json = this.getJsonEmbeddedInCssContent('ac-hostConfig');
+        if (!json) {
+            konsole.log('Did not find AdaptiveCards HostConfig JSON in CSS: #ac-hostConfig {content: <JSON> }');
+            return;
+        }
+
+        let hostConfig: AdaptiveCards.IHostConfig;
+
+        try {
+            hostConfig = JSON.parse(json);
+        } catch (e) {
+            konsole.log('Could not parse AdaptiveCards HostConfig as JSON in CSS: #ac-hostConfig {content: <JSON> }');
+        }
+
+        if (!hostConfig || typeof hostConfig !== 'object') {
+            konsole.log('AdaptiveCards HostConfig JSON is not an object.');
+            return;
+        }
+
+        AdaptiveCards.setHostConfig(hostConfig);
+
+        this.configured = true;
+    };
+
+}
+
+const adaptiveCardsConfiguration = new AdaptiveCardsConfiguration();
