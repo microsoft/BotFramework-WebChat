@@ -194,13 +194,14 @@ var commands_map: CommandValuesMap = {
         }
     },
     "card weather": {
-        client: function () {
-            return document.querySelectorAll('.wc-adaptive-card').length > 0;
-        },
+        client: () => new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(document.querySelectorAll('.wc-adaptive-card').length > 0);
+            }, 2000);
+        }),
         server: function (res, sendActivity, json) {
-            let tempJson = server_content.adaptive_cards;
-            tempJson.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
-            sendActivity(res, tempJson);
+            server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
+            sendActivity(res, server_content.adaptive_cards);
         }
     },
     /*
@@ -209,6 +210,15 @@ var commands_map: CommandValuesMap = {
         client: function () { JavaScript evaluation syntax },
         server: function (res, sendActivity) {
             sendActivity(res, sever_content DirectLineActivity);
+        }
+    }
+
+    ** For adaptive cards, your command will be starting with card <space> command **  
+    "card command": {
+        client: function () { JavaScript evaluation syntax },
+        server: function (res, sendActivity) {
+            server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
+            sendActivity(res, server_content.adaptive_cards);
         }
     }
     */
