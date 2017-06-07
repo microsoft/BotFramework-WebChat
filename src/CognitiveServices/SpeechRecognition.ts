@@ -1,6 +1,6 @@
-import { ISpeechRecognizer, Func, Action } from "../SpeechInterface"
-import { konsole } from "../../Chat"
-import * as CognitiveSpeech from "microsoft-speech-browser-sdk/Speech.Browser.Sdk"
+import { Speech, Func, Action } from '../SpeechModule'
+import { konsole } from '../Chat'
+import * as CognitiveSpeech from 'microsoft-speech-browser-sdk/Speech.Browser.Sdk'
 
 export interface ICognitiveServicesSpeechRecognizerProperties {
     locale?: string,
@@ -9,7 +9,7 @@ export interface ICognitiveServicesSpeechRecognizerProperties {
     fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>
 }
 
-export class SpeechRecognizer implements ISpeechRecognizer {
+export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     public audioStreamStartInitiated: boolean = false;
     public isStreamingToService: boolean = false;
     public onIntermediateResult: Func<string, void> = null;

@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
     entry: {
         BotChat: "./src/BotChat.ts",
-        CognitiveServices: "./src/Speech/CognitiveServices/lib.ts"
+        CognitiveServices: "./src/CognitiveServices/lib.ts"
     },
     output: {
         libraryTarget: "umd",

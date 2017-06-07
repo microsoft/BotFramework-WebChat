@@ -77,15 +77,15 @@
             // or launch chrome (close all the existing chrome browsers) with the following option:
             // chrome.exe --allow-file-access-from-files <sampleHtmlFile>
             var speechOptions = {
-                speechRecognizer: new BotChat.BrowserSpeechRecognizer(),
-                speechSynthesizer: new BotChat.BrowserSpeechSynthesizer()
+                speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
+                speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
             }
 
             // // Option 3 : Cognitive services speech recognition using API key (cross browser, speech priming support)
             //
             // var speechOptions = {
             //     speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
-            //     speechSynthesizer: new BotChat.BrowserSpeechSynthesizer()
+            //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
             // }
 
             // // Option 4 : Cognitive services speech recognition using a token (usually generated in a secure backend using your API key)
@@ -109,7 +109,7 @@
             //             fetchOnExpiryCallback: (authFetchEventId) => getToken(), 
             //         }
             //     ),
-            //     speechSynthesizer: new BotChat.BrowserSpeechSynthesizer()
+            //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
             // }
 
             // Option 5:
