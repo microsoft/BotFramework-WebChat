@@ -1,4 +1,5 @@
 @import "includes/colors";
+@import "includes/settings";
 @import "includes/card-size";
 
 $actionsHeight: 40px;
@@ -15,7 +16,7 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
 /* reset */
 
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
-        font-family: 'Segoe UI', sans-serif;
+        font-family: $fontFamily;
         font-size: 15px;
     }
 

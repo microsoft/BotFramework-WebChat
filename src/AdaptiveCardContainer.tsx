@@ -150,7 +150,7 @@ class AdaptiveCardsConfiguration {
         const style = window.getComputedStyle(element);
         const content = style.content;
         document.body.removeChild(element);
-        return content.slice(1, -1).replace(/\\"/g, '"');
+        return content.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
     }
 
     public configFromJsonInCss() {

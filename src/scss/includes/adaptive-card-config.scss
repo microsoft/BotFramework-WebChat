@@ -1,4 +1,5 @@
 @import "colors";
+@import "settings";
 
 $hostConfig: (
   supportsInteractivity: true,
@@ -7,7 +8,7 @@ $hostConfig: (
     lineThickness: 1px,
     lineColor: rgb(238, 238, 238)
   ),
-  fontFamily: "Segoe UI",
+  fontFamily: $fontFamily,
   fontSizes: (
     small: 12px,
     normal: 14px,
