@@ -2,8 +2,7 @@ import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botfr
 import { FormatOptions, ActivityOrID, konsole, sendMessage as sendChatMessage } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { SpeechRecognizer } from './SpeechRecognition';
-import { SpeechSynthesizer } from './SpeechSynthesis';
+import { SpeechRecognizer, SpeechSynthesizer } from './Speech/SpeechSingleton';
 
 // Reducers - perform state transformations
 

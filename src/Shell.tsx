@@ -4,7 +4,7 @@ import { User } from 'botframework-directlinejs';
 import { sendMessage, sendFiles, classList } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
-import { SpeechRecognizer } from './SpeechRecognition'
+import { SpeechRecognizer } from './Speech/SpeechSingleton'
 
 interface Props {
     inputText: string,

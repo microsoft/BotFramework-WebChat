@@ -1,11 +1,14 @@
 var webpack = require('webpack');
 
 module.exports = {
-    entry: "./src/BotChat.ts",
+    entry: {
+        BotChat: "./src/BotChat.ts",
+        CognitiveServices: "./src/Speech/CognitiveServices/lib.ts"
+    },
     output: {
         libraryTarget: "umd",
-        library: "BotChat",
-        filename: "./botchat.js",
+        library: "[name]",
+        filename: "./[name].js",
     },
 
     devtool: "source-map",

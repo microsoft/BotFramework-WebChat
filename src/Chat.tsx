@@ -7,9 +7,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
 import { createStore, ChatActions } from './Store';
 import { Provider } from 'react-redux';
-import { SpeechOptions } from './SpeechOptions';
-import { SpeechRecognizer } from './SpeechRecognition';
-import { SpeechSynthesizer } from './SpeechSynthesis';
+import { SpeechOptions } from './Speech/SpeechOptions';
+import { SpeechRecognizer, SpeechSynthesizer } from './Speech/SpeechSingleton';
 
 export interface FormatOptions {
     showHeader?: boolean
