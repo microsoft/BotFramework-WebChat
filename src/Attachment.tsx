@@ -64,14 +64,16 @@ const Vimeo = (props: {
         })}` }
     />;
 
-const Video = (props: {
+interface VideoProps {
     src: string,
     poster?: string,
     autoPlay?:boolean,
     loop?: boolean,
     onLoad?: () => void,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void
-}) => {
+}
+
+const Video = (props: VideoProps ) => {
     const url = document.createElement('a');
     url.href = props.src;
 
@@ -85,12 +87,17 @@ const Video = (props: {
         case YOUTUBE_WWW_SHORT_DOMAIN:
             return <Youtube
                 embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams['v'] : pathSegments[pathSegments.length-1] }
-                { ... props }
+                autoPlay={ props.autoPlay }
+                loop={ props.loop }
             />;
 
         case VIMEO_WWW_DOMAIN:
         case VIMEO_DOMAIN:
-            return <Vimeo embedId={ pathSegments[pathSegments.length-1] } { ... props } />
+            return <Vimeo 
+                embedId={ pathSegments[pathSegments.length-1] } 
+                autoPlay={ props.autoPlay }
+                loop={ props.loop }
+            />
 
         default:
             return <video controls { ... props } />
@@ -108,7 +115,7 @@ const Media = (props: {
 }) => {
     switch (props.type) {
         case 'video':
-            return <Video { ... props } />
+            return <Video { ...props as VideoProps }  />
         case 'audio':
             return <audio controls { ... props } />;
         default:
@@ -133,10 +140,6 @@ const Unknown = (props: {
 
 const mediaType = (url: string) =>
     url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'image' : 'video';
-
-const title = (title: string) => renderIfNonempty(title, title => <h1>{ title }</h1>);
-const subtitle = (subtitle: string) => renderIfNonempty(subtitle, subtitle => <h2>{ subtitle }</h2>);
-const text = (text: string) => renderIfNonempty(text, text => <p>{ text }</p>);
 
 export const AttachmentView = (props: {
     format: FormatState;
@@ -321,13 +324,9 @@ export const AttachmentView = (props: {
             if (!attachment.content)
                 return null;
             return (
-                <div className='wc-card flex'>
+                <AdaptiveCardContainer className="flex" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     { attachedImage(attachment.content.images) }
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                </AdaptiveCardContainer>
             );
 
         case "image/png":
