@@ -14,7 +14,6 @@ $card_padding: 8px;
     }
 
     .wc-adaptive-card {
-        padding: 0; //override padding
         width: $cardWidth - 2 * $card_borderWidth;
     }
     
