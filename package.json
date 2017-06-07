@@ -7,10 +7,8 @@
   "scripts": {
     "build-test": "tsc -p ./test/mock_dl && tsc -p ./test",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
-    "build-css": "node-sass ./src/scss/ -o .",
-    "build-css-watch": "node-sass ./src/scss/ -o . -w",
-    "build-ac-config": "ac-scss2json ./src/scss/includes/adaptive-card-config.scss --css-append ./botchat.css",
-    "build": "tsc && npm run build-css && npm run build-ac-config && webpack --progress",
+    "build-css": "node-sass ./src/scss/ -o . && ac-scss2json ./src/scss/includes/adaptive-card-config.scss --css-append ./botchat.css",
+    "build": "tsc && npm run build-css && webpack --progress",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch build-css-watch",
     "tsc-watch": "tsc -w",
     "webpack-watch": "webpack --progress --watch",
