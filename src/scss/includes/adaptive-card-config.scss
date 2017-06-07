@@ -10,21 +10,21 @@ $hostConfig: (
   ),
   fontFamily: $fontFamily,
   fontSizes: (
-    small: 12px,
-    normal: 14px,
-    medium: 17px,
-    large: 21px,
-    extraLarge: 26px
+    small: ($card_fontSize - 1),
+    normal: $card_fontSize,
+    medium: ($card_fontSize + 2),
+    large: ($card_fontSize + 4),
+    extraLarge: ($card_fontSize + 6)
   ),
   fontWeights: (
-    lighter: 200px,
-    normal: 400px,
-    bolder: 600px
+    lighter: 200,
+    normal: 400,
+    bolder: 700
   ),
   colors: (
     dark: (
-      normal: rgb(51, 51, 51),
-      subtle: rgba(51, 51, 0, 238)
+      normal: $c00,
+      subtle: $c08
     ),
     light: (
       normal: rgb(255, 255, 255),
@@ -55,19 +55,19 @@ $hostConfig: (
   actions: (
     maxActions: 100,
     separation: (
-      spacing: 8px
+      spacing: $separation
     ),
-    buttonSpacing: 8px,
+    buttonSpacing: $separation,
     stretch: false,
     showCard: (
       actionMode: "inlineEdgeToEdge",
       inlineTopMargin: 16px,
       backgroundColor: rgba(0, 0, 0, 8),
       padding: (
-        top: 8px,
-        right: 8px,
-        bottom: 8px,
-        left: 8px
+        top: $separation,
+        right: $separation,
+        bottom: $separation,
+        left: $separation
       )
     ),
     actionsOrientation: "vertical",
@@ -84,7 +84,7 @@ $hostConfig: (
   ),
   container: (
     separation: (
-      spacing: 8px
+      spacing: $separation
     ),
     normal: (
       backgroundColor: rgb(255, 255, 255),
@@ -93,16 +93,16 @@ $hostConfig: (
       backgroundColor: rgb(238, 238, 238),
       borderColor: rgb(170, 170, 170),
       borderThickness: (
-        top: 1px,
-        right: 1px,
-        bottom: 1px,
-        left: 1px
+        top: $card_borderWidth,
+        right: $card_borderWidth,
+        bottom: $card_borderWidth,
+        left: $card_borderWidth
       ),
       padding: (
-        top: 10px,
-        right: 10px,
-        bottom: 10px,
-        left: 10px
+        top: $separation,
+        right: $separation,
+        bottom: $separation,
+        left: $separation
       )
     )
   ),
@@ -110,37 +110,37 @@ $hostConfig: (
     color: "dark",
     separations: (
       small: (
-        spacing: 8px
+        spacing: $separation
       ),
       normal: (
-        spacing: 8px
+        spacing: $separation
       ),
       medium: (
-        spacing: 8px
+        spacing: $separation
       ),
       large: (
-        spacing: 8px
+        spacing: $separation
       ),
       extraLarge: (
-        spacing: 8px
+        spacing: $separation
       )
     )
   ),
   image: (
     size: "medium",
     separation: (
-      spacing: 8px
+      spacing: $separation
     )
   ),
   imageSet: (
     imageSize: "medium",
     separation: (
-      spacing: 8px
+      spacing: $separation
     )
   ),
   factSet: (
     separation: (
-      spacing: 8px
+      spacing: $separation
     ),
     title: (
       color: "dark",
@@ -157,21 +157,21 @@ $hostConfig: (
       weight: "normal",
       wrap: true
     ),
-    spacing: 10px
+    spacing: $separation
   ),
   input: (
     separation: (
-      spacing: 8px
+      spacing: $separation
     )
   ),
   columnSet: (
     separation: (
-      spacing: 8px
+      spacing: $separation
     )
   ),
   column: (
     separation: (
-      spacing: 8px
+      spacing: $separation
     )
   )
 );
