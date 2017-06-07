@@ -2,17 +2,6 @@
 @import "includes/settings";
 @import "includes/card-size";
 
-$actionsHeight: 40px;
-$consoleHeight: 50px;
-
-$headerPaddingBottom: 0;
-$headerPaddingLeft: 8px;
-$headerPaddingRight: 8px;
-$headerPaddingTop: 8px;
-$headerTotalHeight: 38px;
-
-$actionTransition: .2s cubic-bezier(0,0,.5,1);
-
 /* reset */
 
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
@@ -299,40 +288,6 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
             background-color: $c_brand;
             border-color: $c_brand;
             color: $c01;
-        }
-
-        h1 {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        h2 {
-            color: $c_textHeading;
-            font-size: inherit;
-            font-weight: normal;
-            margin-bottom: 8px;
-        }
-
-        h1, h2, p {
-            margin-left: 8px;
-            margin-right: 8px;
-        }
-
-        p h2 {
-            /* don't double indent */
-            margin-left: 0;
-        }
-
-        ul.wc-card-buttons {
-            clear: both;
-            display: table;
-        }
-
-        ul.wc-card-buttons li {
-            list-style-type: none;
-            text-align: center;
-            float: left;
-            margin: 2px;
         }
 
         &.receipt table {

@@ -157,11 +157,6 @@ export const AttachmentView = (props: {
             e.stopPropagation();
         });
 
-    const buttons = (buttons: CardAction[]) => buttons &&
-        <ul className="wc-card-buttons">
-            { buttons.map((button, index) => <li key={ index }><button onClick={ onCardAction(button) }>{ button.title }</button></li>) }
-        </ul>;
-
     const attachedImage = (
         images: {
             url: string,
@@ -262,8 +257,12 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.receipt":
             if (!attachment.content)
                 return null;
+
+            const receiptCardBuilder = new CardBuilder.AdaptiveCardBuilder();
+            receiptCardBuilder.addButtons(attachment.content.buttons);
+
             return (
-                <div className='wc-card receipt' onClick={ onCardAction(attachment.content.tap) }>
+                <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } >
                     <table>
                         <thead>
                             <tr>
@@ -308,8 +307,7 @@ export const AttachmentView = (props: {
                             }
                         </tfoot>
                     </table>
-                    { buttons(attachment.content.buttons) }
-                </div>
+                </AdaptiveCardContainer>
             );
 
         case "application/vnd.microsoft.card.adaptive":
