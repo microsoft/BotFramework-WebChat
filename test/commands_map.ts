@@ -162,7 +162,6 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.suggested_actions_card);
         }
-    },
     "suggested-actions-away": {
         client: () => new Promise((resolve) => {
             var green_button = document.querySelectorAll('button[title="Green"]')[0] as HTMLButtonElement;
@@ -193,12 +192,48 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
-    "card weather": {
+    "imback-postback": {
         client: () => new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(document.querySelectorAll('.wc-adaptive-card').length > 0);
-            }, 2000);
+            var buttons = document.querySelectorAll('button');
+            var imBackBtn = buttons[1] as HTMLButtonElement;
+            var postBackBtn = buttons[2] as HTMLButtonElement;
+
+            var p1 = new Promise((resolve, reject) =>{
+                imBackBtn.click();
+
+                setTimeout(() => {
+                    var echos = document.querySelectorAll('.format-markdown');
+                    var lastEcho = echos.length -1;
+
+                    console.log(echos[lastEcho].innerHTML);
+
+                    resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
+                }, 1000);
+            })
+            .then(() => {
+                postBackBtn.click();
+
+                setTimeout(() => {
+                    var echos = document.querySelectorAll('.format-markdown');
+                    var lastEcho = echos.length -1;
+
+
+                    console.log(echos[lastEcho].innerHTML);
+                    resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
+                }, 1000);
+
+                Promise.resolve(true);
+            });
         }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.imback_postback);
+        }
+    },
+    "adaptive-cards": {
+        client: function () {
+            // adaptive-card server mock, no need to test anything here.
+            return true;
+        },
         server: function (res, sendActivity, json) {
             server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
             sendActivity(res, server_content.adaptive_cards);
