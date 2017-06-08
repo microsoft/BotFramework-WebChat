@@ -60,10 +60,10 @@ describe('nightmare UI tests', function () {
 
 					result = yield nightmare.goto(testUrl)
 						.viewport(width, 768)
-						.wait(2000)
+						.wait(1000)
 						.type('.wc-textbox input', keys[cmd_index])
 						.click('.wc-send')
-						.wait(3000)
+						.wait(2000)
 						.do(commands[keys[cmd_index]].do)
 						.evaluate(commands[keys[cmd_index]].client)
 

@@ -3,6 +3,7 @@ require('dotenv').config();
 import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
+import * as fs from 'fs';
 
 const app = express();
 
@@ -19,6 +20,11 @@ const timeout = 60 * 1000;
 const conversationId = "mockversation";
 const expires_in = 1800;
 const streamUrl = "http://nostreamsupport";
+const simpleCard = {
+    "$schema":"https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "body": []
+};
 
 const get_token = (req: express.Request) =>
     (req.headers["authorization"] || "works/all").split(" ")[1];
@@ -151,37 +157,80 @@ let current_uitests = 0;
 let uitests_files = Object.keys(config["width-tests"]).length;
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-    if (commands[cmd] && commands[cmd].server) {
-        commands[cmd].server(res, sendActivity);
-    }
-    else {
-        switch (cmd) {
-            case 'end':
-                current_uitests++;
-                if (uitests_files <= current_uitests) {
-                    setTimeout(
-                        () => {
-                            process.exitCode = 0;
-                            process.exit();
-                        }, 3000);
+    let cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
+
+    if (cardsCmd) {
+        if (cardsCmd.length > 0) {
+            let fsJson;
+            let acCmds = cardsCmd[1];
+            getJson(acCmds).then((val) => {
+                commands['adaptive-cards'].server(res, sendActivity, val);
+            }).catch((err) => {
+                if (err.code === 'ENOENT') {
+                    simpleCard.body[0] = {
+                        "type": "TextBlock",
+                        "text": "Can't find '" + acCmds + "' card in Adaptive Cards directory"
+                    };
+                    commands['adaptive-cards'].server(res, sendActivity, simpleCard);
+                } else {
+                    throw err;
                 }
-                else {
+            });
+        }
+    } else {
+        if (commands[cmd] && commands[cmd].server) {
+            commands[cmd].server(res, sendActivity);
+        }
+        else {
+            switch (cmd) {
+                case 'end':
+                    current_uitests++;
+                    if (uitests_files <= current_uitests) {
+                        setTimeout(
+                            () => {
+                                process.exitCode = 0;
+                                process.exit();
+                            }, 3000);
+                    }
+                    else {
+                        sendActivity(res, {
+                            type: "message",
+                            timestamp: new Date().toUTCString(),
+                            channelId: "webchat",
+                            text: "echo: " + req.body.text
+                        });
+                    }
+                    return;
+                case 'cards':
+                    // prints all available Adaptive Cards json files inside of ./test/cards/ folder
+                    fs.readdir('./test/cards/',(err, files) => {
+                        let renderList = '';
+                        if (err) {
+                            renderList = 'Missing Adaptive cards json files in ./test/cards/ folder';
+                        } else {
+                            files.forEach(fileName => {
+                                fileName = fileName.substr(0, fileName.lastIndexOf('.')) || fileName;
+                                renderList += '<li>' + fileName + '</li>';
+                            });
+                            renderList = '<ul>' + renderList + '</ul>';
+                        }
+                        sendActivity(res, {
+                            type: "message",
+                            timestamp: new Date().toUTCString(),
+                            channelId: "webchat",
+                            text: renderList
+                        });
+                    })
+                    return;
+                default:
                     sendActivity(res, {
                         type: "message",
                         timestamp: new Date().toUTCString(),
                         channelId: "webchat",
                         text: "echo: " + req.body.text
                     });
-                }
-                return;
-            default:
-                sendActivity(res, {
-                    type: "message",
-                    timestamp: new Date().toUTCString(),
-                    channelId: "webchat",
-                    text: "echo: " + req.body.text
-                });
-                return;
+                    return;
+            }
         }
     }
 }
@@ -232,21 +281,39 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
 });
 
 const getMessages = (req: express.Request, res: express.Response) => {
-    if (queue.length > 0) {
-        let msg = queue.shift();
-        let id = messageId++;
-        msg.id = id.toString();
-        msg.from = { id: "id", name: "name" };
-        res.send({
-            activities: [msg],
-            watermark: id
-        });
-    } else {
-        res.send({
-            activities: [],
-            watermark: messageId
-        })
+    if (queue) {
+        if (queue.length > 0) {
+            let msg = queue.shift();
+            let id = messageId++;
+            msg.id = id.toString();
+            msg.from = { id: "id", name: "name" };
+            res.send({
+                activities: [msg],
+                watermark: id
+            });
+        } else {
+            res.send({
+                activities: [],
+                watermark: messageId
+            })
+        }
     }
+}
+
+const getJson = (fsName: string): Promise<any> => {
+    return readFileAsync('./test/cards/' + fsName +'.json')
+        .then(function(res){
+            return JSON.parse(res);
+        });
+}
+
+const readFileAsync = (filename: string): Promise<any> => {
+    return new Promise((resolve,reject) => {
+        fs.readFile(filename,(err,result) => {
+            if (err) reject(err);
+            else resolve(result);
+        });
+    });
 }
 
 app.get('/', function (req, res) {
@@ -265,7 +332,6 @@ app.get('/assets/:file', function (req, res) {
     var file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
-
 // Running Web Server and DirectLine Client on port
 app.listen(process.env.port || process.env.PORT || config["port"], () => {
     console.log('listening on ' + config["port"]);
