@@ -85,6 +85,8 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
 
         //do not allow form elements to trigger a parent click event
         switch ((e.target as HTMLElement).tagName) {
+            case 'AUDIO':
+            case 'VIDEO':
             case 'BUTTON':
             case 'INPUT':
             case 'LABEL':
@@ -103,35 +105,57 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
             adaptiveCardsConfiguration.configFromJsonInCss();
         }
 
-        var adaptiveCard = new LinkedAdaptiveCard(this);
+        const adaptiveCard = new LinkedAdaptiveCard(this);
         adaptiveCard.parse(this.props.card);
-        const renderedCard = adaptiveCard.render();
+        const errors = adaptiveCard.validate();
 
-        if (this.props.onImageLoad) {
-            var imgs = renderedCard.querySelectorAll('img');
-            if (imgs && imgs.length > 0) {
-                Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
-                    img.addEventListener('load', this.props.onImageLoad);
-                });
+        if (errors.length === 0) {
+
+            let renderedCard: HTMLElement;
+            try {
+                renderedCard = adaptiveCard.render();
+            }
+            catch (e) {
+                const ve: AdaptiveCards.IValidationError = {
+                    error: -1,
+                    message: e
+                };
+                errors.push(ve);
+
+                if (e.stack) {
+                    konsole.log(e.stack);
+                }
+            }
+
+            if (renderedCard) {
+                if (this.props.onImageLoad) {
+                    var imgs = renderedCard.querySelectorAll('img');
+                    if (imgs && imgs.length > 0) {
+                        Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
+                            img.addEventListener('load', this.props.onImageLoad);
+                        });
+                    }
+                }
+
+                this.div.appendChild(renderedCard);
+                return;
             }
         }
 
-        this.div.appendChild(renderedCard);
+        //render errors
+        errors.forEach(e => {
+            var div = document.createElement('div');
+            div.innerText = e.message;
+            this.div.appendChild(div);
+        });
     }
 
     componentWillUnmount() {
     }
 
     render() {
-
-        var className = classList(
-            'wc-card',
-            'wc-adaptive-card',
-            this.props.className
-        );
-
         return (
-            <div className={className} ref={div => this.div = div} onClick={e => this.onClick(e)}>
+            <div className={classList('wc-card', 'wc-adaptive-card', this.props.className)} ref={div => this.div = div} onClick={e => this.onClick(e)}>
                 {this.props.children}
             </div>
         )
