@@ -193,6 +193,43 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
+    "imback-postback": {
+        client: () => new Promise((resolve) => {
+            var buttons = document.querySelectorAll('button');
+            var imBackBtn = buttons[1] as HTMLButtonElement;
+            var postBackBtn = buttons[2] as HTMLButtonElement;
+
+            var p1 = new Promise((resolve, reject) =>{
+                imBackBtn.click();
+
+                setTimeout(() => {
+                    var echos = document.querySelectorAll('.format-markdown');
+                    var lastEcho = echos.length -1;
+
+                    console.log(echos[lastEcho].innerHTML);
+
+                    resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
+                }, 1000);
+            })
+            .then(() => {
+                postBackBtn.click();
+
+                setTimeout(() => {
+                    var echos = document.querySelectorAll('.format-markdown');
+                    var lastEcho = echos.length -1;
+
+
+                    console.log(echos[lastEcho].innerHTML);
+                    resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
+                }, 1000);
+
+                Promise.resolve(true);
+            });
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.imback_postback);
+        }
+    },
     /*
      ** Add your commands to test here **  
     "command": {
