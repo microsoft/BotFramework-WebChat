@@ -229,6 +229,26 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.imback_postback);
         }
     },
+    "card weather": {
+       client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return (source.indexOf("Mostly%20Cloudy-Square.png") >= 0);
+        }
+    },
+    "card bingsports": {
+        client: function() {
+            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
+        }
+    },
+    "card calendarreminder": {
+        client: () => new Promise((resolve) => {
+                setTimeout(() => {
+                    var selectPullDown = document.querySelector('.wc-adaptive-card .ac-container select') as HTMLSelectElement;
+                    selectPullDown.selectedIndex = 3;
+                    resolve(selectPullDown.value === '30');
+                }, 1000);
+        })
+    },
     "adaptive-cards": {
         client: function () {
             // adaptive-card server mock, no need to test anything here.

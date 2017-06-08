@@ -156,22 +156,27 @@ let config = require('../mock_dl_server_config');
 let current_uitests = 0;
 let uitests_files = Object.keys(config["width-tests"]).length;
 
-const subsetCmds = (cmd: string) => {
-    let cardsCmdExists = /card[ \t]([^ ]*)/g.exec(cmd);
-
-    if (cardsCmdExists) {
-        if (cardsCmdExists.length > 0) {
-            return [cardsCmdExists[1], getJson(cardsCmdExists[1])];
-        }
-        return null;
-    }
-}
-
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-    let adaptiveCardObj = subsetCmds(cmd);
+    let cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
 
-    if (adaptiveCardObj) {
-        commands['card ' + adaptiveCardObj[0]].server(res, sendActivity, adaptiveCardObj[1]);
+    if (cardsCmd) {
+        if (cardsCmd.length > 0) {
+            let fsJson;
+            let acCmds = cardsCmd[1];
+            getJson(acCmds).then((val) => {
+                commands['adaptive-cards'].server(res, sendActivity, val);
+            }).catch((err) => {
+                if (err.code === 'ENOENT') {
+                    simpleCard.body[0] = {
+                        "type": "TextBlock",
+                        "text": "Can't find '" + acCmds + "' card in Adaptive Cards directory"
+                    };
+                    commands['adaptive-cards'].server(res, sendActivity, simpleCard);
+                } else {
+                    throw err;
+                }
+            });
+        }
     } else {
         if (commands[cmd] && commands[cmd].server) {
             commands[cmd].server(res, sendActivity);
@@ -295,23 +300,20 @@ const getMessages = (req: express.Request, res: express.Response) => {
     }
 }
 
-const getJson = (fsName: string) => {
-    let fsJson;
-    try {
-        fsJson = fs.readFileSync('./test/cards/' + fsName +'.json');
-        fsJson = JSON.parse(fsJson.toString('utf-8'));
-    } catch (err) {
-        if (err.code === 'ENOENT') {
-            simpleCard.body[0] = {
-                "type": "TextBlock",
-                "text": "Can't find '" + fsName + "' card in Adaptive Cards directory"
-            };
-            fsJson = simpleCard;
-        } else {
-            throw err;
-        }
-    }
-    return fsJson;
+const getJson = (fsName: string): Promise<any> => {
+    return readFileAsync('./test/cards/' + fsName +'.json')
+        .then(function(res){
+            return JSON.parse(res);
+        });
+}
+
+const readFileAsync = (filename: string): Promise<any> => {
+    return new Promise((resolve,reject) => {
+        fs.readFile(filename,(err,result) => {
+            if (err) reject(err);
+            else resolve(result);
+        });
+    });
 }
 
 app.get('/', function (req, res) {
