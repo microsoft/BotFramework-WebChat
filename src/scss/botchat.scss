@@ -269,6 +269,10 @@
 
         background-color: $c01;
 
+        .non-adaptive-content {
+            margin: $card_padding $card_padding 0 $card_padding;
+        }
+        
         button {
             background-color: transparent;
             color: $c_brand;

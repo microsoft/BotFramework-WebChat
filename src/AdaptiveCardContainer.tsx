@@ -154,9 +154,10 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
     }
 
     render() {
+        const wrappedChildren = this.props.children ? <div className="non-adaptive-content">{this.props.children}</div> : null;
         return (
             <div className={classList('wc-card', 'wc-adaptive-card', this.props.className)} ref={div => this.div = div} onClick={e => this.onClick(e)}>
-                {this.props.children}
+                {wrappedChildren}
             </div>
         )
     }
