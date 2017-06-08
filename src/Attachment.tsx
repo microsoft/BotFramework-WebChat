@@ -171,7 +171,9 @@ export const AttachmentView = (props: {
                 return null;
 
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
-            attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
+            if (attachment.content.images) {
+                attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
+            }
             heroCardBuilder.addCommon(attachment.content)
 
             return (
