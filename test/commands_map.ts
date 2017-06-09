@@ -193,6 +193,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
+    "receipt": {
+        client: function () {
+            return true;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.receipt_card);
+        }
+    },
     /*
      ** Add your commands to test here **  
     "command": {
