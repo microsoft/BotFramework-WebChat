@@ -4,6 +4,7 @@ import { CardAction } from "botframework-directlinejs/built/directLine";
 import { classList, IDoCardAction, konsole } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
 import { Observable } from 'rxjs/Observable';
+import adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 
 export interface Props {
     card: any,
@@ -102,7 +103,7 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
 
         //lazy-config the first time through
         if (!adaptiveCardsConfiguration.configured) {
-            adaptiveCardsConfiguration.configFromJsonInCss();
+            adaptiveCardsConfiguration.configFromJsonFile();
         }
 
         const adaptiveCard = new LinkedAdaptiveCard(this);
@@ -203,6 +204,9 @@ class AdaptiveCardsConfiguration {
         this.configured = true;
     };
 
+    public configFromJsonFile() {
+        AdaptiveCards.setHostConfig(adaptivecardsHostConfig);
+    }
 }
 
 const adaptiveCardsConfiguration = new AdaptiveCardsConfiguration();
