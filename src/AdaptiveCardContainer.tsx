@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as AdaptiveCards from "microsoft-adaptivecards";
+import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
 import { CardAction } from "botframework-directlinejs/built/directLine";
 import { classList, IDoCardAction, konsole } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
-import { Observable } from 'rxjs/Observable';
-import adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
+import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 
 export interface Props {
-    card: any,
+    card: AdaptiveCardSchema.ICard,
     onImageLoad?: () => any,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void,
     onCardAction: IDoCardAction,
@@ -32,6 +32,27 @@ function getLinkedAdaptiveCard(action: AdaptiveCards.Action) {
     return element as LinkedAdaptiveCard;
 }
 
+function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
+    if (!card.actions) return card;
+
+    const actions: AdaptiveCardSchema.IActionBase[] = [];
+
+    card.actions.forEach(action => {
+
+        //filter out http action buttons
+        if (action.type === 'Action.Http') return;
+
+        if (action.type === 'Action.ShowCard') {
+            const showCardAction = action as AdaptiveCardSchema.IActionShowCard;
+            showCardAction.card = cardWithoutHttpActions(showCardAction.card);
+        }
+
+        actions.push(action);
+    });
+
+    return { ...card, actions };
+}
+
 AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalAction) => {
 
     if (action instanceof AdaptiveCards.OpenUrlAction) {
@@ -47,26 +68,6 @@ AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalActi
                 linkedAdaptiveCard.adaptiveCardContainer.onCardAction('postBack', action.data);
             }
         }
-
-    } else if (action instanceof AdaptiveCards.HttpAction) {
-        /**
-         * This is a simple implementation of AdaptiveCards.HttpAction, but bot developers
-         * should be encouraged to use AdaptiveCards.SubmitAction instead to keep their bot in context
-         * and so that there does not need to be an additional auth mechanism for the http connection.
-         */
-
-        Observable.ajax({
-            body: action.body,
-            crossDomain: true,
-            headers: action.headers,
-            method: action.method,
-            url: action.url
-        } as AjaxRequest)
-            .subscribe(response => {
-                konsole.log("success sending HttpAction");
-            }, error => {
-                konsole.log("failed to send HttpAction", error);
-            });
     }
 };
 
@@ -101,13 +102,8 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
 
     componentDidMount() {
 
-        //lazy-config the first time through
-        if (!adaptiveCardsConfiguration.configured) {
-            adaptiveCardsConfiguration.configFromJsonFile();
-        }
-
         const adaptiveCard = new LinkedAdaptiveCard(this);
-        adaptiveCard.parse(this.props.card);
+        adaptiveCard.parse(cardWithoutHttpActions(this.props.card));
         const errors = adaptiveCard.validate();
 
         if (errors.length === 0) {
@@ -151,9 +147,6 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
         });
     }
 
-    componentWillUnmount() {
-    }
-
     render() {
         const wrappedChildren = this.props.children ? <div className="non-adaptive-content">{this.props.children}</div> : null;
         return (
@@ -164,49 +157,4 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
     }
 }
 
-class AdaptiveCardsConfiguration {
-
-    public configured = false;
-
-    private getJsonEmbeddedInCssContent(cssId: string) {
-        const element = document.createElement('a');  //any element tagname will work
-        element.id = cssId;
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        const style = window.getComputedStyle(element);
-        const content = style.content;
-        document.body.removeChild(element);
-        return content.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-    }
-
-    public configFromJsonInCss() {
-        const json = this.getJsonEmbeddedInCssContent('ac-hostConfig');
-        if (!json) {
-            konsole.log('Did not find AdaptiveCards HostConfig JSON in CSS: #ac-hostConfig {content: <JSON> }');
-            return;
-        }
-
-        let hostConfig: AdaptiveCards.IHostConfig;
-
-        try {
-            hostConfig = JSON.parse(json);
-        } catch (e) {
-            konsole.log('Could not parse AdaptiveCards HostConfig as JSON in CSS: #ac-hostConfig {content: <JSON> }');
-        }
-
-        if (!hostConfig || typeof hostConfig !== 'object') {
-            konsole.log('AdaptiveCards HostConfig JSON is not an object.');
-            return;
-        }
-
-        AdaptiveCards.setHostConfig(hostConfig);
-
-        this.configured = true;
-    };
-
-    public configFromJsonFile() {
-        AdaptiveCards.setHostConfig(adaptivecardsHostConfig);
-    }
-}
-
-const adaptiveCardsConfiguration = new AdaptiveCardsConfiguration();
+AdaptiveCards.setHostConfig(adaptivecardsHostConfig);
