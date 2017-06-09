@@ -32,19 +32,19 @@ $hostConfig: (
     ),
     accent: (
       normal: rgb(46, 137, 252),
-      subtle: rgba(46, 137, 1, 136)
+      subtle: rgba(46, 137, 1, .5)
     ),
     attention: (
       normal: rgb(255, 216, 0),
-      subtle: rgba(255, 216, 0, 221)
+      subtle: rgba(255, 216, 0, .8)
     ),
     good: (
       normal: rgb(0, 255, 0),
-      subtle: rgba(0, 255, 0, 221)
+      subtle: rgba(0, 255, 0, .8)
     ),
     warning: (
       normal: rgb(255, 0, 0),
-      subtle: rgba(255, 0, 0, 221)
+      subtle: rgba(255, 0, 0, .8)
     )
   ),
   imageSizes: (
@@ -62,7 +62,7 @@ $hostConfig: (
     showCard: (
       actionMode: "inlineEdgeToEdge",
       inlineTopMargin: 16px,
-      backgroundColor: rgba(0, 0, 0, 8),
+      backgroundColor: "#00000000",   //using 8 digit hex Adaptive Card color format for transparent ("Transparent" will not be recognized)
       padding: (
         top: $separation,
         right: $separation,
@@ -87,8 +87,7 @@ $hostConfig: (
       spacing: $separation
     ),
     normal: (
-      //map nodes cannot be empty of they will disappear. since we don't actually want a background color, just put x- in front.
-      x-backgroundColor: rgb(255, 255, 255),
+      backgroundColor: "#00000000",   //using 8 digit hex Adaptive Card color format for transparent ("Transparent" will not be recognized)
     ),
     emphasis: (
       backgroundColor: rgb(238, 238, 238),
