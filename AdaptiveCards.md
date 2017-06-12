@@ -23,9 +23,9 @@ An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#cre
 
 The existing Bot Builder SDK card types (Hero, Thumbnail, Audio, Video, Animation, SignIn, Receipt) are now implemented as Adaptive Cards. You may see some rendering differences from previous versions of WebChat, but these should be improvements because the card is adapted to the fields you've populated in your message object.
 
-SDK cards may specify a tap action on the entire card. Since Adaptive Cards have introduced interactive elements, the tap action will not be invoked unless the tap event occurs on a non-interactive element.
+Bot Builder SDK cards may specify a tap action on the entire card. Since Adaptive Cards have introduced interactive elements, the tap action will not be invoked unless the tap event occurs on a non-interactive element.
 
-Audio and Video are not yet part of the Adaptive Cards schema. So, SDK Audio and Video cards are implemented as a Media element followed by an Adaptive Card.
+Audio and Video are not yet part of the Adaptive Cards schema. So, Bot Builder SDK Audio and Video cards are implemented as a Media element followed by an Adaptive Card.
 
 ### Design considerations for WebChat display
 
