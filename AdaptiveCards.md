@@ -17,11 +17,11 @@ An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#cre
 | Action.Http | **Not Supported in WebChat**. WebChat will filter out any actions which have the "Action.Http" type, and they will not be displayed. This applies to actions on the root card as well as sub-cards. The recommendation is to use Action.Submit instead, then execute any HTTP requests on the server-side within your bot code. |
 | Action.OpenUrl  | Supported. Will open the URL in a new browser tab. |
 | Action.ShowCard | Supported. May change the size of your card. |
-| Action.Submit   | Supported. The `data` property of the action may be a string or it may be an object. A string will be passed back to your bot as a Bot Framework `imBack` activity, and an object will be passed as a `postBack` activity. Activities with `imBack` will appear in the chat stream as a user-entered reply; `postBack` activities are not displayed. |
+| Action.Submit   | Supported. The `data` property of the action may be a string or it may be an object. A string will be passed back to your bot as a Bot Builder SDK `imBack` activity, and an object will be passed as a `postBack` activity. Activities with `imBack` will appear in the chat stream as a user-entered reply; `postBack` activities are not displayed. |
 
-### SDK cards are now Adaptive
+### Bot Builder SDK cards are now Adaptive
 
-The existing Bot Framework card types (Hero, Thumbnail, Audio, Video, Animation, SignIn, Receipt) are now implemented as Adaptive Cards. You may see some rendering differences from previous versions of WebChat, but these should be improvements because the card is adapted to the fields you've populated in your message object.
+The existing Bot Builder SDK card types (Hero, Thumbnail, Audio, Video, Animation, SignIn, Receipt) are now implemented as Adaptive Cards. You may see some rendering differences from previous versions of WebChat, but these should be improvements because the card is adapted to the fields you've populated in your message object.
 
 SDK cards may specify a tap action on the entire card. Since Adaptive Cards have introduced interactive elements, the tap action will not be invoked unless the tap event occurs on a non-interactive element.
 
