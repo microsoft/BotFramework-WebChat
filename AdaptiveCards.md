@@ -54,7 +54,7 @@ It is important to first understand how [Adaptive Cards separates the concerns o
 
 ### Embedding
 
-The Adaptive Cards Host Configuration is stored in the `/adaptivecards-hostconfig.json` file. This file's content will be embedded into `/botchat.js` when you issue the `webpack` command. If you have created a Host Configuration file, replace the contents of `/adaptivecards-hostconfig.json`, then webpack.
+The Adaptive Cards Host Configuration is stored in the `/adaptivecards-hostconfig.json` file. This file's content will be embedded into `/botchat.js` when you issue the `webpack` command. If you have created a Host Configuration file elsewhere, replace the contents of `/adaptivecards-hostconfig.json`, then webpack.
 
 ### Creating
 
