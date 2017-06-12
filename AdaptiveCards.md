@@ -1,6 +1,6 @@
 # Adaptive Cards in Microsoft Bot Framework WebChat
 
-WebChat now supports [Adaptive Cards](http://adaptivecards.io/) which you can use to achieve a greater level of rich display and interactivity in your bot's UX. Adaptive Cards are a general purpose technology which may be used in a wide variety of applications, but you should be aware of the specific constraints when using them within the WebChat environment.
+WebChat now supports [Adaptive Cards](http://adaptivecards.io/) which you can use to achieve a greater level of rich display and interactivity in your bot's UX. Adaptive Cards are a general-purpose technology which may be used in a wide variety of applications, but you should be aware of the specific constraints when using them within the WebChat environment.
 
 ## Create and Send an Adaptive Card from your bot
 
@@ -50,7 +50,7 @@ In these scenarios, WebChat may show an error card to the end user.
 ## Style customization
 
 ### Overview
-It is important to first understand how [Adaptive Cards separates the concerns of card content vs presentation style](http://adaptivecards.io/documentation/#about-overview). The cards produced by your bot are pure semantic content, and the presentation style is driven by a [Host Configuration](http://adaptivecards.io/documentation/#display-hostconfigschema) JSON structure. Style aspects such as font, color and margin sizes are specified in the Host Configuration. WebChat is unique in that is the only Bot Framework channel where the bot developer can customize the look and feel of the channel. So, in other channels, the Adaptive Cards Host Configuration is not under the bot devloper's control.
+It is important to first understand how [Adaptive Cards separates the concerns of card content vs presentation style](http://adaptivecards.io/documentation/#about-overview). The cards produced by your bot are pure semantic content, and the presentation style is driven by a [Host Configuration](http://adaptivecards.io/documentation/#display-hostconfigschema) JSON structure. Style aspects such as font, color and margin sizes are specified in the Host Configuration. WebChat is unique in that is the only Bot Framework channel where the bot developer can customize the look and feel of the channel. So, in other channels, the Adaptive Cards Host Configuration is not under the bot developer's control.
 
 ### Embedding
 
