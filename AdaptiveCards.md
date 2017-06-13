@@ -2,11 +2,11 @@
 
 WebChat now supports [Adaptive Cards](http://adaptivecards.io/) which you can use to achieve a greater level of rich display and interactivity in your bot's UX. Adaptive Cards are a general-purpose technology which may be used in a wide variety of applications, but you should be aware of the specific constraints when using them within the WebChat environment.
 
-## Create and Send an Adaptive Card from your bot
+## Create and send an Adaptive Card from your bot
 
 Please see the Bot Framework documentation site for examples of how to create and send an Adaptive Card from either [Node.js](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards#send-an-adaptive-card), [.NET](https://docs.microsoft.com/en-us/bot-framework/dotnet/bot-builder-dotnet-add-rich-card-attachments#adaptive-card), or [REST](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-add-rich-cards#a-idadaptive-carda-add-an-adaptive-card-to-a-message).
 
-## WebChat Implementation details
+## WebChat implementation details
 
 ### Actions
 
