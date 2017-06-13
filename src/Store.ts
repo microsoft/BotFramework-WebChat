@@ -540,7 +540,8 @@ const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
                 store.dispatch(sendChatMessage(srText, store.getState().connection.user, locale));
             };
         var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
-        Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart);
+        var onRecognitionFailed = () => { store.dispatch({ type: 'Clear_Typing' })};
+        Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
     })
     .map(_ => nullAction) 
 

@@ -15,6 +15,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     public onIntermediateResult: Func<string, void> = null;
     public onFinalResult: Func<string, void> = null;
     public onAudioStreamingToService: Action = null;
+    public onRecognitionFailed: Action = null;
     public locale: string = null;
     public referenceGrammarId: string;
 
@@ -67,51 +68,46 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             return;
         }
         let eventhandler = (event: any) => {
+            this.log(event.Name);
             switch (event.Name) {
                 case 'RecognitionTriggeredEvent':
-                    this.log('RecognitionTriggeredEvent');
-                    break;
                 case 'ListeningStartedEvent':
-                    this.log('ListeningStartedEvent');
+                case 'SpeechStartDetectedEvent':
+                case 'SpeechEndDetectedEvent':
+                case 'SpeechDetailedPhraseEvent':
+                case 'ConnectingToServiceEvent':
                     break;
                 case 'RecognitionStartedEvent':
-                    this.log('RecognitionStartedEvent');
                     if (this.onAudioStreamingToService) {
                         this.onAudioStreamingToService()
                     }
                     this.isStreamingToService = true;
                     break;
-                case 'SpeechStartDetectedEvent':
-                    this.log('SpeechStartDetectedEvent');
-                    break;
                 case 'SpeechHypothesisEvent':
                     let hypothesisEvent = event as CognitiveSpeech.SpeechHypothesisEvent;
-                    this.log('SpeechHypothesisEvent: ' + hypothesisEvent.Result.Text);
+                    this.log('Hypothesis Result: ' + hypothesisEvent.Result.Text);
                     if (this.onIntermediateResult) {
                         this.onIntermediateResult(hypothesisEvent.Result.Text);
                     }
                     break;
-                case 'SpeechEndDetectedEvent':
-                    this.log('SpeechEndDetectedEvent');
-                    break;
                 case 'SpeechSimplePhraseEvent':
-                    this.log('SpeechSimplePhraseEvent');
                     let simplePhraseEvent = event as CognitiveSpeech.SpeechSimplePhraseEvent;
                     if (CognitiveSpeech.RecognitionStatus[simplePhraseEvent.Result.RecognitionStatus] as any === CognitiveSpeech.RecognitionStatus.Success) {
                         if (this.onFinalResult) {
                             this.onFinalResult(simplePhraseEvent.Result.DisplayText);
                         }
                     } else {
+                        if (this.onRecognitionFailed) {
+                            this.onRecognitionFailed();
+                        }
                         this.log('Recognition Status: ' + simplePhraseEvent.Result.RecognitionStatus.toString());
                     }
                     break;
-                case 'SpeechDetailedPhraseEvent':
-                    this.log('SpeechDetailedPhraseEvent');
-                    break;
                 case 'RecognitionEndedEvent':
-                    this.log('RecognitionEndedEvent');
                     this.isStreamingToService = false;
                     break;
+                default:
+                    this.log(event.Name + " is unexpected");
             }
         }
 

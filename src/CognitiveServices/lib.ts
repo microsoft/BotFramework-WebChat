@@ -1,2 +1,2 @@
 export { SpeechRecognizer } from './SpeechRecognition'
-export { SpeechSynthesizer, SysthesisGender } from './SpeechSynthesis'
+export { SpeechSynthesizer, SynthesisGender } from './SpeechSynthesis'

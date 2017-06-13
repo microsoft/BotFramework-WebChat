@@ -3,11 +3,11 @@ import { konsole } from '../Chat';
 
 export interface ICognitiveServicesSpeechSynthesisProperties {
     subscriptionKey: string,
-    gender?: SysthesisGender,
+    gender?: SynthesisGender,
     voiceName?: string
 }
 
-export enum SysthesisGender { Male, Female };
+export enum SynthesisGender { Male, Female };
 
 interface SpeakRequest {
     isReadyToPlay: boolean,
@@ -167,7 +167,7 @@ class CognitiveServicesHelper {
             return text;
         }
         else {
-            let ssml = "<speak version='1.0' xml:lang='" + locale + "'><voice xml:lang='" + locale + "' xml:gender='" + (synthesisProperties && synthesisProperties.gender ? SysthesisGender[synthesisProperties.gender] : "Female") + "' name='";
+            let ssml = "<speak version='1.0' xml:lang='" + locale + "'><voice xml:lang='" + locale + "' xml:gender='" + (synthesisProperties && synthesisProperties.gender ? SynthesisGender[synthesisProperties.gender] : "Female") + "' name='";
 
             if (synthesisProperties.voiceName) {
                 ssml += synthesisProperties.voiceName;
@@ -176,18 +176,18 @@ class CognitiveServicesHelper {
                 ssml += this.fetchVoiceName(locale, synthesisProperties.gender);
             }
             else {
-                ssml += this.fetchVoiceName(locale, SysthesisGender.Female);
+                ssml += this.fetchVoiceName(locale, SynthesisGender.Female);
             }
 
             return ssml + "'>" + this.encodeHTML(text) + "</voice></speak>";
         }
     }
 
-    private fetchVoiceName(locale: string, gender: SysthesisGender): string {
+    private fetchVoiceName(locale: string, gender: SynthesisGender): string {
         let voiceName: string;
 
         // source: https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
-        if (gender === SysthesisGender.Female) {
+        if (gender === SynthesisGender.Female) {
             switch (locale.toLowerCase()) {
                 case "ar-eg":
                     voiceName = "Microsoft Server Speech Text to Speech Voice (ar-EG, Hoda)";

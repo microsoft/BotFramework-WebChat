@@ -11,6 +11,7 @@ export module Speech {
         onIntermediateResult: Func<string, void>;
         onFinalResult: Func<string, void>;
         onAudioStreamingToService: Action;
+        onRecognitionFailed: Action;
 
         warmup(): void;
         startRecognizing(): void;
@@ -32,7 +33,8 @@ export module Speech {
         public static startRecognizing(locale: string = 'en-US',
             onIntermediateResult: Func<string, void> = null,
             onFinalResult: Func<string, void> = null,
-            onAudioStreamStarted: Action = null) {
+            onAudioStreamStarted: Action = null,
+            onRecognitionFailed: Action = null) {
 
             if (!SpeechRecognizer.speechIsAvailable())
                 return;
@@ -49,6 +51,7 @@ export module Speech {
             SpeechRecognizer.instance.onIntermediateResult = onIntermediateResult;
             SpeechRecognizer.instance.onFinalResult = onFinalResult;
             SpeechRecognizer.instance.onAudioStreamingToService = onAudioStreamStarted;
+            SpeechRecognizer.instance.onRecognitionFailed = onRecognitionFailed;
             SpeechRecognizer.instance.startRecognizing();
         }
 
@@ -105,6 +108,7 @@ export module Speech {
         public onIntermediateResult: Func<string, void> = null;
         public onFinalResult: Func<string, void> = null;
         public onAudioStreamingToService: Action = null;
+        public onRecognitionFailed: Action = null;
 
         private recognizer: any = null;
 
@@ -124,8 +128,9 @@ export module Speech {
             };
 
             this.recognizer.onresult = (srevent: any) => {
-                if (srevent.results == null || srevent.length == 0)
+                if (srevent.results == null || srevent.length == 0) {
                     return;
+                }
 
                 const result = srevent.results[0];
                 if (result.isFinal === true && this.onFinalResult != null) {
@@ -140,6 +145,9 @@ export module Speech {
             }
 
             this.recognizer.onerror = (err: any) => {
+                if (this.onRecognitionFailed) {
+                    this.onRecognitionFailed();
+                }
                 throw err;
             }
         }
