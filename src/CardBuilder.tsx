@@ -43,7 +43,7 @@ export class AdaptiveCardBuilder {
     }
 
     addTextBlock(text: string, template: Partial<AdaptiveCardSchema.ITextBlock>, container = this.container) {
-        if (typeof text !== undefined) {
+        if (typeof text !== 'undefined') {
             const textblock: AdaptiveCardSchema.ITextBlock = {
                 type: "TextBlock",
                 text: text,
