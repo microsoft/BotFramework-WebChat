@@ -35,7 +35,8 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                     new CognitiveSpeech.Device("WebChat", "WebChat", "1.0.00000"))),
             recognitionMode,        // Speech.RecognitionMode.Interactive  (Options - Interactive/Conversation/Dictation>)
             locale,                 // Supported laguages are specific to each recognition mode. Refer to docs.
-            format);                // Speech.SpeechResultFormat.Simple (Options - Simple/Detailed)
+            format
+        );                // Speech.SpeechResultFormat.Simple (Options - Simple/Detailed)
 
         let authentication;
         if (properties.subscriptionKey) {
@@ -51,7 +52,8 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                     let d = new CognitiveSpeech.Deferred<string>();
                     this.properties.fetchOnExpiryCallback(authFetchEventId).then(value => d.Resolve(value), err => d.Reject(err));
                     return d.Promise();
-                });
+                }
+            );
         } else {
             throw 'Error: The CognitiveServicesSpeechRecognizer requires either a subscriptionKey or a fetchCallback and fetchOnExpiryCallback.';
         }

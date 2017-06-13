@@ -46,7 +46,9 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
                 locale: lang,
                 onSpeakingStarted: onSpeakingStarted,
                 onSpeakingFinished: onSpeakingFinished
-            });
+            }
+        );
+
         this.getSpeechData().then(() => {
             this.playAudio();
         });
