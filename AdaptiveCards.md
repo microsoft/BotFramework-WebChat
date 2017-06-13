@@ -10,7 +10,7 @@ Please see the Bot Framework documentation site for examples of how to create an
 
 ### Actions
 
-An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#create-cardschema) which define buttons that the user may click. There are 4 types of Adaptive Card actions:
+An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#create-cardschema) which define buttons that the user may tap. There are 4 types of Adaptive Card actions:
 
 | Action Type | Implementation details |
 |---|---|
@@ -21,7 +21,7 @@ An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#cre
 
 ### Bot Builder SDK cards are now Adaptive
 
-The existing Bot Builder SDK card types (Hero, Thumbnail, Audio, Video, Animation, SignIn, Receipt) are now implemented as Adaptive Cards. You may see some rendering differences from previous versions of WebChat, but these should be improvements because the card is adapted to the fields you've populated in your message object.
+The existing Bot Builder SDK card types (Hero, Thumbnail, Audio, Video, Animation, SignIn, Receipt) are now implemented as Adaptive Cards. You may see some slight rendering differences from previous versions of WebChat, however as the card is adapted to the fields you've populated the displayed card should be more natural for the user.
 
 Bot Builder SDK cards may specify a tap action on the entire card. Since Adaptive Cards have introduced interactive elements, the tap action will not be invoked unless the tap event occurs on a non-interactive element.
 
@@ -29,11 +29,11 @@ Audio and Video are not yet part of the Adaptive Cards schema. So, Bot Builder S
 
 ### Design considerations for WebChat display
 
-* Action buttons are displayed at full card width by default. Each button will occupy its own vertical space. In the previous WebChat, buttons followed a word-wrap layout. The recommendation is to not use more than 5 or so buttons, depending on card content, such that the entire card may be readable on screen.
+* Action buttons are displayed at full card width by default. Each button will occupy its own vertical space. In previous versions of WebChat, buttons followed a word-wrap layout. To ensure the entire card displays on the screen, we recommend not using more than five buttons.
 
 * Adaptive Cards may define columns of data. It is common for a WebChat to be a sidebar or otherwise narrow window. Having many columns may force a layout wider than the typical chat.
 
-* Adaptive Cards do not currently have a layout model which is constrained by device size. Compare this to CSS Media Queries which allow this type of styling. Again, the recommendation is to simply limit the number of columns in your card.
+* Unlike CSS media queries, Adaptive Cards do not currently have a layout model which is constrained by device size. We recommend limiting the number of columns in a card.
 
 * As any other card, Adaptive Cards can be shown in a carousel.
 
@@ -45,12 +45,13 @@ There are two levels of errors of Adaptive Cards.
 
 2. Your JSON is valid yet still does not produce a renderable card, or an unforeseen error occurs.
 
-In these scenarios, WebChat may show an error card to the end user.
+In these scenarios, WebChat will show an error card to the end user.
 
 ## Style customization
 
 ### Overview
-It is important to first understand how [Adaptive Cards separate the concerns of card content vs presentation style](http://adaptivecards.io/documentation/#about-overview). The cards produced by your bot are pure semantic content, and the presentation style is driven by a [Host Configuration](http://adaptivecards.io/documentation/#display-hostconfigschema) JSON structure. Style aspects such as font, color and margin sizes are specified in the Host Configuration. WebChat is unique in that it is the only Bot Framework channel where the bot developer can customize the look and feel of the channel. So, in other channels, the Adaptive Cards Host Configuration is not under the bot developer's control.
+
+It is important to understand how [Adaptive Cards separate the concerns of card content vs presentation style](http://adaptivecards.io/documentation/#about-overview). The cards produced by your bot are pure semantic content, and the presentation style is driven by a [Host Configuration](http://adaptivecards.io/documentation/#display-hostconfigschema) JSON structure. Style aspects such as font, color and margin sizes are specified in the Host Configuration. WebChat is unique in that it is the only Bot Framework channel where the bot developer can customize the look and feel of the channel. In some channels, the Adaptive Cards host configuration is not under the bot developer's control.
 
 ### Embedding
 
