@@ -185,6 +185,75 @@ class CognitiveServicesHelper {
         }
     }
 
+    private encodeHTML(text: string): string {
+        return text.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+
+    private checkAuthToken(): Promise<void> {
+        // Token expires in 10 minutes. So we renew the token every 500s
+        if (!this._token || (Date.now() - this._lastTokenTime > 500)) {
+            let optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
+            // required for Firefox otherwise a CORS error is raised
+            { name: "Access-Control-Allow-Origin", value: "*" }];
+
+            return this.makeHttpCall("POST", this._tokenURL, false, optionalHeaders).then((text) => {
+                this._token = text;
+                this._lastTokenTime = Date.now();
+                konsole.log("New authentication token generated.");
+            }, (ex) => {
+                konsole.log("Failed to generate authentication token.");
+            });
+        }
+
+        return Promise.resolve();
+    }
+
+    private makeHttpCall(actionType: string, url: string, isArrayBuffer: boolean = false, optionalHeaders?: HttpHeader[], dataToSend?: any): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+
+            if (isArrayBuffer) {
+                xhr.responseType = 'arraybuffer';
+            }
+
+            xhr.onreadystatechange = function (event) {
+                if (xhr.readyState !== 4) return;
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    if (!isArrayBuffer) {
+                        resolve(xhr.responseText);
+                    }
+                    else {
+                        resolve(xhr.response);
+                    }
+                } else {
+                    reject(xhr.status);
+                }
+            };
+            try {
+                xhr.open(actionType, url, true);
+
+                if (optionalHeaders) {
+                    optionalHeaders.forEach((header) => {
+                        xhr.setRequestHeader(header.name, header.value);
+                    });
+                }
+                if (dataToSend) {
+                    xhr.send(dataToSend);
+                }
+                else {
+                    xhr.send();
+                }
+            }
+            catch (ex) {
+                reject(ex)
+            }
+        });
+    }
+
     private fetchVoiceName(locale: string, gender: SynthesisGender): string {
         let voiceName: string;
 
@@ -371,74 +440,5 @@ class CognitiveServicesHelper {
         }
 
         return voiceName;
-    }
-
-    private encodeHTML(text: string): string {
-        return text.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
-    }
-
-    private checkAuthToken(): Promise<void> {
-        // Token expires in 10 minutes. So we renew the token every 500s
-        if (!this._token || (Date.now() - this._lastTokenTime > 500)) {
-            let optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
-            // required for Firefox otherwise a CORS error is raised
-            { name: "Access-Control-Allow-Origin", value: "*" }];
-
-            return this.makeHttpCall("POST", this._tokenURL, false, optionalHeaders).then((text) => {
-                this._token = text;
-                this._lastTokenTime = Date.now();
-                konsole.log("New authentication token generated.");
-            }, (ex) => {
-                konsole.log("Failed to generate authentication token.");
-            });
-        }
-
-        return Promise.resolve();
-    }
-
-    private makeHttpCall(actionType: string, url: string, isArrayBuffer: boolean = false, optionalHeaders?: HttpHeader[], dataToSend?: any): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-
-            if (isArrayBuffer) {
-                xhr.responseType = 'arraybuffer';
-            }
-
-            xhr.onreadystatechange = function (event) {
-                if (xhr.readyState !== 4) return;
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    if (!isArrayBuffer) {
-                        resolve(xhr.responseText);
-                    }
-                    else {
-                        resolve(xhr.response);
-                    }
-                } else {
-                    reject(xhr.status);
-                }
-            };
-            try {
-                xhr.open(actionType, url, true);
-
-                if (optionalHeaders) {
-                    optionalHeaders.forEach((header) => {
-                        xhr.setRequestHeader(header.name, header.value);
-                    });
-                }
-                if (dataToSend) {
-                    xhr.send(dataToSend);
-                }
-                else {
-                    xhr.send();
-                }
-            }
-            catch (ex) {
-                reject(ex)
-            }
-        });
     }
 }
