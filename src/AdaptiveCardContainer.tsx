@@ -60,12 +60,12 @@ AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalActi
 
     } else if (action instanceof AdaptiveCards.SubmitAction) {
         const linkedAdaptiveCard = getLinkedAdaptiveCard(action);
-        if (linkedAdaptiveCard && action.data) {
+        if (linkedAdaptiveCard && action.data !== undefined) {
             if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
                 const cardAction = (action.data as BotFrameworkCardAction);
                 linkedAdaptiveCard.adaptiveCardContainer.onCardAction(cardAction.type, cardAction.value);
             } else {
-                linkedAdaptiveCard.adaptiveCardContainer.onCardAction('postBack', action.data);
+                linkedAdaptiveCard.adaptiveCardContainer.onCardAction(typeof action.data === 'string' ? 'imBack' : 'postBack', action.data);
             }
         }
     }
