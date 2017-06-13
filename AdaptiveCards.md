@@ -14,10 +14,10 @@ An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#cre
 
 | Action Type | Implementation details |
 |---|---|
-| Action.Http | **Not Supported in WebChat**. WebChat will filter out any actions which have the "Action.Http" type, and they will not be displayed. This applies to actions on the root card as well as sub-cards. The recommendation is to use Action.Submit instead, then execute any HTTP requests on the server-side within your bot code. |
 | Action.OpenUrl  | Supported. Will open the URL in a new browser tab. |
 | Action.ShowCard | Supported. May change the size of your card. |
 | Action.Submit   | Supported. The `data` property of the action may be a string or it may be an object. A string will be passed back to your bot as a Bot Builder SDK `imBack` activity, and an object will be passed as a `postBack` activity. Activities with `imBack` will appear in the chat stream as a user-entered reply; `postBack` activities are not displayed. |
+| Action.Http | **Not Supported in WebChat**. WebChat will filter out any actions which have the "Action.Http" type, and they will not be displayed. This applies to actions on the root card as well as sub-cards. The recommendation is to use Action.Submit instead, then execute any HTTP requests on the server-side within your bot code. |
 
 ### Bot Builder SDK cards are now Adaptive
 
