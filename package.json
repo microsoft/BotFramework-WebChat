@@ -13,6 +13,7 @@
     "build": "npm run build-css && tsc && webpack --progress",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch build-css-watch",
     "tsc-watch": "tsc -w",
+    "webpack": "webpack",
     "webpack-watch": "webpack --progress --watch",
     "clean": "rm -rf built",
     "prepublish": "tsc && npm run build-css && webpack --progress --config webpack.production.config.js",

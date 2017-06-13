@@ -14,18 +14,18 @@ An Adaptive Card [may afford actions](http://adaptivecards.io/documentation/#cre
 
 | Action Type | Implementation details |
 |---|---|
-| Action.Http | **Not Supported in WebChat**. WebChat will filter out any actions which have the "Action.Http" type, and they will not be displayed. This applies to actions on the root card as well as sub-cards. The recommendation is to use Action.Submit instead, then execute any HTTP requests on the server-side within your bot code. |
 | Action.OpenUrl  | Supported. Will open the URL in a new browser tab. |
 | Action.ShowCard | Supported. May change the size of your card. |
 | Action.Submit   | Supported. The `data` property of the action may be a string or it may be an object. A string will be passed back to your bot as a Bot Builder SDK `imBack` activity, and an object will be passed as a `postBack` activity. Activities with `imBack` will appear in the chat stream as a user-entered reply; `postBack` activities are not displayed. |
+| Action.Http | **Not Supported in WebChat**. WebChat will filter out any actions which have the "Action.Http" type, and they will not be displayed. This applies to actions on the root card as well as sub-cards. The recommendation is to use Action.Submit instead, then execute any HTTP requests on the server-side within your bot code. |
 
 ### Bot Builder SDK cards are now Adaptive
 
 The existing Bot Builder SDK card types (Hero, Thumbnail, Audio, Video, Animation, SignIn, Receipt) are now implemented as Adaptive Cards. You may see some slight rendering differences from previous versions of WebChat, however as the card is adapted to the fields you've populated the displayed card should be more natural for the user.
 
-Bot Builder SDK cards may specify a tap action on the entire card. Since Adaptive Cards have introduced interactive elements, the tap action will not be invoked unless the tap event occurs on a non-interactive element.
+Bot Builder SDK cards may specify a  **tap** action on the entire card (Example: HeroCard [.NET](https://docs.microsoft.com/en-us/dotnet/api/microsoft.bot.connector.herocard?view=botbuilder-3.8) | [Node.js](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.herocard.html#tap) | [Rest](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-api-reference#objects) ). Since Adaptive Cards have introduced interactive elements such as checkboxes, textboxes, drop-down menus, etc., the tap action will not be invoked unless the tap event occurs on a non-interactive element.
 
-Audio and Video are not yet part of the Adaptive Cards schema. So, Bot Builder SDK Audio and Video cards are implemented as a Media element followed by an Adaptive Card.
+[Audio and Video are not yet part of the Adaptive Cards schema](https://github.com/Microsoft/AdaptiveCards/issues/196). So, Bot Builder SDK Audio and Video cards are implemented as a Media element followed by an Adaptive Card.
 
 ### Design considerations for WebChat display
 
@@ -35,29 +35,24 @@ Audio and Video are not yet part of the Adaptive Cards schema. So, Bot Builder S
 
 * Unlike CSS media queries, Adaptive Cards do not currently have a layout model which is constrained by device size. We recommend limiting the number of columns in a card.
 
-* As any other card, Adaptive Cards can be shown in a carousel.
-
 ## Error handling
 
-There are two levels of errors of Adaptive Cards.
-
-1. Your Adaptive Card is in JSON format and should adhere to a schema. If your JSON does not validate to the schema then an error will result.
-
-2. Your JSON is valid yet still does not produce a renderable card, or an unforeseen error occurs.
-
-In these scenarios, WebChat will show an error card to the end user.
+Your Adaptive Card is in JSON format and should adhere to the [Card schema](http://adaptivecards.io/documentation/#create-cardschema). If your JSON does not validate to the schema then an error card will be shown, and the error details outputted to the JavaScript console.
 
 ## Style customization
 
+
 ### Overview
 
-It is important to understand how [Adaptive Cards separate the concerns of card content vs presentation style](http://adaptivecards.io/documentation/#about-overview). The cards produced by your bot are pure semantic content, and the presentation style is driven by a [Host Configuration](http://adaptivecards.io/documentation/#display-hostconfigschema) JSON structure. Style aspects such as font, color and margin sizes are specified in the Host Configuration. WebChat is unique in that it is the only Bot Framework channel where the bot developer can customize the look and feel of the channel. In some channels, the Adaptive Cards host configuration is not under the bot developer's control.
+It is important to understand how [Adaptive Cards separate the concerns of card content vs presentation style](http://adaptivecards.io/documentation/#about-overview). The cards produced by your bot are pure semantic content, and the presentation style is driven by a [Host Configuration](http://adaptivecards.io/documentation/#display-hostconfigschema) JSON structure. Style aspects such as font, color and margin sizes are specified in the Host Configuration.
 
-### Embedding
+> Note: WebChat is unique in that it is the only Bot Framework channel where the bot developer can customize the look and feel of the channel. In other channels, the Adaptive Cards Host Configuration is not under the bot developer's control.
 
-The Adaptive Cards Host Configuration is stored in the `/adaptivecards-hostconfig.json` file. This file's content will be embedded into `/botchat.js` when you issue the `webpack` command. If you have created a Host Configuration file elsewhere, replace the contents of `/adaptivecards-hostconfig.json`, then webpack.
+### Build
 
-### Creating
+The Adaptive Cards Host Configuration is stored in the `/adaptivecards-hostconfig.json` file in the root of this repo. This file's content will be embedded into `/botchat.js` when you issue the `npm run webpack` command. If you have created a Host Configuration file elsewhere, replace the contents of `/adaptivecards-hostconfig.json`, then webpack.
+
+### Optional: Create using SCSS
 
 You may wish to create your Host Configuration using SCSS in this repo. This method allows you to share variables (which may contain font, color and margins) between CSS and the Adaptive Cards Host Configuration. Find the file `/src/scss/includes/adaptive-card-config.scss` and modify its contents. Then you can run the command `npm run build-ac-config` which will create the `/adaptivecards-hostconfig.json` file for you from the SCSS source. Then you can embed the JSON file as described above.
 
