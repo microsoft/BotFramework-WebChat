@@ -1,43 +1,177 @@
-
 export type Action = () => void
 
-export type Func<T,TResult> = (item: T) => TResult;
+export type Func<T, TResult> = (item: T) => TResult;
 
-export class SpeechSynthesizer {
-    private static instance : SpeechSynthesis.ISpeechSynthesizer = null;
+export module Speech {
+    export interface ISpeechRecognizer {
+        locale: string;
+        isStreamingToService: boolean;
+        referenceGrammarId: string; // unique identifier to send to the speech implementation to bias SR to this scenario
 
-    public static setSpeechSynthesizer(speechSynthesizer : SpeechSynthesis.ISpeechSynthesizer) {
-        SpeechSynthesizer.instance = speechSynthesizer;
+        onIntermediateResult: Func<string, void>;
+        onFinalResult: Func<string, void>;
+        onAudioStreamingToService: Action;
+        onRecognitionFailed: Action;
+
+        warmup(): void;
+        startRecognizing(): void;
+        stopRecognizing(): void;
     }
 
-    public static speak(text : string,  lang : string, onSpeakingStarted : Action = null, onSpeakingFinished : Action = null) {
-        if (SpeechSynthesizer.instance == null)
-            return;
-            
-        SpeechSynthesizer.instance.speak(text, lang, onSpeakingStarted, onSpeakingFinished);
-    }
-
-    public static stopSpeaking() {
-        if (SpeechSynthesizer.instance == null)
-            return;
-            
-        SpeechSynthesizer.instance.stopSpeaking();
-    }
-}
-
-export module SpeechSynthesis {
     export interface ISpeechSynthesizer {
-        speak(text : string,  lang : string, onSpeakingStarted : Action, onspeakingFinished : Action) : void;
-        stopSpeaking() : void;
+        speak(text: string, lang: string, onSpeakingStarted: Action, onspeakingFinished: Action): void;
+        stopSpeaking(): void;
+    }
+
+    export class SpeechRecognizer {
+        private static instance: ISpeechRecognizer = null;
+
+        public static setSpeechRecognizer(recognizer: ISpeechRecognizer) {
+            SpeechRecognizer.instance = recognizer;
+        }
+
+        public static startRecognizing(locale: string = 'en-US',
+            onIntermediateResult: Func<string, void> = null,
+            onFinalResult: Func<string, void> = null,
+            onAudioStreamStarted: Action = null,
+            onRecognitionFailed: Action = null) {
+
+            if (!SpeechRecognizer.speechIsAvailable())
+                return;
+
+            if (locale && SpeechRecognizer.instance.locale !== locale) {
+                SpeechRecognizer.instance.stopRecognizing();
+                SpeechRecognizer.instance.locale = locale; // to do this could invalidate warmup.
+            }
+
+            if (SpeechRecognizer.alreadyRecognizing()) {
+                SpeechRecognizer.stopRecognizing();
+            }
+
+            SpeechRecognizer.instance.onIntermediateResult = onIntermediateResult;
+            SpeechRecognizer.instance.onFinalResult = onFinalResult;
+            SpeechRecognizer.instance.onAudioStreamingToService = onAudioStreamStarted;
+            SpeechRecognizer.instance.onRecognitionFailed = onRecognitionFailed;
+            SpeechRecognizer.instance.startRecognizing();
+        }
+
+        public static stopRecognizing() {
+            if (!SpeechRecognizer.speechIsAvailable())
+                return;
+
+            SpeechRecognizer.instance.stopRecognizing();
+        }
+
+        public static warmup() {
+            if (!SpeechRecognizer.speechIsAvailable())
+                return;
+
+            SpeechRecognizer.instance.warmup();
+        }
+
+        public static speechIsAvailable() {
+            return SpeechRecognizer.instance != null;
+        }
+
+        private static alreadyRecognizing() {
+            return SpeechRecognizer.instance ? SpeechRecognizer.instance.isStreamingToService : false;
+        }
+    }
+
+    export class SpeechSynthesizer {
+        private static instance: ISpeechSynthesizer = null;
+
+        public static setSpeechSynthesizer(speechSynthesizer: ISpeechSynthesizer) {
+            SpeechSynthesizer.instance = speechSynthesizer;
+        }
+
+        public static speak(text: string, lang: string, onSpeakingStarted: Action = null, onSpeakingFinished: Action = null) {
+            if (SpeechSynthesizer.instance == null)
+                return;
+
+            SpeechSynthesizer.instance.speak(text, lang, onSpeakingStarted, onSpeakingFinished);
+        }
+
+        public static stopSpeaking() {
+            if (SpeechSynthesizer.instance == null)
+                return;
+
+            SpeechSynthesizer.instance.stopSpeaking();
+        }
+    }
+
+    export class BrowserSpeechRecognizer implements ISpeechRecognizer {
+        public locale: string = null;
+        public isStreamingToService: boolean = false;
+        public referenceGrammarId: string;
+
+        public onIntermediateResult: Func<string, void> = null;
+        public onFinalResult: Func<string, void> = null;
+        public onAudioStreamingToService: Action = null;
+        public onRecognitionFailed: Action = null;
+
+        private recognizer: any = null;
+
+        constructor() {
+            this.recognizer = new (<any>window).webkitSpeechRecognition();
+
+            if (this.recognizer == null)
+                throw "Error: This browser does not support speech recognition";
+
+            this.recognizer.lang = 'en-US';
+            this.recognizer.interimResults = true;
+
+            this.recognizer.onaudiostart = () => {
+                if (this.onAudioStreamingToService) {
+                    this.onAudioStreamingToService();
+                }
+            };
+
+            this.recognizer.onresult = (srevent: any) => {
+                if (srevent.results == null || srevent.length == 0) {
+                    return;
+                }
+
+                const result = srevent.results[0];
+                if (result.isFinal === true && this.onFinalResult != null) {
+                    this.onFinalResult(result[0].transcript);
+                } else if (result.isFinal === false && this.onIntermediateResult != null) {
+                    let text = "";
+                    for (let i = 0; i < srevent.results.length; ++i) {
+                        text += srevent.results[i][0].transcript;
+                    }
+                    this.onIntermediateResult(text);
+                }
+            }
+
+            this.recognizer.onerror = (err: any) => {
+                if (this.onRecognitionFailed) {
+                    this.onRecognitionFailed();
+                }
+                throw err;
+            }
+        }
+
+        public warmup() {
+
+        }
+
+        public startRecognizing() {
+            this.recognizer.start();
+        }
+
+        public stopRecognizing() {
+            this.recognizer.stop();
+        }
     }
 
     export class BrowserSpeechSynthesizer implements ISpeechSynthesizer {
-        private lastOperation : SpeechSynthesisUtterance = null;
-        private audioElement : HTMLAudioElement = null;
-        private speakRequests :  SpeakRequest[] = [];
+        private lastOperation: SpeechSynthesisUtterance = null;
+        private audioElement: HTMLAudioElement = null;
+        private speakRequests: SpeakRequest[] = [];
 
-        public speak(text : string,  lang : string, onSpeakingStarted : Action = null, onSpeakingFinished : Action = null) {
-            if (!('SpeechSynthesisUtterance' in window) || !text) 
+        public speak(text: string, lang: string, onSpeakingStarted: Action = null, onSpeakingFinished: Action = null) {
+            if (!('SpeechSynthesisUtterance' in window) || !text)
                 return;
 
             if (this.audioElement === null) {
@@ -61,10 +195,10 @@ export module SpeechSynthesis {
                 chunks.push(text);
             }
 
-            const onSpeakingFinishedWrapper = ()=> {
+            const onSpeakingFinishedWrapper = () => {
                 if (onSpeakingFinished !== null)
                     onSpeakingFinished();
-                
+
                 // remove this from the queue since it's done:
                 if (this.speakRequests.length) {
                     this.speakRequests[0].completed();
@@ -77,7 +211,7 @@ export module SpeechSynthesis {
                 }
             }
 
-            const request = new SpeakRequest(chunks, lang, (speakOp)=> {this.lastOperation = speakOp}, onSpeakingStarted, onSpeakingFinishedWrapper);
+            const request = new SpeakRequest(chunks, lang, (speakOp) => { this.lastOperation = speakOp }, onSpeakingStarted, onSpeakingFinishedWrapper);
 
             if (this.speakRequests.length === 0) {
                 this.speakRequests = [request];
@@ -88,9 +222,8 @@ export module SpeechSynthesis {
             }
         }
 
-        public stopSpeaking()
-        {
-            if (('SpeechSynthesisUtterance' in window) === false) 
+        public stopSpeaking() {
+            if (('SpeechSynthesisUtterance' in window) === false)
                 return;
 
             if (this.speakRequests.length) {
@@ -111,11 +244,11 @@ export module SpeechSynthesis {
             }
         };
 
-    private playNextTTS(requestContainer: SpeakRequest, iCurrent: number) {
+        private playNextTTS(requestContainer: SpeakRequest, iCurrent: number) {
             // lang : string, onSpeakQueued: Func<SpeechSynthesisUtterance, void>, onSpeakStarted : Action, onFinishedSpeaking : Action
 
-            let moveToNext = () => { 
-                this.playNextTTS(requestContainer, iCurrent + 1); 
+            let moveToNext = () => {
+                this.playNextTTS(requestContainer, iCurrent + 1);
             };
 
             if (iCurrent < requestContainer.speakChunks.length) {
@@ -140,7 +273,7 @@ export module SpeechSynthesis {
                         msg.onstart = iCurrent === 0 ? requestContainer.onSpeakingStarted : null
                         msg.onend = moveToNext;
                         msg.onerror = moveToNext;
-                        
+
                         if (requestContainer.onSpeakQueued)
                             requestContainer.onSpeakQueued(msg);
 
@@ -204,18 +337,17 @@ export module SpeechSynthesis {
     }
 
     class SpeakRequest {
-        private _onSpeakQueued:  Func<SpeechSynthesisUtterance, void> = null;
+        private _onSpeakQueued: Func<SpeechSynthesisUtterance, void> = null;
         private _onSpeakingStarted: Action = null;
         private _onSpeakingFinished: Action = null;
-        private _speakChunks : any[] = [];
-        private _lang : string = null;
+        private _speakChunks: any[] = [];
+        private _lang: string = null;
 
-        public constructor(speakChunks: any[], 
-                lang: string, 
-                onSpeakQueued:  Func<SpeechSynthesisUtterance, void> = null, 
-                onSpeakingStarted: Action = null, 
-                onSpeakingFinished: Action = null)
-        { 
+        public constructor(speakChunks: any[],
+            lang: string,
+            onSpeakQueued: Func<SpeechSynthesisUtterance, void> = null,
+            onSpeakingStarted: Action = null,
+            onSpeakingFinished: Action = null) {
             this._onSpeakQueued = onSpeakQueued;
             this._onSpeakingStarted = onSpeakingStarted;
             this._onSpeakingFinished = onSpeakingFinished;
@@ -230,12 +362,11 @@ export module SpeechSynthesis {
         public completed() {
             this._speakChunks = [];
         }
-        
-        get onSpeakQueued():  Func<SpeechSynthesisUtterance, void> { return this._onSpeakQueued; }
+
+        get onSpeakQueued(): Func<SpeechSynthesisUtterance, void> { return this._onSpeakQueued; }
         get onSpeakingStarted(): Action { return this._onSpeakingStarted; }
         get onSpeakingFinished(): Action { return this._onSpeakingFinished; }
         get speakChunks(): any[] { return this._speakChunks; }
         get lang(): string { return this._lang; }
     }
 }
-

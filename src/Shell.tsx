@@ -4,7 +4,7 @@ import { User } from 'botframework-directlinejs';
 import { sendMessage, sendFiles, classList } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
-import { SpeechRecognizer } from './SpeechRecognition'
+import { Speech } from './SpeechModule'
 
 interface Props {
     inputText: string,
@@ -67,7 +67,7 @@ class ShellContainer extends React.Component<Props, {}> {
         let className = 'wc-console';
         if (this.props.inputText.length > 0) className += ' has-text';
 
-        const showMicButton = this.props.listening || (SpeechRecognizer.speechIsAvailable()  && !this.props.inputText.length);
+        const showMicButton = this.props.listening || (Speech.SpeechRecognizer.speechIsAvailable()  && !this.props.inputText.length);
 
         const sendButtonClassName = classList(
             'wc-send',

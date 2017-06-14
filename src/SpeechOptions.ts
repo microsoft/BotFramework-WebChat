@@ -1,7 +1,6 @@
-import { SpeechRecognition } from './SpeechRecognition';
-import { SpeechSynthesis } from './SpeechSynthesis';
+import { Speech } from './SpeechModule';
 
 export class SpeechOptions {
-    public speechRecognizer : SpeechRecognition.ISpeechRecognizer;
-    public speechSynthesizer : SpeechSynthesis.ISpeechSynthesizer;
+    public speechRecognizer: Speech.ISpeechRecognizer;
+    public speechSynthesizer: Speech.ISpeechSynthesizer;
 }

@@ -2,8 +2,7 @@ import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botfr
 import { FormatOptions, ActivityOrID, konsole, sendMessage as sendChatMessage } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { SpeechRecognizer } from './SpeechRecognition';
-import { SpeechSynthesizer } from './SpeechSynthesis';
+import { Speech } from './SpeechModule';
 
 // Reducers - perform state transformations
 
@@ -486,7 +485,7 @@ const trySendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
     });
 
-const speakObservable = Observable.bindCallback<string, string, {}, {}>(SpeechSynthesizer.speak);
+const speakObservable = Observable.bindCallback<string, string, {}, {}>(Speech.SpeechSynthesizer.speak);
 const speakSSML:Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Speak_SSML')
     .filter(action => action.ssml )
@@ -495,7 +494,7 @@ const speakSSML:Epic<ChatActions, ChatState> = (action$, store) =>
         var onSpeakingStarted =  null;
         var onSpeakingFinished = () => nullAction;
         if(action.autoListenAfterSpeak) {
-            onSpeakingStarted = () => SpeechRecognizer.warmup() ;
+            onSpeakingStarted = () => Speech.SpeechRecognizer.warmup() ;
             onSpeakingFinished = () => ({ type: 'Listening_Starting' } as ShellAction);
         }
 
@@ -518,7 +517,7 @@ const stopSpeaking: Epic<ChatActions, ChatState> = (action$) =>
         'Card_Action_Clicked',
         'Stop_Speaking'
     )
-    .do(SpeechSynthesizer.stopSpeaking)
+    .do(Speech.SpeechSynthesizer.stopSpeaking)
     .map(_ => nullAction)
 
 const stopListening: Epic<ChatActions, ChatState> = (action$) =>
@@ -526,7 +525,7 @@ const stopListening: Epic<ChatActions, ChatState> = (action$) =>
         'Listening_Stop',
         'Card_Action_Clicked'
     )
-    .do(SpeechRecognizer.stopRecognizing)
+    .do(Speech.SpeechRecognizer.stopRecognizing)
     .map(_ => nullAction)
 
 const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
@@ -541,7 +540,8 @@ const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
                 store.dispatch(sendChatMessage(srText, store.getState().connection.user, locale));
             };
         var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
-        SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart);
+        var onRecognitionFailed = () => { store.dispatch({ type: 'Clear_Typing' })};
+        Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
     })
     .map(_ => nullAction) 
 

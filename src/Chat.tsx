@@ -8,8 +8,7 @@ import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLin
 import { createStore, ChatActions } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
-import { SpeechRecognizer } from './SpeechRecognition';
-import { SpeechSynthesizer } from './SpeechSynthesis';
+import { Speech } from './SpeechModule';
 
 export interface FormatOptions {
     showHeader?: boolean
@@ -87,8 +86,8 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
 
         if (props.speechOptions) {
-            SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
-            SpeechSynthesizer.setSpeechSynthesizer(props.speechOptions.speechSynthesizer);
+            Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
+            Speech.SpeechSynthesizer.setSpeechSynthesizer(props.speechOptions.speechSynthesizer);
         }
     }
 

@@ -46,8 +46,10 @@
 
         <div id="BotChatGoesHere"></div>
 
-        <script src="../../botchat.js"></script>
-
+        <script src="../../botchat.js"></script>        
+        <!--If you want to use Cognitive Services lib, uncomment the following line -->
+        <!--<script src="../../CognitiveServices.js"></script>-->
+        
         <script>
             var params = BotChat.queryParams(location.search);
 
@@ -71,18 +73,22 @@
             
 
             // Note that chrome automatically blocks speech if the html file is loaded from disk. You can run a server locally 
-            // or launch chrome with the following option:
+            // or launch chrome (close all the existing chrome browsers) with the following option:
             // chrome.exe --allow-file-access-from-files <sampleHtmlFile>
             var speechOptions = {
-                speechRecognizer: new BotChat.SpeechRecognition.BrowserSpeechRecognizer(),
-                speechSynthesizer: new BotChat.SpeechSynthesis.BrowserSpeechSynthesizer()
+                speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
+                speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
             }
 
             // // Option 3 : Cognitive services speech recognition using API key (cross browser, speech priming support)
             //
             // var speechOptions = {
-            //     speechRecognizer: new BotChat.SpeechRecognition.CognitiveServicesSpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
-            //     speechSynthesizer: new BotChat.SpeechSynthesis.BrowserSpeechSynthesizer()
+            //     speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
+            //     speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
+            //         { 
+            //             subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
+            //             gender: CognitiveServices.SynthesisGender.Female
+            //         })
             // }
 
             // // Option 4 : Cognitive services speech recognition using a token (usually generated in a secure backend using your API key)
@@ -100,13 +106,13 @@
             // }
             //
             // var speechOptions = {
-            //     speechRecognizer: new BotChat.SpeechRecognition.CognitiveServicesSpeechRecognizer( 
+            //     speechRecognizer: new CognitiveServices.SpeechRecognizer( 
             //         {
             //             fetchCallback: (authFetchEventId) => getToken(),
             //             fetchOnExpiryCallback: (authFetchEventId) => getToken(), 
             //         }
             //     ),
-            //     speechSynthesizer: new BotChat.SpeechSynthesis.BrowserSpeechSynthesizer()
+            //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
             // }
 
             // Option 5:
