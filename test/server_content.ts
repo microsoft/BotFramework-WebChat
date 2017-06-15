@@ -136,6 +136,14 @@ var car_attach4: dl.HeroCard = {
     }
 }
 
+export var adaptive_cards: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    attachments: []
+}
+
 export var car_card: dl.Message = {
     type: "message",
     from: bot,

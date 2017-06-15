@@ -10,7 +10,7 @@ interface ISendActivity {
 
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
-    server?: (res: express.Response, sendActivity: ISendActivity) => void,
+    server?: (res: express.Response, sendActivity: ISendActivity, json: JSON) => void,
     do?: (nightmare: Nightmare) => any
 }
 
@@ -201,12 +201,51 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.receipt_card);
         }
     },
+    "card weather": {
+       client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return (source.indexOf("Mostly%20Cloudy-Square.png") >= 0);
+        }
+    },
+    "card bingsports": {
+        client: function() {
+            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
+        }
+    },
+    "card calendarreminder": {
+        client: () => new Promise((resolve) => {
+                setTimeout(() => {
+                    var selectPullDown = document.querySelector('.wc-adaptive-card .ac-container select') as HTMLSelectElement;
+                    selectPullDown.selectedIndex = 3;
+                    resolve(selectPullDown.value === '30');
+                }, 1000);
+        })
+    },
+    "adaptive-cards": {
+        client: function () {
+            // adaptive-card server mock, no need to test anything here.
+            return true;
+        },
+        server: function (res, sendActivity, json) {
+            server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
+            sendActivity(res, server_content.adaptive_cards);
+        }
+    },
     /*
      ** Add your commands to test here **  
     "command": {
         client: function () { JavaScript evaluation syntax },
         server: function (res, sendActivity) {
             sendActivity(res, sever_content DirectLineActivity);
+        }
+    }
+
+    ** For adaptive cards, your command will be starting with card <space> command **  
+    "card command": {
+        client: function () { JavaScript evaluation syntax },
+        server: function (res, sendActivity) {
+            server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
+            sendActivity(res, server_content.adaptive_cards);
         }
     }
     */
