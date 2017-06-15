@@ -261,55 +261,49 @@ export const AttachmentView = (props: {
                 return null;
 
             const receiptCardBuilder = new CardBuilder.AdaptiveCardBuilder();
+
+            receiptCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" });
+
+            const columns = receiptCardBuilder.addColumnSet([75, 25]);
+
+            attachment.content.facts && attachment.content.facts.map((fact, i) => {
+                receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium', weight: 'lighter'}, columns[0]);
+
+                receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', weight: 'lighter', horizontalAlignment: 'right' }, columns[1]);
+            });
+
+            attachment.content.items && attachment.content.items.map((item, i) => {
+
+                if (item.image) {
+                    const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
+
+                    receiptCardBuilder.addImage(item.image.url, columns2[0]);
+                    receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
+                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium', weight: 'lighter' }, columns2[1]);
+                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);
+                } else {
+                    const columns3 = receiptCardBuilder.addColumnSet([75, 25]);
+
+                    receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns3[0]);
+                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium', weight: 'lighter' }, columns3[0]);
+                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
+                }
+            });
+
+            const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
+
+            receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
+            receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
+
+            const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
+
+            receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
+            receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+
             receiptCardBuilder.addButtons(attachment.content.buttons);
 
             return (
-                <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } >
-                    <table>
-                        <thead>
-                            <tr>
-                                <th colSpan={ 2 }>{ attachment.content.title }</th>
-                            </tr>
-                            { attachment.content.facts && attachment.content.facts.map((fact, i) => <tr key={'fact' + i}><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
-                        </thead>
-                        <tbody>{ attachment.content.items && attachment.content.items.map((item, i) =>
-                            <tr key={'item' + i} onClick={ onCardAction(item.tap) }>
-                                <td>
-                                    { item.image && <Media src={ item.image.url } onLoad={ props.onImageLoad } /> }
-                                    { renderIfNonempty(
-                                        item.title,
-                                        title => <div className="title">
-                                            { item.title }
-                                        </div>)
-                                    }
-                                    { renderIfNonempty(
-                                        item.subtitle,
-                                        subtitle => <div className="subtitle">
-                                            { item.subtitle }
-                                        </div>)
-                                    }
-                                </td>
-                                <td>{ item.price }</td>
-                            </tr>) }
-                        </tbody>
-                        <tfoot>
-                            { renderIfNonempty(
-                                attachment.content.tax,
-                                tax => <tr>
-                                    <td>{ props.format.strings.receiptTax }</td>
-                                    <td>{ attachment.content.tax }</td>
-                                </tr>)
-                            }
-                            { renderIfNonempty(
-                                attachment.content.total,
-                                total => <tr className="total">
-                                    <td>{ props.format.strings.receiptTotal }</td>
-                                    <td>{ attachment.content.total }</td>
-                                </tr>)
-                            }
-                        </tfoot>
-                    </table>
-                </AdaptiveCardContainer>
+                <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
         case "application/vnd.microsoft.card.adaptive":
