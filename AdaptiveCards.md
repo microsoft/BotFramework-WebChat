@@ -61,4 +61,31 @@ You may wish to create your Host Configuration using SCSS in this repo. This met
 
 3. Embed the JSON file as previously described, by running `npm run webpack`.
 
+### Optional: Embed without webpack
 
+It is also possible to supply an Adaptive Cards Host Configuration without the need to webpack. Start with the [basic example from the readme](https://github.com/Microsoft/BotFramework-WebChat#easy-in-your-non-react-website-run-webchat-inline), then add some script prior to instantiating `BotChat.App`:
+
+```HTML
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://unpkg.com/botframework-webchat/botchat.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="bot"/>
+    <script src="https://unpkg.com/botframework-webchat/botchat.js"></script>
+    <script>
+      
+      //set Adaptive Cards Host Configuration
+      AdaptiveCards.setHostConfig( {YOUR JSON HERE} );
+
+      BotChat.App({
+        directLine: { secret: direct_line_secret },
+        user: { id: 'userid' },
+        bot: { id: 'botid' },
+        resize: 'detect'
+      }, document.getElementById("bot"));
+    </script>
+  </body>
+</html>
+```
