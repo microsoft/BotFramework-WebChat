@@ -166,7 +166,7 @@ class CognitiveServicesHelper {
 
     private makeSSML(text: string, locale: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): string {
         if (text.indexOf("<speak") === 0) {
-            return text;
+            return this.processSSML(text);
         }
         else {
             let ssml = "<speak version='1.0' xml:lang='" + locale + "'><voice xml:lang='" + locale + "' xml:gender='" + (synthesisProperties && synthesisProperties.gender ? SynthesisGender[synthesisProperties.gender] : "Female") + "' name='";
@@ -183,6 +183,73 @@ class CognitiveServicesHelper {
 
             return ssml + "'>" + this.encodeHTML(text) + "</voice></speak>";
         }
+    }
+
+    private processSSML(ssml: string): string {
+        let processDone: boolean = false;
+
+        // Extract locale info from ssml
+        let locale: string;
+        let match = /xml:lang=['"](\w\w-\w\w)['"]/.exec(ssml);
+        if (match) {
+            locale = match[1];
+        }
+        else {
+            locale = "en-us";
+        }
+
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(ssml, 'text/xml');
+        const nodes = dom.documentElement.childNodes;
+
+        // Check if there is a voice node
+        for (var i = 0; i < nodes.length; ++i) {
+            if (nodes[i].nodeName === "voice") {
+                let gender: SynthesisGender = null;
+                // Check if there is a name attribute on voice element
+                for (var j = 0; j < nodes[i].attributes.length; ++j) {
+                    if (nodes[i].attributes[j].nodeName === "name") {
+                        // Name attribute is found on voice element, use it directly
+                        processDone = true;
+                        break;
+                    }
+
+                    // Find the gender info from voice element in case there is no name attribute
+                    if (nodes[i].attributes[j].nodeName === "xml:gender") {
+                        gender = nodes[i].attributes[j].nodeValue.toLowerCase() === 'male' ? SynthesisGender.Male : SynthesisGender.Female;
+                    }
+                }
+
+                if (!processDone) {
+                    // Otherwise add the name attribute based on locale and gender
+                    if (gender === null) {
+                        gender = SynthesisGender.Female;
+                    }
+
+                    let attribute = dom.createAttribute("name");
+                    attribute.value = this.fetchVoiceName(locale, gender);
+                    nodes[i].attributes.setNamedItem(attribute);
+                    processDone = true;
+                }
+                break;
+            }
+        }
+
+        const serializer = new XMLSerializer();
+        if (!processDone) {
+            // There is no voice element, add one based on locale
+            let voiceNode = dom.createElement("voice") as Node;
+            let attribute = dom.createAttribute("name");
+            attribute.value = this.fetchVoiceName(locale, SynthesisGender.Female);
+            voiceNode.attributes.setNamedItem(attribute);
+
+            while (nodes.length > 0) {
+                voiceNode.appendChild(dom.documentElement.firstChild);
+            }
+
+            dom.documentElement.appendChild(voiceNode);
+        }
+        return serializer.serializeToString(dom);
     }
 
     private encodeHTML(text: string): string {
