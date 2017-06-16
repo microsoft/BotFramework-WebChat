@@ -20,12 +20,14 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     private scrollStartTimer: number;
     private scrollSyncTimer: number;
     private scrollDurationTimer: number;
+    private currentCardIndex: number;
 
     private scrollSubscription: Subscription;
     private clickSubscription: Subscription;
 
     constructor(props: HScrollProps) {
         super(props);
+        this.currentCardIndex = 0;
     }
 
     private clearScrollTimers() {
@@ -42,8 +44,10 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     public updateScrollButtons() {
-        this.prevButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft <= 0;
-        this.nextButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft >= this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth;
+        let ul = this.scrollDiv.querySelector('ul') as HTMLElement;
+        this.prevButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft <= 0 || this.currentCardIndex == 0;
+        this.nextButton.disabled = !this.scrollDiv || this.scrollDiv.scrollLeft >= this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth ||
+                                   ul.childElementCount - 1 ==  this.currentCardIndex;
     }
 
     componentDidMount() {
@@ -75,11 +79,18 @@ export class HScroll extends React.Component<HScrollProps, {}> {
 
     private scrollAmount(direction: number) {
         if (this.props.scrollUnit == 'item') {
-            // TODO: this can be improved by finding the actual item in the viewport,
-            // instead of the first item, because they may not have the same width.
-            // the width of the li is measured on demand in case CSS has resized it
-            const firstItem = this.scrollDiv.querySelector('ul > li') as HTMLElement;
-            return firstItem ? direction * firstItem.offsetWidth : 0;
+            let ret = 0;
+            let ul = this.scrollDiv.querySelector('ul') as HTMLElement;
+            if (ul.childElementCount > this.currentCardIndex && this.currentCardIndex >= 0) {
+                let li = ul.children[this.currentCardIndex] as HTMLElement;
+                ret = li.scrollWidth;
+                var newIndex = this.currentCardIndex + direction;
+                if (newIndex >= 0 && newIndex < ul.childElementCount) {
+                    this.currentCardIndex = newIndex;
+                }
+            }
+ 
+            return direction * ret;
         } else {
             // TODO: use a good page size. This can be improved by finding the next clipped item.
             return direction * (this.scrollDiv.offsetWidth - 70);
