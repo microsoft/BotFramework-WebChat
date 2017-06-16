@@ -1,4 +1,4 @@
-# Automed Testing framework for Web Chat via Direct Line API
+# Automated Testing framework for Web Chat via Direct Line API
 
 > ## Disclaimer: This test framework is intended for Web Chat and DirectLine testing ONLY. This is NOT intended for testing Bots. 
 
