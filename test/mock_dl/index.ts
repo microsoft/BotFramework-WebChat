@@ -161,7 +161,6 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
 
     if (cardsCmd) {
         if (cardsCmd.length > 0) {
-            let fsJson;
             let acCmds = cardsCmd[1];
             getJson(acCmds).then((val) => {
                 commands['adaptive-cards'].server(res, sendActivity, val);
@@ -171,7 +170,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                         "type": "TextBlock",
                         "text": "Can't find '" + acCmds + "' card in Adaptive Cards directory"
                     };
-                    commands['adaptive-cards'].server(res, sendActivity, fsJson);
+                    commands['adaptive-cards'].server(res, sendActivity, simpleCard);
                 } else {
                     throw err;
                 }
