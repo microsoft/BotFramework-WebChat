@@ -14,6 +14,10 @@ export interface Props {
     className?: string
 }
 
+export interface State {
+    errors?: string[]
+}
+
 class LinkedAdaptiveCard extends AdaptiveCards.AdaptiveCard {
     constructor(public adaptiveCardContainer: AdaptiveCardContainer) {
         super();
@@ -71,9 +75,8 @@ AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalActi
     }
 };
 
-export class AdaptiveCardContainer extends React.Component<Props, {}> {
+export class AdaptiveCardContainer extends React.Component<Props, State> {
     private div: HTMLDivElement;
-    private errors: AdaptiveCards.IValidationError[] = [];
 
     constructor(props: Props) {
         super(props);
@@ -116,10 +119,10 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
                     error: -1,
                     message: e
                 };
-                this.errors.push(ve);
+                errors.push(ve);
 
                 if (e.stack) {
-                    konsole.log(e.stack);
+                    ve.message += '\n' + e.stack;
                 }
             }
 
@@ -136,22 +139,22 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
                 this.div.appendChild(renderedCard);
                 return;
             }
+        }
 
-            if(this.errors.length > 0) {
-                console.log('Error(s) rendering AdaptiveCard:');
-                this.errors.forEach(e => {
-                    console.log(e.message);
-                });
-                this.forceUpdate();
-            }
+        if (errors.length > 0) {
+            console.log('Error(s) rendering AdaptiveCard:');
+            errors.forEach(e => {
+                console.log(e.message);
+            });
+            this.setState({ errors: errors.map(e => e.message) });
         }
     }
 
     render() {
         let wrappedChildren: JSX.Element;
 
-        if(this.errors.length > 0) {
-            wrappedChildren = <svg className="centerSvg" viewBox="0 0 15 12.01" width={'75%'}><path d="M7.62 8.63v-.38H.94a.18.18 0 0 1-.19-.19V.94A.18.18 0 0 1 .94.75h10.12a.18.18 0 0 1 .19.19v3.73H12V.94a.91.91 0 0 0-.07-.36 1 1 0 0 0-.5-.5.91.91 0 0 0-.37-.08H.94a.91.91 0 0 0-.37.07 1 1 0 0 0-.5.5.91.91 0 0 0-.07.37v7.12a.91.91 0 0 0 .07.36 1 1 0 0 0 .5.5.91.91 0 0 0 .37.08h6.72c-.01-.12-.04-.24-.04-.37z" fill="silver"/ ><path d="M11.62 5.26a3.27 3.27 0 0 1 1.31.27 3.39 3.39 0 0 1 1.8 1.8 3.36 3.36 0 0 1 0 2.63 3.39 3.39 0 0 1-1.8 1.8 3.36 3.36 0 0 1-2.62 0 3.39 3.39 0 0 1-1.8-1.8 3.36 3.36 0 0 1 0-2.63 3.39 3.39 0 0 1 1.8-1.8 3.27 3.27 0 0 1 1.31-.27zm0 6a2.53 2.53 0 0 0 1-.21A2.65 2.65 0 0 0 14 9.65a2.62 2.62 0 0 0 0-2 2.65 2.65 0 0 0-1.39-1.39 2.62 2.62 0 0 0-2 0A2.65 2.65 0 0 0 9.2 7.61a2.62 2.62 0 0 0 0 2A2.65 2.65 0 0 0 10.6 11a2.53 2.53 0 0 0 1.02.26zM13 7.77l-.86.86.86.86-.53.53-.86-.86-.86.86-.53-.53.86-.86-.86-.86.53-.53.86.86.86-.86zM1.88 7.13h2.25V4.88H1.88zm.75-1.5h.75v.75h-.75zM5.63 2.63h4.5v.75h-4.5zM1.88 4.13h2.25V1.88H1.88zm.75-1.5h.75v.75h-.75zM9 5.63H5.63v.75h2.64A4 4 0 0 1 9 5.63z" fill="silver"/></svg>
+        if (this.state && this.state.errors && this.state.errors.length > 0) {
+            wrappedChildren = <svg className="card-error" viewBox="0 0 15 12.01"><path d="M7.62 8.63v-.38H.94a.18.18 0 0 1-.19-.19V.94A.18.18 0 0 1 .94.75h10.12a.18.18 0 0 1 .19.19v3.73H12V.94a.91.91 0 0 0-.07-.36 1 1 0 0 0-.5-.5.91.91 0 0 0-.37-.08H.94a.91.91 0 0 0-.37.07 1 1 0 0 0-.5.5.91.91 0 0 0-.07.37v7.12a.91.91 0 0 0 .07.36 1 1 0 0 0 .5.5.91.91 0 0 0 .37.08h6.72c-.01-.12-.04-.24-.04-.37z M11.62 5.26a3.27 3.27 0 0 1 1.31.27 3.39 3.39 0 0 1 1.8 1.8 3.36 3.36 0 0 1 0 2.63 3.39 3.39 0 0 1-1.8 1.8 3.36 3.36 0 0 1-2.62 0 3.39 3.39 0 0 1-1.8-1.8 3.36 3.36 0 0 1 0-2.63 3.39 3.39 0 0 1 1.8-1.8 3.27 3.27 0 0 1 1.31-.27zm0 6a2.53 2.53 0 0 0 1-.21A2.65 2.65 0 0 0 14 9.65a2.62 2.62 0 0 0 0-2 2.65 2.65 0 0 0-1.39-1.39 2.62 2.62 0 0 0-2 0A2.65 2.65 0 0 0 9.2 7.61a2.62 2.62 0 0 0 0 2A2.65 2.65 0 0 0 10.6 11a2.53 2.53 0 0 0 1.02.26zM13 7.77l-.86.86.86.86-.53.53-.86-.86-.86.86-.53-.53.86-.86-.86-.86.53-.53.86.86.86-.86zM1.88 7.13h2.25V4.88H1.88zm.75-1.5h.75v.75h-.75zM5.63 2.63h4.5v.75h-4.5zM1.88 4.13h2.25V1.88H1.88zm.75-1.5h.75v.75h-.75zM9 5.63H5.63v.75h2.64A4 4 0 0 1 9 5.63z" /></svg>
         } else {
             wrappedChildren = this.props.children ? <div className="non-adaptive-content">{this.props.children}</div> : null;
         }
@@ -160,6 +163,10 @@ export class AdaptiveCardContainer extends React.Component<Props, {}> {
                 {wrappedChildren}
             </div>
         )
+    }
+
+    componentDidUpdate() {
+        if (this.props.onImageLoad) this.props.onImageLoad();
     }
 }
 
