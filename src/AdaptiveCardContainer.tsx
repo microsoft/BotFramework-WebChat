@@ -141,10 +141,18 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
             }
         }
 
+<<<<<<< HEAD
         if (errors.length > 0) {
             console.log('Error(s) rendering AdaptiveCard:');
             errors.forEach(e => console.log(e.message));
             this.setState({ errors: errors.map(e => e.message) });
+=======
+            if(this.errors.length > 0) {
+                console.log('Error(s) rendering AdaptiveCard:');
+                this.errors.forEach(e => console.log(e.message));
+                this.setState(this.errors);
+            }
+>>>>>>> 349a643110febcf50479c733e1d5470aac843df0
         }
     }
 
