@@ -171,7 +171,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                         "type": "TextBlock",
                         "text": "Can't find '" + acCmds + "' card in Adaptive Cards directory"
                     };
-                    commands['adaptive-cards'].server(res, sendActivity, fsJson);
+                    commands['adaptive-cards'].server(res, sendActivity, simpleCard);
                 } else {
                     throw err;
                 }
