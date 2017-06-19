@@ -369,6 +369,11 @@
         &.signin h1 {
             margin: 10px 24px 16px 14px;
         }
+
+        .card-error {
+            fill: $c05;
+            margin: 50px;
+        }
     }
 
 /* alternate chat sizes */
@@ -660,11 +665,4 @@
 
     .wc-app ::-webkit-scrollbar-thumb {
         background-color: $c_chrome;
-    }
-
-/* error handling for ac */
-
-    .error {
-        display: block;
-        margin: auto;
     }
