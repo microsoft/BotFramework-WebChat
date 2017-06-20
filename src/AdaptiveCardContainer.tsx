@@ -91,6 +91,7 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
 
         //do not allow form elements to trigger a parent click event
         switch ((e.target as HTMLElement).tagName) {
+            case 'A':
             case 'AUDIO':
             case 'VIDEO':
             case 'BUTTON':
