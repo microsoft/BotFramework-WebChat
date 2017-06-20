@@ -201,7 +201,7 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.receipt_card);
         }
     },
-    "card weather": {
+    "card Weather": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
             return (source.indexOf("Mostly%20Cloudy-Square.png") >= 0);
@@ -210,7 +210,7 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.adaptive_cardsFn(json));
         }
     },
-    "card bingsports": {
+    "card BingSports": {
         client: function () {
             return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
         },
@@ -218,7 +218,7 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.adaptive_cardsFn(json));
         }
     },
-    "card calendarreminder": {
+    "card CalendarReminder": {
         client: () => new Promise((resolve) => {
             setTimeout(() => {
                 var selectPullDown = document.querySelector('.wc-adaptive-card .ac-container select') as HTMLSelectElement;
