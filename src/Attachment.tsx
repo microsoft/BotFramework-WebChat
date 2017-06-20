@@ -76,10 +76,8 @@ interface VideoProps {
 const Video = (props: VideoProps ) => {
     const url = document.createElement('a');
     url.href = props.src;
-
     const urlQueryParams = queryParams(url.search);
     const pathSegments = url.pathname.substr(1).split('/');
-
     switch (url.hostname) {
         case YOUTUBE_DOMAIN:
         case YOUTUBE_SHORT_DOMAIN:
@@ -148,15 +146,12 @@ export const AttachmentView = (props: {
     onImageLoad: () => void
 }) => {
     if (!props.attachment) return;
-
     const attachment = props.attachment;
-
     const onCardAction = (cardAction: CardAction) => cardAction &&
         ((e: React.MouseEvent<HTMLElement>) => {
             props.onCardAction(cardAction.type, cardAction.value);
             e.stopPropagation();
         });
-
     const attachedImage = (
         images: {
             url: string,
@@ -169,13 +164,11 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.hero":
             if (!attachment.content)
                 return null;
-
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
                 attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
             }
             heroCardBuilder.addCommon(attachment.content)
-
             return (
                 <AdaptiveCardContainer className="hero" card={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
@@ -183,21 +176,17 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.thumbnail":
             if (!attachment.content)
                 return null;
-
             const thumbnailCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
                 const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
-
                 thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" }, columns[0]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
                 thumbnailCardBuilder.addImage(attachment.content.images[0].url, columns[1]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.text, { wrap: true });
                 thumbnailCardBuilder.addButtons(attachment.content.buttons);
-
             } else {
                 thumbnailCardBuilder.addCommon(attachment.content);
             }
-
             return (
                 <AdaptiveCardContainer className="thumbnail" card={ thumbnailCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
@@ -259,49 +248,34 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.receipt":
             if (!attachment.content)
                 return null;
-
             const receiptCardBuilder = new CardBuilder.AdaptiveCardBuilder();
-
             receiptCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" });
-
             const columns = receiptCardBuilder.addColumnSet([75, 25]);
-
             attachment.content.facts && attachment.content.facts.map((fact, i) => {
                 receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium'}, columns[0]);
-
                 receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', horizontalAlignment: 'right' }, columns[1]);
             });
-
             attachment.content.items && attachment.content.items.map((item, i) => {
-
                 if (item.image) {
                     const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
-
                     receiptCardBuilder.addImage(item.image.url, columns2[0]);
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);
                 } else {
                     const columns3 = receiptCardBuilder.addColumnSet([75, 25]);
-
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns3[0]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns3[0]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
                 }
             });
-
             const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
-
             receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
             receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
-
             const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
-
             receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
             receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
-
             receiptCardBuilder.addButtons(attachment.content.buttons);
-
             return (
                 <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
