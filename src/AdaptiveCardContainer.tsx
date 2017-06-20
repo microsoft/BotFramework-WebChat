@@ -161,11 +161,18 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
                     <div className="error-text">Can't render card</div>
                 </div>
             );
+        } else if (this.props.children) {
+            wrappedChildren = (
+                <div className="non-adaptive-content">
+                    {this.props.children}
+                </div>
+            );
         } else {
-            wrappedChildren = this.props.children ? <div className="non-adaptive-content">{this.props.children}</div> : null;
+            wrappedChildren = null;
         }
+
         return (
-            <div className={classList('wc-card', 'wc-adaptive-card', this.props.className, hasErrors && 'error' )} ref={div => this.div = div} onClick={e => this.onClick(e)}>
+            <div className={classList('wc-card', 'wc-adaptive-card', this.props.className, hasErrors && 'error')} ref={div => this.div = div} onClick={e => this.onClick(e)}>
                 {wrappedChildren}
             </div>
         )
