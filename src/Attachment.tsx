@@ -267,9 +267,9 @@ export const AttachmentView = (props: {
             const columns = receiptCardBuilder.addColumnSet([75, 25]);
 
             attachment.content.facts && attachment.content.facts.map((fact, i) => {
-                receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium', weight: 'lighter'}, columns[0]);
+                receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium'}, columns[0]);
 
-                receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', weight: 'lighter', horizontalAlignment: 'right' }, columns[1]);
+                receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', horizontalAlignment: 'right' }, columns[1]);
             });
 
             attachment.content.items && attachment.content.items.map((item, i) => {
@@ -279,13 +279,13 @@ export const AttachmentView = (props: {
 
                     receiptCardBuilder.addImage(item.image.url, columns2[0]);
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
-                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium', weight: 'lighter' }, columns2[1]);
+                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);
                 } else {
                     const columns3 = receiptCardBuilder.addColumnSet([75, 25]);
 
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns3[0]);
-                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium', weight: 'lighter' }, columns3[0]);
+                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns3[0]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
                 }
             });
