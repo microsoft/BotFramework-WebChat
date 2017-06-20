@@ -55,7 +55,6 @@ We need to perform two tasks, 1) Build the tests, and 2) start the mock server
 
 The mock server will now automatically serve dummy data to the web chat instance, while the automated tests will run based off of the data. You can view the status of your tests from the terminal. 
 
-
 ### How to run mock service and Nightmare test framework separately
 
 * When it comes to run mock service and tests separately, __"node test/mock_dl/index.js\\"__ will run the mock server on default port of 3000.
