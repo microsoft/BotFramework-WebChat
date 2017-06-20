@@ -67,8 +67,8 @@ var commands_map: CommandValuesMap = {
                     setTimeout(() => {
                         resolve(right_arrow.getAttribute('disabled') != null);
                     }, 2000);
-                }, 500);
-            }, 500);
+                }, 1000);   //make sure time is longer than animation time in .wc-animate-scroll
+            }, 1000);
         }),
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
