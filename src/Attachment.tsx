@@ -1,8 +1,9 @@
 import * as React from 'react';
-
+import * as CardBuilder from './CardBuilder';
 import { Attachment, CardAction } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
+import { AdaptiveCardContainer } from './AdaptiveCardContainer';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
@@ -63,20 +64,20 @@ const Vimeo = (props: {
         })}` }
     />;
 
-const Video = (props: {
+interface VideoProps {
     src: string,
     poster?: string,
     autoPlay?:boolean,
     loop?: boolean,
     onLoad?: () => void,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void
-}) => {
+}
+
+const Video = (props: VideoProps ) => {
     const url = document.createElement('a');
     url.href = props.src;
-
     const urlQueryParams = queryParams(url.search);
     const pathSegments = url.pathname.substr(1).split('/');
-
     switch (url.hostname) {
         case YOUTUBE_DOMAIN:
         case YOUTUBE_SHORT_DOMAIN:
@@ -84,12 +85,17 @@ const Video = (props: {
         case YOUTUBE_WWW_SHORT_DOMAIN:
             return <Youtube
                 embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams['v'] : pathSegments[pathSegments.length-1] }
-                { ... props }
+                autoPlay={ props.autoPlay }
+                loop={ props.loop }
             />;
 
         case VIMEO_WWW_DOMAIN:
         case VIMEO_DOMAIN:
-            return <Vimeo embedId={ pathSegments[pathSegments.length-1] } { ... props } />
+            return <Vimeo 
+                embedId={ pathSegments[pathSegments.length-1] } 
+                autoPlay={ props.autoPlay }
+                loop={ props.loop }
+            />
 
         default:
             return <video controls { ... props } />
@@ -107,7 +113,7 @@ const Media = (props: {
 }) => {
     switch (props.type) {
         case 'video':
-            return <Video { ... props } />
+            return <Video { ...props as VideoProps }  />
         case 'audio':
             return <audio controls { ... props } />;
         default:
@@ -133,10 +139,6 @@ const Unknown = (props: {
 const mediaType = (url: string) =>
     url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'image' : 'video';
 
-const title = (title: string) => renderIfNonempty(title, title => <h1>{ title }</h1>);
-const subtitle = (subtitle: string) => renderIfNonempty(subtitle, subtitle => <h2>{ subtitle }</h2>);
-const text = (text: string) => renderIfNonempty(text, text => <p>{ text }</p>);
-
 export const AttachmentView = (props: {
     format: FormatState;
     attachment: Attachment,
@@ -144,20 +146,12 @@ export const AttachmentView = (props: {
     onImageLoad: () => void
 }) => {
     if (!props.attachment) return;
-
     const attachment = props.attachment;
-
     const onCardAction = (cardAction: CardAction) => cardAction &&
         ((e: React.MouseEvent<HTMLElement>) => {
             props.onCardAction(cardAction.type, cardAction.value);
             e.stopPropagation();
         });
-
-    const buttons = (buttons: CardAction[]) => buttons &&
-        <ul className="wc-card-buttons">
-            { buttons.map((button, index) => <li key={ index }><button onClick={ onCardAction(button) }>{ button.title }</button></li>) }
-        </ul>;
-
     const attachedImage = (
         images: {
             url: string,
@@ -170,34 +164,38 @@ export const AttachmentView = (props: {
         case "application/vnd.microsoft.card.hero":
             if (!attachment.content)
                 return null;
+            const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
+            if (attachment.content.images) {
+                attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
+            }
+            heroCardBuilder.addCommon(attachment.content)
             return (
-                <div className='wc-card hero' onClick={ onCardAction(attachment.content.tap) }>
-                    { attachedImage(attachment.content.images) }
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                <AdaptiveCardContainer className="hero" card={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
         case "application/vnd.microsoft.card.thumbnail":
             if (!attachment.content)
                 return null;
+            const thumbnailCardBuilder = new CardBuilder.AdaptiveCardBuilder();
+            if (attachment.content.images) {
+                const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
+                thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" }, columns[0]);
+                thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
+                thumbnailCardBuilder.addImage(attachment.content.images[0].url, columns[1]);
+                thumbnailCardBuilder.addTextBlock(attachment.content.text, { wrap: true });
+                thumbnailCardBuilder.addButtons(attachment.content.buttons);
+            } else {
+                thumbnailCardBuilder.addCommon(attachment.content);
+            }
             return (
-                <div className='wc-card thumbnail' onClick={ onCardAction(attachment.content.tap) }>
-                    { title(attachment.content.title) }
-                    { attachedImage(attachment.content.images) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                <AdaptiveCardContainer className="thumbnail" card={ thumbnailCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
         case "application/vnd.microsoft.card.video":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
-                <div className='wc-card video'>
+                <AdaptiveCardContainer className="video" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     <Media
                         type='video'
                         src={ attachment.content.media[0].url }
@@ -206,11 +204,7 @@ export const AttachmentView = (props: {
                         autoPlay={ attachment.content.autostart }
                         loop={ attachment.content.autoloop }
                     />
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                </AdaptiveCardContainer>
             );
 
 
@@ -218,7 +212,7 @@ export const AttachmentView = (props: {
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
-                <div className='wc-card animation'>
+                <AdaptiveCardContainer className="animation" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     <Media
                         type={ mediaType(attachment.content.media[0].url) }
                         src={ attachment.content.media[0].url }
@@ -227,92 +221,70 @@ export const AttachmentView = (props: {
                         autoPlay={ attachment.content.autostart }
                         loop={ attachment.content.autoloop }
                     />
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                </AdaptiveCardContainer>
             );
 
         case "application/vnd.microsoft.card.audio":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
-                <div className='wc-card audio'>
+                <AdaptiveCardContainer className="audio" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     <Media
                         type='audio'
                         src={ attachment.content.media[0].url }
                         autoPlay={ attachment.content.autostart }
                         loop={ attachment.content.autoloop }
                     />
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                </AdaptiveCardContainer>
             );
 
         case "application/vnd.microsoft.card.signin":
             if (!attachment.content)
                 return null;
             return (
-                <div className='wc-card signin'>
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                <AdaptiveCardContainer className="signin" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } />
             );
 
         case "application/vnd.microsoft.card.receipt":
             if (!attachment.content)
                 return null;
+            const receiptCardBuilder = new CardBuilder.AdaptiveCardBuilder();
+            receiptCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" });
+            const columns = receiptCardBuilder.addColumnSet([75, 25]);
+            attachment.content.facts && attachment.content.facts.map((fact, i) => {
+                receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium'}, columns[0]);
+                receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', horizontalAlignment: 'right' }, columns[1]);
+            });
+            attachment.content.items && attachment.content.items.map((item, i) => {
+                if (item.image) {
+                    const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
+                    receiptCardBuilder.addImage(item.image.url, columns2[0]);
+                    receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
+                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns2[1]);
+                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);
+                } else {
+                    const columns3 = receiptCardBuilder.addColumnSet([75, 25]);
+                    receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns3[0]);
+                    receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns3[0]);
+                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
+                }
+            });
+            const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
+            receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
+            receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
+            const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
+            receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
+            receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+            receiptCardBuilder.addButtons(attachment.content.buttons);
             return (
-                <div className='wc-card receipt' onClick={ onCardAction(attachment.content.tap) }>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th colSpan={ 2 }>{ attachment.content.title }</th>
-                            </tr>
-                            { attachment.content.facts && attachment.content.facts.map((fact, i) => <tr key={'fact' + i}><th>{ fact.key }</th><th>{ fact.value }</th></tr>) }
-                        </thead>
-                        <tbody>{ attachment.content.items && attachment.content.items.map((item, i) =>
-                            <tr key={'item' + i} onClick={ onCardAction(item.tap) }>
-                                <td>
-                                    { item.image && <Media src={ item.image.url } onLoad={ props.onImageLoad } /> }
-                                    { renderIfNonempty(
-                                        item.title,
-                                        title => <div className="title">
-                                            { item.title }
-                                        </div>)
-                                    }
-                                    { renderIfNonempty(
-                                        item.subtitle,
-                                        subtitle => <div className="subtitle">
-                                            { item.subtitle }
-                                        </div>)
-                                    }
-                                </td>
-                                <td>{ item.price }</td>
-                            </tr>) }
-                        </tbody>
-                        <tfoot>
-                            { renderIfNonempty(
-                                attachment.content.tax,
-                                tax => <tr>
-                                    <td>{ props.format.strings.receiptTax }</td>
-                                    <td>{ attachment.content.tax }</td>
-                                </tr>)
-                            }
-                            { renderIfNonempty(
-                                attachment.content.total,
-                                total => <tr className="total">
-                                    <td>{ props.format.strings.receiptTotal }</td>
-                                    <td>{ attachment.content.total }</td>
-                                </tr>)
-                            }
-                        </tfoot>
-                    </table>
-                    { buttons(attachment.content.buttons) }
-                </div>
+                <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
+            );
+
+        case "application/vnd.microsoft.card.adaptive":
+            if (!attachment.content)
+                return null;
+            return (
+                <AdaptiveCardContainer card={ attachment.content } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } />
             );
 
         // Deprecated format for Skype channels. For testing legacy bots in Emulator only.
@@ -320,13 +292,9 @@ export const AttachmentView = (props: {
             if (!attachment.content)
                 return null;
             return (
-                <div className='wc-card flex'>
+                <AdaptiveCardContainer className="flex" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     { attachedImage(attachment.content.images) }
-                    { title(attachment.content.title) }
-                    { subtitle(attachment.content.subtitle) }
-                    { text(attachment.content.text) }
-                    { buttons(attachment.content.buttons) }
-                </div>
+                </AdaptiveCardContainer>
             );
 
         case "image/png":

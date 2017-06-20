@@ -10,7 +10,7 @@ interface ISendActivity {
 
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
-    server?: (res: express.Response, sendActivity: ISendActivity) => void,
+    server?: (res: express.Response, sendActivity: ISendActivity, json?: JSON) => void,
     do?: (nightmare: Nightmare) => any
 }
 
@@ -67,8 +67,8 @@ var commands_map: CommandValuesMap = {
                     setTimeout(() => {
                         resolve(right_arrow.getAttribute('disabled') != null);
                     }, 2000);
-                }, 500);
-            }, 500);
+                }, 1000);   //make sure time is longer than animation time in .wc-animate-scroll
+            }, 1000);
         }),
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
@@ -193,12 +193,58 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
+    "receipt": {
+        client: function () {
+            return true;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.receipt_card);
+        }
+    },
+    "card Weather": {
+        client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return (source.indexOf("Mostly%20Cloudy-Square.png") >= 0);
+        },
+        server: function (res, sendActivity, json) {
+            sendActivity(res, server_content.adaptive_cardsFn(json));
+        }
+    },
+    "card BingSports": {
+        client: function () {
+            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
+        },
+        server: function (res, sendActivity, json) {
+            sendActivity(res, server_content.adaptive_cardsFn(json));
+        }
+    },
+    "card CalendarReminder": {
+        client: () => new Promise((resolve) => {
+            setTimeout(() => {
+                var selectPullDown = document.querySelector('.wc-adaptive-card .ac-container select') as HTMLSelectElement;
+                selectPullDown.selectedIndex = 3;
+                resolve(selectPullDown.value === '30');
+            }, 1000);
+        }),
+        server: function (res, sendActivity, json) {
+            sendActivity(res, server_content.adaptive_cardsFn(json));
+        }
+    },
     /*
      ** Add your commands to test here **  
     "command": {
         client: function () { JavaScript evaluation syntax },
         server: function (res, sendActivity) {
             sendActivity(res, sever_content DirectLineActivity);
+        }
+    }
+
+    ** For adaptive cards, your command will be starting with card <space> command **  
+    "card command": {
+        client: function () { JavaScript evaluation syntax },
+        server: function (res, sendActivity) {
+            server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
+            sendActivity(res, server_content.adaptive_cards);
         }
     }
     */

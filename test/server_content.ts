@@ -136,6 +136,20 @@ var car_attach4: dl.HeroCard = {
     }
 }
 
+export var adaptive_cardsFn = function (json: any) {
+    var acMessage: dl.Message = {
+        type: "message",
+        from: bot,
+        timestamp: new Date().toUTCString(),
+        channelId: "webchat",
+        attachments: [
+            { contentType: "application/vnd.microsoft.card.adaptive", content: json }
+        ]
+    };
+
+    return acMessage;
+}
+
 export var car_card: dl.Message = {
     type: "message",
     from: bot,
@@ -229,4 +243,72 @@ export var suggested_actions_card: dl.Message = {
             }
         ]
     }
+}
+
+var receipt_attach: dl.Receipt = {
+    contentType: "application/vnd.microsoft.card.receipt",
+    content: {
+    title: "Rodrigez Bender Hotel Bill",
+        items: [
+            {
+                title: "Hotel Bender (r) Paris.",
+                subtitle: "$71 Today up to 27% off Booked in the last 2 hours",
+                text: "Futurama. 40 Aliee De la Mare dian Houleuse, Magny-le-Hongre, Seine-Marne.",
+                image: {
+                    url: "https://testbot.botframework.com/media/hotel-bender.jpg"
+                },
+                price: "$71"
+            },
+            {
+                title: "Label AAAA",
+                price: "$140"
+            },
+            {
+                title: "Label BBBB",
+                price: "$110"
+            }
+        ],
+        facts: [
+            {
+                key: "Order Number",
+                value: "1234567890"
+            },
+            {
+                key: "expected delivery time",
+                value: "2016.06.15"
+            },
+            {
+                key: "Payment Method",
+                value: " VISA 0987"
+            },
+            {
+                key: "Delivery Address",
+                value: "Prague, Andel, 14700"
+            }
+        ],
+        total: "$341.40",
+        tax: "$20.40",
+        buttons: [
+            {
+                type: "imBack",
+                title: "Thumbs Up",
+                value: "I like it"
+            },
+            {
+                type: "imBack",
+                title: "Thumbs Down",
+                value: "I don't like it"
+            }
+        ]
+    }
+}
+
+export var receipt_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachmentLayout: "carousel",
+    attachments: [receipt_attach]
 }

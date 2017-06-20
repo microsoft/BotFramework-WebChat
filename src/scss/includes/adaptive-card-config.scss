@@ -1,0 +1,177 @@
+@import "colors";
+@import "settings";
+
+$hostConfig: (
+  supportsInteractivity: true,
+  strongSeparation: (
+    spacing: 40px,
+    lineThickness: 1px,
+    lineColor: rgb(238, 238, 238)
+  ),
+  fontFamily: $fontFamily,
+  fontSizes: (
+    small: ($card_fontSize - 1),
+    normal: $card_fontSize,
+    medium: ($card_fontSize + 2),
+    large: ($card_fontSize + 4),
+    extraLarge: ($card_fontSize + 6)
+  ),
+  fontWeights: (
+    lighter: 200,
+    normal: 400,
+    bolder: 700
+  ),
+  colors: (
+    dark: (
+      normal: $c00,
+      subtle: $c08
+    ),
+    light: (
+      normal: rgb(255, 255, 255),
+      subtle: rgb(136, 255, 255)
+    ),
+    accent: (
+      normal: rgb(46, 137, 252),
+      subtle: rgba(46, 137, 1, .5)
+    ),
+    attention: (
+      normal: rgb(255, 216, 0),
+      subtle: rgba(255, 216, 0, .8)
+    ),
+    good: (
+      normal: rgb(0, 255, 0),
+      subtle: rgba(0, 255, 0, .8)
+    ),
+    warning: (
+      normal: rgb(255, 0, 0),
+      subtle: rgba(255, 0, 0, .8)
+    )
+  ),
+  imageSizes: (
+    small: 40px,
+    medium: 64px,
+    large: 96px
+  ),
+  actions: (
+    maxActions: 100,
+    separation: (
+      spacing: $separation
+    ),
+    buttonSpacing: $separation,
+    stretch: false,
+    showCard: (
+      actionMode: "inlineEdgeToEdge",
+      inlineTopMargin: 16px,
+      backgroundColor: "#00000000",   //using 8 digit hex Adaptive Card color format for transparent ("Transparent" will not be recognized)
+      padding: (
+        top: $separation,
+        right: $separation,
+        bottom: $separation,
+        left: $separation
+      )
+    ),
+    actionsOrientation: "vertical",
+    actionAlignment: "left"
+  ),
+  adaptiveCard: (
+    backgroundColor: "#00000000",   //using 8 digit hex Adaptive Card color format for transparent ("Transparent" will not be recognized)
+    padding: (
+      left: $card_padding,
+      top: $card_padding,
+      right: $card_padding,
+      bottom: $card_padding
+    )
+  ),
+  container: (
+    separation: (
+      spacing: $separation
+    ),
+    normal: (
+      backgroundColor: "#00000000",   //using 8 digit hex Adaptive Card color format for transparent ("Transparent" will not be recognized)
+    ),
+    emphasis: (
+      backgroundColor: rgb(238, 238, 238),
+      borderColor: rgb(170, 170, 170),
+      borderThickness: (
+        top: $card_borderWidth,
+        right: $card_borderWidth,
+        bottom: $card_borderWidth,
+        left: $card_borderWidth
+      ),
+      padding: (
+        top: $separation,
+        right: $separation,
+        bottom: $separation,
+        left: $separation
+      )
+    )
+  ),
+  textBlock: (
+    color: "dark",
+    separations: (
+      small: (
+        spacing: $separation
+      ),
+      normal: (
+        spacing: $separation
+      ),
+      medium: (
+        spacing: $separation
+      ),
+      large: (
+        spacing: $separation
+      ),
+      extraLarge: (
+        spacing: $separation
+      )
+    )
+  ),
+  image: (
+    size: "medium",
+    separation: (
+      spacing: $separation
+    )
+  ),
+  imageSet: (
+    imageSize: "medium",
+    separation: (
+      spacing: $separation
+    )
+  ),
+  factSet: (
+    separation: (
+      spacing: $separation
+    ),
+    title: (
+      color: "dark",
+      size: "normal",
+      isSubtle: false,
+      weight: "bolder",
+      wrap: true,
+      maxWidth: 150px
+    ),
+    value: (
+      color: "dark",
+      size: "normal",
+      isSubtle: false,
+      weight: "normal",
+      wrap: true
+    ),
+    spacing: $separation
+  ),
+  input: (
+    separation: (
+      spacing: $separation
+    )
+  ),
+  columnSet: (
+    separation: (
+      spacing: $separation
+    )
+  ),
+  column: (
+    separation: (
+      spacing: $separation
+    )
+  )
+);
