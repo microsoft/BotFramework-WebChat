@@ -38,30 +38,22 @@ function getLinkedAdaptiveCard(action: AdaptiveCards.Action) {
 
 function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
     if (!card.actions) return card;
-
     const actions: AdaptiveCardSchema.IActionBase[] = [];
-
     card.actions.forEach(action => {
-
         //filter out http action buttons
         if (action.type === 'Action.Http') return;
-
         if (action.type === 'Action.ShowCard') {
             const showCardAction = action as AdaptiveCardSchema.IActionShowCard;
             showCardAction.card = cardWithoutHttpActions(showCardAction.card);
         }
-
         actions.push(action);
     });
-
     return { ...card, actions };
 }
 
 AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalAction) => {
-
     if (action instanceof AdaptiveCards.OpenUrlAction) {
         window.open(action.url);
-
     } else if (action instanceof AdaptiveCards.SubmitAction) {
         const linkedAdaptiveCard = getLinkedAdaptiveCard(action);
         if (linkedAdaptiveCard && action.data !== undefined) {
@@ -88,7 +80,6 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
 
     private onClick(e: React.MouseEvent<HTMLElement>) {
         if (!this.props.onClick) return;
-
         //do not allow form elements to trigger a parent click event
         switch ((e.target as HTMLElement).tagName) {
             case 'A':
@@ -109,7 +100,6 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         const adaptiveCard = new LinkedAdaptiveCard(this);
         adaptiveCard.parse(cardWithoutHttpActions(this.props.card));
         const errors = adaptiveCard.validate();
-
         if (errors.length === 0) {
             let renderedCard: HTMLElement;
             try {
@@ -126,7 +116,6 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
                     ve.message += '\n' + e.stack;
                 }
             }
-
             if (renderedCard) {
                 if (this.props.onImageLoad) {
                     var imgs = renderedCard.querySelectorAll('img');
@@ -136,12 +125,10 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
                         });
                     }
                 }
-
                 this.div.appendChild(renderedCard);
                 return;
             }
         }
-
         if (errors.length > 0) {
             console.log('Error(s) rendering AdaptiveCard:');
             errors.forEach(e => console.log(e.message));
@@ -152,7 +139,6 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
     render() {
         let wrappedChildren: JSX.Element;
         const hasErrors = this.state && this.state.errors && this.state.errors.length > 0;
-
         if (hasErrors) {
             wrappedChildren = (
                 <div>
@@ -171,7 +157,6 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         } else {
             wrappedChildren = null;
         }
-
         return (
             <div className={classList('wc-card', 'wc-adaptive-card', this.props.className, hasErrors && 'error')} ref={div => this.div = div} onClick={e => this.onClick(e)}>
                 {wrappedChildren}
