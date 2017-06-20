@@ -28,7 +28,9 @@ const Attachments = (props: {
                 <AttachmentView
                     key={ index }
                     attachment={ attachment }
-                    { ... otherProps }
+                    format={ props.format }
+                    onCardAction={ props.onCardAction }
+                    onImageLoad={ props.onImageLoad }
                 />
             ) }
         </div>
@@ -59,7 +61,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
     }
 
     render() {
-        const { activity, ... otherProps } = this.props;
+        const { activity, ... props } = this.props;
         switch (activity.type) {
             case 'message':
                 return (
@@ -67,12 +69,15 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                         <FormattedText
                             text={ activity.text }
                             format={ activity.textFormat }
-                            onImageLoad={ otherProps.onImageLoad }
+                            onImageLoad={ props.onImageLoad }
                         />
                         <Attachments
                             attachments={ activity.attachments }
                             attachmentLayout={ activity.attachmentLayout }
-                            { ... otherProps }
+                            format={ props.format }
+                            onCardAction={ props.onCardAction }
+                            onImageLoad={ props.onImageLoad }
+                            size={ props.size }
                         />
                     </div>
                 );

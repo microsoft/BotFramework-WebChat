@@ -142,7 +142,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
         return (
             <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
-                <div className="wc-message-group-content" ref={ div => this.scrollContent = div }>
+                <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
                     { content }
                 </div>
             </div>
