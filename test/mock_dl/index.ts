@@ -151,18 +151,18 @@ const postMessage = (req: express.Request, res: express.Response) => {
 }
 
 // Getting testing commands from map and server config
-let commands = require('../commands_map');
-let config = require('../mock_dl_server_config');
+const commands = require('../commands_map');
+const config = require('../mock_dl_server_config');
 let current_uitests = 0;
-let uitests_files = Object.keys(config["width-tests"]).length;
+const uitests_files = Object.keys(config["width-tests"]).length;
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
 
     if (commands[cmd] && commands[cmd].server) {
         //look for "card ..." prefix on command
-        let cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
+        const cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
         if (cardsCmd && cardsCmd.length > 0) {
-            let cardName = cardsCmd[1];
+            const cardName = cardsCmd[1];
             getCardJsonFromFs(cardName).then(cardJson => {
                 //execute the server, with the card json from the file system
                 commands[cmd].server(res, sendActivity, cardJson);
@@ -252,8 +252,8 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
 const getMessages = (req: express.Request, res: express.Response) => {
     if (queue) {
         if (queue.length > 0) {
-            let msg = queue.shift();
-            let id = messageId++;
+            const msg = queue.shift();
+            const id = messageId++;
             msg.id = id.toString();
             msg.from = { id: "id", name: "name" };
             res.send({
@@ -297,7 +297,7 @@ app.get('/botchat-fullwindow.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat-fullwindow.css"));
 });
 app.get('/assets/:file', function (req, res) {
-    var file = req.params["file"];
+    const file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
 // Running Web Server and DirectLine Client on port
