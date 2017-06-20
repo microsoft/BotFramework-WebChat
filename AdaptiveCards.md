@@ -1,6 +1,6 @@
 # Adaptive Cards in Microsoft Bot Framework WebChat
 
-WebChat now supports [Adaptive Cards](http://adaptivecards.io/), which you can use to achieve a greater level of rich display and interactivity in your bot's UX. Adaptive Cards are a general-purpose technology, which may be used in a wide variety of applications, but you should be aware of some constraints when using them within the WebChat environment.
+WebChat now supports [Adaptive Cards](http://adaptivecards.io/), which you can use to achieve a greater level of rich display and interactivity in your bot's UX. Adaptive Cards are a general-purpose technology, which may be used in a wide variety of applications. In the Bot Framework, Adaptive Cards have certain limitations on each channel; this document outlines the constraints when using them within the WebChat environment.
 
 ## Create and send an Adaptive Card from your bot
 
@@ -40,7 +40,6 @@ Bot Builder SDK cards may specify a  **tap** action on the entire card (Example:
 Your Adaptive Card is in JSON format and should adhere to the [Card schema](http://adaptivecards.io/documentation/#create-cardschema). If your JSON does not validate to the schema, then an error card is shown, and the error details outputted to the JavaScript console.
 
 ## Style customization
-
 
 ### Overview
 
