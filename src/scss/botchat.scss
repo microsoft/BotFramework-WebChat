@@ -369,6 +369,27 @@
         &.signin h1 {
             margin: 10px 24px 16px 14px;
         }
+
+        &.error {
+            text-align: center;
+
+            .error-icon {
+                fill: $c05;
+                height: 56px;
+                margin-bottom: 2px;
+                margin-top: 20px;
+                padding-left: 12px;
+            }
+
+            .error-text {
+                color: $c05;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                margin-bottom: 20px;
+                text-align: inherit;
+            }
+
+        }
     }
 
 /* alternate chat sizes */
