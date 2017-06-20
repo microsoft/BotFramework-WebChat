@@ -21,7 +21,7 @@ const conversationId = "mockversation";
 const expires_in = 1800;
 const streamUrl = "http://nostreamsupport";
 const simpleCard = {
-    "$schema":"https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",
+    "$schema": "https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
     "body": []
 };
@@ -157,82 +157,52 @@ let current_uitests = 0;
 let uitests_files = Object.keys(config["width-tests"]).length;
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-    let cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
 
-    if (cardsCmd) {
-        if (cardsCmd.length > 0) {
-            let acCmds = cardsCmd[1];
-            getJson(acCmds).then((val) => {
-                commands['adaptive-cards'].server(res, sendActivity, val);
-            }).catch((err) => {
-                if (err.code === 'ENOENT') {
-                    simpleCard.body[0] = {
-                        "type": "TextBlock",
-                        "text": "Can't find '" + acCmds + "' card in Adaptive Cards directory"
-                    };
-                    commands['adaptive-cards'].server(res, sendActivity, simpleCard);
-                } else {
-                    throw err;
-                }
-            });
-        }
-    } else {
-        if (commands[cmd] && commands[cmd].server) {
+    if (commands[cmd] && commands[cmd].server) {
+        //look for "card ..." prefix on command
+        let cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
+        if (cardsCmd && cardsCmd.length > 0) {
+            let cardName = cardsCmd[1];
+            getCardJsonFromFs(cardName).then(cardJson => {
+                //execute the server, with the card json from the file system
+                commands[cmd].server(res, sendActivity, cardJson);
+            }).catch((err) => { throw err });
+        } else {
+            //execute the server
             commands[cmd].server(res, sendActivity);
         }
-        else {
-            switch (cmd) {
-                case 'end':
-                    current_uitests++;
-                    if (uitests_files <= current_uitests) {
-                        setTimeout(
-                            () => {
-                                process.exitCode = 0;
-                                process.exit();
-                            }, 3000);
-                    }
-                    else {
-                        sendActivity(res, {
-                            type: "message",
-                            timestamp: new Date().toUTCString(),
-                            channelId: "webchat",
-                            text: "echo: " + req.body.text
-                        });
-                    }
-                    return;
-                case 'cards':
-                    // prints all available Adaptive Cards json files inside of ./test/cards/ folder
-                    fs.readdir('./test/cards/',(err, files) => {
-                        let renderList = '';
-                        if (err) {
-                            renderList = 'Missing Adaptive cards json files in ./test/cards/ folder';
-                        } else {
-                            files.forEach(fileName => {
-                                fileName = fileName.substr(0, fileName.lastIndexOf('.')) || fileName;
-                                renderList += '<li>' + fileName + '</li>';
-                            });
-                            renderList = '<ul>' + renderList + '</ul>';
-                        }
-                        sendActivity(res, {
-                            type: "message",
-                            timestamp: new Date().toUTCString(),
-                            channelId: "webchat",
-                            text: renderList
-                        });
-                    })
-                    return;
-                default:
+    } else {
+        switch (cmd) {
+            case 'end':
+                current_uitests++;
+                if (uitests_files <= current_uitests) {
+                    setTimeout(
+                        () => {
+                            process.exitCode = 0;
+                            process.exit();
+                        }, 3000);
+                }
+                else {
                     sendActivity(res, {
                         type: "message",
                         timestamp: new Date().toUTCString(),
                         channelId: "webchat",
                         text: "echo: " + req.body.text
                     });
-                    return;
-            }
+                }
+                return;
+            default:
+                sendActivity(res, {
+                    type: "message",
+                    timestamp: new Date().toUTCString(),
+                    channelId: "webchat",
+                    text: "echo: " + req.body.text
+                });
+                return;
         }
     }
 }
+
 
 app.post('/mock/conversations/:conversationId/upload', (req, res) => {
     const token = get_token(req);
@@ -299,16 +269,16 @@ const getMessages = (req: express.Request, res: express.Response) => {
     }
 }
 
-const getJson = (fsName: string): Promise<any> => {
-    return readFileAsync('./test/cards/' + fsName +'.json')
-        .then(function(res){
+const getCardJsonFromFs = (fsName: string): Promise<any> => {
+    return readFileAsync('./test/cards/' + fsName + '.json')
+        .then(function (res) {
             return JSON.parse(res);
         });
 }
 
 const readFileAsync = (filename: string): Promise<any> => {
-    return new Promise((resolve,reject) => {
-        fs.readFile(filename,(err,result) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(filename, (err, result) => {
             if (err) reject(err);
             else resolve(result);
         });

@@ -136,12 +136,18 @@ var car_attach4: dl.HeroCard = {
     }
 }
 
-export var adaptive_cards: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    attachments: []
+export var adaptive_cardsFn = function (json: any) {
+    var acMessage: dl.Message = {
+        type: "message",
+        from: bot,
+        timestamp: new Date().toUTCString(),
+        channelId: "webchat",
+        attachments: [
+            { contentType: "application/vnd.microsoft.card.adaptive", content: json }
+        ]
+    };
+
+    return acMessage;
 }
 
 export var car_card: dl.Message = {
