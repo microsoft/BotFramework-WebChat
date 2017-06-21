@@ -27,7 +27,7 @@ const simpleCard = {
 };
 
 const get_token = (req: express.Request) =>
-    (req.headers["authorization"] || "works/all").split(" ")[1];
+    (req.header("authorization") || "works/all").split(" ")[1];
 
 const sendExpiredToken = (res: express.Response) => {
     res.status(403).send({ error: { code: "TokenExpired" } });
