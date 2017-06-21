@@ -305,10 +305,10 @@ export const AttachmentView = (props: {
 
         case "audio/mpeg":
         case "audio/mp4":
-            return <Media type='audio' src={ attachment.contentUrl } />;
+            return <Media type='video' src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         case "video/mp4":
-            return <Media type='video' src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
+            return <Media type='video' poster={ attachment.thumbnailUrl } src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
             return <Unknown format={ props.format } contentType={ (attachment as any).contentType } contentUrl={ (attachment as any).contentUrl } name={ (attachment as any).name } />;
