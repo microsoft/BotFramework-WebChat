@@ -10,8 +10,8 @@ let nightmare = Nightmare({
 	executionTimeout: 6000
 });
 
-Nightmare.prototype.do = function(doFn){
-	if(doFn) {
+Nightmare.prototype.do = function (doFn) {
+	if (doFn) {
 		doFn(this);
 	}
 	return this;
@@ -33,11 +33,12 @@ describe('nightmare UI tests', function () {
 		let isFalseColor = "\x1b[31m";
 		let deviceColor = "\x1b[36m%s\x1b[0m";
 		let resultToConsole = function (result) {
-			result ? console.log(isTrueColor, `${tab}${tab}${result}`) :
-				console.log(isFalseColor, `${tab}${tab}${result}`);
+			result.toString().toLowerCase().includes("true")
+				? console.log(isTrueColor, `${tab}${tab}${result}`)
+				: console.log(isFalseColor, `${tab}${tab}${result}`);
 		}
-		let deviceToConsole = function(device, width){
-				console.log(deviceColor, `${tab}${device} (width: ${width}px)`);
+		let deviceToConsole = function (device, width) {
+			console.log(deviceColor, `${tab}${device} (width: ${width}px)`);
 		}
 
 		//Testing devices and commands 
@@ -47,9 +48,12 @@ describe('nightmare UI tests', function () {
 				deviceToConsole(device, width);
 
 				for (let cmd_index = 0; cmd_index < keys.length; cmd_index++) {
-					console.log(`${tab}${tab}Command: ${keys[cmd_index]}`);
+					const cmd = keys[cmd_index];
 
-					let testUrl = `${url}&t=${keys[cmd_index]}/ui`;
+					console.log(`${tab}${tab}Command: ${cmd}`);
+
+					// All tests should be passed under speech enabled environment
+					let testUrl = `${url}&t=${cmd}&speech=enabled/ui`;
 					let result = "";
 
 					//Starting server and reload the page.
@@ -61,14 +65,38 @@ describe('nightmare UI tests', function () {
 					result = yield nightmare.goto(testUrl)
 						.viewport(width, 768)
 						.wait(2000)
-						.type('.wc-textbox input', keys[cmd_index])
+						.type('.wc-textbox input', cmd)
 						.click('.wc-send')
 						.wait(3000)
-						.do(commands[keys[cmd_index]].do)
-						.evaluate(commands[keys[cmd_index]].client)
+						.do(commands[cmd].do)
+						.evaluate(commands[cmd].client)
 
-					resultToConsole(result);
+					resultToConsole("Speech enabled: " + result);
 					results.push(result);
+
+					const speechCmd = /speech[ \t]([^ ]*)/g.exec(cmd);
+					if (!speechCmd || speechCmd.length === 0) {
+						// Non speech specific tests should also be passed under speech disabled environment
+						testUrl = `${url}&t=${cmd}&speech=disabled/ui`;
+						result = "";
+
+						if (cmd_index == 0) {
+							result = yield nightmare.goto(testUrl)
+								.viewport(width, 768);
+						}
+
+						result = yield nightmare.goto(testUrl)
+							.viewport(width, 768)
+							.wait(2000)
+							.type('.wc-textbox input', cmd)
+							.click('.wc-send')
+							.wait(3000)
+							.do(commands[cmd].do)
+							.evaluate(commands[cmd].client)
+
+						resultToConsole("Speech disabled: " + result);
+						results.push(result);
+					}
 				}
 			}
 			yield nightmare.end();

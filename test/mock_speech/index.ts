@@ -12,6 +12,7 @@ class MockSpeechRecognizer implements Speech.ISpeechRecognizer {
 
     warmup(): void { }
     startRecognizing(): void {
+        // This will advance to Listening_Start state from Listening_Starting
         if (this.onAudioStreamingToService) {
             this.onAudioStreamingToService();
         }

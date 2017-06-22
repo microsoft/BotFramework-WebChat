@@ -40,7 +40,7 @@
 
         window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
-        var speechOptions = params['speech'] !== "enabled"
+        var speechOptions = params['speech'] !== "enabled/ui"
             ? null
             : {
                 speechRecognizer: new MockSpeechRecognizer(),
