@@ -75,21 +75,21 @@
             // Note that chrome automatically blocks speech if the html file is loaded from disk. You can run a server locally 
             // or launch chrome (close all the existing chrome browsers) with the following option:
             // chrome.exe --allow-file-access-from-files <sampleHtmlFile>
-            // var speechOptions = {
-            //     speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
-            //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
-            // }
+            var speechOptions = {
+                speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
+                speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
+            }
 
             // // Option 3 : Cognitive services speech recognition using API key (cross browser, speech priming support)
             //
-            var speechOptions = {
-                speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
-                speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
-                    { 
-                        subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
-                        gender: CognitiveServices.SynthesisGender.Female
-                    })
-            }
+            // var speechOptions = {
+            //     speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
+            //     speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
+            //         { 
+            //             subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
+            //             gender: CognitiveServices.SynthesisGender.Female
+            //         })
+            // }
 
             // // Option 4 : Cognitive services speech recognition using a token (usually generated in a secure backend using your API key)
             //

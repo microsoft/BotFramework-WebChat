@@ -5,7 +5,7 @@
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
   "scripts": {
-    "build-test": "tsc -p ./test/mock_dl && tsc -p ./test",
+    "build-test": "tsc -p ./test/mock_dl && tsc -p ./test && tsc -p ./test/mock_speech",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
     "build-css": "node-sass ./src/scss/ -o .",
     "build-ac-config": "ac-scss2json ./src/scss/includes/adaptive-card-config.scss > adaptivecards-hostconfig.json",
