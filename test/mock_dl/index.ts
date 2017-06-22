@@ -174,7 +174,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
     } else {
         switch (cmd) {
             case 'end':
-                current_uitests++;
+                current_uitests += 0.5; // For each end command, we will excute twice
                 if (uitests_files <= current_uitests) {
                     setTimeout(
                         () => {
