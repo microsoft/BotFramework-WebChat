@@ -174,8 +174,8 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
     } else {
         switch (cmd) {
             case 'end':
-                current_uitests += 0.5; // For each end command, we will excute twice
-                if (uitests_files <= current_uitests) {
+                current_uitests++; // For each end command, we will excute twice
+                if (uitests_files * 2 <= current_uitests) {
                     setTimeout(
                         () => {
                             process.exitCode = 0;

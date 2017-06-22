@@ -41,6 +41,30 @@ describe('nightmare UI tests', function () {
 			console.log(deviceColor, `${tab}${device} (width: ${width}px)`);
 		}
 
+		let testOneCommand = function* (testurl, index, width, consoleLog) {
+			const cmd = keys[index];
+			let result = "";
+			//Starting server and reload the page.
+			if (index == 0) {
+				result = yield nightmare.goto(testurl)
+					.viewport(width, 768);
+			}
+
+			result = yield nightmare.goto(testurl)
+				.viewport(width, 768)
+				.wait(2000)
+				.type('.wc-textbox input', cmd)
+				.click('.wc-send')
+				.wait(3000)
+				.do(commands[cmd].do)
+				.evaluate(commands[cmd].client);
+
+			if (result) {
+				resultToConsole(consoleLog + result);
+				results.push(result);
+			}
+		}
+
 		//Testing devices and commands 
 		let testAllCommands = function* () {
 			for (let device in devices) {
@@ -54,48 +78,14 @@ describe('nightmare UI tests', function () {
 
 					// All tests should be passed under speech enabled environment
 					let testUrl = `${url}&t=${cmd}&speech=enabled/ui`;
-					let result = "";
+					yield testOneCommand(testUrl, cmd_index, width, "Speech enabled: ")
 
-					//Starting server and reload the page.
-					if (cmd_index == 0) {
-						result = yield nightmare.goto(testUrl)
-							.viewport(width, 768);
-					}
-
-					result = yield nightmare.goto(testUrl)
-						.viewport(width, 768)
-						.wait(2000)
-						.type('.wc-textbox input', cmd)
-						.click('.wc-send')
-						.wait(3000)
-						.do(commands[cmd].do)
-						.evaluate(commands[cmd].client)
-
-					resultToConsole("Speech enabled: " + result);
-					results.push(result);
 
 					const speechCmd = /speech[ \t]([^ ]*)/g.exec(cmd);
 					if (!speechCmd || speechCmd.length === 0) {
 						// Non speech specific tests should also be passed under speech disabled environment
 						testUrl = `${url}&t=${cmd}&speech=disabled/ui`;
-						result = "";
-
-						if (cmd_index == 0) {
-							result = yield nightmare.goto(testUrl)
-								.viewport(width, 768);
-						}
-
-						result = yield nightmare.goto(testUrl)
-							.viewport(width, 768)
-							.wait(2000)
-							.type('.wc-textbox input', cmd)
-							.click('.wc-send')
-							.wait(3000)
-							.do(commands[cmd].do)
-							.evaluate(commands[cmd].client)
-
-						resultToConsole("Speech disabled: " + result);
-						results.push(result);
+						yield testOneCommand(testUrl, cmd_index, width, "Speech disabled: ")
 					}
 				}
 			}
