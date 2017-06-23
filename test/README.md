@@ -66,7 +66,9 @@ The mock server will now automatically serve dummy data to the web chat instance
 * Always run __"npm run build-test"__ prior to any testing processes.
 * Keep in mind that if mock server and [Nightmare.js](http://www.Nightmare.js.org/) / [Mocha.js](https://mochajs.org/) tests are both running separately, the mock server will occupy one terminal (process), tests will run from another terminal (process). If the mock server is interrupted, closed, killed, or force closed, the tests will fail intermediately.
 > * __"npm run build-test-watch"__ will monitor file-system changes to perform automatic rebuilds, but the watch system will occupy a separate process thread on its own.
-> * While running [Nightmare.js](http://www.Nightmare.js.org/), press **Ctrl + C** to cancel it at any time during the process.
+* While running [Nightmare.js](http://www.Nightmare.js.org/), press **Ctrl + C** to cancel it at any time during the process.
+* While running [Nightmare.js](http://www.Nightmare.js.org/), make sure you do not have other processes or browser tabs / windows / processes are opening the same __localhost:3000__ url, otherwise tests will run into state of confusion by not knowing which browser instance to interact with. It will lead to inconsistent test results or test failures.
+* Due to browser resource management constrains, while running [Nightmare.js] (http://www.Nightmare.js.org/) please do not minimize your browser window. It will pause browser activities, which would lead to test failures as well.
 
 ## Example - Write a "Hello World" test 
 
