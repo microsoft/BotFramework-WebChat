@@ -201,6 +201,22 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.receipt_card);
         }
     },
+    "video": {
+        client: function () {
+            return true;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.video );
+        }
+    },
+    "videocard": {
+        client: function () {
+            return true;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.video_card );
+        }
+    },
     "card Weather": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
