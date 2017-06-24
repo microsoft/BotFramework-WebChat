@@ -177,7 +177,7 @@ export const AttachmentView = (props: {
             if (!attachment.content)
                 return null;
             const thumbnailCardBuilder = new CardBuilder.AdaptiveCardBuilder();
-            if (attachment.content.images) {
+            if (attachment.content.images && attachment.content.images.length > 0) {
                 const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" }, columns[0]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
