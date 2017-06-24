@@ -9,6 +9,7 @@ npm-debug.log*
 debug.log
 test/src
 test/mock_dl/index.js*
+test/mock_speech/index.js*
 test/commands_map.js*
 test/server_content.js*
 test/interfaces_sdk.js*
@@ -18,4 +19,6 @@ webpacked
 built
 botchat.js
 botchat.js.map
+CognitiveServices.js
+CognitiveServices.js.map
 *.css

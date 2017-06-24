@@ -174,8 +174,8 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
     } else {
         switch (cmd) {
             case 'end':
-                current_uitests++;
-                if (uitests_files <= current_uitests) {
+                current_uitests++; // For each end command, we will excute twice
+                if (uitests_files * 2 <= current_uitests) {
                     setTimeout(
                         () => {
                             process.exitCode = 0;
@@ -295,6 +295,9 @@ app.get('/botchat.css', function (req, res) {
 });
 app.get('/botchat-fullwindow.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat-fullwindow.css"));
+});
+app.get('/mock_speech.js', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../mock_speech/index.js"));
 });
 app.get('/assets/:file', function (req, res) {
     const file = req.params["file"];
