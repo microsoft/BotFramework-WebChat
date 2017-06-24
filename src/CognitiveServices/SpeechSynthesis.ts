@@ -58,8 +58,10 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     stopSpeaking(): void {
         if (this._isPlaying) {
             this._requestQueue = [];
-            this._audioElement.close();
             this._isPlaying = false;
+            if(this._audioElement.state !== "closed"){
+                this._audioElement.close();
+            }
         }
     }
 
@@ -80,6 +82,10 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
 
         if (!this._isPlaying) {
             this._isPlaying = true;
+            if(this._audioElement.state === "closed"){
+                this._audioElement = new AudioContext();
+            }
+
             this._audioElement.decodeAudioData(top.data, (buffer) => {
                 let source = this._audioElement.createBufferSource();
                 source.buffer = buffer;
@@ -166,7 +172,7 @@ class CognitiveServicesHelper {
 
     private makeSSML(text: string, locale: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): string {
         if (text.indexOf("<speak") === 0) {
-            return this.processSSML(text);
+            return this.processSSML(text, synthesisProperties);
         }
         else {
             let ssml = "<speak version='1.0' xml:lang='" + locale + "'><voice xml:lang='" + locale + "' xml:gender='" + (synthesisProperties && synthesisProperties.gender ? SynthesisGender[synthesisProperties.gender] : "Female") + "' name='";
@@ -185,7 +191,7 @@ class CognitiveServicesHelper {
         }
     }
 
-    private processSSML(ssml: string): string {
+    private processSSML(ssml: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): string {
         let processDone: boolean = false;
 
         // Extract locale info from ssml
@@ -227,7 +233,7 @@ class CognitiveServicesHelper {
                     }
 
                     let attribute = dom.createAttribute("name");
-                    attribute.value = this.fetchVoiceName(locale, gender);
+                    attribute.value = synthesisProperties.voiceName || this.fetchVoiceName(locale, gender);
                     nodes[i].attributes.setNamedItem(attribute);
                     processDone = true;
                 }
@@ -240,7 +246,7 @@ class CognitiveServicesHelper {
             // There is no voice element, add one based on locale
             let voiceNode = dom.createElement("voice") as Node;
             let attribute = dom.createAttribute("name");
-            attribute.value = this.fetchVoiceName(locale, SynthesisGender.Female);
+            attribute.value = synthesisProperties.voiceName || this.fetchVoiceName(locale, SynthesisGender.Female);
             voiceNode.attributes.setNamedItem(attribute);
 
             while (nodes.length > 0) {
@@ -262,7 +268,7 @@ class CognitiveServicesHelper {
 
     private checkAuthToken(): Promise<void> {
         // Token expires in 10 minutes. So we renew the token every 500s
-        if (!this._token || (Date.now() - this._lastTokenTime > 500)) {
+        if (!this._token || (Date.now() - this._lastTokenTime > 500000)) {
             let optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
             // required for Firefox otherwise a CORS error is raised
             { name: "Access-Control-Allow-Origin", value: "*" }];

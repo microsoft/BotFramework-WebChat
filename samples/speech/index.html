@@ -25,8 +25,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<style>
 		.wc-chatview-panel {
-			width: 320px;
-			height: 500px;
+			width: 620px;
+			height: 800px;
 			position: relative;
 		}
         .h2{
@@ -40,7 +40,7 @@
 
         <section class="example">
             <p>
-                This sample shows the various options for enbaling speech recognition and speech synthesis in the WebChat
+                This sample shows the various options for enabling speech recognition and speech synthesis in the WebChat
             </p>
         </section>
 
@@ -84,10 +84,12 @@
             //
             var speechOptions = {
                 speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
+                
                 speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
                     { 
                         subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
-                        gender: CognitiveServices.SynthesisGender.Female
+                        gender: CognitiveServices.SynthesisGender.Female,
+                        voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
                     })
             }
 
