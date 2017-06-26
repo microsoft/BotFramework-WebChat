@@ -59,7 +59,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         if (this._isPlaying) {
             this._requestQueue = [];
             this._isPlaying = false;
-            if(this._audioElement.state !== "closed"){
+            if (this._audioElement.state !== "closed") {
                 this._audioElement.close();
             }
         }
@@ -70,7 +70,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
             return;
         }
 
-        let top = this._requestQueue[0];
+        const top = this._requestQueue[0];
         if (!top) {
             return;
         }
@@ -82,12 +82,12 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
 
         if (!this._isPlaying) {
             this._isPlaying = true;
-            if(this._audioElement.state === "closed"){
+            if (this._audioElement.state === "closed") {
                 this._audioElement = new AudioContext();
             }
 
             this._audioElement.decodeAudioData(top.data, (buffer) => {
-                let source = this._audioElement.createBufferSource();
+                const source = this._audioElement.createBufferSource();
                 source.buffer = buffer;
                 source.connect(this._audioElement.destination);
 
@@ -122,7 +122,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
             return;
         }
 
-        let latest = this._requestQueue[this._requestQueue.length - 1];
+        const latest = this._requestQueue[this._requestQueue.length - 1];
 
         return this._helper.fetchSpeechData(latest.text, latest.locale, this._properties).then((result) => {
             latest.data = result;
@@ -143,6 +143,67 @@ class CognitiveServicesHelper {
     private readonly _tokenURL = "https://api.cognitive.microsoft.com/sts/v1.0/issueToken";
     private readonly _synthesisURL = "https://speech.platform.bing.com/synthesize";
     private readonly _outputFormat = "riff-16khz-16bit-mono-pcm";
+    private readonly _femaleVoiceMap = new Map([
+        ["ar-eg", "Microsoft Server Speech Text to Speech Voice (ar-EG, Hoda)"],
+        ["ca-es", "Microsoft Server Speech Text to Speech Voice (ca-ES, HerenaRUS)"],
+        ["da-dk", "Microsoft Server Speech Text to Speech Voice (da-DK, HelleRUS)"],
+        ["de-de", "Microsoft Server Speech Text to Speech Voice (de-DE, Hedda)"],
+        ["en-au", "Microsoft Server Speech Text to Speech Voice (en-AU, Catherine)"],
+        ["en-ca", "Microsoft Server Speech Text to Speech Voice (en-CA, Linda)"],
+        ["en-gb", "Microsoft Server Speech Text to Speech Voice (en-GB, Susan, Apollo)"],
+        ["en-in", "Microsoft Server Speech Text to Speech Voice (en-IN, Heera, Apollo)"],
+        ["en-us", "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)"],
+        ["es-es", "Microsoft Server Speech Text to Speech Voice (es-ES, Laura, Apollo)"],
+        ["es-mx", "Microsoft Server Speech Text to Speech Voice (es-MX, HildaRUS)"],
+        ["fi-fi", "Microsoft Server Speech Text to Speech Voice (fi-FI, HeidiRUS)"],
+        ["fr-ca", "Microsoft Server Speech Text to Speech Voice (fr-CA, Caroline)"],
+        ["fr-fr", "Microsoft Server Speech Text to Speech Voice (fr-FR, Julie, Apollo)"],
+        ["hi-in", "Microsoft Server Speech Text to Speech Voice (hi-IN, Kalpana, Apollo)"],
+        ["ja-jp", "Microsoft Server Speech Text to Speech Voice (ja-JP, Ayumi, Apollo)"],
+        ["ko-kr", "Microsoft Server Speech Text to Speech Voice (ko-KR, HeamiRUS)"],
+        ["nb-no", "Microsoft Server Speech Text to Speech Voice (nb-NO, HuldaRUS)"],
+        ["nl-nl", "Microsoft Server Speech Text to Speech Voice (nl-NL, HannaRUS)"],
+        ["pl-pl", "Microsoft Server Speech Text to Speech Voice (pl-PL, PaulinaRUS)"],
+        ["pt-br", "Microsoft Server Speech Text to Speech Voice (pt-BR, HeloisaRUS)"],
+        ["pt-pt", "Microsoft Server Speech Text to Speech Voice (pt-PT, HeliaRUS)"],
+        ["ru-ru", "Microsoft Server Speech Text to Speech Voice (ru-RU, Irina, Apollo)"],
+        ["sv-se", "Microsoft Server Speech Text to Speech Voice (sv-SE, HedvigRUS)"],
+        ["tr-tr", "Microsoft Server Speech Text to Speech Voice (tr-TR, SedaRUS)"],
+        ["zh-cn", "Microsoft Server Speech Text to Speech Voice (zh-CN, HuihuiRUS)"],
+        ["zh-hk", "Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)"],
+        ["zh-tw", "Microsoft Server Speech Text to Speech Voice (zh-TW, Yating, Apollo)"]
+    ]);
+    private readonly _maleVoiceMap = new Map([
+        ["ar-sa", "Microsoft Server Speech Text to Speech Voice (ar-SA, Naayf)"],
+        ["cs-cz", "Microsoft Server Speech Text to Speech Voice (cs-CZ, Vit)"],
+        ["de-at", "Microsoft Server Speech Text to Speech Voice (de-AT, Michael)"],
+        ["de-ch", "Microsoft Server Speech Text to Speech Voice (de-CH, Karsten)"],
+        ["de-de", "Microsoft Server Speech Text to Speech Voice (de-DE, Stefan, Apollo)"],
+        ["el-gr", "Microsoft Server Speech Text to Speech Voice (el-GR, Stefanos)"],
+        ["en-gb", "Microsoft Server Speech Text to Speech Voice (en-GB, George, Apollo)"],
+        ["en-ie", "Microsoft Server Speech Text to Speech Voice (en-IE, Shaun)"],
+        ["en-in", "Microsoft Server Speech Text to Speech Voice (en-IN, Ravi, Apollo)"],
+        ["en-us", "Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)"],
+        ["es-es", "Microsoft Server Speech Text to Speech Voice (es-ES, Pablo, Apollo)"],
+        ["es-mx", "Microsoft Server Speech Text to Speech Voice (es-MX, Raul, Apollo)"],
+        ["fr-ch", "Microsoft Server Speech Text to Speech Voice (fr-CH, Guillaume)"],
+        ["fr-fr", "Microsoft Server Speech Text to Speech Voice (fr-FR, Paul, Apollo)"],
+        ["he-il", "Microsoft Server Speech Text to Speech Voice (he-IL, Asaf)"],
+        ["hi-in", "Microsoft Server Speech Text to Speech Voice (hi-IN, Hemant)"],
+        ["hu-hu", "Microsoft Server Speech Text to Speech Voice (hu-HU, Szabolcs)"],
+        ["id-id", "Microsoft Server Speech Text to Speech Voice (id-ID, Andika)"],
+        ["it-it", "Microsoft Server Speech Text to Speech Voice (it-IT, Cosimo, Apollo)"],
+        ["ja-jp", "Microsoft Server Speech Text to Speech Voice (ja-JP, Ichiro, Apollo)"],
+        ["pt-br", "Microsoft Server Speech Text to Speech Voice (pt-BR, Daniel, Apollo)"],
+        ["ro-ro", "Microsoft Server Speech Text to Speech Voice (ro-RO, Andrei)"],
+        ["ru-ru", "Microsoft Server Speech Text to Speech Voice (ru-RU, Pavel, Apollo)"],
+        ["sk-sk", "Microsoft Server Speech Text to Speech Voice (sk-SK, Filip)"],
+        ["th-th", "Microsoft Server Speech Text to Speech Voice (th-TH, Pattara)"],
+        ["zh-cn", "Microsoft Server Speech Text to Speech Voice (zh-CN, Kangkang, Apollo)"],
+        ["zh-hk", "Microsoft Server Speech Text to Speech Voice (zh-HK, Danny, Apollo)"],
+        ["zh-tw", "Microsoft Server Speech Text to Speech Voice (zh-TW, Zhiwei, Apollo)"]
+    ]);
+
     private _apiKey: string;
     private _token: string;
     private _lastTokenTime: number;
@@ -158,13 +219,12 @@ class CognitiveServicesHelper {
 
     public fetchSpeechData(text: string, locale: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): Promise<any> {
         return this.checkAuthToken().then(() => {
-            let optionalHeaders;
-            optionalHeaders = [{ name: "Content-type", value: 'application/ssml+xml' },
+            const optionalHeaders = [{ name: "Content-type", value: 'application/ssml+xml' },
             { name: "X-Microsoft-OutputFormat", value: this._outputFormat },
             { name: "Authorization", value: this._token },
             { name: "Ocp-Apim-Subscription-Key", value: this._apiKey }]
 
-            let SSML = this.makeSSML(text, locale, synthesisProperties);
+            const SSML = this.makeSSML(text, locale, synthesisProperties);
 
             return this.makeHttpCall("POST", this._synthesisURL, true, optionalHeaders, SSML);
         });
@@ -196,7 +256,7 @@ class CognitiveServicesHelper {
 
         // Extract locale info from ssml
         let locale: string;
-        let match = /xml:lang=['"](\w\w-\w\w)['"]/.exec(ssml);
+        const match = /xml:lang=['"](\w\w-\w\w)['"]/.exec(ssml);
         if (match) {
             locale = match[1];
         }
@@ -204,23 +264,28 @@ class CognitiveServicesHelper {
             locale = "en-us";
         }
 
+        // Extract gender from properties
+        let gender = synthesisProperties && synthesisProperties.gender;
+        if (gender === null || gender === undefined) {
+            gender = SynthesisGender.Female;
+        }
+
         const parser = new DOMParser();
         const dom = parser.parseFromString(ssml, 'text/xml');
         const nodes = dom.documentElement.childNodes;
 
         // Check if there is a voice node
-        for (var i = 0; i < nodes.length; ++i) {
+        for (let i = 0; i < nodes.length; ++i) {
             if (nodes[i].nodeName === "voice") {
-                let gender: SynthesisGender = null;
                 // Check if there is a name attribute on voice element
-                for (var j = 0; j < nodes[i].attributes.length; ++j) {
+                for (let j = 0; j < nodes[i].attributes.length; ++j) {
                     if (nodes[i].attributes[j].nodeName === "name") {
                         // Name attribute is found on voice element, use it directly
                         processDone = true;
                         break;
                     }
 
-                    // Find the gender info from voice element in case there is no name attribute
+                    // Find the gender info from voice element, this will override what is in the properties
                     if (nodes[i].attributes[j].nodeName === "xml:gender") {
                         gender = nodes[i].attributes[j].nodeValue.toLowerCase() === 'male' ? SynthesisGender.Male : SynthesisGender.Female;
                     }
@@ -228,12 +293,8 @@ class CognitiveServicesHelper {
 
                 if (!processDone) {
                     // Otherwise add the name attribute based on locale and gender
-                    if (gender === null) {
-                        gender = SynthesisGender.Female;
-                    }
-
-                    let attribute = dom.createAttribute("name");
-                    attribute.value = synthesisProperties.voiceName || this.fetchVoiceName(locale, gender);
+                    const attribute = dom.createAttribute("name");
+                    attribute.value = (synthesisProperties && synthesisProperties.voiceName) || this.fetchVoiceName(locale, gender);
                     nodes[i].attributes.setNamedItem(attribute);
                     processDone = true;
                 }
@@ -244,9 +305,9 @@ class CognitiveServicesHelper {
         const serializer = new XMLSerializer();
         if (!processDone) {
             // There is no voice element, add one based on locale
-            let voiceNode = dom.createElement("voice") as Node;
-            let attribute = dom.createAttribute("name");
-            attribute.value = synthesisProperties.voiceName || this.fetchVoiceName(locale, SynthesisGender.Female);
+            const voiceNode = dom.createElement("voice") as Node;
+            const attribute = dom.createAttribute("name");
+            attribute.value = (synthesisProperties && synthesisProperties.voiceName) || this.fetchVoiceName(locale, gender);
             voiceNode.attributes.setNamedItem(attribute);
 
             while (nodes.length > 0) {
@@ -269,7 +330,7 @@ class CognitiveServicesHelper {
     private checkAuthToken(): Promise<void> {
         // Token expires in 10 minutes. So we renew the token every 500s
         if (!this._token || (Date.now() - this._lastTokenTime > 500000)) {
-            let optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
+            const optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
             // required for Firefox otherwise a CORS error is raised
             { name: "Access-Control-Allow-Origin", value: "*" }];
 
@@ -287,7 +348,7 @@ class CognitiveServicesHelper {
 
     private makeHttpCall(actionType: string, url: string, isArrayBuffer: boolean = false, optionalHeaders?: HttpHeader[], dataToSend?: any): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
 
             if (isArrayBuffer) {
                 xhr.responseType = 'arraybuffer';
@@ -329,186 +390,25 @@ class CognitiveServicesHelper {
 
     private fetchVoiceName(locale: string, gender: SynthesisGender): string {
         let voiceName: string;
+        const localeLowerCase = locale.toLowerCase();
 
         // source: https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
         if (gender === SynthesisGender.Female) {
-            switch (locale.toLowerCase()) {
-                case "ar-eg":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ar-EG, Hoda)";
-                    break;
-                case "ca-es":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ca-ES, HerenaRUS)";
-                    break;
-                case "da-dk":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (da-DK, HelleRUS)";
-                    break;
-                case "de-de":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (de-DE, Hedda)";
-                    break;
-                case "en-au":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-AU, Catherine)";
-                    break;
-                case "en-ca":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-CA, Linda)";
-                    break;
-                case "en-gb":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-GB, Susan, Apollo)";
-                    break;
-                case "en-in":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-IN, Heera, Apollo)";
-                    break;
-                case "en-us":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)";
-                    break;
-                case "es-es":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (es-ES, Laura, Apollo)";
-                    break;
-                case "es-mx":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (es-MX, HildaRUS)";
-                    break;
-                case "fi-fi":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (fi-FI, HeidiRUS)";
-                    break;
-                case "fr-ca":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (fr-CA, Caroline)";
-                    break;
-                case "fr-fr":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (fr-FR, Julie, Apollo)";
-                    break;
-                case "hi-in":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (hi-IN, Kalpana, Apollo)";
-                    break;
-                case "ja-jp":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ja-JP, Ayumi, Apollo)";
-                    break;
-                case "ko-kr":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ko-KR, HeamiRUS)";
-                    break;
-                case "nb-no":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (nb-NO, HuldaRUS)";
-                    break;
-                case "nl-nl":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (nl-NL, HannaRUS)";
-                    break;
-                case "pl-pl":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (pl-PL, PaulinaRUS)";
-                    break;
-                case "pt-br":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (pt-BR, HeloisaRUS)";
-                    break;
-                case "pt-pt":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (pt-PT, HeliaRUS)";
-                    break;
-                case "ru-ru":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ru-RU, Irina, Apollo)";
-                    break;
-                case "sv-se":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (sv-SE, HedvigRUS)";
-                    break;
-                case "tr-tr":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (tr-TR, SedaRUS)";
-                    break;
-                case "zh-cn":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (zh-CN, HuihuiRUS)";
-                    break;
-                case "zh-hk":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)";
-                    break;
-                case "zh-tw":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (zh-TW, Yating, Apollo)";
-                    break;
-                default:
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)";
+            if (this._femaleVoiceMap.has(localeLowerCase)) {
+                voiceName = this._femaleVoiceMap.get(localeLowerCase);
+            }
+            else {
+                // Default
+                voiceName = this._femaleVoiceMap.get("en-us");
             }
         }
         else {
-            switch (locale.toLowerCase()) {
-                case "ar-sa":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ar-SA, Naayf)";
-                    break;
-                case "cs-cz":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (cs-CZ, Vit)";
-                    break;
-                case "de-at":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (de-AT, Michael)";
-                    break;
-                case "de-ch":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (de-CH, Karsten)";
-                    break;
-                case "de-de":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (de-DE, Stefan, Apollo)";
-                    break;
-                case "el-gr":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (el-GR, Stefanos)";
-                    break;
-                case "en-gb":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-GB, George, Apollo)";
-                    break;
-                case "en-ie":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-IE, Shaun)";
-                    break;
-                case "en-in":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-IN, Ravi, Apollo)";
-                    break;
-                case "en-us":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)";
-                    break;
-                case "es-es":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (es-ES, Pablo, Apollo)";
-                    break;
-                case "es-mx":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (es-MX, Raul, Apollo)";
-                    break;
-                case "fr-ch":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (fr-CH, Guillaume)";
-                    break;
-                case "fr-fr":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (fr-FR, Paul, Apollo)";
-                    break;
-                case "he-il":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (he-IL, Asaf)";
-                    break;
-                case "hi-in":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (hi-IN, Hemant)";
-                    break;
-                case "hu-hu":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (hu-HU, Szabolcs)";
-                    break;
-                case "id-id":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (id-ID, Andika)";
-                    break;
-                case "it-it":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (it-IT, Cosimo, Apollo)";
-                    break;
-                case "ja-jp":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ja-JP, Ichiro, Apollo)";
-                    break;
-                case "pt-br":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (pt-BR, Daniel, Apollo)";
-                    break;
-                case "ro-ro":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ro-RO, Andrei)";
-                    break;
-                case "ru-ru":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (ru-RU, Pavel, Apollo)";
-                    break;
-                case "sk-sk":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (sk-SK, Filip)";
-                    break;
-                case "th-th":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (th-TH, Pattara)";
-                    break;
-                case "zh-cn":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (zh-CN, Kangkang, Apollo)";
-                    break;
-                case "zh-hk":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (zh-HK, Danny, Apollo)";
-                    break;
-                case "zh-tw":
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (zh-TW, Zhiwei, Apollo)";
-                    break;
-                default:
-                    voiceName = "Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)";
+            if (this._maleVoiceMap.has(localeLowerCase)) {
+                voiceName = this._maleVoiceMap.get(localeLowerCase);
+            }
+            else {
+                // Default
+                voiceName = this._maleVoiceMap.get("en-us");
             }
         }
 

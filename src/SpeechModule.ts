@@ -247,7 +247,7 @@ export module Speech {
         private playNextTTS(requestContainer: SpeakRequest, iCurrent: number) {
             // lang : string, onSpeakQueued: Func<SpeechSynthesisUtterance, void>, onSpeakStarted : Action, onFinishedSpeaking : Action
 
-            let moveToNext = () => {
+            const moveToNext = () => {
                 this.playNextTTS(requestContainer, iCurrent + 1);
             };
 
