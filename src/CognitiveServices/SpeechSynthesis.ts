@@ -334,87 +334,75 @@ class CognitiveServicesHelper {
         const localeLowerCase = locale.toLowerCase();
 
         if (gender === SynthesisGender.Female) {
-            if (this._femaleVoiceMap.has(localeLowerCase)) {
-                voiceName = this._femaleVoiceMap.get(localeLowerCase);
-            }
-            else {
-                // Default
-                voiceName = this._femaleVoiceMap.get("en-us");
-            }
+            voiceName = this._femaleVoiceMap[localeLowerCase] || this._femaleVoiceMap["en-us"];
         }
         else {
-            if (this._maleVoiceMap.has(localeLowerCase)) {
-                voiceName = this._maleVoiceMap.get(localeLowerCase);
-            }
-            else {
-                // Default
-                voiceName = this._maleVoiceMap.get("en-us");
-            }
+            voiceName = this._maleVoiceMap[localeLowerCase] || this._maleVoiceMap["en-us"];
         }
 
         return voiceName;
     }
 
     // source: https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
-    private readonly _femaleVoiceMap = new Map([
-        ["ar-eg", "Microsoft Server Speech Text to Speech Voice (ar-EG, Hoda)"],
-        ["ca-es", "Microsoft Server Speech Text to Speech Voice (ca-ES, HerenaRUS)"],
-        ["da-dk", "Microsoft Server Speech Text to Speech Voice (da-DK, HelleRUS)"],
-        ["de-de", "Microsoft Server Speech Text to Speech Voice (de-DE, Hedda)"],
-        ["en-au", "Microsoft Server Speech Text to Speech Voice (en-AU, Catherine)"],
-        ["en-ca", "Microsoft Server Speech Text to Speech Voice (en-CA, Linda)"],
-        ["en-gb", "Microsoft Server Speech Text to Speech Voice (en-GB, Susan, Apollo)"],
-        ["en-in", "Microsoft Server Speech Text to Speech Voice (en-IN, Heera, Apollo)"],
-        ["en-us", "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)"],
-        ["es-es", "Microsoft Server Speech Text to Speech Voice (es-ES, Laura, Apollo)"],
-        ["es-mx", "Microsoft Server Speech Text to Speech Voice (es-MX, HildaRUS)"],
-        ["fi-fi", "Microsoft Server Speech Text to Speech Voice (fi-FI, HeidiRUS)"],
-        ["fr-ca", "Microsoft Server Speech Text to Speech Voice (fr-CA, Caroline)"],
-        ["fr-fr", "Microsoft Server Speech Text to Speech Voice (fr-FR, Julie, Apollo)"],
-        ["hi-in", "Microsoft Server Speech Text to Speech Voice (hi-IN, Kalpana, Apollo)"],
-        ["ja-jp", "Microsoft Server Speech Text to Speech Voice (ja-JP, Ayumi, Apollo)"],
-        ["ko-kr", "Microsoft Server Speech Text to Speech Voice (ko-KR, HeamiRUS)"],
-        ["nb-no", "Microsoft Server Speech Text to Speech Voice (nb-NO, HuldaRUS)"],
-        ["nl-nl", "Microsoft Server Speech Text to Speech Voice (nl-NL, HannaRUS)"],
-        ["pl-pl", "Microsoft Server Speech Text to Speech Voice (pl-PL, PaulinaRUS)"],
-        ["pt-br", "Microsoft Server Speech Text to Speech Voice (pt-BR, HeloisaRUS)"],
-        ["pt-pt", "Microsoft Server Speech Text to Speech Voice (pt-PT, HeliaRUS)"],
-        ["ru-ru", "Microsoft Server Speech Text to Speech Voice (ru-RU, Irina, Apollo)"],
-        ["sv-se", "Microsoft Server Speech Text to Speech Voice (sv-SE, HedvigRUS)"],
-        ["tr-tr", "Microsoft Server Speech Text to Speech Voice (tr-TR, SedaRUS)"],
-        ["zh-cn", "Microsoft Server Speech Text to Speech Voice (zh-CN, HuihuiRUS)"],
-        ["zh-hk", "Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)"],
-        ["zh-tw", "Microsoft Server Speech Text to Speech Voice (zh-TW, Yating, Apollo)"]
-    ]);
-    
-    private readonly _maleVoiceMap = new Map([
-        ["ar-sa", "Microsoft Server Speech Text to Speech Voice (ar-SA, Naayf)"],
-        ["cs-cz", "Microsoft Server Speech Text to Speech Voice (cs-CZ, Vit)"],
-        ["de-at", "Microsoft Server Speech Text to Speech Voice (de-AT, Michael)"],
-        ["de-ch", "Microsoft Server Speech Text to Speech Voice (de-CH, Karsten)"],
-        ["de-de", "Microsoft Server Speech Text to Speech Voice (de-DE, Stefan, Apollo)"],
-        ["el-gr", "Microsoft Server Speech Text to Speech Voice (el-GR, Stefanos)"],
-        ["en-gb", "Microsoft Server Speech Text to Speech Voice (en-GB, George, Apollo)"],
-        ["en-ie", "Microsoft Server Speech Text to Speech Voice (en-IE, Shaun)"],
-        ["en-in", "Microsoft Server Speech Text to Speech Voice (en-IN, Ravi, Apollo)"],
-        ["en-us", "Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)"],
-        ["es-es", "Microsoft Server Speech Text to Speech Voice (es-ES, Pablo, Apollo)"],
-        ["es-mx", "Microsoft Server Speech Text to Speech Voice (es-MX, Raul, Apollo)"],
-        ["fr-ch", "Microsoft Server Speech Text to Speech Voice (fr-CH, Guillaume)"],
-        ["fr-fr", "Microsoft Server Speech Text to Speech Voice (fr-FR, Paul, Apollo)"],
-        ["he-il", "Microsoft Server Speech Text to Speech Voice (he-IL, Asaf)"],
-        ["hi-in", "Microsoft Server Speech Text to Speech Voice (hi-IN, Hemant)"],
-        ["hu-hu", "Microsoft Server Speech Text to Speech Voice (hu-HU, Szabolcs)"],
-        ["id-id", "Microsoft Server Speech Text to Speech Voice (id-ID, Andika)"],
-        ["it-it", "Microsoft Server Speech Text to Speech Voice (it-IT, Cosimo, Apollo)"],
-        ["ja-jp", "Microsoft Server Speech Text to Speech Voice (ja-JP, Ichiro, Apollo)"],
-        ["pt-br", "Microsoft Server Speech Text to Speech Voice (pt-BR, Daniel, Apollo)"],
-        ["ro-ro", "Microsoft Server Speech Text to Speech Voice (ro-RO, Andrei)"],
-        ["ru-ru", "Microsoft Server Speech Text to Speech Voice (ru-RU, Pavel, Apollo)"],
-        ["sk-sk", "Microsoft Server Speech Text to Speech Voice (sk-SK, Filip)"],
-        ["th-th", "Microsoft Server Speech Text to Speech Voice (th-TH, Pattara)"],
-        ["zh-cn", "Microsoft Server Speech Text to Speech Voice (zh-CN, Kangkang, Apollo)"],
-        ["zh-hk", "Microsoft Server Speech Text to Speech Voice (zh-HK, Danny, Apollo)"],
-        ["zh-tw", "Microsoft Server Speech Text to Speech Voice (zh-TW, Zhiwei, Apollo)"]
-    ]);
+    private readonly _femaleVoiceMap: { [key: string]: string } = {
+        "ar-eg": "Microsoft Server Speech Text to Speech Voice (ar-EG, Hoda)",
+        "ca-es": "Microsoft Server Speech Text to Speech Voice (ca-ES, HerenaRUS)",
+        "da-dk": "Microsoft Server Speech Text to Speech Voice (da-DK, HelleRUS)",
+        "de-de": "Microsoft Server Speech Text to Speech Voice (de-DE, Hedda)",
+        "en-au": "Microsoft Server Speech Text to Speech Voice (en-AU, Catherine)",
+        "en-ca": "Microsoft Server Speech Text to Speech Voice (en-CA, Linda)",
+        "en-gb": "Microsoft Server Speech Text to Speech Voice (en-GB, Susan, Apollo)",
+        "en-in": "Microsoft Server Speech Text to Speech Voice (en-IN, Heera, Apollo)",
+        "en-us": "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)",
+        "es-es": "Microsoft Server Speech Text to Speech Voice (es-ES, Laura, Apollo)",
+        "es-mx": "Microsoft Server Speech Text to Speech Voice (es-MX, HildaRUS)",
+        "fi-fi": "Microsoft Server Speech Text to Speech Voice (fi-FI, HeidiRUS)",
+        "fr-ca": "Microsoft Server Speech Text to Speech Voice (fr-CA, Caroline)",
+        "fr-fr": "Microsoft Server Speech Text to Speech Voice (fr-FR, Julie, Apollo)",
+        "hi-in": "Microsoft Server Speech Text to Speech Voice (hi-IN, Kalpana, Apollo)",
+        "ja-jp": "Microsoft Server Speech Text to Speech Voice (ja-JP, Ayumi, Apollo)",
+        "ko-kr": "Microsoft Server Speech Text to Speech Voice (ko-KR, HeamiRUS)",
+        "nb-no": "Microsoft Server Speech Text to Speech Voice (nb-NO, HuldaRUS)",
+        "nl-nl": "Microsoft Server Speech Text to Speech Voice (nl-NL, HannaRUS)",
+        "pl-pl": "Microsoft Server Speech Text to Speech Voice (pl-PL, PaulinaRUS)",
+        "pt-br": "Microsoft Server Speech Text to Speech Voice (pt-BR, HeloisaRUS)",
+        "pt-pt": "Microsoft Server Speech Text to Speech Voice (pt-PT, HeliaRUS)",
+        "ru-ru": "Microsoft Server Speech Text to Speech Voice (ru-RU, Irina, Apollo)",
+        "sv-se": "Microsoft Server Speech Text to Speech Voice (sv-SE, HedvigRUS)",
+        "tr-tr": "Microsoft Server Speech Text to Speech Voice (tr-TR, SedaRUS)",
+        "zh-cn": "Microsoft Server Speech Text to Speech Voice (zh-CN, HuihuiRUS)",
+        "zh-hk": "Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)",
+        "zh-tw": "Microsoft Server Speech Text to Speech Voice (zh-TW, Yating, Apollo)"
+    };
+
+    private readonly _maleVoiceMap: { [key: string]: string } = {
+        "ar-sa": "Microsoft Server Speech Text to Speech Voice (ar-SA, Naayf)",
+        "cs-cz": "Microsoft Server Speech Text to Speech Voice (cs-CZ, Vit)",
+        "de-at": "Microsoft Server Speech Text to Speech Voice (de-AT, Michael)",
+        "de-ch": "Microsoft Server Speech Text to Speech Voice (de-CH, Karsten)",
+        "de-de": "Microsoft Server Speech Text to Speech Voice (de-DE, Stefan, Apollo)",
+        "el-gr": "Microsoft Server Speech Text to Speech Voice (el-GR, Stefanos)",
+        "en-gb": "Microsoft Server Speech Text to Speech Voice (en-GB, George, Apollo)",
+        "en-ie": "Microsoft Server Speech Text to Speech Voice (en-IE, Shaun)",
+        "en-in": "Microsoft Server Speech Text to Speech Voice (en-IN, Ravi, Apollo)",
+        "en-us": "Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)",
+        "es-es": "Microsoft Server Speech Text to Speech Voice (es-ES, Pablo, Apollo)",
+        "es-mx": "Microsoft Server Speech Text to Speech Voice (es-MX, Raul, Apollo)",
+        "fr-ch": "Microsoft Server Speech Text to Speech Voice (fr-CH, Guillaume)",
+        "fr-fr": "Microsoft Server Speech Text to Speech Voice (fr-FR, Paul, Apollo)",
+        "he-il": "Microsoft Server Speech Text to Speech Voice (he-IL, Asaf)",
+        "hi-in": "Microsoft Server Speech Text to Speech Voice (hi-IN, Hemant)",
+        "hu-hu": "Microsoft Server Speech Text to Speech Voice (hu-HU, Szabolcs)",
+        "id-id": "Microsoft Server Speech Text to Speech Voice (id-ID, Andika)",
+        "it-it": "Microsoft Server Speech Text to Speech Voice (it-IT, Cosimo, Apollo)",
+        "ja-jp": "Microsoft Server Speech Text to Speech Voice (ja-JP, Ichiro, Apollo)",
+        "pt-br": "Microsoft Server Speech Text to Speech Voice (pt-BR, Daniel, Apollo)",
+        "ro-ro": "Microsoft Server Speech Text to Speech Voice (ro-RO, Andrei)",
+        "ru-ru": "Microsoft Server Speech Text to Speech Voice (ru-RU, Pavel, Apollo)",
+        "sk-sk": "Microsoft Server Speech Text to Speech Voice (sk-SK, Filip)",
+        "th-th": "Microsoft Server Speech Text to Speech Voice (th-TH, Pattara)",
+        "zh-cn": "Microsoft Server Speech Text to Speech Voice (zh-CN, Kangkang, Apollo)",
+        "zh-hk": "Microsoft Server Speech Text to Speech Voice (zh-HK, Danny, Apollo)",
+        "zh-tw": "Microsoft Server Speech Text to Speech Voice (zh-TW, Zhiwei, Apollo)"
+    };
 }
