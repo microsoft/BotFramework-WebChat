@@ -1,22 +1,12 @@
 @import "includes/colors";
+@import "includes/settings";
 @import "includes/card-size";
-
-$actionsHeight: 40px;
-$consoleHeight: 50px;
-
-$headerPaddingBottom: 0;
-$headerPaddingLeft: 8px;
-$headerPaddingRight: 8px;
-$headerPaddingTop: 8px;
-$headerTotalHeight: 38px;
-
-$actionTransition: .2s cubic-bezier(0,0,.5,1);
 
 /* reset */
 
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 15px;
+        font-family: $fontFamily;
+        font-size: $fontSize;
     }
 
     .wc-app button {
@@ -278,8 +268,11 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     .wc-card {
 
         background-color: $c01;
-        font-size: 13px;
 
+        .non-adaptive-content {
+            margin: $card_padding $card_padding 0 $card_padding;
+        }
+        
         button {
             background-color: transparent;
             color: $c_brand;
@@ -298,49 +291,6 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
             background-color: $c_brand;
             border-color: $c_brand;
             color: $c01;
-        }
-
-        h1 {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        h2 {
-            color: $c_textHeading;
-            font-size: inherit;
-            font-weight: normal;
-            margin-bottom: 8px;
-        }
-
-        p {
-            padding-bottom: 10px;
-        }
-
-        h1, h2, p {
-            margin-left: 8px;
-            margin-right: 8px;
-        }
-
-        p h2 {
-            /* don't double indent */
-            margin-left: 0;
-        }
-
-        ul.wc-card-buttons {
-            clear: both;
-            display: table;
-        }
-
-        ul.wc-card-buttons li {
-            list-style-type: none;
-            text-align: center;
-            float: left;
-            margin: 2px;
-        }
-
-        &.hero img {
-            display: block;
-            margin-bottom: 11px;
         }
 
         &.receipt table {
@@ -419,12 +369,32 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
         &.signin h1 {
             margin: 10px 24px 16px 14px;
         }
+
+        &.error {
+            text-align: center;
+
+            .error-icon {
+                fill: $c05;
+                height: 56px;
+                margin-bottom: 2px;
+                margin-top: 20px;
+                padding-left: 12px;
+            }
+
+            .error-text {
+                color: $c05;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                margin-bottom: 20px;
+                text-align: inherit;
+            }
+        }
     }
 
 /* alternate chat sizes */
 
     .wc-message {
-        max-width: 85%;
+        max-width: 91%;
     }
 
     @include card-size($card_normal);
@@ -435,6 +405,15 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
 
     .wc-narrow {
         @include card-size($card_narrow);
+    }
+
+/* adaptive card adjustments from wc-card */
+    .wc-adaptive-card {
+
+        p {
+            margin-left: 0;
+            margin-right: 0;
+        }
     }
 
 /* list */
@@ -517,9 +496,17 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
             padding-right: 0;
         }
 
-        li p {
-            min-height: 4em;
-            white-space: normal;
+        li {
+
+            p {
+                min-height: 4em;
+                white-space: normal;
+            }
+
+            .wc-adaptive-card p {
+                min-height: initial;
+            }
+            
         }
     }
 
@@ -626,9 +613,9 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     .wc-send {
         right: 0;
     }
-
+    
     .wc-console.has-text .wc-send svg {
-        fill: $c07;
+        fill: $c07; 
     }
 
 /* animation */
@@ -693,3 +680,4 @@ $actionTransition: .2s cubic-bezier(0,0,.5,1);
     .wc-app ::-webkit-scrollbar-thumb {
         background-color: $c_chrome;
     }
+    
