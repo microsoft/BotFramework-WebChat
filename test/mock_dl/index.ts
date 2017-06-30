@@ -314,16 +314,9 @@ app.get('/botchat-fullwindow.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat-fullwindow.css"));
 });
 app.get('/assets/:file', function (req, res) {
-<<<<<<< HEAD
-    var file = req.params["file"];
-    res.sendFile(path.join(__dirname + "/../assets/" + file));
-});
-
-=======
     const file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
->>>>>>> upstream/master
 // Running Web Server and DirectLine Client on port
 app.listen(process.env.port || process.env.PORT || config["port"], () => {
     console.log('listening on ' + config["port"]);
