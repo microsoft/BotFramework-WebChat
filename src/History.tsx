@@ -46,11 +46,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
             // Subtract the padding from the offsetParent's width to get the width of the content
             const maxContentWidth = (this.carouselActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - paddedWidth;
-            
+
             // Subtract the content width from the chat width to get the margin.
             // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
             const carouselMargin = this.props.size.width - maxContentWidth;
-            
+
             konsole.log('history measureMessage ' + carouselMargin);
 
             // Finally, save it away in the Store, which will force another re-render
@@ -66,30 +66,35 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
-        if (this.scrollToBottom)
+        const lastActivity = this.props.activities[this.props.activities.length - 1];
+        const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
+
+        // Validating if we are at the bottom of the list or the last activity was triggered by the user.
+        if (this.scrollToBottom || lastActivityFromMe) {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
+        }
     }
 
     // In order to do their cool horizontal scrolling thing, Carousels need to know how wide they can be.
     // So, at startup, we create this mock Carousel activity and measure it. 
     private measurableCarousel = () =>
         // find the largest possible message size by forcing a width larger than the chat itself
-        <WrappedActivity 
-            ref={ x => this.carouselActivity = x }
-            activity={ {
+        <WrappedActivity
+            ref={x => this.carouselActivity = x}
+            activity={{
                 type: 'message',
                 id: '',
                 from: { id: '' },
                 attachmentLayout: 'carousel'
-            } }
-            format={ null }
-            fromMe={ false }
-            onClickActivity={ null }
-            onClickRetry={ null }
-            selected={ false }
-            showTimestamp={ false }
+            }}
+            format={null}
+            fromMe={false}
+            onClickActivity={null}
+            onClickRetry={null}
+            selected={false}
+            showTimestamp={false}
         >
-            <div style={ { width: this.largeWidth } }>&nbsp;</div>
+            <div style={{ width: this.largeWidth }}>&nbsp;</div>
         </WrappedActivity>;
 
     // At startup we do three render passes:
@@ -109,31 +114,31 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             if (this.props.format.carouselMargin === undefined) {
                 // For measuring carousels we need a width known to be larger than the chat itself
                 this.largeWidth = this.props.size.width * 2;
-                content = <this.measurableCarousel/>;
+                content = <this.measurableCarousel />;
             } else {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
-                        format={ this.props.format }
-                        key={ 'message' + index }
-                        activity={ activity }
-                        showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                        selected={ this.props.isSelected(activity) }
-                        fromMe={ this.props.isFromMe(activity) }
-                        onClickActivity={ this.props.onClickActivity(activity) }
-                        onClickRetry={ e => {
+                        format={this.props.format}
+                        key={'message' + index}
+                        activity={activity}
+                        showTimestamp={index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1]))}
+                        selected={this.props.isSelected(activity)}
+                        fromMe={this.props.isFromMe(activity)}
+                        onClickActivity={this.props.onClickActivity(activity)}
+                        onClickRetry={e => {
                             // Since this is a click on an anchor, we need to stop it
                             // from trying to actually follow a (nonexistant) link
                             e.preventDefault();
                             e.stopPropagation();
                             this.props.onClickRetry(activity)
-                        } }
+                        }}
                     >
                         <ActivityView
-                            format={ this.props.format }
-                            size={ this.props.size }
-                            activity={ activity }
-                            onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
-                            onImageLoad={ () => this.autoscroll() }
+                            format={this.props.format}
+                            size={this.props.size}
+                            activity={activity}
+                            onCardAction={(type: CardActionTypes, value: string | object) => this.doCardAction(type, value)}
+                            onImageLoad={() => this.autoscroll()}
                         />
                     </WrappedActivity>
                 );
@@ -141,9 +146,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         }
 
         return (
-            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
-                <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
-                    { content }
+            <div className="wc-message-groups" ref={div => this.scrollMe = div || this.scrollMe}>
+                <div className="wc-message-group-content" ref={div => { if (div) this.scrollContent = div }}>
+                    {content}
                 </div>
             </div>
         );
@@ -223,28 +228,28 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         super(props);
     }
 
-    render () {
+    render() {
         let timeLine: JSX.Element;
         switch (this.props.activity.id) {
             case undefined:
-                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
+                timeLine = <span>{this.props.format.strings.messageSending}</span>;
                 break;
             case null:
-                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
+                timeLine = <span>{this.props.format.strings.messageFailed}</span>;
                 break;
             case "retry":
                 timeLine =
                     <span>
-                        { this.props.format.strings.messageFailed }
-                        { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
+                        {this.props.format.strings.messageFailed}
+                        {' '}
+                        <a href="." onClick={this.props.onClickRetry}>{this.props.format.strings.messageRetry}</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
                     sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                timeLine = <span>{this.props.activity.from.name || this.props.activity.from.id}{sent}</span>;
                 break;
         }
 
@@ -262,17 +267,17 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                    <div className={ contentClassName }>
+            <div data-activity-id={this.props.activity.id} className={wrapperClassName} onClick={this.props.onClickActivity}>
+                <div className={'wc-message wc-message-from-' + who} ref={div => this.messageDiv = div}>
+                    <div className={contentClassName}>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
                         </svg>
-                        { this.props.children }
+                        {this.props.children}
                     </div>
                 </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                <div className={'wc-message-from wc-message-from-' + who}>{timeLine}</div>
             </div>
         );
     }
