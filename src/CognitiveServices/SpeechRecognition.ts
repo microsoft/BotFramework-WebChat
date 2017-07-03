@@ -58,7 +58,12 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             throw 'Error: The CognitiveServicesSpeechRecognizer requires either a subscriptionKey or a fetchCallback and fetchOnExpiryCallback.';
         }
 
-        this.actualRecognizer = CognitiveSpeech.CreateRecognizer(recognizerConfig, authentication);
+        if(window.navigator.getUserMedia){
+            this.actualRecognizer = CognitiveSpeech.CreateRecognizer(recognizerConfig, authentication);
+        }
+        else{
+            console.error("This browser does not support speech recognition");
+        }
     }
 
     public warmup() {
@@ -128,6 +133,10 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
         }
 
         this.actualRecognizer.Recognize(eventhandler, speechContext);
+    }
+
+    public speechIsAvailable(){
+        return this.actualRecognizer != null;
     }
 
     public stopRecognizing() {
