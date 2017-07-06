@@ -16,6 +16,7 @@ export module Speech {
         warmup(): void;
         startRecognizing(): void;
         stopRecognizing(): void;
+        speechIsAvailable() : boolean;
     }
 
     export interface ISpeechSynthesizer {
@@ -70,7 +71,7 @@ export module Speech {
         }
 
         public static speechIsAvailable() {
-            return SpeechRecognizer.instance != null;
+            return SpeechRecognizer.instance != null && SpeechRecognizer.instance.speechIsAvailable() ;
         }
 
         private static alreadyRecognizing() {
@@ -113,11 +114,12 @@ export module Speech {
         private recognizer: any = null;
 
         constructor() {
+            if(!(<any>window).webkitSpeechRecognition) {
+                console.error("This browser does not support speech recognition");
+                return;
+            }
+            
             this.recognizer = new (<any>window).webkitSpeechRecognition();
-
-            if (this.recognizer == null)
-                throw "Error: This browser does not support speech recognition";
-
             this.recognizer.lang = 'en-US';
             this.recognizer.interimResults = true;
 
@@ -150,6 +152,10 @@ export module Speech {
                 }
                 throw err;
             }
+        }
+
+        public speechIsAvailable(){
+            return this.recognizer != null;
         }
 
         public warmup() {
