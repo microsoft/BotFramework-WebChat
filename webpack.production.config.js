@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+require("expose-loader");
 
 module.exports = {
     entry: "./src/BotChat.ts",
@@ -34,7 +35,16 @@ module.exports = {
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            {
+                enforce: "pre",
+                test: /\.js$/,
+                loader: "source-map-loader",
+                exclude: [/node_modules/]
+            },
+            {
+                test: require.resolve('microsoft-adaptivecards'),
+                use: [{ loader: 'expose-loader', options: 'AdaptiveCards' }]
+            }
         ]
     },
 
