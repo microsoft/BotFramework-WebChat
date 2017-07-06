@@ -44,7 +44,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "sendet",
         timeSent: " am %1",
         consolePlaceholder: "Verfasse eine Nachricht...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Hören..."
     },
     'pl-pl': {
         title: "Chat",
@@ -58,7 +58,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "wysyłanie",
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Słuchający..."
     },
     'ru-ru': {
         title: "Чат",
@@ -72,7 +72,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "отправка",
         timeSent: " в %1",
         consolePlaceholder: "Введите ваше сообщение...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "прослушивание..."
     },
     'nl-nl': {
         title: "Chat",
@@ -86,7 +86,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "versturen",
         timeSent: " om %1",
         consolePlaceholder: "Typ je bericht...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "het luisteren..."
     },
     'lv-lv': {
         title: "Tērzēšana",
@@ -100,7 +100,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "Nosūtīšana",
         timeSent: " %1",
         consolePlaceholder: "Ierakstiet savu ziņu...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Klausoties..."
     },
     'pt-br': {
         title: "Bate-papo",
@@ -114,7 +114,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " às %1",
         consolePlaceholder: "Digite sua mensagem...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Ouvindo..."
     },
     'fr-fr': {
         title: "Chat",
@@ -128,7 +128,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "envoi",
         timeSent: " à %1",
         consolePlaceholder: "Écrivez votre message...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Écoute..."
     },
     'es-es': {
         title: "Chat",
@@ -142,7 +142,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " a las %1",
         consolePlaceholder: "Escribe tu mensaje...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Escuchando..."
     },
     'el-gr': {
         title: "Συνομιλία",
@@ -156,7 +156,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "αποστολή",
         timeSent: " την %1",
         consolePlaceholder: "Πληκτρολόγηση μηνύματος...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Ακούγοντας..."
     },
     'it-it': {
         title: "Chat",
@@ -170,7 +170,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "invio",
         timeSent: " il %1",
         consolePlaceholder: "Scrivi il tuo messaggio...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Ascoltando..."
     }
 }
 
