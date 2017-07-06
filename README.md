@@ -123,6 +123,35 @@ This builds the following:
 
 ## Customizing WebChat
 
+### Enabling Speech Capabilities
+
+WebChat includes support for spoken conversations by leveraging Speech Recognition (audio to text) and Speech Synthesis (text to audio). 
+
+Speech support is opt-in. As shown in `/samples/speech`, you can customize the speech experience by supplying a specific implementation for speech recognition and speech synthesis to be used.
+
+```typescript
+var speechOptions = {
+    speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
+
+    speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
+        { 
+            subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
+            gender: CognitiveServices.SynthesisGender.Female,
+            voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+        })
+}
+
+...
+    
+BotChat.App({
+    botConnection: botConnection,
+    speechOptions: speechOptions,
+    ...
+}, document.getElementById("BotChatGoesHere"));
+```
+
+For details related to building a speech enabled bot and leveraging Speech Priming to improve speech recognition accuracy, check out the [Speech Support in Bot Framework](https://blog.botframework.com/2017/06/26/Speech-To-Text) blog post.
+
 ### Styling
 
 In the `/src/scss/` folder you will find the source files for generating `/botchat.css`. Run `npm run build-css` to compile once you've made your changes. For basic branding, change `colors.scss` to match your color scheme. For advanced styling, change `botchat.scss`.
