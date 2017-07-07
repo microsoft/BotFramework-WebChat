@@ -5,7 +5,7 @@
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
   "scripts": {
-    "build-test": "tsc -p ./test/mock_dl && tsc -p ./test",
+    "build-test": "tsc -p ./test/mock_dl && tsc -p ./test && tsc -p ./test/mock_speech",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
     "build-css": "node-sass ./src/scss/ -o .",
     "build-ac-config": "ac-scss2json ./src/scss/includes/adaptive-card-config.scss > adaptivecards-hostconfig.json",
@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/react": "^15.0.21",
-    "botframework-directlinejs": "^0.9.6",
+    "botframework-directlinejs": "^0.9.7",
     "core-js": "^2.4.1",
     "markdown-it": "^8.3.1",
     "microsoft-adaptivecards": "^0.6.0",
@@ -39,8 +39,8 @@
     "redux": "^3.6.0",
     "redux-observable": "^0.13.0",
     "rxjs": "^5.3.0",
-    "tslib": "^1.6.0",
-    "typescript": "2.3"
+    "microsoft-speech-browser-sdk": "0.0.1",
+    "tslib": "^1.6.0"
   },
   "devDependencies": {
     "@types/body-parser": "0.0.33",
@@ -54,7 +54,7 @@
     "@types/react-redux": "^4.4.38",
     "awesome-typescript-loader": "^3.1.2",
     "body-parser": "^1.16.0",
-    "chai": "^3.5.0",
+    "chai": "^3.5",
     "chai-subset": "^1.4.0",
     "concurrently": "^3.1.0",
     "deep-freeze": "0.0.1",
@@ -71,7 +71,7 @@
     "npm-run-all": "^3.1.2",
     "remote": "^0.2.6",
     "source-map-loader": "^0.2.1",
-    "typescript": "2.2.2",
+    "typescript": "2.3",
     "vo": "^4.0.2",
     "webpack": "^2.3.3"
   }

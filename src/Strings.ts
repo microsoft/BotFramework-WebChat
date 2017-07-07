@@ -9,7 +9,8 @@ export interface Strings {
     messageFailed: string,
     messageSending: string,
     timeSent: string,
-    consolePlaceholder: string
+    consolePlaceholder: string,
+    listeningIndicator: string
 }
 
 interface LocalizedStrings {
@@ -28,7 +29,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "couldn't send",
         messageSending: "sending",
         timeSent: " at %1",
-        consolePlaceholder: "Type your message..."
+        consolePlaceholder: "Type your message...",
+        listeningIndicator: "Listening..."
     },
     'de-de': {
         title: "Chat",
@@ -41,7 +43,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "konnte nicht senden",
         messageSending: "sendet",
         timeSent: " am %1",
-        consolePlaceholder: "Verfasse eine Nachricht..."
+        consolePlaceholder: "Verfasse eine Nachricht...",
+        listeningIndicator: "Hören..."
     },
     'pl-pl': {
         title: "Chat",
@@ -54,7 +57,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "wysłanie nieudane",
         messageSending: "wysyłanie",
         timeSent: " o %1",
-        consolePlaceholder: "Wpisz swoją wiadomość..."
+        consolePlaceholder: "Wpisz swoją wiadomość...",
+        listeningIndicator: "Słuchający..."
     },
     'ru-ru': {
         title: "Чат",
@@ -67,7 +71,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "не удалось отправить",
         messageSending: "отправка",
         timeSent: " в %1",
-        consolePlaceholder: "Введите ваше сообщение..."
+        consolePlaceholder: "Введите ваше сообщение...",
+        listeningIndicator: "прослушивание..."
     },
     'nl-nl': {
         title: "Chat",
@@ -80,7 +85,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "versturen mislukt",
         messageSending: "versturen",
         timeSent: " om %1",
-        consolePlaceholder: "Typ je bericht..."
+        consolePlaceholder: "Typ je bericht...",
+        listeningIndicator: "het luisteren..."
     },
     'lv-lv': {
         title: "Tērzēšana",
@@ -93,7 +99,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "Neizdevās nosūtīt",
         messageSending: "Nosūtīšana",
         timeSent: " %1",
-        consolePlaceholder: "Ierakstiet savu ziņu..."
+        consolePlaceholder: "Ierakstiet savu ziņu...",
+        listeningIndicator: "Klausoties..."
     },
     'pt-br': {
         title: "Bate-papo",
@@ -106,7 +113,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "não pude enviar",
         messageSending: "enviando",
         timeSent: " às %1",
-        consolePlaceholder: "Digite sua mensagem..."
+        consolePlaceholder: "Digite sua mensagem...",
+        listeningIndicator: "Ouvindo..."
     },
     'fr-fr': {
         title: "Chat",
@@ -119,7 +127,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "envoi impossible",
         messageSending: "envoi",
         timeSent: " à %1",
-        consolePlaceholder: "Écrivez votre message..."
+        consolePlaceholder: "Écrivez votre message...",
+        listeningIndicator: "Écoute..."
     },
     'es-es': {
         title: "Chat",
@@ -132,7 +141,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "no enviado",
         messageSending: "enviando",
         timeSent: " a las %1",
-        consolePlaceholder: "Escribe tu mensaje..."
+        consolePlaceholder: "Escribe tu mensaje...",
+        listeningIndicator: "Escuchando..."
     },
     'el-gr': {
         title: "Συνομιλία",
@@ -145,7 +155,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "αποτυχία",
         messageSending: "αποστολή",
         timeSent: " την %1",
-        consolePlaceholder: "Πληκτρολόγηση μηνύματος..."
+        consolePlaceholder: "Πληκτρολόγηση μηνύματος...",
+        listeningIndicator: "Ακούγοντας..."
     },
     'it-it': {
         title: "Chat",
@@ -158,7 +169,8 @@ const localizedStrings: LocalizedStrings = {
         messageFailed: "impossibile inviare",
         messageSending: "invio",
         timeSent: " il %1",
-        consolePlaceholder: "Scrivi il tuo messaggio..."
+        consolePlaceholder: "Scrivi il tuo messaggio...",
+        listeningIndicator: "Ascoltando..."
     }
 }
 

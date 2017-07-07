@@ -6,7 +6,7 @@ Used by the Bot Framework developer portal, [Emulator](https://github.com/Micros
 
 WebChat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, WebChat is built with [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
 
-You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com). If you wish to play with speech support, you can use the [speech](https://github.com/Microsoft/BotFramework-WebChat/tree/speech) branch.
+You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com).
 
 ## How to add WebChat to your website
 
@@ -122,6 +122,35 @@ This builds the following:
 * `/botchat-fullwindow.css` media query stylesheet for a full-window experience
 
 ## Customizing WebChat
+
+### Enabling Speech Capabilities
+
+WebChat includes support for spoken conversations by leveraging Speech Recognition (audio to text) and Speech Synthesis (text to audio). 
+
+Speech support is opt-in. As shown in `/samples/speech`, you can customize the speech experience by supplying a specific implementation for speech recognition and speech synthesis to be used.
+
+```typescript
+var speechOptions = {
+    speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
+
+    speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
+        { 
+            subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
+            gender: CognitiveServices.SynthesisGender.Female,
+            voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+        })
+}
+
+...
+    
+BotChat.App({
+    botConnection: botConnection,
+    speechOptions: speechOptions,
+    ...
+}, document.getElementById("BotChatGoesHere"));
+```
+
+For details related to building a speech enabled bot and leveraging Speech Priming to improve speech recognition accuracy, check out the [Speech Support in Bot Framework](https://blog.botframework.com/2017/06/26/Speech-To-Text) blog post.
 
 ### Styling
 
