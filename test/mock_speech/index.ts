@@ -18,6 +18,9 @@ class MockSpeechRecognizer implements Speech.ISpeechRecognizer {
         }
     }
     stopRecognizing(): void { }
+    speechIsAvailable(): boolean {
+        return true;
+    }
 }
 
 class MockSpeechSynthesizer implements Speech.ISpeechSynthesizer {
