@@ -614,6 +614,26 @@
         right: 0;
     }
     
+    .wc-send.hidden {
+        visibility: hidden
+    }
+
+    .wc-mic {
+        right: 0;
+    }
+
+    .wc-mic.hidden {
+        visibility: hidden
+    }
+
+    .wc-mic.active path#micFilling {
+        fill:rgb(78, 55, 135)
+    }
+    
+    .wc-mic.inactive path#micFilling {
+        visibility: hidden
+    }
+
     .wc-console.has-text .wc-send svg {
         fill: $c07; 
     }

@@ -1,7 +1,8 @@
 import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botframework-directlinejs';
-import { FormatOptions, ActivityOrID, konsole } from './Chat';
+import { FormatOptions, ActivityOrID, konsole, sendMessage as sendChatMessage } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Speech } from './SpeechModule';
 
 // Reducers - perform state transformations
 
@@ -10,23 +11,43 @@ import { Reducer } from 'redux';
 export interface ShellState {
     sendTyping: boolean
     input: string
+    listening: boolean
+    lastInputViaSpeech : boolean
 }
 
 export type ShellAction = {
     type: 'Update_Input',
     input: string
+    source: "text" | "speech"
+} | {
+    type: 'Listening_Starting'
+} | {
+    type: 'Listening_Start'
+} | {
+    type: 'Listening_Stop'
+} | {
+    type: 'Stop_Speaking'
+} |  {
+    type: 'Card_Action_Clicked'
 } | {
     type: 'Set_Send_Typing',
     sendTyping: boolean
 } | {
     type: 'Send_Message',
     activity: Activity
+}| {
+    type: 'Speak_SSML',
+    ssml: string,
+    locale: string
+    autoListenAfterSpeak: boolean
 }
 
 export const shell: Reducer<ShellState> = (
     state: ShellState = {
         input: '',
-        sendTyping: false
+        sendTyping: false,
+        listening : false,
+        lastInputViaSpeech : false
     },
     action: ShellAction
 ) => {
@@ -34,9 +55,22 @@ export const shell: Reducer<ShellState> = (
         case 'Update_Input':
             return {
                 ... state,
-                input: action.input
+                input: action.input,
+                lastInputViaSpeech : action.source == "speech"
             };
-        
+            
+        case 'Listening_Start':
+            return {
+                ... state,
+                listening: true
+            };
+
+        case 'Listening_Stop':
+            return {
+                ... state,
+                listening: false
+            };
+
         case 'Send_Message':
             return {
                 ... state,
@@ -48,8 +82,15 @@ export const shell: Reducer<ShellState> = (
                 ... state,
                 sendTyping: action.sendTyping
             };
-            
+
+       case 'Card_Action_Clicked':
+           return {
+               ... state,
+               lastInputViaSpeech : false
+           };
+           
         default:
+        case 'Listening_Starting':
             return state;
     }
 }
@@ -364,6 +405,30 @@ export interface ChatState {
     history: HistoryState
 }
 
+const speakFromMsg = (msg: Message, fallbackLocale: string) => {
+    let speak = msg.speak;
+    
+    if (!speak && msg.textFormat == null || msg.textFormat == "plain")
+        speak = msg.text;
+    if (!speak && msg.channelData && msg.channelData.speechOutput && msg.channelData.speechOutput.speakText)
+        speak = msg.channelData.speechOutput.speakText;
+    if (!speak && msg.attachments && msg.attachments.length > 0)
+        for (let i = 0; i < msg.attachments.length; i++) {
+            var anymsg = <any>msg;
+            if (anymsg.attachments[i]["content"] && anymsg.attachments[i]["content"]["speak"]) {
+                speak = anymsg.attachments[i]["content"]["speak"];
+                break;
+            }
+        }
+
+    return {
+            type : 'Speak_SSML',
+            ssml: speak,
+            locale: msg.locale || fallbackLocale,
+            autoListenAfterSpeak : (msg.inputHint == "expectingInput") || (msg.channelData && msg.channelData.botState == "WaitingForAnswerToQuestion"),
+    }
+}
+
 // Epics - chain actions together with async operations
 
 import { applyMiddleware } from 'redux';
@@ -375,9 +440,12 @@ import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/operator/takeUntil';
 
+import 'rxjs/add/observable/bindCallback';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 
@@ -401,10 +469,91 @@ const trySendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
             return Observable.empty<HistoryAction>();
         }
 
+        if (state.history.clientActivityCounter == 1) {
+            var capabilities = {
+                type : 'ClientCapabilities',
+                requiresBotState: true,
+                supportsTts: true,
+                supportsListening: true,
+                // Todo: consider implementing acknowledgesTts: true
+            };
+            (<any>activity).entities  =(<any>activity).entities == null ? [capabilities] :  [...(<any>activity).entities, capabilities];
+        }
+
         return state.connection.botConnection.postActivity(activity)
         .map(id => ({ type: 'Send_Message_Succeed', clientActivityId, id } as HistoryAction))
         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
     });
+
+const speakObservable = Observable.bindCallback<string, string, {}, {}>(Speech.SpeechSynthesizer.speak);
+const speakSSML:Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Speak_SSML')
+    .filter(action => action.ssml )
+    .mergeMap(action => {
+
+        var onSpeakingStarted =  null;
+        var onSpeakingFinished = () => nullAction;
+        if(action.autoListenAfterSpeak) {
+            onSpeakingStarted = () => Speech.SpeechRecognizer.warmup() ;
+            onSpeakingFinished = () => ({ type: 'Listening_Starting' } as ShellAction);
+        }
+
+        const call$ = speakObservable(action.ssml, action.locale, onSpeakingStarted);
+        return call$.map(onSpeakingFinished)
+            .catch(error => Observable.of(nullAction));
+    })
+    .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stop' } as ShellAction)));
+
+const speakOnMessageReceived:Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Receive_Message')
+    .filter(action => (action.activity as Message) && store.getState().shell.lastInputViaSpeech)
+    .map(action => speakFromMsg(action.activity as Message, store.getState().format.locale) as ShellAction);
+
+const stopSpeaking: Epic<ChatActions, ChatState> = (action$) =>
+    action$.ofType(
+        'Update_Input',
+        'Listening_Starting',
+        'Send_Message',
+        'Card_Action_Clicked',
+        'Stop_Speaking'
+    )
+    .do(Speech.SpeechSynthesizer.stopSpeaking)
+    .map(_ => nullAction)
+
+const stopListening: Epic<ChatActions, ChatState> = (action$) =>
+    action$.ofType(
+        'Listening_Stop',
+        'Card_Action_Clicked'
+    )
+    .do(Speech.SpeechRecognizer.stopRecognizing)
+    .map(_ => nullAction)
+
+const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Listening_Starting')
+    .do((action : ShellAction) => {
+        var locale = store.getState().format.locale;
+        var onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source:"speech" })};
+        var onFinalResult = (srText : string) => {
+                srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
+                onIntermediateResult(srText);
+                store.dispatch({ type: 'Listening_Stop' });
+                store.dispatch(sendChatMessage(srText, store.getState().connection.user, locale));
+            };
+        var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
+        var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stop' })};
+        Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
+    })
+    .map(_ => nullAction) 
+
+const listeningSilenceTimeout: Epic<ChatActions, ChatState> = (action$, store) =>
+{
+    const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stop');
+    return action$.ofType('Listening_Start')
+        .mergeMap((action) =>
+            Observable.of(({ type: 'Listening_Stop' }) as ShellAction)
+            .delay(5000)
+            .takeUntil(cancelMessages$));
+};
 
 const retrySendMessage: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Send_Message_Retry')
@@ -435,7 +584,7 @@ const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
     .filter(state => state.shell.sendTyping)
     .throttleTime(3000)
     .do(_ => konsole.log("sending typing"))
-    .flatMap(state => 
+    .flatMap(state =>
         state.connection.botConnection.postActivity({
             type: 'typing',
             from: state.connection.user
@@ -464,7 +613,13 @@ export const createStore = () =>
             trySendMessage,
             retrySendMessage,
             showTyping,
-            sendTyping
+            sendTyping,
+            speakSSML,
+            speakOnMessageReceived,
+            startListening,
+            stopListening,
+            stopSpeaking,
+            listeningSilenceTimeout,
         )))
     );
 
