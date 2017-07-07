@@ -66,8 +66,13 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
-        if (this.scrollToBottom)
+        const lastActivity = this.props.activities[this.props.activities.length - 1];
+        const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
+
+        // Validating if we are at the bottom of the list or the last activity was triggered by the user.
+        if (this.scrollToBottom || lastActivityFromMe) {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
+        }
     }
 
     // In order to do their cool horizontal scrolling thing, Carousels need to know how wide they can be.
