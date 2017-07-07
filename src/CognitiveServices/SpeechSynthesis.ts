@@ -48,11 +48,9 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
                 onSpeakingFinished: onSpeakingFinished
             }
         );
-
         this.getSpeechData().then(() => {
             this.playAudio();
         });
-
     }
 
     stopSpeaking(): void {
@@ -69,32 +67,26 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         if (this._requestQueue.length == 0) {
             return;
         }
-
         const top = this._requestQueue[0];
         if (!top) {
             return;
         }
-
         if (!top.isReadyToPlay) {
             window.setTimeout(() => this.playAudio(), 100);
             return;
         }
-
         if (!this._isPlaying) {
             this._isPlaying = true;
             if (this._audioElement.state === "closed") {
                 this._audioElement = new AudioContext();
             }
-
             this._audioElement.decodeAudioData(top.data, (buffer) => {
                 const source = this._audioElement.createBufferSource();
                 source.buffer = buffer;
                 source.connect(this._audioElement.destination);
-
                 if (top.onSpeakingStarted) {
                     top.onSpeakingStarted();
                 }
-
                 source.start(0);
                 source.onended = (event) => {
                     this._isPlaying = false;
@@ -121,9 +113,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         if (this._requestQueue.length == 0) {
             return;
         }
-
         const latest = this._requestQueue[this._requestQueue.length - 1];
-
         return this._helper.fetchSpeechData(latest.text, latest.locale, this._properties).then((result) => {
             latest.data = result;
             latest.isReadyToPlay = true;
@@ -143,7 +133,6 @@ class CognitiveServicesHelper {
     private readonly _tokenURL = "https://api.cognitive.microsoft.com/sts/v1.0/issueToken";
     private readonly _synthesisURL = "https://speech.platform.bing.com/synthesize";
     private readonly _outputFormat = "riff-16khz-16bit-mono-pcm";
-
     private _apiKey: string;
     private _token: string;
     private _lastTokenTime: number;
@@ -152,7 +141,6 @@ class CognitiveServicesHelper {
         if (!apiKey) {
             throw "Please provide a valid Bing Speech API key";
         }
-
         this._apiKey = apiKey;
         this.checkAuthToken();
     }
@@ -162,10 +150,8 @@ class CognitiveServicesHelper {
             const optionalHeaders = [{ name: "Content-type", value: 'application/ssml+xml' },
             { name: "X-Microsoft-OutputFormat", value: this._outputFormat },
             { name: "Authorization", value: this._token },
-            { name: "Ocp-Apim-Subscription-Key", value: this._apiKey }]
-
+            { name: "Ocp-Apim-Subscription-Key", value: this._apiKey }];
             const SSML = this.makeSSML(text, locale, synthesisProperties);
-
             return this.makeHttpCall("POST", this._synthesisURL, true, optionalHeaders, SSML);
         });
     }
@@ -176,7 +162,6 @@ class CognitiveServicesHelper {
         }
         else {
             let ssml = "<speak version='1.0' xml:lang='" + locale + "'><voice xml:lang='" + locale + "' xml:gender='" + (synthesisProperties && synthesisProperties.gender ? SynthesisGender[synthesisProperties.gender] : "Female") + "' name='";
-
             if (synthesisProperties.voiceName) {
                 ssml += synthesisProperties.voiceName;
             }
@@ -186,7 +171,6 @@ class CognitiveServicesHelper {
             else {
                 ssml += this.fetchVoiceName(locale, SynthesisGender.Female);
             }
-
             return ssml + "'>" + this.encodeHTML(text) + "</voice></speak>";
         }
     }
@@ -209,7 +193,6 @@ class CognitiveServicesHelper {
         if (gender === null || gender === undefined) {
             gender = SynthesisGender.Female;
         }
-
         const parser = new DOMParser();
         const dom = parser.parseFromString(ssml, 'text/xml');
         const nodes = dom.documentElement.childNodes;
@@ -241,7 +224,6 @@ class CognitiveServicesHelper {
                 break;
             }
         }
-
         const serializer = new XMLSerializer();
         if (!processDone) {
             // There is no voice element, add one based on locale
@@ -249,14 +231,11 @@ class CognitiveServicesHelper {
             const attribute = dom.createAttribute("name");
             attribute.value = (synthesisProperties && synthesisProperties.voiceName) || this.fetchVoiceName(locale, gender);
             voiceNode.attributes.setNamedItem(attribute);
-
             while (nodes.length > 0) {
                 voiceNode.appendChild(dom.documentElement.firstChild);
             }
-
             dom.documentElement.appendChild(voiceNode);
         }
-
         return serializer.serializeToString(dom);
     }
 
@@ -274,7 +253,6 @@ class CognitiveServicesHelper {
             const optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
             // required for Firefox otherwise a CORS error is raised
             { name: "Access-Control-Allow-Origin", value: "*" }];
-
             return this.makeHttpCall("POST", this._tokenURL, false, optionalHeaders).then((text) => {
                 this._token = text;
                 this._lastTokenTime = Date.now();
@@ -283,18 +261,15 @@ class CognitiveServicesHelper {
                 konsole.log("Failed to generate authentication token.");
             });
         }
-
         return Promise.resolve();
     }
 
     private makeHttpCall(actionType: string, url: string, isArrayBuffer: boolean = false, optionalHeaders?: HttpHeader[], dataToSend?: any): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-
             if (isArrayBuffer) {
                 xhr.responseType = 'arraybuffer';
             }
-
             xhr.onreadystatechange = function (event) {
                 if (xhr.readyState !== 4) return;
                 if (xhr.status >= 200 && xhr.status < 300) {
@@ -310,7 +285,6 @@ class CognitiveServicesHelper {
             };
             try {
                 xhr.open(actionType, url, true);
-
                 if (optionalHeaders) {
                     optionalHeaders.forEach((header) => {
                         xhr.setRequestHeader(header.name, header.value);
@@ -332,14 +306,12 @@ class CognitiveServicesHelper {
     private fetchVoiceName(locale: string, gender: SynthesisGender): string {
         let voiceName: string;
         const localeLowerCase = locale.toLowerCase();
-
         if (gender === SynthesisGender.Female) {
             voiceName = this._femaleVoiceMap[localeLowerCase] || this._femaleVoiceMap["en-us"];
         }
         else {
             voiceName = this._maleVoiceMap[localeLowerCase] || this._maleVoiceMap["en-us"];
         }
-
         return voiceName;
     }
 
