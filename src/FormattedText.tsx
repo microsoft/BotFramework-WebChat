@@ -53,7 +53,9 @@ const renderMarkdown = (
     text: string,
     onImageLoad: () => void
 ) => {
-    const src = text.replace(/<br\s*\/?>/ig, '\r\n\r\n');
+    const src = text
+                 .replace(/<br\s*\/?>/ig, '\r\n\r\n')
+                 .replace(/\[(.*)\]\((.*)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
     const __html = markdownIt.render(src);
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
