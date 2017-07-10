@@ -44,6 +44,42 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.ani_card);
         }
     },
+    "button-imback": {
+        client: () => new Promise((resolve) => {
+            var buttons = document.querySelectorAll('button');
+            var imBackBtn = buttons[1] as HTMLButtonElement;
+
+            imBackBtn.click();
+            setTimeout(() => {
+                var echos = document.querySelectorAll('.format-markdown');
+                var lastEcho = echos.length -1;
+
+                console.log(echos[lastEcho].innerHTML);
+                resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
+            }, 1000);
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.hero_card);
+        }
+    },
+    "button-postback": {
+        client: () => new Promise((resolve) => {
+            var buttons = document.querySelectorAll('button');
+            var postBackBtn = buttons[2] as HTMLButtonElement;
+
+            postBackBtn.click();
+            setTimeout(() => {
+                var echos = document.querySelectorAll('.format-markdown');
+                var lastEcho = echos.length -1;
+
+                console.log(echos[lastEcho].innerHTML);
+                resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
+            }, 1000);
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.hero_card);
+        }
+    },    
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;

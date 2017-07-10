@@ -167,6 +167,41 @@ export var smallcar_card: dl.Message = {
     attachments: [car_card.attachments[0]]
 }
 
+export var hero_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachmentLayout: "carousel",
+    attachments: [    
+        <dl.HeroCard>{
+            contentType: "application/vnd.microsoft.card.hero",
+            content: {
+                title: "Details about image 1",
+                text: "Price: $XXX.XX USD",
+                images: [
+                    {
+                        "url": asset_url + "surface1.jpg"
+                    }
+                ],
+                buttons: [
+                    {
+                        "type": "imBack",
+                        "value": "imBack Button",
+                        "title": "imBack Action"
+                    },
+                    {
+                        "type": "postBack",
+                        "value": "postBack Button",
+                        "title": "postBack Action"
+                    }
+                ]
+            }
+        }
+    ]
+}
+
 /*
  * Activity for Markdown
  * 
