@@ -52,7 +52,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.audio_raw);
         }
-    },    
+    },
     "audiocard": {
         client: function () {
             var source = document.querySelectorAll('audio')[0].src;
@@ -291,7 +291,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.video_raw);
         }
-    },      
+    },
     "videocard": {
         client: function () {
             var source = document.querySelectorAll('video')[0].src;
