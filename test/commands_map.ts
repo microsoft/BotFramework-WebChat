@@ -44,6 +44,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.ani_card);
         }
     },
+    "audiocard": {
+        client: function () {
+            return true;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.audio_card);
+        }
+    },    
     "button-imback": {
         client: () => new Promise((resolve) => {
             var buttons = document.querySelectorAll('button');
@@ -156,6 +164,15 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.car_card);
         }
     },
+    "herocard": {
+        client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return source.indexOf("surface1.jpg") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.hero_card);
+        }
+    },
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;
@@ -229,7 +246,7 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.suggested_actions_card);
         }
     },
-    "receipt": {
+    "receiptcard": {
         client: function () {
             return true;
         },

@@ -8,7 +8,25 @@ var bot: dl.User = {
 }
 
 /*
- * Activity for Animation
+* Function that renders Adaptive Cards
+*
+*/
+export var adaptive_cardsFn = function (json: any) {
+    var acMessage: dl.Message = {
+        type: "message",
+        from: bot,
+        timestamp: new Date().toUTCString(),
+        channelId: "webchat",
+        attachments: [
+            { contentType: "application/vnd.microsoft.card.adaptive", content: json }
+        ]
+    };
+
+    return acMessage;
+}
+
+/*
+ * Activity for Animation Card
  * 
  */
 export var ani_card: dl.Message = {
@@ -32,18 +50,29 @@ export var ani_card: dl.Message = {
     ]
 }
 
-export var adaptive_cardsFn = function (json: any) {
-    var acMessage: dl.Message = {
-        type: "message",
-        from: bot,
-        timestamp: new Date().toUTCString(),
-        channelId: "webchat",
-        attachments: [
-            { contentType: "application/vnd.microsoft.card.adaptive", content: json }
-        ]
-    };
-
-    return acMessage;
+/*
+ * Activity for Audio Card
+ * 
+ */
+export var audio_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.AudioCard>{
+            contentType: "application/vnd.microsoft.card.audio",
+            content: {
+                title: "BotFramework Test",
+                subtitle: "audio test",
+                text: "No buttons, No Image, Autoloop, Autostart, Sharable",
+                media: [{ url: asset_url + "bftest.mp3", profile: "audiocard" }],
+                autoloop: true,
+                autostart: true
+            }
+        }
+    ]
 }
 
 /*
@@ -104,7 +133,7 @@ export var car_card: dl.Message = {
                         "title": "Related Products"
                     }
                 ]
-            }            
+            }
         },
         <dl.HeroCard>{
             contentType: "application/vnd.microsoft.card.hero",
@@ -128,7 +157,7 @@ export var car_card: dl.Message = {
                         "title": "Related Products"
                     }
                 ]
-            }            
+            }
         },
         <dl.HeroCard>{
             contentType: "application/vnd.microsoft.card.hero",
@@ -152,7 +181,7 @@ export var car_card: dl.Message = {
                         "title": "Related Products"
                     }
                 ]
-            }            
+            }
         },
     ]
 }
@@ -167,6 +196,10 @@ export var smallcar_card: dl.Message = {
     attachments: [car_card.attachments[0]]
 }
 
+/*
+ * Activity for Hero Card
+ * 
+ */
 export var hero_card: dl.Message = {
     type: "message",
     from: bot,
@@ -174,7 +207,7 @@ export var hero_card: dl.Message = {
     channelId: "webchat",
     text: "",
     attachmentLayout: "carousel",
-    attachments: [    
+    attachments: [
         <dl.HeroCard>{
             contentType: "application/vnd.microsoft.card.hero",
             content: {
@@ -276,64 +309,10 @@ export var suggested_actions_card: dl.Message = {
     }
 }
 
-var receipt_attach: dl.Receipt = {
-    contentType: "application/vnd.microsoft.card.receipt",
-    content: {
-    title: "Rodrigez Bender Hotel Bill",
-        items: [
-            {
-                title: "Hotel Bender (r) Paris.",
-                subtitle: "$71 Today up to 27% off Booked in the last 2 hours",
-                text: "Futurama. 40 Aliee De la Mare dian Houleuse, Magny-le-Hongre, Seine-Marne.",
-                image: {
-                    url: "https://testbot.botframework.com/media/hotel-bender.jpg"
-                },
-                price: "$71"
-            },
-            {
-                title: "Label AAAA",
-                price: "$140"
-            },
-            {
-                title: "Label BBBB",
-                price: "$110"
-            }
-        ],
-        facts: [
-            {
-                key: "Order Number",
-                value: "1234567890"
-            },
-            {
-                key: "expected delivery time",
-                value: "2016.06.15"
-            },
-            {
-                key: "Payment Method",
-                value: " VISA 0987"
-            },
-            {
-                key: "Delivery Address",
-                value: "Prague, Andel, 14700"
-            }
-        ],
-        total: "$341.40",
-        tax: "$20.40",
-        buttons: [
-            {
-                type: "imBack",
-                title: "Thumbs Up",
-                value: "I like it"
-            },
-            {
-                type: "imBack",
-                title: "Thumbs Down",
-                value: "I don't like it"
-            }
-        ]
-    }
-}
-
+/*
+ * Activity for Receipt Card
+ * 
+ */
 export var receipt_card: dl.Message = {
     type: "message",
     from: bot,
@@ -341,5 +320,103 @@ export var receipt_card: dl.Message = {
     channelId: "webchat",
     text: "",
     attachmentLayout: "carousel",
-    attachments: [receipt_attach]
+    attachments: [
+        <dl.Receipt>{
+            contentType: "application/vnd.microsoft.card.receipt",
+            content: {
+                title: "Surface Pro 4",
+                items: [
+                    {
+                        title: "Surface Pro 4",
+                        subtitle: "Surface Pro 4 is a powerful, versatile, lightweight laptop.",
+                        text: "Surface does more. Just like you. For one device that does everything, you need more than a mobile OS.",
+                        image: {
+                             "url": asset_url + "surface1.jpg"
+                        },
+                        price: "$XXX"
+                    },
+                    {
+                        title: "Surface Pro 4 (2) - No subtitle, No text.",
+                        image: {
+                             "url": asset_url + "surface2.jpg"
+                        },
+                        price: "$XXX"
+                    },
+                    {
+                        title: "Surface Pro 4 (3) - No subtitle, No text, No image",
+                        price: "$XXX"
+                    }
+                ],
+                facts: [
+                    {
+                        key: "Order Number",
+                        value: "Value 1"
+                    },
+                    {
+                        key: "Expected Delivery Time",
+                        value: "Value 2"
+                    },
+                    {
+                        key: "Payment Method",
+                        value: "Value 3"
+                    },
+                    {
+                        key: "Delivery Address",
+                        value: "Value 4"
+                    }
+                ],
+                total: "0.01",
+                tax: "XXX.XX",
+                buttons: [
+                    {
+                        type: "imBack",
+                        title: "imBack Button",
+                        value: "imBack Action"
+                    },
+                    {
+                        type: "postBack",
+                        title: "postBack Button",
+                        value: "postBack Action"
+                    }
+                ]
+            }
+        }
+    ]
+}
+
+/*
+ * Activity for Thumbnail Card
+ * 
+ */
+export var thumbnail_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    attachments: [
+        <dl.Thumbnail>{
+            contentType: "application/vnd.microsoft.card.thumbnail",
+            content: {
+                title: "Details about image 1",
+                text: "Price: $XXX.XX USD",
+                images: [
+                    {
+                        "url": asset_url + "surface1.jpg"
+                    }
+                ],
+                buttons: [
+                    {
+                        "type": "imBack",
+                        "value": "imBack Button",
+                        "title": "imBack Action"
+                    },
+                    {
+                        "type": "postBack",
+                        "value": "postBack Button",
+                        "title": "postBack Action"
+                    }
+                ]
+            }
+        }
+    ]
 }
