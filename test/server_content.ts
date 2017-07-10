@@ -1,5 +1,5 @@
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
-let config = require('./mock_dl_server_config');
+const config = require('./mock_dl_server_config');
 const asset_url = "http://localhost:" + config["port"] + "/assets/";
 
 var bot: dl.User = {
@@ -165,6 +165,41 @@ export var smallcar_card: dl.Message = {
     text: "",
     attachmentLayout: "carousel",
     attachments: [car_card.attachments[0]]
+}
+
+export var hero_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachmentLayout: "carousel",
+    attachments: [    
+        <dl.HeroCard>{
+            contentType: "application/vnd.microsoft.card.hero",
+            content: {
+                title: "Details about image 1",
+                text: "Price: $XXX.XX USD",
+                images: [
+                    {
+                        "url": asset_url + "surface1.jpg"
+                    }
+                ],
+                buttons: [
+                    {
+                        "type": "imBack",
+                        "value": "imBack Button",
+                        "title": "imBack Action"
+                    },
+                    {
+                        "type": "postBack",
+                        "value": "postBack Button",
+                        "title": "postBack Action"
+                    }
+                ]
+            }
+        }
+    ]
 }
 
 /*

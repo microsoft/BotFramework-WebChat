@@ -44,6 +44,42 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.ani_card);
         }
     },
+    "button-imback": {
+        client: () => new Promise((resolve) => {
+            var buttons = document.querySelectorAll('button');
+            var imBackBtn = buttons[1] as HTMLButtonElement;
+
+            imBackBtn.click();
+            setTimeout(() => {
+                var echos = document.querySelectorAll('.format-markdown');
+                var lastEcho = echos.length -1;
+
+                console.log(echos[lastEcho].innerHTML);
+                resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
+            }, 1000);
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.hero_card);
+        }
+    },
+    "button-postback": {
+        client: () => new Promise((resolve) => {
+            var buttons = document.querySelectorAll('button');
+            var postBackBtn = buttons[2] as HTMLButtonElement;
+
+            postBackBtn.click();
+            setTimeout(() => {
+                var echos = document.querySelectorAll('.format-markdown');
+                var lastEcho = echos.length -1;
+
+                console.log(echos[lastEcho].innerHTML);
+                resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
+            }, 1000);
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.hero_card);
+        }
+    },    
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
@@ -230,6 +266,43 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.adaptive_cardsFn(json));
         }
     },
+    "speech mic-button": {
+        client: function () {
+            return (document.querySelector('.wc-mic') !== null);
+        }
+    },
+    "speech clicking-mic-starts-speaking": {
+        do: function (nightmare) {
+            nightmare.click('.wc-mic')
+                .wait(1000);
+        },
+        client: function () {
+            debugger;
+            return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Listening...'));
+        }
+    },
+    "speech click-mic-click-to-stop": {
+        do: function (nightmare) {
+            nightmare.click('.wc-mic')
+                .wait(1000)
+                .click('.wc-mic')
+                .wait(1000);
+        },
+        client: function () {
+            return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
+        }
+    },
+    "speech click-mic-type-to-stop": {
+        do: function (nightmare) {
+            nightmare.click('.wc-mic')
+                .wait(1000)
+                .type('.wc-textbox input', '')
+                .wait(2000);
+        },
+        client: function () {
+            return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
+        }
+    },
     /*
      ** Add your commands to test here **  
     "command": {
@@ -238,13 +311,21 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, sever_content DirectLineActivity);
         }
     }
-
+ 
     ** For adaptive cards, your command will be starting with card <space> command **  
     "card command": {
         client: function () { JavaScript evaluation syntax },
         server: function (res, sendActivity) {
             server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
             sendActivity(res, server_content.adaptive_cards);
+        }
+    }
+ 
+    ** For speech specific command, it will be starting with speech <space> command **
+        "speech command": {
+        client: function () { JavaScript evaluation syntax },
+        server: function (res, sendActivity) {
+            sendActivity(res, sever_content DirectLineActivity);
         }
     }
     */

@@ -12,7 +12,7 @@ export interface HistoryProps {
 
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
-
+    onClickCardAction: () => void,
     setFocus: () => void,
 
     isFromMe: (activity: Activity) => boolean,
@@ -104,6 +104,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     private doCardAction(type: CardActionTypes, value: string | object) {
         this.props.setFocus();
+        this.props.onClickCardAction();
         return this.props.doCardAction(type, value);
     }
 
@@ -169,6 +170,7 @@ export const History = connect(
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below 
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
@@ -179,6 +181,7 @@ export const History = connect(
         // from dispatchProps
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
+        onClickCardAction: dispatchProps.onClickCardAction,
         // from ownProps
         setFocus: ownProps.setFocus,
         // helper functions
