@@ -44,14 +44,24 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.ani_card);
         }
     },
+    "audio": {
+        client: function () {
+            var source = document.querySelectorAll('audio')[0].src;
+            return source.indexOf("bftest.mp3") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.audio_raw);
+        }
+    },    
     "audiocard": {
         client: function () {
-            return true;
+            var source = document.querySelectorAll('audio')[0].src;
+            return source.indexOf("bftest.mp3") >= 0;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.audio_card);
         }
-    },    
+    },
     "button-imback": {
         client: () => new Promise((resolve) => {
             var buttons = document.querySelectorAll('button');
@@ -60,7 +70,7 @@ var commands_map: CommandValuesMap = {
             imBackBtn.click();
             setTimeout(() => {
                 var echos = document.querySelectorAll('.format-markdown');
-                var lastEcho = echos.length -1;
+                var lastEcho = echos.length - 1;
 
                 console.log(echos[lastEcho].innerHTML);
                 resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
@@ -78,7 +88,7 @@ var commands_map: CommandValuesMap = {
             postBackBtn.click();
             setTimeout(() => {
                 var echos = document.querySelectorAll('.format-markdown');
-                var lastEcho = echos.length -1;
+                var lastEcho = echos.length - 1;
 
                 console.log(echos[lastEcho].innerHTML);
                 resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
@@ -87,7 +97,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.hero_card);
         }
-    },    
+    },
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
@@ -173,6 +183,15 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.hero_card);
         }
     },
+    "image": {
+        client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return source.indexOf("surface1.jpg") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.image_raw);
+        }
+    },
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;
@@ -248,10 +267,38 @@ var commands_map: CommandValuesMap = {
     },
     "receiptcard": {
         client: function () {
-            return true;
+            var source = document.querySelectorAll('img')[0].src;
+            return source.indexOf("surface1.jpg") >= 0;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.receipt_card);
+        }
+    },
+    "thumbnailcard": {
+        client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return source.indexOf("surface1.jpg") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.thumbnail_card);
+        }
+    },
+    "video": {
+        client: function () {
+            var source = document.querySelectorAll('video')[0].src;
+            return source.indexOf("msband.mp4") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.video_raw);
+        }
+    },      
+    "videocard": {
+        client: function () {
+            var source = document.querySelectorAll('video')[0].src;
+            return source.indexOf("msband.mp4") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.video_card);
         }
     },
     "card Weather": {

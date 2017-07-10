@@ -51,6 +51,25 @@ export var ani_card: dl.Message = {
 }
 
 /*
+ * Activity for Audio Raw
+ * 
+ */
+export var audio_raw: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.Media>{
+            contentType: "audio/mpeg",
+            contentUrl: asset_url + "bftest.mp3",
+            name: "BotFramework Test",
+        }
+    ]
+}
+
+/*
  * Activity for Audio Card
  * 
  */
@@ -236,6 +255,25 @@ export var hero_card: dl.Message = {
 }
 
 /*
+ * Activity for Image Raw
+ * 
+ */
+export var image_raw: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.Media>{
+            contentType: "image/jpg",
+            contentUrl: asset_url + "surface1.jpg",
+            name: "Microsoft Surface",
+        }
+    ]
+}
+
+/*
  * Activity for Markdown
  * 
  */
@@ -331,14 +369,14 @@ export var receipt_card: dl.Message = {
                         subtitle: "Surface Pro 4 is a powerful, versatile, lightweight laptop.",
                         text: "Surface does more. Just like you. For one device that does everything, you need more than a mobile OS.",
                         image: {
-                             "url": asset_url + "surface1.jpg"
+                            "url": asset_url + "surface1.jpg"
                         },
                         price: "$XXX"
                     },
                     {
                         title: "Surface Pro 4 (2) - No subtitle, No text.",
                         image: {
-                             "url": asset_url + "surface2.jpg"
+                            "url": asset_url + "surface2.jpg"
                         },
                         price: "$XXX"
                     },
@@ -416,6 +454,51 @@ export var thumbnail_card: dl.Message = {
                         "title": "postBack Action"
                     }
                 ]
+            }
+        }
+    ]
+}
+
+/*
+ * Activity for Video Raw
+ * 
+ */
+export var video_raw: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.Media>{
+            contentType: "video/mp4",
+            contentUrl: asset_url + "msband.mp4",
+            name: "Microsoft Band",
+        }
+    ]
+}
+
+/*
+ * Activity for Video Card
+ * 
+ */
+export var video_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.VideoCard>{
+            contentType: "application/vnd.microsoft.card.video",
+            content: {
+                title: "Microsoft Band",
+                subtitle: "Large Video",
+                text: "No buttons, No Image, Autoloop, Autostart, No Sharable",
+                media: [{ url: asset_url + "msband.mp4", profile: "videocard" }],
+                image: { url: asset_url + "ms-band1.jpg" },
+                autoloop: true,
+                autostart: true
             }
         }
     ]
