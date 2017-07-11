@@ -33,7 +33,6 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     constructor(properties: ICognitiveServicesSpeechSynthesisProperties) {
         this._helper = new CognitiveServicesHelper(properties.subscriptionKey);
         this._properties = properties;
-        this._audioElement = new AudioContext();
         this._requestQueue = new Array();
     }
 
@@ -57,7 +56,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         if (this._isPlaying) {
             this._requestQueue = [];
             this._isPlaying = false;
-            if (this._audioElement.state !== "closed") {
+            if (this._audioElement && this._audioElement.state !== "closed") {
                 this._audioElement.close();
             }
         }
@@ -77,7 +76,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         }
         if (!this._isPlaying) {
             this._isPlaying = true;
-            if (this._audioElement.state === "closed") {
+            if ( !this._audioElement || this._audioElement.state === "closed") {
                 this._audioElement = new AudioContext();
             }
             this._audioElement.decodeAudioData(top.data, (buffer) => {
