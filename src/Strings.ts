@@ -171,6 +171,20 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " il %1",
         consolePlaceholder: "Scrivi il tuo messaggio...",
         listeningIndicator: "Ascoltando..."
+    },
+    'zh-hans': {
+        title: "聊天",
+        send: "发送",
+        unknownFile: "[类型为'%1'的文件]",
+        unknownCard: "[未知的'%1'卡片]",
+        receiptTax: "税",
+        receiptTotal: "共计",
+        messageRetry: "重试",
+        messageFailed: "无法发送",
+        messageSending: "正在发送",
+        timeSent: " 用时 %1",
+        consolePlaceholder: "输入你的消息...",
+        listeningIndicator: "正在倾听..."
     }
 }
 
@@ -201,6 +215,8 @@ export const strings = (locale: string) => {
         locale = 'el-gr';
     else if (locale.startsWith('it'))
         locale = 'it-it';
+    else if (locale.startsWith('zh'))
+        locale = 'zh-hans';
     else
         locale = 'en-us';
 
