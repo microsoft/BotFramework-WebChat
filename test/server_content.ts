@@ -343,3 +343,48 @@ export var receipt_card: dl.Message = {
     attachmentLayout: "carousel",
     attachments: [receipt_attach]
 }
+
+export var video: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        {
+            contentType: "video/mp4",
+            contentUrl: "https://testbot.botframework.com/media/thenewmicrosoftsurfacebook.mp4",
+            name: "The New Microsoft Surface Book",
+            thumbnailUrl: "https://testbot.botframework.com/media/surface_thumb.jpg"
+        }
+    ]
+}
+
+export var video_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        {
+            contentType: "application/vnd.microsoft.card.video",
+            content: {
+                title: "Microsoft Band",
+                subtitle: "Large Video",
+                text: "No Image, No Buttons, Autostart, Autoloop, Sharable",
+                image: {
+                    url: "https://testbot.botframework.com/media/ms-band1.jpg"
+                },
+                media: [
+                    {
+                        url: "https://testbot.botframework.com/media/thenewmicrosoftband2_mid.mp4"
+                    }
+                ],
+                shareable: true,
+                autoloop: true,
+                autostart: true
+            }
+        }
+    ]
+}

@@ -237,6 +237,62 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.receipt_card);
         }
     },
+    "video": {
+        client: () => new Promise((resolve) => {
+            var source = document.querySelectorAll('video')[0];
+            var videoSrc = source.src;
+            var thumbSrc = source.poster;
+            var test1 = false, test2 = false, test3 = false;
+
+            // check video url and thumbnail url
+            if (videoSrc.indexOf("thenewmicrosoftsurfacebook.mp4") >= 0 &&
+                thumbSrc.indexOf("surface_thumb.jpg") >= 0) {
+                test1 = true;
+            }
+
+            if (source.play()) {
+                test2 = true;
+            }
+
+            setTimeout(() => {
+                source.pause();
+                test3 = true;
+            }, 500);
+
+            setTimeout(() => {
+                resolve(test1 && test2 && test3);
+            }, 1000);
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.video );
+        }
+    },
+    "videocard": {
+        client: () => new Promise((resolve) => {
+            var source = document.querySelectorAll('video')[0];
+            var videoSrc = source.src;
+            var thumbSrc = source.poster;
+            var test1 = false, test2 = false, test3 = false;
+
+            // check video url and thumbnail url
+            if (videoSrc.indexOf("thenewmicrosoftband2_mid.mp4") >= 0 &&
+                thumbSrc.indexOf("ms-band1.jpg") >= 0) {
+                test1 = true;
+            }
+
+            setTimeout(() => {
+                source.pause();
+                test2 = true;
+            }, 1000);
+
+            setTimeout(() => {
+                resolve(test1 && test2);
+            }, 1000);
+        }),
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.video_card );
+        }
+    },
     "card Weather": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
