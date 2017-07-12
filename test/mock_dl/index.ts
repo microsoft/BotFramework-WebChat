@@ -159,8 +159,8 @@ const printCommands = () => {
 }
 
 // Getting testing commands from map and server config
-let commands = require('../commands_map');
-let config = require('../mock_dl_server_config');
+const commands = require('../commands_map');
+const config = require('../mock_dl_server_config');
 let current_uitests = 0;
 let uitests_files = Object.keys(config["width-tests"]).length;
 
