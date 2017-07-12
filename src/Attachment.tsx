@@ -39,7 +39,6 @@ const Youtube = (props: {
     loop?: boolean
 }) =>
     <iframe
-        type="text/html"
         src={ `https://${YOUTUBE_DOMAIN}/embed/${props.embedId}?${queryString({
             modestbranding: '1',
             loop: props.loop ? '1' : '0',
@@ -53,7 +52,6 @@ const Vimeo = (props: {
     loop?: boolean
 }) =>
     <iframe
-        type="text/html"
         src={ `https://player.${VIMEO_DOMAIN}/video/${props.embedId}?${queryString({
             title: '0',
             byline: '0',
