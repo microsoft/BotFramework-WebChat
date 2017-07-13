@@ -33,13 +33,13 @@
     "core-js": "^2.4.1",
     "markdown-it": "^8.3.1",
     "microsoft-adaptivecards": "^0.6.0",
+    "microsoft-speech-browser-sdk": "0.0.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.3",
     "redux": "^3.6.0",
     "redux-observable": "^0.13.0",
     "rxjs": "^5.3.0",
-    "microsoft-speech-browser-sdk": "0.0.1",
     "tslib": "^1.6.0"
   },
   "devDependencies": {
