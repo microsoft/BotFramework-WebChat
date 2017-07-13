@@ -1,9 +1,15 @@
 require('dotenv').config();
 
+import * as dl from "../../node_modules/botframework-directlinejs/built/directLine";
 import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
 import * as fs from 'fs';
+
+export var MockBot: dl.User = {
+    id: "mockbot",
+    name: "MockBot"
+}
 
 const app = express();
 
@@ -47,7 +53,8 @@ app.post('/mock/tokens/generate', (req, res) => {
     res.send({
         conversationId,
         token,
-        expires_in
+        expires_in,
+        timestamp: new Date().toUTCString(),
     });
 });
 
@@ -57,13 +64,14 @@ app.post('/mock/tokens/refresh', (req, res) => {
     res.send({
         conversationId,
         token,
-        expires_in
+        expires_in,
+        timestamp: new Date().toUTCString()
     });
 });
 
 let counter: number;
 let messageId: number;
-let queue: Activity[];
+let queue: dl.Activity[];
 
 app.post('/mock/conversations', (req, res) => {
     counter = 0;
@@ -91,35 +99,18 @@ const startConversation = (req: express.Request, res: express.Response) => {
         conversationId,
         token,
         expires_in,
-        streamUrl
+        streamUrl,
+        timestamp: new Date().toUTCString()
     });
-    sendMessage(res, `Welcome to MockBot! Here is test ${test} on area ${area}`);
-}
-
-interface Activity {
-    type: string,
-    timestamp?: string,
-    textFormat?: string,
-    text?: string,
-    channelId?: string,
-    attachmentLayout?: string,
-    attachments?: Attachment,
-    id?: string,
-    from?: { id?: string, name?: string }
-}
-
-interface Attachment {
-
-}
-
-const sendMessage = (res: express.Response, text: string) => {
-    queue.push({
+    sendActivity(res, {
         type: "message",
-        text
-    })
+        text: "Welcome to MockBot!",
+        timestamp: new Date().toUTCString(),
+        from: MockBot
+    });
 }
 
-const sendActivity = (res: express.Response, activity: Activity) => {
+const sendActivity = (res: express.Response, activity: dl.Activity) => {
     queue.push(activity)
 }
 
@@ -146,13 +137,14 @@ const postMessage = (req: express.Request, res: express.Response) => {
     const id = messageId++;
     res.send({
         id,
+        timestamp: new Date().toUTCString()
     });
     processCommand(req, res, req.body.text, id);
 }
 
 const printCommands = () => {
     let cmds = "### Commands\r\n\r\n";
-    for(var command in commands){
+    for (var command in commands) {
         cmds += `* ${command}\r\n`;
     }
     return cmds;
@@ -187,7 +179,8 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
-                    text: printCommands()
+                    text: printCommands(),
+                    from: MockBot
                 });
                 return;
             case 'end':
@@ -204,7 +197,8 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                         type: "message",
                         timestamp: new Date().toUTCString(),
                         channelId: "webchat",
-                        text: "echo: " + req.body.text
+                        text: "echo: " + req.body.text,
+                        from: MockBot
                     });
                 }
                 return;
@@ -213,7 +207,8 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
-                    text: "echo: " + req.body.text
+                    text: "echo: " + req.body.text,
+                    from: MockBot
                 });
                 return;
         }
@@ -244,6 +239,7 @@ const upload = (req: express.Request, res: express.Response) => {
     const id = messageId++;
     res.send({
         id,
+        timestamp: new Date().toUTCString()
     });
 }
 
@@ -275,12 +271,14 @@ const getMessages = (req: express.Request, res: express.Response) => {
             msg.from = { id: "id", name: "name" };
             res.send({
                 activities: [msg],
-                watermark: id
+                watermark: id,
+                timestamp: new Date().toUTCString()
             });
         } else {
             res.send({
                 activities: [],
-                watermark: messageId
+                watermark: messageId,
+                timestamp: new Date().toUTCString()
             })
         }
     }

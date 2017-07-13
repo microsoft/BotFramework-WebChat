@@ -1,11 +1,7 @@
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import { MockBot as bot } from "./mock_dl/index";
 const config = require('./mock_dl_server_config');
 const asset_url = "http://localhost:" + config["port"] + "/assets/";
-
-export var bot: dl.User = {
-    id: "bot",
-    name: "botname"
-}
 
 /*
 * Function that renders Adaptive Cards

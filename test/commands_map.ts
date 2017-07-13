@@ -2,6 +2,8 @@ import * as server_content from './server_content';
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
 import * as Nightmare from 'nightmare';
 import * as express from 'express';
+import { MockBot } from "./mock_dl/index";
+
 declare let module: any;
 
 interface ISendActivity {
@@ -219,7 +221,7 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, {
                 type: "message",
-                from: server_content.bot,
+                from: MockBot,
                 timestamp: new Date().toUTCString(),
                 channelId: "webchat",
                 textFormat: "markdown",
