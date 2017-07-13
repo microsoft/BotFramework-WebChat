@@ -150,11 +150,20 @@ const postMessage = (req: express.Request, res: express.Response) => {
     processCommand(req, res, req.body.text, id);
 }
 
+const printCommands = () => {
+    let cmds = "### Commands\r\n\r\n";
+    for(var command in commands){
+        cmds += `* ${command}\r\n`;
+    }
+    return cmds;
+}
+
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
 const config = require('../mock_dl_server_config');
 let current_uitests = 0;
-const uitests_files = Object.keys(config["width-tests"]).length;
+let uitests_files = Object.keys(config["width-tests"]).length;
+
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
 
@@ -173,6 +182,14 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
         }
     } else {
         switch (cmd) {
+            case 'help':
+                sendActivity(res, {
+                    type: "message",
+                    timestamp: new Date().toUTCString(),
+                    channelId: "webchat",
+                    text: printCommands()
+                });
+                return;
             case 'end':
                 current_uitests++; // For each end command, we will excute twice
                 if (uitests_files * 2 <= current_uitests) {
