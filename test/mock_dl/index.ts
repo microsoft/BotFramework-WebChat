@@ -6,11 +6,7 @@ import bodyParser = require('body-parser');
 import * as path from 'path';
 import * as fs from 'fs';
 
-export var MockBot: dl.User = {
-    id: "mockbot",
-    name: "MockBot"
-}
-
+const config = require('../mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
 const app = express();
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -106,7 +102,7 @@ const startConversation = (req: express.Request, res: express.Response) => {
         type: "message",
         text: "Welcome to MockBot!",
         timestamp: new Date().toUTCString(),
-        from: MockBot
+        from: config.bot
     });
 }
 
@@ -152,7 +148,6 @@ const printCommands = () => {
 
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
-const config = require('../mock_dl/server_config.json') as { port: number, widthTests: { [id: string]: number } };
 let current_uitests = 0;
 let uitests_files = Object.keys(config.widthTests).length;
 
@@ -180,7 +175,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
                     text: printCommands(),
-                    from: MockBot
+                    from: config.bot
                 });
                 return;
             case 'end':
@@ -198,7 +193,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                         timestamp: new Date().toUTCString(),
                         channelId: "webchat",
                         text: "echo: " + req.body.text,
-                        from: MockBot
+                        from: config.bot
                     });
                 }
                 return;
@@ -208,7 +203,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
                     text: "echo: " + req.body.text,
-                    from: MockBot
+                    from: config.bot
                 });
                 return;
         }
