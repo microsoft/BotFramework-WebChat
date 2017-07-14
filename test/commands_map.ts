@@ -204,29 +204,14 @@ var commands_map: CommandValuesMap = {
     },
     "markdown-url-needs-encoding": {
         client: function () {
-            //there should be 2 messages from the bot in markdown format
-            var botMessages = document.querySelectorAll('.format-markdown');
-            if (!botMessages || botMessages.length !== 2) return false;
-
-            //get the last message
-            var lastMessage = botMessages[botMessages.length - 1];
-
-            //get the hyperlink
-            var a = lastMessage.querySelector('a') as HTMLAnchorElement;
-            if (!a) return false;
+            var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
+            if (!link) return false;
 
             //check if value is encoded
-            return a.href === "https://bing.com/?q=some%20value";
+            return link.href === "https://bing.com/?q=some%20value";
         },
         server: function (res, sendActivity) {
-            sendActivity(res, {
-                type: "message",
-                from: MockBot,
-                timestamp: new Date().toUTCString(),
-                channelId: "webchat",
-                textFormat: "markdown",
-                text: "Some links have [query strings that need encoding](https://bing.com?q=some value)"
-            });
+            sendActivity(res, server_content.mar_encode_card);
         }
     },
     "markdown-links-open-in-new-window": {
