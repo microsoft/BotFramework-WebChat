@@ -152,9 +152,9 @@ const printCommands = () => {
 
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
-const config = require('../mock_dl_server_config');
+const config = require('../mock_dl/server_config.json') as { port: number, widthTests: { [id: string]: number } };
 let current_uitests = 0;
-let uitests_files = Object.keys(config["width-tests"]).length;
+let uitests_files = Object.keys(config.widthTests).length;
 
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
@@ -319,6 +319,6 @@ app.get('/assets/:file', function (req, res) {
     res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
 // Running Web Server and DirectLine Client on port
-app.listen(process.env.port || process.env.PORT || config["port"], () => {
-    console.log('listening on ' + config["port"]);
+app.listen(process.env.port || process.env.PORT || config.port, () => {
+    console.log('listening on ' + config.port);
 });

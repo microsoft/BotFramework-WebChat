@@ -1,0 +1,10 @@
+{
+    "port": 3000,
+    "widthTests": {
+        "iphone5": 320,
+        "iphone6": 375,
+        "iphone6-plus": 414,
+        "ipad": 768,
+        "desktop": 1024
+    }
+}

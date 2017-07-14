@@ -1,7 +1,7 @@
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
 import { MockBot as bot } from "./mock_dl/index";
-const config = require('./mock_dl_server_config');
-const asset_url = "http://localhost:" + config["port"] + "/assets/";
+const config = require('./mock_dl/server_config.json') as { port: number, widthTests: { [id: string]: number } };
+const asset_url = "http://localhost:" + config.port + "/assets/";
 
 /*
 * Function that renders Adaptive Cards
