@@ -411,8 +411,6 @@ var commands_map: CommandValuesMap = {
     }
 };
 
-console.log(JSON.stringify(process.argv));
-
 //use this to run only one test
 var single = "";    //"carousel";
 
