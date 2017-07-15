@@ -185,6 +185,34 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " 用时 %1",
         consolePlaceholder: "输入你的消息...",
         listeningIndicator: "正在倾听..."
+    },
+    'zh-hant': {
+        title: "聊天",
+        send: "發送",
+        unknownFile: "[類型為'%1'的文件]",
+        unknownCard: "[未知的'%1'卡片]",
+        receiptTax: "税",
+        receiptTotal: "總共",
+        messageRetry: "重試",
+        messageFailed: "無法發送",
+        messageSending: "正在發送",
+        timeSent: " 於 %1",
+        consolePlaceholder: "輸入你的訊息...",
+        listeningIndicator: "正在聆聽..."
+    },
+    'zh-yue': {
+        title: "傾偈",
+        send: "傳送",
+        unknownFile: "[類型係'%1'嘅文件]",
+        unknownCard: "[唔知'%1'係咩卡片]",
+        receiptTax: "税",
+        receiptTotal: "總共",
+        messageRetry: "再嚟一次",
+        messageFailed: "傳送唔倒",
+        messageSending: "而家傳送緊",
+        timeSent: " 喺 %1",
+        consolePlaceholder: "輸入你嘅訊息...",
+        listeningIndicator: "聽緊你講嘢..."
     }
 }
 
@@ -215,6 +243,10 @@ export const strings = (locale: string) => {
         locale = 'el-gr';
     else if (locale.startsWith('it'))
         locale = 'it-it';
+    else if (locale === 'zh-yue')
+        locale = 'zh-yue';
+    else if (locale === 'zh-hant' || locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw')
+        locale = 'zh-hant';
     else if (locale.startsWith('zh'))
         locale = 'zh-hans';
     else
