@@ -411,4 +411,13 @@ var commands_map: CommandValuesMap = {
     }
 };
 
+console.log(JSON.stringify(process.argv));
+
+//use this to run only one test
+var single = "";    //"carousel";
+
+if (single) {
+    for(var key in commands_map) if (key !== single && key !== "end") delete commands_map[key];
+}
+
 module.exports = commands_map;
