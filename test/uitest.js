@@ -1,6 +1,6 @@
 "use strict";
 let commands = require('./commands_map');
-let config = require('./mock_dl_server_config');
+let config = require('./mock_dl/server_config.json');
 let Nightmare = require('nightmare');
 let assert = require('assert');
 let vo = require('vo');
@@ -18,12 +18,12 @@ Nightmare.prototype.do = function (doFn) {
 }
 
 describe('nightmare UI tests', function () {
-	let devices = config["width-tests"];
+	let devices = config.widthTests;
 	let keys = Object.keys(commands);
 	this.timeout(devices.length * keys.length * 20000);
 
-	it('Evaluates all UI width_tests for all commands_map file', function (done) {
-		let host = "http://localhost:" + config["port"].toString();
+	it('Evaluates all UI widthTests for all commands_map file', function (done) {
+		let host = "http://localhost:" + config.port;
 		let domain = host + "/mock";
 		let url = host + "?domain=" + domain;
 		let tab = "\t";
