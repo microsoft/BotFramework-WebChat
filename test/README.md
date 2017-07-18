@@ -121,7 +121,7 @@ In the __BotFramework-WebChat__ repo, key component files inside of the /test fo
 
 This file contains the mock server itself and runs on [Node.js](https://nodejs.org/). It will load the __commands_map__ object to communicate through the __Direct Line API__ to the __Web Chat__ instance.
 
-The mock server default port is set to localhost://3000. To resolve a port conflict, change listening port from __/test/mock_dl_server_config.js__.
+The mock server default port is set to localhost://3000. To resolve a port conflict, change listening port from __/test/mock_dl/server_config.json__.
 
 ```Javascript
 module.exports = {
@@ -201,31 +201,13 @@ The __test.html__ is the HTML rendered instance of the Web Chat. Loading the Web
 <script src="botchat.js"></script>
 ```
 
-> ### [mock_dl_server_config.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/mock_dl_server_config.js)
+> ### [mock_dl/server_config.json](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/mock_dl/server_config.json)
 
-The __mock_dl_server_config.js__ file provides the configuration for the UI tests. 
-
-For example, the __width_tests__ object dictates width sizes of the [Electron](https://github.com/electron/electron) client app during testing for different environments.
-
-```Javascript
-// mock_dl_server_config.js
-var width_tests = {
-    "iphone5": 320,
-    "iphone6": 375,
-    "iphone6-plus": 414,
-    "ipad": 768,
-    "desktop": 1024
-};
-
-module.exports = {
-    "port": 3000,
-    "width-tests": width_tests
-};
-```
+The __mock_dl/server_config.json__ file provides the configuration for the UI tests. 
 
 > ### [uitest.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/uitest.js)
 
-The __uitest.js__ file is where the [Mocha.js](https://mochajs.org/) tests are configured with [Nightmare.js](http://www.Nightmare.js.org/), and binds with [vo](https://github.com/matthewmueller/vo) (flow library) to enable batch testing every screen size in __width_tests__
+The __uitest.js__ file is where the [Mocha.js](https://mochajs.org/) tests are configured with [Nightmare.js](http://www.Nightmare.js.org/), and binds with [vo](https://github.com/matthewmueller/vo) (flow library) to enable batch testing every screen size in __widthTests__
 
 ---
 

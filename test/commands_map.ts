@@ -2,7 +2,6 @@ import * as server_content from './server_content';
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
 import * as Nightmare from 'nightmare';
 import * as express from 'express';
-import { MockBot } from "./mock_dl/index";
 
 declare let module: any;
 
@@ -411,5 +410,12 @@ var commands_map: CommandValuesMap = {
         client: function () { return true; }
     }
 };
+
+//use this to run only one test
+var single = "";    //"carousel";
+
+if (single) {
+    for(var key in commands_map) if (key !== single && key !== "end") delete commands_map[key];
+}
 
 module.exports = commands_map;
