@@ -205,22 +205,6 @@ The __test.html__ is the HTML rendered instance of the Web Chat. Loading the Web
 
 The __mock_dl/server_config.json__ file provides the configuration for the UI tests. 
 
-For example, the __widthTests__ object dictates width sizes of the [Electron](https://github.com/electron/electron) client app during testing for different environments.
-
-```Javascript
-// mock_dl/server_config.json
-{
-    "port": 3000,
-    "widthTests": {
-      "iphone5": 320,
-      "iphone6": 375,
-      "iphone6-plus": 414,
-      "ipad": 768,
-      "desktop": 1024
-  }
-}
-```
-
 > ### [uitest.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/uitest.js)
 
 The __uitest.js__ file is where the [Mocha.js](https://mochajs.org/) tests are configured with [Nightmare.js](http://www.Nightmare.js.org/), and binds with [vo](https://github.com/matthewmueller/vo) (flow library) to enable batch testing every screen size in __widthTests__
