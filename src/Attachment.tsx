@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
-import { Attachment, CardAction } from 'botframework-directlinejs';
+import { Attachment, CardAction, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
 import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { AdaptiveCardContainer } from './AdaptiveCardContainer';
@@ -144,7 +144,7 @@ export const AttachmentView = (props: {
     onImageLoad: () => void
 }) => {
     if (!props.attachment) return;
-    const attachment = props.attachment;
+    const attachment = props.attachment as KnownMedia;
     const onCardAction = (cardAction: CardAction) => cardAction &&
         ((e: React.MouseEvent<HTMLElement>) => {
             props.onCardAction(cardAction.type, cardAction.value);
@@ -309,6 +309,7 @@ export const AttachmentView = (props: {
             return <Media type='video' poster={ attachment.thumbnailUrl } src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
-            return <Unknown format={ props.format } contentType={ (attachment as any).contentType } contentUrl={ (attachment as any).contentUrl } name={ (attachment as any).name } />;
+            var unknownAttachment = props.attachment as UnknownMedia;
+            return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } />;
     }
 }
