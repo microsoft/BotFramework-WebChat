@@ -14,7 +14,7 @@ export var adaptive_cardsFn = function (json: any) {
         timestamp: new Date().toUTCString(),
         channelId: "webchat",
         attachments: [
-            { contentType: "application/vnd.microsoft.card.adaptive", content: json }
+            <dl.AdaptiveCard>{ contentType: "application/vnd.microsoft.card.adaptive", content: json }
         ]
     };
 
