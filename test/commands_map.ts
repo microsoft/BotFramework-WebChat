@@ -36,6 +36,7 @@ var commands_map: CommandValuesMap = {
             return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('hi') != -1;
         }
     },
+    /*
     "animation": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
@@ -174,7 +175,20 @@ var commands_map: CommandValuesMap = {
         server: function (res, sendActivity) {
             sendActivity(res, server_content.car_card);
         }
+    },*/
+    "document": {
+        client: function () {
+            var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
+            if (!link) return false;
+
+            //check if value is encoded
+            return link.href.indexOf("Kodu%20Help.docx") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.document_card);
+        }        
     },
+    /*
     "herocard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;

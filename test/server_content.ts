@@ -212,6 +212,25 @@ export var smallcar_card: dl.Message = {
 }
 
 /*
+ * Activity for Document
+ * 
+ */
+export var document_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.UnknownMedia>{
+            contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            contentUrl: asset_url + "Kodu%20Help.docx",
+            name: "Kodu Help.docx"
+        }
+    ]
+}
+
+/*
  * Activity for Hero Card
  * 
  */
