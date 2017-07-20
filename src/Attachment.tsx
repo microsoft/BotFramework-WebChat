@@ -128,7 +128,7 @@ const Unknown = (props: {
     if (regExpCard.test(props.contentType)) {
         return <span>{ props.format.strings.unknownCard.replace('%1', props.contentType) }</span>;
     } else if (props.contentUrl) {
-        return <span><img src='./assets/a1.png' height="42" width="42" /><a href={ props.contentUrl } title={ props.contentUrl } target='_blank'>{ props.name || props.format.strings.unknownFile.replace('%1', props.contentType) }</a></span>;
+        return <span><div className="wc-download"></div><a href={ props.contentUrl } title={ props.contentUrl } target='_blank'>{ props.name || props.format.strings.unknownFile.replace('%1', props.contentType) }</a></span>;
     } else {
         return <span>{ props.format.strings.unknownFile.replace('%1', props.contentType) }</span>;
     }
