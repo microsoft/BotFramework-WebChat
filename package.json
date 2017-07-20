@@ -11,7 +11,7 @@
     "build-ac-config": "ac-scss2json ./src/scss/includes/adaptive-card-config.scss > adaptivecards-hostconfig.json",
     "build-all-style": "npm run build-css && npm run build-ac-config && webpack",
     "build": "npm run build-css && tsc && webpack --progress",
-    "watch": "npm-run-all -p -r -l tsc-watch webpack-watch build-css-watch",
+    "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
     "tsc-watch": "tsc -w",
     "webpack": "webpack",
     "webpack-watch": "webpack --progress --watch",
