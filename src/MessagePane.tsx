@@ -56,7 +56,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             >
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
-                        <button onClick={ e => this.actionClick(e, action) } title={ action.title }>
+                        <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
                             { action.title }
                         </button>
                     </li>
