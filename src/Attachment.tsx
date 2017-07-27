@@ -123,12 +123,13 @@ const Unknown = (props: {
     format: FormatState,
     contentType: string,
     contentUrl: string,
-    name: string
+    name: string,
+    thumbnailUrl?: string
 }) => {
     if (regExpCard.test(props.contentType)) {
         return <span>{ props.format.strings.unknownCard.replace('%1', props.contentType) }</span>;
     } else if (props.contentUrl) {
-        return <span><div className="wc-download"></div><a href={ props.contentUrl } title={ props.contentUrl } target='_blank'>{ props.name || props.format.strings.unknownFile.replace('%1', props.contentType) }</a></span>;
+        return <div><a href={ props.contentUrl } title={ props.contentUrl } target='_blank'><div className="wc-text-download">{ props.name || props.format.strings.unknownFile.replace('%1', props.contentType) }</div><div className="wc-icon-download"></div></a></div>;
     } else {
         return <span>{ props.format.strings.unknownFile.replace('%1', props.contentType) }</span>;
     }
@@ -310,6 +311,8 @@ export const AttachmentView = (props: {
 
         default:
             var unknownAttachment = props.attachment as UnknownMedia;
+            if (unknownAttachment.thumbnailUrl)
+                return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } thumbnailUrl={ unknownAttachment.thumbnailUrl } />
             return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } />;
     }
 }
