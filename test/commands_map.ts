@@ -12,7 +12,8 @@ interface ISendActivity {
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
     server?: (res: express.Response, sendActivity: ISendActivity, json?: JSON) => void,
-    do?: (nightmare: Nightmare) => any
+    do?: (nightmare: Nightmare) => any,
+    alternateText?: string    
 }
 
 interface CommandValuesMap {
@@ -70,11 +71,14 @@ var commands_map: CommandValuesMap = {
 
             imBackBtn.click();
             setTimeout(() => {
-                var echos = document.querySelectorAll('.format-markdown');
+                var echos = document.querySelectorAll('.format-plain');
                 var lastEcho = echos.length - 1;
 
-                console.log(echos[lastEcho].innerHTML);
-                resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
+                var bot_echos = document.querySelectorAll('.format-markdown');
+                var lastBotEcho = bot_echos.length - 1;
+
+                resolve(echos[lastEcho].innerHTML.indexOf('imBack Button') != -1 && 
+                    bot_echos[lastBotEcho].innerHTML.indexOf('echo: imBack Button') != -1);
             }, 1000);
         }),
         server: function (res, sendActivity) {
@@ -88,11 +92,14 @@ var commands_map: CommandValuesMap = {
 
             postBackBtn.click();
             setTimeout(() => {
-                var echos = document.querySelectorAll('.format-markdown');
+                var echos = document.querySelectorAll('.format-plain');
                 var lastEcho = echos.length - 1;
 
-                console.log(echos[lastEcho].innerHTML);
-                resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
+                var bot_echos = document.querySelectorAll('.format-markdown');
+                var lastBotEcho = bot_echos.length - 1;
+
+                resolve(echos[lastEcho].innerHTML.indexOf('button-postback') != -1 && 
+                    bot_echos[lastBotEcho].innerHTML.indexOf('echo: postBack Button') != -1);
             }, 1000);
         }),
         server: function (res, sendActivity) {
@@ -182,6 +189,12 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.hero_card);
+        }
+    },
+    "html-disabled": {
+        alternateText : '<a href="http://dev.botframework.com">Bot Framework</a>',
+        client: function () {
+            return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('<a href=') != -1;
         }
     },
     "image": {

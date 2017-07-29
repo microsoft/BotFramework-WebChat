@@ -53,7 +53,7 @@ describe('nightmare UI tests', function () {
 			result = yield nightmare.goto(testurl)
 				.viewport(width, 768)
 				.wait(2000)
-				.type('.wc-textbox input', cmd)
+				.type('.wc-textbox input', commands[cmd].alternateText || cmd)
 				.click('.wc-send')
 				.wait(3000)
 				.do(commands[cmd].do)
