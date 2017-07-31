@@ -4,6 +4,10 @@ let config = require('./mock_dl/server_config.json');
 let Nightmare = require('nightmare');
 let assert = require('assert');
 let vo = require('vo');
+let host = "http://localhost:" + config.port;
+let params = {
+	domain: host + "/mock"
+};
 
 let nightmare = Nightmare({
 	show: true,
@@ -17,15 +21,26 @@ Nightmare.prototype.do = function (doFn) {
 	return this;
 }
 
+function getUrl() {
+    var paramArray = [{}, params].concat(Array.prototype.slice.call(arguments));
+	var merged = Object.assign.apply(Object, paramArray);
+	var pairs = [];
+	for (var name in merged) {
+		var value = merged[name];
+		if (typeof value === 'object') {
+			value = JSON.stringify(value);
+		}
+		pairs.push(`${name}=${encodeURIComponent(value)}`);
+	}
+	return host + '?' + pairs.join('&');
+}
+
 describe('nightmare UI tests', function () {
 	let devices = config.widthTests;
 	let keys = Object.keys(commands);
 	this.timeout(devices.length * keys.length * 20000);
 
 	it('Evaluates all UI widthTests for all commands_map file', function (done) {
-		let host = "http://localhost:" + config.port;
-		let domain = host + "/mock";
-		let url = host + "?domain=" + domain;
 		let tab = "\t";
 		let results = [];
 
@@ -74,14 +89,14 @@ describe('nightmare UI tests', function () {
 					console.log(`${tab}${tab}Command: ${cmd}`);
 
 					// All tests should be passed under speech enabled environment
-					let testUrl = `${url}&t=${cmd}&speech=enabled/ui`;
+					let testUrl = getUrl({ t: cmd, speech: 'enabled/ui' }, commands[cmd].urlAppend);
 					yield testOneCommand(testUrl, cmd_index, width, "Speech enabled: ")
 
 
 					const speechCmd = /speech[ \t]([^ ]*)/g.exec(cmd);
 					if (!speechCmd || speechCmd.length === 0) {
 						// Non speech specific tests should also be passed under speech disabled environment
-						testUrl = `${url}&t=${cmd}&speech=disabled/ui`;
+						testUrl = getUrl({ t: cmd, speech: 'disabled/ui' }, commands[cmd].urlAppend);
 						yield testOneCommand(testUrl, cmd_index, width, "Speech disabled: ")
 					}
 				}
