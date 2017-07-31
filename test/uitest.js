@@ -32,10 +32,9 @@ describe('nightmare UI tests', function () {
 		let isTrueColor = "\x1b[32m";
 		let isFalseColor = "\x1b[31m";
 		let deviceColor = "\x1b[36m%s\x1b[0m";
-		let resultToConsole = function (result) {
-			result.toString().toLowerCase().includes("true")
-				? console.log(isTrueColor, `${tab}${tab}${result}`)
-				: console.log(isFalseColor, `${tab}${tab}${result}`);
+		let resultToConsole = function (consoleLog, result) {
+			const resultBoolean = !!result;
+			console.log(resultBoolean ? isTrueColor : isFalseColor, `${tab}${tab}${consoleLog}${resultBoolean}`);
 		}
 		let deviceToConsole = function (device, width) {
 			console.log(deviceColor, `${tab}${device} (width: ${width}px)`);
@@ -59,10 +58,8 @@ describe('nightmare UI tests', function () {
 				.do(commands[cmd].do)
 				.evaluate(commands[cmd].client);
 
-			if (result) {
-				resultToConsole(consoleLog + result);
-				results.push(result);
-			}
+			resultToConsole(consoleLog, result);
+			results.push(result);
 		}
 
 		//Testing devices and commands 
