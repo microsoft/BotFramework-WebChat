@@ -213,6 +213,20 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " 喺 %1",
         consolePlaceholder: "輸入你嘅訊息...",
         listeningIndicator: "聽緊你講嘢..."
+    },
+    'cs-cz': {
+        title: "Chat",
+        send: "Odeslat",
+        unknownFile: "[Soubor typu '%1']",
+        unknownCard: "[Neznámá karta '%1']",
+        receiptTax: "DPH",
+        receiptTotal: "Celkem",
+        messageRetry: "opakovat",
+        messageFailed: "nepodařilo se odeslat",
+        messageSending: "Odesílání",
+        timeSent: " v %1",
+        consolePlaceholder: "Napište svou zprávu...",
+        listeningIndicator: "Poslouchám..."
     }
 }
 
@@ -249,6 +263,8 @@ export const strings = (locale: string) => {
         locale = 'zh-hant';
     else if (locale.startsWith('zh'))
         locale = 'zh-hans';
+    else if (locale.startsWith('cs'))
+        locale = 'cs-cz';
     else
         locale = 'en-us';
 
