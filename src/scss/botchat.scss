@@ -709,13 +709,27 @@
         display: inline-block;
         height: 20px;
         margin-left: 28px;
+        vertical-align: top;
         width: 16px;        
     }
     
     .wc-text-download {
         display: inline-block;
-        text-decoration: none;
         font-family: Segoe UI Semibold;
-        font-size: 15px;
+        font-size: 15px;        
+        text-decoration: none;
+        vertical-align: top;
+    }
+
+    a.wc-link-download:link{
         color: #000000;
     }
+
+    a.wc-link-download:hover{
+        color: #0063B1;  
+    }
+
+    a.wc-link-download:active{
+        color: #3A96DD;
+    }
+    
