@@ -25,7 +25,7 @@ const renderPlainText = (text: string) => {
     return <span className="format-plain">{elements}</span>;
 }
 
-const markdownIt = new MarkdownIt({ html: true, linkify: true, typographer: true });
+const markdownIt = new MarkdownIt({ html: false, linkify: true, typographer: true });
 
 //configure MarkdownIt to open links in new tab
 //from https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
