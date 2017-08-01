@@ -47,7 +47,7 @@
                 speechSynthesizer: new MockSpeechSynthesizer()
             };
 
-        BotChat.App({
+        var chatProps = {
             directLine: {
                 secret: params['s'],
                 token: params['t'],
@@ -59,7 +59,22 @@
             locale: params['locale'],
             resize: 'window',
             speechOptions: speechOptions
-        }, document.getElementById("BotChatGoesHere"));
+        };
+
+        function setJsonOption(propName) {
+            var paramValue = params[propName];
+            if (paramValue) {
+                try {
+                    chatProps[propName] = JSON.parse(paramValue);
+                }
+                catch (e) {
+                }
+            }
+        }
+
+        setJsonOption('formatOptions');
+
+        BotChat.App(chatProps, document.getElementById("BotChatGoesHere"));
     </script>
 </body>
 

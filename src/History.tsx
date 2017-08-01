@@ -146,8 +146,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             }
         }
 
+        const groupsClassName = classList('wc-message-groups', !this.props.format.options.showHeader && 'no-header');
+
         return (
-            <div className="wc-message-groups" ref={ div => this.scrollMe = div || this.scrollMe }>
+            <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
                     { content }
                 </div>

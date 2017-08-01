@@ -12,7 +12,9 @@ interface ISendActivity {
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
     server?: (res: express.Response, sendActivity: ISendActivity, json?: JSON) => void,
-    do?: (nightmare: Nightmare) => any
+    do?: (nightmare: Nightmare) => any,
+    alternateText?: string,
+    urlAppend?: { [paramName: string]: any }
 }
 
 interface CommandValuesMap {
@@ -34,6 +36,19 @@ var commands_map: CommandValuesMap = {
     "hi": {
         client: function () {
             return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('hi') != -1;
+        }
+    },
+    "options.showHeader=false": {
+        urlAppend: { "formatOptions": { showHeader: false } },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top === 0;
+        }
+    },
+    "options.showHeader=default": {
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top > 0;
         }
     },
     "animation": {
@@ -70,11 +85,14 @@ var commands_map: CommandValuesMap = {
 
             imBackBtn.click();
             setTimeout(() => {
-                var echos = document.querySelectorAll('.format-markdown');
+                var echos = document.querySelectorAll('.format-plain');
                 var lastEcho = echos.length - 1;
 
-                console.log(echos[lastEcho].innerHTML);
-                resolve(echos[lastEcho].innerHTML.indexOf('echo: imBack clicked') != -1);
+                var bot_echos = document.querySelectorAll('.format-markdown');
+                var lastBotEcho = bot_echos.length - 1;
+
+                resolve(echos[lastEcho].innerHTML.indexOf('imBack Button') != -1 &&
+                    bot_echos[lastBotEcho].innerHTML.indexOf('echo: imBack Button') != -1);
             }, 1000);
         }),
         server: function (res, sendActivity) {
@@ -88,11 +106,14 @@ var commands_map: CommandValuesMap = {
 
             postBackBtn.click();
             setTimeout(() => {
-                var echos = document.querySelectorAll('.format-markdown');
+                var echos = document.querySelectorAll('.format-plain');
                 var lastEcho = echos.length - 1;
 
-                console.log(echos[lastEcho].innerHTML);
-                resolve(echos[lastEcho].innerHTML.indexOf('echo: postBack clicked') == -1);
+                var bot_echos = document.querySelectorAll('.format-markdown');
+                var lastBotEcho = bot_echos.length - 1;
+
+                resolve(echos[lastEcho].innerHTML.indexOf('button-postback') != -1 &&
+                    bot_echos[lastBotEcho].innerHTML.indexOf('echo: postBack Button') != -1);
             }, 1000);
         }),
         server: function (res, sendActivity) {
@@ -209,6 +230,12 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.hero_card);
+        }
+    },
+    "html-disabled": {
+        alternateText: '<a href="http://dev.botframework.com">Bot Framework</a>',
+        client: function () {
+            return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('<a href=') != -1;
         }
     },
     "image": {
@@ -406,7 +433,7 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
         }
-    },
+    }
     /*
      ** Add your commands to test here **  
     "command": {
@@ -433,16 +460,13 @@ var commands_map: CommandValuesMap = {
         }
     }
     */
-    "end": {
-        client: function () { return true; }
-    }
 };
 
-//use this to run only one test
-var single = "";    //"carousel";
+//use this to run only specified tests
+var testOnly = [];    //["carousel", "herocard"];
 
-if (single) {
-    for(var key in commands_map) if (key !== single && key !== "end") delete commands_map[key];
+if (testOnly && testOnly.length > 0) {
+    for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
 }
 
 module.exports = commands_map;

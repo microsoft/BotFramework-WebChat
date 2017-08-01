@@ -128,7 +128,10 @@ export const format: Reducer<FormatState> = (
         case 'Set_Format_Options':
             return {
                 ... state,
-                options: action.options,
+                options: {
+                    ... state.options,
+                    ... action.options
+                }
             };
         case 'Set_Locale':
             return {
