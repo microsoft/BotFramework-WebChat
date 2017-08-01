@@ -38,6 +38,19 @@ var commands_map: CommandValuesMap = {
             return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('hi') != -1;
         }
     },
+    "options.showHeader=false": {
+        urlAppend: { "formatOptions": { showHeader: false } },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top === 0;
+        }
+    },
+    "options.showHeader=default": {
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top > 0;
+        }
+    },
     "animation": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
