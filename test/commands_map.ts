@@ -393,7 +393,7 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
         }
-    },
+    }
     /*
      ** Add your commands to test here **  
     "command": {
@@ -420,16 +420,13 @@ var commands_map: CommandValuesMap = {
         }
     }
     */
-    "end": {
-        client: function () { return true; }
-    }
 };
 
 //use this to run only specified tests
 var testOnly = [];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
-    for (var key in commands_map) if (key !== "end" && testOnly.indexOf(key) < 0) delete commands_map[key];
+    for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
 }
 
 module.exports = commands_map;
