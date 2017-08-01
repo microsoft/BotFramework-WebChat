@@ -29,7 +29,6 @@ describe('nightmare UI tests', function () {
 			failure: "\x1b[31m",
 			device: "\x1b[36m%s\x1b[0m"
 		};
-
 		const nightmare = Nightmare({
 			show: true,
 			executionTimeout: 6000
