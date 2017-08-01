@@ -728,13 +728,13 @@
         color: #000000;
         display: inline-block;
     }
-
-    a.wc-link-download:hover .wc-icon-download {
+   
+    a.wc-link-download:hover .wc-icon-download, a.wc-link-download:visited .wc-icon-download {
         background-image:url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTJweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMTIgMjAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQ1LjIgKDQzNTE0KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT7uopYgY29weSA1PC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9IjIxNi0vLTMyMC0tLTAyMTYxNyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9ImRvd25sb2FkX3dlYl9jaGF0IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTgwLjAwMDAwMCwgLTE5Mi4wMDAwMDApIiBmaWxsPSIjM0E5NkREIj4KICAgICAgICAgICAgPHBhdGggZD0iTTE4MC40MzQ3ODMsMjEyIEwxODAuNDM0NzgzLDIxMC43NSBMMTkxLjU2NTIxNywyMTAuNzUgTDE5MS41NjUyMTcsMjEyIEwxODAuNDM0NzgzLDIxMiBaIE0xOTIsMjAyLjQzOTQ1MyBMMTg2LDIwOC41NTI3MzQgTDE4MCwyMDIuNDM5NDUzIEwxODAuODY5NTY1LDIwMS41NjA1NDcgTDE4NS4zODE2NDMsMjA2LjE1MDM5MSBMMTg1LjM4MTY0MywxOTIgTDE4Ni42MTgzNTcsMTkyIEwxODYuNjE4MzU3LDIwNi4xNTAzOTEgTDE5MS4xMzA0MzUsMjAxLjU2MDU0NyBMMTkyLDIwMi40Mzk0NTMgWiIgaWQ9Iu6ili1jb3B5LTUiPjwvcGF0aD4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==');
         background-repeat: no-repeat;
     }
     
-    a.wc-link-download:hover {
+    a.wc-link-download:hover,  a.wc-link-download:visited{
         color: #3A96DD;
         display: inline-block;
     }
@@ -748,5 +748,3 @@
         color: #0063B1;
         display: inline-block;
     }
-
-    
