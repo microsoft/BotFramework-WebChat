@@ -148,9 +148,6 @@ const printCommands = () => {
 
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
-let current_uitests = 0;
-let uitests_files = Object.keys(config.widthTests).length;
-
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
 
@@ -179,23 +176,8 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                 });
                 return;
             case 'end':
-                current_uitests++; // For each end command, we will excute twice
-                if (uitests_files * 2 <= current_uitests) {
-                    setTimeout(
-                        () => {
-                            process.exitCode = 0;
-                            process.exit();
-                        }, 3000);
-                }
-                else {
-                    sendActivity(res, {
-                        type: "message",
-                        timestamp: new Date().toUTCString(),
-                        channelId: "webchat",
-                        text: "echo: " + req.body.text,
-                        from: config.bot
-                    });
-                }
+                process.exitCode = 0;
+                process.exit();
                 return;
             default:
                 sendActivity(res, {
@@ -316,7 +298,7 @@ app.get('/assets/:file', function (req, res) {
 
 //do not listen unless being called from the command line
 if (!module.parent) {
-    
+
     // Running Web Server and DirectLine Client on port
     app.listen(process.env.port || process.env.PORT || config.port, () => {
         console.log('listening on ' + config.port);

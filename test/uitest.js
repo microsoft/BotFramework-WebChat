@@ -1,14 +1,8 @@
 "use strict";
-let commands = require('./commands_map');
-let config = require('./mock_dl/server_config.json');
-let Nightmare = require('nightmare');
-let assert = require('assert');
-let vo = require('vo');
-
-let nightmare = Nightmare({
-	show: true,
-	executionTimeout: 6000
-});
+const commands = require('./commands_map');
+const config = require('./mock_dl/server_config.json');
+const Nightmare = require('nightmare');
+const vo = require('vo');
 
 Nightmare.prototype.do = function (doFn) {
 	if (doFn) {
@@ -18,80 +12,99 @@ Nightmare.prototype.do = function (doFn) {
 }
 
 describe('nightmare UI tests', function () {
-	let devices = config.widthTests;
-	let keys = Object.keys(commands);
+	const devices = config.widthTests;
+	const keys = Object.keys(commands);
+
 	this.timeout(devices.length * keys.length * 20000);
 
 	it('Evaluates all UI widthTests for all commands_map file', function (done) {
-		let host = "http://localhost:" + config.port;
-		let domain = host + "/mock";
-		let url = host + "?domain=" + domain;
-		let tab = "\t";
-		let results = [];
+		const host = "http://localhost:" + config.port;
+		const params = {
+			domain: host + "/mock"
+		};
+		const tab = "\t";
+		const height = 768;
+		const colors = {
+			success: "\x1b[32m",
+			failure: "\x1b[31m",
+			device: "\x1b[36m%s\x1b[0m"
+		};
+		const nightmare = Nightmare({
+			show: true,
+			executionTimeout: 6000
+		});
 
-		let isTrueColor = "\x1b[32m";
-		let isFalseColor = "\x1b[31m";
-		let deviceColor = "\x1b[36m%s\x1b[0m";
-		let resultToConsole = function (consoleLog, result) {
-			const resultBoolean = !!result;
-			console.log(resultBoolean ? isTrueColor : isFalseColor, `${tab}${tab}${consoleLog}${resultBoolean}`);
-		}
-		let deviceToConsole = function (device, width) {
-			console.log(deviceColor, `${tab}${device} (width: ${width}px)`);
-		}
-
-		let testOneCommand = function* (testurl, index, width, consoleLog) {
-			const cmd = keys[index];
-			let result = "";
-			//Starting server and reload the page.
-			if (index == 0) {
-				result = yield nightmare.goto(testurl)
-					.viewport(width, 768);
+		function getUrl() {
+			var paramArray = [{}, params].concat(Array.prototype.slice.call(arguments));
+			var merged = Object.assign.apply(Object, paramArray);
+			var pairs = [];
+			for (var name in merged) {
+				var value = merged[name];
+				if (typeof value === 'object') {
+					value = JSON.stringify(value);
+				}
+				pairs.push(`${name}=${encodeURIComponent(value)}`);
 			}
+			return host + '?' + pairs.join('&');
+		}
 
-			result = yield nightmare.goto(testurl)
-				.viewport(width, 768)
+		function resultToConsole(consoleLog, result) {
+			console.log(result ? colors.success : colors.failure, `${tab}${tab}${consoleLog}${!!result}`);
+		}
+
+		function deviceToConsole(device, width) {
+			console.log(colors.device, `${tab}${device} (width: ${width}px)`);
+		}
+
+		function* testOneCommand(testurl, cmd, width, consoleLog) {
+			const result = yield nightmare.goto(testurl)
+				.viewport(width, height)
 				.wait(2000)
 				.type('.wc-textbox input', commands[cmd].alternateText || cmd)
 				.click('.wc-send')
 				.wait(3000)
 				.do(commands[cmd].do)
 				.evaluate(commands[cmd].client);
-
 			resultToConsole(consoleLog, result);
-			results.push(result);
+			return result;
 		}
 
 		//Testing devices and commands 
-		let testAllCommands = function* () {
+		function* testAllCommands() {
+			let success = true;
+
 			for (let device in devices) {
 				let width = devices[device];
 				deviceToConsole(device, width);
-
 				for (let cmd_index = 0; cmd_index < keys.length; cmd_index++) {
 					const cmd = keys[cmd_index];
 
 					console.log(`${tab}${tab}Command: ${cmd}`);
 
 					// All tests should be passed under speech enabled environment
-					let testUrl = `${url}&t=${cmd}&speech=enabled/ui`;
-					yield testOneCommand(testUrl, cmd_index, width, "Speech enabled: ")
-
+					let testUrl = getUrl({ t: cmd, speech: 'enabled/ui' }, commands[cmd].urlAppend);
+					success &= yield testOneCommand(testUrl, cmd, width, "Speech enabled: ")
 
 					const speechCmd = /speech[ \t]([^ ]*)/g.exec(cmd);
 					if (!speechCmd || speechCmd.length === 0) {
 						// Non speech specific tests should also be passed under speech disabled environment
-						testUrl = `${url}&t=${cmd}&speech=disabled/ui`;
-						yield testOneCommand(testUrl, cmd_index, width, "Speech disabled: ")
+						testUrl = getUrl({ t: cmd, speech: 'disabled/ui' }, commands[cmd].urlAppend);
+						success &= yield testOneCommand(testUrl, cmd, width, "Speech disabled: ")
 					}
 				}
 			}
+
+			yield nightmare
+				.type('.wc-textbox input', 'end')
+				.click('.wc-send')
+				.wait(1000);
+
 			yield nightmare.end();
-			return results;
+			return success;
 		}
 
-		vo(testAllCommands)(function (err, results) {
-			done();
+		vo(testAllCommands)(function (err, success) {
+			done(!success);
 		});
 	});
 });
