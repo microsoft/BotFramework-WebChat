@@ -77,7 +77,7 @@ describe('nightmare UI tests', function () {
 				let width = devices[device];
 				deviceToConsole(device, width);
 				for (let cmd_index = 0; cmd_index < keys.length; cmd_index++) {
-					let cmd = keys[cmd_index];
+					const cmd = keys[cmd_index];
 
 					console.log(`${tab}${tab}Command: ${cmd}`);
 
@@ -89,7 +89,7 @@ describe('nightmare UI tests', function () {
 					if (!speechCmd || speechCmd.length === 0) {
 						// Non speech specific tests should also be passed under speech disabled environment
 						testUrl = getUrl({ t: cmd, speech: 'disabled/ui' }, commands[cmd].urlAppend);
-						yield testOneCommand(testUrl, cmd, width, "Speech disabled: ")
+						success &= yield testOneCommand(testUrl, cmd, width, "Speech disabled: ")
 					}
 				}
 			}
