@@ -311,8 +311,6 @@ export const AttachmentView = (props: {
 
         default:
             var unknownAttachment = props.attachment as UnknownMedia;
-            if (unknownAttachment.thumbnailUrl)
-                return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } thumbnailUrl={ unknownAttachment.thumbnailUrl } />
-            return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } />;
+            return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } thumbnailUrl={ unknownAttachment.thumbnailUrl } />
     }
 }
