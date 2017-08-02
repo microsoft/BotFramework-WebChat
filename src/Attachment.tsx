@@ -123,8 +123,7 @@ const Unknown = (props: {
     format: FormatState,
     contentType: string,
     contentUrl: string,
-    name: string,
-    thumbnailUrl?: string
+    name: string
 }) => {
     if (regExpCard.test(props.contentType)) {
         return <span>{ props.format.strings.unknownCard.replace('%1', props.contentType) }</span>;
@@ -311,6 +310,6 @@ export const AttachmentView = (props: {
 
         default:
             var unknownAttachment = props.attachment as UnknownMedia;
-            return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } thumbnailUrl={ unknownAttachment.thumbnailUrl } />
+            return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } />
     }
 }
