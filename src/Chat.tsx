@@ -26,7 +26,7 @@ export interface ChatProps {
     directLine?: DirectLineOptions,
     speechOptions?: SpeechOptions,
     locale?: string,
-    pastHistory?: Activity[],
+    history?: Activity[],
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
@@ -76,8 +76,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         konsole.log("BotChat.Chat props", props);
 
         if (props.pastHistory) {
-            this.store.dispatch<HistoryAction>({
-                type: 'Past_History',
+            this.store.dispatch<ChatAction>({
+                type: 'Set_History',
                 activities: props.pastHistory
             });
         }
