@@ -35,7 +35,31 @@ interface CommandValuesMap {
 var commands_map: CommandValuesMap = {
     "hi": {
         client: function () {
-            return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('hi') != -1;
+            return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('hi') != -1
+                //look for 3 messages - greeting, hi, and bot response
+                && document.querySelectorAll('.wc-message').length === 3;
+        }
+    },
+    "pastHistory": {
+        urlAppend: {
+            pastHistory: <dl.Message[]>[
+                {
+                    id: "-2",
+                    type: 'message',
+                    from: { id: 'userid', name: 'username' },
+                    text: 'The user said this in the past.'
+                },
+                {
+                    id: "-1",
+                    type: 'message',
+                    from: server_content.config.bot,
+                    text: 'The bot said this in the past.'
+                }
+            ]
+        },
+        client: function () {
+            //look for 5 messages - the 2 above, greeting, history, and bot response
+            return document.querySelectorAll('.wc-message').length === 5;
         }
     },
     "options.showHeader=false": {

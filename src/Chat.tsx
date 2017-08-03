@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
-import { createStore, ChatActions } from './Store';
+import { createStore, ChatActions, HistoryAction } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
 import { Speech } from './SpeechModule';
@@ -26,6 +26,7 @@ export interface ChatProps {
     directLine?: DirectLineOptions,
     speechOptions?: SpeechOptions,
     locale?: string,
+    pastHistory?: Activity[],
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
@@ -73,6 +74,13 @@ export class Chat extends React.Component<ChatProps, {}> {
         super(props);
 
         konsole.log("BotChat.Chat props", props);
+
+        if (props.pastHistory) {
+            this.store.dispatch<HistoryAction>({
+                type: 'Past_History',
+                activities: props.pastHistory
+            });
+        }
 
         this.store.dispatch<ChatActions>({
             type: 'Set_Locale',

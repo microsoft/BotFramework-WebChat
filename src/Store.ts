@@ -236,14 +236,14 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
+    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message',
     activity: Activity
 } | {
     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
     clientActivityId: string
 } | {
-    type: 'Send_Message_Succeed'
-    clientActivityId: string
+    type: 'Send_Message_Succeed',
+    clientActivityId: string,
     id: string
 } | {
     type: 'Select_Activity',
@@ -254,6 +254,9 @@ export type HistoryAction = {
 } | {
     type: 'Clear_Typing',
     id: string
+} | {
+    type: 'Past_History',
+    activities: Activity[]
 }
 
 const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
@@ -273,6 +276,11 @@ export const history: Reducer<HistoryState> = (
 ) => {
     konsole.log("history action", action);
     switch (action.type) {
+        case 'Past_History':
+            return {
+                ... state,
+                activities: action.activities.slice()
+            };
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history

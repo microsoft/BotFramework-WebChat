@@ -220,6 +220,13 @@ WebChat currently defaults to *not* sending 'typing' activities to the bot when 
 
 You can supply WebChat with the id (and, optionally, a friendly name) of the current user by passing `user: { id: user_id, name: user_name }` to `App`/`Chat`. This object is passed with every activity sent from WebChat to the bot, which means it is not available to the bot *before* any activities are sent. See [The Backchannel](#the-backchannel) to find out how your web page can programmatically send non-message activities to the bot.
 
+### Provide Chat History
+
+You can initialize the WebChat conversation by passing an array of activity objects in `pastHistory: [ activity_object1, activity_object2, ... ]` to `App`/`Chat`. Each activity object should have a unique `id` value, and the `from` property should match either a user identity (above) or the bot's identity. An example activity message might look like:
+```
+{ id: <unique id>, from: { id: <userid>, name: <username> }, type: "message", text: "The user said this in the past." }
+```
+
 ### Replacing DirectLineJS
 
 You can give WebChat any object that implements `IBotConnection` by passing `botConnection: your_directline_replacement` to `App`/`Chat`.
