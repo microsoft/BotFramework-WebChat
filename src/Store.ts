@@ -236,14 +236,14 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message',
+    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
     clientActivityId: string
 } | {
-    type: 'Send_Message_Succeed',
-    clientActivityId: string,
+    type: 'Send_Message_Succeed'
+    clientActivityId: string
     id: string
 } | {
     type: 'Select_Activity',
