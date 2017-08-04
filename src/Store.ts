@@ -279,7 +279,7 @@ export const history: Reducer<HistoryState> = (
         case 'Set_History':
             return {
                 ... state,
-                activities: ... action.activities
+                activities: [... action.activities]
             };
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
