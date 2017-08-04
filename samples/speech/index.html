@@ -51,16 +51,16 @@
             var params = BotChat.queryParams(location.search);
 
             var user = {
-                id: params.userid || 'userid',
-                name: params.username || 'username'
+                id: params['userid'] || 'userid',
+                name: params['username'] || 'username'
             };
 
             var bot = {
-                id: params.botid || 'botid',
-                name: params.botname || 'botname'
+                id: params['botid'] || 'botid',
+                name: params['botname'] || 'botname'
             };
 
-            window.botchatDebug = params.debug && params.debug === 'true';
+            window.botchatDebug = params['debug'] && params['debug'] === 'true';
 
             // // Option 1: No speech
             //
@@ -122,17 +122,17 @@
 
             BotChat.App({
                 bot: bot,
-                locale: params.locale,
+                locale: params['locale'],
                 resize: 'detect',
                 // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
                 speechOptions: speechOptions,
                 user: user,
 
                 directLine: {
-                    domain: params.domain,
-                    secret: params.s,
-                    token: params.t,
-                    webSocket: params.webSocket && params.webSocket === 'true' // defaults to true
+                    domain: params['domain'],
+                    secret: params['s'],
+                    token: params['t'],
+                    webSocket: params['webSocket'] && params['webSocket'] === 'true' // defaults to true
                 }
             }, document.getElementById('BotChatGoesHere'));
         </script>
