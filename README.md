@@ -226,7 +226,7 @@ Using a custom client you can store conversation history to then retrieve and se
 ```
 { id: <unique id>, from: { id: <userid>, name: <username> }, type: "message", text: "The user said this in the past." }
 ```
-The fields above are the fields required to provide chat history to webchat.  Keep in mind you will probably want to store more information.  Specifically you will most likely want a timestamp on each activity to order them in the correct chronological order.  It is suggested to consult the [Activity object](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-api-reference#activity-object) documentation when storing activities for the purnpose of displaying chat history.
+The fields above are the fields required to provide chat history to webchat.  Keep in mind you will probably want to store more information.  Specifically you will most likely want a timestamp on each activity to order them in the correct chronological order.  It is suggested to consult the [Activity object](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-api-reference#activity-object) documentation when storing activities for the purpose of displaying chat history.
 
 ### Replacing DirectLineJS
 
