@@ -76,9 +76,9 @@ export class Chat extends React.Component<ChatProps, {}> {
         konsole.log("BotChat.Chat props", props);
 
         if (props.pastHistory) {
-            this.store.dispatch<ChatAction>({
+            this.store.dispatch<HistoryAction>({
                 type: 'Set_History',
-                activities: props.pastHistory
+                activities: props.history
             });
         }
 
