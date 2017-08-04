@@ -2,6 +2,7 @@ import * as dl from "../node_modules/botframework-directlinejs/built/directLine"
 export const config = require('./mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
 const asset_url = "http://localhost:" + config.port + "/assets/";
 const bot = config.bot;
+const user: dl.User = { id: 'userid', name: 'username' };
 
 /*
 * Function that renders Adaptive Cards
@@ -249,6 +250,25 @@ export var hero_card: dl.Message = {
         }
     ]
 }
+
+/*
+ * Initialize conversation with history messages
+ * 
+ */
+export var history = <dl.Message[]>[
+    {
+        id: "-2",
+        type: 'message',
+        from: user,
+        text: user.name + ' said this in the past.'
+    },
+    {
+        id: "-1",
+        type: 'message',
+        from: bot,
+        text: bot.name + ' said this in the past.'
+    }
+];
 
 /*
  * Activity for Image Raw

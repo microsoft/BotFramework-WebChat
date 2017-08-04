@@ -40,28 +40,6 @@ var commands_map: CommandValuesMap = {
                 && document.querySelectorAll('.wc-message').length === 3;
         }
     },
-    "history": {
-        urlAppend: {
-            history: <dl.Message[]>[
-                {
-                    id: "-2",
-                    type: 'message',
-                    from: { id: 'userid', name: 'username' },
-                    text: 'The user said this in the past.'
-                },
-                {
-                    id: "-1",
-                    type: 'message',
-                    from: server_content.config.bot,
-                    text: 'The bot said this in the past.'
-                }
-            ]
-        },
-        client: function () {
-            //look for 5 messages - the 2 above, greeting, history, and bot response
-            return document.querySelectorAll('.wc-message').length === 5;
-        }
-    },
     "options.showHeader=false": {
         urlAppend: { "formatOptions": { showHeader: false } },
         client: function () {
@@ -227,6 +205,15 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.hero_card);
+        }
+    },
+    "history": {
+        urlAppend: {
+            history: server_content.history
+        },
+        client: function () {
+            //look for 5 messages - the 2 above, greeting, history, and bot response
+            return document.querySelectorAll('.wc-message').length === 5;
         }
     },
     "html-disabled": {
