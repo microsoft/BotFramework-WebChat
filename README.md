@@ -222,11 +222,11 @@ You can supply WebChat with the id (and, optionally, a friendly name) of the cur
 
 ### Provide Chat History
 
-Using a custom client you can store conversation history to then retrieve and send the conversation history to WebChat. You can initialize the WebChat conversation by passing an array of activity objects in `pastHistory: [ activity_object1, activity_object2, ... ]` to `App`/`Chat`. Each activity object should have a unique `id` value, and the `from` property should match either a user identity (above) or the bot's identity. An example activity message might look like:
+You can initialize the WebChat conversation by passing an array of activity objects in `pastHistory: [ activity_object1, activity_object2, ... ]` to `App`/`Chat`. Each activity object should have a unique `id` value, and the `from` property should match either a user identity (above) or the bot's identity. An example activity message might look like:
 ```
 { id: <unique id>, from: { id: <userid>, name: <username> }, type: "message", text: "The user said this in the past." }
 ```
-The fields above are the fields required to provide chat history to webchat.  Keep in mind you will probably want to store more information.  Specifically you will most likely want a timestamp on each activity to order them in the correct chronological order.  It is suggested to consult the [Activity object](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-api-reference#activity-object) documentation when storing activities for the purpose of displaying chat history.
+Consult the [Activity object](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-api-reference#activity-object) documentation for the complete schema. Note that messages will appear in the same order as the array you provide (the `timestamp` field will not affect the order).
 
 ### Replacing DirectLineJS
 
