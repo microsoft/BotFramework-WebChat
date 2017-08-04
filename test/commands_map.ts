@@ -40,9 +40,9 @@ var commands_map: CommandValuesMap = {
                 && document.querySelectorAll('.wc-message').length === 3;
         }
     },
-    "pastHistory": {
+    "history": {
         urlAppend: {
-            pastHistory: <dl.Message[]>[
+            history: <dl.Message[]>[
                 {
                     id: "-2",
                     type: 'message',
