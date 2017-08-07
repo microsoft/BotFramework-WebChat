@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- 
+<!--
     This is a sample HTML file which shows how to use speech in the WebChat.
     1. Build the project: "npm run build"
     2. Start a web server: "npm run start"
@@ -13,31 +13,27 @@
         * userid, username = id (and optionally name) of bot user
         * botid, botname = id (and optionally name) of bot
 
-    You have a few options for speech recognition available to you. See definition of speechOptions below
-
+    You have a few options for speech recognition available to you. See definition of speechOptions below.
 -->
 <html>
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <title>Bot Chat</title>
-        <link href="../../botchat.css" rel="stylesheet" />
-        
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<style>
-		.wc-chatview-panel {
-			width: 620px;
-			height: 800px;
-			position: relative;
-		}
-        .h2{
-            font-family: Segoe UI;
-        }
-	</style>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <link href="../../botchat.css" rel="stylesheet" type="text/css" />
+        <style type="text/css">
+            .wc-chatview-panel {
+                height: 800px;
+                position: relative;
+                width: 620px;
+            }
 
+            .h2 {
+                font-family: 'Segoe UI';
+            }
+        </style>
     </head>
     <body>
-
         <section class="example">
             <p>
                 This sample shows the various options for enabling speech recognition and speech synthesis in the WebChat
@@ -46,94 +42,99 @@
 
         <div id="BotChatGoesHere"></div>
 
-        <script src="../../botchat.js"></script>        
-        <!--If you do not want to use Cognitive Services lib, comment out the following line -->
-        <script src="../../CognitiveServices.js"></script>
-        
-        <script>
+        <script src="../../botchat.js" type="text/javascript"></script>
+
+        <!-- If you do not want to use Cognitive Services library, comment out the following line -->
+        <script src="../../CognitiveServices.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
             var params = BotChat.queryParams(location.search);
 
             var user = {
-                id: params['userid'] || 'userid',
-                name: params["username"] || 'username'
-                };
-            
-            var bot = {
-                id: params['botid'] || 'botid',
-                name: params["botname"] || 'botname'
+                id: params.userid || 'userid',
+                name: params.username || 'username'
             };
-            
-            window['botchatDebug'] = params['debug'] && params['debug'] === "true";
 
-            // // Option 1 : No Speech
+            var bot = {
+                id: params.botid || 'botid',
+                name: params.botname || 'botname'
+            };
+
+            window.botchatDebug = params.debug && params.debug === 'true';
+
+            // // Option 1: No speech
             //
             // var speechOptions = null;
 
-            // Option 2 : native browser speech (not supported by all browsers, no speech recognition priming support)
-            
-
-            // Note that chrome automatically blocks speech if the html file is loaded from disk. You can run a server locally 
-            // or launch chrome (close all the existing chrome browsers) with the following option:
+            // // Option 2: Native browser speech (not supported by all browsers, no speech recognition priming support)
+            //
+            // Note that Chrome automatically blocks speech if the HTML file is loaded from disk. You can run a server locally
+            // or launch Chrome (close all the existing Chrome browsers) with the following option:
             // chrome.exe --allow-file-access-from-files <sampleHtmlFile>
+            //
             // var speechOptions = {
             //     speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
             //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
-            // }
+            // };
 
-            // // Option 3 : Cognitive services speech recognition using API key (cross browser, speech priming support)
+            // // Option 3: Cognitive Services speech recognition using API key (cross browser, speech priming support)
             //
             var speechOptions = {
-                speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
-                
-                speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
-                    { 
-                        subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
-                        gender: CognitiveServices.SynthesisGender.Female,
-                        voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
-                    })
-            }
+                speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' }),
+                speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
+                    gender: CognitiveServices.SynthesisGender.Female,
+                    subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY',
+                    voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+                })
+            };
 
-            // // Option 4 : Cognitive services speech recognition using a token (usually generated in a secure backend using your API key)
+            // // Option 4: Cognitive Services speech recognition using a token (usually generated in a secure backend using your API key)
             //
-            // let getToken = () =>{
-            //     // Normally this token fetch is done from your secured backend to avoid exposing the api key and this call
-            //     // would be to your backend, or to retrieve a token that was served as part of the original page. 
-            //     return $.ajax({
-            //         url: "https://api.cognitive.microsoft.com/sts/v1.0/issueToken",
-            //         beforeSend: function(xhrObj){
-            //             xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","YOUR_COGNITIVE_SPEECH_API_KEY");
-            //         },
-            //         type: "POST",
-            //     })
-            // }
+            // var getToken = () => {
+            //     // Normally this token fetch is done from your secured backend to avoid exposing the API key and this call
+            //     // would be to your backend, or to retrieve a token that was served as part of the original page.
+
+            //     return fetch(
+            //         'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
+            //         {
+            //             headers: {
+            //                 'Ocp-Apim-Subscription-Key': 'YOUR_COGNITIVE_SPEECH_API_KEY'
+            //             },
+            //             method: 'POST'
+            //         }
+            //     ).then(res => res.text());
+            // };
+
+            // var speechOptions = {
+            //     speechRecognizer: new CognitiveServices.SpeechRecognizer({
+            //         fetchCallback: (authFetchEventId) => getToken(),
+            //         fetchOnExpiryCallback: (authFetchEventId) => getToken()
+            //     }),
+            //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
+            // };
+
+            // // Option 5: Your own custom implementations of ISpeechRecognizer and ISpeechSynthesizer
             //
             // var speechOptions = {
-            //     speechRecognizer: new CognitiveServices.SpeechRecognizer( 
-            //         {
-            //             fetchCallback: (authFetchEventId) => getToken(),
-            //             fetchOnExpiryCallback: (authFetchEventId) => getToken(), 
-            //         }
-            //     ),
-            //     speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
-            // }
-
-            // Option 5:
-            // Your own custom implementations of ISpeechRecognizer and ISpeechSynthesizer
+            //     speechRecognizer: new YourOwnSpeechRecognizer(),
+            //     speechSynthesizer: new YourOwnSpeechSynthesizer()
+            // };
 
             BotChat.App({
-                directLine: {
-                    secret: params['s'],
-                    token: params['t'],
-                    domain: params['domain'],
-                    webSocket: params['webSocket'] && params['webSocket'] === "true" // defaults to true
-                },
-                user: user,
                 bot: bot,
-                locale: params['locale'],
+                locale: params.locale,
                 resize: 'detect',
-                speechOptions: speechOptions,
                 // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
-            }, document.getElementById("BotChatGoesHere"));
+                speechOptions: speechOptions,
+                user: user,
+
+                directLine: {
+                    domain: params.domain,
+                    secret: params.s,
+                    token: params.t,
+                    webSocket: params.webSocket && params.webSocket === 'true' // defaults to true
+                }
+            }, document.getElementById('BotChatGoesHere'));
         </script>
     </body>
 </html>
