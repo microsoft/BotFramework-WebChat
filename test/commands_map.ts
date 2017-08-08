@@ -230,11 +230,16 @@ var commands_map: CommandValuesMap = {
     },
     "markdown-url-needs-encoding": {
         client: function () {
-            var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
-            if (!link) return false;
+            var links = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a');
+            if (!links || links.length === 0) return false;
 
-            //check if value is encoded
-            return link.href === "https://bing.com/?q=some%20value";
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i] as HTMLAnchorElement;
+
+                //check if value is encoded
+                if (link.href !== "https://bing.com/?q=some%20value") return false;
+            }
+            return true;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.mar_encode_card);

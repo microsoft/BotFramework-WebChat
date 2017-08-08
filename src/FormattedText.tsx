@@ -57,7 +57,7 @@ const renderMarkdown = (
                 // convert <br> tags to blank lines for markdown
                  .replace(/<br\s*\/?>/ig, '\r\n\r\n')
                 // URL encode all links
-                 .replace(/\[(.*)\]\((.*)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
+                 .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
     const __html = markdownIt.render(src);
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
