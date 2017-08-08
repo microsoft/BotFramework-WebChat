@@ -76,7 +76,7 @@ For ease of testing, several parameters can be set in the query string:
 
             botConnection.activity$
                 .filter(activity => activity.type === "event" && activity.name === "changeBackground")
-                .subscribe(activity => changeBackgroundColor(activity.value))
+                .subscribe(activity => changeBackgroundColor(activity.value));
 
             const changeBackgroundColor = (newColor) => {
                 document.body.style.backgroundColor = newColor;
