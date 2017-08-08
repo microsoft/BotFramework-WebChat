@@ -18,12 +18,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Bot Chat</title>
+
     <link href="../../botchat.css" rel="stylesheet" />
+
     <style>
       .example {
         float: left;
         margin-right: 20px;
         width: 300px;
+      }
+
+      .example > h2 {
+        font-family: 'Segoe UI';
       }
 
       #BotChatGoesHere {
@@ -42,11 +48,14 @@
         width: 320px;
       }
     </style>
+
     <script>
       function toggleClassName(className) {
         const BotChatGoesHere = document.getElementById('BotChatGoesHere');
 
-        ['wc-narrow', 'wc-normal', 'wc-wide'].forEach(c => BotChatGoesHere.classList.remove(c));
+        ['wc-narrow', 'wc-normal', 'wc-wide'].forEach(function (c) {
+          BotChatGoesHere.classList.remove(c);
+        });
 
         BotChatGoesHere.classList.add(className);
       }
@@ -66,8 +75,11 @@
         Important: you will need to set the <b>resize</b> option to <b>'detect'</b> when instantiating the WebChat.
       </p>
     </section>
+
     <div id="BotChatGoesHere"></div>
+
     <script src="../../botchat.js"></script>
+
     <script>
       const params = BotChat.queryParams(location.search);
 
@@ -84,11 +96,11 @@
       window['botchatDebug'] = params['debug'] && params['debug'] === 'true';
 
       BotChat.App({
-        bot,
+        bot: bot,
         locale: params['locale'],
         resize: 'detect',
         // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
-        user,
+        user: user,
 
         directLine: {
           domain: params['domain'],

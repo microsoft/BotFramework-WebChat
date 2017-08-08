@@ -25,7 +25,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Bot Chat</title>
+
     <link href="../../botchat.css" rel="stylesheet" />
+
     <style>
       .example {
         float: left;
@@ -33,7 +35,7 @@
         width: 300px;
       }
 
-      .example h2 {
+      .example > h2 {
         font-family: 'Segoe UI';
       }
 
@@ -51,8 +53,11 @@
       <h2>Type a color into the WebChat!</h2>
       <button onclick="postButtonMessage()" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px;">Click Me!</button>
     </section>
+
     <div id="BotChatGoesHere"></div>
+
     <script src="../../botchat.js"></script>
+
     <script>
       const params = BotChat.queryParams(location.search);
 
@@ -75,17 +80,26 @@
         webSocket: params['webSocket'] && params['webSocket'] === 'true' // defaults to true
       });
 
-      BotChat.App({ bot, botConnection, user }, document.getElementById('BotChatGoesHere'));
-
-      const changeBackgroundColor = newColor => {
-        document.body.style.backgroundColor = newColor;
-      };
+      BotChat.App({
+        bot: bot,
+        botConnection: botConnection,
+        user: user
+      }, document.getElementById('BotChatGoesHere'));
 
       botConnection.activity$
-        .filter(activity => activity.type === 'event' && activity.name === 'changeBackground')
-        .subscribe(activity => changeBackgroundColor(activity.value));
+        .filter(function (activity) {
+          return activity.type === 'event' && activity.name === 'changeBackground';
+        })
+        .subscribe(function (activity) {
+          console.log('"changeBackground" received with value: ' + activity.value);
+          changeBackgroundColor(activity.value);
+        });
 
-      const postButtonMessage = () => {
+      function changeBackgroundColor(newColor) {
+        document.body.style.backgroundColor = newColor;
+      }
+
+      function postButtonMessage() {
         botConnection
           .postActivity({
             from: { id: 'me' },
@@ -93,7 +107,9 @@
             type: 'event',
             value: ''
           })
-          .subscribe(id => console.log('success'));
+          .subscribe(function (id) {
+            console.log('"buttonClicked" sent');
+          });
       };
     </script>
   </body>
