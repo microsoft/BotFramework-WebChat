@@ -411,6 +411,17 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
         }
+    },
+    "focus on type": {
+        do: function (nightmare) {
+            nightmare
+                .type('.wc-chatview-panel', 'Hi!')
+                .wait(1000);
+        },
+        client: function () {
+            debugger;
+            return (((document.querySelector('.wc-shellinput') as HTMLInputElement).value === 'Hi!'));
+        }
     }
     /*
      ** Add your commands to test here **
