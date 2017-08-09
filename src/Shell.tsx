@@ -39,12 +39,10 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private onClickSend() {
-        this.textInput.focus();
         this.sendMessage();
     }
 
     private onChangeFile() {
-        this.textInput.focus();
         this.props.sendFiles(this.fileInput.files);
         this.fileInput.value = null;
     }
