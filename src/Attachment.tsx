@@ -89,8 +89,8 @@ const Video = (props: VideoProps ) => {
 
         case VIMEO_WWW_DOMAIN:
         case VIMEO_DOMAIN:
-            return <Vimeo 
-                embedId={ pathSegments[pathSegments.length-1] } 
+            return <Vimeo
+                embedId={ pathSegments[pathSegments.length-1] }
                 autoPlay={ props.autoPlay }
                 loop={ props.loop }
             />
@@ -268,10 +268,10 @@ export const AttachmentView = (props: {
                 }
             });
             const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
-            receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
+            receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: "medium", weight: "bolder" }, taxCol[0]);
             receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
             const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
-            receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
+            receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: "medium", weight: "bolder" }, totalCol[0]);
             receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
             receiptCardBuilder.addButtons(attachment.content.buttons);
             return (
