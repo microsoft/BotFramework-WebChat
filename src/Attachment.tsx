@@ -89,8 +89,8 @@ const Video = (props: VideoProps ) => {
 
         case VIMEO_WWW_DOMAIN:
         case VIMEO_DOMAIN:
-            return <Vimeo 
-                embedId={ pathSegments[pathSegments.length-1] } 
+            return <Vimeo
+                embedId={ pathSegments[pathSegments.length-1] }
                 autoPlay={ props.autoPlay }
                 loop={ props.loop }
             />
@@ -267,12 +267,16 @@ export const AttachmentView = (props: {
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
                 }
             });
-            const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
-            receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
-            receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
-            const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
-            receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
-            receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+            if(attachment.content.tax !== null && typeof attachment.content.tax !== "undefined") {
+              const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
+              receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
+              receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
+            }
+            if(attachment.content.total !== null && typeof attachment.content.total !== "undefined") {
+              const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
+              receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
+              receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+            }
             receiptCardBuilder.addButtons(attachment.content.buttons);
             return (
                 <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
