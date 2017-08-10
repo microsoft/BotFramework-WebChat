@@ -33,6 +33,8 @@ const queryString = (query: QueryParams) =>
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
     .join('&');
 
+const isNil = (value: any) => value === null || typeof value === "undefined"
+
 const Youtube = (props: {
     embedId: string,
     autoPlay?: boolean,
@@ -267,12 +269,12 @@ export const AttachmentView = (props: {
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
                 }
             });
-            if(attachment.content.tax !== null && typeof attachment.content.tax !== "undefined") {
+            if(!isNil(attachment.content.tax)) {
               const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
               receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: "medium", weight: "bolder" }, taxCol[0]);
               receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
             }
-            if(attachment.content.total !== null && typeof attachment.content.total !== "undefined") {
+            if(!isNil(attachment.content.total)) {
               const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
               receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: "medium", weight: "bolder" }, totalCol[0]);
               receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
