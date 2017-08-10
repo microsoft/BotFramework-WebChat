@@ -269,12 +269,12 @@ export const AttachmentView = (props: {
             });
             if(attachment.content.tax !== null && typeof attachment.content.tax !== "undefined") {
               const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
-              receiptCardBuilder.addTextBlock('Tax', { size: "medium", weight: "bolder" }, taxCol[0]);
+              receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: "medium", weight: "bolder" }, taxCol[0]);
               receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
             }
             if(attachment.content.total !== null && typeof attachment.content.total !== "undefined") {
               const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
-              receiptCardBuilder.addTextBlock('Total', { size: "medium", weight: "bolder" }, totalCol[0]);
+              receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: "medium", weight: "bolder" }, totalCol[0]);
               receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
             }
             receiptCardBuilder.addButtons(attachment.content.buttons);
