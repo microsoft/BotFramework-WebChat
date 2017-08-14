@@ -66,6 +66,10 @@
         right: 0;
         top: $headerTotalHeight;
         transition: transform $actionTransition;
+        
+        &.no-header {
+            top: 0;
+        }
     }
 
     .wc-message-group-content {
