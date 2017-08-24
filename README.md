@@ -172,13 +172,17 @@ You can alter or add localized strings in `/src/Strings.ts`:
 
 Behavioral customization will require changing the TypeScript files in `/src`. A full description of the architecture of WebChat is beyond the scope of this document, but here are a few starters:
 
-### Architecture
+#### Architecture
 
 * `Chat` is the top-level React component
 * `App` creates a React application consists solely of `Chat`
 * `Chat` largely follows the Redux architecture laid out in [this video series](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
 * To handle async side effects of Redux actions, `Chat` uses `Epic` from [redux-observable](https://redux-observable.js.org) - here's a [video introduction](https://www.youtube.com/watch?v=sF5-V-Szo0c)
 * Underlying `redux-observable` (and also [DirectLineJS](https://github.com/microsoft/botframework-directlinejs)) is the `RxJS` library, which implements the Observable pattern for wrangling async. A minimal grasp of `RxJS` is key to understanding WebChat's plumbing.
+
+#### Markdown features
+
+WebChat uses the [markdown-it](https://markdown-it.github.io/) library for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options [here](https://github.com/Microsoft/BotFramework-WebChat/blob/master/src/FormattedText.tsx#L28) in your own build of WebChat.
 
 ### Contributing
 
