@@ -182,7 +182,7 @@ Behavioral customization will require changing the TypeScript files in `/src`. A
 
 #### Markdown
 
-WebChat uses the [markdown-it](https://markdown-it.github.io/) library for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options [here](https://github.com/Microsoft/BotFramework-WebChat/blob/master/src/FormattedText.tsx#L28) in your own build of WebChat.
+WebChat uses [markdown-it](https://markdown-it.github.io/) for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options in `/src/FormattedText.tsx` in your own build of WebChat.
 
 ### Contributing
 
