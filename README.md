@@ -180,7 +180,7 @@ Behavioral customization will require changing the TypeScript files in `/src`. A
 * To handle async side effects of Redux actions, `Chat` uses `Epic` from [redux-observable](https://redux-observable.js.org) - here's a [video introduction](https://www.youtube.com/watch?v=sF5-V-Szo0c)
 * Underlying `redux-observable` (and also [DirectLineJS](https://github.com/microsoft/botframework-directlinejs)) is the `RxJS` library, which implements the Observable pattern for wrangling async. A minimal grasp of `RxJS` is key to understanding WebChat's plumbing.
 
-#### Markdown features
+#### Markdown
 
 WebChat uses the [markdown-it](https://markdown-it.github.io/) library for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options [here](https://github.com/Microsoft/BotFramework-WebChat/blob/master/src/FormattedText.tsx#L28) in your own build of WebChat.
 
