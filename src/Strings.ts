@@ -32,6 +32,20 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Type your message...",
         listeningIndicator: "Listening..."
     },
+    'nb-no': {
+        title: "Chat",
+        send: "Send",
+        unknownFile: "[Fil av typen '%1']",
+        unknownCard: "[Ukjent Kort '%1']",
+        receiptTax: "Skatt",
+        receiptTotal: "Totalt",
+        messageRetry: "prøv igjen",
+        messageFailed: "kunne ikke sende",
+        messageSending: "sender",
+        timeSent: " %1",
+        consolePlaceholder: "Skriv inn melding...",
+        listeningIndicator: "Lytter..."
+    },    
     'de-de': {
         title: "Chat",
         send: "Senden",
@@ -239,6 +253,8 @@ export const defaultStrings = localizedStrings['en-us'];
 export const strings = (locale: string) => {
     if (locale.startsWith('de'))
         locale = 'de-de';
+    else if (locale.startsWith('no') || locale.startsWith('nb') || locale.startsWith('nn'))
+        locale = 'nb-no';
     else if (locale.startsWith('pl'))
         locale = 'pl-pl';
     else if (locale.startsWith('ru'))
