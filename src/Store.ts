@@ -533,6 +533,7 @@ const stopListening: Epic<ChatActions, ChatState> = (action$) =>
 
 const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
+    .throttleTime(500)
     .do((action : ShellAction) => {
         var locale = store.getState().format.locale;
         var onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source:"speech" })};
