@@ -12,10 +12,11 @@ export const FormattedText = (props: IFormattedTextProps) => {
         return null;
 
     switch (props.format) {
-        case "plain":
-            return renderPlainText(props.text);
-        default:
+        case "markdown":
             return renderMarkdown(props.text, props.onImageLoad);
+
+        default:
+            return renderPlainText(props.text);
     }
 }
 
@@ -54,10 +55,10 @@ const renderMarkdown = (
     onImageLoad: () => void
 ) => {
     const src = text
-                // convert <br> tags to blank lines for markdown
-                 .replace(/<br\s*\/?>/ig, '\r\n\r\n')
-                // URL encode all links
-                 .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
+        // convert <br> tags to blank lines for markdown
+        .replace(/<br\s*\/?>/ig, '\r\n\r\n')
+        // URL encode all links
+        .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
     const __html = markdownIt.render(src);
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
