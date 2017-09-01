@@ -12,11 +12,12 @@ export const FormattedText = (props: IFormattedTextProps) => {
         return null;
 
     switch (props.format) {
-        case "markdown":
-            return renderMarkdown(props.text, props.onImageLoad);
+        case "xml":
+        case "plain":
+            return renderPlainText(props.text);
 
         default:
-            return renderPlainText(props.text);
+            return renderMarkdown(props.text, props.onImageLoad);
     }
 }
 
