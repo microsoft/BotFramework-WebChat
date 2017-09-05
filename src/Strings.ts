@@ -109,7 +109,7 @@ const localizedStrings: LocalizedStrings = {
         unknownCard: "[Cartão desconhecido '%1']",
         receiptTax: "Imposto",
         receiptTotal: "Total",
-        messageRetry: "repedit",
+        messageRetry: "repetir",
         messageFailed: "não pude enviar",
         messageSending: "enviando",
         timeSent: " às %1",
