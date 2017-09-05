@@ -15,7 +15,6 @@ export const FormattedText = (props: IFormattedTextProps) => {
         case "xml":
         case "plain":
             return renderPlainText(props.text);
-
         default:
             return renderMarkdown(props.text, props.onImageLoad);
     }
