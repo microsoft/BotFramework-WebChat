@@ -29,10 +29,10 @@
   "license": "MIT",
   "dependencies": {
     "@types/react": "15.0.38",
-    "botframework-directlinejs": "0.9.10",
+    "botframework-directlinejs": "0.9.11",
     "core-js": "2.4.1",
     "markdown-it": "8.3.1",
-    "microsoft-adaptivecards": "0.6.0",
+    "microsoft-adaptivecards": "0.6.1",
     "microsoft-speech-browser-sdk": "0.0.1",
     "react": "15.6.1",
     "react-dom": "15.6.1",
