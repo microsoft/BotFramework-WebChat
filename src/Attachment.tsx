@@ -33,7 +33,7 @@ const queryString = (query: QueryParams) =>
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
     .join('&');
 
-const exists = (value: any) => value != null;
+const exists = (value: any) => value != null && typeof value != "undefined";
 	
 const Youtube = (props: {
     embedId: string,
