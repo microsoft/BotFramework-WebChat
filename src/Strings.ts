@@ -4,6 +4,7 @@ export interface Strings {
     unknownFile: string,
     unknownCard: string,
     receiptTax: string,
+    receiptVat: string,
     receiptTotal: string
     messageRetry: string,
     messageFailed: string,
@@ -23,7 +24,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Send",
         unknownFile: "[File of type '%1']",
         unknownCard: "[Unknown Card '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Tax",
         receiptTotal: "Total",
         messageRetry: "retry",
@@ -38,7 +39,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Senden",
         unknownFile: "[Datei vom Typ '%1']",
         unknownCard: "[Unbekannte Card '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "MwSt.",
         receiptTotal: "Gesamtbetrag",
         messageRetry: "wiederholen",
@@ -53,7 +54,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Wyślij",
         unknownFile: "[Plik typu '%1']",
         unknownCard: "[Nieznana karta '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Podatek",
         receiptTotal: "Razem",
         messageRetry: "wyślij ponownie",
@@ -68,7 +69,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Отправить",
         unknownFile: "[Неизвестный тип '%1']",
         unknownCard: "[Неизвестная карта '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Налог",
         receiptTotal: "Итого",
         messageRetry: "повторить",
@@ -83,7 +84,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Verstuur",
         unknownFile: "[Bestand van het type '%1']",
         unknownCard: "[Onbekende kaart '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "BTW",
         receiptTotal: "Totaal",
         messageRetry: "opnieuw",
@@ -98,7 +99,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Sūtīt",
         unknownFile: "[Nezināms tips '%1']",
         unknownCard: "[Nezināma kartīte '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Nodoklis",
         receiptTotal: "Kopsumma",
         messageRetry: "Mēģināt vēlreiz",
@@ -113,7 +114,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Enviar",
         unknownFile: "[Arquivo do tipo '%1']",
         unknownCard: "[Cartão desconhecido '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Imposto",
         receiptTotal: "Total",
         messageRetry: "repedit",
@@ -128,7 +129,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Envoyer",
         unknownFile: "[Fichier de type '%1']",
         unknownCard: "[Carte inconnue '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Taxe",
         receiptTotal: "Total",
         messageRetry: "reéssayer",
@@ -143,7 +144,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Enviar",
         unknownFile: "[Archivo de tipo '%1']",
         unknownCard: "[Tarjeta desconocida '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Impuestos",
         receiptTotal: "Total",
         messageRetry: "reintentar",
@@ -158,7 +159,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Αποστολή",
         unknownFile: "[Αρχείο τύπου '%1']",
         unknownCard: "[Αγνωστη Κάρτα '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "ΦΠΑ",
         receiptTotal: "Σύνολο",
         messageRetry: "δοκιμή",
@@ -173,7 +174,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Invia",
         unknownFile: "[File di tipo '%1']",
         unknownCard: "[Card sconosciuta '%1']",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "Tasse",
         receiptTotal: "Totale",
         messageRetry: "riprova",
@@ -188,7 +189,7 @@ const localizedStrings: LocalizedStrings = {
         send: "发送",
         unknownFile: "[类型为'%1'的文件]",
         unknownCard: "[未知的'%1'卡片]",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "税",
         receiptTotal: "共计",
         messageRetry: "重试",
@@ -203,7 +204,7 @@ const localizedStrings: LocalizedStrings = {
         send: "發送",
         unknownFile: "[類型為'%1'的文件]",
         unknownCard: "[未知的'%1'卡片]",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "税",
         receiptTotal: "總共",
         messageRetry: "重試",
@@ -218,7 +219,7 @@ const localizedStrings: LocalizedStrings = {
         send: "傳送",
         unknownFile: "[類型係'%1'嘅文件]",
         unknownCard: "[唔知'%1'係咩卡片]",
-		receiptVat: "VAT",
+        receiptVat: "VAT",
         receiptTax: "税",
         receiptTotal: "總共",
         messageRetry: "再嚟一次",
@@ -228,21 +229,21 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "輸入你嘅訊息...",
         listeningIndicator: "聽緊你講嘢..."
     },
-	'cs-cz': {
-		title: "Chat",
-		send: "Odeslat",
-		unknownFile: "[Soubor typu '%1']",
-		unknownCard: "[Neznámá karta '%1']",
-		receiptVat: "VAT",
-		receiptTax: "DPH",
-		receiptTotal: "Celkem",
-		messageRetry: "opakovat",
-		messageFailed: "nepodařilo se odeslat",
-		messageSending: "Odesílání",
-		timeSent: " v %1",
-		consolePlaceholder: "Napište svou zprávu...",
-		listeningIndicator: "Poslouchám..."
-      }
+    'cs-cz': {
+        title: "Chat",
+        send: "Odeslat",
+        unknownFile: "[Soubor typu '%1']",
+        unknownCard: "[Neznámá karta '%1']",
+        receiptVat: "VAT",
+        receiptTax: "DPH",
+        receiptTotal: "Celkem",
+        messageRetry: "opakovat",
+        messageFailed: "nepodařilo se odeslat",
+        messageSending: "Odesílání",
+        timeSent: " v %1",
+        consolePlaceholder: "Napište svou zprávu...",
+        listeningIndicator: "Poslouchám..."
+    }
 }
 
 export const defaultStrings = localizedStrings['en-us'];
@@ -278,8 +279,8 @@ export const strings = (locale: string) => {
         locale = 'zh-hant';
     else if (locale.startsWith('zh'))
         locale = 'zh-hans';
-	else if (locale.startsWith('cs'))
-		locale = 'cs-cz';
+    else if (locale.startsWith('cs'))
+        locale = 'cs-cz';
     else
         locale = 'en-us';
 
