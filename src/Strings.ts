@@ -39,6 +39,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Send",
         unknownFile: "[Fil av typen '%1']",
         unknownCard: "[Ukjent Kort '%1']",
+        receiptVat: "MVA",
         receiptTax: "Skatt",
         receiptTotal: "Totalt",
         messageRetry: "prøv igjen",
