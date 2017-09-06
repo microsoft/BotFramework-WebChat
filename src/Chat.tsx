@@ -101,8 +101,6 @@ export class Chat extends React.Component<ChatProps, {}> {
             || typeof tabIndex !== 'number'
             || tabIndex < 0
         ) {
-            console.log('$$$');
-
             evt.stopPropagation();
             this.shellRef.focus();
         }
