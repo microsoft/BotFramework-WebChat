@@ -93,7 +93,6 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
         const target = evt.target as HTMLElement;
-        const chatviewPanelElement = findDOMNode(this.chatviewPanel);
         const tabIndex = getTabIndex(target);
 
         if (
