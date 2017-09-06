@@ -411,6 +411,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.adaptive_cardsFn(json));
         }
     },
+    "card Inputs": {
+        client: function () {
+            return true;
+        },
+        server: function (res, sendActivity, json) {
+            sendActivity(res, server_content.adaptive_cardsFn(json));
+        }
+    },
     "speech mic-button": {
         client: function () {
             return (document.querySelector('.wc-mic') !== null);
@@ -455,8 +463,19 @@ var commands_map: CommandValuesMap = {
                 .wait(1000);
         },
         client: function () {
-            debugger;
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).value === 'Hi!'));
+        }
+    },
+    "type on Adaptive Cards": {
+        do: function (nightmare) {
+            nightmare
+                .type('.wc-chatview-panel', 'card Inputs')
+                .click('.wc-send')
+                .wait('.ac-input[placeholder="Name"]')
+                .type('.ac-input[placeholder="Name"]', 'John Doe');
+        },
+        client: function () {
+            return (((document.querySelector('.ac-input') as HTMLInputElement).value === 'John Doe'));
         }
     }
     /*
