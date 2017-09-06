@@ -377,7 +377,7 @@ var commands_map: CommandValuesMap = {
     },
     "card Inputs": {
         client: function () {
-            return true;
+            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Input.Text elements');
         },
         server: function (res, sendActivity, json) {
             sendActivity(res, server_content.adaptive_cardsFn(json));
@@ -471,7 +471,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ['card Inputs'];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
