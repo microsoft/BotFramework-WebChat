@@ -33,6 +33,8 @@ const queryString = (query: QueryParams) =>
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
     .join('&');
 
+const exists = (value: any) => value != null && typeof value != "undefined";
+	
 const Youtube = (props: {
     embedId: string,
     autoPlay?: boolean,
@@ -267,12 +269,21 @@ export const AttachmentView = (props: {
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
                 }
             });
-            const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
-            receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: "medium", weight: "bolder" }, taxCol[0]);
-            receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
-            const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
-            receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: "medium", weight: "bolder" }, totalCol[0]);
-            receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+            if (exists(attachment.content.vat)){
+                const vatCol = receiptCardBuilder.addColumnSet([75, 25]);
+                receiptCardBuilder.addTextBlock(props.format.strings.receiptVat, { size: "medium", weight: "bolder" }, vatCol[0]);
+                receiptCardBuilder.addTextBlock(attachment.content.vat, { horizontalAlignment: 'right' }, vatCol[1]);
+            }
+            if (exists(attachment.content.tax)){
+                const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
+                receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: "medium", weight: "bolder" }, taxCol[0]);
+                receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
+            }
+            if (exists(attachment.content.total)){
+                const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
+                receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: "medium", weight: "bolder" }, totalCol[0]);
+                receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+            }
             receiptCardBuilder.addButtons(attachment.content.buttons);
             return (
                 <AdaptiveCardContainer className='receipt' card={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
