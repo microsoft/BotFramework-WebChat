@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { findDOMNode } from 'react-dom';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -11,6 +12,7 @@ import { SpeechOptions } from './SpeechOptions';
 import { Speech } from './SpeechModule';
 import { ActivityOrID, FormatOptions } from './Types';
 import * as konsole from './Konsole';
+import { getTabIndex } from './getTabIndex';
 
 export interface ChatProps {
     user: User,
@@ -48,7 +50,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
 
         this.store.dispatch<ChatActions>({
             type: 'Set_Locale',
@@ -89,13 +91,19 @@ export class Chat extends React.Component<ChatProps, {}> {
         });
     }
 
-    private handleKeyDown(evt: any) {
-        // Chat textbox has "onKeyDown" handler that will call evt.stopPropagation, preventing the handled event to bubble up to this point
+    private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
+        const target = evt.target as HTMLElement;
+        const chatviewPanelElement = findDOMNode(this.chatviewPanel);
+        const tabIndex = getTabIndex(target);
+
         if (
-            evt.key !== 'Enter'
-            && evt.key !== ' '
-            && evt.key !== 'Tab'
+            target === findDOMNode(this.chatviewPanel)
+            || typeof tabIndex !== 'number'
+            || tabIndex < 0
         ) {
+            console.log('$$$');
+
+            evt.stopPropagation();
             this.shellRef.focus();
         }
     }
@@ -173,7 +181,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             <Provider store={ this.store }>
                 <div
                     className="wc-chatview-panel"
-                    onKeyDown={ this.handleKeyDown }
+                    onKeyDownCapture={ this.handleKeyDownCapture }
                     ref={ div => this.chatviewPanel = div }
                     tabIndex={ 0 }
                 >

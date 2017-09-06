@@ -104,7 +104,6 @@ class ShellContainer extends React.Component<Props, {}> implements ShellFunction
                         autoFocus
                         value={ this.props.inputText }
                         onChange={ _ => this.props.onChangeText(this.textInput.value) }
-                        onKeyDown={ e => e.stopPropagation() }
                         onKeyPress={ e => this.onKeyPress(e) }
                         onFocus = {() => this.onTextInputFocus()}
                         placeholder={ this.props.listening ? this.props.strings.listeningIndicator : this.props.strings.consolePlaceholder }
