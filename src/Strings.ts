@@ -144,7 +144,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Envoyer",
         unknownFile: "[Fichier de type '%1']",
         unknownCard: "[Carte inconnue '%1']",
-        receiptVat: "VAT",
+        receiptVat: "TVA",
         receiptTax: "Taxe",
         receiptTotal: "Total",
         messageRetry: "reéssayer",
