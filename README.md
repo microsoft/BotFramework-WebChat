@@ -6,7 +6,7 @@ Used by the Bot Framework developer portal, [Emulator](https://github.com/Micros
 
 WebChat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, WebChat is built with [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
 
-You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com). If you wish to play with speech support, you can use the [speech](https://github.com/Microsoft/BotFramework-WebChat/tree/speech) branch.
+You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com).
 
 ## How to add WebChat to your website
 
@@ -123,9 +123,42 @@ This builds the following:
 
 ## Customizing WebChat
 
+### Enabling Speech Capabilities
+
+WebChat includes support for spoken conversations by leveraging Speech Recognition (audio to text) and Speech Synthesis (text to audio). 
+
+Speech support is opt-in. As shown in `/samples/speech`, you can customize the speech experience by supplying a specific implementation for speech recognition and speech synthesis to be used.
+
+```typescript
+var speechOptions = {
+    speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
+
+    speechSynthesizer: new CognitiveServices.SpeechSynthesizer( 
+        { 
+            subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY', 
+            gender: CognitiveServices.SynthesisGender.Female,
+            voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+        })
+}
+
+...
+    
+BotChat.App({
+    botConnection: botConnection,
+    speechOptions: speechOptions,
+    ...
+}, document.getElementById("BotChatGoesHere"));
+```
+
+For details related to building a speech enabled bot and leveraging Speech Priming to improve speech recognition accuracy, check out the [Speech Support in Bot Framework](https://blog.botframework.com/2017/06/26/Speech-To-Text) blog post.
+
 ### Styling
 
 In the `/src/scss/` folder you will find the source files for generating `/botchat.css`. Run `npm run build-css` to compile once you've made your changes. For basic branding, change `colors.scss` to match your color scheme. For advanced styling, change `botchat.scss`.
+
+#### Card Layout
+
+WebChat uses [AdaptiveCards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
 
 #### Card Sizes / Responsiveness
 
@@ -150,6 +183,10 @@ Behavioral customization will require changing the TypeScript files in `/src`. A
 * `Chat` largely follows the Redux architecture laid out in [this video series](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
 * To handle async side effects of Redux actions, `Chat` uses `Epic` from [redux-observable](https://redux-observable.js.org) - here's a [video introduction](https://www.youtube.com/watch?v=sF5-V-Szo0c)
 * Underlying `redux-observable` (and also [DirectLineJS](https://github.com/microsoft/botframework-directlinejs)) is the `RxJS` library, which implements the Observable pattern for wrangling async. A minimal grasp of `RxJS` is key to understanding WebChat's plumbing.
+
+### Markdown
+
+WebChat uses [markdown-it](https://markdown-it.github.io/) for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options in `/src/FormattedText.tsx` in your own build of WebChat.
 
 ### Contributing
 

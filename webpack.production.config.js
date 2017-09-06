@@ -1,14 +1,7 @@
 var webpack = require('webpack');
 require("expose-loader");
 
-module.exports = {
-    entry: "./src/BotChat.ts",
-    output: {
-        libraryTarget: "umd",
-        library: "BotChat",
-        filename: "./botchat.js",
-    },
-
+var coreConfig = {
     devtool: "source-map",
 
     resolve: {
@@ -46,6 +39,28 @@ module.exports = {
                 use: [{ loader: 'expose-loader', options: 'AdaptiveCards' }]
             }
         ]
-    },
-
+    }
 };
+
+var chatConfig = {
+    entry: "./src/BotChat.ts",
+    output: {
+        libraryTarget: "umd",
+        library: "BotChat",
+        filename: "./botchat.js"
+    }
+}
+
+// Config for addon features
+var featureConfig = {
+    entry: {
+        CognitiveServices: "./src/CognitiveServices/lib.ts"
+    },
+    output: {
+        libraryTarget: "umd",
+        library: "[name]",
+        filename: "./[name].js",
+    }
+}
+
+module.exports = [Object.assign(chatConfig, coreConfig), Object.assign(featureConfig, coreConfig)];

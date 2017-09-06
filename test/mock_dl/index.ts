@@ -1,10 +1,12 @@
 require('dotenv').config();
 
+import * as dl from "../../node_modules/botframework-directlinejs/built/directLine";
 import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
 import * as fs from 'fs';
 
+const config = require('../mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
 const app = express();
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -47,7 +49,8 @@ app.post('/mock/tokens/generate', (req, res) => {
     res.send({
         conversationId,
         token,
-        expires_in
+        expires_in,
+        timestamp: new Date().toUTCString(),
     });
 });
 
@@ -57,13 +60,14 @@ app.post('/mock/tokens/refresh', (req, res) => {
     res.send({
         conversationId,
         token,
-        expires_in
+        expires_in,
+        timestamp: new Date().toUTCString()
     });
 });
 
 let counter: number;
 let messageId: number;
-let queue: Activity[];
+let queue: dl.Activity[];
 
 app.post('/mock/conversations', (req, res) => {
     counter = 0;
@@ -91,35 +95,18 @@ const startConversation = (req: express.Request, res: express.Response) => {
         conversationId,
         token,
         expires_in,
-        streamUrl
+        streamUrl,
+        timestamp: new Date().toUTCString()
     });
-    sendMessage(res, `Welcome to MockBot! Here is test ${test} on area ${area}`);
-}
-
-interface Activity {
-    type: string,
-    timestamp?: string,
-    textFormat?: string,
-    text?: string,
-    channelId?: string,
-    attachmentLayout?: string,
-    attachments?: Attachment,
-    id?: string,
-    from?: { id?: string, name?: string }
-}
-
-interface Attachment {
-
-}
-
-const sendMessage = (res: express.Response, text: string) => {
-    queue.push({
+    sendActivity(res, {
         type: "message",
-        text
-    })
+        text: "Welcome to MockBot!",
+        timestamp: new Date().toUTCString(),
+        from: config.bot
+    });
 }
 
-const sendActivity = (res: express.Response, activity: Activity) => {
+const sendActivity = (res: express.Response, activity: dl.Activity) => {
     queue.push(activity)
 }
 
@@ -146,15 +133,21 @@ const postMessage = (req: express.Request, res: express.Response) => {
     const id = messageId++;
     res.send({
         id,
+        timestamp: new Date().toUTCString()
     });
     processCommand(req, res, req.body.text, id);
 }
 
+const printCommands = () => {
+    let cmds = "### Commands\r\n\r\n";
+    for (var command in commands) {
+        cmds += `* ${command}\r\n`;
+    }
+    return cmds;
+}
+
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
-const config = require('../mock_dl_server_config');
-let current_uitests = 0;
-const uitests_files = Object.keys(config["width-tests"]).length;
 
 const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
 
@@ -173,30 +166,26 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
         }
     } else {
         switch (cmd) {
+            case 'help':
+                sendActivity(res, {
+                    type: "message",
+                    timestamp: new Date().toUTCString(),
+                    channelId: "webchat",
+                    text: printCommands(),
+                    from: config.bot
+                });
+                return;
             case 'end':
-                current_uitests++;
-                if (uitests_files <= current_uitests) {
-                    setTimeout(
-                        () => {
-                            process.exitCode = 0;
-                            process.exit();
-                        }, 3000);
-                }
-                else {
-                    sendActivity(res, {
-                        type: "message",
-                        timestamp: new Date().toUTCString(),
-                        channelId: "webchat",
-                        text: "echo: " + req.body.text
-                    });
-                }
+                process.exitCode = 0;
+                process.exit();
                 return;
             default:
                 sendActivity(res, {
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
-                    text: "echo: " + req.body.text
+                    text: "echo: " + req.body.text,
+                    from: config.bot
                 });
                 return;
         }
@@ -227,6 +216,7 @@ const upload = (req: express.Request, res: express.Response) => {
     const id = messageId++;
     res.send({
         id,
+        timestamp: new Date().toUTCString()
     });
 }
 
@@ -258,12 +248,14 @@ const getMessages = (req: express.Request, res: express.Response) => {
             msg.from = { id: "id", name: "name" };
             res.send({
                 activities: [msg],
-                watermark: id
+                watermark: id,
+                timestamp: new Date().toUTCString()
             });
         } else {
             res.send({
                 activities: [],
-                watermark: messageId
+                watermark: messageId,
+                timestamp: new Date().toUTCString()
             })
         }
     }
@@ -296,11 +288,19 @@ app.get('/botchat.css', function (req, res) {
 app.get('/botchat-fullwindow.css', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat-fullwindow.css"));
 });
+app.get('/mock_speech.js', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../mock_speech/index.js"));
+});
 app.get('/assets/:file', function (req, res) {
     const file = req.params["file"];
     res.sendFile(path.join(__dirname + "/../assets/" + file));
 });
-// Running Web Server and DirectLine Client on port
-app.listen(process.env.port || process.env.PORT || config["port"], () => {
-    console.log('listening on ' + config["port"]);
-});
+
+//do not listen unless being called from the command line
+if (!module.parent) {
+
+    // Running Web Server and DirectLine Client on port
+    app.listen(process.env.port || process.env.PORT || config.port, () => {
+        console.log('listening on ' + config.port);
+    });
+}
