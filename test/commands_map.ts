@@ -6,12 +6,12 @@ import * as express from 'express';
 declare let module: any;
 
 interface ISendActivity {
-    (res: express.Response, activity: dl.Message): void;
+    (conversationId: string, activity: dl.Message): void;
 }
 
 interface CommandValues {
     client: () => (boolean | Promise<boolean>),
-    server?: (res: express.Response, sendActivity: ISendActivity, json?: JSON) => void,
+    server?: (conversationId: string, sendActivity: ISendActivity, json?: JSON) => void,
     do?: (nightmare: Nightmare) => any,
     alternateText?: string,
     urlAppend?: { [paramName: string]: any }
@@ -22,15 +22,15 @@ interface CommandValuesMap {
 }
 
 /*
- * 1. Add command following CommandValues interface 
- * 
+ * 1. Add command following CommandValues interface
+ *
  * 2. Create a DirectLineActivity in server_content.ts
- * 
+ *
  * 3. Import variable to this file and use it as param.
- * 
- * Note: if it is needed to change index.js, so index.ts must be 
+ *
+ * Note: if it is needed to change index.js, so index.ts must be
  * updated and compiled. (use: npm run build-test)
- *  
+ *
 */
 var commands_map: CommandValuesMap = {
     "hi": {
@@ -56,8 +56,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('img')[0].src;
             return source.indexOf("surface_anim.gif") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.ani_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.ani_card);
         }
     },
     "audio": {
@@ -65,8 +65,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('audio')[0].src;
             return source.indexOf("bftest.mp3") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.audio_raw);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.audio_raw);
         }
     },
     "audiocard": {
@@ -74,8 +74,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('audio')[0].src;
             return source.indexOf("bftest.mp3") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.audio_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.audio_card);
         }
     },
     "button-imback": {
@@ -95,8 +95,8 @@ var commands_map: CommandValuesMap = {
                     bot_echos[lastBotEcho].innerHTML.indexOf('echo: imBack Button') != -1);
             }, 1000);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.hero_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
         }
     },
     "button-postback": {
@@ -116,16 +116,16 @@ var commands_map: CommandValuesMap = {
                     bot_echos[lastBotEcho].innerHTML.indexOf('echo: postBack Button') != -1);
             }, 1000);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.hero_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
         }
     },
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.car_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.car_card);
         }
     },
     "carousel-to-right": {
@@ -134,7 +134,7 @@ var commands_map: CommandValuesMap = {
 
             // Carousel made of 4 cards.
             // 3-Clicks are needed to move all carousel to right.
-            // Note: Electron browser width size must not be changed.             
+            // Note: Electron browser width size must not be changed.
             right_arrow.click();
             setTimeout(() => {
                 right_arrow.click();
@@ -146,8 +146,8 @@ var commands_map: CommandValuesMap = {
                 }, 1000);   //make sure time is longer than animation time in .wc-animate-scroll
             }, 1000);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.car_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.car_card);
         }
     },
     "carousel-to-left": {
@@ -164,8 +164,8 @@ var commands_map: CommandValuesMap = {
                 }, 800);
             }, 500);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.car_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.car_card);
         }
     },
     "carousel-fit-width": {
@@ -174,8 +174,8 @@ var commands_map: CommandValuesMap = {
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
             return left_arrow.getAttribute('disabled') != null && right_arrow.getAttribute('disabled') != null;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.smallcar_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.smallcar_card);
         }
     },
     "carousel-scroll": {
@@ -192,8 +192,8 @@ var commands_map: CommandValuesMap = {
                 resolve(right_arrow.getAttribute('disabled') != null);
             }, 500);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.car_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.car_card);
         }
     },
     "herocard": {
@@ -201,8 +201,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('img')[0].src;
             return source.indexOf("surface1.jpg") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.hero_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
         }
     },
     "html-disabled": {
@@ -216,16 +216,16 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('img')[0].src;
             return source.indexOf("surface1.jpg") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.image_raw);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.image_raw);
         }
     },
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.mar_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_card);
         }
     },
     "markdown-url-needs-encoding": {
@@ -241,8 +241,8 @@ var commands_map: CommandValuesMap = {
             }
             return true;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.mar_encode_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_encode_card);
         }
     },
     "markdown-links-open-in-new-window": {
@@ -253,16 +253,16 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return window.location.href.indexOf("localhost") !== -1;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.mar_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_card);
         }
     },
     "signin": {
         client: function () {
             return document.querySelectorAll('button')[0].textContent == "Signin";
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.si_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.si_card);
         }
     },
     "suggested-actions": {
@@ -270,14 +270,14 @@ var commands_map: CommandValuesMap = {
             var ul_object = document.querySelectorAll('ul')[0];
             var show_actions_length = document.querySelectorAll('.show-actions').length;
 
-            // Validating if the the 3 buttons are displayed and suggested actions are visibile  
+            // Validating if the the 3 buttons are displayed and suggested actions are visibile
             return ul_object.childNodes[0].textContent == "Blue" &&
                 ul_object.childNodes[1].textContent == "Red" &&
                 ul_object.childNodes[2].textContent == "Green" &&
                 show_actions_length == 1;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.suggested_actions_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.suggested_actions_card);
         }
     },
     "suggested-actions-away": {
@@ -289,8 +289,8 @@ var commands_map: CommandValuesMap = {
                 resolve(show_actions_length == 0);
             }, 2000);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.suggested_actions_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.suggested_actions_card);
         }
     },
     "suggested-actions-click": {
@@ -306,8 +306,8 @@ var commands_map: CommandValuesMap = {
                 }, 2000);
             }, 2000);
         }),
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.suggested_actions_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.suggested_actions_card);
         }
     },
     "receiptcard": {
@@ -315,8 +315,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('img')[0].src;
             return source.indexOf("surface1.jpg") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.receipt_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.receipt_card);
         }
     },
     "thumbnailcard": {
@@ -324,8 +324,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('img')[0].src;
             return source.indexOf("surface1.jpg") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.thumbnail_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.thumbnail_card);
         }
     },
     "video": {
@@ -333,8 +333,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('video')[0].src;
             return source.indexOf("msband.mp4") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.video_raw);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.video_raw);
         }
     },
     "videocard": {
@@ -342,8 +342,8 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('video')[0].src;
             return source.indexOf("msband.mp4") >= 0;
         },
-        server: function (res, sendActivity) {
-            sendActivity(res, server_content.video_card);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.video_card);
         }
     },
     "card Weather": {
@@ -351,16 +351,16 @@ var commands_map: CommandValuesMap = {
             var source = document.querySelectorAll('img')[0].src;
             return (source.indexOf("Mostly%20Cloudy-Square.png") >= 0);
         },
-        server: function (res, sendActivity, json) {
-            sendActivity(res, server_content.adaptive_cardsFn(json));
+        server: function (conversationId, sendActivity, json) {
+            sendActivity(conversationId, server_content.adaptive_cardsFn(json));
         }
     },
     "card BingSports": {
         client: function () {
             return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
         },
-        server: function (res, sendActivity, json) {
-            sendActivity(res, server_content.adaptive_cardsFn(json));
+        server: function (conversationId, sendActivity, json) {
+            sendActivity(conversationId, server_content.adaptive_cardsFn(json));
         }
     },
     "card CalendarReminder": {
@@ -371,8 +371,8 @@ var commands_map: CommandValuesMap = {
                 resolve(selectPullDown.value === '30');
             }, 1000);
         }),
-        server: function (res, sendActivity, json) {
-            sendActivity(res, server_content.adaptive_cardsFn(json));
+        server: function (conversationId, sendActivity, json) {
+            sendActivity(conversationId, server_content.adaptive_cardsFn(json));
         }
     },
     "speech mic-button": {
@@ -413,28 +413,28 @@ var commands_map: CommandValuesMap = {
         }
     }
     /*
-     ** Add your commands to test here **  
+     ** Add your commands to test here **
     "command": {
         client: function () { JavaScript evaluation syntax },
-        server: function (res, sendActivity) {
-            sendActivity(res, sever_content DirectLineActivity);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, sever_content DirectLineActivity);
         }
     }
- 
-    ** For adaptive cards, your command will be starting with card <space> command **  
+
+    ** For adaptive cards, your command will be starting with card <space> command **
     "card command": {
         client: function () { JavaScript evaluation syntax },
-        server: function (res, sendActivity) {
+        server: function (conversationId, sendActivity) {
             server_content.adaptive_cards.attachments = [{"contentType": "application/vnd.microsoft.card.adaptive", "content": json}];
-            sendActivity(res, server_content.adaptive_cards);
+            sendActivity(conversationId, server_content.adaptive_cards);
         }
     }
- 
+
     ** For speech specific command, it will be starting with speech <space> command **
         "speech command": {
         client: function () { JavaScript evaluation syntax },
-        server: function (res, sendActivity) {
-            sendActivity(res, sever_content DirectLineActivity);
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, sever_content DirectLineActivity);
         }
     }
     */
