@@ -465,6 +465,18 @@ export var thumbnail_card: dl.Message = {
 }
 
 /*
+ * Activity for Upload
+ * 
+ */
+export var upload_txt: dl.Message = {    
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "uploading..."
+}
+
+/*
  * Activity for Video Raw
  * 
  */

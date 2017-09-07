@@ -3,6 +3,7 @@ import * as dl from "../node_modules/botframework-directlinejs/built/directLine"
 import * as Nightmare from 'nightmare';
 import * as express from 'express';
 
+const path = require('path');
 declare let module: any;
 
 interface ISendActivity {
@@ -328,6 +329,19 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.thumbnail_card);
         }
     },
+    "upload": {
+        do: function (nightmare) {
+            nightmare.upload('#wc-upload-input', path.resolve(__dirname, 'assets', 'surface.gif'))
+                .wait(3000)
+        },
+        client: function () {
+            var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
+            return img.src.indexOf('/uploads') >= 0;
+        },
+        server: function(res, sendActivity){
+            sendActivity(res, server_content.upload_txt);
+        }
+    },
     "video": {
         client: function () {
             var source = document.querySelectorAll('video')[0].src;
@@ -441,7 +455,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ["upload"];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];

@@ -2,6 +2,7 @@
 const commands = require('./commands_map');
 const config = require('./mock_dl/server_config.json');
 const Nightmare = require('nightmare');
+require('nightmare-upload')(Nightmare);
 const vo = require('vo');
 
 Nightmare.prototype.do = function (doFn) {
