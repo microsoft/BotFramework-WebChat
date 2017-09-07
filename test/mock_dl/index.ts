@@ -160,7 +160,7 @@ const processCommand = (conversationId: string, req: express.Request, res: expre
             const cardName = cardsCmd[1];
             getCardJsonFromFs(cardName).then(cardJson => {
                 //execute the server, with the card json from the file system
-                commands[cmd].server(conversationId, res, sendActivity, cardJson);
+                commands[cmd].server(conversationId, sendActivity, cardJson);
             }).catch((err) => { throw err });
         } else {
             //execute the server
