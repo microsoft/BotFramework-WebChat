@@ -1,3 +1,5 @@
+import { Activity } from 'botframework-directlinejs';
+
 interface Conversations {
   [key: string]: Conversation
 }
@@ -32,7 +34,7 @@ class Conversation {
 export class Message {
   constructor(
     public watermark: number,
-    public activity: any
+    public activity: Activity
   ) {}
 }
 
@@ -49,7 +51,7 @@ export function getMessage(conversationID: string, watermark: number): Message {
   return conversations[conversationID].getMessages(watermark);
 }
 
-export function pushMessage(conversationID: string, activity: any) {
+export function pushMessage(conversationID: string, activity?: Activity) {
   return conversations[conversationID].pushMessage(activity);
 }
 
