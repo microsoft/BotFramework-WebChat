@@ -10,10 +10,10 @@ function createConversationID() {
 
 class Conversation {
   private messages: Message[] = [];
-  private nextWatermark = 0;
+  private nextWatermark = 1;
 
   private ack(watermark) {
-    this.messages = this.messages.filter(message => message.watermark <= watermark);
+    this.messages = this.messages.filter(message => message.watermark > watermark);
   }
 
   getMessages(ackWatermark) {
@@ -39,6 +39,7 @@ export class Message {
 export function createConversation() {
   const id = createConversationID();
 
+  console.log(`Creating new conversation ${ id }`);
   conversations[id] = new Conversation();
 
   return id;
@@ -49,9 +50,10 @@ export function getMessage(conversationID: string, watermark: number): Message {
 }
 
 export function pushMessage(conversationID: string, activity: any) {
-  conversations[conversationID].pushMessage(activity);
+  return conversations[conversationID].pushMessage(activity);
 }
 
 export function endConversation(conversationID: string) {
+  console.log(`Ending conversation ${ id }`);
   delete conversations[conversationID];
 }
