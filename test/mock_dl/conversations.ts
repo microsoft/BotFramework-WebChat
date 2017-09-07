@@ -54,6 +54,6 @@ export function pushMessage(conversationID: string, activity: any) {
 }
 
 export function endConversation(conversationID: string) {
-  console.log(`Ending conversation ${ id }`);
+  console.log(`Ending conversation ${ conversationID }`);
   delete conversations[conversationID];
 }

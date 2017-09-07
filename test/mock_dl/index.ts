@@ -252,13 +252,21 @@ const getMessages = (conversationID: string, watermark: number, res: express.Res
     }
 
     if (message) {
-        message.activity.id = message.watermark;
-        message.activity.from = { id: 'id', name: 'name' };
-        res.send({
-            activities: [message.activity],
-            timestamp: new Date().toUTCString(),
-            watermark: message.watermark
-        });
+        if (message.activity) {
+            message.activity.id = message.watermark;
+            message.activity.from = { id: 'id', name: 'name' };
+            res.send({
+                activities: [message.activity],
+                timestamp: new Date().toUTCString(),
+                watermark: message.watermark
+            });
+        } else {
+            res.send({
+                activities: [],
+                timestamp: new Date().toUTCString(),
+                watermark: message.watermark
+            });
+        }
     } else {
         res.send({
             activities: [],
