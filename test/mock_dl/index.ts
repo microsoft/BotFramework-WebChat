@@ -5,6 +5,7 @@ import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
 import * as fs from 'fs';
+import * as Conversations from './conversations';
 
 const config = require('../mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
 const app = express();
@@ -90,34 +91,35 @@ app.post('/mock/conversations', (req, res) => {
 const startConversation = (req: express.Request, res: express.Response) => {
     const token = get_token(req);
     const [test, area] = token.split("/");
+    const conversationID = Conversations.createConversation();
 
     res.send({
-        conversationId,
+        conversationID,
         token,
         expires_in,
         streamUrl,
         timestamp: new Date().toUTCString()
     });
-    sendActivity(res, {
+    sendActivity(conversationID, {
         type: "message",
-        text: "Welcome to MockBot!",
+        text: `Welcome to MockBot! You are ${ conversationID }`,
         timestamp: new Date().toUTCString(),
         from: config.bot
     });
 }
 
-const sendActivity = (res: express.Response, activity: dl.Activity) => {
-    queue.push(activity)
+const sendActivity = (conversationID: string, activity: dl.Activity) => {
+    return Conversations.pushMessage(conversationID, activity);
 }
 
-app.post('/mock/conversations/:conversationId/activities', (req, res) => {
+app.post('/mock/conversations/:conversationID/activities', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'post' || !count || ++counter < Number(count))
-        postMessage(req, res);
+        postMessage(req.params.conversationID, req, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => postMessage(req, res), timeout);
+            setTimeout(() => postMessage(req.params.conversationID, req, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -129,13 +131,13 @@ app.post('/mock/conversations/:conversationId/activities', (req, res) => {
     }
 });
 
-const postMessage = (req: express.Request, res: express.Response) => {
+const postMessage = (conversationID: string, req: express.Request, res: express.Response) => {
     const id = messageId++;
     res.send({
         id,
         timestamp: new Date().toUTCString()
     });
-    processCommand(req, res, req.body.text, id);
+    processCommand(conversationID, req, res, req.body.text, id);
 }
 
 const printCommands = () => {
@@ -149,8 +151,7 @@ const printCommands = () => {
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
 
-const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-
+const processCommand = (conversationID: string, req: express.Request, res: express.Response, cmd: string, id: number) => {
     if (commands[cmd] && commands[cmd].server) {
         //look for "card ..." prefix on command
         const cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
@@ -167,7 +168,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
     } else {
         switch (cmd) {
             case 'help':
-                sendActivity(res, {
+                sendActivity(conversationID, {
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
@@ -180,7 +181,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                 process.exit();
                 return;
             default:
-                sendActivity(res, {
+                sendActivity(conversationID, {
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
@@ -193,14 +194,14 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
 }
 
 
-app.post('/mock/conversations/:conversationId/upload', (req, res) => {
+app.post('/mock/conversations/:conversationID/upload', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'upload' || !count || ++counter < Number(count))
-        upload(req, res);
+        upload(req.params.conversationID, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => upload(req, res), timeout);
+            setTimeout(() => upload(req.params.conversationID, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -212,22 +213,23 @@ app.post('/mock/conversations/:conversationId/upload', (req, res) => {
     }
 });
 
-const upload = (req: express.Request, res: express.Response) => {
-    const id = messageId++;
+const upload = (conversationID: string, res: express.Response) => {
+    const watermark = Conversations.pushMessage(conversationID, null);
+    // const id = messageId++;
     res.send({
-        id,
+        watermark,
         timestamp: new Date().toUTCString()
     });
 }
 
-app.get('/mock/conversations/:conversationId/activities', (req, res) => {
+app.get('/mock/conversations/:conversationID/activities', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'get' || !count || ++counter < Number(count))
-        getMessages(req, res);
+        getMessages(req.params.conversationID, req.query.watermark, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => getMessages(req, res), timeout);
+            setTimeout(() => getMessages(req.params.conversationIDreq, req.query.watermark, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -239,26 +241,44 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
     }
 });
 
-const getMessages = (req: express.Request, res: express.Response) => {
-    if (queue) {
-        if (queue.length > 0) {
-            const msg = queue.shift();
-            const id = messageId++;
-            msg.id = id.toString();
-            msg.from = { id: "id", name: "name" };
-            res.send({
-                activities: [msg],
-                watermark: id,
-                timestamp: new Date().toUTCString()
-            });
-        } else {
-            res.send({
-                activities: [],
-                watermark: messageId,
-                timestamp: new Date().toUTCString()
-            })
-        }
+const getMessages = (conversationID: string, watermark: number, res: express.Response) => {
+    const message = Conversations.getMessage(conversationID, watermark);
+
+    if (message) {
+        message.activity.id = message.watermark;
+        message.activity.from = { id: 'id', name: 'name' };
+        res.send({
+            activities: [message.activity],
+            timestamp: new Date().toUTCString(),
+            watermark: message.watermark
+        });
+    } else {
+        res.send({
+            activities: [],
+            timestamp: new Date().toUTCString(),
+            watermark
+        });
     }
+
+    // if (queue) {
+    //     if (queue.length > 0) {
+    //         const msg = queue.shift();
+    //         const id = messageId++;
+    //         msg.id = id.toString();
+    //         msg.from = { id: "id", name: "name" };
+    //         res.send({
+    //             activities: [msg],
+    //             watermark: id,
+    //             timestamp: new Date().toUTCString()
+    //         });
+    //     } else {
+    //         res.send({
+    //             activities: [],
+    //             watermark: messageId,
+    //             timestamp: new Date().toUTCString()
+    //         })
+    //     }
+    // }
 }
 
 const getCardJsonFromFs = (fsName: string): Promise<any> => {
