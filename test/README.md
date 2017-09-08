@@ -1,19 +1,19 @@
 # Automated Testing framework for Web Chat via Direct Line API
 
-> ## Disclaimer: This test framework is intended for Web Chat and DirectLine testing ONLY. This is NOT intended for testing Bots. 
+> ## Disclaimer: This test framework is intended for Web Chat and DirectLine testing ONLY. This is NOT intended for testing Bots.
 
 ### Prerequisites
 
 We'll be using both [Nightmare.js](http://www.nightmarejs.org/) with [Mocha.js](https://mochajs.org/) to run our testing.
-If you forked the [Webchat repo](https://github.com/Microsoft/BotFramework-WebChat), these dependencies are already included in the
-[package.json](https://github.com/Microsoft/BotFramework-WebChat/blob/master/package.json) file.  
+If you forked the [Web Chat repo](https://github.com/Microsoft/BotFramework-WebChat), these dependencies are already included in the
+[package.json](https://github.com/Microsoft/BotFramework-WebChat/blob/master/package.json) file.
 
 ## Overview of the test framework ecosystem
 
 The test framework includes two major components:
 
 * A Web Chat channel client application.
-* A mock service and client objects which communicates through the Web Chat channel via __DirectLine API__. This service submits dummy data to the Web Chat instance while the tests run. 
+* A mock service and client objects which communicates through the Web Chat channel via __DirectLine API__. This service submits dummy data to the Web Chat instance while the tests run.
 
 <pre>
 [ Web Chat (test.html) ]                             [ Mock Service ]
@@ -33,7 +33,7 @@ The test framework includes two major components:
 ### Workflow
 
 1) The mock service initiates a __Web Chat__ instance with a local instance of the __Direct Line API__
-2) As the mock service loads, the __comands_map.server__ object will override the default __Direct Line API__ to connect to the local instance 
+2) As the mock service loads, the __comands_map.server__ object will override the default __Direct Line API__ to connect to the local instance
 3) __uitest.js__ will run the [Nightmare.js](http://www.nightmarejs.org/) with [Mocha.js](https://mochajs.org/) tests in __commands_map.client__ instead.
 
 ## NPM scripts
@@ -53,7 +53,7 @@ We need to perform two tasks, 1) Build the tests, and 2) start the mock server
 2) Start the mock server:
 * __"npm test"__ OR __"npm run test"__ to start a mock server (Direct Line Service) which bridges communications between the Web Chat application in [Mocha.js](https://mochajs.org/) tests on the [Nightmare.js](http://www.Nightmare.js.org/) test framework.
 
-The mock server will now automatically serve dummy data to the web chat instance, while the automated tests will run based off of the data. You can view the status of your tests from the terminal. 
+The mock server will now automatically serve dummy data to the web chat instance, while the automated tests will run based off of the data. You can view the status of your tests from the terminal.
 
 ### How to run mock service and Nightmare test framework separately
 
@@ -70,12 +70,12 @@ The mock server will now automatically serve dummy data to the web chat instance
 * While running [Nightmare.js](http://www.Nightmare.js.org/), make sure you do not have other processes or browser tabs / windows / processes are opening the same __localhost:3000__ url, otherwise tests will run into state of confusion by not knowing which browser instance to interact with. It will lead to inconsistent test results or test failures.
 * Due to browser resource management constrains, while running [Nightmare.js] (http://www.Nightmare.js.org/) please do not minimize your browser window. It will pause browser activities, which would lead to test failures as well.
 
-## Example - Write a "Hello World" test 
+## Example - Write a "Hello World" test
 
 Dummy data for our mock server is stored in two files, __server_content.ts__, and __comands_map.ts__.
-We'll be editing these files to create our 'Hello World' example. 
+We'll be editing these files to create our 'Hello World' example.
 
-Add the following to [__server_content.ts__](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/server_content.ts) : 
+Add the following to [__server_content.ts__](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/server_content.ts) :
 
 ```Javascript
 export var hello_world: dl.Message = {
@@ -86,7 +86,7 @@ export var hello_world: dl.Message = {
     text: "Hello Bot World"
 }
 ```
-This will create the response when the bot sees "hello world" in the chat conversation. 
+This will create the response when the bot sees "hello world" in the chat conversation.
 
 Next, in [__commands_map.ts__](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/commands_map.ts) add the following:
 
@@ -106,8 +106,8 @@ Next, in [__commands_map.ts__](https://github.com/Microsoft/BotFramework-WebChat
 ```
 Save your changes, and run the following two commands:
 
-1) __npm run build-test__ 
-2) __npm_test__ 
+1) __npm run build-test__
+2) __npm_test__
 
 You can view the automated test status from the terminal. If mock server was running separately, manually type in "hello world" in the Web Chat input box. The bot in the Web Chat will surely returns "Hello Bot World" as a reply.
 
@@ -125,7 +125,7 @@ The mock server default port is set to localhost://3000. To resolve a port confl
 
 ```Javascript
 module.exports = {
-    "port": 3000, //default, change as required 
+    "port": 3000, //default, change as required
     ....
 }
 ```
@@ -138,7 +138,7 @@ The __commands_map__ file contains the __commands_map__ object, which is respons
 
 __uitest.js__ will be running at same time when mock service is running.  Inside, the __testAllCommands()__ of the method will trigger each hash key in the __commands_map__
 
-For example,  __"animation"__ : 
+For example,  __"animation"__ :
 
 ```Javascript
 "animation": {
@@ -187,7 +187,7 @@ export var ani_card: dl.Message = {
 
 > ### [server_content.ts](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/server_content.ts)
 
-The __server_content.ts__ file contains [Rich Cards](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards) models overrides as mock data. Ensure that the module file structure structure has to matches the following: 
+The __server_content.ts__ file contains [Rich Cards](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-send-rich-cards) models overrides as mock data. Ensure that the module file structure structure has to matches the following:
 
 > __/node-modules/botframework-Direct Linejs/src/Direct Line.ts__
 
@@ -203,7 +203,7 @@ The __test.html__ is the HTML rendered instance of the Web Chat. Loading the Web
 
 > ### [mock_dl/server_config.json](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/mock_dl/server_config.json)
 
-The __mock_dl/server_config.json__ file provides the configuration for the UI tests. 
+The __mock_dl/server_config.json__ file provides the configuration for the UI tests.
 
 > ### [uitest.js](https://github.com/Microsoft/BotFramework-WebChat/blob/master/test/uitest.js)
 
