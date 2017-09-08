@@ -348,8 +348,8 @@ var commands_map: CommandValuesMap = {
             var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
             return img.src.indexOf('/uploads') >= 0;
         },
-        server: function(res, sendActivity){
-            sendActivity(res, server_content.upload_txt);
+        server: function(conversationId, sendActivity){
+            sendActivity(conversationId, server_content.upload_txt);
         }
     },
     "video": {

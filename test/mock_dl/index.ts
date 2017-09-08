@@ -277,10 +277,10 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'get' || !count || ++counter < Number(count))
-        getMessages(req.params.conversationID, +req.query.watermark, res);
+        getMessages(req.params.conversationId, +req.query.watermark, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => getMessages(req.params.conversationID, +req.query.watermark, res), timeout);
+            setTimeout(() => getMessages(req.params.conversationId, +req.query.watermark, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -292,11 +292,11 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
     }
 });
 
-const getMessages = (conversationID: string, watermark: number, res: express.Response) => {
+const getMessages = (conversationId: string, watermark: number, res: express.Response) => {
     let message;
 
     try {
-        message = Conversations.getMessage(conversationID, watermark);
+        message = Conversations.getMessage(conversationId, watermark);
     } catch (err) {
         return res.status(404).end();
     }
