@@ -331,8 +331,18 @@ var commands_map: CommandValuesMap = {
     },
     "upload": {
         do: function (nightmare) {
-            nightmare.upload('#wc-upload-input', path.resolve(__dirname, 'assets', 'surface.gif'))
-                .wait(3000)
+            try {
+                const upload = <(selector: string, paths: string[]) => Nightmare>(<any> nightmare.upload.bind(nightmare));
+
+                upload('#wc-upload-input', [
+                    path.resolve(__dirname, 'assets', 'surface1.jpg'),
+                    path.resolve(__dirname, 'assets', 'surface2.jpg')
+                ])
+                    .wait(3000)
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
         },
         client: function () {
             var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
@@ -455,7 +465,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ["upload"];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
