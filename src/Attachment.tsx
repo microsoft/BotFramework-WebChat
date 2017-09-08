@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
 import { Attachment, CardAction, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
-import { renderIfNonempty, konsole, IDoCardAction } from './Chat';
+import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { AdaptiveCardContainer } from './AdaptiveCardContainer';
+import * as konsole from './Konsole';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
@@ -34,7 +35,7 @@ const queryString = (query: QueryParams) =>
     .join('&');
 
 const exists = (value: any) => value != null && typeof value != "undefined";
-	
+
 const Youtube = (props: {
     embedId: string,
     autoPlay?: boolean,
