@@ -84,8 +84,6 @@
     "botchat-fullwindow.css",
     "botchat.css",
     "botchat.js",
-    "botchat.js.map",
-    "CognitiveServices.js",
-    "CognitiveServices.js.map"
+    "CognitiveServices.js"
   ]
 }
