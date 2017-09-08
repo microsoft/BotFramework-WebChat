@@ -3,6 +3,7 @@ import * as dl from "../node_modules/botframework-directlinejs/built/directLine"
 import * as Nightmare from 'nightmare';
 import * as express from 'express';
 
+const path = require('path');
 declare let module: any;
 
 interface ISendActivity {
@@ -326,6 +327,29 @@ var commands_map: CommandValuesMap = {
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
+        }
+    },
+    "upload": {
+        do: function (nightmare) {
+            try {
+                const upload = <(selector: string, paths: string[]) => Nightmare>(<any> nightmare.upload.bind(nightmare));
+
+                upload('#wc-upload-input', [
+                    path.resolve(__dirname, 'assets', 'surface1.jpg'),
+                    path.resolve(__dirname, 'assets', 'surface2.jpg')
+                ])
+                    .wait(3000)
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
+        },
+        client: function () {
+            var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
+            return img.src.indexOf('/uploads') >= 0;
+        },
+        server: function(conversationId, sendActivity){
+            sendActivity(conversationId, server_content.upload_txt);
         }
     },
     "video": {
