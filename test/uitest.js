@@ -64,7 +64,6 @@ describe('nightmare UI tests', function () {
 				.type('.wc-textbox input', commands[cmd].alternateText || cmd)
 				.click('.wc-send')
 				.wait(3000)
-				// .do(commands[cmd].do)
 				.do(function (nightmare) {
 					try {
 						commands[cmd].do.apply(this, arguments);
@@ -113,7 +112,6 @@ describe('nightmare UI tests', function () {
 		}
 
 		vo(testAllCommands)(function (err, success) {
-			console.log(err);
 			done(!success);
 		});
 	});
