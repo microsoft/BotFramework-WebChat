@@ -21,7 +21,7 @@ interface Props {
 }
 
 export interface ShellFunctions {
-    focus: () => void
+    focus: (appendKey?: string) => void
 }
 
 class ShellContainer extends React.Component<Props, {}> implements ShellFunctions {
@@ -66,8 +66,12 @@ class ShellContainer extends React.Component<Props, {}> implements ShellFunction
         }
     }
 
-    public focus() {
+    public focus(appendKey?: string) {
         this.textInput.focus();
+
+        if (appendKey) {
+            this.props.onChangeText(this.props.inputText + appendKey);
+        }
     }
 
     render() {

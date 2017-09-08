@@ -101,7 +101,17 @@ export class Chat extends React.Component<ChatProps, {}> {
             || tabIndex < 0
         ) {
             evt.stopPropagation();
-            this.shellRef.focus();
+
+            let key: string;
+
+            // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
+            //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
+            //         So we are manually appending the key if they can be inputted in the box
+            if (/(^|\s)Edge\//.test(navigator.userAgent)) {
+                key = inputtableKey(evt.key);
+            }
+
+            this.shellRef.focus(key);
         }
     }
 
@@ -272,3 +282,15 @@ const ResizeDetector = (props: {
                 frame.contentWindow.onresize = props.onresize;
         } }
     />;
+
+const INPUTTABLE_KEY: { [key: string]: string } = {
+    Add: '+',
+    Decimal: '.',
+    Divide: '/',
+    Multiply: '*',
+    Subtract: '-'
+};
+
+function inputtableKey(key: string) {
+    return key.length === 1 ? key : INPUTTABLE_KEY[key];
+}
