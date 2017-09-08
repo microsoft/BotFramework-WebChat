@@ -370,6 +370,18 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.video_card);
         }
     },
+    "xml": {
+        client: function () {
+            var spans = document.querySelectorAll('.wc-message-from-bot span.format-plain span');
+            return spans[0].innerHTML.indexOf('# markdown h1 &lt;h1&gt;xml h1&lt;/h1&gt;') != -1 &&
+                spans[1].innerHTML.indexOf('*markdown italic* &lt;i&gt;xml italic&lt;/i&gt;') != 1 &&
+                spans[2].innerHTML.indexOf('**markdown bold** &lt;b&gt;xml bold&lt;/b&gt;') != 1 &&
+                spans[3].innerHTML.indexOf('~~markdown strikethrough~~ &lt;s&gt;xml strikethrough&lt;/s&gt;') != 1;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.xml_card);
+        }
+    },
     "card Weather": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
