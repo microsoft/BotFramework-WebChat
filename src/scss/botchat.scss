@@ -77,7 +77,6 @@
     }
 
     .wc-suggested-actions {
-        background-color: #f9f9f9;
         bottom: $consoleHeight;
         height: 0;
         left: 0;
@@ -96,25 +95,27 @@
                 max-width: 40%;
 
                 button {
-                    background-color: #fff;
-                    color: $c_brand;
+                    border-radius: 30px;
+                    background-color: $c_brand;
+                    color: white;
                     min-height: 32px;
                     overflow: hidden;
                     padding: 0 16px;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     width: 100%;
+                    border-width: 1px;
+                    border-color: $c_brand;
+                    border-style: solid;
                 }
 
                 button:hover {
                     background-color: #fff;
-                    border-color: $c_brand;
                     color: $c_brand;
                 }
 
                 button:active {
                     background-color: $c_brand;
-                    border-color: $c_brand;
                     color: $c01;
                 }
             }
@@ -229,7 +230,7 @@
     }
 
     .wc-message-content {
-        border-radius: 2px;
+        border-radius: $element-border-radius;
         box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 8px;
         word-break: break-word;
@@ -278,6 +279,9 @@
         }
         
         button {
+            border-width: 1px;
+            border-style: solid;
+            border-radius: $element-border-radius;
             background-color: transparent;
             color: $c_brand;
             min-height: 32px;
@@ -639,7 +643,7 @@
     }
 
     .wc-console.has-text .wc-send svg {
-        fill: $c07; 
+        fill: $c_brand; 
     }
 
 /* animation */
