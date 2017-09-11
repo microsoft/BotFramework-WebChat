@@ -167,6 +167,7 @@
     }
 
     .wc-console {
+        color: $c_textHeading;
         border: 5px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
@@ -399,6 +400,34 @@
         }
     }
 
+    .wc-card-hero{
+      .wc-card-hero-text-container{
+        text-align: left;
+        padding: 8px;
+       
+      }
+
+      .wc-card-hero-title{
+        font-weight: 700;
+        height: 40px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .wc-card-hero-subtitle{
+        color: $c_textLight;
+        height: 60px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .wc-card-hero-buttons{
+        button{
+            margin-bottom: 8px;
+        }
+      }
+    }
+
 /* alternate chat sizes */
 
     .wc-message {
@@ -408,7 +437,7 @@
     @include card-size($card_normal);
 
     .wc-wide {
-        @include card-size($card_wide);
+      @include card-size($card_wide);
     }
 
     .wc-narrow {
@@ -449,6 +478,7 @@
 
     .wc-hscroll > ul {
         white-space: nowrap;
+        padding: 0;
     }
 
     .wc-hscroll > ul > li {
@@ -463,21 +493,20 @@
         position: relative;
 
         button.scroll {
-            background-color: $c11;
+            background-color: $c08;
             height: 28px;
             overflow: hidden;
             padding: 0;
             position: absolute;
             top: 50%;
+            transform: translateY(-50%);
             width: 28px;
+            border-style: solid;
+            border-width: 0;
         }
 
         button.scroll:disabled {
             display: none;
-        }
-
-        button.scroll:hover {
-            background-color:  $c08;
         }
 
         button.scroll svg {
@@ -485,11 +514,11 @@
         }
 
         button.scroll.previous {
-            left: -16px;
+            left: -8px;
         }
 
         button.scroll.next {
-            right: -16px;
+            right: -8px;
         }
 
         .wc-hscroll > ul {
@@ -556,6 +585,7 @@
     .wc-message-from-bot .wc-message-content {
         background-color: $c_messageFromThem;
         color: $c00;
+        text-align: left;
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
@@ -614,7 +644,7 @@
 
     .wc-textbox {
         bottom: 0;
-        left: 48px;
+        left: 24px;
         right: 49px;
     }
 
