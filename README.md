@@ -222,7 +222,7 @@ You can supply WebChat with the id (and, optionally, a friendly name) of the cur
 
 ### Provide Chat History
 
-You can initialize the WebChat conversation by passing an array of activity objects in `pastHistory: [ activity_object1, activity_object2, ... ]` to `App`/`Chat`. Each activity object should have a unique `id` value, and the `from` property should match either a user identity (above) or the bot's identity. An example activity message might look like:
+You can initialize the WebChat conversation by passing an array of activity objects in `history: [ activity_object1, activity_object2, ... ]` to `App`/`Chat`. Each activity object should have a unique `id` value, and the `from` property should match either a user identity (above) or the bot's identity. An example activity message might look like:
 ```
 { id: <unique id>, from: { id: <userid>, name: <username> }, type: "message", text: "The user said this in the past." }
 ```
