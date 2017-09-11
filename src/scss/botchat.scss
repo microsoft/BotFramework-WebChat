@@ -616,7 +616,7 @@
 
     .wc-console svg {
         fill: $c03;
-        margin: 11px;
+        margin: 10px;
     }
 
     .wc-console textarea, .wc-console input[type=text] {
@@ -628,9 +628,20 @@
         width: 100%;
     }
 
-    .wc-send svg {
-        height: 18px;
-        width: 27px;
+    .wc-console .wc-send {
+        right: 0;
+        display: flex;
+        align-items: center;
+        margin-right: 18px;
+        font-weight: 700;
+
+        &.hidden{
+            visibility: hidden;
+        }
+
+        &.enabled{
+            color: $c_brand;
+        }
     }
 
     .wc-upload svg {
@@ -644,16 +655,8 @@
 
     .wc-textbox {
         bottom: 0;
-        left: 24px;
+        left: 18px;
         right: 49px;
-    }
-
-    .wc-send {
-        right: 0;
-    }
-    
-    .wc-send.hidden {
-        visibility: hidden
     }
 
     .wc-mic {
