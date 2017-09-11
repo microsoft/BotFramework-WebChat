@@ -30,11 +30,11 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="https://unpkg.com/botframework-webchat/botchat.css" rel="stylesheet" />
+    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
   </head>
   <body>
     <div id="bot"/>
-    <script src="https://unpkg.com/botframework-webchat/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
     <script>
       BotChat.App({
         directLine: { secret: direct_line_secret },
@@ -48,7 +48,7 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
 ```
 
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
-* You can reference a specific release like this: `https://unpkg.com/botframework-webchat/botchat.js@v0.8.3`. Make sure you version the `botchat.css` and `botchat.js` files together.
+* You can reference a specific release like this: `https://cdn.botframework.com/botframework-webchat/latest/botchat.js`. Make sure you version the `botchat.css` and `botchat.js` files together.
 * Don't want to depend on a CDN? Download the files and serve them up from your own website.
 * Want to run a custom build of Web Chat? Clone this repo, [alter it](#customizing-webchat), [build it](#building-webchat), and reference your built `botchat.css` and `botchat.js` files.
 * Go to the next level with [Advanced Web Chat](#advanced-webchat)
