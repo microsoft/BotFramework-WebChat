@@ -168,7 +168,7 @@
 
     .wc-console {
         color: $c_textHeading;
-        border: 5px solid $c_chrome;
+        border: 1px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
         height: $consoleHeight;
@@ -400,11 +400,11 @@
         }
     }
 
+    // TODO: make hero-card support wc-wide and wc-narrow
     .wc-card-hero{
       .wc-card-hero-text-container{
-        text-align: left;
+        text-align: center;
         padding: 8px;
-       
       }
 
       .wc-card-hero-title{
@@ -426,6 +426,31 @@
             margin-bottom: 8px;
         }
       }
+
+      .img-container{
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+
+        &.horizontal{
+          padding-top: 66.66%;
+        }
+
+        &.square{
+          padding-top: 100%;
+        }
+
+        img{
+          position: absolute;
+          bottom: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          margin: auto;
+        }
+      }
+
     }
 
 /* alternate chat sizes */
@@ -493,6 +518,7 @@
         position: relative;
 
         button.scroll {
+            z-index: 1050;
             background-color: $c08;
             height: 28px;
             overflow: hidden;
@@ -633,14 +659,15 @@
         display: flex;
         align-items: center;
         margin-right: 18px;
-        font-weight: 700;
+        height: 100%;
 
         &.hidden{
             visibility: hidden;
         }
 
         &.enabled{
-            color: $c_brand;
+          font-weight: 700;
+          color: $c_brand;
         }
     }
 
