@@ -308,7 +308,7 @@ export var mar_encode_card: dl.Message = {
     timestamp: new Date().toUTCString(),
     channelId: "webchat",
     textFormat: "markdown",
-    text: "Some links have [query strings that need encoding](https://bing.com?q=some value)"
+    text: "Some links are [already encoded](https://bing.com?q=some%20value) and some have [query strings that need encoding](https://bing.com?q=some value) and these can occur [multiple](https://bing.com?q=some%20value) [times](https://bing.com?q=some value) in one message. (Links can even appear [within](https://bing.com?q=some%20value) [parentheses](https://bing.com?q=some value) too.)"
 }
 
 /*
@@ -485,6 +485,18 @@ export var thumbnail_card: dl.Message = {
 }
 
 /*
+ * Activity for Upload
+ * 
+ */
+export var upload_txt: dl.Message = {    
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "uploading..."
+}
+
+/*
  * Activity for Video Raw
  * 
  */
@@ -527,4 +539,17 @@ export var video_card: dl.Message = {
             }
         }
     ]
+}
+
+/*
+ * Activity for XML
+ * 
+ */
+export var xml_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    textFormat: "xml",
+    text: "# markdown h1 <h1>xml h1</h1>\r\n *markdown italic* <i>xml italic</i>\r\n **markdown bold** <b>xml bold</b>\r\n ~~markdown strikethrough~~ <s>xml strikethrough</s>"
 }

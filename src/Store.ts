@@ -1,12 +1,46 @@
-import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botframework-directlinejs';
-import { FormatOptions, ActivityOrID, konsole, sendMessage as sendChatMessage } from './Chat';
+import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from 'botframework-directlinejs';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Speech } from './SpeechModule';
+import { ActivityOrID, FormatOptions } from './Types';
+import * as konsole from './Konsole';
 
 // Reducers - perform state transformations
 
 import { Reducer } from 'redux';
+
+export const sendMessage = (text: string, from: User, locale: string) => ({
+    type: 'Send_Message',
+    activity: {
+        type: "message",
+        text,
+        from,
+        locale,
+        textFormat: 'plain',
+        timestamp: (new Date()).toISOString()
+    }} as ChatActions);
+
+export const sendFiles = (files: FileList, from: User, locale: string) => ({
+    type: 'Send_Message',
+    activity: {
+        type: "message",
+        attachments: attachmentsFromFiles(files),
+        from,
+        locale
+    }} as ChatActions);
+
+const attachmentsFromFiles = (files: FileList) => {
+    const attachments: Media[] = [];
+    for (let i = 0, numFiles = files.length; i < numFiles; i++) {
+        const file = files[i];
+        attachments.push({
+            contentType: file.type as MediaType,
+            contentUrl: window.URL.createObjectURL(file),
+            name: file.name
+        });
+    }
+    return attachments;
+}
 
 export interface ShellState {
     sendTyping: boolean
@@ -58,7 +92,7 @@ export const shell: Reducer<ShellState> = (
                 input: action.input,
                 lastInputViaSpeech : action.source == "speech"
             };
-            
+
         case 'Listening_Start':
             return {
                 ... state,
@@ -76,7 +110,7 @@ export const shell: Reducer<ShellState> = (
                 ... state,
                 input: ''
             };
-        
+
         case 'Set_Send_Typing':
             return {
                 ... state,
@@ -88,7 +122,7 @@ export const shell: Reducer<ShellState> = (
                ... state,
                lastInputViaSpeech : false
            };
-           
+
         default:
         case 'Listening_Starting':
             return state;
@@ -303,7 +337,7 @@ export const history: Reducer<HistoryState> = (
             if (state.activities.find(a => a.id === action.activity.id)) return state; // don't allow duplicate messages
 
             return {
-                ... state, 
+                ... state,
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
                     action.activity,
@@ -353,7 +387,7 @@ export const history: Reducer<HistoryState> = (
 
             const newActivity = {
                 ... activity,
-                id: action.type === 'Send_Message_Succeed' ? action.id : null                        
+                id: action.type === 'Send_Message_Succeed' ? action.id : null
             };
             return {
                 ... state,
@@ -364,7 +398,7 @@ export const history: Reducer<HistoryState> = (
         }
         case 'Show_Typing':
             return {
-                ... state, 
+                ... state,
                 activities: [
                     ... state.activities.filter(activity => activity.type !== "typing"),
                     ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
@@ -374,7 +408,7 @@ export const history: Reducer<HistoryState> = (
 
         case 'Clear_Typing':
             return {
-                ... state, 
+                ... state,
                 activities: state.activities.filter(activity => activity.id !== action.id),
                 selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
             };
@@ -418,7 +452,7 @@ export interface ChatState {
 
 const speakFromMsg = (msg: Message, fallbackLocale: string) => {
     let speak = msg.speak;
-    
+
     if (!speak && msg.textFormat == null || msg.textFormat == "plain")
         speak = msg.text;
     if (!speak && msg.channelData && msg.channelData.speechOutput && msg.channelData.speechOutput.speakText)
@@ -461,7 +495,7 @@ import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 
 
-const sendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
+const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
     .map(action => {
         const state = store.getState();
@@ -469,7 +503,7 @@ const sendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
         return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
     });
 
-const trySendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
+const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
     .flatMap(action => {
         const state = store.getState();
@@ -497,7 +531,8 @@ const trySendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
     });
 
 const speakObservable = Observable.bindCallback<string, string, {}, {}>(Speech.SpeechSynthesizer.speak);
-const speakSSML:Epic<ChatActions, ChatState> = (action$, store) =>
+
+const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Speak_SSML')
     .filter(action => action.ssml )
     .mergeMap(action => {
@@ -515,12 +550,12 @@ const speakSSML:Epic<ChatActions, ChatState> = (action$, store) =>
     })
     .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stop' } as ShellAction)));
 
-const speakOnMessageReceived:Epic<ChatActions, ChatState> = (action$, store) =>
+const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Receive_Message')
     .filter(action => (action.activity as Message) && store.getState().shell.lastInputViaSpeech)
     .map(action => speakFromMsg(action.activity as Message, store.getState().format.locale) as ShellAction);
 
-const stopSpeaking: Epic<ChatActions, ChatState> = (action$) =>
+const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType(
         'Update_Input',
         'Listening_Starting',
@@ -531,7 +566,7 @@ const stopSpeaking: Epic<ChatActions, ChatState> = (action$) =>
     .do(Speech.SpeechSynthesizer.stopSpeaking)
     .map(_ => nullAction)
 
-const stopListening: Epic<ChatActions, ChatState> = (action$) =>
+const stopListeningEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType(
         'Listening_Stop',
         'Card_Action_Clicked'
@@ -539,7 +574,7 @@ const stopListening: Epic<ChatActions, ChatState> = (action$) =>
     .do(Speech.SpeechRecognizer.stopRecognizing)
     .map(_ => nullAction)
 
-const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
+const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
     .do((action : ShellAction) => {
         var locale = store.getState().format.locale;
@@ -548,15 +583,15 @@ const startListening:Epic<ChatActions, ChatState> = (action$, store) =>
                 srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
                 onIntermediateResult(srText);
                 store.dispatch({ type: 'Listening_Stop' });
-                store.dispatch(sendChatMessage(srText, store.getState().connection.user, locale));
+                store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
             };
         var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
         var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stop' })};
         Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
     })
-    .map(_ => nullAction) 
+    .map(_ => nullAction)
 
-const listeningSilenceTimeout: Epic<ChatActions, ChatState> = (action$, store) =>
+const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 {
     const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stop');
     return action$.ofType('Listening_Start')
@@ -566,11 +601,11 @@ const listeningSilenceTimeout: Epic<ChatActions, ChatState> = (action$, store) =
             .takeUntil(cancelMessages$));
 };
 
-const retrySendMessage: Epic<ChatActions, ChatState> = (action$) =>
+const retrySendMessageEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Send_Message_Retry')
     .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
-const updateSelectedActivity: Epic<ChatActions, ChatState> = (action$, store) =>
+const updateSelectedActivityEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType(
         'Send_Message_Succeed',
         'Send_Message_Fail',
@@ -584,12 +619,12 @@ const updateSelectedActivity: Epic<ChatActions, ChatState> = (action$, store) =>
         return nullAction;
     });
 
-const showTyping: Epic<ChatActions, ChatState> = (action$) =>
+const showTypingEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType('Show_Typing')
     .delay(3000)
     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
 
-const sendTyping: Epic<ChatActions, ChatState> = (action$, store) =>
+const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Update_Input')
     .map(_ => store.getState())
     .filter(state => state.shell.sendTyping)
@@ -619,18 +654,18 @@ export const createStore = () =>
             history
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
-            updateSelectedActivity,
-            sendMessage,
-            trySendMessage,
-            retrySendMessage,
-            showTyping,
-            sendTyping,
-            speakSSML,
-            speakOnMessageReceived,
-            startListening,
-            stopListening,
-            stopSpeaking,
-            listeningSilenceTimeout,
+            updateSelectedActivityEpic,
+            sendMessageEpic,
+            trySendMessageEpic,
+            retrySendMessageEpic,
+            showTypingEpic,
+            sendTypingEpic,
+            speakSSMLEpic,
+            speakOnMessageReceivedEpic,
+            startListeningEpic,
+            stopListeningEpic,
+            stopSpeakingEpic,
+            listeningSilenceTimeoutEpic
         )))
     );
 

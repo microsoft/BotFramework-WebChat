@@ -3,21 +3,13 @@ import * as React from 'react';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-
-import { Activity, Media, IBotConnection, User, MediaType, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
-import { createStore, ChatActions, HistoryAction } from './Store';
+import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
+import { createStore, ChatActions, HistoryAction, sendMessage } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
 import { Speech } from './SpeechModule';
-
-export interface FormatOptions {
-    showHeader?: boolean
-}
-
-export type ActivityOrID = {
-    activity?: Activity
-    id?: string
-}
+import { ActivityOrID, FormatOptions } from './Types';
+import * as konsole from './Konsole';
 
 export interface ChatProps {
     user: User,
@@ -32,26 +24,6 @@ export interface ChatProps {
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect'
 }
-
-export const sendMessage = (text: string, from: User, locale: string) => ({
-    type: 'Send_Message',
-    activity: {
-        type: "message",
-        text,
-        from,
-        locale,
-        textFormat: 'plain',
-        timestamp: (new Date()).toISOString()
-    }} as ChatActions);
-
-export const sendFiles = (files: FileList, from: User, locale: string) => ({
-    type: 'Send_Message',
-    activity: {
-        type: "message",
-        attachments: attachmentsFromFiles(files),
-        from,
-        locale
-    }} as ChatActions);
 
 import { History } from './History';
 import { MessagePane } from './MessagePane';
@@ -268,19 +240,6 @@ export const sendPostBack = (botConnection: IBotConnection, text: string, value:
     });
 }
 
-const attachmentsFromFiles = (files: FileList) => {
-    const attachments: Media[] = [];
-    for (let i = 0, numFiles = files.length; i < numFiles; i++) {
-        const file = files[i];
-        attachments.push({
-            contentType: file.type as MediaType,
-            contentUrl: window.URL.createObjectURL(file),
-            name: file.name
-        });
-    }
-    return attachments;
-}
-
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
     if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
         return renderer(value);
@@ -288,13 +247,6 @@ export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Eleme
 
 export const classList = (...args:(string | boolean)[]) => {
     return args.filter(Boolean).join(' ');
-}
-
-export const konsole = {
-    log: (message?: any, ... optionalParams: any[]) => {
-        if (typeof(window) !== 'undefined' && (window as any)["botchatDebug"] && message)
-            console.log(message, ... optionalParams);
-    }
 }
 
 // note: container of this element must have CSS position of either absolute or relative

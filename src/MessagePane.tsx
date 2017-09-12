@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
-import { ChatActions, ChatState } from './Store';
+import { ChatState } from './Store';
 import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
-import { konsole, classList, doCardAction, IDoCardAction, sendMessage } from './Chat';
+import { classList, doCardAction, IDoCardAction } from './Chat';
+import * as konsole from './Konsole';
+import { ChatActions, sendMessage } from './Store';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
@@ -33,7 +35,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 
         //"stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
         if (!this.props.activityWithSuggestedActions) return;
-        
+
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
         this.props.doCardAction(cardAction.type, cardAction.value);
         this.props.setFocus();
@@ -50,7 +52,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 
         return (
             <HScroll
-                prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
+                prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z"
                 nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
                 scrollUnit="page"
             >
@@ -82,13 +84,13 @@ export const MessagePane = connect(
     (state: ChatState) => ({
         // passed down to MessagePaneView
         activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
-        // only used to create helper functions below 
+        // only used to create helper functions below
         botConnection: state.connection.botConnection,
         user: state.connection.user,
         locale: state.format.locale
     }), {
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
-        // only used to create helper functions below 
+        // only used to create helper functions below
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
         // from stateProps

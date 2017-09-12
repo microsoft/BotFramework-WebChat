@@ -5,8 +5,14 @@ import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
 import * as fs from 'fs';
+import * as Conversations from './conversations';
+
+const multer = require('multer');
+const upload_path = path.join(__dirname, '../uploads/');
+const multer_upload = multer({ dest: upload_path }).any();
 
 const config = require('../mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
+const uploads_url = "http://localhost:" + config.port + "/uploads/";
 const app = express();
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -19,7 +25,6 @@ app.use((req, res, next) => {
 });
 
 const timeout = 60 * 1000;
-const conversationId = "mockversation";
 const expires_in = 1800;
 const streamUrl = "http://nostreamsupport";
 const simpleCard = {
@@ -45,6 +50,7 @@ const sendStatus = (res: express.Response, code: string) => {
 
 app.post('/mock/tokens/generate', (req, res) => {
     const token = get_token(req);
+    const conversationId = Conversations.createConversation();
 
     res.send({
         conversationId,
@@ -56,6 +62,7 @@ app.post('/mock/tokens/generate', (req, res) => {
 
 app.post('/mock/tokens/refresh', (req, res) => {
     const token = get_token(req);
+    const conversationId = Conversations.createConversation();
 
     res.send({
         conversationId,
@@ -90,6 +97,7 @@ app.post('/mock/conversations', (req, res) => {
 const startConversation = (req: express.Request, res: express.Response) => {
     const token = get_token(req);
     const [test, area] = token.split("/");
+    const conversationId = Conversations.createConversation();
 
     res.send({
         conversationId,
@@ -98,7 +106,7 @@ const startConversation = (req: express.Request, res: express.Response) => {
         streamUrl,
         timestamp: new Date().toUTCString()
     });
-    sendActivity(res, {
+    sendActivity(conversationId, {
         type: "message",
         text: "Welcome to MockBot!",
         timestamp: new Date().toUTCString(),
@@ -106,18 +114,18 @@ const startConversation = (req: express.Request, res: express.Response) => {
     });
 }
 
-const sendActivity = (res: express.Response, activity: dl.Activity) => {
-    queue.push(activity)
+const sendActivity = (conversationId: string, activity: dl.Activity) => {
+    return Conversations.pushMessage(conversationId, activity);
 }
 
 app.post('/mock/conversations/:conversationId/activities', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'post' || !count || ++counter < Number(count))
-        postMessage(req, res);
+        postMessage(req.params.conversationId, req, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => postMessage(req, res), timeout);
+            setTimeout(() => postMessage(req.params.conversationId, req, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -129,13 +137,13 @@ app.post('/mock/conversations/:conversationId/activities', (req, res) => {
     }
 });
 
-const postMessage = (req: express.Request, res: express.Response) => {
+const postMessage = (conversationId: string, req: express.Request, res: express.Response) => {
     const id = messageId++;
     res.send({
         id,
         timestamp: new Date().toUTCString()
     });
-    processCommand(req, res, req.body.text, id);
+    processCommand(conversationId, req, res, req.body.text, id);
 }
 
 const printCommands = () => {
@@ -149,8 +157,7 @@ const printCommands = () => {
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
 
-const processCommand = (req: express.Request, res: express.Response, cmd: string, id: number) => {
-
+const processCommand = (conversationId: string, req: express.Request, res: express.Response, cmd: string, id: number) => {
     if (commands[cmd] && commands[cmd].server) {
         //look for "card ..." prefix on command
         const cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
@@ -158,16 +165,16 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
             const cardName = cardsCmd[1];
             getCardJsonFromFs(cardName).then(cardJson => {
                 //execute the server, with the card json from the file system
-                commands[cmd].server(res, sendActivity, cardJson);
+                commands[cmd].server(conversationId, sendActivity, cardJson);
             }).catch((err) => { throw err });
         } else {
             //execute the server
-            commands[cmd].server(res, sendActivity);
+            commands[cmd].server(conversationId, sendActivity);
         }
     } else {
         switch (cmd) {
             case 'help':
-                sendActivity(res, {
+                sendActivity(conversationId, {
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
@@ -180,7 +187,7 @@ const processCommand = (req: express.Request, res: express.Response, cmd: string
                 process.exit();
                 return;
             default:
-                sendActivity(res, {
+                sendActivity(conversationId, {
                     type: "message",
                     timestamp: new Date().toUTCString(),
                     channelId: "webchat",
@@ -197,10 +204,10 @@ app.post('/mock/conversations/:conversationId/upload', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'upload' || !count || ++counter < Number(count))
-        upload(req, res);
+        echo_uploads(req.params.conversationId, req, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => upload(req, res), timeout);
+            setTimeout(() => upload(req.params.conversationId, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -212,11 +219,57 @@ app.post('/mock/conversations/:conversationId/upload', (req, res) => {
     }
 });
 
-const upload = (req: express.Request, res: express.Response) => {
-    const id = messageId++;
+const upload = (conversationId: string, res: express.Response) => {
+    const watermark = Conversations.pushMessage(conversationId, null);
+
     res.send({
-        id,
+        watermark,
         timestamp: new Date().toUTCString()
+    });
+}
+
+const echo_uploads = (conversationId: string, req: express.Request, res: express.Response) => {
+    // multer upload
+    multer_upload(req, res, function (err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        // sending watermark msg for Web Chat upload success
+        upload(conversationId, res);
+
+        const uploaded_files = [];
+        for (var i = 0; i < req["files"].length; i++) {
+            uploaded_files.push(
+                <dl.UnknownMedia>{
+                    contentType: req["files"][i].mimetype,
+                    contentUrl: uploads_url + req["files"][i].filename,
+                    name: req["files"][i].originalname
+                });
+        }
+
+        // echo files
+        sendActivity(conversationId, {
+            type: "message",
+            from: config.bot,
+            timestamp: new Date().toUTCString(),
+            channelId: "webchat",
+            text: "",
+            attachments: uploaded_files.slice(1)           // skipping first one: contains DL activity data (not an attachment)
+        });
+
+        // deleting files
+        setTimeout(() => {
+            for (var i = 0; i < req["files"].length; i++) {
+                console.log("deleting file: " + upload_path + req["files"][i].filename);
+                if (fs.existsSync(upload_path + req["files"][i].filename)) {
+                    fs.unlinkSync(upload_path + req["files"][i].filename);
+                }
+            }
+        }, 2000);
+
+        return;
     });
 }
 
@@ -224,10 +277,10 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
     const token = get_token(req);
     const [test, area, count] = token.split("/");
     if (test === 'works' || area !== 'get' || !count || ++counter < Number(count))
-        getMessages(req, res);
+        getMessages(req.params.conversationId, +req.query.watermark, res);
     else switch (test) {
         case 'timeout':
-            setTimeout(() => getMessages(req, res), timeout);
+            setTimeout(() => getMessages(req.params.conversationId, +req.query.watermark, res), timeout);
             return;
         case 'expire':
             sendExpiredToken(res);
@@ -239,25 +292,37 @@ app.get('/mock/conversations/:conversationId/activities', (req, res) => {
     }
 });
 
-const getMessages = (req: express.Request, res: express.Response) => {
-    if (queue) {
-        if (queue.length > 0) {
-            const msg = queue.shift();
-            const id = messageId++;
-            msg.id = id.toString();
-            msg.from = { id: "id", name: "name" };
+const getMessages = (conversationId: string, watermark: number, res: express.Response) => {
+    let message;
+
+    try {
+        message = Conversations.getMessage(conversationId, watermark);
+    } catch (err) {
+        return res.status(404).end();
+    }
+
+    if (message) {
+        if (message.activity) {
+            message.activity.id = message.watermark;
+            message.activity.from = { id: 'id', name: 'name' };
             res.send({
-                activities: [msg],
-                watermark: id,
-                timestamp: new Date().toUTCString()
+                activities: [message.activity],
+                timestamp: new Date().toUTCString(),
+                watermark: message.watermark
             });
         } else {
             res.send({
                 activities: [],
-                watermark: messageId,
-                timestamp: new Date().toUTCString()
-            })
+                timestamp: new Date().toUTCString(),
+                watermark: message.watermark
+            });
         }
+    } else {
+        res.send({
+            activities: [],
+            timestamp: new Date().toUTCString(),
+            watermark
+        });
     }
 }
 
@@ -291,10 +356,8 @@ app.get('/botchat-fullwindow.css', function (req, res) {
 app.get('/mock_speech.js', function (req, res) {
     res.sendFile(path.join(__dirname + "/../mock_speech/index.js"));
 });
-app.get('/assets/:file', function (req, res) {
-    const file = req.params["file"];
-    res.sendFile(path.join(__dirname + "/../assets/" + file));
-});
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
+app.use('/uploads', express.static(upload_path));
 
 //do not listen unless being called from the command line
 if (!module.parent) {

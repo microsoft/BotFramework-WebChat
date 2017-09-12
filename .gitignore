@@ -8,6 +8,7 @@ node_modules
 npm-debug.log*
 debug.log
 test/src
+test/mock_dl/conversations.js*
 test/mock_dl/index.js*
 test/mock_speech/index.js*
 test/commands_map.js*
@@ -22,3 +23,4 @@ botchat.js.map
 CognitiveServices.js
 CognitiveServices.js.map
 *.css
+/test/uploads
