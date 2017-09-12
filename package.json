@@ -67,7 +67,7 @@
     "mocha": "3.2.0",
     "multer": "1.3.0",
     "nightmare": "2.8.1",
-    "nightmare-upload": "0.1.1",    
+    "nightmare-upload": "0.1.1",
     "node-sass": "4.5.0",
     "nodemon": "1.11.0",
     "npm-run-all": "3.1.2",
