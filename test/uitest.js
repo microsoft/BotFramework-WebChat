@@ -79,7 +79,7 @@ describe('nightmare UI tests', function () {
 			return result;
 		}
 
-		//Testing devices and commands 
+		//Testing devices and commands
 		function* testAllCommands() {
 			let success = true;
 
@@ -114,7 +114,12 @@ describe('nightmare UI tests', function () {
 		}
 
 		vo(testAllCommands)(function (err, success) {
-			done(!success);
+			// When test failed, err is string instead of Error
+			if (err || !success) {
+				done(new Error(err || 'one or more tests failed'));
+			} else {
+				done();
+			}
 		});
 	});
 });
