@@ -65,11 +65,13 @@ describe('nightmare UI tests', function () {
 				.click('.wc-send')
 				.wait(3000)
 				.do(function (nightmare) {
-					try {
-						commands[cmd].do.apply(this, arguments);
-					} catch (err) {
-						console.error(err);
-						throw err;
+					if (commands[cmd].do) {
+						try {
+							commands[cmd].do.apply(this, arguments);
+						} catch (err) {
+							console.error(err);
+							throw err;
+						}
 					}
 				})
 				.evaluate(commands[cmd].client);
