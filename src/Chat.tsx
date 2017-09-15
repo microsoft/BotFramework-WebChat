@@ -107,7 +107,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
             //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
             //         So we are manually appending the key if they can be inputted in the box
-            if (/(^|\s)Edge\//.test(navigator.userAgent)) {
+            if (/(^|\s)Edge\/16\./.test(navigator.userAgent)) {
                 key = inputtableKey(evt.key);
             }
 
