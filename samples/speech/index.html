@@ -3,7 +3,7 @@
   This is a sample HTML file which shows how to use speech in the Web Chat.
   1. Build the project: "npm run build"
   2. Start a web server: "npm run start"
-  3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
+  3. Aim your browser at "https://localhost:8000/samples?[parameters as listed below]"
 
   For ease of testing, several parameters can be set in the query string:
     * s = Direct Line secret, or
@@ -14,6 +14,13 @@
     * botid, botname = id (and optionally name) of bot
 
   You have a few options for speech recognition available to you. See definition of speechOptions below.
+   
+  Note that Chrome automatically blocks microphone access for pages served over http. Please use https. 
+
+  Chrome also automatically blocks speech if the HTML file is loaded from disk. You can run a server locally
+  or launch Chrome (close all the existing Chrome browsers) with the following option:
+  chrome.exe --allow-file-access-from-files <sampleHtmlFile>
+  
 -->
 <html>
   <head>
@@ -78,10 +85,6 @@
       // const speechOptions = null;
 
       // // Option 2: Native browser speech (not supported by all browsers, no speech recognition priming support)
-      //
-      // Note that Chrome automatically blocks speech if the HTML file is loaded from disk. You can run a server locally
-      // or launch Chrome (close all the existing Chrome browsers) with the following option:
-      // chrome.exe --allow-file-access-from-files <sampleHtmlFile>
       //
       // const speechOptions = {
       //   speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
