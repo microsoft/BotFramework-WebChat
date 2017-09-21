@@ -45,12 +45,13 @@ export class Chat extends React.Component<ChatProps, {}> {
     private chatviewPanel: HTMLElement;
     private resizeListener = () => this.setSize();
 
+    private _handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
+    private _saveShellRef = this.saveShellRef.bind(this);
+
     constructor(props: ChatProps) {
         super(props);
 
         konsole.log("BotChat.Chat props", props);
-
-        this.handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
 
         this.store.dispatch<ChatActions>({
             type: 'Set_Locale',
@@ -113,6 +114,10 @@ export class Chat extends React.Component<ChatProps, {}> {
 
             this.shellRef.focus(key);
         }
+    }
+
+    private saveShellRef(shellWrapper: any) {
+        this.shellRef = shellWrapper.getWrappedInstance();
     }
 
     componentDidMount() {
@@ -188,7 +193,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             <Provider store={ this.store }>
                 <div
                     className="wc-chatview-panel"
-                    onKeyDownCapture={ this.handleKeyDownCapture }
+                    onKeyDownCapture={ this._handleKeyDownCapture }
                     ref={ div => this.chatviewPanel = div }
                     tabIndex={ 0 }
                 >
@@ -196,7 +201,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     <MessagePane>
                         <History />
                     </MessagePane>
-                    <Shell ref={ (shellWrapper: any) => this.shellRef = shellWrapper.getWrappedInstance() } />
+                    <Shell ref={ this._saveShellRef } />
                     { resize }
                 </div>
             </Provider>
