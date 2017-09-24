@@ -20,7 +20,11 @@ interface Props {
     startListening: () => void
 }
 
-class ShellContainer extends React.Component<Props, {}> {
+export interface ShellFunctions {
+    focus: (appendKey?: string) => void
+}
+
+class ShellContainer extends React.Component<Props, {}> implements ShellFunctions {
     private textInput: HTMLInputElement;
     private fileInput: HTMLInputElement;
 
@@ -39,12 +43,10 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     private onClickSend() {
-        this.textInput.focus();
         this.sendMessage();
     }
 
     private onChangeFile() {
-        this.textInput.focus();
         this.props.sendFiles(this.fileInput.files);
         this.fileInput.value = null;
     }
@@ -61,6 +63,14 @@ class ShellContainer extends React.Component<Props, {}> {
         }
         else{
             this.props.startListening();
+        }
+    }
+
+    public focus(appendKey?: string) {
+        this.textInput.focus();
+
+        if (appendKey) {
+            this.props.onChangeText(this.props.inputText + appendKey);
         }
     }
 
@@ -150,5 +160,7 @@ export const Shell = connect(
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening()
-    })
+    }), {
+        withRef: true
+    }
 )(ShellContainer);

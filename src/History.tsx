@@ -15,7 +15,6 @@ export interface HistoryProps {
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
     onClickCardAction: () => void,
-    setFocus: () => void,
 
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
@@ -105,7 +104,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 3. (this is also the normal re-render case) To render without the mock activity
 
     private doCardAction(type: CardActionTypes, value: string | object) {
-        this.props.setFocus();
         this.props.onClickCardAction();
         return this.props.doCardAction(type, value);
     }
@@ -186,8 +184,6 @@ export const History = connect(
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
         onClickCardAction: dispatchProps.onClickCardAction,
-        // from ownProps
-        setFocus: ownProps.setFocus,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
