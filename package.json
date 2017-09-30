@@ -39,7 +39,7 @@
     "react-redux": "5.0.5",
     "redux": "3.7.2",
     "redux-observable": "0.13.0",
-    "rxjs": "5.3.3",
+    "rxjs": "5.4.3",
     "tslib": "1.7.1"
   },
   "devDependencies": {
