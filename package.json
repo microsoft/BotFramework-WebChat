@@ -28,7 +28,6 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
-    "@types/react": "15.0.38",
     "botframework-directlinejs": "0.9.11",
     "core-js": "2.4.1",
     "markdown-it": "8.3.1",
@@ -50,6 +49,7 @@
     "@types/express": "4.0.35",
     "@types/markdown-it": "0.0.2",
     "@types/nightmare": "1.6.30",
+    "@types/react": "^15.0.38",
     "@types/react-dom": "0.14.23",
     "@types/react-redux": "4.4.38",
     "awesome-typescript-loader": "3.1.2",
