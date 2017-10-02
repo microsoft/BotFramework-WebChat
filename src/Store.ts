@@ -267,7 +267,7 @@ export interface HistoryState {
     clientActivityBase: string,
     clientActivityCounter: number,
     selectedActivity: Activity,
-    lastSubmittedActivityId: Activity,
+    lastSubmittedActivityId: string,
 }
 
 export type HistoryAction = {
