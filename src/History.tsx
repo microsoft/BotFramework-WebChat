@@ -11,6 +11,7 @@ export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+    lastSubmittedActivityId: string,
 
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
@@ -29,6 +30,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     private carouselActivity: WrappedActivity;
     private largeWidth: number;
+    private lastScrolledActivityId: string;
 
     constructor(props: HistoryProps) {
         super(props);
@@ -68,11 +70,15 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
         const lastActivity = this.props.activities[this.props.activities.length - 1];
-        const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
+        const lastActivityFromMe = this.props.lastSubmittedActivityId && (this.props.lastSubmittedActivityId !== this.lastScrolledActivityId)
 
         // Validating if we are at the bottom of the list or the last activity was triggered by the user.
         if (this.scrollToBottom || lastActivityFromMe) {
+            console.log('YES');
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
+            this.lastScrolledActivityId = this.props.lastSubmittedActivityId;
+        } else {
+            console.log('NO!');
         }
     }
 
@@ -164,11 +170,12 @@ export const History = connect(
         format: state.format,
         size: state.size,
         activities: state.history.activities,
+        lastSubmittedActivityId: state.history.lastSubmittedActivityId,
         // only used to create helper functions below
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
         botConnection: state.connection.botConnection,
-        user: state.connection.user
+        user: state.connection.user,
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
@@ -180,6 +187,7 @@ export const History = connect(
         format: stateProps.format,
         size: stateProps.size,
         activities: stateProps.activities,
+        lastSubmittedActivityId: stateProps.lastSubmittedActivityId,
         // from dispatchProps
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
