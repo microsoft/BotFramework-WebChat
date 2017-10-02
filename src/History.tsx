@@ -26,7 +26,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
-
+    private lastActivityId: string;
     private carouselActivity: WrappedActivity;
     private largeWidth: number;
 
@@ -71,8 +71,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
 
         // Validating if we are at the bottom of the list or the last activity was triggered by the user.
-        if (this.scrollToBottom || lastActivityFromMe) {
+        if (this.scrollToBottom || (lastActivity && (this.lastActivityId !== lastActivity.channelData.clientActivityId) && lastActivityFromMe)) {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
+            if(lastActivity){
+                this.lastActivityId = lastActivity.channelData.clientActivityId;
+            }
         }
     }
 
