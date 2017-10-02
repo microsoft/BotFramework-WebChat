@@ -34,6 +34,21 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Type your message...",
         listeningIndicator: "Listening..."
     },
+    'nb-no': {
+        title: "Chat",
+        send: "Send",
+        unknownFile: "[Fil av typen '%1']",
+        unknownCard: "[Ukjent Kort '%1']",
+        receiptVat: "MVA",
+        receiptTax: "Skatt",
+        receiptTotal: "Totalt",
+        messageRetry: "prøv igjen",
+        messageFailed: "kunne ikke sende",
+        messageSending: "sender",
+        timeSent: " %1",
+        consolePlaceholder: "Skriv inn melding...",
+        listeningIndicator: "Lytter..."
+    },    
     'de-de': {
         title: "Chat",
         send: "Senden",
@@ -129,7 +144,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Envoyer",
         unknownFile: "[Fichier de type '%1']",
         unknownCard: "[Carte inconnue '%1']",
-        receiptVat: "VAT",
+        receiptVat: "TVA",
         receiptTax: "Taxe",
         receiptTotal: "Total",
         messageRetry: "reéssayer",
@@ -144,7 +159,7 @@ const localizedStrings: LocalizedStrings = {
         send: "Enviar",
         unknownFile: "[Archivo de tipo '%1']",
         unknownCard: "[Tarjeta desconocida '%1']",
-        receiptVat: "VAT",
+        receiptVat: "IVA",
         receiptTax: "Impuestos",
         receiptTotal: "Total",
         messageRetry: "reintentar",
@@ -204,7 +219,7 @@ const localizedStrings: LocalizedStrings = {
         send: "發送",
         unknownFile: "[類型為'%1'的文件]",
         unknownCard: "[未知的'%1'卡片]",
-        receiptVat: "VAT",
+        receiptVat: "消費稅",
         receiptTax: "税",
         receiptTotal: "總共",
         messageRetry: "重試",
@@ -219,7 +234,7 @@ const localizedStrings: LocalizedStrings = {
         send: "傳送",
         unknownFile: "[類型係'%1'嘅文件]",
         unknownCard: "[唔知'%1'係咩卡片]",
-        receiptVat: "VAT",
+        receiptVat: "消費稅",
         receiptTax: "税",
         receiptTotal: "總共",
         messageRetry: "再嚟一次",
@@ -234,8 +249,8 @@ const localizedStrings: LocalizedStrings = {
         send: "Odeslat",
         unknownFile: "[Soubor typu '%1']",
         unknownCard: "[Neznámá karta '%1']",
-        receiptVat: "VAT",
-        receiptTax: "DPH",
+        receiptVat: "DPH",
+        receiptTax: "Daň z prod.",
         receiptTotal: "Celkem",
         messageRetry: "opakovat",
         messageFailed: "nepodařilo se odeslat",
@@ -255,6 +270,8 @@ export const defaultStrings = localizedStrings['en-us'];
 export const strings = (locale: string) => {
     if (locale.startsWith('de'))
         locale = 'de-de';
+    else if (locale.startsWith('no') || locale.startsWith('nb') || locale.startsWith('nn'))
+        locale = 'nb-no';
     else if (locale.startsWith('pl'))
         locale = 'pl-pl';
     else if (locale.startsWith('ru'))

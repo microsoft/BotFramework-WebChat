@@ -2,6 +2,7 @@
 const commands = require('./commands_map');
 const config = require('./mock_dl/server_config.json');
 const Nightmare = require('nightmare');
+require('nightmare-upload')(Nightmare);
 const vo = require('vo');
 
 Nightmare.prototype.do = function (doFn) {
@@ -63,13 +64,22 @@ describe('nightmare UI tests', function () {
 				.type('.wc-textbox input', commands[cmd].alternateText || cmd)
 				.click('.wc-send')
 				.wait(3000)
-				.do(commands[cmd].do)
+				.do(function (nightmare) {
+					if (commands[cmd].do) {
+						try {
+							commands[cmd].do.apply(this, arguments);
+						} catch (err) {
+							console.error(err);
+							throw err;
+						}
+					}
+				})
 				.evaluate(commands[cmd].client);
 			resultToConsole(consoleLog, result);
 			return result;
 		}
 
-		//Testing devices and commands 
+		//Testing devices and commands
 		function* testAllCommands() {
 			let success = true;
 
@@ -104,7 +114,12 @@ describe('nightmare UI tests', function () {
 		}
 
 		vo(testAllCommands)(function (err, success) {
-			done(!success);
+			// When test failed, err is string instead of Error
+			if (err || !success) {
+				done(new Error(err || 'one or more tests failed'));
+			} else {
+				done();
+			}
 		});
 	});
 });

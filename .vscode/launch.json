@@ -24,6 +24,12 @@
             "port": 9222,
             "sourceMaps": true,
             "webRoot": "${workspaceRoot}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch mock_dl server",
+            "program": "${workspaceRoot}/test/mock_dl/index"
         }
     ]
 }

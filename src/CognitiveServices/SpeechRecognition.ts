@@ -1,5 +1,5 @@
 import { Speech, Func, Action } from '../SpeechModule'
-import { konsole } from '../Chat'
+import * as konsole from '../Konsole';
 import * as CognitiveSpeech from 'microsoft-speech-browser-sdk/Speech.Browser.Sdk'
 
 export interface ICognitiveServicesSpeechRecognizerProperties {

@@ -1,5 +1,5 @@
 import { Speech, Action } from '../SpeechModule'
-import { konsole } from '../Chat';
+import * as konsole from '../Konsole';
 
 export interface ICognitiveServicesSpeechSynthesisProperties {
     subscriptionKey: string,

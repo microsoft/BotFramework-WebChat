@@ -12,6 +12,7 @@ export const FormattedText = (props: IFormattedTextProps) => {
         return null;
 
     switch (props.format) {
+        case "xml":
         case "plain":
             return renderPlainText(props.text);
         default:

@@ -2,9 +2,10 @@ import * as React from 'react';
 import * as AdaptiveCards from "microsoft-adaptivecards";
 import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
 import { CardAction } from "botframework-directlinejs/built/directLine";
-import { classList, IDoCardAction, konsole } from "./Chat";
+import { classList, IDoCardAction } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
 import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
+import * as konsole from './Konsole';
 
 export interface Props {
     card: AdaptiveCardSchema.ICard,
