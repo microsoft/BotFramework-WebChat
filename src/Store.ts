@@ -266,7 +266,8 @@ export interface HistoryState {
     activities: Activity[],
     clientActivityBase: string,
     clientActivityCounter: number,
-    selectedActivity: Activity
+    selectedActivity: Activity,
+    lastSubmittedActivityId: Activity,
 }
 
 export type HistoryAction = {
@@ -301,7 +302,8 @@ export const history: Reducer<HistoryState> = (
         activities: [],
         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
         clientActivityCounter: 0,
-        selectedActivity: null
+        selectedActivity: null,
+        lastSubmittedActivityId: null,
     },
     action: HistoryAction
 ) => {
@@ -349,7 +351,8 @@ export const history: Reducer<HistoryState> = (
                     },
                     ... state.activities.filter(activity => activity.type === "typing"),
                 ],
-                clientActivityCounter: state.clientActivityCounter + 1
+                clientActivityCounter: state.clientActivityCounter + 1,
+                lastSubmittedActivityId: state.clientActivityBase + state.clientActivityCounter,
             };
 
         case 'Send_Message_Retry': {
