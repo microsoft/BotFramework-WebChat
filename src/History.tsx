@@ -74,11 +74,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
         // Validating if we are at the bottom of the list or the last activity was triggered by the user.
         if (this.scrollToBottom || lastActivityFromMe) {
-            console.log('YES');
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
             this.lastScrolledActivityId = this.props.lastSubmittedActivityId;
-        } else {
-            console.log('NO!');
         }
     }
 
