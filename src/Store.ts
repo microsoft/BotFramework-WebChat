@@ -1,4 +1,4 @@
-import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from 'botframework-directlinejs';
+import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from '@botique/botframework-directlinejs';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Speech } from './SpeechModule';
@@ -488,7 +488,6 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/bindCallback';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
-
 
 const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')

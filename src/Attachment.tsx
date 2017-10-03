@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
-import { Attachment, CardAction, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
+import { Attachment, CardAction, KnownMedia, UnknownMedia } from '@botique/botframework-directlinejs';
 import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { HeroCard } from './cards/HeroCard';
