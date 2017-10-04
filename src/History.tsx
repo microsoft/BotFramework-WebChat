@@ -39,8 +39,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         super(props);
     }
 
-    componentWillMount(){
-        this.props.onLoadHistory(LOAD_HISTORY_LIMIT, 0);
+    componentDidMount(){
+        //this.props.onLoadHistory(LOAD_HISTORY_LIMIT, 0);
     }
 
     componentWillUpdate() {
@@ -161,6 +161,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         return (
             <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
+                    <button style={{zIndex: 9999, top: '50px', color: 'red'}} onClick={() => this.props.onLoadHistory(10, 0)}>LOAD</button>
                     { content }
                 </div>
             </div>

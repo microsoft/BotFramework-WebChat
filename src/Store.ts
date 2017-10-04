@@ -508,9 +508,9 @@ const getHistoryEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         return ({ type: 'Get_History_Try', limit, page } as HistoryAction);
     });
 
-const tryGetHistoryEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+const tryGetHistoryEpic: Epic<any, ChatState> = (action$, store) =>
     action$.ofType('Get_History_Try')
-    .map(({limit, page}) => {
+    .flatMap(({limit, page}) => {
         const state = store.getState();
         return state.connection.botConnection.getHistory(limit, page)
         .map(activitySet => ({ type: 'Get_History_Succeed', activitySet } as HistoryAction))
@@ -677,6 +677,7 @@ export const createStore = () =>
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             updateSelectedActivityEpic,
+            getHistoryEpic,
             tryGetHistoryEpic,
             sendMessageEpic,
             trySendMessageEpic,
