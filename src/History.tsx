@@ -16,12 +16,15 @@ export interface HistoryProps {
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
     onClickCardAction: () => void,
+    onLoadHistory: (limit: number, page: number) => void,
 
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
     doCardAction: IDoCardAction
 }
+
+const LOAD_HISTORY_LIMIT = 10;
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
@@ -34,6 +37,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     constructor(props: HistoryProps) {
         super(props);
+    }
+
+    componentWillMount(){
+        this.props.onLoadHistory(LOAD_HISTORY_LIMIT, 0);
     }
 
     componentWillUpdate() {
@@ -176,6 +183,7 @@ export const History = connect(
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        onLoadHistory: (limit: number, page: number) => ({ type: 'Get_History', limit, page }),
         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below
         sendMessage
@@ -189,6 +197,7 @@ export const History = connect(
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
         onClickCardAction: dispatchProps.onClickCardAction,
+        onLoadHistory: dispatchProps.onLoadHistory,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IDoCardAction, classList } from "../Chat";
-import { CardAction } from "botframework-directlinejs/built/directLine";
+import { CardAction } from "@botique/botframework-directlinejs/built/directLine";
 
 export interface HeroCardPropTypes {
   image: string;

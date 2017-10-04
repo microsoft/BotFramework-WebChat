@@ -1,4 +1,4 @@
-import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from '@botique/botframework-directlinejs';
+import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User, ActivitySet } from '@botique/botframework-directlinejs';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Speech } from './SpeechModule';
@@ -271,6 +271,13 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
+    type: 'Get_History' | 'Get_History_Try'
+    limit: number,
+    page: number,
+} | {
+    type: 'Get_History_Succeed' | 'Get_History_Fail'
+    activitySet: ActivitySet,
+} | {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
@@ -309,6 +316,12 @@ export const history: Reducer<HistoryState> = (
 ) => {
     konsole.log("history action", action);
     switch (action.type) {
+        case 'Get_History_Succeed': {
+            return{
+                ...state,
+                activities: [...action.activitySet.activities, ...state.activities]
+            }
+        }
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
@@ -489,6 +502,21 @@ import 'rxjs/add/observable/bindCallback';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 
+const getHistoryEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Get_History')
+    .map(({limit, page}) => {
+        return ({ type: 'Get_History_Try', limit, page } as HistoryAction);
+    });
+
+const tryGetHistoryEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Get_History_Try')
+    .map(({limit, page}) => {
+        const state = store.getState();
+        return state.connection.botConnection.getHistory(limit, page)
+        .map(activitySet => ({ type: 'Get_History_Succeed', activitySet } as HistoryAction))
+        .catch(error => Observable.of({ type: 'Get_History_Fail' } as HistoryAction))
+    });
+
 const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
     .map(action => {
@@ -649,6 +677,7 @@ export const createStore = () =>
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             updateSelectedActivityEpic,
+            tryGetHistoryEpic,
             sendMessageEpic,
             trySendMessageEpic,
             retrySendMessageEpic,
