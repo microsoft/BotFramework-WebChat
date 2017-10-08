@@ -1,4 +1,4 @@
-import { Activity } from 'botframework-directlinejs';
+import { Activity } from '@botique/botframework-directlinejs';
 
 export interface FormatOptions {
     showHeader?: boolean

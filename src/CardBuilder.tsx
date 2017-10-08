@@ -1,4 +1,4 @@
-import { Attachment, CardAction, HeroCard, Thumbnail } from 'botframework-directlinejs';
+import { Attachment, CardAction, HeroCard, Thumbnail } from '@botique/botframework-directlinejs';
 import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
@@ -67,7 +67,7 @@ export class AdaptiveCardBuilder {
     }
 
     addCommon(content: ICommonContent) {
-        this.addTextBlock(content.title, { size: "medium", weight: "bolder" });
+        this.addTextBlock(content.title, { size: "medium", weight: "bolder", maxLines: 1 });
         this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true, separation: "none" } as any); //TODO remove "as any" because separation is not defined
         this.addTextBlock(content.text, { wrap: true });
         this.addButtons(content.buttons);

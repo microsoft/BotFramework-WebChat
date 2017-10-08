@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Activity, Message, User, CardActionTypes } from 'botframework-directlinejs';
+import { Activity, Message, User, CardActionTypes } from '@botique/botframework-directlinejs';
 import { ChatState, FormatState, SizeState } from './Store';
 import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
@@ -11,10 +11,13 @@ export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+    lastSubmittedActivityId: string,
+    isLoadingHistory: boolean,
 
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
     onClickCardAction: () => void,
+    onLoadHistory: (limit: number) => void,
 
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
@@ -22,13 +25,18 @@ export interface HistoryProps {
     doCardAction: IDoCardAction
 }
 
+const LOAD_HISTORY_LIMIT = 10;
+
 export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
+    private lastScrollHeight: number;
+    private lastScrollTop: number;
 
     private carouselActivity: WrappedActivity;
     private largeWidth: number;
+    private lastScrolledActivityId: string;
 
     constructor(props: HistoryProps) {
         super(props);
@@ -36,8 +44,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     componentWillUpdate() {
         this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= 1);
+        this.lastScrollHeight = this.scrollMe.scrollHeight;
+        this.lastScrollTop = this.scrollMe.scrollTop;
     }
-
+    
     componentDidUpdate() {
         if (this.props.format.carouselMargin == undefined) {
             // After our initial render we need to measure the carousel width
@@ -68,11 +78,15 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
         const lastActivity = this.props.activities[this.props.activities.length - 1];
-        const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
+        const lastActivityFromMe = this.props.lastSubmittedActivityId && (this.props.lastSubmittedActivityId !== this.lastScrolledActivityId)
 
         // Validating if we are at the bottom of the list or the last activity was triggered by the user.
         if (this.scrollToBottom || lastActivityFromMe) {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
+            this.lastScrolledActivityId = this.props.lastSubmittedActivityId;
+        } else if(this.scrollMe.scrollHeight !== this.lastScrollHeight){
+            // Stay in the same scroll position as before
+            this.scrollMe.scrollTop = this.lastScrollTop + (this.scrollMe.scrollHeight - this.lastScrollHeight);
         }
     }
 
@@ -108,6 +122,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         return this.props.doCardAction(type, value);
     }
 
+    private handleScroll(){
+        if(this.scrollMe.scrollTop < 30 && !this.props.isLoadingHistory){
+            this.props.onLoadHistory(LOAD_HISTORY_LIMIT);
+        }
+    }
+
     render() {
         konsole.log("History props", this);
         let content;
@@ -120,9 +140,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
                         format={ this.props.format }
-                        key={ 'message' + index }
+                        key={ activity.channelData.clientActivityId }
                         activity={ activity }
-                        showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                        showTimestamp={ true }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
                         onClickActivity={ this.props.onClickActivity(activity) }
@@ -149,7 +169,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList('wc-message-groups', !this.props.format.options.showHeader && 'no-header');
 
         return (
-            <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
+            <div onScroll={this.handleScroll.bind(this)} className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
                     { content }
                 </div>
@@ -164,26 +184,32 @@ export const History = connect(
         format: state.format,
         size: state.size,
         activities: state.history.activities,
+        lastSubmittedActivityId: state.history.lastSubmittedActivityId,
         // only used to create helper functions below
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
+        isLoadingHistory: state.history.isLoadingHistory,
         botConnection: state.connection.botConnection,
-        user: state.connection.user
+        user: state.connection.user,
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        onLoadHistory: (limit: number) => ({ type: 'Get_History', limit }),
         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
+        isLoadingHistory: stateProps.isLoadingHistory,
         format: stateProps.format,
         size: stateProps.size,
         activities: stateProps.activities,
+        lastSubmittedActivityId: stateProps.lastSubmittedActivityId,
         // from dispatchProps
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
         onClickCardAction: dispatchProps.onClickCardAction,
+        onLoadHistory: dispatchProps.onLoadHistory,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
@@ -251,7 +277,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             default:
                 let sent: string;
                 if (this.props.showTimestamp)
-                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleString());
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
         }

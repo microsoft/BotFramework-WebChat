@@ -1,4 +1,4 @@
-import { Activity } from 'botframework-directlinejs';
+import { Activity } from '@botique/botframework-directlinejs';
 
 interface Conversations {
   [key: string]: Conversation

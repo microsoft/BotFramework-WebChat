@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
-import { Attachment, CardAction, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
+import { Attachment, CardAction, KnownMedia, UnknownMedia } from '@botique/botframework-directlinejs';
 import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
+import { HeroCard } from './cards/HeroCard';
 import { AdaptiveCardContainer } from './AdaptiveCardContainer';
 import * as konsole from './Konsole';
 
@@ -170,9 +171,8 @@ export const AttachmentView = (props: {
                 attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
             }
             heroCardBuilder.addCommon(attachment.content)
-            return (
-                <AdaptiveCardContainer className="hero" card={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
-            );
+            //return <AdaptiveCardContainer className="hero" card={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
+            return <HeroCard title={attachment.content.title} subtitle={attachment.content.subtitle} buttons={attachment.content.buttons} image={attachment.content.images[0].url} onImageLoad={props.onImageLoad} onCardAction={props.onCardAction} onClick={onCardAction(attachment.content.tap)} />;
 
         case "application/vnd.microsoft.card.thumbnail":
             if (!attachment.content)

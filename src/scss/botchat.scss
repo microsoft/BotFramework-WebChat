@@ -77,7 +77,6 @@
     }
 
     .wc-suggested-actions {
-        background-color: #f9f9f9;
         bottom: $consoleHeight;
         height: 0;
         left: 0;
@@ -96,25 +95,27 @@
                 max-width: 40%;
 
                 button {
-                    background-color: #fff;
-                    color: $c_brand;
+                    border-radius: 30px;
+                    background-color: $c_brand;
+                    color: white;
                     min-height: 32px;
                     overflow: hidden;
                     padding: 0 16px;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     width: 100%;
+                    border-width: 1px;
+                    border-color: $c_brand;
+                    border-style: solid;
                 }
 
                 button:hover {
                     background-color: #fff;
-                    border-color: $c_brand;
                     color: $c_brand;
                 }
 
                 button:active {
                     background-color: $c_brand;
-                    border-color: $c_brand;
                     color: $c01;
                 }
             }
@@ -166,7 +167,8 @@
     }
 
     .wc-console {
-        border: 5px solid $c_chrome;
+        color: $c_textHeading;
+        border: 1px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
         height: $consoleHeight;
@@ -229,7 +231,7 @@
     }
 
     .wc-message-content {
-        border-radius: 2px;
+        border-radius: $element-border-radius;
         box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 8px;
         word-break: break-word;
@@ -278,6 +280,9 @@
         }
         
         button {
+            border-width: 1px;
+            border-style: solid;
+            border-radius: $element-border-radius;
             background-color: transparent;
             color: $c_brand;
             min-height: 32px;
@@ -395,16 +400,69 @@
         }
     }
 
+    // TODO: make hero-card support wc-wide and wc-narrow
+    .wc-card-hero{
+      .wc-card-hero-text-container{
+        text-align: center;
+        padding: 8px;
+      }
+
+      .wc-card-hero-title{
+        font-weight: 700;
+        height: 40px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .wc-card-hero-subtitle{
+        color: $c_textLight;
+        height: 60px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .wc-card-hero-buttons{
+        button{
+            margin-bottom: 8px;
+        }
+      }
+
+      .img-container{
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+
+        &.horizontal{
+          padding-top: 66.66%;
+        }
+
+        &.square{
+          padding-top: 100%;
+        }
+
+        img{
+          position: absolute;
+          bottom: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          margin: auto;
+        }
+      }
+
+    }
+
 /* alternate chat sizes */
 
     .wc-message {
-        max-width: 91%;
+        max-width: 60%;
     }
 
     @include card-size($card_normal);
 
     .wc-wide {
-        @include card-size($card_wide);
+      @include card-size($card_wide);
     }
 
     .wc-narrow {
@@ -445,6 +503,7 @@
 
     .wc-hscroll > ul {
         white-space: nowrap;
+        padding: 0;
     }
 
     .wc-hscroll > ul > li {
@@ -459,21 +518,21 @@
         position: relative;
 
         button.scroll {
-            background-color: $c11;
+            z-index: 1050;
+            background-color: $c08;
             height: 28px;
             overflow: hidden;
             padding: 0;
             position: absolute;
             top: 50%;
+            transform: translateY(-50%);
             width: 28px;
+            border-style: solid;
+            border-width: 0;
         }
 
         button.scroll:disabled {
             display: none;
-        }
-
-        button.scroll:hover {
-            background-color:  $c08;
         }
 
         button.scroll svg {
@@ -481,11 +540,11 @@
         }
 
         button.scroll.previous {
-            left: -16px;
+            left: -8px;
         }
 
         button.scroll.next {
-            right: -16px;
+            right: -8px;
         }
 
         .wc-hscroll > ul {
@@ -552,6 +611,7 @@
     .wc-message-from-bot .wc-message-content {
         background-color: $c_messageFromThem;
         color: $c00;
+        text-align: left;
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
@@ -582,7 +642,7 @@
 
     .wc-console svg {
         fill: $c03;
-        margin: 11px;
+        margin: 10px;
     }
 
     .wc-console textarea, .wc-console input[type=text] {
@@ -594,9 +654,21 @@
         width: 100%;
     }
 
-    .wc-send svg {
-        height: 18px;
-        width: 27px;
+    .wc-console .wc-send {
+        right: 0;
+        display: flex;
+        align-items: center;
+        margin-right: 18px;
+        height: 100%;
+
+        &.hidden{
+            visibility: hidden;
+        }
+
+        &.enabled{
+          font-weight: 700;
+          color: $c_brand;
+        }
     }
 
     .wc-upload svg {
@@ -610,16 +682,8 @@
 
     .wc-textbox {
         bottom: 0;
-        left: 48px;
+        left: 18px;
         right: 49px;
-    }
-
-    .wc-send {
-        right: 0;
-    }
-    
-    .wc-send.hidden {
-        visibility: hidden
     }
 
     .wc-mic {
@@ -639,7 +703,7 @@
     }
 
     .wc-console.has-text .wc-send svg {
-        fill: $c07; 
+        fill: $c_brand; 
     }
 
 /* animation */

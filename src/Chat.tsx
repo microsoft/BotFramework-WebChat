@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
+import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from '@botique/botframework-directlinejs';
 import { createStore, ChatActions, sendMessage } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
@@ -41,6 +41,8 @@ export class Chat extends React.Component<ChatProps, {}> {
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
+
+    private didInitialLoad = false;
 
     private chatviewPanel: HTMLElement;
     private resizeListener = () => this.setSize();
@@ -141,6 +143,11 @@ export class Chat extends React.Component<ChatProps, {}> {
                         this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
                 }
                 this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+
+                if(!this.didInitialLoad){
+                    this.didInitialLoad = true;
+                    this.store.dispatch<ChatActions>({ type: 'Get_History', limit: 10 })
+                }
             }
         );
 
