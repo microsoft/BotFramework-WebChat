@@ -16,7 +16,7 @@ export interface HistoryProps {
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
     onClickCardAction: () => void,
-    onLoadHistory: (limit: number, page: number) => void,
+    onLoadHistory: (limit: number) => void,
 
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
@@ -161,7 +161,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         return (
             <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
-                    <button style={{zIndex: 9999, top: '50px', color: 'red'}} onClick={() => this.props.onLoadHistory(10, 0)}>LOAD</button>
+                    <button style={{zIndex: 9999, top: '50px', color: 'red'}} onClick={() => this.props.onLoadHistory(10)}>LOAD</button>
                     { content }
                 </div>
             </div>
@@ -184,7 +184,7 @@ export const History = connect(
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
-        onLoadHistory: (limit: number, page: number) => ({ type: 'Get_History', limit, page }),
+        onLoadHistory: (limit: number) => ({ type: 'Get_History', limit }),
         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below
         sendMessage

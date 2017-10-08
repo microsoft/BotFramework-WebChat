@@ -273,7 +273,6 @@ export interface HistoryState {
 export type HistoryAction = {
     type: 'Get_History' | 'Get_History_Try'
     limit: number,
-    page: number,
 } | {
     type: 'Get_History_Succeed' | 'Get_History_Fail'
     activitySet: ActivitySet,
@@ -317,9 +316,12 @@ export const history: Reducer<HistoryState> = (
     konsole.log("history action", action);
     switch (action.type) {
         case 'Get_History_Succeed': {
+            // Merge the arrays uniquely
             return{
                 ...state,
-                activities: [...action.activitySet.activities, ...state.activities]
+                activities: [
+                    ...(action.activitySet.activities)
+                        .filter((curr) => !state.activities.find((el) => el.channelData.clientActivityId === curr.channelData.clientActivityId)), ...state.activities]
             }
         }
         case 'Receive_Sent_Message': {
@@ -504,15 +506,16 @@ import 'rxjs/add/observable/of';
 
 const getHistoryEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Get_History')
-    .map(({limit, page}) => {
-        return ({ type: 'Get_History_Try', limit, page } as HistoryAction);
+    .map(({limit}) => {
+        return ({ type: 'Get_History_Try', limit } as HistoryAction);
     });
 
 const tryGetHistoryEpic: Epic<any, ChatState> = (action$, store) =>
     action$.ofType('Get_History_Try')
-    .flatMap(({limit, page}) => {
+    .flatMap(({limit}) => {
         const state = store.getState();
-        return state.connection.botConnection.getHistory(limit, page)
+        const since = state.history.activities.length > 0 ? new Date(state.history.activities[0].timestamp) : new Date();
+        return state.connection.botConnection.getHistory(since, limit)
         .map(activitySet => ({ type: 'Get_History_Succeed', activitySet } as HistoryAction))
         .catch(error => Observable.of({ type: 'Get_History_Fail' } as HistoryAction))
     });
