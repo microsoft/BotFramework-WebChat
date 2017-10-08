@@ -31,6 +31,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;
     private scrollContent: HTMLDivElement;
     private scrollToBottom = true;
+    private lastScrollHeight: number;
+    private lastScrollTop: number;
 
     private carouselActivity: WrappedActivity;
     private largeWidth: number;
@@ -42,6 +44,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     componentWillUpdate() {
         this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= 1);
+        this.lastScrollHeight = this.scrollMe.scrollHeight;
+        this.lastScrollTop = this.scrollMe.scrollTop;
     }
     
     componentDidUpdate() {
@@ -80,6 +84,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         if (this.scrollToBottom || lastActivityFromMe) {
             this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
             this.lastScrolledActivityId = this.props.lastSubmittedActivityId;
+        } else if(this.scrollMe.scrollHeight !== this.lastScrollHeight){
+            // Stay in the same scroll position as before
+            this.scrollMe.scrollTop = this.lastScrollTop + (this.scrollMe.scrollHeight - this.lastScrollHeight);
         }
     }
 
@@ -133,7 +140,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
                         format={ this.props.format }
-                        key={ 'message' + index }
+                        key={ activity.channelData.clientActivityId }
                         activity={ activity }
                         showTimestamp={ true }
                         selected={ this.props.isSelected(activity) }
