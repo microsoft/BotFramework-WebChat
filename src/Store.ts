@@ -268,6 +268,7 @@ export interface HistoryState {
     clientActivityCounter: number,
     selectedActivity: Activity,
     lastSubmittedActivityId: string,
+    isLoadingHistory: boolean,
 }
 
 export type HistoryAction = {
@@ -310,18 +311,32 @@ export const history: Reducer<HistoryState> = (
         clientActivityCounter: 0,
         selectedActivity: null,
         lastSubmittedActivityId: null,
+        isLoadingHistory: false,
     },
     action: HistoryAction
 ) => {
     konsole.log("history action", action);
     switch (action.type) {
+        case 'Get_History_Try': {
+            return{
+                ...state,
+                isLoadingHistory: true,
+            }
+        }
         case 'Get_History_Succeed': {
             // Merge the arrays uniquely
             return{
                 ...state,
+                isLoadingHistory: false,
                 activities: [
                     ...(action.activitySet.activities)
                         .filter((curr) => !state.activities.find((el) => el.channelData.clientActivityId === curr.channelData.clientActivityId)), ...state.activities]
+            }
+        }
+        case 'Get_History_Fail': {
+            return{
+                ...state,
+                isLoadingHistory: false,
             }
         }
         case 'Receive_Sent_Message': {

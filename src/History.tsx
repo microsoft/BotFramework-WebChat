@@ -12,6 +12,7 @@ export interface HistoryProps {
     size: SizeState,
     activities: Activity[],
     lastSubmittedActivityId: string,
+    isLoadingHistory: boolean,
 
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
@@ -114,6 +115,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         return this.props.doCardAction(type, value);
     }
 
+    private handleScroll(){
+        if(this.scrollMe.scrollTop < 30 && !this.props.isLoadingHistory){
+            this.props.onLoadHistory(LOAD_HISTORY_LIMIT);
+        }
+    }
+
     render() {
         konsole.log("History props", this);
         let content;
@@ -155,9 +162,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList('wc-message-groups', !this.props.format.options.showHeader && 'no-header');
 
         return (
-            <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
+            <div onScroll={this.handleScroll.bind(this)} className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
-                    <button style={{zIndex: 9999, top: '50px', color: 'red'}} onClick={() => this.props.onLoadHistory(LOAD_HISTORY_LIMIT)}>LOAD</button>
                     { content }
                 </div>
             </div>
@@ -175,6 +181,7 @@ export const History = connect(
         // only used to create helper functions below
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
+        isLoadingHistory: state.history.isLoadingHistory,
         botConnection: state.connection.botConnection,
         user: state.connection.user,
     }), {
@@ -186,6 +193,7 @@ export const History = connect(
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
+        isLoadingHistory: stateProps.isLoadingHistory,
         format: stateProps.format,
         size: stateProps.size,
         activities: stateProps.activities,
