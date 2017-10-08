@@ -48,7 +48,22 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " %1",
         consolePlaceholder: "Skriv inn melding...",
         listeningIndicator: "Lytter..."
-    },    
+    },
+    'da-dk': {
+        title: "Chat",
+        send: "Send",
+        unknownFile: "[Fil af typen '%1']",
+        unknownCard: "[Ukendt kort '%1']",
+        receiptVat: "Moms",
+        receiptTax: "Skat",
+        receiptTotal: "Total",
+        messageRetry: "prøv igen",
+        messageFailed: "ikke sendt",
+        messageSending: "sender",
+        timeSent: " kl %1",
+        consolePlaceholder: "Skriv din besked...",
+        listeningIndicator: "Lytter..."
+    },
     'de-de': {
         title: "Chat",
         send: "Senden",
@@ -268,7 +283,9 @@ export const defaultStrings = localizedStrings['en-us'];
 // strings('en') should return localizedStrings('en-us')
 
 export const strings = (locale: string) => {
-    if (locale.startsWith('de'))
+    if (locale.startsWith('da'))
+        locale = 'da-dk';
+    else if (locale.startsWith('de'))
         locale = 'de-de';
     else if (locale.startsWith('no') || locale.startsWith('nb') || locale.startsWith('nn'))
         locale = 'nb-no';
