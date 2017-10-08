@@ -42,6 +42,8 @@ export class Chat extends React.Component<ChatProps, {}> {
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
 
+    private didInitialLoad = false;
+
     private chatviewPanel: HTMLElement;
     private resizeListener = () => this.setSize();
 
@@ -141,6 +143,11 @@ export class Chat extends React.Component<ChatProps, {}> {
                         this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
                 }
                 this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+
+                if(!this.didInitialLoad){
+                    this.didInitialLoad = true;
+                    this.store.dispatch<ChatActions>({ type: 'Get_History', limit: 20 })
+                }
             }
         );
 

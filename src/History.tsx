@@ -39,14 +39,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         super(props);
     }
 
-    componentDidMount(){
-        //this.props.onLoadHistory(LOAD_HISTORY_LIMIT, 0);
-    }
-
     componentWillUpdate() {
         this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= 1);
     }
-
+    
     componentDidUpdate() {
         if (this.props.format.carouselMargin == undefined) {
             // After our initial render we need to measure the carousel width
@@ -161,7 +157,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         return (
             <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
-                    <button style={{zIndex: 9999, top: '50px', color: 'red'}} onClick={() => this.props.onLoadHistory(10)}>LOAD</button>
+                    <button style={{zIndex: 9999, top: '50px', color: 'red'}} onClick={() => this.props.onLoadHistory(LOAD_HISTORY_LIMIT)}>LOAD</button>
                     { content }
                 </div>
             </div>
