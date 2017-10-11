@@ -11,7 +11,9 @@ export interface Strings {
     messageSending: string,
     timeSent: string,
     consolePlaceholder: string,
-    listeningIndicator: string
+    listeningIndicator: string,
+    uploadFile: string,
+    speak: string
 }
 
 interface LocalizedStrings {
@@ -32,7 +34,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "sending",
         timeSent: " at %1",
         consolePlaceholder: "Type your message...",
-        listeningIndicator: "Listening..."
+        listeningIndicator: "Listening...",
+        uploadFile: "Upload file",
+        speak: "Speak"
     },
     'ja-jp': {
         title: "チャット",
@@ -47,7 +51,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "送信中",
         timeSent: " %1",
         consolePlaceholder: "メッセージを入力してください...",
-        listeningIndicator: "聴いてます..."
+        listeningIndicator: "聴いてます...",
+        uploadFile: "",
+        speak: ""
     },
     'nb-no': {
         title: "Chat",
@@ -62,7 +68,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "sender",
         timeSent: " %1",
         consolePlaceholder: "Skriv inn melding...",
-        listeningIndicator: "Lytter..."
+        listeningIndicator: "Lytter...",
+        uploadFile: "",
+        speak: ""
     },
     'da-dk': {
         title: "Chat",
@@ -77,7 +85,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "sender",
         timeSent: " kl %1",
         consolePlaceholder: "Skriv din besked...",
-        listeningIndicator: "Lytter..."
+        listeningIndicator: "Lytter...",
+        uploadFile: "",
+        speak: ""
     },
     'de-de': {
         title: "Chat",
@@ -92,7 +102,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "sendet",
         timeSent: " am %1",
         consolePlaceholder: "Verfasse eine Nachricht...",
-        listeningIndicator: "Hören..."
+        listeningIndicator: "Hören...",
+        uploadFile: "",
+        speak: ""
     },
     'pl-pl': {
         title: "Chat",
@@ -107,7 +119,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "wysyłanie",
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość...",
-        listeningIndicator: "Słuchający..."
+        listeningIndicator: "Słuchający...",
+        uploadFile: "",
+        speak: ""
     },
     'ru-ru': {
         title: "Чат",
@@ -122,7 +136,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "отправка",
         timeSent: " в %1",
         consolePlaceholder: "Введите ваше сообщение...",
-        listeningIndicator: "прослушивание..."
+        listeningIndicator: "прослушивание...",
+        uploadFile: "",
+        speak: ""
     },
     'nl-nl': {
         title: "Chat",
@@ -137,7 +153,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "versturen",
         timeSent: " om %1",
         consolePlaceholder: "Typ je bericht...",
-        listeningIndicator: "het luisteren..."
+        listeningIndicator: "het luisteren...",
+        uploadFile: "",
+        speak: ""
     },
     'lv-lv': {
         title: "Tērzēšana",
@@ -152,7 +170,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "Nosūtīšana",
         timeSent: " %1",
         consolePlaceholder: "Ierakstiet savu ziņu...",
-        listeningIndicator: "Klausoties..."
+        listeningIndicator: "Klausoties...",
+        uploadFile: "",
+        speak: ""
     },
     'pt-br': {
         title: "Bate-papo",
@@ -167,7 +187,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " às %1",
         consolePlaceholder: "Digite sua mensagem...",
-        listeningIndicator: "Ouvindo..."
+        listeningIndicator: "Ouvindo...",
+        uploadFile: "",
+        speak: ""
     },
     'fr-fr': {
         title: "Chat",
@@ -182,7 +204,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "envoi",
         timeSent: " à %1",
         consolePlaceholder: "Écrivez votre message...",
-        listeningIndicator: "Écoute..."
+        listeningIndicator: "Écoute...",
+        uploadFile: "",
+        speak: ""
     },
     'es-es': {
         title: "Chat",
@@ -197,7 +221,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "enviando",
         timeSent: " a las %1",
         consolePlaceholder: "Escribe tu mensaje...",
-        listeningIndicator: "Escuchando..."
+        listeningIndicator: "Escuchando...",
+        uploadFile: "",
+        speak: ""
     },
     'el-gr': {
         title: "Συνομιλία",
@@ -212,7 +238,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "αποστολή",
         timeSent: " την %1",
         consolePlaceholder: "Πληκτρολόγηση μηνύματος...",
-        listeningIndicator: "Ακούγοντας..."
+        listeningIndicator: "Ακούγοντας...",
+        uploadFile: "",
+        speak: ""
     },
     'it-it': {
         title: "Chat",
@@ -227,7 +255,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "invio",
         timeSent: " %1",
         consolePlaceholder: "Scrivi il tuo messaggio...",
-        listeningIndicator: "Ascoltando..."
+        listeningIndicator: "Ascoltando...",
+        uploadFile: "",
+        speak: ""
     },
     'zh-hans': {
         title: "聊天",
@@ -242,7 +272,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "正在发送",
         timeSent: " 用时 %1",
         consolePlaceholder: "输入你的消息...",
-        listeningIndicator: "正在倾听..."
+        listeningIndicator: "正在倾听...",
+        uploadFile: "",
+        speak: ""
     },
     'zh-hant': {
         title: "聊天",
@@ -257,7 +289,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "正在發送",
         timeSent: " 於 %1",
         consolePlaceholder: "輸入你的訊息...",
-        listeningIndicator: "正在聆聽..."
+        listeningIndicator: "正在聆聽...",
+        uploadFile: "上載檔案",
+        speak: "發言"
     },
     'zh-yue': {
         title: "傾偈",
@@ -272,7 +306,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "而家傳送緊",
         timeSent: " 喺 %1",
         consolePlaceholder: "輸入你嘅訊息...",
-        listeningIndicator: "聽緊你講嘢..."
+        listeningIndicator: "聽緊你講嘢...",
+        uploadFile: "上載檔案",
+        speak: "講嘢"
     },
     'cs-cz': {
         title: "Chat",
@@ -287,7 +323,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "Odesílání",
         timeSent: " v %1",
         consolePlaceholder: "Napište svou zprávu...",
-        listeningIndicator: "Poslouchám..."
+        listeningIndicator: "Poslouchám...",
+        uploadFile: "",
+        speak: ""
     },
     'ko-kr': {
         title: "채팅",
@@ -302,7 +340,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "전송중",
         timeSent: " %1",
         consolePlaceholder: "메세지를 입력하세요...",
-        listeningIndicator: "수신중..."
+        listeningIndicator: "수신중...",
+        uploadFile: "",
+        speak: ""
     }
 }
 
@@ -344,9 +384,9 @@ export const strings = (locale: string) => {
     else if (locale.startsWith('cs'))
         locale = 'cs-cz';
     else if (locale.startsWith('ko'))
-        locale = 'ko-kr';    
+        locale = 'ko-kr';
     else if (locale.startsWith('ja'))
-        locale = 'ja-jp';    
+        locale = 'ja-jp';
     else if (locale in localizedStrings === false)
         locale = 'en-us';
 
