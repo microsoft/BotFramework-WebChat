@@ -141,6 +141,7 @@ class ShellContainer extends React.Component<Props, {}> implements ShellFunction
                     onClick={ () => this.onClickMic() }
                     aria-label={ this.props.strings.speak }
                     role="button"
+                    tabIndex={ 0 }
                 >
                    <svg width="28" height="22" viewBox="0 0 58 58" >
                         <path d="M 44 28 C 43.448 28 43 28.447 43 29 L 43 35 C 43 42.72 36.72 49 29 49 C 21.28 49 15 42.72 15 35 L 15 29 C 15 28.447 14.552 28 14 28 C 13.448 28 13 28.447 13 29 L 13 35 C 13 43.485 19.644 50.429 28 50.949 L 28 56 L 23 56 C 22.448 56 22 56.447 22 57 C 22 57.553 22.448 58 23 58 L 35 58 C 35.552 58 36 57.553 36 57 C 36 56.447 35.552 56 35 56 L 30 56 L 30 50.949 C 38.356 50.429 45 43.484 45 35 L 45 29 C 45 28.447 44.552 28 44 28 Z"/>
