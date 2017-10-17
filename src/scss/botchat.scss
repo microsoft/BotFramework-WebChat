@@ -165,16 +165,6 @@
         }
     }
 
-    .wc-console {
-        border: 5px solid $c_chrome;
-        bottom: 0;
-        box-sizing: border-box;
-        height: $consoleHeight;
-        left: 0;
-        position: absolute;
-        right: 0;
-    }
-
 /* views */
 
     .wc-chatview-panel {
@@ -568,78 +558,105 @@
 
 /* console */
 
-    .wc-console > * {
-        position: absolute;
-        top: 0;
-        vertical-align: middle;
-    }
-
-    .wc-console label {
-        cursor: pointer;
-        display: inline-block;
-        height: 40px;
-    }
-
-    .wc-console svg {
-        fill: $c03;
-        margin: 11px;
-    }
-
-    .wc-console textarea, .wc-console input[type=text] {
-        border: none;
-        height: 100%;
-        outline: none;
-        padding: 0;
-        resize: none;
-        width: 100%;
-    }
-
-    .wc-send svg {
-        height: 18px;
-        width: 27px;
-    }
-
-    .wc-upload svg {
-        height: 18px;
-        width: 26px;
-    }
-
-    #wc-upload-input {
-        opacity: 0;
-    }
-
-    .wc-textbox {
+    .wc-console {
+        border: 5px solid $c_chrome;
         bottom: 0;
-        left: 48px;
-        right: 49px;
-    }
-
-    .wc-send {
+        box-sizing: border-box;
+        height: $consoleHeight;
+        left: 0;
+        position: absolute;
         right: 0;
-    }
 
-    .wc-send.hidden {
-        visibility: hidden
-    }
+        > * {
+            position: absolute;
+            top: 0;
+            vertical-align: middle;
+        }
 
-    .wc-mic {
-        right: 0;
-    }
+        label, button {
+            cursor: pointer;
+            display: inline-block;
+            height: 40px;
+        }
 
-    .wc-mic.hidden {
-        visibility: hidden
-    }
+        svg {
+            fill: $c03;
+            margin: 11px;
+        }
 
-    .wc-mic.active path#micFilling {
-        fill:rgb(78, 55, 135)
-    }
+        input[type=text],
+        textarea {
+            border: none;
+            height: 100%;
+            outline: none;
+            padding: 0;
+            resize: none;
+            width: 100%;
+        }
 
-    .wc-mic.inactive path#micFilling {
-        visibility: hidden
-    }
+        &.has-text .wc-send svg {
+            fill: $c07;
+        }
 
-    .wc-console.has-text .wc-send svg {
-        fill: $c07;
+        .wc-upload {
+            cursor: pointer;
+            position: relative;
+
+            input[type="file"] {
+                font-size: 0;
+                height: 0;
+                left: 0;
+                opacity: 0;
+                outline: 0;
+                position: absolute;
+                top: 0;
+                width: 0;
+            }
+
+            svg {
+                height: 18px;
+                width: 26px;
+            }
+        }
+
+        .wc-textbox {
+            bottom: 0;
+            left: 48px;
+            right: 49px;
+
+            input {
+                background-color: transparent;
+            }
+        }
+
+        .wc-send {
+            right: 0;
+
+            &.hidden {
+                visibility: hidden
+            }
+
+            svg {
+                height: 18px;
+                width: 27px;
+            }
+        }
+
+        .wc-mic {
+            right: 0;
+
+            &.hidden {
+                visibility: hidden
+            }
+
+            &.active path#micFilling {
+                fill:rgb(78, 55, 135)
+            }
+
+            &.inactive path#micFilling {
+                visibility: hidden
+            }
+        }
     }
 
 /* animation */
