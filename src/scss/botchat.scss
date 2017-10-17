@@ -15,7 +15,6 @@
         border-radius: 1px;
         color: $c01;
         cursor: pointer;
-        outline: none;
         transition: color .2s ease, background-color .2s ease;
     }
 
@@ -106,6 +105,7 @@
                     width: 100%;
                 }
 
+                button:focus,
                 button:hover {
                     background-color: #fff;
                     border-color: $c_brand;
@@ -134,8 +134,9 @@
             display: none;
         }
 
+        button.scroll:focus,
         button.scroll:hover {
-            background-color:  $c08;
+            background-color: $c08;
         }
 
         button.scroll svg {
@@ -462,6 +463,7 @@
             display: none;
         }
 
+        button.scroll:focus,
         button.scroll:hover {
             background-color:  $c08;
         }
@@ -629,13 +631,19 @@
             }
         }
 
+        .wc-mic,
         .wc-send {
+            background-color: transparent;
+            border: 0;
+            padding: 0;
             right: 0;
 
             &.hidden {
-                visibility: hidden
+                visibility: hidden;
             }
+        }
 
+        .wc-send {
             svg {
                 height: 18px;
                 width: 27px;
@@ -643,18 +651,12 @@
         }
 
         .wc-mic {
-            right: 0;
-
-            &.hidden {
-                visibility: hidden
-            }
-
             &.active path#micFilling {
                 fill:rgb(78, 55, 135)
             }
 
             &.inactive path#micFilling {
-                visibility: hidden
+                visibility: hidden;
             }
         }
     }

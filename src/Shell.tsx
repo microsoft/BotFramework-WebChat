@@ -148,7 +148,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         aria-live="polite"
                     />
                 </div>
-                <label
+                <button
                     className={ sendButtonClassName }
                     onClick={ () => this.onClickSend() }
                     aria-label={ this.props.strings.send }
@@ -159,9 +159,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                     <svg>
                         <path d="M26.79 9.38A0.31 0.31 0 0 0 26.79 8.79L0.41 0.02C0.36 0 0.34 0 0.32 0 0.14 0 0 0.13 0 0.29 0 0.33 0.01 0.37 0.03 0.41L3.44 9.08 0.03 17.76A0.29 0.29 0 0 0 0.01 17.8 0.28 0.28 0 0 0 0.01 17.86C0.01 18.02 0.14 18.16 0.3 18.16A0.3 0.3 0 0 0 0.41 18.14L26.79 9.38ZM0.81 0.79L24.84 8.79 3.98 8.79 0.81 0.79ZM3.98 9.37L24.84 9.37 0.81 17.37 3.98 9.37Z" />
                     </svg>
-                </label>
-
-                <label
+                </button>
+                <button
                     className={ micButtonClassName }
                     onClick={ () => this.onClickMic() }
                     aria-label={ this.props.strings.speak }
@@ -173,7 +172,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         <path id="micFilling" d="M 28.97 44.438 L 28.97 44.438 C 23.773 44.438 19.521 40.033 19.521 34.649 L 19.521 11.156 C 19.521 5.772 23.773 1.368 28.97 1.368 L 28.97 1.368 C 34.166 1.368 38.418 5.772 38.418 11.156 L 38.418 34.649 C 38.418 40.033 34.166 44.438 28.97 44.438 Z"/>
                         <path d="M 29 46 C 35.065 46 40 41.065 40 35 L 40 11 C 40 4.935 35.065 0 29 0 C 22.935 0 18 4.935 18 11 L 18 35 C 18 41.065 22.935 46 29 46 Z M 20 11 C 20 6.037 24.038 2 29 2 C 33.962 2 38 6.037 38 11 L 38 35 C 38 39.963 33.962 44 29 44 C 24.038 44 20 39.963 20 35 L 20 11 Z"/>
                     </svg>
-                </label>
+                </button>
             </div>
         );
     }
