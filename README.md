@@ -129,6 +129,12 @@ Web Chat includes support for spoken conversations by leveraging Speech Recognit
 
 Speech support is opt-in. As shown in `/samples/speech`, you can customize the speech experience by supplying a specific implementation for speech recognition and speech synthesis to be used.
 
+ ```HTML
+...
+   <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
+   <script src="https://cdn.botframework.com/botframework-webchat/latest/CognitiveServices.js"></script>
+...
+```
 ```typescript
 var speechOptions = {
     speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
