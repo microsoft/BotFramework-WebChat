@@ -166,11 +166,17 @@ Web Chat strives to use responsive design when possible. As part of this, Web Ch
 
 ### Strings
 
-You can alter or add localized strings in `/src/Strings.ts`:
+You can alter or add localized strings in [/src/Strings.ts](src/Strings.ts):
 
 * Add one or more locales (with associated localized strings) to `localizedStrings`
 * Add logic to map the requested locale to the supported locale in `strings`
 * Please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
+
+You can specify locale to use in your website depends on your usage:
+
+* IFRAME: append `&locale=en-us` in query string
+* Inline JavaScript: add `{ locale: 'en-us' }` to options in `BotChat.App()` call
+* React: add `locale="en-us"` as a props to `<Chat>` component
 
 ### Behaviors
 
