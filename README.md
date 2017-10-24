@@ -70,7 +70,7 @@ Add Web Chat to your React project via `npm install botframework-webchat`
 Include the `Chat` component in your React app, e.g.:
 
 ```typescript
-Import { Chat } from 'botframework-webchat';
+import { Chat } from 'botframework-webchat';
 
 ...
 
