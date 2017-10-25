@@ -50,8 +50,14 @@
   </head>
   <body>
     <section class="example">
-      <h2>Type a color into the Web Chat!</h2>
-      <button onclick="postButtonMessage()" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px;">Click Me!</button>
+      <h2>Click to change the background color of Web Chat!</h2>
+      <button onclick="postButtonMessage('BLUE')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: blue;">BLUE</button>
+	  <button onclick="postButtonMessage('RED')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: red;">RED</button>
+	  <button onclick="postButtonMessage('YELLOW')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: yellow;">YELLOW</button>
+	  <button onclick="postButtonMessage('GREEN')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: green;">GREEN</button>
+	  <button onclick="postButtonMessage('WHITE')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: white;">WHITE</button>
+	  <button onclick="postButtonMessage('GREY')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: GREY;">GREY</button>
+	  <button onclick="postButtonMessage('BLACK')" style="height: 60px; margin-left: 80px; margin-top: 20px; padding: 20px; width: 120px; color: black;">BLACK</button>
     </section>
 
     <div id="BotChatGoesHere"></div>
@@ -88,7 +94,7 @@
 
       botConnection.activity$
         .filter(function (activity) {
-          return activity.type === 'event' && activity.name === 'changeBackground';
+          return activity.type === 'event' && activity.name === 'changeBackgroundColor';
         })
         .subscribe(function (activity) {
           console.log('"changeBackground" received with value: ' + activity.value);
@@ -96,19 +102,19 @@
         });
 
       function changeBackgroundColor(newColor) {
-        document.body.style.backgroundColor = newColor;
+        document.getElementsByClassName('wc-message-groups')[0].style.backgroundColor = newColor;
       }
 
-      function postButtonMessage() {
+      function postButtonMessage(color) {
         botConnection
           .postActivity({
             from: { id: 'me' },
-            name: 'buttonClicked',
+            name: 'changeBackgroundColor',
             type: 'event',
-            value: ''
+            value: color
           })
           .subscribe(function (id) {
-            console.log('"buttonClicked" sent');
+            console.log('"changeBackgroundColor" sent');
           });
       };
     </script>
