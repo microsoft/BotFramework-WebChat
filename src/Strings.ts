@@ -34,7 +34,7 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Type your message...",
         listeningIndicator: "Listening..."
     },
-    'jp': {
+    'ja': {
         title: "チャット",
         send: "送信",
         unknownFile: "[ファイルタイプ '%1']",
@@ -330,8 +330,8 @@ export const strings = (locale: string) => {
         locale = 'zh-hans';
     else if (locale.startsWith('cs'))
         locale = 'cs-cz';
-    else if (locale === 'jp')
-        locale = 'jp';
+    else if (locale === 'ja')
+        locale = 'ja';
     else
         locale = 'en-us';
 
