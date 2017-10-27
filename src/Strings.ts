@@ -322,17 +322,13 @@ export const strings = (locale: string) => {
         locale = 'el-gr';
     else if (locale.startsWith('it'))
         locale = 'it-it';
-    else if (locale === 'zh-yue')
-        locale = 'zh-yue';
     else if (locale === 'zh-hant' || locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw')
         locale = 'zh-hant';
     else if (locale.startsWith('zh'))
         locale = 'zh-hans';
     else if (locale.startsWith('cs'))
         locale = 'cs-cz';
-    else if (locale === 'ja')
-        locale = 'ja';
-    else
+    else if (locale in localizedStrings === false)
         locale = 'en-us';
 
     return localizedStrings[locale];
