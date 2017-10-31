@@ -34,6 +34,21 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Type your message...",
         listeningIndicator: "Listening..."
     },
+    'ja': {
+        title: "チャット",
+        send: "送信",
+        unknownFile: "[ファイルタイプ '%1']",
+        unknownCard: "[不明なカード '%1']",
+        receiptVat: "消費税",
+        receiptTax: "税",
+        receiptTotal: "合計",
+        messageRetry: "再送",
+        messageFailed: "送信できませんでした。",
+        messageSending: "送信中",
+        timeSent: " %1",
+        consolePlaceholder: "メッセージを入力してください...",
+        listeningIndicator: "聴いてます..."
+    },
     'nb-no': {
         title: "Chat",
         send: "Send",
@@ -307,15 +322,13 @@ export const strings = (locale: string) => {
         locale = 'el-gr';
     else if (locale.startsWith('it'))
         locale = 'it-it';
-    else if (locale === 'zh-yue')
-        locale = 'zh-yue';
     else if (locale === 'zh-hant' || locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw')
         locale = 'zh-hant';
     else if (locale.startsWith('zh'))
         locale = 'zh-hans';
     else if (locale.startsWith('cs'))
         locale = 'cs-cz';
-    else
+    else if (locale in localizedStrings === false)
         locale = 'en-us';
 
     return localizedStrings[locale];
