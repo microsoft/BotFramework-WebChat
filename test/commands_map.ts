@@ -450,7 +450,7 @@ var commands_map: CommandValuesMap = {
             nightmare.click('.wc-mic')
                 .wait(1000)
                 .type('.wc-textbox input', '')
-                .wait(2000);
+                .wait(3000);
         },
         client: function () {
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
