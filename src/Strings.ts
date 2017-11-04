@@ -225,7 +225,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: "riprova",
         messageFailed: "impossibile inviare",
         messageSending: "invio",
-        timeSent: " il %1",
+        timeSent: " %1",
         consolePlaceholder: "Scrivi il tuo messaggio...",
         listeningIndicator: "Ascoltando..."
     },
