@@ -718,37 +718,37 @@
     .wc-text-download {
         display: inline-block;
         font-family: Segoe UI Semibold;
-        font-size: 15px;        
+        font-size: $fontSize;
         text-decoration: none;
         vertical-align: top;
     }
    
     a.wc-link-download:link .wc-icon-download, a.wc-link-download:visited .wc-icon-download {
-        background-image:url('data:image/svg+xml;utf8,<svg width="12px" height="20px" viewBox="0 0 12 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="216-/-320---021617" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="download_web_chat" transform="translate(-180.000000, -124.000000)" fill="#2B2B2B"><path d="M180.434783,144 L180.434783,142.75 L191.565217,142.75 L191.565217,144 L180.434783,144 Z M192,134.439453 L186,140.552734 L180,134.439453 L180.869565,133.560547 L185.381643,138.150391 L185.381643,124 L186.618357,124 L186.618357,138.150391 L191.130435,133.560547 L192,134.439453 Z" id="c4"></path></g></g></svg>');
+        background-image:url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><path d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z" fill="#2B2B2B" fill-rule="evenodd"/></svg>');
         background-repeat: no-repeat;
     }
 
     a.wc-link-download:link, a.wc-link-download:visited {
-        color: #000000;
+        color: $c00;
         display: inline-block;
     }
 
     a.wc-link-download:hover .wc-icon-download {
-        background-image:url('data:image/svg+xml;utf8,<svg width="12px" height="20px" viewBox="0 0 12 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="216-/-320---021617" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="download_web_chat" transform="translate(-180.000000, -192.000000)" fill="#3A96DD"><path d="M180.434783,212 L180.434783,210.75 L191.565217,210.75 L191.565217,212 L180.434783,212 Z M192,202.439453 L186,208.552734 L180,202.439453 L180.869565,201.560547 L185.381643,206.150391 L185.381643,192 L186.618357,192 L186.618357,206.150391 L191.130435,201.560547 L192,202.439453 Z" id="c5"></path></g></g></svg>');
+        background-image:url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><path d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z" fill="#3A96DD" fill-rule="evenodd"/></svg>');
         background-repeat: no-repeat;
     }
     
     a.wc-link-download:hover {
-        color: #3A96DD;
+        color: $c07;
         display: inline-block;
     }
     
     a.wc-link-download:active .wc-icon-download {
-        background-image:url('data:image/svg+xml;utf8,<svg width="12px" height="20px" viewBox="0 0 12 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="216-/-320---021617" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="download_web_chat" transform="translate(-180.000000, -260.000000)" fill="#0063B1"><path d="M180.434783,280 L180.434783,278.75 L191.565217,278.75 L191.565217,280 L180.434783,280 Z M192,270.439453 L186,276.552734 L180,270.439453 L180.869565,269.560547 L185.381643,274.150391 L185.381643,260 L186.618357,260 L186.618357,274.150391 L191.130435,269.560547 L192,270.439453 Z" id="c6"></path></g></g></svg>');
+        background-image:url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><path d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z" fill="#0063B1" fill-rule="evenodd"/></svg>');
         background-repeat: no-repeat;
     }
 
     a.wc-link-download:active {
-        color: #0063B1;
+        color: $c06;
         display: inline-block;
     }
