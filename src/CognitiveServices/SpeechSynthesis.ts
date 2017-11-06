@@ -1,10 +1,12 @@
 import { Speech, Action } from '../SpeechModule'
-import { konsole } from '../Chat';
+import * as konsole from '../Konsole';
 
 export interface ICognitiveServicesSpeechSynthesisProperties {
-    subscriptionKey: string,
+    subscriptionKey?: string,
     gender?: SynthesisGender,
-    voiceName?: string
+    voiceName?: string,
+    fetchCallback?: (authFetchEventId: string) => Promise<string>,
+    fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>
 }
 
 export enum SynthesisGender { Male, Female };
@@ -31,7 +33,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     private _properties: ICognitiveServicesSpeechSynthesisProperties;
 
     constructor(properties: ICognitiveServicesSpeechSynthesisProperties) {
-        this._helper = new CognitiveServicesHelper(properties.subscriptionKey);
+        this._helper = new CognitiveServicesHelper(properties);
         this._properties = properties;
         this._requestQueue = new Array();
     }
@@ -76,7 +78,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         }
         if (!this._isPlaying) {
             this._isPlaying = true;
-            if ( !this._audioElement || this._audioElement.state === "closed") {
+            if (!this._audioElement || this._audioElement.state === "closed") {
                 this._audioElement = new AudioContext();
             }
             this._audioElement.decodeAudioData(top.data, (buffer) => {
@@ -132,27 +134,42 @@ class CognitiveServicesHelper {
     private readonly _tokenURL = "https://api.cognitive.microsoft.com/sts/v1.0/issueToken";
     private readonly _synthesisURL = "https://speech.platform.bing.com/synthesize";
     private readonly _outputFormat = "riff-16khz-16bit-mono-pcm";
-    private _apiKey: string;
-    private _token: string;
+    private _tokenCallback: (id: string) => Promise<string>;
+    private _tokenExpiredCallback: (id: string) => Promise<string>;
     private _lastTokenTime: number;
 
-    constructor(apiKey: string) {
-        if (!apiKey) {
-            throw "Please provide a valid Bing Speech API key";
+    constructor(props: ICognitiveServicesSpeechSynthesisProperties) {
+        if (props.subscriptionKey) {
+            this._tokenCallback = (id: string) => this.fetchSpeechToken(id);
+            this._tokenExpiredCallback = (id: string) => this.fetchSpeechToken(id);
         }
-        this._apiKey = apiKey;
-        this.checkAuthToken();
+        else if (props.fetchCallback && props.fetchOnExpiryCallback) {
+            this._tokenCallback = props.fetchCallback;
+            this._tokenExpiredCallback = props.fetchOnExpiryCallback;
+        }
+        else {
+            throw 'Error: The CognitiveServicesSpeechSynthesis requires either a subscriptionKey or a fetchCallback and a fetchOnExpiryCallback.';
+        }
     }
 
     public fetchSpeechData(text: string, locale: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): Promise<any> {
-        return this.checkAuthToken().then(() => {
+        const SSML = this.makeSSML(text, locale, synthesisProperties);
+        const cbAfterToken = (token: string) => {
+            this._lastTokenTime = Date.now();
+
             const optionalHeaders = [{ name: "Content-type", value: 'application/ssml+xml' },
             { name: "X-Microsoft-OutputFormat", value: this._outputFormat },
-            { name: "Authorization", value: this._token },
-            { name: "Ocp-Apim-Subscription-Key", value: this._apiKey }];
-            const SSML = this.makeSSML(text, locale, synthesisProperties);
+            { name: "Authorization", value: token }];
+
             return this.makeHttpCall("POST", this._synthesisURL, true, optionalHeaders, SSML);
-        });
+        };
+
+        if (Date.now() - this._lastTokenTime > 500000) {
+            return this._tokenExpiredCallback(synthesisProperties.subscriptionKey).then(token => cbAfterToken(token));
+        }
+        else {
+            return this._tokenCallback(synthesisProperties.subscriptionKey).then(token => cbAfterToken(token));
+        }
     }
 
     private makeSSML(text: string, locale: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): string {
@@ -246,21 +263,18 @@ class CognitiveServicesHelper {
             .replace(/'/g, '&apos;');
     }
 
-    private checkAuthToken(): Promise<void> {
-        // Token expires in 10 minutes. So we renew the token every 500s
-        if (!this._token || (Date.now() - this._lastTokenTime > 500000)) {
-            const optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: this._apiKey },
-            // required for Firefox otherwise a CORS error is raised
-            { name: "Access-Control-Allow-Origin", value: "*" }];
-            return this.makeHttpCall("POST", this._tokenURL, false, optionalHeaders).then((text) => {
-                this._token = text;
-                this._lastTokenTime = Date.now();
-                konsole.log("New authentication token generated.");
-            }, (ex) => {
-                konsole.log("Failed to generate authentication token.");
-            });
-        }
-        return Promise.resolve();
+    private fetchSpeechToken(apiKey: string): Promise<string> {
+        const optionalHeaders: HttpHeader[] = [{ name: "Ocp-Apim-Subscription-Key", value: apiKey },
+        // required for Firefox otherwise a CORS error is raised
+        { name: "Access-Control-Allow-Origin", value: "*" }];
+        return this.makeHttpCall("POST", this._tokenURL, false, optionalHeaders).then((text) => {
+            konsole.log("New authentication token generated.");
+            return Promise.resolve(text);
+        }, (ex) => {
+            const reason = "Failed to generate authentication token";
+            konsole.log(reason);
+            return Promise.reject(reason);
+        });
     }
 
     private makeHttpCall(actionType: string, url: string, isArrayBuffer: boolean = false, optionalHeaders?: HttpHeader[], dataToSend?: any): Promise<any> {
