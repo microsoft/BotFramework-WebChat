@@ -197,6 +197,33 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.car_card);
         }
     },
+    "document-plain": {
+        client: function () {
+            var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
+            if (!link) return false;
+
+            //check if value is encoded
+            var is_file =  link.href.indexOf("test.txt") >= 0;
+            link.click();
+
+            return is_file && window.location.href.indexOf("localhost") !== -1;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.document_plain);
+        }        
+    },    
+    "document-word": {
+        client: function () {
+            var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
+            if (!link) return false;
+
+            //check if value is encoded
+            return link.href.indexOf("test.docx") >= 0;
+        },
+        server: function (res, sendActivity) {
+            sendActivity(res, server_content.document_word);
+        }        
+    },
     "herocard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;

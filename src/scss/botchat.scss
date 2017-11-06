@@ -705,3 +705,40 @@
         background-color: $c_chrome;
     }
     
+/* download button for Unknown media */
+
+    .wc-icon-download {
+        display: inline-block;
+        height: 20px;
+        margin-left: 8px;
+        vertical-align: top;
+        width: 12px;        
+    }
+    
+    .wc-text-download {
+        display: inline-block;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    a.wc-link-download {
+        @mixin link-and-svg-arrow($color) {
+            color: $color;
+            .wc-icon-download {                
+                background-image:url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><path d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z" fill="#{$color}" fill-rule="evenodd"/></svg>');
+                background-repeat: no-repeat;
+            }
+        }
+
+        &:link, &:visited {
+            @include link-and-svg-arrow($c00);
+        }
+
+        &:hover {
+            @include link-and-svg-arrow($c07);
+        }
+
+        &:active {
+            @include link-and-svg-arrow($c06);
+        }
+    }
