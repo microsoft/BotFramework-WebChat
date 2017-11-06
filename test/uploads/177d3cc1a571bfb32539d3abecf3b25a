@@ -1,0 +1,1 @@
+{"type":"message","from":{"id":"userid","name":"username"},"locale":"en-US","timestamp":"2017-09-08T00:14:39.088Z","channelData":{"clientActivityId":"1504829664536.36321984001975705.0"},"entities":[{"type":"ClientCapabilities","requiresBotState":true,"supportsTts":true,"supportsListening":true}]}
