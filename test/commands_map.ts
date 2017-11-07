@@ -256,7 +256,7 @@ var commands_map: CommandValuesMap = {
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.image_svg);
         }
-    },    
+    },
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;

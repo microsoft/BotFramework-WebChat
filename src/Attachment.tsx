@@ -307,13 +307,13 @@ export const AttachmentView = (props: {
                 </AdaptiveCardContainer>
             );
 
-        case "image/svg+xml":            
+        case "image/svg+xml":
         case "image/png":
         case "image/jpg":
         case "image/jpeg":
         case "image/gif":
             return <Media src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
-        
+
         case "audio/mpeg":
         case "audio/mp4":
             return <Media type='audio' src={ attachment.contentUrl } />;
