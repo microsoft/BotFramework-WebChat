@@ -721,24 +721,39 @@
         text-decoration: none;
     }
 
-    a.wc-link-download {
-        @mixin link-and-svg-arrow($color) {
-            color: $color;
-            .wc-icon-download {                
-                background-image:url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><path d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z" fill="#{$color}" fill-rule="evenodd"/></svg>');
-                background-repeat: no-repeat;
-            }
+    @mixin link-and-svg-arrow($color, $opacity) {
+        color: $color;
+        opacity: $opacity;
+        .wc-icon-download {
+            background-image:url('data:image/svg+xml;utf8,<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg"><path d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z" fill="#{$color}" fill-rule="evenodd"/></svg>');
+            background-repeat: no-repeat;
         }
+    }
 
+    .wc-message-from-bot a.wc-link-download {
         &:link, &:visited {
-            @include link-and-svg-arrow($c00);
+            @include link-and-svg-arrow($c00, 1);
         }
 
         &:hover {
-            @include link-and-svg-arrow($c07);
+            @include link-and-svg-arrow($c07, 1);
         }
 
         &:active {
-            @include link-and-svg-arrow($c06);
+            @include link-and-svg-arrow($c06, 1);
+        }
+    }
+
+    .wc-message-from-me a.wc-link-download {
+        &:link, &:visited {
+            @include link-and-svg-arrow($c01, 1);
+        }
+
+        &:hover {
+            @include link-and-svg-arrow($c01, 0.8);
+        }
+
+        &:active {
+            @include link-and-svg-arrow($c01, 0.6);
         }
     }
