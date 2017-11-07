@@ -265,6 +265,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.mar_card);
         }
     },
+    "markdown-newlines": {
+        client: function () {
+            return document.querySelectorAll('h3').length > 5;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_newlines_card);
+        }
+    },    
     "markdown-url-needs-encoding": {
         client: function () {
             var links = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a');
