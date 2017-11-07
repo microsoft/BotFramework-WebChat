@@ -161,6 +161,13 @@
     .wc-message-pane.show-actions {
         .wc-message-groups {
             transform: translateY(-$actionsHeight);
+
+            &:before {
+                content: "";
+                display: block;
+                height: $actionsHeight + 10px;
+                width: 100%;
+            }
         }
         .wc-suggested-actions {
             height: $actionsHeight;
