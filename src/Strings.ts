@@ -288,6 +288,21 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " v %1",
         consolePlaceholder: "Napište svou zprávu...",
         listeningIndicator: "Poslouchám..."
+    },
+    'ko-kr': {
+        title: "채팅",
+        send: "전송",
+        unknownFile: "[파일 형식 '%1']",
+        unknownCard: "[알수없는 타입의 카드 '%1']",
+        receiptVat: "부가세",
+        receiptTax: "세액",
+        receiptTotal: "합계",
+        messageRetry: "재전송",
+        messageFailed: "전송할 수 없습니다",
+        messageSending: "전송중",
+        timeSent: " %1",
+        consolePlaceholder: "메세지를 입력하세요...",
+        listeningIndicator: "수신중..."
     }
 }
 
@@ -328,6 +343,8 @@ export const strings = (locale: string) => {
         locale = 'zh-hans';
     else if (locale.startsWith('cs'))
         locale = 'cs-cz';
+    else if (locale.startsWith('ko'))
+        locale = 'ko-kr';    
     else if (locale in localizedStrings === false)
         locale = 'en-us';
 
