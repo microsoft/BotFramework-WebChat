@@ -248,6 +248,15 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.image_raw);
         }
     },
+    "image-svg": {
+        client: function () {
+            var source = document.querySelectorAll('img')[0].src;
+            return source.indexOf("bf_square.svg") >= 0;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.image_svg);
+        }
+    },
     "markdown": {
         client: function () {
             return document.querySelectorAll('h3').length > 5;

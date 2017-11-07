@@ -304,6 +304,21 @@ export var image_raw: dl.Message = {
     ]
 }
 
+export var image_svg: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.Media>{
+            contentType: "image/svg+xml",
+            contentUrl: asset_url + "bf_square.svg",
+            name: "Microsoft Bot Framework",
+        }
+    ]
+}
+
 /*
  * Activity for Markdown
  * 
