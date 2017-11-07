@@ -267,7 +267,16 @@ var commands_map: CommandValuesMap = {
     },
     "markdown-newlines": {
         client: function () {
-            return document.querySelectorAll('h3').length > 5;
+            var ps = document.querySelectorAll('p');
+            var single_txt = 'single newline-&gt;&lt;-finish.';             
+            var singles = ps[1].innerHTML.indexOf(single_txt) >= 0 && ps[2].innerHTML.indexOf(single_txt) >= 0;
+
+            var double_init = 'double newline->';
+            var double_finish = '<-finish.';            
+            var doubles = ps[3].innerHTML.indexOf(double_init) >= 0 && ps[4].innerHTML.indexOf(double_finish) >= 0 && 
+                          ps[5].innerHTML.indexOf(double_init) >= 0 && ps[6].innerHTML.indexOf(double_finish) >= 0;
+
+            return singles && doubles;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.mar_newlines_card);
