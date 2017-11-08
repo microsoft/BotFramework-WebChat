@@ -268,15 +268,25 @@ var commands_map: CommandValuesMap = {
     "markdown-newlines": {
         client: function () {
             var ps = document.querySelectorAll('p');
-            var single_txt = 'single newline-&gt;&lt;-finish.';             
+            var single_txt = 'single newline-&gt;<br>';
             var singles = ps[1].innerHTML.indexOf(single_txt) >= 0 && ps[2].innerHTML.indexOf(single_txt) >= 0;
 
-            var double_init = 'double newline->';
-            var double_finish = '<-finish.';            
-            var doubles = ps[3].innerHTML.indexOf(double_init) >= 0 && ps[4].innerHTML.indexOf(double_finish) >= 0 && 
+            var double_init = 'double newline-&gt;';
+            var double_finish = '&lt;-finish.';
+            var doubles = ps[3].innerHTML.indexOf(double_init) >= 0 && ps[4].innerHTML.indexOf(double_finish) >= 0 &&
                           ps[5].innerHTML.indexOf(double_init) >= 0 && ps[6].innerHTML.indexOf(double_finish) >= 0;
 
-            return singles && doubles;
+            var double_double_init = "double-double newline-&gt;";
+            var doubles = ps[7].innerHTML.indexOf(double_double_init) >= 0 && ps[8].innerHTML.indexOf(double_finish) >= 0 &&
+                          ps[9].innerHTML.indexOf(double_double_init) >= 0 && ps[10].innerHTML.indexOf(double_finish) >= 0;
+
+            //validating <br> tags processing
+            var br_single =  ps[11].innerHTML.indexOf(single_txt) >= 0;
+            var br_double =  ps[12].innerHTML.indexOf(double_init) >= 0 && ps[13].innerHTML.indexOf(double_finish) >= 0;
+            var br_doubles = ps[14].innerHTML.indexOf(double_double_init) >= 0 && ps[15].innerHTML.indexOf(double_finish) >= 0;
+            var brs = br_single && br_double && br_doubles;
+
+            return singles && doubles && doubles && brs;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.mar_newlines_card);
@@ -560,7 +570,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ["markdown-newlines"];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];

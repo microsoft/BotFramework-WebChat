@@ -347,7 +347,7 @@ export var mar_newlines_card: dl.Message = {
     timestamp: new Date().toUTCString(),
     channelId: "webchat",
     textFormat: "markdown",
-    text: "**Windows** single newline->\r\n<-finish. \r\n\r\n**Unix** single newline->\n<-finish. \r\n\r\n---\r\n\r\n**Windows** double newline->\r\n\r\n<-finish. \r\n\r\n**Unix** double newline->\n\n<-finish. \r\n\r\n---\r\n\r\n**Windows** double-double newline->\r\n\r\n    \r\n\r\n<-finish. \r\n\r\n**Unix** double-double newline paragraph->\n\n   \n\n<-finish. \r\n\r\n"
+    text: "**Windows** single newline->\r\n<-finish. \r\n\r\n**Unix** single newline->\n<-finish. \r\n\r\n---\r\n\r\n**Windows** double newline->\r\n \r\n<-finish. \r\n\r\n**Unix** double newline->\n \n<-finish. \r\n\r\n---\r\n\r\n**Windows** double-double newline->\r\n \r\n \r\n \r\n<-finish. \r\n\r\n**Unix** double-double newline->\n \n \n \n<-finish. \r\n\r\n---\r\n\r\n**BR** single newline-><br /><-finish. \r\n\r\n **BR** double newline-><br /><br /><-finish. \r\n\r\n**BR** double-double newline-><br /><br /><br /><br /><-finish."
 }
 
 /*
