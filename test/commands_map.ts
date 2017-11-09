@@ -276,7 +276,7 @@ var commands_map: CommandValuesMap = {
                 //check if value is encoded
                 if (link.href !== "https://bing.com/?q=some%20value") return false;
             }
-            return true;
+            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('yaktocat.png?abc=123%20456') >= 0;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.mar_encode_card);
@@ -543,7 +543,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ["markdown-url-needs-encoding"];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];

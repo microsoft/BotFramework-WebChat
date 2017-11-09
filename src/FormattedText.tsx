@@ -55,10 +55,11 @@ const renderMarkdown = (
     onImageLoad: () => void
 ) => {
     const src = text
-                // convert <br> tags to blank lines for markdown
+                // Convert <br> tags to blank lines for markdown
                  .replace(/<br\s*\/?>/ig, '\r\n\r\n')
-                // URL encode all links
-                 .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
+                // MarkdownIt forget to encode URL correctly, so we do that before
+                // Image tag is ![Alt text](/url/to.png "title attribute"), so don't encode "title attribute"
+                .replace(/\[(.*?)\]\((.*?)( +".*?"){0,1}\)/ig, (match, text, url, title) => `[${ text }](${ markdownIt.normalizeLink(url) }${ (title === undefined) && (title='') })`);
     const __html = markdownIt.render(src);
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
