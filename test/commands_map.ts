@@ -356,6 +356,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.receipt_card);
         }
     },
+    "text-empty": {
+        client: function () {
+            return true;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.text_empty_card);
+        }
+    },    
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;

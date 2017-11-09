@@ -478,6 +478,19 @@ export var receipt_card: dl.Message = {
 }
 
 /*
+ * Activity for Text
+ * 
+ */
+export var text_empty_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    textFormat: "markdown",
+    text: " "
+}
+
+/*
  * Activity for Thumbnail Card
  * 
  */
