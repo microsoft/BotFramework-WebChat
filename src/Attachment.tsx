@@ -307,6 +307,11 @@ export const AttachmentView = (props: {
                 </AdaptiveCardContainer>
             );
 
+        case "application/vnd.microsoft.card.image":
+            if (!attachment.content)
+                return null;
+            return <Media src={ attachment.content.url } onLoad={ props.onImageLoad }/>;
+        
         case "image/svg+xml":
         case "image/png":
         case "image/jpg":

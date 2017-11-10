@@ -319,6 +319,29 @@ export var image_svg: dl.Message = {
     ]
 }
 
+export var image_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachments: [
+        <dl.CardImage>{
+            contentType: "application/vnd.microsoft.card.image",
+            content: {
+                alt: "Microsoft Surface",
+                tap: <dl.CardAction>{
+                    type: "showImage",
+                    title: "Microsoft Surface Action",
+                    value: "Showing Microsoft Surface Action",
+                    image: asset_url + "surface1.jpg"                    
+                },
+                url: asset_url + "surface1.jpg"
+            }
+        }
+    ]
+}
+
 /*
  * Activity for Markdown
  * 

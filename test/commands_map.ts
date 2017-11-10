@@ -121,6 +121,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.hero_card);
         }
     },
+    "card-image": {
+        client: function () {
+            return true;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.image_card);
+        }
+    },    
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
