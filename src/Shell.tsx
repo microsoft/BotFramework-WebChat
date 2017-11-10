@@ -28,9 +28,6 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     private textInput: HTMLInputElement;
     private fileInput: HTMLInputElement;
 
-    private _handleSendButtonKeyPress = this.handleSendButtonKeyPress.bind(this);
-    private _handleUploadButtonKeyPress = this.handleUploadButtonKeyPress.bind(this);
-
     private sendMessage() {
         if (this.props.inputText.trim().length > 0) {
             this.props.sendMessage(this.props.inputText);
@@ -116,7 +113,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
             <div className={ className }>
                 <label
                     className="wc-upload"
-                    onKeyPress={ this._handleUploadButtonKeyPress }
+                    onKeyPress={ evt => this.handleUploadButtonKeyPress(evt) }
                     tabIndex={ 0 }
                 >
                     <svg>
@@ -153,7 +150,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                     onClick={ () => this.onClickSend() }
                     aria-label={ this.props.strings.send }
                     role="button"
-                    onKeyPress={ this._handleSendButtonKeyPress }
+                    onKeyPress={ evt => this.handleSendButtonKeyPress(evt) }
                     tabIndex={ 0 }
                 >
                     <svg>
