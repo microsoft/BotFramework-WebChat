@@ -111,15 +111,10 @@ class ShellContainer extends React.Component<Props, {}> implements ShellFunction
                         value={ this.props.inputText }
                         onChange={ _ => this.props.onChangeText(this.textInput.value) }
                         onKeyPress={ e => this.onKeyPress(e) }
-<<<<<<< HEAD
                         onFocus={ () => this.onTextInputFocus() }
                         placeholder={ placeholder }
                         aria-label={ this.props.inputText ? null : placeholder }
-=======
-                        onFocus = {() => this.onTextInputFocus()}
-                        placeholder={ this.props.listening ? this.props.strings.listeningIndicator : this.props.strings.consolePlaceholder }
                         aria-live="polite"
->>>>>>> Send/receive message notification
                     />
                 </div>
                 <label className={sendButtonClassName} onClick={ () => this.onClickSend() } >
