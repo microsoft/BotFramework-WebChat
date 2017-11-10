@@ -122,6 +122,7 @@ class ShellContainer extends React.Component<Props, {}> implements ShellFunction
                         onFocus={ () => this.onTextInputFocus() }
                         placeholder={ placeholder }
                         aria-label={ this.props.inputText ? null : placeholder }
+                        aria-live="polite"
                     />
                 </div>
                 <label
