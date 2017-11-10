@@ -15,7 +15,6 @@
         border-radius: 1px;
         color: $c01;
         cursor: pointer;
-        outline: none;
         transition: color .2s ease, background-color .2s ease;
     }
 
@@ -66,7 +65,7 @@
         right: 0;
         top: $headerTotalHeight;
         transition: transform $actionTransition;
-        
+
         &.no-header {
             top: 0;
         }
@@ -106,6 +105,7 @@
                     width: 100%;
                 }
 
+                button:focus,
                 button:hover {
                     background-color: #fff;
                     border-color: $c_brand;
@@ -129,13 +129,14 @@
             top: 0;
             width: 28px;
         }
-        
+
         button.scroll:disabled {
             display: none;
         }
 
+        button.scroll:focus,
         button.scroll:hover {
-            background-color:  $c08;
+            background-color: $c08;
         }
 
         button.scroll svg {
@@ -163,16 +164,6 @@
         .wc-suggested-actions {
             height: $actionsHeight;
         }
-    }
-
-    .wc-console {
-        border: 5px solid $c_chrome;
-        bottom: 0;
-        box-sizing: border-box;
-        height: $consoleHeight;
-        left: 0;
-        position: absolute;
-        right: 0;
     }
 
 /* views */
@@ -276,7 +267,7 @@
         .non-adaptive-content {
             margin: $card_padding $card_padding 0 $card_padding;
         }
-        
+
         button {
             background-color: transparent;
             color: $c_brand;
@@ -472,6 +463,7 @@
             display: none;
         }
 
+        button.scroll:focus,
         button.scroll:hover {
             background-color:  $c08;
         }
@@ -510,7 +502,7 @@
             .wc-adaptive-card p {
                 min-height: initial;
             }
-            
+
         }
     }
 
@@ -568,78 +560,108 @@
 
 /* console */
 
-    .wc-console > * {
-        position: absolute;
-        top: 0;
-        vertical-align: middle;
-    }
-
-    .wc-console label {
-        cursor: pointer;
-        display: inline-block;
-        height: 40px;
-    }
-
-    .wc-console svg {
-        fill: $c03;
-        margin: 11px;
-    }
-
-    .wc-console textarea, .wc-console input[type=text] {
-        border: none;
-        height: 100%;
-        outline: none;
-        padding: 0;
-        resize: none;
-        width: 100%;
-    }
-
-    .wc-send svg {
-        height: 18px;
-        width: 27px;
-    }
-
-    .wc-upload svg {
-        height: 18px;
-        width: 26px;
-    }
-
-    #wc-upload-input {
-        display: none;
-    }
-
-    .wc-textbox {
+    .wc-console {
+        border: 5px solid $c_chrome;
         bottom: 0;
-        left: 48px;
-        right: 49px;
-    }
-
-    .wc-send {
+        box-sizing: border-box;
+        height: $consoleHeight;
+        left: 0;
+        position: absolute;
         right: 0;
-    }
-    
-    .wc-send.hidden {
-        visibility: hidden
-    }
 
-    .wc-mic {
-        right: 0;
-    }
+        > .wc-upload,
+        > .wc-textbox,
+        > .wc-send,
+        > .wc-mic {
+            position: absolute;
+            top: 0;
+            vertical-align: middle;
+        }
 
-    .wc-mic.hidden {
-        visibility: hidden
-    }
+        label, button {
+            cursor: pointer;
+            display: inline-block;
+            height: 40px;
+        }
 
-    .wc-mic.active path#micFilling {
-        fill:rgb(78, 55, 135)
-    }
-    
-    .wc-mic.inactive path#micFilling {
-        visibility: hidden
-    }
+        svg {
+            fill: $c03;
+            margin: 11px;
+        }
 
-    .wc-console.has-text .wc-send svg {
-        fill: $c07; 
+        input[type=text],
+        textarea {
+            border: none;
+            height: 100%;
+            outline: none;
+            padding: 0;
+            resize: none;
+            width: 100%;
+        }
+
+        &.has-text .wc-send svg {
+            fill: $c07;
+        }
+
+        .wc-upload {
+            cursor: pointer;
+            position: relative;
+
+            input[type="file"] {
+                font-size: 0;
+                height: 0;
+                left: 0;
+                opacity: 0;
+                outline: 0;
+                position: absolute;
+                top: 0;
+                width: 0;
+            }
+
+            svg {
+                height: 18px;
+                width: 26px;
+            }
+        }
+
+        .wc-textbox {
+            bottom: 0;
+            left: 48px;
+            right: 49px;
+
+            input {
+                background-color: transparent;
+            }
+        }
+
+        .wc-mic,
+        .wc-send {
+            background-color: transparent;
+            border: 0;
+            padding: 0;
+            right: 0;
+
+            &.hidden {
+                visibility: hidden;
+            }
+        }
+
+        .wc-send {
+            svg {
+                height: 18px;
+                width: 27px;
+            }
+        }
+
+        .wc-mic {
+            &.active path#micFilling {
+                fill:rgb(78, 55, 135)
+            }
+
+            &.inactive path#micFilling {
+                visibility: hidden;
+            }
+        }
     }
 
 /* animation */
@@ -704,7 +726,7 @@
     .wc-app ::-webkit-scrollbar-thumb {
         background-color: $c_chrome;
     }
-    
+
 /* download button for Unknown media */
 
     .wc-icon-download {
@@ -712,9 +734,9 @@
         height: 20px;
         margin-left: 8px;
         vertical-align: top;
-        width: 12px;        
+        width: 12px;
     }
-    
+
     .wc-text-download {
         display: inline-block;
         font-weight: 500;
