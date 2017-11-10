@@ -569,7 +569,10 @@
         position: absolute;
         right: 0;
 
-        > * {
+        > .wc-upload,
+        > .wc-textbox,
+        > .wc-send,
+        > .wc-mic {
             position: absolute;
             top: 0;
             vertical-align: middle;
