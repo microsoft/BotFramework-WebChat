@@ -34,7 +34,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         }
     }
 
-    private handleSendButtonKeyPress(evt: React.KeyboardEvent<HTMLLabelElement>) {
+    private handleSendButtonKeyPress(evt: React.KeyboardEvent<HTMLButtonElement>) {
         if (evt.key === 'Enter' || evt.key === ' ') {
             evt.preventDefault();
             this.sendMessage();
