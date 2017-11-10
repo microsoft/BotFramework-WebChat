@@ -172,12 +172,6 @@ You can alter or add localized strings in [/src/Strings.ts](src/Strings.ts):
 * Add logic to map the requested locale to the supported locale in `strings`
 * Please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
 
-You can specify locale to use in your website depends on your usage:
-
-* IFRAME: append `&locale=en-us` in query string
-* Inline JavaScript: add `{ locale: 'en-us' }` to options in `BotChat.App()` call
-* React: add `locale="en-us"` as a props to `<Chat>` component
-
 ### Behaviors
 
 Behavioral customization will require changing the TypeScript files in `/src`. A full description of the architecture of Web Chat is beyond the scope of this document, but here are a few starters:
