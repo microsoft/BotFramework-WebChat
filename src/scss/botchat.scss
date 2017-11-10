@@ -10,7 +10,7 @@
     }
 
     .wc-app button {
-        background-color: $c06;
+        background-color: $c_brand;
         border: 1px solid $c05;
         border-radius: 1px;
         color: $c01;
@@ -253,7 +253,7 @@
 
     .wc-message-from {
         clear: both;
-        color: $c_textLight;
+        color: $c_timestamp;
         font-size: 11px;
         margin-top: 5px;
     }
@@ -623,45 +623,55 @@
                 width: 26px;
             }
         }
+    .wc-send {
+        right: 0;
+    }
 
-        .wc-textbox {
-            bottom: 0;
-            left: 48px;
-            right: 49px;
+    .wc-send.hidden {
+        visibility: hidden
+    }
 
-            input {
-                background-color: transparent;
-            }
-        }
+    .wc-textbox {
+        bottom: 0;
+        left: 48px;
+        right: 49px;
 
-        .wc-mic,
-        .wc-send {
+        input {
             background-color: transparent;
-            border: 0;
-            padding: 0;
-            right: 0;
+        }
+    }
 
-            &.hidden {
-                visibility: hidden;
-            }
+    .wc-mic,
+    .wc-send {
+        background-color: transparent;
+        border: 0;
+        padding: 0;
+        right: 0;
+
+        &.hidden {
+            visibility: hidden;
+        }
+    }
+
+    .wc-send {
+        svg {
+            height: 18px;
+            width: 27px;
+        }
+    }
+
+    .wc-mic {
+        &.active path#micFilling {
+            fill:rgb(78, 55, 135)
         }
 
-        .wc-send {
-            svg {
-                height: 18px;
-                width: 27px;
-            }
+        &.inactive path#micFilling {
+            visibility: hidden;
         }
+    }
 
-        .wc-mic {
-            &.active path#micFilling {
-                fill:rgb(78, 55, 135)
-            }
-
-            &.inactive path#micFilling {
-                visibility: hidden;
-            }
-        }
+    .wc-console.has-text .wc-send svg {
+        fill: $c07;
     }
 
 /* animation */
@@ -758,11 +768,11 @@
         }
 
         &:hover {
-            @include link-and-svg-arrow($c07, 1);
+            @include link-and-svg-arrow($c_brand, 1);
         }
 
         &:active {
-            @include link-and-svg-arrow($c06, 1);
+            @include link-and-svg-arrow($c_brand, 0.8);
         }
     }
 
