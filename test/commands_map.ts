@@ -126,7 +126,7 @@ var commands_map: CommandValuesMap = {
             return true;
         },
         server: function (conversationId, sendActivity) {
-            sendActivity(conversationId, server_content.image_card);
+            sendActivity(conversationId, server_content.hero_card);
         }
     },    
     "carousel": {

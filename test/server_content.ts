@@ -265,7 +265,13 @@ export var hero_card: dl.Message = {
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
-                        "url": asset_url + "surface1.jpg"
+                        "url": asset_url + "surface1.jpg",
+                        "alt": "Microsoft Surface Alt",
+                        "tap": {
+                            "type": "openUrl",
+                            "title": "Tapped it!",
+                            "value": "https://www.bing.com/search?q=microsoft%20surface"
+                        }
                     }
                 ],
                 buttons: [
@@ -279,7 +285,12 @@ export var hero_card: dl.Message = {
                         "value": "postBack Button",
                         "title": "postBack Action"
                     }
-                ]
+                ],
+                tap: {
+                    "type": "openUrl",
+                    "title": "Tapped it!",
+                    "value": "https://www.bing.com/search?q=microsoft%20surface"            
+                }
             }
         }
     ]
@@ -315,29 +326,6 @@ export var image_svg: dl.Message = {
             contentType: "image/svg+xml",
             contentUrl: asset_url + "bf_square.svg",
             name: "Microsoft Bot Framework",
-        }
-    ]
-}
-
-export var image_card: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    text: "",
-    attachments: [
-        <dl.CardImage>{
-            contentType: "application/vnd.microsoft.card.image",
-            content: {
-                alt: "Microsoft Surface",
-                tap: <dl.CardAction>{
-                    type: "showImage",
-                    title: "Microsoft Surface Action",
-                    value: "Showing Microsoft Surface Action",
-                    image: asset_url + "surface1.jpg"                    
-                },
-                url: asset_url + "surface1.jpg"
-            }
         }
     ]
 }

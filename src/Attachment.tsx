@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
-import { Attachment, CardAction, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
+import { Attachment, CardAction, CardImage, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
 import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { AdaptiveCardContainer } from './AdaptiveCardContainer';
@@ -109,6 +109,7 @@ const Media = (props: {
     poster?: string,
     autoPlay?:boolean,
     loop?: boolean,
+    alt?: string,
     onLoad?: () => void,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }) => {
@@ -154,12 +155,9 @@ export const AttachmentView = (props: {
             e.stopPropagation();
         });
     const attachedImage = (
-        images: {
-            url: string,
-            tap?: CardAction // deprecated field for Skype channels. For testing legacy bots in Emulator only.
-        }[]
+        images: CardImage[]
     ) => images && images.length > 0 &&
-        <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } />;
+        <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } alt={ images[0].alt } />;
 
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
@@ -207,7 +205,6 @@ export const AttachmentView = (props: {
                     />
                 </AdaptiveCardContainer>
             );
-
 
         case "application/vnd.microsoft.card.animation":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
@@ -307,11 +304,6 @@ export const AttachmentView = (props: {
                 </AdaptiveCardContainer>
             );
 
-        case "application/vnd.microsoft.card.image":
-            if (!attachment.content)
-                return null;
-            return <Media src={ attachment.content.url } onLoad={ props.onImageLoad }/>;
-        
         case "image/svg+xml":
         case "image/png":
         case "image/jpg":
