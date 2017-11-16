@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as AdaptiveCards from "microsoft-adaptivecards";
-import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
+import * as AdaptiveCards from "adaptivecards";
+import * as AdaptiveCardSchema from "adaptivecards/built/schema";
 import { CardAction } from "botframework-directlinejs/built/directLine";
 import { classList, IDoCardAction } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
@@ -52,7 +52,7 @@ function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
     return { ...card, actions };
 }
 
-AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalAction) => {
+AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.Action) => {
     if (action instanceof AdaptiveCards.OpenUrlAction) {
         window.open(action.url);
     } else if (action instanceof AdaptiveCards.SubmitAction) {
@@ -99,6 +99,7 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
 
     componentDidMount() {
         const adaptiveCard = new LinkedAdaptiveCard(this);
+        adaptiveCard.hostConfig = adaptivecardsHostConfig;
         adaptiveCard.parse(cardWithoutHttpActions(this.props.card));
         const errors = adaptiveCard.validate();
         if (errors.length === 0) {
@@ -169,5 +170,3 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         if (this.props.onImageLoad) this.props.onImageLoad();
     }
 }
-
-AdaptiveCards.setHostConfig(adaptivecardsHostConfig);
