@@ -1,5 +1,5 @@
 import { Attachment, CardAction, HeroCard, Thumbnail } from 'botframework-directlinejs';
-import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
+import * as AdaptiveCardSchema from "adaptivecards/built/schema";
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
 interface IVersionedCard extends AdaptiveCardSchema.ICard {
