@@ -203,15 +203,15 @@ var commands_map: CommandValuesMap = {
             if (!link) return false;
 
             //check if value is encoded
-            var is_file =  link.href.indexOf("test.txt") >= 0;
+            var is_file = link.href.indexOf("test.txt") >= 0;
             link.click();
 
             return is_file && window.location.href.indexOf("localhost") !== -1;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_plain);
-        }        
-    },    
+        }
+    },
     "document-word": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
@@ -222,7 +222,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }        
+        }
     },
     "herocard": {
         client: function () {
@@ -265,33 +265,33 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.mar_card);
         }
     },
-    "markdown-newlines": {
+    "markdown-newlines-single": {
         client: function () {
-            var ps = document.querySelectorAll('p');
-            var single_txt = 'single newline-&gt;<br>';
-            var singles = ps[1].innerHTML.indexOf(single_txt) >= 0 && ps[2].innerHTML.indexOf(single_txt) >= 0;
-
-            var double_init = 'double newline-&gt;';
-            var double_finish = '&lt;-finish.';
-            var doubles = ps[3].innerHTML.indexOf(double_init) >= 0 && ps[4].innerHTML.indexOf(double_finish) >= 0 &&
-                          ps[5].innerHTML.indexOf(double_init) >= 0 && ps[6].innerHTML.indexOf(double_finish) >= 0;
-
-            var double_double_init = "double-double newline-&gt;";
-            var doubles = ps[7].innerHTML.indexOf(double_double_init) >= 0 && ps[8].innerHTML.indexOf(double_finish) >= 0 &&
-                          ps[9].innerHTML.indexOf(double_double_init) >= 0 && ps[10].innerHTML.indexOf(double_finish) >= 0;
-
-            //validating <br> tags processing
-            var br_single =  ps[11].innerHTML.indexOf(single_txt) >= 0;
-            var br_double =  ps[12].innerHTML.indexOf(double_init) >= 0 && ps[13].innerHTML.indexOf(double_finish) >= 0;
-            var br_doubles = ps[14].innerHTML.indexOf(double_double_init) >= 0 && ps[15].innerHTML.indexOf(double_finish) >= 0;
-            var brs = br_single && br_double && br_doubles;
-
-            return singles && doubles && doubles && brs;
+            var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');
+            return last_bubble.getElementsByTagName('p').length === 2 && last_bubble.getElementsByTagName('br').length === 3;
         },
         server: function (conversationId, sendActivity) {
-            sendActivity(conversationId, server_content.mar_newlines_card);
+            sendActivity(conversationId, server_content.mar_newlines_single_card);
         }
-    },    
+    },
+    "markdown-newlines-double": {
+        client: function () {
+            var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');
+            return last_bubble.getElementsByTagName('p').length === 4 && last_bubble.getElementsByTagName('br').length === 3;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_newlines_double_card);
+        }
+    },
+    "markdown-newlines-double-double": {
+        client: function () {
+            var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');
+            return last_bubble.getElementsByTagName('p').length === 4 && last_bubble.getElementsByTagName('br').length === 5;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_newlines_ddouble_card);
+        }
+    },
     "markdown-url-needs-encoding": {
         client: function () {
             var links = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a');
@@ -395,7 +395,7 @@ var commands_map: CommandValuesMap = {
     "upload": {
         do: function (nightmare) {
             try {
-                const upload = <(selector: string, paths: string[]) => Nightmare>(<any> nightmare.upload.bind(nightmare));
+                const upload = <(selector: string, paths: string[]) => Nightmare>(<any>nightmare.upload.bind(nightmare));
 
                 upload('#wc-upload-input', [
                     path.resolve(__dirname, 'assets', 'surface1.jpg'),
@@ -411,7 +411,7 @@ var commands_map: CommandValuesMap = {
             var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
             return img.src.indexOf('/uploads') >= 0;
         },
-        server: function(conversationId, sendActivity){
+        server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.upload_txt);
         }
     },

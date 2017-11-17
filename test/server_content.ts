@@ -341,13 +341,31 @@ export var mar_encode_card: dl.Message = {
     text: "Some links are [already encoded](https://bing.com?q=some%20value) and some have [query strings that need encoding](https://bing.com?q=some value) and these can occur [multiple](https://bing.com?q=some%20value) [times](https://bing.com?q=some value) in one message. (Links can even appear [within](https://bing.com?q=some%20value) [parentheses](https://bing.com?q=some value) too.)"
 }
 
-export var mar_newlines_card: dl.Message = {
+export var mar_newlines_single_card: dl.Message = {
     type: "message",
     from: bot,
     timestamp: new Date().toUTCString(),
     channelId: "webchat",
     textFormat: "markdown",
-    text: "**Windows** single newline->\r\n<-finish. \r\n\r\n**Unix** single newline->\n<-finish. \r\n\r\n---\r\n\r\n**Windows** double newline->\r\n \r\n<-finish. \r\n\r\n**Unix** double newline->\n \n<-finish. \r\n\r\n---\r\n\r\n**Windows** double-double newline->\r\n \r\n \r\n \r\n<-finish. \r\n\r\n**Unix** double-double newline->\n \n \n \n<-finish. \r\n\r\n---\r\n\r\n**BR** single newline-><br /><-finish. \r\n\r\n **BR** double newline-><br /><br /><-finish. \r\n\r\n**BR** double-double newline-><br /><br /><br /><br /><-finish."
+    text: "**Windows** single newline->\r\n<-finish. \r\n\r\n**Unix** single newline->\n<-finish."
+}
+
+export var mar_newlines_double_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    textFormat: "markdown",
+    text: "**Windows** double newline->\r\n \r\n<-finish. \r\n\r\n**Unix** double newline->\n \n<-finish."
+}
+
+export var mar_newlines_ddouble_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    textFormat: "markdown",
+    text: "**Windows** double-double newline->\r\n \r\n \r\n \r\n<-finish. \r\n\r\n**Unix** double-double newline->\n \n \n \n<-finish."
 }
 
 /*
