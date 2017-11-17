@@ -228,7 +228,7 @@ You can supply Web Chat with the id (and, optionally, a friendly name) of the cu
 
 You can initialize the WebChat conversation by passing an array of activity objects in `history: [ activity_object1, activity_object2, ... ]` to `App`/`Chat`. Each activity object should have a unique `id` value, and the `from` property should match either a user identity (above) or the bot's identity. An example activity message might look like:
 ```
-{ id: <unique id>, from: { id: <userid>, name: <username> }, type: "message", text: "The user said this in the past." }
+{ id: <unique_activity_id>, from: { id: <user_id>, name: <user_name> }, type: "message", text: "The user said this in the past." }
 ```
 Consult the [Activity object](https://docs.microsoft.com/en-us/bot-framework/rest-api/bot-framework-rest-connector-api-reference#activity-object) documentation for the complete schema. Note that messages will appear in the same order as the array you provide (the `timestamp` field will not affect the order).
 
