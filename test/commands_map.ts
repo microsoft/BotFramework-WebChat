@@ -276,7 +276,7 @@ var commands_map: CommandValuesMap = {
                 //check if value is encoded
                 if (link.href !== "https://bing.com/?q=some%20value") return false;
             }
-            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('yaktocat.png?abc=123%20456') >= 0;
+            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('surface1.jpg?abc=123%20456') >= 0;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.mar_encode_card);
@@ -356,6 +356,15 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.receipt_card);
         }
     },
+    "text-empty": {
+        client: function () {
+            var last_message = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown')[0];
+            return last_message.innerHTML === '&nbsp;';
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.text_empty_card);
+        }
+    },    
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;

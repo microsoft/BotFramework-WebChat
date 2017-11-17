@@ -338,7 +338,7 @@ export var mar_encode_card: dl.Message = {
     timestamp: new Date().toUTCString(),
     channelId: "webchat",
     textFormat: "markdown",
-    text: "Some links are [already encoded](https://bing.com?q=some%20value) and some have [query strings that need encoding](https://bing.com?q=some value) and these can occur [multiple](https://bing.com?q=some%20value) [times](https://bing.com?q=some value) in one message. (Links can even appear [within](https://bing.com?q=some%20value) [parentheses](https://bing.com?q=some value) too.)\r\n\r\n\r\nImages must encode URL component with title attribute![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png?abc=123 456 \"I am a Yaktocat!\")\r\n\r\n\r\n"
+    text: "Some links are [already encoded](https://bing.com?q=some%20value) and some have [query strings that need encoding](https://bing.com?q=some value) and these can occur [multiple](https://bing.com?q=some%20value) [times](https://bing.com?q=some value) in one message. (Links can even appear [within](https://bing.com?q=some%20value) [parentheses](https://bing.com?q=some value) too.)\r\n\r\n\r\nImages must encode URL component with title attribute![Alt for Surface](" + asset_url + "surface1.jpg?abc=123 456 \"Title for Surface!\")\r\n\r\n\r\n"
 }
 
 /*
@@ -475,6 +475,19 @@ export var receipt_card: dl.Message = {
             }
         }
     ]
+}
+
+/*
+ * Activity for Text
+ * 
+ */
+export var text_empty_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    textFormat: "markdown",
+    text: " "
 }
 
 /*
