@@ -172,7 +172,7 @@ Web Chat strives to use responsive design when possible. As part of this, Web Ch
 
 ### Strings
 
-You can alter or add localized strings in `/src/Strings.ts`:
+You can alter or add localized strings in [/src/Strings.ts](src/Strings.ts):
 
 * Add one or more locales (with associated localized strings) to `localizedStrings`
 * Add logic to map the requested locale to the supported locale in `strings`
