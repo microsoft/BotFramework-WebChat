@@ -364,7 +364,7 @@ var commands_map: CommandValuesMap = {
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.text_empty_card);
         }
-    },    
+    },
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
@@ -565,7 +565,6 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-// var testOnly = ["focus on type", "type on Adaptive Cards", "click on Adaptive Cards"];    //["carousel", "herocard"];
 var testOnly = [];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
