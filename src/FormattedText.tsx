@@ -64,6 +64,7 @@ const renderMarkdown = (
                  .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
         __html = markdownIt.render(src);        
     } else {
+        // replace spaces with non-breaking space Unicode characters
         __html = text.replace(/ */, '\u00A0');
     }
 

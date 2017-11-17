@@ -358,7 +358,8 @@ var commands_map: CommandValuesMap = {
     },
     "text-empty": {
         client: function () {
-            return true;
+            var last_message = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown')[0];
+            return last_message.innerHTML === '&nbsp;';
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.text_empty_card);
