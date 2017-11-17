@@ -68,7 +68,7 @@ export class AdaptiveCardBuilder {
 
     addCommon(content: ICommonContent) {
         this.addTextBlock(content.title, { size: "medium", weight: "bolder" });
-        this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true, separation: "none" } as any); //TODO remove "as any" because separation is not defined
+        this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true, separation: "none" });
         this.addTextBlock(content.text, { wrap: true });
         this.addButtons(content.buttons);
     }
