@@ -210,8 +210,8 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_plain);
-        }        
-    },    
+        }
+    },
     "document-word": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
@@ -222,7 +222,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }        
+        }
     },
     "herocard": {
         client: function () {
@@ -364,7 +364,7 @@ var commands_map: CommandValuesMap = {
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.text_empty_card);
         }
-    },    
+    },
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
@@ -504,7 +504,7 @@ var commands_map: CommandValuesMap = {
     "focus on type": {
         do: function (nightmare) {
             nightmare
-                .type('.wc-chatview-panel', 'Hi!')
+                .type('.wc-message-groups', 'Hi!')
                 .wait(1000);
         },
         client: function () {
@@ -514,13 +514,26 @@ var commands_map: CommandValuesMap = {
     "type on Adaptive Cards": {
         do: function (nightmare) {
             nightmare
-                .type('.wc-chatview-panel', 'card Inputs')
+                .type('.wc-message-groups', 'card Inputs')
                 .click('.wc-send')
                 .wait('.ac-input[placeholder="Name"]')
                 .type('.ac-input[placeholder="Name"]', 'John Doe');
         },
         client: function () {
             return (((document.querySelector('.ac-input') as HTMLInputElement).value === 'John Doe'));
+        }
+    },
+    "click on Adaptive Cards": {
+        do: function (nightmare) {
+            nightmare
+                .type('.wc-message-groups', 'button-imback')
+                .click('.wc-send')
+                .wait('.ac-pushButton')
+                .click('.ac-pushButton')
+                .wait('.wc-message-groups:focus');
+        },
+        client: function () {
+            return !!document.querySelector('.wc-message-groups:focus');
         }
     }
     /*
