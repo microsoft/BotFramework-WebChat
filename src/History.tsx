@@ -19,6 +19,8 @@ export interface HistoryProps {
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
+
+    onCardAction: () => void,
     doCardAction: IDoCardAction
 }
 
@@ -105,6 +107,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     private doCardAction(type: CardActionTypes, value: string | object) {
         this.props.onClickCardAction();
+        this.props.onCardAction && this.props.onCardAction();
         return this.props.doCardAction(type, value);
     }
 
@@ -149,7 +152,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList('wc-message-groups', !this.props.format.options.showHeader && 'no-header');
 
         return (
-            <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
+            <div
+                className={ groupsClassName }
+                ref={ div => this.scrollMe = div || this.scrollMe }
+                role="log"
+                tabIndex={ 0 }
+            >
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
                     { content }
                 </div>
@@ -188,8 +196,11 @@ export const History = connect(
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
-        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
-    })
+        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
+        onCardAction: ownProps.onCardAction
+    }), {
+        withRef: true
+    }
 )(HistoryView);
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {

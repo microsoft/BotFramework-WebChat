@@ -54,15 +54,23 @@ const renderMarkdown = (
     text: string,
     onImageLoad: () => void
 ) => {
-    const src = text
-                // convert <br> tags to blank lines for markdown
-                .replace(/<br\s*\/?>/ig, '\n')
-                // URL encode all links
-                 .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`)
+    let __html;
 
-    const arr = src.split(/\n *\n|\r\n *\r\n|\r *\r/);
-    const ma = arr.map(a => markdownIt.render(a));
+    if (text.trim()) {
+        const src = text
+          // convert <br> tags to blank lines for markdown
+          .replace(/<br\s*\/?>/ig, '\n')
+          // URL encode all links
+          .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
 
-    const __html = ma.join('<br/>');
+        const arr = src.split(/\n *\n|\r\n *\r\n|\r *\r/);
+        const ma = arr.map(a => markdownIt.render(a));
+
+        __html = ma.join('<br/>');
+    } else {
+        // replace spaces with non-breaking space Unicode characters
+        __html = text.replace(/ */, '\u00A0');
+    }
+
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
