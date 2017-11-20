@@ -265,6 +265,24 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.mar_card);
         }
     },
+    "markdown-image-no-title": {
+        client: function () {
+            var img = document.querySelectorAll('img')[0] as HTMLImageElement;
+            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('surface1.jpg') >= 0 && img.getAttribute('title') === null;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_card);
+        }
+    },
+    "markdown-image-title": {
+        client: function () {
+            var img = document.querySelectorAll('img')[0] as HTMLImageElement;
+            return img.getAttribute('src').indexOf('surface1.jpg?abc=123%20456') >= 0 && img.getAttribute('title').indexOf('Title for Surface!') >= 0;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_encode_card);
+        }
+    },
     "markdown-newlines-single": {
         client: function () {
             var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');

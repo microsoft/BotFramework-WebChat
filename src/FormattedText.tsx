@@ -61,14 +61,14 @@ const renderMarkdown = (
           // convert <br> tags to blank lines for markdown
           .replace(/<br\s*\/?>/ig, '\n')
           // URL encode all links
-          .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
+          .replace(/\[(.*?)\]\((.*?)( +".*?"){0,1}\)/ig, (match, text, url, title) => `[${text}](${markdownIt.normalizeLink(url)}${title === undefined ? '' : title})`);
 
         const arr = src.split(/\n *\n|\r\n *\r\n|\r *\r/);
         const ma = arr.map(a => markdownIt.render(a));
 
         __html = ma.join('<br/>');
     } else {
-        // replace spaces with non-breaking space Unicode characters
+        // Replace spaces with non-breaking space Unicode characters
         __html = text.replace(/ */, '\u00A0');
     }
 
