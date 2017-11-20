@@ -41,11 +41,15 @@ export class Chat extends React.Component<ChatProps, {}> {
     private connectionStatusSubscription: Subscription;
     private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
+    private historyRef: React.Component;
+    private chatviewPanelRef: HTMLElement;
 
-    private chatviewPanel: HTMLElement;
     private resizeListener = () => this.setSize();
 
+    private _handleCardAction = this.handleCardAction.bind(this);
     private _handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
+    private _saveChatviewPanelRef = this.saveChatviewPanelRef.bind(this);
+    private _saveHistoryRef = this.saveHistoryRef.bind(this);
     private _saveShellRef = this.saveShellRef.bind(this);
 
     constructor(props: ChatProps) {
@@ -87,9 +91,19 @@ export class Chat extends React.Component<ChatProps, {}> {
     private setSize() {
         this.store.dispatch<ChatActions>({
             type: 'Set_Size',
-            width: this.chatviewPanel.offsetWidth,
-            height: this.chatviewPanel.offsetHeight
+            width: this.chatviewPanelRef.offsetWidth,
+            height: this.chatviewPanelRef.offsetHeight
         });
+    }
+
+    private handleCardAction() {
+        // After the user click on any card action, we will "blur" the focus, by setting focus on message pane
+        // This is for after click on card action, the user press "A", it should go into the chat box
+        const historyDOM = findDOMNode(this.historyRef) as HTMLElement;
+
+        if (historyDOM) {
+            historyDOM.focus();
+        }
     }
 
     private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
@@ -97,7 +111,19 @@ export class Chat extends React.Component<ChatProps, {}> {
         const tabIndex = getTabIndex(target);
 
         if (
-            target === findDOMNode(this.chatviewPanel)
+            evt.altKey
+            || evt.ctrlKey
+            || evt.metaKey
+            || (!inputtableKey(evt.key) && evt.key !== 'Backspace')
+        ) {
+            // Ignore if one of the utility key (except SHIFT) is pressed
+            // E.g. CTRL-C on a link in one of the message should not jump to chat box
+            // E.g. "A" or "Backspace" should jump to chat box
+            return;
+        }
+
+        if (
+            target === findDOMNode(this.historyRef)
             || typeof tabIndex !== 'number'
             || tabIndex < 0
         ) {
@@ -114,6 +140,14 @@ export class Chat extends React.Component<ChatProps, {}> {
 
             this.shellRef.focus(key);
         }
+    }
+
+    private saveChatviewPanelRef(chatviewPanelRef: HTMLElement) {
+        this.chatviewPanelRef = chatviewPanelRef;
+    }
+
+    private saveHistoryRef(historyWrapper: any) {
+        this.historyRef = historyWrapper.getWrappedInstance();
     }
 
     private saveShellRef(shellWrapper: any) {
@@ -194,12 +228,14 @@ export class Chat extends React.Component<ChatProps, {}> {
                 <div
                     className="wc-chatview-panel"
                     onKeyDownCapture={ this._handleKeyDownCapture }
-                    ref={ div => this.chatviewPanel = div }
-                    tabIndex={ 0 }
+                    ref={ this._saveChatviewPanelRef }
                 >
                     { header }
                     <MessagePane>
-                        <History />
+                        <History
+                            onCardAction={ this._handleCardAction }
+                            ref={ this._saveHistoryRef }
+                        />
                     </MessagePane>
                     <Shell ref={ this._saveShellRef } />
                     { resize }
