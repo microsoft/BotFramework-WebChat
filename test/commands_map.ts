@@ -203,15 +203,15 @@ var commands_map: CommandValuesMap = {
             if (!link) return false;
 
             //check if value is encoded
-            var is_file =  link.href.indexOf("test.txt") >= 0;
+            var is_file = link.href.indexOf("test.txt") >= 0;
             link.click();
 
             return is_file && window.location.href.indexOf("localhost") !== -1;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_plain);
-        }        
-    },    
+        }
+    },
     "document-word": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
@@ -222,7 +222,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }        
+        }
     },
     "herocard": {
         client: function () {
@@ -265,6 +265,24 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.mar_card);
         }
     },
+    "markdown-image-no-title": {
+        client: function () {
+            var img = document.querySelectorAll('img')[0] as HTMLImageElement;
+            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('surface1.jpg') >= 0 && img.getAttribute('title') === null;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_card);
+        }
+    },
+    "markdown-image-title": {
+        client: function () {
+            var img = document.querySelectorAll('img')[0] as HTMLImageElement;
+            return img.getAttribute('src').indexOf('surface1.jpg?abc=123%20456') >= 0 && img.getAttribute('title').indexOf('Title for Surface!') >= 0;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_encode_card);
+        }
+    },
     "markdown-url-needs-encoding": {
         client: function () {
             var links = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a');
@@ -276,7 +294,7 @@ var commands_map: CommandValuesMap = {
                 //check if value is encoded
                 if (link.href !== "https://bing.com/?q=some%20value") return false;
             }
-            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('surface1.jpg?abc=123%20456') >= 0;
+            return true;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.mar_encode_card);
@@ -364,7 +382,7 @@ var commands_map: CommandValuesMap = {
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.text_empty_card);
         }
-    },    
+    },
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
@@ -377,7 +395,7 @@ var commands_map: CommandValuesMap = {
     "upload": {
         do: function (nightmare) {
             try {
-                const upload = <(selector: string, paths: string[]) => Nightmare>(<any> nightmare.upload.bind(nightmare));
+                const upload = <(selector: string, paths: string[]) => Nightmare>(<any>nightmare.upload.bind(nightmare));
 
                 upload('#wc-upload-input', [
                     path.resolve(__dirname, 'assets', 'surface1.jpg'),
@@ -393,7 +411,7 @@ var commands_map: CommandValuesMap = {
             var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
             return img.src.indexOf('/uploads') >= 0;
         },
-        server: function(conversationId, sendActivity){
+        server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.upload_txt);
         }
     },

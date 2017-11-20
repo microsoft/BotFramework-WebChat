@@ -58,11 +58,11 @@ const renderMarkdown = (
 
     if (text.trim()) {
         const src = text
-                // Convert <br> tags to blank lines for markdown
-                 .replace(/<br\s*\/?>/ig, '\r\n\r\n')
-                // Encode URL correctly
-                // Image tag is ![Alt text](/url/to.png "title attribute"), so don't encode "title attribute"
-                 .replace(/\[(.*?)\]\((.*?)( +".*?"){0,1}\)/ig, (match, text, url, title) => `[${ text }](${ markdownIt.normalizeLink(url) }${ (title === undefined) && (title = '')})`);
+            // Convert <br> tags to blank lines for markdown
+            .replace(/<br\s*\/?>/ig, '\r\n\r\n')
+            // Encode URL correctly
+            // Image tag is ![Alt text](/url/to.png "title attribute"), so don't encode "title attribute"
+            .replace(/\[(.*?)\]\((.*?)( +".*?"){0,1}\)/ig, (match, text, url, title) => `[${text}](${markdownIt.normalizeLink(url)}${title === undefined ? '' : title})`);
         __html = markdownIt.render(src);
     } else {
         // Replace spaces with non-breaking space Unicode characters
