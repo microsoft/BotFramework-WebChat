@@ -239,6 +239,12 @@ var commands_map: CommandValuesMap = {
             return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('<a href=') != -1;
         }
     },
+    "html-no-brs": {
+        alternateText: 'Before<br/>After',
+        client: function () {
+            return document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot').innerHTML.indexOf('Before&lt;br/&gt;After') != -1;
+        }
+    },    
     "image": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
