@@ -203,15 +203,15 @@ var commands_map: CommandValuesMap = {
             if (!link) return false;
 
             //check if value is encoded
-            var is_file =  link.href.indexOf("test.txt") >= 0;
+            var is_file = link.href.indexOf("test.txt") >= 0;
             link.click();
 
             return is_file && window.location.href.indexOf("localhost") !== -1;
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_plain);
-        }        
-    },    
+        }
+    },
     "document-word": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
@@ -222,7 +222,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }        
+        }
     },
     "herocard": {
         client: function () {
@@ -263,6 +263,51 @@ var commands_map: CommandValuesMap = {
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.mar_card);
+        }
+    },
+    "markdown-image-no-title": {
+        client: function () {
+            var img = document.querySelectorAll('img')[0] as HTMLImageElement;
+            return document.querySelectorAll('img')[0].getAttribute('src').indexOf('surface1.jpg') >= 0 && img.getAttribute('title') === null;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_card);
+        }
+    },
+    "markdown-image-title": {
+        client: function () {
+            var img = document.querySelectorAll('img')[0] as HTMLImageElement;
+            return img.getAttribute('src').indexOf('surface1.jpg?abc=123%20456') >= 0 && img.getAttribute('title').indexOf('Title for Surface!') >= 0;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_encode_card);
+        }
+    },
+    "markdown-newlines-single": {
+        client: function () {
+            var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');
+            return last_bubble.getElementsByTagName('p').length === 2 && last_bubble.getElementsByTagName('br').length === 3;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_newlines_single_card);
+        }
+    },
+    "markdown-newlines-double": {
+        client: function () {
+            var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');
+            return last_bubble.getElementsByTagName('p').length === 4 && last_bubble.getElementsByTagName('br').length === 3;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_newlines_double_card);
+        }
+    },
+    "markdown-newlines-double-double": {
+        client: function () {
+            var last_bubble = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown');
+            return last_bubble.getElementsByTagName('p').length === 4 && last_bubble.getElementsByTagName('br').length === 5;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.mar_newlines_ddouble_card);
         }
     },
     "markdown-url-needs-encoding": {
@@ -356,6 +401,15 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.receipt_card);
         }
     },
+    "text-empty": {
+        client: function () {
+            var last_message = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot .format-markdown')[0];
+            return last_message.innerHTML === '&nbsp;';
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.text_empty_card);
+        }
+    },
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
@@ -368,7 +422,7 @@ var commands_map: CommandValuesMap = {
     "upload": {
         do: function (nightmare) {
             try {
-                const upload = <(selector: string, paths: string[]) => Nightmare>(<any> nightmare.upload.bind(nightmare));
+                const upload = <(selector: string, paths: string[]) => Nightmare>(<any>nightmare.upload.bind(nightmare));
 
                 upload('#wc-upload-input', [
                     path.resolve(__dirname, 'assets', 'surface1.jpg'),
@@ -384,7 +438,7 @@ var commands_map: CommandValuesMap = {
             var img = document.querySelectorAll('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot img')[0] as HTMLImageElement;
             return img.src.indexOf('/uploads') >= 0;
         },
-        server: function(conversationId, sendActivity){
+        server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.upload_txt);
         }
     },
@@ -495,7 +549,7 @@ var commands_map: CommandValuesMap = {
     "focus on type": {
         do: function (nightmare) {
             nightmare
-                .type('.wc-chatview-panel', 'Hi!')
+                .type('.wc-message-groups', 'Hi!')
                 .wait(1000);
         },
         client: function () {
@@ -505,13 +559,26 @@ var commands_map: CommandValuesMap = {
     "type on Adaptive Cards": {
         do: function (nightmare) {
             nightmare
-                .type('.wc-chatview-panel', 'card Inputs')
+                .type('.wc-message-groups', 'card Inputs')
                 .click('.wc-send')
                 .wait('.ac-input[placeholder="Name"]')
                 .type('.ac-input[placeholder="Name"]', 'John Doe');
         },
         client: function () {
             return (((document.querySelector('.ac-input') as HTMLInputElement).value === 'John Doe'));
+        }
+    },
+    "click on Adaptive Cards": {
+        do: function (nightmare) {
+            nightmare
+                .type('.wc-message-groups', 'button-imback')
+                .click('.wc-send')
+                .wait('.ac-pushButton')
+                .click('.ac-pushButton')
+                .wait('.wc-message-groups:focus');
+        },
+        client: function () {
+            return !!document.querySelector('.wc-message-groups:focus');
         }
     }
     /*

@@ -26,7 +26,7 @@ const renderPlainText = (text: string) => {
     return <span className="format-plain">{elements}</span>;
 }
 
-const markdownIt = new MarkdownIt({ html: false, linkify: true, typographer: true });
+const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
 
 //configure MarkdownIt to open links in new tab
 //from https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
@@ -54,11 +54,23 @@ const renderMarkdown = (
     text: string,
     onImageLoad: () => void
 ) => {
-    const src = text
-                // convert <br> tags to blank lines for markdown
-                 .replace(/<br\s*\/?>/ig, '\r\n\r\n')
-                // URL encode all links
-                 .replace(/\[(.*?)\]\((.*?)\)/ig, (match, text, url) => `[${text}](${markdownIt.normalizeLink(url)})`);
-    const __html = markdownIt.render(src);
+    let __html;
+
+    if (text.trim()) {
+        const src = text
+          // convert <br> tags to blank lines for markdown
+          .replace(/<br\s*\/?>/ig, '\n')
+          // URL encode all links
+          .replace(/\[(.*?)\]\((.*?)( +".*?"){0,1}\)/ig, (match, text, url, title) => `[${text}](${markdownIt.normalizeLink(url)}${title === undefined ? '' : title})`);
+
+        const arr = src.split(/\n *\n|\r\n *\r\n|\r *\r/);
+        const ma = arr.map(a => markdownIt.render(a));
+
+        __html = ma.join('<br/>');
+    } else {
+        // Replace spaces with non-breaking space Unicode characters
+        __html = text.replace(/ */, '\u00A0');
+    }
+
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
