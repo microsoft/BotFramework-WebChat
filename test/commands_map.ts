@@ -197,6 +197,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.car_card);
         }
     },
+    "content-multimedia": {
+        client: function () {
+            return true;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.multimedia_card);
+        }
+    },
     "document-plain": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
