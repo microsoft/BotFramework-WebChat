@@ -99,7 +99,7 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
 
     componentDidMount() {
         const adaptiveCard = new LinkedAdaptiveCard(this);
-        adaptiveCard.hostConfig = adaptivecardsHostConfig;
+        adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(adaptivecardsHostConfig);
         adaptiveCard.parse(cardWithoutHttpActions(this.props.card));
         const errors = adaptiveCard.validate();
         if (errors.length === 0) {
