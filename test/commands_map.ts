@@ -199,7 +199,11 @@ var commands_map: CommandValuesMap = {
     },
     "content-multimedia": {
         client: function () {
-            return true;
+            var images = document.querySelectorAll('img').length === 2;
+            var audios = document.querySelectorAll('audio').length === 2;
+            var videos = document.querySelectorAll('video').length === 2;
+
+            return images && audios && videos;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.multimedia_card);
