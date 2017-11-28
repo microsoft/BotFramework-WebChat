@@ -85,7 +85,7 @@ const Video = (props: VideoProps) => {
         case YOUTUBE_WWW_DOMAIN:
         case YOUTUBE_WWW_SHORT_DOMAIN:
             return <Youtube
-                embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams['v'] : pathSegments[pathSegments.length - 1] }
+                embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams['v'] : pathSegments[pathSegments.length-1] }
                 autoPlay={ props.autoPlay }
                 loop={ props.loop }
             />;
@@ -93,7 +93,7 @@ const Video = (props: VideoProps) => {
         case VIMEO_WWW_DOMAIN:
         case VIMEO_DOMAIN:
             return <Vimeo
-                embedId={ pathSegments[pathSegments.length - 1] }
+                embedId={ pathSegments[pathSegments.length-1] }
                 autoPlay={ props.autoPlay }
                 loop={ props.loop }
             />
@@ -241,7 +241,7 @@ export const AttachmentView = (props: {
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
-                <AdaptiveCardContainer className="animation" card={CardBuilder.buildCommonCard(attachment.content)} onCardAction={props.onCardAction} >
+                <AdaptiveCardContainer className="animation" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     {getRichCardContentMedia(mediaType, attachment.content)}
                 </AdaptiveCardContainer>
             );
