@@ -187,13 +187,13 @@ export const AttachmentView = (props: {
             let t = (typeof type === 'string')? type : type(md.url);
 
             return <Media
-                type={t}
-                src={md.url}
-                onLoad={props.onImageLoad}
-                poster={content.image && content.image.url}
-                autoPlay={content.autostart}
-                loop={content.autoloop}
-                key={i} />
+                type={ t }
+                src={ md.url }
+                onLoad={ props.onImageLoad }
+                poster={ content.image && content.image.url }
+                autoPlay={ content.autostart }
+                loop={ content.autoloop }
+                key={ i } />
         });
     };
     switch (attachment.contentType) {
