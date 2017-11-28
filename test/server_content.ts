@@ -106,6 +106,7 @@ export var car_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.hero",
             content: {
                 title: "Details about image 1",
+                subtitle: "This is the subtitle",
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
@@ -130,6 +131,7 @@ export var car_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.hero",
             content: {
                 title: "Details about image 2",
+                subtitle: "This is the subtitle",
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
@@ -154,6 +156,7 @@ export var car_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.hero",
             content: {
                 title: "Details about image 3",
+                subtitle: "This is the subtitle",
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
@@ -178,6 +181,7 @@ export var car_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.hero",
             content: {
                 title: "Details about image 4",
+                subtitle: "This is the subtitle",
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
@@ -262,6 +266,7 @@ export var hero_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.hero",
             content: {
                 title: "Details about image 1",
+                subtitle: "This is the subtitle",
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
@@ -445,6 +450,7 @@ export var receipt_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.receipt",
             content: {
                 title: "Surface Pro 4",
+                subtitle: "This is the subtitle",
                 items: [
                     {
                         title: "Surface Pro 4",
@@ -531,6 +537,7 @@ export var thumbnail_card: dl.Message = {
             contentType: "application/vnd.microsoft.card.thumbnail",
             content: {
                 title: "Details about image 1",
+                subtitle: "This is the subtitle",
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
