@@ -1,14 +1,14 @@
 import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframework-directlinejs';
-import * as AdaptiveCardSchema from "adaptivecards/built/schema";
+import * as AdaptiveCardSchema from 'adaptivecards/lib/schema';
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
-interface IVersionedCard extends AdaptiveCardSchema.ICard {
+interface IVersionedCard extends AdaptiveCardSchema.IAdaptiveCard {
     version: string;
 }
 
 export class AdaptiveCardBuilder {
     public container: AdaptiveCardSchema.IContainer;
-    public card: AdaptiveCardSchema.ICard;
+    public card: AdaptiveCardSchema.IAdaptiveCard;
 
     constructor() {
         this.container = {
@@ -106,7 +106,7 @@ export interface ICommonContent {
     buttons?: CardAction[]
 }
 
-export const buildCommonCard = (content: ICommonContent): AdaptiveCardSchema.ICard => {
+export const buildCommonCard = (content: ICommonContent): AdaptiveCardSchema.IAdaptiveCard => {
     if (!content) return null;
 
     const cardBuilder = new AdaptiveCardBuilder();

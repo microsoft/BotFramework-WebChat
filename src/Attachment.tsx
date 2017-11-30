@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
+import { HorizontalAlignment } from 'adaptivecards';
 import { Attachment, CardAction, CardImage, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
 import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
@@ -180,7 +181,7 @@ export const AttachmentView = (props: {
         if (!content.media || content.media.length === 0) {
             return null;
         }
-        // rendering every media in the media array. Validates every type as image, video, audio or a function that returns those values.  
+        // rendering every media in the media array. Validates every type as image, video, audio or a function that returns those values.
         return content.media.map((md, i) => {
             let t = (typeof type === 'string')? type : type(md.url);
             return <Media
@@ -266,7 +267,7 @@ export const AttachmentView = (props: {
             const columns = receiptCardBuilder.addColumnSet([75, 25]);
             attachment.content.facts && attachment.content.facts.map((fact, i) => {
                 receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium' }, columns[0]);
-                receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', horizontalAlignment: 'right' }, columns[1]);
+                receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', horizontalAlignment: HorizontalAlignment.Right }, columns[1]);
             });
             attachment.content.items && attachment.content.items.map((item, i) => {
                 if (item.image) {
@@ -274,28 +275,28 @@ export const AttachmentView = (props: {
                     receiptCardBuilder.addImage(item.image, columns2[0]);
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns2[1]);
-                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);
+                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: HorizontalAlignment.Right }, columns2[2]);
                 } else {
                     const columns3 = receiptCardBuilder.addColumnSet([75, 25]);
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns3[0]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns3[0]);
-                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns3[1]);
+                    receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: HorizontalAlignment.Right }, columns3[1]);
                 }
             });
             if (exists(attachment.content.vat)) {
                 const vatCol = receiptCardBuilder.addColumnSet([75, 25]);
                 receiptCardBuilder.addTextBlock(props.format.strings.receiptVat, { size: "medium", weight: "bolder" }, vatCol[0]);
-                receiptCardBuilder.addTextBlock(attachment.content.vat, { horizontalAlignment: 'right' }, vatCol[1]);
+                receiptCardBuilder.addTextBlock(attachment.content.vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
             }
             if (exists(attachment.content.tax)) {
                 const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
                 receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: "medium", weight: "bolder" }, taxCol[0]);
-                receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: 'right' }, taxCol[1]);
+                receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
             }
             if (exists(attachment.content.total)) {
                 const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
                 receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: "medium", weight: "bolder" }, totalCol[0]);
-                receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: 'right', size: "medium", weight: "bolder" }, totalCol[1]);
+                receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: HorizontalAlignment.Right, size: "medium", weight: "bolder" }, totalCol[1]);
             }
             receiptCardBuilder.addButtons(attachment.content.buttons);
             return (

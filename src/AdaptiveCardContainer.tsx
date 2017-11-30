@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as AdaptiveCards from "adaptivecards";
-import * as AdaptiveCardSchema from "adaptivecards/built/schema";
+import * as AdaptiveCardSchema from "adaptivecards/lib/schema";
 import { CardAction } from "botframework-directlinejs/built/directLine";
 import { classList, IDoCardAction } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
@@ -8,7 +8,7 @@ import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import * as konsole from './Konsole';
 
 export interface Props {
-    card: AdaptiveCardSchema.ICard,
+    card: AdaptiveCardSchema.IAdaptiveCard,
     onImageLoad?: () => any,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void,
     onCardAction: IDoCardAction,
@@ -37,7 +37,7 @@ function getLinkedAdaptiveCard(action: AdaptiveCards.Action) {
     return element as LinkedAdaptiveCard;
 }
 
-function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
+function cardWithoutHttpActions(card: AdaptiveCardSchema.IAdaptiveCard) {
     if (!card.actions) return card;
     const actions: AdaptiveCardSchema.IActionBase[] = [];
     card.actions.forEach(action => {

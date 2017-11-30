@@ -30,7 +30,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/react": "15.0.38",
-    "adaptivecards": "1.0.0-beta5",
+    "adaptivecards": "1.0.0-beta9",
     "botframework-directlinejs": "0.9.13",
     "core-js": "2.4.1",
     "markdown-it": "8.3.1",
