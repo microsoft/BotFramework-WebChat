@@ -90,7 +90,7 @@
       "actionMode": "inline",
       "inlineTopMargin": 8
     },
-    "actionsOrientation": "horizontal",
+    "actionsOrientation": "vertical",
     "actionAlignment": "stretch"
   },
   "adaptiveCard": {
