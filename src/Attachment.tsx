@@ -165,7 +165,7 @@ export const AttachmentView = (props: {
                 return null;
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
-                attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
+                attachment.content.images.forEach(img => heroCardBuilder.addImage(img));
             }
             heroCardBuilder.addCommon(attachment.content)
             return (
@@ -180,7 +180,7 @@ export const AttachmentView = (props: {
                 const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" }, columns[0]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
-                thumbnailCardBuilder.addImage(attachment.content.images[0].url, columns[1]);
+                thumbnailCardBuilder.addImage(attachment.content.images[0], columns[1]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.text, { wrap: true });
                 thumbnailCardBuilder.addButtons(attachment.content.buttons);
             } else {
@@ -256,7 +256,7 @@ export const AttachmentView = (props: {
             attachment.content.items && attachment.content.items.map((item, i) => {
                 if (item.image) {
                     const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
-                    receiptCardBuilder.addImage(item.image.url, columns2[0]);
+                    receiptCardBuilder.addImage(item.image, columns2[0]);
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);
