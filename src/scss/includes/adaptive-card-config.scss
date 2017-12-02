@@ -31,7 +31,7 @@ $hostConfig: (
   containerStyles: (
     default: (
       backgroundColor: "#00000000",   //using 8 digit hex Adaptive Card color format for transparent ("Transparent" will not be recognized)
-      fontColors: (
+      foregroundColors: (
         default: (
           default: $c00,
           subtle: $c08
@@ -56,7 +56,7 @@ $hostConfig: (
     ),
     emphasis: (
       backgroundColor: rgba(0,0,0,0.03137254901960784),
-      fontColors: (
+      foregroundColors: (
         default: (
           default: rgba(51,51,51,1),
           subtle: rgba(51,51,51,0.9333333333333333)

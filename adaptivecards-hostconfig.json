@@ -28,7 +28,7 @@
   "containerStyles": {
     "default": {
       "backgroundColor": "#00000000",
-      "fontColors": {
+      "foregroundColors": {
         "default": {
           "default": "#000000",
           "subtle": "#808c95"
@@ -53,7 +53,7 @@
     },
     "emphasis": {
       "backgroundColor": "#08000000",
-      "fontColors": {
+      "foregroundColors": {
         "default": {
           "default": "#333333",
           "subtle": "#EE333333"
