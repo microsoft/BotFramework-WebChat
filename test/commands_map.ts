@@ -11,9 +11,10 @@ interface ISendActivity {
 }
 
 interface CommandValues {
-    client: () => (boolean | Promise<boolean>),
+    client?: () => (boolean | Promise<boolean>),
     server?: (conversationId: string, sendActivity: ISendActivity, json?: JSON) => void,
     do?: (nightmare: Nightmare) => any,
+    evalOtherWindow?: (nightmare: Nightmare) => (boolean | Promise<boolean>),
     alternateText?: string,
     urlAppend?: { [paramName: string]: any }
 }
@@ -241,6 +242,23 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.hero_card);
         }
     },
+    "herocard-imagetap": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('img');
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+                const windows = await nightmare['windows'].bind(nightmare);
+                const y = windows().length;
+                console.log("y: " + y);
+                return y>0;
+                //return !!~windows[1].title.indexOf('OpenUrl1');
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
+        }
+    },    
     "html-disabled": {
         alternateText: '<a href="http://dev.botframework.com">Bot Framework</a>',
         client: function () {
@@ -551,7 +569,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ["herocard-imagetap"];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];

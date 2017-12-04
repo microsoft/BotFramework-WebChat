@@ -356,6 +356,12 @@ app.get('/botchat-fullwindow.css', function (req, res) {
 app.get('/mock_speech.js', function (req, res) {
     res.sendFile(path.join(__dirname + "/../mock_speech/index.js"));
 });
+app.get('/testurl1.html', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../testurl1.html"));
+});
+app.get('/testurl2.html', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../testurl2.html"));
+});
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 app.use('/uploads', express.static(upload_path));
 

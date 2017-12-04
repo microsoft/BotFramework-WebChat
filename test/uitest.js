@@ -3,6 +3,7 @@ const commands = require('./commands_map');
 const config = require('./mock_dl/server_config.json');
 const Nightmare = require('nightmare');
 require('nightmare-upload')(Nightmare);
+require('nightmare-window-manager')(Nightmare)
 const vo = require('vo');
 
 Nightmare.prototype.do = function (doFn) {
@@ -58,7 +59,8 @@ describe('nightmare UI tests', function () {
 		}
 
 		function* testOneCommand(testurl, cmd, width, consoleLog) {
-			const result = yield nightmare.goto(testurl)
+			const result = yield nightmare.windowManager()
+				.goto(testurl)
 				.viewport(width, height)
 				.wait(2000)
 				.type('.wc-textbox input', commands[cmd].alternateText || cmd)
@@ -73,8 +75,9 @@ describe('nightmare UI tests', function () {
 							throw err;
 						}
 					}
-				})
-				.evaluate(commands[cmd].client);
+				});
+				var x = yield commands[cmd].evalOtherWindow(nightmare);
+				//.evaluate(commands[cmd].client);
 			resultToConsole(consoleLog, result);
 			return result;
 		}
