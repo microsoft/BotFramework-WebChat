@@ -146,8 +146,8 @@ var commands_map: CommandValuesMap = {
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.car_card);
-        }      
-    },  
+        }
+    },
     "carousel-to-right": {
         client: () => new Promise((resolve) => {
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
@@ -168,8 +168,8 @@ var commands_map: CommandValuesMap = {
         }),
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.car_card);
-        }
-    },
+        }       
+    },  
     "carousel-to-left": {
         client: () => new Promise((resolve) => {
             var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;
@@ -241,7 +241,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }       
+        }        
     },
     "herocard": {
         client: function () {
