@@ -146,8 +146,8 @@ var commands_map: CommandValuesMap = {
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.car_card);
-        }
-    },
+        }      
+    },  
     "carousel-to-right": {
         client: () => new Promise((resolve) => {
             var right_arrow = document.querySelectorAll('.scroll.next')[0] as HTMLButtonElement;
@@ -241,7 +241,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }
+        }       
     },
     "herocard": {
         client: function () {
@@ -670,7 +670,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = ["card-actioncall"];    //["carousel", "herocard"];
+var testOnly = [];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
