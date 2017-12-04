@@ -59,7 +59,7 @@ describe('nightmare UI tests', function () {
 		}
 
 		function* testOneCommand(testurl, cmd, width, consoleLog) {
-			const result = yield nightmare.windowManager()
+			yield nightmare.windowManager()
 				.goto(testurl)
 				.viewport(width, height)
 				.wait(2000)
@@ -76,8 +76,11 @@ describe('nightmare UI tests', function () {
 						}
 					}
 				});
-				var x = yield commands[cmd].evalOtherWindow(nightmare);
-				//.evaluate(commands[cmd].client);
+
+			let result = commands[cmd].client? 
+				yield nightmare.evaluate(commands[cmd].client) :
+				yield commands[cmd].evalOtherWindow(nightmare);
+
 			resultToConsole(consoleLog, result);
 			return result;
 		}

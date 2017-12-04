@@ -129,7 +129,7 @@ var commands_map: CommandValuesMap = {
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.hero_card);
         }
-    },    
+    },
     "carousel": {
         client: function () {
             return document.querySelectorAll('.scroll.next').length > 0;
@@ -219,8 +219,8 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_plain);
-        }        
-    },    
+        }
+    },
     "document-word": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;
@@ -231,7 +231,7 @@ var commands_map: CommandValuesMap = {
         },
         server: function (res, sendActivity) {
             sendActivity(res, server_content.document_word);
-        }        
+        }
     },
     "herocard": {
         client: function () {
@@ -242,23 +242,42 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.hero_card);
         }
     },
-    "herocard-imagetap": {
+    "herocard-cardtap": {
         do: function (nightmare) {
             const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
-            nightmare.click('img');
+            nightmare.click('.wc-card .ac-container .ac-container')
+                .wait(2000);
             waitWindowLoad();
         },
         evalOtherWindow: async function (nightmare) {
-                const windows = await nightmare['windows'].bind(nightmare);
-                const y = windows().length;
-                console.log("y: " + y);
-                return y>0;
-                //return !!~windows[1].title.indexOf('OpenUrl1');
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return !!~new_win.title.indexOf('OpenUrl2');
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.hero_card);
         }
-    },    
+    },
+    "herocard-imagetap": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('img')
+                .wait(2000);
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return !!~new_win.title.indexOf('OpenUrl1');
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
+        }
+    },
     "html-disabled": {
         alternateText: '<a href="http://dev.botframework.com">Bot Framework</a>',
         client: function () {
@@ -382,10 +401,82 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.receipt_card);
         }
     },
+    "receiptcard-cardtap": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('.wc-card .ac-container .ac-container')
+                .wait(2000);
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return !!~new_win.title.indexOf('OpenUrl2');
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.receipt_card);
+        }
+    },
+    "receiptcard-imagetap": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('img')
+                .wait(2000);
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return !!~new_win.title.indexOf('OpenUrl1');
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.receipt_card);
+        }
+    },
     "thumbnailcard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
             return source.indexOf("surface1.jpg") >= 0;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.thumbnail_card);
+        }
+    },
+    "thumbnailcard-cardtap": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('.wc-card .ac-container .ac-container')
+                .wait(2000);
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return !!~new_win.title.indexOf('OpenUrl2');
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.thumbnail_card);
+        }
+    },
+    "thumbnailcard-imagetap": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('img')
+                .wait(2000);
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return !!~new_win.title.indexOf('OpenUrl1');
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
@@ -569,7 +660,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = ["herocard-imagetap"];    //["carousel", "herocard"];
+var testOnly = [];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
