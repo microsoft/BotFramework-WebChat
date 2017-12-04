@@ -122,12 +122,22 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.hero_card);
         }
     },
-    "card-image": {
-        client: function () {
-            return true;
+    "card-actioncall": {
+        do: function (nightmare) {
+            const waitWindowLoad = nightmare['waitWindowLoad'].bind(nightmare);
+            nightmare.click('div.ac-container > div:nth-child(7) > div:nth-child(1) > div > img')
+                .wait(2000);
+            waitWindowLoad();
+        },
+        evalOtherWindow: async function (nightmare) {
+            const windows_fn = await nightmare['windows'].bind(nightmare);
+            const windows = await windows_fn();
+            const new_win = await windows[1];
+            console.log("Window 2 Title: " + new_win.title);
+            return new_win.title.indexOf('Bot Chat') === -1;
         },
         server: function (conversationId, sendActivity) {
-            sendActivity(conversationId, server_content.hero_card);
+            sendActivity(conversationId, server_content.receipt_card);
         }
     },
     "carousel": {
@@ -660,7 +670,7 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ["card-actioncall"];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];

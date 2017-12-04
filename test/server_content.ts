@@ -449,7 +449,13 @@ export var receipt_card: dl.Message = {
                     {
                         title: "Surface Pro 4 (2) - No subtitle, No text.",
                         image: {
-                            "url": asset_url + "surface2.jpg"
+                            "url": asset_url + "surface2.jpg",
+                            "alt": "Microsoft Surface Alt",
+                            "tap": {
+                                "type": "call",
+                                "title": "Call back!",
+                                "value": "1234567890"
+                            }                            
                         },
                         price: "$XXX"
                     },
