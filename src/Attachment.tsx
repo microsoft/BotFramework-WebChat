@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as CardBuilder from './CardBuilder';
-import { Attachment, CardAction, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
+import { Attachment, CardAction, CardImage, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
 import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { AdaptiveCardContainer } from './AdaptiveCardContainer';
@@ -109,6 +109,7 @@ const Media = (props: {
     poster?: string,
     autoPlay?:boolean,
     loop?: boolean,
+    alt?: string,
     onLoad?: () => void,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }) => {
@@ -154,12 +155,9 @@ export const AttachmentView = (props: {
             e.stopPropagation();
         });
     const attachedImage = (
-        images: {
-            url: string,
-            tap?: CardAction // deprecated field for Skype channels. For testing legacy bots in Emulator only.
-        }[]
+        images: CardImage[]
     ) => images && images.length > 0 &&
-        <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } />;
+        <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } alt={ images[0].alt } />;
 
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
@@ -167,7 +165,7 @@ export const AttachmentView = (props: {
                 return null;
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
-                attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url));
+                attachment.content.images.forEach(img => heroCardBuilder.addImage(img));
             }
             heroCardBuilder.addCommon(attachment.content)
             return (
@@ -182,7 +180,7 @@ export const AttachmentView = (props: {
                 const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" }, columns[0]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
-                thumbnailCardBuilder.addImage(attachment.content.images[0].url, columns[1]);
+                thumbnailCardBuilder.addImage(attachment.content.images[0], columns[1]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.text, { wrap: true });
                 thumbnailCardBuilder.addButtons(attachment.content.buttons);
             } else {
@@ -207,7 +205,6 @@ export const AttachmentView = (props: {
                     />
                 </AdaptiveCardContainer>
             );
-
 
         case "application/vnd.microsoft.card.animation":
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
@@ -259,7 +256,7 @@ export const AttachmentView = (props: {
             attachment.content.items && attachment.content.items.map((item, i) => {
                 if (item.image) {
                     const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
-                    receiptCardBuilder.addImage(item.image.url, columns2[0]);
+                    receiptCardBuilder.addImage(item.image, columns2[0]);
                     receiptCardBuilder.addTextBlock(item.title, { size: "medium", weight: "bolder" }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { color: 'default', size: 'medium' }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: 'right' }, columns2[2]);

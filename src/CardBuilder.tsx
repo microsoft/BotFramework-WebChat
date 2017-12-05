@@ -1,4 +1,4 @@
-import { Attachment, CardAction, HeroCard, Thumbnail } from 'botframework-directlinejs';
+import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframework-directlinejs';
 import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
@@ -55,14 +55,25 @@ export class AdaptiveCardBuilder {
 
     addButtons(buttons: CardAction[]) {
         if (buttons) {
-            this.card.actions = buttons.map((button): AdaptiveCardSchema.ActionSubmit => {
-                const cardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...button };
-                return {
-                    title: button.title,
-                    type: "Action.Submit",
-                    data: cardAction
-                };
-            });
+            this.card.actions = buttons.map(AdaptiveCardBuilder.addCardAction);
+        }
+    }
+
+    private static addCardAction(cardAction: CardAction) {
+        if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
+            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
+            return {
+                title: cardAction.title,
+                type: "Action.Submit",
+                data: botFrameworkCardAction
+            };
+        }
+        else {
+            return {
+                type: 'Action.OpenUrl',
+                title: cardAction.title,
+                url: cardAction.type === 'call' ? 'tel:' + cardAction.value : cardAction.value
+            };
         }
     }
 
@@ -73,13 +84,17 @@ export class AdaptiveCardBuilder {
         this.addButtons(content.buttons);
     }
 
-    addImage(url: string, container = this.container) {
-        var image: AdaptiveCardSchema.IImage = {
+    addImage(image: CardImage, container = this.container) {
+        var img: AdaptiveCardSchema.IImage = {
             type: "Image",
-            url: url,
-            size: "stretch"
+            url: image.url,
+            size: "stretch",
         };
-        container.items.push(image);
+
+        if (image.tap) {
+            img.selectAction = AdaptiveCardBuilder.addCardAction(image.tap);
+        }
+        container.items.push(img);
     }
 
 }

@@ -1,6 +1,7 @@
 import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
 export const config = require('./mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
-const asset_url = "http://localhost:" + config.port + "/assets/";
+const local_url = "http://localhost:" + config.port + "/";
+const asset_url = local_url + "assets/";
 const bot = config.bot;
 
 /*
@@ -270,7 +271,13 @@ export var hero_card: dl.Message = {
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
-                        "url": asset_url + "surface1.jpg"
+                        "url": asset_url + "surface1.jpg",
+                        "alt": "Microsoft Surface Alt",
+                        "tap": {
+                            "type": "openUrl",
+                            "title": "Tapped it!",
+                            "value": local_url + "testurl1.html"
+                        }
                     }
                 ],
                 buttons: [
@@ -284,7 +291,12 @@ export var hero_card: dl.Message = {
                         "value": "postBack Button",
                         "title": "postBack Action"
                     }
-                ]
+                ],
+                tap: {
+                    "type": "openUrl",
+                    "title": "Tapped it!",
+                    "value": local_url + "testurl2.html"
+                }
             }
         }
     ]
@@ -457,14 +469,26 @@ export var receipt_card: dl.Message = {
                         subtitle: "Surface Pro 4 is a powerful, versatile, lightweight laptop.",
                         text: "Surface does more. Just like you. For one device that does everything, you need more than a mobile OS.",
                         image: {
-                            "url": asset_url + "surface1.jpg"
+                            "url": asset_url + "surface1.jpg",
+                            "alt": "Microsoft Surface Alt",
+                            "tap": {
+                                "type": "openUrl",
+                                "title": "Tapped it!",
+                                "value": local_url + "testurl1.html"
+                            }
                         },
                         price: "$XXX"
                     },
                     {
                         title: "Surface Pro 4 (2) - No subtitle, No text.",
                         image: {
-                            "url": asset_url + "surface2.jpg"
+                            "url": asset_url + "surface2.jpg",
+                            "alt": "Microsoft Surface Alt",
+                            "tap": {
+                                "type": "call",
+                                "title": "Call back!",
+                                "value": "1234567890"
+                            }                            
                         },
                         price: "$XXX"
                     },
@@ -504,7 +528,12 @@ export var receipt_card: dl.Message = {
                         title: "postBack Button",
                         value: "postBack Action"
                     }
-                ]
+                ],
+                tap: {
+                    "type": "openUrl",
+                    "title": "Tapped it!",
+                    "value": local_url + "testurl2.html"
+                }                
             }
         }
     ]
@@ -541,7 +570,13 @@ export var thumbnail_card: dl.Message = {
                 text: "Price: $XXX.XX USD",
                 images: [
                     {
-                        "url": asset_url + "surface1.jpg"
+                        "url": asset_url + "surface1.jpg",
+                        "alt": "Microsoft Surface Alt",
+                        "tap": {
+                            "type": "openUrl",
+                            "title": "Tapped it!",
+                            "value": local_url + "testurl1.html"
+                        }
                     }
                 ],
                 buttons: [
@@ -555,7 +590,12 @@ export var thumbnail_card: dl.Message = {
                         "value": "postBack Button",
                         "title": "postBack Action"
                     }
-                ]
+                ],
+                tap: {
+                    "type": "openUrl",
+                    "title": "Tapped it!",
+                    "value": local_url + "testurl2.html"
+                }                
             }
         }
     ]
