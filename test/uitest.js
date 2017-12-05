@@ -77,9 +77,9 @@ describe('nightmare UI tests', function () {
 					}
 				});
 
-			let result = commands[cmd].client? 
-				yield nightmare.evaluate(commands[cmd].client) :
-				yield commands[cmd].evalOtherWindow(nightmare);
+			let result = !commands[cmd].client || (yield nightmare.evaluate(commands[cmd].client));
+
+			result &= !commands[cmd].evalOtherWindow || (yield commands[cmd].evalOtherWindow(nightmare));
 
 			resultToConsole(consoleLog, result);
 			return result;
