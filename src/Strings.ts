@@ -343,7 +343,75 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: "수신중...",
         uploadFile: "",
         speak: ""
-    }
+    },
+    'hu-hu' : {
+        title: "Csevegés",
+        send: "Küldés",
+        unknownFile: "[Fájltípus '%1']",
+        unknownCard: "[Ismeretlen kártya '%1']",
+        receiptVat: "ÁFA",
+        receiptTax: "Adó",
+        receiptTotal: "Összesen",
+        messageRetry: "próbálja újra",
+        messageFailed: "nem sikerült elküldeni",
+        messageSending: "küldés",
+        timeSent: "%2 ekkor: %1",
+        consolePlaceholder: "Írja be üzenetét...",
+        listeningIndicator: "Figyelés...",
+        uploadFile: "",
+        speak: ""
+    },
+    'sv-se' : {
+        title: "Chatt",
+        send: "Skicka",
+        unknownFile: "[Filtyp '%1']",
+        unknownCard: "[Okänt kort '%1']",
+        receiptVat: "Moms",
+        receiptTax: "Skatt",
+        receiptTotal: "Totalt",
+        messageRetry: "försök igen",
+        messageFailed: "kunde inte skicka",
+        messageSending: "skickar",
+        timeSent: "%2 %1",
+        consolePlaceholder: "Skriv ett meddelande...",
+        listeningIndicator: "Lyssnar...",
+        uploadFile: "",
+        speak: ""  
+    },
+    'tr-tr' : {
+        title: "Sohbet",
+        send: "Gönder",
+        unknownFile: "[Dosya türü: '%1']",
+        unknownCard: "[Bilinmeyen Kart: '%1']",
+        receiptVat: "KDV",
+        receiptTax: "Vergi",
+        receiptTotal: "Toplam",
+        messageRetry: "yeniden deneyin",
+        messageFailed: "gönderilemedi",
+        messageSending: "gönderiliyor",
+        timeSent: "%2, %1",
+        consolePlaceholder: "İletinizi yazın...",
+        listeningIndicator: "Dinliyor...",
+        uploadFile: "",
+        speak: ""
+   },
+   'pt-pt' : {
+        title: "Chat",
+        send: "Enviar",
+        unknownFile: "[Ficheiro do tipo \"%1\"]",
+        unknownCard: "[Cartão Desconhecido \"%1\"]",
+        receiptVat: "IVA",
+        receiptTax: "Imposto",
+        receiptTotal: "Total",
+        messageRetry: "repetir",
+        messageFailed: "não foi possível enviar",
+        messageSending: "a enviar",
+        timeSent: "%2 em %1",
+        consolePlaceholder: "Escreva a sua mensagem...",
+        listeningIndicator: "A Escutar...",
+        uploadFile: "",
+        speak: ""
+   }
 }
 
 export const defaultStrings = localizedStrings['en-us'];
@@ -367,8 +435,10 @@ export const strings = (locale: string) => {
         locale = 'nl-nl';
     else if (locale.startsWith('lv'))
         locale = 'lv-lv';
-    else if (locale.startsWith('pt'))
+    else if (locale.startsWith('pt-br'))
         locale = 'pt-br';
+    else if (locale.startsWith('pt'))
+        locale = 'pt-pt';
     else if (locale.startsWith('fr'))
         locale = 'fr-fr';
     else if (locale.startsWith('es'))
@@ -387,6 +457,12 @@ export const strings = (locale: string) => {
         locale = 'ko-kr';
     else if (locale.startsWith('ja'))
         locale = 'ja-jp';
+    else if (locale.startsWith('hu'))
+        locale = 'hu-hu';
+    else if (locale.startsWith('sv'))
+        locale = 'sv-se';
+    else if (locale.startsWith('tr'))
+        locale = 'tr-tr';
     else if (locale in localizedStrings === false)
         locale = 'en-us';
 
