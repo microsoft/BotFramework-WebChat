@@ -151,6 +151,10 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private saveShellRef(shellWrapper: any) {
+        if (!shellWrapper) {
+            this.shellRef = null;
+            return;
+        }
         this.shellRef = shellWrapper.getWrappedInstance();
     }
 
