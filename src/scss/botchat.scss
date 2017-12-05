@@ -608,21 +608,21 @@
             cursor: pointer;
             position: relative;
 
-            input[type="file"] {
-                font-size: 0;
-                height: 0;
-                left: 0;
-                opacity: 0;
-                outline: 0;
-                position: absolute;
-                top: 0;
-                width: 0;
-            }
-
             svg {
                 height: 18px;
                 width: 26px;
             }
+        }
+
+        #wc-upload-input {
+            font-size: 0;
+            height: 0;
+            left: 0;
+            opacity: 0;
+            outline: 0;
+            position: absolute;
+            top: 0;
+            width: 0;
         }
 
         .wc-send {
