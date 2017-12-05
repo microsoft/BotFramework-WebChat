@@ -216,6 +216,18 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.car_card);
         }
     },
+    "content-multimedia": {
+        client: function () {
+            var images = document.querySelectorAll('img').length === 2;
+            var audios = document.querySelectorAll('audio').length === 2;
+            var videos = document.querySelectorAll('video').length === 2;
+
+            return images && audios && videos;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.multimedia_card);
+        }
+    },
     "document-plain": {
         client: function () {
             var link = document.querySelector('.wc-message-wrapper:last-child .wc-message.wc-message-from-bot a') as HTMLAnchorElement;

@@ -232,7 +232,7 @@ export var document_plain: dl.Message = {
             contentType: "text/plain",
             contentUrl: asset_url + "test.txt",
             name: "test.txt"
-        }        
+        }
     ]
 }
 
@@ -247,7 +247,7 @@ export var document_word: dl.Message = {
             contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             contentUrl: asset_url + "test.docx",
             name: "test.docx"
-        }        
+        }
     ]
 }
 
@@ -383,6 +383,62 @@ export var mar_newlines_ddouble_card: dl.Message = {
     channelId: "webchat",
     textFormat: "markdown",
     text: "**Windows** double-double newline->\r\n \r\n \r\n \r\n<-finish. \r\n\r\n**Unix** double-double newline->\n \n \n \n<-finish."
+}
+
+/*
+ * Activity for Multimedia Attachments
+ * 
+ */
+export var multimedia_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    attachments: [
+        <dl.AnimationCard>{
+            contentType: "application/vnd.microsoft.card.animation",
+            content: {
+                title: "Multimedia Content",
+                subtitle: "Subtitle",
+                text: "Text",
+                media: [
+                    { url: asset_url + "surface_anim.gif", profile: "animation" },
+                    { url: asset_url + "surface_anim.gif", profile: "animation2" }
+                ],
+                autoloop: true,
+                autostart: true
+            }
+        },
+        <dl.AudioCard>{
+            contentType: "application/vnd.microsoft.card.audio",
+            content: {
+                title: "BotFramework Test",
+                subtitle: "audio test",
+                text: "No buttons, No Image, Autoloop, Autostart, Sharable",
+                media: [
+                    { url: asset_url + "bftest.mp3", profile: "audiocard" },
+                    { url: asset_url + "bftest.mp3", profile: "audiocard2" }
+                ],
+                autoloop: true,
+                autostart: true
+            }
+        },
+        <dl.VideoCard>{
+            contentType: "application/vnd.microsoft.card.video",
+            content: {
+                title: "Microsoft Band",
+                subtitle: "Large Video",
+                text: "No buttons, No Image, Autoloop, Autostart, No Sharable",
+                media: [
+                    { url: asset_url + "msband.mp4", profile: "videocard" },
+                    { url: asset_url + "msband.mp4", profile: "videocard2" }
+                ],
+                image: { url: asset_url + "ms-band1.jpg" },
+                autoloop: true,
+                autostart: true
+            }
+        }
+    ]
 }
 
 /*
@@ -605,7 +661,7 @@ export var thumbnail_card: dl.Message = {
  * Activity for Upload
  * 
  */
-export var upload_txt: dl.Message = {    
+export var upload_txt: dl.Message = {
     type: "message",
     from: bot,
     timestamp: new Date().toUTCString(),

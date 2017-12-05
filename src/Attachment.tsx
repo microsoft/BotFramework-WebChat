@@ -68,13 +68,13 @@ const Vimeo = (props: {
 interface VideoProps {
     src: string,
     poster?: string,
-    autoPlay?:boolean,
+    autoPlay?: boolean,
     loop?: boolean,
     onLoad?: () => void,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Video = (props: VideoProps ) => {
+const Video = (props: VideoProps) => {
     const url = document.createElement('a');
     url.href = props.src;
     const urlQueryParams = queryParams(url.search);
@@ -107,7 +107,7 @@ const Media = (props: {
     src: string,
     type?: 'image' | 'video' | 'audio',   // defaults to 'image'
     poster?: string,
-    autoPlay?:boolean,
+    autoPlay?: boolean,
     loop?: boolean,
     alt?: string,
     onLoad?: () => void,
@@ -158,7 +158,41 @@ export const AttachmentView = (props: {
         images: CardImage[]
     ) => images && images.length > 0 &&
         <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } alt={ images[0].alt } />;
-
+    const getRichCardContentMedia = (
+        type: 'image' | 'video' | 'audio' | { (url: string): 'image' | 'video' | 'audio' },
+        content: {
+            title?: string;
+            subtitle?: string;
+            text?: string;
+            media?: {
+                url: string;
+                profile?: string;
+            }[];
+            buttons?: CardAction[];
+            image?: {
+                url: string;
+                alt?: string;
+            };
+            autoloop?: boolean;
+            autostart?: boolean;
+        }
+    ) => {
+        if (!content.media || content.media.length === 0) {
+            return null;
+        }
+        // rendering every media in the media array. Validates every type as image, video, audio or a function that returns those values.  
+        return content.media.map((md, i) => {
+            let t = (typeof type === 'string')? type : type(md.url);
+            return <Media
+                type={ t }
+                src={ md.url }
+                onLoad={ props.onImageLoad }
+                poster={ content.image && content.image.url }
+                autoPlay={ content.autostart }
+                loop={ content.autoloop }
+                key={ i } />
+        });
+    };
     switch (attachment.contentType) {
         case "application/vnd.microsoft.card.hero":
             if (!attachment.content)
@@ -195,14 +229,7 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <AdaptiveCardContainer className="video" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
-                    <Media
-                        type='video'
-                        src={ attachment.content.media[0].url }
-                        onLoad={ props.onImageLoad }
-                        poster={ attachment.content.image && attachment.content.image.url }
-                        autoPlay={ attachment.content.autostart }
-                        loop={ attachment.content.autoloop }
-                    />
+                    {getRichCardContentMedia('video', attachment.content)}
                 </AdaptiveCardContainer>
             );
 
@@ -211,14 +238,7 @@ export const AttachmentView = (props: {
                 return null;
             return (
                 <AdaptiveCardContainer className="animation" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
-                    <Media
-                        type={ mediaType(attachment.content.media[0].url) }
-                        src={ attachment.content.media[0].url }
-                        onLoad={ props.onImageLoad }
-                        poster={ attachment.content.image && attachment.content.image.url }
-                        autoPlay={ attachment.content.autostart }
-                        loop={ attachment.content.autoloop }
-                    />
+                    {getRichCardContentMedia(mediaType, attachment.content)}
                 </AdaptiveCardContainer>
             );
 
@@ -226,13 +246,8 @@ export const AttachmentView = (props: {
             if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
                 return null;
             return (
-                <AdaptiveCardContainer className="audio" card={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
-                    <Media
-                        type='audio'
-                        src={ attachment.content.media[0].url }
-                        autoPlay={ attachment.content.autostart }
-                        loop={ attachment.content.autoloop }
-                    />
+                <AdaptiveCardContainer className="audio" card={CardBuilder.buildCommonCard(attachment.content)} onCardAction={props.onCardAction} >
+                    {getRichCardContentMedia('audio', attachment.content)}
                 </AdaptiveCardContainer>
             );
 
@@ -250,7 +265,7 @@ export const AttachmentView = (props: {
             receiptCardBuilder.addTextBlock(attachment.content.title, { size: "medium", weight: "bolder" });
             const columns = receiptCardBuilder.addColumnSet([75, 25]);
             attachment.content.facts && attachment.content.facts.map((fact, i) => {
-                receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium'}, columns[0]);
+                receiptCardBuilder.addTextBlock(fact.key, { color: 'default', size: 'medium' }, columns[0]);
                 receiptCardBuilder.addTextBlock(fact.value, { color: 'default', size: 'medium', horizontalAlignment: 'right' }, columns[1]);
             });
             attachment.content.items && attachment.content.items.map((item, i) => {
