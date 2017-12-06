@@ -8,8 +8,8 @@ import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import * as konsole from './Konsole';
 
 export interface Props {
-    card?: AdaptiveCard,
-    jcard?: IAdaptiveCard,
+    nativeCard?: AdaptiveCard,
+    jsonCard?: IAdaptiveCard,
     onImageLoad?: () => any,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void,
     onCardAction: IDoCardAction,
@@ -81,11 +81,11 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         }
     }
     componentDidMount() {
-        const adaptiveCard = this.props.card || new AdaptiveCard();
+        const adaptiveCard = this.props.nativeCard || new AdaptiveCard();
         adaptiveCard.hostConfig = hostConfig;
         let errors: IValidationError[] = [];
-        if (!this.props.card && this.props.jcard) {
-            adaptiveCard.parse(cardWithoutHttpActions(this.props.jcard));
+        if (!this.props.nativeCard && this.props.jsonCard) {
+            adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
             errors = adaptiveCard.validate();
         }
         adaptiveCard.onExecuteAction = (action) => this.onExecuteAction(action);
