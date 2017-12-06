@@ -1,5 +1,5 @@
-import { Attachment, CardAction, HeroCard, Thumbnail } from 'botframework-directlinejs';
-import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, Size, SubmitAction, TextBlock, TextSize, TextWeight } from "adaptivecards";
+import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframework-directlinejs';
+import { Action, AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from "adaptivecards";
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
 // interface IVersionedCard extends AdaptiveCardSchema.IAdaptiveCard {
@@ -47,16 +47,27 @@ export class AdaptiveCardBuilder {
         }
     }
 
-    addButtons(cardActions: CardAction[]) {
-        if (cardActions) {
-            cardActions.forEach(cardAction => {
-                const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
-                const action = new SubmitAction();
-                action.title = cardAction.title;
-                action.data = botFrameworkCardAction;
+    addButtons(buttons: CardAction[]) {
+        if (buttons) {
+            buttons.forEach(button => {
+                var action = AdaptiveCardBuilder.convertCardAction(button);
                 this.card.addAction(action);
             });
         }
+    }
+
+    private static convertCardAction(cardAction: CardAction) {
+        let action: Action;
+        if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
+            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
+            action = new SubmitAction();
+            (action as SubmitAction).data = botFrameworkCardAction;
+        } else {
+            action = new OpenUrlAction();
+            (action as OpenUrlAction).url = cardAction.type === 'call' ? 'tel:' + cardAction.value : cardAction.value;
+        }
+        action.title = cardAction.title;
+        return action;
     }
 
     addCommon(content: ICommonContent) {
@@ -66,12 +77,15 @@ export class AdaptiveCardBuilder {
         this.addButtons(content.buttons);
     }
 
-    addImage(url: string, container?: Container) {
+    addImage(image: CardImage, container?: Container) {
         container = container || this.container;
-        var image = new Image();
-        image.url = url;
-        image.size = Size.Stretch;
-        container.addItem(image);
+        var img = new Image();
+        img.url = image.url;
+        img.size = Size.Stretch;
+        if (image.tap) {
+            img.selectAction = AdaptiveCardBuilder.convertCardAction(image.tap);
+        }
+        container.addItem(img);
     }
 
 }
