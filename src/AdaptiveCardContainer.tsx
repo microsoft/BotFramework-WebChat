@@ -85,6 +85,7 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         adaptiveCard.hostConfig = hostConfig;
         let errors: IValidationError[] = [];
         if (!this.props.nativeCard && this.props.jsonCard) {
+            this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
             adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
             errors = adaptiveCard.validate();
         }
