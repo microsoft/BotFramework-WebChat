@@ -83,7 +83,7 @@
     "large": 160
   },
   "actions": {
-    "maxActions": 5,
+    "maxActions": 100,
     "spacing": "default",
     "buttonSpacing": 8,
     "showCard": {
