@@ -2,10 +2,6 @@ import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframe
 import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
-// interface IVersionedCard extends AdaptiveCardSchema.IAdaptiveCard {
-//     version: string;
-// }
-
 export class AdaptiveCardBuilder {
     private container: Container;
     public card: AdaptiveCard;
