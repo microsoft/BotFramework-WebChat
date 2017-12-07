@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-import * as dl from "../../node_modules/botframework-directlinejs/built/directLine";
+import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
 import * as express from 'express';
 import bodyParser = require('body-parser');
 import * as path from 'path';
