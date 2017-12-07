@@ -376,7 +376,7 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Skriv ett meddelande...",
         listeningIndicator: "Lyssnar...",
         uploadFile: "",
-        speak: ""  
+        speak: ""
     },
     'tr-tr' : {
         title: "Sohbet",
@@ -447,6 +447,8 @@ export const strings = (locale: string) => {
         locale = 'el-gr';
     else if (locale.startsWith('it'))
         locale = 'it-it';
+    else if (locale === 'zh-yue')
+        locale = 'zh-yue';
     else if (locale === 'zh-hant' || locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw')
         locale = 'zh-hant';
     else if (locale.startsWith('zh'))
