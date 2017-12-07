@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://hawo@webchat-testbed-mock.scm.azurewebsites.net/webchat-testbed-mock.git"
+    "url": "git://git@github.com/Microsoft/BotFramework-WebChat.git"
   },
-  "author": "",
-  "license": "UNLICENSED",
+  "author": "Microsoft Corp",
+  "license": "MIT",
   "dependencies": {
     "@types/body-parser": "^1.16.8",
     "@types/express": "^4.0.39",
