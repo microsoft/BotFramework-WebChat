@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
     "@types/express": "^4.0.39",
+    "@types/nightmare": "^2.10.0",
     "@types/node": "^8.0.56",
     "nightmare": "^2.10.0",
     "typescript": "2.3"
