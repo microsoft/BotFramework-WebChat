@@ -1,6 +1,29 @@
-import { Func, Action, Speech } from "../../built/SpeechModule"
+type Action = () => void
 
-class MockSpeechRecognizer implements Speech.ISpeechRecognizer {
+type Func<T, TResult> = (item: T) => TResult;
+
+interface ISpeechRecognizer {
+    locale: string;
+    isStreamingToService: boolean;
+    referenceGrammarId: string; // unique identifier to send to the speech implementation to bias SR to this scenario
+
+    onIntermediateResult: Func<string, void>;
+    onFinalResult: Func<string, void>;
+    onAudioStreamingToService: Action;
+    onRecognitionFailed: Action;
+
+    warmup(): void;
+    startRecognizing(): void;
+    stopRecognizing(): void;
+    speechIsAvailable() : boolean;
+}
+
+interface ISpeechSynthesizer {
+    speak(text: string, lang: string, onSpeakingStarted: Action, onspeakingFinished: Action): void;
+    stopSpeaking(): void;
+}
+
+class MockSpeechRecognizer implements ISpeechRecognizer {
     locale: string = "en-US";
     isStreamingToService: boolean = false;
     referenceGrammarId: string = "mock";
@@ -23,7 +46,7 @@ class MockSpeechRecognizer implements Speech.ISpeechRecognizer {
     }
 }
 
-class MockSpeechSynthesizer implements Speech.ISpeechSynthesizer {
+class MockSpeechSynthesizer implements ISpeechSynthesizer {
     speak(text: string, lang: string, onSpeakingStarted: Action, onspeakingFinished: Action): void { }
     stopSpeaking(): void { }
 }

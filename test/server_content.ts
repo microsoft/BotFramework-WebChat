@@ -1,4 +1,4 @@
-import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import * as dl from "./node_modules/botframework-directlinejs/built/directLine";
 export const config = require('./mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
 const local_url = "http://localhost:" + config.port + "/";
 const asset_url = local_url + "assets/";
@@ -24,7 +24,7 @@ export var adaptive_cardsFn = function (json: any) {
 
 /*
  * Activity for Animation Card
- * 
+ *
  */
 export var ani_card: dl.Message = {
     type: "message",
@@ -49,7 +49,7 @@ export var ani_card: dl.Message = {
 
 /*
  * Activity for Audio Raw
- * 
+ *
  */
 export var audio_raw: dl.Message = {
     type: "message",
@@ -68,7 +68,7 @@ export var audio_raw: dl.Message = {
 
 /*
  * Activity for Audio Card
- * 
+ *
  */
 export var audio_card: dl.Message = {
     type: "message",
@@ -93,7 +93,7 @@ export var audio_card: dl.Message = {
 
 /*
  * Activity for Carousel
- * 
+ *
  */
 export var car_card: dl.Message = {
     type: "message",
@@ -218,7 +218,7 @@ export var smallcar_card: dl.Message = {
 
 /*
  * Activity for Document
- * 
+ *
  */
 
 export var document_plain: dl.Message = {
@@ -253,7 +253,7 @@ export var document_word: dl.Message = {
 
 /*
  * Activity for Hero Card
- * 
+ *
  */
 export var hero_card: dl.Message = {
     type: "message",
@@ -304,7 +304,7 @@ export var hero_card: dl.Message = {
 
 /*
  * Activity for Image Raw
- * 
+ *
  */
 export var image_raw: dl.Message = {
     type: "message",
@@ -338,7 +338,7 @@ export var image_svg: dl.Message = {
 
 /*
  * Activity for Markdown
- * 
+ *
  */
 export var mar_card: dl.Message = {
     type: "message",
@@ -387,7 +387,7 @@ export var mar_newlines_ddouble_card: dl.Message = {
 
 /*
  * Activity for Multimedia Attachments
- * 
+ *
  */
 export var multimedia_card: dl.Message = {
     type: "message",
@@ -443,7 +443,7 @@ export var multimedia_card: dl.Message = {
 
 /*
  * Activity for SignIn
- * 
+ *
  */
 export var si_card: dl.Message = {
     type: "message",
@@ -469,7 +469,7 @@ export var si_card: dl.Message = {
 
 /*
  * Activity for SuggestedActions
- * 
+ *
  */
 export var suggested_actions_card: dl.Message = {
     type: "message",
@@ -504,7 +504,7 @@ export var suggested_actions_card: dl.Message = {
 
 /*
  * Activity for Receipt Card
- * 
+ *
  */
 export var receipt_card: dl.Message = {
     type: "message",
@@ -544,7 +544,7 @@ export var receipt_card: dl.Message = {
                                 "type": "call",
                                 "title": "Call back!",
                                 "value": "1234567890"
-                            }                            
+                            }
                         },
                         price: "$XXX"
                     },
@@ -589,7 +589,7 @@ export var receipt_card: dl.Message = {
                     "type": "openUrl",
                     "title": "Tapped it!",
                     "value": local_url + "testurl2.html"
-                }                
+                }
             }
         }
     ]
@@ -597,7 +597,7 @@ export var receipt_card: dl.Message = {
 
 /*
  * Activity for Text
- * 
+ *
  */
 export var text_empty_card: dl.Message = {
     type: "message",
@@ -610,7 +610,7 @@ export var text_empty_card: dl.Message = {
 
 /*
  * Activity for Thumbnail Card
- * 
+ *
  */
 export var thumbnail_card: dl.Message = {
     type: "message",
@@ -651,7 +651,7 @@ export var thumbnail_card: dl.Message = {
                     "type": "openUrl",
                     "title": "Tapped it!",
                     "value": local_url + "testurl2.html"
-                }                
+                }
             }
         }
     ]
@@ -659,7 +659,7 @@ export var thumbnail_card: dl.Message = {
 
 /*
  * Activity for Upload
- * 
+ *
  */
 export var upload_txt: dl.Message = {
     type: "message",
@@ -671,7 +671,7 @@ export var upload_txt: dl.Message = {
 
 /*
  * Activity for Video Raw
- * 
+ *
  */
 export var video_raw: dl.Message = {
     type: "message",
@@ -690,7 +690,7 @@ export var video_raw: dl.Message = {
 
 /*
  * Activity for Video Card
- * 
+ *
  */
 export var video_card: dl.Message = {
     type: "message",
@@ -716,7 +716,7 @@ export var video_card: dl.Message = {
 
 /*
  * Activity for XML
- * 
+ *
  */
 export var xml_card: dl.Message = {
     type: "message",

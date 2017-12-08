@@ -1,5 +1,5 @@
 import * as server_content from './server_content';
-import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import * as dl from "./node_modules/botframework-directlinejs/built/directLine";
 import * as Nightmare from 'nightmare';
 import * as express from 'express';
 
@@ -168,8 +168,8 @@ var commands_map: CommandValuesMap = {
         }),
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.car_card);
-        }       
-    },  
+        }
+    },
     "carousel-to-left": {
         client: () => new Promise((resolve) => {
             var right_arrow = document.querySelectorAll('.scroll.next:not([disabled])')[0] as HTMLButtonElement;
