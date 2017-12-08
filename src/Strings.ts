@@ -420,7 +420,7 @@ export const defaultStrings = localizedStrings['en-us'];
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
 
-export const mapLocale = (locale: string) => {
+function mapLocale(locale: string) {
     locale = locale && locale.toLowerCase();
 
     if (locale in localizedStrings) {
