@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as AdaptiveCards from "microsoft-adaptivecards";
-import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
+import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from "adaptivecards";
+import { IActionBase, IActionShowCard, IAdaptiveCard } from "adaptivecards/lib/schema";
 import { CardAction } from "botframework-directlinejs/built/directLine";
 import { classList, IDoCardAction } from "./Chat";
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
@@ -8,7 +8,8 @@ import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import * as konsole from './Konsole';
 
 export interface Props {
-    card: AdaptiveCardSchema.ICard,
+    nativeCard?: AdaptiveCard,
+    jsonCard?: IAdaptiveCard,
     onImageLoad?: () => any,
     onClick?: (e: React.MouseEvent<HTMLElement>) => void,
     onCardAction: IDoCardAction,
@@ -19,32 +20,20 @@ export interface State {
     errors?: string[]
 }
 
-class LinkedAdaptiveCard extends AdaptiveCards.AdaptiveCard {
-    constructor(public adaptiveCardContainer: AdaptiveCardContainer) {
-        super();
-    }
-}
-
 export interface BotFrameworkCardAction extends CardAction {
     __isBotFrameworkCardAction: boolean
 }
 
-function getLinkedAdaptiveCard(action: AdaptiveCards.Action) {
-    let element = action.parent;
-    while (element && !(element instanceof LinkedAdaptiveCard)) {
-        element = element.parent;
-    }
-    return element as LinkedAdaptiveCard;
-}
+const hostConfig = new HostConfig(adaptivecardsHostConfig);
 
-function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
+function cardWithoutHttpActions(card: IAdaptiveCard) {
     if (!card.actions) return card;
-    const actions: AdaptiveCardSchema.IActionBase[] = [];
+    const actions: IActionBase[] = [];
     card.actions.forEach(action => {
         //filter out http action buttons
         if (action.type === 'Action.Http') return;
         if (action.type === 'Action.ShowCard') {
-            const showCardAction = action as AdaptiveCardSchema.IActionShowCard;
+            const showCardAction = action as IActionShowCard;
             showCardAction.card = cardWithoutHttpActions(showCardAction.card);
         }
         actions.push(action);
@@ -52,31 +41,11 @@ function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
     return { ...card, actions };
 }
 
-AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalAction) => {
-    if (action instanceof AdaptiveCards.OpenUrlAction) {
-        window.open(action.url);
-    } else if (action instanceof AdaptiveCards.SubmitAction) {
-        const linkedAdaptiveCard = getLinkedAdaptiveCard(action);
-        if (linkedAdaptiveCard && action.data !== undefined) {
-            if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
-                const cardAction = (action.data as BotFrameworkCardAction);
-                linkedAdaptiveCard.adaptiveCardContainer.onCardAction(cardAction.type, cardAction.value);
-            } else {
-                linkedAdaptiveCard.adaptiveCardContainer.onCardAction(typeof action.data === 'string' ? 'imBack' : 'postBack', action.data);
-            }
-        }
-    }
-};
-
 export class AdaptiveCardContainer extends React.Component<Props, State> {
     private div: HTMLDivElement;
 
     constructor(props: Props) {
         super(props);
-    }
-
-    public onCardAction: IDoCardAction = (type, value) => {
-        this.props.onCardAction(type, value);
     }
 
     private onClick(e: React.MouseEvent<HTMLElement>) {
@@ -97,22 +66,41 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         }
     }
 
+    private onExecuteAction(action: Action) {
+        if (action instanceof OpenUrlAction) {
+            window.open(action.url);
+        } else if (action instanceof SubmitAction) {
+            if (action.data !== undefined) {
+                if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
+                    const cardAction = (action.data as BotFrameworkCardAction);
+                    this.props.onCardAction(cardAction.type, cardAction.value);
+                } else {
+                    this.props.onCardAction(typeof action.data === 'string' ? 'imBack' : 'postBack', action.data);
+                }
+            }
+        }
+    }
     componentDidMount() {
-        const adaptiveCard = new LinkedAdaptiveCard(this);
-        adaptiveCard.parse(cardWithoutHttpActions(this.props.card));
-        const errors = adaptiveCard.validate();
+        const adaptiveCard = this.props.nativeCard || new AdaptiveCard();
+        adaptiveCard.hostConfig = hostConfig;
+        let errors: IValidationError[] = [];
+        if (!this.props.nativeCard && this.props.jsonCard) {
+            this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
+            adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
+            errors = adaptiveCard.validate();
+        }
+        adaptiveCard.onExecuteAction = (action) => this.onExecuteAction(action);
         if (errors.length === 0) {
             let renderedCard: HTMLElement;
             try {
                 renderedCard = adaptiveCard.render();
             }
             catch (e) {
-                const ve: AdaptiveCards.IValidationError = {
+                const ve: IValidationError = {
                     error: -1,
                     message: e
                 };
                 errors.push(ve);
-
                 if (e.stack) {
                     ve.message += '\n' + e.stack;
                 }
@@ -169,5 +157,3 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         if (this.props.onImageLoad) this.props.onImageLoad();
     }
 }
-
-AdaptiveCards.setHostConfig(adaptivecardsHostConfig);

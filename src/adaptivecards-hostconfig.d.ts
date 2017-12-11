@@ -1,5 +1,5 @@
 declare module "*/adaptivecards-hostconfig.json" {
-    import { IHostConfig } from "microsoft-adaptivecards";
-    const _: IHostConfig;
+    import { HostConfig } from "adaptivecards";
+    const _: HostConfig;
     export = _;
 }
