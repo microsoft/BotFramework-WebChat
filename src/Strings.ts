@@ -376,7 +376,7 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Skriv ett meddelande...",
         listeningIndicator: "Lyssnar...",
         uploadFile: "",
-        speak: ""  
+        speak: ""
     },
     'tr-tr' : {
         title: "Sohbet",
@@ -420,51 +420,60 @@ export const defaultStrings = localizedStrings['en-us'];
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
 
-export const strings = (locale: string) => {
-    if (locale.startsWith('da'))
-        locale = 'da-dk';
-    else if (locale.startsWith('de'))
-        locale = 'de-de';
-    else if (locale.startsWith('no') || locale.startsWith('nb') || locale.startsWith('nn'))
-        locale = 'nb-no';
-    else if (locale.startsWith('pl'))
-        locale = 'pl-pl';
-    else if (locale.startsWith('ru'))
-        locale = 'ru-ru';
-    else if (locale.startsWith('nl'))
-        locale = 'nl-nl';
-    else if (locale.startsWith('lv'))
-        locale = 'lv-lv';
-    else if (locale.startsWith('pt-br'))
-        locale = 'pt-br';
-    else if (locale.startsWith('pt'))
-        locale = 'pt-pt';
-    else if (locale.startsWith('fr'))
-        locale = 'fr-fr';
-    else if (locale.startsWith('es'))
-        locale = 'es-es';
-    else if (locale.startsWith('el'))
-        locale = 'el-gr';
-    else if (locale.startsWith('it'))
-        locale = 'it-it';
-    else if (locale === 'zh-hant' || locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw')
-        locale = 'zh-hant';
-    else if (locale.startsWith('zh'))
-        locale = 'zh-hans';
-    else if (locale.startsWith('cs'))
-        locale = 'cs-cz';
-    else if (locale.startsWith('ko'))
-        locale = 'ko-kr';
-    else if (locale.startsWith('ja'))
-        locale = 'ja-jp';
-    else if (locale.startsWith('hu'))
-        locale = 'hu-hu';
-    else if (locale.startsWith('sv'))
-        locale = 'sv-se';
-    else if (locale.startsWith('tr'))
-        locale = 'tr-tr';
-    else if (locale in localizedStrings === false)
-        locale = 'en-us';
+function mapLocale(locale: string) {
+    locale = locale && locale.toLowerCase();
 
-    return localizedStrings[locale];
+    if (locale in localizedStrings) {
+        return locale;
+    } else if (locale.startsWith('cs')) {
+        return 'cs-cz';
+    } else if (locale.startsWith('da')) {
+        return 'da-dk';
+    } else if (locale.startsWith('de')) {
+        return 'de-de';
+    } else if (locale.startsWith('el')) {
+        return 'el-gr';
+    } else if (locale.startsWith('es')) {
+        return 'es-es';
+    } else if (locale.startsWith('fr')) {
+        return 'fr-fr';
+    } else if (locale.startsWith('hu')) {
+        return 'hu-hu';
+    } else if (locale.startsWith('it')) {
+        return 'it-it';
+    } else if (locale.startsWith('ja')) {
+        return 'ja-jp';
+    } else if (locale.startsWith('ko')) {
+        return 'ko-kr';
+    } else if (locale.startsWith('lv')) {
+        return 'lv-lv';
+    } else if (locale.startsWith('nb') || locale.startsWith('nn') || locale.startsWith('no')) {
+        return 'nb-no';
+    } else if (locale.startsWith('nl')) {
+        return 'nl-nl';
+    } else if (locale.startsWith('pl')) {
+        return 'pl-pl';
+    } else if (locale.startsWith('pt')) {
+        if (locale === 'pt-br') {
+            return 'pt-br';
+        } else {
+            return 'pt-pt';
+        }
+    } else if (locale.startsWith('ru')) {
+        return 'ru-ru';
+    } else if (locale.startsWith('sv')) {
+        return 'sv-se';
+    } else if (locale.startsWith('tr')) {
+        return 'tr-tr';
+    } else if (locale.startsWith('zh')) {
+        if (locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw') {
+            return 'zh-hant';
+        } else {
+            return 'zh-hans';
+        }
+    }
+
+    return 'en-us';
 }
+
+export const strings = (locale: string) => localizedStrings[mapLocale(locale)]
