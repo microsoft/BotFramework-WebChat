@@ -7,7 +7,7 @@ const path = require('path');
 declare let module: any;
 
 interface ISendActivity {
-    (conversationId: string, activity: dl.Message): void;
+    (conversationId: string, activity: dl.Message | dl.Typing): void;
 }
 
 interface CommandValues {
@@ -556,6 +556,14 @@ var commands_map: CommandValuesMap = {
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
+        }
+    },
+    "typing": {
+        client: function () {
+            return document.querySelectorAll('.wc-message-wrapper:last-child .wc-typing').length >= 0;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.typing);
         }
     },
     "upload": {

@@ -658,6 +658,17 @@ export var thumbnail_card: dl.Message = {
 }
 
 /*
+ * Activity for Typing
+ *
+ */
+export var typing: dl.Typing = {
+    type: "typing",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat"
+}
+
+/*
  * Activity for Upload
  *
  */
