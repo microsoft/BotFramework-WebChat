@@ -559,8 +559,6 @@ var commands_map: CommandValuesMap = {
         }
     },
     "typing": {
-        do: function (nightmare) {
-        },
         client: function () {
             return document.querySelectorAll('.wc-message-wrapper:last-child .wc-typing').length >= 0;
         },
