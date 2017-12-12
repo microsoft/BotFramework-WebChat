@@ -324,8 +324,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " v %1",
         consolePlaceholder: "Napište svou zprávu...",
         listeningIndicator: "Poslouchám...",
-        uploadFile: "",
-        speak: ""
+        uploadFile: "Nahrát soubor",
+        speak: "Použít hlas"
     },
     'ko-kr': {
         title: "채팅",
