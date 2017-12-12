@@ -220,7 +220,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         let header: JSX.Element;
         if (state.format.options.showHeader) header =
             <div className="wc-header">
-                <span>{ state.format.strings.title }</span>
+                <span>{ state.format.options.title ? state.format.options.title : state.format.strings.title }</span>
             </div>;
 
         let resize: JSX.Element;
