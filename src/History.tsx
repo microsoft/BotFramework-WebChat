@@ -24,7 +24,8 @@ export interface HistoryProps {
     doCardAction: IDoCardAction
 }
 
-const BOTTOM_SCROLL_TOLERANCE = 50; // This value should be at least as big as the histories container :before element
+// This value should be at least as big as the history container :before element ($actionsHeight scss var)
+const BOTTOM_SCROLL_TOLERANCE = 40;
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
     private scrollMe: HTMLDivElement;

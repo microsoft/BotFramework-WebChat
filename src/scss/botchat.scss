@@ -162,10 +162,12 @@
         .wc-message-groups {
             transform: translateY(-$actionsHeight);
 
+            // Some space up top to keep the transformation from
+            // pushing the messages behind the header
             &:before {
                 content: "";
                 display: block;
-                height: $actionsHeight + 10px;
+                height: $actionsHeight;
                 width: 100%;
             }
         }
