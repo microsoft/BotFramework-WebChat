@@ -199,7 +199,7 @@ const localizedStrings: LocalizedStrings = {
         receiptVat: "TVA",
         receiptTax: "Taxe",
         receiptTotal: "Total",
-        messageRetry: "reéssayer",
+        messageRetry: "réessayer",
         messageFailed: "envoi impossible",
         messageSending: "envoi",
         timeSent: " à %1",
