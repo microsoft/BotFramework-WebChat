@@ -273,8 +273,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " 用时 %1",
         consolePlaceholder: "输入你的消息...",
         listeningIndicator: "正在倾听...",
-        uploadFile: "",
-        speak: ""
+        uploadFile: "上传文件",
+        speak: "发言"
     },
     'zh-hant': {
         title: "聊天",
