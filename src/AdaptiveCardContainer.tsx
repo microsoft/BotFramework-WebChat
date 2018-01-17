@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from "adaptivecards";
-import { IActionBase, IActionShowCard, IAdaptiveCard } from "adaptivecards/lib/schema";
-import { CardAction } from "botframework-directlinejs/built/directLine";
-import { classList, IDoCardAction } from "./Chat";
+import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import { IActionBase, IActionShowCard, IAdaptiveCard } from 'adaptivecards/lib/schema';
+import { CardAction } from 'botframework-directlinejs/built/directLine';
+import { classList, IDoCardAction } from './Chat';
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
 import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import * as konsole from './Konsole';

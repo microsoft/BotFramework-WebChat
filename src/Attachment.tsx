@@ -200,7 +200,7 @@ export const AttachmentView = (props: {
                 return null;
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
-                attachment.content.images.forEach(img => heroCardBuilder.addImage(img));
+                attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url, null, img.tap));
             }
             heroCardBuilder.addCommon(attachment.content)
             return (
@@ -215,7 +215,7 @@ export const AttachmentView = (props: {
                 const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: TextSize.Medium, weight: TextWeight.Bolder }, columns[0]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
-                thumbnailCardBuilder.addImage(attachment.content.images[0], columns[1]);
+                thumbnailCardBuilder.addImage(attachment.content.images[0].url, columns[1], attachment.content.images[0].tap);
                 thumbnailCardBuilder.addTextBlock(attachment.content.text, { wrap: true });
                 thumbnailCardBuilder.addButtons(attachment.content.buttons);
             } else {

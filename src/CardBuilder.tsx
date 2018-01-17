@@ -46,7 +46,7 @@ export class AdaptiveCardBuilder {
     addButtons(cardActions: CardAction[]) {
         if (cardActions) {
             cardActions.forEach(cardAction => {
-                this.card.addAction(AdaptiveCardBuilder.addCardAction(cardAction);
+                this.card.addAction(AdaptiveCardBuilder.addCardAction(cardAction));
             });
         }
     }
