@@ -2,7 +2,7 @@ var webpack = require('webpack');
 require("expose-loader");
 
 var coreConfig = {
-    devtool: "source-map",
+    devtool: "inline-source-map",
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
@@ -26,7 +26,10 @@ var coreConfig = {
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+            {
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader"
+            },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             {
                 enforce: "pre",
@@ -36,7 +39,10 @@ var coreConfig = {
             },
             {
                 test: require.resolve('microsoft-adaptivecards'),
-                use: [{ loader: 'expose-loader', options: 'AdaptiveCards' }]
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'AdaptiveCards'
+                }]
             }
         ]
     }
