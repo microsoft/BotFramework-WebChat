@@ -10,8 +10,7 @@
         "module": "commonjs",
         "noImplicitAny": true,
         "outDir": "./built/",
-        "target": "es5",
-        "sourceMap": true
+        "target": "es5"
     },
     "files": [
         "src/adaptivecards-hostconfig.d.ts",
