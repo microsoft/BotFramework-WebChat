@@ -4,7 +4,7 @@ import { HorizontalAlignment, IAdaptiveCard, TextSize, TextWeight } from 'adapti
 import { Attachment, CardAction, CardImage, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
 import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
-import { AdaptiveCardContainer } from './AdaptiveCardContainer';
+import { default as AdaptiveCardContainer } from './AdaptiveCardContainer';
 import * as konsole from './Konsole';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
