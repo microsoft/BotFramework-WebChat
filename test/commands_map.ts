@@ -488,7 +488,6 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            console.log(windows);
             return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
@@ -713,6 +712,22 @@ var commands_map: CommandValuesMap = {
         },
         client: function () {
             return !!document.querySelector('.wc-message-groups:focus');
+        }
+    },
+    'hostconfig': {
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
+        },
+        do: function (nightmare) {
+            nightmare
+                .evaluate(() => {
+                    window['WebChatTest'].changeHostConfig({ fontFamily: 'serif' });
+                });
+        },
+        client: function () {
+            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Details about image 1');
+
+            return titleElement && window.getComputedStyle(titleElement)['font-family'] === 'serif';
         }
     }
     /*
