@@ -164,7 +164,23 @@ In the `/src/scss/` folder you will find the source files for generating `/botch
 
 #### Card Layout
 
-Web Chat uses [AdaptiveCards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
+Web Chat uses [Adaptive Cards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
+
+##### To customize styles with your own [`hostconfig.json`](https://docs.microsoft.com/en-us/adaptive-cards/display/hostconfig):
+
+```js
+BotChat.App({
+    adaptiveCardsHostConfig: {
+        fontFamily: '"Myriad Pro", sans-serif'
+    }
+}, document.getElementById('BotChatGoesHere'));
+```
+
+Or alternatively, in React.
+
+```jsx
+<BotChat.Chat adaptiveCardsHostConfig={{ fontFamily: '"Myriad Prop", sans-serif' }} />
+```
 
 #### Card Sizes / Responsiveness
 
