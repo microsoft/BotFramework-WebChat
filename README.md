@@ -166,22 +166,6 @@ In the `/src/scss/` folder you will find the source files for generating `/botch
 
 Web Chat uses [Adaptive Cards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
 
-##### To customize styles with your own [`hostconfig.json`](https://docs.microsoft.com/en-us/adaptive-cards/display/hostconfig):
-
-```js
-BotChat.App({
-    adaptiveCardsHostConfig: {
-        fontFamily: '"Myriad Pro", sans-serif'
-    }
-}, document.getElementById('BotChatGoesHere'));
-```
-
-Or alternatively, in React.
-
-```jsx
-<BotChat.Chat adaptiveCardsHostConfig={{ fontFamily: '"Myriad Prop", sans-serif' }} />
-```
-
 #### Card Sizes / Responsiveness
 
 Web Chat strives to use responsive design when possible. As part of this, Web Chat cards come in 3 sizes: narrow (216px), normal (320px) and wide (416px). In a full-window chat, these sizes are invoked by a CSS media query in the `/botchat-fullwindow.css` style sheet. You may customize this style sheet for the media query breakpoints in your own application. Or, if your Web Chat implementation is not a full-window experience, you can manually invoke card sizes by adding the CSS classes `wc-narrow` and `wc-wide` to the HTML element containing your chat.

@@ -62,7 +62,7 @@ You may wish to create your Host Configuration using SCSS in this repo. This met
 
 ### Optional: Embed without webpack
 
-It is also possible to supply an Adaptive Cards Host Configuration without the need to webpack. Start with the [basic example from the readme](https://github.com/Microsoft/BotFramework-WebChat#easy-in-your-non-react-website-run-web-chat-inline), then add some script prior to instantiating `BotChat.App`:
+It is also possible to supply an Adaptive Cards Host Configuration without the need to webpack. Start with the [basic example from the readme](https://github.com/Microsoft/BotFramework-WebChat#easy-in-your-non-react-website-run-web-chat-inline), then add `adaptiveCardsHostConfig` prop when instantiating `BotChat.App`:
 
 ```HTML
 <!DOCTYPE html>
@@ -74,11 +74,10 @@ It is also possible to supply an Adaptive Cards Host Configuration without the n
     <div id="bot"/>
     <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
     <script>
-
-      //set Adaptive Cards Host Configuration
-      AdaptiveCards.setHostConfig( {YOUR JSON HERE} );
-
       BotChat.App({
+        adaptiveCardsHostConfig: {
+          fontFamily: '"Myriad Pro", sans-serif'
+        },
         directLine: { secret: direct_line_secret },
         user: { id: 'userid' },
         bot: { id: 'botid' },
@@ -87,4 +86,16 @@ It is also possible to supply an Adaptive Cards Host Configuration without the n
     </script>
   </body>
 </html>
+```
+
+Or alternatively, in React:
+
+```jsx
+<BotChat.Chat
+  adaptiveCardsHostConfig={{ fontFamily: '"Myriad Prop", sans-serif' }}
+  directLine={{ secret: direct_line_secret }}
+  user={{ id: 'userid' }}
+  bot={{ id: 'botid' }}
+  resize="detect"
+/>
 ```
