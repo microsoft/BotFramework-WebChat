@@ -1,24 +1,31 @@
+//Qim Info color theme
+$primaryColor: #009bde;
+$primaryDarkColor: #0071ce;
+$accentColor: #9fce20;
+$accentLightColor: #cfde00;
+
 //Note: for Adaptive cards 0.5.6, you must use rgb, rgba, or the 6-digit hex (do not use 3 digit hex shortcut)
-$c00: #000000;
-$c01: #ffffff;
-$c02: rgba(0, 0, 0, 0.2);
+$c00: #ffffff;  // Message from bot content
+$c01: #ffffff;  // Message from me content
+$c02: rgba(0, 0, 0, 0.2); // Message shadow
 $c03: #8a8a8a;
 $c04: #999999;
 $c05: #cccccc;
 $c06: #767676; // used for timestamp under chat bubbles
-$c07: #0078d7;
+$c07: $primaryDarkColor; // Message from me background
 $c08: #808c95;
-$c09: #eceff1;
+// $c09: #eceff1;
+$c09: $accentColor; // Message from bot background
 $c10: #dbdee1;
 $c11: #d2dde5;
 $c12: #ffa333;
 
-$c_brand: $c07;
+$c_brand: $primaryColor;
 $c_shadow: $c02;
 $c_chrome: $c10;
 $c_textHeading: $c08;
 $c_textLight: $c04;
 
-$c_messageFromMe: $c_brand;
-$c_messageFromThem: $c09;
+$c_messageFromMe: $primaryDarkColor;
+$c_messageFromThem: $accentColor;
 $c_timestamp: $c06;
