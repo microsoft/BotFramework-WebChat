@@ -282,6 +282,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+                <img src="http://localhost:8000/src/assets/QIMBOT-Avatar-64x64.png"></img>
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">
