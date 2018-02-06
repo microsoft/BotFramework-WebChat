@@ -307,6 +307,12 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             this.props.onClickActivity && 'clickable'
         );
 
+        const messageClassName = classList(
+            'wc-message',
+            'wc-message-from-'+who,
+            this.props.avatar.iconUrl ? 'wc-has-avatar' : null
+        );
+
         const contentClassName = classList(
             'wc-message-content',
             this.props.selected && 'selected'
@@ -314,7 +320,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
+                <div className={ messageClassName } ref={ div => this.messageDiv = div }>
                 <AvatarElement iconUrl={this.props.avatar.iconUrl}></AvatarElement>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">
