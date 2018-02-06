@@ -208,6 +208,23 @@ const localizedStrings: LocalizedStrings = {
         uploadFile: "",
         speak: ""
     },
+    'fr-ch': {
+        title: "Chat",
+        send: "Envoyer",
+        unknownFile: "[Fichier de type '%1']",
+        unknownCard: "[Carte inconnue '%1']",
+        receiptVat: "TVA",
+        receiptTax: "Taxe",
+        receiptTotal: "Total",
+        messageRetry: "reéssayer",
+        messageFailed: "envoi impossible",
+        messageSending: "envoi",
+        timeSent: " à %1",
+        consolePlaceholder: "Écrivez votre message...",
+        listeningIndicator: "Écoute...",
+        uploadFile: "",
+        speak: ""
+    },
     'es-es': {
         title: "Chat",
         send: "Enviar",
