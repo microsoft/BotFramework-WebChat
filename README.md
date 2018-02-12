@@ -1,3 +1,6 @@
+# Fork of MS bot webchat for Qim Info
+Supports bot avatar, uses Qim info color theme.
+
 # Microsoft Bot Framework Web Chat
 
 Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API.

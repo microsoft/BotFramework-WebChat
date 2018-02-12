@@ -11,6 +11,8 @@ export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+    user: User,
+    bot: User,
 
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
@@ -92,6 +94,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } }
             format={ null }
             fromMe={ false }
+            avatar={ {
+                iconUrl: null
+            } }
             onClickActivity={ null }
             onClickRetry={ null }
             selected={ false }
@@ -128,6 +133,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         selected={ this.props.isSelected(activity) }
                         fromMe={ this.props.isFromMe(activity) }
+                        avatar={ this.props.isFromMe(activity) ? this.props.user : this.props.bot }
                         onClickActivity={ this.props.onClickActivity(activity) }
                         onClickRetry={ e => {
                             // Since this is a click on an anchor, we need to stop it
@@ -176,7 +182,8 @@ export const History = connect(
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
         botConnection: state.connection.botConnection,
-        user: state.connection.user
+        bot: state.connection.bot,
+        user: state.connection.user,
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
@@ -188,6 +195,8 @@ export const History = connect(
         format: stateProps.format,
         size: stateProps.size,
         activities: stateProps.activities,
+        user: stateProps.user,
+        bot: stateProps.bot,
         // from dispatchProps
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
@@ -225,15 +234,38 @@ const measurePaddedWidth = (el: HTMLElement): number => {
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
+export interface AvatarProps {
+    iconUrl?: string;
+}
+
 export interface WrappedActivityProps {
     activity: Activity,
     showTimestamp: boolean,
     selected: boolean,
     fromMe: boolean,
     format: FormatState,
+    avatar: AvatarProps,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
 }
+
+export class AvatarElement extends React.Component<AvatarProps, {}> {
+    constructor(props: AvatarProps) {
+        super(props);
+    }
+
+    render() {
+        const iconClassName = classList(
+            'wc-avatar-icon'
+        );
+
+        return this.props.iconUrl ?
+            (<div className={iconClassName}>
+                <img src={ this.props.iconUrl } alt="icon"></img>
+            </div>) :
+            false;
+    }
+};
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     public messageDiv: HTMLDivElement;
@@ -275,6 +307,12 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             this.props.onClickActivity && 'clickable'
         );
 
+        const messageClassName = classList(
+            'wc-message',
+            'wc-message-from-'+who,
+            this.props.avatar.iconUrl ? 'wc-has-avatar' : null
+        );
+
         const contentClassName = classList(
             'wc-message-content',
             this.props.selected && 'selected'
@@ -282,7 +320,8 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
+                <div className={ messageClassName } ref={ div => this.messageDiv = div }>
+                <AvatarElement iconUrl={this.props.avatar.iconUrl}></AvatarElement>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />

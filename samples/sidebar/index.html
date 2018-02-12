@@ -12,6 +12,13 @@
     * webSocket = set to 'true' to use WebSocket to receive messages (currently defaults to false)
     * userid, username = id (and optionally name) of bot user
     * botid, botname = id (and optionally name) of bot
+    * style = 'img' 'firstInitial' or 'bothInitials' for webchat icon style
+    *           img will show user image url
+    *           firstInitial will show first initial of user's name on a colored background
+    *           bothInitials will show both initials of user's name on a colored background
+    * color = the index of desired background color for initials according to colorPalette (see below)
+    * initials = the initials to be rendered against colored background
+    * showbot, showuser = set to 'true' or 'false' to show or hide icon of bot / user
 -->
 <html>
   <head>
@@ -85,23 +92,25 @@
 
       const user = {
         id: params['userid'] || 'userid',
-        name: params['username'] || 'username'
+        name: params['username'] || 'username',
+        // iconUrl: "../../src/assets/user.jpg"
       };
 
       const bot = {
         id: params['botid'] || 'botid',
-        name: params['botname'] || 'botname'
+        name: params['botname'] || 'botname',
+        iconUrl: "../../src/assets/qimbot.jpg"
       };
 
       window['botchatDebug'] = params['debug'] && params['debug'] === 'true';
 
       BotChat.App({
         bot: bot,
-        locale: params['locale'],
+        // locale: params['locale'],
         resize: 'detect',
         // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
         user: user,
-        // locale: 'es-es', // override locale to Spanish
+        locale: 'fr-ch', // override locale to Spanish
 
         directLine: {
           domain: params['domain'],
