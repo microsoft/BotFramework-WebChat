@@ -25,6 +25,14 @@ interface HttpHeader {
     value: string
 }
 
+interface webkitAudioContext extends AudioContext {
+}
+
+declare var webkitAudioContext: {
+    prototype: webkitAudioContext;
+    new(): webkitAudioContext;
+};
+
 export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     private _requestQueue: SpeakRequest[] = null;
     private _isPlaying: boolean = false;
@@ -79,7 +87,12 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         if (!this._isPlaying) {
             this._isPlaying = true;
             if (!this._audioElement || this._audioElement.state === "closed") {
-                this._audioElement = new AudioContext();
+				if (typeof(webkitAudioContext)!=="undefined"){
+                    this._audioElement = new webkitAudioContext();
+                }
+                else{
+                    this._audioElement = new AudioContext();
+                }
             }
             this._audioElement.decodeAudioData(top.data, (buffer) => {
                 const source = this._audioElement.createBufferSource();
