@@ -3,6 +3,7 @@ import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Speech } from './SpeechModule';
 import { ActivityOrID, FormatOptions } from './Types';
+import { HostConfig } from 'adaptivecards';
 import * as konsole from './Konsole';
 
 // Reducers - perform state transformations
@@ -430,16 +431,45 @@ export const history: Reducer<HistoryState> = (
     }
 }
 
-export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction;
+export interface AdaptiveCardsState {
+    hostConfig: HostConfig
+}
+
+export type AdaptiveCardsAction = {
+    type: 'Set_AdaptiveCardsHostConfig',
+    payload: any
+}
+
+export const adaptiveCards: Reducer<AdaptiveCardsState> = (
+    state: AdaptiveCardsState = {
+        hostConfig: null
+    },
+    action: AdaptiveCardsAction
+) => {
+    switch (action.type) {
+        case 'Set_AdaptiveCardsHostConfig':
+            return {
+                ...state,
+                hostConfig: action.payload && (action.payload instanceof HostConfig ? action.payload : new HostConfig(action.payload))
+            };
+
+        default:
+            return state;
+    }
+}
+
+
+export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;
 
 const nullAction = { type: null } as ChatActions;
 
 export interface ChatState {
-    shell: ShellState,
-    format: FormatState,
-    size: SizeState,
+    adaptiveCards: AdaptiveCardsState,
     connection: ConnectionState,
-    history: HistoryState
+    format: FormatState,
+    history: HistoryState,
+    shell: ShellState,
+    size: SizeState
 }
 
 const speakFromMsg = (msg: Message, fallbackLocale: string) => {
@@ -639,11 +669,12 @@ import { combineEpics, createEpicMiddleware } from 'redux-observable';
 export const createStore = () =>
     reduxCreateStore(
         combineReducers<ChatState>({
-            shell,
-            format,
-            size,
+            adaptiveCards,
             connection,
-            history
+            format,
+            history,
+            shell,
+            size
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             updateSelectedActivityEpic,
@@ -662,4 +693,3 @@ export const createStore = () =>
     );
 
 export type ChatStore = Store<ChatState>;
-

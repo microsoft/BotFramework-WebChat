@@ -15,6 +15,7 @@ import * as konsole from './Konsole';
 import { getTabIndex } from './getTabIndex';
 
 export interface ChatProps {
+    adaptiveCardsHostConfig: any,
     user: User,
     bot: User,
     botConnection?: IBotConnection,
@@ -62,11 +63,20 @@ export class Chat extends React.Component<ChatProps, {}> {
             locale: props.locale || (window.navigator as any)["userLanguage"] || window.navigator.language || 'en'
         });
 
-        if (props.formatOptions)
-            this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });
+        if (props.adaptiveCardsHostConfig) {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_AdaptiveCardsHostConfig',
+                payload: props.adaptiveCardsHostConfig
+            });
+        }
 
-        if (props.sendTyping)
+        if (props.formatOptions) {
+            this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });
+        }
+
+        if (props.sendTyping) {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
+        }
 
         if (props.speechOptions) {
             Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
@@ -205,6 +215,15 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (this.botConnection)
             this.botConnection.end();
         window.removeEventListener('resize', this.resizeListener);
+    }
+
+    componentWillReceiveProps(nextProps: ChatProps) {
+        if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_AdaptiveCardsHostConfig',
+                payload: nextProps.adaptiveCardsHostConfig
+            });
+        }
     }
 
     // At startup we do three render passes:

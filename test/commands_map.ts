@@ -132,9 +132,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return new_win.title.indexOf('Bot Chat') === -1;
+            return windows.some(win => !~win.title.indexOf('Bot Chat'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.receipt_card);
@@ -274,9 +272,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl2');
+            return windows.some(window => ~window.title.indexOf('OpenUrl2'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.hero_card);
@@ -292,9 +288,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl1');
+            return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.hero_card);
@@ -478,9 +472,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl2');
+            return windows.some(window => ~window.title.indexOf('OpenUrl2'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.receipt_card);
@@ -496,9 +488,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl1');
+            return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.receipt_card);
@@ -532,9 +522,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl2');
+            return windows.some(window => ~window.title.indexOf('OpenUrl2'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
@@ -550,9 +538,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl1');
+            return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
@@ -630,7 +616,7 @@ var commands_map: CommandValuesMap = {
     },
     "card BingSports": {
         client: function () {
-            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
+            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Seattle vs Panthers');
         },
         server: function (conversationId, sendActivity, json) {
             sendActivity(conversationId, server_content.adaptive_cardsFn(json));
@@ -650,7 +636,7 @@ var commands_map: CommandValuesMap = {
     },
     "card Inputs": {
         client: function () {
-            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Input.Text elements');
+            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Input.Text elements');
         },
         server: function (res, sendActivity, json) {
             sendActivity(res, server_content.adaptive_cardsFn(json));
@@ -726,6 +712,22 @@ var commands_map: CommandValuesMap = {
         },
         client: function () {
             return !!document.querySelector('.wc-message-groups:focus');
+        }
+    },
+    'hostconfig': {
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
+        },
+        do: function (nightmare) {
+            nightmare
+                .evaluate(() => {
+                    window['WebChatTest'].changeHostConfig({ fontFamily: 'serif' });
+                });
+        },
+        client: function () {
+            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Details about image 1');
+
+            return titleElement && window.getComputedStyle(titleElement)['font-family'] === 'serif';
         }
     }
     /*

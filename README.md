@@ -164,7 +164,7 @@ In the `/src/scss/` folder you will find the source files for generating `/botch
 
 #### Card Layout
 
-Web Chat uses [AdaptiveCards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
+Web Chat uses [Adaptive Cards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
 
 #### Card Sizes / Responsiveness
 
