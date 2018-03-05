@@ -411,7 +411,24 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: "A Escutar...",
         uploadFile: "",
         speak: ""
-   }
+   },
+   'fi-fi' : {
+        title: "Chat",
+        send: "Lähetä",
+        unknownFile: "[Tiedosto tyyppiä '%1']",
+        unknownCard: "[Tuntematon kortti '%1']",
+        receiptVat: "ALV",
+        receiptTax: "Vero",
+        receiptTotal: "Yhteensä",
+        messageRetry: "yritä uudelleen",
+        messageFailed: "ei voitu lähettää",
+        messageSending: "lähettää",
+        timeSent: " klo %1",
+        consolePlaceholder: "Kirjoita viesti...",
+        listeningIndicator: "Kuuntelee...",
+        uploadFile: "Lataa tiedosto",
+        speak: "Puhu"
+    }
 }
 
 export const defaultStrings = localizedStrings['en-us'];
@@ -435,6 +452,8 @@ function mapLocale(locale: string) {
         return 'el-gr';
     } else if (locale.startsWith('es')) {
         return 'es-es';
+    } else if (locale.startsWith('fi')) {
+        return 'fi-fi';
     } else if (locale.startsWith('fr')) {
         return 'fr-fr';
     } else if (locale.startsWith('hu')) {
