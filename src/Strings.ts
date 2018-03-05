@@ -153,9 +153,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "versturen",
         timeSent: " om %1",
         consolePlaceholder: "Typ je bericht...",
-        listeningIndicator: "het luisteren...",
-        uploadFile: "",
-        speak: ""
+        listeningIndicator: "Aan het luisteren...",
+        uploadFile: "Bestand uploaden",
+        speak: "Spreek"
     },
     'lv-lv': {
         title: "Tērzēšana",
