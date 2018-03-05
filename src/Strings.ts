@@ -452,6 +452,8 @@ function mapLocale(locale: string) {
         return 'el-gr';
     } else if (locale.startsWith('es')) {
         return 'es-es';
+    } else if (locale.startsWith('fi')) {
+        return 'fi-fi';
     } else if (locale.startsWith('fr')) {
         return 'fr-fr';
     } else if (locale.startsWith('hu')) {
@@ -488,8 +490,6 @@ function mapLocale(locale: string) {
         } else {
             return 'zh-hans';
         }
-    } else if (locale.startsWith('fi')) {
-        return 'fi-fi';
     }
 
     return 'en-us';
