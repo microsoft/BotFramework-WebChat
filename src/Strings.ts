@@ -119,9 +119,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "wysyłanie",
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość...",
-        listeningIndicator: "Słuchający...",
-        uploadFile: "",
-        speak: ""
+        listeningIndicator: "Słuchanie...",
+        uploadFile: "Wyślij plik",
+        speak: "Mów"
     },
     'ru-ru': {
         title: "Чат",
