@@ -423,7 +423,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: "yritä uudelleen",
         messageFailed: "ei voitu lähettää",
         messageSending: "lähettää",
-        timeSent: "klo %1",
+        timeSent: " klo %1",
         consolePlaceholder: "Kirjoita viesti...",
         listeningIndicator: "Kuuntelee...",
         uploadFile: "Lataa tiedosto",
