@@ -264,7 +264,7 @@ const localizedStrings: LocalizedStrings = {
         send: "发送",
         unknownFile: "[类型为'%1'的文件]",
         unknownCard: "[未知的'%1'卡片]",
-        receiptVat: "VAT",
+        receiptVat: "消费税",
         receiptTax: "税",
         receiptTotal: "共计",
         messageRetry: "重试",
@@ -273,8 +273,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " 用时 %1",
         consolePlaceholder: "输入你的消息...",
         listeningIndicator: "正在倾听...",
-        uploadFile: "",
-        speak: ""
+        uploadFile: "上传文件",
+        speak: "发言"
     },
     'zh-hant': {
         title: "聊天",
