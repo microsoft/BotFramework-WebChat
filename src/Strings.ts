@@ -69,8 +69,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " %1",
         consolePlaceholder: "Skriv inn melding...",
         listeningIndicator: "Lytter...",
-        uploadFile: "",
-        speak: ""
+        uploadFile: "Last opp fil",
+        speak: "Snakk"
     },
     'da-dk': {
         title: "Chat",
