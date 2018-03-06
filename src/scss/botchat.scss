@@ -160,16 +160,8 @@
 
     .wc-message-pane.show-actions {
         .wc-message-groups {
+            top: $headerTotalHeight + $actionsHeight;
             transform: translateY(-$actionsHeight);
-
-            // Some space up top to keep the transformation from
-            // pushing the messages behind the header
-            &:before {
-                content: "";
-                display: block;
-                height: $actionsHeight;
-                width: 100%;
-            }
         }
         .wc-suggested-actions {
             height: $actionsHeight;
