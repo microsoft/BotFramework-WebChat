@@ -31,7 +31,7 @@ interface webkitAudioContext extends AudioContext {
 declare var webkitAudioContext: {
     prototype: webkitAudioContext;
     new(): webkitAudioContext;
-};
+}
 
 export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     private _requestQueue: SpeakRequest[] = null;
@@ -87,10 +87,10 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
         if (!this._isPlaying) {
             this._isPlaying = true;
             if (!this._audioElement || this._audioElement.state === "closed") {
-				if (typeof(webkitAudioContext)!=="undefined"){
+                if (typeof webkitAudioContext !== "undefined") {
                     this._audioElement = new webkitAudioContext();
                 }
-                else{
+                else {
                     this._audioElement = new AudioContext();
                 }
             }
