@@ -1,7 +1,8 @@
 import { Activity } from 'botframework-directlinejs';
 
 export interface FormatOptions {
-    showHeader?: boolean
+    showHeader?: boolean // DEPRECATED: Use "title" instead
+    title?: boolean | string
 }
 
 export type ActivityOrID = {

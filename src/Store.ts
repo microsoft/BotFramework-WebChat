@@ -176,7 +176,7 @@ export const format: Reducer<FormatState> = (
     state: FormatState = {
         locale: 'en-us',
         options: {
-            showHeader: true
+            title: true
         },
         showUploadButton: true,
         strings: defaultStrings,

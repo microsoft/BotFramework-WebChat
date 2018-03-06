@@ -74,6 +74,14 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton });
 
         if (props.formatOptions) {
+            if (typeof props.formatOptions.showHeader !== 'undefined') {
+                console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "formatOptions.title" instead');
+
+                if (typeof props.formatOptions.title === 'undefined') {
+                    props.formatOptions.title = props.formatOptions.showHeader;
+                }
+            }
+
             this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });
         }
 
@@ -243,9 +251,9 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         // only render real stuff after we know our dimensions
         let header: JSX.Element;
-        if (state.format.options.showHeader) header =
+        if (state.format.options.title) header =
             <div className="wc-header">
-                <span>{ state.format.strings.title }</span>
+                <span>{ typeof state.format.options.title === 'string' ? state.format.options.title : state.format.strings.title }</span>
             </div>;
 
         let resize: JSX.Element;

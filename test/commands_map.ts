@@ -53,6 +53,27 @@ var commands_map: CommandValuesMap = {
             return top > 0;
         }
     },
+    "options.title=false": {
+        urlAppend: { "formatOptions": { title: false } },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top === 0;
+        }
+    },
+    "options.title=default": {
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top > 0;
+        }
+    },
+    "options.title=custom": {
+        urlAppend: { "formatOptions": { title: 'Hello, World!' } },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            var text = document.querySelector('.wc-header').textContent;
+            return top > 0 && text === 'Hello, World!';
+        }
+    },
     "animation": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
