@@ -6,11 +6,13 @@ import { ActivityView } from './ActivityView';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { sendMessage } from './Store';
+import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
 export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+    hasActivityWithSuggestedActions: Activity,
 
     setMeasurements: (carouselMargin: number) => void,
     onClickRetry: (activity: Activity) => void,
@@ -36,8 +38,14 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         super(props);
     }
 
-    componentWillUpdate() {
-        this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= 1);
+    componentWillUpdate(nextProps: HistoryProps) {
+        let scrollToBottomDetectionTolerance = 1;
+
+        if (!this.props.hasActivityWithSuggestedActions && nextProps.hasActivityWithSuggestedActions) {
+            scrollToBottomDetectionTolerance = 40; // this should be in-sync with $actionsHeight scss var
+        }
+
+        this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= scrollToBottomDetectionTolerance);
     }
 
     componentDidUpdate() {
@@ -172,6 +180,7 @@ export const History = connect(
         format: state.format,
         size: state.size,
         activities: state.history.activities,
+        hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
         // only used to create helper functions below
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
@@ -188,6 +197,7 @@ export const History = connect(
         format: stateProps.format,
         size: stateProps.size,
         activities: stateProps.activities,
+        hasActivityWithSuggestedActions: stateProps.hasActivityWithSuggestedActions,
         // from dispatchProps
         setMeasurements: dispatchProps.setMeasurements,
         onClickRetry: dispatchProps.onClickRetry,
