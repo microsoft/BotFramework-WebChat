@@ -132,7 +132,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             });
         }
 
-        this.actualRecognizer.Recognize(eventhandler, speechContext);
+        return this.actualRecognizer.Recognize(eventhandler, speechContext);
     }
 
     public speechIsAvailable(){
@@ -143,7 +143,10 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
         if (this.actualRecognizer != null) {
             this.actualRecognizer.AudioSource.TurnOff();
         }
+
         this.isStreamingToService = false;
+
+        return Promise.resolve();
     }
 
     private log(message: string) {
