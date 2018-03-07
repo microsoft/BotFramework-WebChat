@@ -75,7 +75,7 @@ export class Chat extends React.Component<ChatProps, {}> {
         let { chatTitle } = props;
 
         if (props.formatOptions) {
-            console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "chatTitle" instead. See https://github.com/Microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#formatoptions-showheader-is-deprecated-use-chattitle-instead.');
+            console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "chatTitle" instead. See https://github.com/Microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#formatoptionsshowheader-is-deprecated-use-chattitle-instead.');
 
             if (typeof props.formatOptions.showHeader !== 'undefined' && typeof props.chatTitle === 'undefined') {
                 chatTitle = props.formatOptions.showHeader;
