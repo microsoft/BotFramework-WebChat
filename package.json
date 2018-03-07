@@ -64,7 +64,7 @@
     "nightmare": "2.8.1",
     "nightmare-upload": "0.1.1",
     "nightmare-window-manager": "^0.2.2",
-    "node-sass": "4.5.0",
+    "node-sass": "4.7.2",
     "nodemon": "1.11.0",
     "npm-run-all": "3.1.2",
     "remote": "0.2.6",
