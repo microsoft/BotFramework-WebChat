@@ -10,6 +10,13 @@ import * as konsole from './Konsole';
 
 import { Reducer } from 'redux';
 
+export enum ListeningState {
+    STOPPED,
+    STARTING,
+    STARTED,
+    STOPPING
+}
+
 export const sendMessage = (text: string, from: User, locale: string) => ({
     type: 'Send_Message',
     activity: {
@@ -46,7 +53,7 @@ const attachmentsFromFiles = (files: FileList) => {
 export interface ShellState {
     sendTyping: boolean
     input: string
-    listening: boolean
+    listeningState: ListeningState
     lastInputViaSpeech : boolean
 }
 
@@ -58,6 +65,8 @@ export type ShellAction = {
     type: 'Listening_Starting'
 } | {
     type: 'Listening_Start'
+} | {
+    type: 'Listening_Stopping'
 } | {
     type: 'Listening_Stop'
 } | {
@@ -81,7 +90,7 @@ export const shell: Reducer<ShellState> = (
     state: ShellState = {
         input: '',
         sendTyping: false,
-        listening : false,
+        listeningState: ListeningState.STOPPED,
         lastInputViaSpeech : false
     },
     action: ShellAction
@@ -89,43 +98,54 @@ export const shell: Reducer<ShellState> = (
     switch (action.type) {
         case 'Update_Input':
             return {
-                ... state,
+                ...state,
                 input: action.input,
                 lastInputViaSpeech : action.source == "speech"
             };
 
         case 'Listening_Start':
             return {
-                ... state,
-                listening: true
+                ...state,
+                listeningState: ListeningState.STARTED
             };
 
         case 'Listening_Stop':
             return {
-                ... state,
-                listening: false
+                ...state,
+                listeningState: ListeningState.STOPPED
+            };
+
+        case 'Listening_Starting':
+            return {
+                ...state,
+                listeningState: ListeningState.STARTING
+            };
+
+        case 'Listening_Stopping':
+            return {
+                ...state,
+                listeningState: ListeningState.STOPPING
             };
 
         case 'Send_Message':
             return {
-                ... state,
+                ...state,
                 input: ''
             };
 
         case 'Set_Send_Typing':
             return {
-                ... state,
+                ...state,
                 sendTyping: action.sendTyping
             };
 
-       case 'Card_Action_Clicked':
+        case 'Card_Action_Clicked':
            return {
-               ... state,
-               lastInputViaSpeech : false
+                ...state,
+                lastInputViaSpeech : false
            };
 
         default:
-        case 'Listening_Starting':
             return state;
     }
 }
@@ -570,7 +590,7 @@ const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         return call$.map(onSpeakingFinished)
             .catch(error => Observable.of(nullAction));
     })
-    .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stop' } as ShellAction)));
+    .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stopping' } as ShellAction)));
 
 const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Receive_Message')
@@ -588,13 +608,17 @@ const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
     .do(Speech.SpeechSynthesizer.stopSpeaking)
     .map(_ => nullAction)
 
-const stopListeningEpic: Epic<ChatActions, ChatState> = (action$) =>
+const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType(
-        'Listening_Stop',
+        'Listening_Stopping',
         'Card_Action_Clicked'
     )
-    .do(Speech.SpeechRecognizer.stopRecognizing)
-    .map(_ => nullAction)
+    .do(() => {
+        Speech.SpeechRecognizer.stopRecognizing().then(() => {
+            store.dispatch({ type: 'Listening_Stop' });
+        });
+    })
+    .map(_ => nullAction);
 
 const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
@@ -604,21 +628,21 @@ const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         var onFinalResult = (srText : string) => {
                 srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
                 onIntermediateResult(srText);
-                store.dispatch({ type: 'Listening_Stop' });
+                store.dispatch({ type: 'Listening_Stopping' });
                 store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
             };
         var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
-        var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stop' })};
+        var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
         Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
     })
     .map(_ => nullAction)
 
 const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 {
-    const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stop');
+    const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stopping');
     return action$.ofType('Listening_Start')
         .mergeMap((action) =>
-            Observable.of(({ type: 'Listening_Stop' }) as ShellAction)
+            Observable.of(({ type: 'Listening_Stopping' }) as ShellAction)
             .delay(5000)
             .takeUntil(cancelMessages$));
 };

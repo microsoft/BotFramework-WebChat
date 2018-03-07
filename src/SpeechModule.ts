@@ -14,8 +14,8 @@ export module Speech {
         onRecognitionFailed: Action;
 
         warmup(): void;
-        startRecognizing(): void;
-        stopRecognizing(): void;
+        startRecognizing(): Promise<void>;
+        stopRecognizing(): Promise<void>;
         speechIsAvailable() : boolean;
     }
 
@@ -53,19 +53,22 @@ export module Speech {
             SpeechRecognizer.instance.onFinalResult = onFinalResult;
             SpeechRecognizer.instance.onAudioStreamingToService = onAudioStreamStarted;
             SpeechRecognizer.instance.onRecognitionFailed = onRecognitionFailed;
-            SpeechRecognizer.instance.startRecognizing();
+
+            return SpeechRecognizer.instance.startRecognizing();
         }
 
         public static stopRecognizing() {
-            if (!SpeechRecognizer.speechIsAvailable())
+            if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
+            }
 
-            SpeechRecognizer.instance.stopRecognizing();
+            return SpeechRecognizer.instance.stopRecognizing();
         }
 
         public static warmup() {
-            if (!SpeechRecognizer.speechIsAvailable())
+            if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
+            }
 
             SpeechRecognizer.instance.warmup();
         }
@@ -118,7 +121,7 @@ export module Speech {
                 console.error("This browser does not support speech recognition");
                 return;
             }
-            
+
             this.recognizer = new (<any>window).webkitSpeechRecognition();
             this.recognizer.lang = 'en-US';
             this.recognizer.interimResults = true;
@@ -163,11 +166,17 @@ export module Speech {
         }
 
         public startRecognizing() {
-            this.recognizer.start();
+            return new Promise<void>(resolve => {
+                this.recognizer.onstart = () => resolve();
+                this.recognizer.start();
+            });
         }
 
         public stopRecognizing() {
-            this.recognizer.stop();
+            return new Promise<void>(resolve => {
+                this.recognizer.onend = () => resolve();
+                this.recognizer.stop();
+            });
         }
     }
 
@@ -292,10 +301,10 @@ export module Speech {
             }
         }
 
-        // process SSML markup into an array of either 
+        // process SSML markup into an array of either
         // * utterenance
         // * number which is delay in msg
-        // * url which is an audio file 
+        // * url which is an audio file
         private processNodes(nodes: NodeList, output: any[]): void {
             for (let i = 0; i < nodes.length; i++) {
                 const node = nodes[i];
@@ -327,7 +336,7 @@ export module Speech {
                         break;
                     case 'say-as':
                     case 'prosody':  // ToDo: handle via msg.rate
-                    case 'emphasis': // ToDo: can probably emulate via prosody + pitch 
+                    case 'emphasis': // ToDo: can probably emulate via prosody + pitch
                     case 'w':
                     case 'phoneme': //
                     case 'voice':
