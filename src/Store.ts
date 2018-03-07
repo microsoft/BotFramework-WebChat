@@ -2,7 +2,7 @@ import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, 
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Speech } from './SpeechModule';
-import { ActivityOrID, FormatOptions } from './Types';
+import { ActivityOrID } from './Types';
 import { HostConfig } from 'adaptivecards';
 import * as konsole from './Konsole';
 
@@ -151,16 +151,16 @@ export const shell: Reducer<ShellState> = (
 }
 
 export interface FormatState {
+    chatTitle: boolean | string,
     locale: string,
-    options: FormatOptions,
     showUploadButton: boolean,
     strings: Strings,
     carouselMargin: number
 }
 
 export type FormatAction = {
-    type: 'Set_Format_Options',
-    options: FormatOptions,
+    type: 'Set_Chat_Title',
+    chatTitle: boolean | string
 } | {
     type: 'Set_Locale',
     locale: string
@@ -174,10 +174,8 @@ export type FormatAction = {
 
 export const format: Reducer<FormatState> = (
     state: FormatState = {
+        chatTitle: true,
         locale: 'en-us',
-        options: {
-            showHeader: true
-        },
         showUploadButton: true,
         strings: defaultStrings,
         carouselMargin: undefined
@@ -185,13 +183,10 @@ export const format: Reducer<FormatState> = (
     action: FormatAction
 ) => {
     switch (action.type) {
-        case 'Set_Format_Options':
+        case 'Set_Chat_Title':
             return {
                 ...state,
-                options: {
-                    ...state.options,
-                    ...action.options
-                }
+                chatTitle: typeof action.chatTitle === 'undefined' ? true : action.chatTitle
             };
         case 'Set_Locale':
             return {

@@ -74,6 +74,7 @@
               id: params['botid'] || 'botid',
               name: params['botname'] || 'botname'
             },
+            chatTitle: params['title'] !== 'false' && params['title'],
             directLine: {
               domain: params['domain'],
               secret: params['s'],
@@ -113,6 +114,7 @@
                 }
               }));
             },
+            setChatTitle: chatTitle => this.setState(() => ({ chatTitle })),
             toggleUploadButton: show => {
               this.setState(state => ({
                 showUploadButton: typeof show === 'boolean' ? show : !state.showUploadButton
@@ -127,6 +129,7 @@
               <BotChat.Chat
                 adaptiveCardsHostConfig={ this.state.adaptiveCardsHostConfig }
                 bot={ this.state.bot }
+                chatTitle={ this.state.chatTitle }
                 directLine={ this.state.directLine }
                 formatOptions={ this.state.formatOptions }
                 locale={ this.state.locale }

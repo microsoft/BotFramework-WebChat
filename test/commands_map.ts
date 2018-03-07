@@ -47,10 +47,37 @@ var commands_map: CommandValuesMap = {
             return top === 0;
         }
     },
-    "options.showHeader=default": {
+    "options.title=false": {
+        urlAppend: { title: false },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top === 0;
+        }
+    },
+    "options.title=undefined": {
         client: function () {
             var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
             return top > 0;
+        }
+    },
+    "options.title=custom": {
+        urlAppend: { title: 'Hello, World!' },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            var text = document.querySelector('.wc-header').textContent;
+            return top > 0 && text === 'Hello, World!';
+        }
+    },
+    "set title on-the-fly": {
+        do: function (nightmare) {
+            nightmare.evaluate(() => {
+                window['WebChatTest'].setChatTitle('Hello, World!');
+            });
+        },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            var text = document.querySelector('.wc-header').textContent;
+            return top > 0 && text === 'Hello, World!';
         }
     },
     "animation": {
