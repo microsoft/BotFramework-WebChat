@@ -16,6 +16,7 @@ import { getTabIndex } from './getTabIndex';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
+    chatTitle?: boolean | string,
     user: User,
     bot: User,
     botConnection?: IBotConnection,
@@ -71,19 +72,21 @@ export class Chat extends React.Component<ChatProps, {}> {
             });
         }
 
-        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton });
+        let { chatTitle } = props;
 
         if (props.formatOptions) {
-            if (typeof props.formatOptions.showHeader !== 'undefined') {
-                console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "formatOptions.title" instead');
+            console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "chatTitle" instead. See https://github.com/Microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#formatoptions-showheader-is-deprecated-use-chattitle-instead.');
 
-                if (typeof props.formatOptions.title === 'undefined') {
-                    props.formatOptions.title = props.formatOptions.showHeader;
-                }
+            if (typeof props.formatOptions.showHeader !== 'undefined' && typeof props.chatTitle === 'undefined') {
+                chatTitle = props.formatOptions.showHeader;
             }
-
-            this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });
         }
+
+        if (typeof chatTitle !== 'undefined') {
+            this.store.dispatch<ChatActions>({ type: 'Set_Chat_Title', chatTitle });
+        }
+
+        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton });
 
         if (props.sendTyping) {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
@@ -238,6 +241,13 @@ export class Chat extends React.Component<ChatProps, {}> {
                 showUploadButton: nextProps.showUploadButton
             });
         }
+
+        if (this.props.chatTitle !== nextProps.chatTitle) {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_Chat_Title',
+                chatTitle: nextProps.chatTitle
+            });
+        }
     }
 
     // At startup we do three render passes:
@@ -250,16 +260,6 @@ export class Chat extends React.Component<ChatProps, {}> {
         konsole.log("BotChat.Chat state", state);
 
         // only render real stuff after we know our dimensions
-        let header: JSX.Element;
-        if (state.format.options.title) header =
-            <div className="wc-header">
-                <span>{ typeof state.format.options.title === 'string' ? state.format.options.title : state.format.strings.title }</span>
-            </div>;
-
-        let resize: JSX.Element;
-        if (this.props.resize === 'detect') resize =
-            <ResizeDetector onresize={ this.resizeListener } />;
-
         return (
             <Provider store={ this.store }>
                 <div
@@ -267,7 +267,12 @@ export class Chat extends React.Component<ChatProps, {}> {
                     onKeyDownCapture={ this._handleKeyDownCapture }
                     ref={ this._saveChatviewPanelRef }
                 >
-                    { header }
+                    {
+                        !!state.format.chatTitle &&
+                            <div className="wc-header">
+                                <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
+                            </div>
+                    }
                     <MessagePane>
                         <History
                             onCardAction={ this._handleCardAction }
@@ -275,7 +280,10 @@ export class Chat extends React.Component<ChatProps, {}> {
                         />
                     </MessagePane>
                     <Shell ref={ this._saveShellRef } />
-                    { resize }
+                    {
+                        this.props.resize === 'detect' &&
+                            <ResizeDetector onresize={ this.resizeListener } />
+                    }
                 </div>
             </Provider>
         );
