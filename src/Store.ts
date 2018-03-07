@@ -153,6 +153,7 @@ export const shell: Reducer<ShellState> = (
 export interface FormatState {
     locale: string,
     options: FormatOptions,
+    showUploadButton: boolean,
     strings: Strings,
     carouselMargin: number
 }
@@ -166,6 +167,9 @@ export type FormatAction = {
 } | {
     type: 'Set_Measurements',
     carouselMargin: number
+} | {
+    type: 'Toggle_Upload_Button',
+    showUploadButton: boolean
 }
 
 export const format: Reducer<FormatState> = (
@@ -174,6 +178,7 @@ export const format: Reducer<FormatState> = (
         options: {
             showHeader: true
         },
+        showUploadButton: true,
         strings: defaultStrings,
         carouselMargin: undefined
     },
@@ -182,22 +187,27 @@ export const format: Reducer<FormatState> = (
     switch (action.type) {
         case 'Set_Format_Options':
             return {
-                ... state,
+                ...state,
                 options: {
-                    ... state.options,
-                    ... action.options
+                    ...state.options,
+                    ...action.options
                 }
             };
         case 'Set_Locale':
             return {
-                ... state,
+                ...state,
                 locale: action.locale,
-                strings: strings(action.locale),
+                strings: strings(action.locale)
             };
         case 'Set_Measurements':
             return {
-                ... state,
+                ...state,
                 carouselMargin: action.carouselMargin
+            };
+        case 'Toggle_Upload_Button':
+            return {
+                ...state,
+                showUploadButton: action.showUploadButton
             };
         default:
             return state;

@@ -729,6 +729,28 @@ var commands_map: CommandValuesMap = {
 
             return titleElement && window.getComputedStyle(titleElement)['font-family'] === 'serif';
         }
+    },
+    'options.showUploadButton=false': {
+        urlAppend: { showUploadButton: false },
+        client: function () {
+            return !document.querySelector('#wc-upload-input');
+        }
+    },
+    'options.showUploadButton=undefined': {
+        urlAppend: {},
+        client: function () {
+            return !!document.querySelector('#wc-upload-input');
+        }
+    },
+    'toggle upload button': {
+        do: function (nightmare) {
+            nightmare.evaluate(() => {
+                window['WebChatTest'].toggleUploadButton(false);
+            });
+        },
+        client: function () {
+            return !document.querySelector('#wc-upload-input');
+        }
     }
     /*
      ** Add your commands to test here **
