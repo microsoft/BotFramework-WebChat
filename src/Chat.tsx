@@ -160,15 +160,11 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private saveHistoryRef(historyWrapper: any) {
-        this.historyRef = historyWrapper.getWrappedInstance();
+        this.historyRef = historyWrapper && historyWrapper.getWrappedInstance();
     }
 
     private saveShellRef(shellWrapper: any) {
-        if (!shellWrapper) {
-            this.shellRef = null;
-            return;
-        }
-        this.shellRef = shellWrapper.getWrappedInstance();
+        this.shellRef = shellWrapper && shellWrapper.getWrappedInstance();
     }
 
     componentDidMount() {
