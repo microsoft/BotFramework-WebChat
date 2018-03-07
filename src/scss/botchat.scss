@@ -634,9 +634,13 @@
             visibility: hidden
         }
 
+        &.has-upload-button .wc-textbox {
+            left: 48px;
+        }
+
         .wc-textbox {
             bottom: 0;
-            left: 48px;
+            left: 11px;
             right: 49px;
 
             input {

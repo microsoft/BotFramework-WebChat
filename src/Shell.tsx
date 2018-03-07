@@ -11,6 +11,7 @@ interface Props {
     inputText: string,
     strings: Strings,
     listeningState: ListeningState,
+    showUploadButton: boolean
 
     onChangeText: (inputText: string) => void
 
@@ -90,7 +91,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     render() {
         const className = classList(
             'wc-console',
-            this.props.inputText.length > 0 && 'has-text'
+            this.props.inputText.length > 0 && 'has-text',
+            this.props.showUploadButton && 'has-upload-button'
         );
 
         const showMicButton = this.props.listeningState !== ListeningState.STOPPED || (Speech.SpeechRecognizer.speechIsAvailable()  && !this.props.inputText.length);
@@ -111,26 +113,32 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
         return (
             <div className={ className }>
-                <label
-                    className="wc-upload"
-                    htmlFor="wc-upload-input"
-                    onKeyPress={ evt => this.handleUploadButtonKeyPress(evt) }
-                    tabIndex={ 0 }
-                >
-                    <svg>
-                        <path d="M19.96 4.79m-2 0a2 2 0 0 1 4 0 2 2 0 0 1-4 0zM8.32 4.19L2.5 15.53 22.45 15.53 17.46 8.56 14.42 11.18 8.32 4.19ZM1.04 1L1.04 17 24.96 17 24.96 1 1.04 1ZM1.03 0L24.96 0C25.54 0 26 0.45 26 0.99L26 17.01C26 17.55 25.53 18 24.96 18L1.03 18C0.46 18 0 17.55 0 17.01L0 0.99C0 0.45 0.47 0 1.03 0Z" />
-                    </svg>
-                </label>
-                <input
-                    id="wc-upload-input"
-                    tabIndex={ -1 }
-                    type="file"
-                    ref={ input => this.fileInput = input }
-                    multiple
-                    onChange={ () => this.onChangeFile() }
-                    aria-label={ this.props.strings.uploadFile }
-                    role="button"
-                />
+                {
+                    this.props.showUploadButton &&
+                        <label
+                            className="wc-upload"
+                            htmlFor="wc-upload-input"
+                            onKeyPress={ evt => this.handleUploadButtonKeyPress(evt) }
+                            tabIndex={ 0 }
+                        >
+                            <svg>
+                                <path d="M19.96 4.79m-2 0a2 2 0 0 1 4 0 2 2 0 0 1-4 0zM8.32 4.19L2.5 15.53 22.45 15.53 17.46 8.56 14.42 11.18 8.32 4.19ZM1.04 1L1.04 17 24.96 17 24.96 1 1.04 1ZM1.03 0L24.96 0C25.54 0 26 0.45 26 0.99L26 17.01C26 17.55 25.53 18 24.96 18L1.03 18C0.46 18 0 17.55 0 17.01L0 0.99C0 0.45 0.47 0 1.03 0Z" />
+                            </svg>
+                        </label>
+                }
+                {
+                    this.props.showUploadButton &&
+                        <input
+                            id="wc-upload-input"
+                            tabIndex={ -1 }
+                            type="file"
+                            ref={ input => this.fileInput = input }
+                            multiple
+                            onChange={ () => this.onChangeFile() }
+                            aria-label={ this.props.strings.uploadFile }
+                            role="button"
+                        />
+                }
                 <div className="wc-textbox">
                     <input
                         type="text"
@@ -180,6 +188,7 @@ export const Shell = connect(
     (state: ChatState) => ({
         // passed down to ShellContainer
         inputText: state.shell.input,
+        showUploadButton: state.format.showUploadButton,
         strings: state.format.strings,
         // only used to create helper functions below
         locale: state.format.locale,
@@ -196,6 +205,7 @@ export const Shell = connect(
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
+        showUploadButton: stateProps.showUploadButton,
         strings: stateProps.strings,
         listeningState: stateProps.listeningState,
         // from dispatchProps

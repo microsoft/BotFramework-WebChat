@@ -84,6 +84,7 @@
             locale: params['locale'],
             resize: 'window',
             sendTyping: false, //set to true to send 'typing' activities to bot (and other users) when user is typing
+            showUploadButton: params['showUploadButton'] !== 'false',
             speechOptions: params['speech'] !== 'enabled/ui' ?
               null
             :
@@ -111,6 +112,11 @@
                   fontFamily: '"Times New Roman", serif'
                 }
               }));
+            },
+            toggleUploadButton: show => {
+              this.setState(state => ({
+                showUploadButton: typeof show === 'boolean' ? show : !state.showUploadButton
+              }));
             }
           };
         }
@@ -126,6 +132,7 @@
                 locale={ this.state.locale }
                 resize={ this.state.resize }
                 sendTyping={ this.state.sendTyping }
+                showUploadButton={ this.state.showUploadButton }
                 speechOptions={ this.state.speechOptions }
                 user={ this.state.user }
               />

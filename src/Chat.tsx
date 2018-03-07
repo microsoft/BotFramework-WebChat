@@ -24,6 +24,7 @@ export interface ChatProps {
     locale?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
+    showUploadButton?: boolean,
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect'
 }
@@ -69,6 +70,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                 payload: props.adaptiveCardsHostConfig
             });
         }
+
+        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton });
 
         if (props.formatOptions) {
             this.store.dispatch<ChatActions>({ type: 'Set_Format_Options', options: props.formatOptions });
@@ -222,6 +225,13 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch<ChatActions>({
                 type: 'Set_AdaptiveCardsHostConfig',
                 payload: nextProps.adaptiveCardsHostConfig
+            });
+        }
+
+        if (this.props.showUploadButton !== nextProps.showUploadButton) {
+            this.store.dispatch<ChatActions>({
+                type: 'Toggle_Upload_Button',
+                showUploadButton: nextProps.showUploadButton
             });
         }
     }
