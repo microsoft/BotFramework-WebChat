@@ -52,6 +52,7 @@
 
     <script src="botchat.js"></script>
     <script src="mock_speech.js"></script>
+    <script src="CognitiveServices.js"></script>
 
     <script type="text/babel">
       const params = BotChat.queryParams(location.search);
@@ -86,13 +87,22 @@
             resize: 'window',
             sendTyping: false, //set to true to send 'typing' activities to bot (and other users) when user is typing
             showUploadButton: params['showUploadButton'] !== 'false',
-            speechOptions: params['speech'] !== 'enabled/ui' ?
-              null
-            :
+            speechOptions: params['speech'] === 'enabled/ui' ?
               {
                 speechRecognizer: new MockSpeechRecognizer(),
                 speechSynthesizer: new MockSpeechSynthesizer()
-              },
+              }
+            : params['speech'] ?
+              {
+                speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: params['speech'] }),
+                speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
+                  gender: CognitiveServices.SynthesisGender.Female,
+                  subscriptionKey: params['speech'],
+                  voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+                })
+              }
+            :
+              null,
             user: {
               id: params['userid'] || 'userid',
               name: params['username'] || 'username'
