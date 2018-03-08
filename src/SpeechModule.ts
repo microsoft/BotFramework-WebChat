@@ -16,7 +16,7 @@ export module Speech {
         warmup(): void;
         startRecognizing(): Promise<void>;
         stopRecognizing(): Promise<void>;
-        speechIsAvailable() : boolean;
+        speechIsAvailable(): boolean;
     }
 
     export interface ISpeechSynthesizer {
@@ -31,22 +31,24 @@ export module Speech {
             SpeechRecognizer.instance = recognizer;
         }
 
-        public static startRecognizing(locale: string = 'en-US',
+        public static async startRecognizing(
+            locale: string = 'en-US',
             onIntermediateResult: Func<string, void> = null,
             onFinalResult: Func<string, void> = null,
             onAudioStreamStarted: Action = null,
-            onRecognitionFailed: Action = null) {
-
-            if (!SpeechRecognizer.speechIsAvailable())
+            onRecognitionFailed: Action = null
+        ) {
+            if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
+            }
 
             if (locale && SpeechRecognizer.instance.locale !== locale) {
-                SpeechRecognizer.instance.stopRecognizing();
+                await SpeechRecognizer.instance.stopRecognizing();
                 SpeechRecognizer.instance.locale = locale; // to do this could invalidate warmup.
             }
 
             if (SpeechRecognizer.alreadyRecognizing()) {
-                SpeechRecognizer.stopRecognizing();
+                await SpeechRecognizer.stopRecognizing();
             }
 
             SpeechRecognizer.instance.onIntermediateResult = onIntermediateResult;
@@ -54,15 +56,15 @@ export module Speech {
             SpeechRecognizer.instance.onAudioStreamingToService = onAudioStreamStarted;
             SpeechRecognizer.instance.onRecognitionFailed = onRecognitionFailed;
 
-            return SpeechRecognizer.instance.startRecognizing();
+            await SpeechRecognizer.instance.startRecognizing();
         }
 
-        public static stopRecognizing() {
+        public static async stopRecognizing() {
             if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
             }
 
-            return SpeechRecognizer.instance.stopRecognizing();
+            await SpeechRecognizer.instance.stopRecognizing();
         }
 
         public static warmup() {
