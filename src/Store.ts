@@ -618,16 +618,16 @@ const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         'Listening_Stopping',
         'Card_Action_Clicked'
     )
-    .do(() => {
-        Speech.SpeechRecognizer.stopRecognizing().then(() => {
-            store.dispatch({ type: 'Listening_Stop' });
-        });
+    .do(async () => {
+        await Speech.SpeechRecognizer.stopRecognizing()
+
+        store.dispatch({ type: 'Listening_Stop' });
     })
     .map(_ => nullAction);
 
 const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
-    .do((action : ShellAction) => {
+    .do(async (action : ShellAction) => {
         var locale = store.getState().format.locale;
         var onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source:"speech" })};
         var onFinalResult = (srText : string) => {
@@ -638,7 +638,8 @@ const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
             };
         var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
         var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
-        Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
+
+        await Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
     })
     .map(_ => nullAction)
 

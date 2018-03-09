@@ -69,7 +69,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     public warmup() {
     }
 
-    public startRecognizing() {
+    public async startRecognizing() {
         if (!this.actualRecognizer) {
             this.log('ERROR: no recognizer?');
             return;
@@ -139,14 +139,14 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
         return this.actualRecognizer != null;
     }
 
-    public stopRecognizing() {
+    public async stopRecognizing() {
         if (this.actualRecognizer != null) {
             this.actualRecognizer.AudioSource.TurnOff();
         }
 
         this.isStreamingToService = false;
 
-        return Promise.resolve();
+        return;
     }
 
     private log(message: string) {

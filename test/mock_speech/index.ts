@@ -13,8 +13,8 @@ interface ISpeechRecognizer {
     onRecognitionFailed: Action;
 
     warmup(): void;
-    startRecognizing(): void;
-    stopRecognizing(): void;
+    startRecognizing(): Promise<void>;
+    stopRecognizing(): Promise<void>;
     speechIsAvailable() : boolean;
 }
 
@@ -34,13 +34,13 @@ class MockSpeechRecognizer implements ISpeechRecognizer {
     onRecognitionFailed: Action = null;
 
     warmup(): void { }
-    startRecognizing(): void {
+    async startRecognizing(): Promise<void> {
         // This will advance to Listening_Start state from Listening_Starting
         if (this.onAudioStreamingToService) {
             this.onAudioStreamingToService();
         }
     }
-    stopRecognizing(): void { }
+    async stopRecognizing(): Promise<void> {}
     speechIsAvailable(): boolean {
         return true;
     }
