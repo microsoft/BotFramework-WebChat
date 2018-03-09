@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - [`adaptivecards@1.0.0-beta9`](https://www.npmjs.com/package/adaptivecards), in [PR #849](https://github.com/Microsoft/BotFramework-WebChat/pull/849)
   - [`http-server@0.10.0`](https://www.npmjs.com/package/http-server), in [PR #829](https://github.com/Microsoft/BotFramework-WebChat/pull/829)
   - [`microsoft-speech-browser-sdk@0.0.12`](https://www.npmjs.com/package/microsoft-speech-browser-sdk), in [PR #888](https://github.com/Microsoft/BotFramework-WebChat/pull/888)
-  - [`nightmare@3.0.0`](https://www.npmjs.com/package/nightmare), in [PR #XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+  - [`nightmare@3.0.0`](https://www.npmjs.com/package/nightmare), in [PR #887](https://github.com/Microsoft/BotFramework-WebChat/pull/887)
   - [`node-sass@4.7.2`](https://www.npmjs.com/package/node-sass), in [PR #873](https://github.com/Microsoft/BotFramework-WebChat/pull/873)
 - Fix: Safari on Mac speech synthesis by prefixing `AudioContext`, by [@DerPate2010](https://github.com/DerPate2010) in [PR #865](https://github.com/Microsoft/BotFramework-WebChat/pull/865)
 - Fix: clicking microphone button too fast should not fail, by [@shahidkhuram](https://github.com/shahidkhuram) in [PR #657](#657) and [PR #881](https://github.com/Microsoft/BotFramework-WebChat/pull/881)
