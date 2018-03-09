@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Update dependencies
-  - [`adaptivecards@1.0.0-beta9`](https://www.npmjs.com/package/adaptivecards), in [PR #849](https://github.com/Microsoft/BotFramework-WebChat/pull/849)
+  - [`adaptivecards@1.0.0`](https://www.npmjs.com/package/adaptivecards), in [PR #849](https://github.com/Microsoft/BotFramework-WebChat/pull/849) and [PR #XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
   - [`http-server@0.10.0`](https://www.npmjs.com/package/http-server), in [PR #829](https://github.com/Microsoft/BotFramework-WebChat/pull/829)
   - [`microsoft-speech-browser-sdk@0.0.12`](https://www.npmjs.com/package/microsoft-speech-browser-sdk), in [PR #888](https://github.com/Microsoft/BotFramework-WebChat/pull/888)
   - [`nightmare@3.0.0`](https://www.npmjs.com/package/nightmare), in [PR #887](https://github.com/Microsoft/BotFramework-WebChat/pull/887)
