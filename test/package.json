@@ -23,7 +23,7 @@
     "botframework-directlinejs": "^0.9.13",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
-    "exnode press": "^4.16.2",
+    "express": "^4.16.2",
     "multer": "^1.3.0",
     "nightmare": "^2.10.0",
     "typescript": "2.3"
