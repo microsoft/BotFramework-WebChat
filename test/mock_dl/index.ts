@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 
 app.use(cors({
     origin: (origin, callback) => {
-        callback(null, origin && (origin.startsWith('http://localhost/') || origin.startsWith('http://localhost:')));
+        callback(null, /^https?:\/\/localhost[:\/]/.test(origin));
     }
 }));
 
