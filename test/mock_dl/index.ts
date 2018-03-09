@@ -338,7 +338,7 @@ const getMessages = (conversationId: string, watermark: number, res: express.Res
 }
 
 const getCardJsonFromFs = (fsName: string): Promise<any> => {
-    return readFileAsync('./test/cards/' + fsName + '.json')
+    return readFileAsync(path.join(__dirname, '../cards/', fsName + '.json'))
         .then(function (res) {
             return JSON.parse(res);
         });
