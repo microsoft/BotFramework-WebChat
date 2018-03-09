@@ -1,12 +1,13 @@
 require('dotenv').config();
 
-import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import * as dl from 'botframework-directlinejs/built/directLine';
 import * as express from 'express';
-import bodyParser = require('body-parser');
+import * as bodyParser from 'body-parser';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as Conversations from './conversations';
 
+const cors = require('cors');
 const multer = require('multer');
 const upload_path = path.join(__dirname, '../uploads/');
 const multer_upload = multer({ dest: upload_path }).any();
@@ -17,12 +18,12 @@ const app = express();
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
+
+app.use(cors({
+    origin: (origin, callback) => {
+        callback(null, /^https?:\/\/localhost[:\/]/.test(origin));
+    }
+}));
 
 const timeout = 60 * 1000;
 const expires_in = 1800;
@@ -143,7 +144,7 @@ const postMessage = (conversationId: string, req: express.Request, res: express.
         id,
         timestamp: new Date().toUTCString()
     });
-    processCommand(conversationId, req, res, req.body.text, id);
+    processCommand(conversationId, req, res, req.body, id);
 }
 
 const printCommands = () => {
@@ -157,22 +158,32 @@ const printCommands = () => {
 // Getting testing commands from map and server config
 const commands = require('../commands_map');
 
-const processCommand = (conversationId: string, req: express.Request, res: express.Response, cmd: string, id: number) => {
-    if (commands[cmd] && commands[cmd].server) {
+const processCommand = (conversationId: string, req: express.Request, res: express.Response, body: { name: string, text: string, type: string, value: string }, id: number) => {
+    const { text, type } = body;
+
+    if (commands[text] && commands[text].server) {
         //look for "card ..." prefix on command
-        const cardsCmd = /card[ \t]([^ ]*)/g.exec(cmd);
+        const cardsCmd = /card[ \t]([^ ]*)/g.exec(text);
+
         if (cardsCmd && cardsCmd.length > 0) {
             const cardName = cardsCmd[1];
             getCardJsonFromFs(cardName).then(cardJson => {
                 //execute the server, with the card json from the file system
-                commands[cmd].server(conversationId, sendActivity, cardJson);
+                commands[text].server(conversationId, sendActivity, cardJson);
             }).catch((err) => { throw err });
         } else {
             //execute the server
-            commands[cmd].server(conversationId, sendActivity);
+            commands[text].server(conversationId, sendActivity);
         }
+    } else if (type === 'event') {
+        sendActivity(conversationId, {
+            from: config.bot,
+            name: body.name,
+            type: 'event',
+            value: body.value
+        });
     } else {
-        switch (cmd) {
+        switch (text) {
             case 'help':
                 sendActivity(conversationId, {
                     type: "message",
