@@ -43,9 +43,9 @@
   },
   "devDependencies": {
     "@types/markdown-it": "0.0.2",
-    "@types/react": "^15.0.38",
-    "@types/react-dom": "0.14.23",
-    "@types/react-redux": "4.4.38",
+    "@types/react": "15.6.1",
+    "@types/react-dom": "15.5.7",
+    "@types/react-redux": "5.0.5",
     "awesome-typescript-loader": "3.1.2",
     "concurrently": "3.1.0",
     "expose-loader": "0.7.3",
