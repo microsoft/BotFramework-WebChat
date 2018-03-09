@@ -18,7 +18,7 @@
     "clean": "rimraf built",
     "prepublish": "tsc && npm run build-css && webpack --progress --config webpack.production.config.js",
     "start": "http-server -p 8000",
-    "test": "concurrently  \"node test/mock_dl/index.js\" \"mocha test\" ",
+    "test": "cd test && npm test",
     "mock": "cd test && npm start"
   },
   "repository": {

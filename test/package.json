@@ -6,7 +6,8 @@
   "scripts": {
     "build": "concurrently \"tsc -p ./mock_dl\" \"tsc -p .\" \"tsc -p ./mock_speech\"",
     "build:watch": "concurrently \"tsc -p ./mock_dl -w\" \"tsc -p . -w\" \"tsc -p ./mock_speech -w\"",
-    "start": "node mock_dl"
+    "start": "node mock_dl",
+    "test": "concurrently \"npm start\" \"mocha .\""
   },
   "repository": {
     "type": "git",
