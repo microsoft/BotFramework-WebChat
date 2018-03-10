@@ -92,6 +92,11 @@
                 speechRecognizer: new MockSpeechRecognizer(),
                 speechSynthesizer: new MockSpeechSynthesizer()
               }
+            : params['speech'] === 'browser' ?
+              {
+                speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
+                speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
+              }
             : params['speech'] ?
               {
                 speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: params['speech'] }),
