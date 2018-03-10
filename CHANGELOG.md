@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - [`nightmare@3.0.0`](https://www.npmjs.com/package/nightmare), in [PR #887](https://github.com/Microsoft/BotFramework-WebChat/pull/887)
   - [`node-sass@4.7.2`](https://www.npmjs.com/package/node-sass), in [PR #873](https://github.com/Microsoft/BotFramework-WebChat/pull/873)
 - Fix: Safari on Mac speech synthesis by prefixing `AudioContext`, by [@DerPate2010](https://github.com/DerPate2010) in [PR #865](https://github.com/Microsoft/BotFramework-WebChat/pull/865)
-- Fix: clicking microphone button too fast should not fail, by [@shahidkhuram](https://github.com/shahidkhuram) in [PR #657](#657) and [PR #881](https://github.com/Microsoft/BotFramework-WebChat/pull/881)
+- Fix: clicking microphone button too fast should not fail, by [@shahidkhuram](https://github.com/shahidkhuram) in [PR #657](#657), [PR #881](https://github.com/Microsoft/BotFramework-WebChat/pull/881) and [PR #XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 - Fix: unmount should not throw exception, in [PR #884](https://github.com/Microsoft/BotFramework-WebChat/pull/884)
 - Cleanup: `dependencies` and `devDependencies` in both `package.json` and `test/package.json` is much cleaner and independent of each other, in [PR #893](https://github.com/Microsoft/BotFramework-WebChat/pull/893)
 
