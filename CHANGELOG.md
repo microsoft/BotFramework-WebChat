@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Customizable chat title thru `props.chatTitle`, either `true`/`false` or a string, by [@shade33](https://github.com/shade33) in [PR #810](https://github.com/Microsoft/BotFramework-WebChat/pull/810) and [PR #875](https://github.com/Microsoft/BotFramework-WebChat/pull/875)
-- Options to show/hide upload button thru `props.showUploadButton`, in [PR #883](https://github.com/Microsoft/BotFramework-WebChat/pull/883)
+- [#754](https://github.com/Microsoft/BotFramework-WebChat/issues/754) Customizable chat title thru `props.chatTitle`, either `true`/`false` or a string, by [@shade33](https://github.com/shade33) in [PR #810](https://github.com/Microsoft/BotFramework-WebChat/pull/810) and [PR #875](https://github.com/Microsoft/BotFramework-WebChat/pull/875)
+- [#798](https://github.com/Microsoft/BotFramework-WebChat/issues/798) Options to show/hide upload button thru `props.showUploadButton`, in [PR #883](https://github.com/Microsoft/BotFramework-WebChat/pull/883)
 - Packaging with source maps with inlined source, by [@PiWiBardy](https://github.com/PiWiBardy) in [PR #842](https://github.com/Microsoft/BotFramework-WebChat/pull/842) and [PR #878](https://github.com/Microsoft/BotFramework-WebChat/pull/878)
 - Translations
   - `cs-cz`, by [Martin Simecek](https://github.com/msimecek) in [PR #809](https://github.com/Microsoft/BotFramework-WebChat/pull/809)
@@ -26,13 +26,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - [`nightmare@3.0.0`](https://www.npmjs.com/package/nightmare), in [PR #887](https://github.com/Microsoft/BotFramework-WebChat/pull/887)
   - [`node-sass@4.7.2`](https://www.npmjs.com/package/node-sass), in [PR #873](https://github.com/Microsoft/BotFramework-WebChat/pull/873)
 - Fix: Safari on Mac speech synthesis by prefixing `AudioContext`, by [@DerPate2010](https://github.com/DerPate2010) in [PR #865](https://github.com/Microsoft/BotFramework-WebChat/pull/865)
-- Fix: clicking microphone button too fast should not fail, by [@shahidkhuram](https://github.com/shahidkhuram) in [PR #657](#657) and [PR #881](https://github.com/Microsoft/BotFramework-WebChat/pull/881)
-- Fix: unmount should not throw exception, in [PR #884](https://github.com/Microsoft/BotFramework-WebChat/pull/884)
+- Fix [#654](https://github.com/Microsoft/BotFramework-WebChat/issues/654): clicking microphone button too fast should not fail, by [@shahidkhuram](https://github.com/shahidkhuram) in [PR #657](#657), [PR #881](https://github.com/Microsoft/BotFramework-WebChat/pull/881) and [PR #895](https://github.com/Microsoft/BotFramework-WebChat/pull/895)
+- Fix [#894](https://github.com/Microsoft/BotFramework-WebChat/issues/894): Chrome not speaking malformed SSML on Adaptive Cards `speak` property, in [PR #895](https://github.com/Microsoft/BotFramework-WebChat/pull/895)
+- Fix [#866](https://github.com/Microsoft/BotFramework-WebChat/issues/866): unmount should not throw exception, in [PR #884](https://github.com/Microsoft/BotFramework-WebChat/pull/884)
 - Cleanup: `dependencies` and `devDependencies` in both `package.json` and `test/package.json` is much cleaner and independent of each other, in [PR #893](https://github.com/Microsoft/BotFramework-WebChat/pull/893)
 
 ### Removed
 - Deprecated `props.formatOptions.showHeader`, [use `props.chatTitle` instead](#formatoptionsshowheader-is-deprecated-use-chattitle-instead), in [PR #875](https://github.com/Microsoft/BotFramework-WebChat/pull/875)
-- NPM `postinstall` steps removed, by [@PiWiBardy](https://github.com/PiWiBardy) in [PR #879](https://github.com/Microsoft/BotFramework-WebChat/pull/879)
+- [#855](https://github.com/Microsoft/BotFramework-WebChat/issues/855) NPM `postinstall` steps removed, by [@PiWiBardy](https://github.com/PiWiBardy) in [PR #879](https://github.com/Microsoft/BotFramework-WebChat/pull/879)
 
 # Deprecations
 

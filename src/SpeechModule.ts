@@ -2,6 +2,33 @@ export type Action = () => void
 
 export type Func<T, TResult> = (item: T) => TResult;
 
+interface EventEmitter {
+    addEventListener(name: string, listener: (event: Event) => void): void
+    removeEventListener(name: string, listener: (event: Event) => void): void
+}
+
+function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
+    return new Promise((resolve, reject) => {
+        const detach = () => {
+            emitter.removeEventListener(name, rejectListener);
+            emitter.removeEventListener(name, resolveListener);
+        };
+
+        const rejectListener = (event: Event) => {
+            detach();
+            reject(event);
+        };
+
+        const resolveListener = (event: Event) => {
+            detach();
+            resolve(event);
+        };
+
+        emitter.addEventListener(name, resolveListener);
+        emitter.addEventListener('error', rejectListener);
+    });
+}
+
 export module Speech {
     export interface ISpeechRecognizer {
         locale: string;
@@ -156,10 +183,14 @@ export module Speech {
                     this.onRecognitionFailed();
                 }
                 throw err;
-            }
+            };
+
+            this.recognizer.onend = () => {
+                this.isStreamingToService = false;
+            };
         }
 
-        public speechIsAvailable(){
+        public speechIsAvailable() {
             return this.recognizer != null;
         }
 
@@ -168,17 +199,20 @@ export module Speech {
         }
 
         public startRecognizing() {
-            return new Promise<void>(resolve => {
-                this.recognizer.onstart = () => resolve();
-                this.recognizer.start();
-            });
+            this.isStreamingToService = true;
+            this.recognizer.start();
+
+            return waitEvent(this.recognizer, 'start').then(() => {});
         }
 
         public stopRecognizing() {
-            return new Promise<void>(resolve => {
-                this.recognizer.onend = () => resolve();
+            if (this.isStreamingToService) {
                 this.recognizer.stop();
-            });
+
+                return waitEvent(this.recognizer, 'end').then(() => {});
+            } else {
+                return Promise.resolve();
+            }
         }
     }
 
@@ -346,7 +380,7 @@ export module Speech {
                         break;
                     default:
                         // Todo: coalesce consecutive non numeric / non html entries.
-                        output.push(node.nodeValue);
+                        output.push(node.textContent);
                         break;
                 }
             }
