@@ -28,7 +28,7 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
-    "adaptivecards": "1.0.0-beta9",
+    "adaptivecards": "1.0.0",
     "botframework-directlinejs": "0.9.13",
     "core-js": "2.4.1",
     "markdown-it": "8.3.1",

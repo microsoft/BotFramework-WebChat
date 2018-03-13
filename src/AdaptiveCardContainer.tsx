@@ -2,7 +2,7 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
 import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
-import { IActionBase, IActionShowCard, IAdaptiveCard } from 'adaptivecards/lib/schema';
+import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from 'adaptivecards/lib/schema';
 import { CardAction } from 'botframework-directlinejs/built/directLine';
 import { classList, IDoCardAction } from './Chat';
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
@@ -31,18 +31,34 @@ export interface BotFrameworkCardAction extends CardAction {
 const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
 
 function cardWithoutHttpActions(card: IAdaptiveCard) {
-    if (!card.actions) return card;
-    const actions: IActionBase[] = [];
-    card.actions.forEach(action => {
-        //filter out http action buttons
-        if (action.type === 'Action.Http') return;
-        if (action.type === 'Action.ShowCard') {
-            const showCardAction = action as IActionShowCard;
-            showCardAction.card = cardWithoutHttpActions(showCardAction.card);
+    if (!card.actions) {
+        return card;
+    }
+
+    const nextActions: (IOpenUrlAction | IShowCardAction | ISubmitAction)[] = card.actions.reduce((nextActions, action) => {
+        // Filter out HTTP action buttons
+        switch (action.type) {
+            case 'Action.Submit':
+                break;
+
+            case 'Action.ShowCard':
+                nextActions.push({
+                    ...action,
+                    card: cardWithoutHttpActions(action.card)
+                });
+
+                break;
+
+            default:
+                nextActions.push(action);
+
+                break;
         }
-        actions.push(action);
-    });
-    return { ...card, actions };
+
+        return nextActions;
+    }, []);
+
+    return { ...card, nextActions };
 }
 
 class AdaptiveCardContainer extends React.Component<Props, State> {
