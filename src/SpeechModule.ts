@@ -380,7 +380,7 @@ export module Speech {
                         break;
                     default:
                         // Todo: coalesce consecutive non numeric / non html entries.
-                        output.push(node.nodeValue);
+                        output.push(node.textContent);
                         break;
                 }
             }
