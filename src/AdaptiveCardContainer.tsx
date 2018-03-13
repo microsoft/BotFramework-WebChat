@@ -47,8 +47,12 @@ function cardWithoutHttpActions(card: IAdaptiveCard) {
                     card: cardWithoutHttpActions(action.card)
                 });
 
+                break;
+
             default:
                 nextActions.push(action);
+
+                break;
         }
 
         return nextActions;
