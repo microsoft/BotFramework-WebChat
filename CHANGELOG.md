@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#894](https://github.com/Microsoft/BotFramework-WebChat/issues/894): Chrome not speaking malformed SSML on Adaptive Cards `speak` property, in [PR #895](https://github.com/Microsoft/BotFramework-WebChat/pull/895)
 - Fix [#866](https://github.com/Microsoft/BotFramework-WebChat/issues/866): unmount should not throw exception, in [PR #884](https://github.com/Microsoft/BotFramework-WebChat/pull/884)
 - Cleanup: `dependencies` and `devDependencies` in both `package.json` and `test/package.json` is much cleaner and independent of each other, in [PR #893](https://github.com/Microsoft/BotFramework-WebChat/pull/893)
-- Fix [#906](https://github.com/Microsoft/BotFramework-WebChat/issues/906): Add type="button" to `<button>`, in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Fix [#906](https://github.com/Microsoft/BotFramework-WebChat/issues/906): Add type="button" to `<button>`, in [#910](https://github.com/Microsoft/BotFramework-WebChat/pull/910)
 
 ### Removed
 - Deprecated `props.formatOptions.showHeader`, [use `props.chatTitle` instead](#formatoptionsshowheader-is-deprecated-use-chattitle-instead), in [PR #875](https://github.com/Microsoft/BotFramework-WebChat/pull/875)
