@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - `nl-nl`, by [Mick Vleeshouwer](https://github.com/iMicknl) in [PR #821](https://github.com/Microsoft/BotFramework-WebChat/pull/821)
   - `pl-pl`, by [Peter Blazejewicz](https://github.com/peterblazejewicz) in [PR #813](https://github.com/Microsoft/BotFramework-WebChat/pull/813)
   - `zh-hans`, by [@Antimoney](https://github.com/Antimoney) in [PR #822](https://github.com/Microsoft/BotFramework-WebChat/pull/822) and [PR #823](https://github.com/Microsoft/BotFramework-WebChat/pull/823)
+- Promise polyfill with [bluebird](https://www.npmjs.com/package/bluebird) if needed in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Changed
 - Update dependencies

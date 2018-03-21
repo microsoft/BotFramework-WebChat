@@ -361,6 +361,12 @@ app.get('/botchat.js', function (req, res) {
 app.get('/botchat.js.map', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../botchat.js.map"));
 });
+app.get('/botchat-es5.js', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../../botchat-es5.js"));
+});
+app.get('/botchat-es5.js.map', function (req, res) {
+    res.sendFile(path.join(__dirname + "/../../botchat-es5.js.map"));
+});
 app.get('/CognitiveServices.js', function (req, res) {
     res.sendFile(path.join(__dirname + "/../../CognitiveServices.js"));
 });

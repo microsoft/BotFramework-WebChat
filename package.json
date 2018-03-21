@@ -29,6 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "adaptivecards": "1.0.0",
+    "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.13",
     "core-js": "2.4.1",
     "markdown-it": "8.3.1",
@@ -65,6 +66,8 @@
     "botchat.css",
     "botchat.js",
     "botchat.js.map",
+    "botchat-es5.js",
+    "botchat-es5.js.map",
     "CognitiveServices.js",
     "CognitiveServices.js.map"
   ]
