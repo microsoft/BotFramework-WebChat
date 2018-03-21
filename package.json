@@ -66,6 +66,8 @@
     "botchat.css",
     "botchat.js",
     "botchat.js.map",
+    "botchat-es5.js",
+    "botchat-es5.js.map",
     "CognitiveServices.js",
     "CognitiveServices.js.map"
   ]

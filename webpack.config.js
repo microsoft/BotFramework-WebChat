@@ -33,11 +33,20 @@ const coreConfig = {
 };
 
 const chatConfig = {
-    entry: "./src/BotChatWithPolyfill.ts",
+    entry: "./src/BotChat.ts",
     output: {
         libraryTarget: "umd",
         library: "BotChat",
         filename: "./botchat.js"
+    }
+}
+
+const chatWithPolyfillConfig = {
+    entry: "./src/BotChatWithPolyfill.ts",
+    output: {
+        libraryTarget: "umd",
+        library: "BotChat",
+        filename: "./botchat-es5.js"
     }
 }
 
@@ -53,4 +62,8 @@ const featureConfig = {
     }
 }
 
-module.exports = [Object.assign(chatConfig, coreConfig), Object.assign(featureConfig, coreConfig)];
+module.exports = [
+    Object.assign(chatConfig, coreConfig),
+    Object.assign(chatWithPolyfillConfig, coreConfig),
+    Object.assign(featureConfig, coreConfig)
+];
