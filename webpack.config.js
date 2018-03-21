@@ -1,7 +1,8 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+
 require("expose-loader");
 
-var coreConfig = {
+const coreConfig = {
     devtool: "source-map",
 
     resolve: {
@@ -12,7 +13,10 @@ var coreConfig = {
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+            {
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader"
+            },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             {
                 enforce: "pre",
@@ -28,8 +32,8 @@ var coreConfig = {
     }
 };
 
-var chatConfig = {
-    entry: "./src/BotChat.ts",
+const chatConfig = {
+    entry: "./src/BotChatWithPolyfill.ts",
     output: {
         libraryTarget: "umd",
         library: "BotChat",
@@ -38,7 +42,7 @@ var chatConfig = {
 }
 
 // Config for addon features
-var featureConfig = {
+const featureConfig = {
     entry: {
         CognitiveServices: "./src/CognitiveServices/lib.ts"
     },
