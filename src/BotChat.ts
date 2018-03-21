@@ -8,3 +8,8 @@ export { Speech } from './SpeechModule'
 import 'core-js/modules/es6.string.starts-with';
 import 'core-js/modules/es6.array.find';
 import 'core-js/modules/es6.array.find-index';
+
+// Polyfill Promise if needed
+if (typeof (window as any).Promise === 'undefined') {
+  (window as any).Promise = require('bluebird');
+}
