@@ -280,6 +280,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.document_word);
         }
     },
+    "emptycard": {
+        client: function () {
+            return true;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.empty_card);
+        }
+    },
     "herocard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
