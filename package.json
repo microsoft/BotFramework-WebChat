@@ -19,7 +19,9 @@
     "prepublish": "tsc && npm run build-css && webpack --progress --config webpack.production.config.js",
     "start": "http-server -p 8000",
     "test": "cd test && npm test",
-    "mock": "cd test && npm start"
+    "mock": "cd test && npm start",
+    "install-test": "cd test && npm install",
+    "versionCommit": "npx gulp-cli version-commit"
   },
   "repository": {
     "type": "git",
@@ -50,11 +52,15 @@
     "awesome-typescript-loader": "3.1.2",
     "concurrently": "3.1.0",
     "expose-loader": "0.7.3",
+    "gulp": "^3.9.1",
+    "gulp-exec": "^3.0.1",
     "http-server": "^0.10.0",
+    "last-commit-log": "^1.0.3",
     "microsoft-adaptivecards-scss-to-json": "1.2.0",
     "node-sass": "4.7.2",
     "npm-run-all": "3.1.2",
     "rimraf": "2.6.1",
+    "semver": "^5.5.0",
     "source-map-loader": "0.2.1",
     "typescript": "2.3",
     "webpack": "2.3.3"
