@@ -252,6 +252,39 @@ export var document_word: dl.Message = {
 }
 
 /*
+ * Activity for Empty Card
+ *
+ */
+export var empty_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    suggestedActions: {
+        actions: [
+            {
+                type: "imBack",
+                title: "Blue",
+                value: "Blue",
+                image: asset_url + "square-icon.png"
+            },
+            {
+                type: "imBack",
+                title: "Red",
+                value: "Red",
+                image: asset_url + "square-icon-red.png"
+            },
+            {
+                type: "imBack",
+                title: "Green",
+                value: "Green",
+                image: asset_url + "square-icon-green.png"
+            }
+        ]
+    }
+}
+
+/*
  * Activity for Hero Card
  *
  */
