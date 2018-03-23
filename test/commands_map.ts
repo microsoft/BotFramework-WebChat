@@ -282,7 +282,10 @@ var commands_map: CommandValuesMap = {
     },
     "emptycard": {
         client: function () {
-            return true;
+            const link = document.querySelectorAll('.wc-message.wc-message-from-bot');
+            const suggestedActions = document.querySelectorAll('.wc-suggested-actions ul li');
+
+            return link.length === 1 && suggestedActions.length === 3;
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.empty_card);

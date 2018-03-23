@@ -129,30 +129,31 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = <this.measurableCarousel/>;
             } else {
                 content = this.props.activities.map((activity, index) =>
-                    <WrappedActivity
-                        format={ this.props.format }
-                        key={ 'message' + index }
-                        activity={ activity }
-                        showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                        selected={ this.props.isSelected(activity) }
-                        fromMe={ this.props.isFromMe(activity) }
-                        onClickActivity={ this.props.onClickActivity(activity) }
-                        onClickRetry={ e => {
-                            // Since this is a click on an anchor, we need to stop it
-                            // from trying to actually follow a (nonexistant) link
-                            e.preventDefault();
-                            e.stopPropagation();
-                            this.props.onClickRetry(activity)
-                        } }
-                    >
-                        <ActivityView
+                    (activity.type !== 'message' || activity.text || (activity.attachments && activity.attachments.length)) &&
+                        <WrappedActivity
                             format={ this.props.format }
-                            size={ this.props.size }
+                            key={ 'message' + index }
                             activity={ activity }
-                            onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
-                            onImageLoad={ () => this.autoscroll() }
-                        />
-                    </WrappedActivity>
+                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                            selected={ this.props.isSelected(activity) }
+                            fromMe={ this.props.isFromMe(activity) }
+                            onClickActivity={ this.props.onClickActivity(activity) }
+                            onClickRetry={ e => {
+                                // Since this is a click on an anchor, we need to stop it
+                                // from trying to actually follow a (nonexistant) link
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.props.onClickRetry(activity)
+                            } }
+                        >
+                            <ActivityView
+                                format={ this.props.format }
+                                size={ this.props.size }
+                                activity={ activity }
+                                onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
+                                onImageLoad={ () => this.autoscroll() }
+                            />
+                        </WrappedActivity>
                 );
             }
         }
