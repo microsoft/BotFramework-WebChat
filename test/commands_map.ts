@@ -691,7 +691,6 @@ var commands_map: CommandValuesMap = {
                 .wait(1000);
         },
         client: function () {
-            debugger;
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Listening...'));
         }
     },
@@ -715,6 +714,21 @@ var commands_map: CommandValuesMap = {
         },
         client: function () {
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
+        }
+    },
+    "speech listen-for": {
+        do: function (nightmare) {
+            nightmare.click('.wc-mic').wait(1000);
+        },
+        client: function () {
+            return JSON.stringify(window['debugSpeechRecognizer'].grammars) === JSON.stringify(['San Francisco', 'Seattle']);
+        },
+        server: function (res, sendActivity, json) {
+            sendActivity(res, {
+                type: 'message',
+                text: 'Where do you live?',
+                listenFor: ['San Francisco', 'Seattle']
+            } as any);
         }
     },
     "focus on type": {
@@ -819,7 +833,8 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ['speech listen-for'];    //["carousel", "herocard"];
+// var testOnly = [];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];

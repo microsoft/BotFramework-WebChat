@@ -89,7 +89,7 @@
             showUploadButton: params['showUploadButton'] !== 'false',
             speechOptions: params['speech'] === 'enabled/ui' ?
               {
-                speechRecognizer: new MockSpeechRecognizer(),
+                speechRecognizer: (window['debugSpeechRecognizer'] = new MockSpeechRecognizer()),
                 speechSynthesizer: new MockSpeechSynthesizer()
               }
             : params['speech'] === 'browser' ?

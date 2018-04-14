@@ -13,6 +13,7 @@ interface ISpeechRecognizer {
     onRecognitionFailed: Action;
 
     warmup(): void;
+    setGrammars(grammars?: string[]);
     startRecognizing(): Promise<void>;
     stopRecognizing(): Promise<void>;
     speechIsAvailable() : boolean;
@@ -24,6 +25,7 @@ interface ISpeechSynthesizer {
 }
 
 class MockSpeechRecognizer implements ISpeechRecognizer {
+    grammars: string[];
     locale: string = "en-US";
     isStreamingToService: boolean = false;
     referenceGrammarId: string = "mock";
@@ -34,13 +36,20 @@ class MockSpeechRecognizer implements ISpeechRecognizer {
     onRecognitionFailed: Action = null;
 
     warmup(): void { }
+
+    setGrammars(grammars?: string[]) {
+        this.grammars = grammars;
+    }
+
     async startRecognizing(): Promise<void> {
         // This will advance to Listening_Start state from Listening_Starting
         if (this.onAudioStreamingToService) {
             this.onAudioStreamingToService();
         }
     }
+
     async stopRecognizing(): Promise<void> {}
+
     speechIsAvailable(): boolean {
         return true;
     }

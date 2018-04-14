@@ -20,6 +20,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     public referenceGrammarId: string;
 
     private actualRecognizer: any = null;
+    private grammars: string[] = null;
     private properties: ICognitiveServicesSpeechRecognizerProperties;
 
     constructor(properties: ICognitiveServicesSpeechRecognizerProperties = {}) {
@@ -67,6 +68,10 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     }
 
     public warmup() {
+    }
+
+    public setGrammars(grammars: string[]) {
+        this.grammars = grammars;
     }
 
     public async startRecognizing() {
@@ -118,21 +123,23 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             }
         }
 
-        let speechContext = null;
+        const speechContext = { dgi: { Groups: [] } };
+
         if (this.referenceGrammarId) {
-            speechContext = JSON.stringify({
-                dgi: {
-                    Groups: [
-                        {
-                            Type: "Generic",
-                            Hints: { ReferenceGrammar: this.referenceGrammarId }
-                        }
-                    ]
-                }
+            speechContext.dgi.Groups.push({
+                Type: 'Generic',
+                Hints: { ReferenceGrammar: this.referenceGrammarId }
             });
         }
 
-        return this.actualRecognizer.Recognize(eventhandler, speechContext);
+        if (this.grammars) {
+            speechContext.dgi.Groups.push({
+                Type: 'Generic',
+                Items: this.grammars.map(grammar => ({ Text: grammar }))
+            });
+        }
+
+        return this.actualRecognizer.Recognize(eventhandler, JSON.stringify(speechContext));
     }
 
     public speechIsAvailable(){
