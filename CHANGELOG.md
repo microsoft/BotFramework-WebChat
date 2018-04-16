@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add `listenFor` speech recognizer hint for both Cognitive Services and Web Speech API
+
 ### Changed
 - Fix [#870](https://github.com/Microsoft/BotFramework-WebChat/issues/870) not to show empty bubble, in [#917](https://github.com/Microsoft/BotFramework-WebChat/pull/917)
 

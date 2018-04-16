@@ -628,18 +628,28 @@ const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
     .do(async (action : ShellAction) => {
-        var locale = store.getState().format.locale;
-        var onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source:"speech" })};
-        var onFinalResult = (srText : string) => {
-                srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
-                onIntermediateResult(srText);
-                store.dispatch({ type: 'Listening_Stopping' });
-                store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
-            };
-        var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
-        var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
+        const { history: { activities }, format: { locale } } = store.getState();
+        const lastMessageActivity = [...activities].reverse().find(activity => activity.type === 'message');
+        // TODO: Bump DirectLineJS version to support "listenFor" grammars
+        const grammars: string[] = lastMessageActivity && (lastMessageActivity as any).listenFor;
+        const onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source: 'speech' })};
+        const onFinalResult = (srText : string) => {
+            srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
+            onIntermediateResult(srText);
+            store.dispatch({ type: 'Listening_Stopping' });
+            store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
+        };
+        const onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
+        const onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
 
-        await Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
+        await Speech.SpeechRecognizer.startRecognizing(
+            locale,
+            grammars,
+            onIntermediateResult,
+            onFinalResult,
+            onAudioStreamStart,
+            onRecognitionFailed
+        );
     })
     .map(_ => nullAction)
 
