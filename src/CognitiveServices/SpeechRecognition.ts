@@ -2,6 +2,16 @@ import { Speech, Func, Action } from '../SpeechModule'
 import * as konsole from '../Konsole';
 import * as CognitiveSpeech from 'microsoft-speech-browser-sdk/Speech.Browser.Sdk'
 
+export interface ISpeechContextDgiGroup {
+    Type: string;
+    Hints?: { ReferenceGrammar: string };
+    Items?: { Text: string }[];
+}
+
+export interface ISpeechContext {
+    dgi: { Groups: ISpeechContextDgiGroup[] };
+}
+
 export interface ICognitiveServicesSpeechRecognizerProperties {
     locale?: string,
     subscriptionKey?: string,
@@ -123,7 +133,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             }
         }
 
-        const speechContext = { dgi: { Groups: [] } };
+        const speechContext: ISpeechContext = { dgi: { Groups: [] } };
 
         if (this.referenceGrammarId) {
             speechContext.dgi.Groups.push({

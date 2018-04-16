@@ -5,7 +5,7 @@ declare module 'jspeech' {
   }
 
   interface Rule {
-    rule: function(name, rule);
+    rule: (name, rule) => void;
   }
 
   export default function (name: string): JSpeech;

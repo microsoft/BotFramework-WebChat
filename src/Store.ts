@@ -629,9 +629,9 @@ const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
     .do(async (action : ShellAction) => {
         const { history: { activities }, format: { locale } } = store.getState();
-        const lastActivity = activities[activities.length - 1];
+        const lastMessageActivity = [...activities].reverse().find(activity => activity.type === 'message');
         // TODO: Bump DirectLineJS version to support "listenFor" grammars
-        const grammars: string[] = lastActivity && (lastActivity as any).listenFor;
+        const grammars: string[] = lastMessageActivity && (lastMessageActivity as any).listenFor;
         const onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source: 'speech' })};
         const onFinalResult = (srText : string) => {
             srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
