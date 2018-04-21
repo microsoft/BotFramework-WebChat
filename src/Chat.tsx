@@ -16,23 +16,26 @@ import { getTabIndex } from './getTabIndex';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
-    chatTitle?: boolean | string,
-    user: User,
     bot: User,
     botConnection?: IBotConnection,
+    chatTitle?: boolean | string,
     directLine?: DirectLineOptions,
-    speechOptions?: SpeechOptions,
+    formatOptions?: FormatOptions,
     locale?: string,
+    resize?: 'none' | 'window' | 'detect'
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     showUploadButton?: boolean,
-    formatOptions?: FormatOptions,
-    resize?: 'none' | 'window' | 'detect'
+    speechOptions?: SpeechOptions,
+    activityMergeWindowSizeInMillis?: number,
+    user: User,
 }
 
 import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
+
+const DEFAULT_ACTIVITY_MERGE_WINDOW_SIZE_IN_MILLIS = 5000;
 
 export class Chat extends React.Component<ChatProps, {}> {
 
@@ -257,6 +260,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     render() {
         const state = this.store.getState();
+        const activityMergeWindowSizeInMillis = this.props.activityMergeWindowSizeInMillis || DEFAULT_ACTIVITY_MERGE_WINDOW_SIZE_IN_MILLIS;
         konsole.log("BotChat.Chat state", state);
 
         // only render real stuff after we know our dimensions
@@ -275,6 +279,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     }
                     <MessagePane>
                         <History
+                            activityMergeWindowSizeInMillis={activityMergeWindowSizeInMillis}
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
                         />

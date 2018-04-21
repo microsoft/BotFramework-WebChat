@@ -8,10 +8,18 @@ import * as konsole from './Konsole';
 import { sendMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
+export enum ActivityPosition {
+    Alone,
+    First,
+    Last,
+    Middle
+}
+
 export interface HistoryProps {
     format: FormatState,
     size: SizeState,
     activities: Activity[],
+    activityMergeWindowSizeInMillis: number,
     hasActivityWithSuggestedActions: Activity,
 
     setMeasurements: (carouselMargin: number) => void,
@@ -27,18 +35,48 @@ export interface HistoryProps {
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
-    private scrollMe: HTMLDivElement;
-    private scrollContent: HTMLDivElement;
-    private scrollToBottom = true;
-
+    private activityPositions: ActivityPosition[] = [];
     private carouselActivity: WrappedActivity;
     private largeWidth: number;
+    private scrollContent: HTMLDivElement;
+    private scrollMe: HTMLDivElement;
+    private scrollToBottom = true;
 
     constructor(props: HistoryProps) {
         super(props);
     }
 
+    private updateActivityPositions(nextProps: HistoryProps) {
+        if (nextProps.activities.length <= this.activityPositions.length) {
+            return;
+        }
+
+        const lastActivityPositionIndex = this.activityPositions.length - 1;
+
+        const newActivity = nextProps.activities[lastActivityPositionIndex + 1];
+        const lastActivity = nextProps.activities[lastActivityPositionIndex];
+
+        if (!lastActivity || newActivity.from.id !== lastActivity.from.id) {
+            this.activityPositions.push(ActivityPosition.Alone);
+        }
+        else if(new Date(newActivity.timestamp).getTime() - new Date(lastActivity.timestamp).getTime() < this.props.activityMergeWindowSizeInMillis) {
+            const lastActivityPosition = this.activityPositions[lastActivityPositionIndex];
+            if (lastActivityPosition === ActivityPosition.Alone) {
+                this.activityPositions[lastActivityPositionIndex] = ActivityPosition.First;
+            }
+            else if (lastActivityPosition === ActivityPosition.Last) {
+                this.activityPositions[lastActivityPositionIndex] = ActivityPosition.Middle;
+            }
+            this.activityPositions.push(ActivityPosition.Last);
+        }
+        else {
+            this.activityPositions.push(ActivityPosition.Alone);
+        }
+    }
+
     componentWillUpdate(nextProps: HistoryProps) {
+        this.updateActivityPositions(nextProps);
+
         let scrollToBottomDetectionTolerance = 1;
 
         if (!this.props.hasActivityWithSuggestedActions && nextProps.hasActivityWithSuggestedActions) {
@@ -91,7 +129,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private measurableCarousel = () =>
         // find the largest possible message size by forcing a width larger than the chat itself
         <WrappedActivity
-            ref={ x => this.carouselActivity = x }
             activity={ {
                 type: 'message',
                 id: '',
@@ -100,8 +137,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } }
             format={ null }
             fromMe={ false }
+            activityPosition={ActivityPosition.Alone}
             onClickActivity={ null }
             onClickRetry={ null }
+            ref={ x => this.carouselActivity = x }
             selected={ false }
             showTimestamp={ false }
         >
@@ -131,12 +170,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = this.props.activities.map((activity, index) =>
                     (activity.type !== 'message' || activity.text || (activity.attachments && activity.attachments.length)) &&
                         <WrappedActivity
-                            format={ this.props.format }
-                            key={ 'message' + index }
                             activity={ activity }
-                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                            selected={ this.props.isSelected(activity) }
+                            format={ this.props.format }
                             fromMe={ this.props.isFromMe(activity) }
+                            key={ 'message' + index }
+                            activityPosition={this.activityPositions[index]}
                             onClickActivity={ this.props.onClickActivity(activity) }
                             onClickRetry={ e => {
                                 // Since this is a click on an anchor, we need to stop it
@@ -145,13 +183,15 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 e.stopPropagation();
                                 this.props.onClickRetry(activity)
                             } }
+                            selected={ this.props.isSelected(activity) }
+                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         >
                             <ActivityView
-                                format={ this.props.format }
-                                size={ this.props.size }
                                 activity={ activity }
+                                format={ this.props.format }
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
+                                size={ this.props.size }
                             />
                         </WrappedActivity>
                 );
@@ -208,7 +248,8 @@ export const History = connect(
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
-        onCardAction: ownProps.onCardAction
+        onCardAction: ownProps.onCardAction,
+        activityMergeWindowSizeInMillis: ownProps.activityMergeWindowSizeInMillis
     }), {
         withRef: true
     }
@@ -238,12 +279,13 @@ const suitableInterval = (current: Activity, next: Activity) =>
 
 export interface WrappedActivityProps {
     activity: Activity,
-    showTimestamp: boolean,
-    selected: boolean,
-    fromMe: boolean,
     format: FormatState,
+    fromMe: boolean,
+    activityPosition?: ActivityPosition,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
-    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
+    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>,
+    selected: boolean,
+    showTimestamp: boolean
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -251,30 +293,41 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
     constructor(props: WrappedActivityProps) {
         super(props);
-    }
+    };
+
+    private activityPosition2Class = {
+        [ActivityPosition.Alone]: 'wc-message-alone',
+        [ActivityPosition.First]: 'wc-message-first',
+        [ActivityPosition.Last]: 'wc-message-last',
+        [ActivityPosition.Middle]: 'wc-message-middle'
+    };
 
     render () {
         let timeLine: JSX.Element;
-        switch (this.props.activity.id) {
+
+        const {activity, format, activityPosition} = this.props;
+
+        switch (activity.id) {
             case undefined:
-                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
+                timeLine = <span>{ format.strings.messageSending }</span>;
                 break;
             case null:
-                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
+                timeLine = <span>{ format.strings.messageFailed }</span>;
                 break;
             case "retry":
                 timeLine =
                     <span>
-                        { this.props.format.strings.messageFailed }
+                        { format.strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
+                        <a href="." onClick={ this.props.onClickRetry }>{ format.strings.messageRetry }</a>
                     </span>;
                 break;
             default:
                 let sent: string;
-                if (this.props.showTimestamp)
-                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                if (this.props.showTimestamp) {
+                    sent = format.strings.timeSent.replace('%1', (new Date(activity.timestamp)).toLocaleTimeString());
+                }
+                timeLine = <span>{ activity.from.name || activity.from.id }{ sent }</span>;
                 break;
         }
 
@@ -282,7 +335,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         const wrapperClassName = classList(
             'wc-message-wrapper',
-            (this.props.activity as Message).attachmentLayout || 'list',
+            (activity as Message).attachmentLayout || 'list',
             this.props.onClickActivity && 'clickable'
         );
 
@@ -291,18 +344,30 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             this.props.selected && 'selected'
         );
 
+        const messageAtBottom = activityPosition === ActivityPosition.Last || activityPosition === ActivityPosition.Alone;
+
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+            <div className={ `${wrapperClassName} ${this.activityPosition2Class[activityPosition]}` }
+                 data-activity-id={ activity.id }
+                 onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
-                        <svg className="wc-message-callout">
-                            <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                            <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                        </svg>
+                        {
+                            messageAtBottom
+                            ? <svg className='wc-message-callout'>
+                                <path className='point-left' d='m0,6 l6 6 v-12 z' />
+                                <path className='point-right' d='m6,6 l-6 6 v-12 z' />
+                              </svg>
+                            : null
+                        }
                         { this.props.children }
                     </div>
                 </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                {
+                    messageAtBottom
+                    ? <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                    : null
+                }
             </div>
         );
     }
