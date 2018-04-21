@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat",
-  "version": "0.12.1-pre",
+  "version": "0.12.2-0",
   "description": "Embeddable web chat control for the Microsoft Bot Framework",
   "main": "built/BotChat.js",
   "types": "built/BotChat.d.ts",
@@ -35,6 +35,7 @@
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.13",
     "core-js": "2.4.1",
+    "jspeech": "^0.1.1",
     "markdown-it": "8.3.1",
     "microsoft-speech-browser-sdk": "0.0.12",
     "react": "15.6.1",

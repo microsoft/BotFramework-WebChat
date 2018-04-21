@@ -1,3 +1,6 @@
+/// <reference path="types/JSpeech.d.ts"/>
+import jspeech from 'jspeech';
+
 export type Action = () => void
 
 export type Func<T, TResult> = (item: T) => TResult;
@@ -5,6 +8,10 @@ export type Func<T, TResult> = (item: T) => TResult;
 interface EventEmitter {
     addEventListener(name: string, listener: (event: Event) => void): void
     removeEventListener(name: string, listener: (event: Event) => void): void
+}
+
+function prefixFallback(type: string, prefixes = ['moz', 'ms', 'webkit']): any {
+    return ['', ...prefixes].reduce((found, prefix) => found || (<any>window)[prefix + type], null);
 }
 
 function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
@@ -41,6 +48,7 @@ export module Speech {
         onRecognitionFailed: Action;
 
         warmup(): void;
+        setGrammars(grammars?: string[]): void;
         startRecognizing(): Promise<void>;
         stopRecognizing(): Promise<void>;
         speechIsAvailable(): boolean;
@@ -60,6 +68,7 @@ export module Speech {
 
         public static async startRecognizing(
             locale: string = 'en-US',
+            grammars?: string[],
             onIntermediateResult: Func<string, void> = null,
             onFinalResult: Func<string, void> = null,
             onAudioStreamStarted: Action = null,
@@ -73,6 +82,8 @@ export module Speech {
                 await SpeechRecognizer.instance.stopRecognizing();
                 SpeechRecognizer.instance.locale = locale; // to do this could invalidate warmup.
             }
+
+            SpeechRecognizer.instance.setGrammars(grammars);
 
             if (SpeechRecognizer.alreadyRecognizing()) {
                 await SpeechRecognizer.stopRecognizing();
@@ -213,6 +224,27 @@ export module Speech {
             } else {
                 return Promise.resolve();
             }
+        }
+
+        public setGrammars(grammars: string[] = []) {
+            const list = new (prefixFallback('SpeechGrammarList'));
+
+            if (!list) {
+                if (grammars.length) {
+                    console.warn('This browser does not support speech grammar list');
+                }
+
+                return;
+            } else if (!grammars.length) {
+                return;
+            }
+
+            const grammar = jspeech('listenfor');
+
+            grammar.public.rule('hint', grammars.join(' | '));
+
+            list.addFromString(grammar.stringify());
+            this.recognizer.grammars = list;
         }
     }
 
