@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.13.1] - 2018-04-21
+### Added
+- Show successive messages from the same chat-end as a single message
+
 ## [0.12.1] - 2018-04-16
 ### Added
 - Add `listenFor` speech recognizer hint for both Cognitive Services and Web Speech API
