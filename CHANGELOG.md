@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Updated [`botframework-directlinejs@0.9.15`](https://www.npmjs.com/package/botframework-directlinejs), in [#953](https://github.com/Microsoft/BotFramework-WebChat/pull/953)
 
 ## [0.12.1] - 2018-04-16
 ### Added
