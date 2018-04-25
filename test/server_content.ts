@@ -501,6 +501,32 @@ export var si_card: dl.Message = {
 }
 
 /*
+ * Activity for OAuth SignIn
+ *
+ */
+export var oauth_card: dl.Message = {
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    attachments: [
+        <dl.OAuth>{
+            contentType: "application/vnd.microsoft.card.oauth",
+            content: {
+                text: "Login to OAuth sample",
+                connectionname: "SampleConnection",
+                buttons: [
+                    {
+                        type: "signin",
+                        title: "Signin"
+                    }
+                ]
+            }
+        }
+    ]
+}
+
+/*
  * Activity for SuggestedActions
  *
  */

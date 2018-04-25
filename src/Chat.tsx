@@ -327,7 +327,7 @@ export const doCardAction = (
             break;
         case "signin":
             let loginWindow =  window.open();
-            if(botConnection.getSessionId)  {
+            if (botConnection.getSessionId)  {
                 botConnection.getSessionId().subscribe(sessionId => {
                     konsole.log("received sessionId: " + sessionId);
                     loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
