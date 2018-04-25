@@ -1,4 +1,25 @@
 language: node_js
 node_js:
-  - "6"
-  
+  - "9"
+install:
+  - npm install
+  - npm run install-test
+before_script:
+  - npm run build
+  - npm run build-test
+script:
+  # Our tests currently don't run on Travis, disabling them for now
+  - npm --version
+before_deploy:
+  - git config --local user.name "Bot Framework"
+  - git config --local user.email "botframework@microsoft.com"
+  - npm run versionCommit
+deploy:
+  - provider: npm
+    api_key:
+      secure: "ow4+DeFWxK5eSiId/c8jkRi6vPc97GgrtgP71SQFxVrcA3tKnDLtaZ4pxDeU+HdMpfdiGq75MQLJMT0UDw7WV3il/HWyTYyJzV6yG12Kw/fv0Rc08in0ImGT7BTt5DVSKqCOD9rpD3MZx3oLqLIVz8wqpVu33w+i6dsPyTQeiJPJ/p/hn6mxt0EcEXaULcYk+gFEiSz0tbP/Ak4CCIC40876T3e3CE8HlE+8Ru8fToeK98ZHLcnVpRcNwgb6qApY09gluJ+ylVVRXK49ofnPyD2KsabPdPv7py1GmmYEXhFLtuIrnTm+yPKKTaVOejbhYO32Z/uRZvr6zjyickVWua4uGm2JqCrg+NHjdiBdKdKM97kq2JvcESt/B4QJLgY2jpd/urgwL272rNpK6psDjpvUBLadnCP8HFqizSWBg23r01wZj2W2cNdiLqvJRfFUQZ4RnshifdBROiiKt88BBkIx3MxaI/OS8I8cODwSPcbA87ptZfzHHtcL39aNAQ9uuvv5kqA6I1tpujm/NJJiIA3xqnoHs0cUjXQEJ8GIIJnap798xsh/0sqfra54PNg8ICw1wXaBlY8qJjkGnqROtdW8dQY4IxOvSKZX8gjpVKw20C2qlJofvUHTkfvQhJz/S1iD5b20IlxEbclRf3fciqU+cx7LkwyUJs7FFZkzUdU="
+    email: "botframework@microsoft.com"
+    on:
+      branch: master
+    skip_cleanup: true
+    tag: master

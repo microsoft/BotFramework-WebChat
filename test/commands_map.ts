@@ -47,10 +47,37 @@ var commands_map: CommandValuesMap = {
             return top === 0;
         }
     },
-    "options.showHeader=default": {
+    "options.title=false": {
+        urlAppend: { title: false },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            return top === 0;
+        }
+    },
+    "options.title=undefined": {
         client: function () {
             var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
             return top > 0;
+        }
+    },
+    "options.title=custom": {
+        urlAppend: { title: 'Hello, World!' },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            var text = document.querySelector('.wc-header').textContent;
+            return top > 0 && text === 'Hello, World!';
+        }
+    },
+    "set title on-the-fly": {
+        do: function (nightmare) {
+            nightmare.evaluate(() => {
+                window['WebChatTest'].setChatTitle('Hello, World!');
+            });
+        },
+        client: function () {
+            var top = document.querySelector('.wc-message-groups').getClientRects()[0].top;
+            var text = document.querySelector('.wc-header').textContent;
+            return top > 0 && text === 'Hello, World!';
         }
     },
     "animation": {
@@ -132,9 +159,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return new_win.title.indexOf('Bot Chat') === -1;
+            return windows.some(win => !~win.title.indexOf('Bot Chat'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.receipt_card);
@@ -255,6 +280,17 @@ var commands_map: CommandValuesMap = {
             sendActivity(res, server_content.document_word);
         }
     },
+    "emptycard": {
+        client: function () {
+            const link = document.querySelectorAll('.wc-message.wc-message-from-bot');
+            const suggestedActions = document.querySelectorAll('.wc-suggested-actions ul li');
+
+            return link.length === 1 && suggestedActions.length === 3;
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.empty_card);
+        }
+    },
     "herocard": {
         client: function () {
             var source = document.querySelectorAll('img')[0].src;
@@ -274,9 +310,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl2');
+            return windows.some(window => ~window.title.indexOf('OpenUrl2'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.hero_card);
@@ -292,9 +326,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl1');
+            return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.hero_card);
@@ -478,9 +510,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl2');
+            return windows.some(window => ~window.title.indexOf('OpenUrl2'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.receipt_card);
@@ -496,9 +526,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl1');
+            return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.receipt_card);
@@ -532,9 +560,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl2');
+            return windows.some(window => ~window.title.indexOf('OpenUrl2'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
@@ -550,9 +576,7 @@ var commands_map: CommandValuesMap = {
         evalOtherWindow: async function (nightmare) {
             const windows_fn = await nightmare['windows'].bind(nightmare);
             const windows = await windows_fn();
-            const new_win = await windows[1];
-            console.log("Window 2 Title: " + new_win.title);
-            return !!~new_win.title.indexOf('OpenUrl1');
+            return windows.some(window => ~window.title.indexOf('OpenUrl1'));
         },
         server: function (conversationId, sendActivity) {
             sendActivity(conversationId, server_content.thumbnail_card);
@@ -630,7 +654,7 @@ var commands_map: CommandValuesMap = {
     },
     "card BingSports": {
         client: function () {
-            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Seattle vs Panthers');
+            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Seattle vs Panthers');
         },
         server: function (conversationId, sendActivity, json) {
             sendActivity(conversationId, server_content.adaptive_cardsFn(json));
@@ -650,7 +674,7 @@ var commands_map: CommandValuesMap = {
     },
     "card Inputs": {
         client: function () {
-            return (document.querySelector('.wc-adaptive-card .ac-container p').innerHTML === 'Input.Text elements');
+            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Input.Text elements');
         },
         server: function (res, sendActivity, json) {
             sendActivity(res, server_content.adaptive_cardsFn(json));
@@ -667,7 +691,6 @@ var commands_map: CommandValuesMap = {
                 .wait(1000);
         },
         client: function () {
-            debugger;
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Listening...'));
         }
     },
@@ -691,6 +714,21 @@ var commands_map: CommandValuesMap = {
         },
         client: function () {
             return (((document.querySelector('.wc-shellinput') as HTMLInputElement).placeholder === 'Type your message...'));
+        }
+    },
+    "speech listen-for": {
+        do: function (nightmare) {
+            nightmare.click('.wc-mic').wait(1000);
+        },
+        client: function () {
+            return JSON.stringify(window['debugSpeechRecognizer'].grammars) === JSON.stringify(['San Francisco', 'Seattle']);
+        },
+        server: function (res, sendActivity, json) {
+            sendActivity(res, {
+                type: 'message',
+                text: 'Where do you live?',
+                listenFor: ['San Francisco', 'Seattle']
+            } as any);
         }
     },
     "focus on type": {
@@ -726,6 +764,44 @@ var commands_map: CommandValuesMap = {
         },
         client: function () {
             return !!document.querySelector('.wc-message-groups:focus');
+        }
+    },
+    'hostconfig': {
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.hero_card);
+        },
+        do: function (nightmare) {
+            nightmare
+                .evaluate(() => {
+                    window['WebChatTest'].changeHostConfig({ fontFamily: 'serif' });
+                });
+        },
+        client: function () {
+            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Details about image 1');
+
+            return titleElement && window.getComputedStyle(titleElement)['font-family'] === 'serif';
+        }
+    },
+    'options.showUploadButton=false': {
+        urlAppend: { showUploadButton: false },
+        client: function () {
+            return !document.querySelector('#wc-upload-input');
+        }
+    },
+    'options.showUploadButton=undefined': {
+        urlAppend: {},
+        client: function () {
+            return !!document.querySelector('#wc-upload-input');
+        }
+    },
+    'toggle upload button': {
+        do: function (nightmare) {
+            nightmare.evaluate(() => {
+                window['WebChatTest'].toggleUploadButton(false);
+            });
+        },
+        client: function () {
+            return !document.querySelector('#wc-upload-input');
         }
     }
     /*

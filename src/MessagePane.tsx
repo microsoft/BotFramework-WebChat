@@ -6,6 +6,7 @@ import { HScroll } from './HScroll';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { ChatActions, sendMessage } from './Store';
+import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
@@ -64,17 +65,6 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         );
     }
 
-}
-
-function activityWithSuggestedActions(activities: Activity[]) {
-    if (!activities || activities.length === 0)
-        return;
-    const lastActivity = activities[activities.length - 1];
-    if (lastActivity.type === 'message'
-        && lastActivity.suggestedActions
-        && lastActivity.suggestedActions.actions.length > 0
-    )
-        return lastActivity;
 }
 
 export const MessagePane = connect(

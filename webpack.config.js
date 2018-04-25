@@ -1,7 +1,8 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+
 require("expose-loader");
 
-var coreConfig = {
+const coreConfig = {
     devtool: "source-map",
 
     resolve: {
@@ -12,7 +13,10 @@ var coreConfig = {
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+            {
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader"
+            },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             {
                 enforce: "pre",
@@ -21,14 +25,14 @@ var coreConfig = {
                 exclude: [/node_modules/]
             },
             {
-                test: require.resolve('microsoft-adaptivecards'),
+                test: require.resolve('adaptivecards'),
                 use: [{ loader: 'expose-loader', options: 'AdaptiveCards' }]
             }
         ]
     }
 };
 
-var chatConfig = {
+const chatConfig = {
     entry: "./src/BotChat.ts",
     output: {
         libraryTarget: "umd",
@@ -37,8 +41,17 @@ var chatConfig = {
     }
 }
 
+const chatWithPolyfillConfig = {
+    entry: "./src/BotChatWithPolyfill.ts",
+    output: {
+        libraryTarget: "umd",
+        library: "BotChat",
+        filename: "./botchat-es5.js"
+    }
+}
+
 // Config for addon features
-var featureConfig = {
+const featureConfig = {
     entry: {
         CognitiveServices: "./src/CognitiveServices/lib.ts"
     },
@@ -49,4 +62,8 @@ var featureConfig = {
     }
 }
 
-module.exports = [Object.assign(chatConfig, coreConfig), Object.assign(featureConfig, coreConfig)];
+module.exports = [
+    Object.assign(chatConfig, coreConfig),
+    Object.assign(chatWithPolyfillConfig, coreConfig),
+    Object.assign(featureConfig, coreConfig)
+];

@@ -143,7 +143,12 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     render() {
         return (
             <div>
-                <button ref={ button => this.prevButton = button } className="scroll previous" disabled>
+                <button
+                    className="scroll previous"
+                    disabled
+                    ref={ button => this.prevButton = button }
+                    type="button"
+                >
                     <svg>
                         <path d={ this.props.prevSvgPathData }/>
                     </svg>
@@ -153,7 +158,12 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                         { this.props.children }
                     </div>
                 </div>
-                <button ref={ button => this.nextButton = button } className="scroll next" disabled>
+                <button
+                    className="scroll next"
+                    disabled
+                    ref={ button => this.nextButton = button }
+                    type="button"
+                >
                     <svg>
                         <path d={ this.props.nextSvgPathData }/>
                     </svg>

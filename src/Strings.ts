@@ -69,8 +69,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " %1",
         consolePlaceholder: "Skriv inn melding...",
         listeningIndicator: "Lytter...",
-        uploadFile: "",
-        speak: ""
+        uploadFile: "Last opp fil",
+        speak: "Snakk"
     },
     'da-dk': {
         title: "Chat",
@@ -119,9 +119,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "wysyłanie",
         timeSent: " o %1",
         consolePlaceholder: "Wpisz swoją wiadomość...",
-        listeningIndicator: "Słuchający...",
-        uploadFile: "",
-        speak: ""
+        listeningIndicator: "Słuchanie...",
+        uploadFile: "Wyślij plik",
+        speak: "Mów"
     },
     'ru-ru': {
         title: "Чат",
@@ -153,9 +153,9 @@ const localizedStrings: LocalizedStrings = {
         messageSending: "versturen",
         timeSent: " om %1",
         consolePlaceholder: "Typ je bericht...",
-        listeningIndicator: "het luisteren...",
-        uploadFile: "",
-        speak: ""
+        listeningIndicator: "Aan het luisteren...",
+        uploadFile: "Bestand uploaden",
+        speak: "Spreek"
     },
     'lv-lv': {
         title: "Tērzēšana",
@@ -199,7 +199,7 @@ const localizedStrings: LocalizedStrings = {
         receiptVat: "TVA",
         receiptTax: "Taxe",
         receiptTotal: "Total",
-        messageRetry: "reéssayer",
+        messageRetry: "réessayer",
         messageFailed: "envoi impossible",
         messageSending: "envoi",
         timeSent: " à %1",
@@ -264,7 +264,7 @@ const localizedStrings: LocalizedStrings = {
         send: "发送",
         unknownFile: "[类型为'%1'的文件]",
         unknownCard: "[未知的'%1'卡片]",
-        receiptVat: "VAT",
+        receiptVat: "消费税",
         receiptTax: "税",
         receiptTotal: "共计",
         messageRetry: "重试",
@@ -273,8 +273,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: " 用时 %1",
         consolePlaceholder: "输入你的消息...",
         listeningIndicator: "正在倾听...",
-        uploadFile: "",
-        speak: ""
+        uploadFile: "上传文件",
+        speak: "发言"
     },
     'zh-hant': {
         title: "聊天",
@@ -411,7 +411,24 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: "A Escutar...",
         uploadFile: "",
         speak: ""
-   }
+   },
+   'fi-fi' : {
+        title: "Chat",
+        send: "Lähetä",
+        unknownFile: "[Tiedosto tyyppiä '%1']",
+        unknownCard: "[Tuntematon kortti '%1']",
+        receiptVat: "ALV",
+        receiptTax: "Vero",
+        receiptTotal: "Yhteensä",
+        messageRetry: "yritä uudelleen",
+        messageFailed: "ei voitu lähettää",
+        messageSending: "lähettää",
+        timeSent: " klo %1",
+        consolePlaceholder: "Kirjoita viesti...",
+        listeningIndicator: "Kuuntelee...",
+        uploadFile: "Lataa tiedosto",
+        speak: "Puhu"
+    }
 }
 
 export const defaultStrings = localizedStrings['en-us'];
@@ -435,6 +452,8 @@ function mapLocale(locale: string) {
         return 'el-gr';
     } else if (locale.startsWith('es')) {
         return 'es-es';
+    } else if (locale.startsWith('fi')) {
+        return 'fi-fi';
     } else if (locale.startsWith('fr')) {
         return 'fr-fr';
     } else if (locale.startsWith('hu')) {

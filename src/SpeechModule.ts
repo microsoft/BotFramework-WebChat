@@ -1,6 +1,40 @@
+/// <reference path="types/JSpeech.d.ts"/>
+import jspeech from 'jspeech';
+
 export type Action = () => void
 
 export type Func<T, TResult> = (item: T) => TResult;
+
+interface EventEmitter {
+    addEventListener(name: string, listener: (event: Event) => void): void
+    removeEventListener(name: string, listener: (event: Event) => void): void
+}
+
+function prefixFallback(type: string, prefixes = ['moz', 'ms', 'webkit']): any {
+    return ['', ...prefixes].reduce((found, prefix) => found || (<any>window)[prefix + type], null);
+}
+
+function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
+    return new Promise((resolve, reject) => {
+        const detach = () => {
+            emitter.removeEventListener(name, rejectListener);
+            emitter.removeEventListener(name, resolveListener);
+        };
+
+        const rejectListener = (event: Event) => {
+            detach();
+            reject(event);
+        };
+
+        const resolveListener = (event: Event) => {
+            detach();
+            resolve(event);
+        };
+
+        emitter.addEventListener(name, resolveListener);
+        emitter.addEventListener('error', rejectListener);
+    });
+}
 
 export module Speech {
     export interface ISpeechRecognizer {
@@ -14,9 +48,10 @@ export module Speech {
         onRecognitionFailed: Action;
 
         warmup(): void;
-        startRecognizing(): void;
-        stopRecognizing(): void;
-        speechIsAvailable() : boolean;
+        setGrammars(grammars?: string[]): void;
+        startRecognizing(): Promise<void>;
+        stopRecognizing(): Promise<void>;
+        speechIsAvailable(): boolean;
     }
 
     export interface ISpeechSynthesizer {
@@ -31,41 +66,49 @@ export module Speech {
             SpeechRecognizer.instance = recognizer;
         }
 
-        public static startRecognizing(locale: string = 'en-US',
+        public static async startRecognizing(
+            locale: string = 'en-US',
+            grammars?: string[],
             onIntermediateResult: Func<string, void> = null,
             onFinalResult: Func<string, void> = null,
             onAudioStreamStarted: Action = null,
-            onRecognitionFailed: Action = null) {
-
-            if (!SpeechRecognizer.speechIsAvailable())
+            onRecognitionFailed: Action = null
+        ) {
+            if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
+            }
 
             if (locale && SpeechRecognizer.instance.locale !== locale) {
-                SpeechRecognizer.instance.stopRecognizing();
+                await SpeechRecognizer.instance.stopRecognizing();
                 SpeechRecognizer.instance.locale = locale; // to do this could invalidate warmup.
             }
 
+            SpeechRecognizer.instance.setGrammars(grammars);
+
             if (SpeechRecognizer.alreadyRecognizing()) {
-                SpeechRecognizer.stopRecognizing();
+                await SpeechRecognizer.stopRecognizing();
             }
 
             SpeechRecognizer.instance.onIntermediateResult = onIntermediateResult;
             SpeechRecognizer.instance.onFinalResult = onFinalResult;
             SpeechRecognizer.instance.onAudioStreamingToService = onAudioStreamStarted;
             SpeechRecognizer.instance.onRecognitionFailed = onRecognitionFailed;
-            SpeechRecognizer.instance.startRecognizing();
+
+            await SpeechRecognizer.instance.startRecognizing();
         }
 
-        public static stopRecognizing() {
-            if (!SpeechRecognizer.speechIsAvailable())
+        public static async stopRecognizing() {
+            if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
+            }
 
-            SpeechRecognizer.instance.stopRecognizing();
+            await SpeechRecognizer.instance.stopRecognizing();
         }
 
         public static warmup() {
-            if (!SpeechRecognizer.speechIsAvailable())
+            if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
+            }
 
             SpeechRecognizer.instance.warmup();
         }
@@ -118,7 +161,7 @@ export module Speech {
                 console.error("This browser does not support speech recognition");
                 return;
             }
-            
+
             this.recognizer = new (<any>window).webkitSpeechRecognition();
             this.recognizer.lang = 'en-US';
             this.recognizer.interimResults = true;
@@ -151,10 +194,14 @@ export module Speech {
                     this.onRecognitionFailed();
                 }
                 throw err;
-            }
+            };
+
+            this.recognizer.onend = () => {
+                this.isStreamingToService = false;
+            };
         }
 
-        public speechIsAvailable(){
+        public speechIsAvailable() {
             return this.recognizer != null;
         }
 
@@ -163,11 +210,41 @@ export module Speech {
         }
 
         public startRecognizing() {
+            this.isStreamingToService = true;
             this.recognizer.start();
+
+            return waitEvent(this.recognizer, 'start').then(() => {});
         }
 
         public stopRecognizing() {
-            this.recognizer.stop();
+            if (this.isStreamingToService) {
+                this.recognizer.stop();
+
+                return waitEvent(this.recognizer, 'end').then(() => {});
+            } else {
+                return Promise.resolve();
+            }
+        }
+
+        public setGrammars(grammars: string[] = []) {
+            const list = new (prefixFallback('SpeechGrammarList'));
+
+            if (!list) {
+                if (grammars.length) {
+                    console.warn('This browser does not support speech grammar list');
+                }
+
+                return;
+            } else if (!grammars.length) {
+                return;
+            }
+
+            const grammar = jspeech('listenfor');
+
+            grammar.public.rule('hint', grammars.join(' | '));
+
+            list.addFromString(grammar.stringify());
+            this.recognizer.grammars = list;
         }
     }
 
@@ -292,10 +369,10 @@ export module Speech {
             }
         }
 
-        // process SSML markup into an array of either 
+        // process SSML markup into an array of either
         // * utterenance
         // * number which is delay in msg
-        // * url which is an audio file 
+        // * url which is an audio file
         private processNodes(nodes: NodeList, output: any[]): void {
             for (let i = 0; i < nodes.length; i++) {
                 const node = nodes[i];
@@ -327,7 +404,7 @@ export module Speech {
                         break;
                     case 'say-as':
                     case 'prosody':  // ToDo: handle via msg.rate
-                    case 'emphasis': // ToDo: can probably emulate via prosody + pitch 
+                    case 'emphasis': // ToDo: can probably emulate via prosody + pitch
                     case 'w':
                     case 'phoneme': //
                     case 'voice':
@@ -335,7 +412,7 @@ export module Speech {
                         break;
                     default:
                         // Todo: coalesce consecutive non numeric / non html entries.
-                        output.push(node.nodeValue);
+                        output.push(node.textContent);
                         break;
                 }
             }

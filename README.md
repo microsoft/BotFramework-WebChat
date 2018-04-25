@@ -24,7 +24,7 @@ Add a Web Chat channel to your registered bot, and paste in the supplied `<ifram
 
 Add a DirectLine (**not Web Chat**) channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
 
-Include `botchat.css` and `botchat.js` in your website, e.g.:
+Include `botchat.css` and `botchat.js` in your website, for example,
 
 ```HTML
 <!DOCTYPE html>
@@ -47,6 +47,8 @@ Include `botchat.css` and `botchat.js` in your website, e.g.:
 </html>
 ```
 
+> Starting from `0.12.0`, we no longer package polyfills in `botchat.js`. If you are on an older browser, you can use the bundle `botchat-es5.js`, which include polyfills for browsers which support up to ES5.
+
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
 * You can reference a specific release like this: `https://cdn.botframework.com/botframework-webchat/latest/botchat.js`. Make sure you version the `botchat.css` and `botchat.js` files together.
 * Don't want to depend on a CDN? Download the files and serve them up from your own website.
@@ -65,7 +67,7 @@ You can isolate your instance of Web Chat by running it inside an IFRAME. This i
 
 Add a DirectLine (**not Web Chat**) channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
 
-Add Web Chat to your React project via `npm install botframework-webchat`
+Add Web Chat to your React project via `npm install botframework-webchat`. This will install latest stable build. If you want to try out features and fixes direct from our GitHub, install via `npm install botframework-webchat@master`.
 
 Include the `Chat` component in your React app, e.g.:
 
@@ -117,8 +119,9 @@ This builds the following:
 * `/built/*.js` compiled from the TypeScript sources in `/src/*.js` - `/built/BotChat.js` is the root
 * `/built/*.d.ts` declarations for TypeScript users - `/built/BotChat.d.ts` is the root
 * `/built/*.js.map` sourcemaps for easier debugging
-* `/botchat.js` webpacked UMD file containing all dependencies (React, Redux, RxJS, polyfills, etc.)
+* `/botchat.js` webpacked UMD file containing all dependencies (React, Redux, RxJS, etc.)
 * `/botchat.css` base stylesheet
+* `/botchat-es5.js` is the Webpack bundle (a.k.a. `botchat.js`) plus polyfills for ES5 browsers
 * `/botchat-fullwindow.css` media query stylesheet for a full-window experience
 
 ## Customizing Web Chat
@@ -164,7 +167,7 @@ In the `/src/scss/` folder you will find the source files for generating `/botch
 
 #### Card Layout
 
-Web Chat uses [AdaptiveCards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
+Web Chat uses [Adaptive Cards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
 
 #### Card Sizes / Responsiveness
 

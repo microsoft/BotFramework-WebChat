@@ -1,86 +1,86 @@
 import * as React from 'react';
-import * as AdaptiveCards from "microsoft-adaptivecards";
-import * as AdaptiveCardSchema from "microsoft-adaptivecards/built/schema";
-import { CardAction } from "botframework-directlinejs/built/directLine";
-import { classList, IDoCardAction } from "./Chat";
+import { findDOMNode } from 'react-dom';
+import { connect } from 'react-redux';
+import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from 'adaptivecards/lib/schema';
+import { CardAction } from 'botframework-directlinejs/built/directLine';
+import { classList, IDoCardAction } from './Chat';
 import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
 import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import * as konsole from './Konsole';
+import { ChatState, AdaptiveCardsState } from './Store';
 
 export interface Props {
-    card: AdaptiveCardSchema.ICard,
-    onImageLoad?: () => any,
-    onClick?: (e: React.MouseEvent<HTMLElement>) => void,
+    className?: string,
+    hostConfig: HostConfig,
+    jsonCard?: IAdaptiveCard,
+    nativeCard?: AdaptiveCard,
     onCardAction: IDoCardAction,
-    className?: string
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void,
+    onImageLoad?: () => any,
 }
 
 export interface State {
     errors?: string[]
 }
 
-class LinkedAdaptiveCard extends AdaptiveCards.AdaptiveCard {
-    constructor(public adaptiveCardContainer: AdaptiveCardContainer) {
-        super();
-    }
-}
-
 export interface BotFrameworkCardAction extends CardAction {
     __isBotFrameworkCardAction: boolean
 }
 
-function getLinkedAdaptiveCard(action: AdaptiveCards.Action) {
-    let element = action.parent;
-    while (element && !(element instanceof LinkedAdaptiveCard)) {
-        element = element.parent;
+const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
+
+function cardWithoutHttpActions(card: IAdaptiveCard) {
+    if (!card.actions) {
+        return card;
     }
-    return element as LinkedAdaptiveCard;
+
+    const nextActions: (IOpenUrlAction | IShowCardAction | ISubmitAction)[] = card.actions.reduce((nextActions, action) => {
+        // Filter out HTTP action buttons
+        switch (action.type) {
+            case 'Action.Submit':
+                break;
+
+            case 'Action.ShowCard':
+                nextActions.push({
+                    ...action,
+                    card: cardWithoutHttpActions(action.card)
+                });
+
+                break;
+
+            default:
+                nextActions.push(action);
+
+                break;
+        }
+
+        return nextActions;
+    }, []);
+
+    return { ...card, nextActions };
 }
 
-function cardWithoutHttpActions(card: AdaptiveCardSchema.ICard) {
-    if (!card.actions) return card;
-    const actions: AdaptiveCardSchema.IActionBase[] = [];
-    card.actions.forEach(action => {
-        //filter out http action buttons
-        if (action.type === 'Action.Http') return;
-        if (action.type === 'Action.ShowCard') {
-            const showCardAction = action as AdaptiveCardSchema.IActionShowCard;
-            showCardAction.card = cardWithoutHttpActions(showCardAction.card);
-        }
-        actions.push(action);
-    });
-    return { ...card, actions };
-}
-
-AdaptiveCards.AdaptiveCard.onExecuteAction = (action: AdaptiveCards.ExternalAction) => {
-    if (action instanceof AdaptiveCards.OpenUrlAction) {
-        window.open(action.url);
-    } else if (action instanceof AdaptiveCards.SubmitAction) {
-        const linkedAdaptiveCard = getLinkedAdaptiveCard(action);
-        if (linkedAdaptiveCard && action.data !== undefined) {
-            if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
-                const cardAction = (action.data as BotFrameworkCardAction);
-                linkedAdaptiveCard.adaptiveCardContainer.onCardAction(cardAction.type, cardAction.value);
-            } else {
-                linkedAdaptiveCard.adaptiveCardContainer.onCardAction(typeof action.data === 'string' ? 'imBack' : 'postBack', action.data);
-            }
-        }
-    }
-};
-
-export class AdaptiveCardContainer extends React.Component<Props, State> {
-    private div: HTMLDivElement;
+class AdaptiveCardContainer extends React.Component<Props, State> {
+    private divRef: React.ReactInstance;
 
     constructor(props: Props) {
         super(props);
+
+        this.handleImageLoad = this.handleImageLoad.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.saveDiv = this.saveDiv.bind(this);
     }
 
-    public onCardAction: IDoCardAction = (type, value) => {
-        this.props.onCardAction(type, value);
+    private saveDiv(divRef: React.ReactInstance) {
+        this.divRef = divRef;
     }
 
     private onClick(e: React.MouseEvent<HTMLElement>) {
-        if (!this.props.onClick) return;
+        if (!this.props.onClick) {
+            return;
+        }
+
         //do not allow form elements to trigger a parent click event
         switch ((e.target as HTMLElement).tagName) {
             case 'A':
@@ -92,44 +92,103 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
             case 'TEXTAREA':
             case 'SELECT':
                 break;
+
             default:
                 this.props.onClick(e);
         }
     }
 
+    private onExecuteAction(action: Action) {
+        if (action instanceof OpenUrlAction) {
+            window.open(action.url);
+        } else if (action instanceof SubmitAction) {
+            if (action.data !== undefined) {
+                if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
+                    const cardAction = (action.data as BotFrameworkCardAction);
+
+                    this.props.onCardAction(cardAction.type, cardAction.value);
+                } else {
+                    this.props.onCardAction(typeof action.data === 'string' ? 'imBack' : 'postBack', action.data);
+                }
+            }
+        }
+    }
+
     componentDidMount() {
-        const adaptiveCard = new LinkedAdaptiveCard(this);
-        adaptiveCard.parse(cardWithoutHttpActions(this.props.card));
-        const errors = adaptiveCard.validate();
+        this.mountAdaptiveCards();
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (
+            prevProps.hostConfig !== this.props.hostConfig
+            || prevProps.jsonCard !== this.props.jsonCard
+            || prevProps.nativeCard !== this.props.nativeCard
+        ) {
+            this.unmountAdaptiveCards();
+            this.mountAdaptiveCards();
+        }
+    }
+
+    handleImageLoad() {
+        this.props.onImageLoad && this.props.onImageLoad.apply(this, arguments);
+    }
+
+    unmountAdaptiveCards() {
+        const divElement = findDOMNode(this.divRef);
+
+        [].forEach.call(divElement.children, (child: any) => divElement.removeChild(child));
+    }
+
+    mountAdaptiveCards() {
+        const adaptiveCard = this.props.nativeCard || new AdaptiveCard();
+
+        adaptiveCard.hostConfig = this.props.hostConfig || defaultHostConfig;
+
+        let errors: IValidationError[] = [];
+
+        if (!this.props.nativeCard && this.props.jsonCard) {
+            this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
+            adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
+            errors = adaptiveCard.validate();
+        }
+
+        adaptiveCard.onExecuteAction = (action) => this.onExecuteAction(action);
+
         if (errors.length === 0) {
             let renderedCard: HTMLElement;
+
             try {
                 renderedCard = adaptiveCard.render();
-            }
-            catch (e) {
-                const ve: AdaptiveCards.IValidationError = {
+            } catch (e) {
+                const ve: IValidationError = {
                     error: -1,
                     message: e
                 };
+
                 errors.push(ve);
 
                 if (e.stack) {
                     ve.message += '\n' + e.stack;
                 }
             }
+
             if (renderedCard) {
                 if (this.props.onImageLoad) {
                     var imgs = renderedCard.querySelectorAll('img');
+
                     if (imgs && imgs.length > 0) {
                         Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
-                            img.addEventListener('load', this.props.onImageLoad);
+                            img.addEventListener('load', this.handleImageLoad);
                         });
                     }
                 }
-                this.div.appendChild(renderedCard);
+
+                findDOMNode(this.divRef).appendChild(renderedCard);
+
                 return;
             }
         }
+
         if (errors.length > 0) {
             console.log('Error(s) rendering AdaptiveCard:');
             errors.forEach(e => console.log(e.message));
@@ -140,6 +199,7 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
     render() {
         let wrappedChildren: JSX.Element;
         const hasErrors = this.state && this.state.errors && this.state.errors.length > 0;
+
         if (hasErrors) {
             wrappedChildren = (
                 <div>
@@ -152,22 +212,32 @@ export class AdaptiveCardContainer extends React.Component<Props, State> {
         } else if (this.props.children) {
             wrappedChildren = (
                 <div className="non-adaptive-content">
-                    {this.props.children}
+                    { this.props.children }
                 </div>
             );
         } else {
             wrappedChildren = null;
         }
+
         return (
-            <div className={classList('wc-card', 'wc-adaptive-card', this.props.className, hasErrors && 'error')} ref={div => this.div = div} onClick={e => this.onClick(e)}>
-                {wrappedChildren}
+            <div
+                className={ classList('wc-card', 'wc-adaptive-card', this.props.className, hasErrors && 'error') }
+                onClick={ this.onClick }
+            >
+                { wrappedChildren }
+                <div ref={ this.saveDiv } />
             </div>
         )
     }
-
-    componentDidUpdate() {
-        if (this.props.onImageLoad) this.props.onImageLoad();
-    }
 }
 
-AdaptiveCards.setHostConfig(adaptivecardsHostConfig);
+export default connect(
+    (state: ChatState) => ({
+        hostConfig: state.adaptiveCards.hostConfig
+    }),
+    {},
+    (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
+        ...ownProps,
+        ...stateProps
+    })
+)(AdaptiveCardContainer);

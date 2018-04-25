@@ -2,12 +2,20 @@ import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, 
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Speech } from './SpeechModule';
-import { ActivityOrID, FormatOptions } from './Types';
+import { ActivityOrID } from './Types';
+import { HostConfig } from 'adaptivecards';
 import * as konsole from './Konsole';
 
 // Reducers - perform state transformations
 
 import { Reducer } from 'redux';
+
+export enum ListeningState {
+    STOPPED,
+    STARTING,
+    STARTED,
+    STOPPING
+}
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
     type: 'Send_Message',
@@ -45,7 +53,7 @@ const attachmentsFromFiles = (files: FileList) => {
 export interface ShellState {
     sendTyping: boolean
     input: string
-    listening: boolean
+    listeningState: ListeningState
     lastInputViaSpeech : boolean
 }
 
@@ -57,6 +65,8 @@ export type ShellAction = {
     type: 'Listening_Starting'
 } | {
     type: 'Listening_Start'
+} | {
+    type: 'Listening_Stopping'
 } | {
     type: 'Listening_Stop'
 } | {
@@ -80,7 +90,7 @@ export const shell: Reducer<ShellState> = (
     state: ShellState = {
         input: '',
         sendTyping: false,
-        listening : false,
+        listeningState: ListeningState.STOPPED,
         lastInputViaSpeech : false
     },
     action: ShellAction
@@ -88,95 +98,111 @@ export const shell: Reducer<ShellState> = (
     switch (action.type) {
         case 'Update_Input':
             return {
-                ... state,
+                ...state,
                 input: action.input,
                 lastInputViaSpeech : action.source == "speech"
             };
 
         case 'Listening_Start':
             return {
-                ... state,
-                listening: true
+                ...state,
+                listeningState: ListeningState.STARTED
             };
 
         case 'Listening_Stop':
             return {
-                ... state,
-                listening: false
+                ...state,
+                listeningState: ListeningState.STOPPED
+            };
+
+        case 'Listening_Starting':
+            return {
+                ...state,
+                listeningState: ListeningState.STARTING
+            };
+
+        case 'Listening_Stopping':
+            return {
+                ...state,
+                listeningState: ListeningState.STOPPING
             };
 
         case 'Send_Message':
             return {
-                ... state,
+                ...state,
                 input: ''
             };
 
         case 'Set_Send_Typing':
             return {
-                ... state,
+                ...state,
                 sendTyping: action.sendTyping
             };
 
-       case 'Card_Action_Clicked':
+        case 'Card_Action_Clicked':
            return {
-               ... state,
-               lastInputViaSpeech : false
+                ...state,
+                lastInputViaSpeech : false
            };
 
         default:
-        case 'Listening_Starting':
             return state;
     }
 }
 
 export interface FormatState {
+    chatTitle: boolean | string,
     locale: string,
-    options: FormatOptions,
+    showUploadButton: boolean,
     strings: Strings,
     carouselMargin: number
 }
 
 export type FormatAction = {
-    type: 'Set_Format_Options',
-    options: FormatOptions,
+    type: 'Set_Chat_Title',
+    chatTitle: boolean | string
 } | {
     type: 'Set_Locale',
     locale: string
 } | {
     type: 'Set_Measurements',
     carouselMargin: number
+} | {
+    type: 'Toggle_Upload_Button',
+    showUploadButton: boolean
 }
 
 export const format: Reducer<FormatState> = (
     state: FormatState = {
+        chatTitle: true,
         locale: 'en-us',
-        options: {
-            showHeader: true
-        },
+        showUploadButton: true,
         strings: defaultStrings,
         carouselMargin: undefined
     },
     action: FormatAction
 ) => {
     switch (action.type) {
-        case 'Set_Format_Options':
+        case 'Set_Chat_Title':
             return {
-                ... state,
-                options: {
-                    ... state.options,
-                    ... action.options
-                }
+                ...state,
+                chatTitle: typeof action.chatTitle === 'undefined' ? true : action.chatTitle
             };
         case 'Set_Locale':
             return {
-                ... state,
+                ...state,
                 locale: action.locale,
-                strings: strings(action.locale),
+                strings: strings(action.locale)
             };
         case 'Set_Measurements':
             return {
-                ... state,
+                ...state,
                 carouselMargin: action.carouselMargin
+            };
+        case 'Toggle_Upload_Button':
+            return {
+                ...state,
+                showUploadButton: action.showUploadButton
             };
         default:
             return state;
@@ -430,16 +456,45 @@ export const history: Reducer<HistoryState> = (
     }
 }
 
-export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction;
+export interface AdaptiveCardsState {
+    hostConfig: HostConfig
+}
+
+export type AdaptiveCardsAction = {
+    type: 'Set_AdaptiveCardsHostConfig',
+    payload: any
+}
+
+export const adaptiveCards: Reducer<AdaptiveCardsState> = (
+    state: AdaptiveCardsState = {
+        hostConfig: null
+    },
+    action: AdaptiveCardsAction
+) => {
+    switch (action.type) {
+        case 'Set_AdaptiveCardsHostConfig':
+            return {
+                ...state,
+                hostConfig: action.payload && (action.payload instanceof HostConfig ? action.payload : new HostConfig(action.payload))
+            };
+
+        default:
+            return state;
+    }
+}
+
+
+export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;
 
 const nullAction = { type: null } as ChatActions;
 
 export interface ChatState {
-    shell: ShellState,
-    format: FormatState,
-    size: SizeState,
+    adaptiveCards: AdaptiveCardsState,
     connection: ConnectionState,
-    history: HistoryState
+    format: FormatState,
+    history: HistoryState,
+    shell: ShellState,
+    size: SizeState
 }
 
 const speakFromMsg = (msg: Message, fallbackLocale: string) => {
@@ -540,7 +595,7 @@ const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         return call$.map(onSpeakingFinished)
             .catch(error => Observable.of(nullAction));
     })
-    .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stop' } as ShellAction)));
+    .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stopping' } as ShellAction)));
 
 const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Receive_Message')
@@ -558,37 +613,52 @@ const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
     .do(Speech.SpeechSynthesizer.stopSpeaking)
     .map(_ => nullAction)
 
-const stopListeningEpic: Epic<ChatActions, ChatState> = (action$) =>
+const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType(
-        'Listening_Stop',
+        'Listening_Stopping',
         'Card_Action_Clicked'
     )
-    .do(Speech.SpeechRecognizer.stopRecognizing)
-    .map(_ => nullAction)
+    .do(async () => {
+        await Speech.SpeechRecognizer.stopRecognizing()
+
+        store.dispatch({ type: 'Listening_Stop' });
+    })
+    .map(_ => nullAction);
 
 const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Listening_Starting')
-    .do((action : ShellAction) => {
-        var locale = store.getState().format.locale;
-        var onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source:"speech" })};
-        var onFinalResult = (srText : string) => {
-                srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
-                onIntermediateResult(srText);
-                store.dispatch({ type: 'Listening_Stop' });
-                store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
-            };
-        var onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
-        var onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stop' })};
-        Speech.SpeechRecognizer.startRecognizing(locale, onIntermediateResult, onFinalResult, onAudioStreamStart, onRecognitionFailed);
+    .do(async (action : ShellAction) => {
+        const { history: { activities }, format: { locale } } = store.getState();
+        const lastMessageActivity = [...activities].reverse().find(activity => activity.type === 'message');
+        // TODO: Bump DirectLineJS version to support "listenFor" grammars
+        const grammars: string[] = lastMessageActivity && (lastMessageActivity as any).listenFor;
+        const onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source: 'speech' })};
+        const onFinalResult = (srText : string) => {
+            srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
+            onIntermediateResult(srText);
+            store.dispatch({ type: 'Listening_Stopping' });
+            store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
+        };
+        const onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
+        const onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
+
+        await Speech.SpeechRecognizer.startRecognizing(
+            locale,
+            grammars,
+            onIntermediateResult,
+            onFinalResult,
+            onAudioStreamStart,
+            onRecognitionFailed
+        );
     })
     .map(_ => nullAction)
 
 const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 {
-    const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stop');
+    const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stopping');
     return action$.ofType('Listening_Start')
         .mergeMap((action) =>
-            Observable.of(({ type: 'Listening_Stop' }) as ShellAction)
+            Observable.of(({ type: 'Listening_Stopping' }) as ShellAction)
             .delay(5000)
             .takeUntil(cancelMessages$));
 };
@@ -639,11 +709,12 @@ import { combineEpics, createEpicMiddleware } from 'redux-observable';
 export const createStore = () =>
     reduxCreateStore(
         combineReducers<ChatState>({
-            shell,
-            format,
-            size,
+            adaptiveCards,
             connection,
-            history
+            format,
+            history,
+            shell,
+            size
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             updateSelectedActivityEpic,
@@ -662,4 +733,3 @@ export const createStore = () =>
     );
 
 export type ChatStore = Store<ChatState>;
-
