@@ -53,18 +53,27 @@ export class AdaptiveCardBuilder {
         }
     }
 
-    addButtons(buttons: CardAction[]) {
+    addButtons(buttons: CardAction[], includesOAuthButtons?: boolean) {
         if (buttons) {
-            this.card.actions = buttons.map(AdaptiveCardBuilder.addCardAction);
+            this.card.actions = buttons.map(b => AdaptiveCardBuilder.addCardAction(b, includesOAuthButtons));
         }
     }
 
-    private static addCardAction(cardAction: CardAction) {
+    private static addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
         if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
             const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
             return {
                 title: cardAction.title,
                 type: "Action.Submit",
+                data: botFrameworkCardAction
+            };
+        }
+        else if (cardAction.type === 'signin' && includesOAuthButtons) {
+            // Create a button specific for OAuthCard 'signin' actions (cardAction.type == signin and button action is Action.Submit)
+            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
+            return {
+                type: 'Action.Submit',
+                title: cardAction.title,
                 data: botFrameworkCardAction
             };
         }
@@ -77,10 +86,14 @@ export class AdaptiveCardBuilder {
         }
     }
 
-    addCommon(content: ICommonContent) {
+    addCommonHeaders(content: ICommonContent) {
         this.addTextBlock(content.title, { size: "medium", weight: "bolder" });
         this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true, separation: "none" } as any); //TODO remove "as any" because separation is not defined
         this.addTextBlock(content.text, { wrap: true });
+    }
+
+    addCommon(content: ICommonContent) {
+        this.addCommonHeaders(content);
         this.addButtons(content.buttons);
     }
 
@@ -111,5 +124,14 @@ export const buildCommonCard = (content: ICommonContent): AdaptiveCardSchema.ICa
 
     const cardBuilder = new AdaptiveCardBuilder();
     cardBuilder.addCommon(content)
+    return cardBuilder.card;
+};
+
+export const buildOAuthCard = (content: ICommonContent): AdaptiveCardSchema.ICard => {
+    if (!content) return null;
+
+    const cardBuilder = new AdaptiveCardBuilder();
+    cardBuilder.addCommonHeaders(content);
+    cardBuilder.addButtons(content.buttons, true);
     return cardBuilder.card;
 };
