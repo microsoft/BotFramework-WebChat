@@ -446,6 +446,14 @@ var commands_map: CommandValuesMap = {
             sendActivity(conversationId, server_content.si_card);
         }
     },
+    "oauth": {
+        client: function () {
+            return document.querySelectorAll('button')[0].textContent == "Signin";
+        },
+        server: function (conversationId, sendActivity) {
+            sendActivity(conversationId, server_content.oauth_card);
+        }
+    },
     "suggested-actions": {
         client: function () {
             var ul_object = document.querySelectorAll('ul')[0];
