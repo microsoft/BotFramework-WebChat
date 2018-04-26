@@ -337,6 +337,10 @@ const getMessages = (conversationId: string, watermark: number, res: express.Res
     }
 }
 
+app.get('/mock/session/getsessionid', (req, res) => {
+    res.send({ sessionId: 'mock_session_id' });
+});
+
 const getCardJsonFromFs = (fsName: string): Promise<any> => {
     return readFileAsync(path.join(__dirname, '../cards/', fsName + '.json'))
         .then(function (res) {
