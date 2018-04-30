@@ -1,6 +1,7 @@
 import { Speech, Func, Action } from '../SpeechModule'
 import * as konsole from '../Konsole';
 import * as CognitiveSpeech from 'microsoft-speech-browser-sdk/Speech.Browser.Sdk'
+import updateIn from 'simple-update-in';
 
 export interface ISpeechContextDgiGroup {
     Type: string;
@@ -133,23 +134,23 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             }
         }
 
-        const speechContext: ISpeechContext = { dgi: { Groups: [] } };
+        let speechContext: ISpeechContext;
 
         if (this.referenceGrammarId) {
-            speechContext.dgi.Groups.push({
+            speechContext = updateIn(speechContext, ['dgi', 'Groups'], (groups: any[] = []) => [...groups, {
                 Type: 'Generic',
                 Hints: { ReferenceGrammar: this.referenceGrammarId }
-            });
+            }]);
         }
 
         if (this.grammars) {
-            speechContext.dgi.Groups.push({
+            speechContext = updateIn(speechContext, ['dgi', 'Groups'], (groups: any[] = []) => [...groups, {
                 Type: 'Generic',
                 Items: this.grammars.map(grammar => ({ Text: grammar }))
-            });
+            }]);
         }
 
-        return this.actualRecognizer.Recognize(eventhandler, JSON.stringify(speechContext));
+        return this.actualRecognizer.Recognize(eventhandler, speechContext && JSON.stringify(speechContext));
     }
 
     public speechIsAvailable(){
