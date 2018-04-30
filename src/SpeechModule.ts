@@ -1,4 +1,3 @@
-/// <reference path="types/JSpeech.d.ts"/>
 import jspeech from 'jspeech';
 
 export type Action = () => void
