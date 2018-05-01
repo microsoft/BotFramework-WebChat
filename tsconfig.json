@@ -18,6 +18,7 @@
     "files": [
         "src/adaptivecards-hostconfig.d.ts",
         "src/BotChat.ts",
+        "src/jspeech.d.ts",
         "src/simple-update-in.d.ts"
     ]
 }

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Fix [#963](https://github.com/Microsoft/BotFramework-WebChat/issues/963) not to send empty `dgi.Groups` to Cognitive Services, in [#965](https://github.com/Microsoft/BotFramework-WebChat/pull/965)
+- Fix [#964](https://github.com/Microsoft/BotFramework-WebChat/issues/964) to include `.d.ts` in `tsconfig.json` instead of `<reference>`, in [#966](https://github.com/Microsoft/BotFramework-WebChat/pull/966)
 
 ## [0.13.0] - 2018-04-26
 ### Added
