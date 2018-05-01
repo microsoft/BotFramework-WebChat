@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Fix [#963](https://github.com/Microsoft/BotFramework-WebChat/issues/963) not to send empty `dgi.Groups` to Cognitive Services, in [#965](https://github.com/Microsoft/BotFramework-WebChat/pull/965)
 
 ## [0.13.0] - 2018-04-26
 ### Added
