@@ -67,7 +67,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 return (
                     <div>
                         <FormattedText
-                            text={ activity.text }
+                            text={ activity.inputHint === 'password' ? '•'.repeat(activity.text.length) : activity.text }
                             format={ activity.textFormat }
                             onImageLoad={ props.onImageLoad }
                         />

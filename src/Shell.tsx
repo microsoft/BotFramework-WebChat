@@ -5,17 +5,18 @@ import { classList } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
-import { ChatActions, ListeningState, sendMessage, sendFiles } from './Store';
+import { ChatActions, InputTypes, ListeningState, sendMessage, sendFiles } from './Store';
 
 interface Props {
     inputText: string,
+    inputType: InputTypes;
     strings: Strings,
     listeningState: ListeningState,
     showUploadButton: boolean
 
     onChangeText: (inputText: string) => void
 
-    sendMessage: (inputText: string) => void,
+    sendMessage: (inputText: string, messageType: string) => void,
     sendFiles: (files: FileList) => void,
     stopListening: () => void,
     startListening: () => void
@@ -31,7 +32,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
     private sendMessage() {
         if (this.props.inputText.trim().length > 0) {
-            this.props.sendMessage(this.props.inputText);
+            this.props.sendMessage(this.props.inputText, this.props.inputType);
         }
     }
 
@@ -141,7 +142,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                 }
                 <div className="wc-textbox">
                     <input
-                        type="text"
+                        type={this.props.inputType}
                         className="wc-shellinput"
                         ref={ input => this.textInput = input }
                         autoFocus
@@ -190,6 +191,7 @@ export const Shell = connect(
     (state: ChatState) => ({
         // passed down to ShellContainer
         inputText: state.shell.input,
+        inputType: state.shell.inputType,
         showUploadButton: state.format.showUploadButton,
         strings: state.format.strings,
         // only used to create helper functions below
@@ -207,13 +209,16 @@ export const Shell = connect(
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
+        inputType: stateProps.inputType,
         showUploadButton: stateProps.showUploadButton,
         strings: stateProps.strings,
         listeningState: stateProps.listeningState,
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions
-        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
+        sendMessage:
+            (text: string, messageType: string) =>
+                dispatchProps.sendMessage(text, stateProps.user, stateProps.locale, messageType),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening()

@@ -17,11 +17,20 @@ export enum ListeningState {
     STOPPING
 }
 
-export const sendMessage = (text: string, from: User, locale: string) => ({
+export type InputTypes = 'password' | 'text';
+
+export const changeInputType = (inputType: InputTypes) => ({
+    inputType,
+    type: 'Change_Input_Type'
+});
+
+export const sendMessage = (text: string, from: User, locale: string, messageType?: string) => ({
     type: 'Send_Message',
+    messageType,
     activity: {
         type: "message",
         text,
+        inputHint: messageType === 'password' ? 'password' : null,
         from,
         locale,
         textFormat: 'plain',
@@ -53,6 +62,7 @@ const attachmentsFromFiles = (files: FileList) => {
 export interface ShellState {
     sendTyping: boolean
     input: string
+    inputType: InputTypes;
     listeningState: ListeningState
     lastInputViaSpeech : boolean
 }
@@ -84,11 +94,15 @@ export type ShellAction = {
     ssml: string,
     locale: string
     autoListenAfterSpeak: boolean
-}
+} | {
+    type: 'Change_Input_Type',
+    inputType: InputTypes
+};
 
 export const shell: Reducer<ShellState> = (
     state: ShellState = {
         input: '',
+        inputType: 'text',
         sendTyping: false,
         listeningState: ListeningState.STOPPED,
         lastInputViaSpeech : false
@@ -96,6 +110,12 @@ export const shell: Reducer<ShellState> = (
     action: ShellAction
 ) => {
     switch (action.type) {
+        case 'Change_Input_Type':
+            return {
+                ...state,
+                inputType: action.inputType
+            };
+
         case 'Update_Input':
             return {
                 ...state,
@@ -296,8 +316,9 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
+    activity: Activity,
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
-    activity: Activity
+    messageType?: string
 } | {
     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
     clientActivityId: string
@@ -547,8 +568,15 @@ const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     .map(action => {
         const state = store.getState();
         const clientActivityId = state.history.clientActivityBase + (state.history.clientActivityCounter - 1);
-        return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
+        return ({ type: 'Send_Message_Try', clientActivityId, messageType: action.messageType } as HistoryAction);
     });
+
+const changeInputEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Send_Message')
+    .filter((action: HistoryAction) => {
+        return action.type === 'Send_Message' && action.messageType === 'password';
+    })
+    .map(() => ({type: 'Change_Input_Type', inputType: 'text'} as ShellAction));
 
 const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
@@ -728,7 +756,8 @@ export const createStore = () =>
             startListeningEpic,
             stopListeningEpic,
             stopSpeakingEpic,
-            listeningSilenceTimeoutEpic
+            listeningSilenceTimeoutEpic,
+            changeInputEpic
         )))
     );
 
