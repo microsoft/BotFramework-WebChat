@@ -10,11 +10,10 @@ import { ChatActions, sendMessage } from './Store';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message;
-
-    takeSuggestedAction: (message: Message) => any;
-
     children: React.ReactNode;
     doCardAction: IDoCardAction;
+    interactive: boolean;
+    takeSuggestedAction: (message: Message) => any;
 }
 
 const MessagePaneView = (props: MessagePaneProps) =>
@@ -56,7 +55,12 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             >
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
-                        <button type="button" onClick={e => this.actionClick(e, action) } title={ action.title }>
+                        <button
+                            disabled={ !this.props.interactive }
+                            onClick={ e => this.actionClick(e, action) }
+                            title={ action.title }
+                            type="button"
+                        >
                             { action.title }
                         </button>
                     </li>
@@ -86,6 +90,7 @@ export const MessagePane = connect(
         takeSuggestedAction: dispatchProps.takeSuggestedAction,
         // from ownProps
         children: ownProps.children,
+        interactive: ownProps.interactive,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage)
     })

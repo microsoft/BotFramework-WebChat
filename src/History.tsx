@@ -24,6 +24,7 @@ export interface HistoryProps {
 
     onCardAction: () => void;
     doCardAction: IDoCardAction;
+    interactive: boolean;
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -153,18 +154,23 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             } }
                         >
                             <ActivityView
-                                format={ this.props.format }
-                                size={ this.props.size }
                                 activity={ activity }
+                                format={ this.props.format }
+                                interactive={ this.props.interactive }
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
+                                size={ this.props.size }
                             />
                         </WrappedActivity>
                 );
             }
         }
 
-        const groupsClassName = classList('wc-message-groups', !this.props.format.chatTitle && 'no-header');
+        const groupsClassName = classList(
+            'wc-message-groups',
+            !this.props.format.chatTitle && 'no-header',
+            !this.props.interactive && 'no-interactive'
+        );
 
         return (
             <div
@@ -184,37 +190,38 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 export const History = connect(
     (state: ChatState) => ({
         // passed down to HistoryView
-        format: state.format,
-        size: state.size,
         activities: state.history.activities,
+        format: state.format,
         hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
+        size: state.size,
         // only used to create helper functions below
+        botConnection: state.connection.botConnection,
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
-        botConnection: state.connection.botConnection,
         user: state.connection.user
     }), {
-        setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
-        onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
+        onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         // only used to create helper functions below
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
-        format: stateProps.format,
-        size: stateProps.size,
         activities: stateProps.activities,
+        format: stateProps.format,
         hasActivityWithSuggestedActions: stateProps.hasActivityWithSuggestedActions,
+        size: stateProps.size,
         // from dispatchProps
-        setMeasurements: dispatchProps.setMeasurements,
-        onClickRetry: dispatchProps.onClickRetry,
         onClickCardAction: dispatchProps.onClickCardAction,
+        onClickRetry: dispatchProps.onClickRetry,
+        setMeasurements: dispatchProps.setMeasurements,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+        interactive: ownProps.interactive,
         isFromMe: (activity: Activity) => activity.from.role === 'user' || activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
-        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
-        onCardAction: ownProps.onCardAction
+        onCardAction: ownProps.onCardAction,
+        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
     }), {
         withRef: true
     }

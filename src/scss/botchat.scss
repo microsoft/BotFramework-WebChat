@@ -70,6 +70,10 @@
         &.no-header {
             top: 0;
         }
+
+        &.no-interactive {
+            bottom: 0;
+        }
     }
 
     .wc-message-group-content {

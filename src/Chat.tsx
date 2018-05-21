@@ -16,18 +16,19 @@ import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any;
-    chatTitle?: boolean | string;
-    user: User;
     bot: User;
     botConnection?: IBotConnection;
+    chatTitle?: boolean | string;
     directLine?: DirectLineOptions;
-    speechOptions?: SpeechOptions;
+    formatOptions?: FormatOptions;
+    interactive?: boolean;
     locale?: string;
+    resize?: 'none' | 'window' | 'detect';
     selectedActivity?: BehaviorSubject<ActivityOrID>;
     sendTyping?: boolean;
     showUploadButton?: boolean;
-    formatOptions?: FormatOptions;
-    resize?: 'none' | 'window' | 'detect';
+    speechOptions?: SpeechOptions;
+    user: User;
 }
 
 import { History } from './History';
@@ -280,13 +281,16 @@ export class Chat extends React.Component<ChatProps, {}> {
                                 <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
                             </div>
                     }
-                    <MessagePane>
+                    <MessagePane interactive={ this.props.interactive }>
                         <History
+                            interactive={ this.props.interactive }
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
                         />
                     </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
+                    {
+                        this.props.interactive !== false && <Shell ref={ this._saveShellRef } />
+                    }
                     {
                         this.props.resize === 'detect' &&
                             <ResizeDetector onresize={ this.resizeListener } />
@@ -308,7 +312,6 @@ export const doCardAction = (
     type,
     actionValue
 ) => {
-
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
 

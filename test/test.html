@@ -84,6 +84,7 @@
             },
             formatOptions: tryParseJSON(params.formatOptions),
             hidden: 'hidden' in params,
+            interactive: params['interactive'] !== 'false',
             locale: params['locale'],
             resize: 'window',
             sendTyping: false, //set to true to send 'typing' activities to bot (and other users) when user is typing
@@ -139,6 +140,7 @@
             },
             setChatTitle: chatTitle => this.setState(() => ({ chatTitle })),
             setHidden: hidden => this.setState(() => ({ hidden })),
+            setInteractive: interactive => this.setState(() => ({ interactive })),
             toggleUploadButton: show => {
               this.setState(state => ({
                 showUploadButton: typeof show === 'boolean' ? show : !state.showUploadButton
@@ -159,6 +161,7 @@
                 chatTitle={ this.state.chatTitle }
                 directLine={ this.state.directLine }
                 formatOptions={ this.state.formatOptions }
+                interactive={ this.state.interactive }
                 locale={ this.state.locale }
                 resize={ this.state.resize }
                 sendTyping={ this.state.sendTyping }

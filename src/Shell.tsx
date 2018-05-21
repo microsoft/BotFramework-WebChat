@@ -1,9 +1,8 @@
-import { User } from 'botframework-directlinejs';
 import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { ChatState } from './Store';
+import { connect } from 'react-redux';
 import { classList } from './Chat';
 import { Speech } from './SpeechModule';
-import { ChatState, FormatState } from './Store';
 import { ChatActions, ListeningState, sendFiles, sendMessage } from './Store';
 import { Strings } from './Strings';
 
@@ -144,19 +143,29 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         />
                 }
                 <div className="wc-textbox">
-                    <input
-                        type="text"
-                        className="wc-shellinput"
-                        ref={ input => this.textInput = input }
-                        autoFocus
-                        value={ this.props.inputText }
-                        onChange={ _ => this.props.onChangeText(this.textInput.value) }
-                        onKeyPress={ e => this.onKeyPress(e) }
-                        onFocus={ () => this.onTextInputFocus() }
-                        placeholder={ placeholder }
-                        aria-label={ this.props.inputText ? null : placeholder }
-                        aria-live="polite"
-                    />
+                    {
+                        this.props.listeningState === ListeningState.STARTED ?
+                            <div
+                                className="wc-shellinput"
+                                style={{ lineHeight: '40px' }}
+                            >
+                                { this.props.inputText }
+                            </div>
+                        :
+                            <input
+                                type="text"
+                                className="wc-shellinput"
+                                ref={ input => this.textInput = input }
+                                autoFocus
+                                value={ this.props.inputText }
+                                onChange={ _ => this.props.onChangeText(this.textInput.value) }
+                                onKeyPress={ e => this.onKeyPress(e) }
+                                onFocus={ () => this.onTextInputFocus() }
+                                placeholder={ placeholder }
+                                aria-label={ this.props.inputText ? null : placeholder }
+                                aria-live="polite"
+                            />
+                    }
                 </div>
                 <button
                     className={ sendButtonClassName }
