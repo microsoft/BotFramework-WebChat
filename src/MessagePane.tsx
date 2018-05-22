@@ -19,8 +19,8 @@ export interface MessagePaneProps {
 const MessagePaneView = (props: MessagePaneProps) =>
     <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
         { props.children }
-        <div className="wc-suggested-actions">
-            <SuggestedActions { ...props } />
+        <div className={ classList('wc-suggested-actions', !props.interactive && 'no-interactive') }>
+            <SuggestedActions { ...props }/>
         </div>
     </div>;
 

@@ -1,8 +1,18 @@
+import { join } from 'path';
+import { promisify } from 'util';
+import { readFile } from 'fs';
 import * as dl from "./node_modules/botframework-directlinejs/built/directLine";
+
 export const config = require('./mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
+
 const local_url = "http://localhost:" + config.port + "/";
 const asset_url = local_url + "assets/";
 const bot = config.bot;
+const readFileAsync = promisify(readFile);
+
+async function readCard(name) {
+    return JSON.parse(await readFileAsync(join(__dirname, `cards/${ name }`), 'utf8'));
+}
 
 /*
 * Function that renders Adaptive Cards
@@ -796,3 +806,68 @@ export var xml_card: dl.Message = {
     textFormat: "xml",
     text: "# markdown h1 <h1>xml h1</h1>\r\n *markdown italic* <i>xml italic</i>\r\n **markdown bold** <b>xml bold</b>\r\n ~~markdown strikethrough~~ <s>xml strikethrough</s>"
 }
+
+/*
+ * Activity for all types of interactivity
+ *
+ */
+export const interactive_card = async (): Promise<dl.Message> => ({
+    type: "message",
+    from: bot,
+    timestamp: new Date().toUTCString(),
+    channelId: "webchat",
+    text: "",
+    attachmentLayout: "carousel",
+    attachments: [
+        <dl.HeroCard>{
+            contentType: "application/vnd.microsoft.card.hero",
+            content: {
+                images: [
+                    {
+                        "url": asset_url + "surface1.jpg",
+                        "alt": "Microsoft Surface Alt",
+                        "tap": {
+                            "type": "openUrl",
+                            "title": "Tapped it!",
+                            "value": local_url + "testurl1.html"
+                        }
+                    }
+                ],
+                buttons: [
+                    {
+                        "type": "imBack",
+                        "value": "imBack Button",
+                        "title": "imBack Action"
+                    },
+                    {
+                        "type": "postBack",
+                        "value": "postBack Button",
+                        "title": "postBack Action"
+                    }
+                ],
+                tap: {
+                    "type": "openUrl",
+                    "title": "Tapped it!",
+                    "value": local_url + "testurl2.html"
+                }
+            }
+        },
+        <dl.AdaptiveCard>{ contentType: "application/vnd.microsoft.card.adaptive", content: await readCard('Inputs.json') }
+    ],
+    suggestedActions: {
+        actions: [
+            {
+                type: "imBack",
+                title: "Blue",
+                value: "Blue",
+                image: asset_url + "square-icon.png"
+            },
+            {
+                type: "imBack",
+                title: "Red",
+                value: "Red",
+                image: asset_url + "square-icon-red.png"
+            }
+        ]
+    }
+});

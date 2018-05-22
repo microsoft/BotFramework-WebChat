@@ -166,7 +166,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                 key = inputtableKey(evt.key);
             }
 
-            this.shellRef.focus(key);
+            // shellRef is null if interactive is set to null
+            this.shellRef && this.shellRef.focus(key);
         }
     }
 

@@ -7,6 +7,7 @@
     "build": "concurrently \"tsc -p ./mock_dl\" \"tsc -p .\" \"tsc -p ./mock_speech\"",
     "build:watch": "concurrently \"tsc -p ./mock_dl -w\" \"tsc -p . -w\" \"tsc -p ./mock_speech -w\"",
     "start": "node mock_dl",
+    "start:watch": "npx node-dev mock_dl",
     "test": "concurrently \"npm start\" \"mocha .\""
   },
   "repository": {

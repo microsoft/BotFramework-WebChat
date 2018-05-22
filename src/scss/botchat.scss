@@ -90,6 +90,10 @@
         right: 0;
         transition: height $actionTransition;
 
+        &.no-interactive {
+            bottom: 0;
+        }
+
         .wc-hscroll > ul {
             height: $actionsHeight;
             padding: 2px 3px;

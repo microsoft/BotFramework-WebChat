@@ -846,6 +846,28 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return [].some.call(document.querySelectorAll('.wc-message-from-me'), ({ innerText }) => ~innerText.indexOf('Appears to be sent by the user'));
         }
+    },
+    'disable interactivity': {
+        server: async function (conversationId, sendActivity) {
+            sendActivity(conversationId, await server_content.interactive_card());
+        },
+        do: function (nightmare) {
+            nightmare.evaluate(() => {
+                window['WebChatTest'].setInteractive(false);
+            });
+        },
+        client: async function () {
+            let result = true;
+            const heroCard = document.querySelector('.wc-adaptive-card');
+            const inputs = heroCard.querySelectorAll('button, input, textarea');
+
+            result = result && [].every.call(inputs, button => button.disabled);
+            result = result && !document.querySelector('.wc-console');
+
+            window['WebChatTest'].setInteractive(true);
+
+            return result;
+        }
     }
     /*
      ** Add your commands to test here **
