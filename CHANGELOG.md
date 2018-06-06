@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 #### Changed
-- Fix links in readme to reference 'web-chat' instead of 'webchat'.
+- Fix [#1006](https://github.com/Microsoft/BotFramework-WebChat/issues/1006) links in README.md to reference `web-chat` instead of `webchat`, by [@AlexanderEllis](https://github.com/AlexanderEllis) in [#980](https://github.com/Microsoft/BotFramework-WebChat/pull/980)
 
 ## [0.13.1] - 2018-05-01
 ### Changed
