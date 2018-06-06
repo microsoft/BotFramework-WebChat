@@ -10,7 +10,7 @@ install:
   - npm run install-test
 before_script:
   # - npm run build
-  # - npm run build-test
+  - npm run build-test
 script:
   # Our tests currently don't run on Travis, disabling them for now
   - npm --version
