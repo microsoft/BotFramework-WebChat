@@ -77,7 +77,7 @@
             },
             chatTitle: params['title'] !== 'false' && params['title'],
             directLine: {
-              domain: params['domain'] || `${ location.protocol }//${ location.host }/mock`,
+              domain: params['domain'],
               secret: params['s'],
               token: params['t'],
               webSocket: false
