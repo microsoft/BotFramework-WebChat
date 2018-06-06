@@ -52,8 +52,8 @@ Include `botchat.css` and `botchat.js` in your website, for example,
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
 * You can reference a specific release like this: `https://cdn.botframework.com/botframework-webchat/latest/botchat.js`. Make sure you version the `botchat.css` and `botchat.js` files together.
 * Don't want to depend on a CDN? Download the files and serve them up from your own website.
-* Want to run a custom build of Web Chat? Clone this repo, [alter it](#customizing-webchat), [build it](#building-webchat), and reference your built `botchat.css` and `botchat.js` files.
-* Go to the next level with [Advanced Web Chat](#advanced-webchat)
+* Want to run a custom build of Web Chat? Clone this repo, [alter it](#customizing-web-chat), [build it](#building-web-chat), and reference your built `botchat.css` and `botchat.js` files.
+* Go to the next level with [Advanced Web Chat](#advanced-web-chat)
 * Running Web Chat inline may not work for some web pages. Read on for a solution.
 
 ### Easyish: In any website, IFRAME your Web Chat instance
@@ -87,12 +87,12 @@ const YourApp = () => {
 ...
 ```
 
-* Go to the next level with [Advanced Web Chat](#advanced-webchat)
+* Go to the next level with [Advanced Web Chat](#advanced-web-chat)
 * Want to run a custom build of Web Chat in your React app? Read on.
 
 ### Hard: In your React website, incorporate a custom build of the Web Chat component
 
-The simplest approach is to clone (or fork) this repo, [alter it](#customizing-webchat), [build it](#building-webchat), then reference your local build in your project's `package.json` as follows:
+The simplest approach is to clone (or fork) this repo, [alter it](#customizing-web-chat), [build it](#building-web-chat), then reference your local build in your project's `package.json` as follows:
 
 ```javascript
 dependencies: {
