@@ -29,7 +29,7 @@ deploy:
     skip_cleanup: true
     tag: master
   - provider: script
-    script: bash scripts/deploy.sh
+    script: bash scripts/deploycdn.sh
     skip_cleanup: true
     on:
       branch: master
