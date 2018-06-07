@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "10"
+  - "9"
 env:
   - secure: "D3J4BNrSjHqPn2kcytkIXQ8IRacPVFN66ID6bOKjkZQub4hQR1Um6Mrk7i5w6Ujx91kW2q/3Y7gfhvW0LvZJxiWDNFaJxxx9Z4qR+1ZLqgVwdnFxVIOpHxMeXAAUyQmFhlZuoOcLh8O0VSGp8QXnDwFzjd4+8zlxq6ftMYIWkKHazi9xsa5F4vegLKEWIGk0huw2T1S9+zUxn76XaIAKWnYHSIHAmeG9c8ZHmkIe+vbic9vfo8/bLZ1+BxN9hWd+muyGOF6RfOJQD7bS48KYz7ngmufvZ7yEh6yQs1O3cxA92x7NGXkNTq7RnI8g0M1RX5h1eWjBqqdw8wF61aZgG0tKnWoJCYK1dWKfm9T0yClIh0i01Gw8KO8euH+ZP18d00tqwzcdwNxCW47UMNjSEJlE9mlteZ8h7FRGs56esP9a0RuO8hFGoMqHo8uajuAU84u4nlQqyDl68Gy6onN7Pj6YOX2POExg5V2HNRwWq7UL5gzK7YPopRFNjhGWyRs5+YmpJPYGvrNVmVuncdDzv0bBUKh17OglQE6IF7PXJc1A1d27IvBO0oEQRrtS+SkrmspEA6lVpp+sBWo2XMOhDKyxAqCmpMztmfeB8fTk42Cdtrmycsnhcow7doqKRvRfWG2EuYpvBPKmVPhHjSVSxlUTlbcTG4ozbLzQdvDRLzc="
 before_install:
@@ -13,20 +13,20 @@ before_install:
   # - chmod +x ~/blobxfer
   - npx version-from-git --travis
 install:
-  # - npm install
-  # - npm run install-test
-  - npm --version
+  - npm install
+  - npm run install-test
+  # - npm --version
 before_script:
-  # - npm run build
-  # - npm run build-test
+  - npm run build
+  - npm run build-test
 script:
   # Our tests currently don't run on Travis, disabling them for now
-  - npm --version
+  # - npm --version
   - bash scripts/deploy.sh
 before_deploy:
   - git config --local user.name "Bot Framework"
   - git config --local user.email "botframework@microsoft.com"
-  - npx version-from-git
+  # - npx version-from-git --travis
 deploy:
   - provider: npm
     api_key:
