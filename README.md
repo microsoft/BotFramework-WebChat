@@ -50,7 +50,9 @@ Include `botchat.css` and `botchat.js` in your website, for example,
 > Starting from `0.12.0`, we no longer package polyfills in `botchat.js`. If you are on an older browser, you can use the bundle `botchat-es5.js`, which include polyfills for browsers which support up to ES5.
 
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
-* You can reference a specific release like this: `https://cdn.botframework.com/botframework-webchat/latest/botchat.js`. Make sure you version the `botchat.css` and `botchat.js` files together.
+* You can reference to latest release like this, [https://cdn.botframework.com/botframework-webchat/latest/botchat.js](https://cdn.botframework.com/botframework-webchat/latest/botchat.js). Make sure you use the same version for both `botchat.css` and `botchat.js`.
+   * You can also reference to a previously published build, for example, [https://cdn.botframework.com/botframework-webchat/0.11.4/botchat.js](https://cdn.botframework.com/botframework-webchat/0.11.4/botchat.js).
+   * Or if you want to try out latest fixes as on our GitHub `master` branch, you can use [https://cdn.botframework.com/botframework-webchat/0.13.1-master.ea2166a/botchat.js](https://cdn.botframework.com/botframework-webchat/0.13.1-master.ea2166a/botchat.js). For all version information, you can find it on [NPM](https://www.npmjs.com/package/botframework-webchat?activeTab=versions).
 * Don't want to depend on a CDN? Download the files and serve them up from your own website.
 * Want to run a custom build of Web Chat? Clone this repo, [alter it](#customizing-web-chat), [build it](#building-web-chat), and reference your built `botchat.css` and `botchat.js` files.
 * Go to the next level with [Advanced Web Chat](#advanced-web-chat)
