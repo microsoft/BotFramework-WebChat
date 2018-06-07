@@ -7,7 +7,7 @@ chmod +x ~/blobxfer
 
 # node -p require\(\'../package.json\'\).version
 
-PACKAGE_VERSION=$(node -p require\(\'../package.json\'\).version)
+PACKAGE_VERSION=$(node -p require\(\'$TRAVIS_BUILD_DIR/package.json\'\).version)
 echo $PACKAGE_VERSION
 
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/package.json --remote-path botframework-webchat/$PACKAGE_VERSION --storage-account webchattest --storage-account-key $AZURE_BLOB_KEY
