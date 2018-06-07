@@ -51,7 +51,7 @@ Include `botchat.css` and `botchat.js` in your website, for example,
 
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
 * You can reference to latest release like this, [https://cdn.botframework.com/botframework-webchat/latest/botchat.js](https://cdn.botframework.com/botframework-webchat/latest/botchat.js). Make sure you use the same version for both `botchat.css` and `botchat.js`.
-   * You can also reference to a previously published build, for example, [https://cdn.botframework.com/botframework-webchat/0.13.0/botchat.js](https://cdn.botframework.com/botframework-webchat/0.13.0/botchat.js).
+   * You can also reference to a previously published build, for example, [https://cdn.botframework.com/botframework-webchat/0.11.4/botchat.js](https://cdn.botframework.com/botframework-webchat/0.11.4/botchat.js).
    * Or if you want to try out latest fixes as on our GitHub `master` branch, you can use [https://cdn.botframework.com/botframework-webchat/0.13.1-master.ea2166a/botchat.js](https://cdn.botframework.com/botframework-webchat/0.13.1-master.ea2166a/botchat.js). For all version information, you can find it on [NPM](https://www.npmjs.com/package/botframework-webchat?activeTab=versions).
 * Don't want to depend on a CDN? Download the files and serve them up from your own website.
 * Want to run a custom build of Web Chat? Clone this repo, [alter it](#customizing-web-chat), [build it](#building-web-chat), and reference your built `botchat.css` and `botchat.js` files.
