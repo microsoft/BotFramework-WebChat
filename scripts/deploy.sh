@@ -22,4 +22,4 @@ mv $TRAVIS_BUILD_DIR/botchat-es5.js.map $TRAVIS_BUILD_DIR/dist
 mv $TRAVIS_BUILD_DIR/CognitiveServices.js $TRAVIS_BUILD_DIR/dist
 mv $TRAVIS_BUILD_DIR/CognitiveServices.js.map $TRAVIS_BUILD_DIR/dist
 
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist/* --remote-path botframework-webchat/$PACKAGE_VERSION --storage-account webchattest --storage-account-key $AZURE_BLOB_KEY
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path botframework-webchat/$PACKAGE_VERSION --storage-account webchattest --storage-account-key $AZURE_BLOB_KEY
