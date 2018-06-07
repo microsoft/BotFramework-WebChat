@@ -6,7 +6,6 @@ env:
 install:
   - npm install
   - npm run install-test
-  # - npm --version
 before_script:
   - npm run build
   - npm run build-test
