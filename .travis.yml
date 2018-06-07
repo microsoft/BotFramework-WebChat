@@ -2,6 +2,7 @@ language: node_js
 node_js:
   - "9"
 env:
+  # This is SAS based on https://xxx.blob.core.windows.net/botframework-webchat/
   - secure: "cWqnxN9B5XfPgozA+4hgVtB2SkvMI5VkNvKID8/59Ut1zZB5Zli4+FcDMyN7ebUwQ+dqDlQx4RSBcZS//M6/3opd4nIDrEHCwct+6/iJbYc1SLv/tfwVDkXXxpv5+W3rLqGqE8GiLjwErksNp5Sda/gXfPqOYqZWkBVF0gPGw5IVdYyzw9gVSiF6/Y/ojJot0E+cnZx7LbWtEYLP7mSokYoXf1nVNqiBYxCjUvYgIHBgnskMMnO6UjqszNqWvMLajfkAe778iBPzRu3s0LF693CdP6yWPS0tzx9b9gJPsErTiYQizz34IA1hJkZFeSdwcyjBzsGuBTRq+0H59Q44MLi92cMYt7OI5Re+oneCzELPYcZmDA4MdpnDS6bGvj4DLXSKRYwU1TUAebnbj6NtuTlqb1z1H4TFTR5Mf84sNNvcdanzD/16vJlQfe7x49fAL6QVirc+1dO7LIcMK3WLigigYbS5rmwg+0lM+LpMnDB+LESS2YfqwxzAONXL3GRgfkmNJ4CqM149h70ldZhL8nvM1ybHzHclnBawwww8wF4nLmqbNzyeSK2kVS01mtMMeL6IRgCwjmoMVWztTUyT0qnLiJgJQ7diqo6ryHjezY17bo+t6D/wmWywjp0a1SGRe0BeZKzKhcIfVRhXqQfwYjy+ZhY9SpOI1hLBxz7mBw0="
 install:
   - npm install
