@@ -8,18 +8,18 @@ chmod +x ~/blobxfer
 # node -p require\(\'../package.json\'\).version
 
 PACKAGE_VERSION=$(node -p require\(\'$TRAVIS_BUILD_DIR/package.json\'\).version)
-echo $PACKAGE_VERSION
+echo Will publish to CDN as $PACKAGE_VERSION
 
 mkdir $TRAVIS_BUILD_DIR/dist
 
-mv $TRAVIS_BUILD_DIR/adaptivecards-hostconfig.json $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/botchat-fullwindow.css $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/botchat.css $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/botchat.js $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/botchat.js.map $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/botchat-es5.js $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/botchat-es5.js.map $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/CognitiveServices.js $TRAVIS_BUILD_DIR/dist
-mv $TRAVIS_BUILD_DIR/CognitiveServices.js.map $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/adaptivecards-hostconfig.json $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/botchat-fullwindow.css $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/botchat.css $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/botchat.js $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/botchat.js.map $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/botchat-es5.js $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/botchat-es5.js.map $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/CognitiveServices.js $TRAVIS_BUILD_DIR/dist
+cp $TRAVIS_BUILD_DIR/CognitiveServices.js.map $TRAVIS_BUILD_DIR/dist
 
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path botframework-webchat/$PACKAGE_VERSION --storage-account webchattest --storage-account-key $AZURE_BLOB_KEY
