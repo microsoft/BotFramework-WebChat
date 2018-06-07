@@ -1,6 +1,8 @@
 language: node_js
 node_js:
   - "9"
+before_install:
+  - npx version-from-git --travis
 install:
   - npm install
   - npm run install-test
@@ -13,7 +15,6 @@ script:
 before_deploy:
   - git config --local user.name "Bot Framework"
   - git config --local user.email "botframework@microsoft.com"
-  - npx version-from-git --travis
 deploy:
   - provider: npm
     api_key:
