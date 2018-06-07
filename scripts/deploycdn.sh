@@ -23,7 +23,7 @@ cp $TRAVIS_BUILD_DIR/CognitiveServices.js.map $TRAVIS_BUILD_DIR/dist
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/$PACKAGE_VERSION --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 
 # If TRAVIS_TAG is present, it means this is going PRODUCTION
-if [ -n $TRAVIS_TAG ]
+if [ -n "$TRAVIS_TAG" ]
 then
 # Upload to /latest/
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
