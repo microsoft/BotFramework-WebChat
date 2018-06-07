@@ -21,11 +21,11 @@ before_script:
 script:
   # Our tests currently don't run on Travis, disabling them for now
   - npm --version
+  - bash scripts/deploy.sh
 before_deploy:
   - git config --local user.name "Bot Framework"
   - git config --local user.email "botframework@microsoft.com"
   - npx version-from-git
-  - bash scripts/deploy.sh
 deploy:
   - provider: npm
     api_key:
