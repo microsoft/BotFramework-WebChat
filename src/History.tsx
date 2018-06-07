@@ -55,19 +55,24 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             // Measure the message padding by subtracting the known large width
             const paddedWidth = measurePaddedWidth(this.carouselActivity.messageDiv) - this.largeWidth;
 
-            // Subtract the padding from the offsetParent's width to get the width of the content
-            const maxContentWidth = (this.carouselActivity.messageDiv.offsetParent as HTMLElement).offsetWidth - paddedWidth;
+            // offsetParent could be null if we start initially hidden
+            const offsetParent = this.carouselActivity.messageDiv.offsetParent as HTMLElement;
 
-            // Subtract the content width from the chat width to get the margin.
-            // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
-            const carouselMargin = this.props.size.width - maxContentWidth;
+            if (offsetParent) {
+                // Subtract the padding from the offsetParent's width to get the width of the content
+                const maxContentWidth = offsetParent.offsetWidth - paddedWidth;
 
-            konsole.log('history measureMessage ' + carouselMargin);
+                // Subtract the content width from the chat width to get the margin.
+                // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
+                const carouselMargin = this.props.size.width - maxContentWidth;
 
-            // Finally, save it away in the Store, which will force another re-render
-            this.props.setMeasurements(carouselMargin)
+                konsole.log('history measureMessage ' + carouselMargin);
 
-            this.carouselActivity = null; // After the re-render this activity doesn't exist
+                // Finally, save it away in the Store, which will force another re-render
+                this.props.setMeasurements(carouselMargin)
+
+                this.carouselActivity = null; // After the re-render this activity doesn't exist
+            }
         }
 
         this.autoscroll();

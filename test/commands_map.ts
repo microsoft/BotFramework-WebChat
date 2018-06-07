@@ -811,6 +811,12 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return !document.querySelector('#wc-upload-input');
         }
+    },
+    'hidden': {
+        urlAppend: { hidden: 1 },
+        client: function () {
+            return !window['WebChatTest'].getLastError();
+        }
     }
     /*
      ** Add your commands to test here **

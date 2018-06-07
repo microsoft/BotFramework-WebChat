@@ -83,6 +83,7 @@
               webSocket: false
             },
             formatOptions: tryParseJSON(params.formatOptions),
+            hidden: 'hidden' in params,
             locale: params['locale'],
             resize: 'window',
             sendTyping: false, //set to true to send 'typing' activities to bot (and other users) when user is typing
@@ -116,12 +117,19 @@
         }
 
         componentWillMount() {
+          let lastError;
+
+          window.onerror = err => {
+            lastError = err;
+          };
+
           window.WebChatTest = {
             changeHostConfig: adaptiveCardsHostConfig => {
               this.setState(() => ({
                 adaptiveCardsHostConfig
               }));
             },
+            getLastError: () => lastError,
             mockHostConfig: () => {
               this.setState(() => ({
                 adaptiveCardsHostConfig: {
@@ -130,6 +138,7 @@
               }));
             },
             setChatTitle: chatTitle => this.setState(() => ({ chatTitle })),
+            setHidden: hidden => this.setState(() => ({ hidden })),
             toggleUploadButton: show => {
               this.setState(state => ({
                 showUploadButton: typeof show === 'boolean' ? show : !state.showUploadButton
@@ -140,7 +149,10 @@
 
         render() {
           return (
-            <div className="wc-app">
+            <div
+              className="wc-app"
+              style={{ display: this.state.hidden ? 'none' : 'inherit' }}
+            >
               <BotChat.Chat
                 adaptiveCardsHostConfig={ this.state.adaptiveCardsHostConfig }
                 bot={ this.state.bot }
