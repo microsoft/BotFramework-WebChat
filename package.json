@@ -20,8 +20,7 @@
     "start": "http-server -p 8000",
     "test": "cd test && npm test",
     "mock": "cd test && npm start",
-    "install-test": "cd test && npm install",
-    "versionCommit": "npx gulp-cli version-commit"
+    "install-test": "cd test && npm install"
   },
   "repository": {
     "type": "git",
