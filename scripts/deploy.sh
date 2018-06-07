@@ -10,4 +10,4 @@ chmod +x ~/blobxfer
 PACKAGE_VERSION=$(node -p require\(\'../package.json\'\).version)
 echo $PACKAGE_VERSION
 
-~/blobxfer upload --local-path package.json --remote-path botframework-webchat/$PACKAGE_VERSION --storage-account webchattest --storage-account-key $AZURE_BLOB_KEY
+~/blobxfer upload --local-path ../package.json --remote-path botframework-webchat/$PACKAGE_VERSION --storage-account webchattest --storage-account-key $AZURE_BLOB_KEY

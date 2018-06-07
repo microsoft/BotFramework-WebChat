@@ -14,6 +14,7 @@ before_install:
 install:
   # - npm install
   # - npm run install-test
+  - npm --version
 before_script:
   # - npm run build
   # - npm run build-test
@@ -36,5 +37,6 @@ deploy:
     tag: master
   - provider: script
     script: bash scripts/deploy.sh
+    skip_cleanup: true
     on:
       branch: masterXXX
