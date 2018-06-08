@@ -15,6 +15,8 @@ export const FormattedText = (props: IFormattedTextProps) => {
         case "xml":
         case "plain":
             return renderPlainText(props.text);
+        case "html":
+            return renderHtml(props.text);
         default:
             return renderMarkdown(props.text, props.onImageLoad);
     }
@@ -24,6 +26,10 @@ const renderPlainText = (text: string) => {
     const lines = text.replace('\r', '').split('\n');
     const elements = lines.map((line, i) => <span key={i}>{line}<br /></span>);
     return <span className="format-plain">{elements}</span>;
+}
+
+const renderHtml = (text: string) => {
+    return <div className="format-html" dangerouslySetInnerHTML={{ __html: text }} />;
 }
 
 const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
