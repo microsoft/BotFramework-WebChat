@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add suport for html text format
 #### Changed
 - Fix [#1006](https://github.com/Microsoft/BotFramework-WebChat/issues/1006) links in README.md to reference `web-chat` instead of `webchat`, by [@AlexanderEllis](https://github.com/AlexanderEllis) in [#980](https://github.com/Microsoft/BotFramework-WebChat/pull/980)
 ### Changed

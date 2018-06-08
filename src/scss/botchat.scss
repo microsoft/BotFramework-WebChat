@@ -711,6 +711,17 @@
 
 /* text formats */
 
+    .format-html {
+        ul, ol {
+            padding-left: 40px;
+            line-height: 12px;
+        }
+
+        p, ul, ol {
+            margin-bottom: 12px;
+        }
+    }
+
     .format-markdown>p {
         margin-bottom: 0px;
     }
