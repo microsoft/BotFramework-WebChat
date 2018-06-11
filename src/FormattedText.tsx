@@ -1,6 +1,7 @@
 import * as MarkdownIt from 'markdown-it';
 import * as React from 'react';
 import { MessageRenderer } from 'webchat-ui';
+import { HeroCard } from 'botframework-directlinejs';
 
 export interface IFormattedTextProps {
     text: string,
@@ -73,7 +74,14 @@ const renderMarkdown = (
         __html = text.replace(/ */, '\u00A0');
     }
 
-    const content = { text };
+    const heroCard: HeroCard = {
+        contentType: "application/vnd.microsoft.card.hero",
+        content: {
+            text
+        }
+    };
 
-    return (<MessageRenderer content={content} />);
-}
+    return (
+        <MessageRenderer {...heroCard} />
+    );
+};
