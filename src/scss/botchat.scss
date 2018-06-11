@@ -9,15 +9,6 @@
         font-size: $fontSize;
     }
 
-    .wc-app button {
-        background-color: $c_brand;
-        border: 1px solid $c05;
-        border-radius: 1px;
-        color: $c01;
-        cursor: pointer;
-        transition: color .2s ease, background-color .2s ease;
-    }
-
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
         margin: 0;
         padding: 0;
@@ -581,11 +572,6 @@
           box-sizing: border-box;
           // border: 1px solid rgba(0,0,0,.1);
         }
-    }
-
-    .wc-message-from-bot .wc-message-content {
-        background-color: $c_messageFromThem;
-        color: $c00;
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
