@@ -204,7 +204,9 @@ export const AttachmentView = (props: {
                 attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url, null, img.tap));
             }
             heroCardBuilder.addCommon(attachment.content);
-            return (<MessageRenderer content={attachment.content} />);
+            return (
+                <MessageRenderer {...attachment} />
+            );
 
         case "application/vnd.microsoft.card.thumbnail":
             if (!attachment.content)
