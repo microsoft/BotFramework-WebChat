@@ -22,6 +22,8 @@ build() {
         exit_script
     fi
 
+    # Change Version in file
+    sed -i "s/VERSION_HERE/$1/" release/bot.html
     zip -r "$release_file" release/
 }
 
