@@ -1,12 +1,12 @@
-import * as React from 'react';
-import * as konsole from './Konsole';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/observable/merge';
+import * as React from "react";
+import "rxjs/add/observable/fromEvent";
+import "rxjs/add/observable/merge";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import * as konsole from "./Konsole";
 
 export interface HScrollProps {
-    scrollUnit?: 'page' | 'item'; // defaults to page
+    scrollUnit?: "page" | "item"; // defaults to page
     prevSvgPathData: string;
     nextSvgPathData: string;
 }
@@ -47,16 +47,16 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     componentDidMount() {
-        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + 'px';
+        this.scrollDiv.style.marginBottom = -(this.scrollDiv.offsetHeight - this.scrollDiv.clientHeight) + "px";
 
-        this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, 'scroll').subscribe(_ => {
+        this.scrollSubscription = Observable.fromEvent<UIEvent>(this.scrollDiv, "scroll").subscribe((_) => {
             this.updateScrollButtons();
         });
 
         this.clickSubscription = Observable.merge(
-            Observable.fromEvent<UIEvent>(this.prevButton, 'click').map(_ => -1),
-            Observable.fromEvent<UIEvent>(this.nextButton, 'click').map(_ => 1)
-        ).subscribe(delta => {
+            Observable.fromEvent<UIEvent>(this.prevButton, "click").map((_) => -1),
+            Observable.fromEvent<UIEvent>(this.nextButton, "click").map((_) => 1),
+        ).subscribe((delta) => {
             this.scrollBy(delta);
         });
 
@@ -74,11 +74,11 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     private scrollAmount(direction: number) {
-        if (this.props.scrollUnit == 'item') {
+        if (this.props.scrollUnit === "item") {
             // TODO: this can be improved by finding the actual item in the viewport,
             // instead of the first item, because they may not have the same width.
             // the width of the li is measured on demand in case CSS has resized it
-            const firstItem = this.scrollDiv.querySelector('ul > li') as HTMLElement;
+            const firstItem = this.scrollDiv.querySelector("ul > li") as HTMLElement;
             return firstItem ? direction * firstItem.offsetWidth : 0;
         } else {
             // TODO: use a good page size. This can be improved by finding the next clipped item.
@@ -88,11 +88,11 @@ export class HScroll extends React.Component<HScrollProps, {}> {
 
     private scrollBy(direction: number) {
 
-        let easingClassName = 'wc-animate-scroll';
+        let easingClassName = "wc-animate-scroll";
 
-        //cancel existing animation when clicking fast
+        // cancel existing animation when clicking fast
         if (this.animateDiv) {
-            easingClassName = 'wc-animate-scroll-rapid';
+            easingClassName = "wc-animate-scroll-rapid";
             this.clearScrollTimers();
         }
 
@@ -100,39 +100,39 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         const scrollLeft = this.scrollDiv.scrollLeft;
         let dest = scrollLeft + unit;
 
-        //don't exceed boundaries
+        // don't exceed boundaries
         dest = Math.max(dest, 0);
         dest = Math.min(dest, this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
 
-        if (scrollLeft == dest) return;
+        if (scrollLeft === dest) { return; }
 
-        //use proper easing curve when distance is small
+        // use proper easing curve when distance is small
         if (Math.abs(dest - scrollLeft) < 60) {
-            easingClassName = 'wc-animate-scroll-near';
+            easingClassName = "wc-animate-scroll-near";
         }
 
-        this.animateDiv = document.createElement('div');
+        this.animateDiv = document.createElement("div");
         this.animateDiv.className = easingClassName;
-        this.animateDiv.style.left = scrollLeft + 'px';
+        this.animateDiv.style.left = scrollLeft + "px";
         document.body.appendChild(this.animateDiv);
 
-        //capture ComputedStyle every millisecond
+        // capture ComputedStyle every millisecond
         this.scrollSyncTimer = window.setInterval(() => {
             const num = parseFloat(getComputedStyle(this.animateDiv).left);
             this.scrollDiv.scrollLeft = num;
         }, 1);
 
-        //don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
-        //we accomplish this by calling 'this.animateDiv.style.left' off this thread, using setTimeout
+        // don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
+        // we accomplish this by calling 'this.animateDiv.style.left' off this thread, using setTimeout
         this.scrollStartTimer = window.setTimeout(() => {
-            this.animateDiv.style.left = dest + 'px';
+            this.animateDiv.style.left = dest + "px";
 
             let duration = 1000 * parseFloat(getComputedStyle(this.animateDiv).transitionDuration);
             if (duration) {
-                //slightly longer that the CSS time so we don't cut it off prematurely
+                // slightly longer that the CSS time so we don't cut it off prematurely
                 duration += 50;
 
-                //stop capturing
+                // stop capturing
                 this.scrollDurationTimer = window.setTimeout(() => this.clearScrollTimers(), duration);
             } else {
                 this.clearScrollTimers();
@@ -146,7 +146,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                 <button
                     className="scroll previous"
                     disabled
-                    ref={ button => this.prevButton = button }
+                    ref={ (button) => this.prevButton = button }
                     type="button"
                 >
                     <svg>
@@ -154,14 +154,14 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     </svg>
                 </button>
                 <div className="wc-hscroll-outer">
-                    <div className="wc-hscroll" ref={ div => this.scrollDiv = div }>
+                    <div className="wc-hscroll" ref={ (div) => this.scrollDiv = div }>
                         { this.props.children }
                     </div>
                 </div>
                 <button
                     className="scroll next"
                     disabled
-                    ref={ button => this.nextButton = button }
+                    ref={ (button) => this.nextButton = button }
                     type="button"
                 >
                     <svg>
@@ -169,6 +169,6 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     </svg>
                 </button>
             </div >
-        )
+        );
     }
 }

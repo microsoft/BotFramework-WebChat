@@ -1,31 +1,31 @@
-import * as React from 'react';
-import { findDOMNode } from 'react-dom';
-import { connect } from 'react-redux';
-import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
-import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from 'adaptivecards/lib/schema';
-import { CardAction } from 'botframework-directlinejs/built/directLine';
-import { classList, IDoCardAction } from './Chat';
-import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
-import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
-import * as konsole from './Konsole';
-import { ChatState, AdaptiveCardsState } from './Store';
+import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from "adaptivecards";
+import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from "adaptivecards/lib/schema";
+import { CardAction } from "botframework-directlinejs/built/directLine";
+import * as React from "react";
+import { findDOMNode } from "react-dom";
+import { connect } from "react-redux";
+import { AjaxRequest, AjaxResponse } from "rxjs/observable/dom/AjaxObservable";
+import * as adaptivecardsHostConfig from "../adaptivecards-hostconfig.json";
+import { classList, IDoCardAction } from "./Chat";
+import * as konsole from "./Konsole";
+import { AdaptiveCardsState, ChatState } from "./Store";
 
 export interface Props {
-    className?: string,
-    hostConfig: HostConfig,
-    jsonCard?: IAdaptiveCard,
-    nativeCard?: AdaptiveCard,
-    onCardAction: IDoCardAction,
-    onClick?: (e: React.MouseEvent<HTMLElement>) => void,
-    onImageLoad?: () => any,
+    className?: string;
+    hostConfig: HostConfig;
+    jsonCard?: IAdaptiveCard;
+    nativeCard?: AdaptiveCard;
+    onCardAction: IDoCardAction;
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+    onImageLoad?: () => any;
 }
 
 export interface State {
-    errors?: string[]
+    errors?: string[];
 }
 
 export interface BotFrameworkCardAction extends CardAction {
-    __isBotFrameworkCardAction: boolean
+    __isBotFrameworkCardAction: boolean;
 }
 
 const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
@@ -35,16 +35,16 @@ function cardWithoutHttpActions(card: IAdaptiveCard) {
         return card;
     }
 
-    const nextActions: (IOpenUrlAction | IShowCardAction | ISubmitAction)[] = card.actions.reduce((nextActions, action) => {
+    const nextActions: Array<IOpenUrlAction | IShowCardAction | ISubmitAction> = card.actions.reduce((nextActions, action) => {
         // Filter out HTTP action buttons
         switch (action.type) {
-            case 'Action.Submit':
+            case "Action.Submit":
                 break;
 
-            case 'Action.ShowCard':
+            case "Action.ShowCard":
                 nextActions.push({
                     ...action,
-                    card: cardWithoutHttpActions(action.card)
+                    card: cardWithoutHttpActions(action.card),
                 });
 
                 break;
@@ -81,16 +81,16 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             return;
         }
 
-        //do not allow form elements to trigger a parent click event
+        // do not allow form elements to trigger a parent click event
         switch ((e.target as HTMLElement).tagName) {
-            case 'A':
-            case 'AUDIO':
-            case 'VIDEO':
-            case 'BUTTON':
-            case 'INPUT':
-            case 'LABEL':
-            case 'TEXTAREA':
-            case 'SELECT':
+            case "A":
+            case "AUDIO":
+            case "VIDEO":
+            case "BUTTON":
+            case "INPUT":
+            case "LABEL":
+            case "TEXTAREA":
+            case "SELECT":
                 break;
 
             default:
@@ -103,12 +103,12 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             window.open(action.url);
         } else if (action instanceof SubmitAction) {
             if (action.data !== undefined) {
-                if (typeof action.data === 'object' && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
+                if (typeof action.data === "object" && (action.data as BotFrameworkCardAction).__isBotFrameworkCardAction) {
                     const cardAction = (action.data as BotFrameworkCardAction);
 
                     this.props.onCardAction(cardAction.type, cardAction.value);
                 } else {
-                    this.props.onCardAction(typeof action.data === 'string' ? 'imBack' : 'postBack', action.data);
+                    this.props.onCardAction(typeof action.data === "string" ? "imBack" : "postBack", action.data);
                 }
             }
         }
@@ -130,6 +130,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     }
 
     handleImageLoad() {
+        // tslint:disable-next-line:no-unused-expression
         this.props.onImageLoad && this.props.onImageLoad.apply(this, arguments);
     }
 
@@ -147,7 +148,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
         let errors: IValidationError[] = [];
 
         if (!this.props.nativeCard && this.props.jsonCard) {
-            this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
+            this.props.jsonCard.version = this.props.jsonCard.version || "0.5";
             adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
             errors = adaptiveCard.validate();
         }
@@ -162,23 +163,23 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             } catch (e) {
                 const ve: IValidationError = {
                     error: -1,
-                    message: e
+                    message: e,
                 };
 
                 errors.push(ve);
 
                 if (e.stack) {
-                    ve.message += '\n' + e.stack;
+                    ve.message += "\n" + e.stack;
                 }
             }
 
             if (renderedCard) {
                 if (this.props.onImageLoad) {
-                    var imgs = renderedCard.querySelectorAll('img');
+                    const imgs = renderedCard.querySelectorAll("img");
 
                     if (imgs && imgs.length > 0) {
                         Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
-                            img.addEventListener('load', this.handleImageLoad);
+                            img.addEventListener("load", this.handleImageLoad);
                         });
                     }
                 }
@@ -190,9 +191,9 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
         }
 
         if (errors.length > 0) {
-            console.log('Error(s) rendering AdaptiveCard:');
-            errors.forEach(e => console.log(e.message));
-            this.setState({ errors: errors.map(e => e.message) });
+            console.log("Error(s) rendering AdaptiveCard:");
+            errors.forEach((e) => console.log(e.message));
+            this.setState({ errors: errors.map((e) => e.message) });
         }
     }
 
@@ -221,23 +222,23 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
 
         return (
             <div
-                className={ classList('wc-card', 'wc-adaptive-card', this.props.className, hasErrors && 'error') }
+                className={ classList("wc-card", "wc-adaptive-card", this.props.className, hasErrors && "error") }
                 onClick={ this.onClick }
             >
                 { wrappedChildren }
                 <div ref={ this.saveDiv } />
             </div>
-        )
+        );
     }
 }
 
 export default connect(
     (state: ChatState) => ({
-        hostConfig: state.adaptiveCards.hostConfig
+        hostConfig: state.adaptiveCards.hostConfig,
     }),
     {},
     (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         ...ownProps,
-        ...stateProps
-    })
+        ...stateProps,
+    }),
 )(AdaptiveCardContainer);

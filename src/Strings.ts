@@ -1,27 +1,27 @@
 export interface Strings {
-    title: string,
-    send: string,
-    unknownFile: string,
-    unknownCard: string,
-    receiptTax: string,
-    receiptVat: string,
-    receiptTotal: string
-    messageRetry: string,
-    messageFailed: string,
-    messageSending: string,
-    timeSent: string,
-    consolePlaceholder: string,
-    listeningIndicator: string,
-    uploadFile: string,
-    speak: string
+    title: string;
+    send: string;
+    unknownFile: string;
+    unknownCard: string;
+    receiptTax: string;
+    receiptVat: string;
+    receiptTotal: string;
+    messageRetry: string;
+    messageFailed: string;
+    messageSending: string;
+    timeSent: string;
+    consolePlaceholder: string;
+    listeningIndicator: string;
+    uploadFile: string;
+    speak: string;
 }
 
 interface LocalizedStrings {
-    [locale: string]: Strings
+    [locale: string]: Strings;
 }
 
 const localizedStrings: LocalizedStrings = {
-    'en-us': {
+    "en-us": {
         title: "Chat",
         send: "Send",
         unknownFile: "[File of type '%1']",
@@ -36,9 +36,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Type your message...",
         listeningIndicator: "Listening...",
         uploadFile: "Upload file",
-        speak: "Speak"
+        speak: "Speak",
     },
-    'ja-jp': {
+    "ja-jp": {
         title: "チャット",
         send: "送信",
         unknownFile: "[ファイルタイプ '%1']",
@@ -53,9 +53,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "メッセージを入力してください...",
         listeningIndicator: "聴いてます...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'nb-no': {
+    "nb-no": {
         title: "Chat",
         send: "Send",
         unknownFile: "[Fil av typen '%1']",
@@ -70,9 +70,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Skriv inn melding...",
         listeningIndicator: "Lytter...",
         uploadFile: "Last opp fil",
-        speak: "Snakk"
+        speak: "Snakk",
     },
-    'da-dk': {
+    "da-dk": {
         title: "Chat",
         send: "Send",
         unknownFile: "[Fil af typen '%1']",
@@ -87,9 +87,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Skriv din besked...",
         listeningIndicator: "Lytter...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'de-de': {
+    "de-de": {
         title: "Chat",
         send: "Senden",
         unknownFile: "[Datei vom Typ '%1']",
@@ -104,9 +104,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Verfasse eine Nachricht...",
         listeningIndicator: "Hören...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'pl-pl': {
+    "pl-pl": {
         title: "Chat",
         send: "Wyślij",
         unknownFile: "[Plik typu '%1']",
@@ -121,9 +121,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Wpisz swoją wiadomość...",
         listeningIndicator: "Słuchanie...",
         uploadFile: "Wyślij plik",
-        speak: "Mów"
+        speak: "Mów",
     },
-    'ru-ru': {
+    "ru-ru": {
         title: "Чат",
         send: "Отправить",
         unknownFile: "[Неизвестный тип '%1']",
@@ -138,9 +138,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Введите ваше сообщение...",
         listeningIndicator: "прослушивание...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'nl-nl': {
+    "nl-nl": {
         title: "Chat",
         send: "Verstuur",
         unknownFile: "[Bestand van het type '%1']",
@@ -155,9 +155,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Typ je bericht...",
         listeningIndicator: "Aan het luisteren...",
         uploadFile: "Bestand uploaden",
-        speak: "Spreek"
+        speak: "Spreek",
     },
-    'lv-lv': {
+    "lv-lv": {
         title: "Tērzēšana",
         send: "Sūtīt",
         unknownFile: "[Nezināms tips '%1']",
@@ -172,9 +172,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Ierakstiet savu ziņu...",
         listeningIndicator: "Klausoties...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'pt-br': {
+    "pt-br": {
         title: "Bate-papo",
         send: "Enviar",
         unknownFile: "[Arquivo do tipo '%1']",
@@ -189,9 +189,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Digite sua mensagem...",
         listeningIndicator: "Ouvindo...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'fr-fr': {
+    "fr-fr": {
         title: "Chat",
         send: "Envoyer",
         unknownFile: "[Fichier de type '%1']",
@@ -206,9 +206,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Écrivez votre message...",
         listeningIndicator: "Écoute...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'es-es': {
+    "es-es": {
         title: "Chat",
         send: "Enviar",
         unknownFile: "[Archivo de tipo '%1']",
@@ -223,9 +223,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Escribe tu mensaje...",
         listeningIndicator: "Escuchando...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'el-gr': {
+    "el-gr": {
         title: "Συνομιλία",
         send: "Αποστολή",
         unknownFile: "[Αρχείο τύπου '%1']",
@@ -240,9 +240,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Πληκτρολόγηση μηνύματος...",
         listeningIndicator: "Ακούγοντας...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'it-it': {
+    "it-it": {
         title: "Chat",
         send: "Invia",
         unknownFile: "[File di tipo '%1']",
@@ -257,9 +257,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Scrivi il tuo messaggio...",
         listeningIndicator: "Ascoltando...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'zh-hans': {
+    "zh-hans": {
         title: "聊天",
         send: "发送",
         unknownFile: "[类型为'%1'的文件]",
@@ -274,9 +274,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "输入你的消息...",
         listeningIndicator: "正在倾听...",
         uploadFile: "上传文件",
-        speak: "发言"
+        speak: "发言",
     },
-    'zh-hant': {
+    "zh-hant": {
         title: "聊天",
         send: "發送",
         unknownFile: "[類型為'%1'的文件]",
@@ -291,9 +291,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "輸入你的訊息...",
         listeningIndicator: "正在聆聽...",
         uploadFile: "上載檔案",
-        speak: "發言"
+        speak: "發言",
     },
-    'zh-yue': {
+    "zh-yue": {
         title: "傾偈",
         send: "傳送",
         unknownFile: "[類型係'%1'嘅文件]",
@@ -308,9 +308,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "輸入你嘅訊息...",
         listeningIndicator: "聽緊你講嘢...",
         uploadFile: "上載檔案",
-        speak: "講嘢"
+        speak: "講嘢",
     },
-    'cs-cz': {
+    "cs-cz": {
         title: "Chat",
         send: "Odeslat",
         unknownFile: "[Soubor typu '%1']",
@@ -325,9 +325,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Napište svou zprávu...",
         listeningIndicator: "Poslouchám...",
         uploadFile: "Nahrát soubor",
-        speak: "Použít hlas"
+        speak: "Použít hlas",
     },
-    'ko-kr': {
+    "ko-kr": {
         title: "채팅",
         send: "전송",
         unknownFile: "[파일 형식 '%1']",
@@ -342,9 +342,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "메세지를 입력하세요...",
         listeningIndicator: "수신중...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'hu-hu' : {
+    "hu-hu" : {
         title: "Csevegés",
         send: "Küldés",
         unknownFile: "[Fájltípus '%1']",
@@ -359,9 +359,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Írja be üzenetét...",
         listeningIndicator: "Figyelés...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'sv-se' : {
+    "sv-se" : {
         title: "Chatt",
         send: "Skicka",
         unknownFile: "[Filtyp '%1']",
@@ -376,9 +376,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Skriv ett meddelande...",
         listeningIndicator: "Lyssnar...",
         uploadFile: "",
-        speak: ""
+        speak: "",
     },
-    'tr-tr' : {
+    "tr-tr" : {
         title: "Sohbet",
         send: "Gönder",
         unknownFile: "[Dosya türü: '%1']",
@@ -393,9 +393,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "İletinizi yazın...",
         listeningIndicator: "Dinliyor...",
         uploadFile: "",
-        speak: ""
+        speak: "",
    },
-   'pt-pt' : {
+   "pt-pt" : {
         title: "Chat",
         send: "Enviar",
         unknownFile: "[Ficheiro do tipo \"%1\"]",
@@ -410,9 +410,9 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Escreva a sua mensagem...",
         listeningIndicator: "A Escutar...",
         uploadFile: "",
-        speak: ""
+        speak: "",
    },
-   'fi-fi' : {
+   "fi-fi" : {
         title: "Chat",
         send: "Lähetä",
         unknownFile: "[Tiedosto tyyppiä '%1']",
@@ -427,11 +427,11 @@ const localizedStrings: LocalizedStrings = {
         consolePlaceholder: "Kirjoita viesti...",
         listeningIndicator: "Kuuntelee...",
         uploadFile: "Lataa tiedosto",
-        speak: "Puhu"
-    }
-}
+        speak: "Puhu",
+    },
+};
 
-export const defaultStrings = localizedStrings['en-us'];
+export const defaultStrings = localizedStrings["en-us"];
 
 // Returns strings using the "best match available"" locale
 // e.g. if 'en-us' is the only supported English locale, then
@@ -442,57 +442,57 @@ function mapLocale(locale: string) {
 
     if (locale in localizedStrings) {
         return locale;
-    } else if (locale.startsWith('cs')) {
-        return 'cs-cz';
-    } else if (locale.startsWith('da')) {
-        return 'da-dk';
-    } else if (locale.startsWith('de')) {
-        return 'de-de';
-    } else if (locale.startsWith('el')) {
-        return 'el-gr';
-    } else if (locale.startsWith('es')) {
-        return 'es-es';
-    } else if (locale.startsWith('fi')) {
-        return 'fi-fi';
-    } else if (locale.startsWith('fr')) {
-        return 'fr-fr';
-    } else if (locale.startsWith('hu')) {
-        return 'hu-hu';
-    } else if (locale.startsWith('it')) {
-        return 'it-it';
-    } else if (locale.startsWith('ja')) {
-        return 'ja-jp';
-    } else if (locale.startsWith('ko')) {
-        return 'ko-kr';
-    } else if (locale.startsWith('lv')) {
-        return 'lv-lv';
-    } else if (locale.startsWith('nb') || locale.startsWith('nn') || locale.startsWith('no')) {
-        return 'nb-no';
-    } else if (locale.startsWith('nl')) {
-        return 'nl-nl';
-    } else if (locale.startsWith('pl')) {
-        return 'pl-pl';
-    } else if (locale.startsWith('pt')) {
-        if (locale === 'pt-br') {
-            return 'pt-br';
+    } else if (locale.startsWith("cs")) {
+        return "cs-cz";
+    } else if (locale.startsWith("da")) {
+        return "da-dk";
+    } else if (locale.startsWith("de")) {
+        return "de-de";
+    } else if (locale.startsWith("el")) {
+        return "el-gr";
+    } else if (locale.startsWith("es")) {
+        return "es-es";
+    } else if (locale.startsWith("fi")) {
+        return "fi-fi";
+    } else if (locale.startsWith("fr")) {
+        return "fr-fr";
+    } else if (locale.startsWith("hu")) {
+        return "hu-hu";
+    } else if (locale.startsWith("it")) {
+        return "it-it";
+    } else if (locale.startsWith("ja")) {
+        return "ja-jp";
+    } else if (locale.startsWith("ko")) {
+        return "ko-kr";
+    } else if (locale.startsWith("lv")) {
+        return "lv-lv";
+    } else if (locale.startsWith("nb") || locale.startsWith("nn") || locale.startsWith("no")) {
+        return "nb-no";
+    } else if (locale.startsWith("nl")) {
+        return "nl-nl";
+    } else if (locale.startsWith("pl")) {
+        return "pl-pl";
+    } else if (locale.startsWith("pt")) {
+        if (locale === "pt-br") {
+            return "pt-br";
         } else {
-            return 'pt-pt';
+            return "pt-pt";
         }
-    } else if (locale.startsWith('ru')) {
-        return 'ru-ru';
-    } else if (locale.startsWith('sv')) {
-        return 'sv-se';
-    } else if (locale.startsWith('tr')) {
-        return 'tr-tr';
-    } else if (locale.startsWith('zh')) {
-        if (locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw') {
-            return 'zh-hant';
+    } else if (locale.startsWith("ru")) {
+        return "ru-ru";
+    } else if (locale.startsWith("sv")) {
+        return "sv-se";
+    } else if (locale.startsWith("tr")) {
+        return "tr-tr";
+    } else if (locale.startsWith("zh")) {
+        if (locale === "zh-hk" || locale === "zh-mo" || locale === "zh-tw") {
+            return "zh-hant";
         } else {
-            return 'zh-hans';
+            return "zh-hans";
         }
     }
 
-    return 'en-us';
+    return "en-us";
 }
 
-export const strings = (locale: string) => localizedStrings[mapLocale(locale)]
+export const strings = (locale: string) => localizedStrings[mapLocale(locale)];

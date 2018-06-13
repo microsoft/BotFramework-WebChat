@@ -1,44 +1,48 @@
-import { Speech, Action } from '../SpeechModule'
-import * as konsole from '../Konsole';
+import * as konsole from "../Konsole";
+import { Action, Speech } from "../SpeechModule";
 
 export interface ICognitiveServicesSpeechSynthesisProperties {
-    subscriptionKey?: string,
-    gender?: SynthesisGender,
-    voiceName?: string,
-    fetchCallback?: (authFetchEventId: string) => Promise<string>,
-    fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>
+    subscriptionKey?: string;
+    gender?: SynthesisGender;
+    voiceName?: string;
+    fetchCallback?: (authFetchEventId: string) => Promise<string>;
+    fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>;
 }
 
-export enum SynthesisGender { Male, Female };
+export enum SynthesisGender { Male, Female }
 
 interface SpeakRequest {
-    isReadyToPlay: boolean,
-    data: ArrayBuffer,
-    text: string,
-    locale: string,
-    onSpeakingStarted: Action,
-    onSpeakingFinished: Action,
+    isReadyToPlay: boolean;
+    data: ArrayBuffer;
+    text: string;
+    locale: string;
+    onSpeakingStarted: Action;
+    onSpeakingFinished: Action;
 }
 
 interface HttpHeader {
-    name: string,
-    value: string
+    name: string;
+    value: string;
 }
 
+// tslint:disable:class-name
+// tslint:disable-next-line:no-empty-interface
 interface webkitAudioContext extends AudioContext {
 }
 
 declare var webkitAudioContext: {
     prototype: webkitAudioContext;
     new(): webkitAudioContext;
-}
+};
 
 export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
+    // tslint:disable:variable-name
     private _requestQueue: SpeakRequest[] = null;
     private _isPlaying: boolean = false;
     private _audioElement: AudioContext;
     private _helper: CognitiveServicesHelper;
     private _properties: ICognitiveServicesSpeechSynthesisProperties;
+    // tslint:enable:variable-name
 
     constructor(properties: ICognitiveServicesSpeechSynthesisProperties) {
         this._helper = new CognitiveServicesHelper(properties);
@@ -51,11 +55,11 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
             {
                 isReadyToPlay: false,
                 data: null,
-                text: text,
+                text,
                 locale: lang,
-                onSpeakingStarted: onSpeakingStarted,
-                onSpeakingFinished: onSpeakingFinished
-            }
+                onSpeakingStarted,
+                onSpeakingFinished,
+            },
         );
         this.getSpeechData().then(() => {
             this.playAudio();
@@ -73,7 +77,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     }
 
     private playAudio() {
-        if (this._requestQueue.length == 0) {
+        if (this._requestQueue.length === 0) {
             return;
         }
         const top = this._requestQueue[0];
@@ -89,8 +93,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
             if (!this._audioElement || this._audioElement.state === "closed") {
                 if (typeof webkitAudioContext !== "undefined") {
                     this._audioElement = new webkitAudioContext();
-                }
-                else {
+                } else {
                     this._audioElement = new AudioContext();
                 }
             }
@@ -111,7 +114,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
                     if (this._requestQueue.length > 0) {
                         this.playAudio();
                     }
-                }
+                };
             }, (ex) => {
                 this.log(ex.message);
                 this._isPlaying = false;
@@ -124,7 +127,7 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     }
 
     private getSpeechData(): Promise<any> {
-        if (this._requestQueue.length == 0) {
+        if (this._requestQueue.length === 0) {
             return;
         }
         const latest = this._requestQueue[this._requestQueue.length - 1];
@@ -139,29 +142,29 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     }
 
     private log(message: string) {
-        konsole.log('CognitiveServicesSpeechSynthesis: ' + message);
+        konsole.log("CognitiveServicesSpeechSynthesis: " + message);
     }
 }
 
 class CognitiveServicesHelper {
+    // tslint:disable:variable-name
     private readonly _tokenURL = "https://api.cognitive.microsoft.com/sts/v1.0/issueToken";
     private readonly _synthesisURL = "https://speech.platform.bing.com/synthesize";
     private readonly _outputFormat = "riff-16khz-16bit-mono-pcm";
     private _tokenCallback: (id: string) => Promise<string>;
     private _tokenExpiredCallback: (id: string) => Promise<string>;
     private _lastTokenTime: number;
+    // tslint:enable:variable-name
 
     constructor(props: ICognitiveServicesSpeechSynthesisProperties) {
         if (props.subscriptionKey) {
             this._tokenCallback = (id: string) => this.fetchSpeechToken(id);
             this._tokenExpiredCallback = (id: string) => this.fetchSpeechToken(id);
-        }
-        else if (props.fetchCallback && props.fetchOnExpiryCallback) {
+        } else if (props.fetchCallback && props.fetchOnExpiryCallback) {
             this._tokenCallback = props.fetchCallback;
             this._tokenExpiredCallback = props.fetchOnExpiryCallback;
-        }
-        else {
-            throw 'Error: The CognitiveServicesSpeechSynthesis requires either a subscriptionKey or a fetchCallback and a fetchOnExpiryCallback.';
+        } else {
+            throw new Error("Error: The CognitiveServicesSpeechSynthesis requires either a subscriptionKey or a fetchCallback and a fetchOnExpiryCallback.");
         }
     }
 
@@ -170,7 +173,7 @@ class CognitiveServicesHelper {
         const cbAfterToken = (token: string) => {
             this._lastTokenTime = Date.now();
 
-            const optionalHeaders = [{ name: "Content-type", value: 'application/ssml+xml' },
+            const optionalHeaders = [{ name: "Content-type", value: "application/ssml+xml" },
             { name: "X-Microsoft-OutputFormat", value: this._outputFormat },
             { name: "Authorization", value: token }];
 
@@ -178,26 +181,22 @@ class CognitiveServicesHelper {
         };
 
         if (Date.now() - this._lastTokenTime > 500000) {
-            return this._tokenExpiredCallback(synthesisProperties.subscriptionKey).then(token => cbAfterToken(token));
-        }
-        else {
-            return this._tokenCallback(synthesisProperties.subscriptionKey).then(token => cbAfterToken(token));
+            return this._tokenExpiredCallback(synthesisProperties.subscriptionKey).then((token) => cbAfterToken(token));
+        } else {
+            return this._tokenCallback(synthesisProperties.subscriptionKey).then((token) => cbAfterToken(token));
         }
     }
 
     private makeSSML(text: string, locale: string, synthesisProperties: ICognitiveServicesSpeechSynthesisProperties): string {
         if (text.indexOf("<speak") === 0) {
             return this.processSSML(text, synthesisProperties);
-        }
-        else {
+        } else {
             let ssml = "<speak version='1.0' xml:lang='" + locale + "'><voice xml:lang='" + locale + "' xml:gender='" + (synthesisProperties && synthesisProperties.gender ? SynthesisGender[synthesisProperties.gender] : "Female") + "' name='";
             if (synthesisProperties.voiceName) {
                 ssml += synthesisProperties.voiceName;
-            }
-            else if (synthesisProperties.gender !== null && synthesisProperties.gender !== undefined) {
+            } else if (synthesisProperties.gender !== null && synthesisProperties.gender !== undefined) {
                 ssml += this.fetchVoiceName(locale, synthesisProperties.gender);
-            }
-            else {
+            } else {
                 ssml += this.fetchVoiceName(locale, SynthesisGender.Female);
             }
             return ssml + "'>" + this.encodeHTML(text) + "</voice></speak>";
@@ -212,8 +211,7 @@ class CognitiveServicesHelper {
         const match = /xml:lang=['"](\w\w-\w\w)['"]/.exec(ssml);
         if (match) {
             locale = match[1];
-        }
-        else {
+        } else {
             locale = "en-us";
         }
 
@@ -223,13 +221,15 @@ class CognitiveServicesHelper {
             gender = SynthesisGender.Female;
         }
         const parser = new DOMParser();
-        const dom = parser.parseFromString(ssml, 'text/xml');
+        const dom = parser.parseFromString(ssml, "text/xml");
         const nodes = dom.documentElement.childNodes;
 
         // Check if there is a voice node
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < nodes.length; ++i) {
             if (nodes[i].nodeName === "voice") {
                 // Check if there is a name attribute on voice element
+                // tslint:disable-next-line:prefer-for-of
                 for (let j = 0; j < nodes[i].attributes.length; ++j) {
                     if (nodes[i].attributes[j].nodeName === "name") {
                         // Name attribute is found on voice element, use it directly
@@ -239,7 +239,7 @@ class CognitiveServicesHelper {
 
                     // Find the gender info from voice element, this will override what is in the properties
                     if (nodes[i].attributes[j].nodeName === "xml:gender") {
-                        gender = nodes[i].attributes[j].nodeValue.toLowerCase() === 'male' ? SynthesisGender.Male : SynthesisGender.Female;
+                        gender = nodes[i].attributes[j].nodeValue.toLowerCase() === "male" ? SynthesisGender.Male : SynthesisGender.Female;
                     }
                 }
 
@@ -269,11 +269,11 @@ class CognitiveServicesHelper {
     }
 
     private encodeHTML(text: string): string {
-        return text.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
+        return text.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
     }
 
     private fetchSpeechToken(apiKey: string): Promise<string> {
@@ -294,15 +294,14 @@ class CognitiveServicesHelper {
         return new Promise<any>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             if (isArrayBuffer) {
-                xhr.responseType = 'arraybuffer';
+                xhr.responseType = "arraybuffer";
             }
-            xhr.onreadystatechange = function (event) {
-                if (xhr.readyState !== 4) return;
+            xhr.onreadystatechange = (event) => {
+                if (xhr.readyState !== 4) { return; }
                 if (xhr.status >= 200 && xhr.status < 300) {
                     if (!isArrayBuffer) {
                         resolve(xhr.responseText);
-                    }
-                    else {
+                    } else {
                         resolve(xhr.response);
                     }
                 } else {
@@ -318,13 +317,11 @@ class CognitiveServicesHelper {
                 }
                 if (dataToSend) {
                     xhr.send(dataToSend);
-                }
-                else {
+                } else {
                     xhr.send();
                 }
-            }
-            catch (ex) {
-                reject(ex)
+            } catch (ex) {
+                reject(ex);
             }
         });
     }
@@ -334,14 +331,14 @@ class CognitiveServicesHelper {
         const localeLowerCase = locale.toLowerCase();
         if (gender === SynthesisGender.Female) {
             voiceName = this._femaleVoiceMap[localeLowerCase] || this._femaleVoiceMap["en-us"];
-        }
-        else {
+        } else {
             voiceName = this._maleVoiceMap[localeLowerCase] || this._maleVoiceMap["en-us"];
         }
         return voiceName;
     }
 
     // source: https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/bingvoiceoutput
+    // tslint:disable-next-line:variable-name
     private readonly _femaleVoiceMap: { [key: string]: string } = {
         "ar-eg": "Microsoft Server Speech Text to Speech Voice (ar-EG, Hoda)",
         "ca-es": "Microsoft Server Speech Text to Speech Voice (ca-ES, HerenaRUS)",
@@ -370,9 +367,10 @@ class CognitiveServicesHelper {
         "tr-tr": "Microsoft Server Speech Text to Speech Voice (tr-TR, SedaRUS)",
         "zh-cn": "Microsoft Server Speech Text to Speech Voice (zh-CN, HuihuiRUS)",
         "zh-hk": "Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)",
-        "zh-tw": "Microsoft Server Speech Text to Speech Voice (zh-TW, Yating, Apollo)"
+        "zh-tw": "Microsoft Server Speech Text to Speech Voice (zh-TW, Yating, Apollo)",
     };
 
+    // tslint:disable-next-line:variable-name
     private readonly _maleVoiceMap: { [key: string]: string } = {
         "ar-sa": "Microsoft Server Speech Text to Speech Voice (ar-SA, Naayf)",
         "cs-cz": "Microsoft Server Speech Text to Speech Voice (cs-CZ, Vit)",
@@ -401,6 +399,6 @@ class CognitiveServicesHelper {
         "th-th": "Microsoft Server Speech Text to Speech Voice (th-TH, Pattara)",
         "zh-cn": "Microsoft Server Speech Text to Speech Voice (zh-CN, Kangkang, Apollo)",
         "zh-hk": "Microsoft Server Speech Text to Speech Voice (zh-HK, Danny, Apollo)",
-        "zh-tw": "Microsoft Server Speech Text to Speech Voice (zh-TW, Zhiwei, Apollo)"
+        "zh-tw": "Microsoft Server Speech Text to Speech Voice (zh-TW, Zhiwei, Apollo)",
     };
 }
