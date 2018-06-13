@@ -13,6 +13,7 @@ RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 ENV NODE_ENV=development
 
 # Install dependencies
+RUN yarn global add npm
 RUN npm install
 
 # Generate assets
