@@ -33,10 +33,48 @@ get_updated_version() {
     patch=$(cut -d '.' -f 3 ${VERSION_FILE})
     echo "${major}.${minor}.${patch}"
 }
+update_version() {
+    echo $1 > $VERSION_FILE
+}
+
+commit_and_tag() {
+    git checkout $BRANCH
+    git add $VERSION_FILE
+    git commit -m "$1"
+    git tag "$1"
+    if [ "$?" -ne 0 ]
+    then
+        echo "Failed to commit or tag new version"
+        exit_script
+    fi
+}
+
+push_master() {
+    git push origin $BRANCH
+    if [ "$?" -ne 0 ]
+    then
+        echo "Failed to push new version commit to master"
+        exit_script
+    fi
+}
+
+push_tag() {
+    git push origin $1
+    if [ "$?" -ne 0 ]
+    then
+        echo "Failed to push tag to master"
+        exit_script
+    fi
+}
 
 main() {
     version=$(get_updated_version)
     build $version
+    update_version $version
+    commit_and_tag $version
+    push_master
+    push_tag $version
+    exit 0
 }
 
 main
