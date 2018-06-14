@@ -5,7 +5,6 @@ import { FormatState, SizeState } from './Store';
 import { HScroll } from './HScroll';
 import { IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
-import { Gallery } from 'webchat-ui';
 
 export interface CarouselProps {
     format: FormatState,
@@ -74,7 +73,16 @@ class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {
         konsole.log("rendering CarouselAttachments");
         const { attachments, ... props } = this.props;
         return (
-            <Gallery attachments={ this.props.attachments } />
+            <ul>{ this.props.attachments.map((attachment, index) =>
+                <li key={ index } className="wc-carousel-item">
+                    <AttachmentView
+                        attachment={ attachment }
+                        format={ props.format }
+                        onCardAction={ props.onCardAction }
+                        onImageLoad={ props.onImageLoad }
+                    />
+                </li>
+            ) }</ul>
         );
     }
 }
