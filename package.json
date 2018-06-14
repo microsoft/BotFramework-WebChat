@@ -43,11 +43,12 @@
     "redux-observable": "0.13.0",
     "rxjs": "5.4.3",
     "simple-update-in": "^1.2.0",
-    "tslib": "1.7.1"
+    "tslib": "1.7.1",
+    "webchat-ui": "git+ssh://git@github.com:Revmaker/webchat-ui.git"
   },
   "devDependencies": {
     "@types/markdown-it": "0.0.2",
-    "@types/react": "15.6.1",
+    "@types/react": "15.6.16",
     "@types/react-dom": "15.5.7",
     "@types/react-redux": "5.0.5",
     "awesome-typescript-loader": "3.1.2",
