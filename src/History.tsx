@@ -5,7 +5,7 @@ import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
-import { sendMessage } from './Store';
+import { sendMessage, addMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
 export interface HistoryProps {
@@ -192,7 +192,8 @@ export const History = connect(
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below
-        sendMessage
+        sendMessage,
+        addMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
         format: stateProps.format,
@@ -204,7 +205,7 @@ export const History = connect(
         onClickRetry: dispatchProps.onClickRetry,
         onClickCardAction: dispatchProps.onClickCardAction,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),

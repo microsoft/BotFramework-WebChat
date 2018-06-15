@@ -299,6 +299,7 @@ export const doCardAction = (
     from: User,
     locale: string,
     sendMessage: (value: string, user: User, locale: string) => void,
+    addMessage: (value: string, user: User, locale: string) => void,
 ): IDoCardAction => (
     type,
     actionValue
@@ -314,7 +315,9 @@ export const doCardAction = (
             break;
 
         case "postBack":
+            console.log('doCardAction:postback', text);
             sendPostBack(botConnection, text, value, from, locale);
+            addMessage(text, from, locale);
             break;
 
         case "call":
