@@ -28,3 +28,10 @@ then
 # Upload to /latest/
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi
+
+# If on "master" branch, deploy to "master" tag too
+if [ "$TRAVIS_BRANCH" = "master" ]
+then
+# Upload to /master/
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/master --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+fi
