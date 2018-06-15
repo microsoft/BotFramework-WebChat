@@ -72,9 +72,9 @@ export interface CarouselAttachmentProps {
 class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {}> {
     render() {
         konsole.log("rendering CarouselAttachments");
-        const { attachments, ... props } = this.props;
+        const { attachments, onCardAction, ... props } = this.props;
         return (
-            <Gallery attachments={ this.props.attachments } />
+            <Gallery attachments={ attachments } buttonAction={ onCardAction }/>
         );
     }
 }
