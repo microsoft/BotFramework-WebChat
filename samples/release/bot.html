@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="./botchat.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="bot"/>
+    <script src="./botchat.js"></script>
+    <script>
+     var CL_BOT_VERSION = 'VERSION_HERE';
+     BotChat.App({
+         directLine: { secret: 'SECRET_KEY_HERE', },
+         user: { id: 'userid' },
+         bot: { id: 'botid' },
+         resize: 'detect'
+     }, document.getElementById("bot"));
+    </script>
+  </body>
+</html>
