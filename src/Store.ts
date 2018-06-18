@@ -31,7 +31,7 @@ export const sendMessage = (text: string, from: User, locale: string) => ({
 export const addMessage = (text: string, from: User, locale: string) => ({
     type: 'Add_Message',
     activity: {
-        id: '#BUTTON_TITLE_MESSAGE_' + (new Date()),
+        id: '#BUTTON_TITLE_MESSAGE_' + (Date.now()),
         type: "message",
         text,
         from,
