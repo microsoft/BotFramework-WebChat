@@ -31,6 +31,7 @@ export const sendMessage = (text: string, from: User, locale: string) => ({
 export const addMessage = (text: string, from: User, locale: string) => ({
     type: 'Add_Message',
     activity: {
+        id: '#POSTBACK_MESSAGE_TITLE',
         type: "message",
         text,
         from,
