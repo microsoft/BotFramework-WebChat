@@ -36,7 +36,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         if (!this.props.activityWithSuggestedActions) return;
 
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
-        this.props.doCardAction(cardAction.type, cardAction.value);
+        this.props.doCardAction(cardAction.type, cardAction.value, cardAction.title);
         e.stopPropagation();
     }
 

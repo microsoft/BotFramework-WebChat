@@ -291,7 +291,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export interface IDoCardAction {
-    (type: CardActionTypes, value: string | object): void;
+    (type: CardActionTypes, value: string | object, buttonTitle?: string): void;
 }
 
 export const doCardAction = (
@@ -302,9 +302,9 @@ export const doCardAction = (
     addMessage: (value: string, user: User, locale: string) => void,
 ): IDoCardAction => (
     type,
-    actionValue
+    actionValue,
+    buttonTitle
 ) => {
-
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object')? actionValue as object : undefined;
 
@@ -315,9 +315,8 @@ export const doCardAction = (
             break;
 
         case "postBack":
-            console.log('doCardAction:postback', text);
             sendPostBack(botConnection, text, value, from, locale);
-            addMessage(text, from, locale);
+            addMessage(buttonTitle, from, locale);
             break;
 
         case "call":

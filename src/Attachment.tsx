@@ -153,7 +153,7 @@ export const AttachmentView = (props: {
     const attachment = props.attachment as KnownMedia;
     const onCardAction = (cardAction: CardAction) => cardAction &&
         ((e: React.MouseEvent<HTMLElement>) => {
-            props.onCardAction(cardAction.type, cardAction.value);
+            props.onCardAction(cardAction.type, cardAction.value, cardAction.title);
             e.stopPropagation();
         });
     const attachedImage = (
