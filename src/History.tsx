@@ -5,7 +5,7 @@ import { Dispatch, connect } from 'react-redux';
 import { ActivityView } from './ActivityView';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
-import { sendMessage } from './Store';
+import { sendMessage, addMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
 export interface HistoryProps {
@@ -113,10 +113,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
-    private doCardAction(type: CardActionTypes, value: string | object) {
+    private doCardAction(type: CardActionTypes, value: string | object, buttonTitle?: string) {
         this.props.onClickCardAction();
         this.props.onCardAction && this.props.onCardAction();
-        return this.props.doCardAction(type, value);
+        return this.props.doCardAction(type, value, buttonTitle);
     }
 
     render() {
@@ -150,7 +150,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 format={ this.props.format }
                                 size={ this.props.size }
                                 activity={ activity }
-                                onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
+                                onCardAction={ (type: CardActionTypes, value: string | object, buttonTitle?: string) => this.doCardAction(type, value, buttonTitle) }
                                 onImageLoad={ () => this.autoscroll() }
                             />
                         </WrappedActivity>
@@ -192,7 +192,8 @@ export const History = connect(
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below
-        sendMessage
+        sendMessage,
+        addMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
         format: stateProps.format,
@@ -204,7 +205,7 @@ export const History = connect(
         onClickRetry: dispatchProps.onClickRetry,
         onClickCardAction: dispatchProps.onClickCardAction,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
