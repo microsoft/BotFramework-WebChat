@@ -1,0 +1,15 @@
+{
+  "plugins": [
+    "@babel/proposal-object-rest-spread"
+  ],
+  "presets": [
+    "@babel/preset-typescript",
+    ["@babel/preset-env", {
+      "targets": {
+        "browsers": ["last 2 versions"]
+      },
+      "modules": "commonjs"
+    }],
+    "@babel/react"
+  ]
+}

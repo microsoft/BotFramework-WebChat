@@ -1,0 +1,24 @@
+{
+  "name": "botframework-webchat",
+  "version": "4.0.0-0",
+  "description": "Embeddable web chat control for the Microsoft Bot Framework",
+  "keywords": [],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "test": "lerna run test"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
+  },
+  "homepage": "https://github.com/Microsoft/BotFramework-WebChat#readme",
+  "devDependencies": {
+    "lerna": "^2.11.0"
+  }
+}
