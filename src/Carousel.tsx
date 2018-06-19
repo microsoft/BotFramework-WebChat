@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Attachment } from 'botframework-directlinejs';
-import { AttachmentView } from './Attachment';
+import { Attachment, CardAction } from 'botframework-directlinejs';
 import { FormatState, SizeState } from './Store';
 import { HScroll } from './HScroll';
 import { IDoCardAction } from './Chat';
@@ -42,7 +41,12 @@ export interface CarouselAttachmentProps {
 class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {}> {
     render() {
         konsole.log("rendering CarouselAttachments");
-        const { attachments, onCardAction, ... props } = this.props;
+        const { attachments,  ...props } = this.props;
+        const onCardAction = (cardAction: CardAction) => cardAction &&
+            ((e: React.MouseEvent<HTMLElement>) => {
+            props.onCardAction(cardAction.type, cardAction.value);
+            e.stopPropagation();
+        });
         return (
             <Gallery attachments={ attachments } buttonAction={ onCardAction } />
         );
