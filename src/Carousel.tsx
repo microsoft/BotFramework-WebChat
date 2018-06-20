@@ -25,7 +25,7 @@ export class Carousel extends React.PureComponent<CarouselProps, {}> {
 
     render() {
         return (
-            <div className="wc-carousel" ref={ div => this.root = div } style={{width: 700}}>
+            <div className="wc-carousel" ref={ div => this.root = div }>
               <CarouselAttachments { ... this.props as CarouselAttachmentProps }/>
             </div >
         );
