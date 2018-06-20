@@ -1,22 +1,16 @@
-import React from 'react';
+import BasicWebChat from './BasicWebChat';
 
-export default class MyComponent extends React.Component {
-  render() {
-    return (
-      <div>This is my component</div>
-    );
-  }
-}
+export default BasicWebChat
 
-const { document } = global as any;
+try {
+  const { document } = global as any;
 
-if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
-  try {
+  if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
     const meta = document.createElement('meta');
 
     meta.setAttribute('name', 'botframework-webchat');
     meta.setAttribute('content', `version=${ '1.0.0' }`);
 
     document.head.appendChild(meta);
-  } catch (err) {}
-}
+  }
+} catch (err) {}
