@@ -24,7 +24,7 @@ export class Carousel extends React.PureComponent<CarouselProps, {}> {
 
     render() {
         return (
-            <div className="wc-carousel" ref={ div => this.root = div } style={{width: 700}}>
+            <div className="wc-carousel" ref={ div => this.root = div }>
               <CarouselAttachments { ... this.props as CarouselAttachmentProps }/>
             </div >
         );
@@ -44,7 +44,7 @@ class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {
         const { attachments,  ...props } = this.props;
         const onCardAction = (cardAction: CardAction) => cardAction &&
             ((e: React.MouseEvent<HTMLElement>) => {
-            props.onCardAction(cardAction.type, cardAction.value);
+            props.onCardAction(cardAction.type, cardAction.value, cardAction.title);
             e.stopPropagation();
         });
         return (
