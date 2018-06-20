@@ -44,7 +44,7 @@ class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {
         const { attachments,  ...props } = this.props;
         const onCardAction = (cardAction: CardAction) => cardAction &&
             ((e: React.MouseEvent<HTMLElement>) => {
-            props.onCardAction(cardAction.type, cardAction.value);
+            props.onCardAction(cardAction.type, cardAction.value, cardAction.title);
             e.stopPropagation();
         });
         return (
