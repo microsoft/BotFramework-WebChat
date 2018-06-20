@@ -18,6 +18,11 @@
         display: block;
     }
 
+    body {
+        margin: 0 auto !important;
+        max-width: 700px;
+    }
+
 /* docking */
 
     .wc-hidden {
