@@ -6,6 +6,7 @@ import { renderIfNonempty, IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 import { default as AdaptiveCardContainer } from './AdaptiveCardContainer';
 import * as konsole from './Konsole';
+import { MessageRenderer } from 'webchat-ui';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
@@ -152,7 +153,7 @@ export const AttachmentView = (props: {
     const attachment = props.attachment as KnownMedia;
     const onCardAction = (cardAction: CardAction) => cardAction &&
         ((e: React.MouseEvent<HTMLElement>) => {
-            props.onCardAction(cardAction.type, cardAction.value);
+            props.onCardAction(cardAction.type, cardAction.value, cardAction.title);
             e.stopPropagation();
         });
     const attachedImage = (
@@ -202,9 +203,9 @@ export const AttachmentView = (props: {
             if (attachment.content.images) {
                 attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url, null, img.tap));
             }
-            heroCardBuilder.addCommon(attachment.content)
+            heroCardBuilder.addCommon(attachment.content);
             return (
-                <AdaptiveCardContainer className="hero" nativeCard={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
+                <MessageRenderer {...attachment} onCardAction={onCardAction} />
             );
 
         case "application/vnd.microsoft.card.thumbnail":
