@@ -2,6 +2,7 @@
   "name": "playground",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/BotFramework-WebChat/",
   "dependencies": {
     "classnames": "^2.2.6",
     "component": "^1.0.0",
