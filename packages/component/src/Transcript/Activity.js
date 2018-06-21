@@ -30,7 +30,7 @@ export default props =>
     />
     <Bubble
       className={ BUBBLE_CSS }
-      timestamp="1 min ago"
+      timestamp={ props.timestamp }
     >
       { props.children }
     </Bubble>

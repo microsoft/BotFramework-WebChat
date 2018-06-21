@@ -17,16 +17,21 @@ export default class Transcript extends React.Component {
   constructor(props) {
     super(props);
 
+    const now = new Date();
+    const timestamp = new Date(now.getTime() - 59000);
+
     this.state = {
       activities: [{
         id: 0,
-        type: 'message',
-        text: 'This is a direct message.'
+        text: 'This is a direct message.',
+        timestamp,
+        type: 'message'
       }, {
         id: 1,
-        type: 'message',
         subType: 'code',
-        text: `function fancyAlert(arg) {\n  if (arg) {\n    $.facebox('div.#foo');\n  }\n}`
+        text: `function fancyAlert(arg) {\n  if (arg) {\n    $.facebox('div.#foo');\n  }\n}`,
+        timestamp,
+        type: 'message'
       }]
     };
   }
@@ -39,7 +44,10 @@ export default class Transcript extends React.Component {
         <ul className={ classNames(ROOT_CSS + '', props.className + '') }>
           {
             this.state.activities.map(activity =>
-              <Activity key={ activity.id }>
+              <Activity
+                key={ activity.id }
+                timestamp={ activity.timestamp }
+              >
                 {
                   activity.type === 'message' ?
                     activity.subType === 'code' ?

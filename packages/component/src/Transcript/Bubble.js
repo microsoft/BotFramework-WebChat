@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { primarySmallFont } from '../Styles';
+import TimeAgo from './TimeAgo';
 
 const ROOT_CSS = css({
   '& > .content': {
@@ -23,5 +24,7 @@ export default props =>
     <div className="content">
       { props.children }
     </div>
-    <div className="timestamp">{ props.timestamp }</div>
+    <div className="timestamp">
+      <TimeAgo value={ props.timestamp } />
+    </div>
   </div>

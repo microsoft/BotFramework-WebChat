@@ -16,7 +16,6 @@ const ROOT_CSS = css({
   color: ACCENT_COLOR,
   cursor: 'pointer',
   fontSize: 16,
-  // fontWeight: 'bold',
   height: 40,
 
   paddingLeft: 20,
