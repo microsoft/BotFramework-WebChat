@@ -4,6 +4,7 @@ import React from 'react';
 
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
+import Composer from './Composer';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -21,7 +22,9 @@ const SEND_BOX_CSS = css({
 });
 
 export default props =>
-  <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
-    <BasicTranscript className={ TRANSCRIPT_CSS } />
-    <BasicSendBox className={ SEND_BOX_CSS } />
-  </div>
+  <Composer>
+    <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+      <BasicTranscript className={ TRANSCRIPT_CSS } />
+      <BasicSendBox className={ SEND_BOX_CSS } />
+    </div>
+  </Composer>

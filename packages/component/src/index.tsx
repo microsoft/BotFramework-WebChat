@@ -9,7 +9,7 @@ try {
     const meta = document.createElement('meta');
 
     meta.setAttribute('name', 'botframework-webchat');
-    meta.setAttribute('content', `version=${ '1.0.0' }`);
+    meta.setAttribute('content', `version=${ '4.0.0' }`);
 
     document.head.appendChild(meta);
   }

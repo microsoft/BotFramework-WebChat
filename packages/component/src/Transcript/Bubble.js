@@ -7,9 +7,10 @@ import TimeAgo from './TimeAgo';
 
 const ROOT_CSS = css({
   maxWidth: 480,
+  minWidth: 240,
 
   '& > .header-image': {
-    backgroundPosition: '50% 50%',
+    backgroundPosition: '50%',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     height: 240,

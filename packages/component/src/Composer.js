@@ -2,12 +2,16 @@ import React from 'react';
 
 import Context from './Context';
 
+import createStyleSet from './Styles/createStyleSet';
+
 export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      context: {}
+      context: {
+        styleSet: props.styleSet || createStyleSet()
+      }
     };
   }
 

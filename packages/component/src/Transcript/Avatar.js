@@ -2,6 +2,8 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+import Context from '../Context';
+
 import { primaryFont } from '../Styles';
 
 const ROOT_CSS = css({
@@ -17,6 +19,10 @@ const ROOT_CSS = css({
 });
 
 export default props =>
-  <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
-    WC
-  </div>
+  <Context.Consumer>
+    { consumer =>
+      <div className={ classNames(consumer.styleSet.avatar + '', (props.className || '') + '') }>
+        WC
+      </div>
+    }
+  </Context.Consumer>
