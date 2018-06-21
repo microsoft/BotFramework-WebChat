@@ -1,9 +1,10 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
-import memoize from 'memoize-one';
 import React from 'react';
 
+import { primarySmallFont } from '../Styles';
 import Context from '../Context';
+import TimeAgo from './TimeAgo';
 
 const ROOT_CSS = css({
   '& > .header-image': {
