@@ -13,6 +13,10 @@ const ROOT_CSS = css({
   padding: 0
 });
 
+const ATTACHMENT_IMAGE_CSS = css({
+  width: '100%'
+});
+
 export default class Transcript extends React.Component {
   constructor(props) {
     super(props);
@@ -32,6 +36,12 @@ export default class Transcript extends React.Component {
         text: `function fancyAlert(arg) {\n  if (arg) {\n    $.facebox('div.#foo');\n  }\n}`,
         timestamp,
         type: 'message'
+      }, {
+        attachment: 'assets/surface4.jpg',
+        id: 2,
+        text: 'This is a cat.',
+        timestamp,
+        type: 'message'
       }]
     };
   }
@@ -45,6 +55,7 @@ export default class Transcript extends React.Component {
           {
             this.state.activities.map(activity =>
               <Activity
+                attachment={ activity.attachment }
                 key={ activity.id }
                 timestamp={ activity.timestamp }
               >

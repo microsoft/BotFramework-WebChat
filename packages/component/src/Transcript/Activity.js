@@ -30,6 +30,7 @@ export default props =>
     />
     <Bubble
       className={ BUBBLE_CSS }
+      image={ props.attachment }
       timestamp={ props.timestamp }
     >
       { props.children }

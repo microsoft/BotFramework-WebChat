@@ -27,6 +27,7 @@ const FILM_STYLES = createBasicStyleSet({
 
 export default props =>
   <BasicFilm
+    autoCenter={ false }
     className={ classNames(ROOT_CSS + '', props.className) }
     showDots={ false }
     styleSet={ FILM_STYLES }
