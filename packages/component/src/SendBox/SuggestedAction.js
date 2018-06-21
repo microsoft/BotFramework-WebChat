@@ -24,7 +24,7 @@ const ROOT_CSS = css({
 
 export default props =>
   <button
-    className={ classNames(ROOT_CSS + '', props.className + '') }
+    className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
   >
     <nobr>{ props.children }</nobr>
   </button>

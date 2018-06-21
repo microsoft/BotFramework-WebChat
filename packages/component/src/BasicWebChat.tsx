@@ -21,7 +21,7 @@ const SEND_BOX_CSS = css({
 });
 
 export default props =>
-  <div className={ classNames(ROOT_CSS + '', props.className + '') }>
+  <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
     <BasicTranscript className={ TRANSCRIPT_CSS } />
     <BasicSendBox className={ SEND_BOX_CSS } />
   </div>

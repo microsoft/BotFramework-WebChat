@@ -14,7 +14,7 @@ export default class TextBox extends React.Component {
 
     return (
       <input
-        className={ classNames(ROOT_CSS + '', props.className + '') }
+        className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
         type="text"
       />
     );

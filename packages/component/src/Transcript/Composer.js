@@ -6,8 +6,39 @@ export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
+    const timestamp = new Date(Date.now() - 59000);
+
     this.state = {
-      context: {}
+      context: {
+        activities: [{
+          id: 0,
+          cards: [{
+            text: 'This is a direct message.',
+            type: 'message'
+          }],
+          timestamp
+        }, {
+          id: 1,
+          cards: [{
+            subType: 'code',
+            text: `function fancyAlert(arg) {\n  if (arg) {\n    $.facebox('div.#foo');\n  }\n}`,
+            type: 'message'
+          }],
+          timestamp
+        }, {
+          id: 2,
+          cards: [{
+            attachment: 'assets/surface4.jpg',
+            text: 'This is a cat.',
+            type: 'message'
+          }, {
+            attachment: 'assets/surface1.jpg',
+            text: 'This is a cat.',
+            type: 'message'
+          }],
+          timestamp
+        }]
+      }
     };
   }
 

@@ -17,6 +17,6 @@ const ROOT_CSS = css({
 });
 
 export default props =>
-  <div className={ classNames(ROOT_CSS + '', props.className + '') }>
+  <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
     WC
   </div>

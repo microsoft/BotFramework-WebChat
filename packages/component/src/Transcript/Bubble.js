@@ -52,7 +52,7 @@ export default class Bubble extends React.Component {
     const { props, state } = this;
 
     return (
-      <div className={ classNames(ROOT_CSS + '', props.className + '') }>
+      <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
         { !!props.image &&
           <div className="header-image" style={ state.headerImageStyle } />
         }
