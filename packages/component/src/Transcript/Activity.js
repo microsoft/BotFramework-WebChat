@@ -24,7 +24,7 @@ const BUBBLE_CSS = css({
 });
 
 export default props =>
-  <div className={ ROOT_CSS }>
+  <li className={ ROOT_CSS }>
     <Avatar
       className={ AVATAR_CSS }
     />
@@ -36,4 +36,4 @@ export default props =>
       { props.children }
     </Bubble>
     <div className="filler" />
-  </div>
+  </li>
