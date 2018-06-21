@@ -2,7 +2,7 @@ import React from 'react';
 
 export default class Timer extends React.Component {
   componentDidMount() {
-    this.schedule();
+    this.schedule(this.props.at);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -10,7 +10,7 @@ export default class Timer extends React.Component {
     const { at: nextAt } = nextProps;
 
     if (at !== nextAt) {
-      this.schedule();
+      this.schedule(nextAt);
     }
   }
 
@@ -18,9 +18,7 @@ export default class Timer extends React.Component {
     clearTimeout(this.timeout);
   }
 
-  schedule() {
-    const { at } = this.props;
-
+  schedule(at) {
     clearTimeout(this.timeout);
 
     if (!isNaN(at)) {
