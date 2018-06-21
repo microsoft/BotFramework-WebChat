@@ -1,4 +1,5 @@
 import { css } from 'glamor';
+import classNames from 'classnames';
 import React from 'react';
 
 import MicrophoneButton from './MicrophoneButton';
@@ -20,23 +21,18 @@ const TEXT_BOX_CSS = css({
   flex: 1
 });
 
-export default class BasicSendBox extends React.Component {
-  render() {
-    return (
-      <div className={ ROOT_CSS }>
-        <SuggestedActions>
-          <SuggestedAction>Action 01</SuggestedAction>
-          <SuggestedAction>Action 02</SuggestedAction>
-          <SuggestedAction>Action 03</SuggestedAction>
-          <SuggestedAction>Action 04</SuggestedAction>
-          <SuggestedAction>Action 05</SuggestedAction>
-        </SuggestedActions>
-        <div className="main">
-          <UploadAttachmentButton />
-          <TextBox className={ TEXT_BOX_CSS } />
-          <MicrophoneButton />
-        </div>
-      </div>
-    );
-  }
-}
+export default props =>
+  <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+    <SuggestedActions>
+      <SuggestedAction>Action 01</SuggestedAction>
+      <SuggestedAction>Action 02</SuggestedAction>
+      <SuggestedAction>Action 03</SuggestedAction>
+      <SuggestedAction>Action 04</SuggestedAction>
+      <SuggestedAction>Action 05</SuggestedAction>
+    </SuggestedActions>
+    <div className="main">
+      <UploadAttachmentButton />
+      <TextBox className={ TEXT_BOX_CSS } />
+      <MicrophoneButton />
+    </div>
+  </div>

@@ -8,9 +8,18 @@ import Composer from './Composer';
 import Text from './Renderer/Text';
 
 const ROOT_CSS = css({
-  listStyleType: 'none',
-  margin: 0,
-  padding: 0
+  display: 'flex',
+  flexDirection: 'column',
+
+  '& > .filler': {
+    flex: 1
+  },
+
+  '& > ul': {
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0
+  }
 });
 
 const ATTACHMENT_IMAGE_CSS = css({
@@ -51,27 +60,30 @@ export default class Transcript extends React.Component {
 
     return (
       <Composer>
-        <ul className={ classNames(ROOT_CSS + '', props.className + '') }>
-          {
-            this.state.activities.map(activity =>
-              <Activity
-                attachment={ activity.attachment }
-                key={ activity.id }
-                timestamp={ activity.timestamp }
-              >
-                {
-                  activity.type === 'message' ?
-                    activity.subType === 'code' ?
-                      <Code>{ activity.text }</Code>
+        <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+          <div className="filler" />
+          <ul>
+            {
+              this.state.activities.map(activity =>
+                <Activity
+                  attachment={ activity.attachment }
+                  key={ activity.id }
+                  timestamp={ activity.timestamp }
+                >
+                  {
+                    activity.type === 'message' ?
+                      activity.subType === 'code' ?
+                        <Code>{ activity.text }</Code>
+                      :
+                        <Text value={ activity.text } />
                     :
-                      <Text value={ activity.text } />
-                  :
-                    <span>Unknown activity</span>
-                }
-              </Activity>
-            )
-          }
-        </ul>
+                      <span>Unknown activity</span>
+                  }
+                </Activity>
+              )
+            }
+          </ul>
+        </div>
       </Composer>
     );
   }
