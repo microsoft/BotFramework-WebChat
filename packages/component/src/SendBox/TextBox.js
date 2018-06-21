@@ -4,7 +4,8 @@ import React from 'react';
 
 const ROOT_CSS = css({
   backgroundColor: 'Transparent',
-  border: 0
+  border: 0,
+  minWidth: 0
 });
 
 export default class TextBox extends React.Component {
