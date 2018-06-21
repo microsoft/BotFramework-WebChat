@@ -22,7 +22,7 @@ export default class Composer extends React.Component {
     super(props);
 
     this.mergeContext = memoize(styleSet => ({ styleSet }));
-    this.stylesToClassNames = memoize(styleSet => mapMap(styleSet, style => css(style)));
+    this.stylesToClassNames = memoize(styleSet => mapMap(styleSet, (style, key) => key === 'options' ? style : css(style)));
   }
 
   render() {

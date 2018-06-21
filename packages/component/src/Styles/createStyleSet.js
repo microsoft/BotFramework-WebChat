@@ -67,13 +67,13 @@ function createBubbleStyle({
   return {
     background: bubbleBackground,
 
-    '& > .header-image': {
-      backgroundPosition: '50%',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      height: bubbleImageHeight,
-      width: '100%'
-    },
+    // '& > .header-image': {
+    //   backgroundPosition: '50%',
+    //   backgroundRepeat: 'no-repeat',
+    //   backgroundSize: 'cover',
+    //   height: bubbleImageHeight,
+    //   width: '100%'
+    // },
 
     '& > .content': {
       minHeight: 20,
@@ -113,6 +113,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     codeCard: createCodeCardStyle(options),
+    options,
     timestamp: createTimestampStyle(options),
     textCard: createTextCardStyle(options)
   };
