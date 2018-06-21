@@ -3,7 +3,7 @@ import React from 'react';
 
 import MicrophoneButton from './MicrophoneButton';
 import SuggestedAction from './SuggestedAction';
-import SuggestedActions from './SuggestedActions';
+import SuggestedActions from './SuggestedActions2';
 import TextBox from './TextBox';
 import UploadAttachmentButton from './UploadAttachmentButton';
 

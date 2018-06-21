@@ -26,5 +26,5 @@ export default props =>
   <button
     className={ classNames(ROOT_CSS + '', props.className + '') }
   >
-    { props.children }
+    <nobr>{ props.children }</nobr>
   </button>
