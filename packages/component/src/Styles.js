@@ -1,5 +1,13 @@
+function fontFamily(fonts) {
+  return fonts.map(font => `'${ font }'`).join(', ');
+}
+
+const monospaceFont = {
+  fontFamily: fontFamily(['Consolas', 'Courier New', 'monospace'])
+};
+
 const primaryFont = {
-  fontFamily: ['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif'].map(font => `'${ font }'`).join(', ')
+  fontFamily: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif'])
 };
 
 const primarySmallFont = {
@@ -8,6 +16,8 @@ const primarySmallFont = {
 };
 
 export {
+  monospaceFont,
+
   primaryFont,
   primarySmallFont
 }

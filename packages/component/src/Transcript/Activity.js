@@ -3,25 +3,36 @@ import React from 'react';
 
 import Avatar from './Avatar';
 import Bubble from './Bubble';
-import Text from './Renderer/Text';
 
 const ROOT_CSS = css({
   display: 'flex',
-  padding: 20
+  padding: 10,
+
+  '& > .filler': {
+    width: 50
+  }
+});
+
+const AVATAR_CSS = css({
+  flexShrink: 0
 });
 
 const BUBBLE_CSS = css({
   flex: 1,
-  marginLeft: 10
+  marginLeft: 10,
+  overflow: 'hidden'
 });
 
 export default props =>
   <div className={ ROOT_CSS }>
-    <Avatar />
+    <Avatar
+      className={ AVATAR_CSS }
+    />
     <Bubble
       className={ BUBBLE_CSS }
       timestamp="1 min ago"
     >
-      <Text value="This is an activity" />
+      { props.children }
     </Bubble>
+    <div className="filler" />
   </div>

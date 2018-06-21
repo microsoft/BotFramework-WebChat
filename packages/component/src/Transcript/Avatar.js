@@ -1,4 +1,5 @@
 import { css } from 'glamor';
+import classNames from 'classnames';
 import React from 'react';
 
 import { primaryFont } from '../Styles';
@@ -16,6 +17,6 @@ const ROOT_CSS = css({
 });
 
 export default props =>
-  <div className={ ROOT_CSS }>
+  <div className={ classNames(ROOT_CSS + '', props.className + '') }>
     WC
   </div>
