@@ -2,9 +2,10 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import BasicActivity from './Activity/BasicActivity';
 import ActivityComposer from './Activity/Composer';
+import BasicActivity from './Activity/BasicActivity';
 import Composer from './Composer';
+import MainContext from '../Context';
 import TranscriptContext from './Context';
 
 const ROOT_CSS = css({
@@ -16,9 +17,7 @@ const ROOT_CSS = css({
   },
 
   '& > ul': {
-    listStyleType: 'none',
-    margin: 0,
-    padding: 0
+    listStyleType: 'none'
   }
 });
 
@@ -27,26 +26,30 @@ const ATTACHMENT_IMAGE_CSS = css({
 });
 
 export default props =>
-  <Composer>
-    <TranscriptContext.Consumer>
-      { ({ activities }) =>
-        <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
-          <div className="filler" />
-          <ul>
-            {
-              activities.map(activity =>
-                <ActivityComposer
-                  activity={ activity }
-                  key={ activity.id }
-                >
-                  <BasicActivity>
-                    { props.children }
-                  </BasicActivity>
-                </ActivityComposer>
-              )
-            }
-          </ul>
-        </div>
-      }
-    </TranscriptContext.Consumer>
-  </Composer>
+  <MainContext.Consumer>
+    { ({ styleSet }) =>
+      <Composer>
+        <TranscriptContext.Consumer>
+          { ({ activities }) =>
+            <div className={ classNames(ROOT_CSS + '', styleSet.activities + '', (props.className || '') + '') }>
+              <div className="filler" />
+              <ul>
+                {
+                  activities.map(activity =>
+                    <ActivityComposer
+                      activity={ activity }
+                      key={ activity.id }
+                    >
+                      <BasicActivity>
+                        { props.children }
+                      </BasicActivity>
+                    </ActivityComposer>
+                  )
+                }
+              </ul>
+            </div>
+          }
+        </TranscriptContext.Consumer>
+      </Composer>
+    }
+  </MainContext.Consumer>

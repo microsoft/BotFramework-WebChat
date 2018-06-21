@@ -1,14 +1,12 @@
-import { css } from 'glamor';
 import React from 'react';
 
-import { monospaceSmallFont } from '../Styles';
-
-const ROOT_CSS = css({
-  ...monospaceSmallFont,
-  margin: 0
-});
+import MainContext from '../Context';
 
 export default props =>
-  <pre className={ ROOT_CSS }>
-    { props.children }
-  </pre>
+  <MainContext.Consumer>
+    { ({ styleSet }) =>
+      <pre className={ styleSet.codeCard }>
+        { props.children }
+      </pre>
+    }
+  </MainContext.Consumer>

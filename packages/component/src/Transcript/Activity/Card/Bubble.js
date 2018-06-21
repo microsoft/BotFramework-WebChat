@@ -1,23 +1,8 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import Context from '../../../Context';
-
-const ROOT_CSS = css({
-  '& > .header-image': {
-    backgroundPosition: '50%',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    width: '100%'
-  },
-
-  '& > .content': {
-    minHeight: 20,
-    padding: 10
-  }
-});
+import MainContext from '../../../Context';
 
 export default class Bubble extends React.Component {
   constructor(props) {
@@ -33,9 +18,9 @@ export default class Bubble extends React.Component {
     const headerImageStyle = this.createHeaderImageStyle(props.image);
 
     return (
-      <Context.Consumer>
+      <MainContext.Consumer>
         { context =>
-          <div className={ classNames(ROOT_CSS + '', context.styleSet.bubble + '', (props.className || '') + '') }>
+          <div className={ classNames(context.styleSet.bubble + '', (props.className || '') + '') }>
             { !!props.image &&
               <div className="header-image" style={ headerImageStyle } />
             }
@@ -44,7 +29,7 @@ export default class Bubble extends React.Component {
             </div>
           </div>
         }
-      </Context.Consumer>
+      </MainContext.Consumer>
     );
   }
 }

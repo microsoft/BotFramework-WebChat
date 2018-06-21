@@ -1,11 +1,12 @@
-import { css } from 'glamor';;
 import React from 'react';
 
-const ROOT_CSS = css({
-  fontFamily: ['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif'].map(font => `'${ font }'`).join(', ')
-});
+import MainContext from '../Context';
 
 export default props =>
-  <div className={ ROOT_CSS }>
-    { props.value }
-  </div>
+  <MainContext.Consumer>
+    { ({ styleSet }) =>
+      <div className={ styleSet.textCard }>
+        { props.value }
+      </div>
+    }
+  </MainContext.Consumer>
