@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import React from 'react';
 
-import { monospaceSmallFont } from '../../Styles';
+import { monospaceSmallFont } from '../Styles';
 
 const ROOT_CSS = css({
   ...monospaceSmallFont,

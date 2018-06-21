@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Timer from '../Utils/Timer';
+import Timer from './Timer';
 
 function ago(date) {
   // We need to use HTML.Intl to create this
@@ -58,8 +58,6 @@ export default class TimeAgo extends React.Component {
 
   render() {
     const { state } = this;
-
-    console.log(state);
 
     return (
       <React.Fragment>

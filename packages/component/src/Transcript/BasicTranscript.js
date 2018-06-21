@@ -2,11 +2,10 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import Activity from './Activity';
-import Code from './Renderer/Code';
+import BasicActivity from './Activity/BasicActivity';
+import ActivityComposer from './Activity/Composer';
 import Composer from './Composer';
-import Context from './Context';
-import Text from './Renderer/Text';
+import TranscriptContext from './Context';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -29,32 +28,25 @@ const ATTACHMENT_IMAGE_CSS = css({
 
 export default props =>
   <Composer>
-    <Context.Consumer>
-      { consumer =>
+    <TranscriptContext.Consumer>
+      { ({ activities }) =>
         <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
           <div className="filler" />
           <ul>
             {
-              consumer.activities.map(({ cards: [card], id, timestamp }) =>
-                <Activity
-                  attachment={ card.attachment }
-                  key={ id }
-                  timestamp={ timestamp }
+              activities.map(activity =>
+                <ActivityComposer
+                  activity={ activity }
+                  key={ activity.id }
                 >
-                  {
-                    card.type === 'message' ?
-                      card.subType === 'code' ?
-                        <Code>{ card.text }</Code>
-                      :
-                        <Text value={ card.text } />
-                    :
-                      <span>Unknown activity</span>
-                  }
-                </Activity>
+                  <BasicActivity>
+                    { props.children }
+                  </BasicActivity>
+                </ActivityComposer>
               )
             }
           </ul>
         </div>
       }
-    </Context.Consumer>
+    </TranscriptContext.Consumer>
   </Composer>

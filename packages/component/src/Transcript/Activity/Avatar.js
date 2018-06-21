@@ -1,10 +1,7 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import Context from '../Context';
-
-import { primaryFont } from '../Styles';
+import Context from '../../Context';
 
 export default props =>
   <Context.Consumer>

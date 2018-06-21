@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import Context from '../Context';
+import Context from '../../../Context';
 
 const ROOT_CSS = css({
   '& > .header-image': {
@@ -29,7 +29,7 @@ export default class Bubble extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const { props } = this;
     const headerImageStyle = this.createHeaderImageStyle(props.image);
 
     return (
