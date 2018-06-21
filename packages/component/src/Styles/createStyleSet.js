@@ -65,6 +65,8 @@ function createBubbleStyle({
   bubbleImageHeight
 }) {
   return {
+    background: bubbleBackground,
+
     '& > .header-image': {
       backgroundPosition: '50%',
       backgroundRepeat: 'no-repeat',
@@ -74,7 +76,6 @@ function createBubbleStyle({
     },
 
     '& > .content': {
-      background: bubbleBackground,
       minHeight: 20,
       padding: 10
     }
