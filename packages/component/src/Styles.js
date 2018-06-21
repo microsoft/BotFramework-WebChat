@@ -6,6 +6,11 @@ const monospaceFont = {
   fontFamily: fontFamily(['Consolas', 'Courier New', 'monospace'])
 };
 
+const monospaceSmallFont = {
+  ...monospaceFont,
+  fontSize: '80%'
+};
+
 const primaryFont = {
   fontFamily: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif'])
 };
@@ -17,6 +22,7 @@ const primarySmallFont = {
 
 export {
   monospaceFont,
+  monospaceSmallFont,
 
   primaryFont,
   primarySmallFont
