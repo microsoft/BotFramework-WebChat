@@ -8,7 +8,9 @@ const ROOT_CSS = css({
 });
 
 const WEB_CHAT_CSS = css({
-  height: '100%'
+  height: '100%',
+  margin: '0 auto',
+  maxWidth: 768
 });
 
 class App extends Component {
