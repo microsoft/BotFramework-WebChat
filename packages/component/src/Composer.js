@@ -1,23 +1,38 @@
+import { css } from 'glamor';
+import memoize from 'memoize-one';
 import React from 'react';
 
 import Context from './Context';
-
 import createStyleSet from './Styles/createStyleSet';
+
+function mapMap(map, mapper) {
+  return Object.keys(map).reduce((result, key) => {
+    result[key] = mapper(map[key], key);
+
+    return result;
+  }, {});
+}
+
+function stylesToClassNames(styles) {
+  return mapMap(styles, style => css(style));
+}
 
 export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      context: {
-        styleSet: props.styleSet || createStyleSet()
-      }
-    };
+    this.mergeContext = memoize(styleSet => ({ styleSet }));
+    this.stylesToClassNames = memoize(styleSet => mapMap(styleSet, style => css(style)));
   }
 
   render() {
+    const { props } = this;
+    const context = this.mergeContext(
+      this.stylesToClassNames(props.styleSet || createStyleSet())
+    );
+
     return (
-      <Context.Provider value={ this.state.context }>
+      <Context.Provider value={ context }>
         { this.props.children }
       </Context.Provider>
     );
