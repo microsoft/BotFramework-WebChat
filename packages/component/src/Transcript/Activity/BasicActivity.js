@@ -12,13 +12,19 @@ import TimeAgo from '../../Utils/TimeAgo';
 const ROOT_CSS = css({
   display: 'flex',
 
+  '&.from-user': {
+    flexDirection: 'row-reverse',
+    justifyContent: 'flex-end'
+  },
+
   '& > .bubble-box': {
-    flex: 1,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    flexGrow: 10000
   },
 
   '& > .filler': {
-    width: 60
+    flexGrow: 1,
+    flexShrink: 10000
   }
 });
 
@@ -29,9 +35,9 @@ const AVATAR_CSS = css({
 export default ({ children }) =>
   <MainContext.Consumer>
     { ({ styleSet }) =>
-      <li className={ classNames(ROOT_CSS + '', styleSet.activity + '') }>
-        <ActivityContext.Consumer>
-          { ({ activity: { cards: [card], timestamp } }) =>
+      <ActivityContext.Consumer>
+        { ({ activity: { cards: [card], from, timestamp } }) =>
+          <li className={ classNames(ROOT_CSS + '', styleSet.activity + '', { 'from-user': from === 'user' }) }>
             <React.Fragment>
               <Avatar className={ AVATAR_CSS } />
               <div className="bubble-box">
@@ -46,8 +52,8 @@ export default ({ children }) =>
               </div>
               <div className="filler" />
             </React.Fragment>
-          }
-        </ActivityContext.Consumer>
-      </li>
+          </li>
+        }
+      </ActivityContext.Consumer>
     }
   </MainContext.Consumer>

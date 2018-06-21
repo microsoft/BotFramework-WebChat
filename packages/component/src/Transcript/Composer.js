@@ -11,6 +11,7 @@ export default class Composer extends React.Component {
     this.state = {
       context: {
         activities: [{
+          from: 'bot',
           id: 0,
           cards: [{
             text: 'This is a direct message.',
@@ -18,6 +19,7 @@ export default class Composer extends React.Component {
           }],
           timestamp
         }, {
+          from: 'user',
           id: 1,
           cards: [{
             subType: 'code',
@@ -26,6 +28,7 @@ export default class Composer extends React.Component {
           }],
           timestamp
         }, {
+          from: 'bot',
           id: 2,
           cards: [{
             attachment: 'assets/surface4.jpg',

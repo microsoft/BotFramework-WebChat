@@ -9,8 +9,8 @@ const DEFAULT_OPTIONS = {
 
   bubbleBackground: 'White',
   bubbleImageHeight: 240,
-  bubbleMaxWidth: 480,
-  bubbleMinWidth: 240,
+  bubbleMaxWidth: 480, // screen width = 600px
+  bubbleMinWidth: 250, // min screen width = 320px
 
   timestampColor: 'rgba(0, 0, 0, .2)'
 };
@@ -24,9 +24,21 @@ function createActivitiesStyle() {
   };
 }
 
-function createActivityStyle() {
+function createActivityStyle({
+  bubbleMaxWidth,
+  bubbleMinWidth
+}) {
   return {
-    paddingBottom: 10
+    paddingBottom: 10,
+
+    '& > .bubble-box': {
+      maxWidth: bubbleMaxWidth,
+      minWidth: bubbleMinWidth
+    },
+
+    '& > .filler': {
+      minWidth: 10
+    }
   };
 }
 
@@ -50,14 +62,9 @@ function createAvatarStyle() {
 
 function createBubbleStyle({
   bubbleBackground,
-  bubbleImageHeight,
-  bubbleMaxWidth,
-  bubbleMinWidth
+  bubbleImageHeight
 }) {
   return {
-    maxWidth: bubbleMaxWidth,
-    minWidth: bubbleMinWidth,
-
     '& > .header-image': {
       backgroundPosition: '50%',
       backgroundRepeat: 'no-repeat',
