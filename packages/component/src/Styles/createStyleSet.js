@@ -10,15 +10,14 @@ export default function createStyleSet(options) {
     avatar: css({
       ...primaryFont,
 
+      alignItems: 'center',
       backgroundColor: 'Black',
       borderRadius: '50%',
       color: 'White',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      // lineHeight: '40px',
-      // textAlign: 'center',
       height: 40,
+      justifyContent: 'center',
+      overflow: 'hidden',
       width: 40
     })
   };
