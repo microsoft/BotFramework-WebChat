@@ -8,7 +8,6 @@ import TimeAgo from './TimeAgo';
 
 const ROOT_CSS = css({
   display: 'flex',
-  padding: 10,
 
   '& > .bubble-box': {
     flex: 1,
@@ -16,7 +15,7 @@ const ROOT_CSS = css({
   },
 
   '& > .filler': {
-    width: 50
+    width: 60
   }
 });
 
