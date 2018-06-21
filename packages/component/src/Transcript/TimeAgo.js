@@ -25,7 +25,7 @@ function nextTimer(date) {
   if (time > now) {
     return time;
   } else {
-    return (60000 - (now - time) % 60000) + now;
+    return Math.ceil((now - time) / 60000) * 60000 + time;
   }
 }
 
@@ -58,6 +58,8 @@ export default class TimeAgo extends React.Component {
 
   render() {
     const { state } = this;
+
+    console.log(state);
 
     return (
       <React.Fragment>
