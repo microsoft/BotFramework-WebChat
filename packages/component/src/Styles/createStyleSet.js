@@ -67,14 +67,6 @@ function createBubbleStyle({
   return {
     background: bubbleBackground,
 
-    // '& > .header-image': {
-    //   backgroundPosition: '50%',
-    //   backgroundRepeat: 'no-repeat',
-    //   backgroundSize: 'cover',
-    //   height: bubbleImageHeight,
-    //   width: '100%'
-    // },
-
     '& > .content': {
       minHeight: 20,
       padding: 10
