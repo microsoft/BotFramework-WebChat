@@ -31,19 +31,24 @@ export default class Composer extends React.Component {
           from: 'bot',
           id: 2,
           cards: [{
-            attachment: 'assets/surface4.jpg',
-            id: 0,
-            text: 'This is a cat.',
-            type: 'message'
-          }, {
             attachment: 'assets/surface1.jpg',
-            id: 1,
-            text: 'This is a cat.',
+            id: 0,
+            text: 'The lightest, most powerful Surface Pro ever.',
             type: 'message'
           }, {
-            attachment: 'assets/microsoft.png',
-            id: 2,
-            text: 'This is a cat.',
+            attachment: 'assets/surface2.jpg',
+            id: 1,
+            text: 'The lightest, most powerful Surface Pro ever.',
+            type: 'message'
+          }, {
+            attachment: 'assets/surface3.jpg',
+            id: 1,
+            text: 'The lightest, most powerful Surface Pro ever.',
+            type: 'message'
+          }, {
+            attachment: 'assets/surface4.jpg',
+            id: 1,
+            text: 'The lightest, most powerful Surface Pro ever.',
             type: 'message'
           }],
           timestamp
@@ -53,7 +58,7 @@ export default class Composer extends React.Component {
           cards: [{
             attachment: 'assets/surface4.jpg',
             id: 0,
-            text: 'This is a cat.',
+            text: 'Empowering every person and every organization on the planet to achieve more.',
             type: 'message'
           }],
           timestamp

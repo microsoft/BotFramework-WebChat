@@ -25,7 +25,10 @@ const LIST_CSS = css({
 });
 
 const BasicTranscript = withStyleSet(withActivities(({ activities, className, children, styleSet }) =>
-  <ScrollToBottom className={ classNames(ROOT_CSS + '', (className || '') + '') }>
+  <ScrollToBottom
+    className={ className }
+    scrollViewClassName={ ROOT_CSS + '' }
+  >
     <div className={ FILLER_CSS } />
     <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
       {
