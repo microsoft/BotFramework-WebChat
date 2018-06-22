@@ -2,8 +2,8 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+import { withActivity } from './Context';
 import { withStyleSet } from '../../Context';
-import ActivityContext from './Context';
 import Avatar from './Avatar';
 import TimeAgo from './TimeAgo';
 
@@ -30,19 +30,15 @@ const AVATAR_CSS = css({
   flexShrink: 0
 });
 
-export default withStyleSet(({ children, styleSet }) =>
-  <ActivityContext.Consumer>
-    { ({ activity: { cards: [card], from } }) =>
-      <div className={ classNames(ROOT_CSS + '', styleSet.singleCardActivity + '', { 'from-user': from === 'user' }) }>
-        <React.Fragment>
-          <Avatar className={ AVATAR_CSS } />
-          <div className="bubble-box">
-            { children(card) }
-            <TimeAgo />
-          </div>
-          <div className="filler" />
-        </React.Fragment>
+export default withStyleSet(withActivity(({ activity: { cards: [card], from }, children, styleSet }) =>
+  <div className={ classNames(ROOT_CSS + '', styleSet.singleCardActivity + '', { 'from-user': from === 'user' }) }>
+    <React.Fragment>
+      <Avatar className={ AVATAR_CSS } />
+      <div className="bubble-box">
+        { children(card) }
+        <TimeAgo />
       </div>
-    }
-  </ActivityContext.Consumer>
-)
+      <div className="filler" />
+    </React.Fragment>
+  </div>
+))

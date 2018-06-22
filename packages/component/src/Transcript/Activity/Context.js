@@ -1,3 +1,18 @@
 import React from 'react';
 
-export default React.createContext()
+const Context = React.createContext();
+
+const withActivity = Component => props =>
+  <Context.Consumer>
+    { ({ activity }) =>
+      <Component activity={ activity } { ...props }>
+        { props.children }
+      </Component>
+    }
+  </Context.Consumer>
+
+export default Context
+
+export {
+  withActivity
+}

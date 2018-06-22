@@ -13,10 +13,6 @@ function mapMap(map, mapper) {
   }, {});
 }
 
-function stylesToClassNames(styles) {
-  return mapMap(styles, style => css(style));
-}
-
 export default class Composer extends React.Component {
   constructor(props) {
     super(props);

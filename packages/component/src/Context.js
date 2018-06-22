@@ -1,17 +1,17 @@
 import React from 'react';
 
-const context = React.createContext();
+const Context = React.createContext();
 
 const withStyleSet = Component => props =>
-  <context.Consumer>
+  <Context.Consumer>
     { ({ styleSet }) =>
       <Component styleSet={ styleSet } { ...props }>
         { props.children }
       </Component>
     }
-  </context.Consumer>
+  </Context.Consumer>
 
-export default context
+export default Context
 
 export {
   withStyleSet

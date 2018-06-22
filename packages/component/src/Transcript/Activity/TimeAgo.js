@@ -1,15 +1,11 @@
 import React from 'react';
 
+import { withActivity } from './Context';
 import { withStyleSet } from '../../Context';
-import ActivityContext from './Context';
 import TimeAgo from '../../Utils/TimeAgo';
 
-export default withStyleSet(({ styleSet }) =>
-  <ActivityContext.Consumer>
-    { ({ activity: { timestamp } }) =>
-      <span className={ styleSet.timestamp }>
-        <TimeAgo value={ timestamp } />
-      </span>
-    }
-  </ActivityContext.Consumer>
-)
+export default withStyleSet(withActivity(({ activity: { timestamp }, styleSet }) =>
+  <span className={ styleSet.timestamp }>
+    <TimeAgo value={ timestamp } />
+  </span>
+))
