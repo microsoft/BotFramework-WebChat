@@ -3,7 +3,8 @@ import classNames from 'classnames';
 import React from 'react';
 
 import ActivityComposer from './Activity/Composer';
-import BasicActivity from './Activity/BasicActivity';
+import BasicMultipleCardActivity from './Activity/BasicMultipleCardActivity';
+import BasicSingleCardActivity from './Activity/BasicSingleCardActivity';
 import Composer from './Composer';
 import MainContext from '../Context';
 import TranscriptContext from './Context';
@@ -21,10 +22,6 @@ const ROOT_CSS = css({
   }
 });
 
-const ATTACHMENT_IMAGE_CSS = css({
-  width: '100%'
-});
-
 export default props =>
   <MainContext.Consumer>
     { ({ styleSet }) =>
@@ -36,14 +33,21 @@ export default props =>
               <ul>
                 {
                   activities.map(activity =>
-                    <ActivityComposer
-                      activity={ activity }
-                      key={ activity.id }
-                    >
-                      <BasicActivity>
-                        { props.children }
-                      </BasicActivity>
-                    </ActivityComposer>
+                    <li key={ activity.id }>
+                      <ActivityComposer activity={ activity }>
+                        {
+                          // Currently, we do not support multiple card originated from the user
+                          activity.cards.length === 1 || activity.from === 'user' ?
+                            <BasicSingleCardActivity>
+                              { props.children }
+                            </BasicSingleCardActivity>
+                          :
+                            <BasicMultipleCardActivity>
+                              { props.children }
+                            </BasicMultipleCardActivity>
+                        }
+                      </ActivityComposer>
+                    </li>
                   )
                 }
               </ul>

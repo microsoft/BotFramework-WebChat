@@ -24,24 +24,6 @@ function createActivitiesStyle() {
   };
 }
 
-function createActivityStyle({
-  bubbleMaxWidth,
-  bubbleMinWidth
-}) {
-  return {
-    paddingBottom: 10,
-
-    '& > .bubble-box': {
-      maxWidth: bubbleMaxWidth,
-      minWidth: bubbleMinWidth
-    },
-
-    '& > .filler': {
-      minWidth: 10
-    }
-  };
-}
-
 function createAvatarStyle() {
   return {
     ...primaryFont,
@@ -61,8 +43,7 @@ function createAvatarStyle() {
 }
 
 function createBubbleStyle({
-  bubbleBackground,
-  bubbleImageHeight
+  bubbleBackground
 }) {
   return {
     background: bubbleBackground,
@@ -78,6 +59,32 @@ function createCodeCardStyle() {
   return {
     ...monospaceSmallFont,
     margin: 0
+  };
+}
+
+function createMultipleCardActivityCardStyle() {
+  return {
+    marginBottom: 10,
+    marginRight: 10,
+    width: 240
+  };
+}
+
+function createSingleCardActivityStyle({
+  bubbleMaxWidth,
+  bubbleMinWidth
+}) {
+  return {
+    paddingBottom: 10,
+
+    '& > .bubble-box': {
+      maxWidth: bubbleMaxWidth,
+      minWidth: bubbleMinWidth
+    },
+
+    '& > .filler': {
+      minWidth: 10
+    }
   };
 }
 
@@ -101,12 +108,13 @@ function createTimestampStyle({
 export default function createStyleSet(options = DEFAULT_OPTIONS) {
   return {
     activities: createActivitiesStyle(options),
-    activity: createActivityStyle(options),
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     codeCard: createCodeCardStyle(options),
+    multipleCardActivityCard: createMultipleCardActivityCardStyle(options),
     options,
-    timestamp: createTimestampStyle(options),
-    textCard: createTextCardStyle(options)
+    singleCardActivity: createSingleCardActivityStyle(options),
+    textCard: createTextCardStyle(options),
+    timestamp: createTimestampStyle(options)
   };
 }

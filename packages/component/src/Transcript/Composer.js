@@ -41,7 +41,7 @@ export default class Composer extends React.Component {
             text: 'This is a cat.',
             type: 'message'
           }, {
-            attachment: 'assets/microsoft.jpg',
+            attachment: 'assets/microsoft.png',
             id: 2,
             text: 'This is a cat.',
             type: 'message'
