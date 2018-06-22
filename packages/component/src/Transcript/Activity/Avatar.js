@@ -1,13 +1,18 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import Context from '../../Context';
+import ActivityContext from './Context';
+import MainContext from '../../Context';
 
 export default props =>
-  <Context.Consumer>
-    { consumer =>
-      <div className={ classNames(consumer.styleSet.avatar + '', (props.className || '') + '') }>
-        WC
-      </div>
+  <MainContext.Consumer>
+    { ({ styleSet }) =>
+      <ActivityContext.Consumer>
+        { ({ activity: { from } }) =>
+          <div className={ classNames(styleSet.avatar + '', (props.className || '') + '') }>
+            { from === 'bot' ? 'BF' : 'WC' }
+          </div>
+        }
+      </ActivityContext.Consumer>
     }
-  </Context.Consumer>
+  </MainContext.Consumer>

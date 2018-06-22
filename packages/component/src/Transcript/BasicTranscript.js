@@ -1,27 +1,27 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 import ActivityComposer from './Activity/Composer';
 import BasicCard from './Activity/Card/BasicCard';
 import BasicMultipleCardActivity from './Activity/BasicMultipleCardActivity';
 import BasicSingleCardActivity from './Activity/BasicSingleCardActivity';
-import CardComposer from './Activity/Card/Composer';
 import Composer from './Composer';
 import MainContext from '../Context';
 import TranscriptContext from './Context';
 
 const ROOT_CSS = css({
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'column'
+});
 
-  '& > .filler': {
-    flex: 1
-  },
+const FILLER_CSS = css({
+  flex: 1
+});
 
-  '& > ul': {
-    listStyleType: 'none'
-  }
+const LIST_CSS = css({
+  listStyleType: 'none'
 });
 
 export default props =>
@@ -30,9 +30,9 @@ export default props =>
       <Composer>
         <TranscriptContext.Consumer>
           { ({ activities }) =>
-            <div className={ classNames(ROOT_CSS + '', styleSet.activities + '', (props.className || '') + '') }>
-              <div className="filler" />
-              <ul>
+            <ScrollToBottom className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+              <div className={ FILLER_CSS } />
+              <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
                 {
                   activities.map(activity =>
                     <li
@@ -64,7 +64,7 @@ export default props =>
                   )
                 }
               </ul>
-            </div>
+            </ScrollToBottom>
           }
         </TranscriptContext.Consumer>
       </Composer>
