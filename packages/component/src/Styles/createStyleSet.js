@@ -24,6 +24,16 @@ function createActivitiesStyle() {
   };
 }
 
+function createActivityStyle() {
+  return {
+    marginBottom: 10,
+
+    '&:first-child': {
+      marginTop: 10
+    }
+  };
+}
+
 function createAvatarStyle() {
   return {
     ...primaryFont,
@@ -64,7 +74,6 @@ function createCodeCardStyle() {
 
 function createMultipleCardActivityCardStyle() {
   return {
-    marginBottom: 10,
     marginRight: 10,
     width: 240
   };
@@ -75,8 +84,6 @@ function createSingleCardActivityStyle({
   bubbleMinWidth
 }) {
   return {
-    paddingBottom: 10,
-
     '& > .bubble-box': {
       maxWidth: bubbleMaxWidth,
       minWidth: bubbleMinWidth
@@ -107,6 +114,7 @@ function createTimestampStyle({
 
 export default function createStyleSet(options = DEFAULT_OPTIONS) {
   return {
+    activity: createActivityStyle(options),
     activities: createActivitiesStyle(options),
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),

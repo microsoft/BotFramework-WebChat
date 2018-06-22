@@ -33,7 +33,10 @@ export default props =>
               <ul>
                 {
                   activities.map(activity =>
-                    <li key={ activity.id }>
+                    <li
+                      className={ styleSet.activity }
+                      key={ activity.id }
+                    >
                       <ActivityComposer activity={ activity }>
                         {
                           // Currently, we do not support multiple card originated from the user
