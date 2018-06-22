@@ -32,10 +32,27 @@ export default class Composer extends React.Component {
           id: 2,
           cards: [{
             attachment: 'assets/surface4.jpg',
+            id: 0,
             text: 'This is a cat.',
             type: 'message'
           }, {
             attachment: 'assets/surface1.jpg',
+            id: 1,
+            text: 'This is a cat.',
+            type: 'message'
+          }, {
+            attachment: 'assets/microsoft.jpg',
+            id: 2,
+            text: 'This is a cat.',
+            type: 'message'
+          }],
+          timestamp
+        }, {
+          from: 'user',
+          id: 3,
+          cards: [{
+            attachment: 'assets/surface4.jpg',
+            id: 0,
             text: 'This is a cat.',
             type: 'message'
           }],
