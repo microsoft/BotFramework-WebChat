@@ -1,12 +1,9 @@
 import React from 'react';
 
-import MainContext from '../Context';
+import { withStyleSet } from '../Context';
 
-export default props =>
-  <MainContext.Consumer>
-    { ({ styleSet }) =>
-      <pre className={ styleSet.codeCard }>
-        { props.children }
-      </pre>
-    }
-  </MainContext.Consumer>
+export default withStyleSet(({ children, styleSet }) =>
+  <pre className={ styleSet.codeCard }>
+    { children }
+  </pre>
+)

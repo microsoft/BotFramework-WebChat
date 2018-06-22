@@ -1,23 +1,20 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import { withStyleSet } from '../../../Context';
 import CroppedImage from '../../../Utils/CroppedImage';
-import MainContext from '../../../Context';
 
-export default props =>
-  <MainContext.Consumer>
-    { ({ styleSet }) =>
-      <div className={ classNames(styleSet.bubble + '', (props.className || '') + '') }>
-        { !!props.image &&
-          <CroppedImage
-            height={ styleSet.options.bubbleImageHeight }
-            src={ props.image }
-            width="100%"
-          />
-        }
-        <div className="content">
-          { props.children }
-        </div>
-      </div>
+export default withStyleSet(({ children, className, image, styleSet }) =>
+  <div className={ classNames(styleSet.bubble + '', (className || '') + '') }>
+    { !!image &&
+      <CroppedImage
+        height={ styleSet.options.bubbleImageHeight }
+        src={ image }
+        width="100%"
+      />
     }
-  </MainContext.Consumer>
+    <div className="content">
+      { children }
+    </div>
+  </div>
+)
