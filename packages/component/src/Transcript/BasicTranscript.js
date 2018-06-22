@@ -3,8 +3,10 @@ import classNames from 'classnames';
 import React from 'react';
 
 import ActivityComposer from './Activity/Composer';
+import BasicCard from './Activity/Card/BasicCard';
 import BasicMultipleCardActivity from './Activity/BasicMultipleCardActivity';
 import BasicSingleCardActivity from './Activity/BasicSingleCardActivity';
+import CardComposer from './Activity/Card/Composer';
 import Composer from './Composer';
 import MainContext from '../Context';
 import TranscriptContext from './Context';
@@ -42,11 +44,19 @@ export default props =>
                           // Currently, we do not support multiple card originated from the user
                           activity.cards.length === 1 || activity.from === 'user' ?
                             <BasicSingleCardActivity>
-                              { props.children }
+                              { card =>
+                                <BasicCard card={ card }>
+                                  { props.children }
+                                </BasicCard>
+                              }
                             </BasicSingleCardActivity>
                           :
                             <BasicMultipleCardActivity>
-                              { props.children }
+                              { card =>
+                                <BasicCard card={ card }>
+                                  { props.children }
+                                </BasicCard>
+                              }
                             </BasicMultipleCardActivity>
                         }
                       </ActivityComposer>

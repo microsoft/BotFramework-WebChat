@@ -41,11 +41,7 @@ export default ({ children }) =>
             <React.Fragment>
               <Avatar className={ AVATAR_CSS } />
               <div className="bubble-box">
-                <CardComposer card={ card }>
-                  <BasicCard>
-                    { children }
-                  </BasicCard>
-                </CardComposer>
+                { children(card) }
                 <TimeAgo />
               </div>
               <div className="filler" />
