@@ -4,8 +4,6 @@ import React from 'react';
 
 import ActivityContext from './Context';
 import Avatar from './Avatar';
-import BasicCard from './Card/BasicCard';
-import CardComposer from './Card/Composer';
 import MainContext from '../../Context';
 import TimeAgo from './TimeAgo';
 
