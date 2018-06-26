@@ -5,10 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-#### Changed
-- Fix [#1006](https://github.com/Microsoft/BotFramework-WebChat/issues/1006) links in README.md to reference `web-chat` instead of `webchat`, by [@AlexanderEllis](https://github.com/AlexanderEllis) in [#980](https://github.com/Microsoft/BotFramework-WebChat/pull/980)
+
+## [0.14.0] - 2018-06-26
+### Added
+- Standard and ES5-polyfill builds are now available on CDN
+   - [https://cdn.botframework.com/botframework-webchat/latest/botchat.js](https://cdn.botframework.com/botframework-webchat/latest/botchat.js)
+   - [https://cdn.botframework.com/botframework-webchat/latest/botchat-es5.js](https://cdn.botframework.com/botframework-webchat/latest/botchat-es5.js)
+
 ### Changed
 - Fix [#997](https://github.com/Microsoft/BotFramework-WebChat/issues/997) to postpone size measurement while hidden, in [#1003](https://github.com/Microsoft/BotFramework-WebChat/pull/1003)
+- Fix [#1006](https://github.com/Microsoft/BotFramework-WebChat/issues/1006) links in README.md to reference `web-chat` instead of `webchat`, by [@AlexanderEllis](https://github.com/AlexanderEllis) in [#980](https://github.com/Microsoft/BotFramework-WebChat/pull/980)
 
 ## [0.13.1] - 2018-05-01
 ### Changed
