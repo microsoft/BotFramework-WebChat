@@ -35,6 +35,8 @@
     <div id="BotChatGoesHere"></div>
     <script src="../../botchat.js"></script>
     <script>
+      window.MENU_CMS_URL = 'http://cms.kia-dev.car-labs.com/api/bot_menu_items?environment=live&is_published=true';
+
       const params = BotChat.queryParams(location.search);
 
       const user = {
