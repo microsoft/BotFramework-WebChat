@@ -638,7 +638,7 @@
         .wc-upload {
             cursor: pointer;
             position: relative;
-
+            left: 27px;
             svg {
                 height: 18px;
                 width: 26px;
@@ -665,7 +665,7 @@
         }
 
         &.has-upload-button .wc-textbox {
-            left: 48px;
+            left: 75px;
         }
 
         .wc-textbox {

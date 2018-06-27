@@ -29,6 +29,14 @@ const coreConfig = {
                 use: [{ loader: 'expose-loader', options: 'AdaptiveCards' }]
             }
         ]
+    },
+    devServer: {
+        proxy: {
+            '/api/**': {
+                target: 'http://cms.kia-dev.car-labs.com',
+                secure: false
+            }
+        }
     }
 };
 

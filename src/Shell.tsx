@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { ChatState, FormatState } from './Store';
 import { User } from 'botframework-directlinejs';
-import { classList } from './Chat';
+import { classList, doCardAction, IDoCardAction } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
-import { ChatActions, ListeningState, sendMessage, sendFiles } from './Store';
+import { ChatActions, ListeningState, sendMessage, addMessage, sendFiles } from './Store';
+import Menu from './Menu';
 
 interface Props {
     inputText: string,
@@ -18,7 +19,8 @@ interface Props {
     sendMessage: (inputText: string) => void,
     sendFiles: (files: FileList) => void,
     stopListening: () => void,
-    startListening: () => void
+    startListening: () => void,
+    doCardAction: IDoCardAction
 }
 
 export interface ShellFunctions {
@@ -113,6 +115,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
         return (
             <div className={ className }>
+                <Menu doCardAction={this.props.doCardAction}/>
                 {
                     this.props.showUploadButton &&
                         <label
@@ -188,14 +191,16 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
 export const Shell = connect(
     (state: ChatState) => ({
-        // passed down to ShellContainer
+        // passed down to ShellContainerw
+        format: state.format,
         inputText: state.shell.input,
         showUploadButton: state.format.showUploadButton,
         strings: state.format.strings,
         // only used to create helper functions below
         locale: state.format.locale,
         user: state.connection.user,
-        listeningState: state.shell.listeningState
+        listeningState: state.shell.listeningState,
+        botConnection: state.connection.botConnection,
     }), {
         // passed down to ShellContainer
         onChangeText: (input: string) => ({ type: 'Update_Input', input, source: "text" } as ChatActions),
@@ -203,6 +208,7 @@ export const Shell = connect(
         startListening:  () => ({ type: 'Listening_Starting' }),
         // only used to create helper functions below
         sendMessage,
+        addMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
@@ -213,6 +219,7 @@ export const Shell = connect(
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
