@@ -115,7 +115,7 @@ MenuState > {
   }
 
   async componentWillMount() {
-    const flatItems = (await fetch(window.MENU_CMS_URL).then(resp => resp.json())).data;
+    const flatItems = (await fetch(window.CMS_URL + '/api/bot_menu_items?environment=live&is_published=true').then(resp => resp.json())).data;
 
     const menu : MenuRoot = this.mapMenuItems(flatItems);
 
