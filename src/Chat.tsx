@@ -187,6 +187,15 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
+        const welcomeMessagePayload = {
+            "localResponse": {
+                "result": {
+                "action": "welcome.greeting"
+                }
+            }
+        };
+        sendPostBack(botConnection, JSON.stringify(welcomeMessagePayload), null, this.props.user, this.store.getState().format.locale);
+
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
 
