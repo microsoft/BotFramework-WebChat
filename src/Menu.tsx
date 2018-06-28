@@ -1,11 +1,11 @@
 import * as React from 'react';
 import MenuItem, {Item, MenuRoot} from './MenuItem';
 
-interface MenuPropsInteface {
+export interface MenuPropsInteface {
   doCardAction : Function
 }
 
-interface MenuState {
+export interface MenuState {
   isMenuOpened : boolean;
   menu : MenuRoot;
   itemsMap : Map < number,
@@ -50,12 +50,12 @@ MenuState > {
     this.handleOutsideMenuClick = this
       .handleOutsideMenuClick
       .bind(this);
-    this.sendMessage = this
-      .sendMessage
+    this.itemClick = this
+      .itemClick
       .bind(this);
   }
 
-  handleOutsideMenuClick(e : Event) {
+  handleOutsideMenuClick(e : any) {
     const {target} = e;
     const clickedInsideMenu = target
       .className
@@ -115,7 +115,7 @@ MenuState > {
   }
 
   async componentWillMount() {
-    const flatItems = (await fetch(window.CMS_URL + '/api/bot_menu_items?environment=live&is_published=true').then(resp => resp.json())).data;
+    const flatItems = (await fetch((window as any).CMS_URL + '/api/bot_menu_items?environment=live&is_published=true').then(resp => resp.json())).data;
 
     const menu : MenuRoot = this.mapMenuItems(flatItems);
 
@@ -140,13 +140,18 @@ MenuState > {
     }
   }
 
-  sendMessage(type : string, payload : string, title : string) {
-    if(type === 'postback') {
-      type = 'postBack';
+  itemClick(type : string, payload : string, title : string) {
+    switch (type) {
+      case 'postBack':
+        this
+          .props
+          .doCardAction(type, payload, title);
+        break;
+      case 'web_url':
+        window.open(payload, 'blank');
+        break;
     }
-    this
-      .props
-      .doCardAction(type, payload, title);
+
     this.menuClick();
   }
 
@@ -155,7 +160,7 @@ MenuState > {
       key={index}
       item={item}
       setActiveItem={this.setActiveItem}
-      sendMessage={this.sendMessage}/>;
+      itemClick={this.itemClick}/>;
   }
 
   renderBackButton(activeItem : Item) {
@@ -202,7 +207,7 @@ MenuState > {
     const {menu} = this.state;
 
     return (
-      <div>
+      <div className="wc-menu-container">
         {menu && <div
           className={`menu__btn ${isMenuOpened
           ? 'menu__btn--open'

@@ -4,7 +4,10 @@ export interface Item {
   type : string;
   title : string;
   position : number;
-  payload : string;
+  payload
+    ?
+    : string;
+  url?: string;
   parentId : number;
   id : number;
   environment : string;
@@ -17,10 +20,10 @@ export interface MenuRoot {
   children : Item[];
 }
 
-interface MenuItemProps {
+export interface MenuItemProps {
   item : Item;
   setActiveItem : Function;
-  sendMessage : Function
+  itemClick : Function
 }
 
 export default class MenuItem extends React.Component < MenuItemProps > {
@@ -30,16 +33,30 @@ export default class MenuItem extends React.Component < MenuItemProps > {
     this.setActiveItem = this
       .setActiveItem
       .bind(this);
-    this.sendMessage = this
-      .sendMessage
+    this.itemClick = this
+      .itemClick
       .bind(this);
   }
 
-  sendMessage() {
+  itemClick() {
     const {item} = this.props;
-    this
-      .props
-      .sendMessage(item.type, item.payload, item.title);
+
+    if (item.type === 'postback') {
+      item.type = 'postBack';
+    }
+
+    switch (item.type) {
+      case 'postBack':
+        this
+          .props
+          .itemClick(item.type, item.payload, item.title);
+        break;
+      case 'web_url':
+        this
+          .props
+          .itemClick(item.type, item.url, item.title);
+    }
+
   }
 
   setActiveItem(e : Event) {
@@ -68,7 +85,7 @@ export default class MenuItem extends React.Component < MenuItemProps > {
     }
 
     return (
-      <div key={item.id} className="menu__popover__link" onClick={this.sendMessage}>
+      <div key={item.id} className="menu__popover__link" onClick={this.itemClick}>
         {item.title}
       </div>
     );

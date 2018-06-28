@@ -670,12 +670,22 @@
 
         .wc-textbox {
             bottom: 0;
-            left: 11px;
+            left: 37px;
             right: 49px;
 
             input {
                 background-color: transparent;
             }
+        }
+
+        .wc-menu-container {
+            position: relative;
+        }
+
+        .menu__popover {
+            position: relative !important;
+            bottom: 159px !important;
+            left: 1px !important;
         }
 
         .wc-mic,
