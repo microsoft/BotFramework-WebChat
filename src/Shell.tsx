@@ -191,7 +191,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
 export const Shell = connect(
     (state: ChatState) => ({
-        // passed down to ShellContainerw
+        // passed down to ShellContainer
         format: state.format,
         inputText: state.shell.input,
         showUploadButton: state.format.showUploadButton,
