@@ -1,6 +1,8 @@
 import * as React from 'react';
 import MenuItem, {Item, MenuRoot} from './MenuItem';
 
+import { mapMenuItems } from './helpers/menuHelpers';
+
 export interface MenuPropsInteface {
   doCardAction : Function
 }
@@ -13,9 +15,7 @@ export interface MenuState {
   activeItemId : number;
 }
 
-export default class Menu extends React.Component < MenuPropsInteface,
-MenuState > {
-
+export default class Menu extends React.Component < MenuPropsInteface, MenuState > {
   constructor() {
     super();
 
@@ -26,33 +26,14 @@ MenuState > {
       activeItemId: -1
     }
 
-    this.menuClick = this
-      .menuClick
-      .bind(this);
-    this.getItemById = this
-      .getItemById
-      .bind(this);
-    this.mapMenuItems = this
-      .mapMenuItems
-      .bind(this);
-    this.renderItem = this
-      .renderItem
-      .bind(this);
-    this.renderBackButton = this
-      .renderBackButton
-      .bind(this);
-    this.renderFloatingMenu = this
-      .renderFloatingMenu
-      .bind(this);
-    this.setActiveItem = this
-      .setActiveItem
-      .bind(this);
-    this.handleOutsideMenuClick = this
-      .handleOutsideMenuClick
-      .bind(this);
-    this.itemClick = this
-      .itemClick
-      .bind(this);
+    this.menuClick = this.menuClick.bind(this);
+    this.getItemById = this.getItemById.bind(this);
+    this.renderItem = this.renderItem.bind(this);
+    this.renderBackButton = this.renderBackButton.bind(this);
+    this.renderFloatingMenu = this.renderFloatingMenu.bind(this);
+    this.setActiveItem = this.setActiveItem.bind(this);
+    this.handleOutsideMenuClick = this.handleOutsideMenuClick.bind(this);
+    this.itemClick = this.itemClick.bind(this);
   }
 
   handleOutsideMenuClick(e : any) {
@@ -70,45 +51,6 @@ MenuState > {
     this.setState({activeItemId: newActiveItemId});
   }
 
-  mapMenuItems(items : Item[]) {
-    const mappedMenu : MenuRoot = {
-      id: -1,
-      children: []
-    };
-
-    if (!items || !items.length) {
-      return;
-    }
-
-    items.forEach((item, index) => {
-      if (item.parentId !== undefined && item.parentId !== null) {
-        const parentItem = items.find((parentCheckItem : Item) => {
-          return parentCheckItem.id === item.parentId;
-        });
-        if (!parentItem.children) {
-          parentItem.children = [];
-        }
-        if (!parentItem.children[item.position])
-          parentItem.children[item.position] = item;
-        else
-          parentItem
-            .children
-            .push(item);
-        }
-      else {
-        item.parentId = -1;
-        if (!mappedMenu.children[item.position])
-          mappedMenu.children[item.position] = item;
-        else
-          mappedMenu
-            .children
-            .push(item);
-        }
-      })
-
-    return mappedMenu;
-  }
-
   getItemById(itemId : number) {
     const {itemsMap} = this.state;
     return itemsMap.get(itemId);
@@ -117,7 +59,7 @@ MenuState > {
   async componentWillMount() {
     const flatItems = (await fetch((window as any).CMS_URL + '/api/bot_menu_items?environment=live&is_published=true').then(resp => resp.json())).data;
 
-    const menu : MenuRoot = this.mapMenuItems(flatItems);
+    const menu : MenuRoot = mapMenuItems(flatItems);
 
     const itemsMap = new Map < number,
       Item > ();
@@ -143,9 +85,7 @@ MenuState > {
   itemClick(type : string, payload : string, title : string) {
     switch (type) {
       case 'postBack':
-        this
-          .props
-          .doCardAction(type, payload, title);
+        this.props.doCardAction(type, payload, title);
         break;
       case 'web_url':
         window.open(payload, 'blank');
@@ -208,12 +148,12 @@ MenuState > {
 
     return (
       <div className="wc-menu-container">
-        {menu && <div
-          className={`menu__btn ${isMenuOpened
-          ? 'menu__btn--open'
-          : 'menu__btn'}`}
-          onClick={this.menuClick}/>
-}
+        {
+          menu && <div className={`menu__btn ${isMenuOpened
+            ? 'menu__btn--open'
+            : 'menu__btn'}`}
+            onClick={this.menuClick}/>
+        }
         {isMenuOpened && this.renderFloatingMenu(this.state.activeItemId)}
       </div>
     )
