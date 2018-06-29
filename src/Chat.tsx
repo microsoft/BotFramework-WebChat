@@ -191,6 +191,9 @@ export class Chat extends React.Component<ChatProps, {}> {
             window.addEventListener('resize', this.resizeListener);
 
         this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        
+        // FEEDYOU - show typing on startup - if bot.id is set to the same value as value on server, it will be cleared by first message
+        this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: this.props.bot, timestamp: ''+Date.now()}});
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
                 if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
