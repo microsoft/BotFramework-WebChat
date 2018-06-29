@@ -1,6 +1,6 @@
 import {Item, MenuRoot} from '../MenuItem';
 
-export function mapMenuItems(items : Item[]) {
+export function prepareMenu(items : Item[]) {
   const mappedMenu : MenuRoot = {
     id: -1,
     children: []
@@ -15,26 +15,25 @@ export function mapMenuItems(items : Item[]) {
       const parentItem = items.find((parentCheckItem : Item) => {
         return parentCheckItem.id === item.parentId;
       });
+
       if (!parentItem.children) {
         parentItem.children = [];
       }
-      if (!parentItem.children[item.position])
-        parentItem.children[item.position] = item;
-      else
-        parentItem
-          .children
-          .push(item);
-      }
-    else {
+
+      pushOrSet(parentItem.children, item.position, item);
+    } else {
       item.parentId = -1;
-      if (!mappedMenu.children[item.position])
-        mappedMenu.children[item.position] = item;
-      else
-        mappedMenu
-          .children
-          .push(item);
-      }
-    })
+      pushOrSet(mappedMenu.children, item.position, item);
+    }
+  })
 
   return mappedMenu;
+}
+
+function pushOrSet(child: Item[], position: number, item: Item) {
+      if (!child[position]) {
+        child[position] = item;
+      } else {
+        child.push(item);
+      }
 }

@@ -1,28 +1,35 @@
 import * as React from 'react';
 import MenuItem, {Item, MenuRoot} from './MenuItem';
 
-import { mapMenuItems } from './helpers/menuHelpers';
+import { IDoCardAction } from './chat';
 
-export interface MenuPropsInteface {
-  doCardAction : Function
+import { prepareMenu } from './helpers/menuHelpers';
+
+declare global {
+  interface Window {
+    CMS_URL: string;
+  }
+}
+
+export interface MenuPropsInterface {
+  doCardAction : IDoCardAction
 }
 
 export interface MenuState {
   isMenuOpened : boolean;
   menu : MenuRoot;
-  itemsMap : Map < number,
-  Item >;
+  flatItemsMap : Map < number, Item >;
   activeItemId : number;
 }
 
-export default class Menu extends React.Component < MenuPropsInteface, MenuState > {
+export default class Menu extends React.Component < MenuPropsInterface, MenuState > {
   constructor() {
     super();
 
     this.state = {
       isMenuOpened: false,
       menu: undefined,
-      itemsMap: undefined,
+      flatItemsMap: undefined,
       activeItemId: -1
     }
 
@@ -52,22 +59,29 @@ export default class Menu extends React.Component < MenuPropsInteface, MenuState
   }
 
   getItemById(itemId : number) {
-    const {itemsMap} = this.state;
-    return itemsMap.get(itemId);
+    const {flatItemsMap} = this.state;
+    return flatItemsMap.get(itemId);
   }
 
   async componentWillMount() {
-    const flatItems = (await fetch((window as any).CMS_URL + '/api/bot_menu_items?environment=live&is_published=true').then(resp => resp.json())).data;
+    const menuItemsApiUrl = window.CMS_URL + '/api/bot_menu_items?environment=live&is_published=true';
 
-    const menu : MenuRoot = mapMenuItems(flatItems);
+    let flatItems;
 
-    const itemsMap = new Map < number,
-      Item > ();
+    try {
+      flatItems = (await fetch(menuItemsApiUrl).then(resp => resp.json())).data
+    } catch(e) {
+      flatItems = [];
+    }
+
+    const menu : MenuRoot = prepareMenu(flatItems);
+
+    const flatItemsMap = new Map < number, Item > ();
     flatItems.forEach((item : Item) => {
-      itemsMap.set(item.id, item);
+      flatItemsMap.set(item.id, item);
     });
 
-    this.setState({itemsMap, menu});
+    this.setState({flatItemsMap, menu});
   }
 
   menuClick() {
@@ -146,15 +160,16 @@ export default class Menu extends React.Component < MenuPropsInteface, MenuState
     const isMenuOpened : boolean = this.state.isMenuOpened;
     const {menu} = this.state;
 
+    const menuButtonClass = (isMenuOpened) ? 'menu__btn menu__btn--open' : 'menu__btn';
+
     return (
       <div className="wc-menu-container">
         {
-          menu && <div className={`menu__btn ${isMenuOpened
-            ? 'menu__btn--open'
-            : 'menu__btn'}`}
-            onClick={this.menuClick}/>
+          menu && <div className={menuButtonClass} onClick={this.menuClick}/>
         }
-        {isMenuOpened && this.renderFloatingMenu(this.state.activeItemId)}
+        {
+          isMenuOpened && this.renderFloatingMenu(this.state.activeItemId)
+        }
       </div>
     )
   }
