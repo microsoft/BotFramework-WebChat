@@ -195,6 +195,17 @@ export class Chat extends React.Component<ChatProps, {}> {
         // FEEDYOU - show typing on startup - if bot.id is set to the same value as value on server, it will be cleared by first message
         this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: this.props.bot, timestamp: ''+Date.now()}});
 
+        // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
+        // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
+        botConnection.postActivity({
+            from: this.props.user,
+            name: 'beginIntroDialog',
+            type: 'event',
+            value: ''
+        }).subscribe(function (id) {
+            konsole.log('"beginIntroDialog" event sent');
+        });
+
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
                 if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
                     let refGrammarId = botConnection.referenceGrammarId;
