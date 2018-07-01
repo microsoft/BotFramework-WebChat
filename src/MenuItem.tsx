@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-type ItemType = "nested" | "postBack" | "web_url";
+export type ItemType = "nested" | "postBack" | "web_url";
 
 export interface Item {
   type : ItemType;
@@ -35,7 +35,7 @@ export default class MenuItem extends React.Component < MenuItemProps > {
   }
 
   itemClick() {
-    const {item} = this.props;
+    const {item, itemClick} = this.props;
 
     if ((item.type as string) === 'postback') {
       item.type = 'postBack';
@@ -43,10 +43,10 @@ export default class MenuItem extends React.Component < MenuItemProps > {
 
     switch (item.type) {
       case 'postBack':
-        this.props.itemClick(item.type, item.payload, item.title);
+        itemClick(item.type, item.payload, item.title);
         break;
       case 'web_url':
-        this.props.itemClick(item.type, item.url, item.title);
+        itemClick(item.type, item.url, item.title);
         break;
     }
 
