@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
-import { ChatActions, sendMessage } from './Store';
+import { ChatActions, sendMessage, addMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
 export interface MessagePaneProps {
@@ -36,7 +36,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
         if (!this.props.activityWithSuggestedActions) return;
 
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
-        this.props.doCardAction(cardAction.type, cardAction.value);
+        this.props.doCardAction(cardAction.type, cardAction.value, cardAction.title);
         e.stopPropagation();
     }
 
@@ -78,7 +78,8 @@ export const MessagePane = connect(
     }), {
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
         // only used to create helper functions below
-        sendMessage
+        sendMessage,
+        addMessage,
     }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
         // from stateProps
         activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
@@ -87,6 +88,6 @@ export const MessagePane = connect(
         // from ownProps
         children: ownProps.children,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
     })
 )(MessagePaneView);

@@ -86,7 +86,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch<ChatActions>({ type: 'Set_Chat_Title', chatTitle });
         }
 
-        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton !== false });
+        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: false });
 
         if (props.sendTyping) {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
@@ -186,6 +186,15 @@ export class Chat extends React.Component<ChatProps, {}> {
             ? (this.botConnection = new DirectLine(this.props.directLine))
             : this.props.botConnection
             ;
+
+        const welcomeMessagePayload = {
+            "localResponse": {
+                "result": {
+                "action": "welcome.greeting"
+                }
+            }
+        };
+        sendPostBack(botConnection, JSON.stringify(welcomeMessagePayload), null, this.props.user, this.store.getState().format.locale);
 
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
@@ -291,7 +300,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export interface IDoCardAction {
-    (type: CardActionTypes, value: string | object): void;
+    (type: CardActionTypes, value: string | object, buttonTitle?: string): void;
 }
 
 export const doCardAction = (
@@ -299,11 +308,12 @@ export const doCardAction = (
     from: User,
     locale: string,
     sendMessage: (value: string, user: User, locale: string) => void,
+    addMessage: (value: string, user: User, locale: string) => void,
 ): IDoCardAction => (
     type,
-    actionValue
+    actionValue,
+    buttonTitle
 ) => {
-
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object')? actionValue as object : undefined;
 
@@ -315,6 +325,7 @@ export const doCardAction = (
 
         case "postBack":
             sendPostBack(botConnection, text, value, from, locale);
+            addMessage(buttonTitle, from, locale);
             break;
 
         case "call":

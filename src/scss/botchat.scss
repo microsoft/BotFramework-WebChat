@@ -9,15 +9,6 @@
         font-size: $fontSize;
     }
 
-    .wc-app button {
-        background-color: $c_brand;
-        border: 1px solid $c05;
-        border-radius: 1px;
-        color: $c01;
-        cursor: pointer;
-        transition: color .2s ease, background-color .2s ease;
-    }
-
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
         margin: 0;
         padding: 0;
@@ -25,6 +16,11 @@
 
     .wc-app audio, .wc-app video {
         display: block;
+    }
+
+    body {
+        margin: 0 auto !important;
+        max-width: 700px;
     }
 
 /* docking */
@@ -214,18 +210,42 @@
     }
 
     .wc-message svg.wc-message-callout {
+        display: none; // hide the arrow
         height: 22px;
         position: absolute;
         stroke: none;
         top: 12px;
         width: 6px;
     }
+    .wc-message-from {
+      &-me {
+        .wc-message-content{
+          border-radius: 10px 4px 4px 10px;
+        }
+      }
+      &-bot {
+        .wc-message-content{
+          border-radius: 4px 10px 10px 4px;
+        }
+      }
+
+    }
 
     .wc-message-content {
-        border-radius: 2px;
-        box-shadow: 0px 1px 1px 0px $c_shadow;
-        padding: 8px;
+        //border-radius: 4px 10px 10px 4px;
+        padding: 8px 10px;
         word-break: break-word;
+
+        // .wc-carousel {
+        //   @at-root {
+        //     .wc-message-from-bot {
+        //       background: none;
+        //     }
+        //   }
+        // }
+        @at-root .wc-carousel#{&} {
+          background-color: yellow
+        }
       }
 
     .wc-message-content.clickable {
@@ -258,6 +278,9 @@
         color: $c_timestamp;
         font-size: 11px;
         margin-top: 5px;
+        span {
+          display: none;
+        }
     }
 
 /* cards */
@@ -539,13 +562,20 @@
 /* from bot */
 
     .wc-message-from-bot {
-        float: left;
-        margin-left: 8px;
-    }
+        margin-left: 40px;
 
-    .wc-message-from-bot .wc-message-content {
-        background-color: $c_messageFromThem;
-        color: $c00;
+        &:before {
+          content: '';
+          position: absolute;
+          left: -36px;
+          background: url('https://scontent-lax3-2.xx.fbcdn.net/v/t1.0-1/p200x200/23172962_150428585474750_5697045357660679044_n.png?_nc_cat=0&oh=9fe0d791f1b5fa12d2a3a559628e8b61&oe=5B910080') no-repeat center bottom;
+          background-size: contain;
+          border-radius: 30px;
+          width: 28px;
+          height: 28px;
+          box-sizing: border-box;
+          // border: 1px solid rgba(0,0,0,.1);
+        }
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
@@ -608,7 +638,7 @@
         .wc-upload {
             cursor: pointer;
             position: relative;
-
+            left: 27px;
             svg {
                 height: 18px;
                 width: 26px;
@@ -635,17 +665,27 @@
         }
 
         &.has-upload-button .wc-textbox {
-            left: 48px;
+            left: 75px;
         }
 
         .wc-textbox {
             bottom: 0;
-            left: 11px;
+            left: 37px;
             right: 49px;
 
             input {
                 background-color: transparent;
             }
+        }
+
+        .wc-menu-container {
+            position: relative;
+        }
+
+        .menu__popover {
+            position: absolute !important;
+            bottom: 4px !important;
+            left: 1px !important;
         }
 
         .wc-mic,
@@ -797,3 +837,70 @@
             @include link-and-svg-arrow($c01, 0.6);
         }
     }
+// Ziv Additions
+.ac-container {
+  padding: 0!important;
+  border-radius: 4px 4px 0 0;
+  outline: 0;
+  button {
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    background: #fff;
+    margin-bottom: -8px;
+    &:last-child {
+      margin-bottom: 0;
+      border-bottom: 1px solid #ccc;
+    }
+    &:hover {
+      border: 1px solid #ccc;
+      background: #fff;
+    }
+  }
+  .ac-image {
+    margin-bottom: -8px;
+    img {
+      border-radius: 4px 4px 0 0;
+    }
+  }
+}
+.wc-carousel-item {
+  .wc-card {
+    background: #fff;
+    border: 1px solid #ccc!important;
+
+    &.wc-adaptive-card{
+      //background: none;
+      border-radius: 5px 5px 0 0;
+    }
+    button {
+      border:0;
+      border-top: 1px solid #ccc;
+    }
+
+  }
+  .ac-image {
+    border-bottom: 1px solid #ccc;
+  }
+}
+.wc-card {
+  background: none;
+  border: 0!important;
+}
+// quick reply buttons
+.wc-suggested-actions {
+  button {
+    display: inline-block;
+    padding: 10px;
+    font-size: 14px;
+    color: #0e85f7;
+    background: #fff;
+    text-decoration: none;
+    border: 1px solid #0e85f7;
+    border-radius: 20px;
+    margin-right: 10px;
+    outline: 0;
+    cursor: pointer;
+    transition: all ease-out .4s;
+
+  }
+}

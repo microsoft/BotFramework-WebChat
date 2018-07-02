@@ -28,6 +28,18 @@ export const sendMessage = (text: string, from: User, locale: string) => ({
         timestamp: (new Date()).toISOString()
     }} as ChatActions);
 
+export const addMessage = (text: string, from: User, locale: string) => ({
+    type: 'Add_Message',
+    activity: {
+        id: '#BUTTON_TITLE_MESSAGE_' + (Date.now()),
+        type: "message",
+        text,
+        from,
+        locale,
+        textFormat: 'plain',
+        timestamp: (new Date()).toISOString()
+    }} as ChatActions);
+
 export const sendFiles = (files: FileList, from: User, locale: string) => ({
     type: 'Send_Message',
     activity: {
@@ -296,7 +308,7 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
+    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message' | 'Add_Message'
     activity: Activity
 } | {
     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
@@ -363,6 +375,7 @@ export const history: Reducer<HistoryState> = (
                 ]
             };
 
+        case 'Add_Message':
         case 'Send_Message':
             return {
                 ... state,
