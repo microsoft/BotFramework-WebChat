@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MenuItem, {Item, MenuRoot} from './MenuItem';
 
-import { IDoCardAction } from './chat';
+import { IDoCardAction } from './Chat';
 
 import { prepareMenu } from './helpers/menuHelpers';
 
