@@ -16,11 +16,23 @@
       var CL_BOT_VERSION = 'VERSION_HERE';
       window.CMS_URL = 'CMS_HOST';
 
+      var dl = new BotChat.DirectLine({
+        secret: 'SECRET_KEY_HERE'
+      });
+
       BotChat.App({
-        directLine: { secret: 'SECRET_KEY_HERE', },
         user: { id: 'userid' },
         bot: { id: 'botid' },
-        resize: 'detect'
+        resize: 'detect',
+        botConnection: {
+          ...dl,
+          postActivity: activity => dl.postActivity({
+            ...activity,
+            channelData: {
+              vendorId: 'VENDOR_ID'
+            }
+          })
+        },
       }, document.getElementById('BotChatGoesHere'));
     </script>
   </body>
