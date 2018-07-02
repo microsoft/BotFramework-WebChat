@@ -638,7 +638,7 @@
         .wc-upload {
             cursor: pointer;
             position: relative;
-
+            left: 27px;
             svg {
                 height: 18px;
                 width: 26px;
@@ -665,17 +665,27 @@
         }
 
         &.has-upload-button .wc-textbox {
-            left: 48px;
+            left: 75px;
         }
 
         .wc-textbox {
             bottom: 0;
-            left: 11px;
+            left: 37px;
             right: 49px;
 
             input {
                 background-color: transparent;
             }
+        }
+
+        .wc-menu-container {
+            position: relative;
+        }
+
+        .menu__popover {
+            position: absolute !important;
+            bottom: 4px !important;
+            left: 1px !important;
         }
 
         .wc-mic,

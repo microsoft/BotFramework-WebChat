@@ -5,6 +5,14 @@
   2. Start a web server: "npm run start"
   3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
 
+  ---------------------------------------------------------------------------------
+  To implement the Menu we had to make a call to the cms to fetch the menu data,
+    to fix the CORS problem we had to change the way we run the dev version:
+      1- run "npm run watch"
+      2- open the http://localhost:8000/samples/fullwindow/
+  make sure that the webpack has been finished before you test you app.
+  ---------------------------------------------------------------------------------
+
   For ease of testing, several parameters can be set in the query string:
     * s = Direct Line secret, or
     * t = Direct Line token (obtained by calling Direct Line's Generate Token)
@@ -35,6 +43,8 @@
     <div id="BotChatGoesHere"></div>
     <script src="../../botchat.js"></script>
     <script>
+      window.CMS_URL = 'http://localhost:8000';
+
       const params = BotChat.queryParams(location.search);
 
       const user = {
