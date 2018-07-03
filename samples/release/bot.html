@@ -20,19 +20,19 @@
         secret: 'SECRET_KEY_HERE'
       });
 
+      var botConnection = Object.assign({}, dl, {
+        postActivity: activity => dl.postActivity(Object.assign({}, {
+          channelData: {
+            vendorId: 'VENDOR_ID'
+          }
+        }, activity))
+      });
+
       BotChat.App({
         user: { id: 'userid' },
         bot: { id: 'botid' },
         resize: 'detect',
-        botConnection: {
-          ...dl,
-          postActivity: activity => dl.postActivity({
-            ...activity,
-            channelData: {
-              vendorId: 'VENDOR_ID'
-            }
-          })
-        },
+        botConnection: botConnection
       }, document.getElementById('BotChatGoesHere'));
     </script>
   </body>
