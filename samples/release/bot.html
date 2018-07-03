@@ -24,11 +24,11 @@
 
       var botConnection = Object.assign({}, dl, {
         postActivity: function(activity) {
-          return dl.postActivity(Object.assign({}, {
+          return dl.postActivity(Object.assign({}, activity, {
             channelData: {
               vendorId: VENDOR_ID 
             }
-          }, activity));
+          }));
         }
       });
 
