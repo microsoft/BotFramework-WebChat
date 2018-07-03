@@ -21,11 +21,13 @@
       });
 
       var botConnection = Object.assign({}, dl, {
-        postActivity: activity => dl.postActivity(Object.assign({}, {
-          channelData: {
-            vendorId: 'VENDOR_ID'
-          }
-        }, activity))
+        postActivity: function(activity) {
+          return dl.postActivity(Object.assign({}, {
+            channelData: {
+              vendorId: 'VENDOR_ID'
+            }
+          }, activity));
+        }
       });
 
       BotChat.App({
