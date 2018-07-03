@@ -14,17 +14,19 @@
 
     <script>
       var CL_BOT_VERSION = 'VERSION_HERE';
+      var VENDOR_ID = 'VENDOR_ID_HERE';
+      var SECRET = 'SECRET_KEY_HERE';
       window.CMS_URL = 'CMS_HOST';
 
       var dl = new BotChat.DirectLine({
-        secret: 'SECRET_KEY_HERE'
+        secret: SECRET 
       });
 
       var botConnection = Object.assign({}, dl, {
         postActivity: function(activity) {
           return dl.postActivity(Object.assign({}, {
             channelData: {
-              vendorId: 'VENDOR_ID'
+              vendorId: VENDOR_ID 
             }
           }, activity));
         }
