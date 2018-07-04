@@ -21,7 +21,7 @@ const MessagePaneView = (props: MessagePaneProps) =>
     <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
         { props.children }
         <div className="wc-suggested-actions">
-            <SuggestedActions { ...props }/>
+            <SuggestedActions { ...props } />
         </div>
     </div>;
 

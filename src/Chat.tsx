@@ -383,7 +383,7 @@ const ResizeDetector = (props: {
         style={{
             border: 'none',
             height: '100%',
-            left: '0',
+            left: 0,
             margin: '1px 0 0',
             opacity: 0,
             pointerEvents: 'none',

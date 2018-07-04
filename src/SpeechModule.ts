@@ -441,11 +441,13 @@ export namespace Speech {
         private _lang: string = null;
         // tslint:enable:variable-name
 
-        public constructor(speakChunks: any[],
-                           lang: string,
-                           onSpeakQueued: Func<SpeechSynthesisUtterance, void> = null,
-                           onSpeakingStarted: Action = null,
-                           onSpeakingFinished: Action = null) {
+        public constructor(
+            speakChunks: any[],
+            lang: string,
+            onSpeakQueued: Func<SpeechSynthesisUtterance, void> = null,
+            onSpeakingStarted: Action = null,
+            onSpeakingFinished: Action = null
+        ) {
             this._onSpeakQueued = onSpeakQueued;
             this._onSpeakingStarted = onSpeakingStarted;
             this._onSpeakingFinished = onSpeakingFinished;

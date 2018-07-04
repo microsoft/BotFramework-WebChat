@@ -116,7 +116,7 @@ const Media = (props: {
 }) => {
     switch (props.type) {
         case 'video':
-            return <Video { ...props as VideoProps }  />;
+            return <Video { ...props as VideoProps } />;
         case 'audio':
             return <audio controls { ...props } />;
         default:

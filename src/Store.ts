@@ -515,10 +515,10 @@ const speakFromMsg = (msg: Message, fallbackLocale: string) => {
     }
 
     return {
-            type : 'Speak_SSML',
-            ssml: speak,
-            locale: msg.locale || fallbackLocale,
-            autoListenAfterSpeak : (msg.inputHint === 'expectingInput') || (msg.channelData && msg.channelData.botState === 'WaitingForAnswerToQuestion')
+        type : 'Speak_SSML',
+        ssml: speak,
+        locale: msg.locale || fallbackLocale,
+        autoListenAfterSpeak : (msg.inputHint === 'expectingInput') || (msg.channelData && msg.channelData.botState === 'WaitingForAnswerToQuestion')
     };
 };
 
@@ -584,7 +584,7 @@ const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     .filter(action => action.ssml )
     .mergeMap(action => {
 
-        let onSpeakingStarted =  null;
+        let onSpeakingStarted = null;
         let onSpeakingFinished = () => nullAction;
         if (action.autoListenAfterSpeak) {
             onSpeakingStarted = () => Speech.SpeechRecognizer.warmup() ;

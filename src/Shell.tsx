@@ -118,7 +118,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         <label
                             className="wc-upload"
                             htmlFor="wc-upload-input"
-                            onKeyPress={evt => this.handleUploadButtonKeyPress(evt) }
+                            onKeyPress={ evt => this.handleUploadButtonKeyPress(evt) }
                             tabIndex={ 0 }
                         >
                             <svg>
@@ -146,8 +146,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         ref={ input => this.textInput = input }
                         autoFocus
                         value={ this.props.inputText }
-                        onChange={_ => this.props.onChangeText(this.textInput.value) }
-                        onKeyPress={e => this.onKeyPress(e) }
+                        onChange={ _ => this.props.onChangeText(this.textInput.value) }
+                        onKeyPress={ e => this.onKeyPress(e) }
                         onFocus={ () => this.onTextInputFocus() }
                         placeholder={ placeholder }
                         aria-label={ this.props.inputText ? null : placeholder }
@@ -159,7 +159,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                     onClick={ () => this.onClickSend() }
                     aria-label={ this.props.strings.send }
                     role="button"
-                    onKeyPress={evt => this.handleSendButtonKeyPress(evt) }
+                    onKeyPress={ evt => this.handleSendButtonKeyPress(evt) }
                     tabIndex={ 0 }
                     type="button"
                 >

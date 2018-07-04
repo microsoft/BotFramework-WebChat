@@ -149,7 +149,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     type="button"
                 >
                     <svg>
-                        <path d={ this.props.prevSvgPathData }/>
+                        <path d={ this.props.prevSvgPathData } />
                     </svg>
                 </button>
                 <div className="wc-hscroll-outer">
@@ -164,7 +164,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     type="button"
                 >
                     <svg>
-                        <path d={ this.props.nextSvgPathData }/>
+                        <path d={ this.props.nextSvgPathData } />
                     </svg>
                 </button>
             </div >
