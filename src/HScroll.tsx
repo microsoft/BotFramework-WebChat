@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as konsole from './Konsole';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/merge';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import * as konsole from './Konsole';
 
 export interface HScrollProps {
     scrollUnit?: 'page' | 'item'; // defaults to page
@@ -74,7 +74,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     private scrollAmount(direction: number) {
-        if (this.props.scrollUnit == 'item') {
+        if (this.props.scrollUnit === 'item') {
             // TODO: this can be improved by finding the actual item in the viewport,
             // instead of the first item, because they may not have the same width.
             // the width of the li is measured on demand in case CSS has resized it
@@ -87,10 +87,9 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     }
 
     private scrollBy(direction: number) {
-
         let easingClassName = 'wc-animate-scroll';
 
-        //cancel existing animation when clicking fast
+        // cancel existing animation when clicking fast
         if (this.animateDiv) {
             easingClassName = 'wc-animate-scroll-rapid';
             this.clearScrollTimers();
@@ -100,13 +99,13 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         const scrollLeft = this.scrollDiv.scrollLeft;
         let dest = scrollLeft + unit;
 
-        //don't exceed boundaries
+        // don't exceed boundaries
         dest = Math.max(dest, 0);
         dest = Math.min(dest, this.scrollDiv.scrollWidth - this.scrollDiv.offsetWidth);
 
-        if (scrollLeft == dest) return;
+        if (scrollLeft === dest) { return; }
 
-        //use proper easing curve when distance is small
+        // use proper easing curve when distance is small
         if (Math.abs(dest - scrollLeft) < 60) {
             easingClassName = 'wc-animate-scroll-near';
         }
@@ -116,23 +115,23 @@ export class HScroll extends React.Component<HScrollProps, {}> {
         this.animateDiv.style.left = scrollLeft + 'px';
         document.body.appendChild(this.animateDiv);
 
-        //capture ComputedStyle every millisecond
+        // capture ComputedStyle every millisecond
         this.scrollSyncTimer = window.setInterval(() => {
             const num = parseFloat(getComputedStyle(this.animateDiv).left);
             this.scrollDiv.scrollLeft = num;
         }, 1);
 
-        //don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
-        //we accomplish this by calling 'this.animateDiv.style.left' off this thread, using setTimeout
+        // don't let the browser optimize the setting of 'this.animateDiv.style.left' - we need this to change values to trigger the CSS animation
+        // we accomplish this by calling 'this.animateDiv.style.left' off this thread, using setTimeout
         this.scrollStartTimer = window.setTimeout(() => {
             this.animateDiv.style.left = dest + 'px';
 
             let duration = 1000 * parseFloat(getComputedStyle(this.animateDiv).transitionDuration);
             if (duration) {
-                //slightly longer that the CSS time so we don't cut it off prematurely
+                // slightly longer that the CSS time so we don't cut it off prematurely
                 duration += 50;
 
-                //stop capturing
+                // stop capturing
                 this.scrollDurationTimer = window.setTimeout(() => this.clearScrollTimers(), duration);
             } else {
                 this.clearScrollTimers();
@@ -150,7 +149,7 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     type="button"
                 >
                     <svg>
-                        <path d={ this.props.prevSvgPathData }/>
+                        <path d={ this.props.prevSvgPathData } />
                     </svg>
                 </button>
                 <div className="wc-hscroll-outer">
@@ -165,10 +164,10 @@ export class HScroll extends React.Component<HScrollProps, {}> {
                     type="button"
                 >
                     <svg>
-                        <path d={ this.props.nextSvgPathData }/>
+                        <path d={ this.props.nextSvgPathData } />
                     </svg>
                 </button>
             </div >
-        )
+        );
     }
 }

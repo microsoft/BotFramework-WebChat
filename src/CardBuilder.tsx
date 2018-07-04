@@ -1,5 +1,5 @@
-import { Attachment, CardAction, HeroCard, Thumbnail, CardImage } from 'botframework-directlinejs';
 import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
+import { Attachment, CardAction, CardImage, HeroCard, Thumbnail } from 'botframework-directlinejs';
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
 export class AdaptiveCardBuilder {
@@ -22,7 +22,7 @@ export class AdaptiveCardBuilder {
             column.width = size;
             columnSet.addColumn(column);
             return column;
-        })
+        });
         return columns;
     }
 
@@ -35,14 +35,14 @@ export class AdaptiveCardBuilder {
         container = container || this.container;
         if (typeof text !== 'undefined') {
             const textblock = new TextBlock();
-            for (let prop in template) {
+            // tslint:disable-next-line:forin
+            for (const prop in template) {
                 (textblock as any)[prop] = (template as any)[prop];
             }
             textblock.text = text;
             container.addItem(textblock);
         }
     }
-
 
     addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
         if (cardActions) {
@@ -110,22 +110,22 @@ export class AdaptiveCardBuilder {
 }
 
 export interface ICommonContent {
-    title?: string,
-    subtitle?: string,
-    text?: string,
-    buttons?: CardAction[]
+    title?: string;
+    subtitle?: string;
+    text?: string;
+    buttons?: CardAction[];
 }
 
 export const buildCommonCard = (content: ICommonContent): AdaptiveCard => {
-    if (!content) return null;
+    if (!content) { return null; }
 
     const cardBuilder = new AdaptiveCardBuilder();
-    cardBuilder.addCommon(content)
+    cardBuilder.addCommon(content);
     return cardBuilder.card;
 };
 
 export const buildOAuthCard = (content: ICommonContent): AdaptiveCard => {
-    if (!content) return null;
+    if (!content) { return null; }
 
     const cardBuilder = new AdaptiveCardBuilder();
     cardBuilder.addCommonHeaders(content);

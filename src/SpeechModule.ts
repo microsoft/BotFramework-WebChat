@@ -1,16 +1,16 @@
 import jspeech from 'jspeech';
 
-export type Action = () => void
+export type Action = () => void;
 
 export type Func<T, TResult> = (item: T) => TResult;
 
 interface EventEmitter {
-    addEventListener(name: string, listener: (event: Event) => void): void
-    removeEventListener(name: string, listener: (event: Event) => void): void
+    addEventListener(name: string, listener: (event: Event) => void): void;
+    removeEventListener(name: string, listener: (event: Event) => void): void;
 }
 
 function prefixFallback(type: string, prefixes = ['moz', 'ms', 'webkit']): any {
-    return ['', ...prefixes].reduce((found, prefix) => found || (<any>window)[prefix + type], null);
+    return ['', ...prefixes].reduce((found, prefix) => found || (window as any)[prefix + type], null);
 }
 
 function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
@@ -35,7 +35,8 @@ function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
     });
 }
 
-export module Speech {
+// tslint:disable-next-line:no-namespace
+export namespace Speech {
     export interface ISpeechRecognizer {
         locale: string;
         isStreamingToService: boolean;
@@ -129,15 +130,17 @@ export module Speech {
         }
 
         public static speak(text: string, lang: string, onSpeakingStarted: Action = null, onSpeakingFinished: Action = null) {
-            if (SpeechSynthesizer.instance == null)
+            if (SpeechSynthesizer.instance == null) {
                 return;
+            }
 
             SpeechSynthesizer.instance.speak(text, lang, onSpeakingStarted, onSpeakingFinished);
         }
 
         public static stopSpeaking() {
-            if (SpeechSynthesizer.instance == null)
+            if (SpeechSynthesizer.instance == null) {
                 return;
+            }
 
             SpeechSynthesizer.instance.stopSpeaking();
         }
@@ -156,12 +159,12 @@ export module Speech {
         private recognizer: any = null;
 
         constructor() {
-            if(!(<any>window).webkitSpeechRecognition) {
-                console.error("This browser does not support speech recognition");
+            if (!(window as any).webkitSpeechRecognition) {
+                console.error('This browser does not support speech recognition');
                 return;
             }
 
-            this.recognizer = new (<any>window).webkitSpeechRecognition();
+            this.recognizer = new (window as any).webkitSpeechRecognition();
             this.recognizer.lang = 'en-US';
             this.recognizer.interimResults = true;
 
@@ -172,7 +175,7 @@ export module Speech {
             };
 
             this.recognizer.onresult = (srevent: any) => {
-                if (srevent.results == null || srevent.length == 0) {
+                if (srevent.results == null || srevent.length === 0) {
                     return;
                 }
 
@@ -180,13 +183,14 @@ export module Speech {
                 if (result.isFinal === true && this.onFinalResult != null) {
                     this.onFinalResult(result[0].transcript);
                 } else if (result.isFinal === false && this.onIntermediateResult != null) {
-                    let text = "";
+                    let text = '';
+                    // tslint:disable-next-line:prefer-for-of
                     for (let i = 0; i < srevent.results.length; ++i) {
                         text += srevent.results[i][0].transcript;
                     }
                     this.onIntermediateResult(text);
                 }
-            }
+            };
 
             this.recognizer.onerror = (err: any) => {
                 if (this.onRecognitionFailed) {
@@ -204,6 +208,7 @@ export module Speech {
             return this.recognizer != null;
         }
 
+        // tslint:disable-next-line:no-empty
         public warmup() {
 
         }
@@ -212,6 +217,7 @@ export module Speech {
             this.isStreamingToService = true;
             this.recognizer.start();
 
+            // tslint:disable-next-line:no-empty
             return waitEvent(this.recognizer, 'start').then(() => {});
         }
 
@@ -219,6 +225,7 @@ export module Speech {
             if (this.isStreamingToService) {
                 this.recognizer.stop();
 
+                // tslint:disable-next-line:no-empty
                 return waitEvent(this.recognizer, 'end').then(() => {});
             } else {
                 return Promise.resolve();
@@ -226,7 +233,7 @@ export module Speech {
         }
 
         public setGrammars(grammars: string[] = []) {
-            const list = new (prefixFallback('SpeechGrammarList'));
+            const list = new (prefixFallback('SpeechGrammarList'))();
 
             if (!list) {
                 if (grammars.length) {
@@ -253,8 +260,9 @@ export module Speech {
         private speakRequests: SpeakRequest[] = [];
 
         public speak(text: string, lang: string, onSpeakingStarted: Action = null, onSpeakingFinished: Action = null) {
-            if (!('SpeechSynthesisUtterance' in window) || !text)
+            if (!('SpeechSynthesisUtterance' in window) || !text) {
                 return;
+            }
 
             if (this.audioElement === null) {
                 const audio = document.createElement('audio');
@@ -266,20 +274,21 @@ export module Speech {
 
             const chunks = new Array<any>();
             if (text[0] === '<') {
-                if (text.indexOf('<speak') != 0)
+                if (text.indexOf('<speak') !== 0) {
                     text = '<speak>\n' + text + '\n</speak>\n';
+                }
                 const parser = new DOMParser();
                 const dom = parser.parseFromString(text, 'text/xml');
                 const nodes = dom.documentElement.childNodes;
                 this.processNodes(nodes, chunks);
-            }
-            else {
+            } else {
                 chunks.push(text);
             }
 
             const onSpeakingFinishedWrapper = () => {
-                if (onSpeakingFinished !== null)
+                if (onSpeakingFinished !== null) {
                     onSpeakingFinished();
+                }
 
                 // remove this from the queue since it's done:
                 if (this.speakRequests.length) {
@@ -291,26 +300,27 @@ export module Speech {
                 if (this.speakRequests.length) {
                     this.playNextTTS(this.speakRequests[0], 0);
                 }
-            }
+            };
 
-            const request = new SpeakRequest(chunks, lang, (speakOp) => { this.lastOperation = speakOp }, onSpeakingStarted, onSpeakingFinishedWrapper);
+            const request = new SpeakRequest(chunks, lang, speakOp => { this.lastOperation = speakOp; }, onSpeakingStarted, onSpeakingFinishedWrapper);
 
             if (this.speakRequests.length === 0) {
                 this.speakRequests = [request];
                 this.playNextTTS(this.speakRequests[0], 0);
-            }
-            else {
+            } else {
                 this.speakRequests.push(request);
             }
         }
 
         public stopSpeaking() {
-            if (('SpeechSynthesisUtterance' in window) === false)
+            if (('SpeechSynthesisUtterance' in window) === false) {
                 return;
+            }
 
             if (this.speakRequests.length) {
-                if (this.audioElement)
+                if (this.audioElement) {
                     this.audioElement.pause();
+                }
 
                 this.speakRequests.forEach(req => {
                     req.abandon();
@@ -319,12 +329,13 @@ export module Speech {
                 this.speakRequests = [];
                 const ss = window.speechSynthesis;
                 if (ss.speaking || ss.pending) {
-                    if (this.lastOperation)
+                    if (this.lastOperation) {
                         this.lastOperation.onend = null;
+                    }
                     ss.cancel();
                 }
             }
-        };
+        }
 
         private playNextTTS(requestContainer: SpeakRequest, iCurrent: number) {
             // lang : string, onSpeakQueued: Func<SpeechSynthesisUtterance, void>, onSpeakStarted : Action, onFinishedSpeaking : Action
@@ -352,19 +363,21 @@ export module Speech {
                         // msg.pitch = 2; //0 to 2
                         msg.text = current;
                         msg.lang = requestContainer.lang;
-                        msg.onstart = iCurrent === 0 ? requestContainer.onSpeakingStarted : null
+                        msg.onstart = iCurrent === 0 ? requestContainer.onSpeakingStarted : null;
                         msg.onend = moveToNext;
                         msg.onerror = moveToNext;
 
-                        if (requestContainer.onSpeakQueued)
+                        if (requestContainer.onSpeakQueued) {
                             requestContainer.onSpeakQueued(msg);
+                        }
 
                         window.speechSynthesis.speak(msg);
                     }
                 }
             } else {
-                if (requestContainer.onSpeakingFinished)
+                if (requestContainer.onSpeakingFinished) {
                     requestContainer.onSpeakingFinished();
+                }
             }
         }
 
@@ -373,6 +386,7 @@ export module Speech {
         // * number which is delay in msg
         // * url which is an audio file
         private processNodes(nodes: NodeList, output: any[]): void {
+            // tslint:disable-next-line:prefer-for-of
             for (let i = 0; i < nodes.length; i++) {
                 const node = nodes[i];
                 switch (node.nodeName) {
@@ -419,21 +433,25 @@ export module Speech {
     }
 
     class SpeakRequest {
+        // tslint:disable:variable-name
         private _onSpeakQueued: Func<SpeechSynthesisUtterance, void> = null;
         private _onSpeakingStarted: Action = null;
         private _onSpeakingFinished: Action = null;
         private _speakChunks: any[] = [];
         private _lang: string = null;
+        // tslint:enable:variable-name
 
-        public constructor(speakChunks: any[],
+        public constructor(
+            speakChunks: any[],
             lang: string,
             onSpeakQueued: Func<SpeechSynthesisUtterance, void> = null,
             onSpeakingStarted: Action = null,
-            onSpeakingFinished: Action = null) {
+            onSpeakingFinished: Action = null
+        ) {
             this._onSpeakQueued = onSpeakQueued;
             this._onSpeakingStarted = onSpeakingStarted;
             this._onSpeakingFinished = onSpeakingFinished;
-            this._speakChunks = speakChunks
+            this._speakChunks = speakChunks;
             this._lang = lang;
         }
 

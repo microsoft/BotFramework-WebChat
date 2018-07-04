@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Activity, Attachment, AttachmentLayout } from 'botframework-directlinejs';
+import * as React from 'react';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
+import { IDoCardAction } from './Chat';
 import { FormattedText } from './FormattedText';
 import { FormatState, SizeState } from './Store';
-import { IDoCardAction } from './Chat';
 
 const Attachments = (props: {
     attachments: Attachment[],
@@ -14,15 +14,16 @@ const Attachments = (props: {
     onCardAction: IDoCardAction,
     onImageLoad: () => void
 }) => {
-    const { attachments, attachmentLayout, ... otherProps } = props;
-    if (!attachments || attachments.length === 0)
+    const { attachments, attachmentLayout, ...otherProps } = props;
+    if (!attachments || attachments.length === 0) {
         return null;
+    }
     return attachmentLayout === 'carousel' ?
         <Carousel
             attachments={ attachments }
-            { ... otherProps }
+            { ...otherProps }
         />
-    : 
+    :
         <div className="wc-list">
             { attachments.map((attachment, index) =>
                 <AttachmentView
@@ -33,20 +34,20 @@ const Attachments = (props: {
                     onImageLoad={ props.onImageLoad }
                 />
             ) }
-        </div>
-}
+        </div>;
+};
 
 export interface ActivityViewProps {
-    format: FormatState,
-    size: SizeState,
-    activity: Activity,
-    onCardAction: IDoCardAction,
-    onImageLoad: () => void
+    format: FormatState;
+    size: SizeState;
+    activity: Activity;
+    onCardAction: IDoCardAction;
+    onImageLoad: () => void;
 }
 
 export class ActivityView extends React.Component<ActivityViewProps, {}> {
     constructor(props: ActivityViewProps) {
-        super(props)
+        super(props);
     }
 
     shouldComponentUpdate(nextProps: ActivityViewProps) {
@@ -61,7 +62,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
     }
 
     render() {
-        const { activity, ... props } = this.props;
+        const { activity, ...props } = this.props;
         switch (activity.type) {
             case 'message':
                 return (

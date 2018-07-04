@@ -1,31 +1,31 @@
-import * as React from 'react';
-import { findDOMNode } from 'react-dom';
-import { connect } from 'react-redux';
 import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
 import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from 'adaptivecards/lib/schema';
 import { CardAction } from 'botframework-directlinejs/built/directLine';
-import { classList, IDoCardAction } from './Chat';
-import { AjaxResponse, AjaxRequest } from 'rxjs/observable/dom/AjaxObservable';
+import * as React from 'react';
+import { findDOMNode } from 'react-dom';
+import { connect } from 'react-redux';
+import { AjaxRequest, AjaxResponse } from 'rxjs/observable/dom/AjaxObservable';
 import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
+import { classList, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
-import { ChatState, AdaptiveCardsState } from './Store';
+import { AdaptiveCardsState, ChatState } from './Store';
 
 export interface Props {
-    className?: string,
-    hostConfig: HostConfig,
-    jsonCard?: IAdaptiveCard,
-    nativeCard?: AdaptiveCard,
-    onCardAction: IDoCardAction,
-    onClick?: (e: React.MouseEvent<HTMLElement>) => void,
-    onImageLoad?: () => any,
+    className?: string;
+    hostConfig: HostConfig;
+    jsonCard?: IAdaptiveCard;
+    nativeCard?: AdaptiveCard;
+    onCardAction: IDoCardAction;
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+    onImageLoad?: () => any;
 }
 
 export interface State {
-    errors?: string[]
+    errors?: string[];
 }
 
 export interface BotFrameworkCardAction extends CardAction {
-    __isBotFrameworkCardAction: boolean
+    __isBotFrameworkCardAction: boolean;
 }
 
 const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
@@ -35,7 +35,7 @@ function cardWithoutHttpActions(card: IAdaptiveCard) {
         return card;
     }
 
-    const nextActions: (IOpenUrlAction | IShowCardAction | ISubmitAction)[] = card.actions.reduce((nextActions, action) => {
+    const nextActions: Array<IOpenUrlAction | IShowCardAction | ISubmitAction> = card.actions.reduce((nextActions, action) => {
         // Filter out HTTP action buttons
         switch (action.type) {
             case 'Action.Submit':
@@ -81,7 +81,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             return;
         }
 
-        //do not allow form elements to trigger a parent click event
+        // do not allow form elements to trigger a parent click event
         switch ((e.target as HTMLElement).tagName) {
             case 'A':
             case 'AUDIO':
@@ -130,6 +130,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     }
 
     handleImageLoad() {
+        // tslint:disable-next-line:no-unused-expression
         this.props.onImageLoad && this.props.onImageLoad.apply(this, arguments);
     }
 
@@ -152,7 +153,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             errors = adaptiveCard.validate();
         }
 
-        adaptiveCard.onExecuteAction = (action) => this.onExecuteAction(action);
+        adaptiveCard.onExecuteAction = action => this.onExecuteAction(action);
 
         if (errors.length === 0) {
             let renderedCard: HTMLElement;
@@ -174,7 +175,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
 
             if (renderedCard) {
                 if (this.props.onImageLoad) {
-                    var imgs = renderedCard.querySelectorAll('img');
+                    const imgs = renderedCard.querySelectorAll('img');
 
                     if (imgs && imgs.length > 0) {
                         Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
@@ -227,7 +228,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
                 { wrappedChildren }
                 <div ref={ this.saveDiv } />
             </div>
-        )
+        );
     }
 }
 

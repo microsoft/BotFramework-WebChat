@@ -5,29 +5,29 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
-import { createStore, ChatActions, sendMessage } from './Store';
+import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
-import { SpeechOptions } from './SpeechOptions';
-import { Speech } from './SpeechModule';
-import { ActivityOrID, FormatOptions } from './Types';
-import * as konsole from './Konsole';
 import { getTabIndex } from './getTabIndex';
+import * as konsole from './Konsole';
+import { Speech } from './SpeechModule';
+import { SpeechOptions } from './SpeechOptions';
+import { ChatActions, createStore, sendMessage } from './Store';
+import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
-    adaptiveCardsHostConfig: any,
-    chatTitle?: boolean | string,
-    user: User,
-    bot: User,
-    botConnection?: IBotConnection,
-    directLine?: DirectLineOptions,
-    speechOptions?: SpeechOptions,
-    locale?: string,
-    selectedActivity?: BehaviorSubject<ActivityOrID>,
-    sendTyping?: boolean,
-    showUploadButton?: boolean,
-    formatOptions?: FormatOptions,
-    resize?: 'none' | 'window' | 'detect'
+    adaptiveCardsHostConfig: any;
+    chatTitle?: boolean | string;
+    user: User;
+    bot: User;
+    botConnection?: IBotConnection;
+    directLine?: DirectLineOptions;
+    speechOptions?: SpeechOptions;
+    locale?: string;
+    selectedActivity?: BehaviorSubject<ActivityOrID>;
+    sendTyping?: boolean;
+    showUploadButton?: boolean;
+    formatOptions?: FormatOptions;
+    resize?: 'none' | 'window' | 'detect';
 }
 
 import { History } from './History';
@@ -49,20 +49,22 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private resizeListener = () => this.setSize();
 
+    // tslint:disable:variable-name
     private _handleCardAction = this.handleCardAction.bind(this);
     private _handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
     private _saveChatviewPanelRef = this.saveChatviewPanelRef.bind(this);
     private _saveHistoryRef = this.saveHistoryRef.bind(this);
     private _saveShellRef = this.saveShellRef.bind(this);
+    // tslint:enable:variable-name
 
     constructor(props: ChatProps) {
         super(props);
 
-        konsole.log("BotChat.Chat props", props);
+        konsole.log('BotChat.Chat props', props);
 
         this.store.dispatch<ChatActions>({
             type: 'Set_Locale',
-            locale: props.locale || (window.navigator as any)["userLanguage"] || window.navigator.language || 'en'
+            locale: props.locale || (window.navigator as any).userLanguage || window.navigator.language || 'en'
         });
 
         if (props.adaptiveCardsHostConfig) {
@@ -99,15 +101,16 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private handleIncomingActivity(activity: Activity) {
-        let state = this.store.getState();
+        const state = this.store.getState();
         switch (activity.type) {
-            case "message":
+            case 'message':
                 this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
                 break;
 
-            case "typing":
-                if (activity.from.id !== state.connection.user.id)
+            case 'typing':
+                if (activity.from.id !== state.connection.user.id) {
                     this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity });
+                }
                 break;
         }
     }
@@ -187,24 +190,26 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
-        if (this.props.resize === 'window')
+        if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
+        }
 
         this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
-                if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
-                    let refGrammarId = botConnection.referenceGrammarId;
-                    if(refGrammarId)
+        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
+                if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
+                    const refGrammarId = botConnection.referenceGrammarId;
+                    if (refGrammarId) {
                         this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
+                    }
                 }
-                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
             }
         );
 
         this.activitySubscription = botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
-            error => konsole.log("activity$ error", error)
+            error => konsole.log('activity$ error', error)
         );
 
         if (this.props.selectedActivity) {
@@ -220,10 +225,12 @@ export class Chat extends React.Component<ChatProps, {}> {
     componentWillUnmount() {
         this.connectionStatusSubscription.unsubscribe();
         this.activitySubscription.unsubscribe();
-        if (this.selectedActivitySubscription)
+        if (this.selectedActivitySubscription) {
             this.selectedActivitySubscription.unsubscribe();
-        if (this.botConnection)
+        }
+        if (this.botConnection) {
             this.botConnection.end();
+        }
         window.removeEventListener('resize', this.resizeListener);
     }
 
@@ -257,7 +264,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     render() {
         const state = this.store.getState();
-        konsole.log("BotChat.Chat state", state);
+        konsole.log('BotChat.Chat state', state);
 
         // only render real stuff after we know our dimensions
         return (
@@ -290,84 +297,82 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
-export interface IDoCardAction {
-    (type: CardActionTypes, value: string | object): void;
-}
+export type IDoCardAction = (type: CardActionTypes, value: string | object) => void;
 
 export const doCardAction = (
     botConnection: IBotConnection,
     from: User,
     locale: string,
-    sendMessage: (value: string, user: User, locale: string) => void,
+    sendMessage: (value: string, user: User, locale: string) => void
 ): IDoCardAction => (
     type,
     actionValue
 ) => {
 
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
-    const value = (typeof actionValue === 'object')? actionValue as object : undefined;
+    const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
 
     switch (type) {
-        case "imBack":
-            if (typeof text === 'string')
+        case 'imBack':
+            if (typeof text === 'string') {
                 sendMessage(text, from, locale);
+            }
             break;
 
-        case "postBack":
+        case 'postBack':
             sendPostBack(botConnection, text, value, from, locale);
             break;
 
-        case "call":
-        case "openUrl":
-        case "playAudio":
-        case "playVideo":
-        case "showImage":
-        case "downloadFile":
+        case 'call':
+        case 'openUrl':
+        case 'playAudio':
+        case 'playVideo':
+        case 'showImage':
+        case 'downloadFile':
             window.open(text);
             break;
-        case "signin":
-            let loginWindow =  window.open();
+        case 'signin':
+            const loginWindow = window.open();
             if (botConnection.getSessionId)  {
                 botConnection.getSessionId().subscribe(sessionId => {
-                    konsole.log("received sessionId: " + sessionId);
+                    konsole.log('received sessionId: ' + sessionId);
                     loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
                 }, error => {
-                    konsole.log("failed to get sessionId", error);
+                    konsole.log('failed to get sessionId', error);
                 });
-            }
-            else {
+            } else {
                 loginWindow.location.href = text;
             }
             break;
 
         default:
-            konsole.log("unknown button type", type);
+            konsole.log('unknown button type', type);
         }
-}
+};
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, value: object, from: User, locale: string) => {
     botConnection.postActivity({
-        type: "message",
+        type: 'message',
         text,
         value,
         from,
         locale
     })
-    .subscribe(id => {
-        konsole.log("success sending postBack", id)
-    }, error => {
-        konsole.log("failed to send postBack", error);
-    });
-}
+    .subscribe(
+        id => konsole.log('success sending postBack', id),
+        error => konsole.log('failed to send postBack', error)
+    );
+};
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
-    if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
+    if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0)) {
         return renderer(value);
-}
+    }
+};
 
-export const classList = (...args:(string | boolean)[]) => {
+export const classList = (...args: Array<string | boolean>) => {
     return args.filter(Boolean).join(' ');
-}
+};
 
 // note: container of this element must have CSS position of either absolute or relative
 const ResizeDetector = (props: {
@@ -375,10 +380,22 @@ const ResizeDetector = (props: {
 }) =>
     // adapted to React from https://github.com/developit/simple-element-resize-detector
     <iframe
-        style={ { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' } }
+        style={{
+            border: 'none',
+            height: '100%',
+            left: 0,
+            margin: '1px 0 0',
+            opacity: 0,
+            pointerEvents: 'none',
+            position: 'absolute',
+            top: '-100%',
+            visibility: 'hidden',
+            width: '100%'
+        }}
         ref={ frame => {
-            if (frame)
+            if (frame) {
                 frame.contentWindow.onresize = props.onresize;
+            }
         } }
     />;
 

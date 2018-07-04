@@ -1,20 +1,20 @@
-import * as React from 'react';
-import * as CardBuilder from './CardBuilder';
 import { HorizontalAlignment, IAdaptiveCard, TextSize, TextWeight } from 'adaptivecards';
 import { Attachment, CardAction, CardImage, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
-import { renderIfNonempty, IDoCardAction } from './Chat';
-import { FormatState } from './Store';
+import * as React from 'react';
 import { default as AdaptiveCardContainer } from './AdaptiveCardContainer';
+import * as CardBuilder from './CardBuilder';
+import { IDoCardAction, renderIfNonempty } from './Chat';
 import * as konsole from './Konsole';
+import { FormatState } from './Store';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
 
-const YOUTUBE_DOMAIN = "youtube.com";
-const YOUTUBE_WWW_DOMAIN = "www.youtube.com";
-const YOUTUBE_SHORT_DOMAIN = "youtu.be";
-const YOUTUBE_WWW_SHORT_DOMAIN = "www.youtu.be";
-const VIMEO_DOMAIN = "vimeo.com";
-const VIMEO_WWW_DOMAIN = "www.vimeo.com";
+const YOUTUBE_DOMAIN = 'youtube.com';
+const YOUTUBE_WWW_DOMAIN = 'www.youtube.com';
+const YOUTUBE_SHORT_DOMAIN = 'youtu.be';
+const YOUTUBE_WWW_SHORT_DOMAIN = 'www.youtu.be';
+const VIMEO_DOMAIN = 'vimeo.com';
+const VIMEO_WWW_DOMAIN = 'www.vimeo.com';
 
 export interface QueryParams {
     [propName: string]: string;
@@ -35,7 +35,7 @@ const queryString = (query: QueryParams) =>
     .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(query[key].toString()))
     .join('&');
 
-const exists = (value: any) => value != null && typeof value != "undefined";
+const exists = (value: any) => value != null && typeof value !== 'undefined';
 
 const Youtube = (props: {
     embedId: string,
@@ -67,12 +67,12 @@ const Vimeo = (props: {
     />;
 
 interface VideoProps {
-    src: string,
-    poster?: string,
-    autoPlay?: boolean,
-    loop?: boolean,
-    onLoad?: () => void,
-    onClick?: (e: React.MouseEvent<HTMLElement>) => void
+    src: string;
+    poster?: string;
+    autoPlay?: boolean;
+    loop?: boolean;
+    onLoad?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Video = (props: VideoProps) => {
@@ -86,7 +86,7 @@ const Video = (props: VideoProps) => {
         case YOUTUBE_WWW_DOMAIN:
         case YOUTUBE_WWW_SHORT_DOMAIN:
             return <Youtube
-                embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams['v'] : pathSegments[pathSegments.length-1] }
+                embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams.v : pathSegments[pathSegments.length - 1] }
                 autoPlay={ props.autoPlay }
                 loop={ props.loop }
             />;
@@ -94,15 +94,15 @@ const Video = (props: VideoProps) => {
         case VIMEO_WWW_DOMAIN:
         case VIMEO_DOMAIN:
             return <Vimeo
-                embedId={ pathSegments[pathSegments.length-1] }
+                embedId={ pathSegments[pathSegments.length - 1] }
                 autoPlay={ props.autoPlay }
                 loop={ props.loop }
-            />
+            />;
 
         default:
-            return <video controls { ... props } />
+            return <video controls { ...props } />;
     }
-}
+};
 
 const Media = (props: {
     src: string,
@@ -116,13 +116,13 @@ const Media = (props: {
 }) => {
     switch (props.type) {
         case 'video':
-            return <Video { ...props as VideoProps }  />
+            return <Video { ...props as VideoProps } />;
         case 'audio':
-            return <audio controls { ... props } />;
+            return <audio controls { ...props } />;
         default:
-            return <img { ... props } />;
+            return <img { ...props } />;
     }
-}
+};
 
 const Unknown = (props: {
     format: FormatState,
@@ -137,10 +137,11 @@ const Unknown = (props: {
     } else {
         return <span>{ props.format.strings.unknownFile.replace('%1', props.contentType) }</span>;
     }
-}
+};
 
 const mediaType = (url: string) =>
-    url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase() == 'gif' ? 'image' : 'video';
+    // tslint:disable-next-line:no-bitwise
+    url.slice((url.lastIndexOf('.') - 1 >>> 0) + 2).toLowerCase() === 'gif' ? 'image' : 'video';
 
 export const AttachmentView = (props: {
     format: FormatState;
@@ -148,7 +149,9 @@ export const AttachmentView = (props: {
     onCardAction: IDoCardAction,
     onImageLoad: () => void
 }) => {
-    if (!props.attachment) return;
+    if (!props.attachment) {
+        return;
+    }
     const attachment = props.attachment as KnownMedia;
     const onCardAction = (cardAction: CardAction) => cardAction &&
         ((e: React.MouseEvent<HTMLElement>) => {
@@ -160,15 +163,15 @@ export const AttachmentView = (props: {
     ) => images && images.length > 0 &&
         <Media src={ images[0].url } onLoad={ props.onImageLoad } onClick={ onCardAction(images[0].tap) } alt={ images[0].alt } />;
     const getRichCardContentMedia = (
-        type: 'image' | 'video' | 'audio' | { (url: string): 'image' | 'video' | 'audio' },
+        type: 'image' | 'video' | 'audio' | ((url: string) => 'image' | 'video' | 'audio'),
         content: {
             title?: string;
             subtitle?: string;
             text?: string;
-            media?: {
+            media?: Array<{
                 url: string;
                 profile?: string;
-            }[];
+            }>;
             buttons?: CardAction[];
             image?: {
                 url: string;
@@ -183,7 +186,7 @@ export const AttachmentView = (props: {
         }
         // rendering every media in the media array. Validates every type as image, video, audio or a function that returns those values.
         return content.media.map((md, i) => {
-            let t = (typeof type === 'string')? type : type(md.url);
+            const t = typeof type === 'string' ? type : type(md.url);
             return <Media
                 type={ t }
                 src={ md.url }
@@ -191,25 +194,27 @@ export const AttachmentView = (props: {
                 poster={ content.image && content.image.url }
                 autoPlay={ content.autostart }
                 loop={ content.autoloop }
-                key={ i } />
+                key={ i } />;
         });
     };
     switch (attachment.contentType) {
-        case "application/vnd.microsoft.card.hero":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.hero':
+            if (!attachment.content) {
                 return null;
+            }
             const heroCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images) {
                 attachment.content.images.forEach(img => heroCardBuilder.addImage(img.url, null, img.tap));
             }
-            heroCardBuilder.addCommon(attachment.content)
+            heroCardBuilder.addCommon(attachment.content);
             return (
                 <AdaptiveCardContainer className="hero" nativeCard={ heroCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
-        case "application/vnd.microsoft.card.thumbnail":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.thumbnail':
+            if (!attachment.content) {
                 return null;
+            }
             const thumbnailCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             if (attachment.content.images && attachment.content.images.length > 0) {
                 const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
@@ -225,57 +230,65 @@ export const AttachmentView = (props: {
                 <AdaptiveCardContainer className="thumbnail" nativeCard={ thumbnailCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
-        case "application/vnd.microsoft.card.video":
-            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
+        case 'application/vnd.microsoft.card.video':
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer className="video" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     {getRichCardContentMedia('video', attachment.content)}
                 </AdaptiveCardContainer>
             );
 
-        case "application/vnd.microsoft.card.animation":
-            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
+        case 'application/vnd.microsoft.card.animation':
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer className="animation" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     {getRichCardContentMedia(mediaType, attachment.content)}
                 </AdaptiveCardContainer>
             );
 
-        case "application/vnd.microsoft.card.audio":
-            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
+        case 'application/vnd.microsoft.card.audio':
+            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer className="audio" nativeCard={CardBuilder.buildCommonCard(attachment.content)} onCardAction={props.onCardAction} >
                     {getRichCardContentMedia('audio', attachment.content)}
                 </AdaptiveCardContainer>
             );
 
-        case "application/vnd.microsoft.card.signin":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.signin':
+            if (!attachment.content) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer className="signin" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } />
             );
 
-        case "application/vnd.microsoft.card.oauth":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.oauth':
+            if (!attachment.content) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer className="signin" nativeCard={ CardBuilder.buildOAuthCard(attachment.content) } onCardAction={ props.onCardAction } />
             );
 
-        case "application/vnd.microsoft.card.receipt":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.receipt':
+            if (!attachment.content) {
                 return null;
+            }
             const receiptCardBuilder = new CardBuilder.AdaptiveCardBuilder();
             receiptCardBuilder.addTextBlock(attachment.content.title, { size: TextSize.Medium, weight: TextWeight.Bolder });
             const columns = receiptCardBuilder.addColumnSet([75, 25]);
+            // tslint:disable-next-line:no-unused-expression
             attachment.content.facts && attachment.content.facts.map((fact, i) => {
                 receiptCardBuilder.addTextBlock(fact.key, { size: TextSize.Medium }, columns[0]);
                 receiptCardBuilder.addTextBlock(fact.value, { size: TextSize.Medium, horizontalAlignment: HorizontalAlignment.Right }, columns[1]);
             });
+            // tslint:disable-next-line:no-unused-expression
             attachment.content.items && attachment.content.items.map((item, i) => {
                 if (item.image) {
                     const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
@@ -307,42 +320,44 @@ export const AttachmentView = (props: {
             }
             receiptCardBuilder.addButtons(attachment.content.buttons);
             return (
-                <AdaptiveCardContainer className='receipt' nativeCard={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
+                <AdaptiveCardContainer className="receipt" nativeCard={ receiptCardBuilder.card } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
             );
 
-        case "application/vnd.microsoft.card.adaptive":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.adaptive':
+            if (!attachment.content) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer jsonCard={ attachment.content as IAdaptiveCard } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } />
             );
 
         // Deprecated format for Skype channels. For testing legacy bots in Emulator only.
-        case "application/vnd.microsoft.card.flex":
-            if (!attachment.content)
+        case 'application/vnd.microsoft.card.flex':
+            if (!attachment.content) {
                 return null;
+            }
             return (
                 <AdaptiveCardContainer className="flex" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
                     { attachedImage(attachment.content.images) }
                 </AdaptiveCardContainer>
             );
 
-        case "image/svg+xml":
-        case "image/png":
-        case "image/jpg":
-        case "image/jpeg":
-        case "image/gif":
+        case 'image/svg+xml':
+        case 'image/png':
+        case 'image/jpg':
+        case 'image/jpeg':
+        case 'image/gif':
             return <Media src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
-        case "audio/mpeg":
-        case "audio/mp4":
-            return <Media type='audio' src={ attachment.contentUrl } />;
+        case 'audio/mpeg':
+        case 'audio/mp4':
+            return <Media type="audio" src={ attachment.contentUrl } />;
 
-        case "video/mp4":
-            return <Media type='video' poster={ attachment.thumbnailUrl } src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
+        case 'video/mp4':
+            return <Media type="video" poster={ attachment.thumbnailUrl } src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
-            var unknownAttachment = props.attachment as UnknownMedia;
+            const unknownAttachment = props.attachment as UnknownMedia;
             return <Unknown format={ props.format } contentType={ unknownAttachment.contentType } contentUrl={ unknownAttachment.contentUrl } name={ unknownAttachment.name } />;
     }
-}
+};
