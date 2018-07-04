@@ -9,6 +9,7 @@ import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import { classList, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { AdaptiveCardsState, ChatState } from './Store';
+import * as MarkdownIt from 'markdown-it';
 
 export interface Props {
     className?: string;
@@ -27,6 +28,18 @@ export interface State {
 export interface BotFrameworkCardAction extends CardAction {
     __isBotFrameworkCardAction: boolean;
 }
+
+const markdownIt = new MarkdownIt({
+    breaks: true,
+    html: false,
+    linkify: true,
+    typographer: true,
+    xhtmlOut: true
+});
+
+AdaptiveCard.processMarkdown = (text: string) => {
+    return markdownIt.render(text);
+};
 
 const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
 
