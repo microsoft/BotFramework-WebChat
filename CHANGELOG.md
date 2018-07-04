@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add TSLint, by [@adeogunsamuel](https://github.com/adeogunsamuel) in [#1017](https://github.com/Microsoft/BotFramework-WebChat/pull/1017)
+
+### Changed
+- Fix typo in `de-DE`, by [@jKelio](https://github.com/jKelio) in [#1022](https://github.com/Microsoft/BotFramework-WebChat/pull/1022)
 
 ## [0.14.0] - 2018-06-26
 ### Added
