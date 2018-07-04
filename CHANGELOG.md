@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Fix typo in `de-DE`, by [@jKelio](https://github.com/jKelio) in [#1022](https://github.com/Microsoft/BotFramework-WebChat/pull/1022)
-- Fix [#949](https://github.com/Microsoft/BotFramework-WebChat/issues/949), [#972](https://github.com/Microsoft/BotFramework-WebChat/issues/972), and [#1030](https://github.com/Microsoft/BotFramework-WebChat/issues/1030) to bring own Markdown-It to Adaptive Cards, in [#1034](https://github.com/Microsoft/BotFramework-WebChat/pull/1034)
 - Fix [#949](https://github.com/Microsoft/BotFramework-WebChat/issues/949), [#972](https://github.com/Microsoft/BotFramework-WebChat/issues/972), and [#1030](https://github.com/Microsoft/BotFramework-WebChat/issues/1030) to bring [Markdown-It](https://github.com/markdown-it/markdown-it) to Adaptive Cards, in [#1034](https://github.com/Microsoft/BotFramework-WebChat/pull/1034)
 
 ## [0.14.0] - 2018-06-26
