@@ -1,6 +1,6 @@
-import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from "adaptivecards";
-import { Attachment, CardAction, CardImage, HeroCard, Thumbnail } from "botframework-directlinejs";
-import { BotFrameworkCardAction } from "./AdaptiveCardContainer";
+import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
+import { Attachment, CardAction, CardImage, HeroCard, Thumbnail } from 'botframework-directlinejs';
+import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
 export class AdaptiveCardBuilder {
     private container: Container;
@@ -17,7 +17,7 @@ export class AdaptiveCardBuilder {
         container = container || this.container;
         const columnSet = new ColumnSet();
         container.addItem(columnSet);
-        const columns = sizes.map((size) => {
+        const columns = sizes.map(size => {
             const column = new Column();
             column.width = size;
             columnSet.addColumn(column);
@@ -28,12 +28,12 @@ export class AdaptiveCardBuilder {
 
     addItems(cardElements: CardElement[], container?: Container) {
         container = container || this.container;
-        cardElements.forEach((cardElement) => container.addItem(cardElement));
+        cardElements.forEach(cardElement => container.addItem(cardElement));
     }
 
     addTextBlock(text: string, template: Partial<TextBlock>, container?: Container) {
         container = container || this.container;
-        if (typeof text !== "undefined") {
+        if (typeof text !== 'undefined') {
             const textblock = new TextBlock();
             // tslint:disable-next-line:forin
             for (const prop in template) {
@@ -46,14 +46,14 @@ export class AdaptiveCardBuilder {
 
     addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
         if (cardActions) {
-            cardActions.forEach((cardAction) => {
+            cardActions.forEach(cardAction => {
                 this.card.addAction(AdaptiveCardBuilder.addCardAction(cardAction, includesOAuthButtons));
             });
         }
     }
 
     private static addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
-        if (cardAction.type === "imBack" || cardAction.type === "postBack") {
+        if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
             const action = new SubmitAction();
             const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
 
@@ -61,7 +61,7 @@ export class AdaptiveCardBuilder {
             action.title = cardAction.title;
 
             return action;
-        } else if (cardAction.type === "signin" && includesOAuthButtons) {
+        } else if (cardAction.type === 'signin' && includesOAuthButtons) {
             // Create a button specific for OAuthCard 'signin' actions (cardAction.type == signin and button action is Action.Submit)
             const action = new SubmitAction();
             const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
@@ -75,7 +75,7 @@ export class AdaptiveCardBuilder {
             const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
 
             action.title = cardAction.title;
-            action.url = cardAction.type === "call" ? "tel:" + cardAction.value : cardAction.value;
+            action.url = cardAction.type === 'call' ? 'tel:' + cardAction.value : cardAction.value;
 
             return action;
         }

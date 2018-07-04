@@ -1,11 +1,11 @@
-import { User } from "botframework-directlinejs";
-import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { classList } from "./Chat";
-import { Speech } from "./SpeechModule";
-import { ChatState, FormatState } from "./Store";
-import { ChatActions, ListeningState, sendFiles, sendMessage } from "./Store";
-import { Strings } from "./Strings";
+import { User } from 'botframework-directlinejs';
+import * as React from 'react';
+import { connect, Dispatch } from 'react-redux';
+import { classList } from './Chat';
+import { Speech } from './SpeechModule';
+import { ChatState, FormatState } from './Store';
+import { ChatActions, ListeningState, sendFiles, sendMessage } from './Store';
+import { Strings } from './Strings';
 
 interface Props {
     inputText: string;
@@ -36,7 +36,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     }
 
     private handleSendButtonKeyPress(evt: React.KeyboardEvent<HTMLButtonElement>) {
-        if (evt.key === "Enter" || evt.key === " ") {
+        if (evt.key === 'Enter' || evt.key === ' ') {
             evt.preventDefault();
             this.sendMessage();
             this.textInput.focus();
@@ -44,14 +44,14 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     }
 
     private handleUploadButtonKeyPress(evt: React.KeyboardEvent<HTMLLabelElement>) {
-        if (evt.key === "Enter" || evt.key === " ") {
+        if (evt.key === 'Enter' || evt.key === ' ') {
             evt.preventDefault();
             this.fileInput.click();
         }
     }
 
     private onKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
             this.sendMessage();
         }
     }
@@ -90,23 +90,23 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
     render() {
         const className = classList(
-            "wc-console",
-            this.props.inputText.length > 0 && "has-text",
-            this.props.showUploadButton && "has-upload-button",
+            'wc-console',
+            this.props.inputText.length > 0 && 'has-text',
+            this.props.showUploadButton && 'has-upload-button'
         );
 
         const showMicButton = this.props.listeningState !== ListeningState.STOPPED || (Speech.SpeechRecognizer.speechIsAvailable()  && !this.props.inputText.length);
 
         const sendButtonClassName = classList(
-            "wc-send",
-            showMicButton && "hidden",
+            'wc-send',
+            showMicButton && 'hidden'
         );
 
         const micButtonClassName = classList(
-            "wc-mic",
-            !showMicButton && "hidden",
-            this.props.listeningState === ListeningState.STARTED && "active",
-            this.props.listeningState !== ListeningState.STARTED && "inactive",
+            'wc-mic',
+            !showMicButton && 'hidden',
+            this.props.listeningState === ListeningState.STARTED && 'active',
+            this.props.listeningState !== ListeningState.STARTED && 'inactive'
         );
 
         const placeholder = this.props.listeningState === ListeningState.STARTED ? this.props.strings.listeningIndicator : this.props.strings.consolePlaceholder;
@@ -118,7 +118,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         <label
                             className="wc-upload"
                             htmlFor="wc-upload-input"
-                            onKeyPress={ (evt) => this.handleUploadButtonKeyPress(evt) }
+                            onKeyPress={evt => this.handleUploadButtonKeyPress(evt) }
                             tabIndex={ 0 }
                         >
                             <svg>
@@ -132,7 +132,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                             id="wc-upload-input"
                             tabIndex={ -1 }
                             type="file"
-                            ref={ (input) => this.fileInput = input }
+                            ref={ input => this.fileInput = input }
                             multiple
                             onChange={ () => this.onChangeFile() }
                             aria-label={ this.props.strings.uploadFile }
@@ -143,11 +143,11 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                     <input
                         type="text"
                         className="wc-shellinput"
-                        ref={ (input) => this.textInput = input }
+                        ref={ input => this.textInput = input }
                         autoFocus
                         value={ this.props.inputText }
-                        onChange={ (_) => this.props.onChangeText(this.textInput.value) }
-                        onKeyPress={ (e) => this.onKeyPress(e) }
+                        onChange={_ => this.props.onChangeText(this.textInput.value) }
+                        onKeyPress={e => this.onKeyPress(e) }
                         onFocus={ () => this.onTextInputFocus() }
                         placeholder={ placeholder }
                         aria-label={ this.props.inputText ? null : placeholder }
@@ -159,7 +159,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                     onClick={ () => this.onClickSend() }
                     aria-label={ this.props.strings.send }
                     role="button"
-                    onKeyPress={ (evt) => this.handleSendButtonKeyPress(evt) }
+                    onKeyPress={evt => this.handleSendButtonKeyPress(evt) }
                     tabIndex={ 0 }
                     type="button"
                 >
@@ -195,15 +195,15 @@ export const Shell = connect(
         // only used to create helper functions below
         locale: state.format.locale,
         user: state.connection.user,
-        listeningState: state.shell.listeningState,
+        listeningState: state.shell.listeningState
     }), {
         // passed down to ShellContainer
-        onChangeText: (input: string) => ({ type: "Update_Input", input, source: "text" } as ChatActions),
-        stopListening:  () => ({ type: "Listening_Stopping" }),
-        startListening:  () => ({ type: "Listening_Starting" }),
+        onChangeText: (input: string) => ({ type: 'Update_Input', input, source: 'text' } as ChatActions),
+        stopListening:  () => ({ type: 'Listening_Stopping' }),
+        startListening:  () => ({ type: 'Listening_Starting' }),
         // only used to create helper functions below
         sendMessage,
-        sendFiles,
+        sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
@@ -216,8 +216,8 @@ export const Shell = connect(
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
-        stopListening: () => dispatchProps.stopListening(),
+        stopListening: () => dispatchProps.stopListening()
     }), {
-        withRef: true,
-    },
+        withRef: true
+    }
 )(ShellContainer);

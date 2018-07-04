@@ -1,12 +1,12 @@
-import { Activity, CardActionTypes, Message, User } from "botframework-directlinejs";
-import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { ActivityView } from "./ActivityView";
-import { activityWithSuggestedActions } from "./activityWithSuggestedActions";
-import { classList, doCardAction, IDoCardAction } from "./Chat";
-import * as konsole from "./Konsole";
-import { ChatState, FormatState, SizeState } from "./Store";
-import { sendMessage } from "./Store";
+import { Activity, CardActionTypes, Message, User } from 'botframework-directlinejs';
+import * as React from 'react';
+import { connect, Dispatch } from 'react-redux';
+import { ActivityView } from './ActivityView';
+import { activityWithSuggestedActions } from './activityWithSuggestedActions';
+import { classList, doCardAction, IDoCardAction } from './Chat';
+import * as konsole from './Konsole';
+import { ChatState, FormatState, SizeState } from './Store';
+import { sendMessage } from './Store';
 
 export interface HistoryProps {
     format: FormatState;
@@ -66,7 +66,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
                 const carouselMargin = this.props.size.width - maxContentWidth;
 
-                konsole.log("history measureMessage " + carouselMargin);
+                konsole.log('history measureMessage ' + carouselMargin);
 
                 // Finally, save it away in the Store, which will force another re-render
                 this.props.setMeasurements(carouselMargin);
@@ -80,7 +80,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     private autoscroll() {
         const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
-        this.scrollContent.style.marginTop = vAlignBottomPadding + "px";
+        this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
         const lastActivity = this.props.activities[this.props.activities.length - 1];
         const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
@@ -96,12 +96,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     private measurableCarousel = () =>
         // find the largest possible message size by forcing a width larger than the chat itself
         <WrappedActivity
-            ref={ (x) => this.carouselActivity = x }
+            ref={ x => this.carouselActivity = x }
             activity={ {
-                type: "message",
-                id: "",
-                from: { id: "" },
-                attachmentLayout: "carousel",
+                type: 'message',
+                id: '',
+                from: { id: '' },
+                attachmentLayout: 'carousel'
             } }
             format={ null }
             fromMe={ false }
@@ -126,7 +126,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     render() {
-        konsole.log("History props", this);
+        konsole.log('History props', this);
         let content;
         if (this.props.size.width !== undefined) {
             if (this.props.format.carouselMargin === undefined) {
@@ -135,16 +135,16 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = <this.measurableCarousel/>;
             } else {
                 content = this.props.activities.map((activity, index) =>
-                    (activity.type !== "message" || activity.text || (activity.attachments && activity.attachments.length)) &&
+                    (activity.type !== 'message' || activity.text || (activity.attachments && activity.attachments.length)) &&
                         <WrappedActivity
                             format={ this.props.format }
-                            key={ "message" + index }
+                            key={ 'message' + index }
                             activity={ activity }
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                             selected={ this.props.isSelected(activity) }
                             fromMe={ this.props.isFromMe(activity) }
                             onClickActivity={ this.props.onClickActivity(activity) }
-                            onClickRetry={ (e) => {
+                            onClickRetry={e => {
                                 // Since this is a click on an anchor, we need to stop it
                                 // from trying to actually follow a (nonexistant) link
                                 e.preventDefault();
@@ -159,21 +159,21 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
                             />
-                        </WrappedActivity>,
+                        </WrappedActivity>
                 );
             }
         }
 
-        const groupsClassName = classList("wc-message-groups", !this.props.format.chatTitle && "no-header");
+        const groupsClassName = classList('wc-message-groups', !this.props.format.chatTitle && 'no-header');
 
         return (
             <div
                 className={ groupsClassName }
-                ref={ (div) => this.scrollMe = div || this.scrollMe }
+                ref={ div => this.scrollMe = div || this.scrollMe }
                 role="log"
                 tabIndex={ 0 }
             >
-                <div className="wc-message-group-content" ref={ (div) => { if (div) { this.scrollContent = div; } }}>
+                <div className="wc-message-group-content" ref={ div => { if (div) { this.scrollContent = div; } }}>
                     { content }
                 </div>
             </div>
@@ -192,13 +192,13 @@ export const History = connect(
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
         botConnection: state.connection.botConnection,
-        user: state.connection.user,
+        user: state.connection.user
     }), {
-        setMeasurements: (carouselMargin: number) => ({ type: "Set_Measurements", carouselMargin }),
-        onClickRetry: (activity: Activity) => ({ type: "Send_Message_Retry", clientActivityId: activity.channelData.clientActivityId }),
-        onClickCardAction: () => ({ type: "Card_Action_Clicked"}),
+        setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
+        onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+        onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
         // only used to create helper functions below
-        sendMessage,
+        sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
         // from stateProps
         format: stateProps.format,
@@ -214,30 +214,30 @@ export const History = connect(
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
-        onCardAction: ownProps.onCardAction,
+        onCardAction: ownProps.onCardAction
     }), {
-        withRef: true,
-    },
+        withRef: true
+    }
 )(HistoryView);
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
     const s = window.getComputedStyle(el);
     const result: { [key: string]: number } = {};
     // tslint:disable-next-line:radix
-    stylePropertyNames.forEach((name) => result[name] = parseInt(s.getPropertyValue(name)));
+    stylePropertyNames.forEach(name => result[name] = parseInt(s.getPropertyValue(name)));
     return result;
 };
 
 const measurePaddedHeight = (el: HTMLElement): number => {
-    const paddingTop = "padding-top";
-    const paddingBottom = "padding-bottom";
+    const paddingTop = 'padding-top';
+    const paddingBottom = 'padding-bottom';
     const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
     return el.offsetHeight - values[paddingTop] - values[paddingBottom];
 };
 
 const measurePaddedWidth = (el: HTMLElement): number => {
-    const paddingLeft = "padding-left";
-    const paddingRight = "padding-right";
+    const paddingLeft = 'padding-left';
+    const paddingRight = 'padding-right';
     const values = getComputedStyleValues(el, [paddingLeft, paddingRight]);
     return el.offsetWidth + values[paddingLeft] + values[paddingRight];
 };
@@ -271,39 +271,39 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             case null:
                 timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
                 break;
-            case "retry":
+            case 'retry':
                 timeLine =
                     <span>
                         { this.props.format.strings.messageFailed }
-                        { " " }
+                        { ' ' }
                         <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp) {
-                    sent = this.props.format.strings.timeSent.replace("%1", (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
                 }
                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
                 break;
         }
 
-        const who = this.props.fromMe ? "me" : "bot";
+        const who = this.props.fromMe ? 'me' : 'bot';
 
         const wrapperClassName = classList(
-            "wc-message-wrapper",
-            (this.props.activity as Message).attachmentLayout || "list",
-            this.props.onClickActivity && "clickable",
+            'wc-message-wrapper',
+            (this.props.activity as Message).attachmentLayout || 'list',
+            this.props.onClickActivity && 'clickable'
         );
 
         const contentClassName = classList(
-            "wc-message-content",
-            this.props.selected && "selected",
+            'wc-message-content',
+            this.props.selected && 'selected'
         );
 
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ "wc-message wc-message-from-" + who } ref={ (div) => this.messageDiv = div }>
+                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
@@ -312,7 +312,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         { this.props.children }
                     </div>
                 </div>
-                <div className={ "wc-message-from wc-message-from-" + who }>{ timeLine }</div>
+                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
             </div>
         );
     }

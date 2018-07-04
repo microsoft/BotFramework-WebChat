@@ -1,10 +1,10 @@
-import { Activity, Attachment, AttachmentLayout } from "botframework-directlinejs";
-import * as React from "react";
-import { AttachmentView } from "./Attachment";
-import { Carousel } from "./Carousel";
-import { IDoCardAction } from "./Chat";
-import { FormattedText } from "./FormattedText";
-import { FormatState, SizeState } from "./Store";
+import { Activity, Attachment, AttachmentLayout } from 'botframework-directlinejs';
+import * as React from 'react';
+import { AttachmentView } from './Attachment';
+import { Carousel } from './Carousel';
+import { IDoCardAction } from './Chat';
+import { FormattedText } from './FormattedText';
+import { FormatState, SizeState } from './Store';
 
 const Attachments = (props: {
     attachments: Attachment[],
@@ -12,16 +12,16 @@ const Attachments = (props: {
     format: FormatState,
     size: SizeState,
     onCardAction: IDoCardAction,
-    onImageLoad: () => void,
+    onImageLoad: () => void
 }) => {
-    const { attachments, attachmentLayout, ... otherProps } = props;
+    const { attachments, attachmentLayout, ...otherProps } = props;
     if (!attachments || attachments.length === 0) {
         return null;
     }
-    return attachmentLayout === "carousel" ?
+    return attachmentLayout === 'carousel' ?
         <Carousel
             attachments={ attachments }
-            { ... otherProps }
+            { ...otherProps }
         />
     :
         <div className="wc-list">
@@ -32,7 +32,7 @@ const Attachments = (props: {
                     format={ props.format }
                     onCardAction={ props.onCardAction }
                     onImageLoad={ props.onImageLoad }
-                />,
+                />
             ) }
         </div>;
 };
@@ -56,15 +56,15 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
         // if the format changed, re-render
             || this.props.format !== nextProps.format
         // if it's a carousel and the size changed, re-render
-            || (this.props.activity.type === "message"
-                && this.props.activity.attachmentLayout === "carousel"
+            || (this.props.activity.type === 'message'
+                && this.props.activity.attachmentLayout === 'carousel'
                 && this.props.size !== nextProps.size);
     }
 
     render() {
-        const { activity, ... props } = this.props;
+        const { activity, ...props } = this.props;
         switch (activity.type) {
-            case "message":
+            case 'message':
                 return (
                     <div>
                         <FormattedText
@@ -83,7 +83,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                     </div>
                 );
 
-            case "typing":
+            case 'typing':
                 return <div className="wc-typing"/>;
         }
     }

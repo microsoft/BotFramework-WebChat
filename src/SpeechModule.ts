@@ -1,4 +1,4 @@
-import jspeech from "jspeech";
+import jspeech from 'jspeech';
 
 export type Action = () => void;
 
@@ -9,8 +9,8 @@ interface EventEmitter {
     removeEventListener(name: string, listener: (event: Event) => void): void;
 }
 
-function prefixFallback(type: string, prefixes = ["moz", "ms", "webkit"]): any {
-    return ["", ...prefixes].reduce((found, prefix) => found || (window as any)[prefix + type], null);
+function prefixFallback(type: string, prefixes = ['moz', 'ms', 'webkit']): any {
+    return ['', ...prefixes].reduce((found, prefix) => found || (window as any)[prefix + type], null);
 }
 
 function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
@@ -31,7 +31,7 @@ function waitEvent(emitter: EventEmitter, name: string): Promise<Event> {
         };
 
         emitter.addEventListener(name, resolveListener);
-        emitter.addEventListener("error", rejectListener);
+        emitter.addEventListener('error', rejectListener);
     });
 }
 
@@ -67,12 +67,12 @@ export namespace Speech {
         }
 
         public static async startRecognizing(
-            locale: string = "en-US",
+            locale: string = 'en-US',
             grammars?: string[],
             onIntermediateResult: Func<string, void> = null,
             onFinalResult: Func<string, void> = null,
             onAudioStreamStarted: Action = null,
-            onRecognitionFailed: Action = null,
+            onRecognitionFailed: Action = null
         ) {
             if (!SpeechRecognizer.speechIsAvailable()) {
                 return;
@@ -160,12 +160,12 @@ export namespace Speech {
 
         constructor() {
             if (!(window as any).webkitSpeechRecognition) {
-                console.error("This browser does not support speech recognition");
+                console.error('This browser does not support speech recognition');
                 return;
             }
 
             this.recognizer = new (window as any).webkitSpeechRecognition();
-            this.recognizer.lang = "en-US";
+            this.recognizer.lang = 'en-US';
             this.recognizer.interimResults = true;
 
             this.recognizer.onaudiostart = () => {
@@ -183,7 +183,7 @@ export namespace Speech {
                 if (result.isFinal === true && this.onFinalResult != null) {
                     this.onFinalResult(result[0].transcript);
                 } else if (result.isFinal === false && this.onIntermediateResult != null) {
-                    let text = "";
+                    let text = '';
                     // tslint:disable-next-line:prefer-for-of
                     for (let i = 0; i < srevent.results.length; ++i) {
                         text += srevent.results[i][0].transcript;
@@ -218,7 +218,7 @@ export namespace Speech {
             this.recognizer.start();
 
             // tslint:disable-next-line:no-empty
-            return waitEvent(this.recognizer, "start").then(() => {});
+            return waitEvent(this.recognizer, 'start').then(() => {});
         }
 
         public stopRecognizing() {
@@ -226,18 +226,18 @@ export namespace Speech {
                 this.recognizer.stop();
 
                 // tslint:disable-next-line:no-empty
-                return waitEvent(this.recognizer, "end").then(() => {});
+                return waitEvent(this.recognizer, 'end').then(() => {});
             } else {
                 return Promise.resolve();
             }
         }
 
         public setGrammars(grammars: string[] = []) {
-            const list = new (prefixFallback("SpeechGrammarList"))();
+            const list = new (prefixFallback('SpeechGrammarList'))();
 
             if (!list) {
                 if (grammars.length) {
-                    console.warn("This browser does not support speech grammar list");
+                    console.warn('This browser does not support speech grammar list');
                 }
 
                 return;
@@ -245,9 +245,9 @@ export namespace Speech {
                 return;
             }
 
-            const grammar = jspeech("listenfor");
+            const grammar = jspeech('listenfor');
 
-            grammar.public.rule("hint", grammars.join(" | "));
+            grammar.public.rule('hint', grammars.join(' | '));
 
             list.addFromString(grammar.stringify());
             this.recognizer.grammars = list;
@@ -260,25 +260,25 @@ export namespace Speech {
         private speakRequests: SpeakRequest[] = [];
 
         public speak(text: string, lang: string, onSpeakingStarted: Action = null, onSpeakingFinished: Action = null) {
-            if (!("SpeechSynthesisUtterance" in window) || !text) {
+            if (!('SpeechSynthesisUtterance' in window) || !text) {
                 return;
             }
 
             if (this.audioElement === null) {
-                const audio = document.createElement("audio");
-                audio.id = "player";
+                const audio = document.createElement('audio');
+                audio.id = 'player';
                 audio.autoplay = true;
 
                 this.audioElement = audio;
             }
 
             const chunks = new Array<any>();
-            if (text[0] === "<") {
-                if (text.indexOf("<speak") !== 0) {
-                    text = "<speak>\n" + text + "\n</speak>\n";
+            if (text[0] === '<') {
+                if (text.indexOf('<speak') !== 0) {
+                    text = '<speak>\n' + text + '\n</speak>\n';
                 }
                 const parser = new DOMParser();
-                const dom = parser.parseFromString(text, "text/xml");
+                const dom = parser.parseFromString(text, 'text/xml');
                 const nodes = dom.documentElement.childNodes;
                 this.processNodes(nodes, chunks);
             } else {
@@ -302,7 +302,7 @@ export namespace Speech {
                 }
             };
 
-            const request = new SpeakRequest(chunks, lang, (speakOp) => { this.lastOperation = speakOp; }, onSpeakingStarted, onSpeakingFinishedWrapper);
+            const request = new SpeakRequest(chunks, lang, speakOp => { this.lastOperation = speakOp; }, onSpeakingStarted, onSpeakingFinishedWrapper);
 
             if (this.speakRequests.length === 0) {
                 this.speakRequests = [request];
@@ -313,7 +313,7 @@ export namespace Speech {
         }
 
         public stopSpeaking() {
-            if (("SpeechSynthesisUtterance" in window) === false) {
+            if (('SpeechSynthesisUtterance' in window) === false) {
                 return;
             }
 
@@ -322,7 +322,7 @@ export namespace Speech {
                     this.audioElement.pause();
                 }
 
-                this.speakRequests.forEach((req) => {
+                this.speakRequests.forEach(req => {
                     req.abandon();
                 });
 
@@ -346,10 +346,10 @@ export namespace Speech {
 
             if (iCurrent < requestContainer.speakChunks.length) {
                 const current = requestContainer.speakChunks[iCurrent];
-                if (typeof current === "number") {
+                if (typeof current === 'number') {
                     setTimeout(moveToNext, current);
                 } else {
-                    if (current.indexOf("http") === 0) {
+                    if (current.indexOf('http') === 0) {
                         const audio = this.audioElement; // document.getElementById('player');
                         audio.src = current;
                         audio.onended = moveToNext;
@@ -390,37 +390,37 @@ export namespace Speech {
             for (let i = 0; i < nodes.length; i++) {
                 const node = nodes[i];
                 switch (node.nodeName) {
-                    case "p":
+                    case 'p':
                         this.processNodes(node.childNodes, output);
                         output.push(250);
                         break;
-                    case "break":
-                        if (node.attributes.getNamedItem("strength")) {
-                            const strength = node.attributes.getNamedItem("strength").nodeValue;
-                            if (strength === "weak") {
+                    case 'break':
+                        if (node.attributes.getNamedItem('strength')) {
+                            const strength = node.attributes.getNamedItem('strength').nodeValue;
+                            if (strength === 'weak') {
                                 // output.push(50);
-                            } else if (strength === "medium") {
+                            } else if (strength === 'medium') {
                                 output.push(50);
-                            } else if (strength === "strong") {
+                            } else if (strength === 'strong') {
                                 output.push(100);
-                            } else if (strength === "x-strong") {
+                            } else if (strength === 'x-strong') {
                                 output.push(250);
                             }
-                        } else if (node.attributes.getNamedItem("time")) {
-                            output.push(JSON.parse(node.attributes.getNamedItem("time").value));
+                        } else if (node.attributes.getNamedItem('time')) {
+                            output.push(JSON.parse(node.attributes.getNamedItem('time').value));
                         }
                         break;
-                    case "audio":
-                        if (node.attributes.getNamedItem("src")) {
-                            output.push(node.attributes.getNamedItem("src").value);
+                    case 'audio':
+                        if (node.attributes.getNamedItem('src')) {
+                            output.push(node.attributes.getNamedItem('src').value);
                         }
                         break;
-                    case "say-as":
-                    case "prosody":  // ToDo: handle via msg.rate
-                    case "emphasis": // ToDo: can probably emulate via prosody + pitch
-                    case "w":
-                    case "phoneme": //
-                    case "voice":
+                    case 'say-as':
+                    case 'prosody':  // ToDo: handle via msg.rate
+                    case 'emphasis': // ToDo: can probably emulate via prosody + pitch
+                    case 'w':
+                    case 'phoneme': //
+                    case 'voice':
                         this.processNodes(node.childNodes, output);
                         break;
                     default:

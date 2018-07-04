@@ -1,6 +1,10 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+    "arrow-parens": [
+      true,
+      "ban-single-arg-parens"
+    ],
     "interface-name": false,
     "max-line-length": false,
     "max-classes-per-file": false,
@@ -8,6 +12,18 @@
     "member-access": false,
     "no-shadowed-variable": false,
     "no-console": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "quotemark": [
+      true,
+      "jsx-double",
+      "single"
+    ],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ]
   }
 }

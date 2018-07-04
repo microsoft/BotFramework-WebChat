@@ -1,4 +1,4 @@
-import { Activity } from "botframework-directlinejs";
+import { Activity } from 'botframework-directlinejs';
 
 export interface FormatOptions {
     showHeader?: boolean; // DEPRECATED: Use "title" instead

@@ -1,18 +1,18 @@
-import * as React from "react";
-import { findDOMNode } from "react-dom";
+import * as React from 'react';
+import { findDOMNode } from 'react-dom';
 
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { Observable } from "rxjs/Observable";
-import { Subscription } from "rxjs/Subscription";
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from "botframework-directlinejs";
-import { Provider } from "react-redux";
-import { getTabIndex } from "./getTabIndex";
-import * as konsole from "./Konsole";
-import { Speech } from "./SpeechModule";
-import { SpeechOptions } from "./SpeechOptions";
-import { ChatActions, createStore, sendMessage } from "./Store";
-import { ActivityOrID, FormatOptions } from "./Types";
+import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
+import { Provider } from 'react-redux';
+import { getTabIndex } from './getTabIndex';
+import * as konsole from './Konsole';
+import { Speech } from './SpeechModule';
+import { SpeechOptions } from './SpeechOptions';
+import { ChatActions, createStore, sendMessage } from './Store';
+import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any;
@@ -27,12 +27,12 @@ export interface ChatProps {
     sendTyping?: boolean;
     showUploadButton?: boolean;
     formatOptions?: FormatOptions;
-    resize?: "none" | "window" | "detect";
+    resize?: 'none' | 'window' | 'detect';
 }
 
-import { History } from "./History";
-import { MessagePane } from "./MessagePane";
-import { Shell, ShellFunctions } from "./Shell";
+import { History } from './History';
+import { MessagePane } from './MessagePane';
+import { Shell, ShellFunctions } from './Shell';
 
 export class Chat extends React.Component<ChatProps, {}> {
 
@@ -60,17 +60,17 @@ export class Chat extends React.Component<ChatProps, {}> {
     constructor(props: ChatProps) {
         super(props);
 
-        konsole.log("BotChat.Chat props", props);
+        konsole.log('BotChat.Chat props', props);
 
         this.store.dispatch<ChatActions>({
-            type: "Set_Locale",
-            locale: props.locale || (window.navigator as any).userLanguage || window.navigator.language || "en",
+            type: 'Set_Locale',
+            locale: props.locale || (window.navigator as any).userLanguage || window.navigator.language || 'en'
         });
 
         if (props.adaptiveCardsHostConfig) {
             this.store.dispatch<ChatActions>({
-                type: "Set_AdaptiveCardsHostConfig",
-                payload: props.adaptiveCardsHostConfig,
+                type: 'Set_AdaptiveCardsHostConfig',
+                payload: props.adaptiveCardsHostConfig
             });
         }
 
@@ -79,19 +79,19 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (props.formatOptions) {
             console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "chatTitle" instead. See https://github.com/Microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#formatoptionsshowheader-is-deprecated-use-chattitle-instead.');
 
-            if (typeof props.formatOptions.showHeader !== "undefined" && typeof props.chatTitle === "undefined") {
+            if (typeof props.formatOptions.showHeader !== 'undefined' && typeof props.chatTitle === 'undefined') {
                 chatTitle = props.formatOptions.showHeader;
             }
         }
 
-        if (typeof chatTitle !== "undefined") {
-            this.store.dispatch<ChatActions>({ type: "Set_Chat_Title", chatTitle });
+        if (typeof chatTitle !== 'undefined') {
+            this.store.dispatch<ChatActions>({ type: 'Set_Chat_Title', chatTitle });
         }
 
-        this.store.dispatch<ChatActions>({ type: "Toggle_Upload_Button", showUploadButton: props.showUploadButton !== false });
+        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton !== false });
 
         if (props.sendTyping) {
-            this.store.dispatch<ChatActions>({ type: "Set_Send_Typing", sendTyping: props.sendTyping });
+            this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
         }
 
         if (props.speechOptions) {
@@ -103,13 +103,13 @@ export class Chat extends React.Component<ChatProps, {}> {
     private handleIncomingActivity(activity: Activity) {
         const state = this.store.getState();
         switch (activity.type) {
-            case "message":
-                this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? "Receive_Sent_Message" : "Receive_Message", activity });
+            case 'message':
+                this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
                 break;
 
-            case "typing":
+            case 'typing':
                 if (activity.from.id !== state.connection.user.id) {
-                    this.store.dispatch<ChatActions>({ type: "Show_Typing", activity });
+                    this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity });
                 }
                 break;
         }
@@ -117,9 +117,9 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private setSize() {
         this.store.dispatch<ChatActions>({
-            type: "Set_Size",
+            type: 'Set_Size',
             width: this.chatviewPanelRef.offsetWidth,
-            height: this.chatviewPanelRef.offsetHeight,
+            height: this.chatviewPanelRef.offsetHeight
         });
     }
 
@@ -141,7 +141,7 @@ export class Chat extends React.Component<ChatProps, {}> {
             evt.altKey
             || evt.ctrlKey
             || evt.metaKey
-            || (!inputtableKey(evt.key) && evt.key !== "Backspace")
+            || (!inputtableKey(evt.key) && evt.key !== 'Backspace')
         ) {
             // Ignore if one of the utility key (except SHIFT) is pressed
             // E.g. CTRL-C on a link in one of the message should not jump to chat box
@@ -151,7 +151,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         if (
             target === findDOMNode(this.historyRef)
-            || typeof tabIndex !== "number"
+            || typeof tabIndex !== 'number'
             || tabIndex < 0
         ) {
             evt.stopPropagation();
@@ -190,33 +190,33 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
-        if (this.props.resize === "window") {
-            window.addEventListener("resize", this.resizeListener);
+        if (this.props.resize === 'window') {
+            window.addEventListener('resize', this.resizeListener);
         }
 
-        this.store.dispatch<ChatActions>({ type: "Start_Connection", user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe((connectionStatus) => {
+        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
                 if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
                     const refGrammarId = botConnection.referenceGrammarId;
                     if (refGrammarId) {
                         this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
                     }
                 }
-                this.store.dispatch<ChatActions>({ type: "Connection_Change", connectionStatus });
-            },
+                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
+            }
         );
 
         this.activitySubscription = botConnection.activity$.subscribe(
-            (activity) => this.handleIncomingActivity(activity),
-            (error) => konsole.log("activity$ error", error),
+            activity => this.handleIncomingActivity(activity),
+            error => konsole.log('activity$ error', error)
         );
 
         if (this.props.selectedActivity) {
-            this.selectedActivitySubscription = this.props.selectedActivity.subscribe((activityOrID) => {
+            this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
                 this.store.dispatch<ChatActions>({
-                    type: "Select_Activity",
-                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find((activity) => activity.id === activityOrID.id),
+                    type: 'Select_Activity',
+                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
                 });
             });
         }
@@ -231,28 +231,28 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (this.botConnection) {
             this.botConnection.end();
         }
-        window.removeEventListener("resize", this.resizeListener);
+        window.removeEventListener('resize', this.resizeListener);
     }
 
     componentWillReceiveProps(nextProps: ChatProps) {
         if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
             this.store.dispatch<ChatActions>({
-                type: "Set_AdaptiveCardsHostConfig",
-                payload: nextProps.adaptiveCardsHostConfig,
+                type: 'Set_AdaptiveCardsHostConfig',
+                payload: nextProps.adaptiveCardsHostConfig
             });
         }
 
         if (this.props.showUploadButton !== nextProps.showUploadButton) {
             this.store.dispatch<ChatActions>({
-                type: "Toggle_Upload_Button",
-                showUploadButton: nextProps.showUploadButton,
+                type: 'Toggle_Upload_Button',
+                showUploadButton: nextProps.showUploadButton
             });
         }
 
         if (this.props.chatTitle !== nextProps.chatTitle) {
             this.store.dispatch<ChatActions>({
-                type: "Set_Chat_Title",
-                chatTitle: nextProps.chatTitle,
+                type: 'Set_Chat_Title',
+                chatTitle: nextProps.chatTitle
             });
         }
     }
@@ -264,7 +264,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     render() {
         const state = this.store.getState();
-        konsole.log("BotChat.Chat state", state);
+        konsole.log('BotChat.Chat state', state);
 
         // only render real stuff after we know our dimensions
         return (
@@ -277,7 +277,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     {
                         !!state.format.chatTitle &&
                             <div className="wc-header">
-                                <span>{ typeof state.format.chatTitle === "string" ? state.format.chatTitle : state.format.strings.title }</span>
+                                <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
                             </div>
                     }
                     <MessagePane>
@@ -288,7 +288,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     </MessagePane>
                     <Shell ref={ this._saveShellRef } />
                     {
-                        this.props.resize === "detect" &&
+                        this.props.resize === 'detect' &&
                             <ResizeDetector onresize={ this.resizeListener } />
                     }
                 </div>
@@ -303,42 +303,42 @@ export const doCardAction = (
     botConnection: IBotConnection,
     from: User,
     locale: string,
-    sendMessage: (value: string, user: User, locale: string) => void,
+    sendMessage: (value: string, user: User, locale: string) => void
 ): IDoCardAction => (
     type,
-    actionValue,
+    actionValue
 ) => {
 
-    const text = (typeof actionValue === "string") ? actionValue as string : undefined;
-    const value = (typeof actionValue === "object") ? actionValue as object : undefined;
+    const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
+    const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
 
     switch (type) {
-        case "imBack":
-            if (typeof text === "string") {
+        case 'imBack':
+            if (typeof text === 'string') {
                 sendMessage(text, from, locale);
             }
             break;
 
-        case "postBack":
+        case 'postBack':
             sendPostBack(botConnection, text, value, from, locale);
             break;
 
-        case "call":
-        case "openUrl":
-        case "playAudio":
-        case "playVideo":
-        case "showImage":
-        case "downloadFile":
+        case 'call':
+        case 'openUrl':
+        case 'playAudio':
+        case 'playVideo':
+        case 'showImage':
+        case 'downloadFile':
             window.open(text);
             break;
-        case "signin":
-            const loginWindow =  window.open();
+        case 'signin':
+            const loginWindow = window.open();
             if (botConnection.getSessionId)  {
-                botConnection.getSessionId().subscribe((sessionId) => {
-                    konsole.log("received sessionId: " + sessionId);
-                    loginWindow.location.href = text + encodeURIComponent("&code_challenge=" + sessionId);
-                }, (error) => {
-                    konsole.log("failed to get sessionId", error);
+                botConnection.getSessionId().subscribe(sessionId => {
+                    konsole.log('received sessionId: ' + sessionId);
+                    loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
+                }, error => {
+                    konsole.log('failed to get sessionId', error);
                 });
             } else {
                 loginWindow.location.href = text;
@@ -346,43 +346,53 @@ export const doCardAction = (
             break;
 
         default:
-            konsole.log("unknown button type", type);
+            konsole.log('unknown button type', type);
         }
 };
 
 export const sendPostBack = (botConnection: IBotConnection, text: string, value: object, from: User, locale: string) => {
     botConnection.postActivity({
-        type: "message",
+        type: 'message',
         text,
         value,
         from,
-        locale,
+        locale
     })
-    .subscribe((id) => {
-        konsole.log("success sending postBack", id);
-    }, (error) => {
-        konsole.log("failed to send postBack", error);
-    });
+    .subscribe(
+        id => konsole.log('success sending postBack', id),
+        error => konsole.log('failed to send postBack', error)
+    );
 };
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
-    if (value !== undefined && value !== null && (typeof value !== "string" || value.length > 0)) {
+    if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0)) {
         return renderer(value);
     }
 };
 
 export const classList = (...args: Array<string | boolean>) => {
-    return args.filter(Boolean).join(" ");
+    return args.filter(Boolean).join(' ');
 };
 
 // note: container of this element must have CSS position of either absolute or relative
 const ResizeDetector = (props: {
-    onresize: () => void,
+    onresize: () => void
 }) =>
     // adapted to React from https://github.com/developit/simple-element-resize-detector
     <iframe
-        style={ { position: "absolute", left: "0", top: "-100%", width: "100%", height: "100%", margin: "1px 0 0", border: "none", opacity: 0, visibility: "hidden", pointerEvents: "none" } }
-        ref={ (frame) => {
+        style={{
+            border: 'none',
+            height: '100%',
+            left: '0',
+            margin: '1px 0 0',
+            opacity: 0,
+            pointerEvents: 'none',
+            position: 'absolute',
+            top: '-100%',
+            visibility: 'hidden',
+            width: '100%'
+        }}
+        ref={ frame => {
             if (frame) {
                 frame.contentWindow.onresize = props.onresize;
             }
@@ -394,11 +404,11 @@ const ResizeDetector = (props: {
 // 1. evt.key.length === 1 (e.g. "1", "A", "=" keys), or
 // 2. evt.key is one of the map keys below (e.g. "Add" will insert "+", "Decimal" will insert ".")
 const INPUTTABLE_KEY: { [key: string]: string } = {
-    Add: "+",      // Numpad add key
-    Decimal: ".",  // Numpad decimal key
-    Divide: "/",   // Numpad divide key
-    Multiply: "*", // Numpad multiply key
-    Subtract: "-",  // Numpad subtract key
+    Add: '+',      // Numpad add key
+    Decimal: '.',  // Numpad decimal key
+    Divide: '/',   // Numpad divide key
+    Multiply: '*', // Numpad multiply key
+    Subtract: '-'  // Numpad subtract key
 };
 
 function inputtableKey(key: string) {

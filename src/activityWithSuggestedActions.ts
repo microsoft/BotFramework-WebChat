@@ -1,4 +1,4 @@
-import { Activity, Message } from "botframework-directlinejs";
+import { Activity, Message } from 'botframework-directlinejs';
 
 export function activityWithSuggestedActions(activities: Activity[]) {
     if (!activities || activities.length === 0) {
@@ -7,7 +7,7 @@ export function activityWithSuggestedActions(activities: Activity[]) {
 
     const lastActivity = activities[activities.length - 1];
 
-    if (lastActivity.type === "message"
+    if (lastActivity.type === 'message'
         && lastActivity.suggestedActions
         && lastActivity.suggestedActions.actions.length > 0
     ) {
