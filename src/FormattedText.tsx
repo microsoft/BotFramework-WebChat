@@ -2,34 +2,35 @@ import * as MarkdownIt from 'markdown-it';
 import * as React from 'react';
 
 export interface IFormattedTextProps {
-    text: string,
-    format: string,
-    onImageLoad: () => void
+    text: string;
+    format: string;
+    onImageLoad: () => void;
 }
 
 export const FormattedText = (props: IFormattedTextProps) => {
-    if (!props.text || props.text === '')
+    if (!props.text || props.text === '') {
         return null;
+    }
 
     switch (props.format) {
-        case "xml":
-        case "plain":
+        case 'xml':
+        case 'plain':
             return renderPlainText(props.text);
         default:
             return renderMarkdown(props.text, props.onImageLoad);
     }
-}
+};
 
 const renderPlainText = (text: string) => {
     const lines = text.replace('\r', '').split('\n');
     const elements = lines.map((line, i) => <span key={i}>{line}<br /></span>);
     return <span className="format-plain">{elements}</span>;
-}
+};
 
 const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
 
-//configure MarkdownIt to open links in new tab
-//from https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
+// configure MarkdownIt to open links in new tab
+// from https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 
 // Remember old renderer, if overriden, or proxy to default renderer
 const defaultRender = markdownIt.renderer.rules.link_open || ((tokens, idx, options, env, self) => {
@@ -54,6 +55,7 @@ const renderMarkdown = (
     text: string,
     onImageLoad: () => void
 ) => {
+    // tslint:disable-next-line:variable-name
     let __html;
 
     if (text.trim()) {
@@ -73,4 +75,4 @@ const renderMarkdown = (
     }
 
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
-}
+};

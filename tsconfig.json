@@ -13,11 +13,13 @@
         "target": "es5",
         "skipLibCheck": true,
         "sourceMap": true,
-        "inlineSources": true
+        "inlineSources": true,
+        "strictNullChecks": false
     },
     "files": [
         "src/adaptivecards-hostconfig.d.ts",
         "src/BotChat.ts",
+        "src/CognitiveServices/lib.ts",
         "src/jspeech.d.ts",
         "src/simple-update-in.d.ts"
     ]

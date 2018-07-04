@@ -1,27 +1,27 @@
+import { Activity, CardAction, Message, User } from 'botframework-directlinejs';
 import * as React from 'react';
-import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
-import { ChatState } from './Store';
 import { connect } from 'react-redux';
-import { HScroll } from './HScroll';
-import { classList, doCardAction, IDoCardAction } from './Chat';
-import * as konsole from './Konsole';
-import { ChatActions, sendMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
+import { classList, doCardAction, IDoCardAction } from './Chat';
+import { HScroll } from './HScroll';
+import * as konsole from './Konsole';
+import { ChatState } from './Store';
+import { ChatActions, sendMessage } from './Store';
 
 export interface MessagePaneProps {
-    activityWithSuggestedActions: Message,
+    activityWithSuggestedActions: Message;
 
-    takeSuggestedAction: (message: Message) => any,
+    takeSuggestedAction: (message: Message) => any;
 
-    children: React.ReactNode,
-    doCardAction: IDoCardAction
+    children: React.ReactNode;
+    doCardAction: IDoCardAction;
 }
 
 const MessagePaneView = (props: MessagePaneProps) =>
     <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
         { props.children }
         <div className="wc-suggested-actions">
-            <SuggestedActions { ... props }/>
+            <SuggestedActions { ...props } />
         </div>
     </div>;
 
@@ -32,8 +32,8 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 
     actionClick(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
 
-        //"stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
-        if (!this.props.activityWithSuggestedActions) return;
+        // "stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
+        if (!this.props.activityWithSuggestedActions) { return; }
 
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
         this.props.doCardAction(cardAction.type, cardAction.value);
@@ -41,12 +41,12 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
     }
 
     shouldComponentUpdate(nextProps: MessagePaneProps) {
-        //update only when there are actions. We want the old actions to remain displayed as it animates down.
+        // update only when there are actions. We want the old actions to remain displayed as it animates down.
         return !!nextProps.activityWithSuggestedActions;
     }
 
     render() {
-        if (!this.props.activityWithSuggestedActions) return null;
+        if (!this.props.activityWithSuggestedActions) { return null; }
 
         return (
             <HScroll
@@ -56,7 +56,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             >
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
-                        <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
+                        <button type="button" onClick={e => this.actionClick(e, action) } title={ action.title }>
                             { action.title }
                         </button>
                     </li>
@@ -87,6 +87,6 @@ export const MessagePane = connect(
         // from ownProps
         children: ownProps.children,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage)
     })
 )(MessagePaneView);

@@ -1,28 +1,28 @@
-import * as React from 'react';
-import { ChatState, FormatState } from './Store';
 import { User } from 'botframework-directlinejs';
+import * as React from 'react';
+import { connect, Dispatch } from 'react-redux';
 import { classList } from './Chat';
-import { Dispatch, connect } from 'react-redux';
+import { Speech } from './SpeechModule';
+import { ChatState, FormatState } from './Store';
+import { ChatActions, ListeningState, sendFiles, sendMessage } from './Store';
 import { Strings } from './Strings';
-import { Speech } from './SpeechModule'
-import { ChatActions, ListeningState, sendMessage, sendFiles } from './Store';
 
 interface Props {
-    inputText: string,
-    strings: Strings,
-    listeningState: ListeningState,
-    showUploadButton: boolean
+    inputText: string;
+    strings: Strings;
+    listeningState: ListeningState;
+    showUploadButton: boolean;
 
-    onChangeText: (inputText: string) => void
+    onChangeText: (inputText: string) => void;
 
-    sendMessage: (inputText: string) => void,
-    sendFiles: (files: FileList) => void,
-    stopListening: () => void,
-    startListening: () => void
+    sendMessage: (inputText: string) => void;
+    sendFiles: (files: FileList) => void;
+    stopListening: () => void;
+    startListening: () => void;
 }
 
 export interface ShellFunctions {
-    focus: (appendKey?: string) => void
+    focus: (appendKey?: string) => void;
 }
 
 class ShellContainer extends React.Component<Props> implements ShellFunctions {
@@ -66,7 +66,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         this.textInput.focus();
     }
 
-    private onTextInputFocus(){
+    private onTextInputFocus() {
         if (this.props.listeningState === ListeningState.STARTED) {
             this.props.stopListening();
         }
@@ -198,7 +198,7 @@ export const Shell = connect(
         listeningState: state.shell.listeningState
     }), {
         // passed down to ShellContainer
-        onChangeText: (input: string) => ({ type: 'Update_Input', input, source: "text" } as ChatActions),
+        onChangeText: (input: string) => ({ type: 'Update_Input', input, source: 'text' } as ChatActions),
         stopListening:  () => ({ type: 'Listening_Stopping' }),
         startListening:  () => ({ type: 'Listening_Starting' }),
         // only used to create helper functions below

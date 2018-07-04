@@ -1,12 +1,12 @@
-import { Speech, Func, Action } from '../SpeechModule'
-import * as konsole from '../Konsole';
-import * as CognitiveSpeech from 'microsoft-speech-browser-sdk/Speech.Browser.Sdk'
+import * as CognitiveSpeech from 'microsoft-speech-browser-sdk/Speech.Browser.Sdk';
 import updateIn from 'simple-update-in';
+import * as konsole from '../Konsole';
+import { Action, Func, Speech } from '../SpeechModule';
 
 export interface ISpeechContextDgiGroup {
     Type: string;
     Hints?: { ReferenceGrammar: string };
-    Items?: { Text: string }[];
+    Items?: Array<{ Text: string }>;
 }
 
 export interface ISpeechContext {
@@ -14,10 +14,10 @@ export interface ISpeechContext {
 }
 
 export interface ICognitiveServicesSpeechRecognizerProperties {
-    locale?: string,
-    subscriptionKey?: string,
-    fetchCallback?: (authFetchEventId: string) => Promise<string>,
-    fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>
+    locale?: string;
+    subscriptionKey?: string;
+    fetchCallback?: (authFetchEventId: string) => Promise<string>;
+    fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>;
 }
 
 export class SpeechRecognizer implements Speech.ISpeechRecognizer {
@@ -40,11 +40,11 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
         const format = CognitiveSpeech.SpeechResultFormat.Simple;
         const locale = properties.locale || 'en-US';
 
-        let recognizerConfig = new CognitiveSpeech.RecognizerConfig(
+        const recognizerConfig = new CognitiveSpeech.RecognizerConfig(
             new CognitiveSpeech.SpeechConfig(
                 new CognitiveSpeech.Context(
-                    new CognitiveSpeech.OS(navigator.userAgent, "Browser", null),
-                    new CognitiveSpeech.Device("WebChat", "WebChat", "1.0.00000"))),
+                    new CognitiveSpeech.OS(navigator.userAgent, 'Browser', null),
+                    new CognitiveSpeech.Device('WebChat', 'WebChat', '1.0.00000'))),
             recognitionMode,        // Speech.RecognitionMode.Interactive  (Options - Interactive/Conversation/Dictation>)
             locale,                 // Supported laguages are specific to each recognition mode. Refer to docs.
             format
@@ -56,28 +56,34 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
         } else if (properties.fetchCallback && properties.fetchOnExpiryCallback) {
             authentication = new CognitiveSpeech.CognitiveTokenAuthentication(
                 (authFetchEventId: string) => {
-                    let d = new CognitiveSpeech.Deferred<string>();
-                    this.properties.fetchCallback(authFetchEventId).then(value => d.Resolve(value), err => d.Reject(err));
+                    const d = new CognitiveSpeech.Deferred<string>();
+                    this.properties.fetchCallback(authFetchEventId).then(
+                        value => d.Resolve(value),
+                        err => d.Reject(err)
+                    );
                     return d.Promise();
                 },
                 (authFetchEventId: string) => {
-                    let d = new CognitiveSpeech.Deferred<string>();
-                    this.properties.fetchOnExpiryCallback(authFetchEventId).then(value => d.Resolve(value), err => d.Reject(err));
+                    const d = new CognitiveSpeech.Deferred<string>();
+                    this.properties.fetchOnExpiryCallback(authFetchEventId).then(
+                        value => d.Resolve(value),
+                        err => d.Reject(err)
+                    );
                     return d.Promise();
                 }
             );
         } else {
-            throw 'Error: The CognitiveServicesSpeechRecognizer requires either a subscriptionKey or a fetchCallback and fetchOnExpiryCallback.';
+            throw new Error('Error: The CognitiveServicesSpeechRecognizer requires either a subscriptionKey or a fetchCallback and fetchOnExpiryCallback.');
         }
 
-        if(window.navigator.getUserMedia){
+        if (window.navigator.getUserMedia) {
             this.actualRecognizer = CognitiveSpeech.CreateRecognizer(recognizerConfig, authentication);
-        }
-        else{
-            console.error("This browser does not support speech recognition");
+        } else {
+            console.error('This browser does not support speech recognition');
         }
     }
 
+    // tslint:disable-next-line:no-empty
     public warmup() {
     }
 
@@ -90,7 +96,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             this.log('ERROR: no recognizer?');
             return;
         }
-        let eventhandler = (event: any) => {
+        const eventhandler = (event: any) => {
             this.log(event.Name);
             switch (event.Name) {
                 case 'RecognitionTriggeredEvent':
@@ -102,19 +108,19 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                     break;
                 case 'RecognitionStartedEvent':
                     if (this.onAudioStreamingToService) {
-                        this.onAudioStreamingToService()
+                        this.onAudioStreamingToService();
                     }
                     this.isStreamingToService = true;
                     break;
                 case 'SpeechHypothesisEvent':
-                    let hypothesisEvent = event as CognitiveSpeech.SpeechHypothesisEvent;
+                    const hypothesisEvent = event as CognitiveSpeech.SpeechHypothesisEvent;
                     this.log('Hypothesis Result: ' + hypothesisEvent.Result.Text);
                     if (this.onIntermediateResult) {
                         this.onIntermediateResult(hypothesisEvent.Result.Text);
                     }
                     break;
                 case 'SpeechSimplePhraseEvent':
-                    let simplePhraseEvent = event as CognitiveSpeech.SpeechSimplePhraseEvent;
+                    const simplePhraseEvent = event as CognitiveSpeech.SpeechSimplePhraseEvent;
                     if (CognitiveSpeech.RecognitionStatus[simplePhraseEvent.Result.RecognitionStatus] as any === CognitiveSpeech.RecognitionStatus.Success) {
                         if (this.onFinalResult) {
                             this.onFinalResult(simplePhraseEvent.Result.DisplayText);
@@ -130,9 +136,9 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                     this.isStreamingToService = false;
                     break;
                 default:
-                    this.log(event.Name + " is unexpected");
+                    this.log(event.Name + ' is unexpected');
             }
-        }
+        };
 
         let speechContext: ISpeechContext;
 
@@ -153,7 +159,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
         return this.actualRecognizer.Recognize(eventhandler, speechContext && JSON.stringify(speechContext));
     }
 
-    public speechIsAvailable(){
+    public speechIsAvailable() {
         return this.actualRecognizer != null;
     }
 

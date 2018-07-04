@@ -10,8 +10,10 @@ export function getTabIndex(element: HTMLElement) {
         const tabIndexAttribute = element.attributes.getNamedItem('tabindex');
 
         if (!tabIndexAttribute || !tabIndexAttribute.specified) {
+            // tslint:disable-next-line:no-bitwise
             return ~IE_FOCUSABLE_LIST.indexOf(element.nodeName.toLowerCase()) ? 0 : null;
         }
+        // tslint:disable-next-line:no-bitwise
     } else if (!~tabIndex) {
         const attr = element.getAttribute('tabindex');
 
@@ -21,4 +23,4 @@ export function getTabIndex(element: HTMLElement) {
     }
 
     return tabIndex;
-};
+}
