@@ -1,6 +1,7 @@
 import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
 import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from 'adaptivecards/lib/schema';
 import { CardAction } from 'botframework-directlinejs/built/directLine';
+import * as MarkdownIt from 'markdown-it';
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
@@ -9,7 +10,6 @@ import * as adaptivecardsHostConfig from '../adaptivecards-hostconfig.json';
 import { classList, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { AdaptiveCardsState, ChatState } from './Store';
-import * as MarkdownIt from 'markdown-it';
 
 export interface Props {
     className?: string;
