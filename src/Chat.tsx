@@ -300,7 +300,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export interface IDoCardAction {
-    (type: CardActionTypes, value: string | object, buttonTitle?: string): void;
+    (type: CardActionTypes | 'shareLocation', value: string | object, buttonTitle?: string): void;
 }
 
 export const doCardAction = (
@@ -326,6 +326,13 @@ export const doCardAction = (
         case "postBack":
             sendPostBack(botConnection, text, value, from, locale);
             addMessage(buttonTitle, from, locale);
+            break;
+
+        case "shareLocation":
+            sendShareLocationMessage(
+                () => sendPostBack(botConnection, text, value, from, locale),
+                () => addMessage(buttonTitle, from, locale)
+            );
             break;
 
         case "call":
@@ -378,6 +385,19 @@ export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Eleme
 
 export const classList = (...args:(string | boolean)[]) => {
     return args.filter(Boolean).join(' ');
+}
+
+export const sendShareLocationMessage = (sendPostBack: Function, addMessage: Function) => {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            sendPostBack();
+            addMessage();
+        });
+    } else {
+        /* geolocation IS NOT available */
+    }
+
+
 }
 
 // note: container of this element must have CSS position of either absolute or relative
