@@ -2,6 +2,12 @@
 var carlaBotConfigs = {};
 
 var carlaBot = (function () {
+  var __carlaChatBotStatesKeys = {
+    LOCAL_STORAGE: '__kian_chat_state',
+    OPENED: 'opened',
+    COLLAPSED: 'collapsed'
+  }
+
   // The app default which will handle the user invalid configs
   var __carlaBotDefaults = {
     CHAT_CONTAINER_DEFAULT_WIDTH: 500,
@@ -12,31 +18,44 @@ var carlaBot = (function () {
     CHAT_CONTAINER_DEFAULT_PLACEMENT: 'left',
     KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT: 'Chat with Kian',
     KIAN_CHAT_DEFAULT_WIDGET_TEXT: 'Let\'s chat!',
-    KIAN_CHAT_LOCAL_STORAGE_STATE_KEY: '__kian_chat_state',
-    CHAT_STATE_OPEN: 'opened',
-    CHAT_STATE_COLLAPSED: 'collapsed'
+    KIAN_DEFAULT_CHAT_STATE: __carlaChatBotStatesKeys.COLLAPSED
   }
 
   // The chat state controller
   var __carlaBotStateController = (function () {
     var _currentState;
 
-    function setInitialState(initialState, isSmallScreen) {
-      _currentState = initialState;
+    function _isValidState(state) {
+      return state && (state === __carlaChatBotStatesKeys.OPENED || state === __carlaChatBotStatesKeys.COLLAPSED);
+    }
 
-      if (localStorage) {
-        _currentState = localStorage.getItem(__carlaBotDefaults.KIAN_CHAT_LOCAL_STORAGE_STATE_KEY) || initialState;
+    function setInitialState(isSmallScreen) {
+      var configuredInitialState = carlaBotConfigs.CHAT_INITIAL_STATE;
+
+      if (_isValidState(configuredInitialState)) {
+        _currentState = configuredInitialState;
       }
 
-      if (isSmallScreen || !_currentState || (_currentState !== __carlaBotDefaults.CHAT_STATE_OPEN && _currentState !== __carlaBotDefaults.CHAT_STATE_COLLAPSED)) {
-        _currentState = __carlaBotDefaults.CHAT_STATE_COLLAPSED;
+      if (localStorage) {
+        var localStorageState = localStorage.getItem(__carlaChatBotStatesKeys.LOCAL_STORAGE);
+
+        if (_isValidState(localStorageState)) {
+          _currentState = localStorageState;
+        }
+      }
+
+      if (isSmallScreen || !_isValidState(_currentState)) {
+        _currentState = __carlaBotDefaults.KIAN_DEFAULT_CHAT_STATE;
       }
     }
 
     function setState(state) {
+      if (!_isValidState(state)) {
+        return;
+      }
       _currentState = state;
       if (localStorage) {
-        localStorage.setItem(__carlaBotDefaults.KIAN_CHAT_LOCAL_STORAGE_STATE_KEY, state);
+        localStorage.setItem(__carlaChatBotStatesKeys.LOCAL_STORAGE, state);
       }
     }
 
@@ -55,7 +74,7 @@ var carlaBot = (function () {
       var state = __carlaBotStateController.getState();
       var height;
 
-      if (state === __carlaBotDefaults.CHAT_STATE_OPEN || whenOpened) {
+      if (state === __carlaChatBotStatesKeys.OPENED || whenOpened) {
         if (!visibleHeight || isNaN(visibleHeight)) {
           visibleHeight = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEIGHT;
         }
@@ -132,7 +151,7 @@ var carlaBot = (function () {
       var chatWidget = document.createElement('div');
       chatWidget.className = '__carla-chat-teaser';
       chatWidgetStyle = [
-        'display: ' + (state === __carlaBotDefaults.CHAT_STATE_OPEN
+        'display: ' + (state === __carlaChatBotStatesKeys.OPENED
           ? 'none'
           : 'block'),
         getChatWindowPlacement()
@@ -154,7 +173,7 @@ var carlaBot = (function () {
   // Carla bot event habdlers
   var __carlaEventHandlers = (function () {
     var _closeChat = function (chatContainer, chatWidget) {
-      __carlaBotStateController.setState(__carlaBotDefaults.CHAT_STATE_COLLAPSED);
+      __carlaBotStateController.setState(__carlaChatBotStatesKeys.COLLAPSED);
       chatContainer.style.height = __carlaBotHelpers.getChatHeight();
       chatWidget.style.display = 'block';
     };
@@ -167,14 +186,14 @@ var carlaBot = (function () {
       if (!chatContainer.contains(chatIframe)) {
         chatContainer.appendChild(chatIframe);
       }
-      __carlaBotStateController.setState(__carlaBotDefaults.CHAT_STATE_OPEN);
+      __carlaBotStateController.setState(__carlaChatBotStatesKeys.OPENED);
       chatWidget.style.display = 'none';
       chatContainer.style.height = __carlaBotHelpers.getChatHeight();
     };
 
     function chatHeaderClick(chatContainer, chatWidget, chatIframe, isSmallScreen) {
       var currentState = __carlaBotStateController.getState();
-      if (currentState === __carlaBotDefaults.CHAT_STATE_OPEN) {
+      if (currentState === __carlaChatBotStatesKeys.OPENED) {
         _closeChat(chatContainer, chatWidget);
       }
     };
@@ -203,9 +222,9 @@ var carlaBot = (function () {
 
   var _isSmallScreen = document.documentElement.clientWidth <= 768;
 
-  function initCarlaBot(botUrl, initialState = '') {
+  function initCarlaBot(botUrl) {
 
-    __carlaBotStateController.setInitialState(initialState, _isSmallScreen);
+    __carlaBotStateController.setInitialState(_isSmallScreen);
 
     var chatContainer = __carlaBotHelpers.createChatContainer();
 
@@ -214,7 +233,7 @@ var carlaBot = (function () {
 
     var chatIFrame = __carlaBotHelpers.createIFrame(botUrl);
 
-    if (__carlaBotStateController.getState() === __carlaBotDefaults.CHAT_STATE_OPEN) {
+    if (__carlaBotStateController.getState() === __carlaChatBotStatesKeys.OPENED) {
       chatContainer.appendChild(chatIFrame);
     }
 
