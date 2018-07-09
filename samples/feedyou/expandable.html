@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #000;
+      font-family: Helvetica, Arial;
+      padding: 30px;
+    }
+
+    h1 {
+      font-family: "Helvetica";
+      color: #e51836;
+    }
+
+    body>p {
+      color: #fff;
+      width: 600px;
+    }
+
+    .header h1 {
+      color: #e51836;
+    }
+
+    #bot-wrapper {
+      background-color: #fff;
+      width: 450px;
+      height: 700px;
+      max-height: 75%;
+      position: fixed;
+      right: 100px;
+      bottom: 0px;
+    }
+
+    #bot-wrapper.collapsed #bot {
+    	display: none;
+    }
+
+    #bot-wrapper.collapsed {
+    	height: auto;
+    }
+
+    #bot-header {
+      color: white;
+      background-color: #e51836;
+      height: 19px;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .wc-chatview-panel {
+    	top: 35px;
+    }
+
+    .wc-message-groups {
+    	top: 0px;
+    }
+
+    .wc-header {
+      display: none;
+    }
+
+    .wc-card button {
+      color: #e51836;
+    }
+
+    .wc-card button:hover {
+      border-color: #e51836;
+      color: #e51836;
+    }
+
+    .wc-card button:active {
+      background-color: #e51836;
+      border-color: #e51836;
+      color: #ffffff;
+    }
+
+    .wc-message-from-me .wc-message-content {
+      background-color: #e51836;
+    }
+
+    .wc-message-from-me svg.wc-message-callout path {
+      fill: #e51836;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div id="bot-wrapper" class="collapsed">
+    <div id="bot-header">
+      Click here for more information!
+    </div>
+    <div id="bot"></div>
+  </div>
+  <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+  <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
+  <script>
+    function makeid() {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      for (var i = 0; i < 11; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    }
+
+    var userId = makeid();
+    $(function() {
+    	$('#bot-header').click(function() {
+    		$('#bot-wrapper').toggleClass('collapsed')
+
+    		if ($('#bot').is(':empty')) {
+    			$('#bot-header').html('Chatbot')
+	    		BotChat.App({
+			      directLine: { secret: '...' },
+			      user: { id: userId, name: 'User' },
+			      bot: { id: 'feedbot-...', name: '...' },
+            showUploadButton: false,
+            resize: 'detect',    
+            locale: 'cs',
+			    }, document.getElementById("bot"));
+	    	}
+    	})
+    })
+
+  </script>
+</body>
+
+</html>
