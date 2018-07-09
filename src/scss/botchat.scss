@@ -90,6 +90,7 @@
                 display: inline-block;
                 margin: 2px;
                 max-width: 40%;
+                padding-right: 5px;
 
                 button {
                     background-color: #fff;
@@ -137,7 +138,7 @@
         }
 
         button.scroll svg {
-            fill: $c01;
+            fill: $c08;
 
             //TODO: use proper svg coords in the path data
             path {
@@ -147,10 +148,22 @@
 
         button.scroll.previous {
             left: 0;
+            margin-right: 0;
+            background: #fff;
+            border-radius: 0;
+            border: 1px solid #e5e5e5;
+            border-left: 0;
+            border-bottom: 0;
         }
 
         button.scroll.next {
             right: 0;
+            margin-right: 0;
+            background: #fff;
+            border-radius: 0;
+            border: 1px solid #e5e5e5;
+            border-right: 0;
+            border-bottom: 0;
         }
     }
 
@@ -574,6 +587,7 @@
           width: 28px;
           height: 28px;
           box-sizing: border-box;
+          margin-top: 8px;
           // border: 1px solid rgba(0,0,0,.1);
         }
     }
@@ -593,13 +607,15 @@
 /* console */
 
     .wc-console {
-        border: 5px solid $c_chrome;
+        //border: 5px solid $c_chrome;
+        border-top: 1px solid $c_chrome;
         bottom: 0;
         box-sizing: border-box;
         height: $consoleHeight;
         left: 0;
         position: absolute;
         right: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .09);
 
         > .wc-upload,
         > .wc-textbox,
@@ -902,5 +918,12 @@
     cursor: pointer;
     transition: all ease-out .4s;
 
+  }
+}
+
+.wc-shellinput {
+  font-weight: 300;
+  &::placeholder {
+    color: #bbb;
   }
 }
