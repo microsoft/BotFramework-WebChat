@@ -1,23 +1,17 @@
 ;
-var carlaBotConfigs = {
-  CHAT_CONTAINER_PLACEMENT: 'left',
-  CHAT_CONTAINER_OFFSET: 10,
-  CHAT_CONTAINER_WIDTH: 400,
-  CHAT_CONTAINER_VISIBLE_HEIGHT: 500,
-  KIAN_CHAT_CONTAINER_HEADER_TEXT: 'Chat with Kian',
-  KIAN_CHAT_WIDGET_TEXT: 'Let\'s chat!'
-}
+var carlaBotConfigs = {};
 
 var carlaBot = (function () {
-  // The app default whicl will handle the user invalid configs
+  // The app default which will handle the user invalid configs
   var __carlaBotDefaults = {
-    CHAT_CONTAINER_DEFAULT_WIDTH: 400,
-    CHAT_CONTAINER_DEFAULT_HEIGHT: 500,
+    CHAT_CONTAINER_DEFAULT_WIDTH: 500,
     CHAT_CONTAINER_DEFAULT_OFFSET: 10,
-    CHAT_CONTAINER_DEFAULT_VISIBLE_HEIGHT: 500,
+    CHAT_CONTAINER_DEFAULT_HEIGHT: 500,
     CHAT_CONTAINER_DEFAULT_HIDDEN_HEIGHT: 0,
     CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT: 40,
     CHAT_CONTAINER_DEFAULT_PLACEMENT: 'left',
+    KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT: 'Chat with Kian',
+    KIAN_CHAT_DEFAULT_WIDGET_TEXT: 'Let\'s chat!',
     KIAN_CHAT_LOCAL_STORAGE_STATE_KEY: '__kian_chat_state',
     CHAT_STATE_OPEN: 'opened',
     CHAT_STATE_COLLAPSED: 'collapsed'
@@ -56,14 +50,14 @@ var carlaBot = (function () {
   // Carla bot helper functions
   var __carlaBotHelpers = (function () {
     var getChatHeight = function (whenOpened) {
-      var visibleHeight = carlaBotConfigs.CHAT_CONTAINER_VISIBLE_HEIGHT;
+      var visibleHeight = carlaBotConfigs.CHAT_CONTAINER_HEIGHT;
       var hiddenHeight = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HIDDEN_HEIGHT;
       var state = __carlaBotStateController.getState();
       var height;
 
       if (state === __carlaBotDefaults.CHAT_STATE_OPEN || whenOpened) {
-        if (!visibleHeight || visibleHeight === '' || isNaN(visibleHeight)) {
-          height = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_VISIBLE_HEIGHT;
+        if (!visibleHeight || isNaN(visibleHeight)) {
+          visibleHeight = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEIGHT;
         }
         height = visibleHeight;
       } else {
@@ -85,26 +79,24 @@ var carlaBot = (function () {
       var offset = carlaBotConfigs.CHAT_CONTAINER_OFFSET;
       var placement = carlaBotConfigs.CHAT_CONTAINER_PLACEMENT;
 
+      if(placement !== 'right' && placement !== 'left') {
+        placement = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_PLACEMENT
+      }
+
       if (offset === '' || isNaN(offset)) {
         offset = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_OFFSET;
       }
 
-      if (placement === 'right') {
-        return 'right:' + offset + 'px';
-      }
-
-      return 'left:' + offset + 'px';
+      return placement + ':' + offset + 'px';
     };
 
-    function createChatHeader(headerText) {
+    function createChatHeader() {
       var chatHeader = document.createElement('div');
       chatHeader.className = '__carla-chat-header';
-      chatHeader.innerText = carlaBotConfigs.KIAN_CHAT_CONTAINER_HEADER_TEXT;
+      chatHeader.innerText = carlaBotConfigs.KIAN_CHAT_CONTAINER_HEADER_TEXT || __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT;
       chatHeaderStyle = 'height: ' + __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT + 'px;';
       chatHeader.setAttribute('style', chatHeaderStyle);
 
-      // originally the close button was designed using a css pseudo element (:before)
-      // this is a translation using only html/js
       var closeButton = document.createElement('div');
       closeButton.className = 'close-button';
       chatHeader.appendChild(closeButton);
@@ -149,7 +141,7 @@ var carlaBot = (function () {
 
       var chatWidgetBubble = document.createElement('div');
       chatWidgetBubble.className = 'bubble';
-      chatWidgetBubble.innerText = carlaBotConfigs.KIAN_CHAT_WIDGET_TEXT;
+      chatWidgetBubble.innerText = carlaBotConfigs.KIAN_CHAT_WIDGET_TEXT || __carlaBotDefaults.KIAN_CHAT_DEFAULT_WIDGET_TEXT;
       chatWidget.appendChild(chatWidgetBubble);
 
       return chatWidget;
@@ -222,7 +214,7 @@ var carlaBot = (function () {
 
     var chatContainer = __carlaBotHelpers.createChatContainer();
 
-    var chatHeader = __carlaBotHelpers.createChatHeader(__carlaBotDefaults.KIAN_CHAT_CONTAINER_HEADER_TEXT);
+    var chatHeader = __carlaBotHelpers.createChatHeader();
     chatContainer.appendChild(chatHeader);
 
     var chatIFrame = __carlaBotHelpers.createIFrame(botUrl);
