@@ -79,7 +79,7 @@ var carlaBot = (function () {
       var offset = carlaBotConfigs.CHAT_CONTAINER_OFFSET;
       var placement = carlaBotConfigs.CHAT_CONTAINER_PLACEMENT;
 
-      if(placement !== 'right' && placement !== 'left') {
+      if (placement !== 'right' && placement !== 'left') {
         placement = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_PLACEMENT
       }
 
@@ -147,13 +147,7 @@ var carlaBot = (function () {
       return chatWidget;
     }
 
-    return {
-      createChatContainer: createChatContainer,
-      createChatWidget: createChatWidget,
-      createChatHeader: createChatHeader,
-      createIFrame: createIFrame,
-      getChatHeight: getChatHeight
-    };
+    return {createChatContainer: createChatContainer, createChatWidget: createChatWidget, createChatHeader: createChatHeader, createIFrame: createIFrame, getChatHeight: getChatHeight};
 
   })();
 
@@ -208,6 +202,7 @@ var carlaBot = (function () {
   })();
 
   var _isSmallScreen = document.documentElement.clientWidth <= 768;
+
   function initCarlaBot(botUrl, initialState = '') {
 
     __carlaBotStateController.setInitialState(initialState, _isSmallScreen);
