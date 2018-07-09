@@ -102,7 +102,7 @@ var carlaBot = (function () {
         placement = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_PLACEMENT
       }
 
-      if (offset === '' || isNaN(offset)) {
+      if (offset === undefined || isNaN(offset)) {
         offset = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_OFFSET;
       }
 
