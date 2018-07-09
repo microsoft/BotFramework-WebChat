@@ -300,7 +300,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 }
 
 export interface IDoCardAction {
-    (type: CardActionTypes | 'shareLocation', value: string | object, buttonTitle?: string): void;
+    (type: CardActionTypes | 'locationButton', value: string | object, buttonTitle?: string): void;
 }
 
 export const doCardAction = (
@@ -328,11 +328,14 @@ export const doCardAction = (
             addMessage(buttonTitle, from, locale);
             break;
 
-        case "shareLocation":
-            sendShareLocationMessage(
-                () => sendPostBack(botConnection, text, value, from, locale),
-                () => addMessage(buttonTitle, from, locale)
-            );
+        case "locationButton":
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const locationMessage = getLocationMessage(position.coords.latitude, position.coords.longitude);
+                    sendPostBack(botConnection, locationMessage, value, from, locale);
+                    addMessage(buttonTitle, from, locale);
+                });
+            }
             break;
 
         case "call":
@@ -387,17 +390,19 @@ export const classList = (...args:(string | boolean)[]) => {
     return args.filter(Boolean).join(' ');
 }
 
-export const sendShareLocationMessage = (sendPostBack: Function, addMessage: Function) => {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            sendPostBack();
-            addMessage();
-        });
-    } else {
-        /* geolocation IS NOT available */
-    }
+const getLocationMessage = function(lat: number, long: number) {
+    const message = {
+        localResponse: {
+            result: {
+                action: "schedule.testDrive",
+                parameters: {
+                    latlong: `${lat},${long}`
+                }
+            }
+        }
+    };
 
-
+    return JSON.stringify(message);
 }
 
 // note: container of this element must have CSS position of either absolute or relative
