@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { withStyleSet } from '../Context';
-import MicrophoneIcon from './Assets/MicrophoneIcon';
-
 function prefix(name) {
   try {
     if (window) {
@@ -21,7 +18,7 @@ const SpeechRecognition = prefix('SpeechRecognition');
 const SpeechGrammarList = prefix('SpeechGrammarList');
 const SpeechRecognitionEvent = prefix('SpeechRecognitionEvent');
 
-class MicrophoneButton extends React.Component {
+export default class MicrophoneButton extends React.Component {
   constructor(props) {
     super(props);
 
@@ -43,14 +40,12 @@ class MicrophoneButton extends React.Component {
 
     return (
       <button
-        className={ props.styleSet.microphone }
+        className={ props.className }
         disabled={ state.support === false }
         onClick={ this.handleClick }
       >
-        <MicrophoneIcon />
+        { props.children }
       </button>
     );
   }
 }
-
-export default withStyleSet(MicrophoneButton)

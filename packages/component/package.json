@@ -45,6 +45,7 @@
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
     "memoize-one": "^3.1.1",
+    "react-dictate-button": "^1.0.0",
     "react-film": "^1.0.0",
     "react-redux": "^5.0.7",
     "react-scroll-to-bottom": "^1.1.0",

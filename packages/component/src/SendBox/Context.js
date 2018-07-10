@@ -1,3 +1,18 @@
 import React from 'react';
 
-export default React.createContext();
+const Context = React.createContext();
+
+const withSendBoxContext = Component => props =>
+  <Context.Consumer>
+    { context =>
+      <Component sendBoxContext={ context } { ...props }>
+        { props.children }
+      </Component>
+    }
+  </Context.Consumer>
+
+export default Context;
+
+export {
+  withSendBoxContext
+}

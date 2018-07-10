@@ -2,7 +2,7 @@ import {
   monospaceSmallFont,
   primaryFont,
   primarySmallFont,
-} from '../Styles';
+} from './Fonts';
 
 const DEFAULT_OPTIONS = {
   accent: '#6CF',
@@ -70,6 +70,20 @@ function createCodeCardStyle() {
   };
 }
 
+function createMicrophoneStyle() {
+  return {
+    backgroundColor: 'Transparent',
+    border: 0,
+    cursor: 'pointer',
+    padding: 0,
+    width: 40,
+
+    '&:disabled > svg': {
+      fill: '#CCC'
+    }
+  };
+}
+
 function createMultipleCardActivityCardStyle() {
   return {
     marginRight: 10,
@@ -117,6 +131,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     codeCard: createCodeCardStyle(options),
+    microphone: createMicrophoneStyle(options),
     multipleCardActivityCard: createMultipleCardActivityCardStyle(options),
     options,
     singleCardActivity: createSingleCardActivityStyle(options),

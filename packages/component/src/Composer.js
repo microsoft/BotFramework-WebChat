@@ -17,13 +17,29 @@ export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.mergeContext = memoize(styleSet => ({ styleSet }));
+    this.mergeContext = memoize((
+      state,
+      locale = 'en-US',
+      styleSet
+    ) => ({
+      ...state,
+      locale,
+      styleSet
+    }));
+
     this.stylesToClassNames = memoize(styleSet => mapMap(styleSet, (style, key) => key === 'options' ? style : css(style)));
+
+    this.state = {
+      grammars: [],
+      setGrammars: memoize(grammars => this.setState(() => ({ grammars })))
+    };
   }
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
     const context = this.mergeContext(
+      state,
+      props.locale,
       this.stylesToClassNames(props.styleSet || createStyleSet())
     );
 
