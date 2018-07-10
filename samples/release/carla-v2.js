@@ -1,11 +1,3 @@
-(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12&autoLogAppEvents=1';
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
 var carlaBotConfigs = {};
 
 var carlaBot = (function () {
@@ -103,7 +95,7 @@ var carlaBot = (function () {
       return height + 'px';
     };
 
-    var getChatWidth = function () {
+    var _getChatWidth = function () {
       var width = carlaBotConfigs.CHAT_CONTAINER_WIDTH;
 
       if (!width || isNaN(width)) {
@@ -112,7 +104,7 @@ var carlaBot = (function () {
       return width + 'px';
     };
 
-    var getChatWindowPlacement = function () {
+    var _getChatWindowPlacement = function () {
       var offset = carlaBotConfigs.CHAT_CONTAINER_OFFSET;
       var placement = carlaBotConfigs.CHAT_CONTAINER_PLACEMENT;
 
@@ -146,7 +138,7 @@ var carlaBot = (function () {
       chatIframe.frameborder = 0;
       chatIframe.src = botUrl;
       chatIframe.className = '__carla-iframe';
-      chatIframeStyle = 'height: ' + __carlaBotHelpers.getChatHeight(true);
+      chatIframeStyle = 'height: ' + getChatHeight(true);
       chatIframe.setAttribute('style', chatIframeStyle);
 
       return chatIframe;
@@ -155,7 +147,7 @@ var carlaBot = (function () {
     function createChatContainer() {
       _chatContainer.className = '__carla-chat-container';
       var chatContainerStyle = [
-        getChatWindowPlacement(), 'width: ' + getChatWidth(),
+        _getChatWindowPlacement(), 'width: ' + _getChatWidth(),
         'height: ' + getChatHeight()
       ].join(';');
       _chatContainer.setAttribute('style', chatContainerStyle);
@@ -170,7 +162,7 @@ var carlaBot = (function () {
         'display: ' + (state === __carlaChatBotStatesKeys.OPENED
           ? 'none'
           : 'block'),
-        getChatWindowPlacement()
+        _getChatWindowPlacement()
       ].join(';');
       _chatWidget.setAttribute('style', chatWidgetStyle);
 
@@ -192,49 +184,49 @@ var carlaBot = (function () {
 
   })();
 
-  // Carla bot event habdlers
+  // Carla bot event handlers
   var __carlaEventHandlers = (function () {
-    var _closeChat = function (chatContainer, chatWidget) {
+    var _closeChat = function () {
       __carlaBotStateController.setState(__carlaChatBotStatesKeys.COLLAPSED);
-      chatContainer.style.height = __carlaBotHelpers.getChatHeight();
-      chatWidget.style.display = 'block';
+      _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
+      _chatWidget.style.display = 'block';
     };
 
-    var _openChat = function (botUrl, chatContainer, chatWidget, chatIframe, isSmallScreen) {
+    var _openChat = function (botUrl, chatIframe, isSmallScreen) {
       if (isSmallScreen) {
         window.open(botUrl);
         return;
       }
-      if (!chatContainer.contains(chatIframe)) {
-        chatContainer.appendChild(chatIframe);
+      if (!_chatContainer.contains(chatIframe)) {
+        _chatContainer.appendChild(chatIframe);
       }
       __carlaBotStateController.setState(__carlaChatBotStatesKeys.OPENED);
-      chatWidget.style.display = 'none';
-      chatContainer.style.height = __carlaBotHelpers.getChatHeight();
+      _chatWidget.style.display = 'none';
+      _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
     };
 
-    function chatHeaderClick(chatContainer, chatWidget, chatIframe, isSmallScreen) {
+    function chatHeaderClick() {
       var currentState = __carlaBotStateController.getState();
       if (currentState === __carlaChatBotStatesKeys.OPENED) {
-        _closeChat(chatContainer, chatWidget);
+        _closeChat();
       }
     };
 
-    function chatWidgetClick(botUrl, chatContainer, chatWidget, chatIframe, isSmallScreen) {
-      _openChat(botUrl, chatContainer, chatWidget, chatIframe, isSmallScreen);
+    function chatWidgetClick(botUrl, chatIframe, isSmallScreen) {
+      _openChat(botUrl, chatIframe, isSmallScreen);
     };
 
-    function onDocumentReady(chatContainer, chatWidget, isSmallScreen) {
+    function onDocumentReady(isSmallScreen) {
       document.onreadystatechange = function () {
         if (document.readyState === 'complete') {
           if (!isSmallScreen) {
             document
               .body
-              .appendChild(chatContainer);
+              .appendChild(_chatContainer);
           }
           document
             .body
-            .appendChild(chatWidget);
+            .appendChild(_chatWidget);
         }
       };
     }
@@ -247,102 +239,126 @@ var carlaBot = (function () {
 
   })();
 
-  function _initCarlaBot(botUrl) {
-    var _isSmallScreen = document.documentElement.clientWidth <= 768;
+  // Carla bot loading handler
+  var __carlaBotLoaders = (function () {
 
-    __carlaBotStateController.setInitialState(_isSmallScreen);
+    var _loadFaceBookSDK = function () {
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12&autoLogAppEvents=1';
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, 'script', 'facebook-jssdk');
+    };
 
-    var chatContainer = __carlaBotHelpers.createChatContainer();
+    var _chatToDisplay = function (chat) {
+      switch (chat) {
+        case "fb":
+          _chatContainer.style.visibility = "hidden";
+          _chatWidget.style.visibility = "hidden";
+          _fbRoot.style.display = "block";
+          break;
 
-    var chatHeader = __carlaBotHelpers.createChatHeader();
-    chatContainer.appendChild(chatHeader);
+        case "web":
+          _chatContainer.style.visibility = "visible";
+          _chatWidget.style.visibility = "visible";
+          _fbRoot.style.display = "none";
+          break;
 
-    var chatIFrame = __carlaBotHelpers.createIFrame(botUrl);
+          default :
+          _chatToDisplay("web");
+      }
+    };
 
-    if (__carlaBotStateController.getState() === __carlaChatBotStatesKeys.OPENED) {
-      chatContainer.appendChild(chatIFrame);
+    var initCarlaBot = function (botUrl) {
+      var _isSmallScreen = document.documentElement.clientWidth <= 768;
+
+      __carlaBotStateController.setInitialState(_isSmallScreen);
+
+      __carlaBotHelpers.createChatContainer();
+
+      var chatHeader = __carlaBotHelpers.createChatHeader();
+      _chatContainer.appendChild(chatHeader);
+
+      var chatIFrame = __carlaBotHelpers.createIFrame(botUrl);
+
+      if (__carlaBotStateController.getState() === __carlaChatBotStatesKeys.OPENED) {
+        _chatContainer.appendChild(chatIFrame);
+      }
+
+      __carlaBotHelpers.createChatWidget();
+
+      _chatWidget.addEventListener('click', function (event) {
+        __carlaEventHandlers.chatWidgetClick(botUrl, chatIFrame, _isSmallScreen);
+      });
+      chatHeader.addEventListener('click', function (event) {
+        __carlaEventHandlers.chatHeaderClick(chatIFrame, _isSmallScreen);
+      });
+      __carlaEventHandlers.onDocumentReady(_isSmallScreen);
+
     }
 
-    var chatWidget = __carlaBotHelpers.createChatWidget();
-
-    chatWidget.addEventListener('click', function (event) {
-      __carlaEventHandlers.chatWidgetClick(botUrl, chatContainer, chatWidget, chatIFrame, _isSmallScreen);
-    });
-    chatHeader.addEventListener('click', function (event) {
-      __carlaEventHandlers.chatHeaderClick(chatContainer, chatWidget, chatIFrame, _isSmallScreen);
-    });
-    __carlaEventHandlers.onDocumentReady(chatContainer, chatWidget, _isSmallScreen);
-  }
-
-  var _chatToDisplay = function (chat) {
-    switch (chat){
-      case "fb":
-        _chatContainer.style.visibility = "hidden";
-        _chatWidget.style.visibility = "hidden";
-        _fbRoot.style.display = "block";
-        break;
-
-      case "web":
-        _chatContainer.style.visibility = "visible";
-        _chatWidget.style.visibility = "visible";
-        _fbRoot.style.display = "none";
-        break;
-        default :
+    var initFBChatPlugin = function (appId, fbPageId) {
+      if (!appId || !fbPageId) {
         _chatToDisplay("web");
-    }
-  };
+        return false;
+      }
 
-  var _initFBChatPlugin = function (appId, fbPageId) {
-    if(!appId || !fbPageId){
-      _chatToDisplay("web");
-      return false;
-    }
+      _loadFaceBookSDK();
 
-    _fbRoot.style.display = "none";
-    _fbRoot.id = "fb-root";
-    document.body.appendChild(_fbRoot);
+      _fbRoot.style.display = "none";
+      _fbRoot.id = "fb-root";
+      document.body.appendChild(_fbRoot);
 
-    var fbChatContainer = document.createElement('div');
-    fbChatContainer.className = 'fb-customerchat';
-    fbChatContainer.setAttribute('page_id', fbPageId);
-    fbChatContainer.setAttribute('theme_color', "#c4172c");
-    fbChatContainer.setAttribute('logged_in_greeting', __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT);
-    _fbRoot.appendChild(fbChatContainer);
+      var fbChatContainer = document.createElement('div');
+      fbChatContainer.className = 'fb-customerchat';
+      fbChatContainer.setAttribute('page_id', fbPageId);
+      fbChatContainer.setAttribute('theme_color', "#c4172c");
+      fbChatContainer.setAttribute('logged_in_greeting', __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT);
+      _fbRoot.appendChild(fbChatContainer);
 
-      // FB To Call This After It Has Loaded
-    window.fbAsyncInit = function(){
-      FB.init({
-          appId  : appId,
-          status : true,
-          cookie : true,
-          version: 'v2.12'
-      });
-      FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') { // Logged In And Has Authorized App
-          _chatToDisplay("fb");
-        }else if(response.status === 'not_authorized') { // Logged In But Hasn't Authorized App
-          FB.login();
-        }else{ // Not Logged In
-          _chatToDisplay("web");
-        }
-      });
+        // FB To Call This After It Has Loaded
+      window.fbAsyncInit = function() {
+        FB.init({
+            appId  : appId,
+            status : true,
+            cookie : true,
+            version: 'v2.12'
+        });
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') { // Logged In And Has Authorized App
+            _chatToDisplay("fb");
+          } else if (response.status === 'not_authorized') { // Logged In But Hasn't Authorized App
+            FB.login();
+          } else { // Not Logged In
+            _chatToDisplay("web");
+          }
+        });
 
-      // Subscribe To Authentication Events Especially After When User Gives Authorization To App
-      FB.Event.subscribe('auth.statusChange', function(response) {
-        if (response.status === 'connected') {
-          _chatToDisplay("fb");
-        }else{
-          _chatToDisplay("web");
-        }
-      });
+        // Subscribe To Authentication Events Especially After When User Gives Authorization To App
+        FB.Event.subscribe('auth.statusChange', function(response) {
+          if (response.status === 'connected') {
+            _chatToDisplay("fb");
+          } else {
+            _chatToDisplay("web");
+          }
+        });
+
+      };
 
     };
 
-  };
+    return {
+      initCarlaBot: initCarlaBot,
+      initFBChatPlugin: initFBChatPlugin
+    };
+
+  })();
 
   var initBot = function (botParams) {
-    _initCarlaBot(botParams.botUrl);
-    _initFBChatPlugin(botParams.appId, botParams.fbPageId);
+    __carlaBotLoaders.initCarlaBot(botParams.botUrl);
+    __carlaBotLoaders.initFBChatPlugin(botParams.appId, botParams.fbPageId);
   }
 
   return {init: initBot};
