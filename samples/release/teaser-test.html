@@ -25,8 +25,12 @@
         carlaBotConfigs.CHAT_INITIAL_STATE = 'collapsed'; accepts 'opened' or 'collapsed', the default is 'collapsed'
     */
 
-    // call the bot init function with the bot url
-    carlaBot.init("./bot.html");
+    // call the bot init function with the bot url and fb credentials
+    carlaBot.init({
+      botUrl: "./bot.html",
+      appId: '', // Facebook App ID here
+      fbPageId: '', // Facebook Page ID here
+    });
   </script>
 </body>
 

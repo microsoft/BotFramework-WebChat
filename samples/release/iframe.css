@@ -16,6 +16,7 @@
   border-radius: 5px 5px 0 0;
   transition: all ease-out .2s;
   box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+  visibility: hidden;
 }
 
 .__carla-chat-header {
@@ -59,6 +60,7 @@
   cursor: pointer;
   padding: 14px 14px 14px 65px;
   background-size: 70px;
+  visibility: hidden;
 }
 
 .__carla-chat-teaser .bubble {
