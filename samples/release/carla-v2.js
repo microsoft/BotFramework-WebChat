@@ -8,7 +8,7 @@ var carlaBot = (function () {
     COLLAPSED: 'collapsed'
   }
 
-  // The app default which will handle the user invalid configs
+  // The app default which will handle the user invalid configs too
   var __carlaBotDefaults = {
     CHAT_CONTAINER_DEFAULT_WIDTH: 500,
     CHAT_CONTAINER_DEFAULT_OFFSET: 10,
@@ -70,6 +70,7 @@ var carlaBot = (function () {
   var __carlaBotHelpers = (function () {
     var getChatHeight = function (whenOpened) {
       var visibleHeight = carlaBotConfigs.CHAT_CONTAINER_HEIGHT;
+      // By default it is 0 but we assume that the user may want to see the chat header while the chat is collapsed (Not fully supported yet)
       var hiddenHeight = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HIDDEN_HEIGHT;
       var state = __carlaBotStateController.getState();
       var height;
@@ -88,7 +89,7 @@ var carlaBot = (function () {
     var getChatWidth = function () {
       var width = carlaBotConfigs.CHAT_CONTAINER_WIDTH;
 
-      if (width === '' || isNaN(width)) {
+      if (!width || isNaN(width)) {
         width = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_WIDTH;
       }
       return width + 'px';
@@ -220,9 +221,8 @@ var carlaBot = (function () {
     return {inDocumentReady: inDocumentReady, chatHeaderClick: chatHeaderClick, chatWidgetClick: chatWidgetClick};
   })();
 
-  var _isSmallScreen = document.documentElement.clientWidth <= 768;
-
   function initCarlaBot(botUrl) {
+    var _isSmallScreen = document.documentElement.clientWidth <= 768;
 
     __carlaBotStateController.setInitialState(_isSmallScreen);
 
@@ -241,10 +241,10 @@ var carlaBot = (function () {
 
     chatWidget.addEventListener('click', function (event) {
       __carlaEventHandlers.chatWidgetClick(botUrl, chatContainer, chatWidget, chatIFrame, _isSmallScreen);
-    })
+    });
     chatHeader.addEventListener('click', function (event) {
       __carlaEventHandlers.chatHeaderClick(chatContainer, chatWidget, chatIFrame, _isSmallScreen);
-    })
+    });
     __carlaEventHandlers.inDocumentReady(chatContainer, chatWidget, _isSmallScreen);
   }
 

@@ -28,4 +28,4 @@ CognitiveServices.js.map
 /test/uploads
 .env
 
-!iframe.css
+!samples/release/iframe.css
