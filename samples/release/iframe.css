@@ -1,0 +1,103 @@
+.__carla-iframe {
+  width: 100%;
+  border: 0;
+  box-sizing: border-box;
+  height: 498px;
+  position: absolute;
+  top: 0;
+  z-index: -1;
+}
+
+.__carla-chat-container {
+  position: fixed;
+  z-index: 9999;
+  box-sizing: border-box;
+  bottom: 0;
+  border-radius: 5px 5px 0 0;
+  transition: all ease-out .2s;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+}
+
+.__carla-chat-header {
+  background: #c4172c;
+  position: relative;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 5px 5px 0 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.__carla-chat-header .close-button:before {
+  position: absolute;
+  display: block;
+  right: 10px;
+  top: 5px;
+  font-size: 26px;
+  font-weight: bold;
+  font-family: sans-serif;
+  color: rgba(255, 255, 255, .6);
+  width: 16px;
+  height: 20px;
+  content: '+';
+  transform: rotate(45deg);
+  transition: all ease-out .4s;
+  cursor: pointer;
+}
+
+.__carla-chat-header .close-button:hover::before {
+  color: rgba(255, 255, 255, 1);
+}
+
+.__carla-chat-teaser {
+  position: fixed;
+  z-index: 9998;
+  box-sizing: border-box;
+  bottom: 0;
+  background: url(https://s3.amazonaws.com/kia-web-bot/kian.gif) no-repeat bottom left;
+  cursor: pointer;
+  padding: 14px 14px 14px 65px;
+  background-size: 70px;
+}
+
+.__carla-chat-teaser .bubble {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  font-size: 14px;
+  color: #000;
+  background: #fff;
+  border-radius: 10px;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, .2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, .1);
+}
+
+.__carla-chat-teaser .bubble:after,
+.__carla-chat-teaser .bubble:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.__carla-chat-teaser .bubble:after {
+  top: 10px;
+  border-color: transparent #fff transparent transparent;
+  border-width: 7px 7px 7px 1px;
+}
+
+.__carla-chat-teaser .bubble:before {
+  top: 9px;
+  border-color: transparent rgba(0, 0, 0, .2) transparent transparent;
+  border-width: 8px 8px 8px 0;
+}
+
+.fb_dialog,
+.fb_iframe_widget iframe {
+  left: 18pt !important;
+}
