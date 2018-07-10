@@ -10,9 +10,9 @@ var carlaBotConfigs = {};
 
 var carlaBot = (function () {
 
-  var _chatContainer;
-  var _chatWidget;
-  var _fbRoot;
+  var _chatContainer = document.createElement('div');
+  var _chatWidget = document.createElement('div');
+  var _fbRoot = document.createElement('div');
 
   var __carlaChatBotStatesKeys = {
     LOCAL_STORAGE: '__kian_chat_state',
@@ -153,7 +153,6 @@ var carlaBot = (function () {
     }
 
     function createChatContainer() {
-      _chatContainer = document.createElement('div');
       _chatContainer.className = '__carla-chat-container';
       var chatContainerStyle = [
         getChatWindowPlacement(), 'width: ' + getChatWidth(),
@@ -166,7 +165,6 @@ var carlaBot = (function () {
 
     function createChatWidget() {
       var state = __carlaBotStateController.getState();
-      _chatWidget = document.createElement('div');
       _chatWidget.className = '__carla-chat-teaser';
       chatWidgetStyle = [
         'display: ' + (state === __carlaChatBotStatesKeys.OPENED
@@ -296,9 +294,10 @@ var carlaBot = (function () {
 
   var _initFBChatPlugin = function (appId, fbPageId) {
     if(!appId || !fbPageId){
+      _chatToDisplay("web");
       return false;
     }
-    _fbRoot = document.createElement('div');
+
     _fbRoot.style.display = "none";
     _fbRoot.id = "fb-root";
     document.body.appendChild(_fbRoot);
