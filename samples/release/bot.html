@@ -41,13 +41,18 @@
         });
       }
 
-      var storageUUIDKey = 'user_uuid'
+      var storageUUIDKey = 'user_uuid';
 
-      var userId = localStorage.getItem(storageUUIDKey);
+      var userId = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
 
-      if (!userId) {
-        userId = getUUID();
-        localStorage.setItem(storageUUIDKey, userId);
+      if (window.localStorage) {
+        userId = localStorage.getItem(storageUUIDKey);
+
+        if (!userId) {
+          userId = getUUID();
+          localStorage.setItem(storageUUIDKey, userId);
+        }
+
       }
 
       BotChat.App({
