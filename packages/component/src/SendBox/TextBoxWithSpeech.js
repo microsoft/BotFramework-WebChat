@@ -9,10 +9,19 @@ import MicrophoneIcon from './Assets/MicrophoneIcon';
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& > .dictation, & > input': {
+  '& > .dictation, & > .status, & > input': {
     flex: 1
+  },
+
+  '& > .dictation > span:last-child': {
+    opacity: .5
   }
 });
+
+const IDLE = 0;
+const STARTING = 1;
+const DICTATING = 2;
+const STOPPING = 3;
 
 class TextBoxWithSpeech extends React.Component {
   constructor(props) {
@@ -24,32 +33,37 @@ class TextBoxWithSpeech extends React.Component {
     this.handleMicrophoneClick = this.handleMicrophoneClick.bind(this);
 
     this.state = {
-      dictating: false,
+      readyState: IDLE,
       interims: [],
       value: ''
     };
   }
 
   handleDictate({ result }) {
-    this.setState(() => ({
-      dictating: false,
-      value: result.transcript
+    this.setState(({ value }) => ({
+      readyState: IDLE,
+      value: result ? result.transcript : value
     }));
   }
 
   handleDictateError() {
+    this.setState(() => ({
+      interims: [],
+      readyState: IDLE
+    }));
   }
 
   handleDictateProgress({ results = [] }) {
     const interims = results.map(({ transcript }) => transcript);
 
-    this.setState(() => ({ interims }));
+    this.setState(() => ({
+      interims,
+      readyState: DICTATING
+    }));
   }
 
   handleMicrophoneClick() {
-    this.setState(() => ({
-      dictating: true
-    }));
+    this.setState(({ readyState }) => ({ readyState: readyState === DICTATING ? STOPPING : STARTING }));
   }
 
   render() {
@@ -62,26 +76,34 @@ class TextBoxWithSpeech extends React.Component {
         onProgress={ this.handleDictateProgress }
         speechRecognition={ window.SpeechRecognition || window.webkitSpeechRecognition }
         speechGrammarList={ window.SpeechGrammarList || window.webkitSpeechGrammarList }
-        started={ state.dictating && !props.disabled }
+        started={ !props.disabled && (state.readyState === STARTING || state.readyState === DICTATING) }
       >
         { context =>
           <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
             {
-              state.dictating ?
-                <div className="dictation">
-                  { state.interims.map((interim, index) => <span key={ index }>{ interim }</span>) }
-                </div>
-              :
+              state.readyState === IDLE ?
                 <input
                   disabled={ props.disabled }
-                  placeholder="type your message"
+                  placeholder="Type your message"
                   readOnly={ true }
                   type="textbox"
                   value={ state.value }
                 />
+              :
+                state.readyState === STARTING ?
+                  <span className="status">Starting...</span>
+                :
+                  state.interims.length ?
+                    <p className="dictation">
+                      {
+                        state.interims.map((interim, index) => <span key={ index }>{ interim }</span>)
+                      }
+                    </p>
+                  :
+                    <span className="status">Listening...</span>
             }
             <button
-              disabled={ state.dictating || props.disabled }
+              disabled={ props.disabled && (readyState === STARTING || readyState === STOPPING) }
               onClick={ this.handleMicrophoneClick }
             >
               <MicrophoneIcon />
