@@ -42,12 +42,12 @@ export default class Composer extends React.Component {
             type: 'message'
           }, {
             attachment: 'assets/surface3.jpg',
-            id: 1,
+            id: 2,
             text: 'The lightest, most powerful Surface Pro ever.',
             type: 'message'
           }, {
             attachment: 'assets/surface4.jpg',
-            id: 1,
+            id: 3,
             text: 'The lightest, most powerful Surface Pro ever.',
             type: 'message'
           }],
