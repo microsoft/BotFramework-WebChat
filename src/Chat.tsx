@@ -13,6 +13,7 @@ import { Speech } from './SpeechModule';
 import { ActivityOrID, FormatOptions } from './Types';
 import * as konsole from './Konsole';
 import { getTabIndex } from './getTabIndex';
+import { getStoredMessages } from './helpers/storeMessage';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
@@ -187,14 +188,28 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
-        const welcomeMessagePayload = {
-            "localResponse": {
-                "result": {
-                "action": "welcome.greeting"
+        const storedMessages = getStoredMessages();
+
+        if (storedMessages.length > 0) {
+            storedMessages.forEach((activity: Activity) => {
+              this.store.dispatch<ChatActions>({ activity, type: "Add_Message"});
+            });
+        } else {
+            const welcomeMessagePayload = {
+                "localResponse": {
+                    "result": {
+                    "action": "welcome.greeting"
+                    }
                 }
-            }
-        };
-        sendPostBack(botConnection, JSON.stringify(welcomeMessagePayload), null, this.props.user, this.store.getState().format.locale);
+            };
+
+            sendPostBack(botConnection,
+                JSON.stringify(welcomeMessagePayload),
+                null,
+                this.props.user,
+                this.store.getState().format.locale
+            );
+        }
 
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
