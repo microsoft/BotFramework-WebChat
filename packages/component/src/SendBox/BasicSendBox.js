@@ -3,9 +3,9 @@ import classNames from 'classnames';
 import React from 'react';
 
 import MicrophoneButton from './MicrophoneButton';
-import SuggestedAction from './SuggestedAction';
-import SuggestedActions from './SuggestedActions2';
-import TextBox from './TextBox';
+import SendBoxComposer from './Composer';
+import SuggestedActions from './SuggestedActions';
+import TextBoxWithSpeech from './TextBoxWithSpeech';
 import UploadAttachmentButton from './UploadAttachmentButton';
 
 const ROOT_CSS = css({
@@ -22,17 +22,12 @@ const TEXT_BOX_CSS = css({
 });
 
 export default props =>
-  <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
-    <SuggestedActions>
-      <SuggestedAction>Action 01</SuggestedAction>
-      <SuggestedAction>Action 02</SuggestedAction>
-      <SuggestedAction>Action 03</SuggestedAction>
-      <SuggestedAction>Action 04</SuggestedAction>
-      <SuggestedAction>Action 05</SuggestedAction>
-    </SuggestedActions>
-    <div className="main">
-      <UploadAttachmentButton />
-      <TextBox className={ TEXT_BOX_CSS } />
-      <MicrophoneButton />
+  <SendBoxComposer>
+    <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+      <SuggestedActions />
+      <div className="main">
+        <UploadAttachmentButton />
+        <TextBoxWithSpeech className={ TEXT_BOX_CSS } />
+      </div>
     </div>
-  </div>
+  </SendBoxComposer>

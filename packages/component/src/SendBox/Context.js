@@ -1,11 +1,14 @@
 import React from 'react';
 
-const Context = React.createContext();
+// TODO: Sync with composer
+const Context = React.createContext({
+  suggestedActions: []
+});
 
-const withSendBoxContext = Component => props =>
+const withSuggestedActions = Component => props =>
   <Context.Consumer>
     { context =>
-      <Component sendBoxContext={ context } { ...props }>
+      <Component suggestedActions={ context.suggestedActions } { ...props }>
         { props.children }
       </Component>
     }
@@ -14,5 +17,5 @@ const withSendBoxContext = Component => props =>
 export default Context;
 
 export {
-  withSendBoxContext
+  withSuggestedActions
 }
