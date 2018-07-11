@@ -32,8 +32,26 @@
         }
       });
 
+      var getUUID = function() {
+        var d = new Date().getTime();
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = (d + Math.random() * 16) % 16 | 0;
+          d = Math.floor(d / 16);
+          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+      }
+
+      var storageUUIDKey = 'user_uuid'
+
+      var userId = localStorage.getItem(storageUUIDKey);
+
+      if (!userId) {
+        userId = getUUID();
+        localStorage.setItem(storageUUIDKey, userId);
+      }
+
       BotChat.App({
-        user: { id: 'userid' },
+        user: { id: userId },
         bot: { id: 'botid' },
         resize: 'detect',
         botConnection: botConnection
