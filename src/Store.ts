@@ -5,6 +5,7 @@ import { Speech } from './SpeechModule';
 import { ActivityOrID } from './Types';
 import { HostConfig } from 'adaptivecards';
 import * as konsole from './Konsole';
+import storeMessage from './helpers/storeMessage';
 
 // Reducers - perform state transformations
 
@@ -307,10 +308,12 @@ export interface HistoryState {
     selectedActivity: Activity
 }
 
-export type HistoryAction = {
+export type MessageHistoryAction = {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message' | 'Add_Message'
     activity: Activity
-} | {
+};
+
+export type HistoryAction = MessageHistoryAction | {
     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
     clientActivityId: string
 } | {
@@ -714,6 +717,13 @@ const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         .catch(error => Observable.of(nullAction))
     );
 
+const storeMessageEpic: Epic<ChatActions, ChatState> = (action$) =>
+    action$.ofType('Receive_Message', 'Send_Message')
+    .map((action: MessageHistoryAction) => {
+        storeMessage(action.activity);
+        return nullAction;
+    });
+
 // Now we put it all together into a store with middleware
 
 import { Store, createStore as reduxCreateStore, combineReducers } from 'redux';
@@ -741,7 +751,8 @@ export const createStore = () =>
             startListeningEpic,
             stopListeningEpic,
             stopSpeakingEpic,
-            listeningSilenceTimeoutEpic
+            listeningSilenceTimeoutEpic,
+            storeMessageEpic
         )))
     );
 
