@@ -2,29 +2,14 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import { primaryFont } from '../Styles';
+import { withStyleSet } from '../Context';
 
-const ACCENT_COLOR = '#69F';
+const ROOT_CSS = css({});
 
-const ROOT_CSS = css({
-  ...primaryFont,
-
-  backgroundColor: 'White',
-  borderColor: ACCENT_COLOR,
-  borderStyle: 'solid',
-  borderWidth: 2,
-  color: ACCENT_COLOR,
-  cursor: 'pointer',
-  fontSize: 16,
-  height: 40,
-
-  paddingLeft: 20,
-  paddingRight: 20
-});
-
-export default props =>
+export default withStyleSet(props =>
   <button
-    className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
+    className={ classNames(styleSet.suggestedAction + '', ROOT_CSS + '', (props.className || '') + '') }
   >
     <nobr>{ props.children }</nobr>
   </button>
+)

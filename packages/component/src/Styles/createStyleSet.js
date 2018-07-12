@@ -7,12 +7,15 @@ import createMicrophoneStyle from './StyleSet/Microphone';
 import createMultipleCardActivityCardStyle from './StyleSet/MultipleCardActivityCard';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSingleCardActivityStyle from './StyleSet/SingleCardActivity';
+import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
+import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
+import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextCardStyle from './StyleSet/TextCard';
 import createTimestampStyle from './StyleSet/Timestamp';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 
 const DEFAULT_OPTIONS = {
-  accent: '#6CF',
+  accent: '#69F',
 
   bubbleBackground: 'White',
   bubbleImageHeight: 240,
@@ -31,9 +34,14 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     codeCard: createCodeCardStyle(options),
     microphone: createMicrophoneStyle(options),
     multipleCardActivityCard: createMultipleCardActivityCardStyle(options),
-    options,
+    options: {
+      ...options,
+      suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
+    },
     sendBox: createSendBoxStyle(options),
     singleCardActivity: createSingleCardActivityStyle(options),
+    suggestedAction: createSuggestedActionStyle(options),
+    suggestedActions: createSuggestedActionsStyle(options),
     textCard: createTextCardStyle(options),
     timestamp: createTimestampStyle(options),
     uploadButton: createUploadButtonStyle(options)
