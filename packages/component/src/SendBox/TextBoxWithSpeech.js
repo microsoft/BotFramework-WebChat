@@ -4,18 +4,12 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { withStyleSet } from '../Context';
+
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 
 const ROOT_CSS = css({
-  display: 'flex',
-
-  '& > .dictation, & > .status, & > input': {
-    flex: 1
-  },
-
-  '& > .dictation > span:last-child': {
-    opacity: .5
-  }
+  display: 'flex'
 });
 
 const IDLE = 0;
@@ -27,6 +21,7 @@ class TextBoxWithSpeech extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.handleDictate = this.handleDictate.bind(this);
     this.handleDictateError = this.handleDictateError.bind(this);
     this.handleDictateProgress = this.handleDictateProgress.bind(this);
@@ -37,6 +32,12 @@ class TextBoxWithSpeech extends React.Component {
       interims: [],
       value: ''
     };
+  }
+
+  handleChange({ target: { value } }) {
+    this.setState(() => ({
+      value
+    }));
   }
 
   handleDictate({ result }) {
@@ -79,19 +80,19 @@ class TextBoxWithSpeech extends React.Component {
         started={ !props.disabled && (state.readyState === STARTING || state.readyState === DICTATING) }
       >
         { context =>
-          <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+          <div className={ classNames(ROOT_CSS + '', props.styleSet.sendBox + '', (props.className || '') + '') }>
             {
               state.readyState === IDLE ?
                 <input
                   disabled={ props.disabled }
+                  onChange={ this.handleChange }
                   placeholder="Type your message"
-                  readOnly={ true }
                   type="textbox"
                   value={ state.value }
                 />
               :
                 state.readyState === STARTING ?
-                  <span className="status">Starting...</span>
+                  <div className="status">Starting...</div>
                 :
                   state.interims.length ?
                     <p className="dictation">
@@ -100,7 +101,7 @@ class TextBoxWithSpeech extends React.Component {
                       }
                     </p>
                   :
-                    <span className="status">Listening...</span>
+                    <div className="status">Listening...</div>
             }
             <button
               disabled={ props.disabled && (readyState === STARTING || readyState === STOPPING) }
@@ -119,4 +120,4 @@ TextBoxWithSpeech.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default TextBoxWithSpeech
+export default withStyleSet(TextBoxWithSpeech)

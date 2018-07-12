@@ -1,20 +1,21 @@
 import { css } from 'glamor';
+import classNames from 'classnames';
 import React from 'react';
 
+import { withStyleSet } from '../Context';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
   position: 'relative',
-  width: 40,
 
   '& > input': {
+    cursor: 'pointer',
     height: '100%',
-    left: 0,
-    opacity: .2,
+    opacity: 0,
     position: 'absolute',
-    top: 0,
-    width: '100%'
+    right: 0,
+    top: 0
   },
 
   '& > .icon': {
@@ -25,14 +26,12 @@ const ROOT_CSS = css({
   }
 });
 
-export default class UploadAttachmentButton extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class UploadAttachmentButton extends React.Component {
   render() {
+    const { props } = this;
+
     return (
-      <div className={ ROOT_CSS }>
+      <div className={ classNames(ROOT_CSS + '', props.styleSet.uploadButton + '') }>
         <input type="file" />
         <div className="icon">
           <AttachmentIcon />
@@ -41,3 +40,5 @@ export default class UploadAttachmentButton extends React.Component {
     );
   }
 }
+
+export default withStyleSet(UploadAttachmentButton)

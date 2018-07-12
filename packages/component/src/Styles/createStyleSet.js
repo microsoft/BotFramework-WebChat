@@ -91,6 +91,42 @@ function createMultipleCardActivityCardStyle() {
   };
 }
 
+function createSendBoxStyle() {
+  return  {
+    ...primaryFont,
+
+    alignItems: 'center',
+
+    '& > input': {
+      border: 0,
+      fontFamily: 'inherit',
+      fontSize: 'inherit',
+      height: '100%'
+    },
+
+    '& > .dictation, & > .status, & > input': {
+      flex: 1,
+      paddingBottom: 0,
+      paddingLeft: 10,
+      paddingRight: 10,
+      paddingTop: 0
+    },
+
+    '& > .dictation > span:last-child': {
+      opacity: .5
+    },
+
+    '& > button': {
+      backgroundColor: 'Transparent',
+      border: 0,
+      cursor: 'pointer',
+      height: '100%',
+      padding: 0,
+      width: 40
+    }
+  };
+}
+
 function createSingleCardActivityStyle({
   bubbleMaxWidth,
   bubbleMinWidth
@@ -124,6 +160,12 @@ function createTimestampStyle({
   };
 }
 
+function createUploadButtonStyle() {
+  return {
+    width: 40
+  };
+}
+
 export default function createStyleSet(options = DEFAULT_OPTIONS) {
   return {
     activity: createActivityStyle(options),
@@ -134,8 +176,10 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     microphone: createMicrophoneStyle(options),
     multipleCardActivityCard: createMultipleCardActivityCardStyle(options),
     options,
+    sendBox: createSendBoxStyle(options),
     singleCardActivity: createSingleCardActivityStyle(options),
     textCard: createTextCardStyle(options),
-    timestamp: createTimestampStyle(options)
+    timestamp: createTimestampStyle(options),
+    uploadButton: createUploadButtonStyle(options)
   };
 }
