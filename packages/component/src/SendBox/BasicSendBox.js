@@ -2,7 +2,6 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import MicrophoneButton from './MicrophoneButton';
 import SendBoxComposer from './Composer';
 import SuggestedActions from './SuggestedActions';
 import TextBoxWithSpeech from './TextBoxWithSpeech';
