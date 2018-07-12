@@ -48,6 +48,7 @@
     "tslib": "1.7.1"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.21",
     "@types/markdown-it": "0.0.2",
     "@types/react": "15.6.1",
     "@types/react-dom": "15.5.7",
