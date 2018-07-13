@@ -61,8 +61,11 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     }
 
     private onChangeFile() {
-        this.props.sendFiles(this.fileInput.files);
-        this.fileInput.value = null;
+        if (this.fileInput.files.length) {
+            this.props.sendFiles(this.fileInput.files);
+            this.fileInput.value = null;
+        }
+
         this.textInput.focus();
     }
 

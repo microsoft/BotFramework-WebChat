@@ -135,7 +135,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = <this.measurableCarousel/>;
             } else {
                 content = this.props.activities.map((activity, index) =>
-                    (activity.type !== 'message' || activity.text || (activity.attachments && activity.attachments.length)) &&
+                    (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
                         <WrappedActivity
                             format={ this.props.format }
                             key={ 'message' + index }
