@@ -5,6 +5,7 @@ import React from 'react';
 
 import { withStyleSet } from '../Context';
 
+import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 
 const IDLE = 0;
@@ -63,7 +64,10 @@ class MicrophoneButton extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const {
+      props: { disabled, styleSet },
+      state: { readyState }
+    } = this;
 
     return (
       <DictateComposer
@@ -72,19 +76,19 @@ class MicrophoneButton extends React.Component {
         onProgress={ this.handleDictating }
         speechRecognition={ window.SpeechRecognition || window.webkitSpeechRecognition }
         speechGrammarList={ window.SpeechGrammarList || window.webkitSpeechGrammarList }
-        started={ !props.disabled && (state.readyState === STARTING || state.readyState === DICTATING) }
+        started={ !disabled && (readyState === STARTING || readyState === DICTATING) }
       >
         { () =>
-          <button
+          <IconButton
             className={ classNames(
-              props.styleSet.microphoneButton + '',
-              { dictating: state.readyState === DICTATING }
+              styleSet.microphoneButton + '',
+              { dictating: readyState === DICTATING }
             ) }
-            disabled={ props.disabled && (readyState === STARTING || readyState === STOPPING) }
+            disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }
             onClick={ this.handleClick }
           >
             <MicrophoneIcon />
-          </button>
+          </IconButton>
         }
       </DictateComposer>
     );

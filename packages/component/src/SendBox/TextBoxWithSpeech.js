@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { withStyleSet } from '../Context';
+import IconButton from './IconButton';
 import MicrophoneButton from './MicrophoneButton';
 import SendBoxContext from './Context';
+import SendIcon from './Assets/SendIcon';
 
 const ROOT_CSS = css({
   display: 'flex'
@@ -82,17 +84,24 @@ class TextBoxWithSpeech extends React.Component {
               :
                 <div className="status">Listening...</div>
             }
-            <MicrophoneButton
-              disabled={ props.disabled }
-              onClick={ this.handleDictateClick }
-              onDictate={ ({ transcript }) => {
-                context.setValue(transcript);
-                this.setState(() => ({ dictateState: IDLE }));
-              } }
-              onDictateClick={ this.handleDictateClick }
-              onDictating={ this.handleDictating }
-              onError={ this.handleDictateError }
-            />
+            {
+              props.speech ?
+                <MicrophoneButton
+                  disabled={ props.disabled }
+                  onClick={ this.handleDictateClick }
+                  onDictate={ ({ transcript }) => {
+                    context.setValue(transcript);
+                    this.setState(() => ({ dictateState: IDLE }));
+                  } }
+                  onDictateClick={ this.handleDictateClick }
+                  onDictating={ this.handleDictating }
+                  onError={ this.handleDictateError }
+                />
+              :
+                <IconButton>
+                  <SendIcon />
+                </IconButton>
+            }
           </div>
         }
       </SendBoxContext>
@@ -100,8 +109,13 @@ class TextBoxWithSpeech extends React.Component {
   }
 }
 
+TextBoxWithSpeech.defaultProps = {
+  speech: true
+};
+
 TextBoxWithSpeech.propTypes = {
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  speech: PropTypes.bool
 };
 
 export default withStyleSet(TextBoxWithSpeech)
