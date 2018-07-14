@@ -25,15 +25,6 @@ export default function createSendBoxStyle() {
 
     '& > .dictation > span:last-child': {
       opacity: .5
-    },
-
-    '& > button': {
-      backgroundColor: 'Transparent',
-      border: 0,
-      cursor: 'pointer',
-      height: '100%',
-      padding: 0,
-      width: 40
     }
   };
 }

@@ -51,6 +51,7 @@
     "react-say": "^1.0.0",
     "react-scroll-to-bottom": "^1.1.0",
     "redux": "^4.0.0",
+    "simple-update-in": "^1.2.0",
     "web-speech-cognitive-services": "^2.1.0"
   },
   "peerDependencies": {

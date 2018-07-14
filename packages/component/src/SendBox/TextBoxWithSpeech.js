@@ -1,12 +1,11 @@
-import { Composer } from 'react-dictate-button';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { withStyleSet } from '../Context';
-
-import MicrophoneIcon from './Assets/MicrophoneIcon';
+import MicrophoneButton from './MicrophoneButton';
+import SendBoxContext from './Context';
 
 const ROOT_CSS = css({
   display: 'flex'
@@ -15,103 +14,88 @@ const ROOT_CSS = css({
 const IDLE = 0;
 const STARTING = 1;
 const DICTATING = 2;
-const STOPPING = 3;
 
 class TextBoxWithSpeech extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDictate = this.handleDictate.bind(this);
+    this.handleDictateClick = this.handleDictateClick.bind(this);
     this.handleDictateError = this.handleDictateError.bind(this);
-    this.handleDictateProgress = this.handleDictateProgress.bind(this);
-    this.handleMicrophoneClick = this.handleMicrophoneClick.bind(this);
+    this.handleDictating = this.handleDictating.bind(this);
 
     this.state = {
-      readyState: IDLE,
       interims: [],
-      value: ''
+      dictateState: IDLE
     };
   }
 
-  handleChange({ target: { value } }) {
+  handleDictateClick() {
     this.setState(() => ({
-      value
-    }));
-  }
-
-  handleDictate({ result }) {
-    this.setState(({ value }) => ({
-      readyState: IDLE,
-      value: result ? result.transcript : value
+      dictateState: STARTING
     }));
   }
 
   handleDictateError() {
     this.setState(() => ({
-      interims: [],
-      readyState: IDLE
+      dictateState: IDLE,
+      interims: []
     }));
   }
 
-  handleDictateProgress({ results = [] }) {
-    const interims = results.map(({ transcript }) => transcript);
-
+  handleDictating({ interims }) {
     this.setState(() => ({
-      interims,
-      readyState: DICTATING
+      dictateState: DICTATING,
+      interims
     }));
-  }
-
-  handleMicrophoneClick() {
-    this.setState(({ readyState }) => ({ readyState: readyState === DICTATING ? STOPPING : STARTING }));
   }
 
   render() {
     const { props, state } = this;
 
     return (
-      <Composer
-        onDictate={ this.handleDictate }
-        onError={ this.handleDictateError }
-        onProgress={ this.handleDictateProgress }
-        speechRecognition={ window.SpeechRecognition || window.webkitSpeechRecognition }
-        speechGrammarList={ window.SpeechGrammarList || window.webkitSpeechGrammarList }
-        started={ !props.disabled && (state.readyState === STARTING || state.readyState === DICTATING) }
-      >
+      <SendBoxContext>
         { context =>
-          <div className={ classNames(ROOT_CSS + '', props.styleSet.sendBox + '', (props.className || '') + '') }>
+          <div
+            className={ classNames(
+              ROOT_CSS + '',
+              props.styleSet.sendBox + '',
+              (props.className || '') + '',
+            ) }
+          >
             {
-              state.readyState === IDLE ?
+              state.dictateState === IDLE ?
                 <input
                   disabled={ props.disabled }
-                  onChange={ this.handleChange }
+                  onChange={ ({ target: { value } }) => context.setValue(value) }
                   placeholder="Type your message"
                   type="textbox"
-                  value={ state.value }
+                  value={ context.value }
                 />
+              : state.dictateState === STARTING ?
+                <div className="status">Starting...</div>
+              : state.interims.length ?
+                <p className="dictation">
+                  {
+                    state.interims.map((interim, index) => <span key={ index }>{ interim }</span>)
+                  }
+                </p>
               :
-                state.readyState === STARTING ?
-                  <div className="status">Starting...</div>
-                :
-                  state.interims.length ?
-                    <p className="dictation">
-                      {
-                        state.interims.map((interim, index) => <span key={ index }>{ interim }</span>)
-                      }
-                    </p>
-                  :
-                    <div className="status">Listening...</div>
+                <div className="status">Listening...</div>
             }
-            <button
-              disabled={ props.disabled && (readyState === STARTING || readyState === STOPPING) }
-              onClick={ this.handleMicrophoneClick }
-            >
-              <MicrophoneIcon />
-            </button>
+            <MicrophoneButton
+              disabled={ props.disabled }
+              onClick={ this.handleDictateClick }
+              onDictate={ ({ transcript }) => {
+                context.setValue(transcript);
+                this.setState(() => ({ dictateState: IDLE }));
+              } }
+              onDictateClick={ this.handleDictateClick }
+              onDictating={ this.handleDictating }
+              onError={ this.handleDictateError }
+            />
           </div>
         }
-      </Composer>
+      </SendBoxContext>
     );
   }
 }

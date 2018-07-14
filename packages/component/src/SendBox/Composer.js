@@ -1,4 +1,5 @@
 import React from 'react';
+import updateIn from 'simple-update-in';
 
 import SendBoxContext from './Context';
 
@@ -8,6 +9,9 @@ export default class Composer extends React.Component {
 
     this.state = {
       context: {
+        setValue: nextValue => this.setState(({ context }) => ({
+          context: updateIn(context, ['value'], () => nextValue)
+        })),
         suggestedActions: [{
           text: 'Action 01'
         }, {
@@ -28,7 +32,8 @@ export default class Composer extends React.Component {
           text: 'Action 09'
         }, {
           text: 'Action 10'
-        }]
+        }],
+        value: ''
       }
     };
   }

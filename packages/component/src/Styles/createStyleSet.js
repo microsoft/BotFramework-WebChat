@@ -3,7 +3,7 @@ import createActivityStyle from './StyleSet/Activity';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCodeCardStyle from './StyleSet/CodeCard';
-import createMicrophoneStyle from './StyleSet/Microphone';
+import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createMultipleCardActivityCardStyle from './StyleSet/MultipleCardActivityCard';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSingleCardActivityStyle from './StyleSet/SingleCardActivity';
@@ -32,7 +32,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     codeCard: createCodeCardStyle(options),
-    microphone: createMicrophoneStyle(options),
+    microphoneButton: createMicrophoneButtonStyle(options),
     multipleCardActivityCard: createMultipleCardActivityCardStyle(options),
     options: {
       ...options,
