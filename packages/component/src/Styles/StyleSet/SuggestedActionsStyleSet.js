@@ -9,5 +9,3 @@ export default function createSuggestedActionsStyleSet() {
     scrollBarMargin: 2
   });
 }
-
-console.log(createSuggestedActionsStyleSet());
