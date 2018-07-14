@@ -26,19 +26,11 @@ const ROOT_CSS = css({
   }
 });
 
-class UploadAttachmentButton extends React.Component {
-  render() {
-    const { props } = this;
-
-    return (
-      <div className={ classNames(ROOT_CSS + '', props.styleSet.uploadButton + '') }>
-        <input type="file" />
-        <div className="icon">
-          <AttachmentIcon />
-        </div>
-      </div>
-    );
-  }
-}
-
-export default withStyleSet(UploadAttachmentButton)
+export default withStyleSet(({ styleSet }) =>
+  <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
+    <input type="file" />
+    <div className="icon">
+      <AttachmentIcon />
+    </div>
+  </div>
+)
