@@ -2,6 +2,19 @@
 
 [![npm version](https://badge.fury.io/js/botframework-webchat.svg)](https://badge.fury.io/js/botframework-webchat) [![Build Status](https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master)](https://travis-ci.org/Microsoft/BotFramework-WebChat)
 
+# To-do
+
+* UI
+   * Adaptive Cards in React
+      * Disable interactivity
+      * Capture all clicks/taps
+         * Tap on image
+         * Tap on the whole card
+         * Submit button
+      * Update host config on-the-fly
+   * Unknown attachment card
+* Backend
+
 # Contributions
 
 Like us? [Star](https://github.com/Microsoft/BotFramework-WebChat/stargazers) us.
