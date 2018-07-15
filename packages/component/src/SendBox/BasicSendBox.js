@@ -2,7 +2,6 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import MainContext from '../Context';
 import SendBoxComposer from './Composer';
 import SuggestedActions from './SuggestedActions';
 import TextBoxWithSpeech from './TextBoxWithSpeech';
@@ -27,14 +26,7 @@ export default props =>
       <SuggestedActions />
       <div className="main">
         <UploadAttachmentButton />
-        <MainContext.Consumer>
-          { ({ focusSinkRef }) =>
-            <TextBoxWithSpeech
-              focusSinkRef={ focusSinkRef }
-              className={ TEXT_BOX_CSS }
-            />
-          }
-        </MainContext.Consumer>
+        <TextBoxWithSpeech className={ TEXT_BOX_CSS } />
       </div>
     </div>
   </SendBoxComposer>
