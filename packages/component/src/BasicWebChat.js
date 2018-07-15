@@ -5,7 +5,7 @@ import React from 'react';
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
-import { Box as FocusSinkBox } from './Utils/FocusSink';
+import { Box as TypeFocusSinkBox } from './Utils/TypeFocusSink';
 
 import Code from './Renderer/Code';
 import Text from './Renderer/Text';
@@ -37,9 +37,7 @@ export default class extends React.Component {
 
     return (
       <Composer>
-        <FocusSinkBox
-          className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
-        >
+        <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
           <BasicTranscript className={ TRANSCRIPT_CSS }>
             { card =>
               card.type === 'message' ?
@@ -53,7 +51,7 @@ export default class extends React.Component {
           <BasicSendBox
             className={ SEND_BOX_CSS }
           />
-        </FocusSinkBox>
+        </TypeFocusSinkBox>
       </Composer>
     );
   }

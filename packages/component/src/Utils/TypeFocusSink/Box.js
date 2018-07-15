@@ -60,17 +60,17 @@ export default class Box extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const { props: { children, disabled, ...otherProps }, state } = this;
 
     return (
       <Context.Provider value={ state.context }>
         <div
-          className={ props.className }
-          onKeyDownCapture={ !props.disabled && this.handleKeyDownCapture }
+          { ...otherProps }
+          onKeyDownCapture={ !disabled && this.handleKeyDownCapture }
           style={ DEFAULT_STYLE }
           tabIndex={ -1 }
         >
-          { props.children }
+          { children }
         </div>
       </Context.Provider>
     );
