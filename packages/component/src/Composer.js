@@ -31,14 +31,7 @@ export default class Composer extends React.Component {
 
     this.state = {
       context: {
-        focusSinkRef: null,
         grammars: [],
-        saveFocusSinkRef: focusSinkRef => this.setState(({ context }) => ({
-          context: {
-            ...context,
-            focusSinkRef
-          }
-        })),
         setGrammars: memoize(grammars => this.setState(() => ({ grammars }))),
       }
     };
