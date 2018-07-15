@@ -7,9 +7,12 @@ try {
 
   if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
     const meta = document.createElement('meta');
+    const params = new URLSearchParams({
+      version: '4.0.0'
+    } as any);
 
     meta.setAttribute('name', 'botframework-webchat');
-    meta.setAttribute('content', `version=${ '4.0.0' }`);
+    meta.setAttribute('content', params.toString());
 
     document.head.appendChild(meta);
   }

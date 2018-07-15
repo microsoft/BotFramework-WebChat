@@ -4,13 +4,10 @@ import React from 'react';
 
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
+import mapMap from './Utils/mapMap';
 
-function mapMap(map, mapper) {
-  return Object.keys(map).reduce((result, key) => {
-    result[key] = mapper(map[key], key);
-
-    return result;
-  }, {});
+function styleSetToClassNames(styleSet) {
+  return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
 }
 
 export default class Composer extends React.Component {
@@ -18,16 +15,14 @@ export default class Composer extends React.Component {
     super(props);
 
     this.mergeContext = memoize((
-      state,
-      locale = 'en-US',
+      staticContext,
+      lang,
       styleSet
     ) => ({
-      ...state,
-      locale,
-      styleSet
+      ...staticContext,
+      lang,
+      styleSet: styleSetToClassNames(styleSet)
     }));
-
-    this.stylesToClassNames = memoize(styleSet => mapMap(styleSet, (style, key) => key === 'options' ? style : css(style)));
 
     this.state = {
       context: {
@@ -38,11 +33,15 @@ export default class Composer extends React.Component {
   }
 
   render() {
-    const { props: { children, locale, styleSet }, state } = this;
+    const {
+      props: { children, lang, styleSet },
+      state: { context: staticContext }
+    } = this;
+
     const context = this.mergeContext(
-      state.context,
-      locale,
-      this.stylesToClassNames(styleSet || createStyleSet())
+      staticContext,
+      lang || 'en-US',
+      styleSet || createStyleSet()
     );
 
     return (
