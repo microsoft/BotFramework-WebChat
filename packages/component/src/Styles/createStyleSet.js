@@ -6,6 +6,7 @@ import createCodeCardStyle from './StyleSet/CodeCard';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createMultipleCardActivityCardStyle from './StyleSet/MultipleCardActivityCard';
 import createSendBoxStyle from './StyleSet/SendBox';
+import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSingleCardActivityStyle from './StyleSet/SingleCardActivity';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
@@ -21,6 +22,8 @@ const DEFAULT_OPTIONS = {
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
+
+  sendBoxHeight: 40,
 
   timestampColor: 'rgba(0, 0, 0, .2)'
 };
@@ -39,6 +42,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
       suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
     },
     sendBox: createSendBoxStyle(options),
+    sendBoxTextBox: createSendBoxTextBoxStyle(options),
     singleCardActivity: createSingleCardActivityStyle(options),
     suggestedAction: createSuggestedActionStyle(options),
     suggestedActions: createSuggestedActionsStyle(options),

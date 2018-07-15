@@ -61,7 +61,7 @@ class TextBoxWithSpeech extends React.Component {
           <div
             className={ classNames(
               ROOT_CSS + '',
-              props.styleSet.sendBox + '',
+              props.styleSet.sendBoxTextBox + '',
               (props.className || '') + '',
             ) }
           >

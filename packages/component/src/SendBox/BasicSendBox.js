@@ -2,6 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+import { withStyleSet } from '../Context';
 import SendBoxComposer from './Composer';
 import SuggestedActions from './SuggestedActions';
 import TextBoxWithSpeech from './TextBoxWithSpeech';
@@ -9,10 +10,7 @@ import UploadAttachmentButton from './UploadAttachmentButton';
 
 const ROOT_CSS = css({
   '& > .main': {
-    backgroundColor: 'White',
-    boxShadow: '0 0 5px rgba(0, 0, 0, .1)',
-    display: 'flex',
-    height: 40
+    display: 'flex'
   }
 });
 
@@ -20,9 +18,13 @@ const TEXT_BOX_CSS = css({
   flex: 1
 });
 
-export default props =>
+export default withStyleSet(({ className, styleSet }) =>
   <SendBoxComposer>
-    <div className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+    <div className={ classNames(
+      styleSet.sendBox + '',
+      ROOT_CSS + '',
+      (className || '') + ''
+    ) }>
       <SuggestedActions />
       <div className="main">
         <UploadAttachmentButton />
@@ -30,3 +32,4 @@ export default props =>
       </div>
     </div>
   </SendBoxComposer>
+)
