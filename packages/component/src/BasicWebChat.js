@@ -5,6 +5,7 @@ import React from 'react';
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
+import { Box as FocusSinkBox } from './Utils/FocusSink';
 
 import Code from './Renderer/Code';
 import Text from './Renderer/Text';
@@ -36,27 +37,23 @@ export default class extends React.Component {
 
     return (
       <Composer>
-        { ({ saveFocusSinkRef }) =>
-          <div
-            className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
-            ref={ saveFocusSinkRef }
-            tabIndex={ -1 }
-          >
-            <BasicTranscript className={ TRANSCRIPT_CSS }>
-              { card =>
-                card.type === 'message' ?
-                  card.subType === 'code' ?
-                    <Code>{ card.text }</Code>
-                  :
-                    <Text value={ card.text } />
-                : false
-              }
-            </BasicTranscript>
-            <BasicSendBox
-              className={ SEND_BOX_CSS }
-            />
-          </div>
-        }
+        <FocusSinkBox
+          className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
+        >
+          <BasicTranscript className={ TRANSCRIPT_CSS }>
+            { card =>
+              card.type === 'message' ?
+                card.subType === 'code' ?
+                  <Code>{ card.text }</Code>
+                :
+                  <Text value={ card.text } />
+              : false
+            }
+          </BasicTranscript>
+          <BasicSendBox
+            className={ SEND_BOX_CSS }
+          />
+        </FocusSinkBox>
       </Composer>
     );
   }

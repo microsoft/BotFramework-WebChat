@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { Context as FocusSinkContext } from '../Utils/FocusSink';
 import { withStyleSet } from '../Context';
-import AutoFocusTextBox from '../Utils/AutoFocusTextBox';
 import IconButton from './IconButton';
 import MicrophoneButton from './MicrophoneButton';
 import SendBoxContext from './Context';
@@ -67,13 +67,18 @@ class TextBoxWithSpeech extends React.Component {
           >
             {
               state.dictateState === IDLE ?
-                <AutoFocusTextBox
-                  disabled={ props.disabled }
-                  onChange={ ({ target: { value } }) => context.setValue(value) }
-                  placeholder="Type your message"
-                  target={ props.focusSinkRef }
-                  value={ context.value }
-                />
+                <FocusSinkContext.Consumer>
+                  { ({ focusableRef }) =>
+                    <input
+                      disabled={ props.disabled }
+                      onChange={ ({ target: { value } }) => context.setValue(value) }
+                      placeholder="Type your message"
+                      ref={ focusableRef }
+                      type="text"
+                      value={ context.value }
+                    />
+                  }
+                </FocusSinkContext.Consumer>
               : state.dictateState === STARTING ?
                 <div className="status">Starting...</div>
               : state.interims.length ?
