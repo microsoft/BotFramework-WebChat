@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { withStyleSet } from '../Context';
+import AutoFocusTextBox from '../Utils/AutoFocusTextBox';
 import IconButton from './IconButton';
 import MicrophoneButton from './MicrophoneButton';
 import SendBoxContext from './Context';
@@ -66,11 +67,11 @@ class TextBoxWithSpeech extends React.Component {
           >
             {
               state.dictateState === IDLE ?
-                <input
+                <AutoFocusTextBox
                   disabled={ props.disabled }
                   onChange={ ({ target: { value } }) => context.setValue(value) }
                   placeholder="Type your message"
-                  type="textbox"
+                  target={ props.focusSinkRef }
                   value={ context.value }
                 />
               : state.dictateState === STARTING ?

@@ -30,22 +30,36 @@ export default class Composer extends React.Component {
     this.stylesToClassNames = memoize(styleSet => mapMap(styleSet, (style, key) => key === 'options' ? style : css(style)));
 
     this.state = {
-      grammars: [],
-      setGrammars: memoize(grammars => this.setState(() => ({ grammars })))
+      context: {
+        focusSinkRef: null,
+        grammars: [],
+        saveFocusSinkRef: focusSinkRef => this.setState(({ context }) => ({
+          context: {
+            ...context,
+            focusSinkRef
+          }
+        })),
+        setGrammars: memoize(grammars => this.setState(() => ({ grammars }))),
+      }
     };
   }
 
   render() {
-    const { props, state } = this;
+    const { props: { children, locale, styleSet }, state } = this;
     const context = this.mergeContext(
-      state,
-      props.locale,
-      this.stylesToClassNames(props.styleSet || createStyleSet())
+      state.context,
+      locale,
+      this.stylesToClassNames(styleSet || createStyleSet())
     );
 
     return (
       <Context.Provider value={ context }>
-        { this.props.children }
+        {
+          typeof children === 'function' ?
+            <Context.Consumer>{ context => children(context) }</Context.Consumer>
+          :
+            children
+        }
       </Context.Provider>
     );
   }

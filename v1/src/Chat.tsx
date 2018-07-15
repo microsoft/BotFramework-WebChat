@@ -131,39 +131,39 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
-        const target = evt.target as HTMLElement;
-        const tabIndex = getTabIndex(target);
+        // const target = evt.target as HTMLElement;
+        // const tabIndex = getTabIndex(target);
 
-        if (
-            evt.altKey
-            || evt.ctrlKey
-            || evt.metaKey
-            || (!inputtableKey(evt.key) && evt.key !== 'Backspace')
-        ) {
-            // Ignore if one of the utility key (except SHIFT) is pressed
-            // E.g. CTRL-C on a link in one of the message should not jump to chat box
-            // E.g. "A" or "Backspace" should jump to chat box
-            return;
-        }
+        // if (
+        //     evt.altKey
+        //     || evt.ctrlKey
+        //     || evt.metaKey
+        //     || (!inputtableKey(evt.key) && evt.key !== 'Backspace')
+        // ) {
+        //     // Ignore if one of the utility key (except SHIFT) is pressed
+        //     // E.g. CTRL-C on a link in one of the message should not jump to chat box
+        //     // E.g. "A" or "Backspace" should jump to chat box
+        //     return;
+        // }
 
-        if (
-            target === findDOMNode(this.historyRef)
-            || typeof tabIndex !== 'number'
-            || tabIndex < 0
-        ) {
-            evt.stopPropagation();
+        // if (
+        //     target === findDOMNode(this.historyRef)
+        //     || typeof tabIndex !== 'number'
+        //     || tabIndex < 0
+        // ) {
+        //     evt.stopPropagation();
 
-            let key: string;
+        //     let key: string;
 
-            // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
-            //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
-            //         So we are manually appending the key if they can be inputted in the box
-            if (/(^|\s)Edge\/16\./.test(navigator.userAgent)) {
-                key = inputtableKey(evt.key);
-            }
+        //     // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
+        //     //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
+        //     //         So we are manually appending the key if they can be inputted in the box
+        //     if (/(^|\s)Edge\/16\./.test(navigator.userAgent)) {
+        //         key = inputtableKey(evt.key);
+        //     }
 
-            this.shellRef.focus(key);
-        }
+        //     this.shellRef.focus(key);
+        // }
     }
 
     private saveChatviewPanelRef(chatviewPanelRef: HTMLElement) {

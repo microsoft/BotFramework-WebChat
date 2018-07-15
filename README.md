@@ -13,7 +13,10 @@
          * Submit button
       * Update host config on-the-fly
    * Unknown attachment card
+   * Auto focus text box
 * Backend
+* General
+   * Folder name should be lowercase
 
 # Contributions
 

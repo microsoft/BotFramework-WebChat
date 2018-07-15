@@ -5,6 +5,7 @@
     "declarationDir": "lib",
     "emitDeclarationOnly": true,
     "lib": [
+      "dom",
       "es2016"
     ],
     "jsx": "react",
