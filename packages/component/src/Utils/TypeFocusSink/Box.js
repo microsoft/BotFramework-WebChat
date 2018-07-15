@@ -26,7 +26,7 @@ export default class Box extends React.Component {
 
     if (
       event.altKey
-      || event.ctrlKey
+      || (event.ctrlKey && event.key !== 'v')
       || event.metaKey
       || (!inputtableKey(event.key) && event.key !== 'Backspace')
     ) {
@@ -37,8 +37,6 @@ export default class Box extends React.Component {
     }
 
     if (
-      // target === findDOMNode(this.historyRef)
-      // || typeof tabIndex !== 'number'
       typeof tabIndex !== 'number'
       || tabIndex < 0
     ) {
