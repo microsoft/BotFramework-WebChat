@@ -5,7 +5,7 @@ import React from 'react';
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
-import { Box as TypeFocusSinkBox } from './Utils/TypeFocusSink';
+import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
 import Code from './Renderer/Code';
 import Text from './Renderer/Text';

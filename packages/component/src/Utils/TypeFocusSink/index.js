@@ -1,4 +1,5 @@
 import Box from './Box';
 import Context from './Context';
 
-export { Box, Context }
+export default Box
+export { Context }
