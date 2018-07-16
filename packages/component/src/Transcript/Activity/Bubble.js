@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { withStyleSet } from '../../../Context';
-import CroppedImage from '../../../Utils/CroppedImage';
+import { withStyleSet } from '../../Context';
+import CroppedImage from '../../Utils/CroppedImage';
 
 export default withStyleSet(({ children, className, image, styleSet }) =>
   <div className={ classNames(styleSet.bubble + '', (className || '') + '') }>

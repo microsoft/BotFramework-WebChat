@@ -5,6 +5,7 @@ import React from 'react';
 import { withActivity } from './Context';
 import { withStyleSet } from '../../Context';
 import Avatar from './Avatar';
+import Bubble from './Bubble';
 import TimeAgo from './TimeAgo';
 
 const ROOT_CSS = css({
@@ -35,7 +36,9 @@ export default withStyleSet(withActivity(({ activity: { cards: [card], from }, c
     <React.Fragment>
       <Avatar className={ AVATAR_CSS } />
       <div className="bubble-box">
-        { children(card) }
+        <Bubble image={ card.attachment }>
+          { children(card) }
+        </Bubble>
         <TimeAgo />
       </div>
       <div className="filler" />

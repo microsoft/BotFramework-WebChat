@@ -4,6 +4,7 @@ import React from 'react';
 import { withActivity } from './Context';
 import { withStyleSet } from '../../Context';
 import Avatar from './Avatar';
+import Bubble from './Bubble';
 import TimeAgo from './TimeAgo';
 
 export default withStyleSet(withActivity(({ activity: { cards }, children, styleSet }) =>
@@ -15,7 +16,9 @@ export default withStyleSet(withActivity(({ activity: { cards }, children, style
     {
       cards.map((card, index) =>
         <div key={ card.id } className={ styleSet.multipleCardActivityCard + '' }>
-          { children(card) }
+          <Bubble image={ card.attachment }>
+            { children(card) }
+          </Bubble>
           { index === 0 && <TimeAgo /> }
         </div>
       )
