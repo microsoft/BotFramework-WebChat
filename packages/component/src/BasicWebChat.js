@@ -7,8 +7,9 @@ import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
-import Code from './Renderer/Code';
-import Text from './Renderer/Text';
+import CodeCard from './Renderer/CodeCard';
+import HeroCard from './Renderer/HeroCard';
+import TextCard from './Renderer/TextCard';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -41,10 +42,12 @@ export default class extends React.Component {
           <BasicTranscript className={ TRANSCRIPT_CSS }>
             { card =>
               card.type === 'message' ?
-                card.subType === 'code' ?
-                  <Code>{ card.text }</Code>
+                card.attachment ?
+                  <HeroCard card={ card } />
+                : card.subType === 'code' ?
+                  <CodeCard card={ card } />
                 :
-                  <Text value={ card.text } />
+                  <TextCard card={ card } />
               : false
             }
           </BasicTranscript>

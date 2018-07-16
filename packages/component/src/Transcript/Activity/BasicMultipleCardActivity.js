@@ -16,8 +16,8 @@ export default withStyleSet(withActivity(({ activity: { cards }, children, style
     {
       cards.map((card, index) =>
         <div key={ card.id } className={ styleSet.multipleCardActivityCard + '' }>
-          <Bubble image={ card.attachment }>
-            { children(card) }
+          <Bubble>
+            { !!children && children(card) }
           </Bubble>
           { index === 0 && <TimeAgo /> }
         </div>

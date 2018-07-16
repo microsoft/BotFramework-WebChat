@@ -5,6 +5,8 @@ import {
 export default function createCodeCardStyle() {
   return {
     ...monospaceSmallFont,
-    margin: 0
+    margin: 0,
+    minHeight: 20,
+    padding: 10
   };
 }

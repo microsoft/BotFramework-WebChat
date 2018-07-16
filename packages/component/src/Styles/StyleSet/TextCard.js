@@ -4,6 +4,9 @@ import {
 
 export default function createTextCardStyle() {
   return {
-    ...primaryFont
+    ...primaryFont,
+    margin: 0,
+    minHeight: 20,
+    padding: 10
   };
 }

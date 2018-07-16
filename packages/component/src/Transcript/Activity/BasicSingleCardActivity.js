@@ -36,8 +36,8 @@ export default withStyleSet(withActivity(({ activity: { cards: [card], from }, c
     <React.Fragment>
       <Avatar className={ AVATAR_CSS } />
       <div className="bubble-box">
-        <Bubble image={ card.attachment }>
-          { children(card) }
+        <Bubble>
+          { !!children && children(card) }
         </Bubble>
         <TimeAgo />
       </div>

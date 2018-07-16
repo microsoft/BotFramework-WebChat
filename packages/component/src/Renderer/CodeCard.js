@@ -2,8 +2,8 @@ import React from 'react';
 
 import { withStyleSet } from '../Context';
 
-export default withStyleSet(({ children, styleSet }) =>
+export default withStyleSet(({ card, styleSet }) =>
   <pre className={ styleSet.codeCard }>
-    { children }
+    { card.text }
   </pre>
 )
