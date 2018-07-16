@@ -7,7 +7,7 @@ import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { withStyleSet } from '../Context';
 import IconButton from './IconButton';
 import MicrophoneButton from './MicrophoneButton';
-import SendBoxContext from './Context';
+import MainContext from '../Context';
 import SendIcon from './Assets/SendIcon';
 
 const ROOT_CSS = css({
@@ -56,8 +56,8 @@ class TextBoxWithSpeech extends React.Component {
     const { props, state } = this;
 
     return (
-      <SendBoxContext>
-        { context =>
+      <MainContext>
+        { ({ sendBoxValue, setSendBoxValue }) =>
           <div
             className={ classNames(
               ROOT_CSS + '',
@@ -71,11 +71,11 @@ class TextBoxWithSpeech extends React.Component {
                   { ({ focusableRef }) =>
                     <input
                       disabled={ props.disabled }
-                      onChange={ ({ target: { value } }) => context.setValue(value) }
+                      onChange={ ({ target: { value } }) => setSendBoxValue(value) }
                       placeholder="Type your message"
                       ref={ focusableRef }
                       type="text"
-                      value={ context.value }
+                      value={ sendBoxValue }
                     />
                   }
                 </TypeFocusSinkContext.Consumer>
@@ -96,7 +96,7 @@ class TextBoxWithSpeech extends React.Component {
                   disabled={ props.disabled }
                   onClick={ this.handleDictateClick }
                   onDictate={ ({ transcript }) => {
-                    context.setValue(transcript);
+                    setSendBoxValue(transcript);
                     this.setState(() => ({ dictateState: IDLE }));
                   } }
                   onDictateClick={ this.handleDictateClick }
@@ -110,7 +110,7 @@ class TextBoxWithSpeech extends React.Component {
             }
           </div>
         }
-      </SendBoxContext>
+      </MainContext>
     );
   }
 }
