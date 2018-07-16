@@ -6,7 +6,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import { withStyleSet } from '../Context';
 import BasicActivity from '../Activity/BasicActivity';
 import MainContext from '../Context';
-import UnknownCard from '../Renderer/UnknownCard';
+import UnknownCard from '../Attachment/UnknownCard';
 
 const ROOT_CSS = css({
   display: 'flex',

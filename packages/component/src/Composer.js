@@ -88,6 +88,7 @@ export default class Composer extends React.Component {
         sendBoxValue: '',
         setGrammars: memoize(grammars => this.setState(() => ({ grammars }))),
         setSendBoxValue: nextValue => this.updateContext(['sendBoxValue'], () => nextValue),
+        setUserID: nextUserID => this.updateContext(['userID'], () => nextUserID),
         suggestedActions: [{
           text: 'Action 01'
         }, {
@@ -108,7 +109,8 @@ export default class Composer extends React.Component {
           text: 'Action 09'
         }, {
           text: 'Action 10'
-        }]
+        }],
+        userID: 'default-user'
       }
     };
   }

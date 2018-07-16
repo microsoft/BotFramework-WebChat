@@ -6,12 +6,11 @@ export default [
     "localTimestamp": "2018-07-16T15:04:54-07:00",
     "from": {
       "id": "bot-1",
-      "name": "Bot",
-      "role": "bot"
+      "name": "Bot"
     },
     "recipient": {
       "id": "default-user",
-      "role": "user"
+      "name": "User"
     },
     "inputHint": "ignoringInput",
     "id": "45378cd0-8944-11e8-8892-3dae42a28190",
@@ -28,13 +27,12 @@ export default [
     "locale": "en-US",
     "localTimestamp": "2018-07-16T15:04:54-07:00",
     "from": {
-      "id": "bot-1",
-      "name": "Bot",
-      "role": "user"
+      "id": "default-user",
+      "name": "User"
     },
     "recipient": {
-      "id": "default-user",
-      "role": "user"
+      "id": "bot-1",
+      "name": "Bot"
     },
     "inputHint": "ignoringInput",
     "id": "453bf9a0-8944-11e8-8892-3dae42a28190",
@@ -98,12 +96,11 @@ export default [
     "localTimestamp": "2018-07-16T15:04:54-07:00",
     "from": {
       "id": "bot-1",
-      "name": "Bot",
-      "role": "bot"
+      "name": "Bot"
     },
     "recipient": {
       "id": "default-user",
-      "role": "user"
+      "name": "user"
     },
     "inputHint": "ignoringInput",
     "id": "453f06e0-8944-11e8-8892-3dae42a28190",
@@ -133,13 +130,12 @@ export default [
     "locale": "en-US",
     "localTimestamp": "2018-07-16T15:04:54-07:00",
     "from": {
-      "id": "bot-1",
-      "name": "Bot",
-      "role": "user"
+      "id": "default-user",
+      "name": "User"
     },
     "recipient": {
-      "id": "default-user",
-      "role": "user"
+      "id": "bot-1",
+      "name": "Bot"
     },
     "inputHint": "acceptingInput",
     "id": "454102b0-8944-11e8-8892-3dae42a28190",

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { withStyleSet } from '../Context';
 import CroppedImage from '../Utils/CroppedImage';
-import TextCard from './TextCard';
+import PlainText from './PlainText';
 
 const ROOT_CSS = css({
 });
@@ -17,6 +17,6 @@ export default withStyleSet(({ attachment, styleSet }) =>
         width="100%"
       />
     }
-    <TextCard attachment={ attachment } />
+    <PlainText attachment={ attachment } />
   </div>
 )

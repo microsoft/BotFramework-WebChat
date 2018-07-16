@@ -7,7 +7,11 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import TimeAgo from './TimeAgo';
 
-export default withStyleSet(withActivity(({ attachments, children, styleSet }) =>
+export default withStyleSet(withActivity(({
+  attachments,
+  children,
+  styleSet
+}) =>
   <BasicFilm
     showDots={ false }
     showScrollBar={ false }
@@ -15,7 +19,10 @@ export default withStyleSet(withActivity(({ attachments, children, styleSet }) =
     <Avatar />
     {
       attachments.map((attachment, index) =>
-        <div key={ attachment.id } className={ styleSet.multipleAttachmentActivity + '' }>
+        <div
+          className={ styleSet.multipleAttachmentActivity + '' }
+          key={ index }
+        >
           <Bubble>
             { !!children && children(attachment) }
           </Bubble>

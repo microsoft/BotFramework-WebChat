@@ -3,10 +3,11 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { withActivity } from './Context';
-import { withStyleSet } from '../Context';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import TimeAgo from './TimeAgo';
+
+import MainContext from '../Context';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -31,24 +32,27 @@ const AVATAR_CSS = css({
   flexShrink: 0
 });
 
-export default withStyleSet(withActivity(({
+export default withActivity(({
   activity: { from },
   attachments: [attachment],
-  children,
-  styleSet
+  children
 }) =>
-  <div className={ classNames(
-    ROOT_CSS + '',
-    styleSet.singleAttachmentActivity + '',
-    { 'from-user': from && from.role === 'user' }
-  ) }>
-    <Avatar className={ AVATAR_CSS } />
-    <div className="bubble-box">
-      <Bubble>
-        { !!children && children(attachment) }
-      </Bubble>
-      <TimeAgo />
-    </div>
-    <div className="filler" />
-  </div>
-))
+  <MainContext>
+    { ({ styleSet, userID }) =>
+      <div className={ classNames(
+        ROOT_CSS + '',
+        styleSet.singleAttachmentActivity + '',
+        { 'from-user': from && from.id === userID }
+      ) }>
+        <Avatar className={ AVATAR_CSS } />
+        <div className="bubble-box">
+          <Bubble>
+            { !!children && children(attachment) }
+          </Bubble>
+          <TimeAgo />
+        </div>
+        <div className="filler" />
+      </div>
+    }
+  </MainContext>
+)
