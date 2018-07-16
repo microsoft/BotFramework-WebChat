@@ -17,8 +17,8 @@ const ROOT_CSS = css({
   },
 
   '& > .bubble-box': {
-    overflow: 'hidden',
-    flexGrow: 10000
+    flexGrow: 10000,
+    overflow: 'hidden'
   },
 
   '& > .filler': {
