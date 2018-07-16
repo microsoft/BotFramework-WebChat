@@ -4,9 +4,7 @@ import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 import { withStyleSet } from '../Context';
-import ActivityComposer from './Activity/Composer';
-import BasicMultipleCardActivity from './Activity/BasicMultipleCardActivity';
-import BasicSingleCardActivity from './Activity/BasicSingleCardActivity';
+import BasicActivity from '../Activity/BasicActivity';
 import MainContext from '../Context';
 import UnknownCard from '../Renderer/UnknownCard';
 
@@ -38,19 +36,9 @@ export default withStyleSet(({ className, children, styleSet }) =>
                 className={ styleSet.activity }
                 key={ activity.id }
               >
-                <ActivityComposer activity={ activity }>
-                  {
-                    // Currently, we do not support multiple card originated from the user
-                    activity.cards.length === 1 || activity.from === 'user' ?
-                      <BasicSingleCardActivity>
-                        { card => children && children(card) || <UnknownCard card={ card } /> }
-                      </BasicSingleCardActivity>
-                    :
-                      <BasicMultipleCardActivity>
-                        { card => children && children(card) || <UnknownCard card={ card } /> }
-                      </BasicMultipleCardActivity>
-                  }
-                </ActivityComposer>
+                <BasicActivity activity={ activity }>
+                  { card => children && children(card) || <UnknownCard card={ card } /> }
+                </BasicActivity>
               </li>
             )
           }

@@ -2,7 +2,7 @@ import BasicFilm from 'react-film';
 import React from 'react';
 
 import { withActivity } from './Context';
-import { withStyleSet } from '../../Context';
+import { withStyleSet } from '../Context';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import TimeAgo from './TimeAgo';
