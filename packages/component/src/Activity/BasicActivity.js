@@ -1,16 +1,19 @@
 import React from 'react';
 
 import ActivityComposer from './Composer';
-import SingleCardActivity from './SingleCardActivity';
-import MultipleCardActivity from './MultipleCardActivity';
+import SingleAttachmentActivity from './SingleAttachmentActivity';
+import MultipleAttachmentActivity from './MultipleAttachmentActivity';
 
 export default ({ activity, children }) =>
   <ActivityComposer activity={ activity }>
     {
-      // Currently, we do not support multiple card originated from the user
-      activity.cards.length === 1 || activity.from === 'user' ?
-        <SingleCardActivity>{ children }</SingleCardActivity>
-      :
-        <MultipleCardActivity>{ children }</MultipleCardActivity>
+      ({ activity, attachments }) =>
+        // Currently, we do not support multiple attachment originated from the user
+        attachments && attachments.length && (
+          attachments.length === 1 || activity.from === 'user' ?
+            <SingleAttachmentActivity>{ children }</SingleAttachmentActivity>
+          :
+            <MultipleAttachmentActivity>{ children }</MultipleAttachmentActivity>
+        )
     }
   </ActivityComposer>

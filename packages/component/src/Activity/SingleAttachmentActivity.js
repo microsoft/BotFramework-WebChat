@@ -31,12 +31,21 @@ const AVATAR_CSS = css({
   flexShrink: 0
 });
 
-export default withStyleSet(withActivity(({ activity: { cards: [card], from }, children, styleSet }) =>
-  <div className={ classNames(ROOT_CSS + '', styleSet.singleCardActivity + '', { 'from-user': from === 'user' }) }>
+export default withStyleSet(withActivity(({
+  activity: { from },
+  attachments: [attachment],
+  children,
+  styleSet
+}) =>
+  <div className={ classNames(
+    ROOT_CSS + '',
+    styleSet.singleAttachmentActivity + '',
+    { 'from-user': from && from.role === 'user' }
+  ) }>
     <Avatar className={ AVATAR_CSS } />
     <div className="bubble-box">
       <Bubble>
-        { !!children && children(card) }
+        { !!children && children(attachment) }
       </Bubble>
       <TimeAgo />
     </div>

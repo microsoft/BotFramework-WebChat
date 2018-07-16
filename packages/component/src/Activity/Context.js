@@ -4,8 +4,12 @@ const Context = React.createContext();
 
 const withActivity = Component => props =>
   <Context.Consumer>
-    { ({ activity }) =>
-      <Component activity={ activity } { ...props }>
+    { ({ activity, attachments }) =>
+      <Component
+        activity={ activity }
+        attachments={ attachments }
+        { ...props }
+      >
         { props.children }
       </Component>
     }

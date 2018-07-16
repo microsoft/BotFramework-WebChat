@@ -8,15 +8,15 @@ import TextCard from './TextCard';
 const ROOT_CSS = css({
 });
 
-export default withStyleSet(({ card, styleSet }) =>
+export default withStyleSet(({ attachment, styleSet }) =>
   <div className={ ROOT_CSS }>
-    { !!card.attachment &&
+    { !!(attachment.content.images && attachment.content.images.length) &&
       <CroppedImage
         height={ styleSet.options.bubbleImageHeight }
-        src={ card.attachment }
+        src={ attachment.content.images[0].url }
         width="100%"
       />
     }
-    <TextCard card={ card } />
+    <TextCard attachment={ attachment } />
   </div>
 )

@@ -7,17 +7,17 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import TimeAgo from './TimeAgo';
 
-export default withStyleSet(withActivity(({ activity: { cards }, children, styleSet }) =>
+export default withStyleSet(withActivity(({ attachments, children, styleSet }) =>
   <BasicFilm
     showDots={ false }
     showScrollBar={ false }
   >
     <Avatar />
     {
-      cards.map((card, index) =>
-        <div key={ card.id } className={ styleSet.multipleCardActivityCard + '' }>
+      attachments.map((attachment, index) =>
+        <div key={ attachment.id } className={ styleSet.multipleAttachmentActivity + '' }>
           <Bubble>
-            { !!children && children(card) }
+            { !!children && children(attachment) }
           </Bubble>
           { index === 0 && <TimeAgo /> }
         </div>

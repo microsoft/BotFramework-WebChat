@@ -3,11 +3,24 @@ import React from 'react';
 
 import Context from './Context';
 
+function activityToAttachment({ contentType = 'text/markdown', text }) {
+  return {
+    content: { text },
+    contentType
+  };
+}
+
 export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createContext = memoize(activity => ({ activity }));
+    this.createContext = memoize(activity => ({
+      activity,
+      attachments: [
+        ...(activity.text ? [activityToAttachment(activity)] : []),
+        ...activity.attachments || []
+      ]
+    }));
   }
 
   render() {
@@ -16,7 +29,12 @@ export default class Composer extends React.Component {
 
     return (
       <Context.Provider value={ context }>
-        { props.children }
+        {
+          typeof props.children === 'function' ?
+            props.children(context)
+          :
+            props.children
+        }
       </Context.Provider>
     );
   }

@@ -4,10 +4,10 @@ import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCodeCardStyle from './StyleSet/CodeCard';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
-import createMultipleCardActivityCardStyle from './StyleSet/MultipleCardActivityCard';
+import createMultipleAttachmentActivityStyle from './StyleSet/MultipleAttachmentActivity';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
-import createSingleCardActivityStyle from './StyleSet/SingleCardActivity';
+import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
@@ -36,14 +36,14 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     bubble: createBubbleStyle(options),
     codeCard: createCodeCardStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
-    multipleCardActivityCard: createMultipleCardActivityCardStyle(options),
+    multipleAttachmentActivity: createMultipleAttachmentActivityStyle(options),
     options: {
       ...options,
       suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
     },
     sendBox: createSendBoxStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
-    singleCardActivity: createSingleCardActivityStyle(options),
+    singleAttachmentActivity: createSingleAttachmentActivityStyle(options),
     suggestedAction: createSuggestedActionStyle(options),
     suggestedActions: createSuggestedActionsStyle(options),
     textCard: createTextCardStyle(options),
