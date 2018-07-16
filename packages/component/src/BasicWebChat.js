@@ -37,7 +37,7 @@ export default class extends React.Component {
     const { props } = this;
 
     return (
-      <Composer>
+      <Composer styleSet={ props.styleSet }>
         <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
           <BasicTranscript className={ TRANSCRIPT_CSS }>
             { card =>

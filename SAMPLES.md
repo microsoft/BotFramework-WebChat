@@ -92,3 +92,50 @@ export default connect(state => state)(({ botConnection }) =>
   <WebChat directLine={ botConnection } />
 )
 ```
+
+# Style set
+
+Style set is a set of CSS rules that will be applied to each individual components. These rules contains customizations like margin and padding. It cannot be used to override CSS rules that will break layout, such as flexbox.
+
+## Tweaking variables for style set
+
+```jsx
+import { createStyleSet } from 'botframework-webchat';
+
+// Instead of customizing CSS, users can provide options to generate a set of styles
+const myStyleSet = createStyleSet({
+  accent: '#F33'
+});
+
+export default () =>
+  <WebChat
+    directLine={{ secret: '...' }}
+    styleSet={ myStyleSet }
+  />
+```
+
+## Modifying part of the style set
+
+```jsx
+import { createStyleSet } from 'botframework-webchat';
+
+// StyleSet is serializable and users can import/export using JSON
+const myStyleSet = createStyleSet({
+  accent: '#F33'
+});
+
+myStyleSet.bubble = {
+  ...myStyleSet.bubble,
+
+  '& > .content': {
+    minHeight: 40,
+    padding: 5
+  }
+};
+
+export default () =>
+  <WebChat
+    directLine={{ secret: '...' }}
+    styleSet={ myStyleSet }
+  />
+```
