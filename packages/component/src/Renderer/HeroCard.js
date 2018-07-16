@@ -3,7 +3,7 @@ import React from 'react';
 
 import { withStyleSet } from '../Context';
 import CroppedImage from '../Utils/CroppedImage';
-import Text from './Text';
+import TextCard from './TextCard';
 
 const ROOT_CSS = css({
 });
@@ -17,6 +17,6 @@ export default withStyleSet(({ card, styleSet }) =>
         width="100%"
       />
     }
-    <Text value={ card.text } />
+    <TextCard card={ card } />
   </div>
 )

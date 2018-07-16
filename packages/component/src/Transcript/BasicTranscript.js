@@ -8,6 +8,7 @@ import ActivityComposer from './Activity/Composer';
 import BasicMultipleCardActivity from './Activity/BasicMultipleCardActivity';
 import BasicSingleCardActivity from './Activity/BasicSingleCardActivity';
 import MainContext from '../Context';
+import UnknownCard from '../Renderer/UnknownCard';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -42,11 +43,11 @@ export default withStyleSet(({ className, children, styleSet }) =>
                     // Currently, we do not support multiple card originated from the user
                     activity.cards.length === 1 || activity.from === 'user' ?
                       <BasicSingleCardActivity>
-                        { card => children && children(card) }
+                        { card => children && children(card) || <UnknownCard card={ card } /> }
                       </BasicSingleCardActivity>
                     :
                       <BasicMultipleCardActivity>
-                        { card => children && children(card) }
+                        { card => children && children(card) || <UnknownCard card={ card } /> }
                       </BasicMultipleCardActivity>
                   }
                 </ActivityComposer>
