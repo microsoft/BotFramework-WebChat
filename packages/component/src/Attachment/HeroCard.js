@@ -1,15 +1,11 @@
-import { css } from 'glamor';
 import React from 'react';
 
 import { withStyleSet } from '../Context';
 import CroppedImage from '../Utils/CroppedImage';
-import PlainText from './PlainText';
-
-const ROOT_CSS = css({
-});
+import TextCard from './TextCard';
 
 export default withStyleSet(({ attachment, styleSet }) =>
-  <div className={ ROOT_CSS }>
+  <div>
     { !!(attachment.content.images && attachment.content.images.length) &&
       <CroppedImage
         height={ styleSet.options.bubbleImageHeight }
@@ -17,6 +13,6 @@ export default withStyleSet(({ attachment, styleSet }) =>
         width="100%"
       />
     }
-    <PlainText attachment={ attachment } />
+    <TextCard attachment={ attachment } />
   </div>
 )
