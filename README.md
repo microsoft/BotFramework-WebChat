@@ -19,7 +19,7 @@ Please paste these values to places marked by `...` in examples.
 
 ### In your non-React website
 
-Include `botchat.css` and `botchat.js` in your website, choose ID of element where webchat should be placed and paste required values you got from Feedyou. 
+Include `botchat.css` and `botchat-es5.js` (from our https://feedyou.blob.core.windows.net/webchat/latest CDN) in your website, choose ID of element where webchat should be placed and paste required values you got from Feedyou. 
 
 ```HTML
 <!DOCTYPE html>
