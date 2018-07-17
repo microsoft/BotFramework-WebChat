@@ -8,8 +8,7 @@ import Composer from './Composer';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
 import HeroCard from './Attachment/HeroCard';
-import MarkdownText from './Attachment/MarkdownText';
-import PlainText from './Attachment/PlainText';
+import TextCard from './Attachment/TextCard';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -37,15 +36,19 @@ export default class extends React.Component {
     const { props } = this;
 
     return (
-      <Composer styleSet={ props.styleSet }>
+      <Composer
+        renderMarkdown={ props.renderMarkdown }
+        styleSet={ props.styleSet }
+      >
         <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
           <BasicTranscript className={ TRANSCRIPT_CSS }>
             { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
                 <HeroCard attachment={ attachment } />
-              : attachment.contentType === 'text/plain' ?
-                <PlainText attachment={ attachment } />
               :
-                <MarkdownText attachment={ attachment } />
+                <TextCard
+                  attachment={ attachment }
+                  contentType={ attachment.contentType }
+                />
             }
           </BasicTranscript>
           <BasicSendBox

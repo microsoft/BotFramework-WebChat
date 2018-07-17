@@ -48,9 +48,11 @@
     "react-dictate-button": "^1.0.0",
     "react-film": "^1.0.0",
     "react-redux": "^5.0.7",
+    "react-sanitized-html": "^2.0.0",
     "react-say": "^1.0.0",
     "react-scroll-to-bottom": "^1.1.0",
     "redux": "^4.0.0",
+    "sanitize-html": "^1.18.2",
     "simple-update-in": "^1.2.0",
     "web-speech-cognitive-services": "^2.1.0"
   },

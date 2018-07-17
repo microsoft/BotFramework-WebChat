@@ -23,7 +23,7 @@ const activities = [
   },
   {
     "type": "message",
-    "text": "```js\r\nfunction fancyAlert(arg) {\r\n  if (arg) {\r\n    $.facebox('div.#foo');\r\n  }\r\n}\r\n```",
+    "text": "### JavaScript\r\n```js\r\nfunction fancyAlert(arg) {\r\n  if (arg) {\r\n    $.facebox('div.#foo');\r\n  }\r\n}\r\n```",
     "locale": "en-US",
     "localTimestamp": "2018-07-16T15:04:54-07:00",
     "from": {

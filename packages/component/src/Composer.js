@@ -16,13 +16,15 @@ export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.mergeContext = memoize((
+    this.mergeContext = memoize(({
       staticContext,
       lang,
+      renderMarkdown,
       styleSet
-    ) => ({
+    }) => ({
       ...staticContext,
       lang,
+      renderMarkdown,
       styleSet: styleSetToClassNames(styleSet)
     }));
 
@@ -68,15 +70,16 @@ export default class Composer extends React.Component {
 
   render() {
     const {
-      props: { children, lang, styleSet },
+      props: { children, lang, renderMarkdown, styleSet },
       state: { context: staticContext }
     } = this;
 
-    const context = this.mergeContext(
+    const context = this.mergeContext({
       staticContext,
-      lang || 'en-US',
-      styleSet || createStyleSet()
-    );
+      lang: lang || 'en-US',
+      renderMarkdown: renderMarkdown,
+      styleSet: styleSet || createStyleSet()
+    });
 
     return (
       <Context.Provider value={ context }>
