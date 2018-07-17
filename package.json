@@ -2,6 +2,9 @@
   "name": "botframework-webchat",
   "version": "4.0.0-0",
   "description": "Embeddable web chat control for the Microsoft Bot Framework",
+  "files": [
+    "lib/**/*"
+  ],
   "keywords": [],
   "scripts": {
     "bootstrap": "lerna bootstrap",
