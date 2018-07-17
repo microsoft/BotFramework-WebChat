@@ -1,4 +1,4 @@
-export default [
+const activities = [
   {
     "type": "message",
     "text": "This is a direct message.",
@@ -146,4 +146,11 @@ export default [
     },
     "timestamp": "2018-07-16T22:04:54.747Z"
   }
-]
+];
+
+const timestamp = new Date(Date.now() - 59000).toISOString();
+
+export default activities.map(activity => ({
+  ...activity,
+  timestamp
+}))
