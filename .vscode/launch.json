@@ -8,16 +8,7 @@
       "type": "node",
       "request": "attach",
       "name": "Attach",
-      "port": 37478
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch backend CLI",
-      "program": "${workspaceFolder}/packages/backend-cli/lib/index.js",
-      "outFiles": [
-        "${workspaceFolder}/packages/backend-cli/lib/**/*.js"
-      ]
+      "port": 9229
     }
   ]
 }
