@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "@babel/proposal-object-rest-spread"
+  ],
+  "presets": [
+    "@babel/preset-typescript",
+    ["@babel/preset-env", {
+      "forceAllTransforms": true,
+      "modules": "commonjs"
+    }]
+  ]
+}
