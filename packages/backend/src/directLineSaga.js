@@ -44,15 +44,14 @@ export default function* () {
       if ('connectionStatus' in result) {
         yield put(connectionStatusUpdate(result.connectionStatus));
       } else if ('postActivity' in result) {
-        directLine.postActivity({
+        const activity = {
           ...result.postActivity.payload.activity,
-          from
-        });
+          from,
+          timestamp: new Date().toISOString()
+        };
 
-        console.log({
-          ...result.postActivity.payload.activity,
-          from
-        });
+        console.log(activity);
+        directLine.postActivity(activity);
       } else if ('receiveActivity' in result) {
         yield put(receiveActivity(result.receiveActivity));
       } else if ('end' in result) {
