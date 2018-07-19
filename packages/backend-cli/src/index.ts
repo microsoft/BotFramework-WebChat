@@ -68,6 +68,7 @@ function main() {
   store.dispatch(startConnection({
     directLine: new DirectLine({
       domain: process.env.DIRECT_LINE_DOMAIN,
+      secret: process.env.DIRECT_LINE_SECRET,
       fetch,
       createFormData: attachments => {
         const formData = new FormData();
