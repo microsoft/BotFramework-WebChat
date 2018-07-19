@@ -1,13 +1,12 @@
 import { call, put, race, take, takeEvery } from 'redux-saga/effects';
 
+import createPromiseQueue from './createPromiseQueue';
+
 import { END_CONNECTION } from './Actions/endConnection';
 import { POST_ACTIVITY } from './Actions/postActivity';
 import { START_CONNECTION } from './Actions/startConnection';
-
 import connectionStatusUpdate from './Actions/connectionStatusUpdate';
 import receiveActivity from './Actions/receiveActivity';
-
-import createPromiseQueue from './createPromiseQueue';
 
 function pause(timeout) {
   return new Promise((resolve, reject) => {

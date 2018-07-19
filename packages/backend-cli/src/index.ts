@@ -1,5 +1,4 @@
 import { config } from 'dotenv';
-// import { DirectLine } from 'botframework-directlinejs';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import program from 'commander';
@@ -21,17 +20,48 @@ function main() {
     output: process.stdout
   });
 
+  rl.setPrompt('> ');
   rl.pause();
 
-  const store = createStore();
+  const store = createStore(
+    store => next => action => {
+      const { payload, type } = action;
+
+      if (type === 'DIRECT_LINE/RECEIVE_ACTIVITY') {
+        const { activity } = payload;
+
+        if (activity.type === 'message') {
+          console.log();
+          console.log(`${ activity.from.name } said: ${ activity.text || '<nothing>' }`);
+
+          const { attachments } = activity;
+
+          if (attachments && attachments.length) {
+            console.log(`(With ${ attachments.length } attachments)`);
+          }
+
+          console.log();
+          rl.prompt();
+        }
+      } else if (action.type === 'DIRECT_LINE/CONNECTION_STATUS_UPDATE') {
+        switch (payload.readyState) {
+          case 1:
+            console.log('Connecting to bot...');
+            break;
+
+          case 2:
+            console.log('Connected to bot.');
+            rl.prompt();
+            break;
+        }
+      }
+
+      return next(action);
+    }
+  );
 
   store.subscribe(() => {
-    const state = store.getState();
-
-    if (state.connection.readyState === 1) {
-      rl.resume();
-      rl.setPrompt('>');
-    }
+    // do more here
   });
 
   store.dispatch(startConnection({
@@ -61,6 +91,8 @@ function main() {
       text: line,
       type: 'message'
     }));
+
+    rl.prompt();
   });
 }
 
