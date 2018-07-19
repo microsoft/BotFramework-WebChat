@@ -31,7 +31,8 @@ function main() {
         const { activity } = payload;
 
         if (activity.type === 'message') {
-          console.log();
+          readline.clearLine(process.stdout, -1);
+          readline.moveCursor(process.stdout, -2, 0);
           console.log(`${ activity.from.name } said: ${ activity.text || '<nothing>' }`);
 
           const { attachments } = activity;
@@ -87,6 +88,8 @@ function main() {
   }));
 
   rl.on('line', line => {
+    console.log();
+
     store.dispatch(postActivity({
       text: line,
       type: 'message'
