@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/concat';
 import 'rxjs/add/operator/count';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/do';
@@ -17,6 +18,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/retryWhen';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/toArray';
 
 // import 'rxjs/add/observable/dom/ajax';
 import 'rxjs/add/observable/defer';
@@ -256,17 +258,24 @@ export enum ConnectionStatus {
 }
 
 export type Fetch = (input?: string | Request, init?: RequestInit) => Promise<Response>
+export interface FormDataAttachment {
+  contentType?: string;
+  data: any;
+  filename?: string;
+  name: string;
+}
 
 export interface DirectLineOptions {
-  secret?: string,
-  token?: string,
-  conversationId?: string,
-  watermark?: string,
-  domain?: string,
-  webSocket?: boolean,
-  pollingInterval?: number,
-  streamUrl?: string,
-  fetch: Fetch
+  secret?: string;
+  token?: string;
+  conversationId?: string;
+  watermark?: string;
+  domain?: string;
+  webSocket?: boolean;
+  pollingInterval?: number;
+  streamUrl?: string;
+  fetch: Fetch;
+  createFormData: (attachments: FormDataAttachment[]) => any;
 }
 
 const lifetimeRefreshToken = 30 * 60 * 1000;
@@ -302,7 +311,7 @@ function rejectAfter(timeout: number) {
   });
 }
 
-function fetchAsObservable(fetch: Fetch, options): Observable<{ response: any }> {
+function fetchAsObservable(fetch: Fetch, options: any): Observable<{ response: ArrayBuffer | any }> {
   const {
     responseType,
     timeout,
@@ -315,28 +324,29 @@ function fetchAsObservable(fetch: Fetch, options): Observable<{ response: any }>
     fetchOptions.credentials = 'include';
   }
 
-  console.log({ url, fetchOptions });
+  return Observable.defer(
+    () => Promise.race([
+      fetch(url, fetchOptions),
+      timeout ? rejectAfter(timeout) : null
+    ]).then(async (res: Response) => {
+      if (!res.ok) {
+        throw new Error(res.statusText || (`server returned ${ res.status }`));
+      }
 
-  return Observable.defer(() => Promise.race([
-    fetch(url, fetchOptions),
-    timeout ? rejectAfter(timeout) : null
-  ]).then(async (res: Response) => {
-    if (!res.ok) {
-      throw new Error(res.statusText || (`server returned ${ res.status }`));
-    }
-
-    if (responseType === 'arraybuffer') {
-      return { response: await res.arrayBuffer() };
-    } else {
-      return { response: await res.json() };
-    }
-  }));
+      if (responseType === 'arraybuffer') {
+        return { response: await res.arrayBuffer() };
+      } else {
+        return { response: await res.json() };
+      }
+    })
+  );
 }
 
 export class DirectLine implements IBotConnection {
   public connectionStatus$ = new BehaviorSubject(ConnectionStatus.Uninitialized);
   public activity$: Observable<Activity>;
-  public fetch: Fetch;
+  private fetchAsObservable: (options: any) => Observable<{ response: ArrayBuffer | any }>;
+  private createFormData: (attachments: FormDataAttachment[]) => any;
 
   private domain = "https://directline.botframework.com/v3/directline";
   private webSocket;
@@ -353,7 +363,8 @@ export class DirectLine implements IBotConnection {
   private tokenRefreshSubscription: Subscription;
 
   constructor(options: DirectLineOptions) {
-    this.fetch = options.fetch;
+    this.createFormData = options.createFormData;
+    this.fetchAsObservable = fetchAsObservable.bind(this, options.fetch);
     this.secret = options.secret;
     this.token = options.secret || options.token;
     this.webSocket = (options.webSocket === undefined ? true : options.webSocket) && typeof WebSocket !== 'undefined' && WebSocket !== undefined;
@@ -449,7 +460,7 @@ export class DirectLine implements IBotConnection {
       : `${this.domain}/conversations`;
     const method = this.conversationId ? "GET" : "POST";
 
-    return fetchAsObservable(this.fetch, {
+    return this.fetchAsObservable({
       method,
       timeout,
       url,
@@ -484,7 +495,7 @@ export class DirectLine implements IBotConnection {
   private refreshToken() {
     return this.checkConnection(true)
     .flatMap(_ =>
-      fetchAsObservable(this.fetch, {
+      this.fetchAsObservable({
         method: "POST",
         url: `${this.domain}/tokens/refresh`,
         timeout,
@@ -527,7 +538,7 @@ export class DirectLine implements IBotConnection {
     konsole.log("getSessionId");
     return this.checkConnection(true)
       .flatMap(_ =>
-        fetchAsObservable(this.fetch, {
+        this.fetchAsObservable({
           method: "GET",
           url: `${this.domain}/session/getsessionid`,
           withCredentials: true,
@@ -558,10 +569,10 @@ export class DirectLine implements IBotConnection {
     konsole.log("postActivity", activity);
     return this.checkConnection(true)
     .flatMap(_ =>
-      fetchAsObservable(this.fetch, {
+      this.fetchAsObservable({
         method: "POST",
         url: `${this.domain}/conversations/${this.conversationId}/activities`,
-        body: activity,
+        body: JSON.stringify(activity),
         timeout,
         headers: {
           "Content-Type": "application/json",
@@ -583,27 +594,36 @@ export class DirectLine implements IBotConnection {
     .flatMap(_ => {
       // To send this message to DirectLine we need to deconstruct it into a "template" activity
       // and one blob for each attachment.
-      formData = new FormData();
-      formData.append('activity', new Blob([JSON.stringify(messageWithoutAttachments)], { type: 'application/vnd.microsoft.activity' }));
 
-      return Observable.from(attachments || [])
-      .flatMap((media: Media) =>
-        fetchAsObservable(this.fetch, {
-          method: "GET",
-          url: media.contentUrl,
-          responseType: 'arraybuffer'
-        })
-        .do(ajaxResponse =>
-          formData.append('file', new Blob([ajaxResponse.response], { type: media.contentType }), media.name)
-        )
-      )
-      .count()
+      const message: Observable<FormDataAttachment> = Observable.from([{
+        contentType: 'application/vnd.microsoft.activity',
+        data: JSON.stringify(messageWithoutAttachments),
+        name: 'activity'
+      }]);
+
+      return message.concat(
+        Observable
+          .from(attachments || [])
+          .flatMap((media: Media) =>
+            this.fetchAsObservable({
+              method: 'GET',
+              url: media.contentUrl,
+              responseType: 'arraybuffer'
+            })
+            .map(ajaxResponse => ({
+              contentType: media.contentType,
+              data: ajaxResponse.response,
+              filename: media.name,
+              name: 'file'
+            }))
+          )
+      ).toArray();
     })
-    .flatMap(_ =>
-      fetchAsObservable(this.fetch, {
+    .flatMap((formDataAttachments: FormDataAttachment[]) =>
+      this.fetchAsObservable({
         method: "POST",
         url: `${this.domain}/conversations/${this.conversationId}/upload?userId=${messageWithoutAttachments.from.id}`,
-        body: formData,
+        body: this.createFormData(formDataAttachments),
         timeout,
         headers: {
           "Authorization": `Bearer ${this.token}`
@@ -635,7 +655,7 @@ export class DirectLine implements IBotConnection {
     return Observable.interval(this.pollingInterval)
     .combineLatest(this.checkConnection())
     .flatMap(_ =>
-      fetchAsObservable(this.fetch, {
+      this.fetchAsObservable({
         method: "GET",
         url: `${this.domain}/conversations/${this.conversationId}/activities?watermark=${this.watermark}`,
         timeout,
@@ -719,7 +739,7 @@ export class DirectLine implements IBotConnection {
   private reconnectToConversation() {
     return this.checkConnection(true)
     .flatMap(_ =>
-      fetchAsObservable(this.fetch, {
+      this.fetchAsObservable({
         method: "GET",
         url: `${this.domain}/conversations/${this.conversationId}?watermark=${this.watermark}`,
         timeout,

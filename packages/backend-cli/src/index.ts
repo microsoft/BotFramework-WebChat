@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 // import { DirectLine } from 'botframework-directlinejs';
 import fetch from 'node-fetch';
+import FormData from 'form-data';
 import program from 'commander';
 import readline from 'readline';
 
@@ -8,6 +9,8 @@ import { createStore, postActivity, startConnection } from 'backend';
 import { DirectLine } from './directLine';
 
 config();
+
+const CRLF = '\r\n';
 
 program
   .version('1.0.0');
@@ -35,6 +38,18 @@ function main() {
     directLine: new DirectLine({
       domain: process.env.DIRECT_LINE_DOMAIN,
       fetch,
+      createFormData: attachments => {
+        const formData = new FormData();
+
+        attachments.forEach(({ contentType, data, filename, name }) => {
+          formData.append(name, data, {
+            contentType,
+            filename
+          });
+        });
+
+        return formData;
+      },
       webSocket: false
     }),
     userID: 'default-user',

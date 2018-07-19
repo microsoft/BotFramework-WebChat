@@ -50,8 +50,9 @@ export default function* () {
           timestamp: new Date().toISOString()
         };
 
-        console.log(activity);
-        directLine.postActivity(activity);
+        const postActivityObservable = directLine.postActivity(activity);
+
+        yield call(postActivityObservable.toPromise.bind(postActivityObservable));
       } else if ('receiveActivity' in result) {
         yield put(receiveActivity(result.receiveActivity));
       } else if ('end' in result) {
