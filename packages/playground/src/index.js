@@ -9,7 +9,7 @@ import SpoeechOnlyButtonApp from './SpeechOnlyButton/index';
 css.global('html, body, #root', { height: '100%' });
 css.global('body', { margin: 0 });
 
-if (/speech-only-button(\.html)?/.test(window.location.pathname)) {
+if (/speech-only-button(\.html)?/.test(window.location.href)) {
   ReactDOM.render(<SpoeechOnlyButtonApp />, document.getElementById('root'));
 } else {
   ReactDOM.render(<App />, document.getElementById('root'));
