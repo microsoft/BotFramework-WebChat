@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Bump [`node-sass`](https://github.com/sass/node-sass) to 4.9.2, by [@corinagum](https://github.com/corinagum) in PR [#1043](https://github.com/Microsoft/BotFramework-WebChat/pull/1043)
 - Add TSLint, by [@adeogunsamuel](https://github.com/adeogunsamuel) in [#1017](https://github.com/Microsoft/BotFramework-WebChat/pull/1017)
+- Add `role === 'user'` to `fromMe` check in [#1053](https://github.com/Microsoft/BotFramework-WebChat/pull/1053)
 
 ### Changed
 - Fix typo in `de-DE`, by [@jKelio](https://github.com/jKelio) in [#1022](https://github.com/Microsoft/BotFramework-WebChat/pull/1022)
