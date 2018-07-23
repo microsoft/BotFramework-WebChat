@@ -26,17 +26,33 @@ const MessagePaneView = (props: MessagePaneProps) =>
     </div>;
 
 class SuggestedActions extends React.Component<MessagePaneProps, {}> {
+    private toBeFocusedDocument: Element = null;
+
     constructor(props: MessagePaneProps) {
         super(props);
     }
 
-    actionClick(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
+    actionMouseDown(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
+        const currentFocusedItem = document.querySelector(':focus');
+        if(currentFocusedItem && currentFocusedItem.className.indexOf("wc-shellinput") > -1) {
+            this.toBeFocusedDocument = currentFocusedItem;
+        } else {
+            this.toBeFocusedDocument = null;
+        }
+    }
 
+    actionClick(e: React.MouseEvent<HTMLElement>, cardAction: CardAction) {
         //"stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
         if (!this.props.activityWithSuggestedActions) return;
 
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
         this.props.doCardAction(cardAction.type, cardAction.value, cardAction.title);
+
+        if(this.toBeFocusedDocument && this.toBeFocusedDocument instanceof HTMLElement) {
+            this.toBeFocusedDocument.focus();
+            this.toBeFocusedDocument = null;
+        }
+
         e.stopPropagation();
     }
 
@@ -56,7 +72,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             >
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
-                        <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
+                        <button type="button" onClick={ e => this.actionClick(e, action) } onMouseDown={ e => this.actionMouseDown(e, action) } title={ action.title }>
                             { action.title }
                         </button>
                     </li>
