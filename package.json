@@ -8,7 +8,7 @@
     "build-test": "cd test && npm run build",
     "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
     "build-css": "node-sass ./src/scss/ -o . && rimraf ./includes/",
-    "build-ac-config": "ac-scss2json ./src/scss/includes/adaptive-card-config.scss > adaptivecards-hostconfig.json",
+    "build-ac-config": "npx microsoft-adaptivecards-scss-to-json ./src/scss/includes/adaptive-card-config.scss > adaptivecards-hostconfig.json",
     "build-all-style": "npm run build-css && npm run build-ac-config && webpack",
     "build": "npm run build-css && npm run tslint && tsc && webpack --progress",
     "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
@@ -48,6 +48,7 @@
     "tslib": "1.7.1"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.21",
     "@types/markdown-it": "0.0.2",
     "@types/react": "15.6.1",
     "@types/react-dom": "15.5.7",
@@ -59,8 +60,7 @@
     "gulp-exec": "^3.0.1",
     "http-server": "^0.10.0",
     "last-commit-log": "^1.0.3",
-    "microsoft-adaptivecards-scss-to-json": "1.2.0",
-    "node-sass": "4.7.2",
+    "node-sass": "^4.9.2",
     "npm-run-all": "3.1.2",
     "rimraf": "2.6.1",
     "semver": "^5.5.0",
