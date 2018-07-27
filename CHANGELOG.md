@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Fix typo in `de-DE`, by [@jKelio](https://github.com/jKelio) in [#1022](https://github.com/Microsoft/BotFramework-WebChat/pull/1022)
+- Fix [#1045](https://github.com/Microsoft/BotFramework-WebChat/issues/1045) IE11 uploading twice, in [#1046](https://github.com/Microsoft/BotFramework-WebChat/pull/1046)
 
 ## [0.14.0] - 2018-06-26
 ### Added
