@@ -278,7 +278,7 @@ const echo_uploads = (conversationId: string, req: express.Request, res: express
                     fs.unlinkSync(upload_path + req["files"][i].filename);
                 }
             }
-        }, 2000);
+        }, 10000);
 
         return;
     });

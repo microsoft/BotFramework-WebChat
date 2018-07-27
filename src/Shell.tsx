@@ -61,8 +61,12 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     }
 
     private onChangeFile() {
-        this.props.sendFiles(this.fileInput.files);
-        this.fileInput.value = null;
+        // IE11 quirks: IE11 fire `onChange` event if we programmatically set `this.fileInput.value = null`, it should not
+        if (this.fileInput.files.length) {
+            this.props.sendFiles(this.fileInput.files);
+            this.fileInput.value = null;
+        }
+
         this.textInput.focus();
     }
 
