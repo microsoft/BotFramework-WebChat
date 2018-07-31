@@ -662,7 +662,7 @@ var commands_map: CommandValuesMap = {
     },
     "card BingSports": {
         client: function () {
-            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Seattle vs Panthers');
+            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container p'), element => element.innerHTML === 'Seattle vs Panthers');
         },
         server: function (conversationId, sendActivity, json) {
             sendActivity(conversationId, server_content.adaptive_cardsFn(json));
@@ -682,7 +682,18 @@ var commands_map: CommandValuesMap = {
     },
     "card Inputs": {
         client: function () {
-            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Input.Text elements');
+            return [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container p'), element => element.innerHTML === 'Input.Text elements');
+        },
+        server: function (res, sendActivity, json) {
+            sendActivity(res, server_content.adaptive_cardsFn(json));
+        }
+    },
+    "card Markdown": {
+        client: function () {
+            return (
+                [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container strong'), element => element.innerHTML === 'Bold')
+                && [].some.call(document.querySelectorAll('.wc-adaptive-card .ac-container em'), element => element.innerHTML === 'Italic')
+            );
         },
         server: function (res, sendActivity, json) {
             sendActivity(res, server_content.adaptive_cardsFn(json));
