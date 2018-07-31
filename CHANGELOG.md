@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.14.1] - 2018-07-31
 ### Added
 - Bump [`node-sass`](https://github.com/sass/node-sass) to 4.9.2, by [@corinagum](https://github.com/corinagum) in PR [#1043](https://github.com/Microsoft/BotFramework-WebChat/pull/1043).
 - Add TSLint, by [@adeogunsamuel](https://github.com/adeogunsamuel) in [#1017](https://github.com/Microsoft/BotFramework-WebChat/pull/1017)
