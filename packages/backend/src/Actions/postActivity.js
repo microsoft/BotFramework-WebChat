@@ -1,4 +1,9 @@
+import { FULFILLED, PENDING, REJECTED } from 'redux-promise-middleware';
+
 const POST_ACTIVITY = 'DIRECT_LINE/POST_ACTIVITY';
+export const POST_ACTIVITY_FULFILLED = `${ POST_ACTIVITY }_${ FULFILLED }`;
+export const POST_ACTIVITY_PENDING = `${ POST_ACTIVITY }_${ PENDING }`;
+export const POST_ACTIVITY_REJECTED = `${ POST_ACTIVITY }_${ REJECTED }`;
 
 export default function (activity) {
   return {
@@ -7,4 +12,6 @@ export default function (activity) {
   };
 }
 
-export { POST_ACTIVITY }
+export {
+  POST_ACTIVITY
+}
