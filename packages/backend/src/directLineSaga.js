@@ -2,8 +2,10 @@ import { call, fork, put, race, take, takeEvery } from 'redux-saga/effects';
 import updateIn from 'simple-update-in';
 
 import createPromiseQueue from './createPromiseQueue';
+import deleteKey from './util/deleteKey';
 import getTimestamp from './util/getTimestamp';
 import observableToPromise from './util/observableToPromise';
+import sleep from './util/sleep';
 import uniqueID from './util/uniqueID';
 
 import {
@@ -17,6 +19,8 @@ import { END_CONNECTION } from './Actions/endConnection';
 import { START_CONNECTION } from './Actions/startConnection';
 import connectionStatusUpdate from './Actions/connectionStatusUpdate';
 import upsertActivity, { UPSERT_ACTIVITY } from './Actions/upsertActivity';
+
+const SEND_TIMEOUT = 5000;
 
 export default function* () {
   yield takeEvery(START_CONNECTION, function* ({ payload: { directLine, userID, username } }) {
@@ -70,18 +74,16 @@ export default function* () {
 }
 
 function* postActivity(directLine, activity) {
-  const clientActivityID = uniqueID();
+  const { channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
-    ...activity,
+    ...deleteKey(activity, 'id'),
     channelData: {
       clientActivityID,
       ...activity.channelData
     },
     timestamp: getTimestamp()
   };
-
-  delete activity.id;
 
   const meta = { clientActivityID };
 
@@ -110,15 +112,27 @@ function* postActivity(directLine, activity) {
     return;
   }
 
-  const echoedAction = yield take(({ payload, type }) => {
-    const { activity: { channelData = {}, id } } = payload;
+  const { echo } = yield race({
+    echo: take(({ payload, type }) => {
+      const { activity: { channelData = {}, id } } = payload;
 
-    return type === UPSERT_ACTIVITY && channelData.clientActivityID === clientActivityID && id;
+      return type === UPSERT_ACTIVITY && channelData.clientActivityID === clientActivityID && id;
+    }),
+    timeout: call(sleep, SEND_TIMEOUT)
   });
 
-  yield put({
-    type: POST_ACTIVITY_FULFILLED,
-    meta,
-    payload: { activity: echoedAction.payload.activity }
-  });
+  if (echo) {
+    yield put({
+      type: POST_ACTIVITY_FULFILLED,
+      meta,
+      payload: { activity: echo.payload.activity }
+    });
+  } else {
+    yield put({
+      type: POST_ACTIVITY_REJECTED,
+      error: true,
+      meta,
+      payload: new Error('timeout')
+    });
+  }
 }
