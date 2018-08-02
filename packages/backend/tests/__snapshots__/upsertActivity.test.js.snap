@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Receive activity 1`] = `
+exports[`Upsert activity 1`] = `
 Array [
   Object {
     "text": "Hello, World!",

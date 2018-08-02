@@ -1,6 +1,6 @@
 import createFacility from './createFacility';
 
-test('Receive activity', async () => {
+test('Upsert activity', async () => {
   const { directLine, store } = await createFacility();
 
   directLine.activity.next({

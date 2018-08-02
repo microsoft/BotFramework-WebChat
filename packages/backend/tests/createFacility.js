@@ -34,8 +34,10 @@ export default async function ({
 } = {}) {
   const actions = [];
   const directLine = mockDirectLine();
+  const latestActions = {};
   const store = createStore(store => next => action => {
     actions.push(action);
+    latestActions[action.type] = action;
 
     return next(action);
   });
@@ -57,6 +59,7 @@ export default async function ({
   return {
     actions,
     directLine,
+    latestActions,
     store
   };
 }

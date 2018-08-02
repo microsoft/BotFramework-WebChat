@@ -20,6 +20,9 @@ class MockDirectLine {
             id
           });
         },
+        error: err => {
+          observer.error(err);
+        },
         peek: () => activity
       });
     });

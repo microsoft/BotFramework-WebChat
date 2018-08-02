@@ -5,7 +5,7 @@ import {
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../Actions/postActivity';
-import { RECEIVE_ACTIVITY } from '../Actions/receiveActivity';
+import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
 
 const DEFAULT_STATE = [];
 
@@ -25,7 +25,7 @@ function updateActivity(activities, clientActivityID, updater) {
   });
 }
 
-function handleReceiveActivity(state, nextActivity) {
+function handleUpsertActivity(state, nextActivity) {
   const { channelData: { clientChannelID: nextClientChannelID } = {} } = nextActivity;
   let found;
 
@@ -50,16 +50,8 @@ function handleReceiveActivity(state, nextActivity) {
 
 export default function (state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
-    case RECEIVE_ACTIVITY:
-      state = handleReceiveActivity(state, payload.activity);
-
-      break;
-
-    case POST_ACTIVITY_PENDING:
-      state = [
-        ...state,
-        updateIn(meta.activity, ['channelData', 'state'], () => 'sending')
-      ];
+    case UPSERT_ACTIVITY:
+      state = handleUpsertActivity(state, payload.activity);
 
       break;
 
@@ -77,7 +69,7 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
         state,
         meta.clientActivityID,
         // We will replace the activity with the version from the server
-        () => updateIn(payload.activity, ['channelData', 'state'], () => 'sent')
+        activity => updateIn(activity, ['channelData', 'state'], () => 'sent')
       );
 
       break;

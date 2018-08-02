@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Post activity: pending to send: activity 1`] = `
+exports[`Post activity failed: pending to send: activity 1`] = `
 Array [
   Object {
     "channelData": Object {
@@ -17,7 +17,7 @@ Array [
 ]
 `;
 
-exports[`Post activity: pending to send: store 1`] = `
+exports[`Post activity failed: pending to send: store 1`] = `
 Array [
   Object {
     "channelData": Object {
@@ -35,7 +35,7 @@ Array [
 ]
 `;
 
-exports[`Post activity: send completed: actions 1`] = `
+exports[`Post activity failed: send failed: actions 1`] = `
 Array [
   Object {
     "payload": Object {
@@ -48,18 +48,6 @@ Array [
   },
   Object {
     "meta": Object {
-      "activity": Object {
-        "channelData": Object {
-          "clientActivityID": "4feornb",
-        },
-        "from": Object {
-          "id": "default-user",
-          "name": "John Doe",
-        },
-        "text": "Hello, World!",
-        "timestamp": "2000-01-01T00:00:01.000Z",
-        "type": "message",
-      },
       "clientActivityID": "4feornb",
     },
     "type": "DIRECT_LINE/POST_ACTIVITY_PENDING",
@@ -69,67 +57,41 @@ Array [
       "activity": Object {
         "channelData": Object {
           "clientActivityID": "4feornb",
+          "state": "sending",
         },
         "from": Object {
           "id": "default-user",
           "name": "John Doe",
         },
-        "id": "server-id:123",
         "text": "Hello, World!",
         "timestamp": "2000-01-01T00:00:01.000Z",
         "type": "message",
       },
     },
-    "type": "DIRECT_LINE/RECEIVE_ACTIVITY",
+    "type": "DIRECT_LINE/UPSERT_ACTIVITY",
   },
   Object {
+    "error": true,
     "meta": Object {
-      "activity": Object {
-        "channelData": Object {
-          "clientActivityID": "4feornb",
-        },
-        "from": Object {
-          "id": "default-user",
-          "name": "John Doe",
-        },
-        "text": "Hello, World!",
-        "timestamp": "2000-01-01T00:00:01.000Z",
-        "type": "message",
-      },
       "clientActivityID": "4feornb",
     },
-    "payload": Object {
-      "activity": Object {
-        "channelData": Object {
-          "clientActivityID": "4feornb",
-        },
-        "from": Object {
-          "id": "default-user",
-          "name": "John Doe",
-        },
-        "id": "server-id:123",
-        "text": "Hello, World!",
-        "timestamp": "2000-01-01T00:00:01.000Z",
-        "type": "message",
-      },
-    },
-    "type": "DIRECT_LINE/POST_ACTIVITY_FULFILLED",
+    "payload": "some error",
+    "type": "DIRECT_LINE/POST_ACTIVITY_REJECTED",
   },
 ]
 `;
 
-exports[`Post activity: send completed: store 1`] = `
+exports[`Post activity failed: send failed: store 1`] = `
 Array [
   Object {
     "channelData": Object {
       "clientActivityID": "4feornb",
-      "state": "sent",
+      "state": "send failed",
     },
     "from": Object {
       "id": "default-user",
       "name": "John Doe",
     },
-    "id": "server-id:123",
     "text": "Hello, World!",
     "timestamp": "2000-01-01T00:00:01.000Z",
     "type": "message",

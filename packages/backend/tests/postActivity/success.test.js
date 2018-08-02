@@ -1,7 +1,7 @@
-import createFacility from './createFacility';
-import { POST_ACTIVITY } from '../src/Actions/postActivity';
+import createFacility from '../createFacility';
+import { POST_ACTIVITY } from '../../src/Actions/postActivity';
 
-test('Post activity', async () => {
+test('Post activity success', async () => {
   const { actions, directLine, store } = await createFacility();
 
   // Clear out actions
