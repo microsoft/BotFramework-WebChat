@@ -35,30 +35,35 @@ export default class extends React.Component {
   render() {
     const { props } = this;
 
+    // TODO: Implement "scrollToBottom" feature
+
     return (
-      <Composer
-        activities={ props.activities }
-        renderMarkdown={ props.renderMarkdown }
-        send={ props.send }
-        styleSet={ props.styleSet }
-        suggestedActions={ props.suggestedActions }
-      >
-        <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
-          <BasicTranscript className={ TRANSCRIPT_CSS }>
-            { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
-                <HeroCard attachment={ attachment } />
-              :
-                <TextCard
-                  attachment={ attachment }
-                  contentType={ attachment.contentType }
-                />
-            }
-          </BasicTranscript>
-          <BasicSendBox
-            className={ SEND_BOX_CSS }
-          />
-        </TypeFocusSinkBox>
-      </Composer>
+      <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
+        { ({ focus }) =>
+          <Composer
+            activities={ props.activities }
+            focusSendBox={ focus }
+            renderMarkdown={ props.renderMarkdown }
+            send={ props.send }
+            styleSet={ props.styleSet }
+            suggestedActions={ props.suggestedActions }
+          >
+            <BasicTranscript className={ TRANSCRIPT_CSS }>
+              { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
+                  <HeroCard attachment={ attachment } />
+                :
+                  <TextCard
+                    attachment={ attachment }
+                    contentType={ attachment.contentType }
+                  />
+              }
+            </BasicTranscript>
+            <BasicSendBox
+              className={ SEND_BOX_CSS }
+            />
+          </Composer>
+        }
+      </TypeFocusSinkBox>
     );
   }
 }

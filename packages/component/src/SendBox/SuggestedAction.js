@@ -12,7 +12,7 @@ const SUGGESTED_ACTION_CSS = css({
 
 export default withStyleSet(({ text, type, value, styleSet }) =>
   <MainContext.Consumer>
-    { ({ send }) =>
+    { ({ focusSendBox, send }) =>
       <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
         <button onClick={ () => {
           if (type === 'imBack') {
@@ -20,6 +20,8 @@ export default withStyleSet(({ text, type, value, styleSet }) =>
               text: value,
               type: 'message'
             });
+
+            focusSendBox();
           }
         } }>
           <nobr>{ text }</nobr>

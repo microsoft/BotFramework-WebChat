@@ -11,6 +11,7 @@ export default class Box extends React.Component {
   constructor(props) {
     super(props);
 
+    this.focus = this.focus.bind(this);
     this.handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
 
     this.state = {
@@ -18,6 +19,12 @@ export default class Box extends React.Component {
         focusableRef: React.createRef()
       }
     };
+  }
+
+  focus() {
+    const { current } = this.state.context.focusableRef;
+
+    current && current.focus();
   }
 
   handleKeyDownCapture(event) {
@@ -51,9 +58,7 @@ export default class Box extends React.Component {
       //   key = inputtableKey(event.key);
       // }
 
-      const { current } = this.state.context.focusableRef;
-
-      current && current.focus();
+      this.focus();
     }
   }
 
@@ -68,7 +73,7 @@ export default class Box extends React.Component {
           style={ DEFAULT_STYLE }
           tabIndex={ -1 }
         >
-          { children }
+          { typeof children === 'function' ? children({ focus: this.focus }) : children }
         </div>
       </Context.Provider>
     );

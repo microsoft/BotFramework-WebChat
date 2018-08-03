@@ -53,10 +53,12 @@ class TextBoxWithSpeech extends React.Component {
     }));
   }
 
-  handleSubmit(send, sendBoxValue, setSendBoxValue, event) {
+  handleSubmit(scrollToBottom, send, sendBoxValue, setSendBoxValue, event) {
     event.preventDefault();
 
     if (sendBoxValue) {
+      scrollToBottom();
+
       send({
         text: sendBoxValue,
         type: 'message'
@@ -71,14 +73,14 @@ class TextBoxWithSpeech extends React.Component {
 
     return (
       <MainContext>
-        { ({ send, sendBoxValue, setSendBoxValue }) =>
+        { ({ scrollToBottom, send, sendBoxValue, setSendBoxValue }) =>
           <form
             className={ classNames(
               ROOT_CSS + '',
               props.styleSet.sendBoxTextBox + '',
               (props.className || '') + '',
             ) }
-            onSubmit={ this.handleSubmit.bind(this, send, sendBoxValue, setSendBoxValue) }
+            onSubmit={ this.handleSubmit.bind(this, scrollToBottom, send, sendBoxValue, setSendBoxValue) }
           >
             {
               state.dictateState === IDLE ?

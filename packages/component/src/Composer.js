@@ -19,19 +19,23 @@ export default class Composer extends React.Component {
     this.mergeContext = memoize(({
       staticContext,
       activities,
+      focusSendBox,
       lang,
       renderMarkdown,
+      scrollToBottom,
       send,
       styleSet,
       suggestedActions
     }) => ({
       ...staticContext,
-      activities,
+      activities: activities || [],
+      focusSendBox: focusSendBox || (() => 0),
       lang,
-      renderMarkdown,
-      send,
+      renderMarkdown: renderMarkdown || (markdown => markdown),
+      scrollToBottom: scrollToBottom || (() => 0),
+      send: send || (() => 0),
       styleSet: styleSetToClassNames(styleSet),
-      suggestedActions
+      suggestedActions: suggestedActions || []
     }));
 
     this.state = {
@@ -58,8 +62,10 @@ export default class Composer extends React.Component {
       props: {
         activities = [],
         children,
+        focusSendBox,
         lang,
         renderMarkdown,
+        scrollToBottom,
         send,
         styleSet,
         suggestedActions = []
@@ -70,8 +76,10 @@ export default class Composer extends React.Component {
     const context = this.mergeContext({
       staticContext,
       activities,
+      focusSendBox,
       lang: lang || 'en-US',
       renderMarkdown: renderMarkdown,
+      scrollToBottom,
       send,
       styleSet: styleSet || createStyleSet(),
       suggestedActions
