@@ -26,20 +26,22 @@ function updateActivity(activities, clientActivityID, updater) {
 }
 
 function handleUpsertActivity(state, nextActivity) {
-  const { channelData: { clientChannelID: nextClientChannelID } = {} } = nextActivity;
+  const { channelData: { clientActivityID: nextClientActivityID } = {} } = nextActivity;
   let found;
 
-  state = state.map(activity => {
-    const { channelData: { clientChannelID } = {} } = activity;
+  if (nextClientActivityID) {
+    state = state.map(activity => {
+      const { channelData: { clientActivityID } = {} } = activity;
 
-    if (clientChannelID === nextClientChannelID) {
-      found = true;
+      if (clientActivityID === nextClientActivityID) {
+        found = true;
 
-      return nextActivity;
-    } else {
-      return activity;
-    }
-  });
+        return nextActivity;
+      } else {
+        return activity;
+      }
+    });
+  }
 
   if (!found) {
     state = [...state, nextActivity];

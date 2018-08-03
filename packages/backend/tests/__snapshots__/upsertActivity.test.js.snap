@@ -8,3 +8,17 @@ Array [
   },
 ]
 `;
+
+exports[`Upsert activity 2`] = `
+Array [
+  Object {
+    "payload": Object {
+      "activity": Object {
+        "text": "Hello, World!",
+        "type": "message",
+      },
+    },
+    "type": "DIRECT_LINE/UPSERT_ACTIVITY",
+  },
+]
+`;

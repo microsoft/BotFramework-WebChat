@@ -1,7 +1,10 @@
 import createFacility from './createFacility';
 
 test('Upsert activity', async () => {
-  const { directLine, store } = await createFacility();
+  const { actions, directLine, store } = await createFacility();
+
+  // Clear out actions
+  actions.splice(0);
 
   directLine.activity.next({
     text: 'Hello, World!',
@@ -11,4 +14,5 @@ test('Upsert activity', async () => {
   await 0;
 
   expect(store.getState().activities).toMatchSnapshot();
+  expect(actions).toMatchSnapshot();
 });

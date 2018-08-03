@@ -28,7 +28,6 @@ test('Post activity success', async () => {
   await 0;
   expect(actions).toMatchSnapshot('send completed: actions');
   expect(store.getState().activities).toMatchSnapshot('send completed: store');
-
   expect(store.getState().activities[0]).toHaveProperty('channelData.state', 'sent');
   expect(store.getState().activities[0]).toHaveProperty('id');
 });
