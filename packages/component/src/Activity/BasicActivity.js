@@ -5,10 +5,7 @@ import SingleAttachmentActivity from './SingleAttachmentActivity';
 import MultipleAttachmentActivity from './MultipleAttachmentActivity';
 import UnknownCard from '../../../playground/node_modules/component/lib/Attachment/UnknownCard';
 
-export default ({ activity, children }) => {
-  console.log(activity);
-
-  return (
+export default ({ activity, children }) =>
   <ActivityComposer activity={ activity }>
     {
       ({ activity, attachments }) =>
@@ -24,5 +21,3 @@ export default ({ activity, children }) => {
           </UnknownCard>
     }
   </ActivityComposer>
-  );
-}

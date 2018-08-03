@@ -1,15 +1,10 @@
-import { css } from 'glamor';
+import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
 
 import { withStyleSet } from '../Context';
-import BasicFilm from 'react-film';
 import MainContext from '../Context';
-
-const SUGGESTED_ACTION_CSS = css({
-  display: 'inline-block',
-  whiteSpace: 'initial',
-});
+import SuggestedAction from './SuggestedAction';
 
 export default withStyleSet(({ className, styleSet }) =>
   <MainContext.Consumer>
@@ -22,14 +17,12 @@ export default withStyleSet(({ className, styleSet }) =>
       >
         {
           suggestedActions.map((suggestedAction, index) =>
-            <div
-              className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }
+            <SuggestedAction
               key={ index }
-            >
-              <button>
-                <nobr>{ suggestedAction.text }</nobr>
-              </button>
-            </div>
+              text={ suggestedAction.title }
+              type={ suggestedAction.type }
+              value={ suggestedAction.value }
+            />
           )
         }
       </BasicFilm>

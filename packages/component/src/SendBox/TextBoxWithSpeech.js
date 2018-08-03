@@ -53,11 +53,15 @@ class TextBoxWithSpeech extends React.Component {
     }));
   }
 
-  handleSubmit(onSend, sendBoxValue, setSendBoxValue, event) {
+  handleSubmit(send, sendBoxValue, setSendBoxValue, event) {
     event.preventDefault();
 
     if (sendBoxValue) {
-      onSend({ type: 'send', value: sendBoxValue });
+      send({
+        text: sendBoxValue,
+        type: 'message'
+      });
+
       setSendBoxValue('');
     }
   }
@@ -67,14 +71,14 @@ class TextBoxWithSpeech extends React.Component {
 
     return (
       <MainContext>
-        { ({ onSend, sendBoxValue, setSendBoxValue }) =>
+        { ({ send, sendBoxValue, setSendBoxValue }) =>
           <form
             className={ classNames(
               ROOT_CSS + '',
               props.styleSet.sendBoxTextBox + '',
               (props.className || '') + '',
             ) }
-            onSubmit={ this.handleSubmit.bind(this, onSend, sendBoxValue, setSendBoxValue) }
+            onSubmit={ this.handleSubmit.bind(this, send, sendBoxValue, setSendBoxValue) }
           >
             {
               state.dictateState === IDLE ?

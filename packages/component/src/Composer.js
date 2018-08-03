@@ -21,15 +21,17 @@ export default class Composer extends React.Component {
       activities,
       lang,
       renderMarkdown,
-      onSend,
-      styleSet
+      send,
+      styleSet,
+      suggestedActions
     }) => ({
       ...staticContext,
       activities,
       lang,
       renderMarkdown,
-      onSend,
-      styleSet: styleSetToClassNames(styleSet)
+      send,
+      styleSet: styleSetToClassNames(styleSet),
+      suggestedActions
     }));
 
     this.state = {
@@ -40,27 +42,6 @@ export default class Composer extends React.Component {
         setGrammars: memoize(grammars => this.setState(() => ({ grammars }))),
         setSendBoxValue: nextValue => this.updateContext(['sendBoxValue'], () => nextValue),
         setUserID: nextUserID => this.updateContext(['userID'], () => nextUserID),
-        suggestedActions: [{
-          text: 'Action 01'
-        }, {
-          text: 'Action 02'
-        }, {
-          text: 'Action 03'
-        }, {
-          text: 'Action 04'
-        }, {
-          text: 'Action 05'
-        }, {
-          text: 'Action 06'
-        }, {
-          text: 'Action 07'
-        }, {
-          text: 'Action 08'
-        }, {
-          text: 'Action 09'
-        }, {
-          text: 'Action 10'
-        }],
         userID: 'default-user'
       }
     };
@@ -74,7 +55,15 @@ export default class Composer extends React.Component {
 
   render() {
     const {
-      props: { activities, children, lang, renderMarkdown, onSend, styleSet },
+      props: {
+        activities = [],
+        children,
+        lang,
+        renderMarkdown,
+        send,
+        styleSet,
+        suggestedActions = []
+      },
       state: { context: staticContext }
     } = this;
 
@@ -83,8 +72,9 @@ export default class Composer extends React.Component {
       activities,
       lang: lang || 'en-US',
       renderMarkdown: renderMarkdown,
-      onSend,
-      styleSet: styleSet || createStyleSet()
+      send,
+      styleSet: styleSet || createStyleSet(),
+      suggestedActions
     });
 
     return (

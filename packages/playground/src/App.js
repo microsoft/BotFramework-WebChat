@@ -49,29 +49,25 @@ class App extends Component {
     }));
   }
 
-  handleSend({ value }) {
-    this.props.dispatch(postActivity({
-      type: 'message',
-      text: value
-    }));
+  handleSend(activity) {
+    this.props.dispatch(postActivity(activity));
   }
 
   render() {
     const { props } = this;
-
-    console.log(props.activities);
 
     return (
       <div className={ ROOT_CSS }>
         <BasicWebChat
           activities={ props.activities }
           className={ WEB_CHAT_CSS }
+          send={ this.handleSend }
           renderMarkdown={ this.renderMarkdown }
-          onSend={ this.handleSend }
+          suggestedActions={ props.suggestedActions }
         />
       </div>
     );
   }
 }
 
-export default connect(({ activities }) => ({ activities }))(App);
+export default connect(({ activities, suggestedActions }) => ({ activities, suggestedActions }))(App);

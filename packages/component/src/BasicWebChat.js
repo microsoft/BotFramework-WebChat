@@ -38,9 +38,10 @@ export default class extends React.Component {
     return (
       <Composer
         activities={ props.activities }
-        onSend={ props.onSend }
         renderMarkdown={ props.renderMarkdown }
+        send={ props.send }
         styleSet={ props.styleSet }
+        suggestedActions={ props.suggestedActions }
       >
         <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
           <BasicTranscript className={ TRANSCRIPT_CSS }>
