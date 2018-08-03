@@ -25,6 +25,7 @@ class TextBoxWithSpeech extends React.Component {
     this.handleDictateClick = this.handleDictateClick.bind(this);
     this.handleDictateError = this.handleDictateError.bind(this);
     this.handleDictating = this.handleDictating.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       interims: [],
@@ -52,18 +53,28 @@ class TextBoxWithSpeech extends React.Component {
     }));
   }
 
+  handleSubmit(onSend, sendBoxValue, setSendBoxValue, event) {
+    event.preventDefault();
+
+    if (sendBoxValue) {
+      onSend({ type: 'send', value: sendBoxValue });
+      setSendBoxValue('');
+    }
+  }
+
   render() {
     const { props, state } = this;
 
     return (
       <MainContext>
-        { ({ sendBoxValue, setSendBoxValue }) =>
-          <div
+        { ({ onSend, sendBoxValue, setSendBoxValue }) =>
+          <form
             className={ classNames(
               ROOT_CSS + '',
               props.styleSet.sendBoxTextBox + '',
               (props.className || '') + '',
             ) }
+            onSubmit={ this.handleSubmit.bind(this, onSend, sendBoxValue, setSendBoxValue) }
           >
             {
               state.dictateState === IDLE ?
@@ -108,7 +119,7 @@ class TextBoxWithSpeech extends React.Component {
                   <SendIcon />
                 </IconButton>
             }
-          </div>
+          </form>
         }
       </MainContext>
     );

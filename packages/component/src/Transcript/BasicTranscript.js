@@ -31,10 +31,10 @@ export default withStyleSet(({ className, children, styleSet }) =>
       { ({ activities }) =>
         <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
           {
-            activities.map(activity =>
+            activities.map((activity, index) =>
               <li
                 className={ styleSet.activity }
-                key={ activity.id }
+                key={ index }
               >
                 <BasicActivity activity={ activity }>
                   { card => children && children(card) || <UnknownCard card={ card } /> }

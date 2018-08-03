@@ -37,6 +37,8 @@ export default class extends React.Component {
 
     return (
       <Composer
+        activities={ props.activities }
+        onSend={ props.onSend }
         renderMarkdown={ props.renderMarkdown }
         styleSet={ props.styleSet }
       >

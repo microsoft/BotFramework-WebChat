@@ -3,7 +3,7 @@ import memoize from 'memoize-one';
 import React from 'react';
 import updateIn from 'simple-update-in';
 
-import activities from './sampleActivities';
+// import activities from './sampleActivities';
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
 import mapMap from './Utils/mapMap';
@@ -18,19 +18,23 @@ export default class Composer extends React.Component {
 
     this.mergeContext = memoize(({
       staticContext,
+      activities,
       lang,
       renderMarkdown,
+      onSend,
       styleSet
     }) => ({
       ...staticContext,
+      activities,
       lang,
       renderMarkdown,
+      onSend,
       styleSet: styleSetToClassNames(styleSet)
     }));
 
     this.state = {
       context: {
-        activities,
+        // activities,
         grammars: [],
         sendBoxValue: '',
         setGrammars: memoize(grammars => this.setState(() => ({ grammars }))),
@@ -70,14 +74,16 @@ export default class Composer extends React.Component {
 
   render() {
     const {
-      props: { children, lang, renderMarkdown, styleSet },
+      props: { activities, children, lang, renderMarkdown, onSend, styleSet },
       state: { context: staticContext }
     } = this;
 
     const context = this.mergeContext({
       staticContext,
+      activities,
       lang: lang || 'en-US',
       renderMarkdown: renderMarkdown,
+      onSend,
       styleSet: styleSet || createStyleSet()
     });
 

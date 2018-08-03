@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
 import { postActivity } from 'backend';
-import classNames from 'classnames';
 import * as CognitiveServices from 'web-speech-cognitive-services';
+import classNames from 'classnames';
 import DictateButton from 'react-dictate-button';
 import React from 'react';
 import Say from 'react-say';

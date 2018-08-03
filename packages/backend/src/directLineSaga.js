@@ -114,9 +114,11 @@ function* postActivity(directLine, activity) {
 
   const { echo } = yield race({
     echo: take(({ payload, type }) => {
-      const { activity: { channelData = {}, id } } = payload;
+      if (type === UPSERT_ACTIVITY) {
+        const { activity: { channelData = {}, id } } = payload;
 
-      return type === UPSERT_ACTIVITY && channelData.clientActivityID === clientActivityID && id;
+        return channelData.clientActivityID === clientActivityID && id;
+      }
     }),
     timeout: call(sleep, SEND_TIMEOUT)
   });

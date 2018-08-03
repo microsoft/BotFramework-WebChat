@@ -40,7 +40,7 @@ const ALLOWED_TAGS = [
 ];
 
 export default ({
-  attachment: { content: { text } },
+  attachment: { content: { text } = {} },
   contentType = 'text/markdown'
 }) =>
   <Context.Consumer>
@@ -48,7 +48,7 @@ export default ({
       (contentType === 'text/markdown' && renderMarkdown) ?
         <SanitizedHTML
           allowedTags={ ALLOWED_TAGS }
-          className={ styleSet.textCard }
+          className={ styleSet.textCard + '' }
           html={ renderMarkdown(text) }
         />
       :

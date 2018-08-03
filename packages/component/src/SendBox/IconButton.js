@@ -26,6 +26,7 @@ export default ({ children, className, onClick }) =>
       (className || '') + ''
     ) }
     onClick={ onClick }
+    type="button"
   >
     { children }
   </button>
