@@ -49,7 +49,7 @@ export default ({
         <SanitizedHTML
           allowedTags={ ALLOWED_TAGS }
           className={ styleSet.textCard + '' }
-          html={ renderMarkdown(text) }
+          html={ renderMarkdown(text || '') }
         />
       :
         <p>{ text }</p>
