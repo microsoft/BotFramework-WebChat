@@ -1,3 +1,4 @@
+import { AdaptiveCard } from 'adaptivecards';
 import { css } from 'glamor';
 import memoize from 'memoize-one';
 import React from 'react';
@@ -19,6 +20,7 @@ export default class Composer extends React.Component {
     this.mergeContext = memoize(({
       staticContext,
       activities,
+      adaptiveCard,
       focusSendBox,
       lang,
       renderMarkdown,
@@ -29,6 +31,7 @@ export default class Composer extends React.Component {
     }) => ({
       ...staticContext,
       activities: activities || [],
+      adaptiveCard: adaptiveCard || AdaptiveCard,
       focusSendBox: focusSendBox || (() => 0),
       lang,
       renderMarkdown: renderMarkdown || (markdown => markdown),
@@ -61,6 +64,7 @@ export default class Composer extends React.Component {
     const {
       props: {
         activities = [],
+        adaptiveCard,
         children,
         focusSendBox,
         lang,
@@ -76,6 +80,7 @@ export default class Composer extends React.Component {
     const context = this.mergeContext({
       staticContext,
       activities,
+      adaptiveCard,
       focusSendBox,
       lang: lang || 'en-US',
       renderMarkdown,
