@@ -13,6 +13,7 @@ import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet'
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextCardStyle from './StyleSet/TextCard';
 import createTimestampStyle from './StyleSet/Timestamp';
+import createUnknownCardStyle from './StyleSet/UnknownCard';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 
 const DEFAULT_OPTIONS = {
@@ -48,6 +49,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     suggestedActions: createSuggestedActionsStyle(options),
     textCard: createTextCardStyle(options),
     timestamp: createTimestampStyle(options),
+    unknownCard: createUnknownCardStyle(options),
     uploadButton: createUploadButtonStyle(options)
   };
 }

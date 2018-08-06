@@ -51,7 +51,7 @@ export default class extends React.Component {
             <BasicTranscript className={ TRANSCRIPT_CSS }>
               { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
                   <HeroCard attachment={ attachment } />
-                :
+                : /^text\//.test(attachment.contentType) &&
                   <TextCard
                     attachment={ attachment }
                     contentType={ attachment.contentType }
