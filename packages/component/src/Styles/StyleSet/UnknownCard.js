@@ -5,19 +5,26 @@ import {
 export default function createUnknownCardStyle() {
   return {
     ...primaryFont,
-    borderColor: 'Red',
-    borderStyle: 'dashed',
-    borderWidth: 2,
+    display: 'flex',
+    flexDirection: 'column',
     margin: 0,
     minHeight: 20,
-    padding: 10,
 
     '& > :first-child': {
-      marginTop: 0
+      backgroundColor: 'Red',
+      color: 'White',
+      padding: '5px 10px'
     },
 
     '& > :last-child': {
-      marginBottom: 0
+      borderColor: 'Red',
+      borderStyle: 'dashed',
+      borderBottomWidth: 2,
+      borderLeftWidth: 2,
+      borderRightWidth: 2,
+      borderTopWidth: 0,
+      margin: 0,
+      padding: 10
     }
   };
 }
