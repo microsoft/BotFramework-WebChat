@@ -9,7 +9,18 @@ import BasicWebChat from 'component';
 import postActivity from '../node_modules/backend/lib/Actions/postActivity';
 
 const ROOT_CSS = css({
-  height: '100%'
+  height: '100%',
+
+  '& > button': {
+    backgroundColor: 'rgba(128, 128, 128, .2)',
+    border: 0,
+    cursor: 'pointer',
+    outline: 0,
+    padding: '5px 10px',
+    position: 'absolute',
+    right: 0,
+    top: 0
+  }
 });
 
 const WEB_CHAT_CSS = css({
@@ -24,6 +35,7 @@ class App extends Component {
 
     const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
 
+    this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSend = this.handleSend.bind(this);
     this.renderMarkdown = markdownIt.render.bind(markdownIt);
   }
@@ -49,6 +61,11 @@ class App extends Component {
     }));
   }
 
+  handleResetClick() {
+    window.sessionStorage.removeItem('REDUX_STORE');
+    window.location.reload();
+  }
+
   handleSend(activity) {
     this.props.dispatch(postActivity(activity));
   }
@@ -65,6 +82,12 @@ class App extends Component {
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }
         />
+        <button
+          onClick={ this.handleResetClick }
+          type="button"
+        >
+          Remove history
+        </button>
       </div>
     );
   }

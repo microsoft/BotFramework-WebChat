@@ -6,6 +6,8 @@ class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.handleExecuteAction = this.handleExecuteAction.bind(this);
+
     this.contentRef = React.createRef();
   }
 
@@ -17,7 +19,18 @@ class AdaptiveCardRenderer extends React.PureComponent {
     this.renderCard();
   }
 
-  handleExecuteAction() {
+  handleExecuteAction(action) {
+    const { props } = this;
+
+    switch (action.type) {
+      case 'Action.OpenUrl':
+        props.onOpen(action.url);
+        break;
+
+      default:
+        console.error(action);
+        break;
+    }
   }
 
   renderCard() {
@@ -28,7 +41,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
       const card = new props.adaptiveCard();
 
       props.adaptiveCard.processMarkdown = props.renderMarkdown || (text => text);
-      card.onExecuteAction = props.onExecuteAction || (() => 0);
+      card.onExecuteAction = this.handleExecuteAction;
       card.parse(props.content);
 
       const element = card.render();
@@ -49,13 +62,21 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 }
 
-export default props =>
-  <Context.Consumer>
-    { ({ adaptiveCard, renderMarkdown, styleSet }) =>
-      <AdaptiveCardRenderer
-        adaptiveCard={ adaptiveCard }
-        content={ props.attachment.content }
-        renderMarkdown={ renderMarkdown }
-      />
-    }
-  </Context.Consumer>
+export default class extends React.Component {
+  render() {
+    const { props } = this;
+
+    return (
+      <Context.Consumer>
+        { ({ adaptiveCard, onOpen, renderMarkdown }) =>
+          <AdaptiveCardRenderer
+            adaptiveCard={ adaptiveCard }
+            content={ props.attachment.content }
+            onOpen={ onOpen }
+            renderMarkdown={ renderMarkdown }
+          />
+        }
+      </Context.Consumer>
+    );
+  }
+}
