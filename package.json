@@ -9,7 +9,10 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "watch": "npx concurrently --names \"backend,component\" \"npm run watch:backend\" \"npm run watch:component\"",
+    "watch:backend": "cd packages && cd backend && npm run watch",
+    "watch:component": "cd packages && cd component && npm run watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
