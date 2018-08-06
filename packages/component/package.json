@@ -42,6 +42,7 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
+    "adaptivecards": "^1.0.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
     "memoize-one": "^3.1.1",

@@ -78,7 +78,7 @@ export default class Composer extends React.Component {
       activities,
       focusSendBox,
       lang: lang || 'en-US',
-      renderMarkdown: renderMarkdown,
+      renderMarkdown,
       scrollToBottom,
       send,
       styleSet: styleSet || createStyleSet(),
