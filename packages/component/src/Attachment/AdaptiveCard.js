@@ -2,7 +2,7 @@ import React from 'react';
 
 import Context from '../Context';
 
-class AdaptiveCardContainer extends React.PureComponent {
+class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -17,6 +17,9 @@ class AdaptiveCardContainer extends React.PureComponent {
     this.renderCard();
   }
 
+  handleExecuteAction() {
+  }
+
   renderCard() {
     const { current } = this.contentRef;
 
@@ -25,6 +28,7 @@ class AdaptiveCardContainer extends React.PureComponent {
       const card = new props.adaptiveCard();
 
       props.adaptiveCard.processMarkdown = props.renderMarkdown || (text => text);
+      card.onExecuteAction = props.onExecuteAction || (() => 0);
       card.parse(props.content);
 
       const element = card.render();
@@ -48,7 +52,7 @@ class AdaptiveCardContainer extends React.PureComponent {
 export default props =>
   <Context.Consumer>
     { ({ adaptiveCard, renderMarkdown, styleSet }) =>
-      <AdaptiveCardContainer
+      <AdaptiveCardRenderer
         adaptiveCard={ adaptiveCard }
         content={ props.attachment.content }
         renderMarkdown={ renderMarkdown }
