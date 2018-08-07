@@ -1,8 +1,9 @@
+import memoize from 'memoize-one';
 import React from 'react';
 
 import Context from '../Context';
 
-class AdaptiveCardRenderer extends React.PureComponent {
+export class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -37,14 +38,13 @@ class AdaptiveCardRenderer extends React.PureComponent {
     const { current } = this.contentRef;
 
     if (current) {
-      const { props } = this;
-      const card = new props.adaptiveCard();
+      const { props: { adaptiveCard, renderMarkdown } } = this;
 
-      props.adaptiveCard.processMarkdown = props.renderMarkdown || (text => text);
-      card.onExecuteAction = this.handleExecuteAction;
-      card.parse(props.content);
+      console.log(adaptiveCard);
 
-      const element = card.render();
+      adaptiveCard.onExecuteAction = this.handleExecuteAction;
+
+      const element = adaptiveCard.render();
       const [firstChild] = current.children;
 
       if (firstChild) {
@@ -63,6 +63,21 @@ class AdaptiveCardRenderer extends React.PureComponent {
 }
 
 export default class extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.createAdaptiveCard = memoize((adaptiveCard, content, renderMarkdown) => {
+      const card = new adaptiveCard();
+
+      // TODO: Checks if we could make the "renderMarkdown" per card
+      //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
+      adaptiveCard.processMarkdown = renderMarkdown || (text => text);
+      card.parse(content);
+
+      return card;
+    });
+  }
+
   render() {
     const { props } = this;
 
@@ -70,8 +85,7 @@ export default class extends React.Component {
       <Context.Consumer>
         { ({ adaptiveCard, onOpen, renderMarkdown }) =>
           <AdaptiveCardRenderer
-            adaptiveCard={ adaptiveCard }
-            content={ props.attachment.content }
+            adaptiveCard={ this.createAdaptiveCard(adaptiveCard, props.attachment.content, renderMarkdown) }
             onOpen={ onOpen }
             renderMarkdown={ renderMarkdown }
           />

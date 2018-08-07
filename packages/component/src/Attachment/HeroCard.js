@@ -1,18 +1,24 @@
 import React from 'react';
 
-import { withStyleSet } from '../Context';
-import CroppedImage from '../Utils/CroppedImage';
-import TextCard from './TextCard';
+import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
+import { AdaptiveCardRenderer } from './AdaptiveCard';
 
-export default withStyleSet(({ attachment, styleSet }) =>
-  <div>
-    { !!(attachment.content.images && attachment.content.images.length) &&
-      <CroppedImage
-        height={ styleSet.options.bubbleImageHeight }
-        src={ attachment.content.images[0].url }
-        width="100%"
-      />
-    }
-    <TextCard attachment={ attachment } />
-  </div>
-)
+export default class extends React.Component {
+  render() {
+    const {
+      props: {
+        attachment: { content } = {}
+      }
+    } = this;
+
+    const builder = new AdaptiveCardBuilder();
+
+    (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
+
+    builder.addCommon(content);
+
+    return (
+      <AdaptiveCardRenderer adaptiveCard={ builder.card } />
+    );
+  }
+}
