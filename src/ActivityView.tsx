@@ -77,7 +77,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                         const {tap, buttons, ...contentWithoutButtons} = content
                         
                         // hide imBack buttons
-                        const buttonsWithoutImback = buttons.filter((button: CardAction) => !button.type || button.type !== 'imBack' )
+                        const buttonsWithoutImback = (buttons || []).filter((button: CardAction) => !button.type || button.type !== 'imBack' )
 
                         // deactivate imBack buttons
                         //const buttonsWithoutImback = buttons.map(button => !button.type || button.type !== 'imBack' ? button : {...button, value: ""} )
