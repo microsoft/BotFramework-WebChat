@@ -1,4 +1,4 @@
-# Feedyou customization of Microsoft Bot Framework Web Chat
+# Feedyou fork of Microsoft Bot Framework WebChat
 
 Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API. This repo is customized fork of [BotBuilder-WebChat](https://github.com/Microsoft/BotFramework-WebChat) by [Feedyou](https://feedyou.agency). This features were added in comparsion with `BotBuilder-WebChat`:
   * show typing indicator on startup until the first message is recieved
@@ -21,7 +21,7 @@ Please paste these values to places marked by `...` in examples.
 
 ### In your non-React website
 
-Include `botchat.css` and `botchat.js` in your website, choose ID of element where webchat should be placed and paste required values you got from Feedyou. 
+Include `botchat.css` and `botchat-es5.js` (from our https://feedyou.blob.core.windows.net/webchat/latest CDN) in your website, choose ID of element where webchat should be placed and paste required values you got from Feedyou. 
 
 ```HTML
 <!DOCTYPE html>
