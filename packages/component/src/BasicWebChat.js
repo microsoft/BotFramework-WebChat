@@ -9,10 +9,13 @@ import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
 import AdaptiveCard from './Attachment/AdaptiveCard';
 import HeroCard from './Attachment/HeroCard';
-import ImageCard from './Attachment/ImageCard';
+import ImageContent from './Attachment/ImageContent';
 import ReceiptCard from './Attachment/ReceiptCard';
-import TextCard from './Attachment/TextCard';
+import TextContent from './Attachment/TextContent';
 import ThumbnailCard from './Attachment/ThumbnailCard';
+
+import AudioAttachment from './Attachment/AudioAttachment';
+import AudioCardAttachment from './Attachment/AudioCardAttachment';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -57,16 +60,23 @@ export default class extends React.Component {
                   <HeroCard attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?
                   <AdaptiveCard attachment={ attachment } />
+                : attachment.contentType === 'application/vnd.microsoft.card.audio' ?
+                  <AudioCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.receipt' ?
                   <ReceiptCard attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ?
                   <ThumbnailCard attachment={ attachment } />
+                : /^audio\//.test(attachment.contentType) ?
+                  <AudioAttachment attachment={ attachment } />
                 : /^image\//.test(attachment.contentType) ?
-                  <ImageCard attachment={ attachment } />
+                  <ImageContent
+                    alt={ attachment.name }
+                    src={ attachment.contentUrl }
+                  />
                 : /^text\//.test(attachment.contentType) &&
-                  <TextCard
-                    attachment={ attachment }
+                  <TextContent
                     contentType={ attachment.contentType }
+                    text={ attachment.content.text }
                   />
               }
             </BasicTranscript>

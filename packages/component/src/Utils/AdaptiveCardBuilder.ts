@@ -128,15 +128,15 @@ export interface ICommonContent {
   buttons?: CardAction[];
 }
 
-export function buildCommonCard(content: ICommonContent): AdaptiveCard {
-  if (!content) { return null; }
+// export function buildCommonCard(content: ICommonContent): AdaptiveCard {
+//   if (!content) { return null; }
 
-  const cardBuilder = new AdaptiveCardBuilder();
+//   const cardBuilder = new AdaptiveCardBuilder();
 
-  cardBuilder.addCommon(content);
+//   cardBuilder.addCommon(content);
 
-  return cardBuilder.card;
-}
+//   return cardBuilder.card;
+// }
 
 export function buildOAuthCard(content: ICommonContent): AdaptiveCard {
   if (!content) { return null; }

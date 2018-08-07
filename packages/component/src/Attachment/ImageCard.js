@@ -1,16 +1,9 @@
 import React from 'react';
 
-import { withStyleSet } from '../Context';
-import CroppedImage from '../Utils/CroppedImage';
+import ImageContent from './ImageContent';
 
-export default withStyleSet(({
-  attachment,
-  styleSet
-}) =>
-  <CroppedImage
+export default ({ attachment }) =>
+  <ImageContent
     alt={ attachment.name }
-    height={ styleSet.options.bubbleImageHeight }
     src={ attachment.contentUrl }
-    width="100%"
   />
-)

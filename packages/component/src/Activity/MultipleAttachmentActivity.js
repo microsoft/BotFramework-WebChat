@@ -24,7 +24,7 @@ export default withStyleSet(withActivity(({
           key={ index }
         >
           <Bubble>
-            { !!children && children(attachment) }
+            { !!children && (typeof children === 'function' ? children(attachment) : children) }
           </Bubble>
           { index === 0 && <TimeAgo /> }
         </div>

@@ -68,7 +68,7 @@ export default class extends React.Component {
 
       // TODO: Checks if we could make the "renderMarkdown" per card
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
-      adaptiveCard.processMarkdown = renderMarkdown || (text => text);
+      adaptiveCards.AdaptiveCard.processMarkdown = renderMarkdown || (text => text);
       card.parse(content);
 
       return card;

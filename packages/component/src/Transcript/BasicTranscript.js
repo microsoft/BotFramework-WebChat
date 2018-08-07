@@ -42,7 +42,13 @@ export default withStyleSet(({ className, children, styleSet }) =>
                       try {
                         return children && children(card) || <UnknownCard message="No renderer for this card">{ JSON.stringify(card, null, 2) }</UnknownCard>;
                       } catch (err) {
-                        return <UnknownCard message="Failed to render card">{ JSON.stringify(card, null, 2) }</UnknownCard>
+                        return (
+                          <UnknownCard message="Failed to render card">
+                            <div>{ JSON.stringify(card, null, 2) }</div>
+                            <br />
+                            <div>{ err.stack }</div>
+                          </UnknownCard>
+                        );
                       }
                     }
                   }

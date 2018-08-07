@@ -2,7 +2,7 @@ import {
   primaryFont
 } from '../Fonts';
 
-export default function createTextCardStyle() {
+export default function () {
   return {
     ...primaryFont,
     margin: 0,
