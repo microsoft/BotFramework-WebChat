@@ -100,17 +100,6 @@
   <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
   <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
   <script>
-    function makeid() {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-      for (var i = 0; i < 11; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-      return text;
-    }
-
-    var userId = makeid();
     $(function() {
     	$('#bot-header').click(function() {
     		$('#bot-wrapper').toggleClass('collapsed')
@@ -119,11 +108,9 @@
     			$('#bot-header').html('Chatbot')
 	    		BotChat.App({
 			      directLine: { secret: '...' },
-			      user: { id: userId, name: 'User' },
 			      bot: { id: 'feedbot-...', name: '...' },
-            showUploadButton: false,
-            resize: 'detect',    
-            locale: 'cs',
+            // OPTIONAL - locale: '...',
+            // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
 			    }, document.getElementById("bot"));
 	    	}
     	})
