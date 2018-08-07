@@ -51,8 +51,8 @@ export class AdaptiveCardBuilder {
   card: AdaptiveCard;
   container: Container;
 
-  constructor() {
-    this.card = new AdaptiveCard();
+  constructor(adaptiveCards) {
+    this.card = new adaptiveCards.AdaptiveCard();
     this.container = new Container();
 
     this.card.addItem(this.container);

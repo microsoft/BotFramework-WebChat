@@ -11,10 +11,19 @@ export default class extends React.Component {
 
     this.buildCard = memoize((adaptiveCards, content) => {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
+      const { TextSize, TextWeight } = adaptiveCards;
 
-      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
+      if (content.images && content.images.length) {
+        const columns = builder.addColumnSet([75, 25]);
 
-      builder.addCommon(content);
+        builder.addTextBlock(content.title, { size: TextSize.Medium, weight: TextWeight.Bolder }, columns[0]);
+        builder.addTextBlock(content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
+        builder.addImage(content.images[0].url, columns[1], content.images[0].tap);
+        builder.addTextBlock(content.text, { wrap: true });
+        builder.addButtons(content.buttons);
+      } else {
+        builder.addCommon(content);
+      }
 
       return builder.card;
     });

@@ -10,7 +10,9 @@ import TypeFocusSinkBox from './Utils/TypeFocusSink';
 import AdaptiveCard from './Attachment/AdaptiveCard';
 import HeroCard from './Attachment/HeroCard';
 import ImageCard from './Attachment/ImageCard';
+import ReceiptCard from './Attachment/ReceiptCard';
 import TextCard from './Attachment/TextCard';
+import ThumbnailCard from './Attachment/ThumbnailCard';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -55,6 +57,10 @@ export default class extends React.Component {
                   <HeroCard attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?
                   <AdaptiveCard attachment={ attachment } />
+                : attachment.contentType === 'application/vnd.microsoft.card.receipt' ?
+                  <ReceiptCard attachment={ attachment } />
+                : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ?
+                  <ThumbnailCard attachment={ attachment } />
                 : /^image\//.test(attachment.contentType) ?
                   <ImageCard attachment={ attachment } />
                 : /^text\//.test(attachment.contentType) &&

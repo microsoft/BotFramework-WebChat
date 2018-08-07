@@ -1,5 +1,5 @@
-import { AdaptiveCard } from 'adaptivecards';
 import { css } from 'glamor';
+import * as AdaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
 import React from 'react';
 import updateIn from 'simple-update-in';
@@ -20,7 +20,7 @@ export default class Composer extends React.Component {
     this.mergeContext = memoize(({
       staticContext,
       activities,
-      adaptiveCard,
+      adaptiveCards,
       focusSendBox,
       lang,
       onOpen,
@@ -32,7 +32,7 @@ export default class Composer extends React.Component {
     }) => ({
       ...staticContext,
       activities: activities || [],
-      adaptiveCard: adaptiveCard || AdaptiveCard,
+      adaptiveCards: adaptiveCards || AdaptiveCards,
       focusSendBox: focusSendBox || (() => 0),
       lang,
       onOpen: onOpen || window.open,
@@ -66,7 +66,7 @@ export default class Composer extends React.Component {
     const {
       props: {
         activities = [],
-        adaptiveCard,
+        adaptiveCards,
         children,
         focusSendBox,
         lang,
@@ -83,7 +83,7 @@ export default class Composer extends React.Component {
     const context = this.mergeContext({
       staticContext,
       activities,
-      adaptiveCard,
+      adaptiveCards,
       focusSendBox,
       lang: lang || 'en-US',
       onOpen,

@@ -36,12 +36,9 @@ export class AdaptiveCardRenderer extends React.PureComponent {
 
   renderCard() {
     const { current } = this.contentRef;
+    const { props: { adaptiveCard } } = this;
 
-    if (current) {
-      const { props: { adaptiveCard, renderMarkdown } } = this;
-
-      console.log(adaptiveCard);
-
+    if (current && adaptiveCard) {
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
 
       const element = adaptiveCard.render();
@@ -66,8 +63,8 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAdaptiveCard = memoize((adaptiveCard, content, renderMarkdown) => {
-      const card = new adaptiveCard();
+    this.createAdaptiveCard = memoize((adaptiveCards, content, renderMarkdown) => {
+      const card = new adaptiveCards.AdaptiveCard();
 
       // TODO: Checks if we could make the "renderMarkdown" per card
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
@@ -83,9 +80,9 @@ export default class extends React.Component {
 
     return (
       <Context.Consumer>
-        { ({ adaptiveCard, onOpen, renderMarkdown }) =>
+        { ({ adaptiveCards, onOpen, renderMarkdown }) =>
           <AdaptiveCardRenderer
-            adaptiveCard={ this.createAdaptiveCard(adaptiveCard, props.attachment.content, renderMarkdown) }
+            adaptiveCard={ this.createAdaptiveCard(adaptiveCards, props.attachment.content, renderMarkdown) }
             onOpen={ onOpen }
             renderMarkdown={ renderMarkdown }
           />
