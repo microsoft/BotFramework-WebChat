@@ -2,7 +2,7 @@ import memoize from 'memoize-one';
 import React from 'react';
 
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
-import { AdaptiveCardRenderer } from './AdaptiveCard';
+import { AdaptiveCardRenderer } from './AdaptiveCardAttachment';
 import Context from '../Context';
 
 export default class extends React.Component {
@@ -11,19 +11,10 @@ export default class extends React.Component {
 
     this.buildCard = memoize((adaptiveCards, content) => {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
-      const { TextSize, TextWeight } = adaptiveCards;
 
-      if (content.images && content.images.length) {
-        const columns = builder.addColumnSet([75, 25]);
+      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
 
-        builder.addTextBlock(content.title, { size: TextSize.Medium, weight: TextWeight.Bolder }, columns[0]);
-        builder.addTextBlock(content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
-        builder.addImage(content.images[0].url, columns[1], content.images[0].tap);
-        builder.addTextBlock(content.text, { wrap: true });
-        builder.addButtons(content.buttons);
-      } else {
-        builder.addCommon(content);
-      }
+      builder.addCommon(content);
 
       return builder.card;
     });

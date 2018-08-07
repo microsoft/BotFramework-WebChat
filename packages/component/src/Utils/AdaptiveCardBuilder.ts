@@ -138,13 +138,13 @@ export interface ICommonContent {
 //   return cardBuilder.card;
 // }
 
-export function buildOAuthCard(content: ICommonContent): AdaptiveCard {
-  if (!content) { return null; }
+// export function buildOAuthCard(content: ICommonContent): AdaptiveCard {
+//   if (!content) { return null; }
 
-  const cardBuilder = new AdaptiveCardBuilder();
+//   const cardBuilder = new AdaptiveCardBuilder();
 
-  cardBuilder.addCommonHeaders(content);
-  cardBuilder.addButtons(content.buttons, true);
+//   cardBuilder.addCommonHeaders(content);
+//   cardBuilder.addButtons(content.buttons, true);
 
-  return cardBuilder.card;
-}
+//   return cardBuilder.card;
+// }

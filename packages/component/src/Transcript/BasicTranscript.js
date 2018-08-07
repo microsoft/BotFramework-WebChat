@@ -6,7 +6,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import { withStyleSet } from '../Context';
 import BasicActivity from '../Activity/BasicActivity';
 import MainContext from '../Context';
-import UnknownCard from '../Attachment/UnknownCard';
+import UnknownAttachment from '../Attachment/UnknownAttachment';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -40,14 +40,14 @@ export default withStyleSet(({ className, children, styleSet }) =>
                   {
                     card => {
                       try {
-                        return children && children(card) || <UnknownCard message="No renderer for this card">{ JSON.stringify(card, null, 2) }</UnknownCard>;
+                        return children && children(card) || <UnknownAttachment message="No renderer for this card">{ JSON.stringify(card, null, 2) }</UnknownAttachment>;
                       } catch (err) {
                         return (
-                          <UnknownCard message="Failed to render card">
+                          <UnknownAttachment message="Failed to render card">
                             <div>{ JSON.stringify(card, null, 2) }</div>
                             <br />
                             <div>{ err.stack }</div>
-                          </UnknownCard>
+                          </UnknownAttachment>
                         );
                       }
                     }

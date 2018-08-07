@@ -5,8 +5,6 @@ import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
-// import createCodeCardStyle from './StyleSet/CodeCard';
-import createImageCardStyle from './StyleSet/ImageCard';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createMultipleAttachmentActivityStyle from './StyleSet/MultipleAttachmentActivity';
 import createSendBoxStyle from './StyleSet/SendBox';
@@ -17,7 +15,7 @@ import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet'
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
-import createUnknownCardStyle from './StyleSet/UnknownCard';
+import createUnknownAttachmentStyle from './StyleSet/UnknownAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 
 const DEFAULT_OPTIONS = {
@@ -42,8 +40,6 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     audioContent: createAudioContentStyle(options),
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
-    // codeCard: createCodeCardStyle(options),
-    imageCard: createImageCardStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     multipleAttachmentActivity: createMultipleAttachmentActivityStyle(options),
     options: {
@@ -57,7 +53,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
     timestamp: createTimestampStyle(options),
-    unknownCard: createUnknownCardStyle(options),
+    unknownAttachment: createUnknownAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options)
   };
 }

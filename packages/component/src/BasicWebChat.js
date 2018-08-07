@@ -7,15 +7,14 @@ import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
-import AdaptiveCard from './Attachment/AdaptiveCard';
-import HeroCard from './Attachment/HeroCard';
-import ImageContent from './Attachment/ImageContent';
-import ReceiptCard from './Attachment/ReceiptCard';
-import TextContent from './Attachment/TextContent';
-import ThumbnailCard from './Attachment/ThumbnailCard';
-
+import AdaptiveCardAttachment from './Attachment/AdaptiveCardAttachment';
 import AudioAttachment from './Attachment/AudioAttachment';
 import AudioCardAttachment from './Attachment/AudioCardAttachment';
+import HeroCardAttachment from './Attachment/HeroCardAttachment';
+import ImageAttachment from './Attachment/ImageAttachment';
+import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
+import TextAttachment from './Attachment/TextAttachment';
+import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -57,27 +56,21 @@ export default class extends React.Component {
           >
             <BasicTranscript className={ TRANSCRIPT_CSS }>
               { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
-                  <HeroCard attachment={ attachment } />
+                  <HeroCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?
-                  <AdaptiveCard attachment={ attachment } />
+                  <AdaptiveCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.audio' ?
                   <AudioCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.receipt' ?
-                  <ReceiptCard attachment={ attachment } />
+                  <ReceiptCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ?
-                  <ThumbnailCard attachment={ attachment } />
+                  <ThumbnailCardAttachment attachment={ attachment } />
                 : /^audio\//.test(attachment.contentType) ?
                   <AudioAttachment attachment={ attachment } />
                 : /^image\//.test(attachment.contentType) ?
-                  <ImageContent
-                    alt={ attachment.name }
-                    src={ attachment.contentUrl }
-                  />
+                  <ImageAttachment attachment={ attachment } />
                 : /^text\//.test(attachment.contentType) &&
-                  <TextContent
-                    contentType={ attachment.contentType }
-                    text={ attachment.content.text }
-                  />
+                  <TextAttachment attachment={ attachment } />
               }
             </BasicTranscript>
             <BasicSendBox
