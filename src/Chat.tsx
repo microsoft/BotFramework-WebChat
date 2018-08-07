@@ -27,7 +27,8 @@ export interface ChatProps {
     sendTyping?: boolean,
     showUploadButton?: boolean,
     formatOptions?: FormatOptions,
-    resize?: 'none' | 'window' | 'detect'
+    resize?: 'none' | 'window' | 'detect',
+    userData?: {}
 }
 
 import { History } from './History';
@@ -182,10 +183,29 @@ export class Chat extends React.Component<ChatProps, {}> {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
 
-        const botConnection = this.props.directLine
-            ? (this.botConnection = new DirectLine(this.props.directLine))
-            : this.props.botConnection
-            ;
+        // FEEDYOU - ability to pass some userData to bot using backchannel's channel data prop
+        let botConnection: any
+        if (this.props.directLine) {
+            const directLine = new DirectLine(this.props.directLine)
+            botConnection = this.botConnection = Object.assign({}, directLine, {
+                postActivity: (activity: any) => {
+                    // send userData only once during initial event
+                    if (activity.name === 'beginIntroDialog') {
+                        const newActivity = Object.assign(
+                            {},
+                            activity,
+                            {channelData: { userData: Object.assign(this.props.userData || {}, { "testMode": window.location.hash === '#feedbot-test-mode' })}}
+                        );
+                        console.log('userData', newActivity.channelData.userData)
+                        return directLine.postActivity(newActivity);
+                    } else {
+                        return directLine.postActivity(activity);
+                    }
+                }
+            })
+        } else {
+            botConnection = this.props.botConnection
+        }
 
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
@@ -202,11 +222,11 @@ export class Chat extends React.Component<ChatProps, {}> {
             name: 'beginIntroDialog',
             type: 'event',
             value: ''
-        }).subscribe(function (id) {
+        }).subscribe(function (id: any) {
             konsole.log('"beginIntroDialog" event sent');
         });
 
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
+        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe((connectionStatus: any) =>{
                 if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
                     let refGrammarId = botConnection.referenceGrammarId;
                     if(refGrammarId)
@@ -217,8 +237,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         );
 
         this.activitySubscription = botConnection.activity$.subscribe(
-            activity => this.handleIncomingActivity(activity),
-            error => konsole.log("activity$ error", error)
+            (activity: any) => this.handleIncomingActivity(activity),
+            (error: any) => konsole.log("activity$ error", error)
         );
 
         if (this.props.selectedActivity) {
