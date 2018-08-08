@@ -19,7 +19,12 @@ const ROOT_CSS = css({
     padding: '5px 10px',
     position: 'absolute',
     right: 0,
-    top: 0
+    top: 0,
+
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, .2)',
+      color: 'White'
+    }
   }
 });
 
