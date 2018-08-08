@@ -48,7 +48,8 @@ class App extends Component {
   componentDidMount() {
     this.props.dispatch(startConnection({
       directLine: new DirectLine({
-        domain: 'http://localhost:3001/mock',
+        // domain: 'http://localhost:3001/mock',
+        domain: 'http://localhost:5000/v3/directline',
         fetch,
         createFormData: attachments => {
           const formData = new FormData();
