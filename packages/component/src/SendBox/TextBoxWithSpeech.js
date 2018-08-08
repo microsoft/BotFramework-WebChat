@@ -85,12 +85,12 @@ class TextBoxWithSpeech extends React.Component {
             {
               state.dictateState === IDLE ?
                 <TypeFocusSinkContext.Consumer>
-                  { ({ focusableRef }) =>
+                  { ({ sendFocusRef }) =>
                     <input
                       disabled={ props.disabled }
                       onChange={ ({ target: { value } }) => setSendBoxValue(value) }
                       placeholder="Type your message"
-                      ref={ focusableRef }
+                      ref={ sendFocusRef }
                       type="text"
                       value={ sendBoxValue }
                     />

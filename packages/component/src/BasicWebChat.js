@@ -46,16 +46,16 @@ export default class extends React.Component {
     return (
       <Composer
         activities={ props.activities }
-        focusSendBox={ this.sendBoxRef }
         renderMarkdown={ props.renderMarkdown }
         send={ props.send }
+        sendBoxRef={ this.sendBoxRef }
         styleSet={ props.styleSet }
         suggestedActions={ props.suggestedActions }
       >
         { ({ styleSet }) =>
           <TypeFocusSinkBox
             className={ classNames(ROOT_CSS + '', styleSet.root + '', (props.className || '') + '') }
-            focusableRef={ this.sendBoxRef }
+            sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS }>
               { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?

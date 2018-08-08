@@ -21,19 +21,23 @@ export default class Composer extends React.Component {
       staticContext,
       activities,
       adaptiveCards,
-      focusSendBox,
       lang,
       onOpen,
       renderMarkdown,
       scrollToBottom,
       send,
+      sendBoxRef,
       styleSet,
       suggestedActions
     }) => ({
       ...staticContext,
       activities: activities || [],
       adaptiveCards: adaptiveCards || AdaptiveCards,
-      focusSendBox: focusSendBox || (() => 0),
+      focusSendBox: () => {
+        const { current } = sendBoxRef || {};
+
+        current && current.focus();
+      },
       lang,
       onOpen: onOpen || window.open,
       renderMarkdown: renderMarkdown || (markdown => markdown),
@@ -68,12 +72,12 @@ export default class Composer extends React.Component {
         activities = [],
         adaptiveCards,
         children,
-        focusSendBox,
         lang,
         onOpen,
         renderMarkdown,
         scrollToBottom,
         send,
+        sendBoxRef,
         styleSet,
         suggestedActions = []
       },
@@ -81,15 +85,15 @@ export default class Composer extends React.Component {
     } = this;
 
     const context = this.mergeContext({
-      staticContext,
       activities,
       adaptiveCards,
-      focusSendBox,
       lang: lang || 'en-US',
       onOpen,
       renderMarkdown,
       scrollToBottom,
       send,
+      sendBoxRef,
+      staticContext,
       styleSet: styleSet || createStyleSet(),
       suggestedActions
     });
