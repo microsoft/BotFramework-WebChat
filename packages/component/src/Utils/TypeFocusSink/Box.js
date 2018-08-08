@@ -1,3 +1,4 @@
+import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -14,15 +15,18 @@ export default class Box extends React.Component {
     this.focus = this.focus.bind(this);
     this.handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
 
+    this.createContext = memoize((staticContext, sendFocusRef = React.createRef()) => ({
+      ...staticContext,
+      sendFocusRef
+    }));
+
     this.state = {
-      context: {
-        focusableRef: React.createRef()
-      }
+      context: {}
     };
   }
 
   focus() {
-    const { current } = this.state.context.focusableRef;
+    const { current } = this.props.sendFocusRef;
 
     current && current.focus();
   }
@@ -63,10 +67,11 @@ export default class Box extends React.Component {
   }
 
   render() {
-    const { props: { children, disabled, ...otherProps }, state } = this;
+    const { props: { children, disabled, sendFocusRef, ...otherProps }, state } = this;
+    const context = this.createContext(state.context, sendFocusRef);
 
     return (
-      <Context.Provider value={ state.context }>
+      <Context.Provider value={ context }>
         <div
           { ...otherProps }
           onKeyDownCapture={ !disabled && this.handleKeyDownCapture }
@@ -79,6 +84,9 @@ export default class Box extends React.Component {
     );
   }
 }
+
+Box.defaultProps = {
+};
 
 Box.propTypes = {
   disabled: PropTypes.bool

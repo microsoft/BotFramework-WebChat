@@ -7,6 +7,7 @@ import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createMultipleAttachmentActivityStyle from './StyleSet/MultipleAttachmentActivity';
+import createRootStyle from './StyleSet/Root';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
@@ -23,6 +24,8 @@ import createVideoContentStyle from './StyleSet/VideoContent';
 const DEFAULT_OPTIONS = {
   accent: '#69F',
   avatarSize: 40,
+
+  backgroundColor: '#EEE',
 
   bubbleBackground: 'White',
   bubbleImageHeight: 240,
@@ -49,6 +52,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
       ...options,
       suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
     },
+    root: createRootStyle(options),
     sendBox: createSendBoxStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),

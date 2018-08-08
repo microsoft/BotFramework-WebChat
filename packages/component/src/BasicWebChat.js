@@ -18,7 +18,6 @@ import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoAttachment from './Attachment/VideoAttachment';
 
 const ROOT_CSS = css({
-  backgroundColor: '#EEE',
   display: 'flex',
   flexDirection: 'column'
 });
@@ -36,7 +35,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.rootRef = React.createRef();
+    this.sendBoxRef = React.createRef();
   }
 
   render() {
@@ -45,15 +44,18 @@ export default class extends React.Component {
     // TODO: Implement "scrollToBottom" feature
 
     return (
-      <TypeFocusSinkBox className={ classNames(ROOT_CSS + '', (props.className || '') + '') }>
-        { ({ focus }) =>
-          <Composer
-            activities={ props.activities }
-            focusSendBox={ focus }
-            renderMarkdown={ props.renderMarkdown }
-            send={ props.send }
-            styleSet={ props.styleSet }
-            suggestedActions={ props.suggestedActions }
+      <Composer
+        activities={ props.activities }
+        focusSendBox={ this.sendBoxRef }
+        renderMarkdown={ props.renderMarkdown }
+        send={ props.send }
+        styleSet={ props.styleSet }
+        suggestedActions={ props.suggestedActions }
+      >
+        { ({ styleSet }) =>
+          <TypeFocusSinkBox
+            className={ classNames(ROOT_CSS + '', styleSet.root + '', (props.className || '') + '') }
+            focusableRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS }>
               { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
@@ -79,9 +81,9 @@ export default class extends React.Component {
             <BasicSendBox
               className={ SEND_BOX_CSS }
             />
-          </Composer>
+          </TypeFocusSinkBox>
         }
-      </TypeFocusSinkBox>
+      </Composer>
     );
   }
 }
