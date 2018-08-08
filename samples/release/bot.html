@@ -17,14 +17,26 @@
       var VENDOR_ID = 'VENDOR_ID_HERE';
       var SECRET = 'SECRET_KEY_HERE';
       window.CMS_URL = 'CMS_HOST';
+      
+      function objectAssign(target) {
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
 
       var dl = new BotChat.DirectLine({
         secret: SECRET 
       });
 
-      var botConnection = Object.assign({}, dl, {
+      var botConnection = objectAssign({}, dl, {
         postActivity: function(activity) {
-          return dl.postActivity(Object.assign({}, activity, {
+          return dl.postActivity(objectAssign({}, activity, {
             channelData: {
               vendorId: VENDOR_ID 
             }
