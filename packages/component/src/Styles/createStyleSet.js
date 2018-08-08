@@ -17,9 +17,12 @@ import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
 import createUnknownAttachmentStyle from './StyleSet/UnknownAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
+import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
+import createVideoContentStyle from './StyleSet/VideoContent';
 
 const DEFAULT_OPTIONS = {
   accent: '#69F',
+  avatarSize: 40,
 
   bubbleBackground: 'White',
   bubbleImageHeight: 240,
@@ -54,6 +57,8 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     textContent: createTextContentStyle(options),
     timestamp: createTimestampStyle(options),
     unknownAttachment: createUnknownAttachmentStyle(options),
-    uploadButton: createUploadButtonStyle(options)
+    uploadButton: createUploadButtonStyle(options),
+    videoAttachment: createVideoAttachmentStyle(options),
+    videoContent: createVideoContentStyle(options)
   };
 }

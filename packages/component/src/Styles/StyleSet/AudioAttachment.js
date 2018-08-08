@@ -1,6 +1,6 @@
-export default function () {
+export default function ({ avatarSize }) {
   return {
     display: 'flex',
-    padding: 10
+    minHeight: avatarSize
   };
 }

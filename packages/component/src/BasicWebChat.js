@@ -15,6 +15,7 @@ import ImageAttachment from './Attachment/ImageAttachment';
 import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
 import TextAttachment from './Attachment/TextAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
+import VideoAttachment from './Attachment/VideoAttachment';
 
 const ROOT_CSS = css({
   backgroundColor: '#EEE',
@@ -69,8 +70,10 @@ export default class extends React.Component {
                   <AudioAttachment attachment={ attachment } />
                 : /^image\//.test(attachment.contentType) ?
                   <ImageAttachment attachment={ attachment } />
-                : /^text\//.test(attachment.contentType) &&
+                : /^text\//.test(attachment.contentType) ?
                   <TextAttachment attachment={ attachment } />
+                : /^video\//.test(attachment.contentType) &&
+                  <VideoAttachment attachment={ attachment } />
               }
             </BasicTranscript>
             <BasicSendBox
