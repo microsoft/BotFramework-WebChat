@@ -46,7 +46,7 @@ export default withActivity(({
       ) }>
         <Avatar className={ AVATAR_CSS } />
         <div className="bubble-box">
-          <Bubble>
+          <Bubble attachment={ attachment }>
             { !!children && (typeof children === 'function' ? children(attachment) : children) }
           </Bubble>
           <TimeAgo />

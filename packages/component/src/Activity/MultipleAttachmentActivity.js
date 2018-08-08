@@ -23,7 +23,7 @@ export default withStyleSet(withActivity(({
           className={ styleSet.multipleAttachmentActivity + '' }
           key={ index }
         >
-          <Bubble>
+          <Bubble attachment={ attachment }>
             { !!children && (typeof children === 'function' ? children(attachment) : children) }
           </Bubble>
           { index === 0 && <TimeAgo /> }
