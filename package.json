@@ -53,6 +53,7 @@
     "@types/react": "15.6.1",
     "@types/react-dom": "15.5.7",
     "@types/react-redux": "5.0.5",
+    "@types/prop-types": "15.5.3",
     "awesome-typescript-loader": "3.1.2",
     "concurrently": "3.1.0",
     "expose-loader": "0.7.3",
