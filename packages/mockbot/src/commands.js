@@ -1,3 +1,4 @@
+import AdaptiveCard from './commands/AdaptiveCard';
 import AnimationCard from './commands/AnimationCard';
 import Audio from './commands/Audio';
 import AudioCard from './commands/AudioCard';
@@ -19,6 +20,7 @@ import VideoCard from './commands/VideoCard';
 import Xml from './commands/Xml';
 
 export default [
+  { pattern: /^card ([\d\w]+)/, processor: AdaptiveCard },
   { pattern: 'animationcard', processor: AnimationCard },
   { pattern: 'audio', processor: Audio },
   { pattern: 'audiocard', processor: AudioCard },

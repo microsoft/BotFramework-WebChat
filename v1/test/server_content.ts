@@ -8,19 +8,19 @@ const bot = config.bot;
 * Function that renders Adaptive Cards
 *
 */
-export var adaptive_cardsFn = function (json: any) {
-    var acMessage: dl.Message = {
-        type: "message",
-        from: bot,
-        timestamp: new Date().toUTCString(),
-        channelId: "webchat",
-        attachments: [
-            <dl.AdaptiveCard>{ contentType: "application/vnd.microsoft.card.adaptive", content: json }
-        ]
-    };
+// export var adaptive_cardsFn = function (json: any) {
+//     var acMessage: dl.Message = {
+//         type: "message",
+//         from: bot,
+//         timestamp: new Date().toUTCString(),
+//         channelId: "webchat",
+//         attachments: [
+//             <dl.AdaptiveCard>{ contentType: "application/vnd.microsoft.card.adaptive", content: json }
+//         ]
+//     };
 
-    return acMessage;
-}
+//     return acMessage;
+// }
 
 /*
  * Activity for Animation Card
