@@ -1,3 +1,4 @@
+/*
 import { TurnContext } from 'botbuilder';
 
 export default async function (context: TurnContext) {
@@ -5,11 +6,8 @@ export default async function (context: TurnContext) {
 
   await context.sendActivity({
     type: 'message',
-    text: '',
     attachments: [{
-      contentType: 'audio/mpeg',
-      contentUrl: `${ PUBLIC_URL }assets/bftest.mp3`,
-      name: 'BotFramework Test'
     }]
   });
 }
+*/

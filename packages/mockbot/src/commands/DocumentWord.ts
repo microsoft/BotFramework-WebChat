@@ -5,11 +5,10 @@ export default async function (context: TurnContext) {
 
   await context.sendActivity({
     type: 'message',
-    text: '',
     attachments: [{
-      contentType: 'audio/mpeg',
-      contentUrl: `${ PUBLIC_URL }assets/bftest.mp3`,
-      name: 'BotFramework Test'
+      contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      contentUrl: `${ PUBLIC_URL }assets/test.docx`,
+      name: 'test.docx'
     }]
   });
 }

@@ -5,7 +5,6 @@ export default async function (context: TurnContext) {
 
   await context.sendActivity({
     type: 'message',
-    channelId: 'webchat',
     text: '',
     attachmentLayout: 'carousel',
     attachments: [{
