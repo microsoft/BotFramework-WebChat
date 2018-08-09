@@ -45,19 +45,15 @@ server.post('/api/messages/', (req, res) => {
       await context.sendActivity(`Welcome to Mockbot v4!`);
     } else if (context.activity.type === 'message') {
       const { activity: { text } } = context;
-      const command = commands.find(({ pattern }) => {
-        if (typeof pattern === 'string') {
-          pattern = new RegExp(pattern, 'i');
-        }
-
-        return pattern.test(text);
-      });
+      const command = commands.find(({ pattern }) => pattern.test(text));
 
       if (command) {
         const { pattern, processor } = command;
         const match = pattern.exec(text);
 
         await processor(context, ...[].slice.call(match, 1));
+      } else if (text === 'help') {
+        await context.sendActivity(`### Commands\r\n\r\n${ commands.map(({ pattern }) => `- \`${ pattern.source }\``).join('\r\n') }`);
       } else {
         await context.sendActivity(`Unknown command: \`${ text }\``);
       }
