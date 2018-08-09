@@ -6,37 +6,38 @@
     <title>Bot Chat</title>
 
     <link href="./botchat.css" rel="stylesheet" />
+    <script type="text/javascript">
+     (function(){
+      if(navigator.userAgent.indexOf('MSIE')!==-1
+        || navigator.appVersion.indexOf('Trident/') > 0){
+        var head = document.head;
+        var polyFills = ['./ie11-shim.js', 'https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js']
+        for (var i = 0; i < polyFills.length; i++) {
+          var script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src = polyFills[i];
+          head.appendChild(script);
+        }
+      }
+     })();
+    </script>
   </head>
   <body>
     <div id="BotChatGoesHere"></div>
-
     <script src="./botchat.js"></script>
-
     <script>
       var CL_BOT_VERSION = 'VERSION_HERE';
       var VENDOR_ID = 'VENDOR_ID_HERE';
       var SECRET = 'SECRET_KEY_HERE';
       window.CMS_URL = 'CMS_HOST';
       
-      function objectAssign(target) {
-        for (var i = 1; i < arguments.length; i++) {
-          var source = arguments[i];
-          for (var key in source) {
-            if (source.hasOwnProperty(key)) {
-              target[key] = source[key];
-            }
-          }
-        }
-        return target;
-      }
-
       var dl = new BotChat.DirectLine({
         secret: SECRET 
       });
 
-      var botConnection = objectAssign({}, dl, {
+      var botConnection = Object.assign({}, dl, {
         postActivity: function(activity) {
-          return dl.postActivity(objectAssign({}, activity, {
+          return dl.postActivity(Object.assign({}, activity, {
             channelData: {
               vendorId: VENDOR_ID 
             }
