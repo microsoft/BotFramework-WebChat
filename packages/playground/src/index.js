@@ -33,4 +33,10 @@ if (/speech-only-button(\.html)?/.test(window.location.href)) {
   document.getElementById('root'));
 }
 
+window.addEventListener('keydown', ({ ctrlKey, keyCode }) => {
+  if (ctrlKey && keyCode === 82) {
+    sessionStorage.removeItem(REDUX_STORE_KEY);
+  }
+});
+
 registerServiceWorker();

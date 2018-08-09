@@ -43,6 +43,8 @@ class App extends Component {
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSend = this.handleSend.bind(this);
     this.renderMarkdown = markdownIt.render.bind(markdownIt);
+
+    this.mainRef = React.createRef();
   }
 
   componentDidMount() {
@@ -65,6 +67,12 @@ class App extends Component {
       userID: 'default-user',
       username: 'User-1'
     }));
+
+    // HACK: Focus send box should be done using context/composer
+    const { current } = this.mainRef;
+    const sendBox = current && current.querySelector('input[type="text"]');
+
+    sendBox && sendBox.focus();
   }
 
   handleResetClick() {
@@ -80,7 +88,10 @@ class App extends Component {
     const { props } = this;
 
     return (
-      <div className={ ROOT_CSS }>
+      <div
+        className={ ROOT_CSS }
+        ref={ this.mainRef }
+      >
         <BasicWebChat
           activities={ props.activities }
           className={ WEB_CHAT_CSS }
