@@ -16,6 +16,7 @@ import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
 import TextAttachment from './Attachment/TextAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoAttachment from './Attachment/VideoAttachment';
+import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -68,6 +69,8 @@ export default class extends React.Component {
                   <ReceiptCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ?
                   <ThumbnailCardAttachment attachment={ attachment } />
+                : attachment.contentType === 'application/vnd.microsoft.card.video' ?
+                  <VideoCardAttachment attachment={ attachment } />
                 : /^audio\//.test(attachment.contentType) ?
                   <AudioAttachment attachment={ attachment } />
                 : /^image\//.test(attachment.contentType) ?

@@ -37,7 +37,7 @@ export default [
   { pattern: 'receiptcard', processor: ReceiptCard },
   { pattern: 'signin', processor: SignInCard },
   { pattern: 'suggested-actions', processor: SuggestedActionsCard },
-  { pattern: 'video', processor: Video },
+  { pattern: /^video(\s+([\d\w]+))?$/, processor: Video },
   { pattern: 'videocard', processor: VideoCard },
   { pattern: 'xml', processor: Xml }
 ].map(({ pattern, processor }) => ({

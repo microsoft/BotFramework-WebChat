@@ -20,6 +20,8 @@ import createUnknownAttachmentStyle from './StyleSet/UnknownAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
+import createVimeoContentStyle from './StyleSet/VimeoContent';
+import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 
 const DEFAULT_OPTIONS = {
   accent: '#69F',
@@ -63,6 +65,8 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     unknownAttachment: createUnknownAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),
-    videoContent: createVideoContentStyle(options)
+    videoContent: createVideoContentStyle(options),
+    vimeoContent: createVimeoContentStyle(options),
+    youTubeContent: createYouTubeContentStyle(options)
   };
 }

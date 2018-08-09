@@ -37,34 +37,34 @@ const queryString = (query: QueryParams) =>
 
 const exists = (value: any) => value != null && typeof value != "undefined";
 
-const Youtube = (props: {
-    embedId: string,
-    autoPlay?: boolean,
-    loop?: boolean
-}) =>
-    <iframe
-        src={ `https://${YOUTUBE_DOMAIN}/embed/${props.embedId}?${queryString({
-            modestbranding: '1',
-            loop: props.loop ? '1' : '0',
-            autoplay: props.autoPlay ? '1' : '0'
-        })}` }
-    />;
+// const Youtube = (props: {
+//     embedId: string,
+//     autoPlay?: boolean,
+//     loop?: boolean
+// }) =>
+//     <iframe
+//         src={ `https://${YOUTUBE_DOMAIN}/embed/${props.embedId}?${queryString({
+//             modestbranding: '1',
+//             loop: props.loop ? '1' : '0',
+//             autoplay: props.autoPlay ? '1' : '0'
+//         })}` }
+//     />;
 
-const Vimeo = (props: {
-    embedId: string,
-    autoPlay?: boolean,
-    loop?: boolean
-}) =>
-    <iframe
-        src={ `https://player.${VIMEO_DOMAIN}/video/${props.embedId}?${queryString({
-            title: '0',
-            byline: '0',
-            portrait: '0',
-            badge: '0',
-            autoplay: props.autoPlay ? '1' : '0',
-            loop: props.loop ? '1' : '0'
-        })}` }
-    />;
+// const Vimeo = (props: {
+//     embedId: string,
+//     autoPlay?: boolean,
+//     loop?: boolean
+// }) =>
+//     <iframe
+//         src={ `https://player.${VIMEO_DOMAIN}/video/${props.embedId}?${queryString({
+//             title: '0',
+//             byline: '0',
+//             portrait: '0',
+//             badge: '0',
+//             autoplay: props.autoPlay ? '1' : '0',
+//             loop: props.loop ? '1' : '0'
+//         })}` }
+//     />;
 
 interface VideoProps {
     src: string,

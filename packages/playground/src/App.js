@@ -103,7 +103,7 @@ class App extends Component {
           onClick={ this.handleResetClick }
           type="button"
         >
-          Remove history
+          Remove history <small>(CTRL-R)</small>
         </button>
       </div>
     );

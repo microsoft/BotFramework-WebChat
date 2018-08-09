@@ -17,7 +17,7 @@ export default async function (context: TurnContext) {
         }],
         image: { url: `${ PUBLIC_URL }assets/ms-band1.jpg` },
         autoloop: true,
-        autostart: true
+        autostart: false
       }
     }]
   });
