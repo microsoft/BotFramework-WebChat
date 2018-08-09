@@ -53,7 +53,7 @@ server.post('/api/messages/', (req, res) => {
 
         await processor(context, ...[].slice.call(match, 1));
       } else if (text === 'help') {
-        await context.sendActivity(`### Commands\r\n\r\n${ commands.map(({ pattern }) => `- \`${ pattern.source }\``).join('\r\n') }`);
+        await context.sendActivity(`### Commands\r\n\r\n${ commands.map(({ pattern }) => `- \`${ pattern.source }\``).sort().join('\r\n') }`);
       } else {
         await context.sendActivity(`Unknown command: \`${ text }\``);
       }
