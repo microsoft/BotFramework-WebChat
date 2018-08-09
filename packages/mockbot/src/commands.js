@@ -11,7 +11,12 @@ import ImageSVG from './commands/ImageSVG';
 import Markdown from './commands/Markdown';
 import MultimediaCard from './commands/MultimediaCard';
 import OAuthCard from './commands/OAuthCard';
+import ReceiptCard from './commands/ReceiptCard';
 import SignInCard from './commands/SignInCard';
+import SuggestedActionsCard from './commands/SuggestedActionsCard';
+import Video from './commands/Video';
+import VideoCard from './commands/VideoCard';
+import Xml from './commands/Xml';
 
 export default [
   { pattern: 'animationcard', processor: AnimationCard },
@@ -27,7 +32,12 @@ export default [
   { pattern: 'markdown', processor: Markdown },
   { pattern: 'content-multimedia', processor: MultimediaCard },
   { pattern: 'oauth', processor: OAuthCard },
-  { pattern: 'signin', processor: SignInCard }
+  { pattern: 'receiptcard', processor: ReceiptCard },
+  { pattern: 'signin', processor: SignInCard },
+  { pattern: 'suggested-actions', processor: SuggestedActionsCard },
+  { pattern: 'video', processor: Video },
+  { pattern: 'videocard', processor: VideoCard },
+  { pattern: 'xml', processor: Xml }
 ].map(({ pattern, processor }) => ({
   pattern: typeof pattern === 'string' ? new RegExp(`^${ pattern }$`, 'i') : pattern,
   processor

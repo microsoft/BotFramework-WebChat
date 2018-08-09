@@ -530,129 +530,129 @@ export var mar_newlines_ddouble_card: dl.Message = {
  * Activity for SuggestedActions
  *
  */
-export var suggested_actions_card: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    textFormat: "plain",
-    text: "Message Text",
-    suggestedActions: {
-        actions: [
-            {
-                type: "imBack",
-                title: "Blue",
-                value: "Blue",
-                image: asset_url + "square-icon.png"
-            },
-            {
-                type: "imBack",
-                title: "Red",
-                value: "Red",
-                image: asset_url + "square-icon-red.png"
-            },
-            {
-                type: "imBack",
-                title: "Green",
-                value: "Green",
-                image: asset_url + "square-icon-green.png"
-            }
-        ]
-    }
-}
+// export var suggested_actions_card: dl.Message = {
+//     type: "message",
+//     from: bot,
+//     timestamp: new Date().toUTCString(),
+//     channelId: "webchat",
+//     textFormat: "plain",
+//     text: "Message Text",
+//     suggestedActions: {
+//         actions: [
+//             {
+//                 type: "imBack",
+//                 title: "Blue",
+//                 value: "Blue",
+//                 image: asset_url + "square-icon.png"
+//             },
+//             {
+//                 type: "imBack",
+//                 title: "Red",
+//                 value: "Red",
+//                 image: asset_url + "square-icon-red.png"
+//             },
+//             {
+//                 type: "imBack",
+//                 title: "Green",
+//                 value: "Green",
+//                 image: asset_url + "square-icon-green.png"
+//             }
+//         ]
+//     }
+// }
 
 /*
  * Activity for Receipt Card
  *
  */
-export var receipt_card: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    text: "",
-    attachmentLayout: "carousel",
-    attachments: [
-        <dl.Receipt>{
-            contentType: "application/vnd.microsoft.card.receipt",
-            content: {
-                title: "Surface Pro 4",
-                subtitle: "This is the subtitle",
-                items: [
-                    {
-                        title: "Surface Pro 4",
-                        subtitle: "Surface Pro 4 is a powerful, versatile, lightweight laptop.",
-                        text: "Surface does more. Just like you. For one device that does everything, you need more than a mobile OS.",
-                        image: {
-                            "url": asset_url + "surface1.jpg",
-                            "alt": "Microsoft Surface Alt",
-                            "tap": {
-                                "type": "openUrl",
-                                "title": "Tapped it!",
-                                "value": local_url + "testurl1.html"
-                            }
-                        },
-                        price: "$XXX"
-                    },
-                    {
-                        title: "Surface Pro 4 (2) - No subtitle, No text.",
-                        image: {
-                            "url": asset_url + "surface2.jpg",
-                            "alt": "Microsoft Surface Alt",
-                            "tap": {
-                                "type": "call",
-                                "title": "Call back!",
-                                "value": "1234567890"
-                            }
-                        },
-                        price: "$XXX"
-                    },
-                    {
-                        title: "Surface Pro 4 (3) - No subtitle, No text, No image",
-                        price: "$XXX"
-                    }
-                ],
-                facts: [
-                    {
-                        key: "Order Number",
-                        value: "Value 1"
-                    },
-                    {
-                        key: "Expected Delivery Time",
-                        value: "Value 2"
-                    },
-                    {
-                        key: "Payment Method",
-                        value: "Value 3"
-                    },
-                    {
-                        key: "Delivery Address",
-                        value: "Value 4"
-                    }
-                ],
-                total: "0.01",
-                tax: "XXX.XX",
-                buttons: [
-                    {
-                        type: "imBack",
-                        title: "imBack Button",
-                        value: "imBack Action"
-                    },
-                    {
-                        type: "postBack",
-                        title: "postBack Button",
-                        value: "postBack Action"
-                    }
-                ],
-                tap: {
-                    "type": "openUrl",
-                    "title": "Tapped it!",
-                    "value": local_url + "testurl2.html"
-                }
-            }
-        }
-    ]
-}
+// export var receipt_card: dl.Message = {
+//     type: "message",
+//     from: bot,
+//     timestamp: new Date().toUTCString(),
+//     channelId: "webchat",
+//     text: "",
+//     attachmentLayout: "carousel",
+//     attachments: [
+//         <dl.Receipt>{
+//             contentType: "application/vnd.microsoft.card.receipt",
+//             content: {
+//                 title: "Surface Pro 4",
+//                 subtitle: "This is the subtitle",
+//                 items: [
+//                     {
+//                         title: "Surface Pro 4",
+//                         subtitle: "Surface Pro 4 is a powerful, versatile, lightweight laptop.",
+//                         text: "Surface does more. Just like you. For one device that does everything, you need more than a mobile OS.",
+//                         image: {
+//                             "url": asset_url + "surface1.jpg",
+//                             "alt": "Microsoft Surface Alt",
+//                             "tap": {
+//                                 "type": "openUrl",
+//                                 "title": "Tapped it!",
+//                                 "value": local_url + "testurl1.html"
+//                             }
+//                         },
+//                         price: "$XXX"
+//                     },
+//                     {
+//                         title: "Surface Pro 4 (2) - No subtitle, No text.",
+//                         image: {
+//                             "url": asset_url + "surface2.jpg",
+//                             "alt": "Microsoft Surface Alt",
+//                             "tap": {
+//                                 "type": "call",
+//                                 "title": "Call back!",
+//                                 "value": "1234567890"
+//                             }
+//                         },
+//                         price: "$XXX"
+//                     },
+//                     {
+//                         title: "Surface Pro 4 (3) - No subtitle, No text, No image",
+//                         price: "$XXX"
+//                     }
+//                 ],
+//                 facts: [
+//                     {
+//                         key: "Order Number",
+//                         value: "Value 1"
+//                     },
+//                     {
+//                         key: "Expected Delivery Time",
+//                         value: "Value 2"
+//                     },
+//                     {
+//                         key: "Payment Method",
+//                         value: "Value 3"
+//                     },
+//                     {
+//                         key: "Delivery Address",
+//                         value: "Value 4"
+//                     }
+//                 ],
+//                 total: "0.01",
+//                 tax: "XXX.XX",
+//                 buttons: [
+//                     {
+//                         type: "imBack",
+//                         title: "imBack Button",
+//                         value: "imBack Action"
+//                     },
+//                     {
+//                         type: "postBack",
+//                         title: "postBack Button",
+//                         value: "postBack Action"
+//                     }
+//                 ],
+//                 tap: {
+//                     "type": "openUrl",
+//                     "title": "Tapped it!",
+//                     "value": local_url + "testurl2.html"
+//                 }
+//             }
+//         }
+//     ]
+// }
 
 /*
  * Activity for Text
@@ -743,56 +743,56 @@ export var upload_txt: dl.Message = {
  * Activity for Video Raw
  *
  */
-export var video_raw: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    text: "",
-    attachments: [
-        <dl.Media>{
-            contentType: "video/mp4",
-            contentUrl: asset_url + "msband.mp4",
-            name: "Microsoft Band",
-        }
-    ]
-}
+// export var video_raw: dl.Message = {
+//     type: "message",
+//     from: bot,
+//     timestamp: new Date().toUTCString(),
+//     channelId: "webchat",
+//     text: "",
+//     attachments: [
+//         <dl.Media>{
+//             contentType: "video/mp4",
+//             contentUrl: asset_url + "msband.mp4",
+//             name: "Microsoft Band",
+//         }
+//     ]
+// }
 
 /*
  * Activity for Video Card
  *
  */
-export var video_card: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    text: "",
-    attachments: [
-        <dl.VideoCard>{
-            contentType: "application/vnd.microsoft.card.video",
-            content: {
-                title: "Microsoft Band",
-                subtitle: "Large Video",
-                text: "No buttons, No Image, Autoloop, Autostart, No Sharable",
-                media: [{ url: asset_url + "msband.mp4", profile: "videocard" }],
-                image: { url: asset_url + "ms-band1.jpg" },
-                autoloop: true,
-                autostart: true
-            }
-        }
-    ]
-}
+// export var video_card: dl.Message = {
+//     type: "message",
+//     from: bot,
+//     timestamp: new Date().toUTCString(),
+//     channelId: "webchat",
+//     text: "",
+//     attachments: [
+//         <dl.VideoCard>{
+//             contentType: "application/vnd.microsoft.card.video",
+//             content: {
+//                 title: "Microsoft Band",
+//                 subtitle: "Large Video",
+//                 text: "No buttons, No Image, Autoloop, Autostart, No Sharable",
+//                 media: [{ url: asset_url + "msband.mp4", profile: "videocard" }],
+//                 image: { url: asset_url + "ms-band1.jpg" },
+//                 autoloop: true,
+//                 autostart: true
+//             }
+//         }
+//     ]
+// }
 
 /*
  * Activity for XML
  *
  */
-export var xml_card: dl.Message = {
-    type: "message",
-    from: bot,
-    timestamp: new Date().toUTCString(),
-    channelId: "webchat",
-    textFormat: "xml",
-    text: "# markdown h1 <h1>xml h1</h1>\r\n *markdown italic* <i>xml italic</i>\r\n **markdown bold** <b>xml bold</b>\r\n ~~markdown strikethrough~~ <s>xml strikethrough</s>"
-}
+// export var xml_card: dl.Message = {
+//     type: "message",
+//     from: bot,
+//     timestamp: new Date().toUTCString(),
+//     channelId: "webchat",
+//     textFormat: "xml",
+//     text: "# markdown h1 <h1>xml h1</h1>\r\n *markdown italic* <i>xml italic</i>\r\n **markdown bold** <b>xml bold</b>\r\n ~~markdown strikethrough~~ <s>xml strikethrough</s>"
+// }
