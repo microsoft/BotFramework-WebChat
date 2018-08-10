@@ -1,4 +1,6 @@
 import * as React from 'react';
+import axios from 'axios';
+
 import MenuItem, {Item, MenuRoot} from './MenuItem';
 
 import { IDoCardAction } from './Chat';
@@ -23,8 +25,8 @@ export interface MenuState {
 }
 
 export default class Menu extends React.Component < MenuPropsInterface, MenuState > {
-  constructor() {
-    super();
+  constructor(props: MenuPropsInterface) {
+    super(props);
 
     this.state = {
       isMenuOpened: false,
@@ -47,7 +49,7 @@ export default class Menu extends React.Component < MenuPropsInterface, MenuStat
     const {target} = e;
     const clickedInsideMenu = target
       .className
-      .startsWith('menu__popover');
+      .indexOf('menu__popover') === 0;
 
     if (!clickedInsideMenu) {
       this.menuClick();
@@ -69,7 +71,7 @@ export default class Menu extends React.Component < MenuPropsInterface, MenuStat
     let flatItems;
 
     try {
-      flatItems = (await fetch(menuItemsApiUrl).then(resp => resp.json())).data
+      flatItems = (await axios.get(menuItemsApiUrl)).data.data;
     } catch(e) {
       flatItems = [];
     }

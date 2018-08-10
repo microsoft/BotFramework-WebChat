@@ -32,6 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "adaptivecards": "1.0.0",
+    "axios": "^0.18.0",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",
     "core-js": "2.4.1",
