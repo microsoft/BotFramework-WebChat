@@ -10,7 +10,7 @@ export default async function (context: TurnContext) {
         connectionname: 'SampleConnection',
         buttons: [{
           type: 'signin',
-          title: 'Signin'
+          title: 'Sign in to OAuth application'
         }]
       }
     }]

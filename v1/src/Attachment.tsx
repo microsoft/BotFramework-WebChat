@@ -225,23 +225,23 @@ export const AttachmentView = (props: {
         //         <AdaptiveCardContainer className="thumbnail" nativeCard={ thumbnailCardBuilder.card } onImageLoad={ props.onImageLoad } onCardAction={ props.onCardAction } onClick={ onCardAction(attachment.content.tap) } />
         //     );
 
-        case "application/vnd.microsoft.card.video":
-            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
-                return null;
-            return (
-                <AdaptiveCardContainer className="video" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
-                    {getRichCardContentMedia('video', attachment.content)}
-                </AdaptiveCardContainer>
-            );
+        // case "application/vnd.microsoft.card.video":
+        //     if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
+        //         return null;
+        //     return (
+        //         <AdaptiveCardContainer className="video" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
+        //             {getRichCardContentMedia('video', attachment.content)}
+        //         </AdaptiveCardContainer>
+        //     );
 
-        case "application/vnd.microsoft.card.animation":
-            if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
-                return null;
-            return (
-                <AdaptiveCardContainer className="animation" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
-                    {getRichCardContentMedia(mediaType, attachment.content)}
-                </AdaptiveCardContainer>
-            );
+        // case "application/vnd.microsoft.card.animation":
+        //     if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
+        //         return null;
+        //     return (
+        //         <AdaptiveCardContainer className="animation" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } >
+        //             {getRichCardContentMedia(mediaType, attachment.content)}
+        //         </AdaptiveCardContainer>
+        //     );
 
         // case "application/vnd.microsoft.card.audio":
         //     if (!attachment.content || !attachment.content.media || attachment.content.media.length === 0)
@@ -252,19 +252,19 @@ export const AttachmentView = (props: {
         //         </AdaptiveCardContainer>
         //     );
 
-        case "application/vnd.microsoft.card.signin":
-            if (!attachment.content)
-                return null;
-            return (
-                <AdaptiveCardContainer className="signin" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } />
-            );
+        // case "application/vnd.microsoft.card.signin":
+        //     if (!attachment.content)
+        //         return null;
+        //     return (
+        //         <AdaptiveCardContainer className="signin" nativeCard={ CardBuilder.buildCommonCard(attachment.content) } onCardAction={ props.onCardAction } />
+        //     );
 
-        case "application/vnd.microsoft.card.oauth":
-            if (!attachment.content)
-                return null;
-            return (
-                <AdaptiveCardContainer className="signin" nativeCard={ CardBuilder.buildOAuthCard(attachment.content) } onCardAction={ props.onCardAction } />
-            );
+        // case "application/vnd.microsoft.card.oauth":
+        //     if (!attachment.content)
+        //         return null;
+        //     return (
+        //         <AdaptiveCardContainer className="signin" nativeCard={ CardBuilder.buildOAuthCard(attachment.content) } onCardAction={ props.onCardAction } />
+        //     );
 
         // case "application/vnd.microsoft.card.receipt":
         //     if (!attachment.content)
@@ -338,8 +338,8 @@ export const AttachmentView = (props: {
         // case "audio/mp4":
         //     return <Media type='audio' src={ attachment.contentUrl } />;
 
-        case "video/mp4":
-            return <Media type='video' poster={ attachment.thumbnailUrl } src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
+        // case "video/mp4":
+        //     return <Media type='video' poster={ attachment.thumbnailUrl } src={ attachment.contentUrl } onLoad={ props.onImageLoad } />;
 
         default:
             var unknownAttachment = props.attachment as UnknownMedia;

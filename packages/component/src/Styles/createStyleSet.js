@@ -1,5 +1,6 @@
 import createActivitiesStyle from './StyleSet/Activities';
 import createActivityStyle from './StyleSet/Activity';
+import createAnimationCardAttachmentStyle from './StyleSet/AnimationCardAttachment';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
@@ -43,6 +44,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
   return {
     activity: createActivityStyle(options),
     activities: createActivitiesStyle(options),
+    animationCardAttachment: createAnimationCardAttachmentStyle(options),
     audioAttachment: createAudioAttachmentStyle(options),
     audioCardAttachment: createAudioCardAttachmentStyle(options),
     audioContent: createAudioContentStyle(options),
