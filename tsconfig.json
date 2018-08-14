@@ -15,7 +15,9 @@
         "sourceMap": true,
         "inlineSources": true,
         "strictNullChecks": false
-    },
+    },"exclude": [
+        "SpeechToText-WebSockets-Javascript"
+    ],
     "files": [
         "src/adaptivecards-hostconfig.d.ts",
         "src/BotChat.ts",

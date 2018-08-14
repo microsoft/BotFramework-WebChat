@@ -105,10 +105,10 @@
         };
 
         const speechOptions = {
-            speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: '4f189f423dcd4ba6b54636754f4e6671' }),
+            speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: '' }),
             speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
                 gender: CognitiveServices.SynthesisGender.Female,
-                subscriptionKey: '4f189f423dcd4ba6b54636754f4e6671',
+                subscriptionKey: '',
                 voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)',
                 onSpeakingStarted: speakingStarted,
                 onSpeakingFinished: speakingFinished

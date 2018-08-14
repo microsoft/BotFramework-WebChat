@@ -14,14 +14,14 @@ const tsLintOptions = {
     // tslint does not interrupt the compilation by default
     // if you want any file with tslint errors to fail
     // set failOnHint to true
-    failOnHint: true,
+    failOnHint: false,
 
     // enables type checked rules like 'for-in-array'
     // uses tsconfig.json from current working directory
     typeCheck: false,
 
     // automatically fix linting errors
-    fix: true,
+    fix: false,
 
     // can specify a custom tsconfig file relative to current directory or with absolute path
     // to be used with type checked rules
