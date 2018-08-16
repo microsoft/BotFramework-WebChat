@@ -315,7 +315,7 @@ const getMessages = (conversationId: string, watermark: number, res: express.Res
     if (message) {
         if (message.activity) {
             message.activity.id = message.watermark;
-            message.activity.from = { id: 'id', name: 'name' };
+            message.activity.from = { id: 'id', name: 'name', ...message.activity.from };
             res.send({
                 activities: [message.activity],
                 timestamp: new Date().toUTCString(),

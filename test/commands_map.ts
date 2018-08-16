@@ -828,6 +828,24 @@ var commands_map: CommandValuesMap = {
         client: function () {
             return !window['WebChatTest'].getLastError();
         }
+    },
+    'role=user': {
+        server: function (conversationId, sendActivity) {
+            sendActivity(
+                conversationId,
+                {
+                    type: 'message',
+                    from: { id: 'bot', role: 'user' },
+                    timestamp: new Date().toUTCString(),
+                    channelId: 'webchat',
+                    textFormat: 'plain',
+                    text: 'Appears to be sent by the user'
+                }
+            );
+        },
+        client: function () {
+            return [].some.call(document.querySelectorAll('.wc-message-from-me'), ({ innerText }) => ~innerText.indexOf('Appears to be sent by the user'));
+        }
     }
     /*
      ** Add your commands to test here **
@@ -858,7 +876,8 @@ var commands_map: CommandValuesMap = {
 };
 
 //use this to run only specified tests
-var testOnly = [];    //["carousel", "herocard"];
+var testOnly = ['role=user'];    //["carousel", "herocard"];
+// var testOnly = [];    //["carousel", "herocard"];
 
 if (testOnly && testOnly.length > 0) {
     for (var key in commands_map) if (testOnly.indexOf(key) < 0) delete commands_map[key];
