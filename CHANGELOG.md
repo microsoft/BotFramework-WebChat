@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Update `PULL_REQUEST_TEMPLATE.md` [@corinagum](https://github.com/corinagum) in PR [#1065](https://github.com/Microsoft/BotFramework-WebChat/pull/1065)
 - Update WebRTC check by `navigator.getUserMedia` and `navigator.mediaDevices.getUserMedia`, by [@rosskyl](https://github.com/rosskyl) in [#1026](https://github.com/Microsoft/BotFramework-WebChat/pull/1026)
+- Translations
+  - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in [PR #1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
 
 ## [0.14.1] - 2018-07-31
 ### Added
