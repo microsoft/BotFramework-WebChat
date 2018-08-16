@@ -68,7 +68,7 @@ const Vimeo = (props: {
 
 interface VideoProps {
     autoPlay?: boolean;
-    interactive: boolean;
+    disabled: boolean;
     loop?: boolean;
     onClick?: (e: React.MouseEvent<HTMLElement>) => void;
     onLoad?: () => void;
@@ -91,8 +91,8 @@ const Video = (props: VideoProps) => {
         case YOUTUBE_WWW_SHORT_DOMAIN:
             return (
                 <Youtube
-                    autoPlay={ props.interactive && props.autoPlay }
-                    embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams['v'] : pathSegments[pathSegments.length - 1] }
+                    autoPlay={ !props.disabled && props.autoPlay }
+                    embedId={ url.hostname === YOUTUBE_DOMAIN || url.hostname === YOUTUBE_WWW_DOMAIN ? urlQueryParams.v : pathSegments[pathSegments.length - 1] }
                     loop={ props.loop }
                 />
             );
@@ -101,7 +101,7 @@ const Video = (props: VideoProps) => {
         case VIMEO_DOMAIN:
             return (
                 <Vimeo
-                    autoPlay={ props.interactive && props.autoPlay }
+                    autoPlay={ !props.disabled && props.autoPlay }
                     embedId={ pathSegments[pathSegments.length - 1] }
                     loop={ props.loop }
                 />
@@ -115,7 +115,7 @@ const Video = (props: VideoProps) => {
 const Media = (props: {
     alt?: string;
     autoPlay?: boolean;
-    interactive: boolean;
+    disabled: boolean;
     loop?: boolean;
     onClick?: (e: React.MouseEvent<HTMLElement>) => void;
     onLoad?: () => void;
@@ -132,7 +132,7 @@ const Media = (props: {
                 <audio
                     controls={ true }
                     { ...props }
-                    autoPlay={ props.interactive && props.autoPlay }
+                    autoPlay={ !props.disabled && props.autoPlay }
                 />
             );
 
@@ -176,8 +176,8 @@ const mediaType = (url: string) =>
 
 export const AttachmentView = (props: {
     attachment: Attachment;
+    disabled: boolean;
     format: FormatState;
-    interactive: boolean;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
 }) => {
@@ -186,7 +186,7 @@ export const AttachmentView = (props: {
     }
 
     const attachment = props.attachment as KnownMedia;
-    const onCardAction = (cardAction: CardAction) => cardAction && props.interactive &&
+    const onCardAction = (cardAction: CardAction) => cardAction && !props.disabled &&
         ((e: React.MouseEvent<HTMLElement>) => {
             props.onCardAction(cardAction.type, cardAction.value);
             e.stopPropagation();
@@ -197,7 +197,7 @@ export const AttachmentView = (props: {
     ) => images && images.length > 0 &&
         <Media
             alt={ images[0].alt }
-            interactive={ props.interactive }
+            disabled={ props.disabled }
             onClick={ onCardAction(images[0].tap) }
             onLoad={ props.onImageLoad }
             src={ images[0].url }
@@ -227,12 +227,12 @@ export const AttachmentView = (props: {
         }
         // rendering every media in the media array. Validates every type as image, video, audio or a function that returns those values.
         return content.media.map((md, i) => {
-            let t = (typeof type === 'string') ? type : type(md.url);
+            const t = (typeof type === 'string') ? type : type(md.url);
 
             return (
                 <Media
                     autoPlay={ content.autostart }
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     key={ i }
                     loop={ content.autoloop }
                     onLoad={ props.onImageLoad }
@@ -260,7 +260,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="hero"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ heroCardBuilder.card }
                     onCardAction={ props.onCardAction }
                     onClick={ onCardAction(attachment.content.tap) }
@@ -290,7 +290,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="thumbnail"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ thumbnailCardBuilder.card }
                     onCardAction={ props.onCardAction }
                     onClick={ onCardAction(attachment.content.tap) }
@@ -306,7 +306,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="video"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ CardBuilder.buildCommonCard(attachment.content) }
                     onCardAction={ props.onCardAction }
                 >
@@ -322,7 +322,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="animation"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     onCardAction={ props.onCardAction }
                     nativeCard={ CardBuilder.buildCommonCard(attachment.content) }
                 >
@@ -338,7 +338,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="audio"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={CardBuilder.buildCommonCard(attachment.content)}
                     onCardAction={props.onCardAction}
                 >
@@ -354,7 +354,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="signin"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ CardBuilder.buildCommonCard(attachment.content) }
                     onCardAction={ props.onCardAction }
                 />
@@ -368,7 +368,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="signin"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ CardBuilder.buildOAuthCard(attachment.content) }
                     onCardAction={ props.onCardAction }
                 />
@@ -433,7 +433,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="receipt"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ receiptCardBuilder.card }
                     onCardAction={ props.onCardAction }
                     onClick={ onCardAction(attachment.content.tap) }
@@ -447,7 +447,7 @@ export const AttachmentView = (props: {
 
             return (
                 <AdaptiveCardContainer
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     jsonCard={ attachment.content as IAdaptiveCard }
                     onCardAction={ props.onCardAction }
                     onImageLoad={ props.onImageLoad }
@@ -463,7 +463,7 @@ export const AttachmentView = (props: {
             return (
                 <AdaptiveCardContainer
                     className="flex"
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     nativeCard={ CardBuilder.buildCommonCard(attachment.content) }
                     onCardAction={ props.onCardAction }
                 >
@@ -478,7 +478,7 @@ export const AttachmentView = (props: {
         case 'image/gif':
             return (
                 <Media
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     onLoad={ props.onImageLoad }
                     src={ attachment.contentUrl }
                 />
@@ -488,7 +488,7 @@ export const AttachmentView = (props: {
         case 'audio/mp4':
             return (
                 <Media
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     src={ attachment.contentUrl }
                     type="audio"
                 />
@@ -497,7 +497,7 @@ export const AttachmentView = (props: {
         case 'video/mp4':
             return (
                 <Media
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     onLoad={ props.onImageLoad }
                     poster={ attachment.thumbnailUrl }
                     src={ attachment.contentUrl }

@@ -9,8 +9,8 @@ import { FormatState, SizeState } from './Store';
 const Attachments = (props: {
     attachmentLayout: AttachmentLayout;
     attachments: Attachment[];
+    disabled: boolean;
     format: FormatState;
-    interactive: boolean;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
     size: SizeState;
@@ -24,7 +24,7 @@ const Attachments = (props: {
     return attachmentLayout === 'carousel' ?
         <Carousel
             attachments={ attachments }
-            interactive={ props.interactive }
+            disabled={ props.disabled }
             { ...otherProps }
         />
     :
@@ -33,7 +33,7 @@ const Attachments = (props: {
                 <AttachmentView
                     attachment={ attachment }
                     format={ props.format }
-                    interactive={ props.interactive }
+                    disabled={ props.disabled }
                     key={ index }
                     onCardAction={ props.onCardAction }
                     onImageLoad={ props.onImageLoad }
@@ -45,7 +45,7 @@ const Attachments = (props: {
 export interface ActivityViewProps {
     activity: Activity;
     format: FormatState;
-    interactive: boolean;
+    disabled: boolean;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
     size: SizeState;
@@ -65,7 +65,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             || (this.props.activity.type === 'message'
                 && this.props.activity.attachmentLayout === 'carousel'
                 && this.props.size !== nextProps.size)
-            || this.props.interactive !== nextProps.interactive;
+            || !this.props.disabled !== !nextProps.disabled;
     }
 
     render() {
@@ -83,8 +83,8 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                         <Attachments
                             attachments={ activity.attachments }
                             attachmentLayout={ activity.attachmentLayout }
+                            disabled={ props.disabled }
                             format={ props.format }
-                            interactive={ props.interactive }
                             onCardAction={ props.onCardAction }
                             onImageLoad={ props.onImageLoad }
                             size={ props.size }

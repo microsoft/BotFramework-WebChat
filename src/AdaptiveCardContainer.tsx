@@ -13,8 +13,8 @@ import { AdaptiveCardsState, ChatState } from './Store';
 
 export interface Props {
     className?: string;
+    disabled?: boolean;
     hostConfig: HostConfig;
-    interactive: boolean;
     jsonCard?: IAdaptiveCard;
     nativeCard?: AdaptiveCard;
     onCardAction: IDoCardAction;
@@ -91,7 +91,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     }
 
     private onClick(e: React.MouseEvent<HTMLElement>) {
-        if (!this.props.interactive || !this.props.onClick) {
+        if (this.props.disabled || !this.props.onClick) {
             return;
         }
 
@@ -113,7 +113,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     }
 
     private onExecuteAction(action: Action) {
-        if (!this.props.interactive) {
+        if (this.props.disabled) {
             return;
         } else if (action instanceof OpenUrlAction) {
             // TODO: Should we let this one bubble to Chat.tsx?
@@ -140,7 +140,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
         if (
             prevProps.hostConfig !== this.props.hostConfig
             || prevProps.jsonCard !== this.props.jsonCard
-            || prevProps.interactive !== this.props.interactive
+            || !prevProps.disabled !== !this.props.disabled
             || prevProps.nativeCard !== this.props.nativeCard
         ) {
             this.unmountAdaptiveCards();
@@ -193,7 +193,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             }
 
             if (renderedCard) {
-                if (!this.props.interactive) {
+                if (this.props.disabled) {
                     const hyperlinks = renderedCard.querySelectorAll('a');
                     const inputs = renderedCard.querySelectorAll('button, input, select, textarea');
 
@@ -214,7 +214,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
                     const imgs = renderedCard.querySelectorAll('img');
 
                     if (imgs && imgs.length > 0) {
-                        Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
+                        [].forEach.call(imgs, (img: HTMLImageElement) => {
                             img.addEventListener('load', this.handleImageLoad);
                         });
                     }

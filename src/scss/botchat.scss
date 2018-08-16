@@ -71,7 +71,7 @@
             top: 0;
         }
 
-        &.no-interactive {
+        &.disabled {
             bottom: 0;
         }
     }
@@ -90,7 +90,7 @@
         right: 0;
         transition: height $actionTransition;
 
-        &.no-interactive {
+        &.disabled {
             bottom: 0;
         }
 

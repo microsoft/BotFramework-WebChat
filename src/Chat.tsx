@@ -20,8 +20,8 @@ export interface ChatProps {
     botConnection?: IBotConnection;
     chatTitle?: boolean | string;
     directLine?: DirectLineOptions;
+    disabled?: boolean;
     formatOptions?: FormatOptions;
-    interactive?: boolean;
     locale?: string;
     resize?: 'none' | 'window' | 'detect';
     selectedActivity?: BehaviorSubject<ActivityOrID>;
@@ -166,8 +166,10 @@ export class Chat extends React.Component<ChatProps, {}> {
                 key = inputtableKey(evt.key);
             }
 
-            // shellRef is null if interactive is set to null
-            this.shellRef && this.shellRef.focus(key);
+            // shellRef is null if Web Chat is disabled
+            if (this.shellRef) {
+                this.shellRef.focus(key);
+            }
         }
     }
 
@@ -282,15 +284,15 @@ export class Chat extends React.Component<ChatProps, {}> {
                                 <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
                             </div>
                     }
-                    <MessagePane interactive={ this.props.interactive }>
+                    <MessagePane disabled={ this.props.disabled }>
                         <History
-                            interactive={ this.props.interactive }
+                            disabled={ this.props.disabled }
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
                         />
                     </MessagePane>
                     {
-                        this.props.interactive !== false && <Shell ref={ this._saveShellRef } />
+                        !this.props.disabled && <Shell ref={ this._saveShellRef } />
                     }
                     {
                         this.props.resize === 'detect' &&

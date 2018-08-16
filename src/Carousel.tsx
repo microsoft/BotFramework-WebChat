@@ -8,8 +8,8 @@ import { FormatState, SizeState } from './Store';
 
 export interface CarouselProps {
     attachments: Attachment[];
+    disabled: boolean;
     format: FormatState;
-    interactive: boolean;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
     size: SizeState;
@@ -64,8 +64,8 @@ export class Carousel extends React.PureComponent<CarouselProps, {}> {
 
 export interface CarouselAttachmentProps {
     attachments: Attachment[];
+    disabled: boolean;
     format: FormatState;
-    interactive: boolean;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
 }
@@ -86,8 +86,8 @@ class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {
                         >
                             <AttachmentView
                                 attachment={ attachment }
+                                disabled={ props.disabled }
                                 format={ props.format }
-                                interactive={ props.interactive }
                                 onCardAction={ props.onCardAction }
                                 onImageLoad={ props.onImageLoad }
                             />

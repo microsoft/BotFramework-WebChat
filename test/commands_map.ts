@@ -796,7 +796,7 @@ var commands_map: CommandValuesMap = {
                 });
         },
         client: function () {
-            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Details about image 1');
+            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container p'), element => element.innerHTML === 'Details about image 1');
 
             return titleElement && window.getComputedStyle(titleElement)['font-family'] === 'serif';
         }
@@ -853,7 +853,7 @@ var commands_map: CommandValuesMap = {
         },
         do: function (nightmare) {
             nightmare.evaluate(() => {
-                window['WebChatTest'].setInteractive(false);
+                window['WebChatTest'].setDisabled(true);
             });
         },
         client: async function () {
@@ -864,7 +864,7 @@ var commands_map: CommandValuesMap = {
             result = result && [].every.call(inputs, button => button.disabled);
             result = result && !document.querySelector('.wc-console');
 
-            window['WebChatTest'].setInteractive(true);
+            window['WebChatTest'].setDisabled(false);
 
             return result;
         }

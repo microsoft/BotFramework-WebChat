@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { ChatState } from './Store';
 import { connect } from 'react-redux';
+
 import { classList } from './Chat';
 import { Speech } from './SpeechModule';
 import { ChatActions, ListeningState, sendFiles, sendMessage } from './Store';
+import { ChatState } from './Store';
 import { Strings } from './Strings';
 
 interface Props {
@@ -38,7 +39,10 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         if (evt.key === 'Enter' || evt.key === ' ') {
             evt.preventDefault();
             this.sendMessage();
-            this.textInput.focus();
+
+            if (this.textInput) {
+                this.textInput.focus();
+            }
         }
     }
 
@@ -66,7 +70,9 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
             this.fileInput.value = null;
         }
 
-        this.textInput.focus();
+        if (this.textInput) {
+            this.textInput.focus();
+        }
     }
 
     private onTextInputFocus() {
@@ -84,7 +90,9 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     }
 
     public focus(appendKey?: string) {
-        this.textInput.focus();
+        if (this.textInput) {
+            this.textInput.focus();
+        }
 
         if (appendKey) {
             this.props.onChangeText(this.props.inputText + appendKey);
@@ -143,29 +151,19 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         />
                 }
                 <div className="wc-textbox">
-                    {
-                        this.props.listeningState === ListeningState.STARTED ?
-                            <div
-                                className="wc-shellinput"
-                                style={{ lineHeight: '40px' }}
-                            >
-                                { this.props.inputText }
-                            </div>
-                        :
-                            <input
-                                type="text"
-                                className="wc-shellinput"
-                                ref={ input => this.textInput = input }
-                                autoFocus
-                                value={ this.props.inputText }
-                                onChange={ _ => this.props.onChangeText(this.textInput.value) }
-                                onKeyPress={ e => this.onKeyPress(e) }
-                                onFocus={ () => this.onTextInputFocus() }
-                                placeholder={ placeholder }
-                                aria-label={ this.props.inputText ? null : placeholder }
-                                aria-live="polite"
-                            />
-                    }
+                    <input
+                        type="text"
+                        className="wc-shellinput"
+                        ref={ input => this.textInput = input }
+                        autoFocus
+                        value={ this.props.inputText }
+                        onChange={ _ => this.props.onChangeText(this.textInput.value) }
+                        onKeyPress={ e => this.onKeyPress(e) }
+                        onFocus={ () => this.onTextInputFocus() }
+                        placeholder={ placeholder }
+                        aria-label={ this.props.inputText ? null : placeholder }
+                        aria-live="polite"
+                    />
                 </div>
                 <button
                     className={ sendButtonClassName }

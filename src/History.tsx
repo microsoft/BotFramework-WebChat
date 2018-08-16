@@ -9,10 +9,11 @@ import { ChatState, FormatState, SizeState } from './Store';
 import { sendMessage } from './Store';
 
 export interface HistoryProps {
-    format: FormatState;
-    size: SizeState;
     activities: Activity[];
+    disabled: boolean;
+    format: FormatState;
     hasActivityWithSuggestedActions: Activity;
+    size: SizeState;
 
     setMeasurements: (carouselMargin: number) => void;
     onClickRetry: (activity: Activity) => void;
@@ -24,7 +25,6 @@ export interface HistoryProps {
 
     onCardAction: () => void;
     doCardAction: IDoCardAction;
-    interactive: boolean;
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -155,8 +155,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                         >
                             <ActivityView
                                 activity={ activity }
+                                disabled={ this.props.disabled }
                                 format={ this.props.format }
-                                interactive={ this.props.interactive }
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
                                 size={ this.props.size }
@@ -169,7 +169,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList(
             'wc-message-groups',
             !this.props.format.chatTitle && 'no-header',
-            !this.props.interactive && 'no-interactive'
+            this.props.disabled && 'disabled'
         );
 
         return (
@@ -215,9 +215,10 @@ export const History = connect(
         onClickCardAction: dispatchProps.onClickCardAction,
         onClickRetry: dispatchProps.onClickRetry,
         setMeasurements: dispatchProps.setMeasurements,
+        // from ownProps
+        disabled: ownProps.disabled,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
-        interactive: ownProps.interactive,
         isFromMe: (activity: Activity) => activity.from.role === 'user' || activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onCardAction: ownProps.onCardAction,
