@@ -796,7 +796,7 @@ var commands_map: CommandValuesMap = {
                 });
         },
         client: function () {
-            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container div'), element => element.innerHTML === 'Details about image 1');
+            var titleElement = [].find.call(document.querySelectorAll('.wc-adaptive-card .ac-container p'), element => element.innerHTML === 'Details about image 1');
 
             return titleElement && window.getComputedStyle(titleElement)['font-family'] === 'serif';
         }
@@ -845,6 +845,28 @@ var commands_map: CommandValuesMap = {
         },
         client: function () {
             return [].some.call(document.querySelectorAll('.wc-message-from-me'), ({ innerText }) => ~innerText.indexOf('Appears to be sent by the user'));
+        }
+    },
+    'disable interactivity': {
+        server: async function (conversationId, sendActivity) {
+            sendActivity(conversationId, await server_content.interactive_card());
+        },
+        do: function (nightmare) {
+            nightmare.evaluate(() => {
+                window['WebChatTest'].setDisabled(true);
+            });
+        },
+        client: async function () {
+            let result = true;
+            const heroCard = document.querySelector('.wc-adaptive-card');
+            const inputs = heroCard.querySelectorAll('button, input, textarea');
+
+            result = result && [].every.call(inputs, button => button.disabled);
+            result = result && !document.querySelector('.wc-console');
+
+            window['WebChatTest'].setDisabled(false);
+
+            return result;
         }
     }
     /*

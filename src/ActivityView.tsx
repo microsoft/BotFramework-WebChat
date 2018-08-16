@@ -7,29 +7,34 @@ import { FormattedText } from './FormattedText';
 import { FormatState, SizeState } from './Store';
 
 const Attachments = (props: {
-    attachments: Attachment[],
-    attachmentLayout: AttachmentLayout,
-    format: FormatState,
-    size: SizeState,
-    onCardAction: IDoCardAction,
-    onImageLoad: () => void
+    attachmentLayout: AttachmentLayout;
+    attachments: Attachment[];
+    disabled: boolean;
+    format: FormatState;
+    onCardAction: IDoCardAction;
+    onImageLoad: () => void;
+    size: SizeState;
 }) => {
     const { attachments, attachmentLayout, ...otherProps } = props;
+
     if (!attachments || attachments.length === 0) {
         return null;
     }
+
     return attachmentLayout === 'carousel' ?
         <Carousel
             attachments={ attachments }
+            disabled={ props.disabled }
             { ...otherProps }
         />
     :
         <div className="wc-list">
             { attachments.map((attachment, index) =>
                 <AttachmentView
-                    key={ index }
                     attachment={ attachment }
                     format={ props.format }
+                    disabled={ props.disabled }
+                    key={ index }
                     onCardAction={ props.onCardAction }
                     onImageLoad={ props.onImageLoad }
                 />
@@ -38,11 +43,12 @@ const Attachments = (props: {
 };
 
 export interface ActivityViewProps {
-    format: FormatState;
-    size: SizeState;
     activity: Activity;
+    disabled: boolean;
+    format: FormatState;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
+    size: SizeState;
 }
 
 export class ActivityView extends React.Component<ActivityViewProps, {}> {
@@ -58,11 +64,13 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
         // if it's a carousel and the size changed, re-render
             || (this.props.activity.type === 'message'
                 && this.props.activity.attachmentLayout === 'carousel'
-                && this.props.size !== nextProps.size);
+                && this.props.size !== nextProps.size)
+            || !this.props.disabled !== !nextProps.disabled;
     }
 
     render() {
         const { activity, ...props } = this.props;
+
         switch (activity.type) {
             case 'message':
                 return (
@@ -75,6 +83,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                         <Attachments
                             attachments={ activity.attachments }
                             attachmentLayout={ activity.attachmentLayout }
+                            disabled={ props.disabled }
                             format={ props.format }
                             onCardAction={ props.onCardAction }
                             onImageLoad={ props.onImageLoad }

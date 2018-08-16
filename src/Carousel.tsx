@@ -7,11 +7,12 @@ import * as konsole from './Konsole';
 import { FormatState, SizeState } from './Store';
 
 export interface CarouselProps {
-    format: FormatState;
-    size: SizeState;
     attachments: Attachment[];
+    disabled: boolean;
+    format: FormatState;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
+    size: SizeState;
 }
 
 export class Carousel extends React.PureComponent<CarouselProps, {}> {
@@ -62,8 +63,9 @@ export class Carousel extends React.PureComponent<CarouselProps, {}> {
 }
 
 export interface CarouselAttachmentProps {
-    format: FormatState;
     attachments: Attachment[];
+    disabled: boolean;
+    format: FormatState;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
 }
@@ -71,18 +73,28 @@ export interface CarouselAttachmentProps {
 class CarouselAttachments extends React.PureComponent<CarouselAttachmentProps, {}> {
     render() {
         konsole.log('rendering CarouselAttachments');
+
         const { attachments, ...props } = this.props;
+
         return (
-            <ul>{ this.props.attachments.map((attachment, index) =>
-                <li key={ index } className="wc-carousel-item">
-                    <AttachmentView
-                        attachment={ attachment }
-                        format={ props.format }
-                        onCardAction={ props.onCardAction }
-                        onImageLoad={ props.onImageLoad }
-                    />
-                </li>
-            ) }</ul>
+            <ul>
+                {
+                    this.props.attachments.map((attachment, index) =>
+                        <li
+                            className="wc-carousel-item"
+                            key={ index }
+                        >
+                            <AttachmentView
+                                attachment={ attachment }
+                                disabled={ props.disabled }
+                                format={ props.format }
+                                onCardAction={ props.onCardAction }
+                                onImageLoad={ props.onImageLoad }
+                            />
+                        </li>
+                    )
+                }
+            </ul>
         );
     }
 }

@@ -13,6 +13,7 @@ import { AdaptiveCardsState, ChatState } from './Store';
 
 export interface Props {
     className?: string;
+    disabled?: boolean;
     hostConfig: HostConfig;
     jsonCard?: IAdaptiveCard;
     nativeCard?: AdaptiveCard;
@@ -90,7 +91,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     }
 
     private onClick(e: React.MouseEvent<HTMLElement>) {
-        if (!this.props.onClick) {
+        if (this.props.disabled || !this.props.onClick) {
             return;
         }
 
@@ -112,7 +113,11 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     }
 
     private onExecuteAction(action: Action) {
-        if (action instanceof OpenUrlAction) {
+        if (this.props.disabled) {
+            return;
+        } else if (action instanceof OpenUrlAction) {
+            // TODO: Should we let this one bubble to Chat.tsx?
+            //       this.props.onCardAction('openUrl', action.url) might work
             window.open(action.url);
         } else if (action instanceof SubmitAction) {
             if (action.data !== undefined) {
@@ -135,6 +140,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
         if (
             prevProps.hostConfig !== this.props.hostConfig
             || prevProps.jsonCard !== this.props.jsonCard
+            || !prevProps.disabled !== !this.props.disabled
             || prevProps.nativeCard !== this.props.nativeCard
         ) {
             this.unmountAdaptiveCards();
@@ -166,7 +172,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             errors = adaptiveCard.validate();
         }
 
-        adaptiveCard.onExecuteAction = action => this.onExecuteAction(action);
+        adaptiveCard.onExecuteAction = this.onExecuteAction.bind(this);
 
         if (errors.length === 0) {
             let renderedCard: HTMLElement;
@@ -187,11 +193,28 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
             }
 
             if (renderedCard) {
+                if (this.props.disabled) {
+                    const hyperlinks = renderedCard.querySelectorAll('a');
+                    const inputs = renderedCard.querySelectorAll('button, input, select, textarea');
+
+                    [].forEach.call(inputs, (input: HTMLInputElement) => {
+                        input.disabled = true;
+                    });
+
+                    [].forEach.call(hyperlinks, (hyperlink: HTMLAnchorElement) => {
+                        hyperlink.addEventListener('click', event => {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            event.stopPropagation();
+                        });
+                    });
+                }
+
                 if (this.props.onImageLoad) {
                     const imgs = renderedCard.querySelectorAll('img');
 
                     if (imgs && imgs.length > 0) {
-                        Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
+                        [].forEach.call(imgs, (img: HTMLImageElement) => {
                             img.addEventListener('load', this.handleImageLoad);
                         });
                     }
@@ -201,9 +224,7 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
 
                 return;
             }
-        }
-
-        if (errors.length > 0) {
+        } else {
             console.log('Error(s) rendering AdaptiveCard:');
             errors.forEach(e => console.log(e.message));
             this.setState({ errors: errors.map(e => e.message) });

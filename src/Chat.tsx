@@ -16,18 +16,19 @@ import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any;
-    chatTitle?: boolean | string;
-    user: User;
     bot: User;
     botConnection?: IBotConnection;
+    chatTitle?: boolean | string;
     directLine?: DirectLineOptions;
-    speechOptions?: SpeechOptions;
+    disabled?: boolean;
+    formatOptions?: FormatOptions;
     locale?: string;
+    resize?: 'none' | 'window' | 'detect';
     selectedActivity?: BehaviorSubject<ActivityOrID>;
     sendTyping?: boolean;
     showUploadButton?: boolean;
-    formatOptions?: FormatOptions;
-    resize?: 'none' | 'window' | 'detect';
+    speechOptions?: SpeechOptions;
+    user: User;
 }
 
 import { History } from './History';
@@ -165,7 +166,10 @@ export class Chat extends React.Component<ChatProps, {}> {
                 key = inputtableKey(evt.key);
             }
 
-            this.shellRef.focus(key);
+            // shellRef is null if Web Chat is disabled
+            if (this.shellRef) {
+                this.shellRef.focus(key);
+            }
         }
     }
 
@@ -280,13 +284,16 @@ export class Chat extends React.Component<ChatProps, {}> {
                                 <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
                             </div>
                     }
-                    <MessagePane>
+                    <MessagePane disabled={ this.props.disabled }>
                         <History
+                            disabled={ this.props.disabled }
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
                         />
                     </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
+                    {
+                        !this.props.disabled && <Shell ref={ this._saveShellRef } />
+                    }
                     {
                         this.props.resize === 'detect' &&
                             <ResizeDetector onresize={ this.resizeListener } />
@@ -308,7 +315,6 @@ export const doCardAction = (
     type,
     actionValue
 ) => {
-
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
 

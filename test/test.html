@@ -82,6 +82,7 @@
               token: params['t'],
               webSocket: false
             },
+            disabled: 'disabled' in params,
             formatOptions: tryParseJSON(params.formatOptions),
             hidden: 'hidden' in params,
             locale: params['locale'],
@@ -138,6 +139,7 @@
               }));
             },
             setChatTitle: chatTitle => this.setState(() => ({ chatTitle })),
+            setDisabled: disabled => this.setState(() => ({ disabled })),
             setHidden: hidden => this.setState(() => ({ hidden })),
             toggleUploadButton: show => {
               this.setState(state => ({
@@ -158,6 +160,7 @@
                 bot={ this.state.bot }
                 chatTitle={ this.state.chatTitle }
                 directLine={ this.state.directLine }
+                disabled={ this.state.disabled }
                 formatOptions={ this.state.formatOptions }
                 locale={ this.state.locale }
                 resize={ this.state.resize }

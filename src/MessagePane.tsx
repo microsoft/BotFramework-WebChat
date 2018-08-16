@@ -10,18 +10,17 @@ import { ChatActions, sendMessage } from './Store';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message;
-
-    takeSuggestedAction: (message: Message) => any;
-
     children: React.ReactNode;
+    disabled: boolean;
     doCardAction: IDoCardAction;
+    takeSuggestedAction: (message: Message) => any;
 }
 
 const MessagePaneView = (props: MessagePaneProps) =>
     <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
         { props.children }
-        <div className="wc-suggested-actions">
-            <SuggestedActions { ...props } />
+        <div className={ classList('wc-suggested-actions', !!props.disabled && 'disabled') }>
+            <SuggestedActions { ...props }/>
         </div>
     </div>;
 
@@ -56,7 +55,12 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             >
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
-                        <button type="button" onClick={e => this.actionClick(e, action) } title={ action.title }>
+                        <button
+                            disabled={ this.props.disabled }
+                            onClick={ e => this.actionClick(e, action) }
+                            title={ action.title }
+                            type="button"
+                        >
                             { action.title }
                         </button>
                     </li>
@@ -86,6 +90,7 @@ export const MessagePane = connect(
         takeSuggestedAction: dispatchProps.takeSuggestedAction,
         // from ownProps
         children: ownProps.children,
+        disabled: ownProps.disabled,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage)
     })

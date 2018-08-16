@@ -70,6 +70,10 @@
         &.no-header {
             top: 0;
         }
+
+        &.disabled {
+            bottom: 0;
+        }
     }
 
     .wc-message-group-content {
@@ -85,6 +89,10 @@
         position: absolute;
         right: 0;
         transition: height $actionTransition;
+
+        &.disabled {
+            bottom: 0;
+        }
 
         .wc-hscroll > ul {
             height: $actionsHeight;
