@@ -76,7 +76,10 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             throw new Error('Error: The CognitiveServicesSpeechRecognizer requires either a subscriptionKey or a fetchCallback and fetchOnExpiryCallback.');
         }
 
-        if (window.navigator.getUserMedia) {
+        if (
+            window.navigator.getUserMedia
+            || (window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia)
+        ) {
             this.actualRecognizer = CognitiveSpeech.CreateRecognizer(recognizerConfig, authentication);
         } else {
             console.error('This browser does not support speech recognition');
