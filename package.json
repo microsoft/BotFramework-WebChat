@@ -37,7 +37,7 @@
     "core-js": "2.4.1",
     "jspeech": "^0.1.1",
     "markdown-it": "8.3.1",
-    "microsoft-speech-browser-sdk": "file:./SpeechToText-WebSockets-Javascript",
+    "microsoft-speech-browser-sdk": "0.0.12",
     "react": "15.6.1",
     "react-dom": "15.6.1",
     "react-redux": "5.0.5",

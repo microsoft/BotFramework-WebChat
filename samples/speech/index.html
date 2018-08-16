@@ -68,6 +68,7 @@
     <script src="../../CognitiveServices.js"></script>
 
     <script>
+        window.cid = 'd321bae0-6f5f-4afe-8dbc-c7502b02fa48';
         const params = BotChat.queryParams(location.search);
 
         const user = {
@@ -105,7 +106,10 @@
         };
 
         const speechOptions = {
-            speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: '' }),
+            speechRecognizer: new CognitiveServices.SpeechRecognizer({
+                subscriptionKey: 'e2134fe6a6b544448ded700a798b11f2',
+                cid: 'd321bae0-6f5f-4afe-8dbc-c7502b02fa48' // CRIS Endpoint
+            }),
             speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
                 gender: CognitiveServices.SynthesisGender.Female,
                 subscriptionKey: '',
