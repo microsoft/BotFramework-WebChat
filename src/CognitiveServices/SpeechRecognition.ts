@@ -37,7 +37,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     constructor(properties: ICognitiveServicesSpeechRecognizerProperties = {}) {
         this.properties = properties;
         const recognitionMode = CognitiveSpeech.RecognitionMode.Interactive;
-        const format = CognitiveSpeech.SpeechResultFormat.Simple;
+        const format = CognitiveSpeech.SpeechResultFormat.Detailed;
         const locale = properties.locale || 'en-US';
 
         const recognizerConfig = new CognitiveSpeech.RecognizerConfig(
@@ -103,7 +103,6 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                 case 'ListeningStartedEvent':
                 case 'SpeechStartDetectedEvent':
                 case 'SpeechEndDetectedEvent':
-                case 'SpeechDetailedPhraseEvent':
                 case 'ConnectingToServiceEvent':
                     break;
                 case 'RecognitionStartedEvent':
@@ -130,6 +129,20 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                             this.onRecognitionFailed();
                         }
                         this.log('Recognition Status: ' + simplePhraseEvent.Result.RecognitionStatus.toString());
+                    }
+                    break;
+                case 'SpeechDetailedPhraseEvent':
+                    const detailedPhraseEvent = event as CognitiveSpeech.SpeechDetailedPhraseEvent;
+                    if (CognitiveSpeech.RecognitionStatus[detailedPhraseEvent.Result.RecognitionStatus] as any === CognitiveSpeech.RecognitionStatus.Success) {
+                        if (this.onFinalResult) {
+                            console.log(detailedPhraseEvent.Result.NBest[0].Lexical);
+                            this.onFinalResult(detailedPhraseEvent.Result.NBest[0].Lexical);
+                        }
+                    } else {
+                        if (this.onRecognitionFailed) {
+                            this.onRecognitionFailed();
+                        }
+                        this.log('Recognition Status: ' + detailedPhraseEvent.Result.RecognitionStatus.toString());
                     }
                     break;
                 case 'RecognitionEndedEvent':

@@ -5,6 +5,8 @@ export interface ICognitiveServicesSpeechSynthesisProperties {
     subscriptionKey?: string;
     gender?: SynthesisGender;
     voiceName?: string;
+    onSpeakingStarted?: Action;
+    onSpeakingFinished?: Action;
     fetchCallback?: (authFetchEventId: string) => Promise<string>;
     fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>;
 }
@@ -43,15 +45,21 @@ export class SpeechSynthesizer implements Speech.ISpeechSynthesizer {
     private _audioElement: AudioContext;
     private _helper: CognitiveServicesHelper;
     private _properties: ICognitiveServicesSpeechSynthesisProperties;
+    private _onSpeakingStarted: Action;
+    private _onSpeakingFinished: Action;
     // tslint:enable:variable-name
 
     constructor(properties: ICognitiveServicesSpeechSynthesisProperties) {
         this._helper = new CognitiveServicesHelper(properties);
         this._properties = properties;
         this._requestQueue = new Array();
+        this._onSpeakingStarted = properties.onSpeakingStarted;
+        this._onSpeakingFinished = properties.onSpeakingFinished;
     }
 
-    speak(text: string, lang: string, onSpeakingStarted: Action = null, onSpeakingFinished: Action = null): void {
+    public speak = (text: string, lang: string, onSpeakingStarted: Action = this._onSpeakingStarted, onSpeakingFinished: Action = this._onSpeakingFinished): void => {
+        onSpeakingStarted = this._onSpeakingStarted;
+        onSpeakingFinished = this._onSpeakingFinished;
         this._requestQueue.push(
             {
                 isReadyToPlay: false,
@@ -225,7 +233,7 @@ class CognitiveServicesHelper {
         }
         const parser = new DOMParser();
         const dom = parser.parseFromString(ssml, 'text/xml');
-        const nodes = dom.documentElement.childNodes;
+        const nodes = dom.documentElement.childNodes as any;
 
         // Check if there is a voice node
         // tslint:disable-next-line:prefer-for-of
@@ -259,7 +267,7 @@ class CognitiveServicesHelper {
         const serializer = new XMLSerializer();
         if (!processDone) {
             // There is no voice element, add one based on locale
-            const voiceNode = dom.createElement('voice') as Node;
+            const voiceNode = dom.createElement('voice') as Node as any;
             const attribute = dom.createAttribute('name');
             attribute.value = (synthesisProperties && synthesisProperties.voiceName) || this.fetchVoiceName(locale, gender);
             voiceNode.attributes.setNamedItem(attribute);
