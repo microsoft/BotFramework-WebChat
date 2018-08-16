@@ -44,8 +44,8 @@ const Attachments = (props: {
 
 export interface ActivityViewProps {
     activity: Activity;
-    format: FormatState;
     disabled: boolean;
+    format: FormatState;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
     size: SizeState;
