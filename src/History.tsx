@@ -211,7 +211,7 @@ export const History = connect(
         onClickCardAction: dispatchProps.onClickCardAction,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
-        isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
+        isFromMe: (activity: Activity) => activity.from.role === 'user' || activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
         onCardAction: ownProps.onCardAction

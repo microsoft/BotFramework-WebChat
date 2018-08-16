@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Update `PULL_REQUEST_TEMPLATE.md` [@corinagum](https://github.com/corinagum) in PR [#1065](https://github.com/Microsoft/BotFramework-WebChat/pull/1065)
+- Add `role === 'user'` to `fromMe` check in [#1053](https://github.com/Microsoft/BotFramework-WebChat/pull/1053)
 
 ## [0.14.1] - 2018-07-31
 ### Added
