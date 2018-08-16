@@ -101,6 +101,9 @@
   <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
   <script>
     $(function() {
+      // OPTIONAL - auto expand after given delay
+      // setTimeout(function() { $('#bot-wrapper').hasClass('collapsed') && $('#bot-header').click() }, 3000);
+
     	$('#bot-header').click(function() {
     		$('#bot-wrapper').toggleClass('collapsed')
 
