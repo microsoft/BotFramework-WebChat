@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
-- Fix [#1079](https://github.com/Microsoft/BotFramework-WebChat/issues/1079) to make `adaptiveCardsHostConfig` an optional props, in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Fix [#1079](https://github.com/Microsoft/BotFramework-WebChat/issues/1079) to make `adaptiveCardsHostConfig` an optional props, in [#1096](https://github.com/Microsoft/BotFramework-WebChat/pull/1096)
 
 ## [0.14.2] - 2018-08-16
 ### Added
