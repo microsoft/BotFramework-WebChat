@@ -15,7 +15,7 @@ import { ChatActions, createStore, sendMessage } from './Store';
 import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
-    adaptiveCardsHostConfig: any;
+    adaptiveCardsHostConfig?: any;
     bot: User;
     botConnection?: IBotConnection;
     chatTitle?: boolean | string;
