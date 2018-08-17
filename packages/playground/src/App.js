@@ -48,10 +48,16 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    const domain = params.get('domain');
+    const secret = params.get('s');
+
     this.props.dispatch(startConnection({
       directLine: new DirectLine({
         // domain: 'http://localhost:3001/mock',
-        domain: 'http://localhost:5000/v3/directline',
+        // domain: 'http://localhost:5000/v3/directline',
+        domain,
+        secret,
         fetch,
         createFormData: attachments => {
           const formData = new FormData();
