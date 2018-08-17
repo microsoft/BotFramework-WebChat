@@ -4,7 +4,6 @@ import memoize from 'memoize-one';
 import React from 'react';
 import updateIn from 'simple-update-in';
 
-// import activities from './sampleActivities';
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
 import mapMap from './Utils/mapMap';
@@ -17,8 +16,9 @@ export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.mergeContext = memoize(({
-      staticContext,
+    // TODO: Revisit all members of context
+    this.createContext = memoize(({
+      contextFromState,
       activities,
       adaptiveCards,
       lang,
@@ -29,27 +29,33 @@ export default class Composer extends React.Component {
       sendBoxRef,
       styleSet,
       suggestedActions
-    }) => ({
-      ...staticContext,
-      activities: activities || [],
-      adaptiveCards: adaptiveCards || AdaptiveCards,
-      focusSendBox: () => {
-        const { current } = sendBoxRef || {};
+    }) => {
+      const context = {
+        ...contextFromState,
+        activities: activities || [],
+        adaptiveCards: adaptiveCards || AdaptiveCards,
+        focusSendBox: () => {
+          const { current } = sendBoxRef || {};
 
-        current && current.focus();
-      },
-      lang,
-      onOpen: onOpen || window.open,
-      renderMarkdown: renderMarkdown || (markdown => markdown),
-      scrollToBottom: scrollToBottom || (() => 0),
-      send: send || (() => 0),
-      styleSet: styleSetToClassNames(styleSet),
-      suggestedActions: suggestedActions || []
-    }));
+          current && current.focus();
+        },
+        lang,
+        onOpen: onOpen || window.open.bind(window),
+        renderMarkdown: renderMarkdown || (markdown => markdown),
+        scrollToBottom: scrollToBottom || (() => 0),
+        send: send || (() => 0),
+        styleSet: styleSetToClassNames(styleSet),
+        suggestedActions: suggestedActions || []
+      };
+
+      console.debug(`Web Chat: new context created`);
+      console.debug(context);
+
+      return context;
+    });
 
     this.state = {
       context: {
-        // activities,
         grammars: [],
         sendBoxValue: '',
         setGrammars: memoize(grammars => this.setState(() => ({ grammars }))),
@@ -81,10 +87,10 @@ export default class Composer extends React.Component {
         styleSet,
         suggestedActions = []
       },
-      state: { context: staticContext }
+      state: { context: contextFromState }
     } = this;
 
-    const context = this.mergeContext({
+    const context = this.createContext({
       activities,
       adaptiveCards,
       lang: lang || 'en-US',
@@ -93,7 +99,7 @@ export default class Composer extends React.Component {
       scrollToBottom,
       send,
       sendBoxRef,
-      staticContext,
+      contextFromState,
       styleSet: styleSet || createStyleSet(),
       suggestedActions
     });

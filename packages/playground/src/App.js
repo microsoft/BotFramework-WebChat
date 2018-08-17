@@ -54,8 +54,6 @@ class App extends Component {
 
     this.props.dispatch(startConnection({
       directLine: new DirectLine({
-        // domain: 'http://localhost:3001/mock',
-        // domain: 'http://localhost:5000/v3/directline',
         domain,
         secret,
         fetch,
