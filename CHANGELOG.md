@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Translations
+  - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in [PR #1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
 
 ## [0.14.2] - 2018-08-16
 ### Added

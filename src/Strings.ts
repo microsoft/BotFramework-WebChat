@@ -188,8 +188,8 @@ const localizedStrings: LocalizedStrings = {
         timeSent: ' às %1',
         consolePlaceholder: 'Digite sua mensagem...',
         listeningIndicator: 'Ouvindo...',
-        uploadFile: '',
-        speak: ''
+        uploadFile: 'Subir arquivo',
+        speak: 'Falar'
     },
     'fr-fr': {
         title: 'Chat',
