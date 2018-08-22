@@ -52,6 +52,6 @@ export default ({
           html={ renderMarkdown(text || '') }
         />
       :
-        <p>{ text }</p>
+        <p className={ styleSet.textContent + '' }>{ text }</p>
     }
   </Context.Consumer>

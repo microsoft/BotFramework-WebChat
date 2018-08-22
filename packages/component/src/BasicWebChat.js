@@ -49,12 +49,8 @@ export default class extends React.Component {
 
     return (
       <Composer
-        activities={ props.activities }
-        renderMarkdown={ props.renderMarkdown }
-        send={ props.send }
         sendBoxRef={ this.sendBoxRef }
-        styleSet={ props.styleSet }
-        suggestedActions={ props.suggestedActions }
+        { ...props }
       >
         { ({ styleSet }) =>
           <TypeFocusSinkBox
@@ -72,6 +68,8 @@ export default class extends React.Component {
                   <AudioCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.oauth' ?
                   <OAuthCardAttachment attachment={ attachment } />
+                : attachment.contentType === 'application/vnd.microsoft.card.postback' ?
+                  false
                 : attachment.contentType === 'application/vnd.microsoft.card.receipt' ?
                   <ReceiptCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.signin' ?
@@ -86,8 +84,10 @@ export default class extends React.Component {
                   <ImageAttachment attachment={ attachment } />
                 : /^text\//.test(attachment.contentType) ?
                   <TextAttachment attachment={ attachment } />
-                : /^video\//.test(attachment.contentType) &&
+                : /^video\//.test(attachment.contentType) ?
                   <VideoAttachment attachment={ attachment } />
+                :
+                  undefined
               }
             </BasicTranscript>
             <BasicSendBox

@@ -14,6 +14,7 @@ function updateActivity(activities, clientActivityID, updater) {
     throw new Error('must specify clientActivityID');
   }
 
+  // Use newer "simple-update-in"
   return activities.map(activity => {
     const { channelData } = activity;
 

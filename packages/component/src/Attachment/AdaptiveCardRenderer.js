@@ -9,10 +9,11 @@ import Context from '../Context';
 
 export default ({ adaptiveCard }) =>
   <Context.Consumer>
-    { ({ onOpen }) =>
+    { ({ onCardAction, postActivity }) =>
       <AdaptiveCardRenderer
         adaptiveCard={ adaptiveCard }
-        onOpen={ onOpen }
+        onCardAction={ onCardAction }
+        postActivity={ postActivity }
       />
     }
   </Context.Consumer>
@@ -38,9 +39,25 @@ class AdaptiveCardRenderer extends React.PureComponent {
     const { props } = this;
 
     if (action instanceof OpenUrlAction) {
-      props.onOpen(action.url);
+      props.onCardAction({
+        type: 'openUrl',
+        value: action.url
+      });
     } else if (action instanceof SubmitAction) {
-      console.warn(action);
+      if (typeof action.data !== 'undefined') {
+        const { data: cardAction } = action || {};
+
+        if (cardAction && cardAction.__isBotFrameworkCardAction) {
+          const { type, value } = cardAction;
+
+          props.onCardAction({ type, value });
+        } else {
+          props.onCardAction({
+            type: typeof action.data === 'string' ? 'imBack' : 'postBack',
+            value: action.data
+          });
+        }
+      }
     } else {
       console.error(`Web Chat: received unknown action from Adaptive Cards`);
       console.error(action);

@@ -7,7 +7,7 @@ import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { withStyleSet } from '../Context';
 import IconButton from './IconButton';
 import MicrophoneButton from './MicrophoneButton';
-import MainContext from '../Context';
+import Context from '../Context';
 import SendIcon from './Assets/SendIcon';
 
 const ROOT_CSS = css({
@@ -53,18 +53,20 @@ class TextBoxWithSpeech extends React.Component {
     }));
   }
 
-  handleSubmit(scrollToBottom, send, sendBoxValue, setSendBoxValue, event) {
+  handleSubmit(event) {
+    const { props } = this;
+
     event.preventDefault();
 
-    if (sendBoxValue) {
-      scrollToBottom();
+    if (props.sendBoxValue) {
+      props.scrollToBottom();
 
-      send({
-        text: sendBoxValue,
+      props.postActivity({
+        text: props.sendBoxValue,
         type: 'message'
       });
 
-      setSendBoxValue('');
+      props.onSendBoxChange('');
     }
   }
 
@@ -72,62 +74,58 @@ class TextBoxWithSpeech extends React.Component {
     const { props, state } = this;
 
     return (
-      <MainContext>
-        { ({ scrollToBottom, send, sendBoxValue, setSendBoxValue }) =>
-          <form
-            className={ classNames(
-              ROOT_CSS + '',
-              props.styleSet.sendBoxTextBox + '',
-              (props.className || '') + '',
-            ) }
-            onSubmit={ this.handleSubmit.bind(this, scrollToBottom, send, sendBoxValue, setSendBoxValue) }
-          >
-            {
-              state.dictateState === IDLE ?
-                <TypeFocusSinkContext.Consumer>
-                  { ({ sendFocusRef }) =>
-                    <input
-                      disabled={ props.disabled }
-                      onChange={ ({ target: { value } }) => setSendBoxValue(value) }
-                      placeholder="Type your message"
-                      ref={ sendFocusRef }
-                      type="text"
-                      value={ sendBoxValue }
-                    />
-                  }
-                </TypeFocusSinkContext.Consumer>
-              : state.dictateState === STARTING ?
-                <div className="status">Starting...</div>
-              : state.interims.length ?
-                <p className="dictation">
-                  {
-                    state.interims.map((interim, index) => <span key={ index }>{ interim }</span>)
-                  }
-                </p>
-              :
-                <div className="status">Listening...</div>
-            }
-            {
-              props.speech ?
-                <MicrophoneButton
+      <form
+        className={ classNames(
+          ROOT_CSS + '',
+          props.styleSet.sendBoxTextBox + '',
+          (props.className || '') + '',
+        ) }
+        onSubmit={ this.handleSubmit }
+      >
+        {
+          state.dictateState === IDLE ?
+            <TypeFocusSinkContext.Consumer>
+              { ({ sendFocusRef }) =>
+                <input
                   disabled={ props.disabled }
-                  onClick={ this.handleDictateClick }
-                  onDictate={ ({ transcript }) => {
-                    setSendBoxValue(transcript);
-                    this.setState(() => ({ dictateState: IDLE }));
-                  } }
-                  onDictateClick={ this.handleDictateClick }
-                  onDictating={ this.handleDictating }
-                  onError={ this.handleDictateError }
+                  onChange={ ({ target: { value } }) => props.onSendBoxChange(value) }
+                  placeholder="Type your message"
+                  ref={ sendFocusRef }
+                  type="text"
+                  value={ props.sendBoxValue }
                 />
-              :
-                <IconButton>
-                  <SendIcon />
-                </IconButton>
-            }
-          </form>
+              }
+            </TypeFocusSinkContext.Consumer>
+          : state.dictateState === STARTING ?
+            <div className="status">Starting...</div>
+          : state.interims.length ?
+            <p className="dictation">
+              {
+                state.interims.map((interim, index) => <span key={ index }>{ interim }</span>)
+              }
+            </p>
+          :
+            <div className="status">Listening...</div>
         }
-      </MainContext>
+        {
+          props.speech ?
+            <MicrophoneButton
+              disabled={ props.disabled }
+              onClick={ this.handleDictateClick }
+              onDictate={ ({ transcript }) => {
+                props.onSendBoxChange(transcript);
+                this.setState(() => ({ dictateState: IDLE }));
+              } }
+              onDictateClick={ this.handleDictateClick }
+              onDictating={ this.handleDictating }
+              onError={ this.handleDictateError }
+            />
+          :
+            <IconButton>
+              <SendIcon />
+            </IconButton>
+        }
+      </form>
     );
   }
 }
@@ -141,4 +139,29 @@ TextBoxWithSpeech.propTypes = {
   speech: PropTypes.bool
 };
 
-export default withStyleSet(TextBoxWithSpeech)
+export default ({
+  className,
+  disabled,
+  speech
+}) =>
+  <Context.Consumer>
+    {
+      ({
+        onSendBoxChange,
+        postActivity,
+        scrollToBottom,
+        sendBoxValue,
+        styleSet
+      }) =>
+        <TextBoxWithSpeech
+          className={ className }
+          disabled={ disabled }
+          onSendBoxChange={ onSendBoxChange }
+          postActivity={ postActivity }
+          scrollToBottom={ scrollToBottom }
+          sendBoxValue={ sendBoxValue }
+          speech={ speech }
+          styleSet={ styleSet }
+        />
+    }
+  </Context.Consumer>

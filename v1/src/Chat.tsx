@@ -60,10 +60,10 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         konsole.log("BotChat.Chat props", props);
 
-        this.store.dispatch<ChatActions>({
-            type: 'Set_Locale',
-            locale: props.locale || (window.navigator as any)["userLanguage"] || window.navigator.language || 'en'
-        });
+        // this.store.dispatch<ChatActions>({
+        //     type: 'Set_Locale',
+        //     locale: props.locale || (window.navigator as any)["userLanguage"] || window.navigator.language || 'en'
+        // });
 
         if (props.adaptiveCardsHostConfig) {
             this.store.dispatch<ChatActions>({
@@ -290,75 +290,75 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 }
 
-export interface IDoCardAction {
-    (type: CardActionTypes, value: string | object): void;
-}
+// export interface IDoCardAction {
+//     (type: CardActionTypes, value: string | object): void;
+// }
 
-export const doCardAction = (
-    botConnection: IBotConnection,
-    from: User,
-    locale: string,
-    sendMessage: (value: string, user: User, locale: string) => void,
-): IDoCardAction => (
-    type,
-    actionValue
-) => {
+// export const doCardAction = (
+//     botConnection: IBotConnection,
+//     from: User,
+//     locale: string,
+//     sendMessage: (value: string, user: User, locale: string) => void,
+// ): IDoCardAction => (
+//     type,
+//     actionValue
+// ) => {
 
-    const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
-    const value = (typeof actionValue === 'object')? actionValue as object : undefined;
+//     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
+//     const value = (typeof actionValue === 'object')? actionValue as object : undefined;
 
-    switch (type) {
-        case "imBack":
-            if (typeof text === 'string')
-                sendMessage(text, from, locale);
-            break;
+//     switch (type) {
+//         case "imBack":
+//             if (typeof text === 'string')
+//                 sendMessage(text, from, locale);
+//             break;
 
-        case "postBack":
-            sendPostBack(botConnection, text, value, from, locale);
-            break;
+//         case "postBack":
+//             sendPostBack(botConnection, text, value, from, locale);
+//             break;
 
-        case "call":
-        case "openUrl":
-        case "playAudio":
-        case "playVideo":
-        case "showImage":
-        case "downloadFile":
-            window.open(text);
-            break;
-        case "signin":
-            let loginWindow =  window.open();
-            if (botConnection.getSessionId)  {
-                botConnection.getSessionId().subscribe(sessionId => {
-                    konsole.log("received sessionId: " + sessionId);
-                    loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
-                }, error => {
-                    konsole.log("failed to get sessionId", error);
-                });
-            }
-            else {
-                loginWindow.location.href = text;
-            }
-            break;
+//         case "call":
+//         case "openUrl":
+//         case "playAudio":
+//         case "playVideo":
+//         case "showImage":
+//         case "downloadFile":
+//             window.open(text);
+//             break;
+//         case "signin":
+//             let loginWindow =  window.open();
+//             if (botConnection.getSessionId)  {
+//                 botConnection.getSessionId().subscribe(sessionId => {
+//                     konsole.log("received sessionId: " + sessionId);
+//                     loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
+//                 }, error => {
+//                     konsole.log("failed to get sessionId", error);
+//                 });
+//             }
+//             else {
+//                 loginWindow.location.href = text;
+//             }
+//             break;
 
-        default:
-            konsole.log("unknown button type", type);
-        }
-}
+//         default:
+//             konsole.log("unknown button type", type);
+//         }
+// }
 
-export const sendPostBack = (botConnection: IBotConnection, text: string, value: object, from: User, locale: string) => {
-    botConnection.postActivity({
-        type: "message",
-        text,
-        value,
-        from,
-        locale
-    })
-    .subscribe(id => {
-        konsole.log("success sending postBack", id)
-    }, error => {
-        konsole.log("failed to send postBack", error);
-    });
-}
+// export const sendPostBack = (botConnection: IBotConnection, text: string, value: object, from: User, locale: string) => {
+//     botConnection.postActivity({
+//         type: "message",
+//         text,
+//         value,
+//         from,
+//         locale
+//     })
+//     .subscribe(id => {
+//         konsole.log("success sending postBack", id)
+//     }, error => {
+//         konsole.log("failed to send postBack", error);
+//     });
+// }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
     if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
@@ -382,18 +382,18 @@ const ResizeDetector = (props: {
         } }
     />;
 
-// For auto-focus in some browsers, we synthetically insert keys into the chatbox.
-// By default, we insert keys when:
-// 1. evt.key.length === 1 (e.g. "1", "A", "=" keys), or
-// 2. evt.key is one of the map keys below (e.g. "Add" will insert "+", "Decimal" will insert ".")
-const INPUTTABLE_KEY: { [key: string]: string } = {
-    Add: '+',      // Numpad add key
-    Decimal: '.',  // Numpad decimal key
-    Divide: '/',   // Numpad divide key
-    Multiply: '*', // Numpad multiply key
-    Subtract: '-'  // Numpad subtract key
-};
+// // For auto-focus in some browsers, we synthetically insert keys into the chatbox.
+// // By default, we insert keys when:
+// // 1. evt.key.length === 1 (e.g. "1", "A", "=" keys), or
+// // 2. evt.key is one of the map keys below (e.g. "Add" will insert "+", "Decimal" will insert ".")
+// const INPUTTABLE_KEY: { [key: string]: string } = {
+//     Add: '+',      // Numpad add key
+//     Decimal: '.',  // Numpad decimal key
+//     Divide: '/',   // Numpad divide key
+//     Multiply: '*', // Numpad multiply key
+//     Subtract: '-'  // Numpad subtract key
+// };
 
-function inputtableKey(key: string) {
-    return key.length === 1 ? key : INPUTTABLE_KEY[key];
-}
+// function inputtableKey(key: string) {
+//     return key.length === 1 ? key : INPUTTABLE_KEY[key];
+// }

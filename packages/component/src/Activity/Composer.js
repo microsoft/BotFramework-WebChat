@@ -3,10 +3,10 @@ import React from 'react';
 
 import Context from './Context';
 
-function activityToAttachment({ contentType = 'text/markdown', text }) {
+function activityToAttachment({ text, textFormat }) {
   return {
     content: { text },
-    contentType
+    contentType: textFormat === 'plain' ? 'text/plain' : textFormat === 'xml' ? 'text/xml' : 'text/markdown'
   };
 }
 
@@ -17,7 +17,17 @@ export default class Composer extends React.Component {
     this.createContext = memoize(activity => ({
       activity,
       attachments: [
-        ...(activity.text ? [activityToAttachment(activity)] : []),
+        ...(
+          activity.text ?
+            [activityToAttachment(activity)]
+          : (activity.type === 'message' && activity.value) ?
+            [{
+              content: { value: activity.value },
+              contentType: 'application/vnd.microsoft.card.postback'
+            }]
+          :
+            []
+          ),
         ...activity.attachments || []
       ]
     }));

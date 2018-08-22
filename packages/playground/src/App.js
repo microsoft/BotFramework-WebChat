@@ -1,12 +1,10 @@
-import { startConnection } from 'backend';
 import { connect } from 'react-redux';
 import { css } from 'glamor';
 import { DirectLine } from 'botframework-directlinejs';
-import MarkdownIt from 'markdown-it';
-import React, { Component } from 'react';
-
+import { postActivity, startConnection } from 'backend';
 import BasicWebChat from 'component';
-import postActivity from '../node_modules/backend/lib/Actions/postActivity';
+import MarkdownIt from 'markdown-it';
+import React from 'react';
 
 const ROOT_CSS = css({
   height: '100%',
@@ -34,14 +32,14 @@ const WEB_CHAT_CSS = css({
   maxWidth: 768
 });
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
     const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
 
+    this.handlePostActivity = this.handlePostActivity.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
-    this.handleSend = this.handleSend.bind(this);
     this.renderMarkdown = markdownIt.render.bind(markdownIt);
 
     this.mainRef = React.createRef();
@@ -84,7 +82,7 @@ class App extends Component {
     window.location.reload();
   }
 
-  handleSend(activity) {
+  handlePostActivity(activity) {
     this.props.dispatch(postActivity(activity));
   }
 
@@ -99,7 +97,7 @@ class App extends Component {
         <BasicWebChat
           activities={ props.activities }
           className={ WEB_CHAT_CSS }
-          send={ this.handleSend }
+          postActivity={ this.handlePostActivity }
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }
         />
@@ -114,4 +112,6 @@ class App extends Component {
   }
 }
 
-export default connect(({ activities, suggestedActions }) => ({ activities, suggestedActions }))(App);
+export default connect(
+  ({ activities, suggestedActions }) => ({ activities, suggestedActions }),
+)(App);
