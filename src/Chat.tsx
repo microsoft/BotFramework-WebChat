@@ -342,9 +342,14 @@ export const doCardAction = (
             if (botConnection.getSessionId)  {
                 botConnection.getSessionId().subscribe(sessionId => {
                     konsole.log('received sessionId: ' + sessionId);
-                    loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
+                    let param = '';
+                    if (sessionId && sessionId.length > 0) {
+                        param = encodeURIComponent('&code_challenge=' + sessionId);
+                    }
+                    loginWindow.location.href = text + param;
                 }, error => {
                     konsole.log('failed to get sessionId', error);
+                    loginWindow.location.href = text;
                 });
             } else {
                 loginWindow.location.href = text;
