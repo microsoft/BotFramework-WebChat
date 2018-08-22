@@ -1,5 +1,4 @@
 import { css } from 'glamor';
-
 import classNames from 'classnames';
 import React from 'react';
 
@@ -31,7 +30,7 @@ const ROOT_CSS = css({
       right: 0,
       top: 0,
 
-      '&:hover': {
+      '&:focus, &:hover': {
         backgroundColor: 'rgba(0, 0, 0, .1)'
       }
     }
