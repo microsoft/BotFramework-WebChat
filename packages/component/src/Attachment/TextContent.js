@@ -52,6 +52,13 @@ export default ({
           html={ renderMarkdown(text || '') }
         />
       :
-        <p className={ styleSet.textContent + '' }>{ text }</p>
+        text.split('\n').map((line, index) =>
+          <p
+            className={ styleSet.textContent + '' }
+            key={ index }
+          >
+            { line.trim() }
+          </p>
+        )
     }
   </Context.Consumer>

@@ -21,7 +21,7 @@ function createLogic(props) {
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
   const onSendBoxChange = props.onSendBoxChange || (() => 0);
   const postActivity = props.postActivity || (() => { throw new Error('"postActivity" is not specified in props'); });
-  const renderMarkdown = props.renderMarkdown || (markdown => markdown);
+  const renderMarkdown = props.renderMarkdown;
   const scrollToBottom = props.scrollToBottom || (() => 0);
   const sendBoxValue = props.sendBoxValue || '';
   const styleSet = styleSetToClassNames(props.styleSet || createStyleSet());
