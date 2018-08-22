@@ -6,6 +6,7 @@ import {
 } from 'adaptivecards';
 
 import Context from '../Context';
+import UnknownAttachment from './UnknownAttachment';
 
 export default ({ adaptiveCard }) =>
   <Context.Consumer>
@@ -25,14 +26,20 @@ class AdaptiveCardRenderer extends React.PureComponent {
     this.handleExecuteAction = this.handleExecuteAction.bind(this);
 
     this.contentRef = React.createRef();
+
+    this.state = {
+      error: null
+    };
   }
 
   componentDidMount() {
     this.renderCard();
   }
 
-  componentDidUpdate() {
-    this.renderCard();
+  componentDidUpdate(prevProps) {
+    if (prevProps.adaptiveCard !== this.props.adaptiveCard) {
+      this.renderCard();
+    }
   }
 
   handleExecuteAction(action) {
@@ -71,7 +78,28 @@ class AdaptiveCardRenderer extends React.PureComponent {
     if (current && adaptiveCard) {
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
 
-      const element = adaptiveCard.render();
+      const errors = adaptiveCard.validate();
+
+      if (errors.length) {
+        return this.setState(() => ({ error: errors }));
+      }
+
+      let element;
+
+      try {
+        element = adaptiveCard.render();
+      } catch (err) {
+        return this.setState(() => ({ errors: err }));
+      }
+
+      if (!element) {
+        return this.setState(() => ({ error: 'Adaptive Card rendered as empty element' }));
+      }
+
+      if (this.state.error) {
+        this.setState(() => ({ error: null }));
+      }
+
       const [firstChild] = current.children;
 
       if (firstChild) {
@@ -83,8 +111,15 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   render() {
+    const { state: { error } } = this;
+
     return (
-      <div ref={ this.contentRef } />
+      error ?
+        <UnknownAttachment message="Adaptive Card render error">
+          { JSON.stringify(error, null, 2) }
+        </UnknownAttachment>
+      :
+        <div ref={ this.contentRef } />
     );
   }
 }
