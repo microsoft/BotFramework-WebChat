@@ -24,6 +24,7 @@ export default function createUnknownCardStyle() {
       borderRightWidth: 2,
       borderTopWidth: 0,
       margin: 0,
+      overflowY: 'auto',
       padding: 10
     }
   };

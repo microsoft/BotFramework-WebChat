@@ -5,6 +5,8 @@ import { withStyleSet } from '../Context';
 export default withStyleSet(({ children, message, styleSet }) =>
   <div className={ styleSet.unknownAttachment }>
     <div>{ message }</div>
-    { children }
+    <div>
+      { children }
+    </div>
   </div>
 )
