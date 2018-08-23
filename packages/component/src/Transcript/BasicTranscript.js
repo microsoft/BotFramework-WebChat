@@ -24,6 +24,7 @@ const LIST_CSS = css({
 export default withStyleSet(({ className, children, styleSet }) =>
   <ScrollToBottom
     className={ className }
+    threshold={ styleSet.options.scrollToBottomThreshold }
     scrollViewClassName={ ROOT_CSS + '' }
   >
     <div className={ FILLER_CSS } />

@@ -78,40 +78,40 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         this.autoscroll();
     }
 
-    private autoscroll() {
-        const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
-        this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
+    // private autoscroll() {
+    //     const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
+    //     this.scrollContent.style.marginTop = vAlignBottomPadding + 'px';
 
-        const lastActivity = this.props.activities[this.props.activities.length - 1];
-        const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
+    //     const lastActivity = this.props.activities[this.props.activities.length - 1];
+    //     const lastActivityFromMe = lastActivity && this.props.isFromMe && this.props.isFromMe(lastActivity);
 
-        // Validating if we are at the bottom of the list or the last activity was triggered by the user.
-        if (this.scrollToBottom || lastActivityFromMe) {
-            this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
-        }
-    }
+    //     // Validating if we are at the bottom of the list or the last activity was triggered by the user.
+    //     if (this.scrollToBottom || lastActivityFromMe) {
+    //         this.scrollMe.scrollTop = this.scrollMe.scrollHeight - this.scrollMe.offsetHeight;
+    //     }
+    // }
 
     // In order to do their cool horizontal scrolling thing, Carousels need to know how wide they can be.
     // So, at startup, we create this mock Carousel activity and measure it.
-    private measurableCarousel = () =>
-        // find the largest possible message size by forcing a width larger than the chat itself
-        <WrappedActivity
-            ref={ x => this.carouselActivity = x }
-            activity={ {
-                type: 'message',
-                id: '',
-                from: { id: '' },
-                attachmentLayout: 'carousel'
-            } }
-            format={ null }
-            fromMe={ false }
-            onClickActivity={ null }
-            onClickRetry={ null }
-            selected={ false }
-            showTimestamp={ false }
-        >
-            <div style={ { width: this.largeWidth } }>&nbsp;</div>
-        </WrappedActivity>;
+    // private measurableCarousel = () =>
+    //     // find the largest possible message size by forcing a width larger than the chat itself
+    //     <WrappedActivity
+    //         ref={ x => this.carouselActivity = x }
+    //         activity={ {
+    //             type: 'message',
+    //             id: '',
+    //             from: { id: '' },
+    //             attachmentLayout: 'carousel'
+    //         } }
+    //         format={ null }
+    //         fromMe={ false }
+    //         onClickActivity={ null }
+    //         onClickRetry={ null }
+    //         selected={ false }
+    //         showTimestamp={ false }
+    //     >
+    //         <div style={ { width: this.largeWidth } }>&nbsp;</div>
+    //     </WrappedActivity>;
 
     // At startup we do three render passes:
     // 1. To determine the dimensions of the chat panel (not much needs to actually render here)

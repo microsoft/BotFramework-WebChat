@@ -55,17 +55,13 @@ class TextBoxWithSpeech extends React.Component {
 
   handleSubmit(event) {
     const { props } = this;
+    const { sendBoxValue } = props;
 
     event.preventDefault();
 
-    if (props.sendBoxValue) {
+    if (sendBoxValue) {
       props.scrollToBottom();
-
-      props.postActivity({
-        text: props.sendBoxValue,
-        type: 'message'
-      });
-
+      props.sendMessage(sendBoxValue);
       props.onSendBoxChange('');
     }
   }
@@ -148,18 +144,18 @@ export default ({
     {
       ({
         onSendBoxChange,
-        postActivity,
         scrollToBottom,
         sendBoxValue,
+        sendMessage,
         styleSet
       }) =>
         <TextBoxWithSpeech
           className={ className }
           disabled={ disabled }
           onSendBoxChange={ onSendBoxChange }
-          postActivity={ postActivity }
           scrollToBottom={ scrollToBottom }
           sendBoxValue={ sendBoxValue }
+          sendMessage={ sendMessage }
           speech={ speech }
           styleSet={ styleSet }
         />

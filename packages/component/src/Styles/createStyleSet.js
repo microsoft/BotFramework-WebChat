@@ -35,6 +35,7 @@ const DEFAULT_OPTIONS = {
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
 
+  scrollToBottomThreshold: 40,
   sendBoxHeight: 50,
 
   timestampColor: 'rgba(0, 0, 0, .2)'
