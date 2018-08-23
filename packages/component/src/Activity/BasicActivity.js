@@ -17,7 +17,9 @@ export default ({ activity, children }) =>
             <MultipleAttachmentActivity>{ children }</MultipleAttachmentActivity>
         ) :
           <SingleAttachmentActivity>
-            <UnknownAttachment message="This activity has no content.">{ JSON.stringify(activity, null, 2) }</UnknownAttachment>
+            <UnknownAttachment message="This activity has no content.">
+              <pre>{ JSON.stringify(activity, null, 2) }</pre>
+            </UnknownAttachment>
           </SingleAttachmentActivity>
     }
   </ActivityComposer>

@@ -45,9 +45,9 @@ export default withStyleSet(({ className, children, styleSet }) =>
                       } catch (err) {
                         return (
                           <UnknownAttachment message="Failed to render card">
-                            <div>{ JSON.stringify(card, null, 2) }</div>
+                            <pre>{ JSON.stringify(card, null, 2) }</pre>
                             <br />
-                            <div>{ err.stack }</div>
+                            <pre>{ err.stack }</pre>
                           </UnknownAttachment>
                         );
                       }

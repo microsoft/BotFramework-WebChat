@@ -73,20 +73,33 @@ export default class extends React.Component {
         errors
       };
     });
+
+    this.handleIgnoreDeprecationClick = this.handleIgnoreDeprecationClick.bind(this);
+
+    this.state = {
+      ignoreDeprecations: false
+    };
+  }
+
+  handleIgnoreDeprecationClick() {
+    // TODO: We need to find a way to only show deprecations in dev mode
+    this.setState(() => ({ ignoreDeprecations: true }));
   }
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
 
     return (
       <Context.Consumer>
         { ({ adaptiveCards, renderMarkdown }) => {
           const { card, errors } = this.createAdaptiveCard(adaptiveCards, props.attachment.content, renderMarkdown);
+          const allDeprecations = errors.every(({ error }) => error === 3);
 
           return (
-            errors.length ?
+            errors.length && !(allDeprecations && state.ignoreDeprecations) ?
               <UnknownAttachment message="Adaptive Card parse error">
-                { JSON.stringify(errors, null, 2) }
+                { allDeprecations && <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button> }
+                <pre>{ JSON.stringify(errors, null, 2) }</pre>
               </UnknownAttachment>
             :
               <AdaptiveCardRenderer

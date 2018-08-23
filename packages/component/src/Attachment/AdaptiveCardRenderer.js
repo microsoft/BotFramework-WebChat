@@ -116,7 +116,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
     return (
       error ?
         <UnknownAttachment message="Adaptive Card render error">
-          { JSON.stringify(error, null, 2) }
+          <pre>{ JSON.stringify(error, null, 2) }</pre>
         </UnknownAttachment>
       :
         <div ref={ this.contentRef } />

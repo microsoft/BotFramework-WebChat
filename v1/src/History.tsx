@@ -38,45 +38,45 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         super(props);
     }
 
-    componentWillUpdate(nextProps: HistoryProps) {
-        let scrollToBottomDetectionTolerance = 1;
+    // componentWillUpdate(nextProps: HistoryProps) {
+    //     let scrollToBottomDetectionTolerance = 1;
 
-        if (!this.props.hasActivityWithSuggestedActions && nextProps.hasActivityWithSuggestedActions) {
-            scrollToBottomDetectionTolerance = 40; // this should be in-sync with $actionsHeight scss var
-        }
+    //     if (!this.props.hasActivityWithSuggestedActions && nextProps.hasActivityWithSuggestedActions) {
+    //         scrollToBottomDetectionTolerance = 40; // this should be in-sync with $actionsHeight scss var
+    //     }
 
-        this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= scrollToBottomDetectionTolerance);
-    }
+    //     this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= scrollToBottomDetectionTolerance);
+    // }
 
-    componentDidUpdate() {
-        if (this.props.format.carouselMargin == undefined) {
-            // After our initial render we need to measure the carousel width
+    // componentDidUpdate() {
+    //     if (this.props.format.carouselMargin == undefined) {
+    //         // After our initial render we need to measure the carousel width
 
-            // Measure the message padding by subtracting the known large width
-            const paddedWidth = measurePaddedWidth(this.carouselActivity.messageDiv) - this.largeWidth;
+    //         // Measure the message padding by subtracting the known large width
+    //         const paddedWidth = measurePaddedWidth(this.carouselActivity.messageDiv) - this.largeWidth;
 
-            // offsetParent could be null if we start initially hidden
-            const offsetParent = this.carouselActivity.messageDiv.offsetParent as HTMLElement;
+    //         // offsetParent could be null if we start initially hidden
+    //         const offsetParent = this.carouselActivity.messageDiv.offsetParent as HTMLElement;
 
-            if (offsetParent) {
-                // Subtract the padding from the offsetParent's width to get the width of the content
-                const maxContentWidth = offsetParent.offsetWidth - paddedWidth;
+    //         if (offsetParent) {
+    //             // Subtract the padding from the offsetParent's width to get the width of the content
+    //             const maxContentWidth = offsetParent.offsetWidth - paddedWidth;
 
-                // Subtract the content width from the chat width to get the margin.
-                // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
-                const carouselMargin = this.props.size.width - maxContentWidth;
+    //             // Subtract the content width from the chat width to get the margin.
+    //             // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
+    //             const carouselMargin = this.props.size.width - maxContentWidth;
 
-                konsole.log('history measureMessage ' + carouselMargin);
+    //             konsole.log('history measureMessage ' + carouselMargin);
 
-                // Finally, save it away in the Store, which will force another re-render
-                this.props.setMeasurements(carouselMargin)
+    //             // Finally, save it away in the Store, which will force another re-render
+    //             this.props.setMeasurements(carouselMargin)
 
-                this.carouselActivity = null; // After the re-render this activity doesn't exist
-            }
-        }
+    //             this.carouselActivity = null; // After the re-render this activity doesn't exist
+    //         }
+    //     }
 
-        this.autoscroll();
-    }
+    //     this.autoscroll();
+    // }
 
     // private autoscroll() {
     //     const vAlignBottomPadding = Math.max(0, measurePaddedHeight(this.scrollMe) - this.scrollContent.offsetHeight);
