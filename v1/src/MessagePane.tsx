@@ -1,29 +1,29 @@
-import * as React from 'react';
-import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
-import { ChatState } from './Store';
-import { connect } from 'react-redux';
-import { HScroll } from './HScroll';
-import { classList, doCardAction, IDoCardAction } from './Chat';
-import * as konsole from './Konsole';
-import { ChatActions, sendMessage } from './Store';
-import { activityWithSuggestedActions } from './activityWithSuggestedActions';
+// import * as React from 'react';
+// import { Activity, CardAction, User, Message } from 'botframework-directlinejs';
+// import { ChatState } from './Store';
+// import { connect } from 'react-redux';
+// import { HScroll } from './HScroll';
+// import { classList, doCardAction, IDoCardAction } from './Chat';
+// import * as konsole from './Konsole';
+// import { ChatActions, sendMessage } from './Store';
+// import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
-export interface MessagePaneProps {
-    activityWithSuggestedActions: Message,
+// export interface MessagePaneProps {
+//     activityWithSuggestedActions: Message,
 
-    takeSuggestedAction: (message: Message) => any,
+//     takeSuggestedAction: (message: Message) => any,
 
-    children: React.ReactNode,
-    doCardAction: IDoCardAction
-}
+//     children: React.ReactNode,
+//     doCardAction: IDoCardAction
+// }
 
-const MessagePaneView = (props: MessagePaneProps) =>
-    <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
-        { props.children }
-        <div className="wc-suggested-actions">
-            <SuggestedActions { ... props }/>
-        </div>
-    </div>;
+// const MessagePaneView = (props: MessagePaneProps) =>
+//     <div className={ classList('wc-message-pane', props.activityWithSuggestedActions && 'show-actions' ) }>
+//         { props.children }
+//         <div className="wc-suggested-actions">
+//             <SuggestedActions { ... props }/>
+//         </div>
+//     </div>;
 
 // class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 //     constructor(props: MessagePaneProps) {
@@ -66,26 +66,26 @@ const MessagePaneView = (props: MessagePaneProps) =>
 //     }
 // }
 
-export const MessagePane = connect(
-    (state: ChatState) => ({
-        // passed down to MessagePaneView
-        activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
-        // only used to create helper functions below
-        botConnection: state.connection.botConnection,
-        user: state.connection.user,
-        locale: state.format.locale
-    }), {
-        takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
-        // only used to create helper functions below
-        sendMessage
-    }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
-        // from stateProps
-        activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
-        // from dispatchProps
-        takeSuggestedAction: dispatchProps.takeSuggestedAction,
-        // from ownProps
-        children: ownProps.children,
-        // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
-    })
-)(MessagePaneView);
+// export const MessagePane = connect(
+//     (state: ChatState) => ({
+//         // passed down to MessagePaneView
+//         activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
+//         // only used to create helper functions below
+//         botConnection: state.connection.botConnection,
+//         user: state.connection.user,
+//         locale: state.format.locale
+//     }), {
+//         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
+//         // only used to create helper functions below
+//         sendMessage
+//     }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
+//         // from stateProps
+//         activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
+//         // from dispatchProps
+//         takeSuggestedAction: dispatchProps.takeSuggestedAction,
+//         // from ownProps
+//         children: ownProps.children,
+//         // helper functions
+//         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
+//     })
+// )(MessagePaneView);
