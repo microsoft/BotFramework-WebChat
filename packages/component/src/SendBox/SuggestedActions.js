@@ -19,7 +19,7 @@ export default withStyleSet(({ className, styleSet }) =>
           suggestedActions.map((suggestedAction, index) =>
             <SuggestedAction
               key={ index }
-              text={ suggestedAction.title }
+              text={ suggestedAction.title || suggestedAction.value }
               type={ suggestedAction.type }
               value={ suggestedAction.value }
             />

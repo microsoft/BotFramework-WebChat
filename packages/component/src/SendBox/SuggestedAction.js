@@ -12,17 +12,11 @@ const SUGGESTED_ACTION_CSS = css({
 
 export default withStyleSet(({ text, type, value, styleSet }) =>
   <MainContext.Consumer>
-    { ({ focusSendBox, send }) =>
+    { ({ focusSendBox, onCardAction }) =>
       <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
         <button onClick={ () => {
-          if (type === 'imBack') {
-            send({
-              text: value,
-              type: 'message'
-            });
-
-            focusSendBox();
-          }
+          onCardAction({ type, value });
+          focusSendBox();
         } }>
           <nobr>{ text }</nobr>
         </button>

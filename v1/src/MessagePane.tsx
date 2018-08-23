@@ -25,47 +25,46 @@ const MessagePaneView = (props: MessagePaneProps) =>
         </div>
     </div>;
 
-class SuggestedActions extends React.Component<MessagePaneProps, {}> {
-    constructor(props: MessagePaneProps) {
-        super(props);
-    }
+// class SuggestedActions extends React.Component<MessagePaneProps, {}> {
+//     constructor(props: MessagePaneProps) {
+//         super(props);
+//     }
 
-    actionClick(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
+//     actionClick(e: React.MouseEvent<HTMLButtonElement>, cardAction: CardAction) {
 
-        //"stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
-        if (!this.props.activityWithSuggestedActions) return;
+//         //"stale" actions may be displayed (see shouldComponentUpdate), do not respond to click events if there aren't actual actions
+//         if (!this.props.activityWithSuggestedActions) return;
 
-        this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
-        this.props.doCardAction(cardAction.type, cardAction.value);
-        e.stopPropagation();
-    }
+//         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
+//         this.props.doCardAction(cardAction.type, cardAction.value);
+//         e.stopPropagation();
+//     }
 
-    shouldComponentUpdate(nextProps: MessagePaneProps) {
-        //update only when there are actions. We want the old actions to remain displayed as it animates down.
-        return !!nextProps.activityWithSuggestedActions;
-    }
+//     shouldComponentUpdate(nextProps: MessagePaneProps) {
+//         //update only when there are actions. We want the old actions to remain displayed as it animates down.
+//         return !!nextProps.activityWithSuggestedActions;
+//     }
 
-    render() {
-        if (!this.props.activityWithSuggestedActions) return null;
+//     render() {
+//         if (!this.props.activityWithSuggestedActions) return null;
 
-        return (
-            <HScroll
-                prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z"
-                nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
-                scrollUnit="page"
-            >
-                <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
-                    <li key={ index }>
-                        <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
-                            { action.title }
-                        </button>
-                    </li>
-                ) }</ul>
-            </HScroll>
-        );
-    }
-
-}
+//         return (
+//             <HScroll
+//                 prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z"
+//                 nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
+//                 scrollUnit="page"
+//             >
+//                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
+//                     <li key={ index }>
+//                         <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
+//                             { action.title }
+//                         </button>
+//                     </li>
+//                 ) }</ul>
+//             </HScroll>
+//         );
+//     }
+// }
 
 export const MessagePane = connect(
     (state: ChatState) => ({

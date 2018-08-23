@@ -13,6 +13,7 @@ export default function (
 ) {
   switch (type) {
     case UPSERT_ACTIVITY:
+      // TODO: UPSERT_ACTIVITY may not upsert-ing the most recent activity
       state = [...(activity && activity.suggestedActions && activity.suggestedActions.actions || [])];
       break;
 
