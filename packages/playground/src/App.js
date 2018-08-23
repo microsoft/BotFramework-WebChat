@@ -9,19 +9,25 @@ import React from 'react';
 const ROOT_CSS = css({
   height: '100%',
 
-  '& > button': {
-    backgroundColor: 'rgba(128, 128, 128, .2)',
-    border: 0,
-    cursor: 'pointer',
-    outline: 0,
-    padding: '5px 10px',
+  '& > div.button-bar': {
+    display: 'flex',
+    flexDirection: 'column',
     position: 'absolute',
     right: 0,
     top: 0,
 
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, .2)',
-      color: 'White'
+    '& > button': {
+      backgroundColor: 'rgba(128, 128, 128, .2)',
+      border: 0,
+      cursor: 'pointer',
+      outline: 0,
+      marginBottom: 10,
+      padding: '5px 10px',
+
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, .2)',
+        color: 'White'
+      }
     }
   }
 });
@@ -40,20 +46,32 @@ class App extends React.Component {
 
     this.handlePostActivity = this.handlePostActivity.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleUseOfficialMockBotClick = this.handleUseOfficialMockBotClick.bind(this);
+
     this.renderMarkdown = markdownIt.render.bind(markdownIt);
 
     this.mainRef = React.createRef();
-  }
 
-  componentDidMount() {
     const params = new URLSearchParams(window.location.search);
     const domain = params.get('domain');
     const secret = params.get('s');
+    const token = params.get('t');
+
+    this.state = {
+      domain,
+      secret,
+      token
+    };
+  }
+
+  componentDidMount() {
+    const { state: { domain, secret, token } } = this;
 
     this.props.dispatch(startConnection({
       directLine: new DirectLine({
         domain,
         secret,
+        token,
         fetch,
         createFormData: attachments => {
           const formData = new FormData();
@@ -86,6 +104,17 @@ class App extends React.Component {
     this.props.dispatch(postActivity(activity));
   }
 
+  async handleUseOfficialMockBotClick() {
+    try {
+      const res = await fetch('https://webchat-mockbot.azurewebsites.net/token-generate', { method: 'POST' });
+      const { token } = await res.json();
+
+      window.location.href = `?t=${ encodeURIComponent(token) }`;
+    } catch (err) {
+      alert('Failed to get Direct Line token for official MockBot');
+    }
+  }
+
   render() {
     const { props } = this;
 
@@ -101,12 +130,20 @@ class App extends React.Component {
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }
         />
-        <button
-          onClick={ this.handleResetClick }
-          type="button"
-        >
-          Remove history <small>(CTRL-R)</small>
-        </button>
+        <div className="button-bar">
+          <button
+            onClick={ this.handleResetClick }
+            type="button"
+          >
+            Remove history <small>(CTRL-R)</small>
+          </button>
+          <button
+            onClick={ this.handleUseOfficialMockBotClick }
+            type="button"
+          >
+            Connect to official MockBot
+          </button>
+        </div>
       </div>
     );
   }
