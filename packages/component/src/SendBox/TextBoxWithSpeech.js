@@ -59,6 +59,8 @@ class TextBoxWithSpeech extends React.Component {
 
     event.preventDefault();
 
+    // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
+    // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
     if (sendBoxValue) {
       props.scrollToBottom();
       props.sendMessage(sendBoxValue);

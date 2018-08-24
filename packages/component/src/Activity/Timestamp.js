@@ -16,6 +16,10 @@ class Timestamp extends React.Component {
     evt.preventDefault();
 
     this.props.postActivity(this.props.activity);
+
+    // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
+    // We want to make sure the user stay inside Web Chat
+    this.props.focusSendBox();
   }
 
   render() {
@@ -43,11 +47,12 @@ class Timestamp extends React.Component {
 
 export default () =>
   <Context.Consumer>
-    { ({ postActivity, styleSet }) =>
+    { ({ focusSendBox, postActivity, styleSet }) =>
       <ActivityContext.Consumer>
         { ({ activity }) =>
           <Timestamp
             activity={ activity }
+            focusSendBox={ focusSendBox }
             postActivity={ postActivity }
             styleSet={ styleSet }
           />
