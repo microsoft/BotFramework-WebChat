@@ -8,6 +8,8 @@ import {
 import Context from '../Context';
 import UnknownAttachment from './UnknownAttachment';
 
+import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
+
 export default ({ adaptiveCard, tapAction }) =>
   <Context.Consumer>
     { ({ onCardAction, postActivity }) =>
@@ -44,10 +46,16 @@ class AdaptiveCardRenderer extends React.PureComponent {
     }
   }
 
-  handleClick() {
-    const { props: { onCardAction, tapAction } } = this;
+  handleClick({ target }) {
+    const tabIndex = getTabIndex(target);
 
-    tapAction && onCardAction(tapAction);
+    // If the user is clicking on something that is already clickable, do not allow them to click the card.
+    // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
+    if (typeof tabIndex !== 'number' || tabIndex < 0) {
+      const { props: { onCardAction, tapAction } } = this;
+
+      tapAction && onCardAction(tapAction);
+    }
   }
 
   handleExecuteAction(action) {
