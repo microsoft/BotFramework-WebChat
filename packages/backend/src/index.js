@@ -1,9 +1,11 @@
+import connect from './Actions/connect';
 import createStore from './createStore';
+import disconnect from './Actions/disconnect';
 import postActivity from './Actions/postActivity';
-import startConnection from './Actions/startConnection';
 
 export {
   createStore,
-  postActivity,
-  startConnection
+  connect,
+  disconnect,
+  postActivity
 }

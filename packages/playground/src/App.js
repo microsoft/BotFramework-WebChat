@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
 import { DirectLine } from 'botframework-directlinejs';
-import { postActivity, startConnection } from 'backend';
+import { connect as createConnectAction, postActivity } from 'backend';
 import BasicWebChat from 'component';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
@@ -67,7 +67,7 @@ class App extends React.Component {
   componentDidMount() {
     const { state: { domain, secret, token } } = this;
 
-    this.props.dispatch(startConnection({
+    this.props.dispatch(createConnectAction({
       directLine: new DirectLine({
         domain,
         secret,
@@ -82,7 +82,7 @@ class App extends React.Component {
 
           return formData;
         },
-        webSocket: false
+        webSocket: true
       }),
       userID: 'default-user',
       username: 'User-1'
@@ -109,6 +109,7 @@ class App extends React.Component {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/token-generate', { method: 'POST' });
       const { token } = await res.json();
 
+      window.sessionStorage.removeItem('REDUX_STORE');
       window.location.href = `?t=${ encodeURIComponent(token) }`;
     } catch (err) {
       alert('Failed to get Direct Line token for official MockBot');
@@ -141,7 +142,7 @@ class App extends React.Component {
             onClick={ this.handleUseOfficialMockBotClick }
             type="button"
           >
-            Connect to official MockBot
+            Start conversation with official MockBot
           </button>
         </div>
       </div>
