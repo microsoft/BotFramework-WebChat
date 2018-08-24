@@ -16,6 +16,19 @@ css.global('body', { margin: 0 });
 const REDUX_STORE_KEY = 'REDUX_STORE';
 let store;
 
+window.addEventListener('keydown', event => {
+  const { ctrlKey, keyCode } = event;
+
+  if (ctrlKey && keyCode === 82) {
+    // CTRL-R
+    sessionStorage.removeItem(REDUX_STORE_KEY);
+  } else if (ctrlKey && keyCode === 83) {
+    // CTRL-S
+    event.preventDefault();
+    store && console.log(store.getState());
+  }
+});
+
 if (/speech-only-button(\.html)?/.test(window.location.href)) {
   ReactDOM.render(<SpeechOnlyButtonApp />, document.getElementById('root'));
 } else {
@@ -33,18 +46,5 @@ if (/speech-only-button(\.html)?/.test(window.location.href)) {
     </Provider>,
   document.getElementById('root'));
 }
-
-window.addEventListener('keydown', event => {
-  const { ctrlKey, keyCode } = event;
-
-  if (ctrlKey && keyCode === 82) {
-    // CTRL-R
-    sessionStorage.removeItem(REDUX_STORE_KEY);
-  } else if (ctrlKey && keyCode === 83) {
-    // CTRL-S
-    event.preventDefault();
-    store && console.log(store.getState());
-  }
-});
 
 registerServiceWorker();

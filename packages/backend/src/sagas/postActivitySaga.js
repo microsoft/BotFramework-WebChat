@@ -1,11 +1,12 @@
 import {
+  call,
   cancelled,
+  fork,
+  join,
   put,
   take,
   takeEvery
 } from 'redux-saga/effects';
-
-import updateIn from 'simple-update-in';
 
 import callWithin from './effects/callWithin';
 import observeOnce from './effects/observeOnce';
@@ -13,6 +14,7 @@ import whileConnected from './effects/whileConnected';
 
 import deleteKey from '../util/deleteKey';
 import getTimestamp from '../util/getTimestamp';
+import sleep from '../util/sleep';
 import uniqueID from '../util/uniqueID';
 
 import {
@@ -46,24 +48,29 @@ function* postActivity(directLine, { payload: { activity } }) {
 
   const meta = { clientActivityID };
 
-  yield put({ type: POST_ACTIVITY_PENDING, meta });
+  yield put({ type: POST_ACTIVITY_PENDING, payload: { activity }, meta });
 
   try {
-    yield put({ type: UPSERT_ACTIVITY, payload: { activity: updateIn(activity, ['channelData', 'state'], () => 'sending') } });
+    // Quirks: We might receive UPSERT_ACTIVITY before the postActivity call completed
+    //         So, we setup expectation first, then postActivity afterward
+
+    const expectEchoBack = yield fork(() => callWithin(function* () {
+      for (;;) {
+        const { payload: { activity } } = yield take(UPSERT_ACTIVITY);
+        const { channelData = {}, id } = activity;
+
+        if (channelData.clientActivityID === clientActivityID && id) {
+          return activity;
+        }
+      }
+    }, [], SEND_TIMEOUT));
+
+    yield call(sleep, 1000);
     yield observeOnce(directLine.postActivity(activity));
 
-    const { payload: { activity: echoBack } } = yield callWithin(function* () {
-      return yield take(({ payload, type }) => {
-        if (type === UPSERT_ACTIVITY) {
-          const { activity: { channelData = {}, id } } = payload;
+    const echoBack = yield join(expectEchoBack);
 
-          return channelData.clientActivityID === clientActivityID && id;
-        }
-      });
-    }, [], SEND_TIMEOUT);
-
-    yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { echoBack } });
-    yield put({ type: UPSERT_ACTIVITY, payload: { activity: updateIn(activity, ['channelData', 'state'], () => 'sent') } });
+    yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } });
   } catch (err) {
     yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: err });
   } finally {

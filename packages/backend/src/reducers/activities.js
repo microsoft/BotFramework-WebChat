@@ -9,76 +9,57 @@ import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
 
 const DEFAULT_STATE = [];
 
-function updateActivity(activities, clientActivityID, updater) {
-  if (!clientActivityID || typeof clientActivityID !== 'string') {
-    throw new Error('must specify clientActivityID');
-  }
-
-  // Use newer "simple-update-in"
-  return activities.map(activity => {
-    const { channelData } = activity;
-
-    if (channelData && channelData.clientActivityID === clientActivityID) {
-      return updater(activity);
-    } else {
-      return activity;
-    }
-  });
+function getClientActivityID({ channelData: { clientActivityID } = {} }) {
+  return clientActivityID;
 }
 
-function handleUpsertActivity(state, nextActivity) {
-  const { channelData: { clientActivityID: nextClientActivityID } = {} } = nextActivity;
-  let found;
-
-  if (nextClientActivityID) {
-    state = state.map(activity => {
-      const { channelData: { clientActivityID } = {} } = activity;
-
-      if (clientActivityID === nextClientActivityID) {
-        found = true;
-
-        return nextActivity;
-      } else {
-        return activity;
-      }
-    });
-  }
-
-  if (!found) {
-    state = [...state, nextActivity];
-  }
-
-  return state;
+function findByClientActivityID(clientActivityID) {
+  return activity => getClientActivityID(activity) === clientActivityID;
 }
 
 export default function (state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
     case UPSERT_ACTIVITY:
-      state = handleUpsertActivity(state, payload.activity);
+      // TODO: UpdateActivity is not supported right now
 
+      // Do not add the activity if it already exists, dedupe by Activity.id
+      if (!~state.findIndex(id => id === payload.activity.id)) {
+        const { channelData: { clientActivityID } = {} } = payload.activity;
+
+        // Tries to update the activity if the incoming activity has clientActivityID
+        const nextState = clientActivityID ? updateIn(state, [findByClientActivityID(clientActivityID)], activity => ({
+          ...activity,
+          ...payload.activity
+        })) : state;
+
+        // If the incoming activity has no clientActivityID, or we cannot find existing activity with the same clientActivityID, append it
+        if (nextState === state) {
+          state = [...state, payload.activity];
+        }
+      }
+
+      break;
+
+    case POST_ACTIVITY_PENDING:
+      state = [...state, updateIn(payload.activity, ['channelData', 'state'], () => 'sending')];
       break;
 
     case POST_ACTIVITY_REJECTED:
-      state = updateActivity(
-        state,
-        meta.clientActivityID,
-        activity => updateIn(activity, ['channelData', 'state'], () => 'send failed')
-      );
-
+      state = updateIn(state, [findByClientActivityID(meta.clientActivityID), 'channelData', 'state'], () => 'send failed');
       break;
 
     case POST_ACTIVITY_FULFILLED:
-      state = updateActivity(
-        state,
-        meta.clientActivityID,
+      state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], activity =>
         // We will replace the activity with the version from the server
-        activity => updateIn(activity, ['channelData', 'state'], () => 'sent')
+        updateIn(payload.activity, ['channelData', 'state'], () => 'sent')
       );
 
       break;
 
     default: break;
   }
+
+  // TODO: Should we sort the state?
 
   return state;
 }

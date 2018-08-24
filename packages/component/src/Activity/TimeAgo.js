@@ -5,10 +5,17 @@ import { withStyleSet } from '../Context';
 import TimeAgo from '../Utils/TimeAgo';
 
 export default withStyleSet(withActivity(({
-  activity: { timestamp },
+  activity: { channelData: { state } = {}, timestamp },
   styleSet
 }) =>
   <span className={ styleSet.timestamp }>
-    <TimeAgo value={ timestamp } />
+    {
+      state === 'sending' ?
+        'Sending'
+      : state === 'send failed' ?
+        'Send failed'
+      :
+        <TimeAgo value={ timestamp } />
+    }
   </span>
 ))
