@@ -11,7 +11,6 @@ export default ({ attachment }) => {
     <Context.Consumer>
       { ({ styleSet }) =>
         <div className={ styleSet.audioCardAttachment }>
-          <CommonCard attachment={ attachment } />
           <ul className="media-list">
             {
               content.media.map((media, index) =>
@@ -26,6 +25,7 @@ export default ({ attachment }) => {
               )
             }
           </ul>
+          <CommonCard attachment={ attachment } />
         </div>
       }
     </Context.Consumer>

@@ -29,7 +29,10 @@ export default class extends React.Component {
     return (
       <Context.Consumer>
         { ({ adaptiveCards }) =>
-          <AdaptiveCardRenderer adaptiveCard={ content && this.buildCard(adaptiveCards, content) } />
+          <AdaptiveCardRenderer
+            adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
+            tapAction={ content.tap }
+          />
         }
       </Context.Consumer>
     );

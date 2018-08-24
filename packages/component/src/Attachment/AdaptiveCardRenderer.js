@@ -8,13 +8,14 @@ import {
 import Context from '../Context';
 import UnknownAttachment from './UnknownAttachment';
 
-export default ({ adaptiveCard }) =>
+export default ({ adaptiveCard, tapAction }) =>
   <Context.Consumer>
     { ({ onCardAction, postActivity }) =>
       <AdaptiveCardRenderer
         adaptiveCard={ adaptiveCard }
         onCardAction={ onCardAction }
         postActivity={ postActivity }
+        tapAction={ tapAction }
       />
     }
   </Context.Consumer>
@@ -23,6 +24,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.handleClick = this.handleClick.bind(this);
     this.handleExecuteAction = this.handleExecuteAction.bind(this);
 
     this.contentRef = React.createRef();
@@ -40,6 +42,12 @@ class AdaptiveCardRenderer extends React.PureComponent {
     if (prevProps.adaptiveCard !== this.props.adaptiveCard) {
       this.renderCard();
     }
+  }
+
+  handleClick() {
+    const { props: { onCardAction, tapAction } } = this;
+
+    tapAction && onCardAction(tapAction);
   }
 
   handleExecuteAction(action) {
@@ -111,7 +119,10 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   render() {
-    const { state: { error } } = this;
+    const {
+      props: { onClick },
+      state: { error }
+    } = this;
 
     return (
       error ?
@@ -119,7 +130,10 @@ class AdaptiveCardRenderer extends React.PureComponent {
           <pre>{ JSON.stringify(error, null, 2) }</pre>
         </UnknownAttachment>
       :
-        <div ref={ this.contentRef } />
+        <div
+          onClick={ this.handleClick }
+          ref={ this.contentRef }
+        />
     );
   }
 }

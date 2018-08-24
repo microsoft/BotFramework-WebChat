@@ -30,7 +30,6 @@ export default class extends React.Component {
       <Context.Consumer>
         { ({ styleSet }) =>
           <div className={ styleSet.animationCardAttachment }>
-            <CommonCard attachment={ attachment } />
             <ul className="media-list">
               {
                 content.media.map((media, index) =>
@@ -51,6 +50,7 @@ export default class extends React.Component {
                 )
               }
             </ul>
+            <CommonCard attachment={ attachment } />
           </div>
         }
       </Context.Consumer>

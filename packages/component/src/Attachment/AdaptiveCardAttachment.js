@@ -104,6 +104,7 @@ export default class extends React.Component {
             :
               <AdaptiveCardRenderer
                 adaptiveCard={ card }
+                tapAction={ content.tap }
               />
           );
         }
