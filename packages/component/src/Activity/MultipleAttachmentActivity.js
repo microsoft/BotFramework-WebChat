@@ -5,7 +5,7 @@ import { withActivity } from './Context';
 import { withStyleSet } from '../Context';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
-import TimeAgo from './TimeAgo';
+import Timestamp from './Timestamp';
 
 export default withStyleSet(withActivity(({
   attachments,
@@ -26,7 +26,7 @@ export default withStyleSet(withActivity(({
           <Bubble attachment={ attachment }>
             { !!children && (typeof children === 'function' ? children(attachment) : children) }
           </Bubble>
-          { index === 0 && <TimeAgo /> }
+          { index === 0 && <Timestamp /> }
         </div>
       )
     }

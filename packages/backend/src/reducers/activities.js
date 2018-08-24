@@ -17,6 +17,25 @@ function findByClientActivityID(clientActivityID) {
   return activity => getClientActivityID(activity) === clientActivityID;
 }
 
+function upsertActivityByClientActivityID(state, activity) {
+  const clientActivityID = getClientActivityID(activity);
+
+  // If the activity has clientActivityID, try to update existing activity
+  if (clientActivityID) {
+    // Tries to update the activity if the incoming activity has clientActivityID
+    const nextState = updateIn(state, [findByClientActivityID(clientActivityID)], existingActivity => ({
+      ...existingActivity,
+      ...activity
+    }));
+
+    if (nextState !== state) {
+      return nextState;
+    }
+  }
+
+  return [...state, activity];
+}
+
 export default function (state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
     case UPSERT_ACTIVITY:
@@ -24,24 +43,13 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
 
       // Do not add the activity if it already exists, dedupe by Activity.id
       if (!~state.findIndex(id => id === payload.activity.id)) {
-        const { channelData: { clientActivityID } = {} } = payload.activity;
-
-        // Tries to update the activity if the incoming activity has clientActivityID
-        const nextState = clientActivityID ? updateIn(state, [findByClientActivityID(clientActivityID)], activity => ({
-          ...activity,
-          ...payload.activity
-        })) : state;
-
-        // If the incoming activity has no clientActivityID, or we cannot find existing activity with the same clientActivityID, append it
-        if (nextState === state) {
-          state = [...state, payload.activity];
-        }
+        state = upsertActivityByClientActivityID(state, payload.activity);
       }
 
       break;
 
     case POST_ACTIVITY_PENDING:
-      state = [...state, updateIn(payload.activity, ['channelData', 'state'], () => 'sending')];
+      state = upsertActivityByClientActivityID(state, updateIn(payload.activity, ['channelData', 'state'], () => 'sending'));
       break;
 
     case POST_ACTIVITY_REJECTED:

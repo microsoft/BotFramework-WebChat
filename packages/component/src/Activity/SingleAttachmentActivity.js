@@ -5,7 +5,7 @@ import React from 'react';
 import { withActivity } from './Context';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
-import TimeAgo from './TimeAgo';
+import Timestamp from './Timestamp';
 
 import MainContext from '../Context';
 
@@ -49,7 +49,7 @@ export default withActivity(({
           <Bubble attachment={ attachment }>
             { !!children && (typeof children === 'function' ? children(attachment) : children) }
           </Bubble>
-          <TimeAgo />
+          <Timestamp />
         </div>
         <div className="filler" />
       </div>

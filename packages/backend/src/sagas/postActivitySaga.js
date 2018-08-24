@@ -41,7 +41,7 @@ function* postActivity(directLine, { payload: { activity } }) {
     ...deleteKey(activity, 'id'),
     channelData: {
       clientActivityID,
-      ...activity.channelData
+      ...deleteKey(activity.channelData, 'state')
     },
     timestamp: getTimestamp()
   };
@@ -54,6 +54,13 @@ function* postActivity(directLine, { payload: { activity } }) {
     // Quirks: We might receive UPSERT_ACTIVITY before the postActivity call completed
     //         So, we setup expectation first, then postActivity afterward
 
+    // TODO: Make these debug switches
+    yield call(sleep, 500);
+
+    if (Math.random() < .5) {
+      throw new Error('artificial error');
+    }
+
     const expectEchoBack = yield fork(() => callWithin(function* () {
       for (;;) {
         const { payload: { activity } } = yield take(UPSERT_ACTIVITY);
@@ -65,7 +72,6 @@ function* postActivity(directLine, { payload: { activity } }) {
       }
     }, [], SEND_TIMEOUT));
 
-    yield call(sleep, 1000);
     yield observeOnce(directLine.postActivity(activity));
 
     const echoBack = yield join(expectEchoBack);
