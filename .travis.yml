@@ -1,40 +1,18 @@
+sudo: required
+
 language: node_js
-node_js:
-  - "10"
-before_script:
-  - npx version-from-git --travis --no-git-tag-version
-  - npm run bootstrap
-  - node scripts/syncVersion
-  - npm run build
-before_deploy:
-  - cp -r packages/component/lib .
+
+services:
+- docker
+
+install:
+- docker build -t webchat.azurecr.io/playground .
+
+script:
+- echo
+
 deploy:
-  # Since we are using Lerna without hoist (conflict between babel@6 and babel@7), thus, we cannot use npm provider to deploy
-  # - provider: npm
-  #   api_key:
-  #     secure: ""
-  #   email: "compulim@hotmail.com"
-  #   on:
-  #     branch: master
-  #   skip_cleanup: true
-  #   tag: master
-  # - provider: npm
-  #   api_key:
-  #     secure: ""
-  #   email: "compulim@hotmail.com"
-  #   on:
-  #     tags: true
-  #   skip_cleanup: true
-  - provider: pages
-    skip-cleanup: true
-    github-token:
-      secure: "zNYsdK3D4NvC+OhybzWX7QCHSKEvzH70thlmzzY65rP0S19Y8I68glXCV656NdKNbu/54APgT3B7Xd8ZO9YBc9T2OfFwL/mqBdQeLutTVjG/x4zENN3vrTbNpU7q61dbnB5I8S3yUOW0yG4M0ZuRmEMxdRwbIlZWlQ17jfR4CgbDy3H5YIgdZtkgiFYpWEqF7SzaSi66aYNB7dlqyUMZLoylWqmflVPK/Jr6liN3wDPFawxAZqM+621UdZs7JP7p4m9YFOkjfWc8M03c8cv0Gc/YQCXLl8Dqg69w75HMh737oJVDk00tmhJpu/+4GBaAda6l3TBSlXDoBSaZTXjlJo7tY9ZHkg1rnm98dGgBuNn2knh1+u3nCmkIjwPPCQYnXZXWaT2i+n0DWzn+fBcoBMDB0VwREMt9ciqYRz7fnwsT70u6KyaaRxvBYPQJoqXa431Lct0dWApditnpJMRG00wROpwRnBYqCDVC3+PNt30wHxQaBjADcHcf6375zlqLpFLeC16Ic8I75graeP5gcg+GSRKmMleLmO4wQ45QraW4lw/M9NispTIpmxm+CDZKHRORKnRurRTxF49spM1w6YOfRdPG56Gq0cYyezPSV8k0hGCrZVtfivkIshHyfsh/5I/4VneH2DAAXySJ3oaDp96wqi0ArByeBr+32VaA248="
-    on:
-      branch: v4
-    local-dir: packages/playground/build
-  - provider: releases
-    api_key:
-      secure: "zNYsdK3D4NvC+OhybzWX7QCHSKEvzH70thlmzzY65rP0S19Y8I68glXCV656NdKNbu/54APgT3B7Xd8ZO9YBc9T2OfFwL/mqBdQeLutTVjG/x4zENN3vrTbNpU7q61dbnB5I8S3yUOW0yG4M0ZuRmEMxdRwbIlZWlQ17jfR4CgbDy3H5YIgdZtkgiFYpWEqF7SzaSi66aYNB7dlqyUMZLoylWqmflVPK/Jr6liN3wDPFawxAZqM+621UdZs7JP7p4m9YFOkjfWc8M03c8cv0Gc/YQCXLl8Dqg69w75HMh737oJVDk00tmhJpu/+4GBaAda6l3TBSlXDoBSaZTXjlJo7tY9ZHkg1rnm98dGgBuNn2knh1+u3nCmkIjwPPCQYnXZXWaT2i+n0DWzn+fBcoBMDB0VwREMt9ciqYRz7fnwsT70u6KyaaRxvBYPQJoqXa431Lct0dWApditnpJMRG00wROpwRnBYqCDVC3+PNt30wHxQaBjADcHcf6375zlqLpFLeC16Ic8I75graeP5gcg+GSRKmMleLmO4wQ45QraW4lw/M9NispTIpmxm+CDZKHRORKnRurRTxF49spM1w6YOfRdPG56Gq0cYyezPSV8k0hGCrZVtfivkIshHyfsh/5I/4VneH2DAAXySJ3oaDp96wqi0ArByeBr+32VaA248="
-    on:
-      tags: true
-    skip_cleanup: true
+  provider: script
+  script: bash scripts/docker_push
+  on:
+    branch: master

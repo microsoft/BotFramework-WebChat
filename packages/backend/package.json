@@ -27,6 +27,7 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.51",
     "@babel/core": "^7.0.0-beta.51",
+    "@babel/plugin-transform-runtime": "^7.0.0-rc.2",
     "@babel/preset-env": "^7.0.0-beta.51",
     "@babel/preset-typescript": "^7.0.0-beta.51",
     "@types/node": "^10.3.3",
@@ -41,7 +42,7 @@
     "zen-observable": "^0.8.9"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/runtime": "^7.0.0-rc.2",
     "event-as-promise": "^1.0.3",
     "redux": "^4.0.0",
     "redux-promise-middleware": "^5.1.1",
