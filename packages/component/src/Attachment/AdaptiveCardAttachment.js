@@ -102,10 +102,7 @@ export default class extends React.Component {
                 <pre>{ JSON.stringify(errors, null, 2) }</pre>
               </UnknownAttachment>
             :
-              <AdaptiveCardRenderer
-                adaptiveCard={ card }
-                tapAction={ content.tap }
-              />
+              <AdaptiveCardRenderer adaptiveCard={ card } />
           );
         }
       }
