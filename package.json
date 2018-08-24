@@ -9,15 +9,13 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "clean": "npm run clean:backend && npm run clean:component && npm run clean:mockbot",
+    "clean": "npm run clean:backend && npm run clean:component",
     "clean:backend": "cd packages && cd backend && npm run clean",
     "clean:component": "cd packages && cd component && npm run clean",
-    "clean:mockbot": "cd packages && cd mockbot && npm run clean",
     "test": "lerna run test",
-    "watch": "npx concurrently --names \"backend,component,mockbot\" \"npm run watch:backend\" \"npm run watch:component\" \"npm run watch:mockbot\"",
+    "watch": "npx concurrently --names \"backend,component\" \"npm run watch:backend\" \"npm run watch:component\"",
     "watch:backend": "cd packages && cd backend && npm run watch",
-    "watch:component": "cd packages && cd component && npm run watch",
-    "watch:mockbot": "cd packages && cd mockbot && npm run watch"
+    "watch:component": "cd packages && cd component && npm run watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
