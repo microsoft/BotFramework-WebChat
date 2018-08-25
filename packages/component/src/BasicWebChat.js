@@ -28,8 +28,7 @@ const ROOT_CSS = css({
 
 const TRANSCRIPT_CSS = css({
   flex: 1,
-  overflowY: 'auto',
-  WebkitOverflowScrolling: 'touch'
+  overflowY: 'auto'
 });
 
 const SEND_BOX_CSS = css({
@@ -58,7 +57,7 @@ export default class extends React.Component {
             className={ classNames(ROOT_CSS + '', styleSet.root + '', (props.className || '') + '') }
             sendFocusRef={ this.sendBoxRef }
           >
-            <BasicTranscript className={ TRANSCRIPT_CSS }>
+            <BasicTranscript className={ TRANSCRIPT_CSS + '' }>
               { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
                   <HeroCardAttachment attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?

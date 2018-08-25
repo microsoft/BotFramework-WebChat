@@ -10,7 +10,8 @@ import UnknownAttachment from '../Attachment/UnknownAttachment';
 
 const ROOT_CSS = css({
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  WebkitOverflowScrolling: 'touch'
 });
 
 const FILLER_CSS = css({
