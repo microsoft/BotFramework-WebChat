@@ -28,7 +28,8 @@ const ROOT_CSS = css({
 
 const TRANSCRIPT_CSS = css({
   flex: 1,
-  overflowY: 'auto'
+  overflowY: 'auto',
+  webkitOverflowScrolling: 'touch'
 });
 
 const SEND_BOX_CSS = css({
