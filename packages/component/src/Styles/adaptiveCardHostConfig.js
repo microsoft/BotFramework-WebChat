@@ -1,5 +1,7 @@
 import { HostConfig } from 'adaptivecards';
 
+// https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
+
 export default new HostConfig({
   "supportsInteractivity": true,
   "spacing": {
