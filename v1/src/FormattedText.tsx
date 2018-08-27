@@ -1,24 +1,24 @@
-import * as MarkdownIt from 'markdown-it';
-import * as React from 'react';
+// import * as MarkdownIt from 'markdown-it';
+// import * as React from 'react';
 
-export interface IFormattedTextProps {
-    text: string,
-    format: string,
-    onImageLoad: () => void
-}
+// export interface IFormattedTextProps {
+//     text: string,
+//     format: string,
+//     onImageLoad: () => void
+// }
 
-export const FormattedText = (props: IFormattedTextProps) => {
-    if (!props.text || props.text === '')
-        return null;
+// export const FormattedText = (props: IFormattedTextProps) => {
+//     if (!props.text || props.text === '')
+//         return null;
 
-    switch (props.format) {
-        case "xml":
-        case "plain":
-            return renderPlainText(props.text);
-        default:
-            return renderMarkdown(props.text, props.onImageLoad);
-    }
-}
+//     switch (props.format) {
+//         case "xml":
+//         case "plain":
+//             return renderPlainText(props.text);
+//         default:
+//             return renderMarkdown(props.text, props.onImageLoad);
+//     }
+// }
 
 // const renderPlainText = (text: string) => {
 //     const lines = text.replace('\r', '').split('\n');
@@ -26,7 +26,7 @@ export const FormattedText = (props: IFormattedTextProps) => {
 //     return <span className="format-plain">{elements}</span>;
 // }
 
-const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
+// const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
 
 //configure MarkdownIt to open links in new tab
 //from https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer

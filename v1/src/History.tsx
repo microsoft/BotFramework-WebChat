@@ -219,24 +219,24 @@ export const History = connect(
     }
 )(HistoryView);
 
-const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
-    const s = window.getComputedStyle(el);
-    const result: { [key: string]: number } = {};
-    stylePropertyNames.forEach(name => result[name] = parseInt(s.getPropertyValue(name)));
-    return result;
-}
+// const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
+//     const s = window.getComputedStyle(el);
+//     const result: { [key: string]: number } = {};
+//     stylePropertyNames.forEach(name => result[name] = parseInt(s.getPropertyValue(name)));
+//     return result;
+// }
 
-const measurePaddedHeight = (el: HTMLElement): number => {
-    const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
-    const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
-    return el.offsetHeight - values[paddingTop] - values[paddingBottom];
-}
+// const measurePaddedHeight = (el: HTMLElement): number => {
+//     const paddingTop = 'padding-top', paddingBottom = 'padding-bottom';
+//     const values = getComputedStyleValues(el, [paddingTop, paddingBottom]);
+//     return el.offsetHeight - values[paddingTop] - values[paddingBottom];
+// }
 
-const measurePaddedWidth = (el: HTMLElement): number => {
-    const paddingLeft = 'padding-left', paddingRight = 'padding-right';
-    const values = getComputedStyleValues(el, [paddingLeft, paddingRight]);
-    return el.offsetWidth + values[paddingLeft] + values[paddingRight];
-}
+// const measurePaddedWidth = (el: HTMLElement): number => {
+//     const paddingLeft = 'padding-left', paddingRight = 'padding-right';
+//     const values = getComputedStyleValues(el, [paddingLeft, paddingRight]);
+//     return el.offsetWidth + values[paddingLeft] + values[paddingRight];
+// }
 
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;

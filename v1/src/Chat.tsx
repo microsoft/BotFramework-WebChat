@@ -112,13 +112,13 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
-    private setSize() {
-        this.store.dispatch<ChatActions>({
-            type: 'Set_Size',
-            width: this.chatviewPanelRef.offsetWidth,
-            height: this.chatviewPanelRef.offsetHeight
-        });
-    }
+    // private setSize() {
+    //     this.store.dispatch<ChatActions>({
+    //         type: 'Set_Size',
+    //         width: this.chatviewPanelRef.offsetWidth,
+    //         height: this.chatviewPanelRef.offsetHeight
+    //     });
+    // }
 
     private handleCardAction() {
         // After the user click on any card action, we will "blur" the focus, by setting focus on message pane
@@ -130,53 +130,53 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
-    private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
-        // const target = evt.target as HTMLElement;
-        // const tabIndex = getTabIndex(target);
+    // private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
+    //     const target = evt.target as HTMLElement;
+    //     const tabIndex = getTabIndex(target);
 
-        // if (
-        //     evt.altKey
-        //     || evt.ctrlKey
-        //     || evt.metaKey
-        //     || (!inputtableKey(evt.key) && evt.key !== 'Backspace')
-        // ) {
-        //     // Ignore if one of the utility key (except SHIFT) is pressed
-        //     // E.g. CTRL-C on a link in one of the message should not jump to chat box
-        //     // E.g. "A" or "Backspace" should jump to chat box
-        //     return;
-        // }
+    //     if (
+    //         evt.altKey
+    //         || evt.ctrlKey
+    //         || evt.metaKey
+    //         || (!inputtableKey(evt.key) && evt.key !== 'Backspace')
+    //     ) {
+    //         // Ignore if one of the utility key (except SHIFT) is pressed
+    //         // E.g. CTRL-C on a link in one of the message should not jump to chat box
+    //         // E.g. "A" or "Backspace" should jump to chat box
+    //         return;
+    //     }
 
-        // if (
-        //     target === findDOMNode(this.historyRef)
-        //     || typeof tabIndex !== 'number'
-        //     || tabIndex < 0
-        // ) {
-        //     evt.stopPropagation();
+    //     if (
+    //         target === findDOMNode(this.historyRef)
+    //         || typeof tabIndex !== 'number'
+    //         || tabIndex < 0
+    //     ) {
+    //         evt.stopPropagation();
 
-        //     let key: string;
+    //         let key: string;
 
-        //     // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
-        //     //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
-        //     //         So we are manually appending the key if they can be inputted in the box
-        //     if (/(^|\s)Edge\/16\./.test(navigator.userAgent)) {
-        //         key = inputtableKey(evt.key);
-        //     }
+    //         // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
+    //         //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
+    //         //         So we are manually appending the key if they can be inputted in the box
+    //         if (/(^|\s)Edge\/16\./.test(navigator.userAgent)) {
+    //             key = inputtableKey(evt.key);
+    //         }
 
-        //     this.shellRef.focus(key);
-        // }
-    }
+    //         this.shellRef.focus(key);
+    //     }
+    // }
 
-    private saveChatviewPanelRef(chatviewPanelRef: HTMLElement) {
-        this.chatviewPanelRef = chatviewPanelRef;
-    }
+    // private saveChatviewPanelRef(chatviewPanelRef: HTMLElement) {
+    //     this.chatviewPanelRef = chatviewPanelRef;
+    // }
 
-    private saveHistoryRef(historyWrapper: any) {
-        this.historyRef = historyWrapper && historyWrapper.getWrappedInstance();
-    }
+    // private saveHistoryRef(historyWrapper: any) {
+    //     this.historyRef = historyWrapper && historyWrapper.getWrappedInstance();
+    // }
 
-    private saveShellRef(shellWrapper: any) {
-        this.shellRef = shellWrapper && shellWrapper.getWrappedInstance();
-    }
+    // private saveShellRef(shellWrapper: any) {
+    //     this.shellRef = shellWrapper && shellWrapper.getWrappedInstance();
+    // }
 
     componentDidMount() {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
@@ -187,12 +187,12 @@ export class Chat extends React.Component<ChatProps, {}> {
             : this.props.botConnection
             ;
 
-        if (this.props.resize === 'window')
-            window.addEventListener('resize', this.resizeListener);
+        // if (this.props.resize === 'window')
+        //     window.addEventListener('resize', this.resizeListener);
 
         this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
+         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
                 if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
                     let refGrammarId = botConnection.referenceGrammarId;
                     if(refGrammarId)
@@ -202,10 +202,10 @@ export class Chat extends React.Component<ChatProps, {}> {
             }
         );
 
-        this.activitySubscription = botConnection.activity$.subscribe(
-            activity => this.handleIncomingActivity(activity),
-            error => konsole.log("activity$ error", error)
-        );
+        // this.activitySubscription = botConnection.activity$.subscribe(
+        //     activity => this.handleIncomingActivity(activity),
+        //     error => konsole.log("activity$ error", error)
+        // );
 
         if (this.props.selectedActivity) {
             this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
@@ -217,15 +217,15 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
     }
 
-    componentWillUnmount() {
-        this.connectionStatusSubscription.unsubscribe();
-        this.activitySubscription.unsubscribe();
-        if (this.selectedActivitySubscription)
-            this.selectedActivitySubscription.unsubscribe();
-        if (this.botConnection)
-            this.botConnection.end();
-        window.removeEventListener('resize', this.resizeListener);
-    }
+    // componentWillUnmount() {
+    //     this.connectionStatusSubscription.unsubscribe();
+    //     this.activitySubscription.unsubscribe();
+    //     if (this.selectedActivitySubscription)
+    //         this.selectedActivitySubscription.unsubscribe();
+    //     if (this.botConnection)
+    //         this.botConnection.end();
+    //     window.removeEventListener('resize', this.resizeListener);
+    // }
 
     componentWillReceiveProps(nextProps: ChatProps) {
         if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
@@ -255,39 +255,39 @@ export class Chat extends React.Component<ChatProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
-    render() {
-        const state = this.store.getState();
-        konsole.log("BotChat.Chat state", state);
+    // render() {
+    //     const state = this.store.getState();
+    //     konsole.log("BotChat.Chat state", state);
 
-        // only render real stuff after we know our dimensions
-        return (
-            <Provider store={ this.store }>
-                <div
-                    className="wc-chatview-panel"
-                    onKeyDownCapture={ this._handleKeyDownCapture }
-                    ref={ this._saveChatviewPanelRef }
-                >
-                    {
-                        !!state.format.chatTitle &&
-                            <div className="wc-header">
-                                <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
-                            </div>
-                    }
-                    <MessagePane>
-                        <History
-                            onCardAction={ this._handleCardAction }
-                            ref={ this._saveHistoryRef }
-                        />
-                    </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
-                    {
-                        this.props.resize === 'detect' &&
-                            <ResizeDetector onresize={ this.resizeListener } />
-                    }
-                </div>
-            </Provider>
-        );
-    }
+    //     // only render real stuff after we know our dimensions
+    //     return (
+    //         <Provider store={ this.store }>
+    //             <div
+    //                 className="wc-chatview-panel"
+    //                 onKeyDownCapture={ this._handleKeyDownCapture }
+    //                 ref={ this._saveChatviewPanelRef }
+    //             >
+    //                 {
+    //                     !!state.format.chatTitle &&
+    //                         <div className="wc-header">
+    //                             <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
+    //                         </div>
+    //                 }
+    //                 <MessagePane>
+    //                     <History
+    //                         onCardAction={ this._handleCardAction }
+    //                         ref={ this._saveHistoryRef }
+    //                     />
+    //                 </MessagePane>
+    //                 <Shell ref={ this._saveShellRef } />
+    //                 {
+    //                     this.props.resize === 'detect' &&
+    //                         <ResizeDetector onresize={ this.resizeListener } />
+    //                 }
+    //             </div>
+    //         </Provider>
+    //     );
+    // }
 }
 
 // export interface IDoCardAction {
@@ -360,27 +360,27 @@ export class Chat extends React.Component<ChatProps, {}> {
 //     });
 // }
 
-export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
-    if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
-        return renderer(value);
-}
+// export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
+//     if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0))
+//         return renderer(value);
+// }
 
-export const classList = (...args:(string | boolean)[]) => {
-    return args.filter(Boolean).join(' ');
-}
+// export const classList = (...args:(string | boolean)[]) => {
+//     return args.filter(Boolean).join(' ');
+// }
 
-// note: container of this element must have CSS position of either absolute or relative
-const ResizeDetector = (props: {
-    onresize: () => void
-}) =>
-    // adapted to React from https://github.com/developit/simple-element-resize-detector
-    <iframe
-        style={ { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' } }
-        ref={ frame => {
-            if (frame)
-                frame.contentWindow.onresize = props.onresize;
-        } }
-    />;
+// // note: container of this element must have CSS position of either absolute or relative
+// const ResizeDetector = (props: {
+//     onresize: () => void
+// }) =>
+//     // adapted to React from https://github.com/developit/simple-element-resize-detector
+//     <iframe
+//         style={ { position: 'absolute', left: '0', top: '-100%', width: '100%', height: '100%', margin: '1px 0 0', border: 'none', opacity: 0, visibility: 'hidden', pointerEvents: 'none' } }
+//         ref={ frame => {
+//             if (frame)
+//                 frame.contentWindow.onresize = props.onresize;
+//         } }
+//     />;
 
 // // For auto-focus in some browsers, we synthetically insert keys into the chatbox.
 // // By default, we insert keys when:

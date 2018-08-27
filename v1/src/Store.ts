@@ -438,18 +438,18 @@ export const history: Reducer<HistoryState> = (
                 selectedActivity: action.selectedActivity
             };
 
-        case 'Take_SuggestedAction':
-            const i = state.activities.findIndex(activity => activity === action.message);
-            const activity = state.activities[i];
-            const newActivity = {
-                ... activity,
-                suggestedActions: undefined
-            };
-            return {
-                ... state,
-                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
-                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
-            }
+        // case 'Take_SuggestedAction':
+        //     const i = state.activities.findIndex(activity => activity === action.message);
+        //     const activity = state.activities[i];
+        //     const newActivity = {
+        //         ... activity,
+        //         suggestedActions: undefined
+        //     };
+        //     return {
+        //         ... state,
+        //         activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
+        //         selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+        //     }
 
         default:
             return state;
