@@ -355,7 +355,7 @@ export const history: Reducer<HistoryState> = (
             const activities = state.activities;
             activities.push(action.activity);
 
-            const allActivities = activities.sort((l, r) => {
+            const sortedActivities = activities.sort((l, r) => {
                 const ld = Date.parse(l.timestamp);
                 const rd = Date.parse(r.timestamp);
 
@@ -366,7 +366,7 @@ export const history: Reducer<HistoryState> = (
             return {
                 ...state,
                 activities: [
-                    ...allActivities.filter(activity => activity.type !== 'typing'),
+                    ...sortedActivities.filter(activity => activity.type !== 'typing'),
                     ...state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === 'typing')
                 ]
             };
