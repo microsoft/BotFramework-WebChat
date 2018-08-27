@@ -456,32 +456,32 @@ export const history: Reducer<HistoryState> = (
     }
 }
 
-export interface AdaptiveCardsState {
-    hostConfig: HostConfig
-}
+// export interface AdaptiveCardsState {
+//     hostConfig: HostConfig
+// }
 
-export type AdaptiveCardsAction = {
-    type: 'Set_AdaptiveCardsHostConfig',
-    payload: any
-}
+// export type AdaptiveCardsAction = {
+//     type: 'Set_AdaptiveCardsHostConfig',
+//     payload: any
+// }
 
-export const adaptiveCards: Reducer<AdaptiveCardsState> = (
-    state: AdaptiveCardsState = {
-        hostConfig: null
-    },
-    action: AdaptiveCardsAction
-) => {
-    switch (action.type) {
-        case 'Set_AdaptiveCardsHostConfig':
-            return {
-                ...state,
-                hostConfig: action.payload && (action.payload instanceof HostConfig ? action.payload : new HostConfig(action.payload))
-            };
+// export const adaptiveCards: Reducer<AdaptiveCardsState> = (
+//     state: AdaptiveCardsState = {
+//         hostConfig: null
+//     },
+//     action: AdaptiveCardsAction
+// ) => {
+//     switch (action.type) {
+//         case 'Set_AdaptiveCardsHostConfig':
+//             return {
+//                 ...state,
+//                 hostConfig: action.payload && (action.payload instanceof HostConfig ? action.payload : new HostConfig(action.payload))
+//             };
 
-        default:
-            return state;
-    }
-}
+//         default:
+//             return state;
+//     }
+// }
 
 
 export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;

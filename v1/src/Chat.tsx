@@ -65,12 +65,12 @@ export class Chat extends React.Component<ChatProps, {}> {
         //     locale: props.locale || (window.navigator as any)["userLanguage"] || window.navigator.language || 'en'
         // });
 
-        if (props.adaptiveCardsHostConfig) {
-            this.store.dispatch<ChatActions>({
-                type: 'Set_AdaptiveCardsHostConfig',
-                payload: props.adaptiveCardsHostConfig
-            });
-        }
+        // if (props.adaptiveCardsHostConfig) {
+        //     this.store.dispatch<ChatActions>({
+        //         type: 'Set_AdaptiveCardsHostConfig',
+        //         payload: props.adaptiveCardsHostConfig
+        //     });
+        // }
 
         let { chatTitle } = props;
 
@@ -228,12 +228,12 @@ export class Chat extends React.Component<ChatProps, {}> {
     // }
 
     componentWillReceiveProps(nextProps: ChatProps) {
-        if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
-            this.store.dispatch<ChatActions>({
-                type: 'Set_AdaptiveCardsHostConfig',
-                payload: nextProps.adaptiveCardsHostConfig
-            });
-        }
+        // if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
+        //     this.store.dispatch<ChatActions>({
+        //         type: 'Set_AdaptiveCardsHostConfig',
+        //         payload: nextProps.adaptiveCardsHostConfig
+        //     });
+        // }
 
         if (this.props.showUploadButton !== nextProps.showUploadButton) {
             this.store.dispatch<ChatActions>({

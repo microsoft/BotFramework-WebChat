@@ -12,9 +12,10 @@ import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 
 export default ({ adaptiveCard, tapAction }) =>
   <Context.Consumer>
-    { ({ onCardAction, postActivity }) =>
+    { ({ adaptiveCardHostConfig, onCardAction, postActivity }) =>
       <AdaptiveCardRenderer
         adaptiveCard={ adaptiveCard }
+        hostConfig={ adaptiveCardHostConfig }
         onCardAction={ onCardAction }
         postActivity={ postActivity }
         tapAction={ tapAction }
@@ -89,9 +90,12 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   renderCard() {
     const { current } = this.contentRef;
-    const { props: { adaptiveCard } } = this;
+    const { props: { adaptiveCard, hostConfig } } = this;
 
     if (current && adaptiveCard) {
+      console.log(hostConfig);
+
+      adaptiveCard.hostConfig = hostConfig;
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
 
       const errors = adaptiveCard.validate();

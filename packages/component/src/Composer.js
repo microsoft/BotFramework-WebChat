@@ -6,6 +6,7 @@ import updateIn from 'simple-update-in';
 
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
+import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
 import mapMap from './Utils/mapMap';
 
 function styleSetToClassNames(styleSet) {
@@ -17,6 +18,7 @@ function createLogic(props) {
 
   const activities = props.activities || [];
   const adaptiveCards = props.adaptiveCards || AdaptiveCards;
+  const adaptiveCardHostConfig = props.adaptiveCardHostConfig || defaultAdaptiveCardHostConfig;
   const grammars = props.grammars || [];
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
   const onSendBoxChange = props.onSendBoxChange || (() => 0);
@@ -103,6 +105,7 @@ function createLogic(props) {
 
     activities,
     adaptiveCards,
+    adaptiveCardHostConfig,
     focusSendBox,
     grammars,
     lang,

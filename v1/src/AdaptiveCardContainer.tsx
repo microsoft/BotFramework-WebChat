@@ -28,7 +28,7 @@
 //     __isBotFrameworkCardAction: boolean
 // }
 
-const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
+// const defaultHostConfig = new HostConfig(adaptivecardsHostConfig);
 
 // function cardWithoutHttpActions(card: IAdaptiveCard) {
 //     if (!card.actions) {
@@ -133,68 +133,68 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
         this.props.onImageLoad && this.props.onImageLoad.apply(this, arguments);
     }
 
-    unmountAdaptiveCards() {
-        const divElement = findDOMNode(this.divRef);
+    // unmountAdaptiveCards() {
+    //     const divElement = findDOMNode(this.divRef);
 
-        [].forEach.call(divElement.children, (child: any) => divElement.removeChild(child));
-    }
+    //     [].forEach.call(divElement.children, (child: any) => divElement.removeChild(child));
+    // }
 
-    mountAdaptiveCards() {
-        // const adaptiveCard = this.props.nativeCard || new AdaptiveCard();
+    // mountAdaptiveCards() {
+    //     const adaptiveCard = this.props.nativeCard || new AdaptiveCard();
 
-        adaptiveCard.hostConfig = this.props.hostConfig || defaultHostConfig;
+    //     adaptiveCard.hostConfig = this.props.hostConfig || defaultHostConfig;
 
-        // let errors: IValidationError[] = [];
+    //     let errors: IValidationError[] = [];
 
-        // if (!this.props.nativeCard && this.props.jsonCard) {
-        //     this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
-        //     adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
-        //     errors = adaptiveCard.validate();
-        // }
+    //     if (!this.props.nativeCard && this.props.jsonCard) {
+    //         this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
+    //         adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
+    //         errors = adaptiveCard.validate();
+    //     }
 
-        // adaptiveCard.onExecuteAction = (action) => this.onExecuteAction(action);
+    //     adaptiveCard.onExecuteAction = (action) => this.onExecuteAction(action);
 
-        // if (errors.length === 0) {
-        //     let renderedCard: HTMLElement;
+    //     if (errors.length === 0) {
+    //         let renderedCard: HTMLElement;
 
-        //     try {
-        //         renderedCard = adaptiveCard.render();
-        //     } catch (e) {
-        //         const ve: IValidationError = {
-        //             error: -1,
-        //             message: e
-        //         };
+    //         try {
+    //             renderedCard = adaptiveCard.render();
+    //         } catch (e) {
+    //             const ve: IValidationError = {
+    //                 error: -1,
+    //                 message: e
+    //             };
 
-        //         errors.push(ve);
+    //             errors.push(ve);
 
-        //         if (e.stack) {
-        //             ve.message += '\n' + e.stack;
-        //         }
-        //     }
+    //             if (e.stack) {
+    //                 ve.message += '\n' + e.stack;
+    //             }
+    //         }
 
-        //     if (renderedCard) {
-        //         if (this.props.onImageLoad) {
-        //             var imgs = renderedCard.querySelectorAll('img');
+    //         if (renderedCard) {
+    //             if (this.props.onImageLoad) {
+    //                 var imgs = renderedCard.querySelectorAll('img');
 
-        //             if (imgs && imgs.length > 0) {
-        //                 Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
-        //                     img.addEventListener('load', this.handleImageLoad);
-        //                 });
-        //             }
-        //         }
+    //                 if (imgs && imgs.length > 0) {
+    //                     Array.prototype.forEach.call(imgs, (img: HTMLImageElement) => {
+    //                         img.addEventListener('load', this.handleImageLoad);
+    //                     });
+    //                 }
+    //             }
 
-        //         findDOMNode(this.divRef).appendChild(renderedCard);
+    //             findDOMNode(this.divRef).appendChild(renderedCard);
 
-        //         return;
-        //     }
-        // }
+    //             return;
+    //         }
+    //     }
 
-        // if (errors.length > 0) {
-        //     console.log('Error(s) rendering AdaptiveCard:');
-        //     errors.forEach(e => console.log(e.message));
-        //     this.setState({ errors: errors.map(e => e.message) });
-        // }
-    }
+    //     if (errors.length > 0) {
+    //         console.log('Error(s) rendering AdaptiveCard:');
+    //         errors.forEach(e => console.log(e.message));
+    //         this.setState({ errors: errors.map(e => e.message) });
+    //     }
+    // }
 
     // render() {
     //     let wrappedChildren: JSX.Element;
@@ -231,13 +231,13 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     // }
 }
 
-export default connect(
-    (state: ChatState) => ({
-        hostConfig: state.adaptiveCards.hostConfig
-    }),
-    {},
-    (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
-        ...ownProps,
-        ...stateProps
-    })
-)(AdaptiveCardContainer);
+// export default connect(
+//     (state: ChatState) => ({
+//         hostConfig: state.adaptiveCards.hostConfig
+//     }),
+//     {},
+//     (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
+//         ...ownProps,
+//         ...stateProps
+//     })
+// )(AdaptiveCardContainer);
