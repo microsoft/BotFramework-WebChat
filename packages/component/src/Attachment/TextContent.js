@@ -52,7 +52,7 @@ export default ({
           html={ renderMarkdown(text || '') }
         />
       :
-        text.split('\n').map((line, index) =>
+        (text || '').split('\n').map((line, index) =>
           <p
             className={ styleSet.textContent + '' }
             key={ index }
