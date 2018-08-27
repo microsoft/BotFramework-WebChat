@@ -54,12 +54,12 @@ function* postActivity(directLine, { payload: { activity } }) {
     // Quirks: We might receive UPSERT_ACTIVITY before the postActivity call completed
     //         So, we setup expectation first, then postActivity afterward
 
-    // TODO: Make these debug switches
-    yield call(sleep, 500);
+    // // TODO: Make these debug switches
+    // yield call(sleep, 500);
 
-    if (Math.random() < .5) {
-      throw new Error('artificial error');
-    }
+    // if (Math.random() < .5) {
+    //   throw new Error('artificial error');
+    // }
 
     const expectEchoBack = yield fork(() => callWithin(function* () {
       for (;;) {

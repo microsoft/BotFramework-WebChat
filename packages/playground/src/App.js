@@ -44,6 +44,7 @@ class App extends React.Component {
 
     const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
 
+    this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handlePostActivity = this.handlePostActivity.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleUseOfficialMockBotClick = this.handleUseOfficialMockBotClick.bind(this);
@@ -56,23 +57,26 @@ class App extends React.Component {
     const domain = params.get('domain');
     const secret = params.get('s');
     const token = params.get('t');
+    const webSocket = params.get('websocket');
 
     this.state = {
       domain,
       secret,
-      token
+      token,
+      webSocket: webSocket === 'true' || +webSocket
     };
   }
 
   componentDidMount() {
-    const { state: { domain, secret, token } } = this;
+    const { state: { domain, secret, token, webSocket } } = this;
 
     this.props.dispatch(createConnectAction({
       directLine: new DirectLine({
         domain,
+        fetch,
         secret,
         token,
-        fetch,
+        webSocket,
         createFormData: attachments => {
           const formData = new FormData();
 
@@ -81,8 +85,7 @@ class App extends React.Component {
           });
 
           return formData;
-        },
-        webSocket: true
+        }
       }),
       userID: 'default-user',
       username: 'User-1'
@@ -93,6 +96,11 @@ class App extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+  }
+
+  handleUseEmulatorCoreClick() {
+    window.sessionStorage.removeItem('REDUX_STORE');
+    window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0';
   }
 
   handleResetClick() {
@@ -144,6 +152,18 @@ class App extends React.Component {
           >
             Start conversation with official MockBot
           </button>
+          <button
+            onClick={ this.handleUseEmulatorCoreClick }
+            type="button"
+          >
+            Start conversation with Emulator Core
+          </button>
+          <div>
+            <label>
+              <input checked={ true } disabled={ true } type="checkbox" />
+              Reliable connection
+            </label>
+          </div>
         </div>
       </div>
     );
