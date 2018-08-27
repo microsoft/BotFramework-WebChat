@@ -352,12 +352,21 @@ export const history: Reducer<HistoryState> = (
         }
         case 'Receive_Message':
             if (state.activities.find(a => a.id === action.activity.id)) { return state; } // don't allow duplicate messages
+            const activities = state.activities;
+            activities.push(action.activity);
+
+            const allActivities = activities.sort((l, r) => {
+                const ld = Date.parse(l.timestamp);
+                const rd = Date.parse(r.timestamp);
+
+                if (ld === rd) { return 0; }
+                if (ld < rd) { return -1; }
+                return 1; });
 
             return {
                 ...state,
                 activities: [
-                    ...state.activities.filter(activity => activity.type !== 'typing'),
-                    action.activity,
+                    ...allActivities.filter(activity => activity.type !== 'typing'),
                     ...state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === 'typing')
                 ]
             };
