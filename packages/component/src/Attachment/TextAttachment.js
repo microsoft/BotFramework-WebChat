@@ -3,8 +3,8 @@ import React from 'react';
 import TextContent from './TextContent';
 
 export default ({ attachment }) =>
-  !!(attachment.content && attachment.content.text) &&
+  !!attachment.content &&
     <TextContent
-      text={ attachment.content.text }
+      text={ attachment.content }
       contentType={ attachment.contentType }
     />

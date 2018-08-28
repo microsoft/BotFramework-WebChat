@@ -7,9 +7,10 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import Timestamp from './Timestamp';
 
+import textFormatToContentType from '../Utils/textFormatToContentType';
+
 const ROOT_CSS = css({
   display: 'flex',
-
   MsOverflowStyle: 'none',
   overflowX: 'scroll',
   overflowY: 'hidden',
@@ -78,8 +79,8 @@ export default ({ activity, children, className }) =>
               <div className="message">
                 <Bubble className="bubble">
                   { children({
-                    contentType: 'text/markdown',
-                    content: { text: activity.text }
+                    contentType: textFormatToContentType(activity.textFormat),
+                    content: activity.text
                   }) }
                 </Bubble>
                 <div className="filler" />

@@ -7,6 +7,8 @@ import Bubble from './Bubble';
 import Context from '../Context';
 import Timestamp from './Timestamp';
 
+import textFormatToContentType from '../Utils/textFormatToContentType';
+
 const ROOT_CSS = css({
   display: 'flex',
 
@@ -54,19 +56,6 @@ const ROOT_CSS = css({
   }
 });
 
-function activityTextFormatToContentType(textFormat) {
-  switch (textFormat) {
-    case 'plain':
-      return 'text/plain';
-
-    case 'xml':
-      return 'text/xml';
-
-    default:
-      return 'text/markdown';
-  }
-}
-
 export default ({ activity, children, fromUser }) =>
   <Context>
     { () =>
@@ -81,8 +70,8 @@ export default ({ activity, children, fromUser }) =>
               <div className="row">
                 <Bubble className="bubble">
                   { children({
-                    contentType: activityTextFormatToContentType(activity.textFormat),
-                    content: { text: activity.text }
+                    contentType: textFormatToContentType(activity.textFormat),
+                    content: activity.text
                   }) }
                 </Bubble>
                 <div className="filler" />
