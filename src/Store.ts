@@ -353,14 +353,13 @@ export const history: Reducer<HistoryState> = (
         case 'Receive_Message':
             if (state.activities.find(a => a.id === action.activity.id)) { return state; } // don't allow duplicate messages
 
-            const activities = [...state.activities];
+            let activities = [...state.activities];
 
-            if (activities.length > 0 && activities[activities.length - 1].type === 'typing') {
-                activities.pop();
-            }
+            // Select all activities that are either non-typing or typing but from a different user than the incoming activity.
+            activities = activities.filter(({type, from}) => type !== 'typing' || from.id !== action.activity.from.id);
 
             const activityTimestamp = Date.parse(action.activity.timestamp);
-            const indexToInsert = action.activity.type === 'typing' ? -1 : activities.findIndex(({ timestamp, type }) => Date.parse(timestamp) >= activityTimestamp || type === 'typing');
+            const indexToInsert = action.activity.type === 'typing' ? -1 : activities.findIndex(({ timestamp, type }) => Date.parse(timestamp) > activityTimestamp || type === 'typing');
 
             activities.splice((indexToInsert < 0) ? activities.length : indexToInsert, 0, action.activity);
 
