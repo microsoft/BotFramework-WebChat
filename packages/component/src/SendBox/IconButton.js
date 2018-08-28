@@ -2,6 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+// TOOD: Move this to StyleSet
 const ROOT_CSS = css({
   backgroundColor: 'Transparent',
   border: 0,
