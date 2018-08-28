@@ -29,42 +29,42 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
     private textInput: HTMLInputElement;
     private fileInput: HTMLInputElement;
 
-    private sendMessage() {
-        if (this.props.inputText.trim().length > 0) {
-            this.props.sendMessage(this.props.inputText);
-        }
-    }
+    // private sendMessage() {
+    //     if (this.props.inputText.trim().length > 0) {
+    //         this.props.sendMessage(this.props.inputText);
+    //     }
+    // }
 
-    private handleSendButtonKeyPress(evt: React.KeyboardEvent<HTMLButtonElement>) {
-        if (evt.key === 'Enter' || evt.key === ' ') {
-            evt.preventDefault();
-            this.sendMessage();
-            this.textInput.focus();
-        }
-    }
+    // private handleSendButtonKeyPress(evt: React.KeyboardEvent<HTMLButtonElement>) {
+    //     if (evt.key === 'Enter' || evt.key === ' ') {
+    //         evt.preventDefault();
+    //         this.sendMessage();
+    //         this.textInput.focus();
+    //     }
+    // }
 
-    private handleUploadButtonKeyPress(evt: React.KeyboardEvent<HTMLLabelElement>) {
-        if (evt.key === 'Enter' || evt.key === ' ') {
-            evt.preventDefault();
-            this.fileInput.click();
-        }
-    }
+    // private handleUploadButtonKeyPress(evt: React.KeyboardEvent<HTMLLabelElement>) {
+    //     if (evt.key === 'Enter' || evt.key === ' ') {
+    //         evt.preventDefault();
+    //         this.fileInput.click();
+    //     }
+    // }
 
-    private onKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
-        if (e.key === 'Enter') {
-            this.sendMessage();
-        }
-    }
+    // private onKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
+    //     if (e.key === 'Enter') {
+    //         this.sendMessage();
+    //     }
+    // }
 
-    private onClickSend() {
-        this.sendMessage();
-    }
+    // private onClickSend() {
+    //     this.sendMessage();
+    // }
 
-    private onChangeFile() {
-        this.props.sendFiles(this.fileInput.files);
-        this.fileInput.value = null;
-        this.textInput.focus();
-    }
+    // private onChangeFile() {
+    //     this.props.sendFiles(this.fileInput.files);
+    //     this.fileInput.value = null;
+    //     this.textInput.focus();
+    // }
 
     private onTextInputFocus(){
         if (this.props.listeningState === ListeningState.STARTED) {
@@ -80,13 +80,13 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         }
     }
 
-    public focus(appendKey?: string) {
-        this.textInput.focus();
+    // public focus(appendKey?: string) {
+    //     this.textInput.focus();
 
-        if (appendKey) {
-            this.props.onChangeText(this.props.inputText + appendKey);
-        }
-    }
+    //     if (appendKey) {
+    //         this.props.onChangeText(this.props.inputText + appendKey);
+    //     }
+    // }
 
     render() {
         const className = classList(

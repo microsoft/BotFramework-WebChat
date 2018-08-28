@@ -1,42 +1,42 @@
-import * as React from 'react';
-import { Activity, Message, User, CardActionTypes } from 'botframework-directlinejs';
-import { ChatState, FormatState, SizeState } from './Store';
-import { Dispatch, connect } from 'react-redux';
-import { ActivityView } from './ActivityView';
-import { classList, doCardAction, IDoCardAction } from './Chat';
-import * as konsole from './Konsole';
-import { sendMessage } from './Store';
-import { activityWithSuggestedActions } from './activityWithSuggestedActions';
+// import * as React from 'react';
+// import { Activity, Message, User, CardActionTypes } from 'botframework-directlinejs';
+// import { ChatState, FormatState, SizeState } from './Store';
+// import { Dispatch, connect } from 'react-redux';
+// import { ActivityView } from './ActivityView';
+// import { classList, doCardAction, IDoCardAction } from './Chat';
+// import * as konsole from './Konsole';
+// import { sendMessage } from './Store';
+// import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
-export interface HistoryProps {
-    format: FormatState,
-    size: SizeState,
-    activities: Activity[],
-    hasActivityWithSuggestedActions: Activity,
+// export interface HistoryProps {
+//     format: FormatState,
+//     size: SizeState,
+//     activities: Activity[],
+//     hasActivityWithSuggestedActions: Activity,
 
-    setMeasurements: (carouselMargin: number) => void,
-    onClickRetry: (activity: Activity) => void,
-    onClickCardAction: () => void,
+//     setMeasurements: (carouselMargin: number) => void,
+//     onClickRetry: (activity: Activity) => void,
+//     onClickCardAction: () => void,
 
-    isFromMe: (activity: Activity) => boolean,
-    isSelected: (activity: Activity) => boolean,
-    onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
+//     isFromMe: (activity: Activity) => boolean,
+//     isSelected: (activity: Activity) => boolean,
+//     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
 
-    onCardAction: () => void,
-    doCardAction: IDoCardAction
-}
+//     onCardAction: () => void,
+//     doCardAction: IDoCardAction
+// }
 
-export class HistoryView extends React.Component<HistoryProps, {}> {
-    private scrollMe: HTMLDivElement;
-    private scrollContent: HTMLDivElement;
-    private scrollToBottom = true;
+// export class HistoryView extends React.Component<HistoryProps, {}> {
+//     private scrollMe: HTMLDivElement;
+//     private scrollContent: HTMLDivElement;
+//     private scrollToBottom = true;
 
-    private carouselActivity: WrappedActivity;
-    private largeWidth: number;
+//     private carouselActivity: WrappedActivity;
+//     private largeWidth: number;
 
-    constructor(props: HistoryProps) {
-        super(props);
-    }
+//     constructor(props: HistoryProps) {
+//         super(props);
+//     }
 
     // componentWillUpdate(nextProps: HistoryProps) {
     //     let scrollToBottomDetectionTolerance = 1;
@@ -118,106 +118,106 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     // 2. To determine the margins of any given carousel (we just render one mock activity so that we can measure it)
     // 3. (this is also the normal re-render case) To render without the mock activity
 
-    private doCardAction(type: CardActionTypes, value: string | object) {
-        this.props.onClickCardAction();
-        this.props.onCardAction && this.props.onCardAction();
-        return this.props.doCardAction(type, value);
-    }
+    // private doCardAction(type: CardActionTypes, value: string | object) {
+    //     this.props.onClickCardAction();
+    //     this.props.onCardAction && this.props.onCardAction();
+    //     return this.props.doCardAction(type, value);
+    // }
 
-    render() {
-        konsole.log("History props", this);
-        let content;
-        if (this.props.size.width !== undefined) {
-            if (this.props.format.carouselMargin === undefined) {
-                // For measuring carousels we need a width known to be larger than the chat itself
-                this.largeWidth = this.props.size.width * 2;
-                content = <this.measurableCarousel/>;
-            } else {
-                content = this.props.activities.map((activity, index) =>
-                    (activity.type !== 'message' || activity.text || (activity.attachments && activity.attachments.length)) &&
-                        <WrappedActivity
-                            format={ this.props.format }
-                            key={ 'message' + index }
-                            activity={ activity }
-                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                            selected={ this.props.isSelected(activity) }
-                            fromMe={ this.props.isFromMe(activity) }
-                            onClickActivity={ this.props.onClickActivity(activity) }
-                            onClickRetry={ e => {
-                                // Since this is a click on an anchor, we need to stop it
-                                // from trying to actually follow a (nonexistant) link
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.props.onClickRetry(activity)
-                            } }
-                        >
-                            <ActivityView
-                                format={ this.props.format }
-                                size={ this.props.size }
-                                activity={ activity }
-                                onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
-                                onImageLoad={ () => this.autoscroll() }
-                            />
-                        </WrappedActivity>
-                );
-            }
-        }
+    // render() {
+    //     konsole.log("History props", this);
+    //     let content;
+    //     if (this.props.size.width !== undefined) {
+    //         if (this.props.format.carouselMargin === undefined) {
+    //             // For measuring carousels we need a width known to be larger than the chat itself
+    //             this.largeWidth = this.props.size.width * 2;
+    //             content = <this.measurableCarousel/>;
+    //         } else {
+    //             content = this.props.activities.map((activity, index) =>
+    //                 (activity.type !== 'message' || activity.text || (activity.attachments && activity.attachments.length)) &&
+    //                     <WrappedActivity
+    //                         format={ this.props.format }
+    //                         key={ 'message' + index }
+    //                         activity={ activity }
+    //                         showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+    //                         selected={ this.props.isSelected(activity) }
+    //                         fromMe={ this.props.isFromMe(activity) }
+    //                         onClickActivity={ this.props.onClickActivity(activity) }
+    //                         onClickRetry={ e => {
+    //                             // Since this is a click on an anchor, we need to stop it
+    //                             // from trying to actually follow a (nonexistant) link
+    //                             e.preventDefault();
+    //                             e.stopPropagation();
+    //                             this.props.onClickRetry(activity)
+    //                         } }
+    //                     >
+    //                         <ActivityView
+    //                             format={ this.props.format }
+    //                             size={ this.props.size }
+    //                             activity={ activity }
+    //                             onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
+    //                             onImageLoad={ () => this.autoscroll() }
+    //                         />
+    //                     </WrappedActivity>
+    //             );
+    //         }
+    //     }
 
-        const groupsClassName = classList('wc-message-groups', !this.props.format.chatTitle && 'no-header');
+    //     const groupsClassName = classList('wc-message-groups', !this.props.format.chatTitle && 'no-header');
 
-        return (
-            <div
-                className={ groupsClassName }
-                ref={ div => this.scrollMe = div || this.scrollMe }
-                role="log"
-                tabIndex={ 0 }
-            >
-                <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
-                    { content }
-                </div>
-            </div>
-        );
-    }
+    //     return (
+    //         <div
+    //             className={ groupsClassName }
+    //             ref={ div => this.scrollMe = div || this.scrollMe }
+    //             role="log"
+    //             tabIndex={ 0 }
+    //         >
+    //             <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
+    //                 { content }
+    //             </div>
+    //         </div>
+    //     );
+    // }
 }
 
-export const History = connect(
-    (state: ChatState) => ({
-        // passed down to HistoryView
-        format: state.format,
-        size: state.size,
-        activities: state.history.activities,
-        hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
-        // only used to create helper functions below
-        connectionSelectedActivity: state.connection.selectedActivity,
-        selectedActivity: state.history.selectedActivity,
-        botConnection: state.connection.botConnection,
-        user: state.connection.user
-    }), {
-        setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
-        onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
-        onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
-        // only used to create helper functions below
-        sendMessage
-    }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
-        // from stateProps
-        format: stateProps.format,
-        size: stateProps.size,
-        activities: stateProps.activities,
-        hasActivityWithSuggestedActions: stateProps.hasActivityWithSuggestedActions,
-        // from dispatchProps
-        setMeasurements: dispatchProps.setMeasurements,
-        onClickRetry: dispatchProps.onClickRetry,
-        onClickCardAction: dispatchProps.onClickCardAction,
-        // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
-        isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
-        isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
-        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
-        onCardAction: ownProps.onCardAction
-    }), {
-        withRef: true
-    }
-)(HistoryView);
+// export const History = connect(
+//     (state: ChatState) => ({
+//         // passed down to HistoryView
+//         format: state.format,
+//         size: state.size,
+//         activities: state.history.activities,
+//         hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
+//         // only used to create helper functions below
+//         connectionSelectedActivity: state.connection.selectedActivity,
+//         selectedActivity: state.history.selectedActivity,
+//         botConnection: state.connection.botConnection,
+//         user: state.connection.user
+//     }), {
+//         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
+//         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
+//         onClickCardAction: () => ({ type: 'Card_Action_Clicked'}),
+//         // only used to create helper functions below
+//         sendMessage
+//     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
+//         // from stateProps
+//         format: stateProps.format,
+//         size: stateProps.size,
+//         activities: stateProps.activities,
+//         hasActivityWithSuggestedActions: stateProps.hasActivityWithSuggestedActions,
+//         // from dispatchProps
+//         setMeasurements: dispatchProps.setMeasurements,
+//         onClickRetry: dispatchProps.onClickRetry,
+//         onClickCardAction: dispatchProps.onClickCardAction,
+//         // helper functions
+//         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
+//         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
+//         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
+//         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
+//         onCardAction: ownProps.onCardAction
+//     }), {
+//         withRef: true
+//     }
+// )(HistoryView);
 
 // const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
 //     const s = window.getComputedStyle(el);
@@ -241,74 +241,74 @@ export const History = connect(
 const suitableInterval = (current: Activity, next: Activity) =>
     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
-export interface WrappedActivityProps {
-    activity: Activity,
-    showTimestamp: boolean,
-    selected: boolean,
-    fromMe: boolean,
-    format: FormatState,
-    onClickActivity: React.MouseEventHandler<HTMLDivElement>,
-    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
-}
+// export interface WrappedActivityProps {
+//     activity: Activity,
+//     showTimestamp: boolean,
+//     selected: boolean,
+//     fromMe: boolean,
+//     format: FormatState,
+//     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
+//     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
+// }
 
-export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
-    public messageDiv: HTMLDivElement;
+// export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
+//     public messageDiv: HTMLDivElement;
 
-    constructor(props: WrappedActivityProps) {
-        super(props);
-    }
+//     constructor(props: WrappedActivityProps) {
+//         super(props);
+//     }
 
-    render () {
-        let timeLine: JSX.Element;
-        switch (this.props.activity.id) {
-            case undefined:
-                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
-                break;
-            case null:
-                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
-                break;
-            case "retry":
-                timeLine =
-                    <span>
-                        { this.props.format.strings.messageFailed }
-                        { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
-                    </span>;
-                break;
-            default:
-                let sent: string;
-                if (this.props.showTimestamp)
-                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
-                break;
-        }
+//     render () {
+//         let timeLine: JSX.Element;
+//         switch (this.props.activity.id) {
+//             case undefined:
+//                 timeLine = <span>{ this.props.format.strings.messageSending }</span>;
+//                 break;
+//             case null:
+//                 timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
+//                 break;
+//             case "retry":
+//                 timeLine =
+//                     <span>
+//                         { this.props.format.strings.messageFailed }
+//                         { ' ' }
+//                         <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
+//                     </span>;
+//                 break;
+//             default:
+//                 let sent: string;
+//                 if (this.props.showTimestamp)
+//                     sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+//                 timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+//                 break;
+//         }
 
-        const who = this.props.fromMe ? 'me' : 'bot';
+//         const who = this.props.fromMe ? 'me' : 'bot';
 
-        const wrapperClassName = classList(
-            'wc-message-wrapper',
-            (this.props.activity as Message).attachmentLayout || 'list',
-            this.props.onClickActivity && 'clickable'
-        );
+//         const wrapperClassName = classList(
+//             'wc-message-wrapper',
+//             (this.props.activity as Message).attachmentLayout || 'list',
+//             this.props.onClickActivity && 'clickable'
+//         );
 
-        const contentClassName = classList(
-            'wc-message-content',
-            this.props.selected && 'selected'
-        );
+//         const contentClassName = classList(
+//             'wc-message-content',
+//             this.props.selected && 'selected'
+//         );
 
-        return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                    <div className={ contentClassName }>
-                        <svg className="wc-message-callout">
-                            <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                            <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                        </svg>
-                        { this.props.children }
-                    </div>
-                </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
-            </div>
-        );
-    }
-}
+//         return (
+//             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+//                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
+//                     <div className={ contentClassName }>
+//                         <svg className="wc-message-callout">
+//                             <path className="point-left" d="m0,6 l6 6 v-12 z" />
+//                             <path className="point-right" d="m6,6 l-6 6 v-12 z" />
+//                         </svg>
+//                         { this.props.children }
+//                     </div>
+//                 </div>
+//                 <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+//             </div>
+//         );
+//     }
+// }
