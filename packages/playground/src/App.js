@@ -56,12 +56,21 @@ class App extends React.Component {
       typographer: true,
       xhtmlOut: true
     }).use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
-      var targetAttrIndex = tokens[index].attrIndex('target');
+      // TODO: Refactor this code
+      const targetAttrIndex = tokens[index].attrIndex('target');
 
       if (~targetAttrIndex) {
         tokens[index].attrs[targetAttrIndex][1] = '_blank';
       } else {
         tokens[index].attrPush(['target', '_blank']);
+      }
+
+      const relAttrIndex = tokens[index].attrIndex('rel');
+
+      if (~relAttrIndex) {
+        tokens[index].attrs[relAttrIndex][1] = 'noopener noreferrer';
+      } else {
+        tokens[index].attrPush(['target', 'noopener noreferrer']);
       }
     });
 

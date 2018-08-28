@@ -35,10 +35,15 @@ export default function* () {
 }
 
 function* postActivity(directLine, { payload: { activity } }) {
-  const { channelData: { clientActivityID = uniqueID() } = {} } = activity;
+  const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
     ...deleteKey(activity, 'id'),
+    attachments: attachments && attachments.map(({ contentObject, contentType, name }) => ({
+      contentType,
+      contentUrl: window.URL.createObjectURL(contentObject),
+      name
+    })),
     channelData: {
       clientActivityID,
       ...deleteKey(activity.channelData, 'state')
@@ -83,5 +88,7 @@ function* postActivity(directLine, { payload: { activity } }) {
     if (yield cancelled()) {
       yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: new Error('cancelled') });
     }
+
+    (activity.attachments || []).forEach(attachment => window.URL.revokeObjectURL(attachment.contentUrl));
   }
 }

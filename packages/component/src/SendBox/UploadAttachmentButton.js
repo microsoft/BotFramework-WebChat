@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import { withStyleSet } from '../Context';
+import Context from '../Context';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
 const ROOT_CSS = css({
@@ -26,11 +26,49 @@ const ROOT_CSS = css({
   }
 });
 
-export default withStyleSet(({ styleSet }) =>
-  <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
-    <input type="file" />
-    <div className="icon">
-      <AttachmentIcon />
-    </div>
-  </div>
-)
+class UploadAttachmentButton extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleFileChange = this.handleFileChange.bind(this);
+    this.inputRef = React.createRef();
+  }
+
+  handleFileChange({ target: { files } }) {
+    if (files && files.length) {
+      const { current } = this.inputRef;
+
+      this.props.sendFiles(...files);
+      current.value = null;
+    }
+  }
+
+  render() {
+    const { styleSet } = this.props;
+
+    return (
+      <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
+        <input
+          multiple={ true }
+          onChange={ this.handleFileChange }
+          ref={ this.inputRef }
+          type="file"
+        />
+        <div className="icon">
+          <AttachmentIcon />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default props =>
+  <Context.Consumer>
+    { ({ sendFiles, styleSet }) =>
+      <UploadAttachmentButton
+        sendFiles={ sendFiles }
+        styleSet={ styleSet }
+        { ...props }
+      />
+    }
+  </Context.Consumer>

@@ -37,7 +37,7 @@ const ROOT_CSS = css({
       '& > .filler': {
         flexGrow: 10000,
         flexShrink: 1
-      },
+      }
     }
   },
 
@@ -85,6 +85,7 @@ export default ({ activity, children, fromUser }) =>
                 <Bubble className="attachment bubble" debug={ attachment } key={ index }>
                   { children(attachment) }
                 </Bubble>
+                <div className="filler" />
               </div>
             )
           }

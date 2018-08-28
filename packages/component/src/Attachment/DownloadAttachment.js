@@ -5,7 +5,11 @@ import DownloadIcon from './Assets/DownloadIcon';
 
 export default withStyleSet(({ attachment, styleSet }) =>
   <div className={ styleSet.downloadAttachment }>
-    <a href={ attachment.contentUrl } target="_blank" title={ attachment.contentUrl }>
+    <a
+      href={ attachment.contentUrl }
+      target="_blank"
+      title={ attachment.contentUrl }
+    >
       <DownloadIcon className="icon" />
       <div className="details">
         <div>{ attachment.name }</div>

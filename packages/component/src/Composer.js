@@ -87,6 +87,21 @@ function createLogic(props) {
     }
   });
 
+  const sendFiles = props.sendFiles || ((...files) => props.postActivity({
+    attachments: files.map(file => ({
+      contentObject: file,
+      contentType: 'application/octet-stream',
+      name: file.name
+    })),
+    from: {
+      id: userID,
+      role: 'user'
+    },
+    locale: lang,
+    timestamp: (new Date()).toISOString(),
+    type: 'message'
+  }));
+
   const sendMessage = props.sendMessage || (text => props.postActivity({
     from: {
       id: userID,
@@ -115,6 +130,7 @@ function createLogic(props) {
     renderMarkdown,
     scrollToBottom,
     sendBoxValue,
+    sendFiles,
     sendMessage,
     styleSet,
     suggestedActions,
