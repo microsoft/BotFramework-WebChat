@@ -12,7 +12,9 @@ export default ({ activity, children }) =>
         // Currently, we do not support multiple attachment originated from the user
         (attachments && attachments.length) ? (
           attachments.length === 1 || activity.from === 'user' ?
-            <SingleAttachmentActivity>{ children }</SingleAttachmentActivity>
+            <SingleAttachmentActivity>
+              { children }
+            </SingleAttachmentActivity>
           :
             <MultipleAttachmentActivity>{ children }</MultipleAttachmentActivity>
         ) :

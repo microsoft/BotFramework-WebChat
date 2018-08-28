@@ -7,7 +7,7 @@ import Avatar from './Avatar';
 import Bubble from './Bubble';
 import Timestamp from './Timestamp';
 
-import MainContext from '../Context';
+import Context from '../Context';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -37,7 +37,7 @@ export default withActivity(({
   attachments: [attachment],
   children
 }) =>
-  <MainContext>
+  <Context>
     { ({ styleSet, userID }) =>
       <div className={ classNames(
         ROOT_CSS + '',
@@ -54,5 +54,5 @@ export default withActivity(({
         <div className="filler" />
       </div>
     }
-  </MainContext>
+  </Context>
 )

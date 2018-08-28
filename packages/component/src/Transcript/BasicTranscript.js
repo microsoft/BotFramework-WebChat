@@ -4,8 +4,9 @@ import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 import { withStyleSet } from '../Context';
-import BasicActivity from '../Activity/BasicActivity';
-import MainContext from '../Context';
+// import BasicActivity from '../Activity/BasicActivity';
+import BasicActivity from '../Activity2/Activity';
+import Context from '../Context';
 import UnknownAttachment from '../Attachment/UnknownAttachment';
 
 const ROOT_CSS = css({
@@ -29,7 +30,7 @@ export default withStyleSet(({ className, children, styleSet }) =>
     scrollViewClassName={ ROOT_CSS + '' }
   >
     <div className={ FILLER_CSS } />
-    <MainContext.Consumer>
+    <Context.Consumer>
       { ({ activities }) =>
         <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
           {
@@ -60,6 +61,6 @@ export default withStyleSet(({ className, children, styleSet }) =>
           }
         </ul>
       }
-    </MainContext.Consumer>
+    </Context.Consumer>
   </ScrollToBottom>
 )
