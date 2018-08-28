@@ -93,8 +93,6 @@ class AdaptiveCardRenderer extends React.PureComponent {
     const { props: { adaptiveCard, hostConfig } } = this;
 
     if (current && adaptiveCard) {
-      console.log(hostConfig);
-
       adaptiveCard.hostConfig = hostConfig;
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
 
