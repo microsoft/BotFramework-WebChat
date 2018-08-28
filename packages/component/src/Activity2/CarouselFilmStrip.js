@@ -88,7 +88,7 @@ export default ({ activity, children, className }) =>
           <ul>
             {
               activity.attachments.map((attachment, index) =>
-                <li>
+                <li key={ index }>
                   <Bubble key={ index }>
                     { children(attachment) }
                   </Bubble>

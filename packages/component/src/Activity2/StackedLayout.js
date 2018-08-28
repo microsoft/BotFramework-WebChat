@@ -77,7 +77,7 @@ export default ({ activity, children, fromUser }) =>
           }
           {
             (activity.attachments || []).map((attachment, index) =>
-              <div className="row">
+              <div className="row" key={ index }>
                 <Bubble className="attachment bubble" key={ index }>
                   { children(attachment) }
                 </Bubble>
