@@ -15,6 +15,16 @@ export default function () {
 
     '& > :last-child': {
       marginBottom: 0
+    },
+
+    '&.markdown': {
+      '& img': {
+        maxWidth: '100%'
+      },
+
+      '& pre': {
+        overflow: 'hidden'
+      }
     }
   };
 }

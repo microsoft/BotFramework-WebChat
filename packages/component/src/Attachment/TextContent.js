@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import SanitizedHTML from 'react-sanitized-html';
 
@@ -48,13 +49,13 @@ export default ({
       (contentType === 'text/markdown' && renderMarkdown) ?
         <SanitizedHTML
           allowedTags={ ALLOWED_TAGS }
-          className={ styleSet.textContent + '' }
+          className={ classNames('markdown', styleSet.textContent + '') }
           html={ renderMarkdown(text || '') }
         />
       :
         (text || '').split('\n').map((line, index) =>
           <p
-            className={ styleSet.textContent + '' }
+            className={ classNames('plain', styleSet.textContent + '') }
             key={ index }
           >
             { line.trim() }
