@@ -7,6 +7,7 @@ import createAudioContentStyle from './StyleSet/AudioContent';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createBubble2Style from './StyleSet/Bubble2';
+import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createMultipleAttachmentActivityStyle from './StyleSet/MultipleAttachmentActivity';
 import createRootStyle from './StyleSet/Root';
@@ -35,6 +36,7 @@ const DEFAULT_OPTIONS = {
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
+  bubbleTextColor: 'Black',
 
   scrollToBottomThreshold: 40,
   sendBoxHeight: 50,
@@ -53,6 +55,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     bubble2: createBubble2Style(options),
+    downloadAttachment: createDownloadAttachmentStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     multipleAttachmentActivity: createMultipleAttachmentActivityStyle(options),
     options: {

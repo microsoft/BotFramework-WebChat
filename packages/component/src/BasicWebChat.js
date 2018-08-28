@@ -11,6 +11,7 @@ import AdaptiveCardAttachment from './Attachment/AdaptiveCardAttachment';
 import AnimationCardAttachment from './Attachment/AnimationCardAttachment';
 import AudioAttachment from './Attachment/AudioAttachment';
 import AudioCardAttachment from './Attachment/AudioCardAttachment';
+import DownloadAttachment from './Attachment/DownloadAttachment';
 import HeroCardAttachment from './Attachment/HeroCardAttachment';
 import ImageAttachment from './Attachment/ImageAttachment';
 import OAuthCardAttachment from './Attachment/OAuthCardAttachment';
@@ -86,6 +87,8 @@ export default class extends React.Component {
                   <TextAttachment attachment={ attachment } />
                 : /^video\//.test(attachment.contentType) ?
                   <VideoAttachment attachment={ attachment } />
+                : attachment.contentType === 'application/octet-stream' ?
+                  <DownloadAttachment attachment={ attachment } />
                 :
                   undefined
               }
