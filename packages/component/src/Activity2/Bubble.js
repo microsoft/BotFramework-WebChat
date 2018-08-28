@@ -8,34 +8,36 @@ const ROOT_CSS = css({
   position: 'relative',
 
   '&.debug-view': {
-    backgroundColor: 'rgba(0, 255, 0, .1)',
-    borderColor: 'Green',
-    borderStyle: 'solid',
-    borderWidth: 2,
-    boxSizing: 'border-box',
-    padding: 10,
-
     '& > pre': {
+      backgroundColor: 'rgba(230, 255, 230, 1)',
+      borderColor: 'Green',
+      borderStyle: 'solid',
+      borderWidth: 2,
+      boxSizing: 'border-box',
       fontSize: '80%',
+      height: '100%',
+      left: 0,
       margin: 0,
-      overflowX: 'auto'
+      overflowX: 'auto',
+      padding: 10,
+      position: 'absolute',
+      top: 0,
+      width: '100%'
     }
   },
 
-  '& > .debug:last-child': {
-    '& > button': {
-      backgroundColor: 'Transparent',
-      border: 0,
-      cursor: 'pointer',
-      outline: 0,
-      padding: 10,
-      position: 'absolute',
-      right: 0,
-      top: 0,
+  '& > button.debug': {
+    backgroundColor: 'Transparent',
+    border: 0,
+    cursor: 'pointer',
+    outline: 0,
+    padding: 10,
+    position: 'absolute',
+    right: 0,
+    top: 0,
 
-      '&:focus, &:hover': {
-        backgroundColor: 'rgba(0, 0, 0, .1)'
-      }
+    '&:focus, &:hover': {
+      backgroundColor: 'rgba(0, 0, 0, .1)'
     }
   }
 });
@@ -75,21 +77,16 @@ export default class extends React.Component {
               (className || '') + ''
             ) }
           >
-            {
-              !!(debugView && debug) ?
-                <pre>{ JSON.stringify(debug, null, 2) }</pre>
-              :
-                children
-            }
+            { children }
+            { !!debugView && <pre>{ JSON.stringify(debug, null, 2) }</pre> }
             { !!debug &&
-              <div className="debug">
-                <button
-                  onClick={ this.handleDebugViewClick }
-                  type="button"
-                >
-                  &hellip;
-                </button>
-              </div>
+              <button
+                className="debug"
+                onClick={ this.handleDebugViewClick }
+                type="button"
+              >
+                &hellip;
+              </button>
             }
           </div>
         }
