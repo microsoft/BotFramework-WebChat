@@ -54,6 +54,19 @@ const ROOT_CSS = css({
   }
 });
 
+function activityTextFormatToContentType(textFormat) {
+  switch (textFormat) {
+    case 'plain':
+      return 'text/plain';
+
+    case 'xml':
+      return 'text/xml';
+
+    default:
+      return 'text/markdown';
+  }
+}
+
 export default ({ activity, children, fromUser }) =>
   <Context>
     { () =>
@@ -68,7 +81,7 @@ export default ({ activity, children, fromUser }) =>
               <div className="row">
                 <Bubble className="bubble">
                   { children({
-                    contentType: 'text/markdown',
+                    contentType: activityTextFormatToContentType(activity.textFormat),
                     content: { text: activity.text }
                   }) }
                 </Bubble>
@@ -78,7 +91,7 @@ export default ({ activity, children, fromUser }) =>
           {
             (activity.attachments || []).map((attachment, index) =>
               <div className="row" key={ index }>
-                <Bubble className="attachment bubble" key={ index }>
+                <Bubble className="attachment bubble" debug={ attachment } key={ index }>
                   { children(attachment) }
                 </Bubble>
               </div>
