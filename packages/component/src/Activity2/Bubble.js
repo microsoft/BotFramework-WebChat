@@ -83,6 +83,7 @@ export default class extends React.Component {
               <button
                 className="debug"
                 onClick={ this.handleDebugViewClick }
+                tabIndex={ -1 }
                 type="button"
               >
                 &hellip;
