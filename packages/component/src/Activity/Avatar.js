@@ -1,15 +1,15 @@
-import classNames from 'classnames';
-import React from 'react';
+// import classNames from 'classnames';
+// import React from 'react';
 
-import { withActivity } from './Context';
-import { withStyleSet } from '../Context';
+// import { withActivity } from './Context';
+// import { withStyleSet } from '../Context';
 
-export default withStyleSet(withActivity(({
-  activity: { from },
-  className,
-  styleSet
-}) =>
-  <div className={ classNames(styleSet.avatar + '', (className || '') + '') }>
-    { from === 'bot' ? 'BF' : 'WC' }
-  </div>
-))
+// export default withStyleSet(withActivity(({
+//   activity: { from },
+//   className,
+//   styleSet
+// }) =>
+//   <div className={ classNames(styleSet.avatar + '', (className || '') + '') }>
+//     { from === 'bot' ? 'BF' : 'WC' }
+//   </div>
+// ))

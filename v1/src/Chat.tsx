@@ -180,7 +180,7 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     componentDidMount() {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
-        this.setSize();
+        // this.setSize();
 
         const botConnection = this.props.directLine
             ? (this.botConnection = new DirectLine(this.props.directLine))

@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
+import { connect as createConnectAction, postActivity } from 'backend';
 import { css } from 'glamor';
 import { DirectLine } from 'botframework-directlinejs';
-import { connect as createConnectAction, postActivity } from 'backend';
 import BasicWebChat from 'component';
+import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
 
@@ -42,14 +43,29 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const markdownIt = new MarkdownIt({ html: false, xhtmlOut: true, breaks: true, linkify: true, typographer: true });
-
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handlePostActivity = this.handlePostActivity.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleUseOfficialMockBotClick = this.handleUseOfficialMockBotClick.bind(this);
 
-    this.renderMarkdown = markdownIt.render.bind(markdownIt);
+    // TODO: We should include Markdown-It in our component package
+    const customMarkdownIt = new MarkdownIt({
+      breaks: true,
+      html: false,
+      linkify: true,
+      typographer: true,
+      xhtmlOut: true
+    }).use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
+      var targetAttrIndex = tokens[index].attrIndex('target');
+
+      if (~targetAttrIndex) {
+        tokens[index].attrs[targetAttrIndex][1] = '_blank';
+      } else {
+        tokens[index].attrPush(['target', '_blank']);
+      }
+    });
+
+    this.renderMarkdown = customMarkdownIt.render.bind(customMarkdownIt);
 
     this.mainRef = React.createRef();
 

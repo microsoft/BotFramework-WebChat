@@ -9,6 +9,7 @@ import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
+// TODO: Put this into StyleSet
 const ROOT_CSS = css({
   display: 'flex',
   MsOverflowStyle: 'none',
@@ -62,6 +63,7 @@ const ROOT_CSS = css({
   }
 });
 
+// TODO: Only show timestamp if it's 5 minutes after last activity
 export default ({ activity, children, className }) =>
   <Context.Consumer>
     { context =>
