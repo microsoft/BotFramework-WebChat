@@ -1,4 +1,4 @@
-import { Composer, createBasicStyleSet, Flipper } from 'react-film';
+import { Composer, Context, createBasicStyleSet, Flipper } from 'react-film';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
@@ -15,13 +15,21 @@ export default ({ activity, children }) => {
 
   return (
     <Composer>
-      <div className={ classNames(ROOT_CSS + '', styleSet.carousel + '') }>
-        <CarouselFilmStrip activity={ activity }>
-          { children }
-        </CarouselFilmStrip>
-        <Flipper className={ styleSet.leftFlipper + '' } mode="left"><div>&lt;</div></Flipper>
-        <Flipper className={ styleSet.rightFlipper + '' } mode="right"><div>&gt;</div></Flipper>
-      </div>
+      <Context.Consumer>
+        { ({ scrollBarWidth }) =>
+          <div className={ classNames(ROOT_CSS + '', styleSet.carousel + '') }>
+            <CarouselFilmStrip activity={ activity }>
+              { children }
+            </CarouselFilmStrip>
+            { scrollBarWidth !== '100%' &&
+              <React.Fragment>
+                <Flipper className={ styleSet.leftFlipper + '' } mode="left"><div>&lt;</div></Flipper>
+                <Flipper className={ styleSet.rightFlipper + '' } mode="right"><div>&gt;</div></Flipper>
+              </React.Fragment>
+            }
+          </div>
+        }
+      </Context.Consumer>
     </Composer>
   );
 }
