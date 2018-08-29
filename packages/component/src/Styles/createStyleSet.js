@@ -19,6 +19,7 @@ import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet'
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
+import createTypingActivityStyle from './StyleSet/TypingActivity';
 import createUnknownAttachmentStyle from './StyleSet/UnknownAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
@@ -70,6 +71,7 @@ export default function createStyleSet(options = DEFAULT_OPTIONS) {
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
     timestamp: createTimestampStyle(options),
+    typingActivity: createTypingActivityStyle(options),
     unknownAttachment: createUnknownAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),

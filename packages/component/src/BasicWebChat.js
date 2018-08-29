@@ -19,6 +19,7 @@ import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
 import SignInCardAttachment from './Attachment/SignInCardAttachment';
 import TextAttachment from './Attachment/TextAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
+import TypingActivity from './Attachment/TypingActivity';
 import VideoAttachment from './Attachment/VideoAttachment';
 import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
@@ -59,7 +60,10 @@ export default class extends React.Component {
             sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' }>
-              { ({ activity, attachment }) => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
+              { ({ activity, attachment }) =>
+                activity.type === 'typing' ?
+                  <TypingActivity />
+                : attachment.contentType === 'application/vnd.microsoft.card.hero' ?
                   <HeroCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?
                   <AdaptiveCardAttachment activity={ activity } attachment={ attachment } />

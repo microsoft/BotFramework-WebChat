@@ -72,7 +72,15 @@ export default ({ activity, children, fromUser }) =>
         <Avatar className="avatar" />
         <div className="content">
           {
-            !!activity.text &&
+            activity.type === 'typing' ?
+              <div className="row typing">
+                { children({
+                  activity,
+                  attachment: { contentType: 'typing' }
+                }) }
+                <div className="filler" />
+              </div>
+            : !!activity.text &&
               <div className="row message">
                 <Bubble className="bubble">
                   { children({
