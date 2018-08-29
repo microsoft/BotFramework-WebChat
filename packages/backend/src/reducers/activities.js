@@ -46,9 +46,7 @@ function upsertActivityWithSort(activities, nextActivity) {
 export default function (state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
     case UPSERT_ACTIVITY:
-      // TODO: UpdateActivity is not supported right now
-
-      // Do not add the activity if it already exists, dedupe by Activity.id
+      // UpdateActivity is not supported right now because we ignore duplicated activity ID
       if (!~state.findIndex(id => id === payload.activity.id)) {
         state = upsertActivityWithSort(state, payload.activity);
       }
@@ -73,8 +71,6 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
 
     default: break;
   }
-
-  // TODO: Should we sort the state?
 
   return state;
 }
