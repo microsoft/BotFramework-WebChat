@@ -6,20 +6,20 @@
 
 - Backend
    - Direct Line JS
-      - [ ] Bring your own fetch
       - [x] Travis CI NPM
-      - [ ] Bring your own Web Socket
-   - [tree/master/backend](Redux)
-      - [ ] Bring your own Direct Line
+      - [ ] Optional: Bring your own fetch
+      - [ ] Optional: Bring your own Web Socket
+   - [Redux](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/backend)
       - [x] Retry send
       - [ ] Send typing
-      - [ ] Connectivity (reconnect)
+      - [ ] Optional: Connectivity
+      - [ ] Optional: Bring your own Direct Line
       - [x] Samples
          - [x] CLI
          - [x] Speech-only
       - [ ] Parity check
 - Frontend
-   - [ ] React
+   - [React](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component)
       - [ ] Activity Renderer
          - [x] Bubble and avatar
          - [ ] Adaptive Cards
@@ -40,7 +40,7 @@
             - [x] Image and animation
             - [x] File download
          - [ ] Scroll to bottom
-            - [x] Panel
+            - [x] Scroll pane
             - [ ] Programmability
          - [x] Markdown/plain/XML
             - [x] Sanitize HTML
@@ -48,7 +48,7 @@
          - [x] Layout
             - [x] Carousel
             - [x] Stacked
-         - [ ] Send box
+         - [x] Send box
             - [x] File upload
                - [x] Multiple uploads
                - [ ] Optional: drag to upload
@@ -61,12 +61,13 @@
       - [x] Speech recognition
       - [x] Speech synthesis
 - Bundling
+   - [ ] NPM
    - [ ] CDN
       - [ ] Everything
       - [ ] Minimal
 - Testing
    - [x] [Hosted Web Chat](https://webchat-playground.azurewebsites.net/)
-   - [ ] Mocking on Direct Line
+   - [ ] Mocking Direct Line
    - [ ] Visual regression tests
       - [ ] BrowserStack
    - [ ] MockBot
