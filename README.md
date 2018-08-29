@@ -4,19 +4,77 @@
 
 # To-do
 
-* UI
-   * Adaptive Cards in React
-      * Disable interactivity
-      * Capture all clicks/taps
-         * Tap on image
-         * Tap on the whole card
-         * Submit button
-      * Update host config on-the-fly
-   * Unknown attachment card
-   * ~Auto focus text box~
-* Backend
-* General
-   * Folder name should be lowercase
+- Backend
+   - Direct Line JS
+      - [ ] Bring your own fetch
+      - [x] Travis CI NPM
+      - [ ] Bring your own Web Socket
+   - [tree/master/backend](Redux)
+      - [ ] Bring your own Direct Line
+      - [x] Retry send
+      - [ ] Send typing
+      - [ ] Connectivity (reconnect)
+      - [x] Samples
+         - [x] CLI
+         - [x] Speech-only
+      - [ ] Parity check
+- Frontend
+   - [ ] React
+      - [ ] Activity Renderer
+         - [x] Bubble and avatar
+         - [ ] Adaptive Cards
+            - [x] Submit
+            - [x] JSON card
+            - [x] Tap
+            - [x] Host config
+            - [ ] Rich card
+               - [x] Sign-in
+               - [ ] OAuth
+               - [x] Others
+         - [x] Media
+            - [x] Video
+               - [x] MP4
+               - [x] Vimeo
+               - [x] YouTube
+            - [x] Audio
+            - [x] Image and animation
+            - [x] File download
+         - [ ] Scroll to bottom
+            - [x] Panel
+            - [ ] Programmability
+         - [x] Markdown/plain/XML
+            - [x] Sanitize HTML
+         - [ ] Speech say
+         - [x] Layout
+            - [x] Carousel
+            - [x] Stacked
+         - [ ] Send box
+            - [x] File upload
+               - [x] Multiple uploads
+               - [ ] Optional: drag to upload
+            - [x] Suggested actions
+               - [x] Show
+               - [x] Carousel
+               - [x] Submit
+            - [x] Microphone
+   - [x] Speech engine
+      - [x] Speech recognition
+      - [x] Speech synthesis
+- Bundling
+   - [ ] CDN
+      - [ ] Everything
+      - [ ] Minimal
+- Testing
+   - [x] [Hosted Web Chat](https://webchat-playground.azurewebsites.net/)
+   - [ ] Mocking on Direct Line
+   - [ ] Visual regression tests
+      - [ ] BrowserStack
+   - [ ] MockBot
+      - [x] [GitHub CI/CD](https://travis-ci.org/compulim/BotFramework-MockBot/)
+      - [x] [Hosted MockBot](https://webchat-mockbot.azurewebsites.net/)
+         - [x] Token exchange
+         - [x] Docker
+      - [x] Parity check
 
 # Contributions
 
