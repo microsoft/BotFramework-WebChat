@@ -1,6 +1,7 @@
-import { primaryFont, primarySmallFont } from '../Fonts';
+import { primaryFont } from '../Fonts';
 
 export default function ({
+  accent,
   bubbleTextColor
 }) {
   return {
@@ -14,12 +15,17 @@ export default function ({
       textDecoration: 'none',
 
       '& > .icon': {
-        marginRight: 10,
+        fill: accent,
+        marginLeft: 10,
         padding: 10
       },
 
-      '& > .details > .url': {
-        ...primarySmallFont
+      '& > .details': {
+        flex: 1,
+
+        '& > .name': {
+          color: accent
+        }
       }
     }
   };

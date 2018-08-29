@@ -93,6 +93,9 @@ function createLogic(props) {
       contentType: 'application/octet-stream',
       name: file.name
     })),
+    channelData: {
+      attachmentSizes: files.map(file => file.size)
+    },
     from: {
       id: userID,
       role: 'user'

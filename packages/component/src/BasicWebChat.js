@@ -59,36 +59,36 @@ export default class extends React.Component {
             sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' }>
-              { attachment => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
-                  <HeroCardAttachment attachment={ attachment } />
+              { ({ activity, attachment }) => attachment.contentType === 'application/vnd.microsoft.card.hero' ?
+                  <HeroCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?
-                  <AdaptiveCardAttachment attachment={ attachment } />
+                  <AdaptiveCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.animation' ?
-                  <AnimationCardAttachment attachment={ attachment } />
+                  <AnimationCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.audio' ?
-                  <AudioCardAttachment attachment={ attachment } />
+                  <AudioCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.oauth' ?
-                  <OAuthCardAttachment attachment={ attachment } />
+                  <OAuthCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.postback' ?
                   false
                 : attachment.contentType === 'application/vnd.microsoft.card.receipt' ?
-                  <ReceiptCardAttachment attachment={ attachment } />
+                  <ReceiptCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.signin' ?
-                  <SignInCardAttachment attachment={ attachment } />
+                  <SignInCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ?
-                  <ThumbnailCardAttachment attachment={ attachment } />
+                  <ThumbnailCardAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/vnd.microsoft.card.video' ?
-                  <VideoCardAttachment attachment={ attachment } />
+                  <VideoCardAttachment activity={ activity } attachment={ attachment } />
                 : /^audio\//.test(attachment.contentType) ?
-                  <AudioAttachment attachment={ attachment } />
+                  <AudioAttachment activity={ activity } attachment={ attachment } />
                 : /^image\//.test(attachment.contentType) ?
-                  <ImageAttachment attachment={ attachment } />
+                  <ImageAttachment activity={ activity } attachment={ attachment } />
                 : /^text\//.test(attachment.contentType) ?
-                  <TextAttachment attachment={ attachment } />
+                  <TextAttachment activity={ activity } attachment={ attachment } />
                 : /^video\//.test(attachment.contentType) ?
-                  <VideoAttachment attachment={ attachment } />
+                  <VideoAttachment activity={ activity } attachment={ attachment } />
                 : attachment.contentType === 'application/octet-stream' ?
-                  <DownloadAttachment attachment={ attachment } />
+                  <DownloadAttachment activity={ activity } attachment={ attachment } />
                 :
                   undefined
               }

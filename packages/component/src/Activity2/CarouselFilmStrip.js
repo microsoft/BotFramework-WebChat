@@ -81,8 +81,11 @@ export default ({ activity, children, className }) =>
               <div className="message">
                 <Bubble className="bubble">
                   { children({
-                    contentType: textFormatToContentType(activity.textFormat),
-                    content: activity.text
+                    activity,
+                    attachment: {
+                      contentType: textFormatToContentType(activity.textFormat),
+                      content: activity.text
+                    }
                   }) }
                 </Bubble>
                 <div className="filler" />
@@ -93,7 +96,7 @@ export default ({ activity, children, className }) =>
               activity.attachments.map((attachment, index) =>
                 <li key={ index }>
                   <Bubble debug={ attachment } key={ index }>
-                    { children(attachment) }
+                    { children({ activity, attachment }) }
                   </Bubble>
                 </li>
               )
