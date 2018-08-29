@@ -17,23 +17,29 @@ function findByClientActivityID(clientActivityID) {
   return activity => getClientActivityID(activity) === clientActivityID;
 }
 
-function upsertActivityByClientActivityID(state, activity) {
-  const clientActivityID = getClientActivityID(activity);
+function upsertActivityWithSort(activities, nextActivity) {
+  const {
+    channelData: { clientActivityID: nextClientActivityID } = {},
+    from: { id: nextFromID } = {}
+  } = nextActivity;
 
-  // If the activity has clientActivityID, try to update existing activity
-  if (clientActivityID) {
-    // Tries to update the activity if the incoming activity has clientActivityID
-    const nextState = updateIn(state, [findByClientActivityID(clientActivityID)], existingActivity => ({
-      ...existingActivity,
-      ...activity
-    }));
+  const nextTimestamp = Date.parse(nextActivity.timestamp);
+  const nextActivities = activities.filter(({ channelData: { clientActivityID } = {}, from, type }) =>
+    // We will remove all "typing" and "echo back" activities
+    !(
+      (type === 'typing' && from.id === nextFromID)
+      || (nextClientActivityID && clientActivityID === nextClientActivityID)
+    )
+  );
 
-    if (nextState !== state) {
-      return nextState;
-    }
-  }
+  // Then, find the right (sorted) place to insert the new activity at, based on timestamp, and must be before "typing"
+  // If we are inserting "typing", we will always append it
+  const indexToInsert = nextActivity.type === 'typing' ? -1 : nextActivities.findIndex(({ timestamp, type }) => Date.parse(timestamp) > nextTimestamp || type === 'typing');
 
-  return [...state, activity];
+  // If no right place are found, append it
+  nextActivities.splice(~indexToInsert ? indexToInsert : nextActivities.length, 0, nextActivity);
+
+  return nextActivities;
 }
 
 export default function (state = DEFAULT_STATE, { meta, payload, type }) {
@@ -43,13 +49,13 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
 
       // Do not add the activity if it already exists, dedupe by Activity.id
       if (!~state.findIndex(id => id === payload.activity.id)) {
-        state = upsertActivityByClientActivityID(state, payload.activity);
+        state = upsertActivityWithSort(state, payload.activity);
       }
 
       break;
 
     case POST_ACTIVITY_PENDING:
-      state = upsertActivityByClientActivityID(state, updateIn(payload.activity, ['channelData', 'state'], () => 'sending'));
+      state = upsertActivityWithSort(state, updateIn(payload.activity, ['channelData', 'state'], () => 'sending'));
       break;
 
     case POST_ACTIVITY_REJECTED:
