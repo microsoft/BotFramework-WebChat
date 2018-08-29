@@ -34,6 +34,10 @@ const ROOT_CSS = css({
         overflow: 'hidden'
       },
 
+      '&.attachment > .bubble': {
+        minWidth: 250
+      },
+
       '& > .filler': {
         flexGrow: 10000,
         flexShrink: 1
@@ -69,7 +73,7 @@ export default ({ activity, children, fromUser }) =>
         <div className="content">
           {
             !!activity.text &&
-              <div className="row">
+              <div className="row message">
                 <Bubble className="bubble">
                   { children({
                     contentType: textFormatToContentType(activity.textFormat),
@@ -81,7 +85,7 @@ export default ({ activity, children, fromUser }) =>
           }
           {
             (activity.attachments || []).map((attachment, index) =>
-              <div className="row" key={ index }>
+              <div className="row attachment" key={ index }>
                 <Bubble className="attachment bubble" debug={ attachment } key={ index }>
                   { children(attachment) }
                 </Bubble>

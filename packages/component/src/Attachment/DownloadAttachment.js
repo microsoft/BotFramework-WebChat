@@ -10,11 +10,11 @@ export default withStyleSet(({ attachment, styleSet }) =>
       target="_blank"
       title={ attachment.contentUrl }
     >
-      <DownloadIcon className="icon" />
       <div className="details">
         <div>{ attachment.name }</div>
         <div className="url">{ attachment.contentUrl }</div>
       </div>
+      <DownloadIcon className="icon" size={ 1.5 } />
     </a>
   </div>
 )
