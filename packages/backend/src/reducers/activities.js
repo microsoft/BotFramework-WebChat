@@ -25,7 +25,8 @@ function upsertActivityWithSort(activities, nextActivity) {
 
   const nextTimestamp = Date.parse(nextActivity.timestamp);
   const nextActivities = activities.filter(({ channelData: { clientActivityID } = {}, from, type }) =>
-    // We will remove all "typing" and "echo back" activities
+    // We will remove all "typing" and "sending messages" activities
+    // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
     !(
       (type === 'typing' && from.id === nextFromID)
       || (nextClientActivityID && clientActivityID === nextClientActivityID)
