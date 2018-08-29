@@ -349,7 +349,6 @@ export const doCardAction = (
                     loginWindow.location.href = text + param;
                 }, error => {
                     konsole.log('failed to get sessionId', error);
-                    loginWindow.location.href = text;
                 });
             } else {
                 loginWindow.location.href = text;
