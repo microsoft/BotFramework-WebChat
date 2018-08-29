@@ -52,11 +52,9 @@ const ROOT_CSS = css({
 
   '&.from-user': {
     flexDirection: 'row-reverse',
-    justifyContent: 'flex-end',
 
     '& > .content > .row': {
-      flexDirection: 'row-reverse',
-      justifyContent: 'flex-end'
+      flexDirection: 'row-reverse'
     }
   }
 });
@@ -100,7 +98,6 @@ export default ({ activity, children, fromUser }) =>
                 <Bubble className="attachment bubble" debug={ attachment } key={ index }>
                   { children({ activity, attachment }) }
                 </Bubble>
-                <div className="filler" />
               </div>
             )
           }
