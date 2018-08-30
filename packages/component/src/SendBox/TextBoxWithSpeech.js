@@ -117,7 +117,11 @@ class TextBoxWithSpeech extends React.Component {
               disabled={ props.disabled }
               onClick={ this.handleDictateClick }
               onDictate={ ({ transcript }) => {
-                props.onSendBoxChange(transcript);
+                props.scrollToBottom();
+                props.sendMessage(transcript);
+                props.onSendBoxChange('');
+                props.sendTyping(false);
+
                 this.setState(() => ({ dictateState: IDLE }));
               } }
               onDictateClick={ this.handleDictateClick }
