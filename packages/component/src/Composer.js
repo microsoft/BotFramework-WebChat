@@ -155,7 +155,8 @@ export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createContext = memoize(createLogic, shallowEquals);
+    this.createContextFromProps = memoize(createLogic, shallowEquals);
+    this.mergeContext = memoize((...contexts) => contexts.reduce((result, context) => Object.assign(result, context), {}));
 
     this.state = {
       // This is for uncontrolled component
@@ -176,10 +177,8 @@ export default class Composer extends React.Component {
       state
     } = this;
 
-    const context = this.createContext({
-      ...state.context,
-      ...otherProps
-    });
+    const contextFromProps = this.createContextFromProps(otherProps);
+    const context = this.mergeContext(contextFromProps, state.context);
 
     return (
       <Context.Provider value={ context }>
