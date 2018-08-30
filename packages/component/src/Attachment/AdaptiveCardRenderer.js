@@ -119,7 +119,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
         this.setState(() => ({ error: null }));
       }
 
-      const [firstChild] = current.children;
+      const firstChild = current.children[0];
 
       if (firstChild) {
         current.replaceChild(element, firstChild);
