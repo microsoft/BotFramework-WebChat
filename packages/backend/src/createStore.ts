@@ -2,7 +2,6 @@ import { applyMiddleware, createStore, Store } from 'redux';
 import { DirectLine, DirectLineOptions } from 'botframework-directlinejs';
 import createSagaMiddleware from 'redux-saga';
 
-// import directLineSaga from './directLineSaga';
 import reducer from './reducer';
 import sagas from './sagas';
 
@@ -26,7 +25,6 @@ export default function (initialState, ...middlewares) {
   );
 
   sagaMiddleware.run(sagas);
-  // sagaMiddleware.run(directLineSaga);
 
   return store;
 }
