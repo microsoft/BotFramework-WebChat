@@ -143,7 +143,7 @@ class App extends React.Component {
       const { token } = await res.json();
 
       window.sessionStorage.removeItem('REDUX_STORE');
-      window.location.href = `?t=${ encodeURIComponent(token) }`;
+      window.location.href = `?t=${ encodeURIComponent(token) }&websocket=true`;
     } catch (err) {
       alert('Failed to get Direct Line token for official MockBot');
     }
