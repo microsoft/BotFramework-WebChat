@@ -47,6 +47,8 @@ class TextBoxWithSpeech extends React.Component {
   }
 
   handleDictating({ interims }) {
+    this.props.sendTyping();
+
     this.setState(() => ({
       dictateState: DICTATING,
       interims
@@ -65,6 +67,7 @@ class TextBoxWithSpeech extends React.Component {
       props.scrollToBottom();
       props.sendMessage(sendBoxValue);
       props.onSendBoxChange('');
+      props.sendTyping(false);
     }
   }
 
@@ -86,7 +89,10 @@ class TextBoxWithSpeech extends React.Component {
               { ({ sendFocusRef }) =>
                 <input
                   disabled={ props.disabled }
-                  onChange={ ({ target: { value } }) => props.onSendBoxChange(value) }
+                  onChange={ ({ target: { value } }) => {
+                    props.onSendBoxChange(value);
+                    value && props.sendTyping();
+                  } }
                   placeholder="Type your message"
                   ref={ sendFocusRef }
                   type="text"
@@ -149,6 +155,7 @@ export default ({
         scrollToBottom,
         sendBoxValue,
         sendMessage,
+        sendTyping,
         styleSet
       }) =>
         <TextBoxWithSpeech
@@ -158,6 +165,7 @@ export default ({
           scrollToBottom={ scrollToBottom }
           sendBoxValue={ sendBoxValue }
           sendMessage={ sendMessage }
+          sendTyping={ sendTyping }
           speech={ speech }
           styleSet={ styleSet }
         />

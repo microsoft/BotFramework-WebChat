@@ -6,28 +6,38 @@ import updateIn from 'simple-update-in';
 
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
+import debounce from './Utils/debounce';
 import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
 import mapMap from './Utils/mapMap';
+
+// Flywheel object
+const EMPTY_ARRAY = [];
+const NULL_FUNCTION = () => 0;
 
 function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
 }
 
 function createLogic(props) {
-  // console.log('creating new context');
+  // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
+  // - User ID changed, cuasing all send* functions to be updated
+  // - send
 
-  const activities = props.activities || [];
-  const adaptiveCards = props.adaptiveCards || AdaptiveCards;
-  const adaptiveCardHostConfig = props.adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(props.styleOptions);
-  const grammars = props.grammars || [];
+  // TODO: We should break this into smaller pieces using memoization function, so we don't recreate styleSet if userID is changed
+
+  // TODO: We should think about if we allow the user to change onSendBoxValueChanged/sendBoxValue, e.g.
+  // 1. Turns text into UPPERCASE
+  // 2. Filter out profanity
+
+  // TODO: The user should be able to add/remove/replace the business logic layer
+
+  // TODO: Give warnings if we are creating logic more often than we should
+
+  // console.log('creating new logic context');
+
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
-  const onSendBoxChange = props.onSendBoxChange || (() => 0);
   const postActivity = props.postActivity || (() => { throw new Error('"postActivity" is not specified in props'); });
-  const renderMarkdown = props.renderMarkdown;
-  const scrollToBottom = props.scrollToBottom || (() => 0);
-  const sendBoxValue = props.sendBoxValue || '';
   const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
-  const suggestedActions = props.suggestedActions || [];
   const userID = props.userID || 'default-user';
 
   const focusSendBox = props.focusSendBox || (() => {
@@ -117,26 +127,36 @@ function createLogic(props) {
     type: 'message'
   }));
 
+  // Debounce will call a function later
+  // But we need to find a way to stop debouncing, e.g.
+  // 1. User type "A", then "B", then "C"
+  // 2. Debouncer called
+  // 3. The user press ENTER
+  // 4. The bot responded
+  // 5. 3 seconds later, debouncer will call sendTyping
+  //    This is because the key event "C" is still pending in the debounce queue, we need to stop this call
+  const sendTyping = props.sendTyping || debounce(shouldSend => shouldSend !== false && props.postActivity({
+    from: {
+      id: userID,
+      role: 'user'
+    },
+    locale: lang,
+    timestamp: (new Date()).toISOString(),
+    type: 'typing'
+  }), 3000);
+
   // TODO: Revisit all members of context
   return {
     ...props,
 
-    activities,
-    adaptiveCards,
-    adaptiveCardHostConfig,
     focusSendBox,
-    grammars,
     lang,
     onCardAction,
-    onSendBoxChange,
     postActivity,
-    renderMarkdown,
-    scrollToBottom,
-    sendBoxValue,
     sendFiles,
     sendMessage,
+    sendTyping,
     styleSet,
-    suggestedActions,
     userID
   };
 }
@@ -155,8 +175,15 @@ export default class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createContextFromProps = memoize(createLogic, shallowEquals);
-    this.mergeContext = memoize((...contexts) => contexts.reduce((result, context) => Object.assign(result, context), {}));
+    this.createContextFromProps = memoize(
+      createLogic,
+      shallowEquals
+    );
+
+    this.mergeContext = memoize(
+      (...contexts) => contexts.reduce((result, context) => Object.assign(result, context), {}),
+      shallowEquals
+    );
 
     this.state = {
       // This is for uncontrolled component
@@ -173,12 +200,36 @@ export default class Composer extends React.Component {
 
   render() {
     const {
-      props: { children, ...otherProps },
+      props: {
+        activities,
+        adaptiveCards,
+        adaptiveCardHostConfig,
+        children,
+        grammars,
+        renderMarkdown,
+        scrollToBottom,
+        suggestedActions,
+        ...propsForLogic
+      },
       state
     } = this;
 
-    const contextFromProps = this.createContextFromProps(otherProps);
-    const context = this.mergeContext(contextFromProps, state.context);
+    const contextFromProps = this.createContextFromProps(propsForLogic);
+    const context = this.mergeContext(
+      contextFromProps,
+      state.context,
+      // TODO: Should we normalize empties here? Or should we let it thru?
+      //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
+      {
+        activities: activities || EMPTY_ARRAY,
+        adaptiveCards: adaptiveCards || AdaptiveCards,
+        adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
+        grammars: grammars || EMPTY_ARRAY,
+        renderMarkdown,
+        scrollToBottom: scrollToBottom || NULL_FUNCTION,
+        suggestedActions: suggestedActions || EMPTY_ARRAY
+      }
+    );
 
     return (
       <Context.Provider value={ context }>
