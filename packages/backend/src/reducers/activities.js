@@ -53,7 +53,7 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
 
     case UPSERT_ACTIVITY:
       // UpdateActivity is not supported right now because we ignore duplicated activity ID
-      if (!~state.findIndex(id => id === payload.activity.id)) {
+      if (!~state.findIndex(({ id }) => id === payload.activity.id)) {
         state = upsertActivityWithSort(state, payload.activity);
       }
 
