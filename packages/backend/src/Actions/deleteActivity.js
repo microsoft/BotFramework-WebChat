@@ -1,4 +1,4 @@
-export const DELETE_ACTIVITY = 'ACTIVITIES/DELETE_ACTIVITY';
+export const DELETE_ACTIVITY = 'DIRECT_LINE/DELETE_ACTIVITY';
 
 export default function (activityID) {
   return {
