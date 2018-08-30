@@ -1,11 +1,13 @@
 import updateIn from 'simple-update-in';
 
+import { DELETE_ACTIVITY } from '../Actions/deleteActivity';
+import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
+
 import {
   POST_ACTIVITY_FULFILLED,
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../Actions/postActivity';
-import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
 
 const DEFAULT_STATE = [];
 
@@ -45,6 +47,10 @@ function upsertActivityWithSort(activities, nextActivity) {
 
 export default function (state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
+    case DELETE_ACTIVITY:
+      state = updateIn(state, [({ id }) => id === payload.activityID]);
+      break;
+
     case UPSERT_ACTIVITY:
       // UpdateActivity is not supported right now because we ignore duplicated activity ID
       if (!~state.findIndex(id => id === payload.activity.id)) {
