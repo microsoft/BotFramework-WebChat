@@ -27,25 +27,9 @@ import createVideoContentStyle from './StyleSet/VideoContent';
 import createVimeoContentStyle from './StyleSet/VimeoContent';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 
-const DEFAULT_OPTIONS = {
-  accent: '#69F',
-  avatarSize: 40,
+import defaultStyleSetOptions from './defaultStyleSetOptions';
 
-  backgroundColor: '#EEE',
-
-  bubbleBackground: 'White',
-  bubbleImageHeight: 240,
-  bubbleMaxWidth: 480, // screen width = 600px
-  bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
-  bubbleTextColor: 'Black',
-
-  scrollToBottomThreshold: 40,
-  sendBoxHeight: 50,
-
-  timestampColor: 'rgba(0, 0, 0, .2)'
-};
-
-export default function createStyleSet(options = DEFAULT_OPTIONS) {
+export default function createStyleSet(options = defaultStyleSetOptions) {
   return {
     activity: createActivityStyle(options),
     activities: createActivitiesStyle(options),

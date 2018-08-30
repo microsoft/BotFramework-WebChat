@@ -1,8 +1,13 @@
 import { HostConfig } from 'adaptivecards';
+import defaultStyleSetOptions from './defaultStyleSetOptions';
 
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
-export default new HostConfig({
+export default ({ accent } = defaultStyleSetOptions) => new HostConfig({
+  colors: {
+    accent
+  },
+
   "supportsInteractivity": true,
   "spacing": {
     "small": 4,

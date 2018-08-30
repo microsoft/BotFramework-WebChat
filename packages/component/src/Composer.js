@@ -18,7 +18,7 @@ function createLogic(props) {
 
   const activities = props.activities || [];
   const adaptiveCards = props.adaptiveCards || AdaptiveCards;
-  const adaptiveCardHostConfig = props.adaptiveCardHostConfig || defaultAdaptiveCardHostConfig;
+  const adaptiveCardHostConfig = props.adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(props.styleOptions);
   const grammars = props.grammars || [];
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
   const onSendBoxChange = props.onSendBoxChange || (() => 0);
@@ -26,7 +26,7 @@ function createLogic(props) {
   const renderMarkdown = props.renderMarkdown;
   const scrollToBottom = props.scrollToBottom || (() => 0);
   const sendBoxValue = props.sendBoxValue || '';
-  const styleSet = styleSetToClassNames(props.styleSet || createStyleSet());
+  const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
   const suggestedActions = props.suggestedActions || [];
   const userID = props.userID || 'default-user';
 
