@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Context from '../Context';
-import TypingAnimation from './Assets/Typing';
+import TypingAnimation from './Assets/TypingAnimation';
 
 export default props =>
   <Context.Consumer>

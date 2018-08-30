@@ -1,5 +1,6 @@
 import createActivitiesStyle from './StyleSet/Activities';
 import createActivityStyle from './StyleSet/Activity';
+import createAdaptiveCardRendererStyle from './StyleSet/AdaptiveCardRenderer';
 import createAnimationCardAttachmentStyle from './StyleSet/AnimationCardAttachment';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
@@ -33,6 +34,7 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
   return {
     activity: createActivityStyle(options),
     activities: createActivitiesStyle(options),
+    adaptiveCardRenderer: createAdaptiveCardRendererStyle(options),
     animationCardAttachment: createAnimationCardAttachmentStyle(options),
     audioAttachment: createAudioAttachmentStyle(options),
     audioCardAttachment: createAudioCardAttachmentStyle(options),
