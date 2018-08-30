@@ -45,18 +45,19 @@
          - [x] Markdown/plain/XML
             - [x] Sanitize HTML
          - [ ] Speech say
+         - [x] Typing
          - [x] Layout
             - [x] Carousel
             - [x] Stacked
-         - [x] Send box
-            - [x] File upload
-               - [x] Multiple uploads
-               - [ ] Optional: drag to upload
-            - [x] Suggested actions
-               - [x] Show
-               - [x] Carousel
-               - [x] Submit
-            - [x] Microphone
+      - [x] Send box
+      - [x] File upload
+            - [x] Multiple uploads
+            - [ ] Optional: drag to upload
+      - [x] Suggested actions
+            - [x] Show
+            - [x] Carousel
+            - [x] Submit
+      - [x] Microphone
    - [x] Speech engine
       - [x] Speech recognition
       - [x] Speech synthesis
