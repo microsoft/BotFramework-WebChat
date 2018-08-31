@@ -1,6 +1,7 @@
 @import "includes/colors";
 @import "includes/settings";
 @import "includes/card-size";
+@import "includes/media-queries";
 
 /* reset */
 
@@ -34,12 +35,10 @@
     }
 
     .wc-header {
-        background-color: $c_brand;
-        box-shadow: 0 1px $c_shadow;
+        background-color: white;
         box-sizing: content-box;
-        color: $c01;
+        color: #444444;
         font-weight: 500;
-        height: $headerTotalHeight - $headerPaddingTop - $headerPaddingBottom;
         left: 0;
         letter-spacing: 0.5px;
         padding: $headerPaddingTop $headerPaddingRight $headerPaddingBottom $headerPaddingLeft;
@@ -47,6 +46,13 @@
         right: 0;
         top: 0;
         z-index: 1;
+
+        &--close {
+            height: 26px;
+            float: right;
+            padding-right: 20px;
+            cursor: pointer;
+        }
     }
 
     .wc-time {
@@ -170,13 +176,58 @@
 
 /* views */
 
+    $rightWeight:28px;
+    $floatingBottom:34px;
+    $floatingHeight:80px;
+    $bottom:$floatingBottom + $floatingHeight + 20px;
+    $cubic:cubic-bezier(0.25, 0.8, 0.25, 1);
+
+
     .wc-chatview-panel {
         overflow: hidden;
         position: absolute;
-        right: 0;
-        left: 0;
-        top: 0;
-        bottom: 0;
+        right: $rightWeight;
+        bottom: $floatingBottom + $floatingHeight + 20px;
+        height: 0;
+        width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
+        visibility: hidden;
+        opacity: 0;
+        transition:visibility 1.5s $cubic, opacity 1.5s $cubic, height 1s $cubic, width 1s $cubic;
+        
+        &__open{
+            opacity: 1;
+            visibility: visible;
+            display: block;
+            width: 452px;
+            max-width: 80vw;
+            height: calc(100vh - #{$bottom} - 20px);
+
+            @include mobileAndTablet {
+                width:350px;
+            }
+        }
+
+    }
+
+    .wc-floating {
+        position: absolute;
+        right: $rightWeight;
+        cursor: pointer;
+        bottom: $floatingBottom;
+        width: 80px;
+        height: $floatingHeight;
+        background-size: 132px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url(https://s3.amazonaws.com/com.gideon.static.dev/chatbot/g-mark%403x.png);
+        border-radius: 80px;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
+
+        &__closed {
+            display: none;
+        }
     }
 
 /* messages */
@@ -226,6 +277,8 @@
         box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 8px;
         word-break: break-word;
+        border-radius: 14px;
+        font-size: $message_font_size;
       }
 
     .wc-message-content.clickable {
@@ -522,6 +575,7 @@
     .wc-message-from-me .wc-message-content {
         background-color: $c_messageFromMe;
         color: $c01;
+        border-top-right-radius: 0px;
     }
 
     .wc-message-from-me svg.wc-message-callout path {
@@ -563,7 +617,7 @@
 /* console */
 
     .wc-console {
-        border: 5px solid $c_chrome;
+        border-top: solid 1px #979999;
         bottom: 0;
         box-sizing: border-box;
         height: $consoleHeight;
@@ -599,6 +653,8 @@
             padding: 0;
             resize: none;
             width: 100%;
+            font-size: 16px;
+            padding-bottom: 2px; // center
         }
 
         &.has-text .wc-send svg {

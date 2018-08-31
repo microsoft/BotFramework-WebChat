@@ -30,11 +30,19 @@ export interface ChatProps {
     resize?: 'none' | 'window' | 'detect';
 }
 
+interface State {
+    open: boolean;
+}
+
 import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
 
-export class Chat extends React.Component<ChatProps, {}> {
+export class Chat extends React.Component<ChatProps, State> {
+
+    state = {
+        open: false
+    };
 
     private store = createStore();
 
@@ -113,6 +121,12 @@ export class Chat extends React.Component<ChatProps, {}> {
                 }
                 break;
         }
+    }
+
+    private toggle = () => {
+        this.setState({
+            open: !this.state.open
+        });
     }
 
     private setSize() {
@@ -264,35 +278,51 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     render() {
         const state = this.store.getState();
-        konsole.log('BotChat.Chat state', state);
+        const { open } = this.state;
+
+        console.log(open);
 
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>
-                <div
-                    className="wc-chatview-panel"
-                    onKeyDownCapture={ this._handleKeyDownCapture }
-                    ref={ this._saveChatviewPanelRef }
-                >
-                    {
-                        !!state.format.chatTitle &&
-                            <div className="wc-header">
-                                <span>{ typeof state.format.chatTitle === 'string' ? state.format.chatTitle : state.format.strings.title }</span>
-                            </div>
-                    }
-                    <MessagePane>
-                        <History
-                            onCardAction={ this._handleCardAction }
-                            ref={ this._saveHistoryRef }
-                        />
-                    </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
-                    {
-                        this.props.resize === 'detect' &&
-                            <ResizeDetector onresize={ this.resizeListener } />
-                    }
+                <div className="wc-wrap">
+                    <div
+                        className={`wc-floating ${/* open ? 'wc-floating__closed' : '' */} `}
+                        onClick={() => {this.toggle(); }}
+                    >
+
+                    </div>
+
+                    <div
+                        className={`wc-chatview-panel ${open ? 'wc-chatview-panel__open' : 'wc-chatview-panel__closed' }`}
+                        onKeyDownCapture={ this._handleKeyDownCapture }
+                        ref={ this._saveChatviewPanelRef }
+                    >
+                        {
+                            !!state.format.chatTitle &&
+                                <div className="wc-header">
+                                    <span>Chat with Gideon</span>
+
+                                    <img
+                                        className="wc-header--close"
+                                        onClick={() => {this.toggle(); }}
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/Screen+Shot+2018-08-30+at+5.55.42+PM.png" />
+                                </div>
+                        }
+                        <MessagePane>
+                            <History
+                                onCardAction={ this._handleCardAction }
+                                ref={ this._saveHistoryRef }
+                            />
+                        </MessagePane>
+                        <Shell ref={ this._saveShellRef } />
+                        {
+                            this.props.resize === 'detect' &&
+                                <ResizeDetector onresize={ this.resizeListener } />
+                        }
+                    </div>
                 </div>
-            </Provider>
+            </Provider >
         );
     }
 }

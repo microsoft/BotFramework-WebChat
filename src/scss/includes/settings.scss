@@ -4,13 +4,15 @@ $consoleHeight: 50px;
 $fontFamily: 'Segoe UI', sans-serif;
 $fontSize: 15px;
 
-$headerPaddingBottom: 0;
-$headerPaddingLeft: 8px;
+$headerPaddingBottom: 15px;
+$headerPaddingLeft: 20px;
 $headerPaddingRight: 8px;
-$headerPaddingTop: 8px;
-$headerTotalHeight: 38px;
+$headerPaddingTop: 23px;
+$headerTotalHeight: 52px;
 
 $actionTransition: .2s cubic-bezier(0,0,.5,1);
+
+$message_font_size: 14px;
 
 $card_narrow: 216px;
 $card_normal: 320px;

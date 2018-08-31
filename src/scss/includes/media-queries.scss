@@ -1,0 +1,70 @@
+$mobile-width: 375px;
+$tablet-width: 720px;
+$desktop-width: 1024px;
+$desktop-width-large: 1700px;
+
+/**
+ * Media Queries
+ */
+
+@mixin smallScreen {
+    @media (max-width: #{$mobile-width}) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: #{$tablet-width}) {
+        @content;
+    }
+}
+
+@mixin mobileAndTablet {
+    @media (max-width: #{$desktop-width}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width}) {
+        @content;
+    }
+}
+
+@mixin tabletAndDesktopAll {
+    @media (min-width: #{$tablet-width}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$desktop-width}) and (max-width: #{$desktop-width-large}) {
+        @content;
+    }
+}
+
+@mixin desktop-large {
+    @media (min-width: #{$desktop-width-large}) {
+        @content;
+    }
+}
+
+@mixin desktop-all {
+    @media (min-width: #{$desktop-width}) {
+        @content;
+    }
+}
+
+@mixin shortScreen {
+    @media (max-height: 520px) {
+        @content;
+    }
+}
+
+// More densities can be found here:
+// https://css-tricks.com/snippets/css/retina-display-media-query/
+@mixin density2x {
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        @content;
+    }
+}
