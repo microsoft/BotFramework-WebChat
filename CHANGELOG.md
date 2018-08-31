@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in PR [#1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
 - Activities are now sorted by timestamp, by [CK Kashyap](https://github.com/ckkashyap) in PR [#1107](https://github.com/Microsoft/BotFramework-WebChat/pull/1107)
 
+### Changed
+- Bump `botframework-directlinejs` to `0.9.17` in PR [#1131](https://github.com/Microsoft/BotFramework-WebChat/pull/1131)
+
 ## [0.14.2] - 2018-08-16
 ### Added
 - Add `disabled` props to disable all controls in PR [#988](https://github.com/Microsoft/BotFramework-WebChat/pull/988)
