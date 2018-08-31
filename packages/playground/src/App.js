@@ -3,6 +3,7 @@ import { connect as createConnectAction, postActivity } from 'backend';
 import { css } from 'glamor';
 import { DirectLine } from 'botframework-directlinejs';
 import BasicWebChat from 'component';
+import classNames from 'classnames';
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
@@ -11,19 +12,41 @@ const ROOT_CSS = css({
   height: '100%',
 
   '& > div.button-bar': {
-    display: 'flex',
+    display      : 'flex',
     flexDirection: 'column',
-    position: 'absolute',
-    right: 0,
-    top: 0,
+    position     : 'absolute',
+    right        : 0,
+    top          : 0,
 
     '& > button': {
       backgroundColor: 'rgba(128, 128, 128, .2)',
-      border: 0,
-      cursor: 'pointer',
-      outline: 0,
-      marginBottom: 10,
-      padding: '5px 10px',
+      border         : 0,
+      cursor         : 'pointer',
+      marginBottom   : 10,
+      outline        : 0,
+      padding        : '5px 10px',
+
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, .2)',
+        color: 'White'
+      }
+    }
+  },
+
+  '& > div.radio':{
+    display        : 'flex',
+    flexDirection  : 'column',
+    left           : 0,
+    position       : 'absolute',
+    top            : 0,
+
+    '& > label': {
+      backgroundColor: 'rgba(128, 128, 128, .2)',
+      border         : 0,
+      cursor         : 'pointer',
+      marginBottom   : 10,
+      outline        : 0,
+      padding        : '5px 10px',
 
       '&:hover': {
         backgroundColor: 'rgba(0, 0, 0, .2)',
@@ -35,17 +58,17 @@ const ROOT_CSS = css({
 
 const WEB_CHAT_CSS = css({
   height: '100%',
-  margin: '0 auto',
-  maxWidth: 768
+  margin: '0 auto'
 });
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handlePostActivity = this.handlePostActivity.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleScreenWidthChange = this.handleScreenWidthChange.bind(this);
+    this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseOfficialMockBotClick = this.handleUseOfficialMockBotClick.bind(this);
 
     // TODO: We should include Markdown-It in our component package
@@ -86,6 +109,7 @@ class App extends React.Component {
 
     this.state = {
       domain,
+      screenWidth: 768,
       secret,
       token,
       webSocket: webSocket === 'true' || +webSocket
@@ -137,6 +161,10 @@ class App extends React.Component {
     this.props.dispatch(postActivity(activity));
   }
 
+  handleScreenWidthChange({ target: { value } }) {
+    this.setState(() => ({ screenWidth: +value }));
+  }
+
   async handleUseOfficialMockBotClick() {
     try {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/token-generate', { method: 'POST' });
@@ -150,7 +178,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
 
     return (
       <div
@@ -159,7 +187,10 @@ class App extends React.Component {
       >
         <BasicWebChat
           activities={ props.activities }
-          className={ WEB_CHAT_CSS }
+          className={ classNames(
+            WEB_CHAT_CSS + '',
+            css({ maxWidth: state.screenWidth }) + ''
+          ) }
           postActivity={ this.handlePostActivity }
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }
@@ -189,6 +220,36 @@ class App extends React.Component {
               Reliable connection
             </label>
           </div>
+        </div>
+        <div className="radio">
+          <label>
+            <input type="radio" checked={ state.screenWidth === 1024 } name="screen-width" value="1024" onChange={ this.handleScreenWidthChange } />
+            1024px iPad Pro 12.9-inch
+          </label>
+          <label>
+            <input type="radio" checked={ state.screenWidth === 834 } name="screen-width" value="834" onChange={ this.handleScreenWidthChange } />
+            834px iPad Pro 10.5-inch
+          </label>
+          <label>
+            <input type="radio" checked={ state.screenWidth === 768 } name="screen-width" value="768" onChange={ this.handleScreenWidthChange } />
+            768px iPad mini
+          </label>
+          <label>
+            <input type="radio" checked={ state.screenWidth === 414 } name="screen-width" value="414" onChange={ this.handleScreenWidthChange } />
+            414px iPhone 6 Plus
+          </label>
+          <label>
+            <input type="radio" checked={ state.screenWidth === 375 } name="screen-width" value="375" onChange={ this.handleScreenWidthChange } />
+            375px iPhone 6
+          </label>
+          <label>
+            <input type="radio" checked={ state.screenWidth === 360 } name="screen-width" value="360" onChange={ this.handleScreenWidthChange } />
+            360px Android
+          </label>
+          <label>
+            <input type="radio" checked={ state.screenWidth === 320 } name="screen-width" value="320" onChange={ this.handleScreenWidthChange } />
+            320px iPhone 5S
+          </label>
         </div>
       </div>
     );
