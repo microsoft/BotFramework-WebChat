@@ -53,6 +53,7 @@
     "@types/react": "15.6.1",
     "@types/react-dom": "15.5.7",
     "@types/react-redux": "5.0.5",
+    "@types/uuid": "^3.4.4",
     "awesome-typescript-loader": "3.1.2",
     "concurrently": "3.1.0",
     "expose-loader": "0.7.3",
@@ -68,6 +69,7 @@
     "tslint": "5.10.0",
     "tslint-loader": "3.6.0",
     "typescript": "2.3",
+    "uuid": "^3.3.2",
     "webpack": "2.3.3"
   },
   "files": [

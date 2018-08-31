@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
+import * as uuid from 'uuid/v5';
 import { getTabIndex } from './getTabIndex';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
@@ -208,7 +209,16 @@ export class Chat extends React.Component<ChatProps, State> {
             window.addEventListener('resize', this.resizeListener);
         }
 
-        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        let user = this.props.user;
+
+        // Generate random user ID if there is none
+        if (!user) {
+            user = {
+                id: uuid(window.location.href, uuid.URL)
+            };
+        }
+
+        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
                 if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
@@ -438,9 +448,6 @@ const INPUTTABLE_KEY: { [key: string]: string } = {
     Decimal: '.',  // Numpad decimal key
     Divide: '/',   // Numpad divide key
     Multiply: '*', // Numpad multiply key
-    Subtract: '-'  // Numpad subtract key
-};
-
-function inputtableKey(key: string) {
+    Subtract: '-'  // Numpad tableKey(key: string) {
     return key.length === 1 ? key : INPUTTABLE_KEY[key];
-}
+};
