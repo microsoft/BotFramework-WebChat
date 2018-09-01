@@ -7,6 +7,7 @@ import { withStyleSet } from '../Context';
 
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import Context from '../Context';
 
 const IDLE = 0;
 const STARTING = 1;
@@ -65,32 +66,36 @@ class MicrophoneButton extends React.Component {
 
   render() {
     const {
-      props: { disabled, styleSet },
+      props: { disabled },
       state: { readyState }
     } = this;
 
     return (
-      <DictateComposer
-        onDictate={ this.handleDictate }
-        onError={ this.handleError }
-        onProgress={ this.handleDictating }
-        speechRecognition={ window.SpeechRecognition || window.webkitSpeechRecognition }
-        speechGrammarList={ window.SpeechGrammarList || window.webkitSpeechGrammarList }
-        started={ !disabled && (readyState === STARTING || readyState === DICTATING) }
-      >
-        { () =>
-          <IconButton
-            className={ classNames(
-              styleSet.microphoneButton + '',
-              { dictating: readyState === DICTATING }
-            ) }
-            disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }
-            onClick={ this.handleClick }
+      <Context.Consumer>
+        { ({ styleSet, webSpeechPolyfill }) =>
+          <DictateComposer
+            onDictate={ this.handleDictate }
+            onError={ this.handleError }
+            onProgress={ this.handleDictating }
+            speechRecognition={ webSpeechPolyfill.SpeechRecognition }
+            speechGrammarList={ webSpeechPolyfill.SpeechGrammarList }
+            started={ !disabled && (readyState === STARTING || readyState === DICTATING) }
           >
-            <MicrophoneIcon />
-          </IconButton>
+            { () =>
+              <IconButton
+                className={ classNames(
+                  styleSet.microphoneButton + '',
+                  { dictating: readyState === DICTATING }
+                ) }
+                disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }
+                onClick={ this.handleClick }
+              >
+                <MicrophoneIcon />
+              </IconButton>
+            }
+          </DictateComposer>
         }
-      </DictateComposer>
+      </Context.Consumer>
     );
   }
 }

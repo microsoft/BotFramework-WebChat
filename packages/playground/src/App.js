@@ -6,7 +6,12 @@ import BasicWebChat from 'component';
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
-import { speechSynthesis, SpeechSynthesisUtterance } from 'web-speech-cognitive-services';
+import {
+  SpeechRecognition,
+  SpeechGrammarList,
+  speechSynthesis,
+  SpeechSynthesisUtterance
+} from 'web-speech-cognitive-services';
 
 const ROOT_CSS = css({
   height: '100%',
@@ -87,15 +92,23 @@ class App extends React.Component {
     let webSpeechPolyfill;
 
     if (speechToken) {
-      speechSynthesis.speechToken = { value: speechToken };
+      speechSynthesis.speechToken = {
+        authorized: Promise.resolve(speechToken),
+        value: speechToken
+      };
+
       webSpeechPolyfill = {
+        SpeechGrammarList,
+        SpeechRecognition,
         speechSynthesis,
         SpeechSynthesisUtterance
       };
     } else {
       webSpeechPolyfill = {
-        speechSynthesis: window.speechSynthesis,
-        SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
+        SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
+        SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
+        speechSynthesis: window.speechSynthesis || window.webkitSpeechSynthese,
+        SpeechSynthesisUtterance: window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance
       };
     }
 
