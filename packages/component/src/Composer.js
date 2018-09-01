@@ -13,6 +13,12 @@ import mapMap from './Utils/mapMap';
 // Flywheel object
 const EMPTY_ARRAY = [];
 const NULL_FUNCTION = () => 0;
+const WEB_SPEECH_POLYFILL = {
+  SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
+  SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
+  SpeechSynthesis: window.SpeechSynthesis,
+  SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
+};
 
 function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
@@ -209,6 +215,7 @@ export default class Composer extends React.Component {
         renderMarkdown,
         scrollToBottom,
         suggestedActions,
+        webSpeechPolyfill,
         ...propsForLogic
       },
       state
@@ -227,7 +234,8 @@ export default class Composer extends React.Component {
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
-        suggestedActions: suggestedActions || EMPTY_ARRAY
+        suggestedActions: suggestedActions || EMPTY_ARRAY,
+        webSpeechPolyfill: webSpeechPolyfill || WEB_SPEECH_POLYFILL
       }
     );
 

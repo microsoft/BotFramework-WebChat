@@ -6,6 +6,7 @@ import BasicWebChat from 'component';
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
+import { speechSynthesis, SpeechSynthesisUtterance } from 'web-speech-cognitive-services';
 
 const ROOT_CSS = css({
   height: '100%',
@@ -79,27 +80,40 @@ class App extends React.Component {
     this.mainRef = React.createRef();
 
     const params = new URLSearchParams(window.location.search);
+    const directLineToken = params.get('t');
     const domain = params.get('domain');
-    const secret = params.get('s');
-    const token = params.get('t');
+    const speechToken = params.get('s');
     const webSocket = params.get('websocket');
+    let webSpeechPolyfill;
+
+    if (speechToken) {
+      speechSynthesis.speechToken = { value: speechToken };
+      webSpeechPolyfill = {
+        speechSynthesis,
+        SpeechSynthesisUtterance
+      };
+    } else {
+      webSpeechPolyfill = {
+        speechSynthesis: window.speechSynthesis,
+        SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
+      };
+    }
 
     this.state = {
       domain,
-      secret,
-      token,
-      webSocket: webSocket === 'true' || +webSocket
+      directLineToken,
+      webSocket: webSocket === 'true' || +webSocket,
+      webSpeechPolyfill
     };
   }
 
   componentDidMount() {
-    const { state: { domain, secret, token, webSocket } } = this;
+    const { state: { domain, directLineToken: token, webSocket } } = this;
 
     this.props.dispatch(createConnectAction({
       directLine: new DirectLine({
         domain,
         fetch,
-        secret,
         token,
         webSocket,
         createFormData: attachments => {
@@ -139,18 +153,21 @@ class App extends React.Component {
 
   async handleUseOfficialMockBotClick() {
     try {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/token-generate', { method: 'POST' });
-      const { token } = await res.json();
+      const [directLineToken, speechToken] = await Promise.all([
+        fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
+        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
+      ]);
 
       window.sessionStorage.removeItem('REDUX_STORE');
-      window.location.href = `?t=${ encodeURIComponent(token) }&websocket=true`;
+      window.location.href = `?t=${ encodeURIComponent(directLineToken) }&s=${ encodeURIComponent(speechToken) }&websocket=true`;
     } catch (err) {
+      console.log(err);
       alert('Failed to get Direct Line token for official MockBot');
     }
   }
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
 
     return (
       <div
@@ -160,9 +177,12 @@ class App extends React.Component {
         <BasicWebChat
           activities={ props.activities }
           className={ WEB_CHAT_CSS }
+          onBotActivity
+          onUserActivity
           postActivity={ this.handlePostActivity }
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }
+          webSpeechPolyfill={ state.webSpeechPolyfill }
         />
         <div className="button-bar">
           <button
