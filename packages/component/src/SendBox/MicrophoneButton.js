@@ -74,6 +74,7 @@ class MicrophoneButton extends React.Component {
       <Context.Consumer>
         { ({ styleSet, webSpeechPolyfill }) =>
           <DictateComposer
+            extra={ webSpeechPolyfill.extra }
             onDictate={ this.handleDictate }
             onError={ this.handleError }
             onProgress={ this.handleDictating }

@@ -87,17 +87,17 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
     const domain = params.get('domain');
-    const speechToken = params.get('s');
+    const speechTokenParam = params.get('s');
     const webSocket = params.get('websocket');
     let webSpeechPolyfill;
 
-    if (speechToken) {
-      speechSynthesis.speechToken = {
-        authorized: Promise.resolve(speechToken),
-        value: speechToken
+    if (speechTokenParam) {
+      const speechToken = {
+        authorized: Promise.resolve(speechTokenParam)
       };
 
       webSpeechPolyfill = {
+        extra: { speechToken },
         SpeechGrammarList,
         SpeechRecognition,
         speechSynthesis,
@@ -105,10 +105,10 @@ class App extends React.Component {
       };
     } else {
       webSpeechPolyfill = {
-        SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
-        SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
-        speechSynthesis: window.speechSynthesis || window.webkitSpeechSynthese,
-        SpeechSynthesisUtterance: window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance
+        SpeechGrammarList: window.SpeechGrammarList,
+        SpeechRecognition: window.SpeechRecognition,
+        speechSynthesis: window.speechSynthesis,
+        SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
       };
     }
 
