@@ -22,6 +22,7 @@ class TextBoxWithSpeech extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleDictate = this.handleDictate.bind(this);
     this.handleDictateClick = this.handleDictateClick.bind(this);
     this.handleDictateError = this.handleDictateError.bind(this);
     this.handleDictating = this.handleDictating.bind(this);
@@ -33,6 +34,19 @@ class TextBoxWithSpeech extends React.Component {
     };
   }
 
+  handleDictate({ transcript }) {
+    const { props } = this;
+
+    if (transcript) {
+      props.sendMessage(transcript);
+      props.onSendBoxChange('');
+    }
+
+    props.sendTyping(false);
+
+    this.setState(() => ({ dictateState: IDLE }));
+  }
+
   handleDictateClick() {
     this.setState(() => ({
       dictateState: STARTING
@@ -40,6 +54,10 @@ class TextBoxWithSpeech extends React.Component {
   }
 
   handleDictateError() {
+    const { props } = this;
+
+    props.sendTyping(false);
+
     this.setState(() => ({
       dictateState: IDLE,
       interims: []
@@ -47,7 +65,10 @@ class TextBoxWithSpeech extends React.Component {
   }
 
   handleDictating({ interims }) {
-    this.props.sendTyping();
+    const { props } = this;
+
+    props.scrollToBottom();
+    props.sendTyping();
 
     this.setState(() => ({
       dictateState: DICTATING,
@@ -116,14 +137,7 @@ class TextBoxWithSpeech extends React.Component {
             <MicrophoneButton
               disabled={ props.disabled }
               onClick={ this.handleDictateClick }
-              onDictate={ ({ transcript }) => {
-                props.scrollToBottom();
-                props.sendMessage(transcript);
-                props.onSendBoxChange('');
-                props.sendTyping(false);
-
-                this.setState(() => ({ dictateState: IDLE }));
-              } }
+              onDictate={ this.handleDictate }
               onDictateClick={ this.handleDictateClick }
               onDictating={ this.handleDictating }
               onError={ this.handleDictateError }
