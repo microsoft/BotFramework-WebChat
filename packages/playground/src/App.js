@@ -7,11 +7,11 @@ import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
 import {
-  SpeechRecognition,
   SpeechGrammarList,
   speechSynthesis,
   SpeechSynthesisUtterance
 } from 'web-speech-cognitive-services';
+import createSpeechRecognitionWithSpeechTokenClass from './SpeechRecognitionWithSpeechToken';
 
 const ROOT_CSS = css({
   height: '100%',
@@ -92,14 +92,11 @@ class App extends React.Component {
     let webSpeechPolyfill;
 
     if (speechTokenParam) {
-      const speechToken = {
-        authorized: Promise.resolve(speechTokenParam)
-      };
-
       webSpeechPolyfill = {
-        extra: { speechToken },
         SpeechGrammarList,
-        SpeechRecognition,
+        SpeechRecognition: createSpeechRecognitionWithSpeechTokenClass({
+          authorized: Promise.resolve(speechTokenParam)
+        }),
         speechSynthesis,
         SpeechSynthesisUtterance
       };
