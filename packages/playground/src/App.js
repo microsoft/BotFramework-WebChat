@@ -87,15 +87,15 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
     const domain = params.get('domain');
-    const speechTokenParam = params.get('s');
     const webSocket = params.get('websocket');
+    const speech = params.get('speech');
     let webSpeechPolyfill;
 
-    if (speechTokenParam) {
+    if (speech === 'cs') {
       webSpeechPolyfill = {
         SpeechGrammarList,
         SpeechRecognition: createSpeechRecognitionWithSpeechTokenClass({
-          authorized: Promise.resolve(speechTokenParam)
+          authorized: fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
         }),
         speechSynthesis,
         SpeechSynthesisUtterance
@@ -163,13 +163,16 @@ class App extends React.Component {
 
   async handleUseOfficialMockBotClick() {
     try {
-      const [directLineToken, speechToken] = await Promise.all([
-        fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
-      ]);
+      const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+
+      if (directLineTokenRes.status !== 200) {
+        throw new Error(`Server returned ${ directLineTokenRes.status } while requesting for Direct Line token`);
+      }
+
+      const { token } = await directLineTokenRes.json();
 
       window.sessionStorage.removeItem('REDUX_STORE');
-      window.location.href = `?t=${ encodeURIComponent(directLineToken) }&s=${ encodeURIComponent(speechToken) }&websocket=true`;
+      window.location.href = `?speech=cs&websocket=true&t=${ encodeURIComponent(token) }`;
     } catch (err) {
       console.log(err);
       alert('Failed to get Direct Line token for official MockBot');
