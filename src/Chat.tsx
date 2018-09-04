@@ -297,7 +297,7 @@ export class Chat extends React.Component<ChatProps, State> {
             <Provider store={ this.store }>
                 <div className="wc-wrap">
                     <div
-                        className={`wc-floating ${/* open ? 'wc-floating__closed' : '' */} `}
+                        className={`wc-floating`}
                         onClick={() => {this.toggle(); }}
                     >
 
