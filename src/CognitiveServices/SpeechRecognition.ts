@@ -18,6 +18,7 @@ export interface ICognitiveServicesSpeechRecognizerProperties {
     subscriptionKey?: string;
     fetchCallback?: (authFetchEventId: string) => Promise<string>;
     fetchOnExpiryCallback?: (authFetchEventId: string) => Promise<string>;
+    resultForm?: string;
 }
 
 export class SpeechRecognizer implements Speech.ISpeechRecognizer {
@@ -37,8 +38,11 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
     constructor(properties: ICognitiveServicesSpeechRecognizerProperties = {}) {
         this.properties = properties;
         const recognitionMode = CognitiveSpeech.RecognitionMode.Interactive;
-        const format = CognitiveSpeech.SpeechResultFormat.Simple;
         const locale = properties.locale || 'en-US';
+        const resultForm = properties.resultForm || 'ITN';
+
+        // Cognitive Speech's Simple mode returns ITN form. For any of the other forms (e.g. Lexical, MaskedITN), we need to use Detailed format.
+        const format = resultForm === 'ITN' ? CognitiveSpeech.SpeechResultFormat.Simple : CognitiveSpeech.SpeechResultFormat.Detailed;
 
         const recognizerConfig = new CognitiveSpeech.RecognizerConfig(
             new CognitiveSpeech.SpeechConfig(
@@ -48,7 +52,7 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
             recognitionMode,        // Speech.RecognitionMode.Interactive  (Options - Interactive/Conversation/Dictation>)
             locale,                 // Supported laguages are specific to each recognition mode. Refer to docs.
             format
-        );                // Speech.SpeechResultFormat.Simple (Options - Simple/Detailed)
+        );
 
         let authentication;
         if (properties.subscriptionKey) {
@@ -106,7 +110,6 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                 case 'ListeningStartedEvent':
                 case 'SpeechStartDetectedEvent':
                 case 'SpeechEndDetectedEvent':
-                case 'SpeechDetailedPhraseEvent':
                 case 'ConnectingToServiceEvent':
                     break;
                 case 'RecognitionStartedEvent':
@@ -127,6 +130,34 @@ export class SpeechRecognizer implements Speech.ISpeechRecognizer {
                     if (CognitiveSpeech.RecognitionStatus[simplePhraseEvent.Result.RecognitionStatus] as any === CognitiveSpeech.RecognitionStatus.Success) {
                         if (this.onFinalResult) {
                             this.onFinalResult(simplePhraseEvent.Result.DisplayText);
+                        }
+                    } else {
+                        if (this.onRecognitionFailed) {
+                            this.onRecognitionFailed();
+                        }
+                        this.log('Recognition Status: ' + simplePhraseEvent.Result.RecognitionStatus.toString());
+                    }
+                    break;
+                case 'SpeechDetailedPhraseEvent':
+                    const detailedPhraseEvent = event as CognitiveSpeech.SpeechDetailedPhraseEvent;
+                    if (CognitiveSpeech.RecognitionStatus[detailedPhraseEvent.Result.RecognitionStatus] as any === CognitiveSpeech.RecognitionStatus.Success) {
+                        if (this.onFinalResult) {
+                            switch (this.properties.resultForm) {
+                                case 'Display':
+                                    this.onFinalResult(detailedPhraseEvent.Result.NBest[0].Display);
+                                    break;
+                                case 'ITN':
+                                    this.onFinalResult(detailedPhraseEvent.Result.NBest[0].ITN);
+                                    break;
+                                case 'Lexical':
+                                    this.onFinalResult(detailedPhraseEvent.Result.NBest[0].Lexical);
+                                    break;
+                                case 'MaskedITN':
+                                    this.onFinalResult(detailedPhraseEvent.Result.NBest[0].MaskedITN);
+                                    break;
+                                default:
+                                    throw new Error(`Error: ${this.properties.resultForm} is not a valid resultForm. Valid forms are 'Display', 'ITN', 'Lexical' and 'MaskedITN'`);
+                            }
                         }
                     } else {
                         if (this.onRecognitionFailed) {
