@@ -20,6 +20,18 @@ const WEB_SPEECH_POLYFILL = {
   SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
 };
 
+const DEFAULT_USER_ID = 'default-user';
+
+function findLastIndex(array, predicate) {
+  for (let index = array.length - 1; index >= 0; index--) {
+    if (predicate.call(array, array[index])) {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
 function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
 }
@@ -44,7 +56,9 @@ function createLogic(props) {
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
   const postActivity = props.postActivity || (() => { throw new Error('"postActivity" is not specified in props'); });
   const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
-  const userID = props.userID || 'default-user';
+
+  // TODO: We should normalize props (fill-in-the-blank) before hitting this line
+  const userID = props.userID || DEFAULT_USER_ID;
 
   const focusSendBox = props.focusSendBox || (() => {
     const { current } = props.sendBoxRef || {};
@@ -194,14 +208,57 @@ export default class Composer extends React.Component {
     this.state = {
       // This is for uncontrolled component
       context: {
-        onSendBoxChange: nextValue => {
-          this.setState(({ context }) => ({
-            context: updateIn(context, ['sendBoxValue'], () => nextValue)
-          }));
-        },
-        sendBoxValue: ''
+        lastSpokenTime: Infinity,
+        markAsSpoken: this.markAsSpoken.bind(this),
+        onSendBoxChange: this.handleSendBoxChange.bind(this),
+        sendBoxValue: '',
+        startSpeaking: this.startSpeaking.bind(this),
+        stopSpeaking: this.stopSpeaking.bind(this)
       }
     };
+  }
+
+  handleSendBoxChange(nextValue) {
+    this.setState(({ context }) => ({
+      context: updateIn(context, ['sendBoxValue'], () => nextValue)
+    }));
+  }
+
+  markAsSpoken(activity) {
+    activity && this.setState(({ context }) => {
+      return { context: {
+        ...context,
+        lastSpokenTime: new Date(activity.timestamp).getTime()
+      } };
+    });
+  }
+
+  startSpeaking() {
+    this.setState(({ context }) => {
+      const { activities, userID = DEFAULT_USER_ID } = this.props;
+      const lastActivityIndex = findLastIndex(activities, ({ from: { id }, type }) => id !== userID && type === 'message');
+
+      if (~lastActivityIndex) {
+        const lastActivity = activities[lastActivityIndex];
+
+        return { context: {
+          ...context,
+          lastSpokenTime: new Date(lastActivity.timestamp).getTime()
+        } };
+      } else {
+        return { context: {
+          ...context,
+          lastSpokenTime: 0
+        } };
+      }
+    });
+  }
+
+  stopSpeaking() {
+    this.setState(({ context }) => ({ context: {
+      ...context,
+      lastSpokenTime: Infinity
+    } }));
   }
 
   render() {

@@ -92,11 +92,14 @@ class App extends React.Component {
     let webSpeechPolyfill;
 
     if (speech === 'cs') {
+      const token = {
+        authorized: fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
+      };
+
+      speechSynthesis.speechToken = token;
       webSpeechPolyfill = {
         SpeechGrammarList,
-        SpeechRecognition: createSpeechRecognitionWithSpeechTokenClass({
-          authorized: fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
-        }),
+        SpeechRecognition: createSpeechRecognitionWithSpeechTokenClass(token),
         speechSynthesis,
         SpeechSynthesisUtterance
       };

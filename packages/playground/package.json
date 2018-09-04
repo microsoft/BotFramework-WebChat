@@ -21,7 +21,7 @@
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
     "simple-update-in": "^1.3.0",
-    "web-speech-cognitive-services": "2.1.1-master.988e54d"
+    "web-speech-cognitive-services": "2.1.1-master.0f7758b"
   },
   "scripts": {
     "start": "react-scripts start",

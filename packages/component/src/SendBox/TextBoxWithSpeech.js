@@ -43,6 +43,7 @@ class TextBoxWithSpeech extends React.Component {
     }
 
     props.sendTyping(false);
+    props.startSpeaking();
 
     this.setState(() => ({ dictateState: IDLE }));
   }
@@ -89,6 +90,7 @@ class TextBoxWithSpeech extends React.Component {
       props.sendMessage(sendBoxValue);
       props.onSendBoxChange('');
       props.sendTyping(false);
+      props.stopSpeaking();
     }
   }
 
@@ -174,6 +176,8 @@ export default ({
         sendBoxValue,
         sendMessage,
         sendTyping,
+        startSpeaking,
+        stopSpeaking,
         styleSet
       }) =>
         <TextBoxWithSpeech
@@ -185,6 +189,8 @@ export default ({
           sendMessage={ sendMessage }
           sendTyping={ sendTyping }
           speech={ speech }
+          startSpeaking={ startSpeaking }
+          stopSpeaking={ stopSpeaking }
           styleSet={ styleSet }
         />
     }

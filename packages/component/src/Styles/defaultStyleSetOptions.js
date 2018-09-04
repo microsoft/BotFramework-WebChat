@@ -13,7 +13,10 @@ const DEFAULT_OPTIONS = {
   scrollToBottomThreshold: 40,
   sendBoxHeight: 50,
 
-  timestampColor: 'rgba(0, 0, 0, .2)'
+  // Visually show spoken text
+  showSpokenText: false,
+
+  timestampColor: 'rgba(0, 0, 0, .2)',
 };
 
 export default DEFAULT_OPTIONS
