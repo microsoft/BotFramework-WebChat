@@ -31,7 +31,7 @@ export interface ChatProps {
     resize?: 'none' | 'window' | 'detect';
 }
 
-interface ChatState {
+export interface State {
     open: boolean;
 }
 
@@ -39,7 +39,7 @@ import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
 
-export class Chat extends React.Component<ChatProps, ChatState> {
+export class Chat extends React.Component<ChatProps, State> {
 
     state = {
         open: false
