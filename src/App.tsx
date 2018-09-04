@@ -10,7 +10,11 @@ export const App = (props: AppProps, container: HTMLElement) => {
     ReactDOM.render(React.createElement(AppContainer, props), container);
 };
 
-const AppContainer = (props: AppProps) =>
-    <div className="wc-app">
-        <Chat { ...props } />
-    </div>;
+const AppContainer = (props: AppProps) => {
+
+    return (
+        <div className="wc-app">
+            <Chat { ...props } />
+        </div>
+    );
+};
