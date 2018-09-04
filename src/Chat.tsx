@@ -28,7 +28,8 @@ export interface ChatProps {
     showUploadButton?: boolean,
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect',
-    userData?: {}
+    userData?: {},
+    startOverTrigger?: (trigger: () => void) => void
 }
 
 import { History } from './History';
@@ -215,6 +216,12 @@ export class Chat extends React.Component<ChatProps, {}> {
         // FEEDYOU - show typing on startup - if bot.id is set to the same value as value on server, it will be cleared by first message
         this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: this.props.bot, timestamp: new Date().toISOString()}});
 
+        // FEEDYOU - support "start over" button
+        this.props.startOverTrigger && this.props.startOverTrigger(() => {
+            console.log('starting over')
+            sendPostBack(botConnection, "start over", {}, this.props.user, this.props.locale)
+        })
+        
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
         botConnection.postActivity({

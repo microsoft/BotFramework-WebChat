@@ -7,6 +7,7 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
   * send backchannel event on startup which could be used instead of `conversationUpdate` event
   * ability to pass some `userData` to bot using backchannel mechanism's `channelData` prop
   * preset some default values in `<App>` component - for example generate `user.id` if not set
+  * support custom button click trigger for restarting conversation (`startOverTrigger` prop)
 
 ## How to add Web Chat to your website
 
