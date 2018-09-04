@@ -448,6 +448,9 @@ const INPUTTABLE_KEY: { [key: string]: string } = {
     Decimal: '.',  // Numpad decimal key
     Divide: '/',   // Numpad divide key
     Multiply: '*', // Numpad multiply key
-    Subtract: '-'  // Numpad tableKey(key: string) {
-    return key.length === 1 ? key : INPUTTABLE_KEY[key];
+    Subtract: '-'  // Numpad subtract key
 };
+
+function inputtableKey(key: string) {
+    return key.length === 1 ? key : INPUTTABLE_KEY[key];
+}
