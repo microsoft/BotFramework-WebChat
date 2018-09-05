@@ -5,6 +5,7 @@ import connectSaga from './sagas/connectSaga';
 import incomingActivitySaga from './sagas/incomingActivitySaga';
 import incomingTypingSaga from './sagas/incomingTypingSaga';
 import postActivitySaga from './sagas/postActivitySaga';
+import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga';
 import speakActivitySaga from './sagas/speakActivitySaga';
 import startSpeechInputAfterSpeakActivitySaga from './sagas/startSpeechInputAfterSpeakActivitySaga';
 import stopSpeakActivityOnSpeechInputSaga from './sagas/stopSpeakActivityOnSpeechInputSaga';
@@ -16,6 +17,7 @@ export default function* () {
   yield fork(incomingActivitySaga);
   yield fork(incomingTypingSaga);
   yield fork(postActivitySaga);
+  yield fork(sendMessageToPostActivitySaga);
   yield fork(speakActivitySaga);
   yield fork(startSpeechInputAfterSpeakActivitySaga);
   yield fork(stopSpeakActivityOnSpeechInputSaga);

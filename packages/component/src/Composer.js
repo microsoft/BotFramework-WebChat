@@ -3,10 +3,10 @@ import { css } from 'glamor';
 import * as AdaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
 import React from 'react';
-import updateIn from 'simple-update-in';
 
 import {
   markActivity,
+  sendMessage,
   setLanguage,
   setSendBox,
   startSpeakingActivity,
@@ -36,6 +36,7 @@ const DEFAULT_USER_ID = 'default-user';
 
 const DISPATCHERS = {
   markActivity,
+  sendMessage,
   setSendBox,
   startSpeakingActivity,
   startSpeechInput,
@@ -92,7 +93,18 @@ function createLogic(props) {
     switch (type) {
       case 'imBack':
         if (typeof value === 'string') {
-          sendMessage(value);
+          // TODO: Should move to Redux action dispatchers instead
+          postActivity({
+            from: {
+              id: userID,
+              role: 'user'
+            },
+            locale: lang,
+            text: value,
+            textFormat: 'plain',
+            timestamp: (new Date()).toISOString(),
+            type: 'message'
+          })
         } else {
           throw new Error('cannot send "imBack" with a non-string value');
         }
@@ -157,18 +169,6 @@ function createLogic(props) {
     type: 'message'
   }));
 
-  const sendMessage = props.sendMessage || (text => props.postActivity({
-    from: {
-      id: userID,
-      role: 'user'
-    },
-    locale: lang,
-    text,
-    textFormat: 'plain',
-    timestamp: (new Date()).toISOString(),
-    type: 'message'
-  }));
-
   // Debounce will call a function later
   // But we need to find a way to stop debouncing, e.g.
   // 1. User type "A", then "B", then "C"
@@ -197,7 +197,6 @@ function createLogic(props) {
     onCardAction,
     postActivity,
     sendFiles,
-    sendMessage,
     sendTyping,
     styleSet,
     userID
