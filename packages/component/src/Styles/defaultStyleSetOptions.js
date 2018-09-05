@@ -14,7 +14,7 @@ const DEFAULT_OPTIONS = {
   sendBoxHeight: 50,
 
   // Visually show spoken text
-  showSpokenText: true,
+  showSpokenText: false,
 
   timestampColor: 'rgba(0, 0, 0, .2)',
 };

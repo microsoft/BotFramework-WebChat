@@ -6,6 +6,7 @@ import React from 'react';
 import updateIn from 'simple-update-in';
 
 import {
+  markActivity,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
@@ -31,6 +32,7 @@ const WEB_SPEECH_POLYFILL = {
 const DEFAULT_USER_ID = 'default-user';
 
 const DISPATCHERS = {
+  markActivity,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
@@ -221,10 +223,9 @@ class Composer extends React.Component {
       shallowEquals
     );
 
-    const createActionAndDispatch = (actionFactory, args) => this.props.dispatch(actionFactory.apply(this, args));
     const hoistedDispatchers = Object.keys(DISPATCHERS).reduce((hoistedDispatchers, name) => ({
       ...hoistedDispatchers,
-      [name]: createActionAndDispatch.bind(this, DISPATCHERS[name])
+      [name]: (...args) => this.props.dispatch(DISPATCHERS[name].apply(this, args))
     }), {});
 
     this.state = {
@@ -240,7 +241,7 @@ class Composer extends React.Component {
   }
 
   handleSendBoxChange(nextValue) {
-    this.nextSpeechState(({ context }) => ({
+    this.setState(({ context }) => ({
       context: updateIn(context, ['sendBoxValue'], () => nextValue)
     }));
   }

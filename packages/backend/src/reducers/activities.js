@@ -56,8 +56,6 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case MARK_ACTIVITY:
-      console.log(`MARK_ACTIVITY`);
-      console.log(payload);
       state = updateIn(state, [({ id }) => id === payload.activityID, 'channelData', payload.name], () => payload.value);
       break;
 

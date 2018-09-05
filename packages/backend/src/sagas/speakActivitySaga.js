@@ -5,6 +5,7 @@ import {
   take
 } from 'redux-saga/effects';
 
+import speakableActivity from './definition/speakableActivity';
 import whileConnected from './effects/whileConnected';
 
 import { START_SPEAKING_ACTIVITY } from '../Actions/startSpeakingActivity';
@@ -16,22 +17,19 @@ export default function* () {
   yield whileConnected(function* (_, userID) {
     yield take(START_SPEAKING_ACTIVITY);
 
-    const task = yield fork(markActivityForSpeak, userID);
+    const task = yield fork(markActivityForSpeakSaga, userID);
 
     yield take(STOP_SPEAKING_ACTIVITY);
     yield cancel(task);
   });
 }
 
-function* markActivityForSpeak(userID) {
+function* markActivityForSpeakSaga(userID) {
   for (;;) {
     const { payload: { activity } } = yield take(
       ({ payload: { activity } = {}, type }) =>
         type === UPSERT_ACTIVITY
-        && activity
-        && activity.from
-        && activity.from.id !== userID
-        && activity.type === 'message'
+        && speakableActivity(activity, userID)
     );
 
     yield put(markActivity(activity, 'speak', true));

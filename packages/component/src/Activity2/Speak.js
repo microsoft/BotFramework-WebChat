@@ -3,9 +3,6 @@ import React from 'react';
 import SayAlt from './SayAlt';
 import Say from 'react-say';
 
-// TODO: Consider moving backend action to composer
-import { markActivity } from 'backend';
-
 import Context from '../Context';
 
 // TODO: Consider moving this feature into BasicActivity
@@ -19,7 +16,9 @@ class SpeakActivity extends React.Component {
   }
 
   handleEnd() {
-    this.props.dispatch(markActivity(this.props.activity, 'speak', false));
+    const { props } = this;
+
+    props.markActivity(props.activity, 'speak', false);
   }
 
   selectVoice(voices) {
@@ -34,7 +33,7 @@ class SpeakActivity extends React.Component {
   }
 
   render() {
-    const { activity, speechSynthesis, speechSynthesisUtterance } = this.props;
+    const { activity } = this.props;
 
     if (!activity) {
       return false;
@@ -87,11 +86,11 @@ class SpeakActivity extends React.Component {
 
 export default connect(() => ({}))(({ activity, dispatch }) =>
   <Context.Consumer>
-    { ({ markAsSpoken, styleSet, webSpeechPolyfill: { speechSynthesis, SpeechSynthesisUtterance } }) =>
+    { ({ markActivity, styleSet, webSpeechPolyfill: { speechSynthesis, SpeechSynthesisUtterance } }) =>
       <SpeakActivity
         activity={ activity }
         dispatch={ dispatch }
-        markAsSpoken={ markAsSpoken }
+        markActivity={ markActivity }
         speechSynthesis={ speechSynthesis }
         speechSynthesisUtterance={ SpeechSynthesisUtterance }
         styleSet={ styleSet }
