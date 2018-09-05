@@ -1,7 +1,8 @@
 import React from 'react';
 
-export default () =>
+export default ({ className }) =>
   <svg
+    className={ (className || '') + '' }
     height="22"
     viewBox="0 0 58 58"
     width="28"

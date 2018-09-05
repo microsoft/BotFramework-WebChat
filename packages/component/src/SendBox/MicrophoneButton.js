@@ -1,5 +1,6 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
 import { connect } from 'react-redux';
+import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -12,6 +13,14 @@ const IDLE = 0;
 const STARTING = 1;
 const DICTATING = 2;
 const STOPPING = 3;
+
+const ROOT_CSS = css({
+  display: 'flex',
+
+  '& > .dictation': {
+    flex: 1
+  }
+});
 
 class MicrophoneButton extends React.Component {
   constructor(props) {
@@ -65,6 +74,7 @@ class MicrophoneButton extends React.Component {
     const { props } = this;
 
     this.setState(() => ({
+      interims: [],
       readyState: IDLE
     }));
 
@@ -82,11 +92,11 @@ class MicrophoneButton extends React.Component {
     const interims = results.map(({ transcript }) => transcript);
 
     this.setState(() => ({
+      interims,
       readyState: DICTATING
     }));
 
     props.sendTyping();
-    props.onDictating && props.onDictating({ interims });
   }
 
   handleError(event) {
@@ -103,47 +113,53 @@ class MicrophoneButton extends React.Component {
 
   render() {
     const {
-      props: { disabled },
-      state: { readyState }
+      props: { className, disabled, speechState, styleSet, webSpeechPolyfill },
+      state: { interims, readyState }
     } = this;
 
+    // TODO: After speech started, when clicking on the transcript, it should
+    //       stop the dictation and allow the user to type-correct the transcript
+
     return (
-      <Context.Consumer>
-        { ({ styleSet, webSpeechPolyfill }) =>
-          <DictateComposer
-            extra={ webSpeechPolyfill.extra }
-            onDictate={ this.handleDictate }
-            onError={ this.handleError }
-            onProgress={ this.handleDictating }
-            speechRecognition={ webSpeechPolyfill.SpeechRecognition }
-            speechGrammarList={ webSpeechPolyfill.SpeechGrammarList }
-            started={ !disabled && (readyState === STARTING || readyState === DICTATING) }
-          >
-            { () =>
-              <IconButton
-                className={ classNames(
-                  styleSet.microphoneButton + '',
-                  { dictating: readyState === DICTATING }
-                ) }
-                disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }
-                onClick={ this.handleClick }
-              >
-                <MicrophoneIcon />
-              </IconButton>
-            }
-          </DictateComposer>
+      <DictateComposer
+        extra={ webSpeechPolyfill.extra }
+        onDictate={ this.handleDictate }
+        onError={ this.handleError }
+        onProgress={ this.handleDictating }
+        speechRecognition={ webSpeechPolyfill.SpeechRecognition }
+        speechGrammarList={ webSpeechPolyfill.SpeechGrammarList }
+        started={ !disabled && (readyState === STARTING || readyState === DICTATING) }
+      >
+        { () =>
+          <div className={ classNames(
+            styleSet.microphoneButton + '',
+            ROOT_CSS + '',
+            (className || '') + '',
+            { dictating: readyState === DICTATING }
+          ) }>
+            { !!speechState && (
+                interims.length ?
+                  <p className="dictation interims">
+                    { interims.map((interim, index) => <span key={ index }>{ interim }</span>) }
+                  </p>
+                :
+                  <p className="dictation status">Listening&hellip;</p>
+            ) }
+            <IconButton
+              disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }
+              onClick={ this.handleClick }
+            >
+              <MicrophoneIcon />
+            </IconButton>
+          </div>
         }
-      </Context.Consumer>
+      </DictateComposer>
     );
   }
 }
 
 MicrophoneButton.propTypes = {
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func,
-  onDictating: PropTypes.func,
-  onDictate: PropTypes.func,
-  onError: PropTypes.func
+  disabled: PropTypes.bool
 };
 
 export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
@@ -154,7 +170,8 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(props 
         startSpeakingActivity,
         startSpeechInput,
         stopSpeechInput,
-        styleSet
+        styleSet,
+        webSpeechPolyfill
       }) =>
       <MicrophoneButton
         { ...props }
@@ -164,6 +181,7 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(props 
         startSpeechInput={ startSpeechInput }
         stopSpeechInput={ stopSpeechInput }
         styleSet={ styleSet }
+        webSpeechPolyfill={ webSpeechPolyfill }
       />
     }
   </Context.Consumer>

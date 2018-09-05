@@ -193,8 +193,6 @@ class App extends React.Component {
         <BasicWebChat
           activities={ props.activities }
           className={ WEB_CHAT_CSS }
-          onBotActivity
-          onUserActivity
           postActivity={ this.handlePostActivity }
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }

@@ -4,37 +4,32 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-// TODO: Consider moving backend action to composer
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import Context from '../Context';
-import IconButton from './IconButton';
-import MicrophoneButton from './MicrophoneButton';
-import SendIcon from './Assets/SendIcon';
 
 const ROOT_CSS = css({
-  display: 'flex'
+  display: 'flex',
+
+  '& > input': {
+    flex: 1
+  }
 });
 
 class TextBoxWithSpeech extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleDictateError = this.handleDictateError.bind(this);
-    this.handleDictating = this.handleDictating.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
-    this.state = {
-      interims: []
-    };
   }
 
-  handleDictateError() {
-    this.setState(() => ({ interims: [] }));
-  }
+  handleChange({ target: { value } }) {
+    const { props } = this;
 
-  handleDictating({ interims }) {
-    this.props.scrollToBottom();
-    this.setState(() => ({ interims }));
+    props.scrollToBottom();
+    props.onSendBoxChange(value);
+
+    value && props.sendTyping();
   }
 
   handleSubmit(event) {
@@ -67,42 +62,18 @@ class TextBoxWithSpeech extends React.Component {
         onSubmit={ this.handleSubmit }
       >
         {
-          !this.props.speechState ?
-            <TypeFocusSinkContext.Consumer>
-              { ({ sendFocusRef }) =>
-                <input
-                  disabled={ props.disabled }
-                  onChange={ ({ target: { value } }) => {
-                    props.onSendBoxChange(value);
-                    value && props.sendTyping();
-                  } }
-                  placeholder="Type your message"
-                  ref={ sendFocusRef }
-                  type="text"
-                  value={ props.sendBoxValue }
-                />
-              }
-            </TypeFocusSinkContext.Consumer>
-          : state.interims.length ?
-            <p className="dictation">
-              {
-                state.interims.map((interim, index) => <span key={ index }>{ interim }</span>)
-              }
-            </p>
-          :
-            <div className="status">Listening&hellip;</div>
-        }
-        {
-          props.speech ?
-            <MicrophoneButton
-              disabled={ props.disabled }
-              onDictating={ this.handleDictating }
-              onError={ this.handleDictateError }
-            />
-          :
-            <IconButton>
-              <SendIcon />
-            </IconButton>
+          <TypeFocusSinkContext.Consumer>
+            { ({ sendFocusRef }) =>
+              <input
+                disabled={ props.disabled }
+                onChange={ this.handleChange }
+                placeholder="Type your message"
+                ref={ sendFocusRef }
+                type="text"
+                value={ props.sendBoxValue }
+              />
+            }
+          </TypeFocusSinkContext.Consumer>
         }
       </form>
     );
@@ -110,14 +81,11 @@ class TextBoxWithSpeech extends React.Component {
 }
 
 TextBoxWithSpeech.defaultProps = {
-  speech: true
+  disabled: false
 };
 
 TextBoxWithSpeech.propTypes = {
-  disabled: PropTypes.bool,
-
-  // TODO: Rename to speechEnabled
-  speech: PropTypes.bool
+  disabled: PropTypes.bool
 };
 
 export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
