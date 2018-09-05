@@ -1,4 +1,4 @@
-import { createStore, startConnection } from 'backend';
+import { createStore, connect as createConnectAction } from 'backend';
 import { DirectLine } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
 import React from 'react';
@@ -15,7 +15,7 @@ export default class SpeechOnlyButton extends React.Component {
   }
 
   componentDidMount() {
-    this.state.store.dispatch(startConnection({
+    this.state.store.dispatch(createConnectAction({
       directLine: new DirectLine({
         domain: 'http://localhost:3001/mock',
         fetch,
