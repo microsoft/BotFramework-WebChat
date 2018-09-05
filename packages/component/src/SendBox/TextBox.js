@@ -28,8 +28,6 @@ class TextBoxWithSpeech extends React.Component {
 
     props.scrollToBottom();
     props.setSendBox(value);
-
-    value && props.sendTyping();
   }
 
   handleSubmit(event) {
@@ -44,7 +42,6 @@ class TextBoxWithSpeech extends React.Component {
     if (sendBox) {
       props.scrollToBottom();
       props.submitSendBox('keyboard');
-      props.sendTyping(false);
     }
   }
 
@@ -92,7 +89,6 @@ export default connect(({ input: { sendBox, speechState } }) => ({ sendBox, spee
     {
       ({
         scrollToBottom,
-        sendTyping,
         setSendBox,
         stopSpeakingActivity,
         submitSendBox,
@@ -101,7 +97,6 @@ export default connect(({ input: { sendBox, speechState } }) => ({ sendBox, spee
         <TextBoxWithSpeech
           { ...props }
           scrollToBottom={ scrollToBottom }
-          sendTyping={ sendTyping }
           setSendBox={ setSendBox }
           stopSpeakingActivity={ stopSpeakingActivity }
           submitSendBox={ submitSendBox }

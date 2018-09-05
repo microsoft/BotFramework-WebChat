@@ -169,25 +169,6 @@ function createLogic(props) {
     type: 'message'
   }));
 
-  // Debounce will call a function later
-  // But we need to find a way to stop debouncing, e.g.
-  // 1. User type "A", then "B", then "C"
-  // 2. Debouncer called
-  // 3. The user press ENTER
-  // 4. The bot responded
-  // 5. 3 seconds later, debouncer will call sendTyping
-  //    This is because the key event "C" is still pending in the debounce queue, we need to stop this call
-  // TODO: Move sendTyping to backend and automate it without the need to call sendTyping(), just look at actions (send box value change + post activity)
-  const sendTyping = props.sendTyping || debounce(shouldSend => shouldSend !== false && props.postActivity({
-    from: {
-      id: userID,
-      role: 'user'
-    },
-    locale: lang,
-    timestamp: (new Date()).toISOString(),
-    type: 'typing'
-  }), 3000);
-
   // TODO: Revisit all members of context
   return {
     ...props,
@@ -197,7 +178,6 @@ function createLogic(props) {
     onCardAction,
     postActivity,
     sendFiles,
-    sendTyping,
     styleSet,
     userID
   };

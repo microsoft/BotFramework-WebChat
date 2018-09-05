@@ -79,7 +79,6 @@ class MicrophoneButton extends React.Component {
     }));
 
     props.stopSpeechInput();
-    props.sendTyping(false);
 
     if (transcript) {
       props.setSendBox(transcript);
@@ -97,7 +96,10 @@ class MicrophoneButton extends React.Component {
       readyState: DICTATING
     }));
 
-    props.sendTyping();
+    // This is for two purposes:
+    // 1. Set send box will also trigger send typing
+    // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
+    props.setSendBox(interims.join(' '));
   }
 
   handleError(event) {
@@ -108,7 +110,6 @@ class MicrophoneButton extends React.Component {
     }));
 
     props.stopSpeechInput();
-    props.sendTyping(false);
     props.onError && props.onError(event);
   }
 
@@ -166,7 +167,6 @@ MicrophoneButton.propTypes = {
 export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
   <Context.Consumer>
     { ({
-        sendTyping,
         setSendBox,
         startSpeakingActivity,
         startSpeechInput,
@@ -177,7 +177,6 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(props 
       }) =>
       <MicrophoneButton
         { ...props }
-        sendTyping={ sendTyping }
         setSendBox={ setSendBox }
         startSpeakingActivity={ startSpeakingActivity }
         startSpeechInput={ startSpeechInput }
