@@ -13,6 +13,10 @@ import {
 } from 'web-speech-cognitive-services';
 import createSpeechRecognitionWithSpeechTokenClass from './SpeechRecognitionWithSpeechToken';
 
+css.global('body', {
+  backgroundColor: '#EEE'
+});
+
 const ROOT_CSS = css({
   height: '100%',
 

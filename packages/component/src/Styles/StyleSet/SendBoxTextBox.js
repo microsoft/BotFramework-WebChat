@@ -13,6 +13,7 @@ export default function createSendBoxTextBoxStyle() {
       fontFamily: 'inherit',
       fontSize: 'inherit',
       height: '100%',
+      outline: 0,
       paddingBottom: 0,
       paddingLeft: 10,
       paddingRight: 10,

@@ -2,9 +2,11 @@ const DEFAULT_OPTIONS = {
   accent: '#69F',
   avatarSize: 40,
 
-  backgroundColor: '#EEE',
+  backgroundColor: 'White',
 
   bubbleBackground: 'White',
+  bubbleBorder: 'solid 1px #E6E6E6',
+  bubbleBorderRadius: 2,
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)

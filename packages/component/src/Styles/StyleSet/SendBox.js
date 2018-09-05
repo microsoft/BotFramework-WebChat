@@ -4,7 +4,7 @@ export default function createSendBoxStyle({
   return {
     '& > .main': {
       backgroundColor: 'White',
-      boxShadow: '0 0 5px rgba(0, 0, 0, .1)',
+      borderTop: 'solid 1px #E6E6E6',
       height: sendBoxHeight
     }
   };

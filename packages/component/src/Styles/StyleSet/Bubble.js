@@ -1,8 +1,12 @@
 export default function createBubbleStyle({
-  bubbleBackground
+  bubbleBackground,
+  bubbleBorder,
+  bubbleBorderRadius,
 }) {
   return {
     background: bubbleBackground,
+    border: bubbleBorder,
+    borderRadius: bubbleBorderRadius,
 
     '& > .content': {
       minHeight: 20,
