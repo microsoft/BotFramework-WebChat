@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import React from 'react';
 
 import Context from '../Context';
@@ -15,11 +16,11 @@ class SendButton extends React.Component {
 
   handleClick() {
     const { props } = this;
-    const { sendBoxValue } = props;
+    const { sendBox } = props;
 
-    if (sendBoxValue) {
-      props.sendMessage(sendBoxValue);
-      props.onSendBoxChange('');
+    if (sendBox) {
+      props.sendMessage(sendBox);
+      props.setSendBox('');
     }
   }
 
@@ -32,13 +33,14 @@ class SendButton extends React.Component {
   }
 }
 
-export default props =>
+export default connect(({ input: { sendBox } }) => ({ sendBox }))(props =>
   <Context.Consumer>
-    { ({ onSendBoxChange, sendBoxValue, sendMessage }) =>
+    { ({ setSendBox, sendMessage }) =>
       <SendButton
-        onSendBoxChange={ onSendBoxChange }
-        sendBoxValue={ sendBoxValue }
+        { ...props }
+        setSendBox={ setSendBox }
         sendMessage={ sendMessage }
       />
     }
   </Context.Consumer>
+)

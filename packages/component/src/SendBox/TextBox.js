@@ -27,23 +27,23 @@ class TextBoxWithSpeech extends React.Component {
     const { props } = this;
 
     props.scrollToBottom();
-    props.onSendBoxChange(value);
+    props.setSendBox(value);
 
     value && props.sendTyping();
   }
 
   handleSubmit(event) {
     const { props } = this;
-    const { sendBoxValue } = props;
+    const { sendBox } = props;
 
     event.preventDefault();
 
     // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
     // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
-    if (sendBoxValue) {
+    if (sendBox) {
       props.scrollToBottom();
-      props.sendMessage(sendBoxValue);
-      props.onSendBoxChange('');
+      props.sendMessage(sendBox);
+      props.setSendBox('');
       props.sendTyping(false);
       props.stopSpeakingActivity();
     }
@@ -70,7 +70,7 @@ class TextBoxWithSpeech extends React.Component {
                 placeholder="Type your message"
                 ref={ sendFocusRef }
                 type="text"
-                value={ props.sendBoxValue }
+                value={ props.sendBox }
               />
             }
           </TypeFocusSinkContext.Consumer>
@@ -88,25 +88,23 @@ TextBoxWithSpeech.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
+export default connect(({ input: { sendBox, speechState } }) => ({ sendBox, speechState }))(props =>
   <Context.Consumer>
     {
       ({
-        onSendBoxChange,
         scrollToBottom,
-        sendBoxValue,
         sendMessage,
         sendTyping,
+        setSendBox,
         stopSpeakingActivity,
         styleSet
       }) =>
         <TextBoxWithSpeech
           { ...props }
-          onSendBoxChange={ onSendBoxChange }
           scrollToBottom={ scrollToBottom }
-          sendBoxValue={ sendBoxValue }
           sendMessage={ sendMessage }
           sendTyping={ sendTyping }
+          setSendBox={ setSendBox }
           stopSpeakingActivity={ stopSpeakingActivity }
           styleSet={ styleSet }
         />

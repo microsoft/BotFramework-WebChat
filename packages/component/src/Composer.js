@@ -7,6 +7,7 @@ import updateIn from 'simple-update-in';
 
 import {
   markActivity,
+  setSendBox,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
@@ -23,9 +24,9 @@ import mapMap from './Utils/mapMap';
 const EMPTY_ARRAY = [];
 const NULL_FUNCTION = () => 0;
 const WEB_SPEECH_POLYFILL = {
-  SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
   SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
-  SpeechSynthesis: window.SpeechSynthesis,
+  SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
+  speechSynthesis: window.speechSynthesis,
   SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
 };
 
@@ -33,6 +34,7 @@ const DEFAULT_USER_ID = 'default-user';
 
 const DISPATCHERS = {
   markActivity,
+  setSendBox,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
@@ -232,18 +234,9 @@ class Composer extends React.Component {
       // This is for uncontrolled component
       context: {
         // Redux actions
-        ...hoistedDispatchers,
-
-        onSendBoxChange: this.handleSendBoxChange.bind(this),
-        sendBoxValue: ''
+        ...hoistedDispatchers
       }
     };
-  }
-
-  handleSendBoxChange(nextValue) {
-    this.setState(({ context }) => ({
-      context: updateIn(context, ['sendBoxValue'], () => nextValue)
-    }));
   }
 
   render() {
@@ -274,7 +267,7 @@ class Composer extends React.Component {
         activities: activities || EMPTY_ARRAY,
         adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
-        enableSpeech: typeof enableSpeech === 'boolean' ? enableSpeech : true,
+        enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
