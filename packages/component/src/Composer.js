@@ -170,6 +170,7 @@ function createLogic(props) {
   // 4. The bot responded
   // 5. 3 seconds later, debouncer will call sendTyping
   //    This is because the key event "C" is still pending in the debounce queue, we need to stop this call
+  // TODO: Move sendTyping to backend and automate it without the need to call sendTyping(), just look at actions (send box value change + post activity)
   const sendTyping = props.sendTyping || debounce(shouldSend => shouldSend !== false && props.postActivity({
     from: {
       id: userID,
