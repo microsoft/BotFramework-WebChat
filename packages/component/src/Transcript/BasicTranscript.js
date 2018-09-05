@@ -24,6 +24,8 @@ const LIST_CSS = css({
   listStyleType: 'none'
 });
 
+// TODO: Collapse timestamps if they are less than 5 minutes apart
+
 export default withStyleSet(({ className, children, styleSet }) =>
   <ScrollToBottom
     className={ className }
