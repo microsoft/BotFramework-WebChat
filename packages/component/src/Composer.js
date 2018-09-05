@@ -7,11 +7,13 @@ import updateIn from 'simple-update-in';
 
 import {
   markActivity,
+  setLanguage,
   setSendBox,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
-  stopSpeechInput
+  stopSpeechInput,
+  submitSendBox
 } from 'backend';
 
 import Context from './Context';
@@ -38,7 +40,8 @@ const DISPATCHERS = {
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
-  stopSpeechInput
+  stopSpeechInput,
+  submitSendBox
 };
 
 function findLastIndex(array, predicate) {
@@ -230,6 +233,8 @@ class Composer extends React.Component {
       [name]: (...args) => this.props.dispatch(DISPATCHERS[name].apply(this, args))
     }), {});
 
+    props.dispatch(setLanguage(props.locale || window.navigator.language));
+
     this.state = {
       // This is for uncontrolled component
       context: {
@@ -237,6 +242,14 @@ class Composer extends React.Component {
         ...hoistedDispatchers
       }
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { props: { locale } } = this;
+
+    if (prevProps.locale !== locale) {
+      props.dispatch(setLanguage(locale || window.navigator.language));
+    }
   }
 
   render() {

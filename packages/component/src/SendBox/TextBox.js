@@ -40,12 +40,11 @@ class TextBoxWithSpeech extends React.Component {
 
     // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
     // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
+
     if (sendBox) {
       props.scrollToBottom();
-      props.sendMessage(sendBox);
-      props.setSendBox('');
+      props.submitSendBox('keyboard');
       props.sendTyping(false);
-      props.stopSpeakingActivity();
     }
   }
 
@@ -93,19 +92,19 @@ export default connect(({ input: { sendBox, speechState } }) => ({ sendBox, spee
     {
       ({
         scrollToBottom,
-        sendMessage,
         sendTyping,
         setSendBox,
         stopSpeakingActivity,
+        submitSendBox,
         styleSet
       }) =>
         <TextBoxWithSpeech
           { ...props }
           scrollToBottom={ scrollToBottom }
-          sendMessage={ sendMessage }
           sendTyping={ sendTyping }
           setSendBox={ setSendBox }
           stopSpeakingActivity={ stopSpeakingActivity }
+          submitSendBox={ submitSendBox }
           styleSet={ styleSet }
         />
     }

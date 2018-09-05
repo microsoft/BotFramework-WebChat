@@ -8,6 +8,7 @@ import postActivitySaga from './sagas/postActivitySaga';
 import speakActivitySaga from './sagas/speakActivitySaga';
 import startSpeechInputAfterSpeakActivitySaga from './sagas/startSpeechInputAfterSpeakActivitySaga';
 import stopSpeakActivityOnSpeechInputSaga from './sagas/stopSpeakActivityOnSpeechInputSaga';
+import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 
 export default function* () {
   yield fork(connectionStatusUpdateSaga);
@@ -18,4 +19,5 @@ export default function* () {
   yield fork(speakActivitySaga);
   yield fork(startSpeechInputAfterSpeakActivitySaga);
   yield fork(stopSpeakActivityOnSpeechInputSaga);
+  yield fork(submitSendBoxSaga);
 }

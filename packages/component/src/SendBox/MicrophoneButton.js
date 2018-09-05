@@ -82,7 +82,8 @@ class MicrophoneButton extends React.Component {
     props.sendTyping(false);
 
     if (transcript) {
-      props.sendMessage(transcript);
+      props.setSendBox(transcript);
+      props.submitSendBox('speech');
       props.startSpeakingActivity();
     }
   }
@@ -165,21 +166,23 @@ MicrophoneButton.propTypes = {
 export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
   <Context.Consumer>
     { ({
-        sendMessage,
         sendTyping,
+        setSendBox,
         startSpeakingActivity,
         startSpeechInput,
         stopSpeechInput,
+        submitSendBox,
         styleSet,
         webSpeechPolyfill
       }) =>
       <MicrophoneButton
         { ...props }
-        sendMessage={ sendMessage }
         sendTyping={ sendTyping }
+        setSendBox={ setSendBox }
         startSpeakingActivity={ startSpeakingActivity }
         startSpeechInput={ startSpeechInput }
         stopSpeechInput={ stopSpeechInput }
+        submitSendBox={ submitSendBox }
         styleSet={ styleSet }
         webSpeechPolyfill={ webSpeechPolyfill }
       />
