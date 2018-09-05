@@ -195,7 +195,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                         const newActivity = Object.assign(
                             {},
                             activity,
-                            {channelData: { userData: Object.assign(this.props.userData || {}, { "testMode": window.location.hash === '#feedbot-test-mode' })}}
+                            {channelData: { userData: Object.assign(this.props.userData || {}, window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {})}}
                         );
                         console.log('userData', newActivity.channelData.userData)
                         return directLine.postActivity(newActivity);
