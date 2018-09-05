@@ -208,12 +208,8 @@ export default class Composer extends React.Component {
     this.state = {
       // This is for uncontrolled component
       context: {
-        lastSpokenTime: Infinity,
-        markAsSpoken: this.markAsSpoken.bind(this),
         onSendBoxChange: this.handleSendBoxChange.bind(this),
-        sendBoxValue: '',
-        startSpeaking: this.startSpeaking.bind(this),
-        stopSpeaking: this.stopSpeaking.bind(this)
+        sendBoxValue: ''
       }
     };
   }
@@ -222,43 +218,6 @@ export default class Composer extends React.Component {
     this.setState(({ context }) => ({
       context: updateIn(context, ['sendBoxValue'], () => nextValue)
     }));
-  }
-
-  markAsSpoken(activity) {
-    activity && this.setState(({ context }) => {
-      return { context: {
-        ...context,
-        lastSpokenTime: new Date(activity.timestamp).getTime()
-      } };
-    });
-  }
-
-  startSpeaking() {
-    this.setState(({ context }) => {
-      const { activities, userID = DEFAULT_USER_ID } = this.props;
-      const lastActivityIndex = findLastIndex(activities, ({ from: { id }, type }) => id !== userID && type === 'message');
-
-      if (~lastActivityIndex) {
-        const lastActivity = activities[lastActivityIndex];
-
-        return { context: {
-          ...context,
-          lastSpokenTime: new Date(lastActivity.timestamp).getTime()
-        } };
-      } else {
-        return { context: {
-          ...context,
-          lastSpokenTime: 0
-        } };
-      }
-    });
-  }
-
-  stopSpeaking() {
-    this.setState(({ context }) => ({ context: {
-      ...context,
-      lastSpokenTime: Infinity
-    } }));
   }
 
   render() {

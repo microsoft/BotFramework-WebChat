@@ -1,6 +1,10 @@
+import { connect } from 'react-redux';
 import React from 'react';
 import SayAlt from './SayAlt';
-import Say, { Composer } from 'react-say';
+import Say from 'react-say';
+
+// TODO: Consider moving backend action to composer
+import { markActivity } from 'backend';
 
 import Context from '../Context';
 
@@ -15,7 +19,7 @@ class SpeakActivity extends React.Component {
   }
 
   handleEnd() {
-    this.props.markAsSpoken(this.props.activity);
+    this.props.dispatch(markActivity(this.props.activity, 'speak', false));
   }
 
   selectVoice(voices) {
@@ -81,11 +85,12 @@ class SpeakActivity extends React.Component {
   }
 }
 
-export default ({ activity }) =>
+export default connect(() => ({}))(({ activity, dispatch }) =>
   <Context.Consumer>
     { ({ markAsSpoken, styleSet, webSpeechPolyfill: { speechSynthesis, SpeechSynthesisUtterance } }) =>
       <SpeakActivity
         activity={ activity }
+        dispatch={ dispatch }
         markAsSpoken={ markAsSpoken }
         speechSynthesis={ speechSynthesis }
         speechSynthesisUtterance={ SpeechSynthesisUtterance }
@@ -93,3 +98,4 @@ export default ({ activity }) =>
       />
     }
   </Context.Consumer>
+)

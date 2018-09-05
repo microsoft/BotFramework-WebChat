@@ -1,6 +1,7 @@
 import updateIn from 'simple-update-in';
 
 import { DELETE_ACTIVITY } from '../Actions/deleteActivity';
+import { MARK_ACTIVITY } from '../Actions/markActivity';
 import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
 
 import {
@@ -54,12 +55,10 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       state = updateIn(state, [({ id }) => id === payload.activityID]);
       break;
 
-    case UPSERT_ACTIVITY:
-      // UpdateActivity is not supported right now because we ignore duplicated activity ID
-      if (!~state.findIndex(({ id }) => id === payload.activity.id)) {
-        state = upsertActivityWithSort(state, payload.activity);
-      }
-
+    case MARK_ACTIVITY:
+      console.log(`MARK_ACTIVITY`);
+      console.log(payload);
+      state = updateIn(state, [({ id }) => id === payload.activityID, 'channelData', payload.name], () => payload.value);
       break;
 
     case POST_ACTIVITY_PENDING:
@@ -75,6 +74,14 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
         // We will replace the activity with the version from the server
         updateIn(payload.activity, ['channelData', 'state'], () => 'sent')
       );
+
+      break;
+
+    case UPSERT_ACTIVITY:
+      // UpdateActivity is not supported right now because we ignore duplicated activity ID
+      if (!~state.findIndex(({ id }) => id === payload.activity.id)) {
+        state = upsertActivityWithSort(state, payload.activity);
+      }
 
       break;
 

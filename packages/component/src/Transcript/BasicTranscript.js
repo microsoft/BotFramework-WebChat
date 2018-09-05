@@ -6,7 +6,6 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import SpeakActivity from '../Activity2/Speak';
 
 import { withStyleSet } from '../Context';
-// import BasicActivity from '../Activity/BasicActivity';
 import BasicActivity from '../Activity2/Activity';
 import Context from '../Context';
 import UnknownAttachment from '../Attachment/UnknownAttachment';
@@ -25,16 +24,6 @@ const LIST_CSS = css({
   listStyleType: 'none'
 });
 
-function last(array, predicate) {
-  for (let index = array.length - 1; index >= 0; index--) {
-    const value = array[index];
-
-    if (predicate.call(array, value)) {
-      return value;
-    }
-  }
-}
-
 export default withStyleSet(({ className, children, styleSet }) =>
   <ScrollToBottom
     className={ className }
@@ -45,8 +34,6 @@ export default withStyleSet(({ className, children, styleSet }) =>
     <Context.Consumer>
       { ({
         activities,
-        lastSpokenTime,
-        userID,
         webSpeechPolyfill: { speechSynthesis, SpeechSynthesisUtterance }
       }) =>
         <React.Fragment>
@@ -79,8 +66,7 @@ export default withStyleSet(({ className, children, styleSet }) =>
                       }
                     </BasicActivity>
                     {
-                      activity.from.id !== userID && activity.type === 'message' && new Date(activity.timestamp).getTime() > lastSpokenTime &&
-                        <SpeakActivity activity={ activity } />
+                      activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
                     }
                   </li>
                 )

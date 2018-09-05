@@ -1,7 +1,11 @@
+import { connect } from 'react-redux';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+// TODO: Consider moving backend action to composer
+import { startSpeakingActivity, stopSpeakingActivity } from 'backend';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { withStyleSet } from '../Context';
@@ -43,15 +47,22 @@ class TextBoxWithSpeech extends React.Component {
     }
 
     props.sendTyping(false);
-    props.startSpeaking();
+    props.dispatch(startSpeakingActivity());
 
     this.setState(() => ({ dictateState: IDLE }));
   }
 
   handleDictateClick() {
-    this.setState(() => ({
-      dictateState: STARTING
-    }));
+    const { props } = this;
+
+    props.sendMessage('Hello');
+    props.onSendBoxChange('');
+    props.sendTyping(false);
+    props.dispatch(startSpeakingActivity());
+
+    // this.setState(() => ({
+    //   dictateState: STARTING
+    // }));
   }
 
   handleDictateError() {
@@ -90,7 +101,7 @@ class TextBoxWithSpeech extends React.Component {
       props.sendMessage(sendBoxValue);
       props.onSendBoxChange('');
       props.sendTyping(false);
-      props.stopSpeaking();
+      props.dispatch(stopSpeakingActivity());
     }
   }
 
@@ -163,9 +174,10 @@ TextBoxWithSpeech.propTypes = {
   speech: PropTypes.bool
 };
 
-export default ({
+export default connect(() => ({}))(({
   className,
   disabled,
+  dispatch,
   speech
 }) =>
   <Context.Consumer>
@@ -176,22 +188,20 @@ export default ({
         sendBoxValue,
         sendMessage,
         sendTyping,
-        startSpeaking,
-        stopSpeaking,
         styleSet
       }) =>
         <TextBoxWithSpeech
           className={ className }
           disabled={ disabled }
+          dispatch={ dispatch }
           onSendBoxChange={ onSendBoxChange }
           scrollToBottom={ scrollToBottom }
           sendBoxValue={ sendBoxValue }
           sendMessage={ sendMessage }
           sendTyping={ sendTyping }
           speech={ speech }
-          startSpeaking={ startSpeaking }
-          stopSpeaking={ stopSpeaking }
           styleSet={ styleSet }
         />
     }
   </Context.Consumer>
+)
