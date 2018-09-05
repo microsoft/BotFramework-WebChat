@@ -1,8 +1,16 @@
+import { connect } from 'react-redux';
 import { css } from 'glamor';
 import * as AdaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
 import React from 'react';
 import updateIn from 'simple-update-in';
+
+import {
+  startSpeakingActivity,
+  startSpeechInput,
+  stopSpeakingActivity,
+  stopSpeechInput
+} from 'backend';
 
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
@@ -21,6 +29,13 @@ const WEB_SPEECH_POLYFILL = {
 };
 
 const DEFAULT_USER_ID = 'default-user';
+
+const DISPATCHERS = {
+  startSpeakingActivity,
+  startSpeechInput,
+  stopSpeakingActivity,
+  stopSpeechInput
+};
 
 function findLastIndex(array, predicate) {
   for (let index = array.length - 1; index >= 0; index--) {
@@ -191,7 +206,7 @@ function shallowEquals(x, y) {
   );
 }
 
-export default class Composer extends React.Component {
+class Composer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -205,9 +220,18 @@ export default class Composer extends React.Component {
       shallowEquals
     );
 
+    const createActionAndDispatch = (actionFactory, args) => this.props.dispatch(actionFactory.apply(this, args));
+    const hoistedDispatchers = Object.keys(DISPATCHERS).reduce((hoistedDispatchers, name) => ({
+      ...hoistedDispatchers,
+      [name]: createActionAndDispatch.bind(this, DISPATCHERS[name])
+    }), {});
+
     this.state = {
       // This is for uncontrolled component
       context: {
+        // Redux actions
+        ...hoistedDispatchers,
+
         onSendBoxChange: this.handleSendBoxChange.bind(this),
         sendBoxValue: ''
       }
@@ -215,7 +239,7 @@ export default class Composer extends React.Component {
   }
 
   handleSendBoxChange(nextValue) {
-    this.setState(({ context }) => ({
+    this.nextSpeechState(({ context }) => ({
       context: updateIn(context, ['sendBoxValue'], () => nextValue)
     }));
   }
@@ -267,3 +291,5 @@ export default class Composer extends React.Component {
     );
   }
 }
+
+export default connect(() => ({}))(Composer)

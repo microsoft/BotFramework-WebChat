@@ -5,87 +5,36 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 // TODO: Consider moving backend action to composer
-import { startSpeakingActivity, stopSpeakingActivity } from 'backend';
-
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
-import { withStyleSet } from '../Context';
+import Context from '../Context';
 import IconButton from './IconButton';
 import MicrophoneButton from './MicrophoneButton';
-import Context from '../Context';
 import SendIcon from './Assets/SendIcon';
 
 const ROOT_CSS = css({
   display: 'flex'
 });
 
-const IDLE = 0;
-const STARTING = 1;
-const DICTATING = 2;
-
 class TextBoxWithSpeech extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleDictate = this.handleDictate.bind(this);
-    this.handleDictateClick = this.handleDictateClick.bind(this);
     this.handleDictateError = this.handleDictateError.bind(this);
     this.handleDictating = this.handleDictating.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      interims: [],
-      dictateState: IDLE
+      interims: []
     };
   }
 
-  handleDictate({ transcript }) {
-    const { props } = this;
-
-    if (transcript) {
-      props.sendMessage(transcript);
-      props.onSendBoxChange('');
-    }
-
-    props.sendTyping(false);
-    props.dispatch(startSpeakingActivity());
-
-    this.setState(() => ({ dictateState: IDLE }));
-  }
-
-  handleDictateClick() {
-    const { props } = this;
-
-    props.sendMessage('Hello');
-    props.onSendBoxChange('');
-    props.sendTyping(false);
-    props.dispatch(startSpeakingActivity());
-
-    // this.setState(() => ({
-    //   dictateState: STARTING
-    // }));
-  }
-
   handleDictateError() {
-    const { props } = this;
-
-    props.sendTyping(false);
-
-    this.setState(() => ({
-      dictateState: IDLE,
-      interims: []
-    }));
+    this.setState(() => ({ interims: [] }));
   }
 
   handleDictating({ interims }) {
-    const { props } = this;
-
-    props.scrollToBottom();
-    props.sendTyping();
-
-    this.setState(() => ({
-      dictateState: DICTATING,
-      interims
-    }));
+    this.props.scrollToBottom();
+    this.setState(() => ({ interims }));
   }
 
   handleSubmit(event) {
@@ -101,7 +50,7 @@ class TextBoxWithSpeech extends React.Component {
       props.sendMessage(sendBoxValue);
       props.onSendBoxChange('');
       props.sendTyping(false);
-      props.dispatch(stopSpeakingActivity());
+      props.stopSpeakingActivity();
     }
   }
 
@@ -118,7 +67,7 @@ class TextBoxWithSpeech extends React.Component {
         onSubmit={ this.handleSubmit }
       >
         {
-          state.dictateState === IDLE ?
+          !this.props.speechState ?
             <TypeFocusSinkContext.Consumer>
               { ({ sendFocusRef }) =>
                 <input
@@ -134,8 +83,6 @@ class TextBoxWithSpeech extends React.Component {
                 />
               }
             </TypeFocusSinkContext.Consumer>
-          : state.dictateState === STARTING ?
-            <div className="status">Starting...</div>
           : state.interims.length ?
             <p className="dictation">
               {
@@ -143,15 +90,12 @@ class TextBoxWithSpeech extends React.Component {
               }
             </p>
           :
-            <div className="status">Listening...</div>
+            <div className="status">Listening&hellip;</div>
         }
         {
           props.speech ?
             <MicrophoneButton
               disabled={ props.disabled }
-              onClick={ this.handleDictateClick }
-              onDictate={ this.handleDictate }
-              onDictateClick={ this.handleDictateClick }
               onDictating={ this.handleDictating }
               onError={ this.handleDictateError }
             />
@@ -171,15 +115,12 @@ TextBoxWithSpeech.defaultProps = {
 
 TextBoxWithSpeech.propTypes = {
   disabled: PropTypes.bool,
+
+  // TODO: Rename to speechEnabled
   speech: PropTypes.bool
 };
 
-export default connect(() => ({}))(({
-  className,
-  disabled,
-  dispatch,
-  speech
-}) =>
+export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
   <Context.Consumer>
     {
       ({
@@ -188,18 +129,17 @@ export default connect(() => ({}))(({
         sendBoxValue,
         sendMessage,
         sendTyping,
+        stopSpeakingActivity,
         styleSet
       }) =>
         <TextBoxWithSpeech
-          className={ className }
-          disabled={ disabled }
-          dispatch={ dispatch }
+          { ...props }
           onSendBoxChange={ onSendBoxChange }
           scrollToBottom={ scrollToBottom }
           sendBoxValue={ sendBoxValue }
           sendMessage={ sendMessage }
           sendTyping={ sendTyping }
-          speech={ speech }
+          stopSpeakingActivity={ stopSpeakingActivity }
           styleSet={ styleSet }
         />
     }

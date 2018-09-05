@@ -1,13 +1,12 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { withStyleSet } from '../Context';
-
+import Context from '../Context';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
-import Context from '../Context';
 
 const IDLE = 0;
 const STARTING = 1;
@@ -30,38 +29,76 @@ class MicrophoneButton extends React.Component {
     };
   }
 
-  handleClick() {
-    this.setState(({ readyState }) => ({
-      readyState: readyState === DICTATING ? STOPPING : STARTING
-    }));
+  componentWillReceiveProps({ speechState: nextSpeechState }) {
+    const { speechState } = this.props;
 
-    this.props.onClick && this.props.onClick();
+    if (!speechState && nextSpeechState) {
+      // Turned on speech
+      this.setState(({ readyState }) => {
+        if (readyState !== STARTING && readyState !== DICTATING) {
+          return { readyState: STARTING };
+        }
+      });
+    } else if (speechState && !nextSpeechState) {
+      // Turned off speech
+      this.setState(({ readyState }) => {
+        if (readyState === STARTING || readyState === DICTATING) {
+          return { readyState: STOPPING };
+        }
+      });
+    }
+  }
+
+  handleClick() {
+    const { props } = this;
+
+    if (props.speechState) {
+      props.stopSpeechInput();
+    } else {
+      props.startSpeechInput();
+    }
+
+    props.onClick && props.onClick();
   }
 
   handleDictate({ result: { transcript } = {} }) {
+    const { props } = this;
+
     this.setState(() => ({
       readyState: IDLE
     }));
 
-    this.props.onDictate && this.props.onDictate({ transcript });
+    props.stopSpeechInput();
+    props.sendTyping(false);
+
+    if (transcript) {
+      props.sendMessage(transcript);
+      props.startSpeakingActivity();
+    }
   }
 
   handleDictating({ results = [] }) {
+    const { props } = this;
     const interims = results.map(({ transcript }) => transcript);
 
     this.setState(() => ({
       readyState: DICTATING
     }));
 
-    this.props.onDictating && this.props.onDictating({ interims });
+    props.sendTyping();
+    props.onDictating && props.onDictating({ interims });
   }
 
   handleError(event) {
+    const { props } = this;
+
     this.setState(() => ({
       readyState: IDLE
     }));
 
-    this.props.onError && this.props.onError(event);
+    props.stopSpeechInput();
+    props.sendTyping(false);
+    props.onError && props.onError(event);
   }
 
   render() {
@@ -109,4 +146,25 @@ MicrophoneButton.propTypes = {
   onError: PropTypes.func
 };
 
-export default withStyleSet(MicrophoneButton)
+export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
+  <Context.Consumer>
+    { ({
+        sendMessage,
+        sendTyping,
+        startSpeakingActivity,
+        startSpeechInput,
+        stopSpeechInput,
+        styleSet
+      }) =>
+      <MicrophoneButton
+        { ...props }
+        sendMessage={ sendMessage }
+        sendTyping={ sendTyping }
+        startSpeakingActivity={ startSpeakingActivity }
+        startSpeechInput={ startSpeechInput }
+        stopSpeechInput={ stopSpeechInput }
+        styleSet={ styleSet }
+      />
+    }
+  </Context.Consumer>
+)
