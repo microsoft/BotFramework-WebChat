@@ -27,7 +27,7 @@ class TextBoxWithSpeech extends React.Component {
     const { props } = this;
 
     props.scrollToBottom();
-    props.setSendBox(value);
+    props.setSendBox(value, 'keyboard');
   }
 
   handleSubmit(event) {

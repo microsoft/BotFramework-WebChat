@@ -18,7 +18,7 @@ export default function* () {
 
       if (text) {
         yield put(sendMessage(text, via));
-        yield put(setSendBox(''));
+        yield put(setSendBox('', 'keyboard'));
       }
     }
   });

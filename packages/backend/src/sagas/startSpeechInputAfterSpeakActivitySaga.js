@@ -15,12 +15,14 @@ import startSpeechInput from '../Actions/startSpeechInput';
 
 export default function* () {
   yield whileConnected(function* (_, userID) {
-    yield take(START_SPEAKING_ACTIVITY);
+    for (;;) {
+      yield take(START_SPEAKING_ACTIVITY);
 
-    const task = yield fork(startSpeechInputAfterSpeakActivitySaga, userID);
+      const task = yield fork(startSpeechInputAfterSpeakActivitySaga, userID);
 
-    yield take(STOP_SPEAKING_ACTIVITY);
-    yield cancel(task);
+      yield take(STOP_SPEAKING_ACTIVITY);
+      yield cancel(task);
+    }
   });
 }
 

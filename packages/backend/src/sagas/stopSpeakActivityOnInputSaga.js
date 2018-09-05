@@ -1,5 +1,6 @@
 import {
   put,
+  race,
   select,
   take
 } from 'redux-saga/effects';
@@ -7,13 +8,16 @@ import {
 import whileConnected from './effects/whileConnected';
 
 import markActivity from '../Actions/markActivity';
+import stopSpeakingActivity from '../Actions/stopSpeakingActivity';
+import { SET_SEND_BOX } from '../Actions/setSendBox';
 import { START_SPEECH_INPUT } from '../Actions/startSpeechInput';
 
 export default function* () {
   yield whileConnected(function* (_, userID) {
     for (;;) {
-      // TODO: We should extend this to all types of input
-      yield take(START_SPEECH_INPUT);
+      const action = yield take(({ payload, type }) => type === START_SPEECH_INPUT || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech'));
+
+      yield put(stopSpeakingActivity());
 
       const activities = yield select(({ activities }) => activities);
 

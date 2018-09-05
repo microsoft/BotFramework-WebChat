@@ -1,9 +1,9 @@
 const SET_SEND_BOX = 'INPUT/SET_SEND_BOX';
 
-export default function (text) {
+export default function (text, via) {
   return {
     type: SET_SEND_BOX,
-    payload: { text }
+    payload: { text, via }
   };
 }
 
