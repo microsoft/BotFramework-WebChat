@@ -12,8 +12,8 @@ function fromUser(activity) {
 export default ({ activity, children }) =>
   // Do not show typing by myself
   !(fromUser(activity) && activity.type === 'typing')
-  // Do not show empty bubbles (no text and attachments)
-  && !!(activity.text || (activity.attachments && activity.attachments.length))
+  // Do not show empty bubbles (no text and attachments, and not "typing")
+  && !!(activity.text || (activity.attachments && activity.attachments.length) || activity.type === 'typing')
   && (
     ((activity.attachments || []).length > 1 && activity.attachmentLayout === 'carousel') ?
       <CarouselLayout activity={ activity }>
