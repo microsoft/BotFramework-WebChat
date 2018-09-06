@@ -39,6 +39,7 @@ const DEFAULT_USER_ID = 'default-user';
 
 const DISPATCHERS = {
   markActivity,
+  postActivity,
   sendMessage,
   setSendBox,
   startSpeakingActivity,
