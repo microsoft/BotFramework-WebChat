@@ -15,7 +15,7 @@ export default function* () {
   yield whileConnected(function* (_, userID) {
     for (;;) {
       const { payload: { text, via } } = yield take(SEND_MESSAGE);
-      const language = yield select(({ interface: { language } }) => language);
+      const language = yield select(({ settings: { language } }) => language);
 
       if (text) {
         yield put(postActivity({

@@ -1,4 +1,4 @@
-const SEND_MESSAGE = 'INTERFACE/SEND_MESSAGE';
+const SEND_MESSAGE = 'INPUT/SEND_MESSAGE';
 
 export default function sendMessage(text, via) {
   return {

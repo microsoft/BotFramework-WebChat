@@ -25,7 +25,7 @@ export default function* () {
           yield call(sleep, interval);
         }
 
-        const language = yield select(({ interface: { language } }) => language);
+        const language = yield select(({ settings: { language } }) => language);
 
         yield put(postActivity({
           from: {
