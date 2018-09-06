@@ -5,7 +5,10 @@ import memoize from 'memoize-one';
 import React from 'react';
 
 import {
+  connect as createConnectAction,
+  disconnect,
   markActivity,
+  postActivity,
   sendMessage,
   setLanguage,
   setSendBox,
@@ -24,7 +27,7 @@ import mapMap from './Utils/mapMap';
 
 // Flywheel object
 const EMPTY_ARRAY = [];
-const NULL_FUNCTION = () => 0;
+const NULL_FUNCTION = () => ({});
 const WEB_SPEECH_POLYFILL = {
   SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
   SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
@@ -76,8 +79,8 @@ function createLogic(props) {
 
   // console.log('creating new logic context');
 
+  const directLine = props.directLine;
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
-  const postActivity = props.postActivity || (() => { throw new Error('"postActivity" is not specified in props'); });
   const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
 
   // TODO: We should normalize props (fill-in-the-blank) before hitting this line
@@ -94,7 +97,7 @@ function createLogic(props) {
       case 'imBack':
         if (typeof value === 'string') {
           // TODO: Should move to Redux action dispatchers instead
-          postActivity({
+          props.dispatch(postActivity({
             from: {
               id: userID,
               role: 'user'
@@ -104,7 +107,7 @@ function createLogic(props) {
             textFormat: 'plain',
             timestamp: (new Date()).toISOString(),
             type: 'message'
-          })
+          }));
         } else {
           throw new Error('cannot send "imBack" with a non-string value');
         }
@@ -112,11 +115,11 @@ function createLogic(props) {
         break;
 
       case 'postBack':
-        postActivity({
+        props.dispatch(postActivity({
           type: 'message',
           value,
           locale: lang
-        });
+        }));
 
         break;
 
@@ -130,28 +133,36 @@ function createLogic(props) {
         window.open(value);
         break;
 
-      // case 'signin':
-      //   const loginWindow = window.open();
+      case 'signin':
+        // TODO: We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
+        //       This is to eliminate the delay between window.open() and location.href call
 
-      //   if (botConnection.getSessionId)  {
-      //     botConnection.getSessionId().subscribe(sessionId => {
-      //       konsole.log("received sessionId: " + sessionId);
-      //       loginWindow.location.href = text + encodeURIComponent('&code_challenge=' + sessionId);
-      //     }, error => {
-      //       konsole.log("failed to get sessionId", error);
-      //     });
-      //   } else {
-      //     loginWindow.location.href = text;
-      //   }
+        const popup = window.open();
 
-      //   break;
+        if (directLine.getSessionId)  {
+          const subscription = directLine.getSessionId().subscribe(sessionId => {
+            popup.location.href = `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`;
+
+            // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
+            //       Need to wait some short time here to make sure the subscription variable has setup
+            setImmediate(() => subscription.unsubscribe());
+          }, error => {
+            // TODO: Let the user know something failed and we cannot proceed
+            console.error(error);
+          });
+        } else {
+          popup.location.href = value;
+        }
+
+        break;
+
       default:
         console.error(`Web Chat: received unknown card action "${ type }"`);
         break;
     }
   });
 
-  const sendFiles = props.sendFiles || ((...files) => props.postActivity({
+  const sendFiles = props.sendFiles || ((...files) => props.dispatch(postActivity({
     attachments: files.map(file => ({
       contentObject: file,
       contentType: 'application/octet-stream',
@@ -167,7 +178,7 @@ function createLogic(props) {
     locale: lang,
     timestamp: (new Date()).toISOString(),
     type: 'message'
-  }));
+  })));
 
   // TODO: Revisit all members of context
   return {
@@ -176,7 +187,6 @@ function createLogic(props) {
     focusSendBox,
     lang,
     onCardAction,
-    postActivity,
     sendFiles,
     styleSet,
     userID
@@ -223,11 +233,32 @@ class Composer extends React.Component {
     };
   }
 
+  componentWillMount() {
+    const { props } = this;
+    const { directLine, userID, username } = props;
+
+    props.dispatch(createConnectAction({ directLine, userID, username }));
+  }
+
   componentDidUpdate(prevProps) {
-    const { props: { locale } } = this;
+    const { props: { directLine, locale, userID, username } } = this;
 
     if (prevProps.locale !== locale) {
       props.dispatch(setLanguage(locale || window.navigator.language));
+    }
+
+    if (
+      prevProps.directLine !== directLine
+      || prevProps.userID !== userID
+      || prevProps.username !== username
+    ) {
+      // TODO: disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+      props.dispatch(disconnect());
+      props.dispatch(createConnectAction({
+        directLine,
+        userID,
+        username
+      }));
     }
   }
 
@@ -268,6 +299,8 @@ class Composer extends React.Component {
       }
     );
 
+    // TODO: Check how many times we do re-render context
+
     return (
       <Context.Provider value={ context }>
         {
@@ -281,4 +314,4 @@ class Composer extends React.Component {
   }
 }
 
-export default connect(() => ({}))(Composer)
+export default connect(NULL_FUNCTION)(Composer)

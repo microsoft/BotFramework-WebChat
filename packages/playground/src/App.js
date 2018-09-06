@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { connect as createConnectAction, postActivity } from 'backend';
 import { css } from 'glamor';
 import { DirectLine } from 'botframework-directlinejs';
 import BasicWebChat from 'component';
@@ -54,9 +53,8 @@ class App extends React.Component {
     super(props);
 
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
-    this.handlePostActivity = this.handlePostActivity.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
-    this.handleUseOfficialMockBotClick = this.handleUseOfficialMockBotClick.bind(this);
+    this.handleUseMockBot = this.handleUseMockBot.bind(this);
 
     // TODO: We should include Markdown-It in our component package
     const customMarkdownIt = new MarkdownIt({
@@ -117,22 +115,11 @@ class App extends React.Component {
     }
 
     this.state = {
-      domain,
-      directLineToken,
-      webSocket: webSocket === 'true' || +webSocket,
-      webSpeechPolyfill
-    };
-  }
-
-  componentDidMount() {
-    const { state: { domain, directLineToken: token, webSocket } } = this;
-
-    this.props.dispatch(createConnectAction({
       directLine: new DirectLine({
         domain,
         fetch,
-        token,
-        webSocket,
+        token: directLineToken,
+        webSocket: webSocket === 'true' || +webSocket,
         createFormData: attachments => {
           const formData = new FormData();
 
@@ -143,10 +130,11 @@ class App extends React.Component {
           return formData;
         }
       }),
-      userID: 'default-user',
-      username: 'User-1'
-    }));
+      webSpeechPolyfill
+    };
+  }
 
+  componentDidMount() {
     // HACK: Focus send box should be done using context/composer
     const { current } = this.mainRef;
     const sendBox = current && current.querySelector('input[type="text"]');
@@ -164,13 +152,9 @@ class App extends React.Component {
     window.location.reload();
   }
 
-  handlePostActivity(activity) {
-    this.props.dispatch(postActivity(activity));
-  }
-
-  async handleUseOfficialMockBotClick() {
+  async handleUseMockBot(url) {
     try {
-      const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const directLineTokenRes = await fetch(`${ url }/directline/token`, { method: 'POST' });
 
       if (directLineTokenRes.status !== 200) {
         throw new Error(`Server returned ${ directLineTokenRes.status } while requesting for Direct Line token`);
@@ -197,9 +181,11 @@ class App extends React.Component {
         <BasicWebChat
           activities={ props.activities }
           className={ WEB_CHAT_CSS }
-          postActivity={ this.handlePostActivity }
+          directLine={ state.directLine }
           renderMarkdown={ this.renderMarkdown }
           suggestedActions={ props.suggestedActions }
+          userID="default-user"
+          username="User 1"
           webSpeechPolyfill={ state.webSpeechPolyfill }
         />
         <div className="button-bar">
@@ -210,7 +196,7 @@ class App extends React.Component {
             Remove history <small>(CTRL-R)</small>
           </button>
           <button
-            onClick={ this.handleUseOfficialMockBotClick }
+            onClick={ this.handleUseMockBot.bind(this, 'https://webchat-mockbot.azurewebsites.net') }
             type="button"
           >
             Start conversation with official MockBot
@@ -220,6 +206,12 @@ class App extends React.Component {
             type="button"
           >
             Start conversation with Emulator Core
+          </button>
+          <button
+            onClick={ this.handleUseMockBot.bind(this, 'http://localhost:3978') }
+            type="button"
+          >
+            Start conversation with local MockBot
           </button>
           <div>
             <label>
