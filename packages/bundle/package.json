@@ -9,7 +9,7 @@
     "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
-    "prepare": "webpack --run-prod",
+    "prepare": "npm run build && webpack --run-prod",
     "test": "jest",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },
