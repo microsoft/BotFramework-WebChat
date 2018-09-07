@@ -1,435 +1,435 @@
-import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from 'botframework-directlinejs';
-import { strings, defaultStrings, Strings } from './Strings';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Speech } from './SpeechModule';
-import { ActivityOrID } from './Types';
-import { HostConfig } from 'adaptivecards';
-import * as konsole from './Konsole';
+// import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from 'botframework-directlinejs';
+// import { strings, defaultStrings, Strings } from './Strings';
+// import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+// import { Speech } from './SpeechModule';
+// import { ActivityOrID } from './Types';
+// import { HostConfig } from 'adaptivecards';
+// import * as konsole from './Konsole';
 
 // Reducers - perform state transformations
 
-import { Reducer } from 'redux';
+// import { Reducer } from 'redux';
 
-export enum ListeningState {
-    STOPPED,
-    STARTING,
-    STARTED,
-    STOPPING
-}
+// export enum ListeningState {
+//     STOPPED,
+//     STARTING,
+//     STARTED,
+//     STOPPING
+// }
 
-export const sendMessage = (text: string, from: User, locale: string) => ({
-    type: 'Send_Message',
-    activity: {
-        type: "message",
-        text,
-        from,
-        locale,
-        textFormat: 'plain',
-        timestamp: (new Date()).toISOString()
-    }} as ChatActions);
+// export const sendMessage = (text: string, from: User, locale: string) => ({
+//     type: 'Send_Message',
+//     activity: {
+//         type: "message",
+//         text,
+//         from,
+//         locale,
+//         textFormat: 'plain',
+//         timestamp: (new Date()).toISOString()
+//     }} as ChatActions);
 
-export const sendFiles = (files: FileList, from: User, locale: string) => ({
-    type: 'Send_Message',
-    activity: {
-        type: "message",
-        attachments: attachmentsFromFiles(files),
-        from,
-        locale
-    }} as ChatActions);
+// export const sendFiles = (files: FileList, from: User, locale: string) => ({
+//     type: 'Send_Message',
+//     activity: {
+//         type: "message",
+//         attachments: attachmentsFromFiles(files),
+//         from,
+//         locale
+//     }} as ChatActions);
 
-const attachmentsFromFiles = (files: FileList) => {
-    const attachments: Media[] = [];
-    for (let i = 0, numFiles = files.length; i < numFiles; i++) {
-        const file = files[i];
-        attachments.push({
-            contentType: file.type as MediaType,
-            contentUrl: window.URL.createObjectURL(file),
-            name: file.name
-        });
-    }
-    return attachments;
-}
+// const attachmentsFromFiles = (files: FileList) => {
+//     const attachments: Media[] = [];
+//     for (let i = 0, numFiles = files.length; i < numFiles; i++) {
+//         const file = files[i];
+//         attachments.push({
+//             contentType: file.type as MediaType,
+//             contentUrl: window.URL.createObjectURL(file),
+//             name: file.name
+//         });
+//     }
+//     return attachments;
+// }
 
-export interface ShellState {
-    sendTyping: boolean
-    input: string
-    listeningState: ListeningState
-    lastInputViaSpeech : boolean
-}
+// export interface ShellState {
+//     sendTyping: boolean
+//     input: string
+//     listeningState: ListeningState
+//     lastInputViaSpeech : boolean
+// }
 
-export type ShellAction = {
-    type: 'Update_Input',
-    input: string
-    source: "text" | "speech"
-} | {
-    type: 'Listening_Starting'
-} | {
-    type: 'Listening_Start'
-} | {
-    type: 'Listening_Stopping'
-} | {
-    type: 'Listening_Stop'
-} | {
-    type: 'Stop_Speaking'
-} |  {
-    type: 'Card_Action_Clicked'
-} | {
-    type: 'Set_Send_Typing',
-    sendTyping: boolean
-} | {
-    type: 'Send_Message',
-    activity: Activity
-}| {
-    type: 'Speak_SSML',
-    ssml: string,
-    locale: string
-    autoListenAfterSpeak: boolean
-}
+// export type ShellAction = {
+//     type: 'Update_Input',
+//     input: string
+//     source: "text" | "speech"
+// } | {
+//     type: 'Listening_Starting'
+// } | {
+//     type: 'Listening_Start'
+// } | {
+//     type: 'Listening_Stopping'
+// } | {
+//     type: 'Listening_Stop'
+// } | {
+//     type: 'Stop_Speaking'
+// } |  {
+//     type: 'Card_Action_Clicked'
+// } | {
+//     type: 'Set_Send_Typing',
+//     sendTyping: boolean
+// } | {
+//     type: 'Send_Message',
+//     activity: Activity
+// }| {
+//     type: 'Speak_SSML',
+//     ssml: string,
+//     locale: string
+//     autoListenAfterSpeak: boolean
+// }
 
-export const shell: Reducer<ShellState> = (
-    state: ShellState = {
-        input: '',
-        sendTyping: false,
-        listeningState: ListeningState.STOPPED,
-        lastInputViaSpeech : false
-    },
-    action: ShellAction
-) => {
-    switch (action.type) {
-        case 'Update_Input':
-            return {
-                ...state,
-                input: action.input,
-                lastInputViaSpeech : action.source == "speech"
-            };
+// export const shell: Reducer<ShellState> = (
+//     state: ShellState = {
+//         input: '',
+//         sendTyping: false,
+//         listeningState: ListeningState.STOPPED,
+//         lastInputViaSpeech : false
+//     },
+//     action: ShellAction
+// ) => {
+//     switch (action.type) {
+//         case 'Update_Input':
+//             return {
+//                 ...state,
+//                 input: action.input,
+//                 lastInputViaSpeech : action.source == "speech"
+//             };
 
-        case 'Listening_Start':
-            return {
-                ...state,
-                listeningState: ListeningState.STARTED
-            };
+//         case 'Listening_Start':
+//             return {
+//                 ...state,
+//                 listeningState: ListeningState.STARTED
+//             };
 
-        case 'Listening_Stop':
-            return {
-                ...state,
-                listeningState: ListeningState.STOPPED
-            };
+//         case 'Listening_Stop':
+//             return {
+//                 ...state,
+//                 listeningState: ListeningState.STOPPED
+//             };
 
-        case 'Listening_Starting':
-            return {
-                ...state,
-                listeningState: ListeningState.STARTING
-            };
+//         case 'Listening_Starting':
+//             return {
+//                 ...state,
+//                 listeningState: ListeningState.STARTING
+//             };
 
-        case 'Listening_Stopping':
-            return {
-                ...state,
-                listeningState: ListeningState.STOPPING
-            };
+//         case 'Listening_Stopping':
+//             return {
+//                 ...state,
+//                 listeningState: ListeningState.STOPPING
+//             };
 
-        case 'Send_Message':
-            return {
-                ...state,
-                input: ''
-            };
+//         case 'Send_Message':
+//             return {
+//                 ...state,
+//                 input: ''
+//             };
 
-        case 'Set_Send_Typing':
-            return {
-                ...state,
-                sendTyping: action.sendTyping
-            };
+//         case 'Set_Send_Typing':
+//             return {
+//                 ...state,
+//                 sendTyping: action.sendTyping
+//             };
 
-        case 'Card_Action_Clicked':
-           return {
-                ...state,
-                lastInputViaSpeech : false
-           };
+//         case 'Card_Action_Clicked':
+//            return {
+//                 ...state,
+//                 lastInputViaSpeech : false
+//            };
 
-        default:
-            return state;
-    }
-}
+//         default:
+//             return state;
+//     }
+// }
 
-export interface FormatState {
-    chatTitle: boolean | string,
-    locale: string,
-    showUploadButton: boolean,
-    strings: Strings,
-    carouselMargin: number
-}
+// export interface FormatState {
+//     chatTitle: boolean | string,
+//     locale: string,
+//     showUploadButton: boolean,
+//     strings: Strings,
+//     carouselMargin: number
+// }
 
-export type FormatAction = {
-    type: 'Set_Chat_Title',
-    chatTitle: boolean | string
-} | {
-    type: 'Set_Locale',
-    locale: string
-} | {
-    type: 'Set_Measurements',
-    carouselMargin: number
-} | {
-    type: 'Toggle_Upload_Button',
-    showUploadButton: boolean
-}
+// export type FormatAction = {
+//     type: 'Set_Chat_Title',
+//     chatTitle: boolean | string
+// } | {
+//     type: 'Set_Locale',
+//     locale: string
+// } | {
+//     type: 'Set_Measurements',
+//     carouselMargin: number
+// } | {
+//     type: 'Toggle_Upload_Button',
+//     showUploadButton: boolean
+// }
 
-export const format: Reducer<FormatState> = (
-    state: FormatState = {
-        chatTitle: true,
-        locale: 'en-us',
-        showUploadButton: true,
-        strings: defaultStrings,
-        carouselMargin: undefined
-    },
-    action: FormatAction
-) => {
-    switch (action.type) {
-        case 'Set_Chat_Title':
-            return {
-                ...state,
-                chatTitle: typeof action.chatTitle === 'undefined' ? true : action.chatTitle
-            };
-        case 'Set_Locale':
-            return {
-                ...state,
-                locale: action.locale,
-                strings: strings(action.locale)
-            };
-        case 'Set_Measurements':
-            return {
-                ...state,
-                carouselMargin: action.carouselMargin
-            };
-        case 'Toggle_Upload_Button':
-            return {
-                ...state,
-                showUploadButton: action.showUploadButton
-            };
-        default:
-            return state;
-    }
-}
+// export const format: Reducer<FormatState> = (
+//     state: FormatState = {
+//         chatTitle: true,
+//         locale: 'en-us',
+//         showUploadButton: true,
+//         strings: defaultStrings,
+//         carouselMargin: undefined
+//     },
+//     action: FormatAction
+// ) => {
+//     switch (action.type) {
+//         case 'Set_Chat_Title':
+//             return {
+//                 ...state,
+//                 chatTitle: typeof action.chatTitle === 'undefined' ? true : action.chatTitle
+//             };
+//         case 'Set_Locale':
+//             return {
+//                 ...state,
+//                 locale: action.locale,
+//                 strings: strings(action.locale)
+//             };
+//         case 'Set_Measurements':
+//             return {
+//                 ...state,
+//                 carouselMargin: action.carouselMargin
+//             };
+//         case 'Toggle_Upload_Button':
+//             return {
+//                 ...state,
+//                 showUploadButton: action.showUploadButton
+//             };
+//         default:
+//             return state;
+//     }
+// }
 
-export interface SizeState {
-    height: number,
-    width: number,
-}
+// export interface SizeState {
+//     height: number,
+//     width: number,
+// }
 
-export type SizeAction = {
-    type: 'Set_Size',
-    width: number,
-    height: number
-}
+// export type SizeAction = {
+//     type: 'Set_Size',
+//     width: number,
+//     height: number
+// }
 
-export const size: Reducer<SizeState> = (
-    state: SizeState = {
-        width: undefined,
-        height: undefined
-    },
-    action: SizeAction
-) => {
-    switch (action.type) {
-        case 'Set_Size':
-            return {
-                ... state,
-                width: action.width,
-                height: action.height
-            };
-        default:
-            return state;
-    }
-}
+// export const size: Reducer<SizeState> = (
+//     state: SizeState = {
+//         width: undefined,
+//         height: undefined
+//     },
+//     action: SizeAction
+// ) => {
+//     switch (action.type) {
+//         case 'Set_Size':
+//             return {
+//                 ... state,
+//                 width: action.width,
+//                 height: action.height
+//             };
+//         default:
+//             return state;
+//     }
+// }
 
 
-export interface ConnectionState {
-    connectionStatus: ConnectionStatus,
-    botConnection: IBotConnection,
-    selectedActivity: BehaviorSubject<ActivityOrID>,
-    user: User,
-    bot: User
-}
+// export interface ConnectionState {
+//     connectionStatus: ConnectionStatus,
+//     botConnection: IBotConnection,
+//     selectedActivity: BehaviorSubject<ActivityOrID>,
+//     user: User,
+//     bot: User
+// }
 
-export type ConnectionAction = {
-    type: 'Start_Connection',
-    botConnection: IBotConnection,
-    user: User,
-    bot: User,
-    selectedActivity: BehaviorSubject<ActivityOrID>
-} | {
-    type: 'Connection_Change',
-    connectionStatus: ConnectionStatus
-}
+// export type ConnectionAction = {
+//     type: 'Start_Connection',
+//     botConnection: IBotConnection,
+//     user: User,
+//     bot: User,
+//     selectedActivity: BehaviorSubject<ActivityOrID>
+// } | {
+//     type: 'Connection_Change',
+//     connectionStatus: ConnectionStatus
+// }
 
-export const connection: Reducer<ConnectionState> = (
-    state: ConnectionState = {
-        connectionStatus: ConnectionStatus.Uninitialized,
-        botConnection: undefined,
-        selectedActivity: undefined,
-        user: undefined,
-        bot: undefined
-    },
-    action: ConnectionAction
-) => {
-    switch (action.type) {
-        case 'Start_Connection':
-            return {
-                ... state,
-                botConnection: action.botConnection,
-                user: action.user,
-                bot: action.bot,
-                selectedActivity: action.selectedActivity
-            };
-        case 'Connection_Change':
-            return {
-                ... state,
-                connectionStatus: action.connectionStatus
-            };
-        default:
-            return state;
-    }
-}
+// export const connection: Reducer<ConnectionState> = (
+//     state: ConnectionState = {
+//         connectionStatus: ConnectionStatus.Uninitialized,
+//         botConnection: undefined,
+//         selectedActivity: undefined,
+//         user: undefined,
+//         bot: undefined
+//     },
+//     action: ConnectionAction
+// ) => {
+//     switch (action.type) {
+//         case 'Start_Connection':
+//             return {
+//                 ... state,
+//                 botConnection: action.botConnection,
+//                 user: action.user,
+//                 bot: action.bot,
+//                 selectedActivity: action.selectedActivity
+//             };
+//         case 'Connection_Change':
+//             return {
+//                 ... state,
+//                 connectionStatus: action.connectionStatus
+//             };
+//         default:
+//             return state;
+//     }
+// }
 
-export interface HistoryState {
-    activities: Activity[],
-    clientActivityBase: string,
-    clientActivityCounter: number,
-    selectedActivity: Activity
-}
+// export interface HistoryState {
+//     activities: Activity[],
+//     clientActivityBase: string,
+//     clientActivityCounter: number,
+//     selectedActivity: Activity
+// }
 
-export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
-    activity: Activity
-} | {
-    type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
-    clientActivityId: string
-} | {
-    type: 'Send_Message_Succeed'
-    clientActivityId: string
-    id: string
-} | {
-    type: 'Select_Activity',
-    selectedActivity: Activity
-} | {
-    type: 'Take_SuggestedAction',
-    message: Message
-} | {
-    type: 'Clear_Typing',
-    id: string
-}
+// export type HistoryAction = {
+//     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
+//     activity: Activity
+// } | {
+//     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
+//     clientActivityId: string
+// } | {
+//     type: 'Send_Message_Succeed'
+//     clientActivityId: string
+//     id: string
+// } | {
+//     type: 'Select_Activity',
+//     selectedActivity: Activity
+// } | {
+//     type: 'Take_SuggestedAction',
+//     message: Message
+// } | {
+//     type: 'Clear_Typing',
+//     id: string
+// }
 
-const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
-    ... array.slice(0, i),
-    item,
-    ... array.slice(i + 1)
-];
+// const copyArrayWithUpdatedItem = <T>(array: Array<T>, i: number, item: T) => [
+//     ... array.slice(0, i),
+//     item,
+//     ... array.slice(i + 1)
+// ];
 
-export const history: Reducer<HistoryState> = (
-    state: HistoryState = {
-        activities: [],
-        clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
-        clientActivityCounter: 0,
-        selectedActivity: null
-    },
-    action: HistoryAction
-) => {
-    konsole.log("history action", action);
-    switch (action.type) {
-        case 'Receive_Sent_Message': {
-            if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
-                // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
-                return state;
-            }
-            const i = state.activities.findIndex(activity =>
-                activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
-            );
-            if (i !== -1) {
-                const activity = state.activities[i];
-                return {
-                    ... state,
-                    activities: copyArrayWithUpdatedItem(state.activities, i, activity),
-                    selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
-                };
-            }
-            // else fall through and treat this as a new message
-        }
-        case 'Receive_Message':
-            if (state.activities.find(a => a.id === action.activity.id)) return state; // don't allow duplicate messages
+// export const history: Reducer<HistoryState> = (
+//     state: HistoryState = {
+//         activities: [],
+//         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
+//         clientActivityCounter: 0,
+//         selectedActivity: null
+//     },
+//     action: HistoryAction
+// ) => {
+//     konsole.log("history action", action);
+//     switch (action.type) {
+        // case 'Receive_Sent_Message': {
+        //     if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
+        //         // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
+        //         return state;
+        //     }
+        //     const i = state.activities.findIndex(activity =>
+        //         activity.channelData && activity.channelData.clientActivityId === action.activity.channelData.clientActivityId
+        //     );
+        //     if (i !== -1) {
+        //         const activity = state.activities[i];
+        //         return {
+        //             ... state,
+        //             activities: copyArrayWithUpdatedItem(state.activities, i, activity),
+        //             selectedActivity: state.selectedActivity === activity ? action.activity : state.selectedActivity
+        //         };
+        //     }
+        //     // else fall through and treat this as a new message
+        // }
+        // case 'Receive_Message':
+        //     if (state.activities.find(a => a.id === action.activity.id)) return state; // don't allow duplicate messages
 
-            return {
-                ... state,
-                activities: [
-                    ... state.activities.filter(activity => activity.type !== "typing"),
-                    action.activity,
-                    ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
-                ]
-            };
+        //     return {
+        //         ... state,
+        //         activities: [
+        //             ... state.activities.filter(activity => activity.type !== "typing"),
+        //             action.activity,
+        //             ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
+        //         ]
+        //     };
 
-        case 'Send_Message':
-            return {
-                ... state,
-                activities: [
-                    ... state.activities.filter(activity => activity.type !== "typing"),
-                    {
-                        ... action.activity,
-                        timestamp: (new Date()).toISOString(),
-                        channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
-                    },
-                    ... state.activities.filter(activity => activity.type === "typing"),
-                ],
-                clientActivityCounter: state.clientActivityCounter + 1
-            };
+        // case 'Send_Message':
+        //     return {
+        //         ... state,
+        //         activities: [
+        //             ... state.activities.filter(activity => activity.type !== "typing"),
+        //             {
+        //                 ... action.activity,
+        //                 timestamp: (new Date()).toISOString(),
+        //                 channelData: { clientActivityId: state.clientActivityBase + state.clientActivityCounter }
+        //             },
+        //             ... state.activities.filter(activity => activity.type === "typing"),
+        //         ],
+        //         clientActivityCounter: state.clientActivityCounter + 1
+        //     };
 
-        case 'Send_Message_Retry': {
-            const activity = state.activities.find(activity =>
-                activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
-            );
-            const newActivity = activity.id === undefined ? activity : { ... activity, id: undefined };
-            return {
-                ... state,
-                activities: [
-                    ... state.activities.filter(activityT => activityT.type !== "typing" && activityT !== activity),
-                    newActivity,
-                    ... state.activities.filter(activity => activity.type === "typing")
-                ],
-                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
-            };
-        }
-        case 'Send_Message_Succeed':
-        case 'Send_Message_Fail': {
-            const i = state.activities.findIndex(activity =>
-                activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
-            );
-            if (i === -1) return state;
+        // case 'Send_Message_Retry': {
+        //     const activity = state.activities.find(activity =>
+        //         activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
+        //     );
+        //     const newActivity = activity.id === undefined ? activity : { ... activity, id: undefined };
+        //     return {
+        //         ... state,
+        //         activities: [
+        //             ... state.activities.filter(activityT => activityT.type !== "typing" && activityT !== activity),
+        //             newActivity,
+        //             ... state.activities.filter(activity => activity.type === "typing")
+        //         ],
+        //         selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+        //     };
+        // }
+        // case 'Send_Message_Succeed':
+        // case 'Send_Message_Fail': {
+        //     const i = state.activities.findIndex(activity =>
+        //         activity.channelData && activity.channelData.clientActivityId === action.clientActivityId
+        //     );
+        //     if (i === -1) return state;
 
-            const activity = state.activities[i];
-            if (activity.id && activity.id != "retry") return state;
+        //     const activity = state.activities[i];
+        //     if (activity.id && activity.id != "retry") return state;
 
-            const newActivity = {
-                ... activity,
-                id: action.type === 'Send_Message_Succeed' ? action.id : null
-            };
-            return {
-                ... state,
-                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
-                clientActivityCounter: state.clientActivityCounter + 1,
-                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
-            };
-        }
-        case 'Show_Typing':
-            return {
-                ... state,
-                activities: [
-                    ... state.activities.filter(activity => activity.type !== "typing"),
-                    ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
-                    action.activity
-                ]
-            };
+        //     const newActivity = {
+        //         ... activity,
+        //         id: action.type === 'Send_Message_Succeed' ? action.id : null
+        //     };
+        //     return {
+        //         ... state,
+        //         activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
+        //         clientActivityCounter: state.clientActivityCounter + 1,
+        //         selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+        //     };
+        // }
+        // case 'Show_Typing':
+        //     return {
+        //         ... state,
+        //         activities: [
+        //             ... state.activities.filter(activity => activity.type !== "typing"),
+        //             ... state.activities.filter(activity => activity.from.id !== action.activity.from.id && activity.type === "typing"),
+        //             action.activity
+        //         ]
+        //     };
 
-        case 'Clear_Typing':
-            return {
-                ... state,
-                activities: state.activities.filter(activity => activity.id !== action.id),
-                selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
-            };
+        // case 'Clear_Typing':
+        //     return {
+        //         ... state,
+        //         activities: state.activities.filter(activity => activity.id !== action.id),
+        //         selectedActivity: state.selectedActivity && state.selectedActivity.id === action.id ? null : state.selectedActivity
+        //     };
 
         case 'Select_Activity':
             if (action.selectedActivity === state.selectedActivity) return state;
@@ -451,8 +451,8 @@ export const history: Reducer<HistoryState> = (
         //         selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
         //     }
 
-        default:
-            return state;
+        // default:
+        //     return state;
     }
 }
 
@@ -484,18 +484,18 @@ export const history: Reducer<HistoryState> = (
 // }
 
 
-export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;
+// export type ChatActions = ShellAction | FormatAction | SizeAction | ConnectionAction | HistoryAction | AdaptiveCardsAction;
 
-const nullAction = { type: null } as ChatActions;
+// const nullAction = { type: null } as ChatActions;
 
-export interface ChatState {
-    adaptiveCards: AdaptiveCardsState,
-    connection: ConnectionState,
-    format: FormatState,
-    history: HistoryState,
-    shell: ShellState,
-    size: SizeState
-}
+// export interface ChatState {
+//     adaptiveCards: AdaptiveCardsState,
+//     connection: ConnectionState,
+//     format: FormatState,
+//     history: HistoryState,
+//     shell: ShellState,
+//     size: SizeState
+// }
 
 const speakFromMsg = (msg: Message, fallbackLocale: string) => {
     let speak = msg.speak;
@@ -542,13 +542,13 @@ import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 
 
-const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType('Send_Message')
-    .map(action => {
-        const state = store.getState();
-        const clientActivityId = state.history.clientActivityBase + (state.history.clientActivityCounter - 1);
-        return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
-    });
+// const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType('Send_Message')
+//     .map(action => {
+//         const state = store.getState();
+//         const clientActivityId = state.history.clientActivityBase + (state.history.clientActivityCounter - 1);
+//         return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
+//     });
 
 const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
@@ -577,7 +577,7 @@ const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
     });
 
-const speakObservable = Observable.bindCallback<string, string, {}, {}>(Speech.SpeechSynthesizer.speak);
+// const speakObservable = Observable.bindCallback<string, string, {}, {}>(Speech.SpeechSynthesizer.speak);
 
 const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Speak_SSML')
@@ -597,10 +597,10 @@ const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     })
     .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stopping' } as ShellAction)));
 
-const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType('Receive_Message')
-    .filter(action => (action.activity as Message) && store.getState().shell.lastInputViaSpeech)
-    .map(action => speakFromMsg(action.activity as Message, store.getState().format.locale) as ShellAction);
+// const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType('Receive_Message')
+//     .filter(action => (action.activity as Message) && store.getState().shell.lastInputViaSpeech)
+//     .map(action => speakFromMsg(action.activity as Message, store.getState().format.locale) as ShellAction);
 
 const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType(
@@ -625,33 +625,33 @@ const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     })
     .map(_ => nullAction);
 
-const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType('Listening_Starting')
-    .do(async (action : ShellAction) => {
-        const { history: { activities }, format: { locale } } = store.getState();
-        const lastMessageActivity = [...activities].reverse().find(activity => activity.type === 'message');
-        // TODO: Bump DirectLineJS version to support "listenFor" grammars
-        const grammars: string[] = lastMessageActivity && (lastMessageActivity as any).listenFor;
-        const onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source: 'speech' })};
-        const onFinalResult = (srText : string) => {
-            srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
-            onIntermediateResult(srText);
-            store.dispatch({ type: 'Listening_Stopping' });
-            store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
-        };
-        const onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
-        const onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
+// const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType('Listening_Starting')
+//     .do(async (action : ShellAction) => {
+//         const { history: { activities }, format: { locale } } = store.getState();
+//         const lastMessageActivity = [...activities].reverse().find(activity => activity.type === 'message');
+//         // TODO: Bump DirectLineJS version to support "listenFor" grammars
+//         const grammars: string[] = lastMessageActivity && (lastMessageActivity as any).listenFor;
+//         const onIntermediateResult = (srText : string) => { store.dispatch({ type: 'Update_Input', input: srText, source: 'speech' })};
+//         const onFinalResult = (srText : string) => {
+//             srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
+//             onIntermediateResult(srText);
+//             store.dispatch({ type: 'Listening_Stopping' });
+//             store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
+//         };
+//         const onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
+//         const onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};
 
-        await Speech.SpeechRecognizer.startRecognizing(
-            locale,
-            grammars,
-            onIntermediateResult,
-            onFinalResult,
-            onAudioStreamStart,
-            onRecognitionFailed
-        );
-    })
-    .map(_ => nullAction)
+//         await Speech.SpeechRecognizer.startRecognizing(
+//             locale,
+//             grammars,
+//             onIntermediateResult,
+//             onFinalResult,
+//             onAudioStreamStart,
+//             onRecognitionFailed
+//         );
+//     })
+//     .map(_ => nullAction)
 
 const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 {
@@ -663,9 +663,9 @@ const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, stor
             .takeUntil(cancelMessages$));
 };
 
-const retrySendMessageEpic: Epic<ChatActions, ChatState> = (action$) =>
-    action$.ofType('Send_Message_Retry')
-    .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
+// const retrySendMessageEpic: Epic<ChatActions, ChatState> = (action$) =>
+//     action$.ofType('Send_Message_Retry')
+//     .map(action => ({ type: 'Send_Message_Try', clientActivityId: action.clientActivityId } as HistoryAction));
 
 const updateSelectedActivityEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType(
@@ -681,25 +681,25 @@ const updateSelectedActivityEpic: Epic<ChatActions, ChatState> = (action$, store
         return nullAction;
     });
 
-const showTypingEpic: Epic<ChatActions, ChatState> = (action$) =>
-    action$.ofType('Show_Typing')
-    .delay(3000)
-    .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
+// const showTypingEpic: Epic<ChatActions, ChatState> = (action$) =>
+//     action$.ofType('Show_Typing')
+//     .delay(3000)
+//     .map(action => ({ type: 'Clear_Typing', id: action.activity.id } as HistoryAction));
 
-const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType('Update_Input')
-    .map(_ => store.getState())
-    .filter(state => state.shell.sendTyping)
-    .throttleTime(3000)
-    .do(_ => konsole.log("sending typing"))
-    .flatMap(state =>
-        state.connection.botConnection.postActivity({
-            type: 'typing',
-            from: state.connection.user
-        })
-        .map(_ => nullAction)
-        .catch(error => Observable.of(nullAction))
-    );
+// const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType('Update_Input')
+//     .map(_ => store.getState())
+//     .filter(state => state.shell.sendTyping)
+//     .throttleTime(3000)
+//     .do(_ => konsole.log("sending typing"))
+//     .flatMap(state =>
+//         state.connection.botConnection.postActivity({
+//             type: 'typing',
+//             from: state.connection.user
+//         })
+//         .map(_ => nullAction)
+//         .catch(error => Observable.of(nullAction))
+//     );
 
 // Now we put it all together into a store with middleware
 
