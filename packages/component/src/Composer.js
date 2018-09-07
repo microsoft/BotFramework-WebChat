@@ -21,7 +21,6 @@ import {
 
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
-import debounce from './Utils/debounce';
 import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
 import mapMap from './Utils/mapMap';
 

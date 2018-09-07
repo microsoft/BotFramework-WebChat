@@ -45,6 +45,8 @@
   },
   "dependencies": {
     "adaptivecards": "^1.0.0",
+    "backend": "^1.0.0",
+    "bytes": "^3.0.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
     "memoize-one": "^3.1.1",

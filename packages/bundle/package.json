@@ -9,15 +9,21 @@
     "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
+    "prepare": "webpack --run-prod",
     "test": "jest",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "backend": "^1.0.0",
     "botframework-directlinejs": "0.9.18-master.3cece81",
+    "component": "^1.0.0",
+    "markdown-it": "^8.4.2",
+    "markdown-it-for-inline": "^0.1.1",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
-    "react-redux": "^5.0.7"
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -31,6 +37,8 @@
     "@types/react": "^16.4.13",
     "babel-core": "7.0.0-bridge.0",
     "concurrently": "^4.0.1",
-    "typescript": "^3.0.3"
+    "typescript": "^3.0.3",
+    "webpack": "^4.17.2",
+    "webpack-command": "^0.4.1"
   }
 }

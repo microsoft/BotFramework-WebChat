@@ -8,3 +8,9 @@ export {
   createDirectLine,
   renderMarkdown
 }
+
+window['WebChat'] = {
+  createDirectLine,
+  renderMarkdown,
+  renderWebChat
+};
