@@ -523,23 +523,23 @@ const speakFromMsg = (msg: Message, fallbackLocale: string) => {
 
 // Epics - chain actions together with async operations
 
-import { applyMiddleware } from 'redux';
-import { Epic } from 'redux-observable';
-import { Observable } from 'rxjs/Observable';
+// import { applyMiddleware } from 'redux';
+// import { Epic } from 'redux-observable';
+// import { Observable } from 'rxjs/Observable';
 
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/merge';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/operator/takeUntil';
+// import 'rxjs/add/operator/catch';
+// import 'rxjs/add/operator/delay';
+// import 'rxjs/add/operator/do';
+// import 'rxjs/add/operator/filter';
+// import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/merge';
+// import 'rxjs/add/operator/mergeMap';
+// import 'rxjs/add/operator/throttleTime';
+// import 'rxjs/add/operator/takeUntil';
 
-import 'rxjs/add/observable/bindCallback';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/of';
+// import 'rxjs/add/observable/bindCallback';
+// import 'rxjs/add/observable/empty';
+// import 'rxjs/add/observable/of';
 
 
 // const sendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
@@ -550,52 +550,52 @@ import 'rxjs/add/observable/of';
 //         return ({ type: 'Send_Message_Try', clientActivityId } as HistoryAction);
 //     });
 
-const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType('Send_Message_Try')
-    .flatMap(action => {
-        const state = store.getState();
-        const clientActivityId = action.clientActivityId;
-        const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
-        if (!activity) {
-            konsole.log("trySendMessage: activity not found");
-            return Observable.empty<HistoryAction>();
-        }
+// const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType('Send_Message_Try')
+//     .flatMap(action => {
+//         const state = store.getState();
+//         const clientActivityId = action.clientActivityId;
+//         const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
+//         if (!activity) {
+//             konsole.log("trySendMessage: activity not found");
+//             return Observable.empty<HistoryAction>();
+//         }
 
-        if (state.history.clientActivityCounter == 1) {
-            var capabilities = {
-                type : 'ClientCapabilities',
-                requiresBotState: true,
-                supportsTts: true,
-                supportsListening: true,
-                // Todo: consider implementing acknowledgesTts: true
-            };
-            (<any>activity).entities  =(<any>activity).entities == null ? [capabilities] :  [...(<any>activity).entities, capabilities];
-        }
+//         if (state.history.clientActivityCounter == 1) {
+//             var capabilities = {
+//                 type : 'ClientCapabilities',
+//                 requiresBotState: true,
+//                 supportsTts: true,
+//                 supportsListening: true,
+//                 // Todo: consider implementing acknowledgesTts: true
+//             };
+//             (<any>activity).entities  =(<any>activity).entities == null ? [capabilities] :  [...(<any>activity).entities, capabilities];
+//         }
 
-        return state.connection.botConnection.postActivity(activity)
-        .map(id => ({ type: 'Send_Message_Succeed', clientActivityId, id } as HistoryAction))
-        .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
-    });
+//         return state.connection.botConnection.postActivity(activity)
+//         .map(id => ({ type: 'Send_Message_Succeed', clientActivityId, id } as HistoryAction))
+//         .catch(error => Observable.of({ type: 'Send_Message_Fail', clientActivityId } as HistoryAction))
+//     });
 
 // const speakObservable = Observable.bindCallback<string, string, {}, {}>(Speech.SpeechSynthesizer.speak);
 
-const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType('Speak_SSML')
-    .filter(action => action.ssml )
-    .mergeMap(action => {
+// const speakSSMLEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType('Speak_SSML')
+//     .filter(action => action.ssml )
+//     .mergeMap(action => {
 
-        var onSpeakingStarted =  null;
-        var onSpeakingFinished = () => nullAction;
-        if(action.autoListenAfterSpeak) {
-            onSpeakingStarted = () => Speech.SpeechRecognizer.warmup() ;
-            onSpeakingFinished = () => ({ type: 'Listening_Starting' } as ShellAction);
-        }
+//         var onSpeakingStarted =  null;
+//         var onSpeakingFinished = () => nullAction;
+//         if(action.autoListenAfterSpeak) {
+//             onSpeakingStarted = () => Speech.SpeechRecognizer.warmup() ;
+//             onSpeakingFinished = () => ({ type: 'Listening_Starting' } as ShellAction);
+//         }
 
-        const call$ = speakObservable(action.ssml, action.locale, onSpeakingStarted);
-        return call$.map(onSpeakingFinished)
-            .catch(error => Observable.of(nullAction));
-    })
-    .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stopping' } as ShellAction)));
+//         const call$ = speakObservable(action.ssml, action.locale, onSpeakingStarted);
+//         return call$.map(onSpeakingFinished)
+//             .catch(error => Observable.of(nullAction));
+//     })
+//     .merge(action$.ofType('Speak_SSML').map(_ => ({ type: 'Listening_Stopping' } as ShellAction)));
 
 // const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 //     action$.ofType('Receive_Message')

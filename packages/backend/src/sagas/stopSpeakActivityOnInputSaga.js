@@ -15,8 +15,7 @@ import { START_SPEECH_INPUT } from '../Actions/startSpeechInput';
 export default function* () {
   yield whileConnected(function* (_, userID) {
     for (;;) {
-      const action = yield take(({ payload, type }) => type === START_SPEECH_INPUT || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech'));
-
+      yield take(({ payload, type }) => type === START_SPEECH_INPUT || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech'));
       yield put(stopSpeakingActivity());
 
       const activities = yield select(({ activities }) => activities);

@@ -29,11 +29,15 @@ const SEND_TIMEOUT = 5000;
 
 export default function* () {
   yield whileConnected(function* (directLine, userID) {
-    yield takeEvery(POST_ACTIVITY, postActivity.bind(null, directLine, userID));
+    for (let numActivitiesPosted = 0;; numActivitiesPosted++) {
+      const action = yield take(POST_ACTIVITY);
+
+      yield fork(postActivity, directLine, userID, numActivitiesPosted, action);
+    }
   });
 }
 
-function* postActivity(directLine, userID, { payload: { activity } }) {
+function* postActivity(directLine, userID, numActivitiesPosted, { payload: { activity } }) {
   const locale = yield select(({ settings: { language } }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
@@ -55,6 +59,18 @@ function* postActivity(directLine, userID, { payload: { activity } }) {
     locale,
     timestamp: getTimestamp()
   };
+
+  if (!numActivitiesPosted) {
+    activity.entities = [...activity.entities || [], {
+      // TODO: Clean up the capabilities
+      requiresBotState: true,
+      supportsListening: true,
+      supportsTts: true,
+      type: 'ClientCapabilities'
+    }];
+  }
+
+  console.warn(activity);
 
   const meta = { clientActivityID };
 
