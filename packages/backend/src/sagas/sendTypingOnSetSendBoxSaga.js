@@ -1,7 +1,6 @@
 import {
   call,
   put,
-  select,
   takeLatest
 } from 'redux-saga/effects';
 
@@ -14,7 +13,7 @@ import sleep from '../util/sleep';
 const SEND_INTERVAL = 3000;
 
 export default function* () {
-  yield whileConnected(function* (_, userID) {
+  yield whileConnected(function* () {
     let lastSend = 0;
 
     yield takeLatest(SET_SEND_BOX, function* ({ payload: { text } }) {
@@ -25,17 +24,7 @@ export default function* () {
           yield call(sleep, interval);
         }
 
-        const language = yield select(({ settings: { language } }) => language);
-
-        yield put(postActivity({
-          from: {
-            id: userID,
-            role: 'user'
-          },
-          locale: language,
-          timestamp: (new Date()).toISOString(),
-          type: 'typing'
-        }));
+        yield put(postActivity({ type: 'typing' }));
 
         lastSend = Date.now();
       }

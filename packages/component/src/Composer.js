@@ -9,6 +9,7 @@ import {
   disconnect,
   markActivity,
   postActivity,
+  sendFiles,
   sendMessage,
   setLanguage,
   setSendBox,
@@ -33,6 +34,7 @@ const DEFAULT_USER_ID = 'default-user';
 const DISPATCHERS = {
   markActivity,
   postActivity,
+  sendFiles,
   sendMessage,
   setSendBox,
   startSpeakingActivity,
@@ -41,16 +43,6 @@ const DISPATCHERS = {
   stopSpeechInput,
   submitSendBox
 };
-
-function findLastIndex(array, predicate) {
-  for (let index = array.length - 1; index >= 0; index--) {
-    if (predicate.call(array, array[index])) {
-      return index;
-    }
-  }
-
-  return -1;
-}
 
 function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
@@ -155,24 +147,6 @@ function createLogic(props) {
         break;
     }
   });
-
-  const sendFiles = props.sendFiles || ((...files) => props.dispatch(postActivity({
-    attachments: files.map(file => ({
-      contentObject: file,
-      contentType: 'application/octet-stream',
-      name: file.name
-    })),
-    channelData: {
-      attachmentSizes: files.map(file => file.size)
-    },
-    from: {
-      id: userID,
-      role: 'user'
-    },
-    locale: lang,
-    timestamp: (new Date()).toISOString(),
-    type: 'message'
-  })));
 
   // TODO: Revisit all members of context
   return {

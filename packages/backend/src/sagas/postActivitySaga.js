@@ -3,6 +3,7 @@ import {
   fork,
   join,
   put,
+  select,
   take,
   takeEvery
 } from 'redux-saga/effects';
@@ -13,7 +14,6 @@ import whileConnected from './effects/whileConnected';
 
 import deleteKey from '../util/deleteKey';
 import getTimestamp from '../util/getTimestamp';
-import sleep from '../util/sleep';
 import uniqueID from '../util/uniqueID';
 
 import {
@@ -28,25 +28,31 @@ import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
 const SEND_TIMEOUT = 5000;
 
 export default function* () {
-  yield whileConnected(function* (directLine) {
-    yield takeEvery(POST_ACTIVITY, postActivity.bind(null, directLine));
+  yield whileConnected(function* (directLine, userID) {
+    yield takeEvery(POST_ACTIVITY, postActivity.bind(null, directLine, userID));
   });
 }
 
-function* postActivity(directLine, { payload: { activity } }) {
+function* postActivity(directLine, userID, { payload: { activity } }) {
+  const locale = yield select(({ settings: { language } }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
     ...deleteKey(activity, 'id'),
-    attachments: attachments && attachments.map(({ contentObject, contentType, name }) => ({
+    attachments: attachments && attachments.map(({ contentType, contentUrl, name }) => ({
       contentType,
-      contentUrl: window.URL.createObjectURL(contentObject),
+      contentUrl,
       name
     })),
     channelData: {
       clientActivityID,
       ...deleteKey(activity.channelData, 'state')
     },
+    from: {
+      id: userID,
+      role: 'user'
+    },
+    locale,
     timestamp: getTimestamp()
   };
 
@@ -87,7 +93,5 @@ function* postActivity(directLine, { payload: { activity } }) {
     if (yield cancelled()) {
       yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: new Error('cancelled') });
     }
-
-    (activity.attachments || []).forEach(attachment => window.URL.revokeObjectURL(attachment.contentUrl));
   }
 }

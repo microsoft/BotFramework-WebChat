@@ -1,6 +1,5 @@
 import {
   put,
-  select,
   take
 } from 'redux-saga/effects';
 
@@ -12,18 +11,12 @@ import startSpeakingActivity from '../Actions/startSpeakingActivity';
 import stopSpeakingActivity from '../Actions/stopSpeakingActivity';
 
 export default function* () {
-  yield whileConnected(function* (_, userID) {
+  yield whileConnected(function* () {
     for (;;) {
       const { payload: { text, via } } = yield take(SEND_MESSAGE);
-      const language = yield select(({ settings: { language } }) => language);
 
       if (text) {
         yield put(postActivity({
-          from: {
-            id: userID,
-            role: 'user'
-          },
-          locale: language,
           text,
           textFormat: 'plain',
           timestamp: (new Date()).toISOString(),

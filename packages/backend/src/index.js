@@ -3,6 +3,7 @@ import createStore from './createStore';
 import disconnect from './Actions/disconnect';
 import markActivity from './Actions/markActivity';
 import postActivity from './Actions/postActivity';
+import sendFiles from './Actions/sendFiles';
 import sendMessage from './Actions/sendMessage';
 import setLanguage from './Actions/setLanguage';
 import setSendBox from './Actions/setSendBox';
@@ -18,6 +19,7 @@ export {
   disconnect,
   markActivity,
   postActivity,
+  sendFiles,
   sendMessage,
   setLanguage,
   setSendBox,
