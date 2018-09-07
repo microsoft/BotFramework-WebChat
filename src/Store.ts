@@ -53,8 +53,10 @@ const attachmentsFromFiles = (files: FileList) => {
 export interface ShellState {
     sendTyping: boolean;
     input: string;
+    placeholder: string;
     listeningState: ListeningState;
     lastInputViaSpeech: boolean;
+    inputDisabled: boolean;
 }
 
 export type ShellAction = {
@@ -84,6 +86,12 @@ export type ShellAction = {
     ssml: string,
     locale: string
     autoListenAfterSpeak: boolean
+}| {
+    type: 'Select_Date',
+    date: string
+}| {
+    type: 'Submit_Date',
+    message: MessageWithDate
 };
 
 export const shell: Reducer<ShellState> = (
@@ -91,7 +99,9 @@ export const shell: Reducer<ShellState> = (
         input: '',
         sendTyping: false,
         listeningState: ListeningState.STOPPED,
-        lastInputViaSpeech : false
+        lastInputViaSpeech : false,
+        inputDisabled: false,
+        placeholder: defaultStrings.consolePlaceholder
     },
     action: ShellAction
 ) => {
@@ -145,6 +155,22 @@ export const shell: Reducer<ShellState> = (
                 lastInputViaSpeech : false
            };
 
+        case 'Select_Date':
+            return {
+                ...state,
+                inputDisabled: true,
+                lastInputViaSpeech: false,
+                input: '',
+                placeholder: 'Press enter to submit selected date'
+            };
+
+        case 'Submit_Date':
+            return {
+                ...state,
+                inputDisabled: false,
+                placeholder: defaultStrings.consolePlaceholder
+            };
+
         default:
             return state;
     }
@@ -176,7 +202,7 @@ export const format: Reducer<FormatState> = (
     state: FormatState = {
         chatTitle: true,
         locale: 'en-us',
-        showUploadButton: true,
+        showUploadButton: false,
         strings: defaultStrings,
         carouselMargin: undefined
     },
@@ -705,6 +731,7 @@ const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 
 import { combineReducers, createStore as reduxCreateStore, Store } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
+import { MessageWithDate } from './MessagePane';
 
 export const createStore = () =>
     reduxCreateStore(

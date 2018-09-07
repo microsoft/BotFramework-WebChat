@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
+import DatePicker from 'react-datepicker';
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid/v5';
 import { getTabIndex } from './getTabIndex';
@@ -35,6 +36,7 @@ export interface State {
     open: boolean;
 }
 
+import { isMoment } from 'moment';
 import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';

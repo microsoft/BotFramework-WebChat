@@ -5,13 +5,15 @@ import { classList } from './Chat';
 import { Speech } from './SpeechModule';
 import { ChatState, FormatState } from './Store';
 import { ChatActions, ListeningState, sendFiles, sendMessage } from './Store';
-import { Strings } from './Strings';
+import { defaultStrings, Strings } from './Strings';
 
 interface Props {
     inputText: string;
+    placeholder: string;
     strings: Strings;
     listeningState: ListeningState;
     showUploadButton: boolean;
+    inputDisabled: boolean;
 
     onChangeText: (inputText: string) => void;
 
@@ -19,6 +21,7 @@ interface Props {
     sendFiles: (files: FileList) => void;
     stopListening: () => void;
     startListening: () => void;
+
 }
 
 export interface ShellFunctions {
@@ -116,7 +119,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
             this.props.listeningState !== ListeningState.STARTED && 'inactive'
         );
 
-        const placeholder = this.props.listeningState === ListeningState.STARTED ? this.props.strings.listeningIndicator : this.props.strings.consolePlaceholder;
+        const placeholder = this.props.listeningState === ListeningState.STARTED ? this.props.strings.listeningIndicator : this.props.placeholder;
 
         return (
             <div className={ className }>
@@ -159,6 +162,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         placeholder={ placeholder }
                         aria-label={ this.props.inputText ? null : placeholder }
                         aria-live="polite"
+                        disabled={ this.props.inputDisabled }
                     />
                 </div>
                 {/* <button
@@ -198,6 +202,8 @@ export const Shell = connect(
         // passed down to ShellContainer
         inputText: state.shell.input,
         showUploadButton: state.format.showUploadButton,
+        inputDisabled: state.shell.inputDisabled,
+        placeholder: state.shell.placeholder || defaultStrings.consolePlaceholder,
         strings: state.format.strings,
         // only used to create helper functions below
         locale: state.format.locale,
@@ -214,7 +220,9 @@ export const Shell = connect(
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
         inputText: stateProps.inputText,
+        placeholder: stateProps.placeholder,
         showUploadButton: stateProps.showUploadButton,
+        inputDisabled: stateProps.inputDisabled,
         strings: stateProps.strings,
         listeningState: stateProps.listeningState,
         // from dispatchProps
