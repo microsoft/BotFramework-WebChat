@@ -42,6 +42,7 @@
     "concurrently": "^4.0.1",
     "typescript": "^3.0.3",
     "webpack": "^4.17.2",
-    "webpack-command": "^0.4.1"
+    "webpack-command": "^0.4.1",
+    "webpack-visualizer-plugin": "^0.1.11"
   }
 }
