@@ -1,20 +1,14 @@
-import createCognitiveServicesWebSpeechPonyfill from './createCognitiveServicesWebSpeechPonyfill';
-import createBrowserWebSpeechPonyfill from './createBrowserWebSpeechPonyfill';
 import createDirectLine from './createDirectLine';
-import renderMarkdown from './renderMarkdown';
 import renderWebChat from './renderWebChat';
 
 export default renderWebChat
 
 export {
-  createCognitiveServicesWebSpeechPonyfill,
-  createBrowserWebSpeechPonyfill,
-  createDirectLine,
-  renderMarkdown
+  createDirectLine
 }
 
 window['WebChat'] = {
+  ...window['WebChat'],
   createDirectLine,
-  renderMarkdown,
   renderWebChat
 };
