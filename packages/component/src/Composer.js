@@ -24,6 +24,7 @@ import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
 import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
 import mapMap from './Utils/mapMap';
+import shallowEquals from './Utils/shallowEquals';
 
 // Flywheel object
 const EMPTY_ARRAY = [];
@@ -159,16 +160,6 @@ function createLogic(props) {
     styleSet,
     userID
   };
-}
-
-function shallowEquals(x, y) {
-  const xKeys = Object.keys(x);
-  const yKeys = Object.keys(y);
-
-  return (
-    xKeys.length === yKeys.length
-    && xKeys.every(key => yKeys.includes(key) && x[key] === y[key])
-  );
 }
 
 class Composer extends React.Component {

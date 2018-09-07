@@ -602,28 +602,28 @@ const speakFromMsg = (msg: Message, fallbackLocale: string) => {
 //     .filter(action => (action.activity as Message) && store.getState().shell.lastInputViaSpeech)
 //     .map(action => speakFromMsg(action.activity as Message, store.getState().format.locale) as ShellAction);
 
-const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
-    action$.ofType(
-        'Update_Input',
-        'Listening_Starting',
-        'Send_Message',
-        'Card_Action_Clicked',
-        'Stop_Speaking'
-    )
-    .do(Speech.SpeechSynthesizer.stopSpeaking)
-    .map(_ => nullAction)
+// const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
+//     action$.ofType(
+//         'Update_Input',
+//         'Listening_Starting',
+//         'Send_Message',
+//         'Card_Action_Clicked',
+//         'Stop_Speaking'
+//     )
+//     .do(Speech.SpeechSynthesizer.stopSpeaking)
+//     .map(_ => nullAction)
 
-const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-    action$.ofType(
-        'Listening_Stopping',
-        'Card_Action_Clicked'
-    )
-    .do(async () => {
-        await Speech.SpeechRecognizer.stopRecognizing()
+// const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+//     action$.ofType(
+//         'Listening_Stopping',
+//         'Card_Action_Clicked'
+//     )
+//     .do(async () => {
+//         await Speech.SpeechRecognizer.stopRecognizing()
 
-        store.dispatch({ type: 'Listening_Stop' });
-    })
-    .map(_ => nullAction);
+//         store.dispatch({ type: 'Listening_Stop' });
+//     })
+//     .map(_ => nullAction);
 
 // const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 //     action$.ofType('Listening_Starting')
@@ -653,15 +653,15 @@ const stopListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 //     })
 //     .map(_ => nullAction)
 
-const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, store) =>
-{
-    const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stopping');
-    return action$.ofType('Listening_Start')
-        .mergeMap((action) =>
-            Observable.of(({ type: 'Listening_Stopping' }) as ShellAction)
-            .delay(5000)
-            .takeUntil(cancelMessages$));
-};
+// const listeningSilenceTimeoutEpic: Epic<ChatActions, ChatState> = (action$, store) =>
+// {
+//     const cancelMessages$ = action$.ofType('Update_Input', 'Listening_Stopping');
+//     return action$.ofType('Listening_Start')
+//         .mergeMap((action) =>
+//             Observable.of(({ type: 'Listening_Stopping' }) as ShellAction)
+//             .delay(5000)
+//             .takeUntil(cancelMessages$));
+// };
 
 // const retrySendMessageEpic: Epic<ChatActions, ChatState> = (action$) =>
 //     action$.ofType('Send_Message_Retry')
@@ -703,33 +703,33 @@ const updateSelectedActivityEpic: Epic<ChatActions, ChatState> = (action$, store
 
 // Now we put it all together into a store with middleware
 
-import { Store, createStore as reduxCreateStore, combineReducers } from 'redux';
-import { combineEpics, createEpicMiddleware } from 'redux-observable';
+// import { Store, createStore as reduxCreateStore, combineReducers } from 'redux';
+// import { combineEpics, createEpicMiddleware } from 'redux-observable';
 
-export const createStore = () =>
-    reduxCreateStore(
-        combineReducers<ChatState>({
-            adaptiveCards,
-            connection,
-            format,
-            history,
-            shell,
-            size
-        }),
-        applyMiddleware(createEpicMiddleware(combineEpics(
-            updateSelectedActivityEpic,
-            sendMessageEpic,
-            trySendMessageEpic,
-            retrySendMessageEpic,
-            showTypingEpic,
-            sendTypingEpic,
-            speakSSMLEpic,
-            speakOnMessageReceivedEpic,
-            startListeningEpic,
-            stopListeningEpic,
-            stopSpeakingEpic,
-            listeningSilenceTimeoutEpic
-        )))
-    );
+// export const createStore = () =>
+//     reduxCreateStore(
+//         combineReducers<ChatState>({
+//             adaptiveCards,
+//             connection,
+//             format,
+//             history,
+//             shell,
+//             size
+//         }),
+//         applyMiddleware(createEpicMiddleware(combineEpics(
+//             updateSelectedActivityEpic,
+//             sendMessageEpic,
+//             trySendMessageEpic,
+//             retrySendMessageEpic,
+//             showTypingEpic,
+//             sendTypingEpic,
+//             speakSSMLEpic,
+//             speakOnMessageReceivedEpic,
+//             startListeningEpic,
+//             stopListeningEpic,
+//             stopSpeakingEpic,
+//             listeningSilenceTimeoutEpic
+//         )))
+//     );
 
-export type ChatStore = Store<ChatState>;
+// export type ChatStore = Store<ChatState>;
