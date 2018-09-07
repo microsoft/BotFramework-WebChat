@@ -5,6 +5,7 @@
   "dependencies": {
     "backend": "^1.0.0",
     "botframework-directlinejs": "0.9.18-master.3cece81",
+    "bundle": "^1.0.0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
     "component": "^1.0.0",

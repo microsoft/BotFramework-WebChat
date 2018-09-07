@@ -1,8 +1,5 @@
 import { css } from 'glamor';
-import { DirectLine } from 'botframework-directlinejs';
 import BasicWebChat from 'component';
-import iterator from 'markdown-it-for-inline';
-import MarkdownIt from 'markdown-it';
 import React from 'react';
 import {
   SpeechGrammarList,
@@ -10,6 +7,11 @@ import {
   SpeechSynthesisUtterance
 } from 'web-speech-cognitive-services';
 import createSpeechRecognitionWithSpeechTokenClass from './SpeechRecognitionWithSpeechToken';
+
+import {
+  createDirectLine,
+  renderMarkdown
+} from 'bundle';
 
 css.global('body', {
   backgroundColor: '#EEE'
@@ -55,34 +57,6 @@ export default class App extends React.Component {
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
 
-    // TODO: We should include Markdown-It in our component package
-    const customMarkdownIt = new MarkdownIt({
-      breaks: true,
-      html: false,
-      linkify: true,
-      typographer: true,
-      xhtmlOut: true
-    }).use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
-      // TODO: Refactor this code
-      const targetAttrIndex = tokens[index].attrIndex('target');
-
-      if (~targetAttrIndex) {
-        tokens[index].attrs[targetAttrIndex][1] = '_blank';
-      } else {
-        tokens[index].attrPush(['target', '_blank']);
-      }
-
-      const relAttrIndex = tokens[index].attrIndex('rel');
-
-      if (~relAttrIndex) {
-        tokens[index].attrs[relAttrIndex][1] = 'noopener noreferrer';
-      } else {
-        tokens[index].attrPush(['target', 'noopener noreferrer']);
-      }
-    });
-
-    this.renderMarkdown = customMarkdownIt.render.bind(customMarkdownIt);
-
     this.mainRef = React.createRef();
 
     const params = new URLSearchParams(window.location.search);
@@ -114,20 +88,11 @@ export default class App extends React.Component {
     }
 
     this.state = {
-      directLine: new DirectLine({
+      directLine: createDirectLine({
         domain,
         fetch,
         token: directLineToken,
-        webSocket: webSocket === 'true' || +webSocket,
-        createFormData: attachments => {
-          const formData = new FormData();
-
-          attachments.forEach(({ contentType, data, filename, name }) => {
-            formData.append(name, new Blob(data, { contentType }), filename);
-          });
-
-          return formData;
-        }
+        webSocket: webSocket === 'true' || +webSocket
       }),
       webSpeechPolyfill
     };
@@ -180,7 +145,7 @@ export default class App extends React.Component {
         <BasicWebChat
           className={ WEB_CHAT_CSS }
           directLine={ state.directLine }
-          renderMarkdown={ this.renderMarkdown }
+          renderMarkdown={ renderMarkdown }
           userID="default-user"
           username="User 1"
           webSpeechPolyfill={ state.webSpeechPolyfill }
