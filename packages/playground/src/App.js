@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import { css } from 'glamor';
 import { DirectLine } from 'botframework-directlinejs';
 import BasicWebChat from 'component';
@@ -48,7 +47,7 @@ const WEB_CHAT_CSS = css({
   maxWidth: 768
 });
 
-class App extends React.Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -171,7 +170,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const { state } = this;
 
     return (
       <div
@@ -179,11 +178,9 @@ class App extends React.Component {
         ref={ this.mainRef }
       >
         <BasicWebChat
-          activities={ props.activities }
           className={ WEB_CHAT_CSS }
           directLine={ state.directLine }
           renderMarkdown={ this.renderMarkdown }
-          suggestedActions={ props.suggestedActions }
           userID="default-user"
           username="User 1"
           webSpeechPolyfill={ state.webSpeechPolyfill }
@@ -224,7 +221,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default connect(
-  ({ activities, suggestedActions }) => ({ activities, suggestedActions }),
-)(App);

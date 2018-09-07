@@ -1,20 +1,17 @@
-import updateIn from 'simple-update-in';
-
-import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
+import { SET_SUGGESTED_ACTIONS } from '../Actions/setSuggestedActions';
 
 const DEFAULT_STATE = [];
 
 export default function (
   state = DEFAULT_STATE,
   {
-    payload: { activity } = {},
+    payload = {},
     type
   }
 ) {
   switch (type) {
-    case UPSERT_ACTIVITY:
-      // TODO: UPSERT_ACTIVITY may not upsert-ing the most recent activity
-      state = [...(activity && activity.suggestedActions && activity.suggestedActions.actions || [])];
+    case SET_SUGGESTED_ACTIONS:
+      state = [].slice.call(payload.suggestedActions || []);
       break;
 
     default: break;
