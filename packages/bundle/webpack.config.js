@@ -8,8 +8,9 @@ module.exports = {
     'BotChat-es5': './lib/index-es5.js'
   },
   output: {
-    path: resolve(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name].js',
+    libraryTarget: 'umd',
+    path: resolve(__dirname, 'dist')
   },
   plugins: [new Visualizer()]
 };

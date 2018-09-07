@@ -182,25 +182,24 @@ export class Chat extends React.Component<ChatProps, {}> {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         // this.setSize();
 
-        const botConnection = this.props.directLine
-            ? (this.botConnection = new DirectLine(this.props.directLine))
-            : this.props.botConnection
-            ;
+        // const botConnection = this.props.directLine
+        //     ? (this.botConnection = new DirectLine(this.props.directLine))
+        //     : this.props.botConnection
+        //     ;
 
         // if (this.props.resize === 'window')
         //     window.addEventListener('resize', this.resizeListener);
 
-        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        // this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
-         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
-                if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
-                    let refGrammarId = botConnection.referenceGrammarId;
-                    if(refGrammarId)
-                        this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
-                }
-                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
+            if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
+                let refGrammarId = botConnection.referenceGrammarId;
+                if(refGrammarId)
+                    this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
             }
-        );
+            this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+        });
 
         // this.activitySubscription = botConnection.activity$.subscribe(
         //     activity => this.handleIncomingActivity(activity),
@@ -227,28 +226,28 @@ export class Chat extends React.Component<ChatProps, {}> {
     //     window.removeEventListener('resize', this.resizeListener);
     // }
 
-    componentWillReceiveProps(nextProps: ChatProps) {
-        // if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
-        //     this.store.dispatch<ChatActions>({
-        //         type: 'Set_AdaptiveCardsHostConfig',
-        //         payload: nextProps.adaptiveCardsHostConfig
-        //     });
-        // }
+    // componentWillReceiveProps(nextProps: ChatProps) {
+    //     // if (this.props.adaptiveCardsHostConfig !== nextProps.adaptiveCardsHostConfig) {
+    //     //     this.store.dispatch<ChatActions>({
+    //     //         type: 'Set_AdaptiveCardsHostConfig',
+    //     //         payload: nextProps.adaptiveCardsHostConfig
+    //     //     });
+    //     // }
 
-        if (this.props.showUploadButton !== nextProps.showUploadButton) {
-            this.store.dispatch<ChatActions>({
-                type: 'Toggle_Upload_Button',
-                showUploadButton: nextProps.showUploadButton
-            });
-        }
+    //     if (this.props.showUploadButton !== nextProps.showUploadButton) {
+    //         this.store.dispatch<ChatActions>({
+    //             type: 'Toggle_Upload_Button',
+    //             showUploadButton: nextProps.showUploadButton
+    //         });
+    //     }
 
-        if (this.props.chatTitle !== nextProps.chatTitle) {
-            this.store.dispatch<ChatActions>({
-                type: 'Set_Chat_Title',
-                chatTitle: nextProps.chatTitle
-            });
-        }
-    }
+    //     if (this.props.chatTitle !== nextProps.chatTitle) {
+    //         this.store.dispatch<ChatActions>({
+    //             type: 'Set_Chat_Title',
+    //             chatTitle: nextProps.chatTitle
+    //         });
+    //     }
+    // }
 
     // At startup we do three render passes:
     // 1. To determine the dimensions of the chat panel (nothing needs to actually render here, so we don't)
