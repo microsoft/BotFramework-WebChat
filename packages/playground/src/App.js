@@ -1,5 +1,7 @@
+import { connect } from 'react-redux';
 import { css } from 'glamor';
 import BasicWebChat from 'component';
+import memoize from 'memoize-one';
 import React from 'react';
 
 import {
@@ -45,7 +47,7 @@ const WEB_CHAT_CSS = css({
   maxWidth: 768
 });
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -58,16 +60,17 @@ export default class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
     const domain = params.get('domain');
-    const webSocket = params.get('websocket');
     const speech = params.get('speech');
-    let webSpeechPonyfill;
+    const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
-      webSpeechPonyfill = createCognitiveServicesWebSpeechPonyfill(
-        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
+      this.createWebSpeechPonyfillFactory = memoize(referenceGrammarId =>
+        createCognitiveServicesWebSpeechPonyfill(
+          fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
+        )
       );
     } else {
-      webSpeechPonyfill = createBrowserWebSpeechPonyfill();
+      this.createWebSpeechPonyfillFactory = memoize(referenceGrammarId => createBrowserWebSpeechPonyfill());
     }
 
     this.state = {
@@ -76,8 +79,7 @@ export default class App extends React.Component {
         fetch,
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
-      }),
-      webSpeechPonyfill
+      })
     };
   }
 
@@ -120,6 +122,8 @@ export default class App extends React.Component {
   render() {
     const { state } = this;
 
+    const webSpeechPonyfillFactory = this.createWebSpeechPonyfillFactory();
+
     return (
       <div
         className={ ROOT_CSS }
@@ -131,7 +135,7 @@ export default class App extends React.Component {
           renderMarkdown={ renderMarkdown }
           userID="default-user"
           username="User 1"
-          webSpeechPolyfill={ state.webSpeechPonyfill }
+          webSpeechPonyfillFactory={ webSpeechPonyfillFactory }
         />
         <div className="button-bar">
           <button
@@ -169,3 +173,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(App)

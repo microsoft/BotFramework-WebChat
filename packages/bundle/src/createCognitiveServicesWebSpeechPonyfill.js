@@ -4,20 +4,22 @@ import {
   SpeechSynthesisUtterance
 } from 'web-speech-cognitive-services';
 
-import createSpeechRecognitionWithSpeechTokenClass from './Util/SpeechRecognitionWithSpeechToken';
+import createCustomSpeechRecognitionClass from './Util/CustomSpeechRecognition';
 
 export default function (fetchToken) {
-  // TODO: Renew token as needed
-  const token = {
-    authorized: fetchToken
-  };
+  return ({ referenceGrammarId }) => {
+    // TODO: Renew token as needed
+    const speechToken = {
+      authorized: fetchToken
+    };
 
-  speechSynthesis.speechToken = token;
+    speechSynthesis.speechToken = speechToken;
 
-  return {
-    SpeechGrammarList,
-    SpeechRecognition: createSpeechRecognitionWithSpeechTokenClass(token),
-    speechSynthesis,
-    SpeechSynthesisUtterance
-  };
+    return {
+      SpeechGrammarList,
+      SpeechRecognition: createCustomSpeechRecognitionClass({ referenceGrammarId, speechToken }),
+      speechSynthesis,
+      SpeechSynthesisUtterance
+    };
+  }
 }

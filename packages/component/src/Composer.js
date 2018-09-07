@@ -27,12 +27,6 @@ import mapMap from './Utils/mapMap';
 // Flywheel object
 const EMPTY_ARRAY = [];
 const NULL_FUNCTION = () => ({});
-const WEB_SPEECH_POLYFILL = {
-  SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
-  SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
-  speechSynthesis: window.speechSynthesis,
-  SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
-};
 
 const DEFAULT_USER_ID = 'default-user';
 
@@ -212,6 +206,8 @@ class Composer extends React.Component {
       shallowEquals
     );
 
+    this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarId) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarId }));
+
     this.mergeContext = memoize(
       (...contexts) => contexts.reduce((result, context) => Object.assign(result, context), {}),
       shallowEquals
@@ -270,10 +266,11 @@ class Composer extends React.Component {
         children,
         enableSpeech,
         grammars,
+        referenceGrammarId,
         renderMarkdown,
         scrollToBottom,
         // TODO: Rename polyfill to ponyfill
-        webSpeechPolyfill,
+        webSpeechPonyfillFactory,
         ...propsForLogic
       },
       state
@@ -292,7 +289,7 @@ class Composer extends React.Component {
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
-        webSpeechPolyfill: webSpeechPolyfill || WEB_SPEECH_POLYFILL
+        webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
       }
     );
 
@@ -311,4 +308,4 @@ class Composer extends React.Component {
   }
 }
 
-export default connect(NULL_FUNCTION)(Composer)
+export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(Composer)

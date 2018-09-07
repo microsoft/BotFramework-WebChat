@@ -1,4 +1,4 @@
-const SET_LANGUAGE = 'DIRECT_LINE/SET_LANGUAGE';
+const SET_LANGUAGE = 'SETTINGS/SET_LANGUAGE';
 
 export default function setLanguage(language) {
   return {

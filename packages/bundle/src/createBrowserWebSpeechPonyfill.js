@@ -1,8 +1,8 @@
 export default function () {
-  return {
+  return () => ({
     SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
     SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
     speechSynthesis: window.speechSynthesis,
     SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
-  };
+  });
 }

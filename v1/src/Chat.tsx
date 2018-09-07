@@ -1,59 +1,59 @@
-import * as React from 'react';
-import { findDOMNode } from 'react-dom';
+// import * as React from 'react';
+// import { findDOMNode } from 'react-dom';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+// import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+// import { Observable } from 'rxjs/Observable';
+// import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
-import { createStore, ChatActions, sendMessage } from './Store';
-import { Provider } from 'react-redux';
-import { SpeechOptions } from './SpeechOptions';
-import { Speech } from './SpeechModule';
-import { ActivityOrID, FormatOptions } from './Types';
-import * as konsole from './Konsole';
-import { getTabIndex } from './getTabIndex';
+// import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
+// import { createStore, ChatActions, sendMessage } from './Store';
+// import { Provider } from 'react-redux';
+// import { SpeechOptions } from './SpeechOptions';
+// import { Speech } from './SpeechModule';
+// import { ActivityOrID, FormatOptions } from './Types';
+// import * as konsole from './Konsole';
+// import { getTabIndex } from './getTabIndex';
 
-export interface ChatProps {
-    adaptiveCardsHostConfig: any,
-    chatTitle?: boolean | string,
-    user: User,
-    bot: User,
-    botConnection?: IBotConnection,
-    directLine?: DirectLineOptions,
-    speechOptions?: SpeechOptions,
-    locale?: string,
-    selectedActivity?: BehaviorSubject<ActivityOrID>,
-    sendTyping?: boolean,
-    showUploadButton?: boolean,
-    formatOptions?: FormatOptions,
-    resize?: 'none' | 'window' | 'detect'
-}
+// export interface ChatProps {
+//     adaptiveCardsHostConfig: any,
+//     chatTitle?: boolean | string,
+//     user: User,
+//     bot: User,
+//     botConnection?: IBotConnection,
+//     directLine?: DirectLineOptions,
+//     speechOptions?: SpeechOptions,
+//     locale?: string,
+//     selectedActivity?: BehaviorSubject<ActivityOrID>,
+//     sendTyping?: boolean,
+//     showUploadButton?: boolean,
+//     formatOptions?: FormatOptions,
+//     resize?: 'none' | 'window' | 'detect'
+// }
 
-import { History } from './History';
-import { MessagePane } from './MessagePane';
-import { Shell, ShellFunctions } from './Shell';
+// import { History } from './History';
+// import { MessagePane } from './MessagePane';
+// import { Shell, ShellFunctions } from './Shell';
 
-export class Chat extends React.Component<ChatProps, {}> {
+// export class Chat extends React.Component<ChatProps, {}> {
 
-    private store = createStore();
+//     private store = createStore();
 
-    private botConnection: IBotConnection;
+//     private botConnection: IBotConnection;
 
-    private activitySubscription: Subscription;
-    private connectionStatusSubscription: Subscription;
-    private selectedActivitySubscription: Subscription;
-    private shellRef: React.Component & ShellFunctions;
-    private historyRef: React.Component;
-    private chatviewPanelRef: HTMLElement;
+//     private activitySubscription: Subscription;
+//     private connectionStatusSubscription: Subscription;
+//     private selectedActivitySubscription: Subscription;
+//     private shellRef: React.Component & ShellFunctions;
+//     private historyRef: React.Component;
+//     private chatviewPanelRef: HTMLElement;
 
-    private resizeListener = () => this.setSize();
+//     private resizeListener = () => this.setSize();
 
-    private _handleCardAction = this.handleCardAction.bind(this);
-    private _handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
-    private _saveChatviewPanelRef = this.saveChatviewPanelRef.bind(this);
-    private _saveHistoryRef = this.saveHistoryRef.bind(this);
-    private _saveShellRef = this.saveShellRef.bind(this);
+//     private _handleCardAction = this.handleCardAction.bind(this);
+//     private _handleKeyDownCapture = this.handleKeyDownCapture.bind(this);
+//     private _saveChatviewPanelRef = this.saveChatviewPanelRef.bind(this);
+//     private _saveHistoryRef = this.saveHistoryRef.bind(this);
+//     private _saveShellRef = this.saveShellRef.bind(this);
 
     constructor(props: ChatProps) {
         super(props);
@@ -72,45 +72,45 @@ export class Chat extends React.Component<ChatProps, {}> {
         //     });
         // }
 
-        let { chatTitle } = props;
+        // let { chatTitle } = props;
 
-        if (props.formatOptions) {
-            console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "chatTitle" instead. See https://github.com/Microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#formatoptionsshowheader-is-deprecated-use-chattitle-instead.');
+        // if (props.formatOptions) {
+        //     console.warn('DEPRECATED: "formatOptions.showHeader" is deprecated, use "chatTitle" instead. See https://github.com/Microsoft/BotFramework-WebChat/blob/master/CHANGELOG.md#formatoptionsshowheader-is-deprecated-use-chattitle-instead.');
 
-            if (typeof props.formatOptions.showHeader !== 'undefined' && typeof props.chatTitle === 'undefined') {
-                chatTitle = props.formatOptions.showHeader;
-            }
-        }
+        //     if (typeof props.formatOptions.showHeader !== 'undefined' && typeof props.chatTitle === 'undefined') {
+        //         chatTitle = props.formatOptions.showHeader;
+        //     }
+        // }
 
-        if (typeof chatTitle !== 'undefined') {
-            this.store.dispatch<ChatActions>({ type: 'Set_Chat_Title', chatTitle });
-        }
+        // if (typeof chatTitle !== 'undefined') {
+        //     this.store.dispatch<ChatActions>({ type: 'Set_Chat_Title', chatTitle });
+        // }
 
-        this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton !== false });
+        // this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton !== false });
 
         if (props.sendTyping) {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
         }
 
-        if (props.speechOptions) {
-            Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
-            Speech.SpeechSynthesizer.setSpeechSynthesizer(props.speechOptions.speechSynthesizer);
-        }
+        // if (props.speechOptions) {
+        //     Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
+        //     Speech.SpeechSynthesizer.setSpeechSynthesizer(props.speechOptions.speechSynthesizer);
+        // }
     }
 
-    private handleIncomingActivity(activity: Activity) {
-        let state = this.store.getState();
-        switch (activity.type) {
-            case "message":
-                this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
-                break;
+    // private handleIncomingActivity(activity: Activity) {
+    //     let state = this.store.getState();
+    //     switch (activity.type) {
+    //         case "message":
+    //             this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
+    //             break;
 
-            case "typing":
-                if (activity.from.id !== state.connection.user.id)
-                    this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity });
-                break;
-        }
-    }
+    //         case "typing":
+    //             if (activity.from.id !== state.connection.user.id)
+    //                 this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity });
+    //             break;
+    //     }
+    // }
 
     // private setSize() {
     //     this.store.dispatch<ChatActions>({
@@ -192,14 +192,14 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         // this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
-            if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
-                let refGrammarId = botConnection.referenceGrammarId;
-                if(refGrammarId)
-                    this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
-            }
-            this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
-        });
+        // this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
+        //     if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
+        //         let refGrammarId = botConnection.referenceGrammarId;
+        //         if(refGrammarId)
+        //             this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
+        //     }
+        //     this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+        // });
 
         // this.activitySubscription = botConnection.activity$.subscribe(
         //     activity => this.handleIncomingActivity(activity),

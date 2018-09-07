@@ -31,7 +31,7 @@ const BasicTranscript = ({
   className,
   children,
   styleSet,
-  webSpeechPolyfill: { speechSynthesis, SpeechSynthesisUtterance }
+  webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
 }) =>
   <ScrollToBottom
     className={ className }
@@ -81,11 +81,11 @@ export default connect(({ activities }) => ({ activities }))(({ children, ...pro
   <Context.Consumer>
     { ({
       styleSet,
-      webSpeechPolyfill
+      webSpeechPonyfill
     }) =>
       <BasicTranscript
         styleSet={ styleSet }
-        webSpeechPolyfill={ webSpeechPolyfill }
+        webSpeechPonyfill={ webSpeechPonyfill }
         { ...props }
       >
         { children }

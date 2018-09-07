@@ -86,13 +86,11 @@ class SpeakActivity extends React.Component {
 
 export default connect(() => ({}))(({ activity, dispatch }) =>
   <Context.Consumer>
-    { ({ markActivity, styleSet, webSpeechPolyfill: { speechSynthesis, SpeechSynthesisUtterance } }) =>
+    { ({ markActivity, styleSet }) =>
       <SpeakActivity
         activity={ activity }
         dispatch={ dispatch }
         markActivity={ markActivity }
-        speechSynthesis={ speechSynthesis }
-        speechSynthesisUtterance={ SpeechSynthesisUtterance }
         styleSet={ styleSet }
       />
     }

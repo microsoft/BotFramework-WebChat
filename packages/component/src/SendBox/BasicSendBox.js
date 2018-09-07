@@ -29,7 +29,7 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(({ cla
     { ({
         enableSpeech,
         styleSet,
-        webSpeechPolyfill
+        webSpeechPonyfill
       }) =>
       <div className={ classNames(
         styleSet.sendBox + '',
@@ -42,7 +42,7 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(({ cla
           { !speechState &&
               <TextBox className={ TEXT_BOX_CSS } />
           }
-          { (enableSpeech && webSpeechPolyfill.SpeechRecognition) ?
+          { (enableSpeech && webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
               <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
             :
               <SendButton />

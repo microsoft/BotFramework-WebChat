@@ -115,7 +115,7 @@ class MicrophoneButton extends React.Component {
 
   render() {
     const {
-      props: { className, disabled, speechState, styleSet, webSpeechPolyfill },
+      props: { className, disabled, speechState, styleSet, webSpeechPonyfill },
       state: { interims, readyState }
     } = this;
 
@@ -124,12 +124,11 @@ class MicrophoneButton extends React.Component {
 
     return (
       <DictateComposer
-        extra={ webSpeechPolyfill.extra }
         onDictate={ this.handleDictate }
         onError={ this.handleError }
         onProgress={ this.handleDictating }
-        speechRecognition={ webSpeechPolyfill.SpeechRecognition }
-        speechGrammarList={ webSpeechPolyfill.SpeechGrammarList }
+        speechRecognition={ webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition }
+        speechGrammarList={ webSpeechPonyfill && webSpeechPonyfill.SpeechGrammarList }
         started={ !disabled && (readyState === STARTING || readyState === DICTATING) }
       >
         { () =>
@@ -173,7 +172,7 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(props 
         stopSpeechInput,
         submitSendBox,
         styleSet,
-        webSpeechPolyfill
+        webSpeechPonyfill
       }) =>
       <MicrophoneButton
         { ...props }
@@ -183,7 +182,7 @@ export default connect(({ input: { speechState } }) => ({ speechState }))(props 
         stopSpeechInput={ stopSpeechInput }
         submitSendBox={ submitSendBox }
         styleSet={ styleSet }
-        webSpeechPolyfill={ webSpeechPolyfill }
+        webSpeechPonyfill={ webSpeechPonyfill }
       />
     }
   </Context.Consumer>
