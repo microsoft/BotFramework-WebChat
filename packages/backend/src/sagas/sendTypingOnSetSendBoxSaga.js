@@ -6,8 +6,8 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import postActivity from '../Actions/postActivity';
 import { SET_SEND_BOX } from '../Actions/setSendBox';
+import postActivity from '../Actions/postActivity';
 import sleep from '../util/sleep';
 
 const SEND_INTERVAL = 3000;
