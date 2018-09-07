@@ -1,14 +1,10 @@
 import { css } from 'glamor';
 import BasicWebChat from 'component';
 import React from 'react';
-import {
-  SpeechGrammarList,
-  speechSynthesis,
-  SpeechSynthesisUtterance
-} from 'web-speech-cognitive-services';
-import createSpeechRecognitionWithSpeechTokenClass from './SpeechRecognitionWithSpeechToken';
 
 import {
+  createCognitiveServicesWebSpeechPonyfill,
+  createBrowserWebSpeechPonyfill,
   createDirectLine,
   renderMarkdown
 } from 'bundle';
@@ -64,27 +60,14 @@ export default class App extends React.Component {
     const domain = params.get('domain');
     const webSocket = params.get('websocket');
     const speech = params.get('speech');
-    let webSpeechPolyfill;
+    let webSpeechPonyfill;
 
     if (speech === 'cs') {
-      const token = {
-        authorized: fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
-      };
-
-      speechSynthesis.speechToken = token;
-      webSpeechPolyfill = {
-        SpeechGrammarList,
-        SpeechRecognition: createSpeechRecognitionWithSpeechTokenClass(token),
-        speechSynthesis,
-        SpeechSynthesisUtterance
-      };
+      webSpeechPonyfill = createCognitiveServicesWebSpeechPonyfill(
+        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
+      );
     } else {
-      webSpeechPolyfill = {
-        SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
-        SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
-        speechSynthesis: window.speechSynthesis,
-        SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
-      };
+      webSpeechPonyfill = createBrowserWebSpeechPonyfill();
     }
 
     this.state = {
@@ -94,7 +77,7 @@ export default class App extends React.Component {
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
       }),
-      webSpeechPolyfill
+      webSpeechPonyfill
     };
   }
 
@@ -148,7 +131,7 @@ export default class App extends React.Component {
           renderMarkdown={ renderMarkdown }
           userID="default-user"
           username="User 1"
-          webSpeechPolyfill={ state.webSpeechPolyfill }
+          webSpeechPolyfill={ state.webSpeechPonyfill }
         />
         <div className="button-bar">
           <button

@@ -272,6 +272,7 @@ class Composer extends React.Component {
         grammars,
         renderMarkdown,
         scrollToBottom,
+        // TODO: Rename polyfill to ponyfill
         webSpeechPolyfill,
         ...propsForLogic
       },
