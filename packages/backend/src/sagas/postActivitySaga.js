@@ -70,8 +70,6 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
     }];
   }
 
-  console.warn(activity);
-
   const meta = { clientActivityID };
 
   yield put({ type: POST_ACTIVITY_PENDING, payload: { activity }, meta });
