@@ -7,6 +7,7 @@ import TextAttachment from '../../Attachment/TextAttachment';
 import TypingActivity from '../../Attachment/TypingActivity';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
+// TODO: Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default () => {
   return next => {
     return ({ activity, attachment }) => {

@@ -10,6 +10,7 @@ import SignInCardAttachment from '../../Attachment/SignInCardAttachment';
 import ThumbnailCardAttachment from '../../Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from '../../Attachment/VideoCardAttachment';
 
+// TODO: Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default () => {
   return next => {
     return ({ activity, attachment }) => {

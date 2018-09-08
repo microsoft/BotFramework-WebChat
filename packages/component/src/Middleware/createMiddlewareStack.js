@@ -1,4 +1,5 @@
 export default function (options, middlewares = []) {
+  // TODO: Refactor this class so we don't actually operate on an Array stack but closure
   middlewares = middlewares.map(middleware => middleware(options));
 
   return {
