@@ -54,9 +54,10 @@ const BasicTranscript = ({
                 {
                   card => {
                     try {
-                      return children && children(card) || <UnknownAttachment message="No renderer for this card">{ JSON.stringify(card, null, 2) }</UnknownAttachment>;
+                      return children && children(card);
                     } catch (err) {
                       return (
+                        // TODO: Consider making the UnknownAttachment as part of the middleware
                         <UnknownAttachment message="Failed to render card">
                           <pre>{ JSON.stringify(card, null, 2) }</pre>
                           <br />

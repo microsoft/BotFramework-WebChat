@@ -5,6 +5,7 @@ import DownloadAttachment from '../../Attachment/DownloadAttachment';
 import ImageAttachment from '../../Attachment/ImageAttachment';
 import TextAttachment from '../../Attachment/TextAttachment';
 import TypingActivity from '../../Attachment/TypingActivity';
+import UnknownAttachment from '../../Attachment/UnknownAttachment';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
 // TODO: Rename this file or the whole middleware, it looks either too simple or too comprehensive now
@@ -27,8 +28,9 @@ export default () => {
         : attachment.contentType === 'application/octet-stream' ?
           <DownloadAttachment activity={ activity } attachment={ attachment } />
         :
-          // TODO: The last one should be <UnknownAttachment>
-          next({ activity, attachment })
+          <UnknownAttachment message="No renderer for this attachment">
+            { JSON.stringify(attachment, null, 2) }
+          </UnknownAttachment>
       );
     };
   };
