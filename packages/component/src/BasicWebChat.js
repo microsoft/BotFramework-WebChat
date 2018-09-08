@@ -7,9 +7,10 @@ import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
-import createMiddlewareStack from './Middleware/createMiddlewareStack';
-import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/adaptiveCard';
+import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
+import createDebugAttachmentMiddleware from './Middleware/Attachment/debug';
+import createMiddlewareStack from './Middleware/createMiddlewareStack';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -34,8 +35,9 @@ export default class extends React.Component {
     this.attachmentRenderer = createMiddlewareStack(
       {},
       [
-        createCoreAttachmentMiddleware,
-        createAdaptiveCardsAttachmentMiddleware
+        createDebugAttachmentMiddleware,
+        createAdaptiveCardsAttachmentMiddleware,
+        createCoreAttachmentMiddleware
       ]
     );
   }

@@ -9,7 +9,7 @@ export default function (options, middlewares = []) {
     run: (...args) => {
       const stack = [...middlewares];
       const next = (...args) => {
-        const middleware = stack.pop();
+        const middleware = stack.shift();
 
         if (middleware) {
           return middleware(next)(...args);
