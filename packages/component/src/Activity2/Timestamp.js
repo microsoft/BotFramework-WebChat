@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import React from 'react';
 
 import Context from '../Context';
@@ -23,6 +24,7 @@ class Timestamp extends React.Component {
   render() {
     const {
       activity: { channelData: { state } = {}, timestamp },
+      language,
       styleSet
     } = this.props;
 
@@ -36,21 +38,25 @@ class Timestamp extends React.Component {
               Send failed, <button className="retry" onClick={ this.handleRetryClick } type="button">retry</button>
             </React.Fragment>
           :
-            <TimeAgo value={ timestamp } />
+            <TimeAgo
+              language={ language }
+              value={ timestamp }
+            />
         }
       </span>
     );
   }
 }
 
-export default ({ activity }) =>
+export default connect(({ settings: { language } }) => ({ language }))(props =>
   <Context.Consumer>
     { ({ focusSendBox, postActivity, styleSet }) =>
       <Timestamp
-        activity={ activity }
+        { ...props }
         focusSendBox={ focusSendBox }
         postActivity={ postActivity }
         styleSet={ styleSet }
       />
     }
   </Context.Consumer>
+)

@@ -13,7 +13,7 @@ export default ({ referenceGrammarId, speechToken }) => {
 
     start() {
       this.grammars = new SpeechGrammarList();
-      this.grammars.referenceGrammar = referenceGrammarId;
+      this.grammars.referenceGrammar = referenceGrammarId || '';
 
       return super.start();
     }

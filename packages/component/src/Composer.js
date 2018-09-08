@@ -60,11 +60,7 @@ function createLogic(props) {
   // 1. Turns text into UPPERCASE
   // 2. Filter out profanity
 
-  // TODO: The user should be able to add/remove/replace the business logic layer
-
   // TODO: Give warnings if we are creating logic more often than we should
-
-  // console.log('creating new logic context');
 
   const directLine = props.directLine;
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
@@ -116,7 +112,7 @@ function createLogic(props) {
       case 'playAudio':
       case 'playVideo':
       case 'showImage':
-        // TODO: We should consider using <a> instead
+        // TODO: We should support ponyfill for window.open
         window.open(value);
         break;
 
@@ -236,7 +232,6 @@ class Composer extends React.Component {
         referenceGrammarId,
         renderMarkdown,
         scrollToBottom,
-        // TODO: Rename polyfill to ponyfill
         webSpeechPonyfillFactory,
         ...propsForLogic
       },

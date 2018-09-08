@@ -49,7 +49,7 @@ export default class TimeAgo extends React.Component {
 
     this.state = {
       // TODO: We need to pass locale
-      text: ago(props.value, 'en-US'),
+      text: ago(props.value, props.language),
       timer: nextTimer(props.value)
     }
   }
@@ -65,7 +65,7 @@ export default class TimeAgo extends React.Component {
   updateText(props) {
     this.setState(() => ({
       // TODO: We need to pass locale
-      text: ago(props.value, 'en-US'),
+      text: ago(props.value, props.language),
       timer: nextTimer(props.value)
     }));
   }

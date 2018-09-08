@@ -1,6 +1,4 @@
-import { connect } from 'react-redux';
 import { css } from 'glamor';
-import memoize from 'memoize-one';
 import React from 'react';
 
 import BasicWebChat, {
@@ -51,7 +49,7 @@ const WEB_CHAT_CSS = css({
   maxWidth: 768
 });
 
-class App extends React.Component {
+export default class extends React.Component {
   constructor(props) {
     super(props);
 
@@ -72,13 +70,11 @@ class App extends React.Component {
     const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
-      this.createWebSpeechPonyfillFactory = memoize(referenceGrammarId =>
-        createCognitiveServicesWebSpeechPonyfill(
-          fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token)
-        )
+      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfill(
+        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
       );
     } else {
-      this.createWebSpeechPonyfillFactory = memoize(referenceGrammarId => createBrowserWebSpeechPonyfill());
+      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfill();
     }
 
     this.state = {
@@ -130,8 +126,6 @@ class App extends React.Component {
   render() {
     const { state } = this;
 
-    const webSpeechPonyfillFactory = this.createWebSpeechPonyfillFactory();
-
     return (
       <div
         className={ ROOT_CSS }
@@ -144,7 +138,7 @@ class App extends React.Component {
           renderMarkdown={ renderMarkdown }
           userID="default-user"
           username="User 1"
-          webSpeechPonyfillFactory={ webSpeechPonyfillFactory }
+          webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
         />
         <div className="button-bar">
           <button
@@ -182,5 +176,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(App)

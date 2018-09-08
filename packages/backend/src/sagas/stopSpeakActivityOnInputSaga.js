@@ -13,7 +13,7 @@ import { SET_SEND_BOX } from '../Actions/setSendBox';
 import { START_SPEECH_INPUT } from '../Actions/startSpeechInput';
 
 export default function* () {
-  yield whileConnected(function* (_, userID) {
+  yield whileConnected(function* () {
     for (;;) {
       // TODO: Also stop on card actions
       yield take(({ payload, type }) => type === START_SPEECH_INPUT || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech'));
