@@ -39,9 +39,7 @@ class SpeakActivity extends React.Component {
       return false;
     }
 
-    const lines = [];
-
-    lines.push(activity.speak || activity.text);
+    const lines = [activity.speak || activity.text];
 
     (activity.attachments || []).forEach(({ content, contentType }) => {
       switch (contentType) {

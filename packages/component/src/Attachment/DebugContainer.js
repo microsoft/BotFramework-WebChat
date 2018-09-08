@@ -13,14 +13,14 @@ const ROOT_CSS = css({
       borderWidth: 2,
       boxSizing: 'border-box',
       fontSize: '80%',
-      height: '100%',
       left: 0,
-      margin: 0,
+      margin: 5,
+      maxHeight: 200,
       overflowX: 'auto',
-      padding: 10,
-      position: 'absolute',
+      padding: 5,
       top: 0,
-      width: '100%'
+      WebkitOverflowScrolling: 'touch',
+      width: 'calc(100% - 10px)'
     }
   },
 

@@ -60,12 +60,12 @@ const ROOT_CSS = css({
 });
 
 // TODO: Only show timestamp if it is 5 minutes after last activity
-export default ({ activity, children, fromUser }) =>
+export default ({ activity, children }) =>
   <Context>
     { () =>
       <div className={ classNames(
         ROOT_CSS + '',
-        { 'from-user': fromUser }
+        { 'from-user': activity.from.role === 'user' }
       ) }>
         <Avatar className="avatar" />
         <div className="content">
@@ -95,8 +95,8 @@ export default ({ activity, children, fromUser }) =>
           {
             (activity.attachments || []).map((attachment, index) =>
               <div className="row attachment" key={ index }>
-                <Bubble className="attachment bubble" debug={ attachment } key={ index }>
-                  { children({ activity, attachment }) }
+                <Bubble className="attachment bubble" key={ index }>
+                  { children({ attachment }) }
                 </Bubble>
               </div>
             )

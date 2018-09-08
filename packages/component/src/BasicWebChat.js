@@ -5,11 +5,12 @@ import React from 'react';
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
 import Composer from './Composer';
+import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
+import createCoreActivityMiddleware from './Middleware/Activity/core';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/adaptiveCard';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
-import createDebugAttachmentMiddleware from './Middleware/Attachment/debug';
 import createMiddlewareStack from './Middleware/createMiddlewareStack';
 
 const ROOT_CSS = css({
@@ -32,14 +33,72 @@ export default class extends React.Component {
 
     this.sendBoxRef = React.createRef();
 
-    this.attachmentRenderer = createMiddlewareStack(
+    this.refreshActivityRenderer(props.activityMiddleware);
+    this.refreshAttachmentRenderer(props.attachmentMiddleware);
+  }
+
+  componentWillReceiveProps({ activityMiddleware, attachmentMiddleware }) {
+    if (this.props.activityMiddleware !== activityMiddleware) {
+      this.refreshActivityRenderer(activityMiddleware);
+    }
+
+    if (this.props.attachmentMiddleware !== attachmentMiddleware) {
+      this.refreshAttachmentRenderer(attachmentMiddleware);
+    }
+  }
+
+  refreshActivityRenderer(additionalMiddleware) {
+    const activityMiddleware = createMiddlewareStack(
       {},
       [
-        createDebugAttachmentMiddleware,
-        createAdaptiveCardsAttachmentMiddleware,
-        createCoreAttachmentMiddleware
+        ...additionalMiddleware || [],
+        createCoreActivityMiddleware(),
+        () => () => ({ activity }) => () =>
+          <ErrorBox message="No renderer for this activity">
+            <pre>{ JSON.stringify(activity, null, 2) }</pre>
+          </ErrorBox>
       ]
     );
+
+    this.activityRenderer = (...args) => {
+      try {
+        return activityMiddleware.run(...args);
+      } catch (err) {
+        return (
+          <ErrorBox message="Failed to render activity">
+            <pre>{ JSON.stringify(err, null, 2) }</pre>
+            <pre>{ JSON.stringify(activity, null, 2) }</pre>
+          </ErrorBox>
+        );
+      }
+    };
+  }
+
+  refreshAttachmentRenderer(additionalMiddleware) {
+    const attachmentMiddleware = createMiddlewareStack(
+      {},
+      [
+        ...additionalMiddleware || [],
+        createCoreAttachmentMiddleware(),
+        () => () => ({ attachment }) =>
+          <ErrorBox message="No renderer for this attachment">
+            <pre>{ JSON.stringify(attachment, null, 2) }</pre>
+          </ErrorBox>
+      ]
+    );
+
+    this.attachmentRenderer = (...args) => {
+      try {
+        return attachmentMiddleware.run(...args);
+      } catch (err) {
+        return (
+          <ErrorBox message="Failed to render attachment">
+            <pre>{ JSON.stringify(err, null, 2) }</pre>
+            <pre>{ JSON.stringify(attachment, null, 2) }</pre>
+          </ErrorBox>
+        );
+      }
+    }
   }
 
   render() {
@@ -49,6 +108,8 @@ export default class extends React.Component {
 
     return (
       <Composer
+        activityRenderer={ this.activityRenderer }
+        attachmentRenderer={ this.attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
       >
@@ -57,14 +118,8 @@ export default class extends React.Component {
             className={ classNames(ROOT_CSS + '', styleSet.root + '', (props.className || '') + '') }
             sendFocusRef={ this.sendBoxRef }
           >
-            <BasicTranscript className={ TRANSCRIPT_CSS + '' }>
-              { ({ activity, attachment }) =>
-                this.attachmentRenderer.run({ attachment, activity })
-              }
-            </BasicTranscript>
-            <BasicSendBox
-              className={ SEND_BOX_CSS }
-            />
+            <BasicTranscript className={ TRANSCRIPT_CSS + '' } />
+            <BasicSendBox className={ SEND_BOX_CSS } />
           </TypeFocusSinkBox>
         }
       </Composer>

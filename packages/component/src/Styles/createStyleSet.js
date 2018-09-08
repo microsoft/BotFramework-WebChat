@@ -9,6 +9,7 @@ import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createBubble2Style from './StyleSet/Bubble2';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
+import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createMultipleAttachmentActivityStyle from './StyleSet/MultipleAttachmentActivity';
 import createRootStyle from './StyleSet/Root';
@@ -21,7 +22,6 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
 import createTypingActivityStyle from './StyleSet/TypingActivity';
-import createUnknownAttachmentStyle from './StyleSet/UnknownAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
@@ -43,6 +43,7 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
     bubble: createBubbleStyle(options),
     bubble2: createBubble2Style(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
+    errorBox: createErrorBoxStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     multipleAttachmentActivity: createMultipleAttachmentActivityStyle(options),
     options: {
@@ -58,7 +59,6 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
     textContent: createTextContentStyle(options),
     timestamp: createTimestampStyle(options),
     typingActivity: createTypingActivityStyle(options),
-    unknownAttachment: createUnknownAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),
     videoContent: createVideoContentStyle(options),

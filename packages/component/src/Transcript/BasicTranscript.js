@@ -5,10 +5,8 @@ import classNames from 'classnames';
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import BasicActivity from '../Activity2/Activity';
 import Context from '../Context';
 import SpeakActivity from '../Activity2/Speak';
-import UnknownAttachment from '../Attachment/UnknownAttachment';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -27,9 +25,10 @@ const LIST_CSS = css({
 // TODO: Collapse timestamps if they are less than 5 minutes apart
 
 const BasicTranscript = ({
+  activityRenderer,
   activities,
+  attachmentRenderer,
   className,
-  children,
   styleSet,
   webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
 }) =>
@@ -48,29 +47,10 @@ const BasicTranscript = ({
           activities.map((activity, index) =>
             <li
               className={ styleSet.activity }
-              key={ index }
+              key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
             >
-              <BasicActivity activity={ activity }>
-                {
-                  card => {
-                    try {
-                      return children && children(card);
-                    } catch (err) {
-                      return (
-                        // TODO: Consider making the UnknownAttachment as part of the middleware
-                        <UnknownAttachment message="Failed to render card">
-                          <pre>{ JSON.stringify(card, null, 2) }</pre>
-                          <br />
-                          <pre>{ err.stack }</pre>
-                        </UnknownAttachment>
-                      );
-                    }
-                  }
-                }
-              </BasicActivity>
-              {
-                activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
-              }
+              { activityRenderer({ activity })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
+              { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
             </li>
           )
         }
@@ -78,19 +58,21 @@ const BasicTranscript = ({
     </SayComposer>
   </ScrollToBottom>
 
-export default connect(({ activities }) => ({ activities }))(({ children, ...props }) =>
+export default connect(({ activities }) => ({ activities }))(props =>
   <Context.Consumer>
     { ({
+      activityRenderer,
+      attachmentRenderer,
       styleSet,
       webSpeechPonyfill
     }) =>
       <BasicTranscript
+        activityRenderer={ activityRenderer }
+        attachmentRenderer={ attachmentRenderer }
         styleSet={ styleSet }
         webSpeechPonyfill={ webSpeechPonyfill }
         { ...props }
-      >
-        { children }
-      </BasicTranscript>
+      />
     }
   </Context.Consumer>
 )

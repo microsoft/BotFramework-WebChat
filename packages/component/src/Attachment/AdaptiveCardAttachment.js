@@ -3,7 +3,7 @@ import React from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import Context from '../Context';
-import UnknownAttachment from './UnknownAttachment';
+import ErrorBox from '../ErrorBox';
 
 import {
   IAdaptiveCard,
@@ -97,10 +97,10 @@ export default class extends React.Component {
 
           return (
             errors.length && !(allDeprecations && state.ignoreDeprecations) ?
-              <UnknownAttachment message="Adaptive Card parse error">
+              <ErrorBox message="Adaptive Card parse error">
                 { allDeprecations && <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button> }
                 <pre>{ JSON.stringify(errors, null, 2) }</pre>
-              </UnknownAttachment>
+              </ErrorBox>
             :
               <AdaptiveCardRenderer adaptiveCard={ card } />
           );

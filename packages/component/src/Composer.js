@@ -226,8 +226,10 @@ class Composer extends React.Component {
   render() {
     const {
       props: {
+        activityRenderer,
         adaptiveCards,
         adaptiveCardHostConfig,
+        attachmentRenderer,
         children,
         enableSpeech,
         grammars,
@@ -248,8 +250,10 @@ class Composer extends React.Component {
       // TODO: Should we normalize empties here? Or should we let it thru?
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
+        activityRenderer,
         adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
+        attachmentRenderer,
         enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,

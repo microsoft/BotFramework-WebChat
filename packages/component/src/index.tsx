@@ -1,6 +1,18 @@
 import BasicWebChat from './BasicWebChat';
 
+import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/adaptiveCard';
+import createCoreActivityMiddleware from './Middleware/Activity/core';
+import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
+import createDebugAttachmentMiddleware from './Middleware/Attachment/debug';
+
 export default BasicWebChat
+
+export {
+  createAdaptiveCardsAttachmentMiddleware,
+  createCoreActivityMiddleware,
+  createCoreAttachmentMiddleware,
+  createDebugAttachmentMiddleware
+}
 
 try {
   const { document } = global as any;

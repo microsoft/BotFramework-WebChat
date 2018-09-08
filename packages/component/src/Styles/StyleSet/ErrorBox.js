@@ -1,14 +1,18 @@
 import {
+  monospaceSmallFont,
   primaryFont
 } from '../Fonts';
 
-export default function createUnknownCardStyle() {
+export default function createErrorBoxStyle() {
   return {
     ...primaryFont,
     display: 'flex',
     flexDirection: 'column',
     margin: 0,
     minHeight: 20,
+    maxHeight: 200,
+    overflowY: 'auto',
+    WebkitOverflowScrolling: 'touch',
 
     '& > :first-child': {
       backgroundColor: 'Red',
@@ -25,7 +29,13 @@ export default function createUnknownCardStyle() {
       borderTopWidth: 0,
       margin: 0,
       overflowY: 'auto',
-      padding: 10
+      padding: 10,
+
+      '& > pre': {
+        ...monospaceSmallFont,
+        fontSize: '60%',
+        margin: 0
+      }
     }
   };
 }

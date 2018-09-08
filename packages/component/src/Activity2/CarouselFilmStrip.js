@@ -95,8 +95,8 @@ export default ({ activity, children, className }) =>
             {
               activity.attachments.map((attachment, index) =>
                 <li key={ index }>
-                  <Bubble debug={ attachment } key={ index }>
-                    { children({ activity, attachment }) }
+                  <Bubble key={ index }>
+                    { children({ attachment }) }
                   </Bubble>
                 </li>
               )

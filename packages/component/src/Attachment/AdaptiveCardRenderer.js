@@ -6,7 +6,7 @@ import {
 } from 'adaptivecards';
 
 import Context from '../Context';
-import UnknownAttachment from './UnknownAttachment';
+import ErrorBox from '../ErrorBox';
 
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 
@@ -137,9 +137,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
     return (
       error ?
-        <UnknownAttachment message="Adaptive Card render error">
+        <ErrorBox message="Adaptive Card render error">
           <pre>{ JSON.stringify(error, null, 2) }</pre>
-        </UnknownAttachment>
+        </ErrorBox>
       :
         <div
           className={ styleSet.adaptiveCardRenderer }

@@ -1,8 +1,12 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
-import BasicWebChat from 'component';
 import memoize from 'memoize-one';
 import React from 'react';
+
+import BasicWebChat, {
+  createAdaptiveCardsAttachmentMiddleware,
+  createDebugAttachmentMiddleware
+} from 'component';
 
 import {
   createCognitiveServicesWebSpeechPonyfill,
@@ -56,6 +60,10 @@ class App extends React.Component {
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
 
     this.mainRef = React.createRef();
+    this.attachmentMiddleware = [
+      createAdaptiveCardsAttachmentMiddleware(),
+      createDebugAttachmentMiddleware()
+    ];
 
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
@@ -130,6 +138,7 @@ class App extends React.Component {
         ref={ this.mainRef }
       >
         <BasicWebChat
+          attachmentMiddleware={ this.attachmentMiddleware }
           className={ WEB_CHAT_CSS }
           directLine={ state.directLine }
           renderMarkdown={ renderMarkdown }

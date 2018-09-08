@@ -5,13 +5,20 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'backend';
 import renderMarkdown from './renderMarkdown';
 
-export default function (props, element) {
+export default function (bundleProps, props, element) {
   const store = createStore();
 
   ReactDOM.render(
     <Provider store={ store }>
       <BasicWebChat
+        { ...bundleProps }
         { ...props }
+
+        attachmentMiddleware={ [
+          ...props.attachmentMiddleware || [],
+          ...bundleProps.attachmentMiddleware || []
+        ] }
+
         renderMarkdown={ renderMarkdown }
       />
     </Provider>,
