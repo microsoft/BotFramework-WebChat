@@ -4,11 +4,11 @@ import CarouselLayout from './CarouselLayout';
 import StackedLayout from './StackedLayout';
 
 // TODO: For multi-user support, We should check against "userID" instead of "role"
-// TODO: We should always fill in "role", so we can simplify the "is it from me?" check every where
 function fromUser(activity) {
   return !!activity.from && activity.from.role === 'user';
 }
 
+// TODO: Refactor it into activity middleware stack
 export default ({ activity, children }) =>
   // Do not show typing by myself
   !(fromUser(activity) && activity.type === 'typing')
