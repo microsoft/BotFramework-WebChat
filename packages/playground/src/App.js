@@ -53,8 +53,9 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
+    this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
 
     this.mainRef = React.createRef();
@@ -83,7 +84,8 @@ export default class extends React.Component {
         fetch,
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
-      })
+      }),
+      language: ''
     };
   }
 
@@ -93,6 +95,10 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+  }
+
+  handleLanguageChange({ target: { value } }) {
+    this.setState(() => ({ language: value }));
   }
 
   handleUseEmulatorCoreClick() {
@@ -135,6 +141,7 @@ export default class extends React.Component {
           attachmentMiddleware={ this.attachmentMiddleware }
           className={ WEB_CHAT_CSS }
           directLine={ state.directLine }
+          locale={ state.language }
           renderMarkdown={ renderMarkdown }
           userID="default-user"
           username="User 1"
@@ -171,6 +178,16 @@ export default class extends React.Component {
               Reliable connection
             </label>
           </div>
+          <select
+            onChange={ this.handleLanguageChange }
+            value={ state.language }
+          >
+            <option>Default ({ window.navigator.language })</option>
+            <option value="en-US">English (United States)</option>
+            <option value="ja-JP">Japanese</option>
+            <option value="zh-HANT">Chinese (Traditional)</option>
+            <option value="zh-YUE">Chinese (Hong Kong)</option>
+          </select>
         </div>
       </div>
     );

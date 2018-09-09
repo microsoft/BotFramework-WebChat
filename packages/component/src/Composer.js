@@ -179,7 +179,7 @@ class Composer extends React.Component {
       [name]: (...args) => this.props.dispatch(DISPATCHERS[name].apply(this, args))
     }), {});
 
-    props.dispatch(setLanguage(props.locale || window.navigator.language));
+    this.setLanguageFromProps(props);
 
     this.state = {
       // This is for uncontrolled component
@@ -198,10 +198,11 @@ class Composer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { props: { directLine, locale, userID, username } } = this;
+    const { props } = this;
+    const { directLine, locale, userID, username } = props;
 
     if (prevProps.locale !== locale) {
-      props.dispatch(setLanguage(locale || window.navigator.language));
+      this.setLanguageFromProps(props);
     }
 
     if (
@@ -219,6 +220,10 @@ class Composer extends React.Component {
     }
   }
 
+  setLanguageFromProps(props) {
+    props.dispatch(setLanguage(props.locale || window.navigator.language));
+  }
+
   render() {
     const {
       props: {
@@ -227,6 +232,10 @@ class Composer extends React.Component {
         adaptiveCardHostConfig,
         attachmentRenderer,
         children,
+
+        // TODO: Add disable interactivity
+        disabled,
+
         enableSpeech,
         grammars,
         referenceGrammarId,
@@ -249,6 +258,7 @@ class Composer extends React.Component {
         adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
+        disabled,
         enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,

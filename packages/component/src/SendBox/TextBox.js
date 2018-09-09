@@ -6,6 +6,7 @@ import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import Context from '../Context';
+import { getString } from '../Languages/String';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -46,7 +47,7 @@ class TextBoxWithSpeech extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const { props } = this;
 
     return (
       <form
@@ -63,7 +64,7 @@ class TextBoxWithSpeech extends React.Component {
               <input
                 disabled={ props.disabled }
                 onChange={ this.handleChange }
-                placeholder="Type your message"
+                placeholder={ getString('Type your message', props.language) }
                 ref={ sendFocusRef }
                 type="text"
                 value={ props.sendBox }
@@ -84,7 +85,7 @@ TextBoxWithSpeech.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default connect(({ input: { sendBox, speechState } }) => ({ sendBox, speechState }))(props =>
+export default connect(({ input: { sendBox, speechState }, settings: { language } }) => ({ language, sendBox, speechState }))(props =>
   <Context.Consumer>
     {
       ({

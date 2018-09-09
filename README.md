@@ -4,6 +4,8 @@
 
 # To-do
 
+## Features
+
 - Backend
    - Direct Line JS
       - [x] Travis CI NPM
@@ -11,25 +13,28 @@
       - [ ] Optional: Bring your own Web Socket
    - [Redux](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/backend)
       - [x] Retry send
-      - [ ] Send typing
+      - [x] Send typing
       - [ ] Optional: Connectivity
       - [ ] Optional: Bring your own Direct Line
       - [x] Samples
          - [x] CLI
          - [x] Speech-only
-      - [ ] Parity check
+      - [x] Parity check
 - Frontend
    - [React](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component)
-      - [ ] Activity Renderer
+      - [x] Activity Renderer
+         - [x] Registries
+            - [x] Custom activity renderer
+            - [x] Custom attachment renderer
          - [x] Bubble and avatar
-         - [ ] Adaptive Cards
+         - [x] Adaptive Cards
             - [x] Submit
             - [x] JSON card
             - [x] Tap
             - [x] Host config
-            - [ ] Rich card
+            - [x] Rich card
                - [x] Sign-in
-               - [ ] OAuth
+               - [x] OAuth
                - [x] Others
          - [x] Media
             - [x] Video
@@ -44,7 +49,7 @@
             - [ ] Programmability
          - [x] Markdown/plain/XML
             - [x] Sanitize HTML
-         - [ ] Speech say
+         - [x] Speech say
          - [x] Typing
          - [x] Layout
             - [x] Carousel
@@ -62,21 +67,31 @@
       - [x] Speech recognition
       - [x] Speech synthesis
 - Bundling
-   - [ ] NPM
-   - [ ] CDN
-      - [ ] Everything
-      - [ ] Minimal
+   - [x] NPM
+   - [x] CDN
+      - [x] Everything
+      - [x] Minimal
 - Testing
    - [x] [Hosted Web Chat](https://webchat-playground.azurewebsites.net/)
    - [ ] Mocking Direct Line
    - [ ] Visual regression tests
       - [ ] BrowserStack
-   - [ ] MockBot
+   - [x] MockBot
       - [x] [GitHub CI/CD](https://travis-ci.org/compulim/BotFramework-MockBot/)
       - [x] [Hosted MockBot](https://webchat-mockbot.azurewebsites.net/)
          - [x] Token exchange
          - [x] Docker
       - [x] Parity check
+
+## Chores
+
+- [ ] Revisit `connect()`
+   - [ ] Can we eliminate all Redux selectors and move them to `Composer`?
+      - [ ] Or, call we eliminate all populated properties and move them to Redux?
+         - E.g. `settings.language`
+      - [ ] Look at speak code first, we migh tnot able to eliminate all Redux selectors due to speak code
+   - [ ] Can we eliminate all dispatch and use actions dispatcher from `Composer`?
+- [ ] Deprecate "locale" prop and rename it to "language"
 
 # Contributions
 
