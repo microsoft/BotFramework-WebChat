@@ -18,8 +18,14 @@ function getStrings(language) {
   }
 }
 
-function getString(text, language) {
-  return (getStrings(language) || {})[text] || enUS[text];
+function getString(text, language, args) {
+  const string = (getStrings(language) || {})[text] || enUS[text];
+
+  if (typeof string === 'function') {
+    return string(args);
+  } else {
+    return string;
+  }
 }
 
 const String = ({ language, text }) => getString(text, language)
