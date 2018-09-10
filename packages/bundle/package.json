@@ -11,9 +11,10 @@
     "clean": "npm run clean:dist && npm run clean:lib",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
-    "prepublishOnly": "npm run clean && npm run build && webpack --run-prod",
+    "prepublishOnly": "npm run clean && npm run build && npm run webpack",
     "test": "jest",
-    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
+    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\"",
+    "webpack": "webpack --run-prod"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
