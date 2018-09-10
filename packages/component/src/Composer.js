@@ -80,7 +80,7 @@ function createLogic(props) {
     switch (type) {
       case 'imBack':
         if (typeof value === 'string') {
-          // TODO: Should move to Redux action dispatchers instead
+          // TODO: We should move to Redux action dispatchers instead
           props.dispatch(postActivity({
             from: {
               id: userID,
@@ -301,4 +301,7 @@ class Composer extends React.Component {
   }
 }
 
+// TODO: Should we hide the knowledge of Redux?
+//       Everyone under this DOM tree should need access to Redux connect or dispatchers
+//       All the features should be accessible via Context/Composer
 export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(Composer)
