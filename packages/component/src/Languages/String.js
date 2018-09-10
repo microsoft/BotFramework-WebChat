@@ -1,16 +1,15 @@
 import { connect } from 'react-redux';
 
 import enUS from './en-US';
+import jaJP from './ja-JP';
 import zhHANT from './zh-HANT';
 import zhYUE from './zh-YUE';
 
 function getStrings(language) {
   switch (normalizeLanguage(language || '')) {
-    case 'zh-HANT':
-      return zhHANT;
-
-    case 'zh-YUE':
-      return zhYUE;
+    case 'ja-JP': return jaJP;
+    case 'zh-HANT': return zhHANT;
+    case 'zh-YUE': return zhYUE;
 
     default:
       return enUS;

@@ -1,43 +1,43 @@
-export interface Strings {
-    title: string,
-    send: string,
-    unknownFile: string,
-    unknownCard: string,
-    receiptTax: string,
-    receiptVat: string,
-    receiptTotal: string
-    messageRetry: string,
-    messageFailed: string,
-    messageSending: string,
-    timeSent: string,
-    consolePlaceholder: string,
-    listeningIndicator: string,
-    uploadFile: string,
-    speak: string
-}
+// export interface Strings {
+//     title: string,
+//     send: string,
+//     unknownFile: string,
+//     unknownCard: string,
+//     receiptTax: string,
+//     receiptVat: string,
+//     receiptTotal: string
+//     messageRetry: string,
+//     messageFailed: string,
+//     messageSending: string,
+//     timeSent: string,
+//     consolePlaceholder: string,
+//     listeningIndicator: string,
+//     uploadFile: string,
+//     speak: string
+// }
 
-interface LocalizedStrings {
-    [locale: string]: Strings
-}
+// interface LocalizedStrings {
+//     [locale: string]: Strings
+// }
 
-const localizedStrings: LocalizedStrings = {
-    'en-us': {
-        title: "Chat",
-        send: "Send",
-        unknownFile: "[File of type '%1']",
-        unknownCard: "[Unknown Card '%1']",
-        receiptVat: "VAT",
-        receiptTax: "Tax",
-        receiptTotal: "Total",
-        messageRetry: "retry",
-        messageFailed: "couldn't send",
-        messageSending: "sending",
-        timeSent: " at %1",
-        consolePlaceholder: "Type your message...",
-        listeningIndicator: "Listening...",
-        uploadFile: "Upload file",
-        speak: "Speak"
-    },
+// const localizedStrings: LocalizedStrings = {
+//     'en-us': {
+//         title: "Chat",
+//         send: "Send",
+//         unknownFile: "[File of type '%1']",
+//         unknownCard: "[Unknown Card '%1']",
+//         receiptVat: "VAT",
+//         receiptTax: "Tax",
+//         receiptTotal: "Total",
+//         messageRetry: "retry",
+//         messageFailed: "couldn't send",
+//         messageSending: "sending",
+//         timeSent: " at %1",
+//         consolePlaceholder: "Type your message...",
+//         listeningIndicator: "Listening...",
+//         uploadFile: "Upload file",
+//         speak: "Speak"
+//     },
     'ja-jp': {
         title: "チャット",
         send: "送信",
@@ -276,40 +276,40 @@ const localizedStrings: LocalizedStrings = {
         uploadFile: "上传文件",
         speak: "发言"
     },
-    'zh-hant': {
-        title: "聊天",
-        send: "發送",
-        unknownFile: "[類型為'%1'的文件]",
-        unknownCard: "[未知的'%1'卡片]",
-        receiptVat: "消費稅",
-        receiptTax: "税",
-        receiptTotal: "總共",
-        messageRetry: "重試",
-        messageFailed: "無法發送",
-        messageSending: "正在發送",
-        timeSent: " 於 %1",
-        consolePlaceholder: "輸入你的訊息...",
-        listeningIndicator: "正在聆聽...",
-        uploadFile: "上載檔案",
-        speak: "發言"
-    },
-    'zh-yue': {
-        title: "傾偈",
-        send: "傳送",
-        unknownFile: "[類型係'%1'嘅文件]",
-        unknownCard: "[唔知'%1'係咩卡片]",
-        receiptVat: "消費稅",
-        receiptTax: "税",
-        receiptTotal: "總共",
-        messageRetry: "再嚟一次",
-        messageFailed: "傳送唔倒",
-        messageSending: "而家傳送緊",
-        timeSent: " 喺 %1",
-        consolePlaceholder: "輸入你嘅訊息...",
-        listeningIndicator: "聽緊你講嘢...",
-        uploadFile: "上載檔案",
-        speak: "講嘢"
-    },
+    // 'zh-hant': {
+    //     title: "聊天",
+    //     send: "發送",
+    //     unknownFile: "[類型為'%1'的文件]",
+    //     unknownCard: "[未知的'%1'卡片]",
+    //     receiptVat: "消費稅",
+    //     receiptTax: "税",
+    //     receiptTotal: "總共",
+    //     messageRetry: "重試",
+    //     messageFailed: "無法發送",
+    //     messageSending: "正在發送",
+    //     timeSent: " 於 %1",
+    //     consolePlaceholder: "輸入你的訊息...",
+    //     listeningIndicator: "正在聆聽...",
+    //     uploadFile: "上載檔案",
+    //     speak: "發言"
+    // },
+    // 'zh-yue': {
+    //     title: "傾偈",
+    //     send: "傳送",
+    //     unknownFile: "[類型係'%1'嘅文件]",
+    //     unknownCard: "[唔知'%1'係咩卡片]",
+    //     receiptVat: "消費稅",
+    //     receiptTax: "税",
+    //     receiptTotal: "總共",
+    //     messageRetry: "再嚟一次",
+    //     messageFailed: "傳送唔倒",
+    //     messageSending: "而家傳送緊",
+    //     timeSent: " 喺 %1",
+    //     consolePlaceholder: "輸入你嘅訊息...",
+    //     listeningIndicator: "聽緊你講嘢...",
+    //     uploadFile: "上載檔案",
+    //     speak: "講嘢"
+    // },
     'cs-cz': {
         title: "Chat",
         send: "Odeslat",
@@ -431,68 +431,68 @@ const localizedStrings: LocalizedStrings = {
     }
 }
 
-export const defaultStrings = localizedStrings['en-us'];
+// export const defaultStrings = localizedStrings['en-us'];
 
 // Returns strings using the "best match available"" locale
 // e.g. if 'en-us' is the only supported English locale, then
 // strings('en') should return localizedStrings('en-us')
 
-function mapLocale(locale: string) {
-    locale = locale && locale.toLowerCase();
+// function mapLocale(locale: string) {
+//     locale = locale && locale.toLowerCase();
 
-    if (locale in localizedStrings) {
-        return locale;
-    } else if (locale.startsWith('cs')) {
-        return 'cs-cz';
-    } else if (locale.startsWith('da')) {
-        return 'da-dk';
-    } else if (locale.startsWith('de')) {
-        return 'de-de';
-    } else if (locale.startsWith('el')) {
-        return 'el-gr';
-    } else if (locale.startsWith('es')) {
-        return 'es-es';
-    } else if (locale.startsWith('fi')) {
-        return 'fi-fi';
-    } else if (locale.startsWith('fr')) {
-        return 'fr-fr';
-    } else if (locale.startsWith('hu')) {
-        return 'hu-hu';
-    } else if (locale.startsWith('it')) {
-        return 'it-it';
-    } else if (locale.startsWith('ja')) {
-        return 'ja-jp';
-    } else if (locale.startsWith('ko')) {
-        return 'ko-kr';
-    } else if (locale.startsWith('lv')) {
-        return 'lv-lv';
-    } else if (locale.startsWith('nb') || locale.startsWith('nn') || locale.startsWith('no')) {
-        return 'nb-no';
-    } else if (locale.startsWith('nl')) {
-        return 'nl-nl';
-    } else if (locale.startsWith('pl')) {
-        return 'pl-pl';
-    } else if (locale.startsWith('pt')) {
-        if (locale === 'pt-br') {
-            return 'pt-br';
-        } else {
-            return 'pt-pt';
-        }
-    } else if (locale.startsWith('ru')) {
-        return 'ru-ru';
-    } else if (locale.startsWith('sv')) {
-        return 'sv-se';
-    } else if (locale.startsWith('tr')) {
-        return 'tr-tr';
-    } else if (locale.startsWith('zh')) {
-        if (locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw') {
-            return 'zh-hant';
-        } else {
-            return 'zh-hans';
-        }
-    }
+//     if (locale in localizedStrings) {
+//         return locale;
+//     } else if (locale.startsWith('cs')) {
+//         return 'cs-cz';
+//     } else if (locale.startsWith('da')) {
+//         return 'da-dk';
+//     } else if (locale.startsWith('de')) {
+//         return 'de-de';
+//     } else if (locale.startsWith('el')) {
+//         return 'el-gr';
+//     } else if (locale.startsWith('es')) {
+//         return 'es-es';
+//     } else if (locale.startsWith('fi')) {
+//         return 'fi-fi';
+//     } else if (locale.startsWith('fr')) {
+//         return 'fr-fr';
+//     } else if (locale.startsWith('hu')) {
+//         return 'hu-hu';
+//     } else if (locale.startsWith('it')) {
+//         return 'it-it';
+//     } else if (locale.startsWith('ja')) {
+//         return 'ja-jp';
+//     } else if (locale.startsWith('ko')) {
+//         return 'ko-kr';
+//     } else if (locale.startsWith('lv')) {
+//         return 'lv-lv';
+//     } else if (locale.startsWith('nb') || locale.startsWith('nn') || locale.startsWith('no')) {
+//         return 'nb-no';
+//     } else if (locale.startsWith('nl')) {
+//         return 'nl-nl';
+//     } else if (locale.startsWith('pl')) {
+//         return 'pl-pl';
+//     } else if (locale.startsWith('pt')) {
+//         if (locale === 'pt-br') {
+//             return 'pt-br';
+//         } else {
+//             return 'pt-pt';
+//         }
+//     } else if (locale.startsWith('ru')) {
+//         return 'ru-ru';
+//     } else if (locale.startsWith('sv')) {
+//         return 'sv-se';
+//     } else if (locale.startsWith('tr')) {
+//         return 'tr-tr';
+//     } else if (locale.startsWith('zh')) {
+//         if (locale === 'zh-hk' || locale === 'zh-mo' || locale === 'zh-tw') {
+//             return 'zh-hant';
+//         } else {
+//             return 'zh-hans';
+//         }
+//     }
 
-    return 'en-us';
-}
+//     return 'en-us';
+// }
 
-export const strings = (locale: string) => localizedStrings[mapLocale(locale)]
+// export const strings = (locale: string) => localizedStrings[mapLocale(locale)]
