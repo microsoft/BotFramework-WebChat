@@ -2,7 +2,7 @@ export default {
   'Chat': 'チャット',
   'Listening': '聴いてます',
   'retry': '再送',
-  'Send failed, [retry]': '送信できませんでした。[retry]',
+  'Send failed, {retry}': '送信できませんでした。{retry}',
   'Sending': '送信中',
   'Tax': '税',
   'Type your message': 'メッセージを入力してください',

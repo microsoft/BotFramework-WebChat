@@ -27,7 +27,7 @@ export default {
   'Chat': '聊天',
   'Listening': '正在聆聽',
   'retry': '重試',
-  'Send failed, [retry]': '無法發送，[retry]',
+  'Send failed, {retry}': '無法發送，{retry}',
   'Sending': '正在發送',
   'Tax': '稅',
   'Type your message': '請輸入您的訊息',

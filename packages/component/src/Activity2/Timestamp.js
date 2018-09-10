@@ -1,8 +1,28 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
+import String, { getString } from '../Languages/String';
 import Context from '../Context';
 import TimeAgo from '../Utils/TimeAgo';
+
+// TODO: We could refactor this into a general component
+function sendFailed(language, replace) {
+  const text = getString('Send failed, {retry}', language);
+  const retry = getString('retry', language);
+  const match = /\{retry\}/.exec(text);
+
+  if (match) {
+    return (
+      <React.Fragment>
+        { text.substr(0, match.index) }
+        { replace(retry) }
+        { text.substr(match.index + match[0].length) }
+      </React.Fragment>
+    );
+  } else {
+    return text;
+  }
+}
 
 class Timestamp extends React.Component {
   constructor(props) {
@@ -32,14 +52,15 @@ class Timestamp extends React.Component {
       <span className={ styleSet.timestamp }>
         {
           state === 'sending' ?
-            'Sending'
+            <String text="Sending" />
           : state === 'send failed' ?
             <React.Fragment>
-              Send failed, <button className="retry" onClick={ this.handleRetryClick } type="button">retry</button>
+              {
+                sendFailed(language, retry => <button className="retry" onClick={ this.handleRetryClick } type="button">{ retry }</button>)
+              }
             </React.Fragment>
           :
             <TimeAgo
-              language={ language }
               value={ timestamp }
             />
         }

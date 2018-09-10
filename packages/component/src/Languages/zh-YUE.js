@@ -28,7 +28,7 @@ export default {
   'Chat': '傾偈',
   'Listening': '聽緊你講嘢',
   'retry': '再嚟一次',
-  'Send failed, [retry]': '傳送唔倒，[retry]',
+  'Send failed, {retry}': '傳送唔倒，{retry}',
   'Sending': '而家傳送緊',
   'Tax': '稅',
   'Total': '總共',

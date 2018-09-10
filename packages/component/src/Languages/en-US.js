@@ -31,7 +31,7 @@ export default {
     'Chat',
     'Listening',
     'retry',
-    'Send failed, [retry]',
+    'Send failed, {retry}',
     'Send',
     'Sending',
     'Speak',

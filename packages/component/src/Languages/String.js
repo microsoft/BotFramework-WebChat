@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import React from 'react';
 
 import enUS from './en-US';
 import jaJP from './ja-JP';
@@ -22,11 +23,11 @@ function getString(text, language, args) {
   if (typeof string === 'function') {
     return string(args);
   } else {
-    return string;
+    return string || text;
   }
 }
 
-const String = ({ language, text }) => getString(text, language)
+const String = ({ args, language, text }) => getString(text, language, args);
 
 export default connect(({ settings: { language } }) => ({ language }))(String)
 
