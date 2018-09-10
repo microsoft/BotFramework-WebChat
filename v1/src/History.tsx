@@ -238,8 +238,8 @@
 //     return el.offsetWidth + values[paddingLeft] + values[paddingRight];
 // }
 
-const suitableInterval = (current: Activity, next: Activity) =>
-    Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
+// const suitableInterval = (current: Activity, next: Activity) =>
+//     Date.parse(next.timestamp) - Date.parse(current.timestamp) > 5 * 60 * 1000;
 
 // export interface WrappedActivityProps {
 //     activity: Activity,
