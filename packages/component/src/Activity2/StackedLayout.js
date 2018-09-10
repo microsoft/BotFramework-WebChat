@@ -79,7 +79,10 @@ const StackedLayout = ({
             </div>
           : !!activity.text &&
             <div className="row message">
-              <Bubble className="bubble">
+              <Bubble
+                className="bubble"
+                fromUser={ activity.from.role === 'user' }
+              >
                 { children({
                   activity,
                   attachment: {
@@ -94,7 +97,11 @@ const StackedLayout = ({
         {
           (activity.attachments || []).map((attachment, index) =>
             <div className="row attachment" key={ index }>
-              <Bubble className="attachment bubble" key={ index }>
+              <Bubble
+                className="attachment bubble"
+                fromUser={ activity.from.role === 'user' }
+                key={ index }
+              >
                 { children({ attachment }) }
               </Bubble>
             </div>

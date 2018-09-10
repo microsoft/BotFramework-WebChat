@@ -84,7 +84,10 @@ const CarouselFilmStrip = ({
         {
           !!activity.text &&
             <div className="message">
-              <Bubble className="bubble">
+              <Bubble
+                className="bubble"
+                fromUser={ activity.from.role === 'user' }
+              >
                 { children({
                   activity,
                   attachment: {
@@ -100,7 +103,10 @@ const CarouselFilmStrip = ({
           {
             activity.attachments.map((attachment, index) =>
               <li key={ index }>
-                <Bubble key={ index }>
+                <Bubble
+                  fromUser={ activity.from.role === 'user' }
+                  key={ index }
+                >
                   { children({ attachment }) }
                 </Bubble>
               </li>

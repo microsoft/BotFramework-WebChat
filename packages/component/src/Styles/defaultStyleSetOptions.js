@@ -7,9 +7,13 @@ const DEFAULT_OPTIONS = {
   bubbleBackground: 'White',
   bubbleBorder: 'solid 1px #E6E6E6',
   bubbleBorderRadius: 2,
+  bubbleFromUserBackground: 'White',
+  bubbleFromUserBorder: 'solid 1px #E6E6E6',
+  bubbleFromUserBorderRadius: 2,
+  bubbleFromUserTextColor: 'Black',
   bubbleImageHeight: 240,
-  bubbleMinHeight: 40,
   bubbleMaxWidth: 480, // screen width = 600px
+  bubbleMinHeight: 40,
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
   bubbleTextColor: 'Black',
 

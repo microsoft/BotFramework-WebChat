@@ -6,7 +6,7 @@ import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
 import createAvatarStyle from './StyleSet/Avatar';
-import createBubble2Style from './StyleSet/Bubble2';
+import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -31,6 +31,8 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 import defaultStyleSetOptions from './defaultStyleSetOptions';
 
 export default function createStyleSet(options = defaultStyleSetOptions) {
+  // Keep this list flat (no nested style) and serializable (no functions)
+
   return {
     activity: createActivityStyle(options),
     activities: createActivitiesStyle(options),
@@ -40,7 +42,7 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
     audioCardAttachment: createAudioCardAttachmentStyle(options),
     audioContent: createAudioContentStyle(options),
     avatar: createAvatarStyle(options),
-    bubble2: createBubble2Style(options),
+    bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),

@@ -2,12 +2,15 @@ import {
   primaryFont
 } from '../Fonts';
 
-export default function createAvatarStyle({ avatarSize }) {
+export default function createAvatarStyle({
+  accent,
+  avatarSize
+}) {
   return {
     ...primaryFont,
 
     alignItems: 'center',
-    backgroundColor: 'Black',
+    backgroundColor: accent,
     borderRadius: '50%',
     color: 'White',
     display: 'flex',
