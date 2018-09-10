@@ -2,19 +2,16 @@ import {
   call
 } from 'redux-saga/effects';
 
-import createPromiseQueue from '../../createPromiseQueue';
-
 export default function (observable) {
-  // TODO: Can we simplify this code and skip PromiseQueue?
-  //       We probably still need Deferred
   return call(function* () {
-    const queue = createPromiseQueue();
-    const subscription = observable.subscribe({ next: queue.push });
+    let subscription;
 
     try {
-      return yield call(queue.shift);
+      return yield call(() => new Promise(resolve => {
+        observable.subscribe({ next: resolve });
+      }));
     } finally {
-      subscription.unsubscribe();
+      subscription && subscription.unsubscribe();
     }
   });
 }
