@@ -26,7 +26,20 @@ function xMinutesAgo(date) {
 export default {
   'X minutes ago': xMinutesAgo,
   ...[
-    'Type your message'
+    // '[File of type '%1']",
+    // '[Unknown Card '%1']',
+    'Chat',
+    'Listening',
+    'retry',
+    'Send failed, [retry]',
+    'Send',
+    'Sending',
+    'Speak',
+    'Tax',
+    'Total',
+    'Type your message',
+    'Upload file',
+    'VAT'
   ].reduce((result, text) => ({
     ...result,
     [text]: text

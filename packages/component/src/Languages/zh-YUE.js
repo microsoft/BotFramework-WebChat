@@ -25,6 +25,17 @@ function xMinutesAgo(date) {
 }
 
 export default {
+  'Chat': '傾偈',
+  'Listening': '聽緊你講嘢',
+  'retry': '再嚟一次',
+  'Send failed, [retry]': '傳送唔倒，[retry]',
+  'Sending': '而家傳送緊',
+  'Tax': '稅',
+  'Total': '總共',
+  'VAT': '消費稅',
+  'Send': '傳送',
+  'Speak': '講嘢',
+  'Upload file': '上載檔案',
   'Type your message': '請打你嘅訊息',
   'X minutes ago': xMinutesAgo
 }

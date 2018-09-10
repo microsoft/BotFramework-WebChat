@@ -85,7 +85,7 @@ export default class extends React.Component {
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
       }),
-      language: ''
+      language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || ''
     };
   }
 
@@ -98,7 +98,9 @@ export default class extends React.Component {
   }
 
   handleLanguageChange({ target: { value } }) {
-    this.setState(() => ({ language: value }));
+    this.setState(() => ({ language: value }), () => {
+      window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value)
+    });
   }
 
   handleUseEmulatorCoreClick() {
@@ -185,8 +187,10 @@ export default class extends React.Component {
             <option>Default ({ window.navigator.language })</option>
             <option value="en-US">English (United States)</option>
             <option value="ja-JP">Japanese</option>
-            <option value="zh-HANT">Chinese (Traditional)</option>
-            <option value="zh-YUE">Chinese (Hong Kong)</option>
+            <option value="zh-HK">Chinese (Hong Kong)</option>
+            <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
+            <option value="zh-TW">Chinese (Taiwan)</option>
+            <option value="zh-HANT">Chinese (Traditional Chinese)</option>
           </select>
         </div>
       </div>
