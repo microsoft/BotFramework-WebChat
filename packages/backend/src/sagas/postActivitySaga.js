@@ -4,8 +4,7 @@ import {
   join,
   put,
   select,
-  take,
-  takeEvery
+  take
 } from 'redux-saga/effects';
 
 import callWithin from './effects/callWithin';
@@ -79,11 +78,11 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
     //         So, we setup expectation first, then postActivity afterward
 
     // TODO: Make these debug switches
-    yield call(sleep, 500);
+    // yield call(sleep, 500);
 
-    if (Math.random() < .5) {
-      throw new Error('artificial error');
-    }
+    // if (Math.random() < .5) {
+    //   throw new Error('artificial error');
+    // }
 
     const expectEchoBack = yield fork(() => callWithin(function* () {
       for (;;) {

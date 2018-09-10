@@ -7,6 +7,7 @@ import React from 'react';
 
 import Context from '../Context';
 import IconButton from './IconButton';
+import String from '../Localization/String';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 
 const IDLE = 0;
@@ -144,7 +145,7 @@ class MicrophoneButton extends React.Component {
                     { interims.map((interim, index) => <span key={ index }>{ interim }</span>) }
                   </p>
                 :
-                  <p className="dictation status">Listening&hellip;</p>
+                  <p className="dictation status"><String text="Listening&hellip;" /></p>
             ) }
             <IconButton
               disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }

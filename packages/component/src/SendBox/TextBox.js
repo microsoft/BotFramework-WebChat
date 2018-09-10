@@ -6,7 +6,7 @@ import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import Context from '../Context';
-import { getString } from '../Languages/String';
+import { getString } from '../Localization/String';
 
 const ROOT_CSS = css({
   display: 'flex',

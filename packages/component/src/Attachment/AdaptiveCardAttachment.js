@@ -87,18 +87,20 @@ export default class extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const { props: { attachment }, state } = this;
 
     return (
       <Context.Consumer>
         { ({ adaptiveCards, renderMarkdown }) => {
-          const { card, errors } = this.createAdaptiveCard(adaptiveCards, props.attachment.content, renderMarkdown);
+          const { card, errors } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
           const allDeprecations = errors.every(({ error }) => error === 3);
 
           return (
             errors.length && !(allDeprecations && state.ignoreDeprecations) ?
               <ErrorBox message="Adaptive Card parse error">
-                { allDeprecations && <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button> }
+                { allDeprecations &&
+                  <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button>
+                }
                 <pre>{ JSON.stringify(errors, null, 2) }</pre>
               </ErrorBox>
             :

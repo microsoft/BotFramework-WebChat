@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
-import { getString } from '../Languages/String';
+import { getString } from '../Localization/String';
 import Timer from './Timer';
 
 function nextTimer(date) {

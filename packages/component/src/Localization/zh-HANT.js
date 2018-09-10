@@ -5,7 +5,7 @@ function xMinutesAgo(date) {
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
   if (deltaInMinutes < 1) {
-    return '啱啱';
+    return '剛剛';
   } else if (deltaInMinutes === 1) {
     return '一分鐘前';
   } else if (deltaInHours < 1) {
@@ -17,25 +17,23 @@ function xMinutesAgo(date) {
   } else if (deltaInHours <= 24) {
     return `今日`;
   } else if (deltaInHours <= 48) {
-    // https://zh-yue.wikipedia.org/wiki/尋日
-    return `尋日`;
+    return `昨日`;
   } else {
     return new Intl.DateTimeFormat('zh-HK').format(date);
   }
 }
 
 export default {
-  'Chat': '傾偈',
-  'Listening': '聽緊你講嘢',
-  'retry': '再嚟一次',
-  'Send failed, {retry}': '傳送唔倒，{retry}',
-  'Sending': '而家傳送緊',
+  'Chat': '聊天',
+  'Listening…': '正在聆聽…',
+  'retry': '重試',
+  'Send failed, {retry}': '無法發送，{retry}',
+  'Sending': '正在發送',
   'Tax': '稅',
+  'Type your message': '請輸入您的訊息',
   'Total': '總共',
   'VAT': '消費稅',
-  'Send': '傳送',
-  'Speak': '講嘢',
+  'Send': '發送',
+  'Speak': '發言',
   'Upload file': '上載檔案',
-  'Type your message': '請打你嘅訊息',
-  'X minutes ago': xMinutesAgo
-}
+  'X minutes ago': xMinutesAgo}

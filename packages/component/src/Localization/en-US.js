@@ -29,7 +29,7 @@ export default {
     // '[File of type '%1']",
     // '[Unknown Card '%1']',
     'Chat',
-    'Listening',
+    'Listening…',
     'retry',
     'Send failed, {retry}',
     'Send',

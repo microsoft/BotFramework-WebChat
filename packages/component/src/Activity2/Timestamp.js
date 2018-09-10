@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
-import String, { getString } from '../Languages/String';
+import String, { getString } from '../Localization/String';
 import Context from '../Context';
 import TimeAgo from '../Utils/TimeAgo';
 
