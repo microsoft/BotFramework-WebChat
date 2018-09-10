@@ -7,6 +7,7 @@ import sendFiles from './Actions/sendFiles';
 import sendMessage from './Actions/sendMessage';
 import setLanguage from './Actions/setLanguage';
 import setSendBox from './Actions/setSendBox';
+import setSendTyping from './Actions/setSendTyping';
 import startSpeakingActivity from './Actions/startSpeakingActivity';
 import startSpeechInput from './Actions/startSpeechInput';
 import stopSpeakingActivity from './Actions/stopSpeakingActivity';
@@ -23,6 +24,7 @@ export {
   sendMessage,
   setLanguage,
   setSendBox,
+  setSendTyping,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,

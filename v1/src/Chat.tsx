@@ -55,10 +55,10 @@
 //     private _saveHistoryRef = this.saveHistoryRef.bind(this);
 //     private _saveShellRef = this.saveShellRef.bind(this);
 
-    constructor(props: ChatProps) {
-        super(props);
+    // constructor(props: ChatProps) {
+    //     super(props);
 
-        konsole.log("BotChat.Chat props", props);
+    //     konsole.log("BotChat.Chat props", props);
 
         // this.store.dispatch<ChatActions>({
         //     type: 'Set_Locale',
@@ -88,9 +88,9 @@
 
         // this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton !== false });
 
-        if (props.sendTyping) {
-            this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
-        }
+        // if (props.sendTyping) {
+        //     this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
+        // }
 
         // if (props.speechOptions) {
         //     Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);

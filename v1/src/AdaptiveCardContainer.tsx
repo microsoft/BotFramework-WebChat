@@ -61,20 +61,20 @@
 //     return { ...card, nextActions };
 // }
 
-class AdaptiveCardContainer extends React.Component<Props, State> {
-    private divRef: React.ReactInstance;
+// class AdaptiveCardContainer extends React.Component<Props, State> {
+//     private divRef: React.ReactInstance;
 
-    constructor(props: Props) {
-        super(props);
+//     constructor(props: Props) {
+//         super(props);
 
-        this.handleImageLoad = this.handleImageLoad.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.saveDiv = this.saveDiv.bind(this);
-    }
+//         this.handleImageLoad = this.handleImageLoad.bind(this);
+//         this.onClick = this.onClick.bind(this);
+//         this.saveDiv = this.saveDiv.bind(this);
+//     }
 
-    private saveDiv(divRef: React.ReactInstance) {
-        this.divRef = divRef;
-    }
+    // private saveDiv(divRef: React.ReactInstance) {
+    //     this.divRef = divRef;
+    // }
 
     private onClick(e: React.MouseEvent<HTMLElement>) {
         if (!this.props.onClick) {

@@ -55,6 +55,7 @@ export default class extends React.Component {
 
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleSendTypingChange = this.handleSendTypingChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
 
@@ -85,7 +86,8 @@ export default class extends React.Component {
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
       }),
-      language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || ''
+      language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
+      sendTyping: true
     };
   }
 
@@ -103,14 +105,18 @@ export default class extends React.Component {
     });
   }
 
-  handleUseEmulatorCoreClick() {
-    window.sessionStorage.removeItem('REDUX_STORE');
-    window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0';
-  }
-
   handleResetClick() {
     window.sessionStorage.removeItem('REDUX_STORE');
     window.location.reload();
+  }
+
+  handleSendTypingChange({ target: { checked } }) {
+    this.setState(() => ({ sendTyping: !!checked }));
+  }
+
+  handleUseEmulatorCoreClick() {
+    window.sessionStorage.removeItem('REDUX_STORE');
+    window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0';
   }
 
   async handleUseMockBot(url) {
@@ -145,6 +151,7 @@ export default class extends React.Component {
           directLine={ state.directLine }
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
+          sendTyping={ state.sendTyping }
           userID="default-user"
           username="User 1"
           webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
@@ -192,6 +199,16 @@ export default class extends React.Component {
             <option value="zh-TW">Chinese (Taiwan)</option>
             <option value="zh-HANT">Chinese (Traditional Chinese)</option>
           </select>
+          <div>
+            <label>
+              <input
+                checked={ state.sendTyping }
+                onChange={ this.handleSendTypingChange }
+                type="checkbox"
+              />
+              Send typing
+            </label>
+          </div>
         </div>
       </div>
     );

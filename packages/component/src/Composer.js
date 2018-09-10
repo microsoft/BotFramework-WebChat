@@ -13,6 +13,7 @@ import {
   sendMessage,
   setLanguage,
   setSendBox,
+  setSendTyping,
   startSpeakingActivity,
   startSpeechInput,
   stopSpeakingActivity,
@@ -180,6 +181,7 @@ class Composer extends React.Component {
     }), {});
 
     this.setLanguageFromProps(props);
+    this.setSendTypingFromProps(props);
 
     this.state = {
       // This is for uncontrolled component
@@ -199,10 +201,14 @@ class Composer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { props } = this;
-    const { directLine, locale, userID, username } = props;
+    const { directLine, locale, sendTyping, userID, username } = props;
 
     if (prevProps.locale !== locale) {
       this.setLanguageFromProps(props);
+    }
+
+    if (!prevProps.sendTyping !== !sendTyping) {
+      this.setSendTypingFromProps(props);
     }
 
     if (
@@ -218,10 +224,17 @@ class Composer extends React.Component {
         username
       }));
     }
+
+    if (prevProps) {
+    }
   }
 
   setLanguageFromProps(props) {
     props.dispatch(setLanguage(props.locale || window.navigator.language));
+  }
+
+  setSendTypingFromProps(props) {
+    props.dispatch(setSendTyping(!!props.sendTyping));
   }
 
   render() {
