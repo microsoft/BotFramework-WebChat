@@ -92,6 +92,7 @@
       - [ ] Look at speak code first, we migh tnot able to eliminate all Redux selectors due to speak code
    - [ ] Can we eliminate all dispatch and use actions dispatcher from `Composer`?
 - [ ] Deprecate "locale" prop and rename it to "language"
+- [ ] Customization localization strings
 
 # Contributions
 
