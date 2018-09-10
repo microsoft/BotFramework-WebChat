@@ -21,8 +21,11 @@ const ROOT_CSS = css({
   height: '100%',
 
   '& > div.button-bar': {
+    backdropFilter: 'blur(2px)',
+    backgroundColor: 'rgba(255, 255, 255, .8)',
     display: 'flex',
     flexDirection: 'column',
+    padding: 10,
     position: 'absolute',
     right: 0,
     top: 0,
@@ -53,12 +56,14 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
     this.handleCollapseTimestampChange = this.handleCollapseTimestampChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSendTypingChange = this.handleSendTypingChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
+    this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
 
     this.mainRef = React.createRef();
     this.attachmentMiddleware = [
@@ -81,6 +86,7 @@ export default class extends React.Component {
     }
 
     this.state = {
+      botAvatarInitials: 'BF',
       collapseTimestamp: window.sessionStorage.getItem('PLAYGROUND_COLLAPSE_TIMESTAMP'),
       directLine: createDirectLine({
         domain,
@@ -89,7 +95,8 @@ export default class extends React.Component {
         webSocket: webSocket === 'true' || +webSocket
       }),
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
-      sendTyping: true
+      sendTyping: true,
+      userAvatarInitials: 'WC'
     };
   }
 
@@ -99,6 +106,10 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+  }
+
+  handleBotAvatarInitialsChange({ target: { value } }) {
+    this.setState(() => ({ botAvatarInitials: value }));
   }
 
   handleCollapseTimestampChange({ target: { value } }) {
@@ -129,6 +140,10 @@ export default class extends React.Component {
     window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0';
   }
 
+  handleUserAvatarInitialsChange({ target: { value } }) {
+    this.setState(() => ({ userAvatarInitials: value }));
+  }
+
   async handleUseMockBot(url) {
     try {
       const directLineTokenRes = await fetch(`${ url }/directline/token`, { method: 'POST' });
@@ -150,8 +165,6 @@ export default class extends React.Component {
   render() {
     const { state } = this;
 
-    console.log(state);
-
     return (
       <div
         className={ ROOT_CSS }
@@ -159,12 +172,14 @@ export default class extends React.Component {
       >
         <BasicWebChat
           attachmentMiddleware={ this.attachmentMiddleware }
+          botAvatarInitials={ state.botAvatarInitials }
           className={ WEB_CHAT_CSS }
           collapseTimestamp={ state.collapseTimestamp }
           directLine={ state.directLine }
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
           sendTyping={ state.sendTyping }
+          userAvatarInitials={ state.userAvatarInitials }
           userID="default-user"
           username="User 1"
           webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
@@ -232,7 +247,7 @@ export default class extends React.Component {
               Collapse timestamp
               <select
                 onChange={ this.handleCollapseTimestampChange }
-                value={ state.collapseTimestamp }
+                value={ state.collapseTimestamp || '' }
               >
                 <option value="default">Default</option>
                 <option value="false">Don't collapse</option>
@@ -242,6 +257,23 @@ export default class extends React.Component {
                 <option value="300000">5 minutes</option>
                 <option value="3600000">One hour</option>
               </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              Avatar initials
+              <input
+                onChange={ this.handleBotAvatarInitialsChange }
+                style={{ width: '4em' }}
+                type="input"
+                value={ state.botAvatarInitials }
+              />
+              <input
+                onChange={ this.handleUserAvatarInitialsChange }
+                style={{ width: '4em' }}
+                type="input"
+                value={ state.userAvatarInitials }
+              />
             </label>
           </div>
         </div>

@@ -244,6 +244,7 @@ class Composer extends React.Component {
         adaptiveCards,
         adaptiveCardHostConfig,
         attachmentRenderer,
+        botAvatarInitials,
         children,
         collapseTimestamp,
 
@@ -255,6 +256,7 @@ class Composer extends React.Component {
         referenceGrammarId,
         renderMarkdown,
         scrollToBottom,
+        userAvatarInitials,
         webSpeechPonyfillFactory,
         ...propsForLogic
       },
@@ -272,12 +274,14 @@ class Composer extends React.Component {
         adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
+        botAvatarInitials,
         collapseTimestamp,
         disabled,
         enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
+        userAvatarInitials,
         webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
       }
     );

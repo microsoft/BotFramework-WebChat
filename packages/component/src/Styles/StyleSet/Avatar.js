@@ -13,8 +13,6 @@ export default function createAvatarStyle({ avatarSize }) {
     display: 'flex',
     height: avatarSize,
     justifyContent: 'center',
-    marginLeft: 10,
-    marginRight: 10,
     overflow: 'hidden',
     width: avatarSize
   };
