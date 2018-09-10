@@ -44,15 +44,28 @@ const BasicTranscript = ({
     >
       <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
         {
-          activities.map((activity, index) =>
-            <li
-              className={ styleSet.activity }
-              key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
-            >
-              { activityRenderer({ activity })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
-              { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
-            </li>
-          )
+          activities.map((activity, index) => {
+            const nextActivity = activities[index + 1];
+            let showTimestamp = true;
+
+            if (nextActivity && activity.from.role === nextActivity.from.role) {
+              const time = new Date(activity.timestamp).getTime();
+              const nextTime = new Date(nextActivity.timestamp).getTime();
+
+              // TODO: Make collapse timestamp 5 minutes configurable
+              showTimestamp = (nextTime - time) > (5 * 60 * 1000);
+            }
+
+            return (
+              <li
+                className={ styleSet.activity }
+                key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
+              >
+                { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
+                { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
+              </li>
+            );
+          })
         }
       </ul>
     </SayComposer>

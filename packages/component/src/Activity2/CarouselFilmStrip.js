@@ -63,8 +63,7 @@ const ROOT_CSS = css({
   }
 });
 
-// TODO: Only show timestamp if it's 5 minutes after last activity
-export default ({ activity, children, className }) =>
+export default ({ activity, children, className, showTimestamp }) =>
   <Context.Consumer>
     { context =>
       <div
@@ -102,7 +101,9 @@ export default ({ activity, children, className }) =>
               )
             }
           </ul>
-          <Timestamp activity={ activity } />
+          { showTimestamp &&
+            <Timestamp activity={ activity } />
+          }
         </div>
       </div>
     }

@@ -10,7 +10,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-export default ({ activity, children }) => {
+export default ({ activity, children, showTimestamp }) => {
   const styleSet = createBasicStyleSet();
 
   return (
@@ -18,7 +18,7 @@ export default ({ activity, children }) => {
       <Context.Consumer>
         { ({ scrollBarWidth }) =>
           <div className={ classNames(ROOT_CSS + '', styleSet.carousel + '') }>
-            <CarouselFilmStrip activity={ activity }>
+            <CarouselFilmStrip activity={ activity } showTimestamp={ showTimestamp }>
               { children }
             </CarouselFilmStrip>
             { scrollBarWidth !== '100%' &&

@@ -6,7 +6,7 @@ import StackedLayout from '../../Activity2/StackedLayout';
 const RETURN_FALSE = () => false;
 
 export default function () {
-  return () => next => ({ activity }) => {
+  return () => next => ({ activity, showTimestamp }) => {
     if (!activity) {
       return RETURN_FALSE;
     } else if (activity.type === 'message') {
@@ -22,13 +22,13 @@ export default function () {
         return RETURN_FALSE;
       }
     } else {
-      return next({ activity });
+      return next({ activity, showTimestamp });
     }
 
     if ((activity.attachments || []).length > 1 && activity.attachmentLayout === 'carousel') {
-      return children => <CarouselLayout activity={ activity }>{ children }</CarouselLayout>;
+      return children => <CarouselLayout activity={ activity } showTimestamp={ showTimestamp }>{ children }</CarouselLayout>;
     } else {
-      return children => <StackedLayout activity={ activity }>{ children }</StackedLayout>;
+      return children => <StackedLayout activity={ activity } showTimestamp={ showTimestamp }>{ children }</StackedLayout>;
     }
   };
 }
