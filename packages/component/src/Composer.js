@@ -245,6 +245,7 @@ class Composer extends React.Component {
         adaptiveCardHostConfig,
         attachmentRenderer,
         children,
+        collapseTimestamp,
 
         // TODO: Add disable interactivity
         disabled,
@@ -271,6 +272,7 @@ class Composer extends React.Component {
         adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
+        collapseTimestamp,
         disabled,
         enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,

@@ -53,6 +53,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleCollapseTimestampChange = this.handleCollapseTimestampChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSendTypingChange = this.handleSendTypingChange.bind(this);
@@ -80,6 +81,7 @@ export default class extends React.Component {
     }
 
     this.state = {
+      collapseTimestamp: window.sessionStorage.getItem('PLAYGROUND_COLLAPSE_TIMESTAMP'),
       directLine: createDirectLine({
         domain,
         fetch,
@@ -97,6 +99,14 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+  }
+
+  handleCollapseTimestampChange({ target: { value } }) {
+    this.setState(() => ({
+      collapseTimestamp: value === 'default' ? undefined : value === 'false' ? false : +value
+    }), () => {
+      window.sessionStorage.setItem('PLAYGROUND_COLLAPSE_TIMESTAMP', value);
+    });
   }
 
   handleLanguageChange({ target: { value } }) {
@@ -140,6 +150,8 @@ export default class extends React.Component {
   render() {
     const { state } = this;
 
+    console.log(state);
+
     return (
       <div
         className={ ROOT_CSS }
@@ -148,6 +160,7 @@ export default class extends React.Component {
         <BasicWebChat
           attachmentMiddleware={ this.attachmentMiddleware }
           className={ WEB_CHAT_CSS }
+          collapseTimestamp={ state.collapseTimestamp }
           directLine={ state.directLine }
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
@@ -187,18 +200,23 @@ export default class extends React.Component {
               Reliable connection
             </label>
           </div>
-          <select
-            onChange={ this.handleLanguageChange }
-            value={ state.language }
-          >
-            <option>Default ({ window.navigator.language })</option>
-            <option value="en-US">English (United States)</option>
-            <option value="ja-JP">Japanese</option>
-            <option value="zh-HK">Chinese (Hong Kong)</option>
-            <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
-            <option value="zh-TW">Chinese (Taiwan)</option>
-            <option value="zh-HANT">Chinese (Traditional Chinese)</option>
-          </select>
+          <div>
+            <label>
+              Language
+              <select
+                onChange={ this.handleLanguageChange }
+                value={ state.language }
+              >
+                <option>Default ({ window.navigator.language })</option>
+                <option value="en-US">English (United States)</option>
+                <option value="ja-JP">Japanese</option>
+                <option value="zh-HK">Chinese (Hong Kong)</option>
+                <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
+                <option value="zh-TW">Chinese (Taiwan)</option>
+                <option value="zh-HANT">Chinese (Traditional Chinese)</option>
+              </select>
+            </label>
+          </div>
           <div>
             <label>
               <input
@@ -207,6 +225,23 @@ export default class extends React.Component {
                 type="checkbox"
               />
               Send typing
+            </label>
+          </div>
+          <div>
+            <label>
+              Collapse timestamp
+              <select
+                onChange={ this.handleCollapseTimestampChange }
+                value={ state.collapseTimestamp }
+              >
+                <option value="default">Default</option>
+                <option value="false">Don't collapse</option>
+                <option value="1000">1 second</option>
+                <option value="10000">10 seconds</option>
+                <option value="60000">One minute</option>
+                <option value="300000">5 minutes</option>
+                <option value="3600000">One hour</option>
+              </select>
             </label>
           </div>
         </div>

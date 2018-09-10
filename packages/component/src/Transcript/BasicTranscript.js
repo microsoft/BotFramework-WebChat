@@ -29,6 +29,7 @@ const BasicTranscript = ({
   activities,
   attachmentRenderer,
   className,
+  collapseTimestamp,
   styleSet,
   webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
 }) =>
@@ -48,12 +49,18 @@ const BasicTranscript = ({
             const nextActivity = activities[index + 1];
             let showTimestamp = true;
 
-            if (nextActivity && activity.from.role === nextActivity.from.role) {
-              const time = new Date(activity.timestamp).getTime();
-              const nextTime = new Date(nextActivity.timestamp).getTime();
+            if (collapseTimestamp !== false) {
+              collapseTimestamp = typeof collapseTimestamp === 'number' ? collapseTimestamp : 5 * 60 * 1000;
 
-              // TODO: Make collapse timestamp 5 minutes configurable
-              showTimestamp = (nextTime - time) > (5 * 60 * 1000);
+              if (activity.type !== 'message') {
+                // Hide timestamp for typing
+                showTimestamp = false;
+              } else if (nextActivity && activity.from.role === nextActivity.from.role) {
+                const time = new Date(activity.timestamp).getTime();
+                const nextTime = new Date(nextActivity.timestamp).getTime();
+
+                showTimestamp = (nextTime - time) > collapseTimestamp;
+              }
             }
 
             return (
@@ -76,12 +83,14 @@ export default connect(({ activities }) => ({ activities }))(props =>
     { ({
       activityRenderer,
       attachmentRenderer,
+      collapseTimestamp,
       styleSet,
       webSpeechPonyfill
     }) =>
       <BasicTranscript
         activityRenderer={ activityRenderer }
         attachmentRenderer={ attachmentRenderer }
+        collapseTimestamp={ collapseTimestamp }
         styleSet={ styleSet }
         webSpeechPonyfill={ webSpeechPonyfill }
         { ...props }
