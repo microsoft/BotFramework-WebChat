@@ -12,8 +12,6 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 // TODO: Put this into StyleSet
 const ROOT_CSS = css({
   display: 'flex',
-  marginLeft: 10,
-  marginRight: 10,
 
   '& > .avatar': {
     flexShrink: 0
@@ -23,21 +21,12 @@ const ROOT_CSS = css({
     flexGrow: 1,
     overflow: 'hidden',
 
-    '& > *:not(:first-child):not(:last-child)': {
-      marginTop: 10
-    },
-
     '& > .row': {
       display: 'flex',
 
       '& > .bubble, & > .timestamp': {
         flexGrow: 1,
-        maxWidth: 480,
         overflow: 'hidden'
-      },
-
-      '&.attachment > .bubble': {
-        minWidth: 250
       },
 
       '& > .filler': {
@@ -48,33 +37,32 @@ const ROOT_CSS = css({
   },
 
   '& > .filler': {
-    flexBasis: 10,
     flexShrink: 0
   },
 
   '&.from-user': {
     flexDirection: 'row-reverse',
 
-    '& > .avatar': {
-      marginLeft: 10
-    },
-
     '& > .content > .row': {
       flexDirection: 'row-reverse'
     }
-  },
-
-  '&:not(.from-user) > .avatar': {
-    marginRight: 10
   }
 });
 
-const StackedLayout = ({ activity, children, context, showTimestamp }) => {
-  const initials = activity.from.role === 'user' ? context.userAvatarInitials : context.botAvatarInitials;
+const StackedLayout = ({
+  activity,
+  botAvatarInitials,
+  children,
+  showTimestamp,
+  styleSet,
+  userAvatarInitials,
+}) => {
+  const initials = activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials;
 
   return (
     <div className={ classNames(
       ROOT_CSS + '',
+      styleSet.stackedLayout + '',
       { 'from-user': activity.from.role === 'user' }
     ) }>
       { !!initials &&
@@ -128,10 +116,16 @@ const StackedLayout = ({ activity, children, context, showTimestamp }) => {
 
 export default ({ children, ...props }) =>
   <Context.Consumer>
-    { context =>
+    { ({
+        botAvatarInitials,
+        styleSet,
+        userAvatarInitials
+      }) =>
       <StackedLayout
         { ...props }
-        context={ context }
+        botAvatarInitials={ botAvatarInitials }
+        styleSet={ styleSet }
+        userAvatarInitials={ userAvatarInitials }
       >
         { children }
       </StackedLayout>

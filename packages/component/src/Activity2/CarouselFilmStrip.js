@@ -10,14 +10,11 @@ import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
-// TODO: Put this into StyleSet
 const ROOT_CSS = css({
   display: 'flex',
   MsOverflowStyle: 'none',
   overflowX: 'scroll',
   overflowY: 'hidden',
-  paddingLeft: 10,
-  paddingRight: 10,
   touchAction: 'manipulation',
   WebkitOverflowScrolling: 'touch',
 
@@ -26,8 +23,7 @@ const ROOT_CSS = css({
   },
 
   '& > .avatar': {
-    flexShrink: 0,
-    marginRight: 10,
+    flexShrink: 0
   },
 
   '& > .content': {
@@ -53,27 +49,30 @@ const ROOT_CSS = css({
       margin: 0,
       padding: 0,
 
-      '&:not(:first-child)': {
-        marginTop: 10
-      },
-
       '& > li': {
-        flex: 1,
-        marginRight: 10,
-        minWidth: 250,
-        maxWidth: 480
+        flex: 1
       }
     }
   }
 });
 
-const CarouselFilmStrip = ({ activity, children, className, context, filmContext, showTimestamp }) => {
-  const initials = activity.from.role === 'user' ? context.userAvatarInitials : context.botAvatarInitials;
+const CarouselFilmStrip = ({
+  activity,
+  botAvatarInitials,
+  children,
+  className,
+  filmContext,
+  showTimestamp,
+  styleSet,
+  userAvatarInitials
+}) => {
+  const initials = activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials;
 
   return (
     <div
       className={ classNames(
         ROOT_CSS + '',
+        styleSet.carouselFilmStrip + '',
         (className || '') + ''
       ) }
       ref={ filmContext._setFilmStripRef }
@@ -120,11 +119,17 @@ export default ({ children, ...props }) =>
   <FilmContext.Consumer>
     { filmContext =>
       <Context.Consumer>
-        { context =>
+        { ({
+            botAvatarInitials,
+            styleSet,
+            userAvatarInitials
+          }) =>
           <CarouselFilmStrip
             { ...props }
-            context={ context }
+            botAvatarInitials={ botAvatarInitials }
             filmContext={ filmContext }
+            styleSet={ styleSet }
+            userAvatarInitials={ userAvatarInitials }
           >
             { children }
           </CarouselFilmStrip>

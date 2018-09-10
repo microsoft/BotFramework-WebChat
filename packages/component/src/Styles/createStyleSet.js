@@ -8,6 +8,7 @@ import createAudioContentStyle from './StyleSet/AudioContent';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createBubble2Style from './StyleSet/Bubble2';
+import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
@@ -16,6 +17,7 @@ import createRootStyle from './StyleSet/Root';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
+import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
@@ -42,6 +44,7 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     bubble2: createBubble2Style(options),
+    carouselFilmStrip: createCarouselFilmStrip(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
@@ -54,6 +57,7 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
     sendBox: createSendBoxStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),
+    stackedLayout: createStackedLayoutStyle(options),
     suggestedAction: createSuggestedActionStyle(options),
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
