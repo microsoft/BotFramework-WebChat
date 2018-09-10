@@ -9,7 +9,6 @@ import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
-// TODO: Put this into StyleSet
 const ROOT_CSS = css({
   display: 'flex',
 
