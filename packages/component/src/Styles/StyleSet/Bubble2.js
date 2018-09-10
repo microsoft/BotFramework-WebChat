@@ -2,13 +2,14 @@ export default function createBubbleStyle({
   bubbleBackground,
   bubbleBorder,
   bubbleBorderRadius,
-  bubbleMaxWidth
+  bubbleMaxWidth,
+  bubbleMinHeight
 }) {
   return {
     background: bubbleBackground,
     border: bubbleBorder,
     borderRadius: bubbleBorderRadius,
     maxWidth: bubbleMaxWidth,
-    minHeight: 40
+    minHeight: bubbleMinHeight
   };
 }

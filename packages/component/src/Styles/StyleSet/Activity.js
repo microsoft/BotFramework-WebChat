@@ -1,9 +1,11 @@
-export default function createActivityStyle() {
+export default function createActivityStyle({
+  paddingRegular
+}) {
   return {
-    marginBottom: 10,
+    marginBottom: paddingRegular,
 
     '&:first-child': {
-      marginTop: 10
+      marginTop: paddingRegular
     }
   };
 }

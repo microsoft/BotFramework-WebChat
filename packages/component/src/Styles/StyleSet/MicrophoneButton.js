@@ -1,6 +1,8 @@
 import { primaryFont } from '../Fonts';
 
-export default function createMicrophoneButtonStyle() {
+export default function createMicrophoneButtonStyle({
+  paddingRegular
+}) {
   return {
     // TODO: This path should not know anything about the DOM tree of <IconButton>
     '&.dictating > button svg': {
@@ -10,8 +12,8 @@ export default function createMicrophoneButtonStyle() {
     '& > .dictation': {
       ...primaryFont,
       paddingBottom: 0,
-      paddingLeft: 10,
-      paddingRight: 10,
+      paddingLeft: paddingRegular,
+      paddingRight: paddingRegular,
       paddingTop: 0,
 
       '& > span:last-child, &.status': {

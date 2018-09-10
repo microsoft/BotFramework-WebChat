@@ -1,18 +1,19 @@
 export default function ({
-  accent
+  accent,
+  paddingRegular
 }) {
   return {
     '& .ac-pushButton': {
         backgroundColor: 'White',
-        borderStyle    : 'solid',
-        borderWidth    : 1,
-        color          : accent,
-        fontWeight     : 'bold',
-        padding        : 10
+        borderStyle: 'solid',
+        borderWidth: 1,
+        color: accent,
+        fontWeight: 'bold',
+        padding: paddingRegular
     },
 
     '& .ac-multichoiceInput': {
-      padding: 10
+      padding: paddingRegular
     }
   };
 }

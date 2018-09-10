@@ -1,6 +1,7 @@
 export default function createSingleCardActivityStyle({
   bubbleMaxWidth,
-  bubbleMinWidth
+  bubbleMinWidth,
+  paddingRegular
 }) {
   return {
     '& > .bubble-box': {
@@ -9,7 +10,7 @@ export default function createSingleCardActivityStyle({
     },
 
     '& > .filler': {
-      minWidth: 10
+      minWidth: paddingRegular
     }
   };
 }

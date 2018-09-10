@@ -1,6 +1,10 @@
-export default function createSuggestedActionsStyle() {
+export default function createSuggestedActionsStyle({
+  paddingRegular
+}) {
   return {
-    paddingLeft: 5,
-    paddingRight: 5
+    '&:not(:first-child)': {
+      paddingLeft: paddingRegular / 2,
+      paddingRight: paddingRegular / 2
+    }
   };
 }

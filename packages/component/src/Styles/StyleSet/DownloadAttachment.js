@@ -2,7 +2,8 @@ import { primaryFont } from '../Fonts';
 
 export default function ({
   accent,
-  bubbleTextColor
+  bubbleTextColor,
+  paddingRegular
 }) {
   return {
     ...primaryFont,
@@ -11,13 +12,13 @@ export default function ({
       alignItems: 'center',
       color: bubbleTextColor,
       display: 'flex',
-      padding: 10,
+      padding: paddingRegular,
       textDecoration: 'none',
 
       '& > .icon': {
         fill: accent,
-        marginLeft: 10,
-        padding: 10
+        marginLeft: paddingRegular,
+        padding: paddingRegular
       },
 
       '& > .details': {

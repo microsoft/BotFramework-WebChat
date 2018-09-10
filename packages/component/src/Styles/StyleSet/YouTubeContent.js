@@ -1,7 +1,9 @@
-export default function () {
+export default function ({
+  videoHeight
+}) {
   return {
     border: 0,
-    height: 270,
+    height: videoHeight,
     width: '100%'
   };
 }

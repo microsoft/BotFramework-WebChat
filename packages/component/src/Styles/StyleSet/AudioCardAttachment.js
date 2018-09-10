@@ -1,11 +1,13 @@
-export default function () {
+export default function ({
+  paddingRegular
+}) {
   return {
     display: 'flex',
     flexDirection: 'column',
 
     '& > ul.media-list': {
       listStyleType: 'none',
-      margin: 10,
+      margin: paddingRegular,
       padding: 0
     }
   };

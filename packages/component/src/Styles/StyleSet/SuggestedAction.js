@@ -1,11 +1,14 @@
 import { primaryFont } from  '../Fonts';
 
-export default function createSuggestedActionStyle({ accent }) {
+export default function createSuggestedActionStyle({
+  accent,
+  paddingRegular
+}) {
   return {
-    paddingBottom: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingTop: 10,
+    paddingBottom: paddingRegular,
+    paddingLeft: paddingRegular / 2,
+    paddingRight: paddingRegular / 2,
+    paddingTop: paddingRegular,
 
     '& > button': {
       ...primaryFont,

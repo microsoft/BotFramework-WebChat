@@ -2,7 +2,9 @@ import {
   primaryFont
 } from '../Fonts';
 
-export default function createSendBoxTextBoxStyle() {
+export default function createSendBoxTextBoxStyle({
+  paddingRegular
+}) {
   return  {
     ...primaryFont,
 
@@ -15,8 +17,8 @@ export default function createSendBoxTextBoxStyle() {
       height: '100%',
       outline: 0,
       paddingBottom: 0,
-      paddingLeft: 10,
-      paddingRight: 10,
+      paddingLeft: paddingRegular,
+      paddingRight: paddingRegular,
       paddingTop: 0
     }
   };
