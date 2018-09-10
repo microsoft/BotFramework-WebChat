@@ -287,7 +287,7 @@
     //         </Provider>
     //     );
     // }
-}
+// }
 
 // export interface IDoCardAction {
 //     (type: CardActionTypes, value: string | object): void;
