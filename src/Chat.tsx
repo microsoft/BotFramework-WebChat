@@ -132,6 +132,13 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (historyDOM) {
             historyDOM.focus();
         }
+        // After user click on any message action in the history
+        // Auto scroll down to view the new incoming message.
+        this.autoScroll();
+    }
+
+    private autoScroll() {
+        this.historyRef.componentDidUpdate(this.historyRef.props, this.historyRef.state, this.historyRef.context);
     }
 
     private handleKeyDownCapture(evt: React.KeyboardEvent<HTMLDivElement>) {
