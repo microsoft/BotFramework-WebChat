@@ -11,6 +11,7 @@ export default function createMicrophoneButtonStyle({
 
     '& > .dictation': {
       ...primaryFont,
+      margin: 0,
       paddingBottom: 0,
       paddingLeft: paddingRegular,
       paddingRight: paddingRegular,

@@ -19,6 +19,8 @@ const ROOT_CSS = css({
   display: 'flex',
 
   '& > .dictation': {
+    alignItems: 'center',
+    display: 'flex',
     flex: 1
   }
 });
