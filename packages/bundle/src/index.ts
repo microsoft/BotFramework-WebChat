@@ -7,11 +7,20 @@ import renderMarkdown from './renderMarkdown';
 import { createAdaptiveCardsAttachmentMiddleware } from 'component';
 
 // Add additional props to <WebChat>, so it support additional features
-const renderWebChat = coreRenderWebChat.bind({
-  attachmentMiddleware: [
-    createAdaptiveCardsAttachmentMiddleware()
-  ]
-});
+const renderWebChat = (props, element) => {
+  const attachmentMiddleware = [];
+
+  props.attachmentMiddleware && attachmentMiddleware.push(props.attachmentMiddleware);
+  attachmentMiddleware.push(createAdaptiveCardsAttachmentMiddleware());
+
+  return coreRenderWebChat(
+    {
+      ...props,
+      attachmentMiddleware
+    },
+    element
+  );
+}
 
 export {
   createCognitiveServicesWebSpeechPonyfill,

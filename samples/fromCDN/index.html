@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Using from CDN</title>
+    <script type="text/javascript" src="BotChat.js"></script>
+    <style>
+      html, body {
+        height: 100%
+      }
+
+      body {
+        margin: 0
+      }
+
+      #webchat {
+        display: flex;
+        height: 100%;
+        width: 100%;
+      }
+
+      #webchat > * {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat">
+    </div>
+    <script>
+      window.WebChat.renderWebChat({
+        className: 'webchat-react',
+        directLine: window.WebChat.createDirectLine({
+          domain: 'http://localhost:5000/v3/directline',
+          webSocket: false
+        })
+      }, document.getElementById('webchat'));
+
+      document.querySelector('#webchat > *').focus();
+    </script>
+  </body>
+</html>

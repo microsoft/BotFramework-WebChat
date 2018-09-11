@@ -51,6 +51,7 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
       clientActivityID,
       ...deleteKey(activity.channelData, 'state')
     },
+    channelId: 'webchat',
     from: {
       id: userID,
       role: 'user'
