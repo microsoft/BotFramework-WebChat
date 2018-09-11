@@ -187,23 +187,23 @@ export class Chat extends React.Component<ChatProps, {}> {
         // FEEDYOU - ability to pass some userData to bot using backchannel's channel data prop
         let botConnection: any
         if (this.props.directLine) {
-            const directLine = new DirectLine(this.props.directLine)
-            botConnection = this.botConnection = Object.assign({}, directLine, {
-                postActivity: (activity: any) => {
-                    // send userData only once during initial event
-                    if (activity.name === 'beginIntroDialog') {
-                        const newActivity = Object.assign(
-                            {},
-                            activity,
-                            {channelData: { userData: Object.assign(this.props.userData || {}, { "testMode": window.location.hash === '#feedbot-test-mode' })}}
-                        );
-                        console.log('userData', newActivity.channelData.userData)
-                        return directLine.postActivity(newActivity);
-                    } else {
-                        return directLine.postActivity(activity);
-                    }
+            botConnection = this.botConnection = new DirectLine(this.props.directLine)
+            botConnection.postActivityOriginal = botConnection.postActivity
+
+            botConnection.postActivity = (activity: any) => {
+                // send userData only once during initial event
+                if (activity.name === 'beginIntroDialog') {
+                    const newActivity = Object.assign(
+                        {},
+                        activity,
+                        {channelData: { userData: Object.assign(this.props.userData || {}, { "testMode": window.location.hash === '#feedbot-test-mode' })}}
+                    );
+                    console.log('userData', newActivity.channelData.userData)
+                    return botConnection.postActivityOriginal(newActivity);
+                } else {
+                    return botConnection.postActivityOriginal(activity);
                 }
-            })
+            }
         } else {
             botConnection = this.props.botConnection
         }
