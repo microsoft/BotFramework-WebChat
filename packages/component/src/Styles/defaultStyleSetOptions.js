@@ -1,5 +1,5 @@
 const DEFAULT_OPTIONS = {
-  accent: '#69F',
+  accent: '#0063B1',
   avatarSize: 40,
 
   backgroundColor: 'White',
