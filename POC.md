@@ -3,49 +3,49 @@
 We will be implementing PoC that show people how to customize with Web Chat. Here is the list:
 
 ## P0
+- Command-and-observe using Redux actions
+- Custom activities and attachments
+   - Map attachment
 - Decorators
    - Upvote/downvote button next to the activity
    - Highlight activities
+- Disable interactivity
 - Handsfree mode
-- Custom activities and attachments
-   - Map as attachment
-- Command-and-observe using Redux actions
 - Resume conversation with past history
 - Unbundle Adaptive Cards
-- Disable interactivity
 
 ## P1
-- Configuring collapsible timestamp
-- Ponyfill for `window.open`
-- Bring your own speech engine
-- Handshake auth token
-- XML text format
-- Integrated machine translation
-- Downscale photo uploads
-- Sanitize HTML
-- Welcome messages
-- Policy statement
-- Clear history after X minutes
-- Auto-scroll on incoming message
 - API: Scroll activity into view
+- API: Set focus
+- Bring your own speech engine
+- Configuring collapsible timestamp
+- Customizing bot avatar
+- Handshake auth token
+- Minimize/hide Web Chat
+- Ponyfill for `window.open`
+- Typeahead/auto-complete (persistent menu)
+- Welcome messages
+- XML text format
 
 ## P2
-- Special password input box
-- Display one thing, send another
-- Send location
-- Typeahead/auto-complete (persistent menu)
-- Up/down arrow to send last message again
-- Minimize/hide Web Chat
-- Multiline send bar
-- Customizing bot avatar
-- API: Set focus
 - Always on/off microphone
-- Custom typing indicator for RESTful connections
+- Auto-scroll on incoming message
+- Clear history after X minutes
 - Connection status
+- Custom typing indicator for RESTful connections
+- Display one thing, send another
+- Downscale photo uploads
+- Integrated machine translation
+- Multiline send bar
+- Policy statement
+- Sanitize HTML
+- Send location
+- Special password input box
+- Up/down arrow to send last message again
 
 ## P3
+- Fix uploaded image orientation
 - Full-screen media playback
-- Using CSS insertion points
 - Show custom image in audio card
 - Tell user about problem on speech
-- Fix uploaded image orientation
+- Using CSS insertion points
