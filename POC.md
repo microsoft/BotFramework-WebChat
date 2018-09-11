@@ -3,16 +3,16 @@
 We will be implementing PoC that show people how to customize with Web Chat. Here is the list:
 
 ## P0
-- Command-and-observe using Redux actions
+- Command-and-observe using Redux actions [#1147](https://github.com/Microsoft/BotFramework-WebChat/issues/1147)
 - Custom activities and attachments
-   - Map attachment
+   - GitHub stargazers [#1148](https://github.com/Microsoft/BotFramework-WebChat/issues/1148)
 - Decorators
-   - Upvote/downvote button next to the activity
-   - Highlight activities
-- Disable interactivity
-- Handsfree mode
+   - Upvote/downvote button next to the activity [#1149](https://github.com/Microsoft/BotFramework-WebChat/issues/1149)
+   - Highlight activities [#1150](https://github.com/Microsoft/BotFramework-WebChat/issues/1150)
+- Disable interactivity [#1151](https://github.com/Microsoft/BotFramework-WebChat/issues/1151)
+- Handsfree mode [#1152](https://github.com/Microsoft/BotFramework-WebChat/issues/1152)
 - Resume conversation with past history
-- Unbundle Adaptive Cards
+- Unbundle Adaptive Cards [#1153](https://github.com/Microsoft/BotFramework-WebChat/issues/1153)
 
 ## P1
 - API: Scroll activity into view
