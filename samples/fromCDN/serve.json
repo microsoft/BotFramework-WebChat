@@ -1,0 +1,7 @@
+{
+  "public": "../..",
+  "rewrites": [
+    { "source": "/BotChat.js", "destination": "packages/bundle/dist/BotChat.js" },
+    { "source": "/", "destination": "samples/fromCDN/index.html" }
+  ]
+}
