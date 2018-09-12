@@ -125,12 +125,20 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private handleCardAction() {
-        // After the user click on any card action, we will "blur" the focus, by setting focus on message pane
-        // This is for after click on card action, the user press "A", it should go into the chat box
-        const historyDOM = findDOMNode(this.historyRef) as HTMLElement;
+        try {
+            // After the user click on any card action, we will "blur" the focus, by setting focus on message pane
+            // This is for after click on card action, the user press "A", it should go into the chat box
+            const historyDOM = findDOMNode(this.historyRef) as HTMLElement;
 
-        if (historyDOM) {
-            historyDOM.focus();
+            if (historyDOM) {
+                historyDOM.focus();
+            }
+        } catch (err) {
+            // In Emulator production build, React.findDOMNode(this.historyRef) will throw an exception saying the
+            // component is unmounted. I verified we did not miss any saveRef calls, so it looks weird.
+            // Since this is an optional feature, I am try-catching this for now. We should find the root cause later.
+            //
+            // Some of my thoughts, React version-compatibility problems.
         }
     }
 
