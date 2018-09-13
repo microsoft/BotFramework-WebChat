@@ -10,7 +10,7 @@ This build does not contains any additional components that makes Web Chat works
 
 # How to run
 
-- Run `npx serve .`
+- Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out

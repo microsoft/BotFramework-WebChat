@@ -4,7 +4,7 @@ A simple web page with a maximized and full-featured Web Chat.
 
 # How to run
 
-- Run `npx serve .`
+- Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
