@@ -4,14 +4,13 @@ import React from 'react';
 
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
+import concatMiddleware from './Middleware/concatMiddleware';
 import Composer from './Composer';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
 
-import createCoreActivityMiddleware from './Middleware/Activity/core';
-import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/adaptiveCard';
-import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
-import createMiddlewareStack from './Middleware/createMiddlewareStack';
+import coreActivityMiddleware from './Middleware/Activity/core';
+import coreAttachmentMiddleware from './Middleware/Attachment/core';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -33,69 +32,67 @@ export default class extends React.Component {
 
     this.sendBoxRef = React.createRef();
 
-    this.refreshActivityRenderer(props.activityMiddleware);
-    this.refreshAttachmentRenderer(props.attachmentMiddleware);
+    this.state = {
+      activityRenderer: this.createActivityRenderer(props.activityMiddleware),
+      attachmentRenderer: this.createAttachmentRenderer(props.attachmentMiddleware)
+    };
   }
 
   // TODO: [P2] Move to React 16 APIs
   componentWillReceiveProps({ activityMiddleware, attachmentMiddleware }) {
-    if (this.props.activityMiddleware !== activityMiddleware) {
-      this.refreshActivityRenderer(activityMiddleware);
-    }
-
-    if (this.props.attachmentMiddleware !== attachmentMiddleware) {
-      this.refreshAttachmentRenderer(attachmentMiddleware);
+    if (
+      this.props.activityMiddleware !== activityMiddleware
+      || this.props.attachmentMiddleware !== attachmentMiddleware
+    ) {
+      this.setState(() => ({
+        activityRenderer: this.createActivityRenderer(activityMiddleware),
+        attachmentRenderer: this.createAttachmentRenderer(attachmentMiddleware)
+      }));
     }
   }
 
-  refreshActivityRenderer(additionalMiddleware) {
-    const activityMiddleware = createMiddlewareStack(
-      {},
-      [
-        ...additionalMiddleware || [],
-        createCoreActivityMiddleware(),
-        () => () => ({ activity }) => () =>
-          <ErrorBox message="No renderer for this activity">
-            <pre>{ JSON.stringify(activity, null, 2) }</pre>
-          </ErrorBox>
-      ]
-    );
+  createActivityRenderer(additionalMiddleware) {
+    const activityMiddleware = concatMiddleware(
+      additionalMiddleware,
+      coreActivityMiddleware
+    )({});
 
-    this.activityRenderer = (...args) => {
+    return (...args) => {
       try {
-        return activityMiddleware.run(...args);
+        return activityMiddleware(
+          () => ({ activity }) => () =>
+            <ErrorBox message="No renderer for this activity">
+              <pre>{ JSON.stringify(activity, null, 2) }</pre>
+            </ErrorBox>
+        )(...args);
       } catch (err) {
-        return (
+        return () => (
           <ErrorBox message="Failed to render activity">
             <pre>{ JSON.stringify(err, null, 2) }</pre>
-            <pre>{ JSON.stringify(activity, null, 2) }</pre>
           </ErrorBox>
         );
       }
     };
   }
 
-  refreshAttachmentRenderer(additionalMiddleware) {
-    const attachmentMiddleware = createMiddlewareStack(
-      {},
-      [
-        ...additionalMiddleware || [],
-        createCoreAttachmentMiddleware(),
-        () => () => ({ attachment }) =>
-          <ErrorBox message="No renderer for this attachment">
-            <pre>{ JSON.stringify(attachment, null, 2) }</pre>
-          </ErrorBox>
-      ]
-    );
+  createAttachmentRenderer(additionalMiddleware) {
+    const attachmentMiddleware = concatMiddleware(
+      additionalMiddleware,
+      coreAttachmentMiddleware
+    )({});
 
-    this.attachmentRenderer = (...args) => {
+    return (...args) => {
       try {
-        return attachmentMiddleware.run(...args);
+        return attachmentMiddleware(
+          () => ({ attachment }) =>
+            <ErrorBox message="No renderer for this attachment">
+              <pre>{ JSON.stringify(attachment, null, 2) }</pre>
+            </ErrorBox>
+        )(...args);
       } catch (err) {
         return (
           <ErrorBox message="Failed to render attachment">
             <pre>{ JSON.stringify(err, null, 2) }</pre>
-            <pre>{ JSON.stringify(attachment, null, 2) }</pre>
           </ErrorBox>
         );
       }
@@ -103,14 +100,14 @@ export default class extends React.Component {
   }
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
 
     // TODO: [P2] Implement "scrollToBottom" feature
 
     return (
       <Composer
-        activityRenderer={ this.activityRenderer }
-        attachmentRenderer={ this.attachmentRenderer }
+        activityRenderer={ state.activityRenderer }
+        attachmentRenderer={ state.attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
       >

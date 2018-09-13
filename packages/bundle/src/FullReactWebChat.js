@@ -1,5 +1,5 @@
 import React from 'react';
-import BasicWebChat, { createAdaptiveCardsAttachmentMiddleware } from 'component';
+import BasicWebChat, { adaptiveCardsAttachmentMiddleware, concatMiddleware } from 'component';
 import memoize from 'memoize-one';
 
 import renderMarkdown from './renderMarkdown';
@@ -9,25 +9,17 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAttachmentMiddleware = memoize(middlewareFromProps => {
-      const attachmentMiddleware = [];
-
-      middlewareFromProps && attachmentMiddleware.push(middlewareFromProps);
-      attachmentMiddleware.push(createAdaptiveCardsAttachmentMiddleware());
-
-      return attachmentMiddleware;
-    });
+    this.createAttachmentMiddleware = memoize(middlewareFromProps => concatMiddleware(middlewareFromProps, adaptiveCardsAttachmentMiddleware));
   }
 
   render() {
-    const { props } = this;
-    const attachmentMiddleware = this.createAttachmentMiddleware(props.attachmentMiddleware);
+    const { attachmentMiddleware, ...otherProps } = this.props;
 
     return (
       <BasicWebChat
-        attachmentMiddleware={ attachmentMiddleware }
+        attachmentMiddleware={ this.createAttachmentMiddleware(attachmentMiddleware) }
         renderMarkdown={ renderMarkdown }
-        { ...props }
+        { ...otherProps }
       />
     );
   }

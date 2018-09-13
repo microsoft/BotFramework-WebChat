@@ -2,6 +2,7 @@ import { css } from 'glamor';
 import React from 'react';
 
 import BasicWebChat, {
+  concatMiddleware,
   createAdaptiveCardsAttachmentMiddleware
 } from 'botframework-webchat-component';
 
@@ -68,10 +69,10 @@ export default class extends React.Component {
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
 
     this.mainRef = React.createRef();
-    this.attachmentMiddleware = [
+    this.attachmentMiddleware = concatMiddleware(
       createDevModeMiddleware().attachment,
       createAdaptiveCardsAttachmentMiddleware()
-    ];
+    );
 
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');

@@ -50,7 +50,7 @@
         const { createStore, ReactWebChat } = window.WebChat;
         const { Provider } = window.ReactRedux;
         const store = createStore();
-        const attachmentMiddleware = [() => next => card => {
+        const attachmentMiddleware = () => next => card => {
           switch (card.attachment.contentType) {
             case 'application/vnd.microsoft.botframework.samples.github-repository':
               return <GitHubRepositoryAttachment owner={ card.attachment.content.owner } repo={ card.attachment.content.repo } />;
@@ -58,7 +58,7 @@
             default:
               return next(card);
           }
-        }];
+        };
 
         window.ReactDOM.render(
           <Provider store={ store }>
