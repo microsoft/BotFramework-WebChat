@@ -64,11 +64,7 @@
           <Provider store={ store }>
             <ReactWebChat
               attachmentMiddleware={ attachmentMiddleware }
-              directLine={ window.WebChat.createDirectLine({
-                domain: 'http://localhost:5000/v3/directline',
-                token,
-                webSocket: false
-              }) }
+              directLine={ window.WebChat.createDirectLine({ token }) }
             />
           </Provider>,
           document.getElementById('webchat')
