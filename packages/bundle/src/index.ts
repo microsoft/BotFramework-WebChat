@@ -19,7 +19,8 @@ const renderWebChat = (props, element) => {
   return coreRenderWebChat(
     {
       ...props,
-      attachmentMiddleware
+      attachmentMiddleware,
+      renderMarkdown
     },
     element
   );
