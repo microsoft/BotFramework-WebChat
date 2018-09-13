@@ -5,17 +5,15 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'botframework-webchat-core';
 import BasicWebChat from 'botframework-webchat-component';
 
-export default function (props, element) {
+export default function (ReactWebChat, props, element) {
   const store = createStore();
 
   ReactDOM.render(
     <Provider store={ store }>
-      <BasicWebChat { ...props } />
+      <ReactWebChat { ...props } />
     </Provider>,
     element
   );
 
-  return {
-    store
-  };
+  return { store };
 }

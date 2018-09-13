@@ -1,10 +1,12 @@
 export * from './index-core';
 
-import coreRenderWebChat from './index-core';
-import createCognitiveServicesWebSpeechPonyfill from './createCognitiveServicesWebSpeechPonyfill';
-import createBrowserWebSpeechPonyfill from './createBrowserWebSpeechPonyfill';
-import renderMarkdown from './renderMarkdown';
 import { createAdaptiveCardsAttachmentMiddleware } from 'botframework-webchat-component';
+
+import coreRenderWebChat from './renderWebChat';
+import createBrowserWebSpeechPonyfill from './createBrowserWebSpeechPonyfill';
+import createCognitiveServicesWebSpeechPonyfill from './createCognitiveServicesWebSpeechPonyfill';
+import ReactWebChat from './FullReactWebChat';
+import renderMarkdown from './renderMarkdown';
 
 // Add additional props to <WebChat>, so it support additional features
 const renderWebChat = (props, element) => {
@@ -29,6 +31,7 @@ const renderWebChat = (props, element) => {
 export {
   createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
+  ReactWebChat,
   renderMarkdown,
   renderWebChat
 }
@@ -37,6 +40,7 @@ window['WebChat'] = {
   ...window['WebChat'],
   createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
+  ReactWebChat,
   renderMarkdown,
   renderWebChat
 };
