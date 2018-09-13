@@ -33,6 +33,6 @@ window.ReactDOM.render(
 );
 ```
 
-In our design, we think we should allow developers to bring in their backend with the Web Chat UI. Therefore, the backend (a.k.a. Redux facility) can be used separately without the UI (a.k.a. React component).
+In our design, we think we should allow developers to bring in their own version of backend with the Web Chat UI. Therefore, the backend (a.k.a. Redux facility) can be used separately without the UI (a.k.a. React component).
 
 When instantiating Web Chat using React, one would need to use [`react-redux/Provider`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#provider-store) to connect them together.
