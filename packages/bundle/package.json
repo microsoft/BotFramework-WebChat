@@ -14,7 +14,7 @@
     "test": "jest",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\"",
     "webpack": "webpack --run-prod",
-    "webpack-dev": "webpack --run-dev"
+    "webpack-dev": "webpack --run-dev --watch"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",

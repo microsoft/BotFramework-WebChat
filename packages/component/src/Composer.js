@@ -32,6 +32,7 @@ const EMPTY_ARRAY = [];
 const NULL_FUNCTION = () => ({});
 
 const DEFAULT_USER_ID = 'default-user';
+const DEFAULT_USERNAME = 'user';
 
 const DISPATCHERS = {
   markActivity,
@@ -64,14 +65,16 @@ function createLogic(props) {
   const directLine = props.directLine;
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
   const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
-  const userID = props.userID || DEFAULT_USER_ID;
+  const { userID } = props;
 
+  // TODO: We should normalize props (fill-in-the-blank) before hitting this line
   const focusSendBox = props.focusSendBox || (() => {
     const { current } = props.sendBoxRef || {};
 
     current && current.focus();
   });
 
+  // TODO: Should we allow the user to change the cardAction? Or do we have a better way to do it?
   const onCardAction = props.onCardAction || (({ type, value }) => {
     switch (type) {
       case 'imBack':
@@ -262,6 +265,7 @@ class Composer extends React.Component {
     } = this;
 
     const contextFromProps = this.createContextFromProps(propsForLogic);
+
     const context = this.mergeContext(
       contextFromProps,
       state.context,
@@ -298,6 +302,11 @@ class Composer extends React.Component {
     );
   }
 }
+
+Composer.defaultProps = {
+  userID: DEFAULT_USER_ID,
+  username: DEFAULT_USERNAME
+};
 
 // TODO: [P3] Should we hide the knowledge of Redux?
 //       Everyone under this DOM tree should need access to Redux connect or dispatchers
