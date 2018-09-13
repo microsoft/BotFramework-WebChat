@@ -2,14 +2,16 @@ import { createStore } from 'backend';
 import ReactWebChat from 'component';
 
 import createDirectLine from './createDirectLine';
-import renderWebChat from './renderWebChat';
+import coreRenderWebChat from './renderWebChat';
 
-export default renderWebChat.bind(null, ReactWebChat)
+const renderWebChat = coreRenderWebChat .bind(null, ReactWebChat)
+
+export default ReactWebChat
 
 export {
   createDirectLine,
   createStore,
-  ReactWebChat
+  renderWebChat
 }
 
 window['WebChat'] = {

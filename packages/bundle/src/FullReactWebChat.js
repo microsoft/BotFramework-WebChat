@@ -1,3 +1,4 @@
+import React from 'react';
 import BasicWebChat, { createAdaptiveCardsAttachmentMiddleware } from 'component';
 import memoize from 'memoize-one';
 

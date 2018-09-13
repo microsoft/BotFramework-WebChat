@@ -28,10 +28,11 @@ const renderWebChat = (props, element) => {
   );
 }
 
+export default ReactWebChat
+
 export {
   createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
-  ReactWebChat,
   renderMarkdown,
   renderWebChat
 }
