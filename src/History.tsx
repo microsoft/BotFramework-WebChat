@@ -138,10 +138,12 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = this.props.activities.map((activity, index) =>
                     (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
                         <WrappedActivity
-                            activity={ activity }
                             format={ this.props.format }
-                            fromMe={ this.props.isFromMe(activity) }
                             key={ 'message' + index }
+                            activity={ activity }
+                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                            selected={ this.props.isSelected(activity) }
+                            fromMe={ this.props.isFromMe(activity) }
                             onClickActivity={ this.props.onClickActivity(activity) }
                             onClickRetry={e => {
                                 // Since this is a click on an anchor, we need to stop it
@@ -150,8 +152,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 e.stopPropagation();
                                 this.props.onClickRetry(activity);
                             } }
-                            selected={ this.props.isSelected(activity) }
-                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                         >
                             <ActivityView
                                 activity={ activity }
@@ -255,12 +255,12 @@ const suitableInterval = (current: Activity, next: Activity) =>
 
 export interface WrappedActivityProps {
     activity: Activity;
-    format: FormatState;
+    showTimestamp: boolean;
+    selected: boolean;
     fromMe: boolean;
+    format: FormatState;
     onClickActivity: React.MouseEventHandler<HTMLDivElement>;
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>;
-    selected: boolean;
-    showTimestamp: boolean;
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
