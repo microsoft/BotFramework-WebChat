@@ -25,27 +25,29 @@
   <body>
     <div id="webchat"></div>
     <script type="text/babel">
-      const { css } = window.Glamor;
-
-      const HIGHLIGHT_FROM_BOT_CSS = css({
-        borderLeftColor: 'Red',
-        borderLeftStyle: 'solid',
-        borderLeftWidth: 5,
-        marginLeft: 8
-      });
-
-      const HIGHLIGHT_FROM_USER_CSS = css({
-        borderRightColor: 'Green',
-        borderRightStyle: 'solid',
-        borderRightWidth: 5,
-        marginRight: 8
-      });
-
       (async function () {
+        'use strict';
+
         // In this demo, we are using Direct Line token from MockBot.
         // To talk to your bot, you should use the token exchanged using your Direct Line secret.
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const { css } = window.Glamor;
+
+        const HIGHLIGHT_FROM_BOT_CSS = css({
+          borderLeftColor: 'Red',
+          borderLeftStyle: 'solid',
+          borderLeftWidth: 5,
+          marginLeft: 8
+        });
+
+        const HIGHLIGHT_FROM_USER_CSS = css({
+          borderRightColor: 'Green',
+          borderRightStyle: 'solid',
+          borderRightWidth: 5,
+          marginRight: 8
+        });
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();

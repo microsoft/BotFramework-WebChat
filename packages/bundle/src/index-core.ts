@@ -1,5 +1,5 @@
 import { createStore } from 'backend';
-import ReactWebChat, { concatMiddleware } from 'component';
+import ReactWebChat, { concatMiddleware, Context } from 'component';
 
 import createDirectLine from './createDirectLine';
 import coreRenderWebChat from './renderWebChat';
@@ -10,6 +10,7 @@ export default ReactWebChat
 
 export {
   concatMiddleware,
+  Context,
   createDirectLine,
   createStore,
   renderWebChat
@@ -18,6 +19,7 @@ export {
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,
+  Context,
   createDirectLine,
   createStore,
   renderWebChat,
