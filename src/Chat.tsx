@@ -28,7 +28,6 @@ export interface ChatProps {
     sendTyping?: boolean;
     showUploadButton?: boolean;
     speechOptions?: SpeechOptions;
-    tabbable?: 'activity' | false;
     user: User;
 }
 
@@ -95,8 +94,6 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (props.sendTyping) {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
         }
-
-        this.store.dispatch<ChatActions>({ type: 'Set_Tabbable', tabbable: props.tabbable || false });
 
         if (props.speechOptions) {
             Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
@@ -269,10 +266,6 @@ export class Chat extends React.Component<ChatProps, {}> {
                 type: 'Set_Chat_Title',
                 chatTitle: nextProps.chatTitle
             });
-        }
-
-        if (this.props.tabbable !== nextProps.tabbable) {
-            this.store.dispatch<ChatActions>({ type: 'Set_Tabbable', tabbable: nextProps.tabbable || false });
         }
     }
 

@@ -221,6 +221,10 @@
         padding-right: 8px;
     }
 
+    .wc-message-wrapper.clickable {
+        cursor: pointer;
+    }
+
     .wc-message svg.wc-message-callout {
         height: 22px;
         position: absolute;
@@ -235,10 +239,6 @@
         padding: 8px;
         word-break: break-word;
       }
-
-    .wc-message-content.clickable {
-        cursor: pointer;
-    }
 
     .wc-message-content.selected {
         box-shadow: 0px 1px 1px 0px $c12;

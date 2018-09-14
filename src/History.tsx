@@ -14,7 +14,6 @@ export interface HistoryProps {
     format: FormatState;
     hasActivityWithSuggestedActions: Activity;
     size: SizeState;
-    tabbable: 'activity' | false;
 
     setMeasurements: (carouselMargin: number) => void;
     onClickRetry: (activity: Activity) => void;
@@ -111,7 +110,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             onClickRetry={ null }
             selected={ false }
             showTimestamp={ false }
-            tabbable={ false }
         >
             <div style={ { width: this.largeWidth } }>&nbsp;</div>
         </WrappedActivity>
@@ -154,7 +152,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             } }
                             selected={ this.props.isSelected(activity) }
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                            tabbable={ this.props.tabbable }
                         >
                             <ActivityView
                                 activity={ activity }
@@ -197,7 +194,6 @@ export const History = connect(
         format: state.format,
         hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
         size: state.size,
-        tabbable: state.history.tabbable,
         // only used to create helper functions below
         botConnection: state.connection.botConnection,
         connectionSelectedActivity: state.connection.selectedActivity,
@@ -215,7 +211,6 @@ export const History = connect(
         format: stateProps.format,
         hasActivityWithSuggestedActions: stateProps.hasActivityWithSuggestedActions,
         size: stateProps.size,
-        tabbable: stateProps.tabbable,
         // from dispatchProps
         onClickCardAction: dispatchProps.onClickCardAction,
         onClickRetry: dispatchProps.onClickRetry,
@@ -266,7 +261,6 @@ export interface WrappedActivityProps {
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>;
     selected: boolean;
     showTimestamp: boolean;
-    tabbable: 'activity' | false;
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -320,7 +314,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 data-activity-id={ this.props.activity.id }
                 className={ wrapperClassName }
                 onClick={ this.props.onClickActivity }
-                tabIndex={ this.props.tabbable === 'activity' ? 0 : undefined }
+                tabIndex={ this.props.onClickActivity ? 0 : undefined }
             >
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
