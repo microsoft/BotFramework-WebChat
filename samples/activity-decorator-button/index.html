@@ -33,62 +33,58 @@
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        const { css } = window.Glamor;
         const { Context, createStore, ReactWebChat } = window.WebChat;
+        const { css } = window.Glamor;
         const { Provider } = window.ReactRedux;
 
         const ACTIVITY_WITH_FEEDBACK_CSS = css({
-          display: 'flex',
+          minHeight: 60,
+          position: 'relative',
+
+          '& > .activity': {
+            paddingLeft: 40
+          },
 
           '& > .button-bar': {
-            display: 'flex',
-            flexDirection: 'column',
             listStyleType: 'none',
             margin: '0 0 0 10px',
             padding: 0,
+            position: 'absolute',
 
-            '& > li': {
-              '& > button': {
-                background: 'Transparent',
-                border: 'solid 1px #E6E6E6',
-                cursor: 'pointer',
-                marginBottom: 2,
-                padding: '2px 5px 5px'
-              }
+            '& > li > button': {
+              background: 'White',
+              border: 'solid 1px #E6E6E6',
+              cursor: 'pointer',
+              marginBottom: 2,
+              padding: '2px 5px 5px'
             }
           }
         });
 
         class ActivityWithFeedback extends React.Component {
-          handleDownvoteButton = () => this.props.sendMessage('Not quite.')
-          handleUpvoteButton = () => this.props.sendMessage('Great!')
+          handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, score: -1 } })
+          handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, score: 1 } })
 
           render() {
             const { props } = this;
 
             return (
-              <Context.Consumer>
-                { ({ sendMessage }) =>
-                  <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
-                    <ul className="button-bar">
-                      <li><button onClick={ this.handleUpvoteButton }>👍</button></li>
-                      <li><button onClick={ this.handleDownvoteButton }>👎</button></li>
-                    </ul>
-                    <div>
-                      { props.children }
-                    </div>
-                  </div>
-                }
-              </Context.Consumer>
+              <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
+                <ul className="button-bar">
+                  <li><button onClick={ this.handleUpvoteButton }>👍</button></li>
+                  <li><button onClick={ this.handleDownvoteButton }>👎</button></li>
+                </ul>
+                <div className="activity">
+                  { props.children }
+                </div>
+              </div>
             );
           }
         }
 
         const ConnectedActivityWithFeedback = props =>
           <Context.Consumer>
-            { ({ sendMessage }) =>
-              <ActivityWithFeedback { ...props } sendMessage={ sendMessage } />
-            }
+            { ({ postActivity }) => <ActivityWithFeedback { ...props } postActivity={ postActivity } /> }
           </Context.Consumer>
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
@@ -98,7 +94,7 @@
           if (card.activity.from.role === 'bot') {
             return (
               children =>
-                <ConnectedActivityWithFeedback>
+                <ConnectedActivityWithFeedback activityID={ card.activity.id }>
                   { next(card)(children) }
                 </ConnectedActivityWithFeedback>
             );
