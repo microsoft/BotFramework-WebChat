@@ -14,6 +14,7 @@ export interface HistoryProps {
     format: FormatState;
     hasActivityWithSuggestedActions: Activity;
     size: SizeState;
+    tabbable: 'activity' | false;
 
     setMeasurements: (carouselMargin: number) => void;
     onClickRetry: (activity: Activity) => void;
@@ -110,6 +111,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             onClickRetry={ null }
             selected={ false }
             showTimestamp={ false }
+            tabbable={ false }
         >
             <div style={ { width: this.largeWidth } }>&nbsp;</div>
         </WrappedActivity>
@@ -138,12 +140,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = this.props.activities.map((activity, index) =>
                     (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
                         <WrappedActivity
-                            format={ this.props.format }
-                            key={ 'message' + index }
                             activity={ activity }
-                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
-                            selected={ this.props.isSelected(activity) }
+                            format={ this.props.format }
                             fromMe={ this.props.isFromMe(activity) }
+                            key={ 'message' + index }
                             onClickActivity={ this.props.onClickActivity(activity) }
                             onClickRetry={e => {
                                 // Since this is a click on an anchor, we need to stop it
@@ -152,6 +152,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 e.stopPropagation();
                                 this.props.onClickRetry(activity);
                             } }
+                            selected={ this.props.isSelected(activity) }
+                            showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
+                            tabbable={ this.props.tabbable }
                         >
                             <ActivityView
                                 activity={ activity }
@@ -194,6 +197,7 @@ export const History = connect(
         format: state.format,
         hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
         size: state.size,
+        tabbable: state.history.tabbable,
         // only used to create helper functions below
         botConnection: state.connection.botConnection,
         connectionSelectedActivity: state.connection.selectedActivity,
@@ -211,6 +215,7 @@ export const History = connect(
         format: stateProps.format,
         hasActivityWithSuggestedActions: stateProps.hasActivityWithSuggestedActions,
         size: stateProps.size,
+        tabbable: stateProps.tabbable,
         // from dispatchProps
         onClickCardAction: dispatchProps.onClickCardAction,
         onClickRetry: dispatchProps.onClickRetry,
@@ -255,12 +260,13 @@ const suitableInterval = (current: Activity, next: Activity) =>
 
 export interface WrappedActivityProps {
     activity: Activity;
-    showTimestamp: boolean;
-    selected: boolean;
-    fromMe: boolean;
     format: FormatState;
+    fromMe: boolean;
     onClickActivity: React.MouseEventHandler<HTMLDivElement>;
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>;
+    selected: boolean;
+    showTimestamp: boolean;
+    tabbable: 'activity' | false;
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -310,7 +316,12 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+            <div
+                data-activity-id={ this.props.activity.id }
+                className={ wrapperClassName }
+                onClick={ this.props.onClickActivity }
+                tabIndex={ this.props.tabbable === 'activity' ? 0 : undefined }
+            >
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">

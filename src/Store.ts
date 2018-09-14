@@ -292,6 +292,7 @@ export interface HistoryState {
     clientActivityBase: string;
     clientActivityCounter: number;
     selectedActivity: Activity;
+    tabbable: 'activity' | false;
 }
 
 export type HistoryAction = {
@@ -313,6 +314,9 @@ export type HistoryAction = {
 } | {
     type: 'Clear_Typing',
     id: string
+} | {
+    type: 'Set_Tabbable',
+    tabbable: 'activity' | false
 };
 
 const copyArrayWithUpdatedItem = <T>(array: T[], i: number, item: T) => [
@@ -326,7 +330,8 @@ export const history: Reducer<HistoryState> = (
         activities: [],
         clientActivityBase: Date.now().toString() + Math.random().toString().substr(1) + '.',
         clientActivityCounter: 0,
-        selectedActivity: null
+        selectedActivity: null,
+        tabbable: false
     },
     action: HistoryAction
 ) => {
@@ -441,6 +446,12 @@ export const history: Reducer<HistoryState> = (
             return {
                 ...state,
                 selectedActivity: action.selectedActivity
+            };
+
+        case 'Set_Tabbable':
+            return {
+                ...state,
+                tabbable: action.tabbable
             };
 
         case 'Take_SuggestedAction':

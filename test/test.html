@@ -110,6 +110,7 @@
               }
             :
               null,
+            tabbable: undefined,
             user: {
               id: params['userid'] || 'userid',
               name: params['username'] || 'username'
@@ -167,6 +168,7 @@
                 sendTyping={ this.state.sendTyping }
                 showUploadButton={ this.state.showUploadButton }
                 speechOptions={ this.state.speechOptions }
+                tabbable={ this.state.tabbable }
                 user={ this.state.user }
               />
             </div>
