@@ -901,6 +901,17 @@ var commands_map: CommandValuesMap = {
                 && third.trim() === 'Third'
             );
         }
+    },
+    'selectable': {
+        urlAppend: { selectable: true },
+        client: async function () {
+            const firstMessageWrapper = document.querySelector('.wc-message-wrapper') as HTMLElement;
+
+            firstMessageWrapper.click();
+            firstMessageWrapper.focus();
+
+            return (document.querySelector(':focus .wc-message-content') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
+        }
     }
     /*
      ** Add your commands to test here **
