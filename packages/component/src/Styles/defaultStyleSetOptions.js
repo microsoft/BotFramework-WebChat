@@ -25,7 +25,7 @@ const DEFAULT_OPTIONS = {
   // Visually show spoken text
   showSpokenText: false,
 
-  timestampColor: 'rgba(0, 0, 0, .2)',
+  timestampColor: '#767676',
 
   videoHeight: 270 // based on bubbleMaxWidth, 480 / 16 * 9 = 270
 };
