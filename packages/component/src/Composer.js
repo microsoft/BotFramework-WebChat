@@ -100,7 +100,8 @@ function createLogic(props) {
       case 'postBack':
         props.dispatch(postActivity({
           type: 'message',
-          value,
+          text: typeof value === 'string' ? value : undefined,
+          value: typeof value !== 'string' ? value : undefined,
           locale: lang
         }));
 

@@ -12,8 +12,6 @@ export default function () {
   return () => next => ({ activity, attachment }) =>
     activity.type === 'typing' ?
       <TypingActivity />
-    : attachment.contentType === 'application/vnd.microsoft.card.postback' ?
-      false
     : /^audio\//.test(attachment.contentType) ?
       <AudioAttachment activity={ activity } attachment={ attachment } />
     : /^image\//.test(attachment.contentType) ?
