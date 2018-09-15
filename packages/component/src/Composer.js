@@ -11,6 +11,7 @@ import {
   postActivity,
   sendFiles,
   sendMessage,
+  sendPostBack,
   setLanguage,
   setSendBox,
   setSendTyping,
@@ -39,6 +40,7 @@ const DISPATCHERS = {
   postActivity,
   sendFiles,
   sendMessage,
+  sendPostBack,
   setSendBox,
   startSpeakingActivity,
   startSpeechInput,
@@ -80,17 +82,7 @@ function createLogic(props) {
       case 'imBack':
         if (typeof value === 'string') {
           // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-          props.dispatch(postActivity({
-            from: {
-              id: userID,
-              role: 'user'
-            },
-            locale: lang,
-            text: value,
-            textFormat: 'plain',
-            timestamp: (new Date()).toISOString(),
-            type: 'message'
-          }));
+          props.dispatch(sendMessage(value, 'imBack'));
         } else {
           throw new Error('cannot send "imBack" with a non-string value');
         }
@@ -98,12 +90,7 @@ function createLogic(props) {
         break;
 
       case 'postBack':
-        props.dispatch(postActivity({
-          type: 'message',
-          text: typeof value === 'string' ? value : undefined,
-          value: typeof value !== 'string' ? value : undefined,
-          locale: lang
-        }));
+        props.dispatch(sendPostBack(value));
 
         break;
 

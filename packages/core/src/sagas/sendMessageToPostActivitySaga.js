@@ -19,7 +19,6 @@ export default function* () {
         yield put(postActivity({
           text,
           textFormat: 'plain',
-          timestamp: (new Date()).toISOString(),
           type: 'message'
         }));
 

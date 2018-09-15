@@ -9,6 +9,7 @@ import markActivityForSpeakSaga from './sagas/markActivityForSpeakSaga';
 import postActivitySaga from './sagas/postActivitySaga';
 import sendFilesToPostActivitySaga from './sagas/sendFilesToPostActivitySaga';
 import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga';
+import sendPostBackToPostActivitySaga from './sagas/sendPostBackToPostActivitySaga';
 import sendTypingOnSetSendBoxSaga from './sagas/sendTypingOnSetSendBoxSaga';
 import startSpeechInputAfterSpeakActivitySaga from './sagas/startSpeechInputAfterSpeakActivitySaga';
 import stopSpeakActivityOnInputSaga from './sagas/stopSpeakActivityOnInputSaga';
@@ -25,6 +26,7 @@ export default function* () {
   yield fork(postActivitySaga);
   yield fork(sendFilesToPostActivitySaga);
   yield fork(sendMessageToPostActivitySaga);
+  yield fork(sendPostBackToPostActivitySaga);
   yield fork(sendTypingOnSetSendBoxSaga);
   yield fork(startSpeechInputAfterSpeakActivitySaga);
   yield fork(stopSpeakActivityOnInputSaga);

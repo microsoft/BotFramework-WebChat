@@ -44,6 +44,10 @@ const BasicTranscript = ({
       <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
         {
           activities.map((activity, index) => {
+            if (activity.channelData && activity.channelData.postBack) {
+              return false;
+            }
+
             const nextActivity = activities[index + 1];
             let showTimestamp = true;
 
