@@ -192,6 +192,7 @@ export default class extends React.Component {
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
           sendTyping={ state.sendTyping }
+          storeKey="webchat"
           userAvatarInitials={ state.userAvatarInitials }
           userID="default-user"
           username="User 1"

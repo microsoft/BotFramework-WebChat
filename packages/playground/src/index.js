@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import { Provider } from 'react-redux';
+import { createProvider } from 'react-redux';
 import onErrorResumeNext from 'on-error-resume-next';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -14,6 +14,7 @@ css.global('html, body, #root', { height: '100%' });
 css.global('body', { margin: 0 });
 
 const REDUX_STORE_KEY = 'REDUX_STORE';
+const Provider = createProvider('webchat');
 let store;
 
 window.addEventListener('keydown', event => {

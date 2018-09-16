@@ -5,7 +5,7 @@ import React from 'react';
 import Context from './Context';
 
 export default function (stateSelector, contextSelector) {
-  const createConnected = memoize(storeKey => connect(state => stateSelector(state), { storeKey }));
+  const createConnected = memoize(storeKey => connect(state => stateSelector(state), null, null, { storeKey }));
 
   return component => props => (
     <Context.Consumer>

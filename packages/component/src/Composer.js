@@ -301,5 +301,12 @@ Composer.defaultProps = {
 // TODO: [P3] Should we hide the knowledge of Redux?
 //       Everyone under this DOM tree should need access to Redux connect or dispatchers
 //       All the features should be accessible via Context/Composer
-// TODO: We should move referenceGrammarId to Composer
-export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(Composer)
+
+const createComposerFromStoreKey = memoize(storeKey => connect(
+  ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }),
+  null,
+  null,
+  { storeKey }
+)(Composer))
+
+export default props => React.createElement(createComposerFromStoreKey(props.storeKey), props)
