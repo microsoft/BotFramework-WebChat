@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
+import connectWithContext from '../connectWithContext';
 import Timer from './Timer';
 
 function nextTimer(date) {
@@ -55,4 +55,4 @@ class TimeAgo extends React.Component {
   }
 }
 
-export default connect(({ settings: { language } }) => ({ language }))(TimeAgo)
+export default connectWithContext(({ settings: { language } }) => ({ language }))(TimeAgo)

@@ -1,16 +1,15 @@
-import { connect } from 'react-redux';
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 
-export default connect(({ input: { sendBox } }) => ({ sendBox }))(props =>
-  <Context.Consumer>
-    { ({ submitSendBox }) =>
-      <IconButton onClick={ submitSendBox }>
-        <SendIcon />
-      </IconButton>
-    }
-  </Context.Consumer>
+export default connectWithContext(
+  () => ({}),
+  ({ submitSendBox }) => ({ submitSendBox })
+)(
+  ({ submitSendBox }) =>
+    <IconButton onClick={ submitSendBox }>
+      <SendIcon />
+    </IconButton>
 )

@@ -1,9 +1,8 @@
-import { connect } from 'react-redux';
 import React from 'react';
 import SayAlt from './SayAlt';
 import Say from 'react-say';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
@@ -82,15 +81,4 @@ class SpeakActivity extends React.Component {
   }
 }
 
-export default connect(() => ({}))(({ activity, dispatch }) =>
-  <Context.Consumer>
-    { ({ markActivity, styleSet }) =>
-      <SpeakActivity
-        activity={ activity }
-        dispatch={ dispatch }
-        markActivity={ markActivity }
-        styleSet={ styleSet }
-      />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(() => ({}), ({ markActivity, styleSet }) => ({ markActivity, styleSet }))(SpeakActivity);

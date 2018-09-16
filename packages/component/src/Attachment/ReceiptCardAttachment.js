@@ -1,11 +1,10 @@
-import { connect } from 'react-redux';
 import memoize from 'memoize-one';
 import React from 'react';
 
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
 import { localize } from '../Localization/Localize';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
@@ -90,13 +89,7 @@ class ReceiptCardAttachment extends React.Component {
   }
 }
 
-export default connect(({ settings: { language } }) => ({ language }))(props =>
-  <Context.Consumer>
-    { ({ adaptiveCards }) =>
-      <ReceiptCardAttachment
-        { ...props }
-        adaptiveCards={ adaptiveCards }
-      />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(
+  ({ settings: { language } }) => ({ language }),
+  ({ adaptiveCards }) => ({ adaptiveCards })
+)(ReceiptCardAttachment)

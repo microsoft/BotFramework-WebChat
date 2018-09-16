@@ -1,12 +1,11 @@
-import { connect } from 'react-redux';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
-import Context from '../Context';
 import { localize } from '../Localization/Localize';
+import connectWithContext from '../connectWithContext';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -85,24 +84,19 @@ TextBoxWithSpeech.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default connect(({ input: { sendBox, speechState }, settings: { language } }) => ({ language, sendBox, speechState }))(props =>
-  <Context.Consumer>
-    {
-      ({
-        scrollToBottom,
-        setSendBox,
-        stopSpeakingActivity,
-        submitSendBox,
-        styleSet
-      }) =>
-        <TextBoxWithSpeech
-          { ...props }
-          scrollToBottom={ scrollToBottom }
-          setSendBox={ setSendBox }
-          stopSpeakingActivity={ stopSpeakingActivity }
-          submitSendBox={ submitSendBox }
-          styleSet={ styleSet }
-        />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(
+  ({ input: { sendBox, speechState }, settings: { language } }) => ({ language, sendBox, speechState }),
+  ({
+    scrollToBottom,
+    setSendBox,
+    stopSpeakingActivity,
+    submitSendBox,
+    styleSet
+  }) => ({
+    scrollToBottom,
+    setSendBox,
+    stopSpeakingActivity,
+    submitSendBox,
+    styleSet
+  })
+)(TextBoxWithSpeech)

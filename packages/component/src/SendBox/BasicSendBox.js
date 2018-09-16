@@ -1,9 +1,8 @@
-import { connect } from 'react-redux';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
@@ -24,31 +23,34 @@ const TEXT_BOX_CSS = css({
   flex: 10000
 });
 
-export default connect(({ input: { speechState } }) => ({ speechState }))(({ className, speechState }) =>
-  <Context.Consumer>
-    { ({
-        enableSpeech,
-        styleSet,
-        webSpeechPonyfill
-      }) =>
-      <div className={ classNames(
-        styleSet.sendBox + '',
-        ROOT_CSS + '',
-        (className || '') + ''
-      ) }>
-        <SuggestedActions />
-        <div className="main">
-          <UploadAttachmentButton />
-          { !speechState &&
-              <TextBox className={ TEXT_BOX_CSS } />
-          }
-          { (enableSpeech && webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
-              <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
-            :
-              <SendButton />
-          }
-        </div>
-      </div>
-    }
-  </Context.Consumer>
-)
+const BasicSendBox = ({
+  className,
+  enableSpeech,
+  speechState,
+  styleSet,
+  webSpeechPonyfill
+}) =>
+  <div className={ classNames(
+    styleSet.sendBox + '',
+    ROOT_CSS + '',
+    (className || '') + ''
+  ) }>
+    <SuggestedActions />
+    <div className="main">
+      <UploadAttachmentButton />
+      { !speechState &&
+          <TextBox className={ TEXT_BOX_CSS } />
+      }
+      { (enableSpeech && webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
+          <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
+        :
+          <SendButton />
+      }
+    </div>
+  </div>
+
+
+export default connectWithContext(
+  ({ input: { speechState } }) => ({ speechState }),
+  ({ enableSpeech, styleSet, webSpeechPonyfill }) => ({ enableSpeech, styleSet, webSpeechPonyfill })
+)(BasicSendBox)

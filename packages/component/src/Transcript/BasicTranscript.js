@@ -1,11 +1,10 @@
 import { Composer as SayComposer } from 'react-say';
-import { connect } from 'react-redux';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 import SpeakActivity from '../Activity2/Speak';
 
 const ROOT_CSS = css({
@@ -80,23 +79,19 @@ const BasicTranscript = ({
     </SayComposer>
   </ScrollToBottom>
 
-export default connect(({ activities }) => ({ activities }))(props =>
-  <Context.Consumer>
-    { ({
-      activityRenderer,
-      attachmentRenderer,
-      collapseTimestamp,
-      styleSet,
-      webSpeechPonyfill
-    }) =>
-      <BasicTranscript
-        activityRenderer={ activityRenderer }
-        attachmentRenderer={ attachmentRenderer }
-        collapseTimestamp={ collapseTimestamp }
-        styleSet={ styleSet }
-        webSpeechPonyfill={ webSpeechPonyfill }
-        { ...props }
-      />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(
+  ({ activities }) => ({ activities }),
+  ({
+    activityRenderer,
+    attachmentRenderer,
+    collapseTimestamp,
+    styleSet,
+    webSpeechPonyfill
+  }) => ({
+    activityRenderer,
+    attachmentRenderer,
+    collapseTimestamp,
+    styleSet,
+    webSpeechPonyfill
+  })
+)(BasicTranscript)

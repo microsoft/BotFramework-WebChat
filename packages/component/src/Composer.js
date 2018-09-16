@@ -157,6 +157,8 @@ class Composer extends React.Component {
       shallowEquals
     );
 
+    // TODO: Add window.open ponyfill
+
     this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarId) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarId }));
 
     this.mergeContext = memoize(
@@ -299,4 +301,5 @@ Composer.defaultProps = {
 // TODO: [P3] Should we hide the knowledge of Redux?
 //       Everyone under this DOM tree should need access to Redux connect or dispatchers
 //       All the features should be accessible via Context/Composer
+// TODO: We should move referenceGrammarId to Composer
 export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(Composer)

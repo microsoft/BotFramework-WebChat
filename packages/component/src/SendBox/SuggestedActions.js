@@ -1,9 +1,8 @@
-import { connect } from 'react-redux';
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 import SuggestedAction from './SuggestedAction';
 
 const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
@@ -26,13 +25,7 @@ const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
       }
     </BasicFilm>
 
-export default connect(({ suggestedActions }) => ({ suggestedActions }))(props =>
-  <Context.Consumer>
-    { ({ styleSet }) =>
-      <SuggestedActions
-        { ...props }
-        styleSet={ styleSet }
-      />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(
+  ({ suggestedActions }) => ({ suggestedActions }),
+  ({ styleSet }) => ({ styleSet })
+)(SuggestedActions)

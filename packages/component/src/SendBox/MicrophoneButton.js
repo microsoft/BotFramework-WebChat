@@ -1,11 +1,10 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
-import { connect } from 'react-redux';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 import IconButton from './IconButton';
 import Localize from '../Localization/Localize';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
@@ -166,27 +165,23 @@ MicrophoneButton.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default connect(({ input: { speechState } }) => ({ speechState }))(props =>
-  <Context.Consumer>
-    { ({
-        setSendBox,
-        startSpeakingActivity,
-        startSpeechInput,
-        stopSpeechInput,
-        submitSendBox,
-        styleSet,
-        webSpeechPonyfill
-      }) =>
-      <MicrophoneButton
-        { ...props }
-        setSendBox={ setSendBox }
-        startSpeakingActivity={ startSpeakingActivity }
-        startSpeechInput={ startSpeechInput }
-        stopSpeechInput={ stopSpeechInput }
-        submitSendBox={ submitSendBox }
-        styleSet={ styleSet }
-        webSpeechPonyfill={ webSpeechPonyfill }
-      />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(
+  ({ input: { speechState } }) => ({ speechState }),
+  ({
+    setSendBox,
+    startSpeakingActivity,
+    startSpeechInput,
+    stopSpeechInput,
+    submitSendBox,
+    styleSet,
+    webSpeechPonyfill
+  }) => ({
+    setSendBox,
+    startSpeakingActivity,
+    startSpeechInput,
+    stopSpeechInput,
+    submitSendBox,
+    styleSet,
+    webSpeechPonyfill
+  })
+)(MicrophoneButton)

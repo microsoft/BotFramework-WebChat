@@ -1,6 +1,3 @@
-import { connect } from 'react-redux';
-import React from 'react';
-
 import enUS from './en-US';
 import jaJP from './ja-JP';
 import zhHANT from './zh-HANT';
