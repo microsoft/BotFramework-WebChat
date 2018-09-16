@@ -1,5 +1,42 @@
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
+import sanitizeHTML from 'sanitize-html';
+
+const ALLOWED_TAGS = [
+  'a',
+  'b',
+  'blockquote',
+  'br',
+  'caption',
+  'code',
+  'div',
+  'em',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'hr',
+  'i',
+  'img',
+  'li',
+  'nl',
+  'ol',
+  'p',
+  'pre',
+  'span',
+  'strike',
+  'strong',
+  'table',
+  'tbody',
+  'td',
+  'tfoot',
+  'th',
+  'thead',
+  'tr',
+  'ul'
+];
 
 const customMarkdownIt = new MarkdownIt({
   breaks: true,
@@ -27,4 +64,8 @@ const customMarkdownIt = new MarkdownIt({
   }
 });
 
-export default customMarkdownIt.render.bind(customMarkdownIt)
+export default function render(markdown) {
+  const html = customMarkdownIt.render(markdown);
+
+  return sanitizeHTML(html, { allowedTags: ALLOWED_TAGS });
+}
