@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { css } from 'glamor';
 import * as AdaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -53,9 +54,87 @@ function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
 }
 
+function createCardActionLogic({ directLine, dispatch }) {
+  return {
+    onCardAction: (({ type, value }) => {
+      switch (type) {
+        case 'imBack':
+          if (typeof value === 'string') {
+            // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
+            props.dispatch(sendMessage(value, 'imBack'));
+          } else {
+            throw new Error('cannot send "imBack" with a non-string value');
+          }
+
+          break;
+
+        case 'postBack':
+          props.dispatch(sendPostBack(value));
+
+          break;
+
+        case 'call':
+        case 'downloadFile':
+        case 'openUrl':
+        case 'playAudio':
+        case 'playVideo':
+        case 'showImage':
+          // TODO: [P3] We should support ponyfill for window.open
+          //       This is as-of v3
+          window.open(value);
+          break;
+
+        case 'signin':
+          // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
+          //       This is to eliminate the delay between window.open() and location.href call
+
+          const popup = window.open();
+
+          if (directLine.getSessionId)  {
+            const subscription = directLine.getSessionId().subscribe(sessionId => {
+              popup.location.href = `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`;
+
+              // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
+              //       Need to wait some short time here to make sure the subscription variable has setup
+              setImmediate(() => subscription.unsubscribe());
+            }, error => {
+              // TODO: [P3] Let the user know something failed and we cannot proceed
+              //       This is as-of v3 now
+              console.error(error);
+            });
+          } else {
+            popup.location.href = value;
+          }
+
+          break;
+
+        default:
+          console.error(`Web Chat: received unknown card action "${ type }"`);
+          break;
+      }
+    })
+  };
+}
+
+function createFocusSendBoxLogic({ sendBoxRef }) {
+  const focusSendBox = (() => {
+    const { current } = sendBoxRef || {};
+
+    current && current.focus();
+  });
+
+  return { focusSendBox };
+}
+
+function createStyleSetLogic({ styleSet, styleOptions }) {
+  return {
+    styleSet: styleSetToClassNames(styleSet || createStyleSet(styleOptions))
+  };
+}
+
 function createLogic(props) {
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
-  // - User ID changed, cuasing all send* functions to be updated
+  // - User ID changed, causing all send* functions to be updated
   // - send
 
   // TODO: [P4] We should break this into smaller pieces using memoization function, so we don't recreate styleSet if userID is changed
@@ -64,87 +143,12 @@ function createLogic(props) {
   // 1. Turns text into UPPERCASE
   // 2. Filter out profanity
 
-  const directLine = props.directLine;
-  const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
-  const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
-  const { userID } = props;
-
-  // TODO: We should normalize props (fill-in-the-blank) before hitting this line
-  const focusSendBox = props.focusSendBox || (() => {
-    const { current } = props.sendBoxRef || {};
-
-    current && current.focus();
-  });
-
-  // TODO: Should we allow the user to change the cardAction? Or do we have a better way to do it?
-  const onCardAction = props.onCardAction || (({ type, value }) => {
-    switch (type) {
-      case 'imBack':
-        if (typeof value === 'string') {
-          // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-          props.dispatch(sendMessage(value, 'imBack'));
-        } else {
-          throw new Error('cannot send "imBack" with a non-string value');
-        }
-
-        break;
-
-      case 'postBack':
-        props.dispatch(sendPostBack(value));
-
-        break;
-
-      case 'call':
-      case 'downloadFile':
-      case 'openUrl':
-      case 'playAudio':
-      case 'playVideo':
-      case 'showImage':
-        // TODO: [P3] We should support ponyfill for window.open
-        //       This is as-of v3
-        window.open(value);
-        break;
-
-      case 'signin':
-        // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
-        //       This is to eliminate the delay between window.open() and location.href call
-
-        const popup = window.open();
-
-        if (directLine.getSessionId)  {
-          const subscription = directLine.getSessionId().subscribe(sessionId => {
-            popup.location.href = `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`;
-
-            // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
-            //       Need to wait some short time here to make sure the subscription variable has setup
-            setImmediate(() => subscription.unsubscribe());
-          }, error => {
-            // TODO: [P3] Let the user know something failed and we cannot proceed
-            //       This is as-of v3 now
-            console.error(error);
-          });
-        } else {
-          popup.location.href = value;
-        }
-
-        break;
-
-      default:
-        console.error(`Web Chat: received unknown card action "${ type }"`);
-        break;
-    }
-  });
-
   // TODO: [P4] Revisit all members of context
   return {
     ...props,
-
-    focusSendBox,
-    lang,
-    onCardAction,
-    sendFiles,
-    styleSet,
-    userID
+    ...createCardActionLogic(props),
+    ...createFocusSendBoxLogic(props),
+    ...createStyleSetLogic(props)
   };
 }
 
@@ -166,26 +170,17 @@ class Composer extends React.Component {
       shallowEquals
     );
 
-    const hoistedDispatchers = Object.keys(DISPATCHERS).reduce((hoistedDispatchers, name) => ({
-      ...hoistedDispatchers,
-      [name]: (...args) => this.props.dispatch(DISPATCHERS[name].apply(this, args))
-    }), {});
-
-    this.setLanguageFromProps(props);
-    this.setSendTypingFromProps(props);
-
     this.state = {
-      // This is for uncontrolled component
-      context: {
-        // Redux actions
-        ...hoistedDispatchers
-      }
+      hoistedDispatchers: mapMap(DISPATCHERS, dispatcher => (...args) => this.props.dispatch(dispatcher.apply(this, args)))
     };
   }
 
   componentWillMount() {
     const { props } = this;
     const { directLine, userID, username } = props;
+
+    this.setLanguageFromProps(props);
+    this.setSendTypingFromProps(props);
 
     props.dispatch(createConnectAction({ directLine, userID, username }));
   }
@@ -209,19 +204,12 @@ class Composer extends React.Component {
     ) {
       // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
       props.dispatch(disconnect());
-      props.dispatch(createConnectAction({
-        directLine,
-        userID,
-        username
-      }));
-    }
-
-    if (prevProps) {
+      props.dispatch(createConnectAction({ directLine, userID, username }));
     }
   }
 
   setLanguageFromProps(props) {
-    props.dispatch(setLanguage(props.locale || window.navigator.language));
+    props.dispatch(setLanguage(props.locale || window.navigator.language || 'en-US'));
   }
 
   setSendTypingFromProps(props) {
@@ -248,6 +236,7 @@ class Composer extends React.Component {
         renderMarkdown,
         scrollToBottom,
         userAvatarInitials,
+        userID,
         webSpeechPonyfillFactory,
         ...propsForLogic
       },
@@ -256,13 +245,17 @@ class Composer extends React.Component {
 
     const contextFromProps = this.createContextFromProps(propsForLogic);
 
+    // TODO: Consider moving props to BasicWebChat
+    //       Developers are very unlikely to create Composer without BasicWebChat
+    //       We could simplify logic and memoizer there
     const context = this.mergeContext(
       contextFromProps,
-      state.context,
+      state.hoistedDispatchers,
       // TODO: [P4] Should we normalize empties here? Or should we let it thru?
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
         activityRenderer,
+        // TODO: Take Adaptive Cards away, put it to attachment
         adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
@@ -274,6 +267,7 @@ class Composer extends React.Component {
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
         userAvatarInitials,
+        userID,
         webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
       }
     );
@@ -292,6 +286,24 @@ class Composer extends React.Component {
     );
   }
 }
+
+Composer.propTypes = {
+  activityRenderer: PropTypes.func.isRequired,
+  adaptiveCards: PropTypes.any,
+  adaptiveCardHostConfig: PropTypes.any,
+  attachmentRenderer: PropTypes.func.isRequired,
+  botAvatarInitials: PropTypes.string,
+  collapseTimestamp: PropTypes.bool,
+  disabled: PropTypes.bool,
+  enableSpeech: PropTypes.bool,
+  grammars: PropTypes.arrayOf(PropTypes.string),
+  referenceGrammarId: PropTypes.string,
+  renderMarkdown: PropTypes.func,
+  scrollToBottom: PropTypes.func,
+  userAvatarInitials: PropTypes.string,
+  userID: PropTypes.string,
+  webSpeechPonyfillFactory: PropTypes.func
+};
 
 Composer.defaultProps = {
   userID: DEFAULT_USER_ID,
