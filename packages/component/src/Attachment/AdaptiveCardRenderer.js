@@ -11,23 +11,6 @@ import Context from '../Context';
 import ErrorBox from '../ErrorBox';
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 
-export default connect(({ settings: { language } }) => ({ language }))(
-  ({ adaptiveCard, language, tapAction }) =>
-    <Context.Consumer>
-      { ({ adaptiveCardHostConfig, onCardAction, postActivity, styleSet }) =>
-        <AdaptiveCardRenderer
-          adaptiveCard={ adaptiveCard }
-          hostConfig={ adaptiveCardHostConfig }
-          language={ language }
-          onCardAction={ onCardAction }
-          postActivity={ postActivity }
-          styleSet={ styleSet }
-          tapAction={ tapAction }
-        />
-      }
-    </Context.Consumer>
-)
-
 class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -153,3 +136,20 @@ class AdaptiveCardRenderer extends React.PureComponent {
     );
   }
 }
+
+export default connect(({ settings: { language } }) => ({ language }))(
+  ({ adaptiveCard, language, tapAction }) =>
+    <Context.Consumer>
+      { ({ adaptiveCardHostConfig, onCardAction, postActivity, styleSet }) =>
+        <AdaptiveCardRenderer
+          adaptiveCard={ adaptiveCard }
+          hostConfig={ adaptiveCardHostConfig }
+          language={ language }
+          onCardAction={ onCardAction }
+          postActivity={ postActivity }
+          styleSet={ styleSet }
+          tapAction={ tapAction }
+        />
+      }
+    </Context.Consumer>
+)

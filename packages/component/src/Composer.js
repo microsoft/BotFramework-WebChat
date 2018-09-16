@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
-import * as AdaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -220,7 +219,6 @@ class Composer extends React.Component {
     const {
       props: {
         activityRenderer,
-        adaptiveCards,
         adaptiveCardHostConfig,
         attachmentRenderer,
         botAvatarInitials,
@@ -255,8 +253,6 @@ class Composer extends React.Component {
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
         activityRenderer,
-        // TODO: Take Adaptive Cards away, put it to attachment
-        adaptiveCards: adaptiveCards || AdaptiveCards,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
         botAvatarInitials,
@@ -267,7 +263,6 @@ class Composer extends React.Component {
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
         userAvatarInitials,
-        userID,
         webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
       }
     );
@@ -289,7 +284,6 @@ class Composer extends React.Component {
 
 Composer.propTypes = {
   activityRenderer: PropTypes.func.isRequired,
-  adaptiveCards: PropTypes.any,
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func.isRequired,
   botAvatarInitials: PropTypes.string,
@@ -314,6 +308,7 @@ Composer.defaultProps = {
 //       Everyone under this DOM tree should need access to Redux connect or dispatchers
 //       All the features should be accessible via Context/Composer
 
+// TODO: Simplify storeKey by hardcoding it
 const createComposerFromStoreKey = memoize(storeKey => connect(
   ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }),
   null,

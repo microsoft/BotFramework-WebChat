@@ -4,6 +4,8 @@ import React from 'react';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import Context from '../Context';
 
+import { AdaptiveCard } from 'adaptivecards';
+
 import {
   IAdaptiveCard,
   IOpenUrlAction,
@@ -40,7 +42,7 @@ export default class AdaptiveCardAttachment extends React.Component {
       // TODO: [P3] Checks if we could make the "renderMarkdown" per card
       //       This could be limitations from Adaptive Cards package
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
-      adaptiveCards.AdaptiveCard.processMarkdown = renderMarkdown || (text => text);
+      AdaptiveCard.processMarkdown = renderMarkdown || (text => text);
 
       // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
       adaptiveCards.AdaptiveCard.onParseError = error => errors.push(error);
@@ -50,7 +52,7 @@ export default class AdaptiveCardAttachment extends React.Component {
         ...content
       }));
 
-      adaptiveCards.AdaptiveCard.onParseError = null;
+      AdaptiveCard.onParseError = null;
 
       return {
         card,
