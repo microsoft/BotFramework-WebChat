@@ -869,39 +869,6 @@ var commands_map: CommandValuesMap = {
             return result;
         }
     },
-    'sort activities': {
-        server: async function (conversationId, sendActivity) {
-            sendActivity(conversationId, {
-                from: { id: 'bot' },
-                text: 'Third',
-                timestamp: new Date(2000, 0, 1, 12, 34, 58).toUTCString(),
-                type: 'message',
-            });
-
-            sendActivity(conversationId, {
-                from: { id: 'bot' },
-                text: 'Second',
-                timestamp: new Date(2000, 0, 1, 12, 34, 57).toUTCString(),
-                type: 'message',
-            });
-
-            sendActivity(conversationId, {
-                from: { id: 'bot' },
-                text: 'First',
-                timestamp: new Date(2000, 0, 1, 12, 34, 56).toUTCString(),
-                type: 'message',
-            });
-        },
-        client: async function () {
-            const [first, second, third] = [].map.call(document.querySelectorAll('.wc-message-wrapper .wc-message.wc-message-from-bot'), element => element.innerText);
-
-            return (
-                first.trim() === 'First'
-                && second.trim() === 'Second'
-                && third.trim() === 'Third'
-            );
-        }
-    },
     'selectable': {
         urlAppend: { selectable: true },
         client: async function () {

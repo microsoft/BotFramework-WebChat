@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Translations
   - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in PR [#1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
-- Activities are now sorted by timestamp, by [CK Kashyap](https://github.com/ckkashyap) in PR [#1107](https://github.com/Microsoft/BotFramework-WebChat/pull/1107)
 - Props to add `tabIndex` to activity in PR [#1161](https://github.com/Microsoft/BotFramework-WebChat/pull/1161)
 
 ### Changed
