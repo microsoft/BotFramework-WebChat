@@ -333,7 +333,8 @@ export const history: Reducer<HistoryState> = (
     konsole.log('history action', action);
     switch (action.type) {
         case 'Receive_Sent_Message': {
-            if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
+            // if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
+            if (action.activity.channelData && action.activity.channelData.postBack) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
                 return state;
             }

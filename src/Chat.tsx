@@ -370,7 +370,10 @@ export const sendPostBack = (botConnection: IBotConnection, text: string, value:
         text,
         value,
         from,
-        locale
+        locale,
+        channelData: {
+            postback: true
+        }
     })
     .subscribe(
         id => konsole.log('success sending postBack', id),
