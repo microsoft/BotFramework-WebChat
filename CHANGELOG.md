@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Translations
   - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in PR [#1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
 - Activities are now sorted by timestamp, by [CK Kashyap](https://github.com/ckkashyap) in PR [#1107](https://github.com/Microsoft/BotFramework-WebChat/pull/1107)
+- Props to add `tabIndex` to activity in PR [#1161](https://github.com/Microsoft/BotFramework-WebChat/pull/1161)
 
 ### Changed
 - Bump `botframework-directlinejs` to `0.9.17` in PR [#1131](https://github.com/Microsoft/BotFramework-WebChat/pull/1131)

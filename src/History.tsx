@@ -310,7 +310,12 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+            <div
+                data-activity-id={ this.props.activity.id }
+                className={ wrapperClassName }
+                onClick={ this.props.onClickActivity }
+                tabIndex={ this.props.onClickActivity ? 0 : undefined }
+            >
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">

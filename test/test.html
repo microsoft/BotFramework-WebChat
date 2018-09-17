@@ -65,6 +65,23 @@
         } catch (err) {}
       }
 
+      function createObserver() {
+        let subscribers = [];
+
+        return {
+          next: value => {
+            subscribers.forEach(subscriber => subscriber(value));
+          },
+          subscribe: fn => {
+            subscribers.push(fn);
+
+            return () => {
+              subscribers = subscribers.filter(subscriber => subscriber !== fn)
+            };
+          }
+        };
+      }
+
       class App extends React.Component {
         constructor(props, context) {
           super(props, context);
@@ -87,6 +104,7 @@
             hidden: 'hidden' in params,
             locale: params['locale'],
             resize: 'window',
+            selectedActivity: params['selectable'] === 'true' ? createObserver() : null,
             sendTyping: false, //set to true to send 'typing' activities to bot (and other users) when user is typing
             showUploadButton: params['showUploadButton'] !== 'false',
             speechOptions: params['speech'] === 'enabled/ui' ?
@@ -164,6 +182,7 @@
                 formatOptions={ this.state.formatOptions }
                 locale={ this.state.locale }
                 resize={ this.state.resize }
+                selectedActivity={ this.state.selectedActivity }
                 sendTyping={ this.state.sendTyping }
                 showUploadButton={ this.state.showUploadButton }
                 speechOptions={ this.state.speechOptions }
