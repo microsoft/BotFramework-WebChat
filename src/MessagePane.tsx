@@ -1,4 +1,4 @@
-import { Activity, CardAction, Message, User } from 'botframework-directlinejs';
+import { CardAction, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
 import ReactDatePicker from 'react-datepicker';
@@ -9,7 +9,6 @@ import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import { getAvailableTimes } from './getAvailableTimes';
 import { HScroll } from './HScroll';
-import * as konsole from './Konsole';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
 
