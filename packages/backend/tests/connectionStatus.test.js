@@ -1,5 +1,6 @@
-import { START_CONNECTION } from '../src/Actions/startConnection';
 import createFacility from './createFacility';
+
+import { START_CONNECTION } from '../src/actions/startConnection';
 
 test('Connection status', async () => {
   const { directLine, store } = await createFacility({ start: false });

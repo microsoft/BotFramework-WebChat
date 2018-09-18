@@ -5,6 +5,10 @@ import String, { getString } from '../Localization/String';
 import Context from '../Context';
 import TimeAgo from '../Utils/TimeAgo';
 
+import { Constants } from 'backend';
+
+const { SendState: { SEND_FAILED, SENDING } } = Constants;
+
 // TODO: We could refactor this into a general component
 function sendFailed(language, replace) {
   const text = getString('Send failed, {retry}', language);
@@ -51,9 +55,9 @@ class Timestamp extends React.Component {
     return (
       <span className={ styleSet.timestamp }>
         {
-          state === 'sending' ?
+          state === SENDING ?
             <String text="Sending" />
-          : state === 'send failed' ?
+          : state === SEND_FAILED ?
             <React.Fragment>
               {
                 sendFailed(language, retry => <button className="retry" onClick={ this.handleRetryClick } type="button">{ retry }</button>)

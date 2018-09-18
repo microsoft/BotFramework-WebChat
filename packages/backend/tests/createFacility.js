@@ -1,6 +1,7 @@
-import { START_CONNECTION } from '../src/Actions/startConnection';
-import createStore from '../src/createStore';
 import mockDirectLine from './mockDirectLine';
+
+import { START_CONNECTION } from '../src/actions/startConnection';
+import createStore from '../src/createStore';
 
 const DEFAULT_USER_ID = 'default-user';
 const DEFAULT_USERNAME = 'John Doe';

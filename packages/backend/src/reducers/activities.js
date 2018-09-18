@@ -10,6 +10,8 @@ import {
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
 
+import { SEND_FAILED, SENDING, SENT } from '../constants/SendState';
+
 const DEFAULT_STATE = [];
 
 function getClientActivityID({ channelData: { clientActivityID } = {} }) {
@@ -40,7 +42,7 @@ function upsertActivityWithSort(activities, nextActivity) {
   // Since clockskew might happen, we will ignore timestamp on messages that are sending
   // If we are inserting "typing", we will always append it
   const indexToInsert = nextActivity.type === 'typing' ? -1 : nextActivities.findIndex(({ channelData: { state } = {}, timestamp, type }) =>
-    (Date.parse(timestamp) > nextTimestamp && state !== 'sending' && state !== 'send failed') || type === 'typing'
+    (Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED) || type === 'typing'
   );
 
   // If no right place are found, append it
@@ -60,17 +62,17 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case POST_ACTIVITY_PENDING:
-      state = upsertActivityWithSort(state, updateIn(payload.activity, ['channelData', 'state'], () => 'sending'));
+      state = upsertActivityWithSort(state, updateIn(payload.activity, ['channelData', 'state'], () => SENDING));
       break;
 
     case POST_ACTIVITY_REJECTED:
-      state = updateIn(state, [findByClientActivityID(meta.clientActivityID), 'channelData', 'state'], () => 'send failed');
+      state = updateIn(state, [findByClientActivityID(meta.clientActivityID), 'channelData', 'state'], () => SEND_FAILED);
       break;
 
     case POST_ACTIVITY_FULFILLED:
       state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], activity =>
         // We will replace the activity with the version from the server
-        updateIn(payload.activity, ['channelData', 'state'], () => 'sent')
+        updateIn(payload.activity, ['channelData', 'state'], () => SENT)
       );
 
       break;

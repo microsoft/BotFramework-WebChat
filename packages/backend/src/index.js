@@ -14,8 +14,13 @@ import stopSpeakingActivity from './actions/stopSpeakingActivity';
 import stopSpeechInput from './actions/stopSpeechInput';
 import submitSendBox from './actions/submitSendBox';
 
+import SendState from './constants/SendState';
+
+const Constants = { SendState };
+
 export {
   connect,
+  Constants,
   createStore,
   disconnect,
   markActivity,

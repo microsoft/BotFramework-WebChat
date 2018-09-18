@@ -11,7 +11,7 @@ import sendMessage from '../actions/sendMessage';
 import setSendBox from '../actions/setSendBox';
 
 export default function* () {
-  yield whileConnected(function* (_, userID) {
+  yield whileConnected(function* () {
     for (;;) {
       const { payload: { via } } = yield take(SUBMIT_SEND_BOX);
       const text = yield select(({ input: { sendBox } }) => sendBox);

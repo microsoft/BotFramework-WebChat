@@ -1,5 +1,7 @@
 import createFacility from '../createFacility';
-import { POST_ACTIVITY } from '../../src/Actions/postActivity';
+
+import { POST_ACTIVITY } from '../../src/actions/postActivity';
+import * as SendState from '../../src/constants/SendState';
 
 test('Post activity success', async () => {
   // 1. postActivity
@@ -25,7 +27,7 @@ test('Post activity success', async () => {
 
   await 0;
   expect(directLine.pendingPosts).toHaveProperty('length', 1);
-  expect(store.getState().activities[0]).toHaveProperty('channelData.state', 'sending');
+  expect(store.getState().activities[0]).toHaveProperty('channelData.state', SendState.SENDING);
 
   // Receive an activity while a message is pending to post
   directLine.activity.next({
@@ -36,13 +38,13 @@ test('Post activity success', async () => {
 
   await 0;
   expect(store.getState().activities).toHaveProperty('length', 2);
-  expect(store.getState().activities[0]).toHaveProperty('channelData.state', 'sending');
+  expect(store.getState().activities[0]).toHaveProperty('channelData.state', SendState.SENDING);
   expect(store.getState().activities[0]).toHaveProperty('text', 'Outgoing');
   expect(store.getState().activities[1]).toHaveProperty('id', 'bot:1');
 
   directLine.pendingPosts[0].complete('user:1');
   await 0;
 
-  expect(store.getState().activities[0]).toHaveProperty('channelData.state', 'sent');
+  expect(store.getState().activities[0]).toHaveProperty('channelData.state', SendState.SENT);
   expect(store.getState().activities[0]).toHaveProperty('id', 'user:1');
 });
