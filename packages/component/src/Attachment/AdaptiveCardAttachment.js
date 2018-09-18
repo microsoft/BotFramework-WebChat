@@ -13,13 +13,11 @@ import {
 } from 'adaptivecards/lib/schema';
 
 function stripSubmitAction(card) {
-// function cardWithoutHttpActions(card: IAdaptiveCard) {
   if (!card.actions) {
     return card;
   }
 
   const nextActions = card.actions.reduce((nextActions, action) => {
-  // const nextActions: (IOpenUrlAction | IShowCardAction | ISubmitAction)[] = card.actions.reduce((nextActions, action) => {
     // Filter out HTTP action buttons
     switch (action.type) {
       case 'Action.Submit':

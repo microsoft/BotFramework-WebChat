@@ -1,13 +1,13 @@
-// 1. postActivity
-// 2. new incoming activity
-// 3. look for incoming activity
-// 4. complete postActivity
-// 5. look for posted activity
-
 import createFacility from '../createFacility';
 import { POST_ACTIVITY } from '../../src/Actions/postActivity';
 
 test('Post activity success', async () => {
+  // 1. postActivity
+  // 2. new incoming activity
+  // 3. look for incoming activity
+  // 4. complete postActivity
+  // 5. look for posted activity
+
   const { actions, directLine, store } = await createFacility();
 
   // Clear out actions

@@ -11,15 +11,8 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function isTypingActivity({
-  type,
-  payload
-}) {
-  if (type === UPSERT_ACTIVITY) {
-    const { activity: { type } } = payload;
-
-    return type === 'typing';
-  }
+function isTypingActivity({ type, payload }) {
+  return type === UPSERT_ACTIVITY && payload.activity.type === 'typing';
 }
 
 export default function* () {

@@ -31,6 +31,7 @@ export default {
     'Chat',
     'Listening…',
     'retry',
+    // Do not localize {retry}, it is a placeholder for "retry"
     'Send failed, {retry}',
     'Send',
     'Sending',

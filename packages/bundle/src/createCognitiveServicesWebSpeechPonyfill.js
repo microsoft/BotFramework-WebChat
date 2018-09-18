@@ -4,7 +4,7 @@ import {
   SpeechSynthesisUtterance
 } from 'web-speech-cognitive-services';
 
-import createCustomSpeechRecognitionClass from './Util/CustomSpeechRecognition';
+import createCustomSpeechRecognitionClass from './Util/createCustomSpeechRecognition';
 
 export default function (fetchToken) {
   return ({ referenceGrammarId }) => {

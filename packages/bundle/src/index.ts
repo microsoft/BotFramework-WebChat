@@ -10,7 +10,10 @@ import { createAdaptiveCardsAttachmentMiddleware } from 'component';
 const renderWebChat = (props, element) => {
   const attachmentMiddleware = [];
 
-  props.attachmentMiddleware && attachmentMiddleware.push(props.attachmentMiddleware);
+  if (props.attachmentMiddleware) {
+    attachmentMiddleware.push(props.attachmentMiddleware);
+  }
+
   attachmentMiddleware.push(createAdaptiveCardsAttachmentMiddleware());
 
   return coreRenderWebChat(
