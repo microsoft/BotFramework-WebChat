@@ -9,8 +9,9 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "clean": "npm run clean:backend && npm run clean:component",
+    "clean": "npm run clean:backend && npm run clean:bundle && npm run clean:component",
     "clean:backend": "cd packages && cd backend && npm run clean",
+    "clean:bundle": "cd packages && cd bundle && npm run clean",
     "clean:component": "cd packages && cd component && npm run clean",
     "test": "lerna run test",
     "watch": "npx concurrently --names \"backend,bundle,component\" \"npm run watch:backend\" \"npm run watch:bundle\" \"npm run watch:component\"",

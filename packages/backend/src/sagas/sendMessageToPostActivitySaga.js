@@ -5,10 +5,10 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import { SEND_MESSAGE } from '../Actions/sendMessage';
-import postActivity from '../Actions/postActivity';
-import startSpeakingActivity from '../Actions/startSpeakingActivity';
-import stopSpeakingActivity from '../Actions/stopSpeakingActivity';
+import { SEND_MESSAGE } from '../actions/sendMessage';
+import postActivity from '../actions/postActivity';
+import startSpeakingActivity from '../actions/startSpeakingActivity';
+import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 
 export default function* () {
   yield whileConnected(function* () {

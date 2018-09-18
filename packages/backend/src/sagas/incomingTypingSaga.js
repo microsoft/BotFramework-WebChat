@@ -4,8 +4,8 @@ import {
   takeLatest
 } from 'redux-saga/effects';
 
-import deleteActivity from '../Actions/deleteActivity';
-import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
+import deleteActivity from '../actions/deleteActivity';
+import { UPSERT_ACTIVITY } from '../actions/upsertActivity';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

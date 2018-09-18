@@ -1,4 +1,4 @@
-import { SET_SUGGESTED_ACTIONS } from '../Actions/setSuggestedActions';
+import { SET_SUGGESTED_ACTIONS } from '../actions/setSuggestedActions';
 
 const DEFAULT_STATE = [];
 

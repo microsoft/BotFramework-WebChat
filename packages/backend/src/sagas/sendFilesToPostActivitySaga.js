@@ -5,9 +5,9 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import { SEND_FILES } from '../Actions/sendFiles';
-import postActivity from '../Actions/postActivity';
-import stopSpeakingActivity from '../Actions/stopSpeakingActivity';
+import { SEND_FILES } from '../actions/sendFiles';
+import postActivity from '../actions/postActivity';
+import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 
 export default function* () {
   yield whileConnected(function* () {

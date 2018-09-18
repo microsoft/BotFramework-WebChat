@@ -6,9 +6,9 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import { SUBMIT_SEND_BOX } from '../Actions/submitSendBox';
-import sendMessage from '../Actions/sendMessage';
-import setSendBox from '../Actions/setSendBox';
+import { SUBMIT_SEND_BOX } from '../actions/submitSendBox';
+import sendMessage from '../actions/sendMessage';
+import setSendBox from '../actions/setSendBox';
 
 export default function* () {
   yield whileConnected(function* (_, userID) {

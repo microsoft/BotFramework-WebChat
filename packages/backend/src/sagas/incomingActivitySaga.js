@@ -6,8 +6,8 @@ import {
 import observeEach from './effects/observeEach';
 import whileConnected from './effects/whileConnected';
 
-import setSuggestedActions from '../Actions/setSuggestedActions';
-import upsertActivity from '../Actions/upsertActivity';
+import setSuggestedActions from '../actions/setSuggestedActions';
+import upsertActivity from '../actions/upsertActivity';
 
 function last(array, predicate) {
   for (let i = array.length - 1; i >= 0; i--) {

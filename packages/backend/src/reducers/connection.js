@@ -1,6 +1,6 @@
 import updateIn from 'simple-update-in';
 
-import { CONNECTION_STATUS_UPDATE } from '../Actions/connectionStatusUpdate';
+import { CONNECTION_STATUS_UPDATE } from '../actions/connectionStatusUpdate';
 
 const DEFAULT_STATE = {
   readyState: 0

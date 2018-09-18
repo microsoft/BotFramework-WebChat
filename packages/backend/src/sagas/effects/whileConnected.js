@@ -5,8 +5,8 @@ import {
   take
 } from 'redux-saga/effects';
 
-import { CONNECT_FULFILLED } from '../../Actions/connect';
-import { DISCONNECT_FULFILLED } from '../../Actions/disconnect';
+import { CONNECT_FULFILLED } from '../../actions/connect';
+import { DISCONNECT_FULFILLED } from '../../actions/disconnect';
 
 export default function (fn) {
   return call(function* () {

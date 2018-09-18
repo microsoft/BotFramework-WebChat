@@ -17,14 +17,14 @@ import {
   CONNECT_PENDING,
   CONNECT_REJECTED,
   CONNECT_FULFILLED
-} from '../Actions/connect';
+} from '../actions/connect';
 
 import {
   DISCONNECT,
   DISCONNECT_PENDING,
   DISCONNECT_REJECTED,
   DISCONNECT_FULFILLED
-} from '../Actions/disconnect';
+} from '../actions/disconnect';
 
 // const UNINITIALIZED = 0;
 // const CONNECTING = 1;
@@ -51,8 +51,7 @@ function* connectSaga(directLine, userID, username) {
   const connectionStatusQueue = createPromiseQueue();
   const connectionStatusSubscription = directLine.connectionStatus$.subscribe({ next: connectionStatusQueue.push });
 
-  // TODO: DirectLineJS start the connection only after the first subscriber for activity$
-  //       I think it should use connectionStatus$ instead
+  // DirectLineJS start the connection only after the first subscriber for activity$, but not connectionStatus$
   const activitySubscription = directLine.activity$.subscribe({ next: () => 0 });
 
   try {

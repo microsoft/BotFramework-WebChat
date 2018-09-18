@@ -1,6 +1,18 @@
 const { navigator: { userAgent } } = window;
 
-const IE_FOCUSABLE_LIST = ['a', 'body', 'button', 'frame', 'iframe', 'img', 'input', 'isindex', 'object', 'select', 'textarea'];
+const IE_FOCUSABLE_LIST = [
+  'a',
+  'body',
+  'button',
+  'frame',
+  'iframe',
+  'img',
+  'input',
+  'isindex',
+  'object',
+  'select',
+  'textarea'
+];
 
 const IS_FIREFOX = /Firefox\//i.test(userAgent);
 const IS_IE = /Trident\//i.test(userAgent);

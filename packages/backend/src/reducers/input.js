@@ -1,8 +1,8 @@
 import updateIn from 'simple-update-in';
 
-import { SET_SEND_BOX } from '../Actions/setSendBox';
-import { START_SPEECH_INPUT } from '../Actions/startSpeechInput';
-import { STOP_SPEECH_INPUT } from '../Actions/stopSpeechInput';
+import { SET_SEND_BOX } from '../actions/setSendBox';
+import { START_SPEECH_INPUT } from '../actions/startSpeechInput';
+import { STOP_SPEECH_INPUT } from '../actions/stopSpeechInput';
 
 const DEFAULT_STATE = {
   sendBox: '',

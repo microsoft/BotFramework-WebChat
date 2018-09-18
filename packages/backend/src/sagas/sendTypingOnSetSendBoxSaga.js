@@ -9,10 +9,10 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import { SET_SEND_BOX } from '../Actions/setSendBox';
-import { SET_SEND_TYPING } from '../Actions/setSendTyping';
-import postActivity from '../Actions/postActivity';
-import sleep from '../util/sleep';
+import { SET_SEND_BOX } from '../actions/setSendBox';
+import { SET_SEND_TYPING } from '../actions/setSendTyping';
+import postActivity from '../actions/postActivity';
+import sleep from '../utils/sleep';
 
 const SEND_INTERVAL = 3000;
 

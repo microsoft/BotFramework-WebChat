@@ -8,10 +8,10 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import { MARK_ACTIVITY } from '../Actions/markActivity';
-import { START_SPEAKING_ACTIVITY } from '../Actions/startSpeakingActivity';
-import { STOP_SPEAKING_ACTIVITY } from '../Actions/stopSpeakingActivity';
-import startSpeechInput from '../Actions/startSpeechInput';
+import { MARK_ACTIVITY } from '../actions/markActivity';
+import { START_SPEAKING_ACTIVITY } from '../actions/startSpeakingActivity';
+import { STOP_SPEAKING_ACTIVITY } from '../actions/stopSpeakingActivity';
+import startSpeechInput from '../actions/startSpeechInput';
 
 export default function* () {
   yield whileConnected(function* (_, userID) {

@@ -11,18 +11,18 @@ import callWithin from './effects/callWithin';
 import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
 
-import deleteKey from '../util/deleteKey';
-import getTimestamp from '../util/getTimestamp';
-import uniqueID from '../util/uniqueID';
+import deleteKey from '../utils/deleteKey';
+import getTimestamp from '../utils/getTimestamp';
+import uniqueID from '../utils/uniqueID';
 
 import {
   POST_ACTIVITY,
   POST_ACTIVITY_FULFILLED,
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
-} from '../Actions/postActivity';
+} from '../actions/postActivity';
 
-import { UPSERT_ACTIVITY } from '../Actions/upsertActivity';
+import { UPSERT_ACTIVITY } from '../actions/upsertActivity';
 
 const SEND_TIMEOUT = 5000;
 

@@ -1,7 +1,7 @@
 import updateIn from 'simple-update-in';
 
-import { SET_LANGUAGE } from '../Actions/setLanguage';
-import { SET_REFERENCE_GRAMMAR_ID } from '../Actions/setReferenceGrammarId';
+import { SET_LANGUAGE } from '../actions/setLanguage';
+import { SET_REFERENCE_GRAMMAR_ID } from '../actions/setReferenceGrammarId';
 
 const DEFAULT_STATE = {
   language: 'en-US',

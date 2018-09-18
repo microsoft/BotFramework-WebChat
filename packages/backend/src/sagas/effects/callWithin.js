@@ -3,7 +3,7 @@ import {
   race
 } from 'redux-saga/effects';
 
-import sleep from '../../util/sleep';
+import sleep from '../../utils/sleep';
 
 export default function (fn, args, timeout) {
   return call(function* () {

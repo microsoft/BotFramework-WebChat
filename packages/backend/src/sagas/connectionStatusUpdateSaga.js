@@ -5,8 +5,8 @@ import {
 import observeEach from './effects/observeEach';
 import whileConnected from './effects/whileConnected';
 
-import { CONNECTION_STATUS_UPDATE } from '../Actions/connectionStatusUpdate';
-import { SET_REFERENCE_GRAMMAR_ID } from '../Actions/setReferenceGrammarId';
+import { CONNECTION_STATUS_UPDATE } from '../actions/connectionStatusUpdate';
+import { SET_REFERENCE_GRAMMAR_ID } from '../actions/setReferenceGrammarId';
 
 export default function* () {
   yield whileConnected(function* (directLine) {

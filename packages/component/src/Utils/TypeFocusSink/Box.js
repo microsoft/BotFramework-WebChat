@@ -53,15 +53,6 @@ export default class Box extends React.Component {
     ) {
       event.stopPropagation();
 
-      // let key;
-
-      // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
-      //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
-      //         So we are manually appending the key if they can be inputted in the box
-      // if (/(^|\s)Edge\/16\./.test(window.navigator.userAgent)) {
-      //   key = inputtableKey(event.key);
-      // }
-
       this.focus();
     }
   }
