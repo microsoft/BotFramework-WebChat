@@ -28,6 +28,8 @@ export default {
   ...[
     // '[File of type '%1']",
     // '[Unknown Card '%1']',
+    'Adaptive Card parse error',
+    'Adaptive Card render error',
     'Chat',
     'Listening…',
     'retry',

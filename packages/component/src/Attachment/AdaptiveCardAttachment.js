@@ -1,6 +1,8 @@
+import { connect } from 'react-redux';
 import memoize from 'memoize-one';
 import React from 'react';
 
+import { getString } from '../Localization/String';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import Context from '../Context';
 import ErrorBox from '../ErrorBox';
@@ -12,43 +14,35 @@ import {
   ISubmitAction
 } from 'adaptivecards/lib/schema';
 
+import { ValidationError } from 'adaptivecards/lib/enums';
+
+console.warn(ValidationError.Deprecated);
+
 function stripSubmitAction(card) {
   if (!card.actions) {
     return card;
   }
 
-  const nextActions = card.actions.reduce((nextActions, action) => {
-    // Filter out HTTP action buttons
-    switch (action.type) {
-      case 'Action.Submit':
-        break;
-
-      case 'Action.ShowCard':
-        nextActions.push({
-          ...action,
-          card: stripSubmitAction(action.card)
-        });
-
-        break;
-
-      default:
-        nextActions.push(action);
-
-        break;
-    }
-
-    return nextActions;
-  }, []);
+  // Filter out HTTP action buttons
+  const nextActions = card.actions
+    .filter(action => action.type !== 'Action.Submit')
+    .map(action =>
+      action.type === 'Action.ShowCard' ?
+        { ...action, card: stripSubmitAction(action.card) }
+      :
+        action
+    );
 
   return { ...card, nextActions };
 }
 
-export default class extends React.Component {
+class AdaptiveCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
     this.createAdaptiveCard = memoize((adaptiveCards, content, renderMarkdown) => {
       const card = new adaptiveCards.AdaptiveCard();
+      const errors = [];
 
       // TODO: Checks if we could make the "renderMarkdown" per card
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
@@ -56,8 +50,6 @@ export default class extends React.Component {
 
       // TODO: Move from "onParseError" to "card.parse(json, errors)"
       adaptiveCards.AdaptiveCard.onParseError = error => errors.push(error);
-
-      const errors = [];
 
       card.parse(stripSubmitAction({
         version: '1.0',
@@ -85,17 +77,17 @@ export default class extends React.Component {
   }
 
   render() {
-    const { props: { attachment }, state } = this;
+    const { props: { attachment, language }, state } = this;
 
     return (
       <Context.Consumer>
         { ({ adaptiveCards, renderMarkdown }) => {
           const { card, errors } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
-          const allDeprecations = errors.every(({ error }) => error === 3);
+          const allDeprecations = errors.every(({ error }) => error === ValidationError.Deprecated);
 
           return (
             errors.length && !(allDeprecations && state.ignoreDeprecations) ?
-              <ErrorBox message="Adaptive Card parse error">
+              <ErrorBox message={ getString('Adaptive Card parse error', language) }>
                 { allDeprecations &&
                   <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button>
                 }
@@ -110,3 +102,5 @@ export default class extends React.Component {
     );
   }
 }
+
+export default connect(({ settings: { language } }) => ({ language }))(AdaptiveCardAttachment)

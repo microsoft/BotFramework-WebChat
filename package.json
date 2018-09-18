@@ -29,6 +29,6 @@
   },
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat#readme",
   "devDependencies": {
-    "lerna": "^2.11.0"
+    "lerna": "^3.4.0"
   }
 }

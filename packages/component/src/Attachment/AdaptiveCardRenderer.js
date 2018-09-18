@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import React from 'react';
 
 import {
@@ -5,24 +6,27 @@ import {
   SubmitAction
 } from 'adaptivecards';
 
+import { getString } from '../Localization/String';
 import Context from '../Context';
 import ErrorBox from '../ErrorBox';
-
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 
-export default ({ adaptiveCard, tapAction }) =>
-  <Context.Consumer>
-    { ({ adaptiveCardHostConfig, onCardAction, postActivity, styleSet }) =>
-      <AdaptiveCardRenderer
-        adaptiveCard={ adaptiveCard }
-        hostConfig={ adaptiveCardHostConfig }
-        onCardAction={ onCardAction }
-        postActivity={ postActivity }
-        styleSet={ styleSet }
-        tapAction={ tapAction }
-      />
-    }
-  </Context.Consumer>
+export default connect(({ settings: { language } }) => ({ language }))(
+  ({ adaptiveCard, language, tapAction }) =>
+    <Context.Consumer>
+      { ({ adaptiveCardHostConfig, onCardAction, postActivity, styleSet }) =>
+        <AdaptiveCardRenderer
+          adaptiveCard={ adaptiveCard }
+          hostConfig={ adaptiveCardHostConfig }
+          language={ language }
+          onCardAction={ onCardAction }
+          postActivity={ postActivity }
+          styleSet={ styleSet }
+          tapAction={ tapAction }
+        />
+      }
+    </Context.Consumer>
+)
 
 class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
@@ -131,13 +135,13 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   render() {
     const {
-      props: { styleSet },
+      props: { language, styleSet },
       state: { error }
     } = this;
 
     return (
       error ?
-        <ErrorBox message="Adaptive Card render error">
+        <ErrorBox message={ getString('Adaptive Card render error', language) }>
           <pre>{ JSON.stringify(error, null, 2) }</pre>
         </ErrorBox>
       :
