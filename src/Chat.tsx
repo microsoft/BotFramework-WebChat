@@ -214,7 +214,9 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
         
         // FEEDYOU - show typing on startup - if bot.id is set to the same value as value on server, it will be cleared by first message
-        this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: this.props.bot, timestamp: new Date().toISOString()}});
+        if (this.props.bot.id) {
+            this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: {...this.props.bot, name: "Chatbot" }, timestamp: new Date().toISOString()}});
+        }
 
         // FEEDYOU - support "start over" button
         this.props.startOverTrigger && this.props.startOverTrigger(() => {
