@@ -1,9 +1,14 @@
 <p align="center">
-  [![Azure Bot Services logo](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/abs-logo.png)](https://azure.microsoft.com/en-us/services/bot-service/)
+  <a href="https://azure.microsoft.com/en-us/services/bot-service/">
+    <img src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/abs-logo.png" alt="Azure Bot Services logo" width="240" />
+  </a>
+</p>
 
-  A web-based client for Azure Bot Services.
+<p align="center">A highly-customizable web-based client for Azure Bot Services.</p>
 
-  [![npm version](https://badge.fury.io/js/botframework-webchat.svg)](https://badge.fury.io/js/botframework-webchat) [![Build Status](https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master)](https://travis-ci.org/Microsoft/BotFramework-WebChat)
+<p align="center">
+  <a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
+  <a href="https://travis-ci.org/Microsoft/BotFramework-WebChat"><img alt="Build Status" src="https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=v4" /></a>
 </p>
 
 # About
