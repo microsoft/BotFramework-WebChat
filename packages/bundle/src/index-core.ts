@@ -1,5 +1,5 @@
-import { createStore } from 'backend';
-import ReactWebChat, { concatMiddleware, Context } from 'component';
+import { createStore } from 'botframework-webchat-core';
+import ReactWebChat, { concatMiddleware, Context } from 'botframework-webchat-component';
 
 import createDirectLine from './createDirectLine';
 import coreRenderWebChat from './renderWebChat';

@@ -1,5 +1,5 @@
 import React from 'react';
-import BasicWebChat, { adaptiveCardsAttachmentMiddleware, concatMiddleware } from 'component';
+import BasicWebChat, { adaptiveCardsAttachmentMiddleware, concatMiddleware } from 'botframework-webchat-component';
 import memoize from 'memoize-one';
 
 import renderMarkdown from './renderMarkdown';

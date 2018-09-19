@@ -1,30 +1,22 @@
 import {
   put,
+  race,
   select,
   take
 } from 'redux-saga/effects';
 
 import whileConnected from './effects/whileConnected';
 
-import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
-import { SET_SEND_BOX } from '../actions/setSendBox';
-import { START_SPEECH_INPUT } from '../actions/startSpeechInput';
-import markActivity from '../actions/markActivity';
-import stopSpeakingActivity from '../actions/stopSpeakingActivity';
+import markActivity from '../Actions/markActivity';
+import stopSpeakingActivity from '../Actions/stopSpeakingActivity';
+import { SET_SEND_BOX } from '../Actions/setSendBox';
+import { START_SPEECH_INPUT } from '../Actions/startSpeechInput';
 
 export default function* () {
   yield whileConnected(function* () {
     for (;;) {
-      yield take(
-        ({ payload, type }) => type === START_SPEECH_INPUT
-        || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech')
-
-        // We want to stop speaking activity when the user click on a card action
-        // But currently there are no actions generated out of a card action
-        // So, right now, we are using best-effort by listening to POST_ACTIVITY_PENDING with a "message" event
-        || (type === POST_ACTIVITY_PENDING && payload.activity.type === 'message')
-      );
-
+      // TODO: Also stop on card actions
+      yield take(({ payload, type }) => type === START_SPEECH_INPUT || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech'));
       yield put(stopSpeakingActivity());
 
       const activities = yield select(({ activities }) => activities);
