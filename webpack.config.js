@@ -20,9 +20,6 @@ const tsLintOptions = {
     // uses tsconfig.json from current working directory
     typeCheck: false,
 
-    // automatically fix linting errors
-    fix: true,
-
     // can specify a custom tsconfig file relative to current directory or with absolute path
     // to be used with type checked rules
     tsConfigFile: 'tsconfig.json',

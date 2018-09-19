@@ -212,15 +212,6 @@
         }
     }
 
-    .wc-buttonless {
-        background-color: transparent;
-        border: 1px solid transparent;
-        box-sizing: border-box;
-        text-align: left;
-        width: 100%;
-        margin-top: 1px;
-    }
-
     .wc-message {
         position: relative;
     }
@@ -231,7 +222,13 @@
     }
 
     .wc-message-wrapper.clickable {
+        background-color: transparent;
+        border: 1px solid transparent;
+        box-sizing: border-box;
         cursor: pointer;
+        text-align: left;
+        width: 100%;
+        margin-top: 1px;
     }
 
     .wc-message svg.wc-message-callout {
