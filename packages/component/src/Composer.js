@@ -246,7 +246,7 @@ class Composer extends React.Component {
         children,
         collapseTimestamp,
 
-        // TODO: [P1] Add disable interactivity
+        // TODO: [P2] Add disable interactivity
         disabled,
 
         enableSpeech,
