@@ -869,15 +869,22 @@ var commands_map: CommandValuesMap = {
             return result;
         }
     },
-    'selectable': {
+    'selectable by click': {
         urlAppend: { selectable: true },
+        do: function (nightmare) {
+            nightmare.click('.wc-message-wrapper');
+        },
         client: async function () {
-            const firstMessageWrapper = document.querySelector('.wc-message-wrapper') as HTMLElement;
-
-            firstMessageWrapper.click();
-            firstMessageWrapper.focus();
-
-            return (document.querySelector(':focus .wc-message-content') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
+            return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
+        }
+    },
+    'selectable by tab': {
+        urlAppend: { selectable: true },
+        do: function (nightmare) {
+            nightmare.type('.wc-message-wrapper', ' ');
+        },
+        client: async function () {
+            return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
         }
     }
     /*
