@@ -1,7 +1,7 @@
 import createFacility from '../createFacility';
 
 import { POST_ACTIVITY, POST_ACTIVITY_REJECTED } from '../../src/actions/postActivity';
-import * as SendState from '../../src/constants/SendState';
+import * as ActivityClientState from '../../src/constants/ActivityClientState';
 
 test('Post activity failed', async () => {
   const { actions, directLine, latestActions, store } = await createFacility();
@@ -22,7 +22,7 @@ test('Post activity failed', async () => {
   await 0;
   expect(directLine.pendingPosts.map(post => post.peek())).toMatchSnapshot('pending to send: activity');
   expect(store.getState().activities).toMatchSnapshot('pending to send: store');
-  expect(store.getState().activities[0]).toHaveProperty('channelData.state', SendState.SENDING);
+  expect(store.getState().activities[0]).toHaveProperty('channelData.state', ActivityClientState.SENDING);
   expect(store.getState().activities[0]).not.toHaveProperty('id');
 
   directLine.pendingPosts[0].error('some error');
@@ -33,6 +33,6 @@ test('Post activity failed', async () => {
 
   expect(latestActions[POST_ACTIVITY_REJECTED]).toHaveProperty('error', true);
   expect(latestActions[POST_ACTIVITY_REJECTED]).toHaveProperty('payload', 'some error');
-  expect(store.getState().activities[0]).toHaveProperty('channelData.state', SendState.SEND_FAILED);
+  expect(store.getState().activities[0]).toHaveProperty('channelData.state', ActivityClientState.SEND_FAILED);
   expect(store.getState().activities[0]).not.toHaveProperty('id');
 });

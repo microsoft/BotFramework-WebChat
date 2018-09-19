@@ -11,4 +11,3 @@ export default ({ activity: { timestamp } }) =>
       </span>
     }
   </Context.Consumer>
-)

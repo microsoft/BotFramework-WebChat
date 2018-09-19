@@ -6,7 +6,7 @@ import { Constants } from 'backend';
 import String, { getString } from '../Localization/String';
 import Context from '../Context';
 
-const { SendState: { SEND_FAILED, SENDING } } = Constants;
+const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 
 // TODO: We could refactor this into a general component
 function sendFailed(language, replace) {

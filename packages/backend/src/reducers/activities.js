@@ -10,7 +10,7 @@ import {
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
 
-import { SEND_FAILED, SENDING, SENT } from '../constants/SendState';
+import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
 
 const DEFAULT_STATE = [];
 

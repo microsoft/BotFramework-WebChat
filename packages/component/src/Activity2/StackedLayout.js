@@ -12,7 +12,7 @@ import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
-const { SendState: { SENDING, SEND_FAILED } } = Constants;
+const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -62,8 +62,10 @@ const StackedLayout = ({
   userAvatarInitials,
 }) => {
   const initials = activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials;
-  const { sendState } = activity.channelData || {};
-  const showSendStatus = sendState === SENDING || sendState === SEND_FAILED;
+  const { state } = activity.channelData || {};
+  const showSendStatus = state === SENDING || state === SEND_FAILED;
+
+  console.warn(`showSendStatus: ${ state }, ${ showSendStatus }`);
 
   return (
     <div className={ classNames(

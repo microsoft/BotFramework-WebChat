@@ -7,8 +7,8 @@ export default function (observable) {
     let subscription;
 
     try {
-      return yield call(() => new Promise(resolve => {
-        observable.subscribe({ next: resolve });
+      return yield call(() => new Promise((resolve, reject) => {
+        observable.subscribe(resolve, reject);
       }));
     } finally {
       subscription && subscription.unsubscribe();

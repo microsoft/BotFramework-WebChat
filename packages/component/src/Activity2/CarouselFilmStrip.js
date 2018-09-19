@@ -13,7 +13,7 @@ import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
-const { SendState: { SENDING, SEND_FAILED } } = Constants;
+const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -122,8 +122,8 @@ const CarouselFilmStrip = ({
           (
             activity.channelData
             && (
-              activity.channelData.sendState === SENDING
-              || activity.channelData.sendState === SEND_FAILED
+              activity.channelData.state === SENDING
+              || activity.channelData.state === SEND_FAILED
             )
           ) ?
             <SendStatus activity={ activity } />
