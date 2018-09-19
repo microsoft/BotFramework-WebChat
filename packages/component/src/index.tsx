@@ -1,17 +1,19 @@
 import BasicWebChat from './BasicWebChat';
 
+import Context from './Context';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/adaptiveCard';
 import createCoreActivityMiddleware from './Middleware/Activity/core';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
-import createDebugAttachmentMiddleware from './Middleware/Attachment/debug';
+import ErrorBox from './ErrorBox';
 
 export default BasicWebChat
 
 export {
+  Context,
   createAdaptiveCardsAttachmentMiddleware,
   createCoreActivityMiddleware,
   createCoreAttachmentMiddleware,
-  createDebugAttachmentMiddleware
+  ErrorBox
 }
 
 try {

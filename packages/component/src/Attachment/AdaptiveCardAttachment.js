@@ -1,11 +1,8 @@
-import { connect } from 'react-redux';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import { getString } from '../Localization/String';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import Context from '../Context';
-import ErrorBox from '../ErrorBox';
 
 import {
   IAdaptiveCard,
@@ -13,8 +10,6 @@ import {
   IShowCardAction,
   ISubmitAction
 } from 'adaptivecards/lib/schema';
-
-import { ValidationError } from 'adaptivecards/lib/enums';
 
 function stripSubmitAction(card) {
   if (!card.actions) {
@@ -34,7 +29,7 @@ function stripSubmitAction(card) {
   return { ...card, nextActions };
 }
 
-class AdaptiveCardAttachment extends React.Component {
+export default class AdaptiveCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
@@ -61,38 +56,18 @@ class AdaptiveCardAttachment extends React.Component {
         errors
       };
     });
-
-    this.handleIgnoreDeprecationClick = this.handleIgnoreDeprecationClick.bind(this);
-
-    this.state = {
-      ignoreDeprecations: false
-    };
-  }
-
-  handleIgnoreDeprecationClick() {
-    // TODO: We need to find a way to only show deprecations in dev mode
-    this.setState(() => ({ ignoreDeprecations: true }));
   }
 
   render() {
-    const { props: { attachment, language }, state } = this;
+    const { props: { attachment } } = this;
 
     return (
       <Context.Consumer>
         { ({ adaptiveCards, renderMarkdown }) => {
-          const { card, errors } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
-          const allDeprecations = errors.every(({ error }) => error === ValidationError.Deprecated);
+          const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
 
           return (
-            errors.length && !(allDeprecations && state.ignoreDeprecations) ?
-              <ErrorBox message={ getString('Adaptive Card parse error', language) }>
-                { allDeprecations &&
-                  <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button>
-                }
-                <pre>{ JSON.stringify(errors, null, 2) }</pre>
-              </ErrorBox>
-            :
-              <AdaptiveCardRenderer adaptiveCard={ card } />
+            <AdaptiveCardRenderer adaptiveCard={ card } />
           );
         }
       }
@@ -100,5 +75,3 @@ class AdaptiveCardAttachment extends React.Component {
     );
   }
 }
-
-export default connect(({ settings: { language } }) => ({ language }))(AdaptiveCardAttachment)

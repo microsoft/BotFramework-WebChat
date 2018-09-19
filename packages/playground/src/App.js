@@ -2,8 +2,7 @@ import { css } from 'glamor';
 import React from 'react';
 
 import BasicWebChat, {
-  createAdaptiveCardsAttachmentMiddleware,
-  createDebugAttachmentMiddleware
+  createAdaptiveCardsAttachmentMiddleware
 } from 'component';
 
 import {
@@ -12,6 +11,8 @@ import {
   createDirectLine,
   renderMarkdown
 } from 'bundle';
+
+import createDevModeMiddleware from './createDevModeMiddleware';
 
 css.global('body', {
   backgroundColor: '#EEE'
@@ -67,8 +68,8 @@ export default class extends React.Component {
 
     this.mainRef = React.createRef();
     this.attachmentMiddleware = [
-      createAdaptiveCardsAttachmentMiddleware(),
-      createDebugAttachmentMiddleware()
+      createDevModeMiddleware().attachment,
+      createAdaptiveCardsAttachmentMiddleware()
     ];
 
     const params = new URLSearchParams(window.location.search);
