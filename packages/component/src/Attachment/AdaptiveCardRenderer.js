@@ -6,7 +6,7 @@ import {
   SubmitAction
 } from 'adaptivecards';
 
-import { getString } from '../Localization/String';
+import { localize } from '../Localization/Localize';
 import Context from '../Context';
 import ErrorBox from '../ErrorBox';
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
@@ -141,7 +141,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
     return (
       error ?
-        <ErrorBox message={ getString('Adaptive Card render error', language) }>
+        <ErrorBox message={ localize('Adaptive Card render error', language) }>
           <pre>{ JSON.stringify(error, null, 2) }</pre>
         </ErrorBox>
       :

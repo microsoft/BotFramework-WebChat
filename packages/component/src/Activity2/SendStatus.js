@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import String, { getString } from '../Localization/String';
+import Localize, { localize } from '../Localization/Localize';
 import Context from '../Context';
 
 const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
@@ -11,8 +11,8 @@ const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 // TODO: [P4] Currently, this is the only place which use a templated string
 //       We could refactor this into a general component if there are more templated strings
 function sendFailed(language, replace) {
-  const text = getString('Send failed, {retry}', language);
-  const retry = getString('retry', language);
+  const text = localize('Send failed, {retry}', language);
+  const retry = localize('retry', language);
   const match = /\{retry\}/.exec(text);
 
   if (match) {
@@ -56,7 +56,7 @@ class SendStatus extends React.Component {
       <span className={ styleSet.sendStatus }>
         {
           state === SENDING ?
-            <String text="Sending" />
+            <Localize text="Sending" />
           : state === SEND_FAILED ?
             sendFailed(language, retry => <button onClick={ this.handleRetryClick } type="button">{ retry }</button>)
           :

@@ -3,7 +3,7 @@ import memoize from 'memoize-one';
 import React from 'react';
 
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
-import { getString } from '../Localization/String';
+import { localize } from '../Localization/Localize';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import Context from '../Context';
 
@@ -50,21 +50,21 @@ class ReceiptCardAttachment extends React.Component {
       if (!nullOrUndefined(content.vat)) {
         const vatCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(getString('VAT', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
+        builder.addTextBlock(localize('VAT', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
         builder.addTextBlock(content.vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
       }
 
       if (!nullOrUndefined(content.tax)) {
         const taxCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(getString('Tax', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
+        builder.addTextBlock(localize('Tax', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
         builder.addTextBlock(content.tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
       }
 
       if (!nullOrUndefined(content.total)) {
         const totalCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(getString('Total', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
+        builder.addTextBlock(localize('Total', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
         builder.addTextBlock(content.total, { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[1]);
       }
 

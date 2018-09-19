@@ -17,7 +17,7 @@ function getStrings(language) {
   }
 }
 
-function getString(text, language, args) {
+function localize(text, language, args) {
   const string = (getStrings(language) || {})[text] || enUS[text];
 
   if (typeof string === 'function') {
@@ -27,11 +27,13 @@ function getString(text, language, args) {
   }
 }
 
-const String = ({ args, language, text }) => getString(text, language, args);
+export default connect(
+  ({ settings: { language } }) => ({ language })
+)(
+  ({ args, language, text }) => localize(text, language, args)
+)
 
-export default connect(({ settings: { language } }) => ({ language }))(String)
-
-export { getString }
+export { localize }
 
 function normalizeLanguage(language) {
   language = language.toLowerCase();

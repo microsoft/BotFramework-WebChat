@@ -6,7 +6,7 @@ import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import Context from '../Context';
-import { getString } from '../Localization/String';
+import { localize } from '../Localization/Localize';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -64,7 +64,7 @@ class TextBoxWithSpeech extends React.Component {
               <input
                 disabled={ props.disabled }
                 onChange={ this.handleChange }
-                placeholder={ getString('Type your message', props.language) }
+                placeholder={ localize('Type your message', props.language) }
                 ref={ sendFocusRef }
                 type="text"
                 value={ props.sendBox }

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
-import { getString } from '../Localization/String';
+import { localize } from '../Localization/Localize';
 import Timer from './Timer';
 
 function nextTimer(date) {
@@ -38,7 +38,7 @@ class TimeAgo extends React.Component {
 
   getStateFromProps(props) {
     return {
-      text: getString('X minutes ago', props.language, props.value),
+      text: localize('X minutes ago', props.language, props.value),
       timer: nextTimer(props.value)
     };
   }
