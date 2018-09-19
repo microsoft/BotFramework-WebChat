@@ -298,18 +298,18 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
 
         const who = this.props.fromMe ? 'me' : 'bot';
 
-        const wrapperClassName = classList(
+        let wrapperClassName = classList(
             'wc-message-wrapper',
             (this.props.activity as Message).attachmentLayout || 'list',
             this.props.onClickActivity && 'clickable'
         );
 
-        let contentClassName = classList(
+        const contentClassName = classList(
             'wc-message-content',
             this.props.selected && 'selected'
         );
         if (this.props.onClickActivity) {
-            contentClassName += (' buttonless');
+            wrapperClassName += (' wc-buttonless');
         }
 
         return (
