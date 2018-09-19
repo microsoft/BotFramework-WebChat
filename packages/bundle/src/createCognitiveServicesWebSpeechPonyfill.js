@@ -8,7 +8,7 @@ import createCustomSpeechRecognitionClass from './createCustomSpeechRecognition'
 
 export default function (fetchToken) {
   return ({ referenceGrammarId }) => {
-    // TODO: Renew token as needed
+    // TODO: [P1] Renew token as needed
     const speechToken = {
       authorized: fetchToken
     };

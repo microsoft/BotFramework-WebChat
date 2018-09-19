@@ -68,8 +68,9 @@ function* connectSaga(directLine, userID, username) {
 
     yield forever();
   } finally {
-    // TODO: DirectLineJS should kill the connection when we unsubscribe
-    //       But currently, we need to call "end()" explicitly
+    // TODO: [P2] DirectLineJS should kill the connection when we unsubscribe
+    //       But currently in v3, DirectLineJS does not have this functionality
+    //       Thus, we need to call "end()" explicitly
     directLine.end();
     activitySubscription.unsubscribe();
     connectionStatusSubscription.unsubscribe();

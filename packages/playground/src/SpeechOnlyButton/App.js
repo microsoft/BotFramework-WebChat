@@ -136,7 +136,7 @@ class App extends React.Component {
       speechSynthesisUtterance: speechKey ? CognitiveServices.SpeechSynthesisUtterance : (window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance),
       spoken: false,
       typeMessage: '',
-      // TODO: Fix this
+      // TODO: [P3] Don't hardcode this
       voice: { voiceURI: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)' }
     };
   }

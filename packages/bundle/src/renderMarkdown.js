@@ -8,7 +8,8 @@ const customMarkdownIt = new MarkdownIt({
   typographer: true,
   xhtmlOut: true
 }).use(iterator, 'url_new_win', 'link_open', (tokens, index) => {
-  // TODO: Refactor this code
+  // TODO: [P4] This is copied from v3 and looks clunky
+  //       We should refactor this code
   const targetAttrIndex = tokens[index].attrIndex('target');
 
   if (~targetAttrIndex) {

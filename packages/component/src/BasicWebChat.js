@@ -104,7 +104,7 @@ export default class extends React.Component {
   render() {
     const { props } = this;
 
-    // TODO: Implement "scrollToBottom" feature
+    // TODO: [P2] Implement "scrollToBottom" feature
 
     return (
       <Composer

@@ -38,9 +38,9 @@ class UploadAttachmentButton extends React.Component {
     if (files && files.length) {
       const { current } = this.inputRef;
 
-      // TODO: We need to find revokeObjectURL on the UI side
+      // TODO: [P3] We need to find revokeObjectURL on the UI side
       //       Redux store should not know about the browser environment
-      //       One fix is to use ArrayBuffer instead of object URL
+      //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
       this.props.sendFiles([].map.call(files, file => ({
         name: file.name,
         size: file.size,

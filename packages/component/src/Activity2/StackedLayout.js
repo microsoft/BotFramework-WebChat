@@ -65,8 +65,6 @@ const StackedLayout = ({
   const { state } = activity.channelData || {};
   const showSendStatus = state === SENDING || state === SEND_FAILED;
 
-  console.warn(`showSendStatus: ${ state }, ${ showSendStatus }`);
-
   return (
     <div className={ classNames(
       ROOT_CSS + '',

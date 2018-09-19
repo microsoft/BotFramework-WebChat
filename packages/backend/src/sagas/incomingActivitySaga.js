@@ -36,14 +36,10 @@ export default function* () {
       yield put(upsertActivity(activity));
 
       // Update suggested actions
-
       const activities = yield select(({ activities }) => activities);
       const lastMessageActivity = last(activities, ({ type }) => type === 'message');
 
-      // TODO: Optimize by not sending redundant setSuggestedActions
-      if (lastMessageActivity.from.id === userID) {
-        yield put(setSuggestedActions());
-      } else {
+      if (lastMessageActivity.from.role === 'bot') {
         const { suggestedActions: { actions } = {} } = lastMessageActivity;
 
         yield put(setSuggestedActions(actions));

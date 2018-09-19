@@ -7,7 +7,7 @@ import TextAttachment from '../../Attachment/TextAttachment';
 import TypingActivity from '../../Attachment/TypingActivity';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
-// TODO: Rename this file or the whole middleware, it looks either too simple or too comprehensive now
+// TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function () {
   return () => next => ({ activity, attachment }) =>
     activity.type === 'typing' ?

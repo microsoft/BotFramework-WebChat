@@ -62,7 +62,8 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
 
   if (!numActivitiesPosted) {
     activity.entities = [...activity.entities || [], {
-      // TODO: Clean up the capabilities
+      // TODO: [P4] Currently in v3, we send the capabilities although the client might not actually have them
+      //       We need to understand why we need to send these, and only send capabilities the client have
       requiresBotState: true,
       supportsListening: true,
       supportsTts: true,

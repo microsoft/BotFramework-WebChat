@@ -122,7 +122,7 @@ class MicrophoneButton extends React.Component {
       state: { interims, readyState }
     } = this;
 
-    // TODO: After speech started, when clicking on the transcript, it should
+    // TODO: [P3] After speech started, when clicking on the transcript, it should
     //       stop the dictation and allow the user to type-correct the transcript
 
     return (

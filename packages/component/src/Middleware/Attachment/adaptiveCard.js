@@ -10,7 +10,7 @@ import SignInCardAttachment from '../../Attachment/SignInCardAttachment';
 import ThumbnailCardAttachment from '../../Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from '../../Attachment/VideoCardAttachment';
 
-// TODO: Rename this file or the whole middleware, it looks either too simple or too comprehensive now
+// TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function () {
   return () => next => ({ activity, attachment }) =>
     attachment.contentType === 'application/vnd.microsoft.card.hero' ?

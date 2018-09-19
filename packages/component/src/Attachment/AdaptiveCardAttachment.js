@@ -37,11 +37,12 @@ export default class AdaptiveCardAttachment extends React.Component {
       const card = new adaptiveCards.AdaptiveCard();
       const errors = [];
 
-      // TODO: Checks if we could make the "renderMarkdown" per card
+      // TODO: [P3] Checks if we could make the "renderMarkdown" per card
+      //       This could be limitations from Adaptive Cards package
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
       adaptiveCards.AdaptiveCard.processMarkdown = renderMarkdown || (text => text);
 
-      // TODO: Move from "onParseError" to "card.parse(json, errors)"
+      // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
       adaptiveCards.AdaptiveCard.onParseError = error => errors.push(error);
 
       card.parse(stripSubmitAction({

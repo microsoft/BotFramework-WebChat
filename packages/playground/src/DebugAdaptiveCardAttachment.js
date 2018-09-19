@@ -13,7 +13,7 @@ export default class DebugAdaptiveCardAttachment extends React.Component {
       const card = new AdaptiveCard();
       const errors = [];
 
-      // TODO: Move from "onParseError" to "card.parse(json, errors)"
+      // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
       AdaptiveCard.onParseError = error => errors.push(error);
 
       card.parse({

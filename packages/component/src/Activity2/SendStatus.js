@@ -8,7 +8,8 @@ import Context from '../Context';
 
 const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 
-// TODO: We could refactor this into a general component
+// TODO: [P4] Currently, this is the only place which use a templated string
+//       We could refactor this into a general component if there are more templated strings
 function sendFailed(language, replace) {
   const text = getString('Send failed, {retry}', language);
   const retry = getString('retry', language);

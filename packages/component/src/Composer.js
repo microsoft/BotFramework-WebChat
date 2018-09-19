@@ -55,19 +55,15 @@ function createLogic(props) {
   // - User ID changed, cuasing all send* functions to be updated
   // - send
 
-  // TODO: We should break this into smaller pieces using memoization function, so we don't recreate styleSet if userID is changed
+  // TODO: [P4] We should break this into smaller pieces using memoization function, so we don't recreate styleSet if userID is changed
 
-  // TODO: We should think about if we allow the user to change onSendBoxValueChanged/sendBoxValue, e.g.
+  // TODO: [P3] We should think about if we allow the user to change onSendBoxValueChanged/sendBoxValue, e.g.
   // 1. Turns text into UPPERCASE
   // 2. Filter out profanity
-
-  // TODO: Give warnings if we are creating logic more often than we should
 
   const directLine = props.directLine;
   const lang = props.lang || window.navigator.userLanguage || window.navigator.language || 'en-US';
   const styleSet = styleSetToClassNames(props.styleSet || createStyleSet(props.styleOptions));
-
-  // TODO: We should normalize props (fill-in-the-blank) before hitting this line
   const userID = props.userID || DEFAULT_USER_ID;
 
   const focusSendBox = props.focusSendBox || (() => {
@@ -80,7 +76,7 @@ function createLogic(props) {
     switch (type) {
       case 'imBack':
         if (typeof value === 'string') {
-          // TODO: We should move to Redux action dispatchers instead
+          // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
           props.dispatch(postActivity({
             from: {
               id: userID,
@@ -113,12 +109,13 @@ function createLogic(props) {
       case 'playAudio':
       case 'playVideo':
       case 'showImage':
-        // TODO: We should support ponyfill for window.open
+        // TODO: [P3] We should support ponyfill for window.open
+        //       This is as-of v3
         window.open(value);
         break;
 
       case 'signin':
-        // TODO: We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
+        // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
         //       This is to eliminate the delay between window.open() and location.href call
 
         const popup = window.open();
@@ -131,7 +128,8 @@ function createLogic(props) {
             //       Need to wait some short time here to make sure the subscription variable has setup
             setImmediate(() => subscription.unsubscribe());
           }, error => {
-            // TODO: Let the user know something failed and we cannot proceed
+            // TODO: [P3] Let the user know something failed and we cannot proceed
+            //       This is as-of v3 now
             console.error(error);
           });
         } else {
@@ -146,7 +144,7 @@ function createLogic(props) {
     }
   });
 
-  // TODO: Revisit all members of context
+  // TODO: [P4] Revisit all members of context
   return {
     ...props,
 
@@ -216,7 +214,7 @@ class Composer extends React.Component {
       || prevProps.userID !== userID
       || prevProps.username !== username
     ) {
-      // TODO: disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+      // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
       props.dispatch(disconnect());
       props.dispatch(createConnectAction({
         directLine,
@@ -248,7 +246,7 @@ class Composer extends React.Component {
         children,
         collapseTimestamp,
 
-        // TODO: Add disable interactivity
+        // TODO: [P2] Add disable interactivity
         disabled,
 
         enableSpeech,
@@ -267,7 +265,7 @@ class Composer extends React.Component {
     const context = this.mergeContext(
       contextFromProps,
       state.context,
-      // TODO: Should we normalize empties here? Or should we let it thru?
+      // TODO: [P4] Should we normalize empties here? Or should we let it thru?
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
         activityRenderer,
@@ -286,7 +284,7 @@ class Composer extends React.Component {
       }
     );
 
-    // TODO: Check how many times we do re-render context
+    // TODO: [P3] Check how many times we do re-render context
 
     return (
       <Context.Provider value={ context }>
@@ -301,7 +299,7 @@ class Composer extends React.Component {
   }
 }
 
-// TODO: Should we hide the knowledge of Redux?
+// TODO: [P3] Should we hide the knowledge of Redux?
 //       Everyone under this DOM tree should need access to Redux connect or dispatchers
 //       All the features should be accessible via Context/Composer
 export default connect(({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }))(Composer)

@@ -5,7 +5,7 @@ import Say from 'react-say';
 
 import Context from '../Context';
 
-// TODO: Consider moving this feature into BasicActivity
+// TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
 class SpeakActivity extends React.Component {
   constructor(props) {
