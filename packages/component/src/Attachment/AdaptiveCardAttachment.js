@@ -16,8 +16,6 @@ import {
 
 import { ValidationError } from 'adaptivecards/lib/enums';
 
-console.warn(ValidationError.Deprecated);
-
 function stripSubmitAction(card) {
   if (!card.actions) {
     return card;
