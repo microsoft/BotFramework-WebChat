@@ -1,9 +1,9 @@
 import { Provider } from 'react-redux';
-import BasicWebChat from 'component';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { createStore } from 'backend';
+import { createStore } from 'botframework-webchat-core';
+import BasicWebChat from 'botframework-webchat-component';
 import renderMarkdown from './renderMarkdown';
 
 export default function (props, element) {

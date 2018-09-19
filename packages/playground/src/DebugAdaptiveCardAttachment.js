@@ -3,7 +3,7 @@ import { ValidationError } from 'adaptivecards/lib/enums';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import { ErrorBox } from 'component';
+import { ErrorBox } from 'botframework-webchat-component';
 
 export default class DebugAdaptiveCardAttachment extends React.Component {
   constructor(props) {

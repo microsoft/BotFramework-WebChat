@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
-import { Constants } from 'backend';
+import { Constants } from 'botframework-webchat-core';
 
 import String, { getString } from '../Localization/String';
 import Context from '../Context';

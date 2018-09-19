@@ -19,7 +19,7 @@ import {
   stopSpeakingActivity,
   stopSpeechInput,
   submitSendBox
-} from 'backend';
+} from 'botframework-webchat-core';
 
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';

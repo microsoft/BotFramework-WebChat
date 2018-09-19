@@ -4,7 +4,7 @@ import FormData from 'form-data';
 import program from 'commander';
 import readline from 'readline';
 
-import { createStore, postActivity, startConnection } from 'backend';
+import { createStore, postActivity, startConnection } from 'botframework-webchat-core';
 import { DirectLine } from './directLine';
 
 config();

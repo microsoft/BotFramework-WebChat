@@ -1,4 +1,4 @@
-import { createStore, connect as createConnectAction } from 'backend';
+import { createStore, connect as createConnectAction } from 'botframework-webchat-core';
 import { DirectLine } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
 import React from 'react';

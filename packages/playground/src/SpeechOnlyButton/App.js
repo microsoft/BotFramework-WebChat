@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { css } from 'glamor';
-import { postActivity } from 'backend';
+import { postActivity } from 'botframework-webchat-core';
 import * as CognitiveServices from 'web-speech-cognitive-services';
 import classNames from 'classnames';
 import DictateButton from 'react-dictate-button';

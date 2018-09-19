@@ -3,13 +3,13 @@ import React from 'react';
 
 import BasicWebChat, {
   createAdaptiveCardsAttachmentMiddleware
-} from 'component';
+} from 'botframework-webchat-component';
 
 import {
   createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
   renderMarkdown
-} from 'bundle';
+} from 'botframework-webchat';
 
 import createDevModeMiddleware from './createDevModeMiddleware';
 import createFaultyDirectLine from './createFaultyDirectLine';

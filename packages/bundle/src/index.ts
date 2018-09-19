@@ -4,7 +4,7 @@ import coreRenderWebChat from './index-core';
 import createCognitiveServicesWebSpeechPonyfill from './createCognitiveServicesWebSpeechPonyfill';
 import createBrowserWebSpeechPonyfill from './createBrowserWebSpeechPonyfill';
 import renderMarkdown from './renderMarkdown';
-import { createAdaptiveCardsAttachmentMiddleware } from 'component';
+import { createAdaptiveCardsAttachmentMiddleware } from 'botframework-webchat-component';
 
 // Add additional props to <WebChat>, so it support additional features
 const renderWebChat = (props, element) => {
