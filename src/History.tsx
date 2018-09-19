@@ -312,19 +312,6 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             contentClassName += (' buttonless');
         }
 
-        const wcMessageContent = [
-            <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                <div className={ contentClassName }>
-                    <svg className="wc-message-callout">
-                        <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                        <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                    </svg>
-                        { this.props.children }
-                </div>
-            </div>,
-            <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
-        ];
-
         return (
                 React.createElement(
                     this.props.onClickActivity ? 'button' : 'div',
@@ -333,7 +320,18 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         'className': wrapperClassName,
                         'onClick': this.props.onClickActivity
                     },
-                    ...wcMessageContent
+                    [
+                        <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
+                            <div className={ contentClassName }>
+                                <svg className="wc-message-callout">
+                                    <path className="point-left" d="m0,6 l6 6 v-12 z" />
+                                    <path className="point-right" d="m6,6 l-6 6 v-12 z" />
+                                </svg>
+                                    { this.props.children }
+                            </div>
+                        </div>,
+                        <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                    ]
                 )
         );
     }
