@@ -8,11 +8,11 @@ import BasicWebChat, {
 import {
   createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
-  createDirectLine,
   renderMarkdown
 } from 'bundle';
 
 import createDevModeMiddleware from './createDevModeMiddleware';
+import createFaultyDirectLine from './createFaultyDirectLine';
 
 css.global('body', {
   backgroundColor: '#EEE'
@@ -60,6 +60,7 @@ export default class extends React.Component {
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
     this.handleCollapseTimestampChange = this.handleCollapseTimestampChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
+    this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSendTypingChange = this.handleSendTypingChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
@@ -89,12 +90,13 @@ export default class extends React.Component {
     this.state = {
       botAvatarInitials: 'BF',
       collapseTimestamp: window.sessionStorage.getItem('PLAYGROUND_COLLAPSE_TIMESTAMP'),
-      directLine: createDirectLine({
+      directLine: createFaultyDirectLine({
         domain,
         fetch,
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
       }),
+      faulty: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
       sendTyping: true,
       userAvatarInitials: 'WC'
@@ -125,6 +127,15 @@ export default class extends React.Component {
     this.setState(() => ({ language: value }), () => {
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value)
     });
+  }
+
+  handleReliabilityChange({ target: { checked } }) {
+    this.setState(
+      () => ({ faulty: !checked }),
+      () => {
+        this.state.directLine.setFaulty(this.state.faulty);
+      }
+    );
   }
 
   handleResetClick() {
@@ -212,7 +223,11 @@ export default class extends React.Component {
           </button>
           <div>
             <label>
-              <input checked={ true } disabled={ true } type="checkbox" />
+              <input
+                checked={ !state.faulty }
+                onChange={ this.handleReliabilityChange }
+                type="checkbox"
+              />
               Reliable connection
             </label>
           </div>
