@@ -14,6 +14,7 @@ import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createRootStyle from './StyleSet/Root';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
+import createSendStatusStyle from './StyleSet/SendStatus';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
@@ -54,6 +55,7 @@ export default function createStyleSet(options = defaultStyleSetOptions) {
     root: createRootStyle(options),
     sendBox: createSendBoxStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
+    sendStatus: createSendStatusStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),
     stackedLayout: createStackedLayoutStyle(options),
     suggestedAction: createSuggestedActionStyle(options),

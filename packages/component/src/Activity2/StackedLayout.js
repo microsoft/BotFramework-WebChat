@@ -2,12 +2,17 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+import { Constants } from 'backend';
+
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import Context from '../Context';
+import SendStatus from './SendStatus';
 import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
+
+const { SendState: { SENDING, SEND_FAILED } } = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -57,6 +62,8 @@ const StackedLayout = ({
   userAvatarInitials,
 }) => {
   const initials = activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials;
+  const { sendState } = activity.channelData || {};
+  const showSendStatus = sendState === SENDING || sendState === SEND_FAILED;
 
   return (
     <div className={ classNames(
@@ -108,9 +115,13 @@ const StackedLayout = ({
           )
         }
         {
-          showTimestamp &&
+          (showSendStatus || showTimestamp) &&
             <div className="row">
-              <Timestamp activity={ activity } className="timestamp" />
+              { showSendStatus ?
+                  <SendStatus activity={ activity } className="timestamp" />
+                :
+                  <Timestamp activity={ activity } className="timestamp" />
+              }
               <div className="filler" />
             </div>
         }

@@ -3,12 +3,17 @@ import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
 
+import { Constants } from 'backend';
+
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import Context from '../Context';
+import SendStatus from './SendStatus';
 import Timestamp from './Timestamp';
 
 import textFormatToContentType from '../Utils/textFormatToContentType';
+
+const { SendState: { SENDING, SEND_FAILED } } = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -113,8 +118,17 @@ const CarouselFilmStrip = ({
             )
           }
         </ul>
-        { showTimestamp &&
-          <Timestamp activity={ activity } />
+        {
+          (
+            activity.channelData
+            && (
+              activity.channelData.sendState === SENDING
+              || activity.channelData.sendState === SEND_FAILED
+            )
+          ) ?
+            <SendStatus activity={ activity } />
+          : showTimestamp &&
+            <Timestamp activity={ activity } />
         }
       </div>
     </div>
