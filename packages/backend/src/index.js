@@ -14,7 +14,7 @@ import stopSpeakingActivity from './actions/stopSpeakingActivity';
 import stopSpeechInput from './actions/stopSpeechInput';
 import submitSendBox from './actions/submitSendBox';
 
-import SendState from './constants/SendState';
+import * as SendState from './constants/SendState';
 
 const Constants = { SendState };
 
