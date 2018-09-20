@@ -10,15 +10,15 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "clean": "npm run clean:backend && npm run clean:bundle && npm run clean:component",
-    "clean:backend": "cd packages && cd backend && npm run clean",
+    "clean": "npm run clean:bundle && npm run clean:component && npm run clean:core",
     "clean:bundle": "cd packages && cd bundle && npm run clean",
     "clean:component": "cd packages && cd component && npm run clean",
+    "clean:core": "cd packages && cd core && npm run clean",
     "test": "lerna run test",
-    "watch": "npx concurrently --names \"backend,bundle,component\" \"npm run watch:backend\" \"npm run watch:bundle\" \"npm run watch:component\"",
-    "watch:backend": "cd packages && cd backend && npm run watch",
+    "watch": "npx concurrently --names \"bundle,component,core\" \"npm run watch:bundle\" \"npm run watch:component\" \"npm run watch:core\"",
     "watch:bundle": "cd packages && cd bundle && npm run watch",
-    "watch:component": "cd packages && cd component && npm run watch"
+    "watch:component": "cd packages && cd component && npm run watch",
+    "watch:core": "cd packages && cd core && npm run watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
