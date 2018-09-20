@@ -148,7 +148,6 @@ class DatePicker extends React.Component<MessagePaneProps, DatePickerState> {
 
     render() {
         console.log('Rendering datepicker');
-        if (!this.props.activityWithDatePicker) { return null; }
 
         return (
             <div>
