@@ -21,6 +21,8 @@ export default function () {
         // Do not show typing by oneself
         return RETURN_FALSE;
       }
+    } else if (activity.type === 'event') {
+        return RETURN_FALSE;
     } else {
       // Do not show carousel/stacked if it is not activity.type === 'message' or 'typing'
       return next({ activity, showTimestamp });
