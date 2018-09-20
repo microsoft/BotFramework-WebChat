@@ -1,6 +1,8 @@
-import React from 'react';
-import BasicWebChat, { adaptiveCardsAttachmentMiddleware, concatMiddleware } from 'botframework-webchat-component';
+import * as adaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
+import React from 'react';
+
+import BasicWebChat, { createAdaptiveCardsAttachmentMiddleware, concatMiddleware } from 'botframework-webchat-component';
 
 import renderMarkdown from './renderMarkdown';
 
@@ -9,7 +11,12 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAttachmentMiddleware = memoize(middlewareFromProps => concatMiddleware(middlewareFromProps, adaptiveCardsAttachmentMiddleware));
+    const adaptiveCardsAttachmentMiddleware = createAdaptiveCardsAttachmentMiddleware({ adaptiveCards });
+
+    this.createAttachmentMiddleware = memoize(middlewareFromProps => concatMiddleware(
+      middlewareFromProps,
+      adaptiveCardsAttachmentMiddleware
+    ));
   }
 
   render() {

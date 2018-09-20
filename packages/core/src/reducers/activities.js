@@ -41,6 +41,8 @@ function upsertActivityWithSort(activities, nextActivity) {
   // Then, find the right (sorted) place to insert the new activity at, based on timestamp, and must be before "typing"
   // Since clockskew might happen, we will ignore timestamp on messages that are sending
   // If we are inserting "typing", we will always append it
+
+  // TODO: [P4] Move "typing" into Constants.ActivityType
   const indexToInsert = nextActivity.type === 'typing' ? -1 : nextActivities.findIndex(({ channelData: { state } = {}, timestamp, type }) =>
     (Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED) || type === 'typing'
   );

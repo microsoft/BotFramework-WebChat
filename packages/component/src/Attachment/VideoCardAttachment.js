@@ -7,7 +7,7 @@ import VideoContent from './VideoContent';
 
 export default class extends React.Component {
   render() {
-    const { props: { attachment } } = this;
+    const { props: { adaptiveCards, attachment } } = this;
     const { content = {} } = attachment || {};
 
     return (
@@ -28,7 +28,10 @@ export default class extends React.Component {
                 )
               }
             </ul>
-            <CommonCard attachment={ attachment } />
+            <CommonCard
+              adaptiveCards={ adaptiveCards }
+              attachment={ attachment }
+            />
           </div>
         }
       </Context.Consumer>

@@ -60,7 +60,7 @@ function createCardActionLogic({ directLine, dispatch }) {
         case 'imBack':
           if (typeof value === 'string') {
             // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-            props.dispatch(sendMessage(value, 'imBack'));
+            dispatch(sendMessage(value, 'imBack'));
           } else {
             throw new Error('cannot send "imBack" with a non-string value');
           }
@@ -68,7 +68,7 @@ function createCardActionLogic({ directLine, dispatch }) {
           break;
 
         case 'postBack':
-          props.dispatch(sendPostBack(value));
+          dispatch(sendPostBack(value));
 
           break;
 
@@ -160,8 +160,6 @@ class Composer extends React.Component {
       shallowEquals
     );
 
-    // TODO: Add window.open ponyfill
-
     this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarId) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarId }));
 
     this.mergeContext = memoize(
@@ -243,9 +241,6 @@ class Composer extends React.Component {
 
     const contextFromProps = this.createContextFromProps(propsForLogic);
 
-    // TODO: Consider moving props to BasicWebChat
-    //       Developers are very unlikely to create Composer without BasicWebChat
-    //       We could simplify logic and memoizer there
     const context = this.mergeContext(
       contextFromProps,
       state.hoistedDispatchers,

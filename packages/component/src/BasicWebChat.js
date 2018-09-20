@@ -4,13 +4,12 @@ import React from 'react';
 
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicTranscript from './Transcript/BasicTranscript';
-import concatMiddleware from './Middleware/concatMiddleware';
 import Composer from './Composer';
+import concatMiddleware from './Middleware/concatMiddleware';
+import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 import TypeFocusSinkBox from './Utils/TypeFocusSink';
-
-import coreActivityMiddleware from './Middleware/Activity/core';
-import coreAttachmentMiddleware from './Middleware/Attachment/core';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -54,13 +53,13 @@ export default class extends React.Component {
   createActivityRenderer(additionalMiddleware) {
     const activityMiddleware = concatMiddleware(
       additionalMiddleware,
-      coreActivityMiddleware
+      createCoreActivityMiddleware()
     )({});
 
     return (...args) => {
       try {
         return activityMiddleware(
-          () => ({ activity }) => () =>
+          ({ activity }) => () =>
             <ErrorBox message="No renderer for this activity">
               <pre>{ JSON.stringify(activity, null, 2) }</pre>
             </ErrorBox>
@@ -78,13 +77,13 @@ export default class extends React.Component {
   createAttachmentRenderer(additionalMiddleware) {
     const attachmentMiddleware = concatMiddleware(
       additionalMiddleware,
-      coreAttachmentMiddleware
+      createCoreAttachmentMiddleware()
     )({});
 
     return (...args) => {
       try {
         return attachmentMiddleware(
-          () => ({ attachment }) =>
+          ({ attachment }) =>
             <ErrorBox message="No renderer for this attachment">
               <pre>{ JSON.stringify(attachment, null, 2) }</pre>
             </ErrorBox>

@@ -3,7 +3,6 @@ import React from 'react';
 
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import Context from '../Context';
 
 export default class extends React.Component {
   constructor(props) {
@@ -22,16 +21,13 @@ export default class extends React.Component {
   render() {
     const {
       props: {
+        adaptiveCards,
         attachment: { content } = {}
       }
     } = this;
 
     return (
-      <Context.Consumer>
-        { ({ adaptiveCards }) =>
-          <AdaptiveCardRenderer adaptiveCard={ content && this.buildCard(adaptiveCards, content) } />
-        }
-      </Context.Consumer>
+      <AdaptiveCardRenderer adaptiveCard={ content && this.buildCard(adaptiveCards, content) } />
     );
   }
 }

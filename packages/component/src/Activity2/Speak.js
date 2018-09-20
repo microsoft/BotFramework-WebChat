@@ -81,4 +81,7 @@ class SpeakActivity extends React.Component {
   }
 }
 
-export default connectWithContext(() => ({}), ({ markActivity, styleSet }) => ({ markActivity, styleSet }))(SpeakActivity);
+export default connectWithContext(
+  () => ({}),
+  ({ markActivity, styleSet }) => ({ markActivity, styleSet })
+)(SpeakActivity);

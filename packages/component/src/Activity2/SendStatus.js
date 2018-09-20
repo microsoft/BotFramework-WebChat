@@ -3,8 +3,8 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
+import connectWithContext from '../connectWithContext';
 import Localize, { localize } from '../Localization/Localize';
-import Context from '../Context';
 
 const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 
@@ -67,15 +67,7 @@ class SendStatus extends React.Component {
   }
 }
 
-export default connect(({ settings: { language } }) => ({ language }))(props =>
-  <Context.Consumer>
-    { ({ focusSendBox, postActivity, styleSet }) =>
-      <SendStatus
-        { ...props }
-        focusSendBox={ focusSendBox }
-        postActivity={ postActivity }
-        styleSet={ styleSet }
-      />
-    }
-  </Context.Consumer>
-)
+export default connectWithContext(
+  ({ settings: { language } }) => ({ language }),
+  ({ focusSendBox, postActivity, styleSet }) => ({ focusSendBox, postActivity, styleSet }),
+)(SendStatus)

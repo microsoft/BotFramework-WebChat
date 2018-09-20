@@ -55,4 +55,6 @@ class TimeAgo extends React.Component {
   }
 }
 
-export default connectWithContext(({ settings: { language } }) => ({ language }))(TimeAgo)
+export default connectWithContext(
+  ({ settings: { language } }) => ({ language })
+)(TimeAgo)

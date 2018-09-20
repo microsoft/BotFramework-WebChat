@@ -2,7 +2,7 @@ import BasicWebChat from './BasicWebChat';
 
 import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
-import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/adaptiveCard';
+import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/createAdaptiveCardMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/core';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
 import ErrorBox from './ErrorBox';

@@ -11,26 +11,26 @@ import ThumbnailCardAttachment from '../../Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from '../../Attachment/VideoCardAttachment';
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
-export default function () {
+export default function (props) {
   return () => next => ({ activity, attachment }) =>
     attachment.contentType === 'application/vnd.microsoft.card.hero' ?
-      <HeroCardAttachment activity={ activity } attachment={ attachment } />
+      <HeroCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ?
-      <AdaptiveCardAttachment activity={ activity } attachment={ attachment } />
+      <AdaptiveCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.animation' ?
-      <AnimationCardAttachment activity={ activity } attachment={ attachment } />
+      <AnimationCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.audio' ?
-      <AudioCardAttachment activity={ activity } attachment={ attachment } />
+      <AudioCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.oauth' ?
-      <OAuthCardAttachment activity={ activity } attachment={ attachment } />
+      <OAuthCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.receipt' ?
-      <ReceiptCardAttachment activity={ activity } attachment={ attachment } />
+      <ReceiptCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.signin' ?
-      <SignInCardAttachment activity={ activity } attachment={ attachment } />
+      <SignInCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ?
-      <ThumbnailCardAttachment activity={ activity } attachment={ attachment } />
+      <ThumbnailCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     : attachment.contentType === 'application/vnd.microsoft.card.video' ?
-      <VideoCardAttachment activity={ activity } attachment={ attachment } />
+      <VideoCardAttachment { ...props } activity={ activity } attachment={ attachment } />
     :
       next({ activity, attachment });
 }

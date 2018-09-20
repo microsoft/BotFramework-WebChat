@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import React from 'react';
 
 import {
@@ -7,7 +6,7 @@ import {
 } from 'adaptivecards';
 
 import { localize } from '../Localization/Localize';
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 import ErrorBox from '../ErrorBox';
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 
@@ -49,13 +48,14 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   handleExecuteAction(action) {
     const { props } = this;
+    const actionTypeName = action.getJsonTypeName();
 
-    if (action instanceof OpenUrlAction) {
+    if (actionTypeName === 'Action.OpenUrl') {
       props.onCardAction({
         type: 'openUrl',
         value: action.url
       });
-    } else if (action instanceof SubmitAction) {
+    } else if (actionTypeName === 'Action.Submit') {
       if (typeof action.data !== 'undefined') {
         const { data: cardAction } = action || {};
 
@@ -78,10 +78,17 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   renderCard() {
     const { current } = this.contentRef;
-    const { props: { adaptiveCard, hostConfig } } = this;
+    const { props: { adaptiveCard, adaptiveCardHostConfig, renderMarkdown } } = this;
 
     if (current && adaptiveCard) {
-      adaptiveCard.hostConfig = hostConfig;
+      // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
+
+      // TODO: [P3] Checks if we could make the "renderMarkdown" per card
+      //       This could be limitations from Adaptive Cards package
+      //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
+
+      adaptiveCard.constructor.processMarkdown = renderMarkdown || (text => text);
+      adaptiveCard.hostConfig = adaptiveCardHostConfig;
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
 
       const errors = adaptiveCard.validate();
@@ -137,19 +144,21 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 }
 
-export default connect(({ settings: { language } }) => ({ language }))(
-  ({ adaptiveCard, language, tapAction }) =>
-    <Context.Consumer>
-      { ({ adaptiveCardHostConfig, onCardAction, postActivity, styleSet }) =>
-        <AdaptiveCardRenderer
-          adaptiveCard={ adaptiveCard }
-          hostConfig={ adaptiveCardHostConfig }
-          language={ language }
-          onCardAction={ onCardAction }
-          postActivity={ postActivity }
-          styleSet={ styleSet }
-          tapAction={ tapAction }
-        />
-      }
-    </Context.Consumer>
-)
+export default connectWithContext(
+  ({ settings: { language } }) => ({ language }),
+  ({
+    adaptiveCardHostConfig,
+    language,
+    onCardAction,
+    renderMarkdown,
+    styleSet,
+    tapAction
+  }) => ({
+    adaptiveCardHostConfig,
+    language,
+    onCardAction,
+    renderMarkdown,
+    styleSet,
+    tapAction
+  })
+)(AdaptiveCardRenderer)

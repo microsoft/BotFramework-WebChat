@@ -2,7 +2,6 @@ import memoize from 'memoize-one';
 import React from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import Context from '../Context';
 
 import { AdaptiveCard } from 'adaptivecards';
 
@@ -39,11 +38,6 @@ export default class AdaptiveCardAttachment extends React.Component {
       const card = new adaptiveCards.AdaptiveCard();
       const errors = [];
 
-      // TODO: [P3] Checks if we could make the "renderMarkdown" per card
-      //       This could be limitations from Adaptive Cards package
-      //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
-      AdaptiveCard.processMarkdown = renderMarkdown || (text => text);
-
       // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
       adaptiveCards.AdaptiveCard.onParseError = error => errors.push(error);
 
@@ -62,19 +56,11 @@ export default class AdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { attachment } } = this;
+    const { props: { adaptiveCards, attachment, renderMarkdown } } = this;
+    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
 
     return (
-      <Context.Consumer>
-        { ({ adaptiveCards, renderMarkdown }) => {
-          const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
-
-          return (
-            <AdaptiveCardRenderer adaptiveCard={ card } />
-          );
-        }
-      }
-      </Context.Consumer>
+      <AdaptiveCardRenderer adaptiveCard={ card } />
     );
   }
 }

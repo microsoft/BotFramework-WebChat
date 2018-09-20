@@ -4,9 +4,10 @@ import React from 'react';
 
 import Context from './Context';
 
-// TODO: Consider using "store" props, instead of "storeKey"
+// TODO: [P4] Consider using "store" props, instead of "storeKey"
+// TODO: [P4] Consider hardcoding "storeKey" because it is a rarely used feature in Redux, collision is very unlikely
 export default function (stateSelector, contextSelector) {
-  const createConnected = memoize(storeKey => connect(state => stateSelector(state), null, null, { storeKey }));
+  const createConnected = memoize(storeKey => connect(state => stateSelector(state), null, null, { storeKey: 'webchat' }));
 
   return component => props => (
     <Context.Consumer>

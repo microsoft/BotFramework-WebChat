@@ -1,18 +1,13 @@
 import { css } from 'glamor';
 import React from 'react';
 
-import BasicWebChat, {
-  concatMiddleware,
-  createAdaptiveCardsAttachmentMiddleware
-} from 'botframework-webchat-component';
-
-import {
+import ReactWebChat, {
   createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
   renderMarkdown
 } from 'botframework-webchat';
 
-import createDevModeMiddleware from './createDevModeMiddleware';
+import createDevModeAttachmentMiddleware from './createDevModeAttachmentMiddleware';
 import createFaultyDirectLine from './createFaultyDirectLine';
 
 css.global('body', {
@@ -69,10 +64,7 @@ export default class extends React.Component {
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
 
     this.mainRef = React.createRef();
-    this.attachmentMiddleware = concatMiddleware(
-      createDevModeMiddleware().attachment,
-      createAdaptiveCardsAttachmentMiddleware()
-    );
+    this.attachmentMiddleware = createDevModeAttachmentMiddleware();
 
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
@@ -183,7 +175,7 @@ export default class extends React.Component {
         className={ ROOT_CSS }
         ref={ this.mainRef }
       >
-        <BasicWebChat
+        <ReactWebChat
           attachmentMiddleware={ this.attachmentMiddleware }
           botAvatarInitials={ state.botAvatarInitials }
           className={ WEB_CHAT_CSS }

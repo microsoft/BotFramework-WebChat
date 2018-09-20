@@ -1,3 +1,5 @@
+import connectWithContext from '../connectWithContext';
+
 import enUS from './en-US';
 import jaJP from './ja-JP';
 import zhHANT from './zh-HANT';
@@ -24,7 +26,7 @@ function localize(text, language, args) {
   }
 }
 
-export default connect(
+export default connectWithContext(
   ({ settings: { language } }) => ({ language })
 )(
   ({ args, language, text }) => localize(text, language, args)

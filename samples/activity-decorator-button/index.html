@@ -35,7 +35,8 @@
 
         const { Context, createStore, ReactWebChat } = window.WebChat;
         const { css } = window.Glamor;
-        const { Provider } = window.ReactRedux;
+        const { createProvider } = window.ReactRedux;
+        const Provider = createProvider('webchat');
 
         const ACTIVITY_WITH_FEEDBACK_CSS = css({
           minHeight: 60,
@@ -108,6 +109,7 @@
             <ReactWebChat
               activityMiddleware={ activityMiddleware }
               directLine={ window.WebChat.createDirectLine({ token }) }
+              storeKey="webchat"
             />
           </Provider>,
           document.getElementById('webchat')

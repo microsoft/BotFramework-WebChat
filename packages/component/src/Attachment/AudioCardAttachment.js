@@ -4,7 +4,7 @@ import AudioContent from './AudioContent';
 import CommonCard from './CommonCard';
 import Context from '../Context';
 
-export default ({ attachment }) => {
+export default ({ adaptiveCards, attachment }) => {
   const { content = {} } = attachment || {};
 
   return (
@@ -25,7 +25,10 @@ export default ({ attachment }) => {
               )
             }
           </ul>
-          <CommonCard attachment={ attachment } />
+          <CommonCard
+            adaptiveCards={ adaptiveCards }
+            attachment={ attachment }
+          />
         </div>
       }
     </Context.Consumer>

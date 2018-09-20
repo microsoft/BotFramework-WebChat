@@ -52,7 +52,8 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const { createStore, ReactWebChat } = window.WebChat;
-        const { Provider } = window.ReactRedux;
+        const { createProvider } = window.ReactRedux;
+        const Provider = createProvider('webchat');
         const store = createStore();
         const activityMiddleware = () => next => card => {
           return (
@@ -64,10 +65,11 @@
         };
 
         window.ReactDOM.render(
-          <Provider store={ store }>
+          <Provider store={ store } storeKey="webchat">
             <ReactWebChat
               activityMiddleware={ activityMiddleware }
               directLine={ window.WebChat.createDirectLine({ token }) }
+              storeKey="webchat"
             />
           </Provider>,
           document.getElementById('webchat')
