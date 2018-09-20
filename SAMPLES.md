@@ -8,78 +8,9 @@ If you want to achieve the functionality below, you need to upgrade to the new W
 
 Example snippets:
 
-# Customizing styles
+# How to use Web Chat?
 
-## Change font or color
-
-```js
-TODO: Add code snippet
-```
-
-## Add a logo to the top bar
-
-```js
-TODO: Add code snippet
-```
-
-## Change the avatar of the bot within the dialog box
-
-```js
-TODO: Add code snippet
-```
-
-# Adding UI
-
-## Add a settings gear icon to the send box
-
-```js
-TODO: Add code snippet
-```
-
-## Add a persistent menu to the send box
-
-```js
-TODO: Add code snippet
-```
-
-# Custom render activity or attachment
-
-## Google maps
-
-```js
-TODO: Add code snippet
-```
-
-## Spotify player control?
-
-```js
-TODO: Add code snippet
-```
-
-# Building command-line interface for Web Chat
-
-## Full customization: Bring webchat to Command Line (pure Angular example TODO: Add code snippet).
-
-```js
-TODO: Add code snippet
-```
-
-## Search box on the site becomes a bot send box
-
-As a developer, I can add functionality to my search box on my site to respond to question "Where is my order?" with a full-screen adaptive card or another instance of a message.
-
-```js
-TODO: Add code snippet
-```
-
-# Full support of Auth / SSO
-
-TODO: Add screenshots
-TODO: Link to existing tutorials
-
-# Backchannel integration
-
-There are three ways you can receive commands from Direct Line and handled by your JavaScript code.
+There are few ways you can embed Web Chat into your existing website or web app.
 
 ## Integrate with JavaScript
 
@@ -162,6 +93,75 @@ export default class extends React.Component {
   }
 }
 ```
+
+# Customizing styles
+
+## Change font or color
+
+```js
+TODO: Add code snippet
+```
+
+## Add a logo to the top bar
+
+```js
+TODO: Add code snippet
+```
+
+## Change the avatar of the bot within the dialog box
+
+```js
+TODO: Add code snippet
+```
+
+# Adding UI
+
+## Add a settings gear icon to the send box
+
+```js
+TODO: Add code snippet
+```
+
+## Add a persistent menu to the send box
+
+```js
+TODO: Add code snippet
+```
+
+# Custom render activity or attachment
+
+## Google maps
+
+```js
+TODO: Add code snippet
+```
+
+## Spotify player control?
+
+```js
+TODO: Add code snippet
+```
+
+# Building command-line interface for Web Chat
+
+## Full customization: Bring webchat to Command Line (pure Angular example TODO: Add code snippet).
+
+```js
+TODO: Add code snippet
+```
+
+## Search box on the site becomes a bot send box
+
+As a developer, I can add functionality to my search box on my site to respond to question "Where is my order?" with a full-screen adaptive card or another instance of a message.
+
+```js
+TODO: Add code snippet
+```
+
+# Full support of Auth / SSO
+
+TODO: Add screenshots
+TODO: Link to existing tutorials
 
 # Styling
 
