@@ -1,13 +1,11 @@
 import { CardAction, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
-import ReactDatePicker from 'react-datepicker';
-import { ReactDatePickerProps } from 'react-datepicker';
 import { connect } from 'react-redux';
 import { activityWithDatePicker } from './activityWithDatePicker';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { classList, doCardAction, IDoCardAction } from './Chat';
-import { getAvailableTimes } from './getAvailableTimes';
+import {AvailableTime, DatePickerCard} from './DatePickerCard';
 import { HScroll } from './HScroll';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
@@ -37,7 +35,7 @@ const MessagePaneView = (props: MessagePaneProps) =>
             <SuggestedActions { ...props } />
         </div>
         <div className="gd-date-picker">
-            <DatePicker { ...props } />
+            <DatePickerCard { ...props } />
         </div>
     </div>;
 
@@ -82,93 +80,11 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
     }
 }
 
-export interface DatePickerState {
-    startDate: moment.Moment;
-    dateSelected: boolean;
-    avaiableTimes: AvailableTime[];
-}
-
-export interface AvailableTime {
-    from: string;
-    to: string;
-}
-
 export interface EntityType {
     node_type: string;
     availableTimes: AvailableTime[];
     customAttributes: string[];
     options: string[];
-}
-
-class DatePicker extends React.Component<MessagePaneProps, DatePickerState> {
-    constructor(props: MessagePaneProps) {
-        super(props);
-        this.state = {
-            startDate: moment(),
-            dateSelected: false,
-            avaiableTimes: []
-        };
-        this.handleKeyDown = this.handleKeyDown.bind(this);
-    }
-
-    handleDateChange(date: moment.Moment) {
-        this.setState({
-            startDate: date,
-            dateSelected: true,
-            avaiableTimes: getAvailableTimes(this.props.activityWithDatePicker, date.format(('YYYY-mm-DD')))
-            },
-            () => this.props.selectDate(date)
-        );
-
-        document.addEventListener('keypress', this.handleKeyDown.bind(this));
-    }
-
-    private handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): any {
-        if (!this.state.dateSelected) { return; }
-
-        if (e.key === 'Enter') {
-            this.props.submitDate(this.props.activityWithDatePicker);
-            this.props.sendMessage(this.state.startDate.format('MMMM D, YYYY'));
-            document.removeEventListener('keypress', this.handleKeyDown.bind(this));
-        }
-    }
-
-    clickToSubmitDate(e: React.MouseEvent<HTMLButtonElement>) {
-
-        if (!this.props.activityWithDatePicker) { return; }
-        if (!this.state.dateSelected) { return; }
-
-        this.props.submitDate(this.props.activityWithDatePicker);
-        this.props.sendMessage(this.state.startDate.format('MMMM D, YYYY'));
-
-        document.removeEventListener('keypress', this.handleKeyDown.bind(this));
-
-        e.stopPropagation();
-    }
-
-    render() {
-        console.log('Rendering datepicker');
-
-        return (
-            <div>
-                <div className="gd-selected-date-container">
-                    <span className="gd-selected-date">{this.state.startDate.format('MMMM D, YYYY')}</span>
-                </div>
-               <ReactDatePicker
-                    startDate={this.state.startDate}
-                    selected={this.state.startDate}
-                    onChange={date => this.handleDateChange(date)}
-                    inline={true}
-                    fixedHeight
-                    tabIndex={1}
-                    dateFormat="DD-MMM HH:mm"
-                    />
-               <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
-                    Press enter to submit
-                </button>
-            </div>
-        );
-    }
 }
 
 export const MessagePane = connect(
