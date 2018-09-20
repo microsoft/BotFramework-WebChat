@@ -5,8 +5,8 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import { SEND_POST_BACK } from '../Actions/sendPostBack';
-import postActivity from '../Actions/postActivity';
+import { SEND_POST_BACK } from '../actions/sendPostBack';
+import postActivity from '../actions/postActivity';
 
 export default function* () {
   yield whileConnected(function* () {

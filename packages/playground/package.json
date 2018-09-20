@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "adaptivecards": "^1.0.0",
     "botframework-directlinejs": "0.9.18-master.3cece81",
     "botframework-webchat": "^4.0.0-0",
     "botframework-webchat-component": "^1.0.0",

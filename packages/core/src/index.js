@@ -1,19 +1,19 @@
-import connect from './Actions/connect';
+import connect from './actions/connect';
 import createStore from './createStore';
-import disconnect from './Actions/disconnect';
-import markActivity from './Actions/markActivity';
-import postActivity from './Actions/postActivity';
-import sendFiles from './Actions/sendFiles';
-import sendMessage from './Actions/sendMessage';
-import sendPostBack from './Actions/sendPostBack';
-import setLanguage from './Actions/setLanguage';
-import setSendBox from './Actions/setSendBox';
-import setSendTyping from './Actions/setSendTyping';
-import startSpeakingActivity from './Actions/startSpeakingActivity';
-import startSpeechInput from './Actions/startSpeechInput';
-import stopSpeakingActivity from './Actions/stopSpeakingActivity';
-import stopSpeechInput from './Actions/stopSpeechInput';
-import submitSendBox from './Actions/submitSendBox';
+import disconnect from './actions/disconnect';
+import markActivity from './actions/markActivity';
+import postActivity from './actions/postActivity';
+import sendFiles from './actions/sendFiles';
+import sendMessage from './actions/sendMessage';
+import sendPostBack from './actions/sendPostBack';
+import setLanguage from './actions/setLanguage';
+import setSendBox from './actions/setSendBox';
+import setSendTyping from './actions/setSendTyping';
+import startSpeakingActivity from './actions/startSpeakingActivity';
+import startSpeechInput from './actions/startSpeechInput';
+import stopSpeakingActivity from './actions/stopSpeakingActivity';
+import stopSpeechInput from './actions/stopSpeechInput';
+import submitSendBox from './actions/submitSendBox';
 
 export {
   connect,

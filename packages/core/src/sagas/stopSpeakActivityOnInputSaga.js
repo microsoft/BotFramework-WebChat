@@ -7,10 +7,10 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import markActivity from '../Actions/markActivity';
-import stopSpeakingActivity from '../Actions/stopSpeakingActivity';
-import { SET_SEND_BOX } from '../Actions/setSendBox';
-import { START_SPEECH_INPUT } from '../Actions/startSpeechInput';
+import markActivity from '../actions/markActivity';
+import stopSpeakingActivity from '../actions/stopSpeakingActivity';
+import { SET_SEND_BOX } from '../actions/setSendBox';
+import { START_SPEECH_INPUT } from '../actions/startSpeechInput';
 
 export default function* () {
   yield whileConnected(function* () {

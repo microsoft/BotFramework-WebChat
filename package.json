@@ -6,7 +6,6 @@
   "files": [
     "lib/**/*"
   ],
-  "private": true,
   "keywords": [],
   "scripts": {
     "bootstrap": "lerna bootstrap",
