@@ -1,10 +1,5 @@
 import React from 'react';
 
-import {
-  OpenUrlAction,
-  SubmitAction
-} from 'adaptivecards';
-
 import { localize } from '../Localization/Localize';
 import connectWithContext from '../connectWithContext';
 import ErrorBox from '../ErrorBox';
