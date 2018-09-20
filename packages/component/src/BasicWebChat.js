@@ -37,6 +37,7 @@ export default class extends React.Component {
     this.refreshAttachmentRenderer(props.attachmentMiddleware);
   }
 
+  // TODO: [P2] Move to React 16 APIs
   componentWillReceiveProps({ activityMiddleware, attachmentMiddleware }) {
     if (this.props.activityMiddleware !== activityMiddleware) {
       this.refreshActivityRenderer(activityMiddleware);
