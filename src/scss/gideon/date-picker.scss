@@ -1,0 +1,10 @@
+.gd-date-picker{
+  .react-datepicker, .react-datepicker__month-container{
+    width: 100%;
+  }
+  .react-datepicker{
+    margin-bottom: -0.5em;
+    border-bottom: none;
+    border-radius: 0;
+  }
+}
