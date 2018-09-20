@@ -1,23 +1,23 @@
 # Proof-of-Concept
 
-We will be implementing PoC that show people how to customize with Web Chat. Here is the list:
+This list PoCs that will guide you to customize Web Chat in different ways.
 
 ## P0
-- [ ] Command-and-observe using Redux actions [#1147](https://github.com/Microsoft/BotFramework-WebChat/issues/1147)
+- [x] Command-and-observe using Redux actions [#1147](https://github.com/Microsoft/BotFramework-WebChat/issues/1147)
 - [x] Custom activities and attachments
    - [x] GitHub repository [#1148](https://github.com/Microsoft/BotFramework-WebChat/issues/1148)
 - [x] Decorators
    - [x] Upvote/downvote button next to the activity [#1149](https://github.com/Microsoft/BotFramework-WebChat/issues/1149)
    - [x] Highlight activities [#1150](https://github.com/Microsoft/BotFramework-WebChat/issues/1150)
 - [ ] Disable interactivity [#1151](https://github.com/Microsoft/BotFramework-WebChat/issues/1151)
-- [ ] Handsfree mode [#1152](https://github.com/Microsoft/BotFramework-WebChat/issues/1152)
+- [ ] Hands-free mode [#1152](https://github.com/Microsoft/BotFramework-WebChat/issues/1152)
 - [ ] Resume conversation with past history
 - [x] Unbundle Adaptive Cards [#1153](https://github.com/Microsoft/BotFramework-WebChat/issues/1153)
 
 ## P1
 - [ ] API: Scroll activity into view
 - [ ] API: Set focus
-- [ ] Bring your own speech engine
+- [ ] Use a different speech engine
 - [ ] Configuring collapsible timestamp
 - [ ] Customizing bot avatar
 - [ ] Handshake auth token
@@ -28,7 +28,7 @@ We will be implementing PoC that show people how to customize with Web Chat. Her
 
 ## P2
 - [ ] Always on/off microphone
-- [ ] Auto-scroll on incoming message
+- [ ] Auto-scroll on outgoing message
 - [ ] Clear history after X minutes
 - [ ] Connection status
 - [ ] Custom typing indicator for RESTful connections

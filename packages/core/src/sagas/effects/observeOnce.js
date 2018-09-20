@@ -11,7 +11,9 @@ export default function (observable) {
         observable.subscribe(resolve, reject);
       }));
     } finally {
-      subscription && subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     }
   });
 }

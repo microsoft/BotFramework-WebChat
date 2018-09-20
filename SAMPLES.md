@@ -79,9 +79,13 @@ TODO: Link to existing tutorials
 
 # Backchannel integration
 
-There are three ways you can receive commands from Direct Line and handled by your page.
+There are three ways you can receive commands from Direct Line and handled by your JavaScript code.
 
 ## Integrate with JavaScript
+
+### Full bundle
+
+Sample at [`samples/full-bundle`](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/full-bundle/).
 
 ```html
 <!DOCTYPE html>
@@ -91,9 +95,33 @@ There are three ways you can receive commands from Direct Line and handled by yo
     <script src="//cdn.botframework.com/.../botchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({
-          token: '...'
-        })
+        directLine: window.WebChat.createDirectLine({ token: '...' })
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
+```
+
+### Minimal bundle
+
+Sample at [`samples/minimal-bundle`](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/minimal-bundle/).
+
+This bundle does not contains:
+- Adaptive Cards
+- Cognitive Services
+- Markdown-It
+
+Rich cards that depends on Adaptive Cards will not render, e.g. hero card, receipt card, etc.
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="//cdn.botframework.com/.../botchat-core.js"></script>
+    <script>
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ token: '...' })
       }, document.getElementById('webchat'));
     </script>
   </body>
@@ -102,31 +130,31 @@ There are three ways you can receive commands from Direct Line and handled by yo
 
 ## Integrate with React
 
+Sample at [`samples/integrate-with-react`](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/integrate-with-react/).
+
 ```jsx
-import { Provider } from 'react-redux';
+import { createProvider } from 'react-redux';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import DirectLine from 'botframework-directlinejs';
 import WebChat, { createStore } from 'botframework-webchat';
+
+const Provider = createProvider('webchat');
 
 export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      directLine: new DirectLine({ token: '...' }),
-      store: createStore()
-    };
+    this.directLine = new DirectLine({ token: '...' });
+    this.store = createStore();
   }
 
   render() {
-    const { state } = this;
-
-    ReactDOM.render(
-      <Provider store={ state.store }>
+    return (
+      <Provider store={ this.store }>
         <WebChat
-          directLine={ state.directLine }
+          directLine={ this.directLine }
+          storeKey="webchat"
         />
       </Provider>,
       element
@@ -135,9 +163,9 @@ export default class extends React.Component {
 }
 ```
 
-# Style set
+# Styling
 
-Style set is a set of CSS rules that will be applied to each individual components. These rules contains customizations like margin and padding. It cannot be used to override CSS rules that will break layout, such as flexbox.
+Style set is a set of CSS rules that will be applied to each individual component. These rules contains customizations like margin and padding. It cannot be used to override CSS rules that will break layout, such as flexbox.
 
 ## Tweaking variables for style set
 
