@@ -3,8 +3,8 @@ import BasicWebChat from './BasicWebChat';
 import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/createAdaptiveCardMiddleware';
-import createCoreActivityMiddleware from './Middleware/Activity/core';
-import createCoreAttachmentMiddleware from './Middleware/Attachment/core';
+import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import ErrorBox from './ErrorBox';
 
 export default BasicWebChat
