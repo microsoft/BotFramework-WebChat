@@ -31,7 +31,9 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 
 import defaultStyleSetOptions from './defaultStyleSetOptions';
 
-export default function createStyleSet(options = defaultStyleSetOptions) {
+export default function createStyleSet(options) {
+  options = { ...defaultStyleSetOptions, ...options };
+
   // Keep this list flat (no nested style) and serializable (no functions)
 
   return {
