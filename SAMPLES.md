@@ -23,7 +23,7 @@ Sample at [`samples/full-bundle`](https://github.com/Microsoft/BotFramework-WebC
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="//cdn.botframework.com/.../botchat.js"></script>
+    <script src="BotChat.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ token: '...' })
@@ -42,14 +42,14 @@ This bundle does not contains:
 - Cognitive Services
 - Markdown-It
 
-Rich cards that depends on Adaptive Cards will not render, e.g. hero card, receipt card, etc.
+Since Adaptive Cards is not include in this bundle, rich cards that depends on Adaptive Cards will not render, e.g. hero card, receipt card, etc. List of attachments that are not supported without Adaptive Cards can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Middleware/Attachment/createAdaptiveCardMiddleware.js).
 
 ```html
 <!DOCTYPE html>
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="//cdn.botframework.com/.../botchat-core.js"></script>
+    <script src="BotChat-core.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ token: '...' })
@@ -98,8 +98,18 @@ export default class extends React.Component {
 
 ## Change font or color
 
+If you need to modify something simple, you can set styles thru `styleOptions`. List of supported options can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
+
 ```js
-TODO: Add code snippet
+const styleOptions = {
+  bubbleBackground: 'rgba(0, 0, 255, .1)',
+  bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+};
+
+window.WebChat.renderWebChat({
+  directLine: window.WebChat.createDirectLine({ token }),
+  styleOptions
+}, document.getElementById('webchat'));
 ```
 
 ## Add a logo to the top bar
@@ -110,8 +120,16 @@ TODO: Add code snippet
 
 ## Change the avatar of the bot within the dialog box
 
+(PM to fill-in)
+
+Avatar can be show as initials, use `botAvatarInitials` and `userAvatarInitials` props.
+
 ```js
-TODO: Add code snippet
+window.WebChat.renderWebChat({
+  botAvatarInitials: 'BF',
+  directLine: window.WebChat.createDirectLine({ token }),
+  userAvatarInitials: 'WC'
+}, document.getElementById('webchat'));
 ```
 
 # Adding UI
