@@ -13,22 +13,33 @@
 
 # About
 
-`PM: Please fill-in`
+**Preview Software Alert!** Please note that this version of Web Chat is still in preview. If you want a stable release, go [here](https://github.com/Microsoft/BotFramework-WebChat/blob/master/README.md).
 
 # How to use
 
-First, create a bot using [Azure Bot Services](https://azure.microsoft.com/en-us/services/bot-service/).
+First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
+Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal to use in the code below. 
 
-Then, in your HTML file, add the following:
+Here is how how you can add Web Chat control to you website:
 
 ```html
-<iframe src="https://webchat.botframework.com/embed/your-bot-name?s=your-bot-secret"></iframe>
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/v4/botchat.js"></script>
+    <script>
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' })
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
 ```
 
 # Customizations
 
-`PM: Please fill-in`
-
+The new version of Web Chat control adds many customization options: 
 [Samples page](SAMPLES.md)
 
 # Contributions
