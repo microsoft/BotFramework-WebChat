@@ -70,7 +70,6 @@ export class DatePickerCard extends React.Component<MessagePaneProps, DatePicker
     }
 
     render() {
-
         return (
             <div>
                 <div className={this.state.showTimeSelectClass}>
@@ -87,6 +86,7 @@ export class DatePickerCard extends React.Component<MessagePaneProps, DatePicker
                         tabIndex={1}
                         dateFormat="DD-MMM HH:mm"
                         showTimeSelect={false}
+
                     />
                 </div>
             </div>

@@ -1,6 +1,12 @@
 .gd-date-picker{
   width: 100% !important;
 
+  .react-datepicker{
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+
+
   .show-time-select{
     .react-datepicker{
       border-bottom: 1px solid #aeaeae !important;
@@ -41,6 +47,10 @@
   .hide-time-select{
     .react-datepicker__month-container{
       width: 100% !important;
+    }
+
+    .gd-selected-date-container{
+      width: 16.1em;
     }
   }
 }
