@@ -10,10 +10,13 @@
     border-radius: 4em;
   }
 
-  .react-datepicker__day--in-range{
-    background-color: #216ba5bf;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+  .react-datepicker__day--in-range {
+    //&:not(.react-datepicker__day--range-start, .react-datepicker__day--range-end){
+    //  background-color: #216ba5bf;
+    //  margin-left: 0 !important;
+    //  margin-right: 0 !important;
+    //  border-radius: 0;
+    //}
   }
 
 
