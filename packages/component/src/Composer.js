@@ -284,7 +284,7 @@ Composer.propTypes = {
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func.isRequired,
   botAvatarInitials: PropTypes.string,
-  collapseTimestamp: PropTypes.bool,
+  collapseTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   enableSpeech: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
