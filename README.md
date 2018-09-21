@@ -41,6 +41,8 @@ Here is how how you can add Web Chat control to you website:
 
 ## Integrate with JavaScript
 
+Web Chat is designed to integrate with your existing web site using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
+
 ### Full bundle
 
 You can use the full, typical webchat package that contains the most typically used features.
@@ -81,7 +83,7 @@ See a working sample with minimal Web Chat bundle [here](https://github.com/Micr
     <script src="BotChat-core.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: '...' })
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' })
       }, document.getElementById('webchat'));
     </script>
   </body>
@@ -90,7 +92,7 @@ See a working sample with minimal Web Chat bundle [here](https://github.com/Micr
 
 ## Integrate with React
 
-Sample at [`samples/integrate-with-react`](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/integrate-with-react/).
+For full customizability, you can use React to recompose components of Web Chat.
 
 ```jsx
 import { createProvider } from 'react-redux';
@@ -105,7 +107,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.directLine = new DirectLine({ token: '...' });
+    this.directLine = new DirectLine({ token: 'YOUR_BOT_SECRET' });
     this.store = createStore();
   }
 
@@ -122,6 +124,8 @@ export default class extends React.Component {
   }
 }
 ```
+
+See a working sample with Web Chat rendered by React [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/integrate-with-react/).
 
 # Customize Web Chat UI
 
