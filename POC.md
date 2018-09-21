@@ -11,6 +11,7 @@ This list PoCs that will guide you to customize Web Chat in different ways.
    - [x] Highlight activities [#1150](https://github.com/Microsoft/BotFramework-WebChat/issues/1150)
 - [ ] Disable interactivity [#1151](https://github.com/Microsoft/BotFramework-WebChat/issues/1151)
 - [ ] Hands-free mode [#1152](https://github.com/Microsoft/BotFramework-WebChat/issues/1152)
+   - [Add input hints to messages](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-add-input-hints?view=azure-bot-service-3.0)
 - [ ] Resume conversation with past history
 - [x] Unbundle Adaptive Cards [#1153](https://github.com/Microsoft/BotFramework-WebChat/issues/1153)
 
