@@ -1,6 +1,10 @@
-We updated the look and feel of webchat control
+<p align="center">
 
-![Screenshot of Web Chat](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/doc/webchat-screenshot.png)
+  ![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/webchat-screenshot.png)
+
+</p>
+
+We updated the look and feel of webchat control
 
 Fully customize webchat and use 100% your own look of the webchat control
 
