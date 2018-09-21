@@ -10,6 +10,7 @@ export interface DatePickerState {
     dateSelected: boolean;
     selectChoice: string;
     availableTimes: AvailableTime[];
+    showTimeSelectClass: string;
 }
 
 export interface AvailableTime {
@@ -25,7 +26,8 @@ export class DatePickerCard extends React.Component<MessagePaneProps, DatePicker
             endDate: moment().add(1, 'days'),
             dateSelected: false,
             selectChoice: 'endDate',
-            availableTimes: []
+            availableTimes: [],
+            showTimeSelectClass: 'hide-time-select'
         };
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
@@ -68,23 +70,25 @@ export class DatePickerCard extends React.Component<MessagePaneProps, DatePicker
     }
 
     render() {
+
         return (
             <div>
-                <div className="gd-selected-date-container">
-                    <span className="gd-selected-date">{this.state.startDate.format('MMMM D, YYYY')}</span>
+                <div className={this.state.showTimeSelectClass}>
+                    <div className="gd-selected-date-container">
+                        <span className="gd-selected-date">{this.state.startDate.format('MMMM D, YYYY')}</span>
+                    </div>
+                    <ReactDatePicker
+                        startDate={this.state.startDate}
+                        endDate={this.state.endDate}
+                        selected={this.state.startDate}
+                        onChange={date => this.handleDateChange(date)}
+                        inline={true}
+                        fixedHeight
+                        tabIndex={1}
+                        dateFormat="DD-MMM HH:mm"
+                        showTimeSelect={false}
+                    />
                 </div>
-                <ReactDatePicker
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    selected={this.state.startDate}
-                    onChange={date => this.handleDateChange(date)}
-                    inline={true}
-                    fixedHeight
-                    tabIndex={1}
-                    dateFormat="DD-MMM HH:mm"
-                    showTimeSelect
-
-                />
             </div>
         );
     }

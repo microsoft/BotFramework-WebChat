@@ -1,38 +1,46 @@
 .gd-date-picker{
   width: 100% !important;
 
-  .react-datepicker{
-    border-bottom: 1px solid #aeaeae !important;
-    width: 26em;
+  .show-time-select{
+    .react-datepicker{
+      border-bottom: 1px solid #aeaeae !important;
+      width: 26em;
+    }
+
+
+    .gd-selected-date-container{
+      width: 22.1em;
+    }
+
+    .react-datepicker__navigation--next--with-time{
+      right: 100px;
+    }
+
+    .react-datepicker__time-box{
+      width: 100% !important;
+    }
+
+    .react-datepicker__header--time{
+      height: 59px;
+    }
+
+    .react-datepicker__month-container{
+      width: 70% !important;
+    }
+
+    .react-datepicker__time-container{
+      width: 30% !important;
+    }
+
+    .react-datepicker{
+      border-bottom: none;
+      border-radius: 0;
+    }
   }
 
-
-  .gd-selected-date-container{
-    width: 22.1em;
-  }
-
-  .react-datepicker__navigation--next--with-time{
-    right: 100px;
-  }
-
-  .react-datepicker__time-box{
-    width: 100% !important;
-  }
-
-  .react-datepicker__header--time{
-    height: 59px;
-  }
-
-  .react-datepicker__month-container{
-    width: 70% !important;
-  }
-
-  .react-datepicker__time-container{
-    width: 30% !important;
-  }
-
-  .react-datepicker{
-    border-bottom: none;
-    border-radius: 0;
+  .hide-time-select{
+    .react-datepicker__month-container{
+      width: 100% !important;
+    }
   }
 }
