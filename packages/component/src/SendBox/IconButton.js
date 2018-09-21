@@ -6,10 +6,13 @@ import React from 'react';
 const ROOT_CSS = css({
   backgroundColor: 'Transparent',
   border: 0,
-  cursor: 'pointer',
   height: '100%',
   padding: 0,
   width: 40,
+
+  '&:not(:disabled)': {
+    cursor: 'pointer'
+  },
 
   '& > svg': {
     fill: '#999'
@@ -20,12 +23,13 @@ const ROOT_CSS = css({
   }
 });
 
-export default ({ children, className, onClick }) =>
+export default ({ children, className, disabled, onClick }) =>
   <button
     className={ classNames(
       ROOT_CSS + '',
       (className || '') + ''
     ) }
+    disabled= { disabled }
     onClick={ onClick }
     type="button"
   >

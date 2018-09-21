@@ -116,7 +116,9 @@ export default class extends React.Component {
             sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' } />
-            <BasicSendBox className={ SEND_BOX_CSS } />
+            { !styleSet.options.hideSendBox &&
+              <BasicSendBox className={ SEND_BOX_CSS } />
+            }
           </TypeFocusSinkBox>
         }
       </Composer>

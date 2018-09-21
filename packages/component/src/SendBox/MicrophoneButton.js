@@ -149,7 +149,7 @@ class MicrophoneButton extends React.Component {
                   <p className="dictation status"><Localize text="Listening&hellip;" /></p>
             ) }
             <IconButton
-              disabled={ disabled && (readyState === STARTING || readyState === STOPPING) }
+              disabled={ disabled || (readyState === STARTING || readyState === STOPPING) }
               onClick={ this.handleClick }
             >
               <MicrophoneIcon />
@@ -161,13 +161,10 @@ class MicrophoneButton extends React.Component {
   }
 }
 
-MicrophoneButton.propTypes = {
-  disabled: PropTypes.bool
-};
-
 export default connectWithContext(
   ({ input: { speechState } }) => ({ speechState }),
   ({
+    disabled,
     setSendBox,
     startSpeakingActivity,
     startSpeechInput,
@@ -176,6 +173,7 @@ export default connectWithContext(
     styleSet,
     webSpeechPonyfill
   }) => ({
+    disabled,
     setSendBox,
     startSpeakingActivity,
     startSpeechInput,

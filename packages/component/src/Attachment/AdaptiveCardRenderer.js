@@ -108,6 +108,24 @@ class AdaptiveCardRenderer extends React.PureComponent {
         this.setState(() => ({ error: null }));
       }
 
+      // TODO: Verify if this code works
+      if (this.props.disabled) {
+          const hyperlinks = element.querySelectorAll('a');
+          const inputs = element.querySelectorAll('button, input, select, textarea');
+
+          [].forEach.call(inputs, input => {
+              input.disabled = true;
+          });
+
+          [].forEach.call(hyperlinks, hyperlink => {
+              hyperlink.addEventListener('click', event => {
+                  event.preventDefault();
+                  event.stopImmediatePropagation();
+                  event.stopPropagation();
+              });
+          });
+      }
+
       const firstChild = current.children[0];
 
       if (firstChild) {
@@ -143,6 +161,7 @@ export default connectWithContext(
   ({ settings: { language } }) => ({ language }),
   ({
     adaptiveCardHostConfig,
+    disabled,
     language,
     onCardAction,
     renderMarkdown,
@@ -150,6 +169,7 @@ export default connectWithContext(
     tapAction
   }) => ({
     adaptiveCardHostConfig,
+    disabled,
     language,
     onCardAction,
     renderMarkdown,

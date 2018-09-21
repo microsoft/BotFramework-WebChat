@@ -250,6 +250,8 @@ class Composer extends React.Component {
         activityRenderer,
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
+
+        // TODO: [P2] Move avatar initials to style options
         botAvatarInitials,
         collapseTimestamp,
         disabled,

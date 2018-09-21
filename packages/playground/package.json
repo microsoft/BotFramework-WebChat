@@ -13,6 +13,7 @@
     "glamor": "^2.20.40",
     "markdown-it": "^8.4.1",
     "markdown-it-for-inline": "^0.1.1",
+    "memoize-one": "^4.0.2",
     "microsoft-speech-browser-sdk": "^0.0.12",
     "on-error-resume-next": "^1.0.0",
     "react": "^16.4.1",

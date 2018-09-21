@@ -10,19 +10,26 @@ const ROOT_CSS = css({
   position: 'relative',
 
   '& > input': {
-    cursor: 'pointer',
     height: '100%',
     opacity: 0,
     position: 'absolute',
     right: 0,
-    top: 0
+    top: 0,
+
+    '&:not(:disabled)': {
+      cursor: 'pointer'
+    }
   },
 
   '& > .icon': {
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
-    height: '100%'
+    height: '100%',
+
+    '&.disabled > svg': {
+      fill: '#CCC'
+    }
   }
 });
 
@@ -52,17 +59,18 @@ class UploadAttachmentButton extends React.Component {
   }
 
   render() {
-    const { styleSet } = this.props;
+    const { disabled, styleSet } = this.props;
 
     return (
       <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
         <input
+          disabled={ disabled }
           multiple={ true }
           onChange={ this.handleFileChange }
           ref={ this.inputRef }
           type="file"
         />
-        <div className="icon">
+        <div className={ classNames('icon', { disabled }) }>
           <AttachmentIcon />
         </div>
       </div>
@@ -72,8 +80,9 @@ class UploadAttachmentButton extends React.Component {
 
 export default props =>
   <Context.Consumer>
-    { ({ sendFiles, styleSet }) =>
+    { ({ disabled, sendFiles, styleSet }) =>
       <UploadAttachmentButton
+        disabled={ disabled }
         sendFiles={ sendFiles }
         styleSet={ styleSet }
         { ...props }

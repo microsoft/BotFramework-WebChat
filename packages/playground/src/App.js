@@ -1,9 +1,11 @@
 import { css } from 'glamor';
 import React from 'react';
+import memoize from 'memoize-one';
 
 import ReactWebChat, {
-  createCognitiveServicesWebSpeechPonyfill,
   createBrowserWebSpeechPonyfill,
+  createCognitiveServicesWebSpeechPonyfill,
+  createStyleSet,
   renderMarkdown
 } from 'botframework-webchat';
 
@@ -55,6 +57,8 @@ export default class extends React.Component {
 
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
     this.handleCollapseTimestampChange = this.handleCollapseTimestampChange.bind(this);
+    this.handleDisabledChange = this.handleDisabledChange.bind(this);
+    this.handleHideSendBoxChange = this.handleHideSendBoxChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
@@ -65,6 +69,7 @@ export default class extends React.Component {
 
     this.mainRef = React.createRef();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
+    this.createMemoizedStyleSet = memoize(hideSendBox => createStyleSet({ hideSendBox }));
 
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
@@ -89,7 +94,9 @@ export default class extends React.Component {
         token: directLineToken,
         webSocket: webSocket === 'true' || +webSocket
       }),
+      disabled: false,
       faulty: false,
+      hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
       sendTyping: true,
       userAvatarInitials: 'WC'
@@ -114,6 +121,14 @@ export default class extends React.Component {
     }), () => {
       window.sessionStorage.setItem('PLAYGROUND_COLLAPSE_TIMESTAMP', value);
     });
+  }
+
+  handleDisabledChange({ target: { checked } }) {
+    this.setState(() => ({ disabled: checked }));
+  }
+
+  handleHideSendBoxChange({ target: { checked } }) {
+    this.setState(() => ({ hideSendBox: checked }) );
   }
 
   handleLanguageChange({ target: { value } }) {
@@ -169,6 +184,9 @@ export default class extends React.Component {
 
   render() {
     const { state } = this;
+    const styleSet = this.createMemoizedStyleSet(this.state.hideSendBox);
+
+    console.log(styleSet);
 
     return (
       <div
@@ -181,10 +199,12 @@ export default class extends React.Component {
           className={ WEB_CHAT_CSS }
           collapseTimestamp={ state.collapseTimestamp }
           directLine={ state.directLine }
+          disabled={ state.disabled }
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
           sendTyping={ state.sendTyping }
           storeKey="webchat"
+          styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
           userID="default-user"
           username="User 1"
@@ -250,6 +270,26 @@ export default class extends React.Component {
                 type="checkbox"
               />
               Send typing
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                checked={ state.disabled }
+                onChange={ this.handleDisabledChange }
+                type="checkbox"
+              />
+              Disabled
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                checked={ state.hideSendBox }
+                onChange={ this.handleHideSendBoxChange }
+                type="checkbox"
+              />
+              Hide send box
             </label>
           </div>
           <div>
