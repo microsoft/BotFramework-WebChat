@@ -117,7 +117,7 @@ export default class extends React.Component {
 
   handleCollapseTimestampChange({ target: { value } }) {
     this.setState(() => ({
-      collapseTimestamp: value === 'default' ? undefined : value === 'false' ? false : +value
+      collapseTimestamp: value
     }), () => {
       window.sessionStorage.setItem('PLAYGROUND_COLLAPSE_TIMESTAMP', value);
     });
@@ -185,6 +185,7 @@ export default class extends React.Component {
   render() {
     const { state } = this;
     const styleSet = this.createMemoizedStyleSet(this.state.hideSendBox);
+    const { collapseTimestamp } = state;
 
     return (
       <div
@@ -195,7 +196,7 @@ export default class extends React.Component {
           attachmentMiddleware={ this.attachmentMiddleware }
           botAvatarInitials={ state.botAvatarInitials }
           className={ WEB_CHAT_CSS }
-          collapseTimestamp={ state.collapseTimestamp }
+          collapseTimestamp={ collapseTimestamp === 'default' ? undefined : collapseTimestamp === 'false' ? false : +collapseTimestamp }
           directLine={ state.directLine }
           disabled={ state.disabled }
           locale={ state.language }
