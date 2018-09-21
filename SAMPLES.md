@@ -8,7 +8,7 @@ You can refer to our [README.md](README.md) on integrating Web Chat with your we
 
 ## Change font or color
 
-![Screenshot with custom style options](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-options.png)
+<img alt="Screenshot with custom style options" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-options.png" width="396" />
 
 If you need to do some simple styling, you can set them thru `styleOptions`. Style options are set of predefined styles that you can modify directly, and Web Chat will compute the whole stylesheet based on it.
 
@@ -37,7 +37,7 @@ List of supported options can be found [here](https://github.com/Microsoft/BotFr
 
 ## Change the CSS manually
 
-![Screenshot with custom style set](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-set.png)
+<img alt="Screenshot with custom style set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-set.png" width="396" />
 
 In the previous sample, we talked about customizing thru style options. Inside Web Chat, style options generates a set of CSS rules (enhanced with [glamor](https://github.com/threepointone/glamor)), we call it "style set".
 
@@ -71,7 +71,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
 
 ## Change the avatar of the bot within the dialog box
 
-![Screenshot with avatar initials](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-avatar-initials.png)
+<img alt="Screenshot with avatar initials" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-avatar-initials.png" width="396" />
 
 Avatar can be show as initials, use `botAvatarInitials` and `userAvatarInitials` props.
 
@@ -112,7 +112,7 @@ userAvatarInitials: 'WC'
 
 ## Show GitHub repository as an attachment
 
-![Screenshot with custom GitHub repository attachment](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-github-repository-attachment.png)
+<img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-github-repository-attachment.png" width="396" />
 
 ```jsx
 import { createProvider } from 'react-redux';
