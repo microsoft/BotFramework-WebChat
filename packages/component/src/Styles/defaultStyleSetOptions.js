@@ -1,3 +1,4 @@
+// TODO: [P4] Rename styleSetOptions to styleOptions
 const DEFAULT_OPTIONS = {
   accent: '#0063B1',
   avatarSize: 40,
