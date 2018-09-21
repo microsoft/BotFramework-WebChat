@@ -1,8 +1,15 @@
 import { primaryFont } from  '../Fonts';
 
 export default function createSuggestedActionStyle({
-  accent,
-  paddingRegular
+  paddingRegular,
+  paddingWide,
+  suggestedActionBackground,
+  suggestedActionBorder,
+  suggestedActionTextColor,
+  suggestedActionDisabledBackground,
+  suggestedActionDisabledBorder,
+  suggestedActionDisabledTextColor,
+  suggestedActionHeight
 }) {
   return {
     paddingBottom: paddingRegular,
@@ -13,17 +20,23 @@ export default function createSuggestedActionStyle({
     '& > button': {
       ...primaryFont,
 
-      backgroundColor: 'White',
-      borderColor: accent,
-      borderStyle: 'solid',
-      borderWidth: 2,
-      color: accent,
-      cursor: 'pointer',
-      fontSize: 16,
-      height: 40,
+      fontSize: 'inherit',
+      height: suggestedActionHeight,
+      paddingLeft: paddingWide,
+      paddingRight: paddingWide,
 
-      paddingLeft: 20,
-      paddingRight: 20
+      '&:disabled': {
+        background: suggestedActionDisabledBackground,
+        border: suggestedActionDisabledBorder,
+        color: suggestedActionDisabledTextColor
+      },
+
+      '&:not(:disabled)': {
+        background: suggestedActionBackground,
+        border: suggestedActionBorder,
+        color: suggestedActionTextColor,
+        cursor: 'pointer'
+      }
     }
   };
 }

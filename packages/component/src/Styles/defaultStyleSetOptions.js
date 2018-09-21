@@ -1,6 +1,9 @@
 // TODO: [P4] Rename styleSetOptions to styleOptions
+const DEFAULT_ACCENT = '#0063B1';
+const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
+
 const DEFAULT_OPTIONS = {
-  accent: '#0063B1',
+  accent: DEFAULT_ACCENT,
   avatarSize: 40,
 
   backgroundColor: 'White',
@@ -21,6 +24,7 @@ const DEFAULT_OPTIONS = {
   hideSendBox: false,
 
   paddingRegular: 10,
+  paddingWide: 20,
 
   scrollToBottomThreshold: 40,
   sendBoxHeight: 40,
@@ -28,7 +32,17 @@ const DEFAULT_OPTIONS = {
   // Visually show spoken text
   showSpokenText: false,
 
-  timestampColor: '#767676',
+  subtle: DEFAULT_SUBTLE,
+
+  suggestedActionBackground: 'White',
+  suggestedActionBorder: `solid 2px ${ DEFAULT_ACCENT }`,
+  suggestedActionTextColor: DEFAULT_ACCENT,
+  suggestedActionDisabledBackground: 'White',
+  suggestedActionDisabledBorder: `solid 2px #E6E6E6`,
+  suggestedActionDisabledTextColor: DEFAULT_SUBTLE,
+  suggestedActionHeight: 40,
+
+  timestampColor: DEFAULT_SUBTLE,
 
   videoHeight: 270 // based on bubbleMaxWidth, 480 / 16 * 9 = 270
 };

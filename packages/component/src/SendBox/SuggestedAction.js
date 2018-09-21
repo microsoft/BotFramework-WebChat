@@ -2,19 +2,18 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import { withStyleSet } from '../Context';
-import MainContext from '../Context';
+import Context from '../Context';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
   whiteSpace: 'initial'
 });
 
-export default withStyleSet(({ text, type, value, styleSet }) =>
-  <MainContext.Consumer>
-    { ({ focusSendBox, onCardAction }) =>
+export default ({ text, type, value }) =>
+  <Context.Consumer>
+    { ({ disabled, focusSendBox, onCardAction, styleSet }) =>
       <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
-        <button onClick={ () => {
+        <button disabled={ disabled } onClick={ () => {
           onCardAction({ type, value });
           focusSendBox();
         } }>
@@ -22,5 +21,4 @@ export default withStyleSet(({ text, type, value, styleSet }) =>
         </button>
       </div>
     }
-  </MainContext.Consumer>
-)
+  </Context.Consumer>

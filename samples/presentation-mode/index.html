@@ -37,9 +37,8 @@
           styleOptions
         }, document.getElementById('webchat'));
 
-        setTimeout(() => {
-          store.dispatch({ type: 'INPUT/SEND_MESSAGE', payload: { text: 'Hello, World!' } });
-        }, 1000);
+        setTimeout(() => store.dispatch({ type: 'INPUT/SEND_MESSAGE', payload: { text: 'card inputs' } }), 1000);
+        setTimeout(() => store.dispatch({ type: 'INPUT/SEND_MESSAGE', payload: { text: 'suggested-actions' } }), 1500);
       })().catch(err => console.error(err));
     </script>
   </body>
