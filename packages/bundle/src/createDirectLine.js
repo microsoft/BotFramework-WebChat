@@ -1,9 +1,10 @@
 import { DirectLine } from 'botframework-directlinejs';
 
-export default function ({ domain, fetch, token, webSocket }) {
+export default function ({ domain, fetch, secret, token, webSocket }) {
   return new DirectLine({
     domain,
     fetch,
+    secret,
     token,
     webSocket,
     createFormData: attachments => {
