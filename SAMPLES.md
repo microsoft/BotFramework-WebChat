@@ -1,60 +1,224 @@
-<p align="center">
-
-  ![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/webchat-screenshot.png)
-
-</p>
-
-We updated the look and feel of webchat control
-
-Fully customize webchat and use 100% your own look of the webchat control
-
-If you want to achieve the functionality below, you need to upgrade to the new Webchat control.
-
-Example snippets:
+![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/webchat-screenshot.png)
 
 # How to use Web Chat?
 
-There are few ways you can embed Web Chat into your existing website or web app.
+You can refer to our [README.md](README.md) on integrating Web Chat with your website or web app.
 
 # Customizing styles
 
 ## Change font or color
 
-If you need to modify something simple, you can set styles thru `styleOptions`. List of supported options can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
+![Screenshot with custom style options](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-options.png)
 
-```js
-const styleOptions = {
-  bubbleBackground: 'rgba(0, 0, 255, .1)',
-  bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
-};
+If you need to do some simple styling, you can set them thru `styleOptions`. Style options are set of predefined styles that you can modify directly, and Web Chat will compute the whole stylesheet based on it.
 
-window.WebChat.renderWebChat({
-  directLine: window.WebChat.createDirectLine({ token }),
-  styleOptions
-}, document.getElementById('webchat'));
+List of supported options can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/v4/botchat.js"></script>
+    <script>
+      const styleOptions = {
+        bubbleBackground: 'rgba(0, 0, 255, .1)',
+        bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+      };
+
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+        styleOptions
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
 ```
 
+## Change the CSS manually
+
+![Screenshot with custom style set](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-set.png)
+
+In the previous sample, we talked about customizing thru style options. Inside Web Chat, style options generates a set of CSS rules (enhanced with [glamor](https://github.com/threepointone/glamor)), we call it "style set".
+
+For deeper styling, you can also modify the style set manually by setting the CSS rules directly.
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/v4/botchat.js"></script>
+    <script>
+      const styleSet = window.WebChat.createStyleSet({
+        bubbleBackground: 'rgba(0, 0, 255, .1)',
+        bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+      });
+
+      styleSet.textContent = { ...styleSet.textContent,
+        fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
+        fontWeight: 'bold'
+      };
+
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+        styleOptions
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
+```
+
+## Change the avatar of the bot within the dialog box
+
+![Screenshot with avatar initials](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-avatar-initials.png)
+
+Avatar can be show as initials, use `botAvatarInitials` and `userAvatarInitials` props.
+
+If you need to modify something simple, you can set styles thru `styleOptions`. List of supported options can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/v4/botchat.js"></script>
+    <script>
+      const styleOptions = {
+        bubbleBackground: 'rgba(0, 0, 255, .1)',
+        bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+      };
+
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+        botAvatarInitials: 'BF',
+        userAvatarInitials: 'WC'
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
+```
+
+Inside the `renderWebChat` code, we added `botAvatarInitials` and `userAvatarInitials`:
+
+```js
+botAvatarInitials: 'BF',
+userAvatarInitials: 'WC'
+```
+
+`botAvatarInitials` will set the text inside the avatar on the left-hand side. If it is set to falsy value, the avatar on the bot side will be hidden. In contrast, `userAvatarInitials` will set the avatar text on the right-hand side.
+
+# Custom rendering activity or attachment
+
+## Show GitHub repository as an attachment
+
+![Screenshot with custom GitHub repository attachment](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-github-repository-attachment.png)
+
+```jsx
+import { createProvider } from 'react-redux';
+import { createStore, ReactWebChat } from 'botframework-webchat';
+import ReactDOM from 'react-dom';
+
+const GitHubRepositoryAttachment = props =>
+  <div style={{ fontFamily: '\'Calibri\', \'Helvetica Neue\', Arial, sans-serif', margin: 20, textAlign: 'center' }}>
+    <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true"><path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <p>
+      <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
+    </p>
+  </div>
+
+const Provider = createProvider('webchat');
+const store = createStore();
+const attachmentMiddleware = () => next => card => {
+  switch (card.attachment.contentType) {
+    case 'application/vnd.microsoft.botframework.samples.github-repository':
+      return <GitHubRepositoryAttachment owner={ card.attachment.content.owner } repo={ card.attachment.content.repo } />;
+
+    default:
+      return next(card);
+  }
+};
+
+ReactDOM.render(
+  <Provider store={ store }>
+    <ReactWebChat
+      attachmentMiddleware={ attachmentMiddleware }
+      directLine={ window.WebChat.createDirectLine({ token }) }
+      storeKey="webchat"
+    />
+  </Provider>,
+  document.getElementById('webchat')
+);
+```
+
+The full sample can be found at [/samples/custom-attachment-github-repository/](samples/custom-attachment-github-repository/).
+
+In this sample, we are adding a new React component called `GitHubRepositoryAttachment`:
+
+```jsx
+<div style={{ fontFamily: '\'Calibri\', \'Helvetica Neue\', Arial, sans-serif', margin: 20, textAlign: 'center' }}>
+  <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true"><path fillRule="evenodd" d="..."></path></svg>
+  <p>
+    <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
+  </p>
+</div>
+```
+
+Then, we create a middleware that will render the new React component when the bot send attachment of content type `application/vnd.microsoft.botframework.samples.github-repository`. Otherwise, it will continue on the middleware by calling `next(card)`.
+
+```jsx
+const attachmentMiddleware = () => next => card => {
+  switch (card.attachment.contentType) {
+    case 'application/vnd.microsoft.botframework.samples.github-repository':
+      return <GitHubRepositoryAttachment owner={ card.attachment.content.owner } repo={ card.attachment.content.repo } />;
+
+    default:
+      return next(card);
+  }
+};
+```
+
+The activity sent from the bot looks like the following:
+
+```json
+{
+  "type": "message",
+  "from": {
+    "role": "bot"
+  },
+  "attachmentLayout": "carousel",
+  "attachments": [
+    {
+      "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
+      "content": {
+        "owner": "Microsoft",
+        "repo": "BotFramework-WebChat"
+      }
+    },
+    {
+      "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
+      "content": {
+        "owner": "Microsoft",
+        "repo": "BotFramework-Emulator"
+      }
+    },
+    {
+      "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
+      "content": {
+        "owner": "Microsoft",
+        "repo": "BotFramework-DirectLineJS"
+      }
+    }
+  ]
+}
+```
+
+<!---
 ## Add a logo to the top bar
 
 ```js
 TODO: Add code snippet
 ```
-
-## Change the avatar of the bot within the dialog box
-
-(PM to fill-in)
-
-Avatar can be show as initials, use `botAvatarInitials` and `userAvatarInitials` props.
-
-```js
-window.WebChat.renderWebChat({
-  botAvatarInitials: 'BF',
-  directLine: window.WebChat.createDirectLine({ token }),
-  userAvatarInitials: 'WC'
-}, document.getElementById('webchat'));
-```
-
-# Adding UI
 
 ## Add a settings gear icon to the send box
 
@@ -84,7 +248,7 @@ TODO: Add code snippet
 
 # Building command-line interface for Web Chat
 
-## Full customization: Bring webchat to Command Line (pure Angular example TODO: Add code snippet).
+## Full customization: Bring Web Chat to Command Line (pure Angular example TODO: Add code snippet).
 
 ```js
 TODO: Add code snippet
@@ -102,50 +266,4 @@ TODO: Add code snippet
 
 TODO: Add screenshots
 TODO: Link to existing tutorials
-
-# Styling
-
-Style set is a set of CSS rules that will be applied to each individual component. These rules contains customizations like margin and padding. It cannot be used to override CSS rules that will break layout, such as flexbox.
-
-## Tweaking variables for style set
-
-```jsx
-import { createStyleSet } from 'botframework-webchat';
-
-// Instead of customizing CSS, users can provide options to generate a set of styles
-const myStyleSet = createStyleSet({
-  accent: '#F33'
-});
-
-export default () =>
-  <WebChat
-    directLine={{ secret: '...' }}
-    styleSet={ myStyleSet }
-  />
-```
-
-## Modifying part of the style set
-
-```jsx
-import { createStyleSet } from 'botframework-webchat';
-
-// StyleSet is serializable and users can import/export using JSON
-const myStyleSet = createStyleSet({
-  accent: '#F33'
-});
-
-myStyleSet.bubble = {
-  ...myStyleSet.bubble,
-
-  '& > .content': {
-    minHeight: 40,
-    padding: 5
-  }
-};
-
-export default () =>
-  <WebChat
-    directLine={{ secret: '...' }}
-    styleSet={ myStyleSet }
-  />
-```
+--->
