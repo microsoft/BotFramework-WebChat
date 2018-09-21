@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://azure.microsoft.com/en-us/services/bot-service/">
-    <img src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/abs-logo.png" alt="Azure Bot Services logo" width="360" />
+    <img src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/abs-logo.png" alt="Azure Bot Services logo" width="240" />
   </a>
 </p>
 
@@ -36,6 +36,8 @@ Here is how how you can add Web Chat control to you website:
   </body>
 </html>
 ```
+
+![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/webchat-screenshot.png)
 
 ## Integrate with JavaScript
 

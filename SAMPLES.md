@@ -1,5 +1,3 @@
-![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/webchat-screenshot.png)
-
 # How to use Web Chat?
 
 You can refer to our [README.md](README.md) on integrating Web Chat with your website or web app.
