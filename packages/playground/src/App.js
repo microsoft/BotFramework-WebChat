@@ -186,8 +186,6 @@ export default class extends React.Component {
     const { state } = this;
     const styleSet = this.createMemoizedStyleSet(this.state.hideSendBox);
 
-    console.log(styleSet);
-
     return (
       <div
         className={ ROOT_CSS }

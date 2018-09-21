@@ -43,6 +43,10 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   handleExecuteAction(action) {
     const { props } = this;
+
+    // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
+    if (props.disabled) { return; }
+
     const actionTypeName = action.getJsonTypeName();
 
     if (actionTypeName === 'Action.OpenUrl') {
