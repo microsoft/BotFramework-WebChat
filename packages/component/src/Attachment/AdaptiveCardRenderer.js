@@ -30,6 +30,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   handleClick({ target }) {
+    // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
+    if (this.props.disabled) { return; }
+
     const tabIndex = getTabIndex(target);
 
     // If the user is clicking on something that is already clickable, do not allow them to click the card.
