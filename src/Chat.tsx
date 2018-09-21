@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid/v5';
+import * as gideonBot from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
@@ -20,6 +21,7 @@ export interface ChatProps {
     chatTitle?: boolean | string;
     user: User;
     bot: User;
+    gid: string;
     botConnection?: IBotConnection;
     directLine?: DirectLineOptions;
     speechOptions?: SpeechOptions;
@@ -217,8 +219,41 @@ export class Chat extends React.Component<ChatProps, State> {
                 id: uuid(window.location.href, uuid.URL)
             };
         }
+        const state = this.store.getState();
 
-        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        if (!state.connection.verification.attempted) {
+            this.store.dispatch<ChatActions>({
+                type: 'Set_Verification',
+                verification: {
+                    attempted: true
+                }
+            });
+
+            gideonBot.verifyConversation(
+                this.props.gid,
+                user.id,
+                window.location.origin,
+                (res: any) => {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Verification',
+                        verification: {
+                            status: 1
+                        }
+                    });
+
+                    this.store.dispatch<ChatActions>({ type: 'Start_Connection', user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+                },
+                (err: any) => {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Verification',
+                        verification: {
+                            status: 2
+                        }
+                    });
+                    console.log(err);
+                }
+            );
+        }
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
                 if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
@@ -289,8 +324,6 @@ export class Chat extends React.Component<ChatProps, State> {
     render() {
         const state = this.store.getState();
         const { open } = this.state;
-
-        console.log(open);
 
         // only render real stuff after we know our dimensions
         return (

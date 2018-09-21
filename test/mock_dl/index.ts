@@ -100,6 +100,8 @@ const startConversation = (req: express.Request, res: express.Response) => {
     const [test, area] = token.split("/");
     const conversationId = Conversations.createConversation();
 
+    console.log("STARTING");
+
     res.send({
         conversationId,
         token,
@@ -176,6 +178,7 @@ const processCommand = (conversationId: string, req: express.Request, res: expre
             commands[text].server(conversationId, sendActivity);
         }
     } else if (type === 'event') {
+        console.log("SENDING EVENT")
         sendActivity(conversationId, {
             from: config.bot,
             name: body.name,
@@ -198,6 +201,7 @@ const processCommand = (conversationId: string, req: express.Request, res: expre
                 process.exit();
                 return;
             default:
+                console.log("SENDING ACTIVITY")
                 sendActivity(conversationId, {
                     type: "message",
                     timestamp: new Date().toUTCString(),
