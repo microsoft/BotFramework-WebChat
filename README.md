@@ -1,32 +1,35 @@
-# botframework-webchat
+<p align="center">
+  <a href="https://azure.microsoft.com/en-us/services/bot-service/">
+    <img src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/abs-logo.png" alt="Azure Bot Services logo" width="360" />
+  </a>
+</p>
 
-[![npm version](https://badge.fury.io/js/botframework-webchat.svg)](https://badge.fury.io/js/botframework-webchat) [![Build Status](https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master)](https://travis-ci.org/Microsoft/BotFramework-WebChat)
+<p align="center">A highly-customizable web-based client for Azure Bot Services.</p>
 
-# Roadmap
+<p align="center">
+  <a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
+  <a href="https://travis-ci.org/Microsoft/BotFramework-WebChat"><img alt="Build Status" src="https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=v4" /></a>
+</p>
 
-## Parity
+# About
 
-- [ ] Adaptive Cards: Emit `load` event when image is loaded
-- [ ] Adaptive Cards: Emit `click` event except `A`/`AUDIO`/`VIDEO`/`BUTTON`/`INPUT`/`LABEL`/`TEXTAREA`/`SELECT`
-- [ ] Adaptive Cards: Focus on transcript DOM after card action so the user can continue typing on
-- [ ] Select activity UI and API, could be a sample or canned
-- [ ] Fix Markdown before Markdown-It
-   - [ ] Convert `<br>` to `\n`
-   - [ ] URL encode all links, e.g. `[abc](abc def)` should be `[abc](abc%20def)`
-   - [ ] Render lines with empty spaces correctly, e.g. `abc\n \ndef`
-- [ ] Use `inputHint` for handsfree mode: `expectingInput` should retrigger microphone
-- [ ] Migrate translations
+`PM: Please fill-in`
 
-## Chores
+# How to use
 
-- [ ] Revisit `connect()`
-   - [ ] Can we eliminate all Redux selectors and move them to `Composer`?
-      - [ ] Or, call we eliminate all populated properties and move them to Redux?
-         - E.g. `settings.language`
-      - [ ] Look at speak code first, we migh tnot able to eliminate all Redux selectors due to speak code
-   - [ ] Can we eliminate all dispatch and use actions dispatcher from `Composer`?
-- [ ] Deprecate "locale" prop and rename it to "language"
-- [ ] Customization localization strings
+First, create a bot using [Azure Bot Services](https://azure.microsoft.com/en-us/services/bot-service/).
+
+Then, in your HTML file, add the following:
+
+```html
+<iframe src="https://webchat.botframework.com/embed/your-bot-name?s=your-bot-secret"></iframe>
+```
+
+# Customizations
+
+`PM: Please fill-in`
+
+[Samples page](SAMPLES.md)
 
 # Contributions
 
