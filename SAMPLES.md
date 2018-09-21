@@ -123,7 +123,7 @@ const GitHubRepositoryAttachment = props =>
     <p>
       <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
     </p>
-  </div>
+  </div>;
 
 const Provider = createProvider('webchat');
 const store = createStore();
@@ -154,12 +154,13 @@ The full sample can be found at [/samples/custom-attachment-github-repository/](
 In this sample, we are adding a new React component called `GitHubRepositoryAttachment`:
 
 ```jsx
-<div style={{ fontFamily: '\'Calibri\', \'Helvetica Neue\', Arial, sans-serif', margin: 20, textAlign: 'center' }}>
-  <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true"><path fillRule="evenodd" d="..."></path></svg>
-  <p>
-    <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
-  </p>
-</div>
+const GitHubRepositoryAttachment = props =>
+  <div style={{ fontFamily: '\'Calibri\', \'Helvetica Neue\', Arial, sans-serif', margin: 20, textAlign: 'center' }}>
+    <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true"><path fillRule="evenodd" d="..."></path></svg>
+    <p>
+      <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
+    </p>
+  </div>;
 ```
 
 Then, we create a middleware that will render the new React component when the bot send attachment of content type `application/vnd.microsoft.botframework.samples.github-repository`. Otherwise, it will continue on the middleware by calling `next(card)`.
