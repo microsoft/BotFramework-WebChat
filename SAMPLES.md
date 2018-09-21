@@ -1,16 +1,20 @@
-# How to use Web Chat?
+# Integrate Web Chat into your website
 
-You can refer to our [README.md](README.md) on integrating Web Chat with your website or web app.
+Follow the instructions on the [README.md](README.md) page to integrate the Web Chat control into your website.
 
 # Customizing styles
 
+The latest version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. Below are several examples of how to customize those elements of the Web Chat UI.
+
+You can find the full list of all settings that the Web Chat control understands [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
+
 ## Change font or color
+
+Instead of using the default background color and the fonts used inside of the chat bubbles, you can customize those to match the style of the target web page. The code snippet below allows you to change the background color of messages from the user and from the bot.
 
 <img alt="Screenshot with custom style options" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-options.png" width="396" />
 
 If you need to do some simple styling, you can set them thru `styleOptions`. Style options are set of predefined styles that you can modify directly, and Web Chat will compute the whole stylesheet based on it.
-
-List of supported options can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
 
 ```html
 <!DOCTYPE html>
@@ -26,6 +30,8 @@ List of supported options can be found [here](https://github.com/Microsoft/BotFr
 
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+
+        // Passing "styleOptions" when rendering Web Chat
         styleOptions
       }, document.getElementById('webchat'));
     </script>
@@ -35,9 +41,11 @@ List of supported options can be found [here](https://github.com/Microsoft/BotFr
 
 ## Change the CSS manually
 
+In addition to colors, you can modify fonts used to render messages:
+
 <img alt="Screenshot with custom style set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-set.png" width="396" />
 
-In the previous sample, we talked about customizing thru style options. Inside Web Chat, style options generates a set of CSS rules (enhanced with [glamor](https://github.com/threepointone/glamor)), we call it "style set".
+Inside Web Chat, styles are set through *style sets*, which are a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can modify the style set by setting the CSS rules directly:
 
 For deeper styling, you can also modify the style set manually by setting the CSS rules directly.
 

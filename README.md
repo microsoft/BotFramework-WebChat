@@ -27,7 +27,7 @@ Here is how how you can add Web Chat control to you website:
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/v4/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/v4/BotChat.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' })
@@ -43,7 +43,7 @@ Here is how how you can add Web Chat control to you website:
 
 ### Full bundle
 
-Sample at [`samples/full-bundle`](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/full-bundle/).
+You can use the full, typical webchat package that contains the most typically used features.
 
 ```html
 <!DOCTYPE html>
@@ -53,23 +53,25 @@ Sample at [`samples/full-bundle`](https://github.com/Microsoft/BotFramework-WebC
     <script src="https://cdn.botframework.com/botframework-webchat/v4/BotChat.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: '...' })
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECREET' })
       }, document.getElementById('webchat'));
     </script>
   </body>
 </html>
 ```
 
+See a working sample with full Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/full-bundle/).
+
 ### Minimal bundle
 
-Sample at [`samples/minimal-bundle`](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/minimal-bundle/).
-
-This bundle does not contains:
+Instead of using the full, typical package of Web Chat, you can choose a lighter-weight sample with fewer features. This bundle does not contain:
 - Adaptive Cards
 - Cognitive Services
 - Markdown-It
 
 Since Adaptive Cards is not include in this bundle, rich cards that depends on Adaptive Cards will not render, e.g. hero card, receipt card, etc. List of attachments that are not supported without Adaptive Cards can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Middleware/Attachment/createAdaptiveCardMiddleware.js).
+
+See a working sample with minimal Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/samples/minimal-bundle/).
 
 ```html
 <!DOCTYPE html>
@@ -121,10 +123,9 @@ export default class extends React.Component {
 }
 ```
 
-# Customizations
+# Customize Web Chat UI
 
-The new version of Web Chat control adds many customization options:
-[Samples page](SAMPLES.md)
+The new version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. See more about [customizing Web Chat](SAMPLES.md).
 
 # Contributions
 
