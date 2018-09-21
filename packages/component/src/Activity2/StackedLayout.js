@@ -61,7 +61,8 @@ const StackedLayout = ({
   styleSet,
   userAvatarInitials,
 }) => {
-  const initials = activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials;
+  const fromUser = activity.from.role === 'user';
+  const initials = fromUser ? userAvatarInitials : botAvatarInitials;
   const { state } = activity.channelData || {};
   const showSendStatus = state === SENDING || state === SEND_FAILED;
 
@@ -69,10 +70,10 @@ const StackedLayout = ({
     <div className={ classNames(
       ROOT_CSS + '',
       styleSet.stackedLayout + '',
-      { 'from-user': activity.from.role === 'user' }
+      { 'from-user': fromUser }
     ) }>
       { !!initials &&
-        <Avatar className="avatar">{ initials }</Avatar>
+        <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
       }
       <div className="content">
         {
@@ -88,7 +89,7 @@ const StackedLayout = ({
             <div className="row message">
               <Bubble
                 className="bubble"
-                fromUser={ activity.from.role === 'user' }
+                fromUser={ fromUser }
               >
                 { children({
                   activity,
@@ -106,7 +107,7 @@ const StackedLayout = ({
             <div className="row attachment" key={ index }>
               <Bubble
                 className="attachment bubble"
-                fromUser={ activity.from.role === 'user' }
+                fromUser={ fromUser }
                 key={ index }
               >
                 { children({ attachment }) }

@@ -1,5 +1,9 @@
 import { createStore } from 'botframework-webchat-core';
-import ReactWebChat, { concatMiddleware, Context } from 'botframework-webchat-component';
+import ReactWebChat, {
+  concatMiddleware,
+  Context,
+  createStyleSet
+} from 'botframework-webchat-component';
 
 import createDirectLine from './createDirectLine';
 import coreRenderWebChat from './renderWebChat';
@@ -13,6 +17,7 @@ export {
   Context,
   createDirectLine,
   createStore,
+  createStyleSet,
   renderWebChat
 }
 
@@ -22,6 +27,7 @@ window['WebChat'] = {
   Context,
   createDirectLine,
   createStore,
+  createStyleSet,
   renderWebChat,
   ReactWebChat
 };

@@ -71,7 +71,8 @@ const CarouselFilmStrip = ({
   styleSet,
   userAvatarInitials
 }) => {
-  const initials = activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials;
+  const fromUser = activity.from.role === 'user';
+  const initials = fromUser ? userAvatarInitials : botAvatarInitials;
 
   return (
     <div
@@ -83,7 +84,7 @@ const CarouselFilmStrip = ({
       ref={ filmContext._setFilmStripRef }
     >
       { !!initials &&
-        <Avatar className="avatar">{ initials }</Avatar>
+        <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
       }
       <div className="content">
         {
