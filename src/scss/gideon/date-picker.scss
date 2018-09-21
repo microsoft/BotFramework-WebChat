@@ -1,6 +1,10 @@
 .gd-date-picker{
   width: 100% !important;
 
+  button{
+    margin-top: -0.4em;
+  }
+
   .react-datepicker{
     border-top-right-radius: 0;
     border-top-left-radius: 0;
