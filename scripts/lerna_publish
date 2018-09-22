@@ -1,0 +1,9 @@
+#!/bin/bash
+
+NPM_TOKEN="$NPM_TOKEN"
+
+# If on "v4" branch, deploy to "v4" tag too
+if [ "$TRAVIS_BRANCH" = "v4" ]
+then
+  lerna publish --npm-tag v4
+fi

@@ -35,12 +35,16 @@ deploy:
   #   on:
   #     branch: v4
   - provider: script
-    script: bash scripts/deploycdn.sh
+    script: bash scripts/deploy_cdn
     skip_cleanup: true
     on:
       branch: v4
   - provider: script
-    script: bash scripts/deploycdn.sh
+    script: bash scripts/deploy_cdn
     skip_cleanup: true
     on:
       tags: true
+  - provider: script
+    script: bash scripts/lerna_publish
+    on:
+      branch: v4

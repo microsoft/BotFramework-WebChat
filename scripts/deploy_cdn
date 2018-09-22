@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Install blobxfer
 curl -L -o ~/blobxfer https://github.com/Azure/blobxfer/releases/download/1.2.1/blobxfer-1.2.1-linux-x86_64
 chmod +x ~/blobxfer
@@ -18,7 +20,7 @@ then
 fi
 
 # If on "v4" branch, deploy to "v4" tag too
-if [ "$TRAVIS_BRANCH" = "master" ]
+if [ "$TRAVIS_BRANCH" = "v4" ]
 then
 # Upload to /v4/
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/v4 --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
