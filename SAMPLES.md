@@ -8,6 +8,8 @@ The latest version of Web Chat control provides rich customization options: you 
 
 You can find the full list of all settings that the Web Chat control understands [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
 
+These settings will generate a *style set*, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set [here](https://github.com/Microsoft/BotFramework-WebChat/blob/v4/packages/component/src/Styles/createStyleSet.js).
+
 ## Change font or color
 
 Instead of using the default background color and the fonts used inside of the chat bubbles, you can customize those to match the style of the target web page. The code snippet below allows you to change the background color of messages from the user and from the bot.
@@ -45,9 +47,9 @@ In addition to colors, you can modify fonts used to render messages:
 
 <img alt="Screenshot with custom style set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-style-set.png" width="396" />
 
-Inside Web Chat, styles are set through *style sets*, which are a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can modify the style set by setting the CSS rules directly:
-
 For deeper styling, you can also modify the style set manually by setting the CSS rules directly.
+
+> Since CSS rules are tightly-coupled to the structure of the DOM tree, there is possibility that these rules need to be updated to work with the newer version of Web Chat.
 
 ```html
 <!DOCTYPE html>
@@ -56,11 +58,13 @@ For deeper styling, you can also modify the style set manually by setting the CS
     <div id="webchat"></div>
     <script src="https://cdn.botframework.com/botframework-webchat/v4/botchat.js"></script>
     <script>
+      // "styleSet" is a set of CSS rules which are generated from "styleOptions"
       const styleSet = window.WebChat.createStyleSet({
         bubbleBackground: 'rgba(0, 0, 255, .1)',
         bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
       });
 
+      // After generated, you can modify the CSS rules
       styleSet.textContent = { ...styleSet.textContent,
         fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
         fontWeight: 'bold'
@@ -68,7 +72,9 @@ For deeper styling, you can also modify the style set manually by setting the CS
 
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
-        styleOptions
+
+        // Passing "styleSet" when rendering Web Chat
+        styleSet
       }, document.getElementById('webchat'));
     </script>
   </body>
@@ -77,11 +83,9 @@ For deeper styling, you can also modify the style set manually by setting the CS
 
 ## Change the avatar of the bot within the dialog box
 
+The latest Web Chat support avatar, you can customize them using `botAvatarInitials` and `userAvatarInitials` props.
+
 <img alt="Screenshot with avatar initials" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-avatar-initials.png" width="396" />
-
-Avatar can be show as initials, use `botAvatarInitials` and `userAvatarInitials` props.
-
-If you need to modify something simple, you can set styles thru `styleOptions`. List of supported options can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v4/packages/component/src/Styles/defaultStyleSetOptions.js).
 
 ```html
 <!DOCTYPE html>
@@ -116,7 +120,16 @@ userAvatarInitials: 'WC'
 
 # Custom rendering activity or attachment
 
+With the latest version of Web Chat, you can also render activities or attachments that Web Chat does not support out-of-the-box. Activities and attachments render are sent thru a customizable pipeline that modeled after [Redux middleware](https://redux.js.org/api/applymiddleware). The pipeline is flexible enough that you can do the following tasks easily:
+
+- Decorate existing activities/attachments
+- Add new activities/attachments
+- Replace existing activities/attachments (or remove them)
+- Daisy chain middleware together
+
 ## Show GitHub repository as an attachment
+
+If you want to display a deck of GitHub repository cards, you can create a new React component for the GitHub repository and add it as a middleware for attachment.
 
 <img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/v4/doc/sample-custom-github-repository-attachment.png" width="396" />
 
