@@ -12,7 +12,7 @@ before_install:
   - npm install
   - sudo apt-get install jq
   - npx version-from-git --travis
-  - lerna version `cat package.json | jq -r .version`
+  - lerna version --skip-git `cat package.json | jq -r .version`
 
 install:
   #  - docker build -t webchat.azurecr.io/playground .
