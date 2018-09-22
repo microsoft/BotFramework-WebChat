@@ -1,6 +1,6 @@
 {
   "name": "@webchattest/botframework-webchat",
-  "version": "4.0.0-0",
+  "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
   "main": "lib/index.js",
   "scripts": {
@@ -22,8 +22,8 @@
     "babel-runtime": "^7.0.0-beta.3",
     "bluebird": "^3.5.2",
     "botframework-directlinejs": "0.9.18-master.3cece81",
-    "@webchattest/botframework-webchat-component": "^4.0.0-0",
-    "@webchattest/botframework-webchat-core": "^4.0.0-0",
+    "@webchattest/botframework-webchat-component": "^0.0.0-0",
+    "@webchattest/botframework-webchat-core": "^0.0.0-0",
     "core-js": "^2.5.7",
     "markdown-it": "^8.4.2",
     "markdown-it-for-inline": "^0.1.1",

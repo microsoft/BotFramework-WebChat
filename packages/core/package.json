@@ -1,6 +1,6 @@
 {
   "name": "@webchattest/botframework-webchat-core",
-  "version": "4.0.0-0",
+  "version": "0.0.0-0",
   "description": "Core of botframework-webchat",
   "main": "lib/index.js",
   "private": true,
