@@ -3,11 +3,11 @@
 
   button{
     margin-top: -0.4em;
+    width: 16.1em;
   }
 
   .react-datepicker{
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+    border-radius: 0;
   }
 
   .react-datepicker__day--range-start, .react-datepicker__day--range-end{

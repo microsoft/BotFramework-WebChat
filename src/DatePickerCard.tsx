@@ -91,6 +91,7 @@ export class DatePickerCard extends React.Component<MessagePaneProps, DatePicker
                     <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
                         Press enter to submit
                     </button>
+
                 </div>
             </div>
         );
