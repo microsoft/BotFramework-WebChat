@@ -1,7 +1,6 @@
 {
-  "name": "botframework-webchat",
-  "version": "4.0.0-0",
-  "description": "Embeddable web chat control for the Microsoft Bot Framework",
+  "name": "botframework-webchat-root",
+  "version": "0.0.0-0",
   "private": true,
   "files": [
     "lib/**/*"
@@ -14,6 +13,7 @@
     "clean:bundle": "cd packages && cd bundle && npm run clean",
     "clean:component": "cd packages && cd component && npm run clean",
     "clean:core": "cd packages && cd core && npm run clean",
+    "prepublishOnly": "cd packages && cd bundle && npm run prepublishOnly",
     "test": "lerna run test",
     "watch": "npx concurrently --names \"bundle,component,core\" \"npm run watch:bundle\" \"npm run watch:component\" \"npm run watch:core\"",
     "watch:bundle": "cd packages && cd bundle && npm run watch",
