@@ -16,12 +16,12 @@ echo Will publish to CDN at $PACKAGE_NAME/$PACKAGE_VERSION/*
 if [ -n "$TRAVIS_TAG" ]
 then
 # Upload to /latest/
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi
 
 # If on "v4" branch, deploy to "v4" tag too
 if [ "$TRAVIS_BRANCH" = "v4" ]
 then
 # Upload to /v4/
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/v4 --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/v4 --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi
