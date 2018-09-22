@@ -19,9 +19,9 @@ then
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi
 
-# If on "v4" branch, deploy to "v4" tag too
+# If on "v4" branch, deploy to "preview" tag too
 if [ "$TRAVIS_BRANCH" = "v4" ]
 then
-# Upload to /v4/
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/v4 --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+# Upload to /preview/
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/preview --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi

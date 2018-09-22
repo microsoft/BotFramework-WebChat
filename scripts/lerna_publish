@@ -6,11 +6,11 @@ echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > ~/.npmrc
 if [ "$TRAVIS_BRANCH" = "v4" ]
 then
   cd packages/core
-  npm publish --tag v4
+  npm publish --tag preview
 
   cd ../component
-  npm publish --tag v4
+  npm publish --tag preview
 
   cd ../bundle
-  npm publish --tag v4
+  npm publish --tag preview
 fi
