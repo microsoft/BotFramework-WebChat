@@ -1,5 +1,9 @@
 # Microsoft Bot Framework Web Chat
 
+***Web Chat v4 is now in public preview.** To get started, please visit the [`preview`](https://github.com/Microsoft/BotFramework-WebChat/tree/preview) branch for details.*
+
+## About
+
 Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API.
 
 Used by the Bot Framework developer portal, [Emulator](https://github.com/Microsoft/BotFramework-Emulator), Web Chat channel, and [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/)
