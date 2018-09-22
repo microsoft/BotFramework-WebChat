@@ -1,9 +1,0 @@
-{
-  "public": "../..",
-  "rewrites": [
-    { "source": "/BotChat.js", "destination": "packages/bundle/dist/BotChat.js" },
-    { "source": "/BotChat-core.js", "destination": "packages/bundle/dist/BotChat-core.js" },
-    { "source": "/BotChat-es5.js", "destination": "packages/bundle/dist/BotChat-es5.js" },
-    { "source": "/", "destination": "samples/custom-attachment-github-repository/index.html" }
-  ]
-}
