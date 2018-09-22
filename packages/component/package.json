@@ -1,5 +1,5 @@
 {
-  "name": "@webchattest/botframework-webchat-component",
+  "name": "botframework-webchat-component",
   "version": "0.0.0-0",
   "description": "React component of botframework-webchat",
   "main": "lib/index.js",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "adaptivecards": "^1.0.0",
-    "@webchattest/botframework-webchat-core": "^0.0.0-0",
+    "botframework-webchat-core": "^0.0.0-0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",

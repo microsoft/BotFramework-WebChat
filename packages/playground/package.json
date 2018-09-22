@@ -5,9 +5,9 @@
   "dependencies": {
     "adaptivecards": "^1.0.0",
     "botframework-directlinejs": "0.9.18-master.3cece81",
-    "@webchattest/botframework-webchat": "^0.0.0-0",
-    "@webchattest/botframework-webchat-component": "^0.0.0-0",
-    "@webchattest/botframework-webchat-core": "^0.0.0-0",
+    "botframework-webchat": "^0.0.0-0",
+    "botframework-webchat-component": "^0.0.0-0",
+    "botframework-webchat-core": "^0.0.0-0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",

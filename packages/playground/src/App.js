@@ -7,7 +7,7 @@ import ReactWebChat, {
   createCognitiveServicesWebSpeechPonyfill,
   createStyleSet,
   renderMarkdown
-} from '@webchattest/botframework-webchat';
+} from 'botframework-webchat';
 
 import createDevModeAttachmentMiddleware from './createDevModeAttachmentMiddleware';
 import createFaultyDirectLine from './createFaultyDirectLine';

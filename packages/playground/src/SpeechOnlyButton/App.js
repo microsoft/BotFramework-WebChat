@@ -6,7 +6,7 @@ import DictateButton from 'react-dictate-button';
 import React from 'react';
 import Say from 'react-say';
 
-import { postActivity } from '@webchattest/botframework-webchat';
+import { postActivity } from 'botframework-webchat';
 
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 

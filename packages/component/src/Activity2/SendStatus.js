@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Constants } from '@webchattest/botframework-webchat-core';
+import { Constants } from 'botframework-webchat-core';
 
 import connectWithContext from '../connectWithContext';
 import Localize, { localize } from '../Localization/Localize';

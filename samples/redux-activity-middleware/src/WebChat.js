@@ -1,7 +1,7 @@
 import { createProvider } from 'react-redux';
 import React from 'react';
 
-import ReactWebChat, { createDirectLine, createStore } from '@webchattest/botframework-webchat';
+import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
 import dispatchIncomingActivityMiddleware from './dispatchIncomingActivityMiddleware';
 
 const WebChatProvider = createProvider('webchat');
@@ -24,18 +24,11 @@ export default class extends React.Component {
   }
 
   async fetchToken() {
-    // const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-    // const { token } = await res.json();
-
-    // this.setState(() => ({
-    //   directLine: createDirectLine({ token })
-    // }));
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const { token } = await res.json();
 
     this.setState(() => ({
-      directLine: createDirectLine({
-        domain: 'http://localhost:5000/v3/directline',
-        webSocket: false
-      })
+      directLine: createDirectLine({ token })
     }));
   }
 

@@ -2,8 +2,21 @@
 
 echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > ~/.npmrc
 
-# If on "v4" branch, deploy to "v4" tag too
-if [ "$TRAVIS_BRANCH" = "v4" ]
+# If TRAVIS_TAG is present, it means this is going PRODUCTION
+if [ -n "$TRAVIS_TAG" ]
+then
+  cd packages/core
+  npm publish
+
+  cd ../component
+  npm publish
+
+  cd ../bundle
+  npm publish
+fi
+
+# If on "preview" branch, deploy to "preview" tag
+if [ "$TRAVIS_BRANCH" = "preview" ]
 then
   cd packages/core
   npm publish --tag preview

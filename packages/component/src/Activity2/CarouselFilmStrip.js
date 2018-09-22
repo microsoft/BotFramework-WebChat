@@ -3,7 +3,7 @@ import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
 
-import { Constants } from '@webchattest/botframework-webchat-core';
+import { Constants } from 'botframework-webchat-core';
 
 import Avatar from './Avatar';
 import Bubble from './Bubble';
