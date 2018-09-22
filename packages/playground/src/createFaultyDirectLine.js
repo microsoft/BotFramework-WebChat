@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 
 import 'rxjs/observable/throw';
 
-import { createDirectLine } from 'botframework-webchat';
+import { createDirectLine } from '@webchattest/botframework-webchat';
 
 export default function createFaultyDirectLine(directLineOptions) {
   const underlying = createDirectLine(directLineOptions);

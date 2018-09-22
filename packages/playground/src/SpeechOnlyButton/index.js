@@ -2,7 +2,7 @@ import { DirectLine } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
 import React from 'react';
 
-import { createStore, connect as createConnectAction } from 'botframework-webchat';
+import { createStore, connect as createConnectAction } from '@webchattest/botframework-webchat';
 
 import App from './App';
 

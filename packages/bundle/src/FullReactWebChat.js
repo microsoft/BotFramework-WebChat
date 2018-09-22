@@ -2,7 +2,7 @@ import * as adaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import BasicWebChat, { createAdaptiveCardsAttachmentMiddleware, concatMiddleware } from 'botframework-webchat-component';
+import BasicWebChat, { createAdaptiveCardsAttachmentMiddleware, concatMiddleware } from '@webchattest/botframework-webchat-component';
 
 import renderMarkdown from './renderMarkdown';
 

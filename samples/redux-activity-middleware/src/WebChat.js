@@ -1,7 +1,7 @@
 import { createProvider } from 'react-redux';
 import React from 'react';
 
-import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
+import ReactWebChat, { createDirectLine, createStore } from '@webchattest/botframework-webchat';
 import dispatchIncomingActivityMiddleware from './dispatchIncomingActivityMiddleware';
 
 const WebChatProvider = createProvider('webchat');

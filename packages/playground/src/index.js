@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
-import { createStore } from 'botframework-webchat-core';
+import { createStore } from '@webchattest/botframework-webchat-core';
 
 import App from './App';
 import SpeechOnlyButtonApp from './SpeechOnlyButton/index';

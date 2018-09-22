@@ -2,7 +2,7 @@ import { createProvider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { createStore } from 'botframework-webchat-core';
+import { createStore } from '@webchattest/botframework-webchat-core';
 
 const REDUX_STORE_KEY = 'webchat';
 
