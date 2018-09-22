@@ -5,5 +5,12 @@ echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > ~/.npmrc
 # If on "v4" branch, deploy to "v4" tag too
 if [ "$TRAVIS_BRANCH" = "v4" ]
 then
-  npm run lerna-publish -- --npm-tag v4
+  cd packages/core
+  npm publish --tag v4
+
+  cd ../component
+  npm publish --tag v4
+
+  cd ../bundle
+  npm publish --tag v4
 fi
