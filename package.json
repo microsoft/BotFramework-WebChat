@@ -13,6 +13,7 @@
     "clean:bundle": "cd packages && cd bundle && npm run clean",
     "clean:component": "cd packages && cd component && npm run clean",
     "clean:core": "cd packages && cd core && npm run clean",
+    "lerna-publish": "lerna publish",
     "prepublishOnly": "cd packages && cd bundle && npm run prepublishOnly",
     "test": "lerna run test",
     "watch": "npx concurrently --names \"bundle,component,core\" \"npm run watch:bundle\" \"npm run watch:component\" \"npm run watch:core\"",
