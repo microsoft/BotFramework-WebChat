@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > ~/.npmrc
+
 # If on "v4" branch, deploy to "v4" tag too
 if [ "$TRAVIS_BRANCH" = "v4" ]
 then
