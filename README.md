@@ -131,7 +131,7 @@ See a working sample with Web Chat rendered by React [here](https://github.com/M
 
 # Customize Web Chat UI
 
-The new version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. See more about [customizing Web Chat](SAMPLES.md).
+The new version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-WebChat/blob/preview/SAMPLES.md).
 
 # Contributions
 
