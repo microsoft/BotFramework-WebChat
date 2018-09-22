@@ -2,7 +2,8 @@
 curl -L -o ~/blobxfer https://github.com/Azure/blobxfer/releases/download/1.2.1/blobxfer-1.2.1-linux-x86_64
 chmod +x ~/blobxfer
 
-PACKAGE_NAME=$(node -p require\(\'$TRAVIS_BUILD_DIR/packages/bundle/package.json\'\).name)
+# PACKAGE_NAME=$(node -p require\(\'$TRAVIS_BUILD_DIR/packages/bundle/package.json\'\).name)
+PACKAGE_NAME=botframework-webchat-test
 PACKAGE_VERSION=$(node -p require\(\'$TRAVIS_BUILD_DIR/packages/bundle/package.json\'\).version)
 echo Will publish to CDN at $PACKAGE_NAME/$PACKAGE_VERSION/*
 
