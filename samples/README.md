@@ -12,9 +12,9 @@ This section covers samples helping you to jumpstart embedding Web Chat in your 
 
 For simplicity, you can use a `<script>` tag to embed Web Chat from a CDN.
 
-- [Full bundle](https://microsoft.github.io/BotFramework-WebChat/full-bundle)
-- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle)
-- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle-with-markdown)
+- [Full bundle](https://microsoft.github.io/BotFramework-WebChat/full-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/full-bundle)
+- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle)
+- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle-with-markdown) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle-with-markdown)
 
 ### Thru NPM (as a React component)
 
@@ -22,16 +22,16 @@ You can also embed Web Chat as a React component from NPM. This is a more advanc
 
 This approach will give you lots of flexibility to style and customize the component, including breaking down Web Chat into pieces and recompose back into a component.
 
-- [Integrate with React](https://microsoft.github.io/BotFramework-WebChat/integrate-with-react)
+- [Integrate with React](https://microsoft.github.io/BotFramework-WebChat/integrate-with-react) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/integrate-with-react)
 
 ## Styling
 
 Web Chat can be styled in many ways without too much coding.
 
-- [Avatar initials](https://microsoft.github.io/BotFramework-WebChat/avatar-initials)
-- [Custom style options](https://microsoft.github.io/BotFramework-WebChat/custom-style-options)
-- [Custom style set](https://microsoft.github.io/BotFramework-WebChat/custom-style-set)
-- [Presentation mode](https://microsoft.github.io/BotFramework-WebChat/presentation-mode)
+- [Avatar initials](https://microsoft.github.io/BotFramework-WebChat/avatar-initials) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/avatar-initials)
+- [Custom style options](https://microsoft.github.io/BotFramework-WebChat/custom-style-options) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/custom-style-options)
+- [Custom style set](https://microsoft.github.io/BotFramework-WebChat/custom-style-set) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/custom-style-set)
+- [Presentation mode](https://microsoft.github.io/BotFramework-WebChat/presentation-mode) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/presentation-mode)
 
 ## Customization
 
@@ -41,12 +41,12 @@ If styling cannot met your need, you can customize Web Chat by extend the render
 
 To add, decorate, replace, or remove activity or attachment, these samples will give you a headstart.
 
-- [Activity decorator: Button](https://microsoft.github.io/BotFramework-WebChat/activity-decorator-button)
-- [Activity decorator: Highlight](https://microsoft.github.io/BotFramework-WebChat/activity-decorator-highlight)
-- [Custom attachment: GitHub repository](https://microsoft.github.io/BotFramework-WebChat/custom-attachment-github-repository)
+- [Activity decorator: Button](https://microsoft.github.io/BotFramework-WebChat/activity-decorator-button) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/activity-decorator-button)
+- [Activity decorator: Highlight](https://microsoft.github.io/BotFramework-WebChat/activity-decorator-highlight) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/activity-decorator-highlight)
+- [Custom attachment: GitHub repository](https://microsoft.github.io/BotFramework-WebChat/custom-attachment-github-repository) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/custom-attachment-github-repository)
 
 ## Backchannel
 
 On your web site, instead of connecting to your backend thru REST/Web Socket API, you can also connect thru Direct Line activities. This gives you flexibility of delivering content to your users.
 
-- [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/build)
+- [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/build) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/redux-activity-middleware)
