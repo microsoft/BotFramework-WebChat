@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd samples/redux-activity-middleware
+npm install
+npm run build
+
+cd ../../
+rsync -av --progress samples gh-pages --exclude samples/redux-activity-middleware
+rsync -av --progress samples/redux-activity-middleware/build gh-pages/redux-activity-middleware/build
