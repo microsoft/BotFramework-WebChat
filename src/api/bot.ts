@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 export const verifyConversation = (
     baseUrl: string,
     msftConversationId: string,
+    msftUserId: string,
     originatingUrl: string,
     success: (res: any) => void,
     error: (err: any) => void

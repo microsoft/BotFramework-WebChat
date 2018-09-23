@@ -216,55 +216,69 @@ export class Chat extends React.Component<ChatProps, State> {
         // Generate random user ID if there is none
         if (!user) {
             user = {
-                id: uuid(window.location.href, uuid.URL)
+                id: uuid(Date.now() + window.location.href, uuid.URL)
             };
         }
+
+        this.store.dispatch<ChatActions>({
+            type: 'Start_Connection',
+            user,
+            bot: this.props.bot,
+            botConnection,
+            selectedActivity: this.props.selectedActivity
+        });
+
         const state = this.store.getState();
 
-        if (!state.connection.verification.attempted) {
-            this.store.dispatch<ChatActions>({
-                type: 'Set_Verification',
-                verification: {
-                    attempted: true
-                }
-            });
-
-            gideonBot.verifyConversation(
-                this.props.gid,
-                user.id,
-                window.location.origin,
-                (res: any) => {
-                    this.store.dispatch<ChatActions>({
-                        type: 'Set_Verification',
-                        verification: {
-                            status: 1
-                        }
-                    });
-
-                    this.store.dispatch<ChatActions>({ type: 'Start_Connection', user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
-                },
-                (err: any) => {
-                    this.store.dispatch<ChatActions>({
-                        type: 'Set_Verification',
-                        verification: {
-                            status: 2
-                        }
-                    });
-                    console.log(err);
-                }
-            );
-        }
-
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
-                if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
-                    const refGrammarId = botConnection.referenceGrammarId;
-                    if (refGrammarId) {
-                        this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
-                    }
+            if (connectionStatus === 2) {  // wait for connection is 'OnLine' to send data to bot
+
+                const botCopy: any = botConnection;
+                const conversationId = botCopy.conversationId;
+
+                if (!state.connection.verification.attempted) {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Verification',
+                        verification: {
+                            attempted: true
+                        }
+                    });
+
+                    gideonBot.verifyConversation(
+                        this.props.gid,
+                        conversationId,
+                        user.id,
+                        window.location.origin,
+                         (res: any) => {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Verification',
+                                verification: {
+                                    status: 1
+                                }
+                            });
+                        },
+                        (err: any) => {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Verification',
+                                verification: {
+                                    status: 2
+                                }
+                            });
+                            console.log(err);
+                        }
+                    );
                 }
-                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
             }
-        );
+
+            if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
+                const refGrammarId = botConnection.referenceGrammarId;
+                if (refGrammarId) {
+                    this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
+                }
+            }
+
+            this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
+        });
 
         this.activitySubscription = botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
