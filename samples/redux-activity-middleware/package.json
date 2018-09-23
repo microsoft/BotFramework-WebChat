@@ -2,7 +2,7 @@
   "name": "redux-activity-middleware",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/build",
   "dependencies": {
     "botframework-webchat": "^4.0.0-preview.df85d5d",
     "react": "^16.5.1",
