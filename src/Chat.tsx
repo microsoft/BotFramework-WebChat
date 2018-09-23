@@ -216,7 +216,7 @@ export class Chat extends React.Component<ChatProps, State> {
         // Generate random user ID if there is none
         if (!user) {
             user = {
-                id: uuid(Date.now() + window.location.href, uuid.URL)
+                id: uuid(window.location.href, uuid.URL)
             };
         }
 
