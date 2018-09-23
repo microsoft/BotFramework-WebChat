@@ -5,6 +5,6 @@ npm install
 npm run build
 
 cd ../../
-rsync -av --progress samples gh-pages --exclude samples/backend-cli --exclude samples/redux-activity-middleware
+rsync -av --progress samples/ gh-pages/ --exclude backend-cli --exclude redux-activity-middleware
 mkdir gh-pages/redux-activity-middleware
-rsync -av --progress samples/redux-activity-middleware/build gh-pages/redux-activity-middleware/build
+rsync -av --progress samples/redux-activity-middleware/build/ gh-pages/redux-activity-middleware/build/
