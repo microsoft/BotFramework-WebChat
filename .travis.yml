@@ -20,7 +20,6 @@ install:
   - npm run bootstrap
   - npm run build
   - npm run prepublishOnly
-  - ./scripts/build_pages
 
 script:
   - echo
@@ -30,6 +29,11 @@ before_deploy:
   - git config --local user.email "botframework@microsoft.com"
 
 deploy:
+  - provider: script
+    script: bash scripts/build_pages
+    skip_cleanup: true
+    on:
+      branch: preview
   - provider: script
     script: bash scripts/deploy_cdn
     skip_cleanup: true
