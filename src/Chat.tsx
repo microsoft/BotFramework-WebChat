@@ -14,6 +14,7 @@ import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
 import { ChatActions, createStore, sendMessage } from './Store';
+import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
@@ -21,6 +22,7 @@ export interface ChatProps {
     chatTitle?: boolean | string;
     user: User;
     bot: User;
+    strings: Strings;
     gid: string;
     botConnection?: IBotConnection;
     directLine?: DirectLineOptions;
@@ -256,6 +258,8 @@ export class Chat extends React.Component<ChatProps, State> {
                                     status: 1
                                 }
                             });
+
+                            this.store.dispatch(sendMessage(state.format.strings.pingMessage,  state.connection.user, state.format.locale));
                         },
                         (err: any) => {
                             this.store.dispatch<ChatActions>({
@@ -398,6 +402,8 @@ export const doCardAction = (
 
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
+
+    console.log(type);
 
     switch (type) {
         case 'imBack':
