@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Props to add `tabIndex` to activity in PR [#1161](https://github.com/Microsoft/BotFramework-WebChat/pull/1161)
 
 ### Changed
-- Add more error handling to mountAdaptiveCards, by in PR, by [@corinagum](https://github.com/corinagum) [#1176](https://github.com/Microsoft/BotFramework-WebChat/pull/1176)
+- Add more error handling to mountAdaptiveCards, by [@corinagum](https://github.com/corinagum) [#1176](https://github.com/Microsoft/BotFramework-WebChat/pull/1176)
 - Bump `botframework-directlinejs` to `0.9.17` in PR [#1131](https://github.com/Microsoft/BotFramework-WebChat/pull/1131)
 - Fix `historyRef` cannot be focused because it is unmounted in Emulator, in PR [#1157](https://github.com/Microsoft/BotFramework-WebChat/pull/1157)
 - Fix for Chatdown that activities sent by the user are not displayed, in PR [#1162](https://github.com/Microsoft/BotFramework-WebChat/pull/1162)
