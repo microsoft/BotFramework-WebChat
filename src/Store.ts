@@ -265,12 +265,18 @@ export const size: Reducer<SizeState> = (
     }
 };
 
+export interface Verification {
+    attempted?: boolean;
+    status?: number;
+}
+
 export interface ConnectionState {
     connectionStatus: ConnectionStatus;
     botConnection: IBotConnection;
     selectedActivity: BehaviorSubject<ActivityOrID>;
     user: User;
     bot: User;
+    verification: Verification;
 }
 
 export type ConnectionAction = {
@@ -282,6 +288,9 @@ export type ConnectionAction = {
 } | {
     type: 'Connection_Change',
     connectionStatus: ConnectionStatus
+} | {
+    type: 'Set_Verification',
+    verification: Verification;
 };
 
 export const connection: Reducer<ConnectionState> = (
@@ -290,7 +299,11 @@ export const connection: Reducer<ConnectionState> = (
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
-        bot: undefined
+        bot: undefined,
+        verification: {
+            attempted: false,
+            status: 0
+        }
     },
     action: ConnectionAction
 ) => {
@@ -302,6 +315,11 @@ export const connection: Reducer<ConnectionState> = (
                 user: action.user,
                 bot: action.bot,
                 selectedActivity: action.selectedActivity
+            };
+        case 'Set_Verification':
+            return {
+                ...state,
+                verification: action.verification
             };
         case 'Connection_Change':
             return {
@@ -729,6 +747,7 @@ const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 
 // Now we put it all together into a store with middleware
 
+import { attempt } from 'bluebird';
 import { combineReducers, createStore as reduxCreateStore, Store } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
 import { MessageWithDate } from './MessagePane';

@@ -7,6 +7,7 @@ import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { ChatState, FormatState, SizeState } from './Store';
 import { sendMessage } from './Store';
+import { Strings } from './Strings';
 
 export interface HistoryProps {
     format: FormatState;
@@ -134,7 +135,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 this.largeWidth = this.props.size.width * 2;
                 content = <this.measurableCarousel/>;
             } else {
-                content = this.props.activities.map((activity, index) =>
+                const notPingMessage = (activity: Activity, index: number) => (activity.type !== 'message' || activity.text !== this.props.format.strings.pingMessage);
+
+                content = this.props.activities
+                .filter(notPingMessage)
+                .map((activity, index) =>
                     (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
                         <WrappedActivity
                             format={ this.props.format }
@@ -312,7 +317,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                         { this.props.children }
                     </div>
                 </div>
-                <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
+                {/* <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> */}
             </div>
         );
     }

@@ -17,7 +17,7 @@
     "webpack-watch": "webpack --progress --watch",
     "clean": "rimraf built",
     "prepublish": "npm run build-css && npm run tslint && tsc && webpack --progress --config webpack.production.config.js",
-    "start": "http-server -p 8000",
+    "start": "http-server -p 3000 -a 0.0.0.0",
     "test": "cd test && npm test",
     "mock": "cd test && npm start",
     "install-test": "cd test && npm install",

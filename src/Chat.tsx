@@ -9,11 +9,13 @@ import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnectio
 import DatePicker from 'react-datepicker';
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid/v5';
+import * as gideonBot from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
 import { ChatActions, createStore, sendMessage } from './Store';
+import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
@@ -21,6 +23,8 @@ export interface ChatProps {
     chatTitle?: boolean | string;
     user: User;
     bot: User;
+    strings: Strings;
+    gid: string;
     botConnection?: IBotConnection;
     directLine?: DirectLineOptions;
     speechOptions?: SpeechOptions;
@@ -220,18 +224,67 @@ export class Chat extends React.Component<ChatProps, State> {
             };
         }
 
-        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
+        this.store.dispatch<ChatActions>({
+            type: 'Start_Connection',
+            user,
+            bot: this.props.bot,
+            botConnection,
+            selectedActivity: this.props.selectedActivity
+        });
+
+        const state = this.store.getState();
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
-                if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
-                    const refGrammarId = botConnection.referenceGrammarId;
-                    if (refGrammarId) {
-                        this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
-                    }
+            if (connectionStatus === 2) {  // wait for connection is 'OnLine' to send data to bot
+
+                const botCopy: any = botConnection;
+                const conversationId = botCopy.conversationId;
+
+                if (!state.connection.verification.attempted) {
+                    this.store.dispatch<ChatActions>({
+                        type: 'Set_Verification',
+                        verification: {
+                            attempted: true
+                        }
+                    });
+
+                    gideonBot.verifyConversation(
+                        this.props.gid,
+                        conversationId,
+                        user.id,
+                        window.location.origin,
+                         (res: any) => {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Verification',
+                                verification: {
+                                    status: 1
+                                }
+                            });
+
+                            this.store.dispatch(sendMessage(state.format.strings.pingMessage,  state.connection.user, state.format.locale));
+                        },
+                        (err: any) => {
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Verification',
+                                verification: {
+                                    status: 2
+                                }
+                            });
+                            console.log(err);
+                        }
+                    );
                 }
-                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
             }
-        );
+
+            if (this.props.speechOptions && this.props.speechOptions.speechRecognizer) {
+                const refGrammarId = botConnection.referenceGrammarId;
+                if (refGrammarId) {
+                    this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
+                }
+            }
+
+            this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus });
+        });
 
         this.activitySubscription = botConnection.activity$.subscribe(
             activity => this.handleIncomingActivity(activity),
@@ -292,8 +345,6 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         const { open } = this.state;
 
-        console.log(open);
-
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>
@@ -353,6 +404,8 @@ export const doCardAction = (
 
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
+
+    console.log(type);
 
     switch (type) {
         case 'imBack':

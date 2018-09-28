@@ -72,7 +72,7 @@
         padding: 10px;
         position: absolute;
         right: 0;
-        top: $headerTotalHeight;
+        top: $headerTotalHeight + 2px;
         transition: transform $actionTransition;
 
         &.no-header {
@@ -301,6 +301,7 @@
 
     .wc-message {
         position: relative;
+        height: 49px;
     }
 
     .wc-message-wrapper.carousel .wc-message {
@@ -319,7 +320,7 @@
     .wc-message-content {
         border-radius: 2px;
         box-shadow: 0px 1px 1px 0px $c_shadow;
-        padding: 8px;
+        padding: 15px ;
         word-break: break-word;
         border-radius: 14px;
         font-size: $message_font_size;
@@ -644,6 +645,7 @@
     .wc-message-from-bot .wc-message-content {
         background-color: $c_messageFromThem;
         color: $c00;
+        border-top-left-radius: 0px;
     }
 
     .wc-message-from-bot svg.wc-message-callout path {
