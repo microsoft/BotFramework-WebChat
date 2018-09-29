@@ -166,48 +166,6 @@
         }
     }
 
-    .gd-date-picker {
-        bottom: $consoleHeight;
-        overflow: hidden;
-        text-align: center;
-        overflow: hidden;
-        position: absolute;
-        right: 0;
-        width: 280px;
-    }
-
-    .gd-submit-date-button {
-        width: 280px;
-        height: 40px;
-    }
-
-    .gd-selected-date-container {
-        width: 278px;
-        height: 59px;
-        background-color: $gd_dark_sky_blue;
-        border-top-left-radius: 12px;
-        display: inline-block
-    }
-
-    .gd-selected-date {
-        width: 118px;
-        height: 17px;
-        font-family: Lato;
-        font-size: 14px;
-        font-weight: bold;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        text-align: center;
-        color: #ffffff;
-      }
-
-    .react-datepicker__header--time {
-        padding-bottom: 8px;
-        height: 63px;
-    }
-
     .wc-message-pane.show-actions {
         .wc-message-groups {
             top: $headerTotalHeight + $actionsHeight;
@@ -301,7 +259,8 @@
 
     .wc-message {
         position: relative;
-        height: 49px;
+        min-height: 49px;
+        margin-bottom: 3px;
     }
 
     .wc-message-wrapper.carousel .wc-message {
@@ -322,8 +281,12 @@
         box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 15px ;
         word-break: break-word;
-        border-radius: 14px;
+        border-radius: $messageBorderRadius;
         font-size: $message_font_size;
+
+        .wc-message-date & {
+            padding:0 !important;
+        }
       }
 
     .wc-message-content.clickable {

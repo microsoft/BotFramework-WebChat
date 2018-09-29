@@ -750,7 +750,7 @@ const sendTypingEpic: Epic<ChatActions, ChatState> = (action$, store) =>
 import { attempt } from 'bluebird';
 import { combineReducers, createStore as reduxCreateStore, Store } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
-import { MessageWithDate } from './MessagePane';
+import { MessageWithDate } from './DatePickerCard';
 
 export const createStore = () =>
     reduxCreateStore(

@@ -104,6 +104,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 from: { id: '' },
                 attachmentLayout: 'carousel'
             } }
+            lastMessage={false}
             format={ null }
             fromMe={ false }
             onClickActivity={ null }
@@ -136,15 +137,18 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 content = <this.measurableCarousel/>;
             } else {
                 const notPingMessage = (activity: Activity, index: number) => (activity.type !== 'message' || activity.text !== this.props.format.strings.pingMessage);
+                // Remove initial ping message from list of activities. User should not see this
+                const filteredActivites = this.props.activities.filter(notPingMessage);
 
-                content = this.props.activities
-                .filter(notPingMessage)
+                content = filteredActivites
                 .map((activity, index) =>
                     (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
                         <WrappedActivity
                             format={ this.props.format }
                             key={ 'message' + index }
                             activity={ activity }
+                            doCardAction={this.doCardAction}
+                            lastMessage={index === filteredActivites.length - 1}
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                             selected={ this.props.isSelected(activity) }
                             fromMe={ this.props.isFromMe(activity) }
@@ -161,6 +165,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 format={ this.props.format }
                                 size={ this.props.size }
                                 activity={ activity }
+                                type={activity.type}
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
                             />
@@ -256,6 +261,8 @@ export interface WrappedActivityProps {
     selected: boolean;
     fromMe: boolean;
     format: FormatState;
+    doCardAction?: IDoCardAction;
+    lastMessage?: boolean;
     onClickActivity: React.MouseEventHandler<HTMLDivElement>;
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>;
 }
@@ -267,29 +274,67 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         super(props);
     }
 
+    /**
+     * In cases of having a date picker/custom interaction cmp., this
+     * method will handle rendering the additional cmp.
+     */
+    renderAdditionalActivity(contentClassName: string, wrapperClassName: string) {
+        const { lastMessage, activity, doCardAction } = this.props;
+        const activityCopy: any = activity;
+
+        console.log(lastMessage);
+
+        // Check if there's an additional activity to render to get the user's input
+        if (lastMessage && activityCopy.entities && activityCopy.entities.length > 0 && activityCopy.entities[0].node_type !== null) {
+            if (activityCopy.entities[0].node_type === 'date') {
+                const node_type = activityCopy.entities[0].node_type;
+                return (
+                    <div data-activity-id={ activity.id } className={ wrapperClassName } >
+                        <div className={'wc-message wc-message-from-me wc-message-' + node_type} ref={ div => this.messageDiv = div }>
+                            <div className={ contentClassName }>
+                                <ActivityView
+                                    format={ this.props.format }
+                                    size={null}
+                                    type="date"
+                                    activity={activity}
+                                    onCardAction={ (type: CardActionTypes, value: string | object) => doCardAction(type, value) }
+                                    onImageLoad={null}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+    }
+
     render() {
         let timeLine: JSX.Element;
-        switch (this.props.activity.id) {
+
+        const { activity, format } = this.props;
+
+        switch (activity.id) {
             case undefined:
-                timeLine = <span>{ this.props.format.strings.messageSending }</span>;
+                timeLine = <span>{ format.strings.messageSending }</span>;
                 break;
             case null:
-                timeLine = <span>{ this.props.format.strings.messageFailed }</span>;
+                timeLine = <span>{ format.strings.messageFailed }</span>;
                 break;
             case 'retry':
                 timeLine =
                     <span>
-                        { this.props.format.strings.messageFailed }
+                        { format.strings.messageFailed }
                         { ' ' }
-                        <a href="." onClick={ this.props.onClickRetry }>{ this.props.format.strings.messageRetry }</a>
+                        <a href="." onClick={ this.props.onClickRetry }>{ format.strings.messageRetry }</a>
                     </span>;
                 break;
             default:
                 let sent: string;
                 if (this.props.showTimestamp) {
-                    sent = this.props.format.strings.timeSent.replace('%1', (new Date(this.props.activity.timestamp)).toLocaleTimeString());
+                    sent = format.strings.timeSent.replace('%1', (new Date(activity.timestamp)).toLocaleTimeString());
                 }
-                timeLine = <span>{ this.props.activity.from.name || this.props.activity.from.id }{ sent }</span>;
+                timeLine = <span>{ activity.from.name || activity.from.id }{ sent }</span>;
                 break;
         }
 
@@ -307,17 +352,22 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
-                <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
-                    <div className={ contentClassName }>
-                        {/* <svg className="wc-message-callout">
-                            <path className="point-left" d="m0,6 l6 6 v-12 z" />
-                            <path className="point-right" d="m6,6 l-6 6 v-12 z" />
-                        </svg> */}
-                        { this.props.children }
+            <div>
+                <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+                    <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
+                        <div className={ contentClassName }>
+                            {/* <svg className="wc-message-callout">
+                                <path className="point-left" d="m0,6 l6 6 v-12 z" />
+                                <path className="point-right" d="m6,6 l-6 6 v-12 z" />
+                            </svg> */}
+                            { this.props.children }
+                        </div>
                     </div>
+
+                    {/* <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> */}
                 </div>
-                {/* <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div> */}
+
+                {this.renderAdditionalActivity(contentClassName, wrapperClassName)}
             </div>
         );
     }

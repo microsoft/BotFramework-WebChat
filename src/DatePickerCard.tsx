@@ -1,9 +1,25 @@
+import { Activity, CardAction, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
 import ReactDatePicker from 'react-datepicker';
+import { connect } from 'react-redux';
 import { getAvailableTimes } from './getAvailableTimes';
+import { ChatState } from './Store';
+import { ChatActions, sendMessage } from './Store';
 
 import { MessagePaneProps } from './MessagePane';
+
+interface DatePickerProps {
+    submitDate: () => any;
+    selectDate: (date: moment.Moment) => any;
+    sendMessage: (inputText: string) => void;
+    node: any;
+    withTime: boolean;
+}
+
+export interface MessageWithDate extends Message {
+    selectedDate: moment.Moment;
+}
 
 export interface DatePickerState {
     startDate: moment.Moment;
@@ -12,6 +28,8 @@ export interface DatePickerState {
     selectChoice: string;
     availableTimes: AvailableTime[];
     showTimeSelectClass: string;
+    withRange: boolean;
+    withTime: boolean;
 }
 
 export interface AvailableTime {
@@ -19,51 +37,68 @@ export interface AvailableTime {
     to: string;
 }
 
-export class DatePickerCard extends React.Component<MessagePaneProps, DatePickerState> {
-    constructor(props: MessagePaneProps) {
+const dateFormat = 'MMMM D, YYYY';
+const dateFormatWithTime = 'MMMM D, YYYY hh:mm A';
+
+class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
+    constructor(props: DatePickerProps) {
         super(props);
+
         this.state = {
-            startDate: moment(),
-            endDate: moment().add(1, 'days'),
+            startDate: null,
+            endDate: null,
             dateSelected: false,
             selectChoice: 'endDate',
             availableTimes: [],
+            withRange: props.node.custom_attributes.includes('range'),
+            withTime: props.withTime || props.node.custom_attributes.includes('time'),
             showTimeSelectClass: 'hide-time-select'
         };
+
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     handleDateChange(date: moment.Moment) {
-        if (this.state.selectChoice === 'endDate') {
-            return this.setState({
-                selectChoice: 'startDate',
-                endDate: date
+        const { withRange } = this.state;
+
+        if (withRange) {
+            if (this.state.selectChoice === 'endDate') {
+                return this.setState({
+                    selectChoice: 'startDate',
+                    endDate: date,
+                    dateSelected: true
+                });
+            }
+
+            this.setState({
+                selectChoice: 'endDate',
+                startDate: date,
+                dateSelected: true
+            });
+        } else {
+            this.setState({
+                startDate: date,
+                dateSelected: true
             });
         }
 
-        this.setState({
-            selectChoice: 'endDate',
-            startDate: date
-        });
     }
 
     private handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): any {
         if (!this.state.dateSelected) { return; }
 
         if (e.key === 'Enter') {
-            this.props.submitDate(this.props.activityWithDatePicker);
-            this.props.sendMessage(this.state.startDate.format('MMMM D, YYYY'));
+            this.props.submitDate();
+            this.props.sendMessage(this.state.startDate.format(this.state.withTime ? dateFormatWithTime : dateFormat));
             document.removeEventListener('keypress', this.handleKeyDown.bind(this));
         }
     }
 
     clickToSubmitDate(e: React.MouseEvent<HTMLButtonElement>) {
-
-        if (!this.props.activityWithDatePicker) { return; }
         if (!this.state.dateSelected) { return; }
 
-        this.props.submitDate(this.props.activityWithDatePicker);
-        this.props.sendMessage(this.state.startDate.format('MMMM D, YYYY'));
+        // this.props.submitDate();
+        this.props.sendMessage(this.state.startDate.format(this.state.withTime ? dateFormatWithTime : dateFormat));
 
         document.removeEventListener('keypress', this.handleKeyDown.bind(this));
 
@@ -71,31 +106,56 @@ export class DatePickerCard extends React.Component<MessagePaneProps, DatePicker
     }
 
     render() {
+        const { startDate, showTimeSelectClass, endDate, withTime } = this.state;
+
         return (
-            <div>
-                <div className={this.state.showTimeSelectClass}>
-                    <div className="gd-selected-date-container">
-                        <span className="gd-selected-date">{this.state.startDate.format('MMMM D, YYYY')}</span>
-                    </div>
-                    <ReactDatePicker
-                        startDate={this.state.startDate}
-                        endDate={this.state.endDate}
-                        selected={this.state.startDate}
-                        onChange={date => this.handleDateChange(date)}
-                        inline={true}
-                        fixedHeight
-                        tabIndex={1}
-                        dateFormat="DD-MMM HH:mm"
-                        showTimeSelect={false}
+            <div className={`gd-date-picker ${withTime && 'withTime'}`}>
+                <div className="gd-selected-date-container">
+                    <span className="gd-selected-date">{startDate ? startDate.format('MMMM D, YYYY') : 'Select a date'}</span>
 
-                    />
-                    <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
-                        Press enter to submit
-                    </button>
-
+                    {(withTime && startDate) &&
+                    <span className="gd-selected-time">at {startDate && startDate.format('hh:mm A')}</span>
+                }
                 </div>
+
+                <ReactDatePicker
+                    endDate={this.state.endDate}
+                    startDate={this.state.startDate}
+                    selected={this.state.startDate}
+                    onChange={date => this.handleDateChange(date)}
+                    inline={true}
+                    calendarClassName="gideon__calendar"
+                    fixedHeight
+                    tabIndex={1}
+                    dateFormat={withTime ? dateFormatWithTime : dateFormat}
+                    showTimeSelect={withTime}
+                />
+
+                <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
+                    Press enter to submit
+                </button>
             </div>
         );
     }
-
 }
+
+export const DatePickerCard = connect(
+    (state: ChatState) => ({
+        // passed down to MessagePaneView
+        locale: state.format.locale,
+        user: state.connection.user
+    }), {
+        selectDate: (date: moment.Moment) => ({ type: 'Select_Date', date: date.format('DD MMM YYYY') } as ChatActions),
+        submitDate: () => ({ type: 'Submit_Date' } as ChatActions),
+        // only used to create helper functions below
+        sendMessage
+    }, (stateProps: any, dispatchProps: any, ownProps: any): DatePickerProps => ({
+        // from stateProps
+        node: ownProps.node,
+        withTime: ownProps.withTime,
+        // from dispatchProps
+        selectDate: dispatchProps.selectDate,
+        submitDate: dispatchProps.submitDate,
+        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale)
+    })
+)(DatePicker);

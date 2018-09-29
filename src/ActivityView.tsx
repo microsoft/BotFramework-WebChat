@@ -3,6 +3,7 @@ import * as React from 'react';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { IDoCardAction } from './Chat';
+import { DatePickerCard } from './DatePickerCard';
 import { FormattedText } from './FormattedText';
 import { FormatState, SizeState } from './Store';
 
@@ -41,6 +42,7 @@ export interface ActivityViewProps {
     format: FormatState;
     size: SizeState;
     activity: Activity;
+    type?: string;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
 }
@@ -62,29 +64,33 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
     }
 
     render() {
-        const { activity, ...props } = this.props;
-        switch (activity.type) {
-            case 'message':
-                return (
-                    <div>
-                        <FormattedText
-                            text={ activity.text }
-                            format={ activity.textFormat }
-                            onImageLoad={ props.onImageLoad }
-                        />
-                        <Attachments
-                            attachments={ activity.attachments }
-                            attachmentLayout={ activity.attachmentLayout }
-                            format={ props.format }
-                            onCardAction={ props.onCardAction }
-                            onImageLoad={ props.onImageLoad }
-                            size={ props.size }
-                        />
-                    </div>
-                );
+        const { activity, type, ...props } = this.props;
 
-            case 'typing':
-                return <div className="wc-typing"/>;
+        if (type === 'message' && activity.type === 'message') {
+            return (
+                <div>
+                    <FormattedText
+                        text={ activity.text }
+                        format={ activity.textFormat }
+                        onImageLoad={ props.onImageLoad }
+                    />
+                    <Attachments
+                        attachments={ activity.attachments }
+                        attachmentLayout={ activity.attachmentLayout }
+                        format={ props.format }
+                        onCardAction={ props.onCardAction }
+                        onImageLoad={ props.onImageLoad }
+                        size={ props.size }
+                    />
+                </div>
+            );
+        } else if (activity.type === 'typing') {
+            return <div className="wc-typing"/>;
+        } else if (type === 'date') {
+            const activityCopy: any = activity;
+            return (
+                <DatePickerCard { ...props } node={activityCopy.entities[0]} />
+            );
         }
     }
 }
