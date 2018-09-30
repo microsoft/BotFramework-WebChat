@@ -115,6 +115,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     render() {
         const { startDate, endDate, withTime } = this.state;
         const { node } = this.props;
+        const isHandoff = node.node_type === 'handoff';
 
         return (
             <div className={`gd-date-picker ${withTime && 'withTime'}`}>
@@ -132,6 +133,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     selected={this.state.startDate}
                     onChange={date => this.handleDateChange(date)}
                     inline={true}
+                    minDate={isHandoff && moment()}
                     excludeTimes={getAvailableTimes(node)}
                     tabIndex={1}
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}

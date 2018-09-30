@@ -167,6 +167,10 @@ $width: 280px;
             background-color: $gd_dark_sky_blue;
             color:white;
         }
+
+        &__day--disabled {
+            color:#CCC;
+        }
     }
 
 
