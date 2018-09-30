@@ -1,14 +1,18 @@
-import { Activity, Message } from 'botframework-directlinejs';
+import * as moment from 'moment';
+import { Node } from './DatePickerCard';
 
-export function getAvailableTimes(message: Message, dateformat: string) {
-    if (!message) {
+/**
+ * Returns a list of momentified times for the calender
+ * @param node
+ */
+export function getAvailableTimes(node: Node) {
+    if (!node) {
         return;
     }
 
-    if (message.entities
-        && message.entities[0]
-        && message.entities[0].node_type === 'handoff'
-        && message.entities[0].availableTimes) {
-        return message.entities[0].availableTimes;
+    if (node.node_type === 'handoff' && node.availableTimes) {
+        return node.availableTimes.map(time => moment(time, 'hh:mm A'));
     }
+
+    return null;
 }

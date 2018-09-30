@@ -261,7 +261,8 @@ export class Chat extends React.Component<ChatProps, State> {
                                 }
                             });
 
-                            this.store.dispatch(sendMessage(state.format.strings.pingMessage,  state.connection.user, state.format.locale));
+                            // Send initial message to start conversation
+                            this.store.dispatch(sendMessage(state.format.strings.pingMessage, state.connection.user, state.format.locale));
                         },
                         (err: any) => {
                             this.store.dispatch<ChatActions>({
@@ -270,7 +271,6 @@ export class Chat extends React.Component<ChatProps, State> {
                                     status: 2
                                 }
                             });
-                            console.log(err);
                         }
                     );
                 }
@@ -352,9 +352,7 @@ export class Chat extends React.Component<ChatProps, State> {
                     <div
                         className={`wc-floating`}
                         onClick={() => {this.toggle(); }}
-                    >
-
-                    </div>
+                    />
 
                     <div
                         className={`wc-chatview-panel ${open ? 'wc-chatview-panel__open' : 'wc-chatview-panel__closed' }`}

@@ -4,7 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { classList, doCardAction, IDoCardAction } from './Chat';
-import {AvailableTime, DatePickerCard} from './DatePickerCard';
 import { HScroll } from './HScroll';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
@@ -67,13 +66,6 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             </HScroll>
         );
     }
-}
-
-export interface EntityType {
-    node_type: string;
-    availableTimes: AvailableTime[];
-    customAttributes: string[];
-    options: string[];
 }
 
 export const MessagePane = connect(

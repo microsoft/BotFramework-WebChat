@@ -7,13 +7,18 @@ import { getAvailableTimes } from './getAvailableTimes';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
 
-import { MessagePaneProps } from './MessagePane';
+export interface Node {
+    node_type: string;
+    availableTimes: string[];
+    custom_attributes: string[];
+    options: string[];
+}
 
 interface DatePickerProps {
     submitDate: () => any;
     selectDate: (date: moment.Moment) => any;
     sendMessage: (inputText: string) => void;
-    node: any;
+    node: Node;
     withTime: boolean;
 }
 
@@ -26,20 +31,18 @@ export interface DatePickerState {
     endDate: moment.Moment;
     dateSelected: boolean;
     selectChoice: string;
-    availableTimes: AvailableTime[];
     showTimeSelectClass: string;
     withRange: boolean;
     withTime: boolean;
 }
 
-export interface AvailableTime {
-    from: string;
-    to: string;
-}
-
 const dateFormat = 'MMMM D, YYYY';
 const dateFormatWithTime = 'MMMM D, YYYY hh:mm A';
 
+/**
+ * Date picker card which renders in response to node of types 'date' and 'handoff'
+ * Used for date(time) selection
+ */
 class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     constructor(props: DatePickerProps) {
         super(props);
@@ -49,15 +52,19 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             endDate: null,
             dateSelected: false,
             selectChoice: 'endDate',
-            availableTimes: [],
             withRange: props.node.custom_attributes.includes('range'),
-            withTime: props.withTime || props.node.custom_attributes.includes('time'),
+            withTime: props.withTime || props.node.custom_attributes.includes('time') || props.node.node_type === 'handoff',
             showTimeSelectClass: 'hide-time-select'
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
+    /**
+     * Handles date changing when either selecting a range
+     * or just a single date
+     * @param date
+     */
     handleDateChange(date: moment.Moment) {
         const { withRange } = this.state;
 
@@ -106,7 +113,8 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     render() {
-        const { startDate, showTimeSelectClass, endDate, withTime } = this.state;
+        const { startDate, endDate, withTime } = this.state;
+        const { node } = this.props;
 
         return (
             <div className={`gd-date-picker ${withTime && 'withTime'}`}>
@@ -124,8 +132,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     selected={this.state.startDate}
                     onChange={date => this.handleDateChange(date)}
                     inline={true}
-                    calendarClassName="gideon__calendar"
-                    fixedHeight
+                    excludeTimes={getAvailableTimes(node)}
                     tabIndex={1}
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}
                     showTimeSelect={withTime}

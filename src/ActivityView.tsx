@@ -86,7 +86,7 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             );
         } else if (activity.type === 'typing') {
             return <div className="wc-typing"/>;
-        } else if (type === 'date') {
+        } else if (type === 'date' || type === 'handoff') {
             const activityCopy: any = activity;
             return (
                 <DatePickerCard { ...props } node={activityCopy.entities[0]} />

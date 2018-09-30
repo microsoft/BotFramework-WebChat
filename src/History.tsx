@@ -7,7 +7,6 @@ import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { ChatState, FormatState, SizeState } from './Store';
 import { sendMessage } from './Store';
-import { Strings } from './Strings';
 
 export interface HistoryProps {
     format: FormatState;
@@ -281,21 +280,21 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     renderAdditionalActivity(contentClassName: string, wrapperClassName: string) {
         const { lastMessage, activity, doCardAction } = this.props;
         const activityCopy: any = activity;
-
-        console.log(lastMessage);
+        const activityRequiresAdditionalInput = activityCopy.entities && activityCopy.entities.length > 0 && activityCopy.entities[0].node_type !== null;
 
         // Check if there's an additional activity to render to get the user's input
-        if (lastMessage && activityCopy.entities && activityCopy.entities.length > 0 && activityCopy.entities[0].node_type !== null) {
-            if (activityCopy.entities[0].node_type === 'date') {
-                const node_type = activityCopy.entities[0].node_type;
+        if (lastMessage && activityRequiresAdditionalInput) {
+            const node_type = activityCopy.entities[0].node_type;
+
+            if (node_type === 'date' || node_type === 'handoff') {
                 return (
-                    <div data-activity-id={ activity.id } className={ wrapperClassName } >
+                    <div data-activity-id={activity.id } className={wrapperClassName}>
                         <div className={'wc-message wc-message-from-me wc-message-' + node_type} ref={ div => this.messageDiv = div }>
                             <div className={ contentClassName }>
                                 <ActivityView
-                                    format={ this.props.format }
+                                    format={this.props.format}
                                     size={null}
-                                    type="date"
+                                    type={node_type}
                                     activity={activity}
                                     onCardAction={ (type: CardActionTypes, value: string | object) => doCardAction(type, value) }
                                     onImageLoad={null}
@@ -306,7 +305,6 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 );
             }
         }
-
     }
 
     render() {

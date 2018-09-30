@@ -284,7 +284,7 @@
         border-radius: $messageBorderRadius;
         font-size: $message_font_size;
 
-        .wc-message-date & {
+        .wc-message-date &, .wc-message-handoff & {
             padding:0 !important;
         }
       }
@@ -626,7 +626,7 @@
 /* console */
 
     .wc-console {
-        border-top: solid 1px #979999;
+        border-top: solid 1px #cedcdb;
         bottom: 0;
         box-sizing: border-box;
         height: $consoleHeight;
