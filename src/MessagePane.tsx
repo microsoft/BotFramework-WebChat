@@ -1,17 +1,19 @@
-import { Activity, CardAction, Message, User } from 'botframework-directlinejs';
+import { CardAction, Message} from 'botframework-directlinejs';
+import * as moment from 'moment';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import { HScroll } from './HScroll';
-import * as konsole from './Konsole';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message;
+    // activityWithDateAndTimePicker: Message;
 
     takeSuggestedAction: (message: Message) => any;
+    sendMessage: (inputText: string) => void;
 
     children: React.ReactNode;
     doCardAction: IDoCardAction;
@@ -64,7 +66,6 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
             </HScroll>
         );
     }
-
 }
 
 export const MessagePane = connect(
@@ -82,8 +83,10 @@ export const MessagePane = connect(
     }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
         // from stateProps
         activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
+
         // from dispatchProps
         takeSuggestedAction: dispatchProps.takeSuggestedAction,
+        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         // from ownProps
         children: ownProps.children,
         // helper functions

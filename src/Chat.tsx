@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
+import DatePicker from 'react-datepicker';
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid/v5';
 import * as gideonBot from './api/bot';
@@ -39,6 +40,7 @@ export interface State {
     open: boolean;
 }
 
+import { isMoment } from 'moment';
 import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
@@ -259,7 +261,8 @@ export class Chat extends React.Component<ChatProps, State> {
                                 }
                             });
 
-                            this.store.dispatch(sendMessage(state.format.strings.pingMessage,  state.connection.user, state.format.locale));
+                            // Send initial message to start conversation
+                            this.store.dispatch(sendMessage(state.format.strings.pingMessage, state.connection.user, state.format.locale));
                         },
                         (err: any) => {
                             this.store.dispatch<ChatActions>({
@@ -268,7 +271,6 @@ export class Chat extends React.Component<ChatProps, State> {
                                     status: 2
                                 }
                             });
-                            console.log(err);
                         }
                     );
                 }
@@ -350,9 +352,7 @@ export class Chat extends React.Component<ChatProps, State> {
                     <div
                         className={`wc-floating`}
                         onClick={() => {this.toggle(); }}
-                    >
-
-                    </div>
+                    />
 
                     <div
                         className={`wc-chatview-panel ${open ? 'wc-chatview-panel__open' : 'wc-chatview-panel__closed' }`}

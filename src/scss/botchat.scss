@@ -2,6 +2,8 @@
 @import "includes/settings";
 @import "includes/card-size";
 @import "includes/media-queries";
+@import "~react-datepicker/dist/react-datepicker.css";
+@import "gideon/gideon";
 
 /* reset */
 
@@ -257,7 +259,8 @@
 
     .wc-message {
         position: relative;
-        height: 49px;
+        min-height: 49px;
+        margin-bottom: 3px;
     }
 
     .wc-message-wrapper.carousel .wc-message {
@@ -278,8 +281,12 @@
         box-shadow: 0px 1px 1px 0px $c_shadow;
         padding: 15px ;
         word-break: break-word;
-        border-radius: 14px;
+        border-radius: $messageBorderRadius;
         font-size: $message_font_size;
+
+        .wc-message-date &, .wc-message-handoff & {
+            padding:0 !important;
+        }
       }
 
     .wc-message-content.clickable {
@@ -619,7 +626,7 @@
 /* console */
 
     .wc-console {
-        border-top: solid 1px #979999;
+        border-top: solid 1px #cedcdb;
         bottom: 0;
         box-sizing: border-box;
         height: $consoleHeight;
