@@ -3,12 +3,12 @@ import {
   SpeechRecognition
 } from 'web-speech-cognitive-services';
 
-export default ({ referenceGrammarId, speechToken }) => {
+export default ({ fetchToken, referenceGrammarId }) => {
   return class extends SpeechRecognition {
     constructor() {
       super();
 
-      this.speechToken = speechToken;
+      this.fetchToken = fetchToken;
     }
 
     start() {

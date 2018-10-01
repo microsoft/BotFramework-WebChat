@@ -12,6 +12,8 @@ import {
   sendFiles,
   sendMessage,
   sendPostBack,
+  setDictateInterims,
+  setDictateState,
   setLanguage,
   setSendBox,
   setSendTyping,
@@ -25,6 +27,7 @@ import {
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
 import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
+import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import shallowEquals from './Utils/shallowEquals';
 
@@ -41,6 +44,8 @@ const DISPATCHERS = {
   sendFiles,
   sendMessage,
   sendPostBack,
+  setDictateInterims,
+  setDictateState,
   setSendBox,
   startSpeakingActivity,
   startSpeechInput,
@@ -274,6 +279,7 @@ class Composer extends React.Component {
           :
             children
         }
+        <Dictation />
       </Context.Provider>
     );
   }

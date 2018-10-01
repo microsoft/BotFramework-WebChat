@@ -79,9 +79,9 @@ export default class extends React.Component {
     const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfill(
-        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-      );
+      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfill({
+        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
+      });
     } else {
       this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfill();
     }

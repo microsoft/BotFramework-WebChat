@@ -9,6 +9,10 @@ import SuggestedActions from './SuggestedActions';
 import TextBox from './TextBox';
 import UploadAttachmentButton from './UploadAttachmentButton';
 
+import { Constants } from 'botframework-webchat-core';
+
+const { DictateState } = Constants;
+
 const ROOT_CSS = css({
   '& > .main': {
     display: 'flex'
@@ -25,8 +29,8 @@ const TEXT_BOX_CSS = css({
 
 const BasicSendBox = ({
   className,
+  dictationStarted,
   enableSpeech,
-  speechState,
   styleSet,
   webSpeechPonyfill
 }) =>
@@ -38,7 +42,7 @@ const BasicSendBox = ({
     <SuggestedActions />
     <div className="main">
       <UploadAttachmentButton />
-      { !speechState &&
+      { !dictationStarted &&
           <TextBox className={ TEXT_BOX_CSS } />
       }
       { (enableSpeech && webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
@@ -51,6 +55,8 @@ const BasicSendBox = ({
 
 
 export default connectWithContext(
-  ({ input: { speechState } }) => ({ speechState }),
+  ({ input: { dictateState } }) => ({
+    dictationStarted: dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING
+  }),
   ({ enableSpeech, styleSet, webSpeechPonyfill }) => ({ enableSpeech, styleSet, webSpeechPonyfill })
 )(BasicSendBox)

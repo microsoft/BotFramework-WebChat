@@ -6,18 +6,13 @@ import {
 
 import createCustomSpeechRecognitionClass from './createCustomSpeechRecognition';
 
-export default function (fetchToken) {
+export default function ({ fetchToken }) {
   return ({ referenceGrammarId }) => {
-    // TODO: [P1] Renew token as needed
-    const speechToken = {
-      authorized: fetchToken
-    };
-
-    speechSynthesis.speechToken = speechToken;
+    speechSynthesis.fetchToken = fetchToken;
 
     return {
       SpeechGrammarList,
-      SpeechRecognition: createCustomSpeechRecognitionClass({ referenceGrammarId, speechToken }),
+      SpeechRecognition: createCustomSpeechRecognitionClass({ fetchToken, referenceGrammarId }),
       speechSynthesis,
       SpeechSynthesisUtterance
     };
