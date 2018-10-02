@@ -28,40 +28,38 @@
         const { token } = await res.json();
 
         // To run this demo, set the parameter below or use the query param ?s=YOUR_BING_SPEECH_SUBSCRIPTION_KEY
-
         const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s');
 
         // We use the subscription key to get the token. This part of code is shown for demo purpose only.
-        // You should authenticate against your server to avoid exposing the subscription key to any part of your client code.
+        // Client should authenticate against your server to avoid exposing the subscription key to any part of your client code.
         // https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization
-        let lastFetch = 0;
-        let lastAccessTokenPromise;
         const TOKEN_RENEWAL_INTERVAL = 300000;
+        let accessTokenPromise;
+        let lastFetch = 0;
 
         const fetchToken = () => {
           const now = Date.now();
 
-          if (!lastAccessTokenPromise || now - lastFetch > TOKEN_RENEWAL_INTERVAL) {
+          if (!accessTokenPromise || now - lastFetch > TOKEN_RENEWAL_INTERVAL) {
             console.log(`Cognitive Services: Issuing new token using subscription key`);
 
             lastFetch = now;
-            lastAccessTokenPromise = fetch(
+            accessTokenPromise = fetch(
               'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
               {
-                method: 'POST',
-                headers: { 'Ocp-Apim-Subscription-Key': SUBSCRIPTION_KEY }
+                headers: { 'Ocp-Apim-Subscription-Key': SUBSCRIPTION_KEY },
+                method: 'POST'
               }
             )
-            .then(res => res.text())
-            .catch(
-              err => {
+            .then(res => res.ok ? res.text() : Promise.reject(new Error(`Failed to issue token`)))
+            .catch(err => {
               lastFetch = 0;
 
               return Promise.reject(err);
             });
           }
 
-          return lastAccessTokenPromise;
+          return accessTokenPromise;
         };
 
         window.WebChat.renderWebChat({
