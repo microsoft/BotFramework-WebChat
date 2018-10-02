@@ -2,8 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Cognitive Services Bing Speech</title>
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script> -->
-    <script src="/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -30,7 +29,7 @@
         // To run this demo, set the parameter below or use the query param ?s=YOUR_BING_SPEECH_SUBSCRIPTION_KEY
         const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s');
 
-        // We use the subscription key to get the token. This part of code is shown for demo purpose only.
+        // This part of code for fetching a token from a subscription key is for demonstration only.
         // Client should authenticate against your server to avoid exposing the subscription key to any part of your client code.
         // https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization
         const TOKEN_RENEWAL_INTERVAL = 300000;
@@ -62,6 +61,9 @@
           return accessTokenPromise;
         };
 
+        // Pass a Web Speech ponyfill factory to renderWebChat.
+        // You can also use your own speech engine given it is complaint to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
           webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesWebSpeechPonyfill({ fetchToken })
