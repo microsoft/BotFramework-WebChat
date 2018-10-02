@@ -85,7 +85,7 @@ TextBoxWithSpeech.propTypes = {
 };
 
 export default connectWithContext(
-  ({ input: { sendBox, speechState }, settings: { language } }) => ({ language, sendBox, speechState }),
+  ({ input: { sendBox }, settings: { language } }) => ({ language, sendBox }),
   ({
     disabled,
     scrollToBottom,
