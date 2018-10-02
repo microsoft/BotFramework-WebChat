@@ -30,7 +30,6 @@ const TEXT_BOX_CSS = css({
 const BasicSendBox = ({
   className,
   dictationStarted,
-  enableSpeech,
   styleSet,
   webSpeechPonyfill
 }) =>
@@ -45,7 +44,7 @@ const BasicSendBox = ({
       { !dictationStarted &&
           <TextBox className={ TEXT_BOX_CSS } />
       }
-      { (enableSpeech && webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
+      { (webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
           <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
         :
           <SendButton />
@@ -58,5 +57,5 @@ export default connectWithContext(
   ({ input: { dictateState } }) => ({
     dictationStarted: dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING
   }),
-  ({ enableSpeech, styleSet, webSpeechPonyfill }) => ({ enableSpeech, styleSet, webSpeechPonyfill })
+  ({ styleSet, webSpeechPonyfill }) => ({ styleSet, webSpeechPonyfill })
 )(BasicSendBox)

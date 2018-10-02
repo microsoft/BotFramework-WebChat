@@ -231,7 +231,6 @@ class Composer extends React.Component {
         // TODO: [P2] Add disable interactivity
         disabled,
 
-        enableSpeech,
         grammars,
         referenceGrammarId,
         renderMarkdown,
@@ -260,7 +259,6 @@ class Composer extends React.Component {
         botAvatarInitials,
         collapseTimestamp,
         disabled,
-        enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
@@ -292,7 +290,6 @@ Composer.propTypes = {
   botAvatarInitials: PropTypes.string,
   collapseTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
-  enableSpeech: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
   referenceGrammarId: PropTypes.string,
   renderMarkdown: PropTypes.func,

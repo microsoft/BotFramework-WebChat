@@ -54,7 +54,7 @@ class Dictation extends React.Component {
 
   render() {
     const {
-      props: { dictateState, disabled, enableSpeech, webSpeechPonyfill }
+      props: { dictateState, disabled, webSpeechPonyfill }
     } = this;
 
     return (
@@ -66,7 +66,6 @@ class Dictation extends React.Component {
         speechGrammarList={ webSpeechPonyfill && webSpeechPonyfill.SpeechGrammarList }
         started={
           !disabled
-          && enableSpeech
           && (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING)
         }
       />
@@ -78,7 +77,6 @@ export default connectWithContext(
   ({ input: { dictateState } }) => ({ dictateState }),
   ({
     disabled,
-    enableSpeech,
     setDictateInterims,
     setDictateState,
     setSendBox,
@@ -88,7 +86,6 @@ export default connectWithContext(
     webSpeechPonyfill
   }) => ({
     disabled,
-    enableSpeech,
     setDictateInterims,
     setDictateState,
     setSendBox,
