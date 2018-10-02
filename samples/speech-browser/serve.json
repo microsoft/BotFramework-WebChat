@@ -2,6 +2,6 @@
   "public": "../../",
   "rewrites": [
     { "source": "/", "destination": "samples/speech-browser/index.html" },
-    { "source": "/botchat.js", "destination": "packages/bundle/dist/botchat.js" }
+    { "source": "/botchat-core.js", "destination": "packages/bundle/dist/botchat-core.js" }
   ]
 }

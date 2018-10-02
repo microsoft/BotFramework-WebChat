@@ -2,6 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Cognitive Services Bing Speech</title>
+    <!-- Cognitive Services Bing Speech adapter is only available in full bundle -->
     <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
     <style>
       html, body { height: 100% }
@@ -66,7 +67,7 @@
         // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesWebSpeechPonyfill({ fetchToken })
+          webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesWebSpeechPonyfillFactory({ fetchToken })
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();

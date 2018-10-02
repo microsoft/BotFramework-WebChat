@@ -2,7 +2,11 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Browser-supported speech</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+    <!--
+       Speech functionality is a core feature in Web Chat and does not require the full bundle.
+       We are using the core bundle for demonstration purpose here.
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -31,7 +35,7 @@
         // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          webSpeechPonyfillFactory: window.WebChat.createBrowserWebSpeechPonyfill()
+          webSpeechPonyfillFactory: window.WebChat.createBrowserWebSpeechPonyfillFactory()
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
