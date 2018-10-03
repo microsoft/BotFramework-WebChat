@@ -1,0 +1,7 @@
+{
+  "public": "../..",
+  "redirects": [
+    { "source": "/", "destination": "samples/es5-bundle/index.html" },
+    { "source": "/botchat-es5.js", "destination": "packages/bundle/dist/botchat-es5.js" }
+  ]
+}

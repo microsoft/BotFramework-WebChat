@@ -48,7 +48,8 @@
     "redux": "^4.0.0",
     "sanitize-html": "^1.19.0",
     "store": "^2.0.12",
-    "web-speech-cognitive-services": "2.1.1-master.0f7758b"
+    "web-speech-cognitive-services": "2.1.1-master.0f7758b",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
