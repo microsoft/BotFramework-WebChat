@@ -75,6 +75,7 @@ export default class extends React.Component {
     const directLineToken = params.get('t');
     const domain = params.get('domain');
     const speech = params.get('speech');
+    const userID = params.get('u') || 'default-user';
     const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
@@ -99,7 +100,8 @@ export default class extends React.Component {
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
       sendTyping: true,
-      userAvatarInitials: 'WC'
+      userAvatarInitials: 'WC',
+      userID
     };
   }
 
@@ -172,10 +174,15 @@ export default class extends React.Component {
         throw new Error(`Server returned ${ directLineTokenRes.status } while requesting for Direct Line token`);
       }
 
-      const { token } = await directLineTokenRes.json();
+      const { userID, token } = await directLineTokenRes.json();
 
       window.sessionStorage.removeItem('REDUX_STORE');
-      window.location.href = `?speech=cs&websocket=true&t=${ encodeURIComponent(token) }`;
+      window.location.href = '/?' + new URLSearchParams({
+        speech: 'cs',
+        websocket: 'true',
+        t: token,
+        u: userID || ''
+      }).toString();
     } catch (err) {
       console.log(err);
       alert('Failed to get Direct Line token for official MockBot');
@@ -205,7 +212,7 @@ export default class extends React.Component {
           storeKey="webchat"
           styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
-          userID="default-user"
+          userID={ state.userID }
           username="User 1"
           webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
         />
