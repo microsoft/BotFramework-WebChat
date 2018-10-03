@@ -10,6 +10,7 @@ import 'core-js/modules/es6.promise';
 import 'core-js/modules/es6.string.starts-with';
 import 'core-js/modules/es6.symbol';
 import 'core-js/modules/es7.array.includes';
+import 'url-search-params-polyfill';
 import 'whatwg-fetch';
 
 export * from './index';
