@@ -26,7 +26,7 @@ const BasicTranscript = ({
   activities,
   attachmentRenderer,
   className,
-  collapseTimestamp,
+  groupTimestamp,
   styleSet,
   webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
 }) =>
@@ -50,8 +50,8 @@ const BasicTranscript = ({
             const nextActivity = activities[index + 1];
             let showTimestamp = true;
 
-            if (collapseTimestamp !== false) {
-              collapseTimestamp = typeof collapseTimestamp === 'number' ? collapseTimestamp : 5 * 60 * 1000;
+            if (groupTimestamp !== false) {
+              groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
 
               if (activity.type !== 'message') {
                 // Hide timestamp for typing
@@ -60,7 +60,7 @@ const BasicTranscript = ({
                 const time = new Date(activity.timestamp).getTime();
                 const nextTime = new Date(nextActivity.timestamp).getTime();
 
-                showTimestamp = (nextTime - time) > collapseTimestamp;
+                showTimestamp = (nextTime - time) > groupTimestamp;
               }
             }
 
@@ -84,13 +84,13 @@ export default connectWithContext(
   ({
     activityRenderer,
     attachmentRenderer,
-    collapseTimestamp,
+    groupTimestamp,
     styleSet,
     webSpeechPonyfill
   }) => ({
     activityRenderer,
     attachmentRenderer,
-    collapseTimestamp,
+    groupTimestamp,
     styleSet,
     webSpeechPonyfill
   })

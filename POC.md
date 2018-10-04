@@ -18,14 +18,15 @@ This list PoCs that will guide you to customize Web Chat in different ways.
 ## P1
 - [ ] API: Scroll activity into view
 - [ ] API: Set focus
-- [ ] Use a different speech engine
-- [ ] Configuring collapsible timestamp
+- [x] Use a different speech engine
+- [x] Configuring timestamp grouping
 - [ ] Customizing bot avatar
 - [ ] Handshake auth token
 - [ ] Minimize/hide Web Chat
 - [ ] Ponyfill for `window.open`
 - [ ] Typeahead/auto-complete (persistent menu)
 - [ ] Welcome messages
+- [ ] Tamper-proof user ID
 
 ## P2
 - [ ] Always on/off microphone
