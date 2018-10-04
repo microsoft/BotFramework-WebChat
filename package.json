@@ -8,7 +8,7 @@
   "keywords": [],
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run --parallel build --scope=botframework-webchat* --stream",
+    "build": "lerna run --scope=botframework-webchat* --stream build",
     "clean": "lerna run --parallel --stream clean",
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --stream prepublishOnly",
