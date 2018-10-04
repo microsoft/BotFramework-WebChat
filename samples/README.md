@@ -13,8 +13,11 @@ This section covers samples helping you to jumpstart embedding Web Chat in your 
 For simplicity, you can use a `<script>` tag to embed Web Chat from a CDN.
 
 - [Full bundle](https://microsoft.github.io/BotFramework-WebChat/full-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/full-bundle)
+- [Full bundle with polyfills for ES5 browsers](https://microsoft.github.io/BotFramework-WebChat/es5-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/es5-bundle)
 - [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle)
 - [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle-with-markdown) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle-with-markdown)
+
+> You can look at this [sunburst chart](http://cdn.botframework.com/botframework-webchat/preview/stats.html) for better understanding on the content of various bundles.
 
 ### Thru NPM (as a React component)
 

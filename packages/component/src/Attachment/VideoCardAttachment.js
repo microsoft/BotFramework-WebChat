@@ -1,4 +1,3 @@
-import memoize from 'memoize-one';
 import React from 'react';
 
 import CommonCard from './CommonCard';

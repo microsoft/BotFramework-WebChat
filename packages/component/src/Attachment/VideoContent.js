@@ -11,9 +11,27 @@ const YOUTUBE_WWW_SHORT_DOMAIN = "www.youtu.be";
 const VIMEO_DOMAIN = "vimeo.com";
 const VIMEO_WWW_DOMAIN = "www.vimeo.com";
 
+// This is a workaround
+// - Today, there is no good URL polyfill for older browser
+// - Instead of writing a URL parser, for older browser, we will use this <a href> trick to parse the URL
+function parseURL(url) {
+  let urlLike;
+
+  if (typeof URL === 'function') {
+    urlLike = new URL(src);
+  } else {
+    urlLike = document.createElement('a');
+    urlLike.setAttribute('href', url);
+  }
+
+  const { hostname, pathname, search } = urlLike;
+
+  return { hostname, pathname, search };
+}
+
 export default props => {
   const { autoPlay, loop, poster, src } = props;
-  const { hostname, pathname, search } = new URL(src);
+  const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();
   const searchParams = new URLSearchParams(search);
 
