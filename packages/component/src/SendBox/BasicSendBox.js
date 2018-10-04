@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import connectWithContext from '../connectWithContext';
+import DictationInterims from './DictationInterims';
 import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
@@ -19,13 +20,9 @@ const ROOT_CSS = css({
   }
 });
 
-const MICROPHONE_BUTTON_CSS = css({
-  flex: 1
-});
-
-const TEXT_BOX_CSS = css({
-  flex: 10000
-});
+const DICTATION_INTERIMS_CSS = css({ flex: 10000 });
+const MICROPHONE_BUTTON_CSS = css({ flex: 1 });
+const TEXT_BOX_CSS = css({ flex: 10000 });
 
 const BasicSendBox = ({
   className,
@@ -41,7 +38,9 @@ const BasicSendBox = ({
     <SuggestedActions />
     <div className="main">
       <UploadAttachmentButton />
-      { !dictationStarted &&
+      { dictationStarted ?
+          <DictationInterims className={ DICTATION_INTERIMS_CSS } />
+        :
           <TextBox className={ TEXT_BOX_CSS } />
       }
       { (webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?

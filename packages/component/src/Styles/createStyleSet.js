@@ -8,6 +8,7 @@ import createAudioContentStyle from './StyleSet/AudioContent';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
+import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
@@ -47,6 +48,7 @@ export default function createStyleSet(options) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
+    dictationInterims: createDictationInterimsStyle(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
