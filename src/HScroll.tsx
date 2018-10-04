@@ -24,8 +24,12 @@ export class HScroll extends React.Component<HScrollProps, {}> {
     private scrollSubscription: Subscription;
     private clickSubscription: Subscription;
 
+    private handleLoad: () => void;
+
     constructor(props: HScrollProps) {
         super(props);
+
+        this.handleLoad = this.updateScrollButtons.bind(this);
     }
 
     private clearScrollTimers() {
@@ -141,7 +145,9 @@ export class HScroll extends React.Component<HScrollProps, {}> {
 
     render() {
         return (
-            <div>
+            <div
+                onLoad={ this.handleLoad }
+            >
                 <button
                     className="scroll previous"
                     disabled
