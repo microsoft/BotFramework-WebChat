@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix `historyRef` cannot be focused because it is unmounted in Emulator, in PR [#1157](https://github.com/Microsoft/BotFramework-WebChat/pull/1157)
 - Fix for Chatdown that activities sent by the user are not displayed, in PR [#1162](https://github.com/Microsoft/BotFramework-WebChat/pull/1162)
 - Accessibility adjustment on History.tsx where clickable div is converted to button, by [@corinagum](https://github.com/corinagum) in PR [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166)
+- Fix so that carousel buttons are updated on load, by [@corinagum](https://github.com/corinagum) in PR [#1188](https://github.com/Microsoft/BotFramework-WebChat/pull/1188)
 
 ## [0.14.2] - 2018-08-16
 ### Added
