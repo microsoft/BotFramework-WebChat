@@ -18,7 +18,7 @@ const ROOT_CSS = css({
 //       stop the dictation and allow the user to type-correct the transcript
 
 const DictationInterims = ({ className, dictateInterims, dictateState, styleSet }) =>
-  dictating && (
+  (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) && (
     dictateInterims.length ?
       <p className={ classNames(
         styleSet.dictationInterims + '',
@@ -33,9 +33,14 @@ const DictationInterims = ({ className, dictateInterims, dictateState, styleSet 
         styleSet.dictationInterims + '',
         ROOT_CSS + '',
         (className || '') + '',
-        'listening'
+        dictateState === DictateState.STARTING ? 'starting' : 'listening'
       ) }>
-        <Localize text="Listening&hellip;" />
+        {
+          dictateState === DictateState.STARTING ?
+            <Localize text="Starting&hellip;" />
+          :
+            <Localize text="Listening&hellip;" />
+        }
       </p>
   )
 
@@ -45,7 +50,7 @@ export default connectWithContext(
     dictateState
   } }) => ({
     dictateInterims,
-    dictating: dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING
+    dictateState
   }),
   ({
     styleSet
