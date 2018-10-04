@@ -3,8 +3,8 @@ import React from 'react';
 import memoize from 'memoize-one';
 
 import ReactWebChat, {
-  createBrowserWebSpeechPonyfill,
-  createCognitiveServicesWebSpeechPonyfill,
+  createBrowserWebSpeechPonyfillFactory,
+  createCognitiveServicesWebSpeechPonyfillFactory,
   createStyleSet,
   renderMarkdown
 } from 'botframework-webchat';
@@ -79,11 +79,11 @@ export default class extends React.Component {
     const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfill({
+      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
         fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
       });
     } else {
-      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfill();
+      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
     }
 
     this.state = {
