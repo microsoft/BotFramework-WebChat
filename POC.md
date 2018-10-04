@@ -20,6 +20,7 @@ This list PoCs that will guide you to customize Web Chat in different ways.
 - [ ] API: Set focus
 - [x] Use a different speech engine
 - [x] Configuring timestamp grouping
+- [x] API: Backchannel
 - [ ] Customizing bot avatar
 - [ ] Handshake auth token
 - [ ] Minimize/hide Web Chat
