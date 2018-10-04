@@ -352,7 +352,9 @@ export class Chat extends React.Component<ChatProps, State> {
                     <div
                         className={`wc-floating`}
                         onClick={() => {this.toggle(); }}
-                    />
+                    >
+                        <div className="wc-floating-inner"></div>
+                    </div>
 
                     <div
                         className={`wc-chatview-panel ${open ? 'wc-chatview-panel__open' : 'wc-chatview-panel__closed' }`}
@@ -458,7 +460,7 @@ export const sendPostBack = (botConnection: IBotConnection, text: string, value:
 };
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {
-    if (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0)) {
+    if                                                      (value !== undefined && value !== null && (typeof value !== 'string' || value.length > 0)) {
         return renderer(value);
     }
 };
@@ -497,7 +499,7 @@ const ResizeDetector = (props: {
 // 1. evt.key.length === 1 (e.g. "1", "A", "=" keys), or
 // 2. evt.key is one of the map keys below (e.g. "Add" will insert "+", "Decimal" will insert ".")
 const INPUTTABLE_KEY: { [key: string]: string } = {
-    Add: '+',      // Numpad add key
+    Add:                                                      '+',      // Numpad add key
     Decimal: '.',  // Numpad decimal key
     Divide: '/',   // Numpad divide key
     Multiply: '*', // Numpad multiply key

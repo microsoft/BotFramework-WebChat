@@ -2,8 +2,7 @@
 @import "includes/settings";
 @import "includes/card-size";
 @import "includes/media-queries";
-@import "~react-datepicker/dist/react-datepicker.css";
-@import "gideon/gideon";
+@import "gideon";
 
 /* reset */
 
@@ -67,6 +66,7 @@
         left: 0;
         transform: translateY(0);
         outline: 0;
+        background: white;
         overflow-x: hidden;
         overflow-y: scroll;
         padding: 10px;
@@ -95,7 +95,7 @@
         transition: height $actionTransition;
 
         .wc-hscroll > ul {
-            height: $actionsHeight;
+            height: $actionsHeight + 4px;
             padding: 2px 3px;
 
             > li {
@@ -107,6 +107,7 @@
                     background-color: #fff;
                     color: $c_brand;
                     min-height: 32px;
+                    height: 50px;
                     overflow: hidden;
                     padding: 0 16px;
                     text-overflow: ellipsis;
@@ -117,7 +118,7 @@
                 button:focus,
                 button:hover {
                     background-color: #fff;
-                    border-color: $c_brand;
+                    border-color: #31ace2;
                     color: $c_brand;
                 }
 
@@ -187,12 +188,13 @@
 
     .wc-chatview-panel {
         overflow: hidden;
-        position: absolute;
+        position: fixed;
         right: $rightWeight;
         bottom: $floatingBottom + $floatingHeight + 20px;
         height: 0;
         width: 200px;
         border-radius: 8px;
+        z-index: 1000;
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
@@ -214,18 +216,27 @@
     }
 
     .wc-floating {
-        position: absolute;
+        position: fixed;
         right: $rightWeight;
         cursor: pointer;
         bottom: $floatingBottom;
-        width: 80px;
+        width: $floatingHeight ;
         height: $floatingHeight;
-        background-size: 132px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: url(https://s3.amazonaws.com/com.gideon.static.dev/chatbot/g-mark%403x.png);
+        background-color: white;
         border-radius: 80px;
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
+        z-index: 1000;
+        
+        &-inner {
+            z-index: 1001;
+            background: white;
+            width:$floatingHeight;
+            height: $floatingHeight;
+            background-size: 132px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url(https://s3.amazonaws.com/com.gideon.static.dev/chatbot/g-mark-copy-7%403x.png);
+        }
 
         &__closed {
             display: none;
@@ -629,6 +640,7 @@
         border-top: solid 1px #cedcdb;
         bottom: 0;
         box-sizing: border-box;
+        background: white;
         height: $consoleHeight;
         left: 0;
         position: absolute;
@@ -665,6 +677,12 @@
             font-size: 16px;
             padding-bottom: 2px; // center
         }
+
+        ::-webkit-input-placeholder {color: #979999;}
+        :-moz-placeholder           {color: #979999;}
+        ::-moz-placeholder          {color: #979999;}
+        :-ms-input-placeholder      {color: #979999;}
+
 
         &.has-text .wc-send svg {
             fill: $c07;
