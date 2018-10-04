@@ -1,3 +1,5 @@
+// TODO: [P3] We could pass the font-family as part of style set options
+
 function fontFamily(fonts) {
   return fonts.map(font => `'${ font }'`).join(', ');
 }
