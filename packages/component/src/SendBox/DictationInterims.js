@@ -14,6 +14,9 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
+// TODO: [P3] After speech started, when clicking on the transcript, it should
+//       stop the dictation and allow the user to type-correct the transcript
+
 const DictationInterims = ({ className, dictateInterims, dictateState, styleSet }) =>
   dictating && (
     dictateInterims.length ?
