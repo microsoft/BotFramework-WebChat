@@ -19,17 +19,8 @@ export interface BotFrameworkCardAction extends CardAction {
   __isBotFrameworkCardAction: boolean;
 }
 
-function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
+function addCardAction(cardAction: CardAction) {
   if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
-    const action = new SubmitAction();
-    const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
-
-    action.data = botFrameworkCardAction;
-    action.title = cardAction.title;
-
-    return action;
-  } else if (cardAction.type === 'signin' && includesOAuthButtons) {
-    // Create a button specific for OAuthCard 'signin' actions (cardAction.type == signin and button action is Action.Submit)
     const action = new SubmitAction();
     const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
 
@@ -91,9 +82,9 @@ export class AdaptiveCardBuilder {
     }
   }
 
-  addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
+  addButtons(cardActions: CardAction[]) {
     cardActions && cardActions.forEach(cardAction => {
-      this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
+      this.card.addAction(addCardAction(cardAction));
     });
   }
 

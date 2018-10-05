@@ -12,7 +12,10 @@ export default class extends React.Component {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
 
       builder.addCommonHeaders(content);
-      builder.addButtons(content.buttons, true);
+
+      // "signin" button should be converted to "openUrl" with corresponding "?code_challenge" via saga in "botframework-webchat-core"
+      // Thus, if we see "signin" button, they are not converted and not ready for the user to click on
+      builder.addButtons(content.buttons.filter(({ type }) => type !== 'signin'));
 
       return builder.card;
     });

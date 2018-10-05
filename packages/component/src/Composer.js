@@ -83,30 +83,6 @@ function createCardActionLogic({ directLine, dispatch }) {
           window.open(value);
           break;
 
-        case 'signin':
-          // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
-          //       This is to eliminate the delay between window.open() and location.href call
-
-          const popup = window.open();
-
-          if (directLine.getSessionId)  {
-            const subscription = directLine.getSessionId().subscribe(sessionId => {
-              popup.location.href = `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`;
-
-              // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
-              //       Need to wait some short time here to make sure the subscription variable has setup
-              setImmediate(() => subscription.unsubscribe());
-            }, error => {
-              // TODO: [P3] Let the user know something failed and we cannot proceed
-              //       This is as-of v3 now
-              console.error(error);
-            });
-          } else {
-            popup.location.href = value;
-          }
-
-          break;
-
         default:
           console.error(`Web Chat: received unknown card action "${ type }"`);
           break;

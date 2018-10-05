@@ -6,6 +6,7 @@ import connectSaga from './sagas/connectSaga';
 import incomingActivitySaga from './sagas/incomingActivitySaga';
 import incomingTypingSaga from './sagas/incomingTypingSaga';
 import markActivityForSpeakSaga from './sagas/markActivityForSpeakSaga';
+import patchOAuthAttachmentSaga from './sagas/patchOAuthAttachmentSaga';
 import postActivitySaga from './sagas/postActivitySaga';
 import sendFilesToPostActivitySaga from './sagas/sendFilesToPostActivitySaga';
 import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga';
@@ -23,6 +24,7 @@ export default function* () {
   yield fork(incomingActivitySaga);
   yield fork(incomingTypingSaga);
   yield fork(markActivityForSpeakSaga);
+  yield fork(patchOAuthAttachmentSaga);
   yield fork(postActivitySaga);
   yield fork(sendFilesToPostActivitySaga);
   yield fork(sendMessageToPostActivitySaga);

@@ -41,6 +41,7 @@
     "@babel/cli": "^7.0.0-beta.51",
     "@babel/core": "^7.0.0-beta.51",
     "@babel/plugin-proposal-class-properties": "^7.0.0-beta.56",
+    "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.0.0-beta.51",
     "@babel/preset-react": "^7.0.0-beta.51",
     "@babel/preset-typescript": "^7.0.0-beta.51",
@@ -57,6 +58,7 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
+    "@babel/runtime": "^7.1.2",
     "adaptivecards": "^1.0.0",
     "botframework-webchat-core": "^0.0.0-0",
     "bytes": "^3.0.0",
