@@ -13,6 +13,8 @@ import { Speech } from './SpeechModule';
 import { ActivityOrID, FormatOptions } from './Types';
 import * as konsole from './Konsole';
 import { getTabIndex } from './getTabIndex';
+import { ConnectionStatus } from 'botframework-directlinejs';
+
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
@@ -29,7 +31,8 @@ export interface ChatProps {
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect',
     userData?: {},
-    startOverTrigger?: (trigger: () => void) => void
+    startOverTrigger?: (trigger: () => void) => void,
+    onConversationStarted?: (callback: (conversationId: string) => void) => void
 }
 
 import { History } from './History';
@@ -123,12 +126,19 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private handleCardAction() {
-        // After the user click on any card action, we will "blur" the focus, by setting focus on message pane
-        // This is for after click on card action, the user press "A", it should go into the chat box
-        const historyDOM = findDOMNode(this.historyRef) as HTMLElement;
-
-        if (historyDOM) {
-            historyDOM.focus();
+        try {
+            // After the user click on any card action, we will "blur" the focus, by setting focus on message pane
+            // This is for after click on card action, the user press "A", it should go into the chat box
+            const historyDOM = findDOMNode(this.historyRef) as HTMLElement;
+            if (historyDOM) {
+                historyDOM.focus();
+            }
+        } catch (err) {
+            // In Emulator production build, React.findDOMNode(this.historyRef) will throw an exception saying the
+            // component is unmounted. I verified we did not miss any saveRef calls, so it looks weird.
+            // Since this is an optional feature, I am try-catching this for now. We should find the root cause later.
+            //
+            // Some of my thoughts, React version-compatibility problems.
         }
     }
 
@@ -189,15 +199,19 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (this.props.directLine) {
             botConnection = this.botConnection = new DirectLine(this.props.directLine)
             botConnection.postActivityOriginal = botConnection.postActivity
-
+            
             botConnection.postActivity = (activity: any) => {
                 // send userData only once during initial event
                 if (activity.name === 'beginIntroDialog') {
-                    const newActivity = Object.assign(
-                        {},
-                        activity,
-                        {channelData: { userData: Object.assign(this.props.userData || {}, window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {})}}
-                    );
+                    const newActivity = {
+                        ...activity,
+                        channelData: {
+                            userData: {
+                                ...(this.props.userData || {}),
+                                ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {})
+                            }
+                        }
+                    };
                     console.log('userData', newActivity.channelData.userData)
                     return botConnection.postActivityOriginal(newActivity);
                 } else {
@@ -214,8 +228,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
         
         // FEEDYOU - show typing on startup - if bot.id is set to the same value as value on server, it will be cleared by first message
-        if (this.props.bot.id) {
-            this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: {...this.props.bot, name: "Chatbot" }, timestamp: new Date().toISOString()}});
+        if (this.props.bot && this.props.bot.id) {
+            this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity: { id: 'typingUntilIntroDialog', type: 'typing', from: { name: "Chatbot", ...this.props.bot }, timestamp: new Date().toISOString()}});
         }
 
         // FEEDYOU - support "start over" button
@@ -226,14 +240,16 @@ export class Chat extends React.Component<ChatProps, {}> {
         
         // FEEDYOU - send event to bot to tell him webchat was opened - more reliable solution instead of conversationUpdate event
         // https://github.com/Microsoft/BotBuilder/issues/4245#issuecomment-369311452
-        botConnection.postActivity({
-            from: this.props.user,
-            name: 'beginIntroDialog',
-            type: 'event',
-            value: ''
-        }).subscribe(function (id: any) {
-            konsole.log('"beginIntroDialog" event sent');
-        });
+        if (!this.props.directLine.conversationId) {
+            botConnection.postActivity({
+                from: this.props.user,
+                name: 'beginIntroDialog',
+                type: 'event',
+                value: ''
+            }).subscribe(function (id: any) {
+                konsole.log('"beginIntroDialog" event sent');
+            });
+        }
 
         this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe((connectionStatus: any) =>{
                 if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
@@ -242,6 +258,12 @@ export class Chat extends React.Component<ChatProps, {}> {
                         this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
                 }
                 this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
+
+                // FEEDYOU
+                if (this.props.onConversationStarted && connectionStatus === ConnectionStatus.Online && botConnection.conversationId) {
+                    this.props.onConversationStarted(botConnection.conversationId)
+                }
+
             }
         );
 

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css" rel="stylesheet" />
+  <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat-fullwindow.css" rel="stylesheet" />
+  <title>Chatbot</title>
+  <style>
+    body {
+      background-color: black;
+      font-family: Helvetica, Arial;
+      padding: 30px;
+
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    h1 {
+      font-family: "Helvetica";
+      color: #D83838;
+    }
+
+    body>p {
+      color: #fff;
+      width: 600px;
+    }
+
+    .header h1 {
+      color: #D83838;
+    }
+
+    #logo {
+      background-color: black;
+  		height: 120px;
+  		text-align: center;
+  		padding-top: 0px;
+  		padding-bottom: 5px;
+    }
+
+    #logo img {
+      height: 70%;
+      padding-top: 15px;
+    }
+
+    #bot-wrapper {
+      background-color: #fff;
+      max-width: 600px;
+      width: 95%;
+      height: 1000px;
+      max-height: 98.5%;
+      min-height: 500px;
+
+      position: absolute;
+      bottom: 0;
+    }
+
+    #bot-header {
+      color: white;
+      background-color: #D83838;
+      height: 22px;
+      padding: 8px;
+      font-size: 115%;
+    }
+
+    .wc-header {
+      display: none;
+    }
+
+    .wc-message-groups {
+      top: 163px;
+    }
+
+    .wc-adaptive-card {
+      max-width: 100%;
+    }
+
+    .wc-card button {
+      color: #D83838;
+    }
+
+    .wc-card button:hover {
+      border-color: #D83838;
+      color: #D83838;
+    }
+
+    .wc-card button:active {
+      background-color: #D83838;
+      border-color: #D83838;
+      color: #ffffff;
+    }
+
+    .wc-message-from-me .wc-message-content {
+      background-color: #D83838;
+    }
+
+    .wc-message-from-me svg.wc-message-callout path {
+      fill: #D83838;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="bot-wrapper">
+    <div id="logo">
+      <img src="https://feedyou.blob.core.windows.net/webchat/feedyou_logo.png" alt="Logo" />
+    </div>
+    <div id="bot-header">
+      Chatbot
+    </div>
+    <div id="bot" />
+  </div>
+  <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
+  <script>
+    if (!localStorage.userId) {
+      localStorage.userId = BotChat.MakeId();
+    }
+
+    BotChat.App({
+	  // TRY THIS TO TEST: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
+      directLine: {
+        secret: 'flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo',
+        conversationId: localStorage.conversationId,
+        webSocket: false  // web socket connection currently doesn't support conversationId preset
+      },	
+      // TRY THIS TO TEST: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
+      bot: { id: 'feedbot-demo-webchat', name: 'DEMO webchat chatbot' },
+      onConversationStarted: function(conversationId) {
+        localStorage.conversationId = conversationId;
+      },
+      user: { id: localStorage.userId, name: 'Uživatel' },
+      // OPTIONAL - locale: '...',
+    }, document.getElementById("bot"));
+  </script>
+</body>
+
+</html>

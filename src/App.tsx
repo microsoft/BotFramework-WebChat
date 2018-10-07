@@ -9,7 +9,7 @@ export const App = (props: AppProps, container: HTMLElement) => {
     konsole.log("BotChat.App props", props);
 
     // FEEDYOU generate user ID if not present in props
-    props.user = {...{id: makeid(), name: 'Uživatel'}, ...props.user};
+    props.user = {...{id: MakeId(), name: 'Uživatel'}, ...props.user};
     props.showUploadButton = props.hasOwnProperty('showUploadButton') ? props.showUploadButton : false;
     props.resize = props.hasOwnProperty('resize') ? props.resize : 'detect';
     props.locale = props.hasOwnProperty('locale') ? props.locale : 'cs-cz';
@@ -22,7 +22,7 @@ const AppContainer = (props: AppProps) =>
         <Chat { ...props } />
     </div>;
 
-function makeid() {
+export function MakeId() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

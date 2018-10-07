@@ -1,4 +1,4 @@
-export { App, AppProps } from './App';
+export { App, AppProps, MakeId } from './App';
 export { Chat, ChatProps } from './Chat';
 export * from 'botframework-directlinejs';
 export { queryParams } from './Attachment';
