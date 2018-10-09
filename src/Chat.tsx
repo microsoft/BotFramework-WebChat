@@ -22,6 +22,7 @@ export interface ChatProps {
     bot: User,
     botConnection?: IBotConnection,
     directLine?: DirectLineOptions,
+    actionEndpointUrl: string,
     speechOptions?: SpeechOptions,
     locale?: string,
     selectedActivity?: BehaviorSubject<ActivityOrID>,
@@ -34,6 +35,7 @@ export interface ChatProps {
 import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
+import axios from 'axios';
 
 export class Chat extends React.Component<ChatProps, {}> {
 
@@ -195,20 +197,16 @@ export class Chat extends React.Component<ChatProps, {}> {
               this.store.dispatch<ChatActions>({ activity, type: "Add_Message"});
             });
         } else {
-            const welcomeMessagePayload = {
-                "localResponse": {
-                    "result": {
-                    "action": "welcome.greeting"
-                    }
-                }
-            };
-
-            sendPostBack(botConnection,
-                JSON.stringify(welcomeMessagePayload),
-                null,
-                this.props.user,
-                this.store.getState().format.locale
-            );
+            axios.request<Activity[]>({
+                method: 'GET',
+                url: this.props.actionEndpointUrl,
+            })
+            .then((response) => {
+                const { data } = response
+                data.forEach((activity: Activity) => {
+                    this.store.dispatch<ChatActions>({ activity, type: "Add_Message"});
+                });
+            });
         }
 
         if (this.props.resize === 'window')
