@@ -11,9 +11,9 @@ function xMinutesAgo(date) {
   } else if (deltaInHours < 5) {
     return `${ deltaInHours } 時間前`;
   } else if (deltaInHours <= 24) {
-    return `今日`;
+    return '今日';
   } else if (deltaInHours <= 48) {
-    return `昨日`;
+    return '昨日';
   } else {
     return new Intl.DateTimeFormat('ja-JP').format(date);
   }
@@ -30,4 +30,5 @@ export default {
   'Total': '合計',
   'VAT': '消費税',
   'Send': '送信',
-  'X minutes ago': xMinutesAgo}
+  'X minutes ago': xMinutesAgo
+}
