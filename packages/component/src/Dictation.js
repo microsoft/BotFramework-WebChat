@@ -1,10 +1,16 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
 import React from 'react';
 
-import connectWithContext from './connectWithContext';
 import { Constants } from 'botframework-webchat-core';
+import connectWithContext from './connectWithContext';
 
-const { DictateState } = Constants;
+const {
+  DictateState: {
+    DICTATING,
+    IDLE,
+    STARTING
+  }
+} = Constants;
 
 class Dictation extends React.Component {
   constructor(props) {
@@ -19,8 +25,7 @@ class Dictation extends React.Component {
     const { props } = this;
 
     props.setDictateInterims([]);
-    props.setDictateState(DictateState.IDLE);
-
+    props.setDictateState(IDLE);
     props.stopSpeechInput();
 
     if (transcript) {
@@ -35,7 +40,7 @@ class Dictation extends React.Component {
     const interims = results.map(({ transcript }) => transcript);
 
     props.setDictateInterims(interims);
-    props.setDictateState(DictateState.DICTATING);
+    props.setDictateState(DICTATING);
 
     // This is for two purposes:
     // 1. Set send box will also trigger send typing
@@ -46,7 +51,7 @@ class Dictation extends React.Component {
   handleError(event) {
     const { props } = this;
 
-    props.setDictateState(DictateState.IDLE);
+    props.setDictateState(IDLE);
     props.stopSpeechInput();
 
     props.onError && props.onError(event);
@@ -54,20 +59,24 @@ class Dictation extends React.Component {
 
   render() {
     const {
-      props: { dictateState, disabled, webSpeechPonyfill }
+      props: {
+        dictateState,
+        disabled,
+        webSpeechPonyfill = {}
+      },
+      handleDictate,
+      handleDictating,
+      handleError
     } = this;
 
     return (
       <DictateComposer
-        onDictate={ this.handleDictate }
-        onError={ this.handleError }
-        onProgress={ this.handleDictating }
-        speechRecognition={ webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition }
-        speechGrammarList={ webSpeechPonyfill && webSpeechPonyfill.SpeechGrammarList }
-        started={
-          !disabled
-          && (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING)
-        }
+        onDictate={ handleDictate }
+        onError={ handleError }
+        onProgress={ handleDictating }
+        speechRecognition={ webSpeechPonyfill.SpeechRecognition }
+        speechGrammarList={ webSpeechPonyfill.SpeechGrammarList }
+        started={ !disabled && (dictateState === STARTING || dictateState === DICTATING) }
       />
     );
   }

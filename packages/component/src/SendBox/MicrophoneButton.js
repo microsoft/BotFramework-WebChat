@@ -22,15 +22,22 @@ class MicrophoneButton extends React.Component {
   }
 
   handleClick() {
-    const { props } = this;
+    const {
+      props: {
+        dictateState,
+        onClick,
+        startSpeechInput,
+        stopSpeechInput
+      }
+    } = this;
 
-    if (props.dictateState === DictateState.STARTING || props.dictateState === DictateState.DICTATING) {
-      props.stopSpeechInput();
+    if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
+      stopSpeechInput();
     } else {
-      props.startSpeechInput();
+      startSpeechInput();
     }
 
-    props.onClick && props.onClick();
+    onClick && onClick();
   }
 
   render() {

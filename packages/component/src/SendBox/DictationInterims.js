@@ -7,7 +7,12 @@ import { Constants } from 'botframework-webchat-core';
 import connectWithContext from '../connectWithContext';
 import Localize from '../Localization/Localize';
 
-const { DictateState } = Constants;
+const {
+  DictateState: {
+    DICTATING,
+    STARTING
+  }
+} = Constants;
 
 const ROOT_CSS = css({
   alignItems: 'center',
@@ -18,7 +23,7 @@ const ROOT_CSS = css({
 //       stop the dictation and allow the user to type-correct the transcript
 
 const DictationInterims = ({ className, dictateInterims, dictateState, styleSet }) =>
-  (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) && (
+  (dictateState === STARTING || dictateState === DICTATING) && (
     dictateInterims.length ?
       <p className={ classNames(
         styleSet.dictationInterims + '',
@@ -33,10 +38,10 @@ const DictationInterims = ({ className, dictateInterims, dictateState, styleSet 
         styleSet.dictationInterims + '',
         ROOT_CSS + '',
         (className || '') + '',
-        dictateState === DictateState.STARTING ? 'starting' : 'listening'
+        'status'
       ) }>
         {
-          dictateState === DictateState.STARTING ?
+          dictateState === STARTING ?
             <Localize text="Starting&hellip;" />
           :
             <Localize text="Listening&hellip;" />

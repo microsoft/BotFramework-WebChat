@@ -12,7 +12,12 @@ import UploadAttachmentButton from './UploadAttachmentButton';
 
 import { Constants } from 'botframework-webchat-core';
 
-const { DictateState } = Constants;
+const {
+  DictateState: {
+    DICTATING,
+    STARTING
+  }
+} = Constants;
 
 const ROOT_CSS = css({
   '& > .main': {
@@ -28,7 +33,7 @@ const BasicSendBox = ({
   className,
   dictationStarted,
   styleSet,
-  webSpeechPonyfill
+  webSpeechPonyfill = {}
 }) =>
   <div className={ classNames(
     styleSet.sendBox + '',
@@ -43,7 +48,7 @@ const BasicSendBox = ({
         :
           <TextBox className={ TEXT_BOX_CSS } />
       }
-      { (webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
+      { webSpeechPonyfill.SpeechRecognition ?
           <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
         :
           <SendButton />
@@ -54,7 +59,7 @@ const BasicSendBox = ({
 
 export default connectWithContext(
   ({ input: { dictateState } }) => ({
-    dictationStarted: dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING
+    dictationStarted: dictateState === STARTING || dictateState === DICTATING
   }),
   ({ styleSet, webSpeechPonyfill }) => ({ styleSet, webSpeechPonyfill })
 )(BasicSendBox)

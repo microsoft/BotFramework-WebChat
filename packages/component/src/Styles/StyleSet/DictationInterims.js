@@ -11,7 +11,7 @@ export default function createDictationInterimsStyle({
     paddingRight: paddingRegular,
     paddingTop: 0,
 
-    '&.dictating > span:not(:first-child), &.starting': {
+    '&.dictating > span:not(:first-child), &.status': {
       opacity: .5
     }
   };
