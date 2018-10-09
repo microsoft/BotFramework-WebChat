@@ -9,6 +9,7 @@ import ReactWebChat, {
   renderMarkdown
 } from 'botframework-webchat';
 
+import createDevModeActivityMiddleware from './createDevModeActivityMiddleware';
 import createDevModeAttachmentMiddleware from './createDevModeAttachmentMiddleware';
 import createFaultyDirectLine from './createFaultyDirectLine';
 
@@ -68,6 +69,7 @@ export default class extends React.Component {
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
 
     this.mainRef = React.createRef();
+    this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
     this.createMemoizedStyleSet = memoize(hideSendBox => createStyleSet({ hideSendBox }));
 
@@ -200,6 +202,7 @@ export default class extends React.Component {
         ref={ this.mainRef }
       >
         <ReactWebChat
+          activityMiddleware={ this.activityMiddleware }
           attachmentMiddleware={ this.attachmentMiddleware }
           botAvatarInitials={ state.botAvatarInitials }
           className={ WEB_CHAT_CSS }
