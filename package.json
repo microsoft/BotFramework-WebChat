@@ -8,18 +8,12 @@
   "keywords": [],
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run build",
-    "clean": "npm run clean:bundle && npm run clean:component && npm run clean:core",
-    "clean:bundle": "cd packages && cd bundle && npm run clean",
-    "clean:component": "cd packages && cd component && npm run clean",
-    "clean:core": "cd packages && cd core && npm run clean",
+    "build": "lerna run --scope=botframework-webchat* --stream build",
+    "clean": "lerna run --parallel --stream clean",
     "lerna-publish": "lerna publish",
-    "prepublishOnly": "cd packages && cd bundle && npm run prepublishOnly",
-    "test": "lerna run test",
-    "watch": "npx concurrently --names \"bundle,component,core\" \"npm run watch:bundle\" \"npm run watch:component\" \"npm run watch:core\"",
-    "watch:bundle": "cd packages && cd bundle && npm run watch",
-    "watch:component": "cd packages && cd component && npm run watch",
-    "watch:core": "cd packages && cd core && npm run watch"
+    "prepublishOnly": "lerna run --stream prepublishOnly",
+    "test": "lerna run --parallel --stream test",
+    "watch": "lerna run --parallel --stream watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",

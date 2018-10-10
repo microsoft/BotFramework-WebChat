@@ -36,6 +36,14 @@ Web Chat can be styled in many ways without too much coding.
 - [Custom style set](https://microsoft.github.io/BotFramework-WebChat/custom-style-set) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/custom-style-set)
 - [Presentation mode](https://microsoft.github.io/BotFramework-WebChat/presentation-mode) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/presentation-mode)
 
+## Speech support
+
+To use Cognitive Services or your own speech engine withWeb Chat, these samples will give you a headstart.
+
+- [Cognitive Services Bing Speech API](https://microsoft.github.io/BotFramework-WebChat/speech-cognitive-services-bing-speech) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/speech-cognitive-services-bing-speech)
+- [Speech thru a supported browsers](https://microsoft.github.io/BotFramework-WebChat/speech-browser) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/speech-browser)
+   - [List of supported browsers](https://caniuse.com/#search=speech)
+
 ## Customization
 
 If styling cannot met your need, you can customize Web Chat by extend the render pipeline or break it down and recompose it.

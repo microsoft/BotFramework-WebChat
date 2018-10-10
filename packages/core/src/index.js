@@ -6,6 +6,8 @@ import postActivity from './actions/postActivity';
 import sendFiles from './actions/sendFiles';
 import sendMessage from './actions/sendMessage';
 import sendPostBack from './actions/sendPostBack';
+import setDictateInterims from './actions/setDictateInterims';
+import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
 import setSendBox from './actions/setSendBox';
 import setSendTyping from './actions/setSendTyping';
@@ -16,8 +18,9 @@ import stopSpeechInput from './actions/stopSpeechInput';
 import submitSendBox from './actions/submitSendBox';
 
 import * as ActivityClientState from './constants/ActivityClientState';
+import * as DictateState from './constants/DictateState';
 
-const Constants = { ActivityClientState };
+const Constants = { ActivityClientState, DictateState };
 
 export {
   connect,
@@ -29,6 +32,8 @@ export {
   sendFiles,
   sendMessage,
   sendPostBack,
+  setDictateInterims,
+  setDictateState,
   setLanguage,
   setSendBox,
   setSendTyping,

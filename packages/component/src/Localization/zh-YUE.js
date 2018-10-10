@@ -30,6 +30,7 @@ export default {
   'retry': '再嚟一次',
   'Send failed, {retry}': '傳送唔倒，{retry}',
   'Sending': '而家傳送緊',
+  'Starting…': '開始緊…',
   'Tax': '稅',
   'Total': '總共',
   'VAT': '消費稅',

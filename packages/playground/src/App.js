@@ -3,12 +3,13 @@ import React from 'react';
 import memoize from 'memoize-one';
 
 import ReactWebChat, {
-  createBrowserWebSpeechPonyfill,
-  createCognitiveServicesWebSpeechPonyfill,
+  createBrowserWebSpeechPonyfillFactory,
+  createCognitiveServicesWebSpeechPonyfillFactory,
   createStyleSet,
   renderMarkdown
 } from 'botframework-webchat';
 
+import createDevModeActivityMiddleware from './createDevModeActivityMiddleware';
 import createDevModeAttachmentMiddleware from './createDevModeAttachmentMiddleware';
 import createFaultyDirectLine from './createFaultyDirectLine';
 
@@ -68,6 +69,7 @@ export default class extends React.Component {
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
 
     this.mainRef = React.createRef();
+    this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
     this.createMemoizedStyleSet = memoize(hideSendBox => createStyleSet({ hideSendBox }));
 
@@ -79,11 +81,11 @@ export default class extends React.Component {
     const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfill(
-        fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-      );
+      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
+        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
+      });
     } else {
-      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfill();
+      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
     }
 
     this.state = {
@@ -200,6 +202,7 @@ export default class extends React.Component {
         ref={ this.mainRef }
       >
         <ReactWebChat
+          activityMiddleware={ this.activityMiddleware }
           attachmentMiddleware={ this.attachmentMiddleware }
           botAvatarInitials={ state.botAvatarInitials }
           className={ WEB_CHAT_CSS }

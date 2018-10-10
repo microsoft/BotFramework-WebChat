@@ -1,0 +1,7 @@
+{
+  "public": "../../",
+  "rewrites": [
+    { "source": "/", "destination": "samples/speech-cognitive-services-bing-speech/index.html" },
+    { "source": "/botchat.js", "destination": "packages/bundle/dist/botchat.js" }
+  ]
+}

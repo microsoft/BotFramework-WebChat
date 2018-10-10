@@ -3,11 +3,21 @@ import classNames from 'classnames';
 import React from 'react';
 
 import connectWithContext from '../connectWithContext';
+import DictationInterims from './DictationInterims';
 import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
 import TextBox from './TextBox';
 import UploadAttachmentButton from './UploadAttachmentButton';
+
+import { Constants } from 'botframework-webchat-core';
+
+const {
+  DictateState: {
+    DICTATING,
+    STARTING
+  }
+} = Constants;
 
 const ROOT_CSS = css({
   '& > .main': {
@@ -15,20 +25,15 @@ const ROOT_CSS = css({
   }
 });
 
-const MICROPHONE_BUTTON_CSS = css({
-  flex: 1
-});
-
-const TEXT_BOX_CSS = css({
-  flex: 10000
-});
+const DICTATION_INTERIMS_CSS = css({ flex: 10000 });
+const MICROPHONE_BUTTON_CSS = css({ flex: 1 });
+const TEXT_BOX_CSS = css({ flex: 10000 });
 
 const BasicSendBox = ({
   className,
-  enableSpeech,
-  speechState,
+  dictationStarted,
   styleSet,
-  webSpeechPonyfill
+  webSpeechPonyfill = {}
 }) =>
   <div className={ classNames(
     styleSet.sendBox + '',
@@ -38,10 +43,12 @@ const BasicSendBox = ({
     <SuggestedActions />
     <div className="main">
       <UploadAttachmentButton />
-      { !speechState &&
+      { dictationStarted ?
+          <DictationInterims className={ DICTATION_INTERIMS_CSS } />
+        :
           <TextBox className={ TEXT_BOX_CSS } />
       }
-      { (enableSpeech && webSpeechPonyfill && webSpeechPonyfill.SpeechRecognition) ?
+      { webSpeechPonyfill.SpeechRecognition ?
           <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
         :
           <SendButton />
@@ -51,6 +58,8 @@ const BasicSendBox = ({
 
 
 export default connectWithContext(
-  ({ input: { speechState } }) => ({ speechState }),
-  ({ enableSpeech, styleSet, webSpeechPonyfill }) => ({ enableSpeech, styleSet, webSpeechPonyfill })
+  ({ input: { dictateState } }) => ({
+    dictationStarted: dictateState === STARTING || dictateState === DICTATING
+  }),
+  ({ styleSet, webSpeechPonyfill }) => ({ styleSet, webSpeechPonyfill })
 )(BasicSendBox)

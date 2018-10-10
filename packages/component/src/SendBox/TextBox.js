@@ -46,27 +46,37 @@ class TextBoxWithSpeech extends React.Component {
   }
 
   render() {
-    const { props } = this;
+    const {
+      props: {
+        className,
+        disabled,
+        language,
+        sendBox,
+        styleSet
+      },
+      handleChange,
+      handleSubmit
+    } = this;
 
     return (
       <form
         className={ classNames(
           ROOT_CSS + '',
-          props.styleSet.sendBoxTextBox + '',
-          (props.className || '') + '',
+          styleSet.sendBoxTextBox + '',
+          (className || '') + '',
         ) }
-        onSubmit={ this.handleSubmit }
+        onSubmit={ handleSubmit }
       >
         {
           <TypeFocusSinkContext.Consumer>
             { ({ sendFocusRef }) =>
               <input
-                disabled={ props.disabled }
-                onChange={ this.handleChange }
-                placeholder={ localize('Type your message', props.language) }
+                disabled={ disabled }
+                onChange={ handleChange }
+                placeholder={ localize('Type your message', language) }
                 ref={ sendFocusRef }
                 type="text"
-                value={ props.sendBox }
+                value={ sendBox }
               />
             }
           </TypeFocusSinkContext.Consumer>
@@ -85,7 +95,7 @@ TextBoxWithSpeech.propTypes = {
 };
 
 export default connectWithContext(
-  ({ input: { sendBox, speechState }, settings: { language } }) => ({ language, sendBox, speechState }),
+  ({ input: { sendBox }, settings: { language } }) => ({ language, sendBox }),
   ({
     disabled,
     scrollToBottom,

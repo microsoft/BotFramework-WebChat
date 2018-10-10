@@ -38,6 +38,7 @@ export default {
     'Send',
     'Sending',
     'Speak',
+    'Starting…',
     'Tax',
     'Total',
     'Type your message',

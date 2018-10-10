@@ -12,6 +12,8 @@ import {
   sendFiles,
   sendMessage,
   sendPostBack,
+  setDictateInterims,
+  setDictateState,
   setLanguage,
   setSendBox,
   setSendTyping,
@@ -25,6 +27,7 @@ import {
 import Context from './Context';
 import createStyleSet from './Styles/createStyleSet';
 import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
+import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import shallowEquals from './Utils/shallowEquals';
 
@@ -41,6 +44,8 @@ const DISPATCHERS = {
   sendFiles,
   sendMessage,
   sendPostBack,
+  setDictateInterims,
+  setDictateState,
   setSendBox,
   startSpeakingActivity,
   startSpeechInput,
@@ -226,7 +231,6 @@ class Composer extends React.Component {
         // TODO: [P2] Add disable interactivity
         disabled,
 
-        enableSpeech,
         grammars,
         referenceGrammarId,
         renderMarkdown,
@@ -255,7 +259,6 @@ class Composer extends React.Component {
         botAvatarInitials,
         collapseTimestamp,
         disabled,
-        enableSpeech: enableSpeech !== false,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
@@ -274,6 +277,7 @@ class Composer extends React.Component {
           :
             children
         }
+        <Dictation />
       </Context.Provider>
     );
   }
@@ -286,7 +290,6 @@ Composer.propTypes = {
   botAvatarInitials: PropTypes.string,
   collapseTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
-  enableSpeech: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
   referenceGrammarId: PropTypes.string,
   renderMarkdown: PropTypes.func,
