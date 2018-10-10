@@ -61,3 +61,9 @@ To add, decorate, replace, or remove activity or attachment, these samples will 
 On your web site, instead of connecting to your backend thru REST/Web Socket API, you can also connect thru Direct Line activities. This gives you flexibility of delivering content to your users.
 
 - [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/build) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/redux-activity-middleware)
+
+## Timestamps
+
+Timestamps can be grouped using various settings.
+
+- [Group timestamps](https://microsoft.github.io/BotFramework-WebChat/timestamp-grouping) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/timestamp-grouping)

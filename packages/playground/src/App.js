@@ -57,7 +57,7 @@ export default class extends React.Component {
     super(props);
 
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
-    this.handleCollapseTimestampChange = this.handleCollapseTimestampChange.bind(this);
+    this.handleGroupTimestampChange = this.handleGroupTimestampChange.bind(this);
     this.handleDisabledChange = this.handleDisabledChange.bind(this);
     this.handleHideSendBoxChange = this.handleHideSendBoxChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
@@ -90,7 +90,6 @@ export default class extends React.Component {
 
     this.state = {
       botAvatarInitials: 'BF',
-      collapseTimestamp: window.sessionStorage.getItem('PLAYGROUND_COLLAPSE_TIMESTAMP'),
       directLine: createFaultyDirectLine({
         domain,
         fetch,
@@ -99,6 +98,7 @@ export default class extends React.Component {
       }),
       disabled: false,
       faulty: false,
+      groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
       sendTyping: true,
@@ -119,11 +119,11 @@ export default class extends React.Component {
     this.setState(() => ({ botAvatarInitials: value }));
   }
 
-  handleCollapseTimestampChange({ target: { value } }) {
+  handleGroupTimestampChange({ target: { value } }) {
     this.setState(() => ({
-      collapseTimestamp: value
+      groupTimestamp: value
     }), () => {
-      window.sessionStorage.setItem('PLAYGROUND_COLLAPSE_TIMESTAMP', value);
+      window.sessionStorage.setItem('PLAYGROUND_GROUP_TIMESTAMP', value);
     });
   }
 
@@ -176,6 +176,7 @@ export default class extends React.Component {
         throw new Error(`Server returned ${ directLineTokenRes.status } while requesting for Direct Line token`);
       }
 
+      // TODO: [P4] We should use JWT to get user ID so it don't introduce inconsistencies
       const { userID, token } = await directLineTokenRes.json();
 
       window.sessionStorage.removeItem('REDUX_STORE');
@@ -194,7 +195,7 @@ export default class extends React.Component {
   render() {
     const { state } = this;
     const styleSet = this.createMemoizedStyleSet(this.state.hideSendBox);
-    const { collapseTimestamp } = state;
+    const { groupTimestamp } = state;
 
     return (
       <div
@@ -206,7 +207,7 @@ export default class extends React.Component {
           attachmentMiddleware={ this.attachmentMiddleware }
           botAvatarInitials={ state.botAvatarInitials }
           className={ WEB_CHAT_CSS }
-          collapseTimestamp={ collapseTimestamp === 'default' ? undefined : collapseTimestamp === 'false' ? false : +collapseTimestamp }
+          groupTimestamp={ groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp }
           directLine={ state.directLine }
           disabled={ state.disabled }
           locale={ state.language }
@@ -303,13 +304,13 @@ export default class extends React.Component {
           </div>
           <div>
             <label>
-              Collapse timestamp
+              Group timestamp
               <select
-                onChange={ this.handleCollapseTimestampChange }
-                value={ state.collapseTimestamp || '' }
+                onChange={ this.handleGroupTimestampChange }
+                value={ state.groupTimestamp || '' }
               >
                 <option value="default">Default</option>
-                <option value="false">Don't collapse</option>
+                <option value="false">Don't group</option>
                 <option value="1000">1 second</option>
                 <option value="10000">10 seconds</option>
                 <option value="60000">One minute</option>

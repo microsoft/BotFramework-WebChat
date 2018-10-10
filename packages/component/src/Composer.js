@@ -226,12 +226,12 @@ class Composer extends React.Component {
         attachmentRenderer,
         botAvatarInitials,
         children,
-        collapseTimestamp,
 
         // TODO: [P2] Add disable interactivity
         disabled,
 
         grammars,
+        groupTimestamp,
         referenceGrammarId,
         renderMarkdown,
         scrollToBottom,
@@ -257,7 +257,7 @@ class Composer extends React.Component {
 
         // TODO: [P2] Move avatar initials to style options
         botAvatarInitials,
-        collapseTimestamp,
+        groupTimestamp,
         disabled,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
@@ -288,7 +288,7 @@ Composer.propTypes = {
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func.isRequired,
   botAvatarInitials: PropTypes.string,
-  collapseTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
   referenceGrammarId: PropTypes.string,
@@ -308,7 +308,7 @@ Composer.defaultProps = {
 //       Everyone under this DOM tree should need access to Redux connect or dispatchers
 //       All the features should be accessible via Context/Composer
 
-// TODO: Simplify storeKey by hardcoding it
+// TODO: [P2] Simplify storeKey by hardcoding it
 const createComposerFromStoreKey = memoize(storeKey => connect(
   ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }),
   null,
