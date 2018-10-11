@@ -44,9 +44,6 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private botConnection: IBotConnection;
 
-    //private activitySubscription: Subscription;
-    //private connectionStatusSubscription: Subscription;
-    //private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
     private historyRef: React.Component;
     private chatviewPanelRef: HTMLElement;

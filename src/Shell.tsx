@@ -220,7 +220,6 @@ export const Shell = connect(
         strings: state.format.strings,
         // only used to create helper functions below
         locale: state.format.locale,
-        //user: state.connection.user,
         listeningState: state.shell.listeningState,
         botConnection: state.connection.botConnection,
     }), {
@@ -251,7 +250,6 @@ export const Shell = connect(
         onChangeText: dispatchProps.onChangeText,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
-        //sendMessage: (text: string, from: User, locale: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendMessage: (text: string, from: User, locale: string) => dispatchProps.sendMessage(text, from, locale),
         initializeConnection: (secret: string, vendorId: string, user: User, bot: User) => dispatchProps.initializeConnection(secret, vendorId, user, bot),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
