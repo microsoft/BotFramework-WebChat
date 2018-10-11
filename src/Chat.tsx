@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, IBotConnection, User, DirectLine, DirectLineOptions, CardActionTypes } from 'botframework-directlinejs';
-import { createStore, ChatActions, sendMessage } from './Store';
+import { createStore, ChatActions, sendMessage, initializeConnection } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
 import { Speech } from './SpeechModule';
@@ -169,7 +169,14 @@ export class Chat extends React.Component<ChatProps, {}> {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
 
-        this.store.dispatch<ChatActions>({ user: this.props.user, type: "Set_User"});
+        // Configure directline options
+        this.store.dispatch<ChatActions>({ 
+            type: "Configure_DirectLine_Options",
+            user: this.props.user,
+            bot: this.props.bot,
+            secret: this.props.secret, 
+            vendorId: this.props.vendorId
+        });
 
         const storedMessages = getStoredMessages();
 
@@ -191,7 +198,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 data.forEach((activity) => { 
                     this.store.dispatch<ChatActions>({ activity, type: "Receive_Message"})
                 });
-            });
+            })
         }
 
         if (this.props.resize === 'window')
@@ -261,7 +268,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                             ref={ this._saveHistoryRef }
                         />
                     </MessagePane>
-                    <Shell ref={ this._saveShellRef } botConnection={this.props.botConnection} secret={this.props.secret} vendorId={this.props.vendorId} user={this.props.user} bot={this.props.bot} />
+                    <Shell ref={ this._saveShellRef } />
                     {
                         this.props.resize === 'detect' &&
                             <ResizeDetector onresize={ this.resizeListener } />
@@ -277,10 +284,10 @@ export interface IDoCardAction {
 }
 
 export const doCardAction = (
-    botConnection: IBotConnection,
     from: User,
     locale: string,
-    sendMessage: (value: string, user: User, locale: string) => void,
+    sendMessage: (value: string) => void,
+    sendPostBack: (text: string, value: object) => void,
     addMessage: (value: string, user: User, locale: string) => void,
 ): IDoCardAction => (
     type,
@@ -293,24 +300,22 @@ export const doCardAction = (
     switch (type) {
         case "imBack":
             if (typeof text === 'string')
-                sendMessage(text, from, locale);
+                sendMessage(text);
             break;
-
         case "postBack":
-            sendPostBack(botConnection, text, value, from, locale);
+            console.log('POST_BACK');
+            sendPostBack(text, value);
             addMessage(buttonTitle, from, locale);
             break;
-
         case "locationButton":
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const locationMessage = getLocationMessage(position.coords.latitude, position.coords.longitude);
-                    sendPostBack(botConnection, locationMessage, value, from, locale);
+                    sendPostBack(locationMessage, value);
                     addMessage(buttonTitle, from, locale);
                 });
             }
             break;
-
         case "call":
         case "openUrl":
         case "playAudio":
@@ -337,21 +342,6 @@ export const doCardAction = (
         default:
             konsole.log("unknown button type", type);
         }
-}
-
-export const sendPostBack = (botConnection: IBotConnection, text: string, value: object, from: User, locale: string) => {
-    botConnection.postActivity({
-        type: "message",
-        text,
-        value,
-        from,
-        locale
-    })
-    .subscribe(id => {
-        konsole.log("success sending postBack", id)
-    }, error => {
-        konsole.log("failed to send postBack", error);
-    });
 }
 
 export const renderIfNonempty = (value: any, renderer: (value: any) => JSX.Element ) => {

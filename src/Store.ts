@@ -22,8 +22,10 @@ export enum ListeningState {
 
 export type ThunkInterface<R> = ThunkAction<R, ChatState, void>;
 
-export function initializeConnection(secret: string, vendorId: string, user: User, bot: User, selectedActivity: BehaviorSubject<ActivityOrID> = null): ThunkInterface<Promise<{}>> {
+export function initializeConnection(): ThunkInterface<Promise<{}>> {
     return (dispatch: Dispatch<ChatState>, getState) => {
+        const { secret, vendorId, user, bot, selectedActivity } = getState().connection;
+
         return new Promise((resolve) => {
             const directLine = new DirectLine({
                 secret: secret
@@ -99,6 +101,56 @@ export function initializeConnection(secret: string, vendorId: string, user: Use
     };
 }
 
+export function sendMessage(text: string): ThunkInterface<Promise<{}>> {
+    return (dispatch: Dispatch<ChatState>, getState) => {
+        const { locale } = getState().format;
+        const { connectionStatus, user } = getState().connection;
+        return new Promise((resolve) => {
+            switch(connectionStatus) {
+                case ConnectionStatus.Uninitialized:
+                    return dispatch(initializeConnection())
+                    .then(() => {
+                        dispatch(sendMessageSync(text, user, locale));
+                        resolve();
+                    });
+                case ConnectionStatus.Online:
+                    return dispatch(sendMessageSync(text, user, locale));
+            }
+        });
+    };
+}
+
+export function sendPostBack(text: string, value: object): ThunkInterface<Promise<{}>> {
+    return (dispatch: Dispatch<ChatState>, getState) => {
+        const { locale } = getState().format;
+        const { connectionStatus, user } = getState().connection;
+        return new Promise((resolve) => {
+            switch(connectionStatus) {
+                case ConnectionStatus.Uninitialized:
+                    return dispatch(initializeConnection())
+                    .then(() => {
+                        const { botConnection } = getState().connection;
+                        botConnection.postActivity({type: "message", text, value, from: user, locale })
+                        .subscribe(
+                            id => konsole.log("success sending postBack", id),
+                            error => konsole.log("failed to send postBack", error)
+                        );
+                        resolve();
+                    });
+                case ConnectionStatus.Online:
+                    const { botConnection } = getState().connection;
+                    botConnection.postActivity({type: "message", text, value, from: user, locale })
+                    .subscribe(
+                        id => konsole.log("success sending postBack", id),
+                        error => konsole.log("failed to send postBack", error)
+                    );
+                    resolve();
+                    break;
+            }
+        });
+    };
+}
+
 export const receiveSentMessage = (activity: Activity) => ({
     type: 'Receive_Sent_Message',
     activity,
@@ -127,7 +179,7 @@ export const connectionChange = (connectionStatus: ConnectionStatus) => ({
     connectionStatus
     } as ChatActions);
 
-export const sendMessage = (text: string, from: User, locale: string) => ({
+const sendMessageSync = (text: string, from: User, locale: string) => ({
     type: 'Send_Message',
     activity: {
         type: "message",
@@ -366,7 +418,9 @@ export interface ConnectionState {
     botConnection: IBotConnection,
     selectedActivity: BehaviorSubject<ActivityOrID>,
     user: User,
-    bot: User
+    bot: User,
+    secret: string,
+    vendorId: string
 }
 
 export type ConnectionAction = {
@@ -379,8 +433,11 @@ export type ConnectionAction = {
     type: 'Connection_Change',
     connectionStatus: ConnectionStatus
 } | {
-    type: 'Set_User',
-    user: User
+    type: 'Configure_DirectLine_Options',
+    user: User,
+    bot: User,
+    secret: string,
+    vendorId: string
 }
 
 export const connection: Reducer<ConnectionState> = (
@@ -389,15 +446,20 @@ export const connection: Reducer<ConnectionState> = (
         botConnection: undefined,
         selectedActivity: undefined,
         user: undefined,
-        bot: undefined
+        bot: undefined,
+        secret: undefined,
+        vendorId: undefined
     },
     action: ConnectionAction
 ) => {
     switch (action.type) {
-        case 'Set_User':
+        case 'Configure_DirectLine_Options':
             return {
                 ... state,
-                user: action.user
+                user: action.user,
+                bot: action.bot,
+                secret: action.secret, 
+                vendorId: action.vendorId
             }
         case 'Start_Connection':
             return {
@@ -770,7 +832,7 @@ const startListeningEpic: Epic<ChatActions, ChatState> = (action$, store) =>
             srText = srText.replace(/^[.\s]+|[.\s]+$/g, "");
             onIntermediateResult(srText);
             store.dispatch({ type: 'Listening_Stopping' });
-            store.dispatch(sendMessage(srText, store.getState().connection.user, locale));
+            store.dispatch(sendMessageSync(srText, store.getState().connection.user, locale));
         };
         const onAudioStreamStart = () => { store.dispatch({ type: 'Listening_Start' }) };
         const onRecognitionFailed = () => { store.dispatch({ type: 'Listening_Stopping' })};

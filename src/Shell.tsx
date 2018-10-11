@@ -7,7 +7,7 @@ import { classList, doCardAction, IDoCardAction } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
-import { ChatActions, ListeningState, initializeConnection, sendMessage, addMessage, sendFiles } from './Store';
+import { ChatActions, ListeningState, sendMessage, addMessage, sendPostBack, sendFiles } from './Store';
 import Menu from './Menu';
 import { buildOAuthCard } from './CardBuilder';
 
@@ -17,15 +17,10 @@ interface Props {
     connectionStatus: number;
     botConnection: DirectLine;
     locale: string;
-    vendorId: string;
-    secret: string;
-    user: User;
-    bot: User;
     listeningState: ListeningState;
     showUploadButton: boolean;
     onChangeText: (inputText: string) => void;
-    initializeConnection: (secret: string, vendorId: string, user: User, bot: User) => Promise<{}>;
-    sendMessage: (inputText: string, from: User, locale: string) => void;
+    sendMessage: (inputText: string) => void;
     sendFiles: (files: FileList) => void;
     stopListening: () => void;
     startListening: () => void;
@@ -42,19 +37,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
     private sendMessage() {
         if (this.props.inputText.trim().length > 0) {
-            const { connectionStatus, inputText, secret, vendorId, locale, user, bot, initializeConnection, sendMessage } = this.props
-            switch(connectionStatus) {
-                case ConnectionStatus.Uninitialized:
-                    initializeConnection(secret, vendorId, user, bot)
-                    .then(() => {
-                        sendMessage(inputText, user, locale);
-                    });
-                    break;
-                case ConnectionStatus.Online:
-                    sendMessage(inputText, user, locale);
-                    break;
-
-            }
+            const { inputText, sendMessage } = this.props
+            sendMessage(inputText);
         }
     }
 
@@ -228,16 +212,11 @@ export const Shell = connect(
         stopListening:  () => ({ type: 'Listening_Stopping' }),
         startListening:  () => ({ type: 'Listening_Starting' }),
         // only used to create helper functions below
-        initializeConnection,
         sendMessage,
+        sendPostBack,
         addMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
-        // from ownProps
-        vendorId: ownProps.vendorId,
-        secret: ownProps.secret,
-        user: ownProps.user,
-        bot: ownProps.bot,
         // from stateProps
         locale: stateProps.locale,
         botConnection: stateProps.botConnection,
@@ -249,9 +228,8 @@ export const Shell = connect(
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
-        sendMessage: (text: string, from: User, locale: string) => dispatchProps.sendMessage(text, from, locale),
-        initializeConnection: (secret: string, vendorId: string, user: User, bot: User) => dispatchProps.initializeConnection(secret, vendorId, user, bot),
+        doCardAction: doCardAction(stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.sendPostBack, dispatchProps.addMessage),
+        sendMessage: (text: string) => dispatchProps.sendMessage(text),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening()

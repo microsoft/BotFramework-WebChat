@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
-import { ChatActions, sendMessage, addMessage } from './Store';
+import { ChatActions, sendMessage, sendPostBack, addMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 
 export interface MessagePaneProps {
@@ -95,7 +95,8 @@ export const MessagePane = connect(
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
         // only used to create helper functions below
         sendMessage,
-        addMessage,
+        sendPostBack,
+        addMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
         // from stateProps
         activityWithSuggestedActions: stateProps.activityWithSuggestedActions,
@@ -104,6 +105,6 @@ export const MessagePane = connect(
         // from ownProps
         children: ownProps.children,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
+        doCardAction: doCardAction(stateProps.user, stateProps.locale, dispatchProps.sendMessage, dispatchProps.sendPostBack, dispatchProps.addMessage),
     })
 )(MessagePaneView);
