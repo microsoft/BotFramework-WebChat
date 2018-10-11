@@ -118,7 +118,7 @@
                 button:focus,
                 button:hover {
                     background-color: #fff;
-                    border-color: #31ace2;
+                    border-color: $c_brand;
                     color: $c_brand;
                 }
 
@@ -181,7 +181,7 @@
 
     $rightWeight:28px;
     $floatingBottom:34px;
-    $floatingHeight:80px;
+    $floatingHeight:78px;
     $bottom:$floatingBottom + $floatingHeight + 20px;
     $cubic:cubic-bezier(0.25, 0.8, 0.25, 1);
 
@@ -220,22 +220,23 @@
         right: $rightWeight;
         cursor: pointer;
         bottom: $floatingBottom;
-        width: $floatingHeight ;
+        width: $floatingHeight;
         height: $floatingHeight;
         background-color: white;
         border-radius: 80px;
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
         z-index: 1000;
-        
-        &-inner {
+
+        $difference: 6px;
+
+        img {
             z-index: 1001;
-            background: white;
-            width:$floatingHeight;
-            height: $floatingHeight;
-            background-size: 132px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-image: url(https://s3.amazonaws.com/com.gideon.static.dev/chatbot/g-mark-copy-7%403x.png);
+            position: relative;
+            top: -2px;
+            width:$floatingHeight + $difference;
+            height: $floatingHeight + $difference;
+            left: -#{$difference - 1px};
+            background-size: 80px;
         }
 
         &__closed {

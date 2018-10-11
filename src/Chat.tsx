@@ -353,7 +353,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         className={`wc-floating`}
                         onClick={() => {this.toggle(); }}
                     >
-                        <div className="wc-floating-inner"></div>
+                        <img src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/gideon-horn-logo.svg"/>
                     </div>
 
                     <div
