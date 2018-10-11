@@ -62,6 +62,13 @@ On your web site, instead of connecting to your backend thru REST/Web Socket API
 
 - [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/build) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/redux-activity-middleware)
 
+## Selectable activity
+
+In some cases, you may want to allow the user to select specific activity and highlight it.
+
+- [Select activity using Redux store from the host](https://microsoft.github.io/BotFramework-WebChat/select-activity/build) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/select-activity)
+   - In this sample, we use a Redux store owned by the host app. This gives us flexibility on controlling which activities should be selected.
+
 ## Timestamps
 
 Timestamps can be grouped using various settings.
