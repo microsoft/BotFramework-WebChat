@@ -9,6 +9,7 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
+    library: 'WebChat',
     libraryTarget: 'umd',
     path: resolve(__dirname, 'dist')
   },

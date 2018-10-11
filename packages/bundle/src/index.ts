@@ -11,14 +11,7 @@ export default ReactWebChat
 
 export {
   createCognitiveServicesWebSpeechPonyfillFactory,
-  renderMarkdown,
-  renderWebChat
-}
-
-window['WebChat'] = {
-  ...window['WebChat'],
-  createCognitiveServicesWebSpeechPonyfillFactory,
   ReactWebChat,
   renderMarkdown,
   renderWebChat
-};
+}

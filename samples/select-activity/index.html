@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Highlight and select activity</title>
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/redux@3.7.2/dist/redux.js"></script>
+    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
+    <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
+    <script src="/botchat.js"></script>
+    <!-- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script> -->
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+
+      #webchat,
+      #webchat > * {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel">
+      (async function () {
+        'use strict';
+
+        // In this demo, we are using Direct Line token from MockBot.
+        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+        // You should never put the Direct Line secret in the browser or client app.
+        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const { css } = window.Glamor;
+        const { connect, createProvider, Provider } = window.ReactRedux;
+        const { createStore } = window.Redux;
+        const { createStore: createWebChatStore, ReactWebChat } = window.WebChat;
+
+        const SELECTABLE_ACTIVITY_CSS = css({
+          backgroundColor: 'Transparent',
+          border: 0,
+          cursor: 'pointer',
+          fontSize: 'initial',
+          margin: 0,
+          outline: 0,
+          padding: 0,
+          textAlign: 'initial',
+          width: '100%',
+
+          '&.selected': {
+            backgroundColor: 'rgba(0, 99, 177, .1)',
+            paddingBottom: 10,
+            paddingTop: 10
+          }
+        });
+
+        // We keep the selected activity ID in our own Redux store
+        function appReducer(state = { selectedActivityID: null }, { payload, type }) {
+          switch (type) {
+            case 'APP/SELECT_OR_TOGGLE_ACTIVITY':
+              state = { ...state, selectedActivityID: payload.activityID === state.selectedActivityID ? null : payload.activityID };
+              break;
+          }
+
+          return state;
+        }
+
+        // This is an activity decorator for all activities
+        // We prefer to wrap the activity in a <button> for accessibility reason
+        const SelectableActivityDecorator = ({ children, onSelect, selected }) =>
+          <button
+            className={ `${ SELECTABLE_ACTIVITY_CSS }${ selected ? ' selected' : '' }` }
+            onClick={ onSelect }
+          >
+            { children }
+          </button>;
+
+        // The decorator is connected to the Redux store owned by the app:
+        // - props.onSelect, is a function to call when the activity is selected
+        // - props.selected, is a boolean, it determines whether the activity is selected or not
+        const ConnectedSelectableActivityDecorator = connect(
+          state => state,
+          {
+            onSelect: activityID => ({ type: 'APP/SELECT_OR_TOGGLE_ACTIVITY', payload: { activityID } })
+          },
+          (
+            stateProps,
+            dispatchProps,
+            {
+              activityID,
+              ...otherOwnProps
+            }
+          ) => ({
+            onSelect: dispatchProps.onSelect.bind(null, activityID),
+            selected: activityID && stateProps.selectedActivityID === activityID,
+            ...otherOwnProps
+          })
+        )(SelectableActivityDecorator);
+
+        // const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        // const { token } = await res.json();
+
+        // We will create a Redux store for the app
+        const appStore = createStore(appReducer);
+
+        // We also need to create the Redux store specific for Web Chat
+        const WebChatProvider = createProvider('webchat');
+        const webChatStore = createWebChatStore();
+
+        // Then we create an activity middleware that wrap all activity in a decorator
+        const activityMiddleware = () => next => card => {
+          return (
+            children =>
+              <ConnectedSelectableActivityDecorator activityID={ card.activity.id }>
+                { next(card)(children) }
+              </ConnectedSelectableActivityDecorator>
+          );
+        };
+
+        window.ReactDOM.render(
+          <Provider store={ appStore }>
+            <WebChatProvider store={ webChatStore }>
+              <ReactWebChat
+                activityMiddleware={ activityMiddleware }
+                directLine={ window.WebChat.createDirectLine({
+                  domain: 'http://localhost:5000/v3/directline',
+                  webSocket: false
+                }) }
+                // directLine={ window.WebChat.createDirectLine({ token }) }
+                storeKey="webchat"
+              />
+            </WebChatProvider>
+          </Provider>,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

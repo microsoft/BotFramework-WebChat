@@ -20,17 +20,6 @@ export {
   createDirectLine,
   createStore,
   createStyleSet,
+  ReactWebChat,
   renderWebChat
 }
-
-window['WebChat'] = {
-  ...window['WebChat'],
-  concatMiddleware,
-  Context,
-  createBrowserWebSpeechPonyfillFactory,
-  createDirectLine,
-  createStore,
-  createStyleSet,
-  renderWebChat,
-  ReactWebChat
-};
