@@ -1,6 +1,8 @@
-import { Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User } from 'botframework-directlinejs';
+import { DirectLine, Activity, ConnectionStatus, IBotConnection, Media, MediaType, Message, User, DirectLineOptions } from 'botframework-directlinejs';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ThunkAction } from 'redux-thunk';
+import { Dispatch } from 'react-redux';
 import { Speech } from './SpeechModule';
 import { ActivityOrID } from './Types';
 import { HostConfig } from 'adaptivecards';
@@ -17,6 +19,113 @@ export enum ListeningState {
     STARTED,
     STOPPING
 }
+
+export type ThunkInterface<R> = ThunkAction<R, ChatState, void>;
+
+export function initializeConnection(secret: string, vendorId: string, user: User, bot: User, selectedActivity: BehaviorSubject<ActivityOrID> = null): ThunkInterface<Promise<{}>> {
+    return (dispatch: Dispatch<ChatState>, getState) => {
+        return new Promise((resolve) => {
+            const directLine = new DirectLine({
+                secret: secret
+            });
+
+            const botConnection = Object.assign({}, directLine, {
+                postActivity: function(activity: Activity) {
+                    return directLine.postActivity(Object.assign({}, activity, {
+                        channelData: {
+                            vendorId 
+                        }
+                    }));
+                }
+            });
+
+            dispatch(startConnection(user, bot, botConnection, selectedActivity));
+
+            botConnection.connectionStatus$.subscribe(
+                (connectionStatus: ConnectionStatus) => {
+                    // TODO: Re-enable
+                    /*
+                    if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
+                        let refGrammarId = botConnection.referenceGrammarId;
+                        if(refGrammarId)
+                            this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
+                    }
+                    */
+                    dispatch(connectionChange(connectionStatus));
+
+                    switch(connectionStatus) {
+                        case ConnectionStatus.ExpiredToken:
+                        case ConnectionStatus.Ended:
+                        case ConnectionStatus.Online:
+                            resolve();
+                            break;
+                    }
+                }
+            );
+
+            botConnection.activity$.subscribe(
+                (activity: Activity) => {
+                    switch (activity.type) {
+                        case "message": {
+                            if (activity.from.id === user.id) {
+                                dispatch(receiveSentMessage(activity));
+                            } else {
+                                dispatch(receiveMessage(activity));
+                            }
+                            break;
+                        }
+                        case "typing": {
+                            if (activity.from.id !== user.id)
+                                dispatch(showTyping(activity));
+                            break;
+                        }
+                    }
+                },
+                (error: Error) => konsole.log("activity$ error", error)
+            );
+
+            // TODO: Re-enable
+            /*
+            if (selectedActivity) {
+                this.selectedActivitySubscription = this.props.selectedActivity.subscribe((activityOrID: string) => {
+                    dispatch<ChatActions>({
+                        type: 'Select_Activity',
+                        selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
+                    });
+                });
+            }
+            */
+        });
+    };
+}
+
+export const receiveSentMessage = (activity: Activity) => ({
+    type: 'Receive_Sent_Message',
+    activity,
+    } as ChatActions);
+
+export const receiveMessage = (activity: Activity) => ({
+    type: 'Receive_Message',
+    activity,
+    } as ChatActions);
+
+export const showTyping = (activity: Activity) => ({
+    type: 'Show_Typing',
+    activity,
+    } as ChatActions);
+
+export const startConnection = (user: User, bot: any, botConnection: any, selectedActivity: any) => ({
+    type: 'Start_Connection',
+    user,
+    bot,
+    botConnection,
+    selectedActivity
+    } as ChatActions);
+
+export const connectionChange = (connectionStatus: ConnectionStatus) => ({
+    type: 'Connection_Change',
+    connectionStatus
+    } as ChatActions);
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
     type: 'Send_Message',
@@ -252,7 +361,6 @@ export const size: Reducer<SizeState> = (
     }
 }
 
-
 export interface ConnectionState {
     connectionStatus: ConnectionStatus,
     botConnection: IBotConnection,
@@ -270,6 +378,9 @@ export type ConnectionAction = {
 } | {
     type: 'Connection_Change',
     connectionStatus: ConnectionStatus
+} | {
+    type: 'Set_User',
+    user: User
 }
 
 export const connection: Reducer<ConnectionState> = (
@@ -283,6 +394,11 @@ export const connection: Reducer<ConnectionState> = (
     action: ConnectionAction
 ) => {
     switch (action.type) {
+        case 'Set_User':
+            return {
+                ... state,
+                user: action.user
+            }
         case 'Start_Connection':
             return {
                 ... state,
@@ -570,6 +686,7 @@ const trySendMessageEpic: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message_Try')
     .flatMap(action => {
         const state = store.getState();
+
         const clientActivityId = action.clientActivityId;
         const activity = state.history.activities.find(activity => activity.channelData && activity.channelData.clientActivityId === clientActivityId);
         if (!activity) {
@@ -728,6 +845,8 @@ const storeMessageEpic: Epic<ChatActions, ChatState> = (action$) =>
 
 import { Store, createStore as reduxCreateStore, combineReducers } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
+import thunk from 'redux-thunk';
+import { resolve } from 'dns';
 
 export const createStore = () =>
     reduxCreateStore(
@@ -739,21 +858,24 @@ export const createStore = () =>
             shell,
             size
         }),
-        applyMiddleware(createEpicMiddleware(combineEpics(
-            updateSelectedActivityEpic,
-            sendMessageEpic,
-            trySendMessageEpic,
-            retrySendMessageEpic,
-            showTypingEpic,
-            sendTypingEpic,
-            speakSSMLEpic,
-            speakOnMessageReceivedEpic,
-            startListeningEpic,
-            stopListeningEpic,
-            stopSpeakingEpic,
-            listeningSilenceTimeoutEpic,
-            storeMessageEpic
-        )))
+        applyMiddleware(
+            thunk,
+            createEpicMiddleware(combineEpics(
+                updateSelectedActivityEpic,
+                sendMessageEpic,
+                trySendMessageEpic,
+                retrySendMessageEpic,
+                showTypingEpic,
+                sendTypingEpic,
+                speakSSMLEpic,
+                speakOnMessageReceivedEpic,
+                startListeningEpic,
+                stopListeningEpic,
+                stopSpeakingEpic,
+                listeningSilenceTimeoutEpic,
+                storeMessageEpic
+            ))
+        )
     );
 
 export type ChatStore = Store<ChatState>;

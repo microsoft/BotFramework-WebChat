@@ -18,10 +18,11 @@ import { getStoredMessages } from './helpers/storeMessage';
 export interface ChatProps {
     adaptiveCardsHostConfig: any,
     chatTitle?: boolean | string,
+    vendorId: string,
+    secret: string,
     user: User,
     bot: User,
-    botConnection?: IBotConnection,
-    directLine?: DirectLineOptions,
+    botConnection: DirectLine,
     actionEndpointUrl: string,
     speechOptions?: SpeechOptions,
     locale?: string,
@@ -43,9 +44,9 @@ export class Chat extends React.Component<ChatProps, {}> {
 
     private botConnection: IBotConnection;
 
-    private activitySubscription: Subscription;
-    private connectionStatusSubscription: Subscription;
-    private selectedActivitySubscription: Subscription;
+    //private activitySubscription: Subscription;
+    //private connectionStatusSubscription: Subscription;
+    //private selectedActivitySubscription: Subscription;
     private shellRef: React.Component & ShellFunctions;
     private historyRef: React.Component;
     private chatviewPanelRef: HTMLElement;
@@ -98,20 +99,6 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (props.speechOptions) {
             Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
             Speech.SpeechSynthesizer.setSpeechSynthesizer(props.speechOptions.speechSynthesizer);
-        }
-    }
-
-    private handleIncomingActivity(activity: Activity) {
-        let state = this.store.getState();
-        switch (activity.type) {
-            case "message":
-                this.store.dispatch<ChatActions>({ type: activity.from.id === state.connection.user.id ? 'Receive_Sent_Message' : 'Receive_Message', activity });
-                break;
-
-            case "typing":
-                if (activity.from.id !== state.connection.user.id)
-                    this.store.dispatch<ChatActions>({ type: 'Show_Typing', activity });
-                break;
         }
     }
 
@@ -185,67 +172,43 @@ export class Chat extends React.Component<ChatProps, {}> {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
 
-        const botConnection = this.props.directLine
-            ? (this.botConnection = new DirectLine(this.props.directLine))
-            : this.props.botConnection
-            ;
+        this.store.dispatch<ChatActions>({ user: this.props.user, type: "Set_User"});
 
         const storedMessages = getStoredMessages();
 
+        // Activities in storage, add them to history.
         if (storedMessages.length > 0) {
             storedMessages.forEach((activity: Activity) => {
               this.store.dispatch<ChatActions>({ activity, type: "Add_Message"});
             });
-        } else {
+        } 
+        
+        // Nothing in storage, fetch initial messages.
+        else {
             axios.request<Activity[]>({
                 method: 'GET',
                 url: this.props.actionEndpointUrl,
             })
             .then((response) => {
                 const { data } = response
-                data.forEach((activity: Activity) => {
-                    this.store.dispatch<ChatActions>({ activity, type: "Add_Message"});
+                data.forEach((activity) => { 
+                    this.store.dispatch<ChatActions>({ activity, type: "Receive_Message"})
                 });
             });
         }
 
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
-
-        this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
-
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus =>{
-                if(this.props.speechOptions && this.props.speechOptions.speechRecognizer){
-                    let refGrammarId = botConnection.referenceGrammarId;
-                    if(refGrammarId)
-                        this.props.speechOptions.speechRecognizer.referenceGrammarId = refGrammarId;
-                }
-                this.store.dispatch<ChatActions>({ type: 'Connection_Change', connectionStatus })
-            }
-        );
-
-        this.activitySubscription = botConnection.activity$.subscribe(
-            activity => this.handleIncomingActivity(activity),
-            error => konsole.log("activity$ error", error)
-        );
-
-        if (this.props.selectedActivity) {
-            this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
-                this.store.dispatch<ChatActions>({
-                    type: 'Select_Activity',
-                    selectedActivity: activityOrID.activity || this.store.getState().history.activities.find(activity => activity.id === activityOrID.id)
-                });
-            });
-        }
     }
 
     componentWillUnmount() {
-        this.connectionStatusSubscription.unsubscribe();
-        this.activitySubscription.unsubscribe();
-        if (this.selectedActivitySubscription)
-            this.selectedActivitySubscription.unsubscribe();
-        if (this.botConnection)
-            this.botConnection.end();
+        // TODO: Re-enable, possibly want to unsubscribe and end connection
+        //this.connectionStatusSubscription.unsubscribe();
+        //this.activitySubscription.unsubscribe();
+        //if (this.selectedActivitySubscription)
+        //    this.selectedActivitySubscription.unsubscribe();
+        //if (this.botConnection)
+        //    this.botConnection.end();
         window.removeEventListener('resize', this.resizeListener);
     }
 
@@ -301,7 +264,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                             ref={ this._saveHistoryRef }
                         />
                     </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
+                    <Shell ref={ this._saveShellRef } botConnection={this.props.botConnection} secret={this.props.secret} vendorId={this.props.vendorId} user={this.props.user} bot={this.props.bot} />
                     {
                         this.props.resize === 'detect' &&
                             <ResizeDetector onresize={ this.resizeListener } />

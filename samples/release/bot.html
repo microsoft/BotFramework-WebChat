@@ -26,26 +26,12 @@
     <div id="BotChatGoesHere"></div>
     <script src="./botchat.js"></script>
     <script>
-      var CL_BOT_VERSION = 'VERSION_HERE';
+      var CL_BOT_VERSION = 'CL_BOT_VERSION_HERE';
       var VENDOR_ID = 'VENDOR_ID_HERE';
-      var SECRET = 'SECRET_KEY_HERE';
+      var SECRET = 'SECRET_HERE';
       var ACTION_ENDPOINT_URL = 'ACTION_ENDPOINT_URL_HERE';
-      window.CMS_URL = 'CMS_HOST';
+      window.CMS_URL = 'CMS_URL_HERE';
       
-      var dl = new BotChat.DirectLine({
-        secret: SECRET 
-      });
-
-      var botConnection = Object.assign({}, dl, {
-        postActivity: function(activity) {
-          return dl.postActivity(Object.assign({}, activity, {
-            channelData: {
-              vendorId: VENDOR_ID 
-            }
-          }));
-        }
-      });
-
       var getUUID = function() {
         var d = new Date().getTime();
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -69,12 +55,15 @@
 
       }
 
+      var actionEndpointUrl = `${ACTION_ENDPOINT_URL}/api/action/welcome.greeting?userId=${userId}&vendorId=${VENDOR_ID}`;
+
       BotChat.App({
+        secret: SECRET,
         user: { id: userId },
         bot: { id: 'botid' },
+        vendorId: VENDOR_ID,
         resize: 'detect',
-        botConnection: botConnection,
-        actionEndpointUrl: ACTION_ENDPOINT_URL,
+        actionEndpointUrl: actionEndpointUrl,
       }, document.getElementById('BotChatGoesHere'));
     </script>
   </body>
