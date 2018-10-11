@@ -1,26 +1,30 @@
 import * as React from 'react';
 import { ChatState, FormatState } from './Store';
-import { User } from 'botframework-directlinejs';
+import { User, DirectLine, DirectLineOptions, ConnectionStatus } from 'botframework-directlinejs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ActivityOrID } from './Types';
 import { classList, doCardAction, IDoCardAction } from './Chat';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
-import { ChatActions, ListeningState, sendMessage, addMessage, sendFiles } from './Store';
+import { ChatActions, ListeningState, sendMessage, addMessage, sendPostBack, sendFiles } from './Store';
 import Menu from './Menu';
+import { buildOAuthCard } from './CardBuilder';
 
 interface Props {
-    inputText: string,
-    strings: Strings,
-    listeningState: ListeningState,
-    showUploadButton: boolean
-
-    onChangeText: (inputText: string) => void
-
-    sendMessage: (inputText: string) => void,
-    sendFiles: (files: FileList) => void,
-    stopListening: () => void,
-    startListening: () => void,
-    doCardAction: IDoCardAction
+    inputText: string;
+    strings: Strings;
+    connectionStatus: number;
+    botConnection: DirectLine;
+    locale: string;
+    listeningState: ListeningState;
+    showUploadButton: boolean;
+    onChangeText: (inputText: string) => void;
+    sendMessage: (inputText: string) => void;
+    sendFiles: (files: FileList) => void;
+    stopListening: () => void;
+    startListening: () => void;
+    doCardAction: IDoCardAction;
 }
 
 export interface ShellFunctions {
@@ -33,7 +37,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
     private sendMessage() {
         if (this.props.inputText.trim().length > 0) {
-            this.props.sendMessage(this.props.inputText);
+            const { inputText, sendMessage } = this.props
+            sendMessage(inputText);
         }
     }
 
@@ -192,13 +197,13 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 export const Shell = connect(
     (state: ChatState) => ({
         // passed down to ShellContainer
+        connectionStatus: state.connection.connectionStatus,
         format: state.format,
         inputText: state.shell.input,
         showUploadButton: state.format.showUploadButton,
         strings: state.format.strings,
         // only used to create helper functions below
         locale: state.format.locale,
-        user: state.connection.user,
         listeningState: state.shell.listeningState,
         botConnection: state.connection.botConnection,
     }), {
@@ -208,10 +213,14 @@ export const Shell = connect(
         startListening:  () => ({ type: 'Listening_Starting' }),
         // only used to create helper functions below
         sendMessage,
+        sendPostBack,
         addMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
+        locale: stateProps.locale,
+        botConnection: stateProps.botConnection,
+        connectionStatus: stateProps.connectionStatus,
         inputText: stateProps.inputText,
         showUploadButton: stateProps.showUploadButton,
         strings: stateProps.strings,
@@ -219,8 +228,8 @@ export const Shell = connect(
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.addMessage),
-        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
+        doCardAction: doCardAction(stateProps.user, stateProps.format.locale, dispatchProps.sendMessage, dispatchProps.sendPostBack, dispatchProps.addMessage),
+        sendMessage: (text: string) => dispatchProps.sendMessage(text),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening()
