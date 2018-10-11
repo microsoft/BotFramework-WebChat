@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Cognitive Services Bing Speech using JavaScript</title>
-    <!-- Cognitive Services Bing Speech adapter is only available in full bundle -->
+    <title>Web Chat: Cognitive Services Bing Speech using React</title>
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
     <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
     <style>
       html, body { height: 100% }
@@ -17,8 +23,20 @@
   </head>
   <body>
     <div id="webchat"></div>
-    <script>
+    <script type="text/babel">
       (async function () {
+        'use strict';
+
+        const { render } = window.ReactDOM;
+        const { createProvider } = window.ReactRedux;
+        const {
+          Context,
+          createCognitiveServicesWebSpeechPonyfillFactory,
+          createDirectLine,
+          createStore,
+          ReactWebChat
+        } = window.WebChat;
+
         // In this demo, we are using Direct Line token from MockBot.
         // To talk to your bot, you should use the token exchanged using your Direct Line secret.
         // You should never put the Direct Line secret in the browser or client app.
@@ -62,13 +80,22 @@
           return accessTokenPromise;
         };
 
+        const Provider = createProvider('webchat');
+        const store = createStore();
+
         // Pass a Web Speech ponyfill factory to renderWebChat.
         // You can also use your own speech engine given it is complaint to W3C Web Speech API, https://w3c.github.io/speech-api/.
         // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-          webSpeechPonyfillFactory: window.WebChat.createCognitiveServicesWebSpeechPonyfillFactory({ fetchToken })
-        }, document.getElementById('webchat'));
+        render(
+          <Provider store={ store }>
+            <ReactWebChat
+              directLine={ createDirectLine({ token }) }
+              storeKey="webchat"
+              webSpeechPonyfillFactory={ createCognitiveServicesWebSpeechPonyfillFactory({ fetchToken }) }
+            />
+          </Provider>,
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
