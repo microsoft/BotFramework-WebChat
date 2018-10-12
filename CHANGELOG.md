@@ -16,10 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix for Chatdown that activities sent by the user are not displayed, in PR [#1162](https://github.com/Microsoft/BotFramework-WebChat/pull/1162)
 - Accessibility adjustment on `History.tsx` where clickable `<div>` is converted to `<button>`, by [@corinagum](https://github.com/corinagum) in PR [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166)
 - Fix so that carousel buttons are updated on load, by [@corinagum](https://github.com/corinagum) in PR [#1188](https://github.com/Microsoft/BotFramework-WebChat/pull/1188)
-- Move `react` and `react-dom` to `peerDependencies` in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Move `react` and `react-dom` to `peerDependencies` in [#1202](https://github.com/Microsoft/BotFramework-WebChat/pull/1202)
    - The host page should already include `react` and `react-dom` as dependencies
    - Bundle with `react@16.5.2` and `react-dom@16.5.2`
-- Bump dependencies to fix vulnerability issues in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Bump dependencies to fix vulnerability issues in [#1202](https://github.com/Microsoft/BotFramework-WebChat/pull/1202)
    - `gulp@^4.0.0`
    - `http-server@^0.11.1`
    - `node-sass@^4.9.3`
