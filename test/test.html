@@ -36,16 +36,10 @@
     <link href="botchat-fullwindow.css" rel="stylesheet" />
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
-    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
-    <!--
-      Upgrade to React@16
 
-      If version mismatch (React inside HTML and BotChat.js), auto-focus will fail to work because ReactDOM.findDOMNode() will return null on mismatch version
-
-    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    -->
+    <!-- React/ReactDOM version specified here should sync with devDependencies-->
+    <script src="https://unpkg.com/react@16.5.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.5.2/umd/react-dom.development.js"></script>
   </head>
   <body>
     <div id="BotChatGoesHere"></div>
