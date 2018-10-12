@@ -260,12 +260,17 @@ export default class extends React.Component {
                 value={ state.language }
               >
                 <option value="">Default ({ window.navigator.language })</option>
+                <option value="zh-HK">Chinese (Hong Kong)</option>
+                <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
+                <option value="zh-HANS">Chinese (Simplifies Chinese)</option>
+                <option value="zh-TW">Chinese (Taiwan)</option>
+                <option value="zh-HANT">Chinese (Traditional Chinese)</option>
                 <option value="cs-CZ">Czech (Czech Republic)</option>
                 <option value="da-DK">Danish (Denmark)</option>
+                <option value="nl-NL">Dutch (Netherlands)</option>
+                <option value="en-US">English (United States)</option>
                 <option value="de-DE">German (Germany)</option>
                 <option value="el-GR">Greek (Greece)</option>
-                <option value="en-US">English (United States)</option>
-                <option value="es-ES">Spanish (Spain)</option>
                 <option value="fi-FI">Finnish (Finland)</option>
                 <option value="fr-FR">French (France)</option>
                 <option value="hu-HU">Hungarian (Hungary)</option>
@@ -273,18 +278,14 @@ export default class extends React.Component {
                 <option value="ja-JP">Japanese</option>
                 <option value="ko-KR">Korean (Korea)</option>
                 <option value="lv-LV">Latvian (Latvia)</option>
-                <option value="nl-NL">Dutch (Netherlands)</option>
+                <option value="nb-NO">Norwegian Bokmål (Norway)</option>
                 <option value="pl-PL">Polish (Poland)</option>
                 <option value="pt-BR">Portuguese (Brazil)</option>
                 <option value="pt-PT">Portuguese (Portugal)</option>
                 <option value="ru-RU">Russian (Russia)</option>
+                <option value="es-ES">Spanish (Spain)</option>
                 <option value="sv-SE">Swedish (Sweden)</option>
                 <option value="tr-TR">Turkish (Turkey)</option>
-                <option value="zh-HK">Chinese (Hong Kong)</option>
-                <option value="zh-YUE">Chinese (Hong Kong, Yue)</option>
-                <option value="zh-TW">Chinese (Taiwan)</option>
-                <option value="zh-HANS">Chinese (Simplifies Chinese)</option>
-                <option value="zh-HANT">Chinese (Traditional Chinese)</option>
               </select>
             </label>
           </div>
