@@ -324,6 +324,8 @@ export const doCardAction = (
         case "downloadFile":
             window.open(text);
             break;
+        // TODO: Re-enable
+        /*
         case "signin":
             let loginWindow =  window.open();
             if (botConnection.getSessionId)  {
@@ -338,7 +340,7 @@ export const doCardAction = (
                 loginWindow.location.href = text;
             }
             break;
-
+        */
         default:
             konsole.log("unknown button type", type);
         }
