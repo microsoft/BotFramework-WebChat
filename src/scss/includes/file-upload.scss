@@ -52,12 +52,16 @@ $gd_dark_sky_blue: #31ace2;
 }
 
 .fileAttach{
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="170" height="240" viewBox="0 0 170 240"><defs><path id="a" d="M8 0h24a8 8 0 0 1 8 8v24a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8z"/><path id="c" d="M20.908 14.811l4.74 4.74-1.697 1.698-2.751-2.752V28h-2.4v-9.503l-2.751 2.752-1.698-1.698 4.8-4.8c.533-.532 1.331-.424 1.757.06zM11 2.041V10.6H2v15.36h14.4v2H1.2a1.2 1.2 0 0 1-1.2-1.2V8.802a.8.8 0 0 1 .248-.579L8.61.262A.8.8 0 0 1 9.161.04H21.6a1.2 1.2 0 0 1 1.2 1.2V12h-2V2.04H11zm-2 .61L2.754 8.6H9V2.651z"/></defs><g fill="none" fill-rule="evenodd"><path fill="#F3F4F5" d="M0-6934h728V3613H0z"/><g transform="translate(30 100)"><mask id="b" fill="#fff"><use xlink:href="#a"/></mask><use fill="#CEDBDA" fill-rule="nonzero" xlink:href="#a"/><g fill="#E1CC91" mask="url(#b)"><path d="M0 0h40v40H0z"/></g></g><g transform="translate(38.4 106)"><mask id="d" fill="#fff"><use xlink:href="#c"/></mask><use fill="#FFF" fill-rule="nonzero" xlink:href="#c"/><g fill="#FFF" mask="url(#d)"><path d="M-2.4 0h28v28h-28z"/></g></g></g></svg>');
+    background-image: url("https://cdn1.imggmi.com/uploads/2018/10/15/7c7174a92ae80437fb8e996a7889dfc3-full.png");  
     min-width: 60px;
-    min-height: 70px;
+    min-height: 70px;  
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 0 0 20px 0;
 }
 
-.remove_link{
+a.remove_link{
     text-decoration: underline;
 }
 
