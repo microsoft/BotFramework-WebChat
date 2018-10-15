@@ -92,6 +92,9 @@ export type ShellAction = {
 }| {
     type: 'Submit_Date',
     message: MessageWithDate
+}| {
+    type: 'Submit_File',
+    files: FileList
 };
 
 export const shell: Reducer<ShellState> = (

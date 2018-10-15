@@ -4,6 +4,7 @@ import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
 import { IDoCardAction } from './Chat';
 import { DatePickerCard } from './DatePickerCard';
+import { FileUploadCard } from './FileUploadCard';
 import { FormattedText } from './FormattedText';
 import { FormatState, SizeState } from './Store';
 
@@ -90,6 +91,12 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             const activityCopy: any = activity;
             return (
                 <DatePickerCard { ...props } node={activityCopy.entities[0]} />
+            );
+        } else if (type === 'file') {
+            console.log('ActivityViee');
+            const activityCopy: any = activity;
+            return (
+                <FileUploadCard { ...props } node={activityCopy.entities[0]} />
             );
         }
     }

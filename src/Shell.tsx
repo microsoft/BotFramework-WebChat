@@ -97,7 +97,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
     render() {
         // Override
-        const showUploadButton = false;
+        const showUploadButton = true;
 
         const className = classList(
             'wc-console',

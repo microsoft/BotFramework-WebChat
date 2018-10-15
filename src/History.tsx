@@ -281,12 +281,16 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const { lastMessage, activity, doCardAction } = this.props;
         const activityCopy: any = activity;
         const activityRequiresAdditionalInput = activityCopy.entities && activityCopy.entities.length > 0 && activityCopy.entities[0].node_type !== null;
-
+        console.log('testtt');
+        console.log(lastMessage);
+        console.log(activityRequiresAdditionalInput);
+        console.log(activityCopy);
+        console.log('test');
         // Check if there's an additional activity to render to get the user's input
         if (lastMessage && activityRequiresAdditionalInput) {
             const node_type = activityCopy.entities[0].node_type;
 
-            if (node_type === 'date' || node_type === 'handoff') {
+            if (node_type === 'date' || node_type === 'handoff' || node_type === 'file') {
                 return (
                     <div data-activity-id={activity.id } className={wrapperClassName}>
                         <div className={'wc-message wc-message-from-me wc-message-' + node_type} ref={ div => this.messageDiv = div }>
