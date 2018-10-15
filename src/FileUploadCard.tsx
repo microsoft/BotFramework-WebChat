@@ -136,7 +136,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                     <div className="file-upload-title">{this.state.files[0].name}</div>
                     <div className="file_chunk no-border">
                         <div className="drop-text add-padding">
-                            <div className="fileAttach"><img src="./public/assets/file.png" /></div>
+                            <div className="fileAttach"></div>
                             <span className="bold-line">{this.state.files[0].name} </span>
                             <br/>
                             <a onClick={this.removeFile} className="remove_link" href="#"> remove file</a>
