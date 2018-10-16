@@ -93,7 +93,6 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 <DatePickerCard { ...props } node={activityCopy.entities[0]} />
             );
         } else if (type === 'file') {
-            console.log('ActivityViee');
             const activityCopy: any = activity;
             return (
                 <FileUploadCard { ...props } node={activityCopy.entities[0]} />

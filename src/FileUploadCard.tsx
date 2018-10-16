@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Activity, CardAction, Message} from 'botframework-directlinejs';
 import * as moment from 'moment';
 import * as React from 'react';
@@ -10,9 +11,7 @@ import { ChatActions, sendFiles , sendMessage } from './Store';
 
 export interface Node {
     node_type: string;
-    availableTimes: string[];
-    custom_attributes: string[];
-    options: string[];
+    upload_url: string;
 }
 
 interface FileUploadProps {
@@ -29,6 +28,7 @@ export interface MessageWithDate extends Message {
 export interface FileUploadState {
     files: any;
     previewFile: boolean;
+    isUploading: boolean;
 }
 
 /**
@@ -41,7 +41,8 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
         this.state = {
             files: [],
-            previewFile: false
+            previewFile: false,
+            isUploading: false
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -66,15 +67,40 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
     }
 
     handleSkipFile(e: React.MouseEvent<HTMLDivElement>) {
-        this.props.sendMessage('');
+        this.props.sendMessage('SKIP_UPLOAD');
     }
 
     clickToSubmitFile(e: React.MouseEvent<HTMLDivElement>) {
         if (!this.state.previewFile) { return; }
 
-        // this.props.submitDate();
-        this.props.sendFiles(this.state.files);
+        this.setState({isUploading: true});
+        for (let i = 0, numFiles = this.state.files.length; i < numFiles; i++) {
+            const file = this.state.files[i];
+            axios.get( this.props.node.upload_url)
+              .then((result: any) => {
+                const signedUrl = result.data.signedUrl;
 
+                const options = {
+                  headers: {
+                    'Content-Type': file.type
+                  }
+                };
+
+                return axios.put(signedUrl, file, options);
+              })
+              .then((result: any) => {
+                this.setState({isUploading: false});
+                this.props.sendMessage(file.name);
+              })
+              .catch(err => {
+                this.setState({isUploading: false});
+                console.log('error', err);
+                this.props.sendMessage('Docs not uploaded successfully.');
+              });
+        }
+
+        // this.props.submitDate();
+        // this.props.sendMessage(this.state.files);
         document.removeEventListener('keypress', this.handleKeyDown.bind(this));
 
         e.stopPropagation();
@@ -87,31 +113,6 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                 previewFile: true
             });
         }
-
-        console.log(imageFiles);
-        // var file = files[0];
-        // this.props.sendFiles(files);
-        // axios.get(ENDPOINT_TO_GET_SIGNED_URL, {
-        //   filename: file.name,
-        //   filetype: file.type
-        // })
-        // .then(function (result) {
-        //   var signedUrl = result.data.signedUrl;
-
-        //   var options = {
-        //     headers: {
-        //       'Content-Type': file.type
-        //     }
-        //   };
-
-        //   return axios.put(signedUrl, file, options);
-        // })
-        // .then(function (result) {
-        //   console.log(result);
-        // })
-        // .catch(function (err) {
-        //   console.log(err);
-        // });
       }
 
       showDropzone = () => {
@@ -156,6 +157,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
         return (
             <div className="fileUpload">
+                { (this.state.isUploading) ? <div className="loading"></div> : null}
                 { this.showDropzone() }
             </div>
         );
