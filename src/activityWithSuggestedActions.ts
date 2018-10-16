@@ -9,6 +9,7 @@ export function activityWithSuggestedActions(activities: Activity[]) {
 
     if (lastActivity.type === 'message'
         && lastActivity.suggestedActions
+        && lastActivity.suggestedActions.actions
         && lastActivity.suggestedActions.actions.length > 0
     ) {
         return lastActivity;
