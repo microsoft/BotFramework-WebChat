@@ -18,7 +18,7 @@ function parseURL(url) {
   let urlLike;
 
   if (typeof URL === 'function') {
-    urlLike = new URL(src);
+    urlLike = new URL(url);
   } else {
     urlLike = document.createElement('a');
     urlLike.setAttribute('href', url);
