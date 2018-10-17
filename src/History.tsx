@@ -297,6 +297,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         }
 
         const who = this.props.fromMe ? 'me' : 'bot';
+        const selectable = this.props.onClickActivity || undefined;
 
         const wrapperClassName = classList(
             'wc-message-wrapper',
@@ -308,15 +309,14 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             'wc-message-content',
             this.props.selected && 'selected'
         );
-
         return (
-                React.createElement(
-                    this.props.onClickActivity ? 'button' : 'div',
-                    {
-                        'className': wrapperClassName,
-                        'data-activity-id': this.props.activity.id,
-                        'onClick': this.props.onClickActivity
-                    },
+                <div
+                    aria-type={ selectable ? 'button' : undefined }
+                    className={ wrapperClassName }
+                    data-activity-id={ this.props.activity.id}
+                    onClick={ this.props.onClickActivity }
+                    tabIndex={ selectable ? 0 : undefined }
+                >
                     <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                         <div className={ contentClassName }>
                             <svg className="wc-message-callout">
@@ -325,9 +325,9 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                             </svg>
                                 { this.props.children }
                         </div>
-                    </div>,
+                    </div>
                     <div className={ 'wc-message-from wc-message-from-' + who }>{ timeLine }</div>
-                )
+                </div>
         );
     }
 }
