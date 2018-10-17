@@ -5,37 +5,37 @@ function xMinutesAgo(date) {
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
   if (deltaInMinutes < 1) {
-    return '剛剛';
+    return '刚刚';
   } else if (deltaInMinutes === 1) {
-    return '一分鐘前';
+    return '一分钟前';
   } else if (deltaInHours < 1) {
-    return `${ deltaInMinutes } 分鐘前`;
+    return `${ deltaInMinutes } 分钟前`;
   } else if (deltaInHours === 1) {
-    return `一個鐘前`;
+    return `一个钟前`;
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } 個鐘前`;
+    return `${ deltaInHours } 个钟前`;
   } else if (deltaInHours <= 24) {
     return `今日`;
   } else if (deltaInHours <= 48) {
     return `昨日`;
   } else {
-    return new Intl.DateTimeFormat('zh-HK').format(date);
+    return new Intl.DateTimeFormat('zh-HANS').format(date);
   }
 }
 
 export default {
   'Chat': '聊天',
-  'Listening…': '正在聆聽…',
-  'retry': '重試',
-  'Send failed, {retry}': '無法發送，{retry}',
-  'Send': '發送',
-  'Sending': '正在發送',
-  'Speak': '發言',
-  'Starting…': '開始中…',
-  'Tax': '稅',
-  'Total': '總共',
-  'Type your message': '請輸入您的訊息',
-  'Upload file': '上載檔案',
-  'VAT': '消費稅',
+  'Listening…': '正在倾听…',
+  'retry': '重试',
+  'Send failed, {retry}': '无法发送，{retry}',
+  'Send': '发送',
+  'Sending': '正在发送',
+  'Speak': '发言',
+  // 'Starting…': '',
+  'Tax': '税',
+  'Total': '共计',
+  'Type your message': '输入你的消息',
+  'Upload file': '上传文件',
+  'VAT': '消费税',
   'X minutes ago': xMinutesAgo
 }
