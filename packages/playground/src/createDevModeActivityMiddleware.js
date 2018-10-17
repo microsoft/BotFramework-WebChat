@@ -12,7 +12,8 @@ const ROOT_CSS = css({
   position: 'relative',
 
   '& > .content': {
-    flex: 1
+    flex: 1,
+    width: '100%'
   },
 
   '&.from-user > button': {
@@ -31,7 +32,11 @@ const ROOT_CSS = css({
     outline: 0,
     padding: 0,
     position: 'absolute',
-    top: 0
+    top: 0,
+
+    '&:hover > svg': {
+      fill: '#999'
+    }
   }
 });
 
@@ -62,7 +67,7 @@ class SpeakActivity extends React.Component {
         <div className="content">
           { children }
         </div>
-        <button onClick={ handleSpeak }>
+        <button onClick={ handleSpeak } tabIndex={ -1 }>
           <svg
             fill="#CCC"
             height="11"

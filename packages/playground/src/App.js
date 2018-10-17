@@ -262,7 +262,7 @@ export default class extends React.Component {
                 onChange={ this.handleLanguageChange }
                 value={ state.language }
               >
-                <option>Default ({ window.navigator.language })</option>
+                <option value="">Default ({ window.navigator.language })</option>
                 <option value="cs-CZ">Czech (Czech Republic)</option>
                 <option value="da-DK">Danish (Denmark)</option>
                 <option value="de-DE">German (Germany)</option>
