@@ -881,10 +881,10 @@ var commands_map: CommandValuesMap = {
     'selectable by tab': {
         urlAppend: { selectable: true },
         do: function (nightmare) {
-            nightmare.type('.wc-message-wrapper', ' ');
+            nightmare.type('.wc-message-groups', '\u0009');
         },
         client: async function () {
-            return (document.querySelector('.wc-message-wrapper') as HTMLElement).innerText.trim().startsWith('Welcome to MockBot!');
+            return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim().startsWith('Welcome to MockBot!');
         }
     }
     /*
