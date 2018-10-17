@@ -884,7 +884,7 @@ var commands_map: CommandValuesMap = {
             nightmare.type('.wc-message-groups', '\u0009');
         },
         client: async function () {
-            return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim().startsWith('Welcome to MockBot!');
+            return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
         }
     }
     /*
