@@ -297,7 +297,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         }
 
         const who = this.props.fromMe ? 'me' : 'bot';
-        const selectable = this.props.onClickActivity || undefined;
+        const selectable = this.props.onClickActivity;
 
         const wrapperClassName = classList(
             'wc-message-wrapper',
@@ -313,7 +313,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                 <div
                     aria-type={ selectable ? 'button' : undefined }
                     className={ wrapperClassName }
-                    data-activity-id={ this.props.activity.id}
+                    data-activity-id={ this.props.activity.id }
                     onClick={ this.props.onClickActivity }
                     tabIndex={ selectable ? 0 : undefined }
                 >
