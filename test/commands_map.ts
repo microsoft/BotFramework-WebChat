@@ -880,10 +880,19 @@ var commands_map: CommandValuesMap = {
             return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
         }
     },
-    'selectable by tab': {
+    'selectable by tab using spacebar': {
         urlAppend: { selectable: true },
         do: function (nightmare) {
-            nightmare.type('.wc-message-wrapper', ' ');
+            nightmare.type('.wc-message-groups', '\u0009 ');
+        },
+        client: async function () {
+            return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
+        }
+    },
+    'selectable by tab using enter key': {
+        urlAppend: { selectable: true },
+        do: function (nightmare) {
+            nightmare.type('.wc-message-groups', '\u0009\u000D');
         },
         client: async function () {
             return (document.querySelector('.wc-message-content.selected') as HTMLElement).innerText.trim() === 'Welcome to MockBot!';
