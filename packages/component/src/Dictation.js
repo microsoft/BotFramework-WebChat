@@ -62,6 +62,7 @@ class Dictation extends React.Component {
       props: {
         dictateState,
         disabled,
+        language,
         webSpeechPonyfill = {}
       },
       handleDictate,
@@ -71,6 +72,7 @@ class Dictation extends React.Component {
 
     return (
       <DictateComposer
+        lang={ language }
         onDictate={ handleDictate }
         onError={ handleError }
         onProgress={ handleDictating }
@@ -83,7 +85,13 @@ class Dictation extends React.Component {
 }
 
 export default connectWithContext(
-  ({ input: { dictateState } }) => ({ dictateState }),
+  ({
+    input: { dictateState },
+    settings: { language }
+  }) => ({
+    dictateState,
+    language
+  }),
   ({
     disabled,
     setDictateInterims,

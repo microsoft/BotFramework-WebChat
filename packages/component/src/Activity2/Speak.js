@@ -21,10 +21,11 @@ class SpeakActivity extends React.Component {
   }
 
   selectVoice(voices) {
-    const { activity } = this.props;
+    const { activity, language } = this.props;
 
     return (
       [].find.call(voices, voice => voice.lang === activity.locale)
+      || [].find.call(voices, voice => voice.lang === language)
       || [].find.call(voices, voice => voice.lang === window.navigator.language)
       || [].find.call(voices, voice => voice.lang === 'en-US')
       || voices[0]
@@ -82,6 +83,6 @@ class SpeakActivity extends React.Component {
 }
 
 export default connectWithContext(
-  () => ({}),
+  ({ settings: { language } }) => ({ language }),
   ({ markActivity, styleSet }) => ({ markActivity, styleSet })
 )(SpeakActivity);
