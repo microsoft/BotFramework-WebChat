@@ -1,0 +1,19 @@
+sudo: required
+
+language: node_js
+
+services:
+- docker
+
+node_js:
+- "10"
+
+install:
+- npm install
+- docker build -t $ACR_NAME.azurecr.io/$DOCKER_IMAGE_NAME .
+
+deploy:
+- provider: script
+  script: bash scripts/docker_push
+  on:
+    branch: master

@@ -69,3 +69,7 @@ On your web site, instead of connecting to your backend thru REST/Web Socket API
 Timestamps can be grouped using various settings.
 
 - [Group timestamps](https://microsoft.github.io/BotFramework-WebChat/timestamp-grouping) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/timestamp-grouping)
+
+## Others
+
+- [Direct Line token server](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/token-server)

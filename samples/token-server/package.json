@@ -1,0 +1,12 @@
+{
+  "name": "token-server",
+  "version": "0.0.0-0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^6.1.0",
+    "node-fetch": "^2.2.0",
+    "restify": "^7.2.1"
+  }
+}
