@@ -167,9 +167,9 @@ export default connectToWebChat(
   ({
     adaptiveCardHostConfig,
     disabled,
+    language,
     onCardAction,
     renderMarkdown,
-    settings: { language } = {},
     styleSet,
     tapAction
   }) => ({
