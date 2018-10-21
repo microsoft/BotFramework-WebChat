@@ -37,7 +37,7 @@ export default function* () {
 }
 
 function* postActivity(directLine, userID, numActivitiesPosted, { payload: { activity } }) {
-  const locale = yield select(({ settings: { language } }) => language);
+  const locale = yield select(({ language }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {

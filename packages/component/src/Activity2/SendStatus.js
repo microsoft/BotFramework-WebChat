@@ -69,8 +69,8 @@ class SendStatus extends React.Component {
 export default connectWithContext(
   ({
     focusSendBox,
+    language,
     postActivity,
-    settings: { language } = {},
     styleSet
   }) => ({
     focusSendBox,

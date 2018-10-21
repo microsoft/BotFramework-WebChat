@@ -69,7 +69,7 @@ function localize(text, language, args) {
 export default connectWithContext(
   ({
     args,
-    settings: { language } = {},
+    language,
     text
   }) => ({
     args,

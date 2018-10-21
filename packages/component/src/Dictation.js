@@ -86,12 +86,12 @@ class Dictation extends React.Component {
 
 export default connectWithContext(
   ({
+    dictateState,
     disabled,
-    input: { dictateState } = {},
+    language,
     setDictateInterims,
     setDictateState,
     setSendBox,
-    settings: { language } = {},
     startSpeakingActivity,
     stopSpeechInput,
     submitSendBox,

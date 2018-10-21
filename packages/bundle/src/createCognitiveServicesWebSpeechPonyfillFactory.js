@@ -7,12 +7,12 @@ import {
 import createCustomSpeechRecognitionClass from './createCustomSpeechRecognition';
 
 export default function ({ fetchToken }) {
-  return ({ referenceGrammarId }) => {
+  return ({ referenceGrammarID }) => {
     speechSynthesis.fetchToken = fetchToken;
 
     return {
       SpeechGrammarList,
-      SpeechRecognition: createCustomSpeechRecognitionClass({ fetchToken, referenceGrammarId }),
+      SpeechRecognition: createCustomSpeechRecognitionClass({ fetchToken, referenceGrammarID }),
       speechSynthesis,
       SpeechSynthesisUtterance
     };

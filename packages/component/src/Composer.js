@@ -162,7 +162,7 @@ class Composer extends React.Component {
       shallowEquals
     );
 
-    this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarId) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarId }));
+    this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarID) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID }));
 
     this.mergeContext = memoize(
       (...contexts) => Object.assign({}, ...contexts),
@@ -228,7 +228,7 @@ class Composer extends React.Component {
 
         grammars,
         groupTimestamp,
-        referenceGrammarId,
+        referenceGrammarID,
         renderMarkdown,
         scrollToBottom,
         store,
@@ -261,7 +261,7 @@ class Composer extends React.Component {
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
         store,
         userAvatarInitials,
-        webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
+        webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarID)
       }
     );
 
@@ -289,7 +289,7 @@ Composer.propTypes = {
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
-  referenceGrammarId: PropTypes.string,
+  referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
   userAvatarInitials: PropTypes.string,
@@ -298,5 +298,5 @@ Composer.propTypes = {
 };
 
 export default connect(
-  ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId })
+  ({ referenceGrammarID }) => ({ referenceGrammarID })
 )(props => <Composer { ...props } />);

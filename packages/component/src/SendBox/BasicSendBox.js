@@ -59,7 +59,7 @@ const BasicSendBox = ({
 
 export default connectWithContext(
   ({
-    input: { dictateState } = {},
+    dictateState,
     styleSet,
     webSpeechPonyfill
   }) => ({

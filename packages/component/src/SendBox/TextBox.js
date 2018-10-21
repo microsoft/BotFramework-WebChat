@@ -97,13 +97,13 @@ TextBoxWithSpeech.propTypes = {
 export default connectWithContext(
   ({
     disabled,
-    input: { sendBoxValue } = {},
+    language,
     scrollToBottom,
+    sendBoxValue,
     setSendBox,
-    settings: { language } = {},
     stopSpeakingActivity,
-    submitSendBox,
-    styleSet
+    styleSet,
+    submitSendBox
   }) => ({
     disabled,
     language,
@@ -111,7 +111,7 @@ export default connectWithContext(
     sendBoxValue,
     setSendBox,
     stopSpeakingActivity,
-    submitSendBox,
-    styleSet
+    styleSet,
+    submitSendBox
   })
 )(TextBoxWithSpeech)

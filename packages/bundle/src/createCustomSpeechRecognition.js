@@ -3,7 +3,7 @@ import {
   SpeechRecognition
 } from 'web-speech-cognitive-services';
 
-export default ({ fetchToken, referenceGrammarId }) => {
+export default ({ fetchToken, referenceGrammarID }) => {
   return class extends SpeechRecognition {
     constructor() {
       super();
@@ -13,7 +13,7 @@ export default ({ fetchToken, referenceGrammarId }) => {
 
     start() {
       this.grammars = new SpeechGrammarList();
-      this.grammars.referenceGrammar = referenceGrammarId || '';
+      this.grammars.referenceGrammar = referenceGrammarID || '';
 
       return super.start();
     }

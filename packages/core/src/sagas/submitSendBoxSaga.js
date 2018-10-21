@@ -14,7 +14,7 @@ export default function* () {
   yield whileConnected(function* () {
     for (;;) {
       const { payload: { via } } = yield take(SUBMIT_SEND_BOX);
-      const sendBoxValue = yield select(({ input: { sendBoxValue } }) => sendBoxValue);
+      const sendBoxValue = yield select(({ sendBoxValue }) => sendBoxValue);
 
       if (sendBoxValue) {
         yield put(sendMessage(sendBoxValue, via));
