@@ -26,15 +26,15 @@ class MicrophoneButton extends React.Component {
       props: {
         dictateState,
         onClick,
-        startSpeechInput,
-        stopSpeechInput
+        startDictate,
+        stopDictate
       }
     } = this;
 
     if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
-      stopSpeechInput();
+      stopDictate();
     } else {
-      startSpeechInput();
+      startDictate();
     }
 
     onClick && onClick();
@@ -67,14 +67,14 @@ export default connectWithContext(
   ({
     disabled,
     dictateState,
-    startSpeechInput,
-    stopSpeechInput,
+    startDictate,
+    stopDictate,
     styleSet
   }) => ({
     dictateState,
     disabled,
-    startSpeechInput,
-    stopSpeechInput,
+    startDictate,
+    stopDictate,
     styleSet
   })
 )(MicrophoneButton)

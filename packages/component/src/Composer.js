@@ -17,10 +17,10 @@ import {
   setLanguage,
   setSendBox,
   setSendTyping,
+  startDictate,
   startSpeakingActivity,
-  startSpeechInput,
+  stopDictate,
   stopSpeakingActivity,
-  stopSpeechInput,
   submitSendBox
 } from 'botframework-webchat-core';
 
@@ -44,10 +44,10 @@ const DISPATCHERS = {
   setDictateInterims,
   setDictateState,
   setSendBox,
+  startDictate,
   startSpeakingActivity,
-  startSpeechInput,
+  stopDictate,
   stopSpeakingActivity,
-  stopSpeechInput,
   submitSendBox
 };
 

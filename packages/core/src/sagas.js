@@ -11,9 +11,9 @@ import sendFilesToPostActivitySaga from './sagas/sendFilesToPostActivitySaga';
 import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga';
 import sendPostBackToPostActivitySaga from './sagas/sendPostBackToPostActivitySaga';
 import sendTypingOnSetSendBoxSaga from './sagas/sendTypingOnSetSendBoxSaga';
-import startSpeechInputAfterSpeakActivitySaga from './sagas/startSpeechInputAfterSpeakActivitySaga';
+import startDictateAfterSpeakActivitySaga from './sagas/startDictateAfterSpeakActivitySaga';
+import stopDictateOnCardAction from './sagas/stopDictateOnCardAction';
 import stopSpeakActivityOnInputSaga from './sagas/stopSpeakActivityOnInputSaga';
-import stopSpeechInputOnCardAction from './sagas/stopSpeechInputOnCardAction';
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 
 export default function* () {
@@ -28,8 +28,8 @@ export default function* () {
   yield fork(sendMessageToPostActivitySaga);
   yield fork(sendPostBackToPostActivitySaga);
   yield fork(sendTypingOnSetSendBoxSaga);
-  yield fork(startSpeechInputAfterSpeakActivitySaga);
+  yield fork(startDictateAfterSpeakActivitySaga);
+  yield fork(stopDictateOnCardAction);
   yield fork(stopSpeakActivityOnInputSaga);
-  yield fork(stopSpeechInputOnCardAction);
   yield fork(submitSendBoxSaga);
 }

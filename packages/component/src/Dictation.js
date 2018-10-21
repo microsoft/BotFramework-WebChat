@@ -26,7 +26,7 @@ class Dictation extends React.Component {
 
     props.setDictateInterims([]);
     props.setDictateState(IDLE);
-    props.stopSpeechInput();
+    props.stopDictate();
 
     if (transcript) {
       props.setSendBox(transcript, 'speech');
@@ -52,7 +52,7 @@ class Dictation extends React.Component {
     const { props } = this;
 
     props.setDictateState(IDLE);
-    props.stopSpeechInput();
+    props.stopDictate();
 
     props.onError && props.onError(event);
   }
@@ -93,7 +93,7 @@ export default connectWithContext(
     setDictateState,
     setSendBox,
     startSpeakingActivity,
-    stopSpeechInput,
+    stopDictate,
     submitSendBox,
     webSpeechPonyfill
   }) => ({
@@ -104,7 +104,7 @@ export default connectWithContext(
     setDictateState,
     setSendBox,
     startSpeakingActivity,
-    stopSpeechInput,
+    stopDictate,
     submitSendBox,
     webSpeechPonyfill
   })

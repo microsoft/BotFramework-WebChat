@@ -11,10 +11,10 @@ import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
 import setSendBox from './actions/setSendBox';
 import setSendTyping from './actions/setSendTyping';
+import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
-import startSpeechInput from './actions/startSpeechInput';
+import stopDictate from './actions/stopDictate';
 import stopSpeakingActivity from './actions/stopSpeakingActivity';
-import stopSpeechInput from './actions/stopSpeechInput';
 import submitSendBox from './actions/submitSendBox';
 
 import * as ActivityClientState from './constants/ActivityClientState';
@@ -37,9 +37,9 @@ export {
   setLanguage,
   setSendBox,
   setSendTyping,
+  startDictate,
   startSpeakingActivity,
-  startSpeechInput,
+  stopDictate,
   stopSpeakingActivity,
-  stopSpeechInput,
   submitSendBox
 }

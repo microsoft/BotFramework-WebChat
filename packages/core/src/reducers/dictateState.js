@@ -6,8 +6,8 @@ import {
 } from '../constants/DictateState';
 
 import { SET_DICTATE_STATE } from '../actions/setDictateState';
-import { START_SPEECH_INPUT } from '../actions/startSpeechInput';
-import { STOP_SPEECH_INPUT } from '../actions/stopSpeechInput';
+import { START_DICTATE } from '../actions/startDictate';
+import { STOP_DICTATE } from '../actions/stopDictate';
 
 const DEFAULT_STATE = IDLE;
 
@@ -17,14 +17,14 @@ export default function (state = DEFAULT_STATE, { payload, type }) {
       state = payload.dictateState;
       break;
 
-    case START_SPEECH_INPUT:
+    case START_DICTATE:
       if (state === IDLE || state === STOPPING) {
         state = STARTING;
       }
 
       break;
 
-    case STOP_SPEECH_INPUT:
+    case STOP_DICTATE:
       if (state === STARTING || state === DICTATING) {
         state = STOPPING;
       }
