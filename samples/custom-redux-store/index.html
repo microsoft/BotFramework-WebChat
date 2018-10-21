@@ -34,7 +34,7 @@
             if (action.type === 'DIRECT_LINE/CONNECTION_STATUS_UPDATE' && action.payload.connectionStatus === 2) {
               // After connected, we will send a message by dispatching a Redux action.
               dispatch({ type: 'INPUT/SEND_MESSAGE', payload: { text: 'sample:backchannel' } });
-            } else if (action.type === 'DIRECT_LINE/UPSERT_ACTIVITY') {
+            } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
               // When receiving an activity of type "event" with name of "sample:backchannel", prompt it out.
               const { activity } = action.payload;
 

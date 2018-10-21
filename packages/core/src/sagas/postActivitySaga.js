@@ -22,7 +22,7 @@ import {
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
 
-import { UPSERT_ACTIVITY } from '../actions/upsertActivity';
+import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
 const SEND_TIMEOUT = 5000;
 
@@ -76,12 +76,12 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
   yield put({ type: POST_ACTIVITY_PENDING, payload: { activity }, meta });
 
   try {
-    // Quirks: We might receive UPSERT_ACTIVITY before the postActivity call completed
+    // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
     //         So, we setup expectation first, then postActivity afterward
 
     const expectEchoBack = yield fork(() => callWithin(function* () {
       for (;;) {
-        const { payload: { activity } } = yield take(UPSERT_ACTIVITY);
+        const { payload: { activity } } = yield take(INCOMING_ACTIVITY);
         const { channelData = {}, id } = activity;
 
         if (channelData.clientActivityID === clientActivityID && id) {

@@ -1,6 +1,6 @@
 import createFacility from './createFacility';
 
-test('Upsert activity', async () => {
+test('Incoming activity', async () => {
   const { actions, directLine, store } = await createFacility();
 
   // Clear out actions

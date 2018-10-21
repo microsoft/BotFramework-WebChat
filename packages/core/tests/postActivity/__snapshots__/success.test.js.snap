@@ -68,7 +68,7 @@ Array [
         "type": "message",
       },
     },
-    "type": "DIRECT_LINE/UPSERT_ACTIVITY",
+    "type": "DIRECT_LINE/INCOMING_ACTIVITY",
   },
   Object {
     "payload": Object {
@@ -86,7 +86,7 @@ Array [
         "type": "message",
       },
     },
-    "type": "DIRECT_LINE/UPSERT_ACTIVITY",
+    "type": "DIRECT_LINE/INCOMING_ACTIVITY",
   },
   Object {
     "meta": Object {

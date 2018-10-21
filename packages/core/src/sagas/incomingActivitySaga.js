@@ -6,8 +6,8 @@ import {
 import observeEach from './effects/observeEach';
 import whileConnected from './effects/whileConnected';
 
+import incomingActivity from '../actions/incomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
-import upsertActivity from '../actions/upsertActivity';
 
 function last(array, predicate) {
   for (let i = array.length - 1; i >= 0; i--) {
@@ -33,7 +33,7 @@ export default function* () {
         }
       }
 
-      yield put(upsertActivity(activity));
+      yield put(incomingActivity(activity));
 
       // Update suggested actions
       const activities = yield select(({ activities }) => activities);
