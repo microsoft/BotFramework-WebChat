@@ -1,4 +1,4 @@
-const SEND_FILES = 'INPUT/SEND_FILES';
+const SEND_FILES = 'WEB_CHAT/SEND_FILES';
 
 export default function sendFiles(files) {
   return {

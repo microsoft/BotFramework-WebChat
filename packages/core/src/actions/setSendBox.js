@@ -1,4 +1,4 @@
-const SET_SEND_BOX = 'INPUT/SET_SEND_BOX';
+const SET_SEND_BOX = 'WEB_CHAT/SET_SEND_BOX';
 
 export default function (text, via) {
   return {

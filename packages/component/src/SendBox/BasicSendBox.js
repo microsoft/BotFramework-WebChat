@@ -56,7 +56,6 @@ const BasicSendBox = ({
     </div>
   </div>
 
-
 export default connectWithContext(
   ({
     dictateState,

@@ -1,9 +1,9 @@
 const CONNECTION_STATUS_UPDATE = 'DIRECT_LINE/CONNECTION_STATUS_UPDATE';
 
-export default function (readyState) {
+export default function (connectionStatus) {
   return {
     type: CONNECTION_STATUS_UPDATE,
-    payload: { readyState }
+    payload: { connectionStatus }
   };
 }
 

@@ -1,4 +1,4 @@
-const STOP_SPEECH_INPUT = 'INPUT/STOP_SPEECH';
+const STOP_SPEECH_INPUT = 'WEB_CHAT/STOP_SPEECH_INPUT';
 
 export default function () {
   return { type: STOP_SPEECH_INPUT };

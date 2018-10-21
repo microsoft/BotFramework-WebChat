@@ -94,7 +94,7 @@
 
         // The following code is for convenient when trying out this sample, not required for production.
         document.querySelector('#webchat > *').focus();
-        setTimeout(() => store.dispatch({ type: 'INPUT/SEND_MESSAGE', payload: { text: 'timestamp' } }), 1000);
+        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'timestamp' } }), 1000);
       })().catch(err => console.error(err));
     </script>
   </body>

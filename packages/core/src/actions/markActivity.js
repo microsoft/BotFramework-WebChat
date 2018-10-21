@@ -1,4 +1,4 @@
-const MARK_ACTIVITY = 'ACTIVITY/MARK';
+const MARK_ACTIVITY = 'WEB_CHAT/MARK_ACTIVITY';
 
 export default function markActivity({ id: activityID }, name, value) {
   return {

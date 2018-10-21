@@ -31,7 +31,7 @@ export default class extends React.Component {
 
   setSendBox() {
     this.store.dispatch({
-      type: 'INPUT/SET_SEND_BOX',
+      type: 'WEB_CHAT/SET_SEND_BOX',
       payload: { text: 'sample:redux-middleware' }
     });
   }
