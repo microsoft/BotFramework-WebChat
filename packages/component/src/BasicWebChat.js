@@ -1,5 +1,7 @@
+import { createStore } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
+import memoize from 'memoize-one';
 import React from 'react';
 
 import BasicSendBox from './SendBox/BasicSendBox';
@@ -29,6 +31,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
+    this.createMemoizedStore = memoize(() => createStore());
     this.sendBoxRef = React.createRef();
 
     this.state = {
@@ -109,6 +112,8 @@ export default class extends React.Component {
         attachmentRenderer={ state.attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
+        // We override store from props: if it was not passed in, we will create-and-cache it automatically
+        store={ props.store || this.createMemoizedStore() }
       >
         { ({ styleSet }) =>
           <TypeFocusSinkBox

@@ -14,10 +14,10 @@ export default function* () {
   yield whileConnected(function* () {
     for (;;) {
       const { payload: { via } } = yield take(SUBMIT_SEND_BOX);
-      const text = yield select(({ input: { sendBox } }) => sendBox);
+      const sendBoxValue = yield select(({ input: { sendBoxValue } }) => sendBoxValue);
 
-      if (text) {
-        yield put(sendMessage(text, via));
+      if (sendBoxValue) {
+        yield put(sendMessage(sendBoxValue, via));
         yield put(setSendBox('', 'keyboard'));
       }
     }

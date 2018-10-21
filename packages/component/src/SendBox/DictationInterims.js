@@ -50,16 +50,15 @@ const DictationInterims = ({ className, dictateInterims, dictateState, styleSet 
   )
 
 export default connectWithContext(
-  ({ input: {
-    dictateInterims,
-    dictateState
-  } }) => ({
-    dictateInterims,
-    dictateState
-  }),
   ({
+    input: {
+      dictateInterims,
+      dictateState
+    } = {},
     styleSet
   }) => ({
+    dictateInterims,
+    dictateState,
     styleSet
   })
 )(DictationInterims)

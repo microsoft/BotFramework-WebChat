@@ -8,7 +8,6 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
     <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
     <style>
       html, body { height: 100% }
@@ -32,18 +31,10 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const { createStore, ReactWebChat } = window.WebChat;
-        const { createProvider } = window.ReactRedux;
-        const Provider = createProvider('webchat');
-        const store = createStore();
+        const { ReactWebChat } = window.WebChat;
 
         window.ReactDOM.render(
-          <Provider store={ store }>
-            <ReactWebChat
-              directLine={ window.WebChat.createDirectLine({ token }) }
-              storeKey="webchat"
-            />
-          </Provider>,
+          <ReactWebChat directLine={ window.WebChat.createDirectLine({ token }) } />,
           document.getElementById('webchat')
         );
 

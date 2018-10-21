@@ -64,17 +64,14 @@ class MicrophoneButton extends React.Component {
 }
 
 export default connectWithContext(
-  ({ input: {
-    dictateState
-  } }) => ({
-    dictateState
-  }),
   ({
     disabled,
+    input: { dictateState } = {},
     startSpeechInput,
     stopSpeechInput,
     styleSet
   }) => ({
+    dictateState,
     disabled,
     startSpeechInput,
     stopSpeechInput,

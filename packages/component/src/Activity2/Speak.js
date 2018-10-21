@@ -83,6 +83,13 @@ class SpeakActivity extends React.Component {
 }
 
 export default connectWithContext(
-  ({ settings: { language } }) => ({ language }),
-  ({ markActivity, styleSet }) => ({ markActivity, styleSet })
+  ({
+    markActivity,
+    settings: { language } = {},
+    styleSet
+  }) => ({
+    language,
+    markActivity,
+    styleSet
+  })
 )(SpeakActivity);

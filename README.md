@@ -97,30 +97,20 @@ For full customizability, you can use React to recompose components of Web Chat.
 To install the preview build from NPM, run `npm install botframework-webchat@preview`.
 
 ```jsx
-import { createProvider } from 'react-redux';
-import React from 'react';
-
 import DirectLine from 'botframework-directlinejs';
-import WebChat, { createStore } from 'botframework-webchat';
-
-const Provider = createProvider('webchat');
+import React from 'react';
+import ReactWebChat from 'botframework-webchat';
 
 export default class extends React.Component {
   constructor(props) {
     super(props);
 
     this.directLine = new DirectLine({ token: 'YOUR_BOT_SECRET' });
-    this.store = createStore();
   }
 
   render() {
     return (
-      <Provider store={ this.store }>
-        <WebChat
-          directLine={ this.directLine }
-          storeKey="webchat"
-        />
-      </Provider>,
+      <ReactWebChat directLine={ this.directLine } />
       element
     );
   }

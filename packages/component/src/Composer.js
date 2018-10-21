@@ -165,7 +165,7 @@ class Composer extends React.Component {
     this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarId) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarId }));
 
     this.mergeContext = memoize(
-      (...contexts) => contexts.reduce((result, context) => Object.assign(result, context), {}),
+      (...contexts) => Object.assign({}, ...contexts),
       shallowEquals
     );
 
@@ -231,6 +231,7 @@ class Composer extends React.Component {
         referenceGrammarId,
         renderMarkdown,
         scrollToBottom,
+        store,
         userAvatarInitials,
         userID,
         webSpeechPonyfillFactory,
@@ -258,6 +259,7 @@ class Composer extends React.Component {
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
+        store,
         userAvatarInitials,
         webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
       }
@@ -295,16 +297,6 @@ Composer.propTypes = {
   webSpeechPonyfillFactory: PropTypes.func
 };
 
-// TODO: [P3] Should we hide the knowledge of Redux?
-//       Everyone under this DOM tree should need access to Redux connect or dispatchers
-//       All the features should be accessible via Context/Composer
-
-// TODO: [P2] Simplify storeKey by hardcoding it
-const createComposerFromStoreKey = memoize(storeKey => connect(
-  ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }),
-  null,
-  null,
-  { storeKey }
-)(Composer))
-
-export default props => React.createElement(createComposerFromStoreKey(props.storeKey), props)
+export default connect(
+  ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId })
+)(props => <Composer { ...props } />);

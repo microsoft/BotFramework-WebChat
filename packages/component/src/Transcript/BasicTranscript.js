@@ -82,14 +82,15 @@ const BasicTranscript = ({
   </ScrollToBottom>
 
 export default connectWithContext(
-  ({ activities }) => ({ activities }),
   ({
+    activities,
     activityRenderer,
     attachmentRenderer,
     groupTimestamp,
     styleSet,
     webSpeechPonyfill
   }) => ({
+    activities,
     activityRenderer,
     attachmentRenderer,
     groupTimestamp,

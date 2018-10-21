@@ -33,10 +33,8 @@
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        const { Context, createStore, ReactWebChat } = window.WebChat;
+        const { Context, ReactWebChat } = window.WebChat;
         const { css } = window.Glamor;
-        const { createProvider } = window.ReactRedux;
-        const Provider = createProvider('webchat');
 
         const ACTIVITY_WITH_FEEDBACK_CSS = css({
           minHeight: 60,
@@ -90,7 +88,6 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const store = createStore();
         const activityMiddleware = () => next => card => {
           if (card.activity.from.role === 'bot') {
             return (
@@ -105,13 +102,10 @@
         };
 
         window.ReactDOM.render(
-          <Provider store={ store }>
-            <ReactWebChat
-              activityMiddleware={ activityMiddleware }
-              directLine={ window.WebChat.createDirectLine({ token }) }
-              storeKey="webchat"
-            />
-          </Provider>,
+          <ReactWebChat
+            activityMiddleware={ activityMiddleware }
+            directLine={ window.WebChat.createDirectLine({ token }) }
+          />,
           document.getElementById('webchat')
         );
 

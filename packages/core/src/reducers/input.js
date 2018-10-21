@@ -11,7 +11,7 @@ import { IDLE } from '../constants/DictateState';
 const DEFAULT_STATE = {
   dictateInterims: [],
   dictateState: IDLE,
-  sendBox: ''
+  sendBoxValue: ''
 };
 
 export default function (state = DEFAULT_STATE, { payload, type }) {
@@ -25,7 +25,7 @@ export default function (state = DEFAULT_STATE, { payload, type }) {
       break;
 
     case SET_SEND_BOX:
-      state = updateIn(state, ['sendBox'], () => payload.text);
+      state = updateIn(state, ['sendBoxValue'], () => payload.text);
       break;
 
     case START_SPEECH_INPUT:
