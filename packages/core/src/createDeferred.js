@@ -1,3 +1,4 @@
+// TODO: [P3] Move to p-defer
 export default function createDeferred() {
   let reject, resolve;
 
