@@ -167,9 +167,9 @@ export default connectWithContext(
   ({
     adaptiveCardHostConfig,
     disabled,
+    language,
     onCardAction,
     renderMarkdown,
-    settings: { language } = {},
     styleSet,
     tapAction
   }) => ({

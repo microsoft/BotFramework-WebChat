@@ -1,4 +1,4 @@
-const SET_REFERENCE_GRAMMAR_ID = 'WEB_CHAT/SET_REFERENCE_GRAMMAR_ID';
+const SET_REFERENCE_GRAMMAR_ID = 'SETTINGS/SET_REFERENCE_GRAMMAR_ID';
 
 export default function setReferenceGrammarID(referenceGrammarID) {
   return {

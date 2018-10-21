@@ -101,7 +101,6 @@ export default connectWithContext(
     scrollToBottom,
     sendBoxValue,
     setSendBox,
-    settings: { language } = {},
     stopSpeakingActivity,
     styleSet,
     submitSendBox
