@@ -50,11 +50,13 @@ const BasicTranscript = ({
             const nextActivity = activities[index + 1];
             let showTimestamp = true;
 
-            if (groupTimestamp !== false) {
+            if (groupTimestamp === false) {
+              showTimestamp = false;
+            } else {
               groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
 
               if (activity.type !== 'message') {
-                // Hide timestamp for typing
+                // Hide timestamp for non-messages, e.g. typing
                 showTimestamp = false;
               } else if (nextActivity && activity.from.role === nextActivity.from.role) {
                 const time = new Date(activity.timestamp).getTime();
