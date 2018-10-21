@@ -7,6 +7,8 @@ import {
   take,
 } from 'redux-saga/effects';
 
+import { decode } from 'jsonwebtoken';
+
 import callUntil from './effects/callUntil';
 import forever from './effects/forever';
 
@@ -36,6 +38,17 @@ const ENDED = 5;
 export default function* () {
   for (;;) {
     const { payload: { directLine, userID, username } } = yield take(CONNECT);
+    const { token } = directLine;
+    const { user: userIDFromToken } = decode(token) || {};
+
+    if (userIDFromToken) {
+      if (userID && userID !== userIDFromToken) {
+        console.warn('Web Chat: user ID is both specified in the Direct Line token and passed in, will use the user ID from the token.');
+      }
+
+      userID = userIDFromToken;
+    }
+
     const connectTask = yield fork(connectSaga, directLine, userID, username);
 
     yield take(DISCONNECT);
