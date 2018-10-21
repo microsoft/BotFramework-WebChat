@@ -31,8 +31,7 @@ export default class SpeechOnlyButton extends React.Component {
         },
         webSocket: false
       }),
-      userID: 'default-user',
-      username: 'User-1'
+      userID: 'default-user'
     }));
   }
 

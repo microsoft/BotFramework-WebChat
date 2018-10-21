@@ -215,7 +215,6 @@ export default class extends React.Component {
           styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
           userID={ state.userID }
-          username="User 1"
           webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
         />
         <div className="button-bar">

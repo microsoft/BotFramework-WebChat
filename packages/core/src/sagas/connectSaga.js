@@ -35,9 +35,11 @@ const ONLINE = 2;
 // const FAILED_TO_CONNECT = 4;
 const ENDED = 5;
 
+const DEFAULT_USER_ID = 'default-user';
+
 export default function* () {
   for (;;) {
-    const { payload: { directLine, userID, username } } = yield take(CONNECT);
+    const { payload: { directLine, userID } } = yield take(CONNECT);
     const { token } = directLine;
     const { user: userIDFromToken } = decode(token) || {};
 
@@ -47,17 +49,20 @@ export default function* () {
       }
 
       userID = userIDFromToken;
+    } else if (!userID) {
+      // Only specify "default-user" if not found from token and not passed in
+      userID = DEFAULT_USER_ID;
     }
 
-    const connectTask = yield fork(connectSaga, directLine, userID, username);
+    const connectTask = yield fork(connectSaga, directLine, userID);
 
     yield take(DISCONNECT);
     yield call(disconnectSaga, connectTask, directLine);
   }
 }
 
-function* connectSaga(directLine, userID, username) {
-  const meta = { userID, username };
+function* connectSaga(directLine, userID) {
+  const meta = { userID };
 
   yield put({ type: CONNECT_PENDING, meta });
 
