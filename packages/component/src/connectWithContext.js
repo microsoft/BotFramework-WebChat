@@ -21,14 +21,7 @@ export default function (selector) {
       { context =>
         React.createElement(
           connect(
-            state => removeUndefinedValues((selector && selector(state)) || {}),
-            null,
-            (stateProps, dispatchProps, ownProps) => ({
-              ...ownProps,
-              ...stateProps,
-              ...dispatchProps,
-              ...removeUndefinedValues((selector && selector(context)) || {})
-            })
+            state => removeUndefinedValues((selector && selector({ ...state, ...context })) || {})
           )(component),
           {
             ...props,
