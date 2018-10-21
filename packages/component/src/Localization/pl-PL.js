@@ -1,5 +1,5 @@
 export default {
-  'Chat': 'Chat',
+  'Chat': 'Czat',
   'Listening…': 'Słuchanie…',
   'retry': 'wyślij ponownie',
   'Send failed, {retry}': 'wysłanie nieudane, {retry}',
@@ -11,6 +11,6 @@ export default {
   'Total': 'Razem',
   'Type your message': 'Wpisz swoją wiadomość',
   'Upload file': 'Wyślij plik',
-  'VAT': 'VAT'
-  // 'X minutes ago':
+  'VAT': 'VAT',
+  'X minutes ago': 'X minut temu'
 }
