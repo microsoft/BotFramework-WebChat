@@ -21,6 +21,47 @@ const LIST_CSS = css({
   listStyleType: 'none'
 });
 
+function shouldShowActivity(activity) {
+  if (activity) {
+    if (activity.type === 'message') {
+      const { attachments = [], text } = activity;
+
+      if (
+        // Do not show postback
+        !(activity.channelData && activity.channelData.postBack)
+        // Do not show empty bubbles (no text and attachments, and not "typing")
+        && (text || attachments.length)
+      ) {
+        return true;
+      }
+    } else if (activity.type === 'typing') {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function shouldShowTimestamp(activity, nextActivity, groupTimestamp) {
+  if (groupTimestamp === false) {
+    return false;
+  } else {
+    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
+
+    if (activity.type !== 'message') {
+      // Hide timestamp for typing
+      return false;
+    } else if (nextActivity && activity.from.role === nextActivity.from.role) {
+      const time = new Date(activity.timestamp).getTime();
+      const nextTime = new Date(nextActivity.timestamp).getTime();
+
+      return (nextTime - time) > groupTimestamp;
+    } else {
+      return true;
+    }
+  }
+}
+
 const BasicTranscript = ({
   activityRenderer,
   activities,
@@ -29,57 +70,41 @@ const BasicTranscript = ({
   groupTimestamp,
   styleSet,
   webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
-}) =>
-  <ScrollToBottom
-    className={ className }
-    threshold={ styleSet.options.scrollToBottomThreshold }
-    scrollViewClassName={ ROOT_CSS + '' }
-  >
-    <div className={ FILLER_CSS } />
-    <SayComposer
-      speechSynthesis={ speechSynthesis }
-      speechSynthesisUtterance={ SpeechSynthesisUtterance }
+}) => {
+  const visibleActivities = activities.filter(shouldShowActivity);
+
+  return (
+    <ScrollToBottom
+      className={ className }
+      threshold={ styleSet.options.scrollToBottomThreshold }
+      scrollViewClassName={ ROOT_CSS + '' }
     >
-      <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
-        {
-          activities.map((activity, index) => {
-            if (activity.channelData && activity.channelData.postBack) {
-              return false;
-            }
+      <div className={ FILLER_CSS } />
+      <SayComposer
+        speechSynthesis={ speechSynthesis }
+        speechSynthesisUtterance={ SpeechSynthesisUtterance }
+      >
+        <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
+          {
+            visibleActivities.map((activity, index) => {
+              const showTimestamp = shouldShowTimestamp(activity, visibleActivities[index + 1], groupTimestamp);
 
-            const nextActivity = activities[index + 1];
-            let showTimestamp = true;
-
-            if (groupTimestamp === false) {
-              showTimestamp = false;
-            } else {
-              groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
-
-              if (activity.type !== 'message') {
-                // Hide timestamp for non-messages, e.g. typing
-                showTimestamp = false;
-              } else if (nextActivity && activity.from.role === nextActivity.from.role) {
-                const time = new Date(activity.timestamp).getTime();
-                const nextTime = new Date(nextActivity.timestamp).getTime();
-
-                showTimestamp = (nextTime - time) > groupTimestamp;
-              }
-            }
-
-            return (
-              <li
-                className={ styleSet.activity }
-                key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
-              >
-                { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
-                { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
-              </li>
-            );
-          })
-        }
-      </ul>
-    </SayComposer>
-  </ScrollToBottom>
+              return (
+                <li
+                  className={ styleSet.activity }
+                  key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
+                >
+                  { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
+                  { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
+                </li>
+              );
+            })
+          }
+        </ul>
+      </SayComposer>
+    </ScrollToBottom>
+  );
+}
 
 export default connectWithContext(
   ({
