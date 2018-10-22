@@ -5,6 +5,13 @@ import ErrorBox from './ErrorBox';
 import SpeakActivity from './Activity2/Speak';
 import StackedLayout from './Activity2/StackedLayout';
 
+import DictationInterims from './SendBox/DictationInterims';
+import MicrophoneButton from './SendBox/MicrophoneButton';
+import SendButton from './SendBox/SendButton';
+import SendTextBox from './SendBox/TextBox';
+import SuggestedActions from './SendBox/SuggestedActions';
+import UploadAttachmentButton from './SendBox/UploadAttachmentButton';
+
 import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/createAdaptiveCardMiddleware';
@@ -13,10 +20,19 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createStyleSet from './Styles/createStyleSet';
 
 const Components = {
+  // Components for recomposing transcript
   CarouselLayout,
   ErrorBox,
   SpeakActivity,
-  StackedLayout
+  StackedLayout,
+
+  // Components for recomposing send box
+  DictationInterims,
+  MicrophoneButton,
+  SendButton,
+  SendTextBox,
+  SuggestedActions,
+  UploadAttachmentButton,
 };
 
 export default BasicWebChat
