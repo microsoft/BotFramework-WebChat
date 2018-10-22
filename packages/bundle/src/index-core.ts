@@ -1,5 +1,6 @@
 import { createStore } from 'botframework-webchat-core';
 import ReactWebChat, {
+  Components,
   concatMiddleware,
   Context,
   createStyleSet
@@ -14,6 +15,7 @@ const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat)
 export default ReactWebChat
 
 export {
+  Components,
   concatMiddleware,
   Context,
   createBrowserWebSpeechPonyfillFactory,

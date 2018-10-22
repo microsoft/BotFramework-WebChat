@@ -1,23 +1,34 @@
 import BasicWebChat from './BasicWebChat';
 
+import CarouselLayout from './Activity2/CarouselLayout';
+import ErrorBox from './ErrorBox';
+import SpeakActivity from './Activity2/Speak';
+import StackedLayout from './Activity2/StackedLayout';
+
 import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/createAdaptiveCardMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import ErrorBox from './ErrorBox';
+
+const Components = {
+  CarouselLayout,
+  ErrorBox,
+  SpeakActivity,
+  StackedLayout
+};
 
 export default BasicWebChat
 
 export {
+  Components,
   concatMiddleware,
   Context,
   createAdaptiveCardsAttachmentMiddleware,
   createCoreActivityMiddleware,
   createCoreAttachmentMiddleware,
-  createStyleSet,
-  ErrorBox
+  createStyleSet
 }
 
 try {

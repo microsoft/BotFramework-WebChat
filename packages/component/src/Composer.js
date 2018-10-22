@@ -292,6 +292,7 @@ Composer.propTypes = {
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
+  sendTyping: PropTypes.bool,
   userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
