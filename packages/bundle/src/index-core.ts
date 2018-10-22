@@ -20,9 +20,9 @@ export default ReactWebChat
 
 export {
   Components,
-  Constants,
   concatMiddleware,
   connectToWebChat,
+  Constants,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
   createStore,
@@ -39,6 +39,6 @@ window['WebChat'] = {
   createDirectLine,
   createStore,
   createStyleSet,
-  renderWebChat,
-  ReactWebChat
+  ReactWebChat,
+  renderWebChat
 };
