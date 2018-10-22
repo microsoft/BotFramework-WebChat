@@ -11,6 +11,6 @@ export default {
   'Total': 'Razem',
   'Type your message': 'Wpisz swoją wiadomość',
   'Upload file': 'Wyślij plik',
-  'VAT': 'VAT',
-  'X minutes ago': 'X minut temu'
+  'VAT': 'VAT'
+  // 'X minutes ago': 'X minut temu'
 }
