@@ -1,9 +1,13 @@
 import BasicWebChat from './BasicWebChat';
 
+import Avatar from './Activity2/Avatar';
+import Bubble from './Activity2/Bubble';
 import CarouselLayout from './Activity2/CarouselLayout';
 import ErrorBox from './ErrorBox';
+import SendStatus from './Activity2/SendStatus';
 import SpeakActivity from './Activity2/Speak';
 import StackedLayout from './Activity2/StackedLayout';
+import Timestamp from './Activity2/Timestamp';
 
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
@@ -21,10 +25,14 @@ import createStyleSet from './Styles/createStyleSet';
 
 const Components = {
   // Components for recomposing transcript
+  Avatar,
+  Bubble,
   CarouselLayout,
   ErrorBox,
+  SendStatus,
   SpeakActivity,
   StackedLayout,
+  Timestamp,
 
   // Components for recomposing send box
   DictationInterims,
