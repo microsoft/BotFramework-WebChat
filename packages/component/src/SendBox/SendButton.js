@@ -5,7 +5,13 @@ import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 
 const connectSendButton = (...selectors) => connectWithContext(
-  ({ submitSendBox }) => ({ submitSendBox }),
+  ({
+    language,
+    submitSendBox
+  }) => ({
+    click: submitSendBox,
+    language
+  }),
   ...selectors
 )
 

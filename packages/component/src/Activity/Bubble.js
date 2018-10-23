@@ -6,7 +6,12 @@ import connectWithContext from '../connectWithContext';
 export default connectWithContext(
   ({ styleSet }) => ({ styleSet })
 )(
-  ({ children, className, fromUser, styleSet }) =>
+  ({
+    children,
+    className,
+    fromUser,
+    styleSet
+  }) =>
     <div
       className={ classNames(
         styleSet.bubble + '',

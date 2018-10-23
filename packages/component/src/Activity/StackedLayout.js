@@ -57,9 +57,11 @@ const ROOT_CSS = css({
 const connectStackedLayout = (...selectors) => connectWithContext(
   ({
     botAvatarInitials,
+    language,
     userAvatarInitials
   }) => ({
     botAvatarInitials,
+    language,
     userAvatarInitials
   }),
   ...selectors
@@ -82,11 +84,13 @@ export default connectStackedLayout(
     const showSendStatus = state === SENDING || state === SEND_FAILED;
 
     return (
-      <div className={ classNames(
-        ROOT_CSS + '',
-        styleSet.stackedLayout + '',
-        { 'from-user': fromUser }
-      ) }>
+      <div
+        className={ classNames(
+          ROOT_CSS + '',
+          styleSet.stackedLayout + '',
+          { 'from-user': fromUser }
+        ) }
+      >
         { !!initials &&
           <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
         }
@@ -94,10 +98,12 @@ export default connectStackedLayout(
           {
             activity.type === 'typing' ?
               <div className="row typing">
-                { children({
-                  activity,
-                  attachment: { contentType: 'typing' }
-                }) }
+                {
+                  children({
+                    activity,
+                    attachment: { contentType: 'typing' }
+                  })
+                }
                 <div className="filler" />
               </div>
             : !!activity.text &&
@@ -106,13 +112,15 @@ export default connectStackedLayout(
                   className="bubble"
                   fromUser={ fromUser }
                 >
-                  { children({
-                    activity,
-                    attachment: {
-                      contentType: textFormatToContentType(activity.textFormat),
-                      content: activity.text
-                    }
-                  }) }
+                  {
+                    children({
+                      activity,
+                      attachment: {
+                        contentType: textFormatToContentType(activity.textFormat),
+                        content: activity.text
+                      }
+                    })
+                  }
                 </Bubble>
                 <div className="filler" />
               </div>

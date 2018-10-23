@@ -36,10 +36,12 @@ const ROOT_CSS = css({
 const connectUploadAttachmentButton = (...selectors) => connectWithContext(
   ({
     disabled,
+    language,
     sendFiles
   }) => ({
     disabled,
-    onFileChange: ({ target: { files } }) => {
+    language,
+    sendFiles: files => {
       if (files && files.length) {
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
@@ -64,7 +66,7 @@ class UploadAttachmentButton extends React.Component {
   }
 
   handleFileChange(event) {
-    this.props.onFileChange(event);
+    this.props.sendFiles(event.target.files);
 
     const { current } = this.inputRef;
 

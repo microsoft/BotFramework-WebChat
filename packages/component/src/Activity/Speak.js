@@ -6,35 +6,39 @@ import connectWithContext from '../connectWithContext';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
-class SpeakActivity extends React.Component {
-  constructor(props) {
-    super(props);
+const connectSpeakActivity = (...selectors) => connectWithContext(
+  ({
+    language,
+    markActivity
+  }, {
+    activity
+  }) => ({
+    language,
+    markAsSpoken: () => {
+      markActivity(activity, 'speak', false)
+    },
+    selectVoice: voices => {
+      return (
+        [].find.call(voices, voice => voice.lang === activity.locale)
+        || [].find.call(voices, voice => voice.lang === language)
+        || [].find.call(voices, voice => voice.lang === window.navigator.language)
+        || [].find.call(voices, voice => voice.lang === 'en-US')
+        || voices[0]
+      );
+    }
+  }),
+  ...selectors
+);
 
-    this.handleEnd = this.handleEnd.bind(this);
-    this.selectVoice = this.selectVoice.bind(this);
-  }
-
-  handleEnd() {
-    const { props } = this;
-
-    props.markActivity(props.activity, 'speak', false);
-  }
-
-  selectVoice(voices) {
-    const { activity, language } = this.props;
-
-    return (
-      [].find.call(voices, voice => voice.lang === activity.locale)
-      || [].find.call(voices, voice => voice.lang === language)
-      || [].find.call(voices, voice => voice.lang === window.navigator.language)
-      || [].find.call(voices, voice => voice.lang === 'en-US')
-      || voices[0]
-    );
-  }
-
-  render() {
-    const { activity } = this.props;
-
+export default connectSpeakActivity(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    activity,
+    markAsSpoken,
+    selectVoice,
+    styleSet
+  }) => {
     if (!activity) {
       return false;
     }
@@ -66,30 +70,20 @@ class SpeakActivity extends React.Component {
     return (
       <React.Fragment>
         <Say
-          onEnd={ this.handleEnd }
+          onEnd={ markAsSpoken }
           speak={ lines.filter(line => line).join('\r\n') }
-          voice={ this.selectVoice }
+          voice={ selectVoice }
         />
         {
-          !!this.props.styleSet.options.showSpokenText &&
+          !!styleSet.options.showSpokenText &&
             <SayAlt
               speak={ lines.filter(line => line).join('\r\n') }
-              voice={ this.selectVoice }
+              voice={ selectVoice }
             />
         }
       </React.Fragment>
     );
   }
-}
+)
 
-export default connectWithContext(
-  ({
-    language,
-    markActivity,
-    styleSet
-  }) => ({
-    language,
-    markActivity,
-    styleSet
-  })
-)(SpeakActivity);
+export { connectSpeakActivity }

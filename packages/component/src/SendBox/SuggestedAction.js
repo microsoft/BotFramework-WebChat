@@ -13,13 +13,17 @@ const connectSuggestedAction = (...selectors) => connectWithContext(
   ({
     disabled,
     focusSendBox,
+    language,
     onCardAction
+  }, {
+    type, value
   }) => ({
-    disabled,
-    onClick: (type, value) => {
+    click: () => {
       onCardAction({ type, value });
       focusSendBox();
-    }
+    },
+    disabled,
+    language
   }),
   ...selectors
 )
@@ -29,16 +33,14 @@ export default connectSuggestedAction(
 )(
   ({
     disabled,
-    onClick,
+    click,
     styleSet,
-    text,
-    type,
-    value
+    text
   }) =>
     <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
       <button
         disabled={ disabled }
-        onClick={ onClick.bind(null, type, value) }
+        onClick={ click }
       >
         <nobr>{ text }</nobr>
       </button>

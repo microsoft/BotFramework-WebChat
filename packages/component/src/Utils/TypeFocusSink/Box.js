@@ -76,9 +76,6 @@ export default class Box extends React.Component {
   }
 }
 
-Box.defaultProps = {
-};
-
 Box.propTypes = {
   disabled: PropTypes.bool
 };

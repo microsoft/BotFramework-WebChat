@@ -4,9 +4,9 @@ import React from 'react';
 import Context from './Context';
 
 function combineSelectors(...selectors) {
-  return state => selectors.reduce((result, selector) => ({
+  return (...args) => selectors.reduce((result, selector) => ({
     ...result,
-    ...removeUndefinedValues((selector && selector(state)) || {})
+    ...removeUndefinedValues((selector && selector(...args)) || {})
   }), {});
 }
 
@@ -27,7 +27,7 @@ export default function (...selectors) {
 
   return Component => {
     const ConnectedComponent = connect(
-      (state, { context }) => combinedSelector({ ...state, ...context })
+      (state, { context, store, ...ownProps }) => combinedSelector({ ...state, ...context }, ownProps)
     )(Component);
 
     return props => (

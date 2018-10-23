@@ -64,9 +64,11 @@ const ROOT_CSS = css({
 const connectCarouselFilmStrip = (...selectors) => connectWithContext(
   ({
     botAvatarInitials,
+    language,
     userAvatarInitials
   }) => ({
     botAvatarInitials,
+    language,
     userAvatarInitials
   }),
   ...selectors

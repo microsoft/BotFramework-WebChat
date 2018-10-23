@@ -6,17 +6,30 @@ import connectWithContext from '../connectWithContext';
 import SuggestedAction from './SuggestedAction';
 
 const connectSuggestedActions = (...selectors) => connectWithContext(
-  ({ suggestedActions }) => ({ suggestedActions }),
+  ({
+    language,
+    suggestedActions
+  }) => ({
+    language,
+    suggestedActions
+  }),
   ...selectors
 )
 
 export default connectSuggestedActions(
   ({ styleSet }) => ({ styleSet })
-)(({ className, styleSet, suggestedActions }) =>
+)(({
+  className,
+  styleSet,
+  suggestedActions
+}) =>
   !!suggestedActions.length &&
     <BasicFilm
       autoCenter={ false }
-      className={ classNames(styleSet.suggestedActions + '', className) }
+      className={ classNames(
+        styleSet.suggestedActions + '',
+        className
+      ) }
       showDots={ false }
       styleSet={ styleSet.options.suggestedActionsStyleSet }
     >

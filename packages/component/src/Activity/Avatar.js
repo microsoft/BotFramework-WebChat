@@ -12,11 +12,13 @@ export default connectWithContext(
     fromUser,
     styleSet
   }) =>
-    <div className={ classNames(
-      styleSet.avatar + '',
-      { 'from-user': fromUser },
-      (className || '') + '')
-    }>
+    <div
+      className={ classNames(
+        styleSet.avatar + '',
+        { 'from-user': fromUser },
+        (className || '') + ''
+      ) }
+    >
       { children }
     </div>
 )

@@ -6,7 +6,10 @@ import TimeAgo from '../Utils/TimeAgo';
 export default connectWithContext(
   ({ styleSet }) => ({ styleSet })
 )(
-  ({ activity: { timestamp }, styleSet }) =>
+  ({
+    activity: { timestamp },
+    styleSet
+  }) =>
     <span className={ styleSet.timestamp }>
       <TimeAgo value={ timestamp } />
     </span>

@@ -5,13 +5,6 @@ import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
 import { AdaptiveCard } from 'adaptivecards';
 
-import {
-  IAdaptiveCard,
-  IOpenUrlAction,
-  IShowCardAction,
-  ISubmitAction
-} from 'adaptivecards/lib/schema';
-
 function stripSubmitAction(card) {
   if (!card.actions) {
     return card;

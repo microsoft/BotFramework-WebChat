@@ -18,18 +18,20 @@ const connectMicrophoneButton = (...selectors) => connectWithContext(
   ({
     disabled,
     dictateState,
+    language,
     startDictate,
     stopDictate
   }) => ({
-    dictating: dictateState === DictateState.DICTATING,
-    disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
-    onClick: () => {
+    click: () => {
       if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
         stopDictate();
       } else {
         startDictate();
       }
-    }
+    },
+    dictating: dictateState === DictateState.DICTATING,
+    disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
+    language
   }),
   ...selectors
 );
@@ -37,7 +39,13 @@ const connectMicrophoneButton = (...selectors) => connectWithContext(
 export default connectMicrophoneButton(
   ({ styleSet }) => ({ styleSet })
 )(
-  ({ className, dictating, disabled, onClick, styleSet }) =>
+  ({
+    className,
+    click,
+    dictating,
+    disabled,
+    styleSet
+  }) =>
     <div className={ classNames(
       styleSet.microphoneButton + '',
       ROOT_CSS + '',
@@ -46,7 +54,7 @@ export default connectMicrophoneButton(
     ) }>
       <IconButton
         disabled={ disabled }
-        onClick={ onClick }
+        onClick={ click }
       >
         <MicrophoneIcon />
       </IconButton>

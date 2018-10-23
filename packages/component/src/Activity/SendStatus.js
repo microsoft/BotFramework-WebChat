@@ -32,9 +32,11 @@ const connectSendStatus = (...selectors) => connectWithContext(
     focusSendBox,
     language,
     postActivity
+  }, {
+    activity
   }) => ({
     language,
-    onRetryClick: (activity, evt) => {
+    retrySend: evt => {
       evt.preventDefault();
 
       postActivity(activity);
@@ -51,35 +53,30 @@ export default connectSendStatus(
   ({ styleSet }) => ({ styleSet })
 )(
   ({
-    activity,
+    activity: { channelData: { state } = {} },
     language,
-    onRetryClick,
+    retrySend,
     styleSet
-  }) => {
-    const { channelData: { state } = {} } = activity;
-
-    return (
-      <span className={ styleSet.sendStatus }>
-        {
-          state === SENDING ?
-            <Localize text="Sending" />
-          : state === SEND_FAILED ?
-            sendFailed(
-              language,
-              retry =>
-                <button
-                  onClick={ onRetryClick.bind(null, activity) }
-                  type="button"
-                >
-                  { retry }
-                </button>
-            )
-          :
-            false
-        }
-      </span>
-    );
-  }
+  }) =>
+    <span className={ styleSet.sendStatus }>
+      {
+        state === SENDING ?
+          <Localize text="Sending" />
+        : state === SEND_FAILED ?
+          sendFailed(
+            language,
+            retry =>
+              <button
+                onClick={ retrySend }
+                type="button"
+              >
+                { retry }
+              </button>
+          )
+        :
+          false
+      }
+    </span>
 )
 
 export { connectSendStatus }

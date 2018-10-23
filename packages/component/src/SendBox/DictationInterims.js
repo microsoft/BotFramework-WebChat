@@ -22,10 +22,12 @@ const ROOT_CSS = css({
 const connectDictationInterims = (...selectors) => connectWithContext(
   ({
     dictateInterims,
-    dictateState
+    dictateState,
+    language
   }) => ({
     dictateInterims,
-    dictateState
+    dictateState,
+    language
   }),
   ...selectors
 )
@@ -36,7 +38,12 @@ const connectDictationInterims = (...selectors) => connectWithContext(
 export default connectDictationInterims(
   ({ styleSet }) => ({ styleSet })
 )(
-  ({ className, dictateInterims, dictateState, styleSet }) =>
+  ({
+    className,
+    dictateInterims,
+    dictateState,
+    styleSet
+  }) =>
     (dictateState === STARTING || dictateState === DICTATING) && (
       dictateInterims.length ?
         <p className={ classNames(

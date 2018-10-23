@@ -25,8 +25,6 @@ const connectSendTextBox = (...selectors) => connectWithContext(
   }) => ({
     disabled,
     language,
-    sendBoxValue,
-
     onChange: ({ target: { value } }) => {
       scrollToBottom();
       setSendBox(value, 'keyboard');
@@ -41,7 +39,8 @@ const connectSendTextBox = (...selectors) => connectWithContext(
         scrollToBottom();
         submitSendBox('keyboard');
       }
-    }
+    },
+    value: sendBoxValue
   }),
   ...selectors
 )
@@ -54,8 +53,8 @@ export default connectSendTextBox(
   language,
   onChange,
   onSubmit,
-  sendBoxValue,
-  styleSet
+  styleSet,
+  value
 }) =>
   <form
     className={ classNames(
@@ -74,7 +73,7 @@ export default connectSendTextBox(
             placeholder={ localize('Type your message', language) }
             ref={ sendFocusRef }
             type="text"
-            value={ sendBoxValue }
+            value={ value }
           />
         }
       </TypeFocusSinkContext.Consumer>
