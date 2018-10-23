@@ -1,4 +1,4 @@
-import { Composer, Context, createBasicStyleSet, Flipper } from 'react-film';
+import { Composer, Context: FilmContext, createBasicStyleSet, Flipper } from 'react-film';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
@@ -15,7 +15,7 @@ export default ({ activity, children, showTimestamp }) => {
 
   return (
     <Composer>
-      <Context.Consumer>
+      <FilmContext.Consumer>
         { ({ scrollBarWidth }) =>
           <div className={ classNames(ROOT_CSS + '', styleSet.carousel + '') }>
             <CarouselFilmStrip activity={ activity } showTimestamp={ showTimestamp }>
@@ -29,7 +29,7 @@ export default ({ activity, children, showTimestamp }) => {
             }
           </div>
         }
-      </Context.Consumer>
+      </FilmContext.Consumer>
     </Composer>
   );
 }

@@ -245,6 +245,7 @@ class Composer extends React.Component {
     const context = this.mergeContext(
       contextFromProps,
       state.hoistedDispatchers,
+
       // TODO: [P4] Should we normalize empties here? Or should we let it thru?
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
@@ -271,7 +272,7 @@ class Composer extends React.Component {
       <Context.Provider value={ context }>
         {
           typeof children === 'function' ?
-            <Context.Consumer>{ context => children(context) }</Context.Consumer>
+            children(context)
           :
             children
         }

@@ -23,18 +23,19 @@ function removeUndefinedValues(map) {
 }
 
 export default function (...selectors) {
-  return component => props =>
-    <Context.Consumer>
-      { context =>
-        React.createElement(
-          connect(
-            state => combineSelectors(...selectors)({ ...state, ...context })
-          )(component),
-          {
-            ...props,
-            store: context.store
-          }
-        )
-      }
-    </Context.Consumer>;
+  const combinedSelector = combineSelectors(...selectors);
+
+  return Component => {
+    const ConnectedComponent = connect(
+      (state, { context }) => combinedSelector({ ...state, ...context })
+    )(Component);
+
+    return props => (
+      <Context.Consumer>
+        {
+          context => <ConnectedComponent { ...props } context={ context } store={ context.store } />
+        }
+      </Context.Consumer>
+    );
+  };
 }
