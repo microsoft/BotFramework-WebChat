@@ -14,67 +14,43 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
-class MicrophoneButton extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    const {
-      props: {
-        dictateState,
-        onClick,
-        startDictate,
-        stopDictate
-      }
-    } = this;
-
-    if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
-      stopDictate();
-    } else {
-      startDictate();
-    }
-
-    onClick && onClick();
-  }
-
-  render() {
-    const {
-      props: { className, dictateState, disabled, styleSet }
-    } = this;
-
-    return (
-      <div className={ classNames(
-        styleSet.microphoneButton + '',
-        ROOT_CSS + '',
-        (className || '') + '',
-        { dictating: dictateState === DictateState.DICTATING }
-      ) }>
-        <IconButton
-          disabled={ disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING) }
-          onClick={ this.handleClick }
-        >
-          <MicrophoneIcon />
-        </IconButton>
-      </div>
-    );
-  }
-}
-
-export default connectWithContext(
+const connectMicrophoneButton = (...selectors) => connectWithContext(
   ({
     disabled,
     dictateState,
     startDictate,
-    stopDictate,
-    styleSet
+    stopDictate
   }) => ({
-    dictateState,
-    disabled,
-    startDictate,
-    stopDictate,
-    styleSet
-  })
-)(MicrophoneButton)
+    dictating: dictateState === DictateState.DICTATING,
+    disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
+    onClick: () => {
+      if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
+        stopDictate();
+      } else {
+        startDictate();
+      }
+    }
+  }),
+  ...selectors
+);
+
+export default connectMicrophoneButton(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({ className, dictating, disabled, onClick, styleSet }) =>
+    <div className={ classNames(
+      styleSet.microphoneButton + '',
+      ROOT_CSS + '',
+      (className || '') + '',
+      { dictating }
+    ) }>
+      <IconButton
+        disabled={ disabled }
+        onClick={ onClick }
+      >
+        <MicrophoneIcon />
+      </IconButton>
+    </div>
+)
+
+export { connectMicrophoneButton }

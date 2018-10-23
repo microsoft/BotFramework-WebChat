@@ -5,7 +5,14 @@ import React from 'react';
 import connectWithContext from '../connectWithContext';
 import SuggestedAction from './SuggestedAction';
 
-const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
+const connectSuggestedActions = (...selectors) => connectWithContext(
+  ({ suggestedActions }) => ({ suggestedActions }),
+  ...selectors
+)
+
+export default connectSuggestedActions(
+  ({ styleSet }) => ({ styleSet })
+)(({ className, styleSet, suggestedActions }) =>
   !!suggestedActions.length &&
     <BasicFilm
       autoCenter={ false }
@@ -24,13 +31,6 @@ const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
         )
       }
     </BasicFilm>
+)
 
-export default connectWithContext(
-  ({
-    styleSet,
-    suggestedActions
-  }) => ({
-    styleSet,
-    suggestedActions
-  })
-)(SuggestedActions)
+export { connectSuggestedActions }

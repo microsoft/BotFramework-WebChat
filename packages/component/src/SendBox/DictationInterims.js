@@ -19,44 +19,49 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
+const connectDictationInterims = (...selectors) => connectWithContext(
+  ({
+    dictateInterims,
+    dictateState
+  }) => ({
+    dictateInterims,
+    dictateState
+  }),
+  ...selectors
+)
+
 // TODO: [P3] After speech started, when clicking on the transcript, it should
 //       stop the dictation and allow the user to type-correct the transcript
 
-const DictationInterims = ({ className, dictateInterims, dictateState, styleSet }) =>
-  (dictateState === STARTING || dictateState === DICTATING) && (
-    dictateInterims.length ?
-      <p className={ classNames(
-        styleSet.dictationInterims + '',
-        ROOT_CSS + '',
-        (className || '') + '',
-        'dictating'
-      ) }>
-        { dictateInterims.map((interim, index) => <span key={ index }>{ interim }&nbsp;</span>) }
-      </p>
-    :
-      <p className={ classNames(
-        styleSet.dictationInterims + '',
-        ROOT_CSS + '',
-        (className || '') + '',
-        'status'
-      ) }>
-        {
-          dictateState === STARTING ?
-            <Localize text="Starting&hellip;" />
-          :
-            <Localize text="Listening&hellip;" />
-        }
-      </p>
-  )
+export default connectDictationInterims(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({ className, dictateInterims, dictateState, styleSet }) =>
+    (dictateState === STARTING || dictateState === DICTATING) && (
+      dictateInterims.length ?
+        <p className={ classNames(
+          styleSet.dictationInterims + '',
+          ROOT_CSS + '',
+          (className || '') + '',
+          'dictating'
+        ) }>
+          { dictateInterims.map((interim, index) => <span key={ index }>{ interim }&nbsp;</span>) }
+        </p>
+      :
+        <p className={ classNames(
+          styleSet.dictationInterims + '',
+          ROOT_CSS + '',
+          (className || '') + '',
+          'status'
+        ) }>
+          {
+            dictateState === STARTING ?
+              <Localize text="Starting&hellip;" />
+            :
+              <Localize text="Listening&hellip;" />
+          }
+        </p>
+    )
+)
 
-export default connectWithContext(
-  ({
-    dictateInterims,
-    dictateState,
-    styleSet
-  }) => ({
-    dictateInterims,
-    dictateState,
-    styleSet
-  })
-)(DictationInterims)
+export { connectDictationInterims }
