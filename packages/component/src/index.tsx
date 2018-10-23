@@ -1,5 +1,7 @@
 import BasicWebChat from './BasicWebChat';
 
+import Composer from './Composer';
+
 import Avatar from './Activity2/Avatar';
 import Bubble from './Activity2/Bubble';
 import CarouselLayout from './Activity2/CarouselLayout';
@@ -24,6 +26,8 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createStyleSet from './Styles/createStyleSet';
 
 const Components = {
+  Composer,
+
   // Components for recomposing transcript
   Avatar,
   Bubble,

@@ -282,9 +282,9 @@ class Composer extends React.Component {
 }
 
 Composer.propTypes = {
-  activityRenderer: PropTypes.func.isRequired,
+  activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
-  attachmentRenderer: PropTypes.func.isRequired,
+  attachmentRenderer: PropTypes.func,
   botAvatarInitials: PropTypes.string,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
