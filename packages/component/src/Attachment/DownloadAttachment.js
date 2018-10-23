@@ -33,5 +33,5 @@ export default connectWithContext(
         </a>
       </div>
     );
-  })
+  }
 )
