@@ -1,7 +1,7 @@
 import React from 'react';
 
-import CarouselLayout from '../../Activity2/CarouselLayout';
-import StackedLayout from '../../Activity2/StackedLayout';
+import CarouselLayout from '../../Activity/CarouselLayout';
+import StackedLayout from '../../Activity/StackedLayout';
 
 const RETURN_FALSE = () => false;
 

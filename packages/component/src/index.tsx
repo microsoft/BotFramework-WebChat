@@ -2,14 +2,14 @@ import BasicWebChat from './BasicWebChat';
 
 import Composer from './Composer';
 
-import Avatar from './Activity2/Avatar';
-import Bubble from './Activity2/Bubble';
-import CarouselLayout from './Activity2/CarouselLayout';
+import Avatar from './Activity/Avatar';
+import Bubble from './Activity/Bubble';
+import CarouselLayout from './Activity/CarouselLayout';
 import ErrorBox from './ErrorBox';
-import SendStatus from './Activity2/SendStatus';
-import SpeakActivity from './Activity2/Speak';
-import StackedLayout from './Activity2/StackedLayout';
-import Timestamp from './Activity2/Timestamp';
+import SendStatus from './Activity/SendStatus';
+import SpeakActivity from './Activity/Speak';
+import StackedLayout from './Activity/StackedLayout';
+import Timestamp from './Activity/Timestamp';
 
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
