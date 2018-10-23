@@ -112,8 +112,6 @@ export default class extends React.Component {
         attachmentRenderer={ state.attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
-        // We override store from props: if it was not passed in, we will create-and-cache it automatically
-        store={ props.store || this.createMemoizedStore() }
       >
         { ({ styleSet }) =>
           <TypeFocusSinkBox

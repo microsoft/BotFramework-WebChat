@@ -6,6 +6,7 @@ import React from 'react';
 
 import {
   connect as createConnectAction,
+  createStore,
   disconnect,
   markActivity,
   postActivity,
@@ -282,7 +283,37 @@ class Composer extends React.Component {
   }
 }
 
-Composer.propTypes = {
+const ConnectedComposer = connect(
+  ({ referenceGrammarID }) => ({ referenceGrammarID })
+)(props => <Composer { ...props } />);
+
+// We will create a Redux store if it was not passed in
+class ConnectedComposerWithStore extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.createMemoizedStore = memoize(() => createStore());
+  }
+
+  render() {
+    const { props } = this;
+
+    return (
+      <ConnectedComposer
+        { ...props }
+        store={ props.store || this.createMemoizedStore() }
+      />
+    );
+  }
+}
+
+export default ConnectedComposerWithStore
+
+// TODO: [P3] We should consider moving some props to Redux store
+//       Although we use `connectWithContext` to hide the details of accessor of Redux store,
+//       we should clean up the responsibility between Context and Redux store
+//       We should decide which data is needed for React but not in other environment such as CLI/VSCode
+ConnectedComposerWithStore.propTypes = {
   activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
@@ -294,6 +325,7 @@ Composer.propTypes = {
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
   sendTyping: PropTypes.bool,
+  store: PropTypes.any,
   userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func

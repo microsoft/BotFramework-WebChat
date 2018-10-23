@@ -37,7 +37,6 @@ export default class App extends Component {
       !!directLine &&
         <Composer
           directLine={ directLine }
-          storeKey="webchat"
         >
           <div className="App">
             <header className="App-header">

@@ -4,16 +4,8 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import { createProvider } from 'react-redux';
-import { createStore } from 'botframework-webchat';
-
-const WebChatProvider = createProvider('webchat');
-const store = createStore();
-
 ReactDOM.render(
-  <WebChatProvider store={ store }>
-    <App />
-  </WebChatProvider>,
+  <App />,
   document.getElementById('root')
 );
 
