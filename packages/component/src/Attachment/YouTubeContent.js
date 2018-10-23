@@ -1,23 +1,29 @@
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 
-export default ({ alt, autoPlay, embedID, loop }) => {
-  const search = new URLSearchParams({
-    autoplay: autoPlay ? 1 : 0,
-    loop: loop ? 1 : 0,
-    modestbranding: 1
-  }).toString();
+export default connectWithContext(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    alt,
+    autoPlay,
+    embedID,
+    loop,
+    styleSet
+  }) => {
+    const search = new URLSearchParams({
+      autoplay: autoPlay ? 1 : 0,
+      loop: loop ? 1 : 0,
+      modestbranding: 1
+    }).toString();
 
-  return (
-    <Context.Consumer>
-      { ({ styleSet }) =>
-        <iframe
-          aria-label={ alt }
-          className={ styleSet.youTubeContent }
-          src={ `https://youtube.com/embed/${ embedID }?${ search }` }
-        />
-      }
-    </Context.Consumer>
-  );
-}
+    return (
+      <iframe
+        aria-label={ alt }
+        className={ styleSet.youTubeContent }
+        src={ `https://youtube.com/embed/${ embedID }?${ search }` }
+      />
+    );
+  }
+)

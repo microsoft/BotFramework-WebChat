@@ -2,22 +2,22 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 
 const ROOT_CSS = css({});
 
-export default ({ children, className, fromUser }) =>
-  <Context.Consumer>
-    { ({ styleSet }) =>
-      <div
-        className={ classNames(
-          ROOT_CSS + '',
-          styleSet.bubble + '',
-          { 'from-user': fromUser },
-          (className || '') + ''
-        ) }
-      >
-        { children }
-      </div>
-    }
-  </Context.Consumer>
+export default connectWithContext(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({ children, className, fromUser, styleSet }) =>
+    <div
+      className={ classNames(
+        ROOT_CSS + '',
+        styleSet.bubble + '',
+        { 'from-user': fromUser },
+        (className || '') + ''
+      ) }
+    >
+      { children }
+    </div>
+)

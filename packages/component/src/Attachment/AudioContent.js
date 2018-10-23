@@ -1,17 +1,23 @@
 import React from 'react';
 
-import Context from '../Context';
+import connectWithContext from '../connectWithContext';
 
-export default props =>
-  <Context.Consumer>
-    { ({ styleSet }) =>
-      <audio
-        autoPlay={ props.autoPlay }
-        className={ styleSet.audioContent }
-        controls={ true }
-        loop={ props.loop }
-        poster={ props.poster }
-        src={ props.src }
-      />
-    }
-  </Context.Consumer>
+export default connectWithContext(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    autoPlay,
+    loop,
+    poster,
+    src,
+    styleSet
+  }) =>
+    <audio
+      autoPlay={ autoPlay }
+      className={ styleSet.audioContent }
+      controls={ true }
+      loop={ loop }
+      poster={ poster }
+      src={ src }
+    />
+)

@@ -10,6 +10,7 @@ import Context from '../Context';
 import SendStatus from './SendStatus';
 import Timestamp from './Timestamp';
 
+import connectWithContext from '../connectWithContext';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
 const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
@@ -53,99 +54,98 @@ const ROOT_CSS = css({
   }
 });
 
-const StackedLayout = ({
-  activity,
-  botAvatarInitials,
-  children,
-  showTimestamp,
-  styleSet,
-  userAvatarInitials,
-}) => {
-  const fromUser = activity.from.role === 'user';
-  const initials = fromUser ? userAvatarInitials : botAvatarInitials;
-  const { state } = activity.channelData || {};
-  const showSendStatus = state === SENDING || state === SEND_FAILED;
+const connectStackedLayout = (...selectors) => connectWithContext(
+  ({
+    botAvatarInitials,
+    userAvatarInitials
+  }) => ({
+    botAvatarInitials,
+    userAvatarInitials
+  }),
+  ...selectors
+);
 
-  return (
-    <div className={ classNames(
-      ROOT_CSS + '',
-      styleSet.stackedLayout + '',
-      { 'from-user': fromUser }
-    ) }>
-      { !!initials &&
-        <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
-      }
-      <div className="content">
-        {
-          activity.type === 'typing' ?
-            <div className="row typing">
-              { children({
-                activity,
-                attachment: { contentType: 'typing' }
-              }) }
-              <div className="filler" />
-            </div>
-          : !!activity.text &&
-            <div className="row message">
-              <Bubble
-                className="bubble"
-                fromUser={ fromUser }
-              >
+export default connectStackedLayout(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    activity,
+    botAvatarInitials,
+    children,
+    showTimestamp,
+    styleSet,
+    userAvatarInitials
+  }) => {
+    const fromUser = activity.from.role === 'user';
+    const initials = fromUser ? userAvatarInitials : botAvatarInitials;
+    const { state } = activity.channelData || {};
+    const showSendStatus = state === SENDING || state === SEND_FAILED;
+
+    return (
+      <div className={ classNames(
+        ROOT_CSS + '',
+        styleSet.stackedLayout + '',
+        { 'from-user': fromUser }
+      ) }>
+        { !!initials &&
+          <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
+        }
+        <div className="content">
+          {
+            activity.type === 'typing' ?
+              <div className="row typing">
                 { children({
                   activity,
-                  attachment: {
-                    contentType: textFormatToContentType(activity.textFormat),
-                    content: activity.text
-                  }
+                  attachment: { contentType: 'typing' }
                 }) }
-              </Bubble>
-              <div className="filler" />
-            </div>
-        }
-        {
-          (activity.attachments || []).map((attachment, index) =>
-            <div className="row attachment" key={ index }>
-              <Bubble
-                className="attachment bubble"
-                fromUser={ fromUser }
-                key={ index }
-              >
-                { children({ attachment }) }
-              </Bubble>
-            </div>
-          )
-        }
-        {
-          (showSendStatus || showTimestamp) &&
-            <div className="row">
-              { showSendStatus ?
-                  <SendStatus activity={ activity } className="timestamp" />
-                :
-                  <Timestamp activity={ activity } className="timestamp" />
-              }
-              <div className="filler" />
-            </div>
-        }
+                <div className="filler" />
+              </div>
+            : !!activity.text &&
+              <div className="row message">
+                <Bubble
+                  className="bubble"
+                  fromUser={ fromUser }
+                >
+                  { children({
+                    activity,
+                    attachment: {
+                      contentType: textFormatToContentType(activity.textFormat),
+                      content: activity.text
+                    }
+                  }) }
+                </Bubble>
+                <div className="filler" />
+              </div>
+          }
+          {
+            (activity.attachments || []).map((attachment, index) =>
+              <div className="row attachment" key={ index }>
+                <Bubble
+                  className="attachment bubble"
+                  fromUser={ fromUser }
+                  key={ index }
+                >
+                  { children({ attachment }) }
+                </Bubble>
+              </div>
+            )
+          }
+          {
+            (showSendStatus || showTimestamp) &&
+              <div className="row">
+                { showSendStatus ?
+                    <SendStatus activity={ activity } className="timestamp" />
+                  :
+                    <Timestamp activity={ activity } className="timestamp" />
+                }
+                <div className="filler" />
+              </div>
+          }
+        </div>
+        <div className="filler" />
       </div>
-      <div className="filler" />
-    </div>
-  );
-}
+    );
+  }
+)
 
-export default ({ children, ...props }) =>
-  <Context.Consumer>
-    { ({
-        botAvatarInitials,
-        styleSet,
-        userAvatarInitials
-      }) =>
-      <StackedLayout
-        { ...props }
-        botAvatarInitials={ botAvatarInitials }
-        styleSet={ styleSet }
-        userAvatarInitials={ userAvatarInitials }
-      >
-        { children }
-      </StackedLayout>
-    }
-  </Context.Consumer>
+export { connectStackedLayout }

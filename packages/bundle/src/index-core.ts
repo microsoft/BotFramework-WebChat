@@ -2,6 +2,8 @@ import { createStore } from 'botframework-webchat-core';
 import ReactWebChat, {
   Components,
   concatMiddleware,
+  connectWithContext,
+  // TODO: [P2] Remove Context
   Context,
   createStyleSet
 } from 'botframework-webchat-component';
@@ -17,6 +19,7 @@ export default ReactWebChat
 export {
   Components,
   concatMiddleware,
+  connectWithContext,
   Context,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
@@ -28,6 +31,7 @@ export {
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,
+  connectWithContext,
   Context,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,

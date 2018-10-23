@@ -1,13 +1,17 @@
 import React from 'react';
 
-import Context from './Context';
+import connectWithContext from './connectWithContext';
 
-export default ({ children, message }) =>
-  <Context.Consumer>
-    { ({ styleSet }) =>
-      <div className={ styleSet.errorBox }>
-        <div>{ message }</div>
-        <div>{ children }</div>
-      </div>
-    }
-  </Context.Consumer>
+export default connectWithContext(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    children,
+    message,
+    styleSet
+  }) =>
+    <div className={ styleSet.errorBox }>
+      <div>{ message }</div>
+      <div>{ children }</div>
+    </div>
+)

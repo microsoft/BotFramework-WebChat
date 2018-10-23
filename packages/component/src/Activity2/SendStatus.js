@@ -27,29 +27,36 @@ function sendFailed(language, replace) {
   }
 }
 
-class SendStatus extends React.Component {
-  constructor(props) {
-    super(props);
+const connectSendStatus = (...selectors) => connectWithContext(
+  ({
+    focusSendBox,
+    language,
+    postActivity
+  }) => ({
+    language,
+    onRetryClick: (activity, evt) => {
+      evt.preventDefault();
 
-    this.handleRetryClick = this.handleRetryClick.bind(this);
-  }
+      postActivity(activity);
 
-  handleRetryClick(evt) {
-    evt.preventDefault();
+      // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
+      // We want to make sure the user stay inside Web Chat
+      focusSendBox();
+    }
+  }),
+  ...selectors
+)
 
-    this.props.postActivity(this.props.activity);
-
-    // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
-    // We want to make sure the user stay inside Web Chat
-    this.props.focusSendBox();
-  }
-
-  render() {
-    const {
-      activity: { channelData: { state } = {} },
-      language,
-      styleSet
-    } = this.props;
+export default connectSendStatus(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    activity,
+    language,
+    onRetryClick,
+    styleSet
+  }) => {
+    const { channelData: { state } = {} } = activity;
 
     return (
       <span className={ styleSet.sendStatus }>
@@ -57,25 +64,22 @@ class SendStatus extends React.Component {
           state === SENDING ?
             <Localize text="Sending" />
           : state === SEND_FAILED ?
-            sendFailed(language, retry => <button onClick={ this.handleRetryClick } type="button">{ retry }</button>)
+            sendFailed(
+              language,
+              retry =>
+                <button
+                  onClick={ onRetryClick.bind(null, activity) }
+                  type="button"
+                >
+                  { retry }
+                </button>
+            )
           :
             false
         }
       </span>
     );
   }
-}
+)
 
-export default connectWithContext(
-  ({
-    focusSendBox,
-    language,
-    postActivity,
-    styleSet
-  }) => ({
-    focusSendBox,
-    language,
-    postActivity,
-    styleSet
-  }),
-)(SendStatus)
+export { connectSendStatus }

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import {
-  Context
+  connectWithContext
 } from 'botframework-webchat';
 
 const ROOT_CSS = css({
@@ -84,19 +84,27 @@ class SpeakActivity extends React.Component {
   }
 }
 
+const ConnectedDevModeDecorator = connectWithContext(
+  ({ markActivity, webSpeechPonyfill = {} }) => ({ markActivity, webSpeechPonyfill })
+)(
+  ({
+    card,
+    children,
+    markActivity,
+    webSpeechPonyfill
+  }) =>
+    webSpeechPonyfill.speechSynthesis ?
+      <SpeakActivity activity={ card.activity } markActivity={ markActivity }>
+        { children }
+      </SpeakActivity>
+    :
+      children
+)
+
 export default function () {
   return () => next => card => {
     return (children =>
-      <Context.Consumer>
-        { ({ markActivity, webSpeechPonyfill = {} }) =>
-          webSpeechPonyfill.speechSynthesis ?
-            <SpeakActivity activity={ card.activity } markActivity={ markActivity }>
-              { next(card)(children) }
-            </SpeakActivity>
-          :
-            next(card)(children)
-        }
-      </Context.Consumer>
+      <ConnectedDevModeDecorator card={ card }>{ next(card)(children) }</ConnectedDevModeDecorator>
     );
   };
 }
