@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import BasicSendBox from './SendBox/BasicSendBox';
-import BasicTranscript from './Transcript/BasicTranscript';
+import BasicSendBox from './BasicSendBox';
+import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';

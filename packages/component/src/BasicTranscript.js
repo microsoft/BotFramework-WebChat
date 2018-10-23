@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import connectWithContext from '../connectWithContext';
-import SpeakActivity from '../Activity2/Speak';
+import connectWithContext from './connectWithContext';
+import SpeakActivity from './Activity2/Speak';
 
 const ROOT_CSS = css({
   display: 'flex',

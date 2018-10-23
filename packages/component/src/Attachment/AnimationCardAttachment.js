@@ -6,7 +6,6 @@ import CommonCard from './CommonCard';
 import connectWithContext from '../connectWithContext';
 import ImageContent from './ImageContent';
 import VideoContent from './VideoContent';
-import connectWithContext from '../connectWithContext';
 
 class AnimationCardAttachment extends React.Component {
   constructor(props) {
