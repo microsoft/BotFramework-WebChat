@@ -2,6 +2,6 @@
 
 A simple React web site that use 3 pieces of custom UIs:
 
-- Microphone button: a <button> to start/stop microphone input
-- Dictation interims: a <p> to show dictation interims
-- Last bot activity: a new component which show the last message activity from bot
+- [Microphone button](src/CustomMicrophoneButton.js): a <button> to start/stop microphone input
+- [Dictation interims](src/CustomDictationInterims.js): a <p> to show dictation interims
+- [Last bot activity](src/LastBotActivity.js): a new component which show the last message activity from bot
