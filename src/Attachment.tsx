@@ -1,10 +1,9 @@
-import { HorizontalAlignment, IAdaptiveCard, TextSize, TextWeight } from 'adaptivecards';
+import { ColumnWidth, HorizontalAlignment, IAdaptiveCard, SizeAndUnit, SizeUnit, TextSize, TextWeight } from 'adaptivecards';
 import { Attachment, CardAction, CardImage, KnownMedia, UnknownMedia } from 'botframework-directlinejs';
 import * as React from 'react';
 import { default as AdaptiveCardContainer } from './AdaptiveCardContainer';
 import * as CardBuilder from './CardBuilder';
-import { IDoCardAction, renderIfNonempty } from './Chat';
-import * as konsole from './Konsole';
+import { IDoCardAction } from './Chat';
 import { FormatState } from './Store';
 
 const regExpCard = /\^application\/vnd\.microsoft\.card\./i;
@@ -15,6 +14,10 @@ const YOUTUBE_SHORT_DOMAIN = 'youtu.be';
 const YOUTUBE_WWW_SHORT_DOMAIN = 'www.youtu.be';
 const VIMEO_DOMAIN = 'vimeo.com';
 const VIMEO_WWW_DOMAIN = 'www.vimeo.com';
+
+function pixelsToColumnWidths(...pixels: number[]): ColumnWidth[] {
+    return pixels.map(pixel => new SizeAndUnit(pixel, SizeUnit.Pixel));
+}
 
 export interface QueryParams {
     [propName: string]: string;
@@ -276,7 +279,7 @@ export const AttachmentView = (props: {
             const thumbnailCardBuilder = new CardBuilder.AdaptiveCardBuilder();
 
             if (attachment.content.images && attachment.content.images.length > 0) {
-                const columns = thumbnailCardBuilder.addColumnSet([75, 25]);
+                const columns = thumbnailCardBuilder.addColumnSet(pixelsToColumnWidths(75, 25));
 
                 thumbnailCardBuilder.addTextBlock(attachment.content.title, { size: TextSize.Medium, weight: TextWeight.Bolder }, columns[0]);
                 thumbnailCardBuilder.addTextBlock(attachment.content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
@@ -383,7 +386,7 @@ export const AttachmentView = (props: {
 
             receiptCardBuilder.addTextBlock(attachment.content.title, { size: TextSize.Medium, weight: TextWeight.Bolder });
 
-            const columns = receiptCardBuilder.addColumnSet([75, 25]);
+            const columns = receiptCardBuilder.addColumnSet(pixelsToColumnWidths(75, 25));
 
             // tslint:disable-next-line:no-unused-expression
             attachment.content.facts && attachment.content.facts.map((fact, i) => {
@@ -394,13 +397,13 @@ export const AttachmentView = (props: {
             // tslint:disable-next-line:no-unused-expression
             attachment.content.items && attachment.content.items.map((item, i) => {
                 if (item.image) {
-                    const columns2 = receiptCardBuilder.addColumnSet([15, 75, 10]);
+                    const columns2 = receiptCardBuilder.addColumnSet(pixelsToColumnWidths(15, 75, 10));
                     receiptCardBuilder.addImage(item.image.url, columns2[0], item.image.tap);
                     receiptCardBuilder.addTextBlock(item.title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { size: TextSize.Medium, wrap: true }, columns2[1]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: HorizontalAlignment.Right }, columns2[2]);
                 } else {
-                    const columns3 = receiptCardBuilder.addColumnSet([75, 25]);
+                    const columns3 = receiptCardBuilder.addColumnSet(pixelsToColumnWidths(75, 25));
                     receiptCardBuilder.addTextBlock(item.title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, columns3[0]);
                     receiptCardBuilder.addTextBlock(item.subtitle, { size: TextSize.Medium, wrap: true }, columns3[0]);
                     receiptCardBuilder.addTextBlock(item.price, { horizontalAlignment: HorizontalAlignment.Right }, columns3[1]);
@@ -408,21 +411,21 @@ export const AttachmentView = (props: {
             });
 
             if (exists(attachment.content.vat)) {
-                const vatCol = receiptCardBuilder.addColumnSet([75, 25]);
+                const vatCol = receiptCardBuilder.addColumnSet(pixelsToColumnWidths(75, 25));
 
                 receiptCardBuilder.addTextBlock(props.format.strings.receiptVat, { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
                 receiptCardBuilder.addTextBlock(attachment.content.vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
             }
 
             if (exists(attachment.content.tax)) {
-                const taxCol = receiptCardBuilder.addColumnSet([75, 25]);
+                const taxCol = receiptCardBuilder.addColumnSet(pixelsToColumnWidths(75, 25));
 
                 receiptCardBuilder.addTextBlock(props.format.strings.receiptTax, { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
                 receiptCardBuilder.addTextBlock(attachment.content.tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
             }
 
             if (exists(attachment.content.total)) {
-                const totalCol = receiptCardBuilder.addColumnSet([75, 25]);
+                const totalCol = receiptCardBuilder.addColumnSet(pixelsToColumnWidths(75, 25));
 
                 receiptCardBuilder.addTextBlock(props.format.strings.receiptTotal, { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
                 receiptCardBuilder.addTextBlock(attachment.content.total, { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[1]);

@@ -1,5 +1,20 @@
-import { AdaptiveCard, CardElement, Column, ColumnSet, Container, Image, OpenUrlAction, Size, SubmitAction, TextBlock, TextSize, TextWeight } from 'adaptivecards';
-import { Attachment, CardAction, CardImage, HeroCard, Thumbnail } from 'botframework-directlinejs';
+import {
+    AdaptiveCard,
+    CardElement,
+    Column,
+    ColumnSet,
+    ColumnWidth,
+    Container,
+    Image,
+    OpenUrlAction,
+    Size,
+    SubmitAction,
+    TextBlock,
+    TextSize,
+    TextWeight
+} from 'adaptivecards';
+
+import { CardAction } from 'botframework-directlinejs';
 import { BotFrameworkCardAction } from './AdaptiveCardContainer';
 
 export class AdaptiveCardBuilder {
@@ -13,7 +28,7 @@ export class AdaptiveCardBuilder {
         this.card.addItem(this.container);
     }
 
-    addColumnSet(sizes: number[], container?: Container) {
+    addColumnSet(sizes: ColumnWidth[], container?: Container) {
         container = container || this.container;
         const columnSet = new ColumnSet();
         container.addItem(columnSet);
