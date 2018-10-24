@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Revert [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166) and fix tests, by [@corinagum](https://github.com/corinagum) in PR [#1215](https://github.com/Microsoft/BotFramework-WebChat/pull/1215)
 
 ### Changed
-- Bump `adaptivecards` to `1.1.0` in [#XXXXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXXXX)
+- Bump `adaptivecards` to `1.1.0` in [#1231](https://github.com/Microsoft/BotFramework-WebChat/pull/1231)
 - Bump `botframework-directlinejs` to `0.9.17` in PR [#1131](https://github.com/Microsoft/BotFramework-WebChat/pull/1131)
 - Fix `historyRef` cannot be focused because it is unmounted in Emulator, in PR [#1157](https://github.com/Microsoft/BotFramework-WebChat/pull/1157)
 - Fix for Chatdown that activities sent by the user are not displayed, in PR [#1162](https://github.com/Microsoft/BotFramework-WebChat/pull/1162)
