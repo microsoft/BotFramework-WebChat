@@ -4,7 +4,6 @@ import { START_CONNECTION } from '../src/actions/startConnection';
 import createStore from '../src/createStore';
 
 const DEFAULT_USER_ID = 'default-user';
-const DEFAULT_USERNAME = 'John Doe';
 
 jest.mock('../src/util/getTimestamp', () => {
   let now = 946684800000; // '2000-01-01T00:00:00.000Z'
@@ -48,8 +47,7 @@ export default async function ({
       type: START_CONNECTION,
       payload: {
         directLine,
-        userID: DEFAULT_USER_ID,
-        username: DEFAULT_USERNAME
+        userID: DEFAULT_USER_ID
       }
     });
 

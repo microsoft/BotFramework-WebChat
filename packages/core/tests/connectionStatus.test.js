@@ -11,8 +11,7 @@ test('Connection status', async () => {
     type: START_CONNECTION,
     payload: {
       directLine,
-      userID: 'default-user',
-      username: 'WC'
+      userID: 'default-user'
     }
   });
 

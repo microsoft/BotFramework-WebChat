@@ -86,8 +86,7 @@ function main() {
       },
       webSocket: false
     }),
-    userID: 'default-user',
-    username: 'User-1'
+    userID: 'default-user'
   }));
 
   rl.on('line', line => {

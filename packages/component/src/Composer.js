@@ -35,9 +35,6 @@ import shallowEquals from './Utils/shallowEquals';
 const EMPTY_ARRAY = [];
 const NULL_FUNCTION = () => ({});
 
-const DEFAULT_USER_ID = 'default-user';
-const DEFAULT_USERNAME = 'user';
-
 const DISPATCHERS = {
   markActivity,
   postActivity,
@@ -179,17 +176,17 @@ class Composer extends React.Component {
 
   componentWillMount() {
     const { props } = this;
-    const { directLine, userID, username } = props;
+    const { directLine, userID } = props;
 
     this.setLanguageFromProps(props);
     this.setSendTypingFromProps(props);
 
-    props.dispatch(createConnectAction({ directLine, userID, username }));
+    props.dispatch(createConnectAction({ directLine, userID }));
   }
 
   componentDidUpdate(prevProps) {
     const { props } = this;
-    const { directLine, locale, sendTyping, userID, username } = props;
+    const { directLine, locale, sendTyping, userID } = props;
 
     if (prevProps.locale !== locale) {
       this.setLanguageFromProps(props);
@@ -202,11 +199,10 @@ class Composer extends React.Component {
     if (
       prevProps.directLine !== directLine
       || prevProps.userID !== userID
-      || prevProps.username !== username
     ) {
       // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
       props.dispatch(disconnect());
-      props.dispatch(createConnectAction({ directLine, userID, username }));
+      props.dispatch(createConnectAction({ directLine, userID }));
     }
   }
 
@@ -297,11 +293,6 @@ Composer.propTypes = {
   userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
-};
-
-Composer.defaultProps = {
-  userID: DEFAULT_USER_ID,
-  username: DEFAULT_USERNAME
 };
 
 // TODO: [P3] Should we hide the knowledge of Redux?

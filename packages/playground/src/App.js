@@ -57,8 +57,8 @@ export default class extends React.Component {
     super(props);
 
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
-    this.handleGroupTimestampChange = this.handleGroupTimestampChange.bind(this);
     this.handleDisabledChange = this.handleDisabledChange.bind(this);
+    this.handleGroupTimestampChange = this.handleGroupTimestampChange.bind(this);
     this.handleHideSendBoxChange = this.handleHideSendBoxChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
@@ -77,7 +77,7 @@ export default class extends React.Component {
     const directLineToken = params.get('t');
     const domain = params.get('domain');
     const speech = params.get('speech');
-    const userID = params.get('u') || 'default-user';
+    const userID = params.get('u');
     const webSocket = params.get('websocket');
 
     if (speech === 'cs') {
@@ -161,7 +161,7 @@ export default class extends React.Component {
 
   handleUseEmulatorCoreClick() {
     window.sessionStorage.removeItem('REDUX_STORE');
-    window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0';
+    window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0&u=default-user';
   }
 
   handleUserAvatarInitialsChange({ target: { value } }) {
@@ -176,15 +176,13 @@ export default class extends React.Component {
         throw new Error(`Server returned ${ directLineTokenRes.status } while requesting for Direct Line token`);
       }
 
-      // TODO: [P4] We should use JWT to get user ID so it don't introduce inconsistencies
-      const { userID, token } = await directLineTokenRes.json();
+      const { token } = await directLineTokenRes.json();
 
       window.sessionStorage.removeItem('REDUX_STORE');
       window.location.href = '/?' + new URLSearchParams({
         speech: 'cs',
         websocket: 'true',
-        t: token,
-        u: userID || ''
+        t: token
       }).toString();
     } catch (err) {
       console.log(err);
@@ -217,7 +215,6 @@ export default class extends React.Component {
           styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
           userID={ state.userID }
-          username="User 1"
           webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
         />
         <div className="button-bar">
