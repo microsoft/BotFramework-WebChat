@@ -2,16 +2,23 @@ import React from 'react';
 
 import Context from '../Context';
 
-export default props =>
+export default ({
+  alt,
+  autoPlay,
+  loop,
+  poster,
+  src
+}) =>
   <Context.Consumer>
     { ({ styleSet }) =>
       <video
-        autoPlay={ props.autoPlay }
+        aria-label={ alt }
+        autoPlay={ autoPlay }
         className={ styleSet.videoContent }
         controls={ true }
-        loop={ props.loop }
-        poster={ props.poster }
-        src={ props.src }
+        loop={ loop }
+        poster={ poster }
+        src={ src }
       />
     }
   </Context.Consumer>
