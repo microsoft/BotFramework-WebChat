@@ -32,7 +32,7 @@ export default class Bubble extends React.Component {
       <div
         aria-label={ props.alt }
         className={ classNames(ROOT_CSS + '', (props.className || '') + '') }
-        role="image"
+        role="img"
         style={ headerImageStyle }
       />
     );
