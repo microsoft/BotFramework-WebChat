@@ -29,8 +29,7 @@ function parseURL(url) {
   return { hostname, pathname, search };
 }
 
-export default props => {
-  const { autoPlay, loop, poster, src } = props;
+export default ({ alt, autoPlay, loop, poster, src }) => {
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();
   const searchParams = new URLSearchParams(search);
@@ -40,6 +39,7 @@ export default props => {
     case VIMEO_WWW_DOMAIN:
       return (
         <VimeoContent
+          alt={ alt }
           autoPlay={ autoPlay }
           embedID={ lastSegment }
           loop={ loop }
@@ -50,6 +50,7 @@ export default props => {
     case YOUTUBE_WWW_DOMAIN:
       return (
         <YouTubeContent
+          alt={ alt }
           autoPlay={ autoPlay }
           embedID={ searchParams.get('v') }
           loop={ loop }
@@ -60,6 +61,7 @@ export default props => {
     case YOUTUBE_WWW_SHORT_DOMAIN:
       return (
         <YouTubeContent
+          alt={ alt }
           autoPlay={ autoPlay }
           embedID={ lastSegment }
           loop={ loop }
@@ -69,6 +71,7 @@ export default props => {
     default:
       return (
         <HTMLVideoContent
+          alt={ alt }
           autoPlay={ autoPlay }
           loop={ loop }
           poster={ poster }

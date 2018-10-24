@@ -2,7 +2,7 @@ import React from 'react';
 
 import Context from '../Context';
 
-export default ({ autoPlay, embedID, loop }) => {
+export default ({ alt, autoPlay, embedID, loop }) => {
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     loop: loop ? 1 : 0,
@@ -13,6 +13,7 @@ export default ({ autoPlay, embedID, loop }) => {
     <Context.Consumer>
       { ({ styleSet }) =>
         <iframe
+          aria-label={ alt }
           className={ styleSet.youTubeContent }
           src={ `https://youtube.com/embed/${ embedID }?${ search }` }
         />
