@@ -5,6 +5,8 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
+import { localize } from '../Localization/Localize';
+
 const ROOT_CSS = css({
   overflow: 'hidden',
   position: 'relative',
@@ -76,15 +78,18 @@ class UploadAttachmentButton extends React.Component {
   }
 
   render() {
-    const { disabled, styleSet } = this.props;
+    const { disabled, language, styleSet } = this.props;
+    const uploadFileString = localize('Upload file', language);
 
     return (
       <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
         <input
+          aria-label={ uploadFileString }
           disabled={ disabled }
           multiple={ true }
           onChange={ this.handleFileChange }
           ref={ this.inputRef }
+          role="button"
           type="file"
         />
         <div className={ classNames('icon', { disabled }) }>
@@ -96,7 +101,17 @@ class UploadAttachmentButton extends React.Component {
 }
 
 export default connectUploadAttachmentButton(
-  ({ styleSet }) => ({ styleSet })
+  ({
+    disabled,
+    language,
+    sendFiles,
+    styleSet
+  }) => ({
+    disabled,
+    language,
+    sendFiles,
+    styleSet
+  })
 )(UploadAttachmentButton)
 
 export { connectUploadAttachmentButton }

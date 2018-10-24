@@ -55,30 +55,35 @@ export default connectSendTextBox(
   onSubmit,
   styleSet,
   value
-}) =>
-  <form
-    className={ classNames(
-      ROOT_CSS + '',
-      styleSet.sendBoxTextBox + '',
-      (className || '') + '',
-    ) }
-    onSubmit={ onSubmit }
-  >
-    {
-      <TypeFocusSinkContext.Consumer>
-        { ({ sendFocusRef }) =>
-          <input
-            disabled={ disabled }
-            onChange={ onChange }
-            placeholder={ localize('Type your message', language) }
-            ref={ sendFocusRef }
-            type="text"
-            value={ value }
-          />
-        }
-      </TypeFocusSinkContext.Consumer>
-    }
-  </form>
-)
+}) => {
+  const typeYourMessageString = localize('Type your message', language);
+
+  return (
+    <form
+      className={ classNames(
+        ROOT_CSS + '',
+        styleSet.sendBoxTextBox + '',
+        (className || '') + '',
+      ) }
+      onSubmit={ onSubmit }
+    >
+      {
+        <TypeFocusSinkContext.Consumer>
+          { ({ sendFocusRef }) =>
+            <input
+                  aria-label={ typeYourMessageString }
+              disabled={ disabled }
+              onChange={ onChange }
+              placeholder={ typeYourMessageString }
+              ref={ sendFocusRef }
+              type="text"
+              value={ value }
+            />
+          }
+        </TypeFocusSinkContext.Consumer>
+      }
+    </form>
+  );
+})
 
 export { connectSendTextBox }
