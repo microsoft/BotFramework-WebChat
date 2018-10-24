@@ -23,7 +23,7 @@ const ROOT_CSS = css({
   }
 });
 
-export default ({ children, className, disabled, onClick }) =>
+export default ({ alt, children, className, disabled, onClick }) =>
   <button
     className={ classNames(
       ROOT_CSS + '',
@@ -31,6 +31,7 @@ export default ({ children, className, disabled, onClick }) =>
     ) }
     disabled= { disabled }
     onClick={ onClick }
+    title={ alt }
     type="button"
   >
     { children }
