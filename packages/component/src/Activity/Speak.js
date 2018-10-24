@@ -6,6 +6,8 @@ import connectWithContext from '../connectWithContext';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
+
+// TODO: [P3] We should add a "spoken" or "speakState" flag to indicate whether this activity is going to speak, or spoken
 const connectSpeakActivity = (...selectors) => connectWithContext(
   ({
     language,

@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import React from 'react';
 
 import { Components, Constants } from 'botframework-webchat';
@@ -13,10 +12,7 @@ export default connectDictationInterims()(
     dictateState
   }) =>
     (dictateState === STARTING || dictateState === DICTATING) && !!dictateInterims.length &&
-      <p className={ classNames(
-        (className || '') + '',
-        'dictating'
-      ) }>
+      <p className={ className }>
         { dictateInterims.map((interim, index) => <span key={ index }>{ interim }&nbsp;</span>) }
       </p>
 )
