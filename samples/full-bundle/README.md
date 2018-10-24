@@ -25,7 +25,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 # Code
 
-> Jump to [Completed code](completed-code) to see the end-result `index.html`.
+> Jump to [Completed code](#completed-code) to see the end-result `index.html`.
 
 ## Getting started
 
@@ -36,31 +36,30 @@ The `index.html` page has two main accomplishments.
 
  We'll start by adding the CDN to the head of a 'blank' `index.html` template.
 ```diff
-...
+…
 <head>
-+      <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
++ <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
 </head> 
-...
+…
 ```
 
 Next, the code to render Web Chat must be added to the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**. 
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 
 ```diff
-  <body>
-+    <div id="webchat"></div>
-+     <script>
-+      (async function () {
-        // Direct Line token:
-+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-+        const { token } = await res.json();
-+        window.WebChat.renderWebChat({
-+          directLine: window.WebChat.createDirectLine({ token })
-+        }, document.getElementById('webchat'));
-+      })();
-+    </script>
-...
-  </body>
+<body>
++ <div id="webchat"></div>
++ <script>
++   (async function () {
++     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
++     const { token } = await res.json();
++     window.WebChat.renderWebChat({
++       directLine: window.WebChat.createDirectLine({ token })
++     }, document.getElementById('webchat'));
++   })();
++ </script>
+…
+</body>
 ```
 
 ## Adding features
@@ -70,29 +69,28 @@ Next, you can add any other structure or DOM changes that will support Web Chat.
 MockBot also features an autofocus on the Web Chat container, as well as push of any errors to the browser console. This is helpful for debugging.
 
 ```diff
-    (async function () {
-...
--   })();
+  (async function () {
+…
+-  })();
 +    document.querySelector('#webchat > *').focus();
-+      })().catch(err => console.error(err));
++  })().catch(err => console.error(err));
 </script>
 ```
 
 Finally, add desired styling.
 
 ```diff
-...
+…
 <style>
-+    html, body { height: 100% }
-+    body { margin: 0 }
++ html, body { height: 100% }
++ body { margin: 0 }
 
-+    #webchat,
-+    #webchat > * {
-+    height: 100%;
-+    width: 100%;
-+    }
++ #webchat, #webchat > * {
++   height: 100%;
++   width: 100%;
++ }
 </style>
-...
+…
 
 ```
 ## Completed code 
@@ -102,36 +100,30 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle</title>
-+     <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
-    <style>
-+      html, body { height: 100% }
-+      body { margin: 0 }
-
-+      #webchat,
-+      #webchat > * {
-+        height: 100%;
-+        width: 100%;
-+      }
-    </style>
++   <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+   <style>
++    html, body { height: 100% }
++    body { margin: 0 }
++    #webchat,
++    #webchat > * {
++      height: 100%;
++      width: 100%;
++    }
+   </style>
   </head>
-  <body>
+   <body>
 +    <div id="webchat"></div>
-+     <script>
-+      (async function () {
-        // In this demo, we are using Direct Line token from MockBot.
-        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
-        // You should never put the Direct Line secret in the browser or client app.
-        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
++    <script>
++     (async function () {
++       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
++       const { token } = await res.json();
 
-+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-+        const { token } = await res.json();
++       window.WebChat.renderWebChat({
++         directLine: window.WebChat.createDirectLine({ token })
++       }, document.getElementById('webchat'));
 
-+        window.WebChat.renderWebChat({
-+          directLine: window.WebChat.createDirectLine({ token })
-+        }, document.getElementById('webchat'));
-
-+        document.querySelector('#webchat > *').focus();
-+      })().catch(err => console.error(err));
++       document.querySelector('#webchat > *').focus();
++     })().catch(err => console.error(err));
 +    </script>
   </body>
 </html>
@@ -142,12 +134,12 @@ Here is the finished `index.html`:
 ## Other CDN bundles
 Check out the hosted samples and source code for other CDN bundle options below. 
 
-- [Full bundle with polyfills for ES5 browsers](https://microsoft.github.io/BotFramework-WebChat/es5-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/es5-bundle)
-- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle)
-- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle-with-markdown) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle-with-markdown)
+- [Full bundle with polyfills for ES5 browsers](https://microsoft.github.io/BotFramework-WebChat/es5-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/es5-bundle)
+- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle)
+- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle-with-markdown) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle-with-markdown)
 
 ## CDN sunburst chart
-[This chart](http://cdn.botframework.com/botframework-webchat/preview/stats.html) provides a visual of the contents of the various Web Chat bundles.
+[This chart](http://cdn.botframework.com/botframework-webchat/preview/stats.html) provides a visual of the contents of the various Web Chat bundles
 
 ## Full list of Web Chat Hosted Samples
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples).
+View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples)
