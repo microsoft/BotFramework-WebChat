@@ -26,8 +26,10 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': '傾偈',
+  'Left': '左',
   'Listening…': '聽緊你講嘢…',
   'retry': '再嚟一次',
+  'Right': '右',
   'Send failed, {retry}': '傳送唔倒，{retry}',
   'Sending': '而家傳送緊',
   'Starting…': '開始緊…',

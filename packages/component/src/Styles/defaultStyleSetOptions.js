@@ -21,6 +21,11 @@ const DEFAULT_OPTIONS = {
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
   bubbleTextColor: 'Black',
 
+  carouselFlipperBackground: 'rgba(0, 0, 0, .6)',
+  carouselFlipperBackgroundOnHover: 'rgba(0, 0, 0, .8)',
+  carouselFlipperColor: 'White',
+  carouselFlipperColorOnHover: 'White',
+
   hideSendBox: false,
 
   paddingRegular: 10,

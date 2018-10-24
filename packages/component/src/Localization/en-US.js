@@ -31,6 +31,8 @@ export default {
     'Adaptive Card parse error',
     'Adaptive Card render error',
     'Chat',
+    'Left',
+    'Right',
     'Listening…',
     'retry',
     // Do not localize {retry}, it is a placeholder for "retry"

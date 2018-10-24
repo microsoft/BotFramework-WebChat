@@ -3,6 +3,8 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+import { localize } from '../Localization/Localize';
+import connectWithContext from '../connectWithContext';
 import CarouselFilmStrip from './CarouselFilmStrip';
 
 const ROOT_CSS = css({
@@ -10,8 +12,12 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-export default ({ activity, children, showTimestamp }) => {
-  const styleSet = createBasicStyleSet();
+export default connectWithContext(
+  ({ settings: { language } }) => ({ language }),
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({ activity, children, language, showTimestamp, styleSet }) => {
+    const filmStyleSet = createBasicStyleSet();
 
   return (
     <Composer>
@@ -23,8 +29,24 @@ export default ({ activity, children, showTimestamp }) => {
             </CarouselFilmStrip>
             { scrollBarWidth !== '100%' &&
               <React.Fragment>
-                <Flipper className={ styleSet.leftFlipper + '' } mode="left"><div>&lt;</div></Flipper>
-                <Flipper className={ styleSet.rightFlipper + '' } mode="right"><div>&gt;</div></Flipper>
+                <Flipper
+                  className={ classNames(
+                    styleSet.carouselFlipper + '',
+                    filmStyleSet.leftFlipper + ''
+                  ) }
+                  mode="left"
+                >
+                  <div aria-label={ localize('Left', language) } className="button">&lt;</div>
+                </Flipper>
+                <Flipper
+                  className={ classNames(
+                    styleSet.carouselFlipper + '',
+                    filmStyleSet.rightFlipper + ''
+                  ) }
+                  mode="right"
+                >
+                  <div aria-label={ localize('Right', language) } className="button">&gt;</div>
+                </Flipper>
               </React.Fragment>
             }
           </div>
@@ -32,4 +54,4 @@ export default ({ activity, children, showTimestamp }) => {
       </FilmContext.Consumer>
     </Composer>
   );
-}
+})
