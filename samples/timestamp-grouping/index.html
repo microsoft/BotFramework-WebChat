@@ -57,7 +57,8 @@
     -->
     <p id="buttonBar">
       <a href="?ts=default">Default grouping</a>
-      <a href="?ts=false">Don't grouping</a>
+      <a href="?ts=false">Don't show timestamp</a>
+      <a href="?ts=0">Don't group</a>
       <a href="?ts=2000">Group by 2 seconds</a>
       <a href="?ts=300000">Group by 5 minutes</a>
     </p>
@@ -65,10 +66,10 @@
     <script>
       'use strict';
 
-      const timestamp = new URLSearchParams(window.location.search).get('ts') || 'default';
+      const groupTimestamp = new URLSearchParams(window.location.search).get('ts') || 'default';
 
       document.querySelectorAll('#buttonBar > a').forEach(hyperlink => {
-        if (hyperlink.getAttribute('href') === `?ts=${ timestamp }`) {
+        if (hyperlink.getAttribute('href') === `?ts=${ groupTimestamp }`) {
           hyperlink.className = 'selected';
         }
       });
@@ -87,7 +88,7 @@
           // - Set to `undefined` to use default grouping (5 minutes)
           // - Set to `false` to not to group timestamps, it will show on every bubble
           // - Set to `1000` to hide timestamps if they are less than 1 second apart
-          groupTimestamp: timestamp === 'default' ? undefined : timestamp === 'false' ? false : +timestamp,
+          groupTimestamp: groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp,
           directLine: window.WebChat.createDirectLine({ token })
         }, document.getElementById('webchat'));
 
