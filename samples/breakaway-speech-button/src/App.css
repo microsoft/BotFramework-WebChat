@@ -32,10 +32,44 @@
 }
 
 .App-speech-button {
-  background-color: Transparent;
-  border: 0;
+  background-color: transparent;
+  border: solid 2px #61DAFB;
+  border-radius: 50%;
   cursor: pointer;
   margin: 0;
   outline: 0;
-  padding: 0;
+  padding: 3vmin;
+  position: absolute;
+  right: 5vmin;
+  bottom: 5vmin;
+}
+
+.App-speech-button:active > svg,
+.App-speech-button:hover > svg {
+  fill: White;
+}
+
+.App-speech-button > svg {
+  fill: #61DAFB;
+}
+
+.App-speech-button.dictating {
+  background-color: Red;
+  border-color: Red;
+}
+
+.App-speech-button.dictating > svg {
+  fill: White;
+}
+
+.App-speech-interims {
+  align-items: center;
+  bottom: 5vmin;
+  color: #61DAFB;
+  display: flex;
+  font-size: 8vmin;
+  height: 18vmin;
+  margin: 0;
+  position: absolute;
+  right: 25vmin;
 }

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "botframework-webchat": "^0.0.0-0",
+    "classnames": "^2.2.6",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",

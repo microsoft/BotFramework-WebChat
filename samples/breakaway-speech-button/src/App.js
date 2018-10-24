@@ -1,11 +1,13 @@
 import './App.css';
 import { Components, createDirectLine, createCognitiveServicesWebSpeechPonyfillFactory } from 'botframework-webchat';
-import logo from './logo.svg';
 import React, { Component } from 'react';
 
+import CustomDictationInterims from './CustomDictationInterims';
+import CustomMicrophoneButton from './CustomMicrophoneButton';
 import fetchBingSpeechToken from './fetchBingSpeechToken';
+import LastBotActivity from './LastBotActivity';
 
-const { Composer, DictationInterims, MicrophoneButton } = Components;
+const { Composer } = Components;
 
 export default class App extends Component {
   constructor(props) {
@@ -40,18 +42,9 @@ export default class App extends Component {
         >
           <div className="App">
             <header className="App-header">
-              <MicrophoneButton className="App-speech-button">
-                <img src={ logo } className="App-logo" alt="logo" />
-              </MicrophoneButton>
-              <DictationInterims />
-              <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Learn React
-              </a>
+              <CustomMicrophoneButton className="App-speech-button" />
+              <CustomDictationInterims className="App-speech-interims" />
+              <LastBotActivity className="App-bot-activity" />
             </header>
           </div>
         </Composer>

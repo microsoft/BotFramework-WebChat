@@ -6,17 +6,17 @@ import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
 import CarouselLayout from './Activity/CarouselLayout';
 import ErrorBox from './ErrorBox';
-import SendStatus from './Activity/SendStatus';
-import SpeakActivity from './Activity/Speak';
-import StackedLayout from './Activity/StackedLayout';
+import SendStatus, { connectSendStatus } from './Activity/SendStatus';
+import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
+import StackedLayout, { connectStackedLayout } from './Activity/StackedLayout';
 import Timestamp from './Activity/Timestamp';
 
-import DictationInterims from './SendBox/DictationInterims';
-import MicrophoneButton from './SendBox/MicrophoneButton';
-import SendButton from './SendBox/SendButton';
-import SendTextBox from './SendBox/TextBox';
-import SuggestedActions from './SendBox/SuggestedActions';
-import UploadAttachmentButton from './SendBox/UploadAttachmentButton';
+import DictationInterims, { connectDictationInterims } from './SendBox/DictationInterims';
+import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneButton';
+import SendButton, { connectSendButton } from './SendBox/SendButton';
+import SendTextBox, { connectSendTextBox } from './SendBox/TextBox';
+import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
+import UploadAttachmentButton, { connectUploadAttachmentButton } from './SendBox/UploadAttachmentButton';
 
 import concatMiddleware from './Middleware/concatMiddleware';
 import connectWithContext from './connectWithContext';
@@ -39,6 +39,10 @@ const Components = {
   StackedLayout,
   Timestamp,
 
+  connectSendStatus,
+  connectSpeakActivity,
+  connectStackedLayout,
+
   // Components for recomposing send box
   DictationInterims,
   MicrophoneButton,
@@ -46,6 +50,13 @@ const Components = {
   SendTextBox,
   SuggestedActions,
   UploadAttachmentButton,
+
+  connectDictationInterims,
+  connectMicrophoneButton,
+  connectSendButton,
+  connectSendTextBox,
+  connectSuggestedActions,
+  connectUploadAttachmentButton
 };
 
 export default BasicWebChat
