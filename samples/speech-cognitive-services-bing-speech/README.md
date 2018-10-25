@@ -85,7 +85,7 @@ window.WebChat.renderWebChat({
 }, document.getElementById('webchat'));
 ```
 
-> If you prefer, you can use your own W3C Web Speech API compliant speech engine. Visit the [w3c Speech API](https://w3c.github.io/speech-api/) documentation for more information, and check out the file [createBrowserWebSpeechPonyfillFactory.js](./../packages\bundle\src\createBrowserWebSpeechPonyfillFactory.js) to reference implementation.
+> If you prefer, you can use your own W3C Web Speech API compliant speech engine. Visit the [w3c Speech API](https://w3c.github.io/speech-api/) documentation for more information, and check out the file [createCognitiveServicesWebSpeechPonyfillFactory.js](./../packages\bundle\src\createCognitiveServicesWebSpeechPonyfillFactory.js) to reference implementation.
 
 
 
