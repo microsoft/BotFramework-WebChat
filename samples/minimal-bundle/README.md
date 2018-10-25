@@ -1,8 +1,8 @@
-# Sample
+# Sample -  Getting Started with Web Chat CDN Core Bundle
 
+## Description
 A simple web page with a maximized Web Chat and minimal additional components.
 
-This build does not contains any additional components that makes Web Chat works in a minimal way. That means, it does not contains the following components:
 
 - Adaptive Cards
 - Cognitive Services Bing Speech
@@ -10,10 +10,75 @@ This build does not contains any additional components that makes Web Chat works
 
 # How to run
 
+- Fork and clone this repo
+- Navigate to `/Your-Local-WebChat/samples/minimal-bundle` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `markdown`, you should see the raw text, instead of rendered Markdown
-- Type `card weather`, you should see an error stating Adaptive Cards renderer is not found
+- Type `markdown`: you should see the raw text, instead of rendered Markdown
+- Type `card weather`: you should see an error stating Adaptive Cards renderer is not found
+- Type `hello` as a greeting: you should be able to type to the bot and receive a response in plain text
+
+# Code
+> Jump to [completed code](#completed-code) to see the end-result `index.html`.
+
+## Getting started
+### Goals of this bot
+This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies and functionality. 
+
+The `index.html` page has two main goals.
+- To import the Web Chat core bundle CDN script
+- To render Web Chat 
+
+ This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md) as the base template.
+
+ The only change needed in this sample is to change the Web Chat CDN from the full bundle to core bundle.
+
+ ```diff
+ …
+<head>
+- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
++ <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
+</head> 
+…
+```
+
+## Completed code 
+Here is the finished `index.html`:
+
+```diff
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Minimal bundle</title>
+- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+
+      #webchat,
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script>
+      (async function () {
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token })
+        }, document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
+```

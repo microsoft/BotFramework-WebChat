@@ -31,7 +31,7 @@ The `index.html` page has two main goals.
 - To import React and Babel from unpkg.com
 - To render Web Chat via React component
 
- We'll start by adding React and Babel to the head our template, based off of the [full-bundle CDN sample](./../full-bundle/README.md).
+We'll start by adding React and Babel to the head our template, based off of the [full-bundle CDN sample](./../full-bundle/README.md).
 ```diff
 …
 <head>
