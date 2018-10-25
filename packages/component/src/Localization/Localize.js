@@ -13,6 +13,7 @@ import itIT from './it-IT';
 import jaJP from './ja-JP';
 import koKR from './ko-KR';
 import lvLV from './lv-LV';
+import nbNO from './nb-NO';
 import nlNL from './nl-NL';
 import plPL from './pl-PL';
 import ptBR from './pt-BR';
@@ -38,6 +39,7 @@ function getStrings(language) {
     case 'ja-JP': return jaJP;
     case 'ko-KR': return koKR;
     case 'lv-LV': return lvLV;
+    case 'nb-NO': return nbNO;
     case 'nl-NL': return nlNL;
     case 'pl-PL': return plPL;
     case 'pt-BR': return ptBR;
