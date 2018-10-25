@@ -28,11 +28,11 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Getting started
-
+### Goals of this bot
 This code features the minimal scripting the bot needs to host a full-featured Web Chat. 
-The `index.html` page has two main accomplishments.
-- It imports the Web Chat full bundle CDN script
-- It renders Web Chat 
+The `index.html` page has two main goals.
+- To import the Web Chat full bundle CDN script
+- To render Web Chat 
 
  We'll start by adding the CDN to the head of a blank `index.html` template.
 ```diff

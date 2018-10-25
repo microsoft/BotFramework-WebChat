@@ -26,9 +26,10 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 # Code
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-The `index.html` page has two main accomplishments.
-- It imports React and Babel from unpkg.com
-- It renders Web Chat via React component
+### Goals of this bot
+The `index.html` page has two main goals.
+- To import React and Babel from unpkg.com
+- To render Web Chat via React component
 
  We'll start by adding React and Babel to the head our template, based off of the [full-bundle CDN sample](./../full-bundle/README.md).
 ```diff
