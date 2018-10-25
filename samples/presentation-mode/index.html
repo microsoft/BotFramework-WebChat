@@ -26,15 +26,15 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // You can modify the style set by providing a limited set of style options
-        const styleOptions = {
-          hideSendBox: true
-        };
+        const store = window.WebChat.createStore();
 
-        const { store } = window.WebChat.renderWebChat({
+        window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
           disabled: true,
-          styleOptions
+          store,
+          styleOptions: {
+            hideSendBox: true
+          }
         }, document.getElementById('webchat'));
 
         setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } }), 1000);

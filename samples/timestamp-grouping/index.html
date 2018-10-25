@@ -83,13 +83,17 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        const { store } = window.WebChat.renderWebChat({
+        const store = window.WebChat.createStore();
+
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token }),
+
           // You can set groupTimestamp to configure how timestamps are grouped.
           // - Set to `undefined` to use default grouping (5 minutes)
           // - Set to `false` to not to group timestamps, it will show on every bubble
           // - Set to `1000` to hide timestamps if they are less than 1 second apart
           groupTimestamp: groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp,
-          directLine: window.WebChat.createDirectLine({ token })
+          store
         }, document.getElementById('webchat'));
 
         // The following code is for convenient when trying out this sample, not required for production.
