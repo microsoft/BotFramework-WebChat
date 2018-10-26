@@ -10,7 +10,7 @@ import Bubble from './Bubble';
 import SendStatus from './SendStatus';
 import Timestamp from './Timestamp';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
 const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
@@ -61,7 +61,7 @@ const ROOT_CSS = css({
   }
 });
 
-const connectCarouselFilmStrip = (...selectors) => connectWithContext(
+const connectCarouselFilmStrip = (...selectors) => connectToWebChat(
   ({
     botAvatarInitials,
     language,

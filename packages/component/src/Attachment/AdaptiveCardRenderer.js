@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import ErrorBox from '../ErrorBox';
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
 
@@ -163,7 +163,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({
     adaptiveCardHostConfig,
     disabled,

@@ -2,10 +2,10 @@ import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
 
-const connectSuggestedActions = (...selectors) => connectWithContext(
+const connectSuggestedActions = (...selectors) => connectToWebChat(
   ({
     language,
     suggestedActions

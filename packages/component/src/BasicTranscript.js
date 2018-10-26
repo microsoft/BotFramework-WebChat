@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import connectWithContext from './connectWithContext';
+import connectToWebChat from './connectToWebChat';
 import SpeakActivity from './Activity/Speak';
 
 const ROOT_CSS = css({
@@ -106,7 +106,7 @@ const BasicTranscript = ({
   );
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({
     activities,
     activityRenderer,

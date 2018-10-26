@@ -310,7 +310,7 @@ class ConnectedComposerWithStore extends React.Component {
 export default ConnectedComposerWithStore
 
 // TODO: [P3] We should consider moving some props to Redux store
-//       Although we use `connectWithContext` to hide the details of accessor of Redux store,
+//       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
 //       we should clean up the responsibility between Context and Redux store
 //       We should decide which data is needed for React but not in other environment such as CLI/VSCode
 ConnectedComposerWithStore.propTypes = {

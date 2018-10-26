@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from './connectWithContext';
+import connectToWebChat from './connectToWebChat';
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
 import SendButton from './SendBox/SendButton';
@@ -56,7 +56,7 @@ const BasicSendBox = ({
     </div>
   </div>
 
-export default connectWithContext(
+export default connectToWebChat(
   ({
     dictateState,
     styleSet,

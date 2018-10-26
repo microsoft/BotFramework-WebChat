@@ -10,7 +10,7 @@ import Context from '../Context';
 import SendStatus from './SendStatus';
 import Timestamp from './Timestamp';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 
 const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
@@ -54,7 +54,7 @@ const ROOT_CSS = css({
   }
 });
 
-const connectStackedLayout = (...selectors) => connectWithContext(
+const connectStackedLayout = (...selectors) => connectToWebChat(
   ({
     botAvatarInitials,
     language,

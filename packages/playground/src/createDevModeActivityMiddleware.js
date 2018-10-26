@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import {
-  connectWithContext
+  connectToWebChat
 } from 'botframework-webchat';
 
 const ROOT_CSS = css({
@@ -84,7 +84,7 @@ class SpeakActivity extends React.Component {
   }
 }
 
-const ConnectedDevModeDecorator = connectWithContext(
+const ConnectedDevModeDecorator = connectToWebChat(
   ({ markActivity, webSpeechPonyfill = {} }) => ({ markActivity, webSpeechPonyfill })
 )(
   ({

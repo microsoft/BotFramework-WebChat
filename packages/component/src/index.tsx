@@ -19,7 +19,7 @@ import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedAc
 import UploadAttachmentButton, { connectUploadAttachmentButton } from './SendBox/UploadAttachmentButton';
 
 import concatMiddleware from './Middleware/concatMiddleware';
-import connectWithContext from './connectWithContext';
+import connectToWebChat from './connectToWebChat';
 import Context from './Context';
 import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/createAdaptiveCardMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -64,7 +64,7 @@ export default BasicWebChat
 export {
   Components,
   concatMiddleware,
-  connectWithContext,
+  connectToWebChat,
   Context,
   createAdaptiveCardsAttachmentMiddleware,
   createCoreActivityMiddleware,

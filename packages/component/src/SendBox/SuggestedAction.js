@@ -2,14 +2,14 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
   whiteSpace: 'initial'
 });
 
-const connectSuggestedAction = (...selectors) => connectWithContext(
+const connectSuggestedAction = (...selectors) => connectToWebChat(
   ({
     disabled,
     focusSendBox,

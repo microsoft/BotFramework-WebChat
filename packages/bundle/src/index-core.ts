@@ -6,7 +6,7 @@ import {
 import ReactWebChat, {
   Components,
   concatMiddleware,
-  connectWithContext,
+  connectToWebChat,
   createStyleSet
 } from 'botframework-webchat-component';
 
@@ -22,7 +22,7 @@ export {
   Components,
   Constants,
   concatMiddleware,
-  connectWithContext,
+  connectToWebChat,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
   createStore,
@@ -33,7 +33,7 @@ export {
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,
-  connectWithContext,
+  connectToWebChat,
   Constants,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,

@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { localize } from '../Localization/Localize';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -14,7 +14,7 @@ const ROOT_CSS = css({
   }
 });
 
-const connectSendTextBox = (...selectors) => connectWithContext(
+const connectSendTextBox = (...selectors) => connectToWebChat(
   ({
     disabled,
     language,

@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import VideoContent from './VideoContent';
 
 const ROOT_CSS = css({
@@ -10,7 +10,7 @@ const ROOT_CSS = css({
   flexDirection: 'column'
 });
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(
   ({ attachment, styleSet }) =>

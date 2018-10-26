@@ -2,9 +2,9 @@ import React from 'react';
 
 import AudioContent from './AudioContent';
 import CommonCard from './CommonCard';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(
   ({

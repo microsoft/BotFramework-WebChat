@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 
@@ -14,7 +14,7 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
-const connectMicrophoneButton = (...selectors) => connectWithContext(
+const connectMicrophoneButton = (...selectors) => connectToWebChat(
   ({
     disabled,
     dictateState,

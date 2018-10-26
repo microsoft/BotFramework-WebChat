@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
 const ROOT_CSS = css({
@@ -33,7 +33,7 @@ const ROOT_CSS = css({
   }
 });
 
-const connectUploadAttachmentButton = (...selectors) => connectWithContext(
+const connectUploadAttachmentButton = (...selectors) => connectToWebChat(
   ({
     disabled,
     language,

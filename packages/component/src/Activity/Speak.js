@@ -2,13 +2,13 @@ import React from 'react';
 import SayAlt from './SayAlt';
 import Say from 'react-say';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
 
 // TODO: [P3] We should add a "spoken" or "speakState" flag to indicate whether this activity is going to speak, or spoken
-const connectSpeakActivity = (...selectors) => connectWithContext(
+const connectSpeakActivity = (...selectors) => connectToWebChat(
   ({
     language,
     markActivity

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import Localize, { localize } from '../Localization/Localize';
 
 const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
@@ -27,7 +27,7 @@ function sendFailed(language, replace) {
   }
 }
 
-const connectSendStatus = (...selectors) => connectWithContext(
+const connectSendStatus = (...selectors) => connectToWebChat(
   ({
     focusSendBox,
     language,

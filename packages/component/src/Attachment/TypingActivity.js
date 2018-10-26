@@ -1,9 +1,9 @@
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(({ styleSet }) =>
   <div className={ styleSet.typingActivity }>

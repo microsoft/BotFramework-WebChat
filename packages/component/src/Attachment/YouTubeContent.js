@@ -1,8 +1,8 @@
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(
   ({
@@ -19,6 +19,7 @@ export default connectWithContext(
     }).toString();
 
     return (
+      // TODO: We should encodeURI the URL
       <iframe
         aria-label={ alt }
         className={ styleSet.youTubeContent }

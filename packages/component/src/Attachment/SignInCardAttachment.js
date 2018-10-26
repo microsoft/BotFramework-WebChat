@@ -1,9 +1,9 @@
 import React from 'react';
 
 import CommonCard from './CommonCard';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(
   ({

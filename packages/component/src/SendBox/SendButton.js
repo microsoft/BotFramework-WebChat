@@ -1,10 +1,10 @@
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 
-const connectSendButton = (...selectors) => connectWithContext(
+const connectSendButton = (...selectors) => connectToWebChat(
   ({
     language,
     submitSendBox

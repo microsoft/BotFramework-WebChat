@@ -1,4 +1,4 @@
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
 import csCZ from './cs-CZ';
 import daDK from './da-DK';
@@ -66,7 +66,7 @@ function localize(text, language, args) {
   }
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({
     args,
     language,

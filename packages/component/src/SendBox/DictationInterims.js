@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import Localize from '../Localization/Localize';
 
 const {
@@ -19,7 +19,7 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
-const connectDictationInterims = (...selectors) => connectWithContext(
+const connectDictationInterims = (...selectors) => connectToWebChat(
   ({
     dictateInterims,
     dictateState,

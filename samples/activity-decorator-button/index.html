@@ -34,7 +34,7 @@
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        const { connectWithContext, ReactWebChat } = window.WebChat;
+        const { connectToWebChat, ReactWebChat } = window.WebChat;
         const { css } = window.Glamor;
 
         const ACTIVITY_WITH_FEEDBACK_CSS = css({
@@ -82,7 +82,7 @@
           }
         }
 
-        const ConnectedActivityWithFeedback = connectWithContext(
+        const ConnectedActivityWithFeedback = connectToWebChat(
           ({ postActivity }) => ({ postActivity })
         )(props => <ActivityWithFeedback { ...props } />)
 

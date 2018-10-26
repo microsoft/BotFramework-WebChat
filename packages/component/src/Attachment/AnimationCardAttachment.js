@@ -3,7 +3,7 @@ import React from 'react';
 
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
 import CommonCard from './CommonCard';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import ImageContent from './ImageContent';
 import VideoContent from './VideoContent';
 
@@ -57,6 +57,6 @@ class AnimationCardAttachment extends React.Component {
   }
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(AnimationCardAttachment)

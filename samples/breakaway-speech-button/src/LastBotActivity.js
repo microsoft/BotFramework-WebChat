@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { connectWithContext, Components } from 'botframework-webchat';
+import { connectToWebChat, Components } from 'botframework-webchat';
 
 const { SpeakActivity } = Components;
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ activities }) => ({
     activity: activities.slice().reverse().find(({ from: { role }, type }) => role === 'bot' && type === 'message')
   })
