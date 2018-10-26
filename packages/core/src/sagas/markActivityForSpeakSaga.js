@@ -8,9 +8,9 @@ import {
 import speakableActivity from './definition/speakableActivity';
 import whileConnected from './effects/whileConnected';
 
+import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { START_SPEAKING_ACTIVITY } from '../actions/startSpeakingActivity';
 import { STOP_SPEAKING_ACTIVITY } from '../actions/stopSpeakingActivity';
-import { UPSERT_ACTIVITY } from '../actions/upsertActivity';
 import markActivity from '../actions/markActivity';
 
 export default function* () {
@@ -30,7 +30,7 @@ function* markActivityForSpeakSaga(userID) {
   for (;;) {
     const { payload: { activity } } = yield take(
       ({ payload: { activity } = {}, type }) =>
-        type === UPSERT_ACTIVITY
+        type === INCOMING_ACTIVITY
         && speakableActivity(activity, userID)
     );
 

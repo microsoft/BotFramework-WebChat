@@ -191,7 +191,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { state } = this;
+    const { props: { store }, state } = this;
     const styleSet = this.createMemoizedStyleSet(this.state.hideSendBox);
     const { groupTimestamp } = state;
 
@@ -211,7 +211,7 @@ export default class extends React.Component {
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
           sendTyping={ state.sendTyping }
-          storeKey="webchat"
+          store={ store }
           styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
           userID={ state.userID }

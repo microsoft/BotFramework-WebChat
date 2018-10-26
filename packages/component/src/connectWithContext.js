@@ -1,25 +1,33 @@
 import { connect } from 'react-redux';
-import memoize from 'memoize-one';
 import React from 'react';
 
 import Context from './Context';
 
-// TODO: [P4] Consider using "store" props, instead of "storeKey"
-// TODO: [P4] Consider hardcoding "storeKey" because it is a rarely used feature in Redux, collision is very unlikely
-export default function (stateSelector, contextSelector) {
-  const createConnected = memoize(storeKey => connect(state => stateSelector(state), null, null, { storeKey: storeKey || 'webchat' }));
+function removeUndefinedValues(map) {
+  return Object.keys(map).reduce((result, key) => {
+    const value = map[key];
 
-  return component => props => (
+    if (typeof value !== 'undefined') {
+      result[key] = value;
+    }
+
+    return result;
+  }, {});
+}
+
+export default function (selector) {
+  return component => props =>
     <Context.Consumer>
-      { context => {
-        return React.createElement(
-          createConnected(context.storeKey)(component),
-          ({
-            ...contextSelector ? contextSelector(context) : {},
-            ...props
-          })
-        );
-      } }
-    </Context.Consumer>
-  );
+      { context =>
+        React.createElement(
+          connect(
+            state => removeUndefinedValues((selector && selector({ ...state, ...context })) || {})
+          )(component),
+          {
+            ...props,
+            store: context.store
+          }
+        )
+      }
+    </Context.Consumer>;
 }

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 
-import WebChat from './WebChat';
+import ReactWebChat from './WebChat';
 
 class App extends React.Component {
   render() {
@@ -12,7 +12,7 @@ class App extends React.Component {
 
     return (
       <div id="app" style={{ backgroundColor }}>
-        <WebChat appDispatch={ dispatch } />
+        <ReactWebChat appDispatch={ dispatch } />
       </div>
     )
   }

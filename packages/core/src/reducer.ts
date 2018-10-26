@@ -1,15 +1,21 @@
 import { combineReducers } from 'redux';
 
 import activities from './reducers/activities';
-import connection from './reducers/connection';
-import input from './reducers/input';
-import settings from './reducers/settings';
+import dictateInterims from './reducers/dictateInterims';
+import dictateState from './reducers/dictateState';
+import language from './reducers/language';
+import readyState from './reducers/readyState';
+import referenceGrammarID from './reducers/referenceGrammarID';
+import sendBoxValue from './reducers/sendBoxValue';
 import suggestedActions from './reducers/suggestedActions';
 
 export default combineReducers({
   activities,
-  connection,
-  input,
-  settings,
+  dictateInterims,
+  dictateState,
+  language,
+  readyState,
+  referenceGrammarID,
+  sendBoxValue,
   suggestedActions
 })

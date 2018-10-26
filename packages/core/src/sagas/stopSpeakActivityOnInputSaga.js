@@ -10,13 +10,13 @@ import markActivity from '../actions/markActivity';
 import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import { SET_SEND_BOX } from '../actions/setSendBox';
-import { START_SPEECH_INPUT } from '../actions/startSpeechInput';
+import { START_DICTATE } from '../actions/startDictate';
 
 export default function* () {
   yield whileConnected(function* () {
     for (;;) {
       yield take(
-        ({ payload, type }) => type === START_SPEECH_INPUT
+        ({ payload, type }) => type === START_DICTATE
         || (type === SET_SEND_BOX && payload.text && payload.via !== 'speech')
 
         // We want to stop speaking activity when the user click on a card action

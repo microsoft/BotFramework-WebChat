@@ -5,7 +5,7 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import stopSpeechInput from '../actions/stopSpeechInput';
+import stopDictate from '../actions/stopDictate';
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 
 export default function* () {
@@ -21,7 +21,7 @@ export default function* () {
         ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message'
       );
 
-      yield put(stopSpeechInput());
+      yield put(stopDictate());
     }
   });
 }

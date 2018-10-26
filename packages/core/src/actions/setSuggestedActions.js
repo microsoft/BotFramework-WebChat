@@ -1,6 +1,6 @@
 const EMPTY_ARRAY = [];
 
-const SET_SUGGESTED_ACTIONS = 'SUGGESTED_ACTIONS/SET';
+const SET_SUGGESTED_ACTIONS = 'WEB_CHAT/SET_SUGGESTED_ACTIONS';
 
 export default function setSuggestedActions(suggestedActions = EMPTY_ARRAY) {
   return {

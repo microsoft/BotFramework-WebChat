@@ -164,7 +164,6 @@ class AdaptiveCardRenderer extends React.PureComponent {
 }
 
 export default connectWithContext(
-  ({ settings: { language } }) => ({ language }),
   ({
     adaptiveCardHostConfig,
     disabled,

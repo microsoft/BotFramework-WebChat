@@ -1,4 +1,4 @@
-const SET_DICTATE_INTERIMS = 'INPUT/SET_DICTATE_INTERIMS';
+const SET_DICTATE_INTERIMS = 'WEB_CHAT/SET_DICTATE_INTERIMS';
 
 export default function (dictateInterims) {
   return {

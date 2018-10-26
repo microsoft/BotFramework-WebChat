@@ -1,4 +1,4 @@
-const SUBMIT_SEND_BOX = 'INPUT/SUBMIT_SEND_BOX';
+const SUBMIT_SEND_BOX = 'WEB_CHAT/SUBMIT_SEND_BOX';
 
 export default function submitSendBox(via) {
   return {

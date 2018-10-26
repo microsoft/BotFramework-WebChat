@@ -26,6 +26,11 @@ const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
     </BasicFilm>
 
 export default connectWithContext(
-  ({ suggestedActions }) => ({ suggestedActions }),
-  ({ styleSet }) => ({ styleSet })
+  ({
+    styleSet,
+    suggestedActions
+  }) => ({
+    styleSet,
+    suggestedActions
+  })
 )(SuggestedActions)

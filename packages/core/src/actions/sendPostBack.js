@@ -1,4 +1,4 @@
-const SEND_POST_BACK = 'INPUT/SEND_POST_BACK';
+const SEND_POST_BACK = 'WEB_CHAT/SEND_POST_BACK';
 
 export default function sendPostback(value) {
   return {

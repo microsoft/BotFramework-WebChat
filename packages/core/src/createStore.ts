@@ -14,11 +14,6 @@ export default function (initialState, ...middlewares) {
     initialState || {},
     applyMiddleware(
       sagaMiddleware,
-      store => next => action => {
-        console.debug(action);
-
-        return next(action);
-      },
       ...middlewares
     )
   );

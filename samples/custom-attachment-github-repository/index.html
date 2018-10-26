@@ -41,8 +41,6 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const { createStore, ReactWebChat } = window.WebChat;
-        const { createProvider } = window.ReactRedux;
-        const Provider = createProvider('webchat');
         const store = createStore();
         const attachmentMiddleware = () => next => card => {
           switch (card.attachment.contentType) {
@@ -55,18 +53,16 @@
         };
 
         window.ReactDOM.render(
-          <Provider store={ store }>
-            <ReactWebChat
-              attachmentMiddleware={ attachmentMiddleware }
-              directLine={ window.WebChat.createDirectLine({ token }) }
-              storeKey="webchat"
-            />
-          </Provider>,
+          <ReactWebChat
+            attachmentMiddleware={ attachmentMiddleware }
+            directLine={ window.WebChat.createDirectLine({ token }) }
+            store={ store }
+          />,
           document.getElementById('webchat')
         );
 
         store.dispatch({
-          type: 'INPUT/SET_SEND_BOX',
+          type: 'WEB_CHAT/SET_SEND_BOX',
           payload: { text: 'sample:github-repository' }
         });
 

@@ -17,10 +17,10 @@ import {
   setLanguage,
   setSendBox,
   setSendTyping,
+  startDictate,
   startSpeakingActivity,
-  startSpeechInput,
+  stopDictate,
   stopSpeakingActivity,
-  stopSpeechInput,
   submitSendBox
 } from 'botframework-webchat-core';
 
@@ -44,10 +44,10 @@ const DISPATCHERS = {
   setDictateInterims,
   setDictateState,
   setSendBox,
+  startDictate,
   startSpeakingActivity,
-  startSpeechInput,
+  stopDictate,
   stopSpeakingActivity,
-  stopSpeechInput,
   submitSendBox
 };
 
@@ -162,10 +162,10 @@ class Composer extends React.Component {
       shallowEquals
     );
 
-    this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarId) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarId }));
+    this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarID) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID }));
 
     this.mergeContext = memoize(
-      (...contexts) => contexts.reduce((result, context) => Object.assign(result, context), {}),
+      (...contexts) => Object.assign({}, ...contexts),
       shallowEquals
     );
 
@@ -228,9 +228,10 @@ class Composer extends React.Component {
 
         grammars,
         groupTimestamp,
-        referenceGrammarId,
+        referenceGrammarID,
         renderMarkdown,
         scrollToBottom,
+        store,
         userAvatarInitials,
         userID,
         webSpeechPonyfillFactory,
@@ -258,8 +259,9 @@ class Composer extends React.Component {
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToBottom: scrollToBottom || NULL_FUNCTION,
+        store,
         userAvatarInitials,
-        webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarId)
+        webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarID)
       }
     );
 
@@ -287,7 +289,7 @@ Composer.propTypes = {
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
-  referenceGrammarId: PropTypes.string,
+  referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
   userAvatarInitials: PropTypes.string,
@@ -295,16 +297,6 @@ Composer.propTypes = {
   webSpeechPonyfillFactory: PropTypes.func
 };
 
-// TODO: [P3] Should we hide the knowledge of Redux?
-//       Everyone under this DOM tree should need access to Redux connect or dispatchers
-//       All the features should be accessible via Context/Composer
-
-// TODO: [P2] Simplify storeKey by hardcoding it
-const createComposerFromStoreKey = memoize(storeKey => connect(
-  ({ settings: { referenceGrammarId } }) => ({ referenceGrammarId }),
-  null,
-  null,
-  { storeKey }
-)(Composer))
-
-export default props => React.createElement(createComposerFromStoreKey(props.storeKey), props)
+export default connect(
+  ({ referenceGrammarID }) => ({ referenceGrammarID })
+)(props => <Composer { ...props } />);

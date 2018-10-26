@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upsert activity 1`] = `
+exports[`Incoming activity 1`] = `
 Array [
   Object {
     "text": "Hello, World!",
@@ -9,7 +9,7 @@ Array [
 ]
 `;
 
-exports[`Upsert activity 2`] = `
+exports[`Incoming activity 2`] = `
 Array [
   Object {
     "payload": Object {
@@ -18,7 +18,7 @@ Array [
         "type": "message",
       },
     },
-    "type": "DIRECT_LINE/UPSERT_ACTIVITY",
+    "type": "DIRECT_LINE/INCOMING_ACTIVITY",
   },
 ]
 `;

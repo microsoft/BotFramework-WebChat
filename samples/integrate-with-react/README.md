@@ -19,16 +19,12 @@ A simple web page with a maximized Web Chat and hosted using React.
 The core of the code looks like the following:
 
 ```js
-const { createStore, ReactWebChat } = window.WebChat;
-const { Provider } = window.ReactRedux;
-const store = createStore();
+const { ReactWebChat } = window.WebChat;
 
 window.ReactDOM.render(
-  <Provider store={ store }>
-    <ReactWebChat
-      directLine={ window.WebChat.createDirectLine({ token }) }
-    />
-  </Provider>,
+  <ReactWebChat
+    directLine={ window.WebChat.createDirectLine({ token }) }
+  />,
   document.getElementById('webchat')
 );
 ```

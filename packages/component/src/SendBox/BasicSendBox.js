@@ -56,10 +56,14 @@ const BasicSendBox = ({
     </div>
   </div>
 
-
 export default connectWithContext(
-  ({ input: { dictateState } }) => ({
-    dictationStarted: dictateState === STARTING || dictateState === DICTATING
-  }),
-  ({ styleSet, webSpeechPonyfill }) => ({ styleSet, webSpeechPonyfill })
+  ({
+    dictateState,
+    styleSet,
+    webSpeechPonyfill
+  }) => ({
+    dictationStarted: dictateState === STARTING || dictateState === DICTATING,
+    styleSet,
+    webSpeechPonyfill
+  })
 )(BasicSendBox)

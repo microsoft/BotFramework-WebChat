@@ -32,14 +32,14 @@ class TextBoxWithSpeech extends React.Component {
 
   handleSubmit(event) {
     const { props } = this;
-    const { sendBox } = props;
+    const { sendBoxValue } = props;
 
     event.preventDefault();
 
     // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
     // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
 
-    if (sendBox) {
+    if (sendBoxValue) {
       props.scrollToBottom();
       props.submitSendBox('keyboard');
     }
@@ -51,7 +51,7 @@ class TextBoxWithSpeech extends React.Component {
         className,
         disabled,
         language,
-        sendBox,
+        sendBoxValue,
         styleSet
       },
       handleChange,
@@ -76,7 +76,7 @@ class TextBoxWithSpeech extends React.Component {
                 placeholder={ localize('Type your message', language) }
                 ref={ sendFocusRef }
                 type="text"
-                value={ sendBox }
+                value={ sendBoxValue }
               />
             }
           </TypeFocusSinkContext.Consumer>
@@ -95,20 +95,23 @@ TextBoxWithSpeech.propTypes = {
 };
 
 export default connectWithContext(
-  ({ input: { sendBox }, settings: { language } }) => ({ language, sendBox }),
   ({
     disabled,
+    language,
     scrollToBottom,
+    sendBoxValue,
     setSendBox,
     stopSpeakingActivity,
-    submitSendBox,
-    styleSet
+    styleSet,
+    submitSendBox
   }) => ({
     disabled,
+    language,
     scrollToBottom,
+    sendBoxValue,
     setSendBox,
     stopSpeakingActivity,
-    submitSendBox,
-    styleSet
+    styleSet,
+    submitSendBox
   })
 )(TextBoxWithSpeech)

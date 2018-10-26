@@ -1,4 +1,4 @@
-const SET_DICTATE_STATE = 'INPUT/SET_DICTATE_STATE';
+const SET_DICTATE_STATE = 'WEB_CHAT/SET_DICTATE_STATE';
 
 export default function (dictateState) {
   return {

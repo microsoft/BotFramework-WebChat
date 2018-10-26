@@ -28,12 +28,10 @@
         'use strict';
 
         const { render } = window.ReactDOM;
-        const { createProvider } = window.ReactRedux;
         const {
           Context,
           createCognitiveServicesWebSpeechPonyfillFactory,
           createDirectLine,
-          createStore,
           ReactWebChat
         } = window.WebChat;
 
@@ -80,20 +78,14 @@
           return accessTokenPromise;
         };
 
-        const Provider = createProvider('webchat');
-        const store = createStore();
-
         // Pass a Web Speech ponyfill factory to renderWebChat.
         // You can also use your own speech engine given it is complaint to W3C Web Speech API, https://w3c.github.io/speech-api/.
         // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         render(
-          <Provider store={ store }>
-            <ReactWebChat
-              directLine={ createDirectLine({ token }) }
-              storeKey="webchat"
-              webSpeechPonyfillFactory={ createCognitiveServicesWebSpeechPonyfillFactory({ fetchToken }) }
-            />
-          </Provider>,
+          <ReactWebChat
+            directLine={ createDirectLine({ token }) }
+            webSpeechPonyfillFactory={ createCognitiveServicesWebSpeechPonyfillFactory({ fetchToken }) }
+          />,
           document.getElementById('webchat')
         );
 

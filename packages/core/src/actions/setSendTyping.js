@@ -1,4 +1,4 @@
-const SET_SEND_TYPING = 'SETTINGS/SET_SEND_TYPING';
+const SET_SEND_TYPING = 'WEB_CHAT/SET_SEND_TYPING';
 
 export default function (value) {
   return {

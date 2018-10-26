@@ -131,8 +131,7 @@ If you want to display a deck of GitHub repository cards, you can create a new R
 <img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/preview/doc/sample-custom-github-repository-attachment.png" width="396" />
 
 ```jsx
-import { createProvider } from 'react-redux';
-import { createStore, ReactWebChat } from 'botframework-webchat';
+import ReactWebChat from 'botframework-webchat';
 import ReactDOM from 'react-dom';
 
 // Create a new React component that accept render a GitHub repository attachment
@@ -143,9 +142,6 @@ const GitHubRepositoryAttachment = props =>
       <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
     </p>
   </div>;
-
-const Provider = createProvider('webchat');
-const store = createStore();
 
 // Creating a new middleware pipeline that will render <GitHubRepositoryAttachment> for specific type of attachment
 const attachmentMiddleware = () => next => card => {
@@ -159,14 +155,11 @@ const attachmentMiddleware = () => next => card => {
 };
 
 ReactDOM.render(
-  <Provider store={ store }>
-    <ReactWebChat
-      // Prepending the new middleware pipeline
-      attachmentMiddleware={ attachmentMiddleware }
-      directLine={ window.WebChat.createDirectLine({ token }) }
-      storeKey="webchat"
-    />
-  </Provider>,
+  <ReactWebChat
+    // Prepending the new middleware pipeline
+    attachmentMiddleware={ attachmentMiddleware }
+    directLine={ window.WebChat.createDirectLine({ token }) }
+  />,
   document.getElementById('webchat')
 );
 ```

@@ -1,4 +1,4 @@
-const SEND_MESSAGE = 'INPUT/SEND_MESSAGE';
+const SEND_MESSAGE = 'WEB_CHAT/SEND_MESSAGE';
 
 export default function sendMessage(text, via) {
   return {

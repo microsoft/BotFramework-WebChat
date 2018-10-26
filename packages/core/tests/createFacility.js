@@ -35,7 +35,7 @@ export default async function ({
   const actions = [];
   const directLine = mockDirectLine();
   const latestActions = {};
-  const store = createStore(store => next => action => {
+  const store = createStore(() => next => action => {
     actions.push(action);
     latestActions[action.type] = action;
 

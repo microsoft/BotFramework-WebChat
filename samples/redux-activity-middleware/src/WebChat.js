@@ -1,16 +1,13 @@
-import { createProvider } from 'react-redux';
 import React from 'react';
 
 import ReactWebChat, { createDirectLine, createStore } from 'botframework-webchat';
 import dispatchIncomingActivityMiddleware from './dispatchIncomingActivityMiddleware';
 
-const WebChatProvider = createProvider('webchat');
-
 export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.webChatCoreStore = createStore(
+    this.store = createStore(
       {},
       dispatchIncomingActivityMiddleware(props.appDispatch)
     );
@@ -33,28 +30,25 @@ export default class extends React.Component {
   }
 
   setSendBox() {
-    this.webChatCoreStore.dispatch({
-      type: 'INPUT/SET_SEND_BOX',
+    this.store.dispatch({
+      type: 'WEB_CHAT/SET_SEND_BOX',
       payload: { text: 'sample:redux-middleware' }
     });
   }
 
   render() {
     return (
-      <WebChatProvider store={ this.webChatCoreStore }>
-        { this.state.directLine ?
-            <ReactWebChat
-              className="chat"
-              directLine={ this.state.directLine }
-              storeKey="webchat"
-              styleOptions={{
-                backgroundColor: 'Transparent'
-              }}
-            />
-          :
-            <div>Connecting to bot&hellip;</div>
-        }
-      </WebChatProvider>
+      this.state.directLine ?
+        <ReactWebChat
+          className="chat"
+          directLine={ this.state.directLine }
+          store={ this.store }
+          styleOptions={{
+            backgroundColor: 'Transparent'
+          }}
+        />
+      :
+        <div>Connecting to bot&hellip;</div>
     );
   }
 }

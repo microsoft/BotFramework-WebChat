@@ -90,5 +90,5 @@ class ReceiptCardAttachment extends React.Component {
 }
 
 export default connectWithContext(
-  ({ settings: { language } }) => ({ language })
+  ({ language }) => ({ language })
 )(ReceiptCardAttachment)
