@@ -377,6 +377,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             <History
                                 onCardAction={ this._handleCardAction }
                                 ref={ this._saveHistoryRef }
+                                gid={ this.props.gid }
                             />
                         </MessagePane>
                         <Shell ref={ this._saveShellRef } />

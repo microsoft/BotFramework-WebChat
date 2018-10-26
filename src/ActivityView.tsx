@@ -46,6 +46,7 @@ export interface ActivityViewProps {
     type?: string;
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
+    gid: string;
 }
 
 export class ActivityView extends React.Component<ActivityViewProps, {}> {

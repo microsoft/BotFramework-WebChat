@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { Activity, CardAction, Message} from 'botframework-directlinejs';
-import * as moment from 'moment';
 import * as React from 'react';
-import ReactDatePicker from 'react-datepicker';
 import Dropzone from 'react-dropzone';
 import { connect } from 'react-redux';
 import { getAvailableTimes } from './getAvailableTimes';
@@ -12,23 +10,23 @@ import { ChatActions, sendFiles , sendMessage } from './Store';
 export interface Node {
     node_type: string;
     upload_url: string;
+    conversation_id: string;
+    node_id: number;
 }
 
 interface FileUploadProps {
     node: Node;
-    submitFile: () => any;
-    sendMessage: (inputText: string) => void;
+    fileSelected: (inputStatus: boolean) => void;
+    sendMessage: (inputText: any) => void;
     sendFiles: (files: FileList) => void;
-}
-
-export interface MessageWithDate extends Message {
-    selectedDate: moment.Moment;
+    gid: string;
 }
 
 export interface FileUploadState {
     files: any;
-    previewFile: boolean;
+    uploadPhase: string;
     isUploading: boolean;
+    signedUrl: string;
 }
 
 /**
@@ -41,8 +39,9 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
         this.state = {
             files: [],
-            previewFile: false,
-            isUploading: false
+            uploadPhase: 'open',
+            isUploading: false,
+            signedUrl: null
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -51,54 +50,104 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
     removeFile = () => {
         this.setState({
             files: [],
-            previewFile: false
+            uploadPhase: 'open'
         });
     }
 
-    private handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): any {
-        if (!this.state.previewFile) { return; }
-
+    private handleKeyDown =  (e: React.KeyboardEvent<HTMLInputElement>): any => {
+        if (this.state.uploadPhase === 'open') { return; }
+        if (this.state.uploadPhase === 'error') {
+            this.setState({uploadPhase: 'open'});
+            return;
+        }
         if (e.key === 'Enter') {
-            console.log('enter');
-            this.props.submitFile();
-            this.props.sendFiles(this.state.files);
+            this.submitFiles();
+            // this.props.sendFiles(this.state.files);
             document.removeEventListener('keypress', this.handleKeyDown.bind(this));
         }
     }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown.bind(this));
+      }
 
     handleSkipFile(e: React.MouseEvent<HTMLDivElement>) {
         this.props.sendMessage('SKIP_UPLOAD');
     }
 
-    clickToSubmitFile(e: React.MouseEvent<HTMLDivElement>) {
-        if (!this.state.previewFile) { return; }
+    getSignedUrl = (data: any) => {
+        return new Promise((resolve, reject) => {
+            if (this.state.signedUrl) {
+                resolve({s3Url: this.state.signedUrl});
+            } else {
+                axios.post(this.props.gid + '/api/v1/nodes/presigned_url_for_node', data)
+                .then((result: any) => {
+                    console.log(result);
+                    if (result.data.success) {
+                        const signedUrl = result.data.url;
+                        this.setState({signedUrl});
+                        resolve({s3Url: this.state.signedUrl});
+                    } else {
+                        reject('Request failed');
+                    }
+                }).catch(err => {
+                    reject('Request failed');
+                });
+            }
 
+        });
+    }
+
+    submitFiles = () => {
         this.setState({isUploading: true});
-        for (let i = 0, numFiles = this.state.files.length; i < numFiles; i++) {
-            const file = this.state.files[i];
-            axios.get( this.props.node.upload_url)
-              .then((result: any) => {
-                const signedUrl = result.data.signedUrl;
+        this.props.fileSelected(true);
+        console.log(this.props);
 
+        const file = this.state.files[0];
+        const dataToGetSignedUrl = {
+            node_id: this.props.node.node_id,
+            content_tye: file.type,
+            msft_conversation_id: this.props.node.conversation_id
+        };
+
+        this.getSignedUrl(dataToGetSignedUrl).then((result: any) => {
                 const options = {
                   headers: {
                     'Content-Type': file.type
                   }
                 };
 
-                return axios.put(signedUrl, file, options);
-              })
-              .then((result: any) => {
-                this.setState({isUploading: false});
-                this.props.sendMessage(file.name);
-              })
-              .catch(err => {
-                this.setState({isUploading: false});
-                console.log('error', err);
+                return axios.put(result.s3Url, file, options);
+            }).then((result: any) => {
+                if (result.status === 200) {
+                  this.props.fileSelected(false);
+                  this.setState({isUploading: false, uploadPhase: 'success'});
+
+                  this.props.sendMessage(this.state.signedUrl.split('?')[0]);
+                } else {
+                    throw Error('Something went wrong. Try again.');
+                }
+            }).catch(err => {
+                this.props.fileSelected(false);
+                this.setState({isUploading: false, uploadPhase: 'error'});
+                // console.log('error', err);
                 this.props.sendMessage('Docs not uploaded successfully.');
               });
         }
 
+    clickToSubmitFile(e: React.MouseEvent<HTMLDivElement>) {
+        if (this.state.uploadPhase !== 'preview') { return; }
+        this.submitFiles();
+        // this.props.submitDate();
+        // this.props.sendMessage(this.state.files);
+        document.removeEventListener('keypress', this.handleKeyDown.bind(this));
+
+        e.stopPropagation();
+    }
+
+    clickToRetryFile(e: React.MouseEvent<HTMLDivElement>) {
+        if (this.state.uploadPhase !== 'error') { return; }
+        this.setState({uploadPhase: 'open'});
         // this.props.submitDate();
         // this.props.sendMessage(this.state.files);
         document.removeEventListener('keypress', this.handleKeyDown.bind(this));
@@ -110,7 +159,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
         if (imageFiles.length > 0) {
             this.setState({
                 files: imageFiles,
-                previewFile: true
+                uploadPhase: 'preview'
             });
         }
       }
@@ -131,7 +180,8 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                 <div className="upload-skip" onClick={e => this.handleSkipFile(e) }>Skip</div>
             </div>
           );
-          if (this.state.previewFile) {
+
+          if (this.state.uploadPhase === 'preview') {
             returnDropzone = (
                 <div>
                     <div className="file-upload-title">{this.state.files[0].name}</div>
@@ -146,7 +196,21 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                     <div className="upload-skip" onClick={e => this.clickToSubmitFile(e) }>Press Enter to Submit</div>
                 </div>
               );
-        }
+           }
+
+          if (this.state.uploadPhase === 'error') {
+            returnDropzone = (
+                <div>
+                    <div className="file-upload-title error">Error</div>
+                    <div className="file_chunk no-border">
+                        <div className="drop-text add-padding">
+                            <span className="bold-line">Your file not uploaded successfully.</span>
+                        </div>
+                    </div>
+                    <div className="upload-skip" onClick={e => this.clickToRetryFile(e) }>Press Enter to Retry</div>
+                </div>
+              );
+           }
 
           return returnDropzone;
 
@@ -170,13 +234,14 @@ export const FileUploadCard = connect(
         locale: state.format.locale,
         user: state.connection.user
     }), {
-        submitFile: () => ({ type: 'Submit_File' } as ChatActions),
+        fileSelected: (inputStatus: boolean) => ({type: 'Select_File', payload: inputStatus}),
         sendMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): FileUploadProps => ({
         node: ownProps.node,
-        submitFile: dispatchProps.submitFile,
-        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
-        sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale)
+        fileSelected: dispatchProps.fileSelected,
+        sendMessage: (text: any) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
+        sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
+        gid: ownProps.gid
     })
 )(FileUpload);

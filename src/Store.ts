@@ -92,9 +92,9 @@ export type ShellAction = {
 }| {
     type: 'Submit_Date',
     message: MessageWithDate
-}| {
-    type: 'Submit_File',
-    files: FileList
+}|  {
+    type: 'Select_File',
+    payload: boolean
 };
 
 export const shell: Reducer<ShellState> = (
@@ -172,6 +172,12 @@ export const shell: Reducer<ShellState> = (
                 ...state,
                 inputDisabled: false,
                 placeholder: defaultStrings.consolePlaceholder
+            };
+
+        case 'Select_File':
+            return {
+                ...state,
+                inputDisabled: action.payload
             };
 
         default:

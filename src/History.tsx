@@ -24,6 +24,7 @@ export interface HistoryProps {
 
     onCardAction: () => void;
     doCardAction: IDoCardAction;
+    gid: string;
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -110,6 +111,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             onClickRetry={ null }
             selected={ false }
             showTimestamp={ false }
+            gid={null}
         >
             <div style={ { width: this.largeWidth } }>&nbsp;</div>
         </WrappedActivity>
@@ -159,6 +161,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 e.stopPropagation();
                                 this.props.onClickRetry(activity);
                             } }
+                            gid={ this.props.gid }
                         >
                             <ActivityView
                                 format={ this.props.format }
@@ -167,6 +170,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 type={activity.type}
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
+                                gid={ this.props.gid}
                             />
                         </WrappedActivity>
                 );
@@ -223,7 +227,8 @@ export const History = connect(
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
-        onCardAction: ownProps.onCardAction
+        onCardAction: ownProps.onCardAction,
+        gid: ownProps.gid
     }), {
         withRef: true
     }
@@ -264,6 +269,7 @@ export interface WrappedActivityProps {
     lastMessage?: boolean;
     onClickActivity: React.MouseEventHandler<HTMLDivElement>;
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>;
+    gid: string;
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -297,6 +303,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                                     activity={activity}
                                     onCardAction={ (type: CardActionTypes, value: string | object) => doCardAction(type, value) }
                                     onImageLoad={null}
+                                    gid={this.props.gid}
                                 />
                             </div>
                         </div>
