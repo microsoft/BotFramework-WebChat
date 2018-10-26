@@ -330,7 +330,3 @@ ConnectedComposerWithStore.propTypes = {
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
 };
-
-export default connect(
-  ({ referenceGrammarID }) => ({ referenceGrammarID })
-)(props => <Composer { ...props } />);
