@@ -106,7 +106,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
         const file = this.state.files[0];
         const dataToGetSignedUrl = {
             node_id: this.props.node.node_id,
-            content_tye: file.type,
+            content_type: file.type,
             msft_conversation_id: this.props.node.conversation_id
         };
 
@@ -131,7 +131,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                 this.props.fileSelected(false);
                 this.setState({isUploading: false, uploadPhase: 'error'});
                 // console.log('error', err);
-                this.props.sendMessage('Docs not uploaded successfully.');
+                // this.props.sendMessage('Docs not uploaded successfully.');
               });
         }
 
