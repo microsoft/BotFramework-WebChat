@@ -13,8 +13,7 @@ const ROOT_CSS = css({
 });
 
 export default connectToWebChat(
-  ({ settings: { language } }) => ({ language }),
-  ({ styleSet }) => ({ styleSet })
+  ({ language, styleSet }) => ({ language, styleSet })
 )(({ activity, children, language, showTimestamp, styleSet }) => {
   const filmStyleSet = createBasicStyleSet();
 
