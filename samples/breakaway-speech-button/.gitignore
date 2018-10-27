@@ -19,6 +19,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Removing package-lock.json for sample, so user can always try out the latest version
-package-lock.json
