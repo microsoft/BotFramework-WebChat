@@ -21,7 +21,7 @@ export default connectToWebChat(
     <Composer>
       <FilmContext.Consumer>
         { ({ scrollBarWidth }) =>
-          <div className={ classNames(ROOT_CSS + '', styleSet.carousel + '') }>
+          <div className={ classNames(ROOT_CSS + '', filmStyleSet.carousel + '') }>
             <CarouselFilmStrip activity={ activity } showTimestamp={ showTimestamp }>
               { children }
             </CarouselFilmStrip>
