@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import CarouselFilmStrip from './CarouselFilmStrip';
 
 const ROOT_CSS = css({
@@ -12,7 +12,7 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ settings: { language } }) => ({ language }),
   ({ styleSet }) => ({ styleSet })
 )(({ activity, children, language, showTimestamp, styleSet }) => {
