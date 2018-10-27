@@ -116,6 +116,7 @@ export default class extends React.Component {
         { ({ styleSet }) =>
           <TypeFocusSinkBox
             className={ classNames(ROOT_CSS + '', styleSet.root + '', (props.className || '') + '') }
+            role="complementary"
             sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' } />
