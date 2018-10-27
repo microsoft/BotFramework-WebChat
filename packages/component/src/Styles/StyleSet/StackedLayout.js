@@ -23,10 +23,6 @@ export default function ({
       }
     },
 
-    '& > .filler': {
-      flexBasis: paddingRegular
-    },
-
     '&.from-user > .avatar': {
       marginLeft: paddingRegular
     },
