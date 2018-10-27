@@ -15,9 +15,8 @@ const ROOT_CSS = css({
 export default connectWithContext(
   ({ settings: { language } }) => ({ language }),
   ({ styleSet }) => ({ styleSet })
-)(
-  ({ activity, children, language, showTimestamp, styleSet }) => {
-    const filmStyleSet = createBasicStyleSet();
+)(({ activity, children, language, showTimestamp, styleSet }) => {
+  const filmStyleSet = createBasicStyleSet();
 
   return (
     <Composer>
