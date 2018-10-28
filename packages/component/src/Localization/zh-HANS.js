@@ -34,7 +34,7 @@ export default {
   'Send': '发送',
   'Sending': '正在发送',
   'Speak': '发言',
-  // 'Starting…': '',
+  'Starting…': '开始中…',
   'Tax': '税',
   'Total': '共计',
   'Type your message': '输入你的消息',
