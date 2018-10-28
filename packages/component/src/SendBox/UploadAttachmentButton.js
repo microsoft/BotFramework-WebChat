@@ -78,13 +78,13 @@ class UploadAttachmentButton extends React.Component {
     return (
       <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
         <input
+          aria-label={ uploadFileString }
           disabled={ disabled }
           multiple={ true }
           onChange={ this.handleFileChange }
           ref={ this.inputRef }
           role="button"
           tabIndex={ -1 }
-          title={ uploadFileString }
           type="file"
         />
         <IconButton
