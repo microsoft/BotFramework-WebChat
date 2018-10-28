@@ -18,7 +18,7 @@ export default function () {
       <ImageAttachment activity={ activity } attachment={ attachment } />
     : /^video\//.test(contentType) ?
       <VideoAttachment activity={ activity } attachment={ attachment } />
-    : attachment.contentUrl ?
+    : (attachment.contentUrl || contentType === 'application/octet-stream') ?
       <DownloadAttachment activity={ activity } attachment={ attachment } />
     : /^text\//.test(contentType) ?
       <TextAttachment activity={ activity } attachment={ attachment } />
