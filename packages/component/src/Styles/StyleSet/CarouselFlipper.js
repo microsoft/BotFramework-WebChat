@@ -9,25 +9,25 @@ export default function ({
   transcriptOverlayButtonColorOnHover
 }) {
   return {
-    '& > div.button': {
+    '& > div.slider > div.button': {
       backgroundColor: transcriptOverlayButtonBackground,
       color: transcriptOverlayButtonColor,
-      outline: 0,
+      outline: 0
+    },
 
-      '&:disabled': {
-        backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
-        color: transcriptOverlayButtonColorOnDisabled
-      },
+    '&:disabled > div.slider > div.button': {
+      backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+      color: transcriptOverlayButtonColorOnDisabled
+    },
 
-      '&:focus': {
-        backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
-        color: transcriptOverlayButtonColorOnFocus
-      },
+    '&:focus > div.slider > div.button': {
+      backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
+      color: transcriptOverlayButtonColorOnFocus
+    },
 
-      '&:hover': {
-        backgroundColor: transcriptOverlayButtonBackgroundOnHover,
-        color: transcriptOverlayButtonColorOnHover
-      }
+    '&:hover > div.slider > div.button': {
+      backgroundColor: transcriptOverlayButtonBackgroundOnHover,
+      color: transcriptOverlayButtonColorOnHover
     }
   };
 }
