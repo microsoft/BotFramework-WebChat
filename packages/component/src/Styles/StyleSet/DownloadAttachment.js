@@ -15,6 +15,10 @@ export default function ({
       padding: paddingRegular,
       textDecoration: 'none',
 
+      '&:focus': {
+        backgroundColor: 'rgba(0, 0, 0, .1)'
+      },
+
       '& > .icon': {
         fill: accent,
         marginLeft: paddingRegular,
