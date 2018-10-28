@@ -6,32 +6,19 @@ import connectToWebChat from '../connectToWebChat';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
 import { localize } from '../Localization/Localize';
+import IconButton from './IconButton';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
   position: 'relative',
 
   '& > input': {
-    height: '100%',
+    height: 0,
+    width: 0,
     opacity: 0,
     position: 'absolute',
-    right: 0,
-    top: 0,
-
-    '&:not(:disabled)': {
-      cursor: 'pointer'
-    }
-  },
-
-  '& > .icon': {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    height: '100%',
-
-    '&.disabled > svg': {
-      fill: '#CCC'
-    }
+    left: 0,
+    top: 0
   }
 });
 
@@ -63,8 +50,15 @@ class UploadAttachmentButton extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleClick = this.handleClick.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
     this.inputRef = React.createRef();
+  }
+
+  handleClick(event) {
+    const { current } = this.inputRef;
+
+    current && current.click();
   }
 
   handleFileChange(event) {
@@ -89,12 +83,17 @@ class UploadAttachmentButton extends React.Component {
           onChange={ this.handleFileChange }
           ref={ this.inputRef }
           role="button"
+          tabIndex={ -1 }
           title={ uploadFileString }
           type="file"
         />
-        <div className={ classNames('icon', { disabled }) }>
+        <IconButton
+          alt={ localize('Upload file', language) }
+          disabled={ disabled }
+          onClick={ this.handleClick }
+        >
           <AttachmentIcon />
-        </div>
+        </IconButton>
       </div>
     );
   }
