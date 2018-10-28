@@ -28,22 +28,24 @@ export default connectToWebChat(
             { scrollBarWidth !== '100%' &&
               <React.Fragment>
                 <Flipper
+                  aria-label={ localize('Left', language) }
                   className={ classNames(
                     styleSet.carouselFlipper + '',
                     filmStyleSet.leftFlipper + ''
                   ) }
                   mode="left"
                 >
-                  <div aria-label={ localize('Left', language) } className="button">&lt;</div>
+                  <div className="button">&lt;</div>
                 </Flipper>
                 <Flipper
+                  aria-label={ localize('Right', language) }
                   className={ classNames(
                     styleSet.carouselFlipper + '',
                     filmStyleSet.rightFlipper + ''
                   ) }
                   mode="right"
                 >
-                  <div aria-label={ localize('Right', language) } className="button">&gt;</div>
+                  <div className="button">&gt;</div>
                 </Flipper>
               </React.Fragment>
             }
