@@ -28,6 +28,7 @@ export default {
   'Chat': '傾偈',
   'Left': '左',
   'Listening…': '聽緊你講嘢…',
+  'New messages': '新訊息',
   'retry': '再嚟一次',
   'Right': '右',
   'Send failed, {retry}': '傳送唔倒，{retry}',

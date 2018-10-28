@@ -13,6 +13,7 @@ const ROOT_CSS = css({
 
   '& > .content': {
     flex: 1,
+    overflow: 'hidden',
     width: '100%'
   },
 

@@ -27,6 +27,7 @@ export default {
   'Chat': '聊天',
   'Left': '左',
   'Listening…': '正在倾听…',
+  'New messages': '新讯息',
   'retry': '重试',
   'Right': '右',
   'Send failed, {retry}': '无法发送，{retry}',

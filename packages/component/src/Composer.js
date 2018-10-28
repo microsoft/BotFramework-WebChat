@@ -1,3 +1,7 @@
+import {
+  Composer as ScrollToBottomComposer,
+  FunctionContext as ScrollToBottomFunctionContext
+} from 'react-scroll-to-bottom';
 import { connect } from 'react-redux';
 import { css } from 'glamor';
 import memoize from 'memoize-one';
@@ -119,13 +123,13 @@ function createCardActionLogic({ directLine, dispatch }) {
 }
 
 function createFocusSendBoxLogic({ sendBoxRef }) {
-  const focusSendBox = (() => {
-    const { current } = sendBoxRef || {};
+  return {
+    focusSendBox: () => {
+      const { current } = sendBoxRef || {};
 
-    current && current.focus();
-  });
-
-  return { focusSendBox };
+      current && current.focus();
+    }
+  };
 }
 
 function createStyleSetLogic({ styleSet, styleOptions }) {
@@ -231,7 +235,7 @@ class Composer extends React.Component {
         groupTimestamp,
         referenceGrammarID,
         renderMarkdown,
-        scrollToBottom,
+        scrollToEnd,
         store,
         userAvatarInitials,
         userID,
@@ -260,7 +264,7 @@ class Composer extends React.Component {
         disabled,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
-        scrollToBottom: scrollToBottom || NULL_FUNCTION,
+        scrollToEnd,
         store,
         userAvatarInitials,
         webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarID)
@@ -271,12 +275,7 @@ class Composer extends React.Component {
 
     return (
       <Context.Provider value={ context }>
-        {
-          typeof children === 'function' ?
-            children(context)
-          :
-            children
-        }
+        { typeof children === 'function' ? children(context) : children }
         <Dictation />
       </Context.Provider>
     );
@@ -285,7 +284,18 @@ class Composer extends React.Component {
 
 const ConnectedComposer = connect(
   ({ referenceGrammarID }) => ({ referenceGrammarID })
-)(props => <Composer { ...props } />);
+)(props =>
+  <ScrollToBottomComposer threshold={ 40 }>
+    <ScrollToBottomFunctionContext.Consumer>
+      { ({ scrollToEnd }) =>
+        <Composer
+          scrollToEnd={ scrollToEnd }
+          { ...props }
+        />
+      }
+    </ScrollToBottomFunctionContext.Consumer>
+  </ScrollToBottomComposer>
+);
 
 // We will create a Redux store if it was not passed in
 class ConnectedComposerWithStore extends React.Component {

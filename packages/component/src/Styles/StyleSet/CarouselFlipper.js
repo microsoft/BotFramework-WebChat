@@ -1,18 +1,33 @@
 export default function ({
-  carouselFlipperBackground,
-  carouselFlipperBackgroundOnHover,
-  carouselFlipperColor,
-  carouselFlipperColorOnHover
+  transcriptOverlayButtonBackground,
+  transcriptOverlayButtonBackgroundOnDisabled,
+  transcriptOverlayButtonBackgroundOnFocus,
+  transcriptOverlayButtonBackgroundOnHover,
+  transcriptOverlayButtonColor,
+  transcriptOverlayButtonColorOnDisabled,
+  transcriptOverlayButtonColorOnFocus,
+  transcriptOverlayButtonColorOnHover
 }) {
   return {
     '& > div.button': {
-      backgroundColor: carouselFlipperBackground,
-      color: carouselFlipperColor
-    },
+      backgroundColor: transcriptOverlayButtonBackground,
+      color: transcriptOverlayButtonColor,
+      outline: 0,
 
-    '&:hover > div.button': {
-      backgroundColor: carouselFlipperBackgroundOnHover,
-      color: carouselFlipperColorOnHover
+      '&:disabled': {
+        backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+        color: transcriptOverlayButtonColorOnDisabled
+      },
+
+      '&:focus': {
+        backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
+        color: transcriptOverlayButtonColorOnFocus
+      },
+
+      '&:hover': {
+        backgroundColor: transcriptOverlayButtonBackgroundOnHover,
+        color: transcriptOverlayButtonColorOnHover
+      }
     }
   };
 }

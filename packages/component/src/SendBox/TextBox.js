@@ -18,7 +18,7 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
   ({
     disabled,
     language,
-    scrollToBottom,
+    scrollToEnd,
     sendBoxValue,
     setSendBox,
     submitSendBox
@@ -26,7 +26,6 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
     disabled,
     language,
     onChange: ({ target: { value } }) => {
-      scrollToBottom();
       setSendBox(value, 'keyboard');
     },
     onSubmit: event => {
@@ -36,7 +35,7 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
       // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
 
       if (sendBoxValue) {
-        scrollToBottom();
+        scrollToEnd();
         submitSendBox('keyboard');
       }
     },

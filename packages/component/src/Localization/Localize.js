@@ -67,15 +67,7 @@ function localize(text, language, args) {
 }
 
 export default connectToWebChat(
-  ({
-    args,
-    language,
-    text
-  }) => ({
-    args,
-    language,
-    text
-  })
+  ({ language }) => ({ language })
 )(({ args, language, text }) => localize(text, language, args))
 
 export { localize }

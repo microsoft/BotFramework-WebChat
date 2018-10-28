@@ -1,5 +1,9 @@
 import React from 'react';
 
-export default React.createContext({
+const context = React.createContext({
   focusableRef: null
 });
+
+context.displayName = 'TypeFocusSinkContext';
+
+export default context

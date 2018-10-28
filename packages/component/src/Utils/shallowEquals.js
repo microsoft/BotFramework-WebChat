@@ -1,4 +1,6 @@
 export default function (x, y) {
+  if (x === y) { return true; }
+
   const xKeys = Object.keys(x);
   const yKeys = Object.keys(y);
 

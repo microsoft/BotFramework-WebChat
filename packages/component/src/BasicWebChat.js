@@ -19,8 +19,7 @@ const ROOT_CSS = css({
 });
 
 const TRANSCRIPT_CSS = css({
-  flex: 1,
-  overflowY: 'auto'
+  flex: 1
 });
 
 const SEND_BOX_CSS = css({

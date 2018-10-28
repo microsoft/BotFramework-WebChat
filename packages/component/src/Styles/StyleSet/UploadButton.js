@@ -1,4 +1,7 @@
 export default function createUploadButtonStyle({
+  sendBoxButtonColor,
+  sendBoxButtonColorOnFocus,
+  sendBoxButtonColorOnHover,
   sendBoxHeight
 }) {
   return {
@@ -6,7 +9,15 @@ export default function createUploadButtonStyle({
     width: sendBoxHeight,
 
     '& > .icon > svg': {
-      fill: '#999'
+      fill: sendBoxButtonColor
+    },
+
+    '& > input:hover + .icon > svg': {
+      fill: sendBoxButtonColorOnHover
+    },
+
+    '& > input:focus + .icon > svg': {
+      fill: sendBoxButtonColorOnFocus
     }
   };
 }
