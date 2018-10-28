@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
+import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
@@ -37,13 +38,14 @@ const connectMicrophoneButton = (...selectors) => connectToWebChat(
 );
 
 export default connectMicrophoneButton(
-  ({ styleSet }) => ({ styleSet })
+  ({ language, styleSet }) => ({ language, styleSet })
 )(
   ({
     className,
     click,
     dictating,
     disabled,
+    language,
     styleSet
   }) =>
     <div className={ classNames(
@@ -53,6 +55,7 @@ export default connectMicrophoneButton(
       { dictating }
     ) }>
       <IconButton
+        alt={ localize('Speak', language) }
         disabled={ disabled }
         onClick={ click }
       >
