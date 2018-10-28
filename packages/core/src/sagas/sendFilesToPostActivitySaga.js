@@ -16,13 +16,13 @@ export default function* () {
 
       if (files.length) {
         yield put(postActivity({
-          attachments: files.map(file => ({
+          attachments: [].map.call(files, file => ({
             contentType: 'application/octet-stream',
             contentUrl: file.url,
             name: file.name
           })),
           channelData: {
-            attachmentSizes: files.map(file => file.size)
+            attachmentSizes: [].map.call(files, file => file.size)
           },
           type: 'message'
         }));
