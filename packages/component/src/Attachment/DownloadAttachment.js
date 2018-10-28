@@ -20,7 +20,6 @@ export default connectToWebChat(
         <a
           href={ attachment.contentUrl }
           target="_blank"
-          title={ attachment.contentUrl }
         >
           <div className="details">
             <div className="name">{ attachment.name }</div>
