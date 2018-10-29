@@ -7,14 +7,13 @@ const ROOT_CSS = css({
   overflow: 'hidden',
   position: 'relative',
 
-  // TODO: [P2] Prefer "cover" over "contains"
   '& > img': {
-    height: '100%',
+    height: 'auto',
     left: '50%',
     position: 'absolute',
     top: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 'auto'
+    width: '100%'
   }
 });
 
