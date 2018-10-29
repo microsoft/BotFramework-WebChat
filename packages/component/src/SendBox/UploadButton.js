@@ -22,7 +22,7 @@ const ROOT_CSS = css({
   }
 });
 
-const connectUploadAttachmentButton = (...selectors) => connectToWebChat(
+const connectUploadButton = (...selectors) => connectToWebChat(
   ({
     disabled,
     language,
@@ -46,7 +46,7 @@ const connectUploadAttachmentButton = (...selectors) => connectToWebChat(
   ...selectors
 )
 
-class UploadAttachmentButton extends React.Component {
+class UploadButton extends React.Component {
   constructor(props) {
     super(props);
 
@@ -99,7 +99,7 @@ class UploadAttachmentButton extends React.Component {
   }
 }
 
-export default connectUploadAttachmentButton(
+export default connectUploadButton(
   ({
     disabled,
     language,
@@ -111,6 +111,6 @@ export default connectUploadAttachmentButton(
     sendFiles,
     styleSet
   })
-)(UploadAttachmentButton)
+)(UploadButton)
 
-export { connectUploadAttachmentButton }
+export { connectUploadButton }

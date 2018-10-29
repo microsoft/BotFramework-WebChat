@@ -16,7 +16,7 @@ import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneB
 import SendButton, { connectSendButton } from './SendBox/SendButton';
 import SendTextBox, { connectSendTextBox } from './SendBox/TextBox';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
-import UploadAttachmentButton, { connectUploadAttachmentButton } from './SendBox/UploadAttachmentButton';
+import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 
 import concatMiddleware from './Middleware/concatMiddleware';
 import connectToWebChat from './connectToWebChat';
@@ -49,14 +49,14 @@ const Components = {
   SendButton,
   SendTextBox,
   SuggestedActions,
-  UploadAttachmentButton,
+  UploadButton,
 
   connectDictationInterims,
   connectMicrophoneButton,
   connectSendButton,
   connectSendTextBox,
   connectSuggestedActions,
-  connectUploadAttachmentButton
+  connectUploadButton
 };
 
 export default BasicWebChat
