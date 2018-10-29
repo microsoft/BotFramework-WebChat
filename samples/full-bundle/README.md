@@ -29,6 +29,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 ## Getting started
 ### Goals of this bot
+
 This code features the minimal scripting the bot needs to host a full-featured Web Chat. 
 The `index.html` page has two main goals.
 - To import the Web Chat full bundle CDN script
@@ -91,10 +92,12 @@ Finally, add desired styling.
 + }
 </style>
 …
-
 ```
+
 ## Completed code 
+
 Here is the finished `index.html`:
+
 ```diff
 <!DOCTYPE html>
 <html lang="en-US">
