@@ -11,7 +11,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 # How to run locally
 
-- Fork and clone this repo
+- Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/full-bundle` in command line
 - Run `npx serve` in the full-bundle directory
 - Browse to [http://localhost:5000/](http://localhost:5000/)

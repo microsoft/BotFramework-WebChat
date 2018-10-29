@@ -6,11 +6,10 @@ A simple web page with a maximized Web Chat and minimal additional components.
 
 - Adaptive Cards
 - Cognitive Services Bing Speech
-- Markdown-It
 
 # How to run
 
-- Fork and clone this repo
+- Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/minimal-bundle` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
@@ -19,13 +18,14 @@ A simple web page with a maximized Web Chat and minimal additional components.
 
 - Type `markdown`: you should see the raw text, instead of rendered Markdown
 - Type `card weather`: you should see an error stating Adaptive Cards renderer is not found
-- Type `hello` as a greeting: you should be able to type to the bot and receive a response in plain text
+- Type `hello`: you should be able to type to the bot and receive a response in plain text
 
 # Code
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Getting started
 ### Goals of this bot
+
 This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies and functionality. 
 
 The `index.html` page has two main goals.
@@ -35,6 +35,10 @@ The `index.html` page has two main goals.
  This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md) as the base template.
 
  The only change needed in this sample is to change the Web Chat CDN from the full bundle to core bundle.
+
+
+<!-- TODO: [P0] Change CDN urls across ALL samples to reflect updated, non-preview CDN. -->
+
 
  ```diff
  …

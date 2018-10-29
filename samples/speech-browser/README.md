@@ -7,7 +7,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN, 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/speech-browser)
 
 # How to run locally
-- Fork and clone this repo
+- Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/speech-browser` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
@@ -15,8 +15,8 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN, 
 # Things to try out
 - Use the microphone button: you should be able to provide commands to the bot via speech
 - Speak `help`: you should see a full list of MockBot features
-- Speak `card weather`, you should see a weather card built using Adaptive Cards
-- Speak `carousel`, you should see a carousel of cards
+- Speak `card weather`: you should see a weather card built using Adaptive Cards
+- Speak `carousel`: you should see a carousel of cards
 
 # Code
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.

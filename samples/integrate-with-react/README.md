@@ -10,7 +10,7 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/integrate-with-react)
 
 # How to run locally
-- Fork and clone this repo
+- Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/integrate-with-react` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
@@ -18,9 +18,9 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 # Things to try out
 
 - Type `help`: you should see a full list of MockBot features
-- Type `markdown`, you should see the sample of Markdown
-- Type `card weather`, you should see a weather card built using Adaptive Cards
-- Type `layout carousel`, you should see a carousel of cards
+- Type `markdown`: you should see the sample of Markdown
+- Type `card weather`: you should see a weather card built using Adaptive Cards
+- Type `layout carousel`: you should see a carousel of cards
    - Resize the window and see how the carousel change its size
 
 # Code
