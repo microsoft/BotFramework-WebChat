@@ -1,12 +1,11 @@
-# Sample -  Getting Started with Web Chat CDN
+# Sample -  Getting started with Web Chat CDN
 
 > This is a great sample for first-time Web Chat users.
 
-## Description
 A simple web page with a maximized and full-featured Web Chat embed from a CDN. This includes Adaptive Cards, Cognitive Services, and Markdown-It dependencies. 
 
-
 # Test out the hosted sample
+
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/full-bundle)
 
 # How to run locally
@@ -17,6 +16,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
+
 - Type `help`: you should see a full list of MockBot features
 - Type `markdown`: you should see the sample of Markdown
 - Type `card weather`: you should see a weather card built using Adaptive Cards
@@ -28,6 +28,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Getting started
+
 ### Goals of this bot
 
 This code features the minimal scripting the bot needs to host a full-featured Web Chat. 
@@ -132,9 +133,10 @@ Here is the finished `index.html`:
 </html>
 ```
 
-# Further Reading
+# Further reading
 
 ## Other CDN bundles
+
 Check out the hosted samples and source code for other CDN bundle options below. 
 
 - [Full bundle with polyfills for ES5 browsers](https://microsoft.github.io/BotFramework-WebChat/es5-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/es5-bundle)
@@ -142,7 +144,9 @@ Check out the hosted samples and source code for other CDN bundle options below.
 - [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/minimal-bundle-with-markdown) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/minimal-bundle-with-markdown)
 
 ## CDN sunburst chart
+
 [This chart](http://cdn.botframework.com/botframework-webchat/preview/stats.html) provides a visual of the contents of the various Web Chat bundles
 
-## Full list of Web Chat Hosted Samples
+## Full list of Web Chat hosted samples
+
 View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples)
