@@ -8,6 +8,12 @@ export default function ({
   transcriptOverlayButtonColorOnHover
 }) {
   return {
+    // TODO: [P3] Can we not to unset borderWidth and outline earlier?
+    '@media screen and (-ms-high-contrast: active)': {
+      borderWidth: 'initial',
+      outline: 'initial'
+    },
+
     backgroundColor: transcriptOverlayButtonBackground,
     borderRadius: paddingRegular,
     borderWidth: 0,
