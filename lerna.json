@@ -1,7 +1,8 @@
 {
   "lerna": "2.11.0",
   "packages": [
-    "packages/*"
+    "packages/*",
+    "samples/breakaway-speech-button"
   ],
   "version": "0.0.0"
 }

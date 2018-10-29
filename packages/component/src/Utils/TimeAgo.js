@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
 
 function nextTimer(date) {
@@ -55,6 +55,6 @@ class TimeAgo extends React.Component {
   }
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ language }) => ({ language })
 )(TimeAgo)

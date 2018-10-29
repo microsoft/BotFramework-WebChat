@@ -1,13 +1,12 @@
 import React from 'react';
 
-import Context from '../Context';
+import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
 
-export default props =>
-  <Context.Consumer>
-    { ({ styleSet }) =>
-      <div className={ styleSet.typingActivity }>
-        <TypingAnimation />
-      </div>
-    }
-  </Context.Consumer>
+export default connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(({ styleSet }) =>
+  <div className={ styleSet.typingActivity }>
+    <TypingAnimation />
+  </div>
+)

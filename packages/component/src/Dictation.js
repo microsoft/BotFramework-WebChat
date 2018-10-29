@@ -2,7 +2,7 @@ import { Composer as DictateComposer } from 'react-dictate-button';
 import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
-import connectWithContext from './connectWithContext';
+import connectToWebChat from './connectToWebChat';
 
 const {
   DictateState: {
@@ -84,7 +84,7 @@ class Dictation extends React.Component {
   }
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({
     dictateState,
     disabled,

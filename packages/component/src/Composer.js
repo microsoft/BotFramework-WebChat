@@ -6,6 +6,7 @@ import React from 'react';
 
 import {
   connect as createConnectAction,
+  createStore,
   disconnect,
   markActivity,
   postActivity,
@@ -245,6 +246,7 @@ class Composer extends React.Component {
     const context = this.mergeContext(
       contextFromProps,
       state.hoistedDispatchers,
+
       // TODO: [P4] Should we normalize empties here? Or should we let it thru?
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
@@ -271,7 +273,7 @@ class Composer extends React.Component {
       <Context.Provider value={ context }>
         {
           typeof children === 'function' ?
-            <Context.Consumer>{ context => children(context) }</Context.Consumer>
+            children(context)
           :
             children
         }
@@ -281,10 +283,40 @@ class Composer extends React.Component {
   }
 }
 
-Composer.propTypes = {
-  activityRenderer: PropTypes.func.isRequired,
+const ConnectedComposer = connect(
+  ({ referenceGrammarID }) => ({ referenceGrammarID })
+)(props => <Composer { ...props } />);
+
+// We will create a Redux store if it was not passed in
+class ConnectedComposerWithStore extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.createMemoizedStore = memoize(() => createStore());
+  }
+
+  render() {
+    const { props } = this;
+
+    return (
+      <ConnectedComposer
+        { ...props }
+        store={ props.store || this.createMemoizedStore() }
+      />
+    );
+  }
+}
+
+export default ConnectedComposerWithStore
+
+// TODO: [P3] We should consider moving some props to Redux store
+//       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
+//       we should clean up the responsibility between Context and Redux store
+//       We should decide which data is needed for React but not in other environment such as CLI/VSCode
+ConnectedComposerWithStore.propTypes = {
+  activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
-  attachmentRenderer: PropTypes.func.isRequired,
+  attachmentRenderer: PropTypes.func,
   botAvatarInitials: PropTypes.string,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
@@ -292,11 +324,9 @@ Composer.propTypes = {
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
+  sendTyping: PropTypes.bool,
+  store: PropTypes.any,
   userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
 };
-
-export default connect(
-  ({ referenceGrammarID }) => ({ referenceGrammarID })
-)(props => <Composer { ...props } />);

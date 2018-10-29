@@ -4,10 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
-import { createStore } from 'botframework-webchat-core';
+import { createStore } from 'botframework-webchat';
 
 import App from './App';
-import SpeechOnlyButtonApp from './SpeechOnlyButton/index';
 
 css.global('html, body, #root', { height: '100%' });
 css.global('body', { margin: 0 });
@@ -28,21 +27,17 @@ window.addEventListener('keydown', event => {
   }
 });
 
-if (/speech-only-button(\.html)?/.test(window.location.href)) {
-  ReactDOM.render(<SpeechOnlyButtonApp />, document.getElementById('root'));
-} else {
-  store = createStore(
-    onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY)))
-  );
+store = createStore(
+  onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY)))
+);
 
-  store.subscribe(() => {
-    sessionStorage.setItem(REDUX_STORE_KEY, JSON.stringify(store.getState()));
-  });
+store.subscribe(() => {
+  sessionStorage.setItem(REDUX_STORE_KEY, JSON.stringify(store.getState()));
+});
 
-  ReactDOM.render(
-    <App store={ store }/>,
-    document.getElementById('root')
-  );
-}
+ReactDOM.render(
+  <App store={ store }/>,
+  document.getElementById('root')
+);
 
 registerServiceWorker();

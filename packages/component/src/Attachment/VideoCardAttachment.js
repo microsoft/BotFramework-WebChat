@@ -1,39 +1,36 @@
 import React from 'react';
 
 import CommonCard from './CommonCard';
-import Context from '../Context';
+import connectToWebChat from '../connectToWebChat';
 import VideoContent from './VideoContent';
 
-export default class extends React.Component {
-  render() {
-    const { props: { adaptiveCards, attachment } } = this;
-    const { content = {} } = attachment || {};
-
-    return (
-      <Context.Consumer>
-        { ({ styleSet }) =>
-          <div className={ styleSet.audioCardAttachment }>
-            <ul className="media-list">
-              {
-                content.media.map((media, index) =>
-                  <li key={ index }>
-                    <VideoContent
-                      autoPlay={ content.autostart }
-                      loop={ content.autoloop }
-                      poster={ content.image && content.image.url }
-                      src={ media.url }
-                    />
-                  </li>
-                )
-              }
-            </ul>
-            <CommonCard
-              adaptiveCards={ adaptiveCards }
-              attachment={ attachment }
-            />
-          </div>
+export default connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    adaptiveCards,
+    attachment,
+    attachment: { content = {} } = {},
+    styleSet
+  }) =>
+    <div className={ styleSet.audioCardAttachment }>
+      <ul className="media-list">
+        {
+          content.media.map((media, index) =>
+            <li key={ index }>
+              <VideoContent
+                autoPlay={ content.autostart }
+                loop={ content.autoloop }
+                poster={ content.image && content.image.url }
+                src={ media.url }
+              />
+            </li>
+          )
         }
-      </Context.Consumer>
-    );
-  }
-}
+      </ul>
+      <CommonCard
+        adaptiveCards={ adaptiveCards }
+        attachment={ attachment }
+      />
+    </div>
+)

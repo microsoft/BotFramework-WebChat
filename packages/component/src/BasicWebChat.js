@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import memoize from 'memoize-one';
 import React from 'react';
 
-import BasicSendBox from './SendBox/BasicSendBox';
-import BasicTranscript from './Transcript/BasicTranscript';
+import BasicSendBox from './BasicSendBox';
+import BasicTranscript from './BasicTranscript';
 import Composer from './Composer';
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -112,8 +112,6 @@ export default class extends React.Component {
         attachmentRenderer={ state.attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
-        // We override store from props: if it was not passed in, we will create-and-cache it automatically
-        store={ props.store || this.createMemoizedStore() }
       >
         { ({ styleSet }) =>
           <TypeFocusSinkBox

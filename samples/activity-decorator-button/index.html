@@ -10,7 +10,8 @@
     <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
     <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
-    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+    <!-- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script> -->
+    <script src="/botchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -33,7 +34,7 @@
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        const { Context, ReactWebChat } = window.WebChat;
+        const { connectToWebChat, ReactWebChat } = window.WebChat;
         const { css } = window.Glamor;
 
         const ACTIVITY_WITH_FEEDBACK_CSS = css({
@@ -81,10 +82,9 @@
           }
         }
 
-        const ConnectedActivityWithFeedback = props =>
-          <Context.Consumer>
-            { ({ postActivity }) => <ActivityWithFeedback { ...props } postActivity={ postActivity } /> }
-          </Context.Consumer>
+        const ConnectedActivityWithFeedback = connectToWebChat(
+          ({ postActivity }) => ({ postActivity })
+        )(props => <ActivityWithFeedback { ...props } />)
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();

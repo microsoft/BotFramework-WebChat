@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 
@@ -14,67 +14,51 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
-class MicrophoneButton extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    const {
-      props: {
-        dictateState,
-        onClick,
-        startDictate,
-        stopDictate
-      }
-    } = this;
-
-    if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
-      stopDictate();
-    } else {
-      startDictate();
-    }
-
-    onClick && onClick();
-  }
-
-  render() {
-    const {
-      props: { className, dictateState, disabled, styleSet }
-    } = this;
-
-    return (
-      <div className={ classNames(
-        styleSet.microphoneButton + '',
-        ROOT_CSS + '',
-        (className || '') + '',
-        { dictating: dictateState === DictateState.DICTATING }
-      ) }>
-        <IconButton
-          disabled={ disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING) }
-          onClick={ this.handleClick }
-        >
-          <MicrophoneIcon />
-        </IconButton>
-      </div>
-    );
-  }
-}
-
-export default connectWithContext(
+const connectMicrophoneButton = (...selectors) => connectToWebChat(
   ({
     disabled,
     dictateState,
+    language,
     startDictate,
-    stopDictate,
-    styleSet
+    stopDictate
   }) => ({
-    dictateState,
+    click: () => {
+      if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
+        stopDictate();
+      } else {
+        startDictate();
+      }
+    },
+    dictating: dictateState === DictateState.DICTATING,
+    disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
+    language
+  }),
+  ...selectors
+);
+
+export default connectMicrophoneButton(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    className,
+    click,
+    dictating,
     disabled,
-    startDictate,
-    stopDictate,
     styleSet
-  })
-)(MicrophoneButton)
+  }) =>
+    <div className={ classNames(
+      styleSet.microphoneButton + '',
+      ROOT_CSS + '',
+      (className || '') + '',
+      { dictating }
+    ) }>
+      <IconButton
+        disabled={ disabled }
+        onClick={ click }
+      >
+        <MicrophoneIcon />
+      </IconButton>
+    </div>
+)
+
+export { connectMicrophoneButton }

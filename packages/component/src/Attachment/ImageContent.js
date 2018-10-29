@@ -1,17 +1,20 @@
 import React from 'react';
 
-import { withStyleSet } from '../Context';
+import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
 
-export default withStyleSet(({
-  alt,
-  src,
-  styleSet
-}) =>
-  <CroppedImage
-    alt={ alt }
-    height={ styleSet.options.bubbleImageHeight }
-    src={ src }
-    width="100%"
-  />
+export default connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({
+    alt,
+    src,
+    styleSet
+  }) =>
+    <CroppedImage
+      alt={ alt }
+      height={ styleSet.options.bubbleImageHeight }
+      src={ src }
+      width="100%"
+    />
 )

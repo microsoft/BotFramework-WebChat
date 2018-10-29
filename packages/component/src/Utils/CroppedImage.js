@@ -14,7 +14,7 @@ export default class Bubble extends React.Component {
     super(props);
 
     this.createStyle = memoize((src, width, height) => ({
-      backgroundImage: `url(${ src })`,
+      backgroundImage: `url(${ encodeURI(src) })`,
       height,
       width
     }));

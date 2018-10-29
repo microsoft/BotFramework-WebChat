@@ -2,14 +2,34 @@ import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
 
-const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
+const connectSuggestedActions = (...selectors) => connectToWebChat(
+  ({
+    language,
+    suggestedActions
+  }) => ({
+    language,
+    suggestedActions
+  }),
+  ...selectors
+)
+
+export default connectSuggestedActions(
+  ({ styleSet }) => ({ styleSet })
+)(({
+  className,
+  styleSet,
+  suggestedActions
+}) =>
   !!suggestedActions.length &&
     <BasicFilm
       autoCenter={ false }
-      className={ classNames(styleSet.suggestedActions + '', className) }
+      className={ classNames(
+        styleSet.suggestedActions + '',
+        className
+      ) }
       showDots={ false }
       styleSet={ styleSet.options.suggestedActionsStyleSet }
     >
@@ -24,13 +44,6 @@ const SuggestedActions = ({ className, styleSet, suggestedActions }) =>
         )
       }
     </BasicFilm>
+)
 
-export default connectWithContext(
-  ({
-    styleSet,
-    suggestedActions
-  }) => ({
-    styleSet,
-    suggestedActions
-  })
-)(SuggestedActions)
+export { connectSuggestedActions }

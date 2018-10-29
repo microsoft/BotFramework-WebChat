@@ -2,13 +2,13 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import connectWithContext from '../connectWithContext';
-import DictationInterims from './DictationInterims';
-import MicrophoneButton from './MicrophoneButton';
-import SendButton from './SendButton';
-import SuggestedActions from './SuggestedActions';
-import TextBox from './TextBox';
-import UploadAttachmentButton from './UploadAttachmentButton';
+import connectToWebChat from './connectToWebChat';
+import DictationInterims from './SendBox/DictationInterims';
+import MicrophoneButton from './SendBox/MicrophoneButton';
+import SendButton from './SendBox/SendButton';
+import SuggestedActions from './SendBox/SuggestedActions';
+import TextBox from './SendBox/TextBox';
+import UploadAttachmentButton from './SendBox/UploadAttachmentButton';
 
 import { Constants } from 'botframework-webchat-core';
 
@@ -56,7 +56,7 @@ const BasicSendBox = ({
     </div>
   </div>
 
-export default connectWithContext(
+export default connectToWebChat(
   ({
     dictateState,
     styleSet,

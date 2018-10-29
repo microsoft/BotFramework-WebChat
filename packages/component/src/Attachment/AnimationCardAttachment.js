@@ -3,11 +3,11 @@ import React from 'react';
 
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
 import CommonCard from './CommonCard';
-import Context from '../Context';
+import connectToWebChat from '../connectToWebChat';
 import ImageContent from './ImageContent';
 import VideoContent from './VideoContent';
 
-export default class extends React.Component {
+class AnimationCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,40 +23,40 @@ export default class extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCards, attachment } } = this;
+    const { props: { adaptiveCards, attachment, styleSet } } = this;
     const { content = {} } = attachment || {};
 
     return (
-      <Context.Consumer>
-        { ({ styleSet }) =>
-          <div className={ styleSet.animationCardAttachment }>
-            <ul className="media-list">
-              {
-                content.media.map((media, index) =>
-                  <li key={ index }>
-                    {
-                      /\.gif$/i.test(media.url) ?
-                        <ImageContent
-                          alt={ media.profile }
-                          src={ media.url }
-                        />
-                      :
-                        <VideoContent
-                          alt={ media.profile }
-                          src={ media.url }
-                        />
-                    }
-                  </li>
-                )
-              }
-            </ul>
-            <CommonCard
-              adaptiveCards={ adaptiveCards }
-              attachment={ attachment }
-            />
-          </div>
-        }
-      </Context.Consumer>
+      <div className={ styleSet.animationCardAttachment }>
+        <ul className="media-list">
+          {
+            content.media.map((media, index) =>
+              <li key={ index }>
+                {
+                  /\.gif$/i.test(media.url) ?
+                    <ImageContent
+                      alt={ media.profile }
+                      src={ media.url }
+                    />
+                  :
+                    <VideoContent
+                      alt={ media.profile }
+                      src={ media.url }
+                    />
+                }
+              </li>
+            )
+          }
+        </ul>
+        <CommonCard
+          adaptiveCards={ adaptiveCards }
+          attachment={ attachment }
+        />
+      </div>
     );
   }
 }
+
+export default connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(AnimationCardAttachment)

@@ -4,7 +4,7 @@ import React from 'react';
 import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
 import { localize } from '../Localization/Localize';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import connectWithContext from '../connectWithContext';
+import connectToWebChat from '../connectToWebChat';
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
@@ -89,6 +89,6 @@ class ReceiptCardAttachment extends React.Component {
   }
 }
 
-export default connectWithContext(
+export default connectToWebChat(
   ({ language }) => ({ language })
 )(ReceiptCardAttachment)

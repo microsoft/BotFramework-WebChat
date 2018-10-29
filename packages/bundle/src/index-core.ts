@@ -1,7 +1,12 @@
-import { createStore } from 'botframework-webchat-core';
+import {
+  Constants,
+  createStore
+} from 'botframework-webchat-core';
+
 import ReactWebChat, {
+  Components,
   concatMiddleware,
-  Context,
+  connectToWebChat,
   createStyleSet
 } from 'botframework-webchat-component';
 
@@ -14,8 +19,10 @@ const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat)
 export default ReactWebChat
 
 export {
+  Components,
+  Constants,
   concatMiddleware,
-  Context,
+  connectToWebChat,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
   createStore,
@@ -26,7 +33,8 @@ export {
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,
-  Context,
+  connectToWebChat,
+  Constants,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
   createStore,

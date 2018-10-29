@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-import Context from '../Context';
+import connectToWebChat from '../connectToWebChat';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
 const ROOT_CSS = css({
@@ -33,6 +33,30 @@ const ROOT_CSS = css({
   }
 });
 
+const connectUploadAttachmentButton = (...selectors) => connectToWebChat(
+  ({
+    disabled,
+    language,
+    sendFiles
+  }) => ({
+    disabled,
+    language,
+    sendFiles: files => {
+      if (files && files.length) {
+        // TODO: [P3] We need to find revokeObjectURL on the UI side
+        //       Redux store should not know about the browser environment
+        //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
+        sendFiles([].map.call(files, file => ({
+          name: file.name,
+          size: file.size,
+          url: window.URL.createObjectURL(file)
+        })));
+      }
+    }
+  }),
+  ...selectors
+)
+
 class UploadAttachmentButton extends React.Component {
   constructor(props) {
     super(props);
@@ -41,19 +65,12 @@ class UploadAttachmentButton extends React.Component {
     this.inputRef = React.createRef();
   }
 
-  handleFileChange({ target: { files } }) {
-    if (files && files.length) {
-      const { current } = this.inputRef;
+  handleFileChange(event) {
+    this.props.sendFiles(event.target.files);
 
-      // TODO: [P3] We need to find revokeObjectURL on the UI side
-      //       Redux store should not know about the browser environment
-      //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-      this.props.sendFiles([].map.call(files, file => ({
-        name: file.name,
-        size: file.size,
-        url: window.URL.createObjectURL(file)
-      })));
+    const { current } = this.inputRef;
 
+    if (current) {
       current.value = null;
     }
   }
@@ -78,14 +95,8 @@ class UploadAttachmentButton extends React.Component {
   }
 }
 
-export default props =>
-  <Context.Consumer>
-    { ({ disabled, sendFiles, styleSet }) =>
-      <UploadAttachmentButton
-        disabled={ disabled }
-        sendFiles={ sendFiles }
-        styleSet={ styleSet }
-        { ...props }
-      />
-    }
-  </Context.Consumer>
+export default connectUploadAttachmentButton(
+  ({ styleSet }) => ({ styleSet })
+)(UploadAttachmentButton)
+
+export { connectUploadAttachmentButton }
