@@ -1,8 +1,8 @@
-# Sample -  Getting Started with Web Chat CDN Core Bundle
+# Sample - Getting Started with Web Chat CDN minimal bundle
 
 ## Description
-A simple web page with a maximized Web Chat and minimal additional components.
 
+A simple web page with a maximized Web Chat and minimal additional components.
 
 - Adaptive Cards
 - Cognitive Services Bing Speech
@@ -21,9 +21,11 @@ A simple web page with a maximized Web Chat and minimal additional components.
 - Type `hello`: you should be able to type to the bot and receive a response in plain text
 
 # Code
+
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Getting started
+
 ### Goals of this bot
 
 This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies and functionality. 
@@ -32,16 +34,15 @@ The `index.html` page has two main goals.
 - To import the Web Chat core bundle CDN script
 - To render Web Chat 
 
- This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md) as the base template.
 
- The only change needed in this sample is to change the Web Chat CDN from the full bundle to core bundle.
-
+The only change needed in this sample is to change the Web Chat CDN from the full bundle to core bundle.
 
 <!-- TODO: [P0] Change CDN urls across ALL samples to reflect updated, non-preview CDN. -->
 
 
- ```diff
- …
+```diff
+…
 <head>
 - <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
 + <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
@@ -50,6 +51,7 @@ The `index.html` page has two main goals.
 ```
 
 ## Completed code 
+
 Here is the finished `index.html`:
 
 ```diff
