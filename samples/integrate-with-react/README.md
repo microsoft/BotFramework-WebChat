@@ -30,10 +30,12 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 ## Goals of this bot
 
 The `index.html` page has two main goals.
-- To import React and Babel from unpkg.com
+
+- To import React and Babel from [unpkg.com](https://unpkg.com/)
 - To render Web Chat via React component
 
 We'll start by adding React and Babel to the head our template, based off of the [full-bundle CDN sample](./../full-bundle/README.md).
+
 ```diff
 …
 <head>
@@ -67,7 +69,8 @@ In our design, we believe we should allow developers to bring in their own versi
 
 When instantiating Web Chat using React, one would need to use [`react-redux/Provider`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#provider-store) to connect them together.
 
-## Completed code 
+## Completed code
+
 Here is the finished `index.html`:
 
 ```diff
@@ -118,7 +121,7 @@ Here is the finished `index.html`:
 </html>
 ```
 
-# Further Reading
+# Further reading
 
 ## Full list of Web Chat hosted samples
 
