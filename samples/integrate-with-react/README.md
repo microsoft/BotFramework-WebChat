@@ -1,15 +1,15 @@
 # Sample -  Integrating Web Chat using React
+
 > This is a great sample for first-time Web Chat users.
 
-## Description
 A simple web page with a maximized Web Chat and hosted using React. This sample makes changes that are based off of the [full-bundle CDN sample](./../full-bundle/README.md).
 
-
-
 # Test out the hosted sample
+
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/integrate-with-react)
 
 # How to run locally
+
 - Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/integrate-with-react` in command line
 - Run `npx serve`
@@ -24,9 +24,11 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
    - Resize the window and see how the carousel change its size
 
 # Code
+
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-### Goals of this bot
+## Goals of this bot
+
 The `index.html` page has two main goals.
 - To import React and Babel from unpkg.com
 - To render Web Chat via React component
@@ -118,5 +120,6 @@ Here is the finished `index.html`:
 
 # Further Reading
 
-## Full list of Web Chat Hosted Samples
+## Full list of Web Chat hosted samples
+
 View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples)
