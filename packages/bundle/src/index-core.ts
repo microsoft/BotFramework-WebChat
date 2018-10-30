@@ -10,6 +10,7 @@ import ReactWebChat, {
   createStyleSet
 } from 'botframework-webchat-component';
 
+import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';
 import createDirectLine from './createDirectLine';
@@ -42,3 +43,5 @@ window['WebChat'] = {
   ReactWebChat,
   renderWebChat
 };
+
+addVersion('minimal');

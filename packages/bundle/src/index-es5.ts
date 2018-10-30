@@ -14,4 +14,8 @@ import 'core-js/modules/es7.array.includes';
 import 'url-search-params-polyfill';
 import 'whatwg-fetch';
 
+import addVersion from './addVersion';
+
 export * from './index';
+
+addVersion('full-es5');
