@@ -100,17 +100,7 @@ class UploadButton extends React.Component {
 }
 
 export default connectUploadButton(
-  ({
-    disabled,
-    language,
-    sendFiles,
-    styleSet
-  }) => ({
-    disabled,
-    language,
-    sendFiles,
-    styleSet
-  })
+  ({ styleSet }) => ({ styleSet })
 )(UploadButton)
 
 export { connectUploadButton }
