@@ -19,6 +19,6 @@ function setMetaTag(name, content) {
 export default function (variant) {
   setMetaTag('botframework-webchat:variant', variant);
   setMetaTag('botframework-webchat:version', VERSION);
-  setMetaTag('botframework-webchat:version:core', coreVersion);
   setMetaTag('botframework-webchat:version:component', componentVersion);
+  setMetaTag('botframework-webchat:version:core', coreVersion);
 }
