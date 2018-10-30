@@ -8,11 +8,14 @@ import createAudioContentStyle from './StyleSet/AudioContent';
 import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
+import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createRootStyle from './StyleSet/Root';
+import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
+import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
@@ -38,8 +41,8 @@ export default function createStyleSet(options) {
   // Keep this list flat (no nested style) and serializable (no functions)
 
   return {
-    activity: createActivityStyle(options),
     activities: createActivitiesStyle(options),
+    activity: createActivityStyle(options),
     adaptiveCardRenderer: createAdaptiveCardRendererStyle(options),
     animationCardAttachment: createAnimationCardAttachmentStyle(options),
     audioAttachment: createAudioAttachmentStyle(options),
@@ -48,6 +51,7 @@ export default function createStyleSet(options) {
     avatar: createAvatarStyle(options),
     bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
+    carouselFlipper: createCarouselFlipper(options),
     dictationInterims: createDictationInterimsStyle(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),
@@ -57,7 +61,9 @@ export default function createStyleSet(options) {
       suggestedActionsStyleSet: createSuggestedActionsStyleSet(options)
     },
     root: createRootStyle(options),
+    scrollToEndButton: createScrollToEndButtonStyle(options),
     sendBox: createSendBoxStyle(options),
+    sendBoxButton: createSendBoxButtonStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
     sendStatus: createSendStatusStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),

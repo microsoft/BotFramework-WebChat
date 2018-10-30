@@ -31,8 +31,11 @@ export default {
     'Adaptive Card parse error',
     'Adaptive Card render error',
     'Chat',
+    'Left',
     'Listening…',
+    'New messages',
     'retry',
+    'Right',
     // Do not localize {retry}, it is a placeholder for "retry"
     'Send failed, {retry}',
     'Send',

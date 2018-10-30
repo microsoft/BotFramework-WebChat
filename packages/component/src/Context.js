@@ -1,5 +1,7 @@
 import React from 'react';
 
-const Context = React.createContext();
+const context = React.createContext();
 
-export default Context
+context.displayName = 'WebChatContext';
+
+export default context

@@ -8,7 +8,7 @@ import MicrophoneButton from './SendBox/MicrophoneButton';
 import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
-import UploadAttachmentButton from './SendBox/UploadAttachmentButton';
+import UploadButton from './SendBox/UploadButton';
 
 import { Constants } from 'botframework-webchat-core';
 
@@ -42,7 +42,7 @@ const BasicSendBox = ({
   ) }>
     <SuggestedActions />
     <div className="main">
-      <UploadAttachmentButton />
+      <UploadButton />
       { dictationStarted ?
           <DictationInterims className={ DICTATION_INTERIMS_CSS } />
         :

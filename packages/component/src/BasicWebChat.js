@@ -19,8 +19,7 @@ const ROOT_CSS = css({
 });
 
 const TRANSCRIPT_CSS = css({
-  flex: 1,
-  overflowY: 'auto'
+  flex: 1
 });
 
 const SEND_BOX_CSS = css({
@@ -116,6 +115,7 @@ export default class extends React.Component {
         { ({ styleSet }) =>
           <TypeFocusSinkBox
             className={ classNames(ROOT_CSS + '', styleSet.root + '', (props.className || '') + '') }
+            role="complementary"
             sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' } />

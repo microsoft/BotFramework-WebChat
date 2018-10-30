@@ -1,37 +1,21 @@
-import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
-// TOOD: Move this to StyleSet
-const ROOT_CSS = css({
-  backgroundColor: 'Transparent',
-  border: 0,
-  height: '100%',
-  padding: 0,
-  width: 40,
+import connectToWebChat from '../connectToWebChat';
 
-  '&:not(:disabled)': {
-    cursor: 'pointer'
-  },
-
-  '& > svg': {
-    fill: '#999'
-  },
-
-  '&:disabled > svg': {
-    fill: '#CCC'
-  }
-});
-
-export default ({ children, className, disabled, onClick }) =>
+export default connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(({ alt, children, className, disabled, onClick, styleSet }) =>
   <button
     className={ classNames(
-      ROOT_CSS + '',
+      styleSet.sendBoxButton + '',
       (className || '') + ''
     ) }
     disabled= { disabled }
     onClick={ onClick }
+    title={ alt }
     type="button"
   >
     { children }
   </button>
+)

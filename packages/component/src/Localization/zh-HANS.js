@@ -25,13 +25,16 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': '聊天',
+  'Left': '左',
   'Listening…': '正在倾听…',
+  'New messages': '新讯息',
   'retry': '重试',
+  'Right': '右',
   'Send failed, {retry}': '无法发送，{retry}',
   'Send': '发送',
   'Sending': '正在发送',
   'Speak': '发言',
-  // 'Starting…': '',
+  'Starting…': '开始中…',
   'Tax': '税',
   'Total': '共计',
   'Type your message': '输入你的消息',

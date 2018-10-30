@@ -25,8 +25,11 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': '聊天',
+  'Left': '左',
   'Listening…': '正在聆聽…',
+  'New messages': '新訊息',
   'retry': '重試',
+  'Right': '右',
   'Send failed, {retry}': '無法發送，{retry}',
   'Send': '發送',
   'Sending': '正在發送',

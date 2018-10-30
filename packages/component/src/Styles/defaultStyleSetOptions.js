@@ -23,10 +23,16 @@ const DEFAULT_OPTIONS = {
 
   hideSendBox: false,
 
+  microphoneButtonColorOnDictate: '#F33',
+
   paddingRegular: 10,
   paddingWide: 20,
 
-  scrollToBottomThreshold: 40,
+  sendBoxButtonColor: '#999',
+  sendBoxButtonColorOnDisabled: '#CCC',
+  sendBoxButtonColorOnFocus: '#333',
+  sendBoxButtonColorOnHover: '#333',
+
   sendBoxHeight: 40,
 
   // Visually show spoken text
@@ -43,6 +49,13 @@ const DEFAULT_OPTIONS = {
   suggestedActionHeight: 40,
 
   timestampColor: DEFAULT_SUBTLE,
+
+  transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
+  transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
+  transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',
+  transcriptOverlayButtonColor: 'White',
+  transcriptOverlayButtonColorOnFocus: 'White',
+  transcriptOverlayButtonColorOnHover: 'White',
 
   videoHeight: 270 // based on bubbleMaxWidth, 480 / 16 * 9 = 270
 };

@@ -2,12 +2,18 @@ import { Composer as SayComposer } from 'react-say';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
-import ScrollToBottom from 'react-scroll-to-bottom';
+import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
 
 import connectToWebChat from './connectToWebChat';
+import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 
 const ROOT_CSS = css({
+  overflow: 'hidden',
+  position: 'relative'
+});
+
+const PANEL_CSS = css({
   display: 'flex',
   flexDirection: 'column',
   WebkitOverflowScrolling: 'touch'
@@ -74,35 +80,39 @@ const BasicTranscript = ({
   const visibleActivities = activities.filter(shouldShowActivity);
 
   return (
-    <ScrollToBottom
-      className={ className }
-      threshold={ styleSet.options.scrollToBottomThreshold }
-      scrollViewClassName={ ROOT_CSS + '' }
+    <div
+      className={ classNames(
+        ROOT_CSS + '',
+        (className || '') + ''
+      ) }
     >
-      <div className={ FILLER_CSS } />
-      <SayComposer
-        speechSynthesis={ speechSynthesis }
-        speechSynthesisUtterance={ SpeechSynthesisUtterance }
-      >
-        <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
-          {
-            visibleActivities.map((activity, index) => {
-              const showTimestamp = shouldShowTimestamp(activity, visibleActivities[index + 1], groupTimestamp);
+      <ScrollToBottomPanel className={ PANEL_CSS + '' }>
+        <div className={ FILLER_CSS } />
+        <SayComposer
+          speechSynthesis={ speechSynthesis }
+          speechSynthesisUtterance={ SpeechSynthesisUtterance }
+        >
+          <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
+            {
+              visibleActivities.map((activity, index) => {
+                const showTimestamp = shouldShowTimestamp(activity, visibleActivities[index + 1], groupTimestamp);
 
-              return (
-                <li
-                  className={ styleSet.activity }
-                  key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
-                >
-                  { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
-                  { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
-                </li>
-              );
-            })
-          }
-        </ul>
-      </SayComposer>
-    </ScrollToBottom>
+                return (
+                  <li
+                    className={ styleSet.activity }
+                    key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
+                  >
+                    { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
+                    { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </SayComposer>
+      </ScrollToBottomPanel>
+      <ScrollToEndButton />
+    </div>
   );
 }
 

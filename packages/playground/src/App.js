@@ -88,6 +88,8 @@ export default class extends React.Component {
       this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
     }
 
+    document.querySelector('html').setAttribute('lang', window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
+
     this.state = {
       botAvatarInitials: 'BF',
       directLine: createFaultyDirectLine({
@@ -137,7 +139,8 @@ export default class extends React.Component {
 
   handleLanguageChange({ target: { value } }) {
     this.setState(() => ({ language: value }), () => {
-      window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value)
+      document.querySelector('html').setAttribute('lang', value || window.navigator.language);
+      window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
   }
 
