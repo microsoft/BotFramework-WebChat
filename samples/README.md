@@ -19,6 +19,19 @@ For simplicity, you can use a `<script>` tag to embed Web Chat from a CDN.
 
 > You can look at this [sunburst chart](http://cdn.botframework.com/botframework-webchat/preview/stats.html) for better understanding on the content of various bundles.
 
+Web Chat offer different bundle varieties as outlined in the table below.
+
+| | Minimal | Full | Full with ES5 polyfills |
+| - | - | - | - |
+| [Adaptive Cards](https://adaptivecards.io/) | | Yes | Yes |
+| [Cognitive Services Bing Speech](https://azure.microsoft.com/en-us/services/cognitive-services/speech/) | | Yes | Yes |
+| [DirectLineJS](https://npmjs.com/package/botframework-directlinejs) | Yes | Yes | Yes |
+| [Markdown-It](https://npmjs.com/package/markdown-it/) | | Yes | Yes |
+| [`sanitize-html`](https://npmjs.com/package/sanitize-html) | | Yes | Yes |
+| ES5 Polyfills (for IE11) | | | Yes |
+
+> Rich card (e.g. hero card, receipt card) requires Adaptive Cards.
+
 ### Thru NPM (as a React component)
 
 You can also embed Web Chat as a React component from NPM. This is a more advanced approach and requires knowledge of React and bundling.
