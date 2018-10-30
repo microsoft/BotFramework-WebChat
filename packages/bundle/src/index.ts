@@ -1,4 +1,4 @@
-export * from './index-core';
+export * from './index-minimal';
 
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
