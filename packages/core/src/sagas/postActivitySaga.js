@@ -1,13 +1,16 @@
 import {
+  all,
+  call,
   cancelled,
   fork,
-  join,
   put,
+  race,
   select,
   take
 } from 'redux-saga/effects';
 
-import callWithin from './effects/callWithin';
+import sleep from '../utils/sleep';
+
 import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
 
@@ -79,7 +82,7 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
     //         So, we setup expectation first, then postActivity afterward
 
-    const expectEchoBack = yield fork(() => callWithin(function* () {
+    const echoBackCall = call(function* () {
       for (;;) {
         const { payload: { activity } } = yield take(INCOMING_ACTIVITY);
         const { channelData = {}, id } = activity;
@@ -88,11 +91,20 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
           return activity;
         }
       }
-    }, [], SEND_TIMEOUT));
+    });
 
-    yield observeOnce(directLine.postActivity(activity));
+    // Timeout could be due to either:
+    // - Post activity call may take too long time to complete
+    //   - Direct Line service only respond on HTTP after bot respond to Direct Line
+    // - Activity may take too long time to echo back
 
-    const echoBack = yield join(expectEchoBack);
+    const { send: { echoBack } } = yield race({
+      send: all({
+        echoBack: echoBackCall,
+        postActivity: observeOnce(directLine.postActivity(activity))
+      }),
+      timeout: call(() => sleep(SEND_TIMEOUT).then(() => Promise.reject(new Error('timeout'))))
+    });
 
     yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } });
   } catch (err) {
