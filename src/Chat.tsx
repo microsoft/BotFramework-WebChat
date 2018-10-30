@@ -344,8 +344,6 @@ export class Chat extends React.Component<ChatProps, State> {
     render() {
         const state = this.store.getState();
         const { open } = this.state;
-        console.log(state , 'state');
-        console.log(this.props , 'props');
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>

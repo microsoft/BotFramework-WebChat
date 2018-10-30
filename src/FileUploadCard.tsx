@@ -72,7 +72,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
       }
 
     handleSkipFile(e: React.MouseEvent<HTMLDivElement>) {
-        this.props.sendMessage('SKIP_UPLOAD');
+        this.props.sendMessage('Skip Upload');
     }
 
     getSignedUrl = (data: any) => {
@@ -82,7 +82,6 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
             } else {
                 axios.post(this.props.gid + '/api/v1/nodes/presigned_url_for_node', data)
                 .then((result: any) => {
-                    console.log(result);
                     if (result.data.success) {
                         const signedUrl = result.data.url;
                         this.setState({signedUrl});
@@ -94,14 +93,12 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                     reject('Request failed');
                 });
             }
-
         });
     }
 
     submitFiles = () => {
         this.setState({isUploading: true});
         this.props.fileSelected(true);
-        console.log(this.props);
 
         const file = this.state.files[0];
         const dataToGetSignedUrl = {
@@ -162,26 +159,27 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                 uploadPhase: 'preview'
             });
         }
-      }
+    }
 
-      showDropzone = () => {
-          let returnDropzone = (
+    showDropzone = () => {
+        let returnDropzone = (
             <div>
-                <div className="file-upload-title">Upload your docs</div>
+                <div className="file-upload-title">Upload a file</div>
                 <Dropzone
-                onDrop={this.onDrop.bind(this)}
+                    onDrop={this.onDrop.bind(this)}
+                    maxSize={1048576}
                 >
                     <div className="drop-text">
-                        <span className="bold-line"> Drop files here to upload</span>
-                        <br/>
-                        <span>or <br/> click here to select files </span>
+                        <span className="bold-line">Drop files here to upload</span>
+                        <br />
+                        <span>or <br /> click here to select files </span>
                     </div>
                 </Dropzone>
-                <div className="upload-skip" onClick={e => this.handleSkipFile(e) }>Skip</div>
+                <div className="upload-skip" onClick={e => this.handleSkipFile(e)}>Skip</div>
             </div>
-          );
+        );
 
-          if (this.state.uploadPhase === 'preview') {
+        if (this.state.uploadPhase === 'preview') {
             returnDropzone = (
                 <div>
                     <div className="file-upload-title">{this.state.files[0].name}</div>
@@ -189,32 +187,31 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                         <div className="drop-text add-padding">
                             <div className="fileAttach"></div>
                             <span className="bold-line">{this.state.files[0].name} </span>
-                            <br/>
+                            <br />
                             <a onClick={this.removeFile} className="remove_link" href="#"> remove file</a>
                         </div>
                     </div>
-                    <div className="upload-skip" onClick={e => this.clickToSubmitFile(e) }>Press Enter to Submit</div>
+                    <div className="upload-skip" onClick={e => this.clickToSubmitFile(e)}>Press Enter to Submit</div>
                 </div>
-              );
-           }
+            );
+        }
 
-          if (this.state.uploadPhase === 'error') {
+        if (this.state.uploadPhase === 'error') {
             returnDropzone = (
                 <div>
                     <div className="file-upload-title error">Error</div>
                     <div className="file_chunk no-border">
                         <div className="drop-text add-padding">
-                            <span className="bold-line">Your file not uploaded successfully.</span>
+                            <span className="bold-line">Your file was not uploaded successfully.</span>
                         </div>
                     </div>
-                    <div className="upload-skip" onClick={e => this.clickToRetryFile(e) }>Press Enter to Retry</div>
+                    <div className="upload-skip" onClick={e => this.clickToRetryFile(e)}>Press Enter to Retry</div>
                 </div>
-              );
-           }
+            );
+        }
 
-          return returnDropzone;
-
-      }
+        return returnDropzone;
+    }
 
     render() {
         const { node } = this.props;
