@@ -21,6 +21,7 @@ import * as ActivityClientState from './constants/ActivityClientState';
 import * as DictateState from './constants/DictateState';
 
 const Constants = { ActivityClientState, DictateState };
+const version = VERSION;
 
 export {
   connect,
@@ -41,5 +42,6 @@ export {
   startSpeakingActivity,
   stopDictate,
   stopSpeakingActivity,
-  submitSendBox
+  submitSendBox,
+  version
 }

@@ -28,15 +28,15 @@ A simple web page with a maximized Web Chat and minimal additional components.
 
 ### Goals of this bot
 
-This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies and functionality. 
+This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies and functionality.
 
 The `index.html` page has two main goals.
 - To import the Web Chat core bundle CDN script
-- To render Web Chat 
+- To render Web Chat
 
 This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md) as the base template.
 
-The only change needed in this sample is to change the Web Chat CDN from the full bundle to core bundle.
+The only change needed in this sample is to change the Web Chat CDN from the full bundle to minimal bundle.
 
 <!-- TODO: [P0] Change CDN urls across ALL samples to reflect updated, non-preview CDN. -->
 
@@ -45,12 +45,12 @@ The only change needed in this sample is to change the Web Chat CDN from the ful
 …
 <head>
 - <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
-+ <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
-</head> 
++ <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-minimal.js"></script>
+</head>
 …
 ```
 
-## Completed code 
+## Completed code
 
 Here is the finished `index.html`:
 
@@ -60,7 +60,7 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Minimal bundle</title>
 - <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
-+   <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-minimal.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }

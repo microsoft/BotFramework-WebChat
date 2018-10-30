@@ -80,7 +80,7 @@ See a working sample with minimal Web Chat bundle [here](https://github.com/Micr
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-core.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-minimal.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' })

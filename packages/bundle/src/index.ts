@@ -1,5 +1,6 @@
-export * from './index-core';
+export * from './index-minimal';
 
+import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createCognitiveServicesWebSpeechPonyfillFactory from './createCognitiveServicesWebSpeechPonyfillFactory';
 import ReactWebChat from './FullReactWebChat';
@@ -22,3 +23,5 @@ window['WebChat'] = {
   renderMarkdown,
   renderWebChat
 };
+
+addVersion('full');

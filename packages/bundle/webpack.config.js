@@ -4,8 +4,8 @@ const Visualizer = require('webpack-visualizer-plugin');
 module.exports = {
   entry: {
     'botchat': './lib/index.js',
-    'botchat-core': './lib/index-core.js',
-    'botchat-es5': './lib/index-es5.js'
+    'botchat-es5': './lib/index-es5.js',
+    'botchat-minimal': './lib/index-minimal.js'
   },
   output: {
     filename: '[name].js',
