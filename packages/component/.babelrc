@@ -1,7 +1,8 @@
 {
   "plugins": [
     "@babel/proposal-class-properties",
-    "@babel/proposal-object-rest-spread"
+    "@babel/proposal-object-rest-spread",
+    "babel-plugin-version-transform"
   ],
   "presets": [
     "@babel/preset-typescript",

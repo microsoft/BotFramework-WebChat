@@ -26,6 +26,10 @@ import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddle
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 
+declare var VERSION
+
+const version = VERSION
+
 const Components = {
   Composer,
 
@@ -69,21 +73,6 @@ export {
   createAdaptiveCardsAttachmentMiddleware,
   createCoreActivityMiddleware,
   createCoreAttachmentMiddleware,
-  createStyleSet
+  createStyleSet,
+  version
 }
-
-try {
-  const { document } = global as any;
-
-  if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
-    const meta = document.createElement('meta');
-    const params = new URLSearchParams({
-      version: '4.0.0'
-    } as any);
-
-    meta.setAttribute('name', 'botframework-webchat');
-    meta.setAttribute('content', params.toString());
-
-    document.head.appendChild(meta);
-  }
-} catch (err) {}
