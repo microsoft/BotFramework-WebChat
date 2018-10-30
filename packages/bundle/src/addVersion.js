@@ -6,7 +6,7 @@ function setMetaTag(name, content) {
     const { document } = global;
 
     if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
-      const meta = document.querySelector(`html meta[name="${ encodeURIComponent(name) }"]`) || document.createElement('meta');
+      const meta = document.querySelector(`html meta[name="${ encodeURI(name) }"]`) || document.createElement('meta');
 
       meta.setAttribute('name', name);
       meta.setAttribute('content', content);
@@ -17,8 +17,8 @@ function setMetaTag(name, content) {
 }
 
 export default function (variant) {
-  setMetaTag('botframework-webchat:variant', variant);
-  setMetaTag('botframework-webchat:version', VERSION);
-  setMetaTag('botframework-webchat:version:component', componentVersion);
-  setMetaTag('botframework-webchat:version:core', coreVersion);
+  setMetaTag('botframework-webchat:bundle:variant', variant);
+  setMetaTag('botframework-webchat:bundle:version', VERSION);
+  setMetaTag('botframework-webchat:core:version', coreVersion);
+  setMetaTag('botframework-webchat:ui:version', componentVersion);
 }
