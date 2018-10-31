@@ -38,7 +38,7 @@ const connectMicrophoneButton = (...selectors) => connectToWebChat(
 );
 
 export default connectMicrophoneButton(
-  ({ language, styleSet }) => ({ language, styleSet })
+  ({ styleSet }) => ({ styleSet })
 )(
   ({
     className,

@@ -21,6 +21,7 @@ import {
   setDictateState,
   setLanguage,
   setSendBox,
+  setSendTimeout,
   setSendTyping,
   startDictate,
   startSpeakingActivity,
@@ -38,7 +39,6 @@ import shallowEquals from './Utils/shallowEquals';
 
 // Flywheel object
 const EMPTY_ARRAY = [];
-const NULL_FUNCTION = () => ({});
 
 const DISPATCHERS = {
   markActivity,
@@ -49,6 +49,7 @@ const DISPATCHERS = {
   setDictateInterims,
   setDictateState,
   setSendBox,
+  setSendTimeout,
   startDictate,
   startSpeakingActivity,
   stopDictate,
@@ -184,6 +185,7 @@ class Composer extends React.Component {
     const { directLine, userID } = props;
 
     this.setLanguageFromProps(props);
+    this.setSendTimeoutFromProps(props);
     this.setSendTypingFromProps(props);
 
     props.dispatch(createConnectAction({ directLine, userID }));
@@ -191,10 +193,14 @@ class Composer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { props } = this;
-    const { directLine, locale, sendTyping, userID } = props;
+    const { directLine, locale, sendTimeout, sendTyping, userID } = props;
 
     if (prevProps.locale !== locale) {
       this.setLanguageFromProps(props);
+    }
+
+    if (prevProps.sendTimeout !== sendTimeout) {
+      this.setSendTimeoutFromProps(props);
     }
 
     if (!prevProps.sendTyping !== !sendTyping) {
@@ -213,6 +219,10 @@ class Composer extends React.Component {
 
   setLanguageFromProps(props) {
     props.dispatch(setLanguage(props.locale || window.navigator.language || 'en-US'));
+  }
+
+  setSendTimeoutFromProps(props) {
+    props.dispatch(setSendTimeout(props.sendTimeout || 20000));
   }
 
   setSendTypingFromProps(props) {
@@ -334,6 +344,7 @@ ConnectedComposerWithStore.propTypes = {
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
+  sendTimeout: PropTypes.number,
   sendTyping: PropTypes.bool,
   store: PropTypes.any,
   userAvatarInitials: PropTypes.string,

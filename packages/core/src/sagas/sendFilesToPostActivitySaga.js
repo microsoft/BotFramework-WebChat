@@ -3,11 +3,15 @@ import {
   take
 } from 'redux-saga/effects';
 
+import mime from 'mime';
+
 import whileConnected from './effects/whileConnected';
 
 import { SEND_FILES } from '../actions/sendFiles';
 import postActivity from '../actions/postActivity';
 import stopSpeakingActivity from '../actions/stopSpeakingActivity';
+
+const getType = mime.getType.bind(mime);
 
 export default function* () {
   yield whileConnected(function* () {
@@ -17,7 +21,7 @@ export default function* () {
       if (files.length) {
         yield put(postActivity({
           attachments: [].map.call(files, file => ({
-            contentType: 'application/octet-stream',
+            contentType: getType(file.name) || 'application/octet-stream',
             contentUrl: file.url,
             name: file.name
           })),

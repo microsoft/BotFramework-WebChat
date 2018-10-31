@@ -10,6 +10,7 @@ import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
 import setSendBox from './actions/setSendBox';
+import setSendTimeout from './actions/setSendTimeout';
 import setSendTyping from './actions/setSendTyping';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
@@ -37,6 +38,7 @@ export {
   setDictateState,
   setLanguage,
   setSendBox,
+  setSendTimeout,
   setSendTyping,
   startDictate,
   startSpeakingActivity,
