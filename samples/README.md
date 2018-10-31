@@ -75,7 +75,13 @@ To add, decorate, replace, or remove activity or attachment, these samples will 
 
 On your web site, instead of connecting to your backend thru REST/Web Socket API, you can also connect thru Direct Line activities. This gives you flexibility of delivering content to your users.
 
-- [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/build) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/redux-activity-middleware)
+- [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/redux-activity-middleware)
+
+## Breakaway components
+
+If you want to deep-customize Web Chat, you can break Web Chat into multiple breakaway components and join them back together.
+
+- [Speech button](https://microsoft.github.io/BotFramework-WebChat/breakaway-speech-button) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples/breakaway-speech-button)
 
 ## Timestamps
 

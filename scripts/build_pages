@@ -12,7 +12,7 @@ cd ../../
 rsync -av --progress samples/ gh-pages/ --exclude backend-cli --exclude breakaway-speech-button --exclude redux-activity-middleware
 
 mkdir gh-pages/breakaway-speech-button
-rsync -av --progress samples/breakaway-speech-button/build/ gh-pages/breakaway-speech-button/build/
+rsync -av --progress samples/breakaway-speech-button/build/ gh-pages/breakaway-speech-button/
 
 mkdir gh-pages/redux-activity-middleware
-rsync -av --progress samples/redux-activity-middleware/build/ gh-pages/redux-activity-middleware/build/
+rsync -av --progress samples/redux-activity-middleware/build/ gh-pages/redux-activity-middleware/
