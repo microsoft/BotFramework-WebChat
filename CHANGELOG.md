@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - `http-server@^0.11.1`
    - `node-sass@^4.9.3`
 - Fix [#1029](https://github.com/Microsoft/BotFramework-WebChat/issues/1029), translation for time strings in PR [#1140](https://git, by [@curia-damiano]hub.com/Microsoft/BotFramework-WebChat/pull/1140), by [@curia-damiano]
+- Bump [`botframework-directlinejs`](https://github.com/Microsoft/BotFramework-DirectLineJS/) to `0.10.0` in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [0.14.2] - 2018-08-16
 ### Added
