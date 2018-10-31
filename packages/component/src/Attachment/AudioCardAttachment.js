@@ -10,7 +10,8 @@ export default connectToWebChat(
   ({
     adaptiveCards,
     attachment,
-    attachment: { content = {} } = {}
+    attachment: { content = {} } = {},
+    styleSet
   }) =>
     <div className={ styleSet.audioCardAttachment }>
       <ul className="media-list">
