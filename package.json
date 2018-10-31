@@ -1,0 +1,31 @@
+{
+  "name": "botframework-webchat-root",
+  "version": "4.0.0-0",
+  "private": true,
+  "files": [
+    "lib/**/*"
+  ],
+  "keywords": [],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run --scope=botframework-webchat* --stream build",
+    "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
+    "lerna-publish": "lerna publish",
+    "prepublishOnly": "lerna run --scope=botframework-webchat* --stream prepublishOnly",
+    "test": "lerna run --parallel --stream test",
+    "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
+  },
+  "homepage": "https://github.com/Microsoft/BotFramework-WebChat#readme",
+  "devDependencies": {
+    "lerna": "^3.4.0"
+  }
+}

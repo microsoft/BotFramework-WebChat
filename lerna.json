@@ -1,0 +1,9 @@
+{
+  "lerna": "2.11.0",
+  "packages": [
+    "packages/*",
+    "samples/breakaway-speech-button",
+    "samples/redux-activity-middleware"
+  ],
+  "version": "0.0.0"
+}
