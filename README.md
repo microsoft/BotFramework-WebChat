@@ -1,307 +1,132 @@
-# Microsoft Bot Framework Web Chat
+<p align="center">
+  <a href="https://azure.microsoft.com/en-us/services/bot-service/">
+    <img src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/abs-logo.png" alt="Azure Bot Services logo" width="240" />
+  </a>
+</p>
 
-***Web Chat v4 is now in public preview.** To get started, please visit the [`preview`](https://github.com/Microsoft/BotFramework-WebChat/tree/preview) branch for details.*
+<p align="center">A highly-customizable web-based client for Azure Bot Services.</p>
 
-## About
+<p align="center">
+  <a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
+  <a href="https://travis-ci.org/Microsoft/BotFramework-WebChat"><img alt="Build Status" src="https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master" /></a>
+</p>
 
-Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API.
+# How to use
 
-Used by the Bot Framework developer portal, [Emulator](https://github.com/Microsoft/BotFramework-Emulator), Web Chat channel, and [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/)
+> For previous versions of Web Chat (v3), you can find it [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v0.15.0).
 
-Web Chat is available both as a [React](https://facebook.github.io/react/) component and as a self-contained control easily usable by any non-React website. Under the covers, Web Chat is built with [TypeScript](http://www.typescriptlang.org) using [Redux](http://redux.js.org) for state management and [RxJS](http://reactivex.io/rxjs/) for wrangling async.
+First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
+Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal to use in the code below.
 
-You can easily play with the most recent release using [botchattest](https://botchattest.herokuapp.com).
+Here is how how you can add Web Chat control to you website:
 
-## How to add Web Chat to your website
-
-If you haven't already, start by [registering your bot](https://dev.botframework.com/bots/new).
-
-Now decide how you'd like to use Web Chat.
-
-### Easiest: In any website, IFRAME the standard Web Chat channel
-
-Add a Web Chat channel to your registered bot, and paste in the supplied `<iframe>` code, which points at a Web Chat instance hosted by Microsoft. That was easy, you're done! Please be aware that the version of its Web Chat instance may lag behind the latest release.
-
-* Want more options, or to run the latest release, or a custom build? Read on.
-
-### Easy: In your non-React website, run Web Chat inline
-
-Add a DirectLine (**not Web Chat**) channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
-
-Include `botchat.css` and `botchat.js` in your website, for example,
-
-```HTML
+```html
 <!DOCTYPE html>
 <html>
-  <head>
-    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
-  </head>
   <body>
-    <div id="bot"/>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
     <script>
-      BotChat.App({
-        directLine: { secret: direct_line_secret },
-        user: { id: 'userid' },
-        bot: { id: 'botid' },
-        resize: 'detect'
-      }, document.getElementById("bot"));
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' })
+      }, document.getElementById('webchat'));
     </script>
   </body>
 </html>
 ```
 
-> Starting from `0.12.0`, we no longer package polyfills in `botchat.js`. If you are on an older browser, you can use the bundle `botchat-es5.js`, which include polyfills for browsers which support up to ES5.
+![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/webchat-screenshot.png)
 
-* `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
-* You can reference to latest release like this, [https://cdn.botframework.com/botframework-webchat/latest/botchat.js](https://cdn.botframework.com/botframework-webchat/latest/botchat.js). Make sure you use the same version for both `botchat.css` and `botchat.js`.
-   * You can also reference to a previously published build, for example, [https://cdn.botframework.com/botframework-webchat/0.11.4/botchat.js](https://cdn.botframework.com/botframework-webchat/0.11.4/botchat.js).
-   * Or if you want to try out latest fixes as on our GitHub `master` branch, you can use [https://cdn.botframework.com/botframework-webchat/0.13.1-master.ea2166a/botchat.js](https://cdn.botframework.com/botframework-webchat/0.13.1-master.ea2166a/botchat.js). For all version information, you can find it on [NPM](https://www.npmjs.com/package/botframework-webchat?activeTab=versions).
-* Don't want to depend on a CDN? Download the files and serve them up from your own website.
-* Want to run a custom build of Web Chat? Clone this repo, [alter it](#customizing-web-chat), [build it](#building-web-chat), and reference your built `botchat.css` and `botchat.js` files.
-* Go to the next level with [Advanced Web Chat](#advanced-web-chat)
-* Running Web Chat inline may not work for some web pages. Read on for a solution.
+## Integrate with JavaScript
 
-### Easyish: In any website, IFRAME your Web Chat instance
+Web Chat is designed to integrate with your existing web site using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
 
-You can isolate your instance of Web Chat by running it inside an IFRAME. This involves creating two web pages:
+### Full bundle
 
-1. Your Web Chat instance, as shown above.
-2. The hosting page, adding `<iframe src="/path/to/your/webchat/instance" height="height" width="width" />`
+You can use the full, typical webchat package that contains the most typically used features.
 
-### Medium: In your React website, incorporate the Web Chat React component
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script>
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECREET' })
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
+```
 
-Add a DirectLine (**not Web Chat**) channel, and generate a Direct Line Secret. Make sure to enable Direct Line 3.0.
+See a working sample with full Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/full-bundle/).
 
-Add Web Chat to your React project via `npm install botframework-webchat`. This will install latest stable build. If you want to try out features and fixes direct from our GitHub, install via `npm install botframework-webchat@master`.
+### Minimal bundle
 
-Include the `Chat` component in your React app, e.g.:
+Instead of using the full, typical package of Web Chat, you can choose a lighter-weight sample with fewer features. This bundle does not contain:
+- Adaptive Cards
+- Cognitive Services
+- Markdown-It
 
-```typescript
-import { Chat } from 'botframework-webchat';
+Since Adaptive Cards is not include in this bundle, rich cards that depends on Adaptive Cards will not render, e.g. hero card, receipt card, etc. List of attachments that are not supported without Adaptive Cards can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Middleware/Attachment/createAdaptiveCardMiddleware.js).
 
-...
+See a working sample with minimal Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/minimal-bundle/).
 
-const YourApp = () => {
-    <div>
-        <YourComponent />
-        <Chat directLine={{ secret: direct_line_secret }} user={{ id: 'user_id', name: 'user_name' }} />
-        <YourOtherComponent />
-    </div>
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
+    <script>
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' })
+      }, document.getElementById('webchat'));
+    </script>
+  </body>
+</html>
+```
+
+## Integrate with React
+
+For full customizability, you can use React to recompose components of Web Chat.
+
+To install the production build from NPM, run `npm install botframework-webchat`.
+
+```jsx
+import DirectLine from 'botframework-directlinejs';
+import React from 'react';
+import ReactWebChat from 'botframework-webchat';
+
+export default class extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.directLine = new DirectLine({ token: 'YOUR_BOT_SECRET' });
+  }
+
+  render() {
+    return (
+      <ReactWebChat directLine={ this.directLine } />
+      element
+    );
+  }
 }
-
-...
 ```
 
-* Go to the next level with [Advanced Web Chat](#advanced-web-chat)
-* Want to run a custom build of Web Chat in your React app? Read on.
+> You can also run `npm install botframework-webchat@master` to install a development build that sync with GitHub `master` branch.
 
-### Hard: In your React website, incorporate a custom build of the Web Chat component
+See a working sample with Web Chat rendered by React [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/integrate-with-react/).
 
-The simplest approach is to clone (or fork) this repo, [alter it](#customizing-web-chat), [build it](#building-web-chat), then reference your local build in your project's `package.json` as follows:
+# Customize Web Chat UI
 
-```javascript
-dependencies: {
-    ...
-    'botframework-webchat': 'file:/path/to/your/repo'
-    ...
-}
-```
+The new version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-WebChat/blob/master/SAMPLES.md).
 
-Running `npm install` will copy your local repo to `node_modules`, and `import`/`require` references to `'botframework-webchat'` will resolve correctly.
+# Contributions
 
-You may also wish to go so far as to publish your repo as its own full-fledged, versioned npm package using `npm version` and `npm publish`, either privately or publicly.
+Like us? [Star](https://github.com/Microsoft/BotFramework-WebChat/stargazers) us.
 
-Different projects have different build strategies, yours may vary considerably from the above. If you come up with a different integration approach that you feel would have broad application, please consider filing a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) for this README.
+Want to make it better? [File](https://github.com/Microsoft/BotFramework-WebChat/issues) us an issue.
 
-## Building Web Chat
-
-1. Clone (or fork) this repo
-2. `npm install`
-3. `npm run build` (to build on every change `npm run watch`, to build production `npm run prepublish`)
-
-This builds the following:
-
-* `/built/*.js` compiled from the TypeScript sources in `/src/*.js` - `/built/BotChat.js` is the root
-* `/built/*.d.ts` declarations for TypeScript users - `/built/BotChat.d.ts` is the root
-* `/built/*.js.map` sourcemaps for easier debugging
-* `/botchat.js` webpacked UMD file containing all dependencies (React, Redux, RxJS, etc.)
-* `/botchat.css` base stylesheet
-* `/botchat-es5.js` is the Webpack bundle (a.k.a. `botchat.js`) plus polyfills for ES5 browsers
-* `/botchat-fullwindow.css` media query stylesheet for a full-window experience
-
-## Customizing Web Chat
-
-### Enabling Speech Capabilities
-
-Web Chat includes support for spoken conversations by leveraging Speech Recognition (audio to text) and Speech Synthesis (text to audio).
-
-Speech support is opt-in. As shown in `/samples/speech`, you can customize the speech experience by supplying a specific implementation for speech recognition and speech synthesis to be used.
-
- ```HTML
-...
-   <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
-   <script src="https://cdn.botframework.com/botframework-webchat/latest/CognitiveServices.js"></script>
-...
-```
-```typescript
-var speechOptions = {
-    speechRecognizer: new CognitiveServices.SpeechRecognizer( { subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY' } ),
-
-    speechSynthesizer: new CognitiveServices.SpeechSynthesizer(
-        {
-            subscriptionKey: 'YOUR_COGNITIVE_SPEECH_API_KEY',
-            gender: CognitiveServices.SynthesisGender.Female,
-            voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
-        })
-}
-
-...
-
-BotChat.App({
-    botConnection: botConnection,
-    speechOptions: speechOptions,
-    ...
-}, document.getElementById("BotChatGoesHere"));
-```
-
-For details related to building a speech enabled bot and leveraging Speech Priming to improve speech recognition accuracy, check out the [Speech Support in Bot Framework](https://blog.botframework.com/2017/06/26/Speech-To-Text) blog post.
-
-### Styling
-
-In the `/src/scss/` folder you will find the source files for generating `/botchat.css`. Run `npm run build-css` to compile once you've made your changes. For basic branding, change `colors.scss` to match your color scheme. For advanced styling, change `botchat.scss`.
-
-#### Card Layout
-
-Web Chat uses [Adaptive Cards](https://adaptivecards.io) that let the bot developer create cards with advanced layout and interactive capabilities. For more details, see [AdaptiveCards.md](AdaptiveCards.md)
-
-#### Card Sizes / Responsiveness
-
-Web Chat strives to use responsive design when possible. As part of this, Web Chat cards come in 3 sizes: narrow (216px), normal (320px) and wide (416px). In a full-window chat, these sizes are invoked by a CSS media query in the `/botchat-fullwindow.css` style sheet. You may customize this style sheet for the media query breakpoints in your own application. Or, if your Web Chat implementation is not a full-window experience, you can manually invoke card sizes by adding the CSS classes `wc-narrow` and `wc-wide` to the HTML element containing your chat.
-
-### Strings
-
-You can alter or add localized strings in [/src/Strings.ts](src/Strings.ts):
-
-* Add one or more locales (with associated localized strings) to `localizedStrings`
-* Add logic to map the requested locale to the supported locale in `strings`
-* Please help the community by submitting a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
-
-### Behaviors
-
-Behavioral customization will require changing the TypeScript files in `/src`. A full description of the architecture of Web Chat is beyond the scope of this document, but here are a few starters:
-
-### Architecture
-
-* `Chat` is the top-level React component
-* `App` creates a React application consists solely of `Chat`
-* `Chat` largely follows the Redux architecture laid out in [this video series](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
-* To handle async side effects of Redux actions, `Chat` uses `Epic` from [redux-observable](https://redux-observable.js.org) - here's a [video introduction](https://www.youtube.com/watch?v=sF5-V-Szo0c)
-* Underlying `redux-observable` (and also [DirectLineJS](https://github.com/microsoft/botframework-directlinejs)) is the `RxJS` library, which implements the Observable pattern for wrangling async. A minimal grasp of `RxJS` is key to understanding Web Chat's plumbing.
-
-### Markdown
-
-Web Chat uses [markdown-it](https://markdown-it.github.io/) for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options in `/src/FormattedText.tsx` in your own build of Web Chat.
-
-### Contributing
-
-If you feel your change might benefit the community, please submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
-
-## Advanced Web Chat
-
-### Direct Line and DirectLineJS
-
-Web Chat communicates with your bot using the [Direct Line 3.0](https://docs.botframework.com/en-us/restapi/directline3/) protocol. Web Chat's implementation of this protocol is called [DirectLineJS](https://github.com/microsoft/botframework-directlinejs) and can be installed and used independently of Web Chat if you want to create your own user experience.
-
-#### Direct Line fundamentals
-
-Web Chat exchanges *activities* with the bot. The most common activity type is 'message', but there is also 'typing', and 'event'. For more information on how to use 'event' activities, see [The Backchannel](#the-backchannel).
-
-#### Named Direct Line endpoint
-
-If you wish to point to a specific URL for Direct Line (such as a region-specific endpoint), pass it to DirectLine as `domain: direct_line_url`.
-
-#### Secrets versus Tokens
-
-If you don't want to publish your Direct Line Secret (which lets anyone put your bot on their website), exchange that Secret for a Token as detailed in the Direct Line [documentation](https://docs.botframework.com/en-us/restapi/directline3/) and pass it to DirectLine as `token: direct_line_token`. If you do choose to pass a Token instead of a Secret, you may need to handle scenarios where Web Chat has become disconnected from the bot and needs a fresh token to reconnect. See the DirectLineJS [reconnect](https://github.com/microsoft/botframework-directlinejs#reconnect-to-a-conversation) documentation for a few more details on how to do this.
-
-#### WebSocket
-
-DirectLineJS defaults to WebSocket for receiving messages from the bot. If WebSocket is not available, it will use GET polling. You can force it to use GET polling by passing `webSocket: false` in the options you pass to DirectLine.
-
-Note: the standard Web Chat channel does not currently use WebSocket, which is a compelling reason to use this project.
-
-### Typing
-
-Web Chat currently defaults to *not* sending 'typing' activities to the bot when the user is typing. If your bot would find it useful to receive these, pass `sendTyping: true` in the options to `App`/`Chat`. In the future this feature may be enabled by default, so set `sendTyping: false` if you want to make sure to disable it.
-
-### User identity
-
-You can supply Web Chat with the id (and, optionally, a friendly name) of the current user by passing `user: { id: user_id, name: user_name }` to `App`/`Chat`. This object is passed with every activity sent from Web Chat to the bot, which means it is not available to the bot *before* any activities are sent. See [The Backchannel](#the-backchannel) to find out how your web page can programmatically send non-message activities to the bot.
-
-### Replacing DirectLineJS
-
-You can give Web Chat any object that implements `IBotConnection` by passing `botConnection: your_directline_replacement` to `App`/`Chat`.
-
-### The Backchannel
-
-Web Chat can either create its own instance of DirectLine (as shown in `/samples/standalone`), or it can share one with the hosting page (as shown in `/samples/backchannel`). In the shared case, Web Chat and/or the page can send and/or receive activities. If they are type 'event', Web Chat will not display them. This is how the backchannel works.
-
-NOTE: The provided backchannel sample requires a bot which can send and receive specific event activities. Follow the instructions [here](https://github.com/ryanvolum/backChannelBot) to deploy such a bot.
-
-The backchannel sample provided in this project listens for events of name "changeBackground" and sends events of name "buttonClicked". This highlights the ability for a bot to communicate with the page that embeds Web Chat.
-
-In the sample above, the web page creates a DirectLine object:
-
-```typescript
-var botConnection = new BotChat.DirectLine(...);
-```
-
-It shares this when creating the Web Chat instance:
-
-```typescript
-BotChat.App({
-    botConnection: botConnection,
-    user: user
-    ...
-}, document.getElementById("BotChatGoesHere"));
-```
-
-It notifies the bot upon the click of a button on the web page:
-
-```typescript
-const postButtonMessage = () => {
-    botConnection
-        .postActivity({ type: "event", value: "", from: { id: "me" }, name: "buttonClicked" })
-        .subscribe(id => console.log("success"));
-    }
-```
-
-Note the creation of an activity of type 'event' and how it is sent with `postActivity`. Also note that the name and value of the event can be anything defined by the developer. It is simply a contract between the web page and the bot.
-
-The client JavaScript also listens for a specific event from the bot:
-
-```typescript
-botConnection.activity$
-    .filter(activity => activity.type === "event" && activity.name === "changeBackground")
-    .subscribe(activity => changeBackgroundColor(activity.value))
-```
-
-The bot, in this example, can request the page to change the background color via a specific event with `name: 'changeBackground'`. The web page can respond to this in any way it wants, including ignoring it. In this case it cooperates by changing the background color as passed in the `value` field of the event.
-
-Essentially the backchannel allows client and server to exchange any data needed, from requesting the client's time zone to reading a GPS location or what the user is doing on a web page. The bot can even "guide" the user by automatically filling out parts of a form and so on. The backchannel closes the gap between client JavaScript and bots.
-
-## You can contribute to Web Chat!
-
-* Add localized strings (see [above](#strings))
-* Report any unreported [issues](https://github.com/Microsoft/BotFramework-WebChat/issues)
-* Propose new [features](https://github.com/Microsoft/BotFramework-WebChat/issues)
-* Fix an outstanding [issue](https://github.com/Microsoft/BotFramework-WebChat/issues) and submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls) *(please only commit source code, non-generated files)*
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Copyright & License
-
-© 2016 Microsoft Corporation
-
-[MIT License](/LICENSE)
+Don't like something you see? [Submit](https://github.com/Microsoft/BotFramework-WebChat/pulls) a pull request.

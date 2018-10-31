@@ -1,0 +1,7 @@
+{
+  "public": "../../",
+  "rewrites": [
+    { "source": "/", "destination": "samples/speech-browser/index.html" },
+    { "source": "/botchat-minimal.js", "destination": "packages/bundle/dist/botchat-minimal.js" }
+  ]
+}

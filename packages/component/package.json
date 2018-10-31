@@ -1,0 +1,80 @@
+{
+  "name": "botframework-webchat-component",
+  "version": "0.0.0-0",
+  "description": "React component of botframework-webchat",
+  "main": "lib/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
+  },
+  "homepage": "https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component#readme",
+  "scripts": {
+    "build": "concurrently --names \"babel,typecheck\" \"npm run build:babel\" \"npm run build:typecheck\"",
+    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:typecheck": "tsc",
+    "clean": "rimraf lib",
+    "test": "jest",
+    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)(spec|test).[jt]s?(x)"
+    ],
+    "transform": {
+      "^.+\\.[jt]sx?$": "babel-jest"
+    }
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.51",
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.56",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "@babel/preset-react": "^7.0.0-beta.51",
+    "@babel/preset-typescript": "^7.0.0-beta.51",
+    "@types/node": "^10.3.3",
+    "@types/react": "^16.4.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.0.1",
+    "babel-plugin-version-transform": "^1.0.0",
+    "botframework-directlinejs": "^0.10.0",
+    "concurrently": "^3.5.1",
+    "jest": "^22.4.4",
+    "react": "^16.4.1",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^22.4.6",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "adaptivecards": "^1.0.0",
+    "botframework-webchat-core": "^0.0.0-0",
+    "bytes": "^3.0.0",
+    "classnames": "^2.2.6",
+    "glamor": "^2.20.40",
+    "memoize-one": "^3.1.1",
+    "react-dictate-button": "^1.1.3",
+    "react-film": "^1.1.1",
+    "react-redux": "^5.0.7",
+    "react-say": "^1.1.0",
+    "react-scroll-to-bottom": "^1.2.0",
+    "redux": "^4.0.0",
+    "sanitize-html": "^1.18.2",
+    "simple-update-in": "^1.3.0"
+  },
+  "peerDependencies": {
+    "botframework-directlinejs": "^0.10.0",
+    "react": "^16.4.1"
+  }
+}

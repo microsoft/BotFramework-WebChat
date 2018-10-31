@@ -1,0 +1,44 @@
+html {
+  font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a, a:visited {
+  color: #0063B1;
+}
+
+blockquote {
+  border-left: solid 4px #E6E6E6;
+  color: #767676;
+  margin: 0;
+  padding-left: .6em;
+}
+
+blockquote > p {
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  border-bottom: solid 1px #EEE;
+  font-family: 'Calibri Light', 'Helvetica Neue Light', Arial, sans-serif;
+  font-weight: normal;
+  padding-bottom: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul > li::before {
+  content: '·';
+  margin-left: .4em;
+  padding-right: .5em;
+}

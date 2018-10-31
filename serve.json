@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "samples/full-bundle/index.html" },
+    { "source": "/botchat.js", "destination": "packages/bundle/dist/botchat.js" },
+    { "source": "/botchat-es5.js", "destination": "packages/bundle/dist/botchat-es5.js" },
+    { "source": "/botchat-minimal.js", "destination": "packages/bundle/dist/botchat-minimal.js" }
+  ]
+}

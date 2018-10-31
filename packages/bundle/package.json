@@ -1,0 +1,72 @@
+{
+  "name": "botframework-webchat",
+  "version": "0.0.0-0",
+  "description": "A highly-customizable web-based chat client for Azure Bot Services.",
+  "main": "lib/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
+  },
+  "homepage": "https://github.com/Microsoft/BotFramework-WebChat/#readme",
+  "scripts": {
+    "build": "concurrently --names \"babel,typecheck\" \"npm run build:babel\" \"npm run build:typecheck\"",
+    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:typecheck": "tsc",
+    "clean": "npm run clean:dist && npm run clean:lib",
+    "clean:dist": "rimraf dist",
+    "clean:lib": "rimraf lib",
+    "prepublishOnly": "npm run clean && npm run build && npm run webpack",
+    "test": "jest",
+    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\"",
+    "webpack": "webpack --run-prod",
+    "webpack-dev": "webpack --run-dev --watch"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "adaptivecards": "^1.0.0",
+    "babel-runtime": "^7.0.0-beta.3",
+    "botframework-directlinejs": "^0.10.0",
+    "botframework-webchat-component": "^0.0.0-0",
+    "botframework-webchat-core": "^0.0.0-0",
+    "core-js": "^2.5.7",
+    "markdown-it": "^8.4.2",
+    "markdown-it-for-inline": "^0.1.1",
+    "memoize-one": "^4.0.2",
+    "microsoft-speech-browser-sdk": "^0.0.12",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "sanitize-html": "^1.19.0",
+    "store": "^2.0.12",
+    "url-search-params-polyfill": "^5.0.0",
+    "web-speech-cognitive-services": "3.0.0-master.da6efbb",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@types/node": "^10.9.4",
+    "@types/react": "^16.4.13",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-plugin-version-transform": "^1.0.0",
+    "concurrently": "^4.0.1",
+    "typescript": "^3.0.3",
+    "webpack": "^4.17.2",
+    "webpack-command": "^0.4.1",
+    "webpack-visualizer-plugin": "^0.1.11"
+  }
+}

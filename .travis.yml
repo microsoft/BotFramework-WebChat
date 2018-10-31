@@ -1,43 +1,61 @@
+sudo: required
+
 language: node_js
+
 node_js:
-  - "9"
+  - "10"
+
+services:
+  - docker
+
 before_install:
-  - npx version-from-git --travis
-install:
   - npm install
-  - npm run install-test
-before_script:
+  - sudo apt-get install jq
+  - npx version-from-git --travis
+  - git checkout -b temp-ci
+  - lerna version --exact --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
+
+install:
+  - npm run bootstrap
   - npm run build
-  - npm run build-test
+  - npm run prepublishOnly
+  - docker build -t webchat.azurecr.io/playground .
+
 script:
-  # Our tests currently don't run on Travis, disabling them for now
-  - npm --version
+  - echo
+
 before_deploy:
   - git config --local user.name "Bot Framework"
   - git config --local user.email "botframework@microsoft.com"
+
 deploy:
-  - provider: npm
-    api_key:
-      secure: "Mgt7i6P52nq77RdBUlcS1EBosxW6Qd6mM86A6RLQKzNJTWMW6GM0YhrqVHT6HQxrqcTRvuSHxJtOKyLoLPou2lWCZbsSy0ANb8tEJcurTF4lLvcTgMN+G5YD74F4RHRyLNW6rHDKvYvBl4iDLE6rW/B6Ew6uORMdlzJOJzjw075/7AoJIjB60f/Hf2aAx3q0wcWxlPyTqh6YD2mJ1GaiflTalxkYalr/Xh3bevrP4I2XyZV1vaCJqDZvrUVlYfSOCJRyBUSrCemkc6nkSTwdbY38L4k7ilrNgm5QfugoaKIPe600WCy4uPp0woz796rdurppsKeLmMSCKKu2mIqz1CT6mf8CR8hQAzGhKqsF0Rydjz6N/OF2XnFbtPZzu/FQJYED9H1UViUAHXsw528Ul9NSseMCVIZirRT+ysIB8Ny9oBddfRyifxnv2T9Zorm7y1V0nrmMXgCrZIvfgvOVXqij7euC4dgnOG4w0eG/Vd1EW87rskpZswV8gx/7ZsVOY/1NFDVxBi//EBSBOLctOSoZF8snT0+Duvw5Id3pXKvqm+ffI19xBe8Bua64fMg7dHWqZN/ixjTqeySBAYDPtRx/0wBSBwMIDh/Syux+fgjXpqf87HJc3vbjAXyuwPyO9mlblpm02JrZmG8Yik1krVvnLWzvqGqrmVKsLKmndn8="
-    email: "botframework@microsoft.com"
-    on:
-      branch: master
-    skip_cleanup: true
-    tag: master
-  - provider: npm
-    api_key:
-      secure: "Mgt7i6P52nq77RdBUlcS1EBosxW6Qd6mM86A6RLQKzNJTWMW6GM0YhrqVHT6HQxrqcTRvuSHxJtOKyLoLPou2lWCZbsSy0ANb8tEJcurTF4lLvcTgMN+G5YD74F4RHRyLNW6rHDKvYvBl4iDLE6rW/B6Ew6uORMdlzJOJzjw075/7AoJIjB60f/Hf2aAx3q0wcWxlPyTqh6YD2mJ1GaiflTalxkYalr/Xh3bevrP4I2XyZV1vaCJqDZvrUVlYfSOCJRyBUSrCemkc6nkSTwdbY38L4k7ilrNgm5QfugoaKIPe600WCy4uPp0woz796rdurppsKeLmMSCKKu2mIqz1CT6mf8CR8hQAzGhKqsF0Rydjz6N/OF2XnFbtPZzu/FQJYED9H1UViUAHXsw528Ul9NSseMCVIZirRT+ysIB8Ny9oBddfRyifxnv2T9Zorm7y1V0nrmMXgCrZIvfgvOVXqij7euC4dgnOG4w0eG/Vd1EW87rskpZswV8gx/7ZsVOY/1NFDVxBi//EBSBOLctOSoZF8snT0+Duvw5Id3pXKvqm+ffI19xBe8Bua64fMg7dHWqZN/ixjTqeySBAYDPtRx/0wBSBwMIDh/Syux+fgjXpqf87HJc3vbjAXyuwPyO9mlblpm02JrZmG8Yik1krVvnLWzvqGqrmVKsLKmndn8="
-    email: "botframework@microsoft.com"
-    on:
-      tags: true
-    skip_cleanup: true
   - provider: script
-    script: bash scripts/deploycdn.sh
+    script: bash scripts/build_pages
     skip_cleanup: true
     on:
       branch: master
   - provider: script
-    script: bash scripts/deploycdn.sh
+    script: bash scripts/deploy_cdn
+    skip_cleanup: true
+    on:
+      branch: master
+  - provider: script
+    script: bash scripts/deploy_cdn
     skip_cleanup: true
     on:
       tags: true
+  - provider: script
+    script: bash scripts/lerna_publish
+    skip_cleanup: true
+    on:
+      branch: master
+  - provider: script
+    script: bash scripts/docker_push
+    on:
+      branch: master
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    local-dir: gh-pages
+    on:
+      branch: master
