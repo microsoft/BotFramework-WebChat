@@ -33,12 +33,12 @@ deploy:
     script: bash scripts/build_pages
     skip_cleanup: true
     on:
-      branch: preview
+      branch: master
   - provider: script
     script: bash scripts/deploy_cdn
     skip_cleanup: true
     on:
-      branch: preview
+      branch: master
   - provider: script
     script: bash scripts/deploy_cdn
     skip_cleanup: true
@@ -48,14 +48,14 @@ deploy:
     script: bash scripts/lerna_publish
     skip_cleanup: true
     on:
-      branch: preview
+      branch: master
   - provider: script
     script: bash scripts/docker_push
     on:
-      branch: preview
+      branch: master
   - provider: pages
     skip-cleanup: true
     github-token: $GITHUB_TOKEN
     local-dir: gh-pages
     on:
-      branch: preview
+      branch: master

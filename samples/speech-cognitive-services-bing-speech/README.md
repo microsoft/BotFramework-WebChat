@@ -37,17 +37,17 @@ First, the app must retrieve the __speech cognitive services subscription key__ 
 ```diff
 …
     const { token } = await res.json();
-+   const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s'); 
++   const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s');
     window.WebChat.renderWebChat({
 …
 ```
 
 
-Next, the bot needs to fetch a **token** using the subscription key when the previous token expires. 
+Next, the bot needs to fetch a **token** using the subscription key when the previous token expires.
 
 ```diff
 …
-  const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s'); 
+  const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s');
 + const TOKEN_RENEWAL_INTERVAL = 300000;
 + let accessTokenPromise;
 + let lastFetch = 0;
@@ -89,7 +89,7 @@ window.WebChat.renderWebChat({
 
 
 
-## Completed code 
+## Completed code
 Here is the finished `index.html`:
 
 ```diff
@@ -97,7 +97,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Cognitive Services Bing Speech using JavaScript</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -115,7 +115,7 @@ Here is the finished `index.html`:
       (async function () {
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-+       const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s'); 
++       const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s');
 +       const TOKEN_RENEWAL_INTERVAL = 300000;
 +       let accessTokenPromise;
 +       let lastFetch = 0;
@@ -160,4 +160,4 @@ Here is the finished `index.html`:
 # Further Reading
 
 ## Full list of Web Chat Hosted Samples
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples)
+View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

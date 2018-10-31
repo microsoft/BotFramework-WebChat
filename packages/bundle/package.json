@@ -10,12 +10,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git#preview"
+    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git"
   },
   "bugs": {
     "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
   },
-  "homepage": "https://github.com/Microsoft/BotFramework-WebChat/tree/preview#readme",
+  "homepage": "https://github.com/Microsoft/BotFramework-WebChat/#readme",
   "scripts": {
     "build": "concurrently --names \"babel,typecheck\" \"npm run build:babel\" \"npm run build:typecheck\"",
     "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",

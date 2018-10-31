@@ -20,15 +20,15 @@ then
   npm publish
 fi
 
-# If on "preview" branch, deploy to "preview" tag
-if [ "$TRAVIS_BRANCH" = "preview" ]
+# If on "master" branch, deploy to "master" tag
+if [ "$TRAVIS_BRANCH" = "master" ]
 then
   cd packages/core
-  npm publish --tag preview
+  npm publish --tag master
 
   cd ../component
-  npm publish --tag preview
+  npm publish --tag master
 
   cd ../bundle
-  npm publish --tag preview
+  npm publish --tag master
 fi

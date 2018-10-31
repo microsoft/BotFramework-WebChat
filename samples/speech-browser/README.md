@@ -47,7 +47,7 @@ window.WebChat.renderWebChat({
 
 > If you prefer, you can use your own W3C Web Speech API compliant speech engine. Visit the [W3C Speech API](https://w3c.github.io/speech-api/) documentation for more information, and check out the file [createBrowserWebSpeechPonyfillFactory.js](./../packages\bundle\src\createBrowserWebSpeechPonyfillFactory.js) to reference implementation.
 
-## Completed code 
+## Completed code
 
 Here is the finished `index.html`:
 
@@ -56,7 +56,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Browser-supported speech</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -92,4 +92,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples)
+View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

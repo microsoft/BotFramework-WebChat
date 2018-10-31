@@ -43,8 +43,8 @@ We'll start by adding React and Babel to the head our template, based off of the
 + <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
 + <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
 + <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-  <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
-</head> 
+  <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+</head>
 …
 ```
 
@@ -82,7 +82,7 @@ Here is the finished `index.html`:
 +   <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
 +   <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
 +   <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -125,4 +125,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/preview/samples)
+View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

@@ -38,14 +38,11 @@ This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md)
 
 The only change needed in this sample is to change the Web Chat CDN from the full bundle to minimal bundle.
 
-<!-- TODO: [P0] Change CDN urls across ALL samples to reflect updated, non-preview CDN. -->
-
-
 ```diff
 …
 <head>
-- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
-+ <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-minimal.js"></script>
+- <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
++ <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
 </head>
 …
 ```
@@ -59,8 +56,8 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Minimal bundle</title>
-- <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
-+   <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat-minimal.js"></script>
+- <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
