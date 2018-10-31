@@ -33,7 +33,7 @@
   "dependencies": {
     "adaptivecards": "1.0.0",
     "bluebird": "^3.5.1",
-    "botframework-directlinejs": "0.9.17",
+    "botframework-directlinejs": "^0.10.0",
     "core-js": "2.4.1",
     "jspeech": "^0.1.1",
     "markdown-it": "8.3.1",
