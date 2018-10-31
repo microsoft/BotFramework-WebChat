@@ -2,6 +2,7 @@
   "name": "sample-breakaway-speech-button",
   "version": "0.0.0-0",
   "private": true,
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/breakaway-speech-button/",
   "dependencies": {
     "botframework-webchat": ">= 0.0.0-0",
     "classnames": "^2.2.6",
