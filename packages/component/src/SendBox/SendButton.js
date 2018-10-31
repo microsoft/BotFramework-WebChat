@@ -17,10 +17,10 @@ const connectSendButton = (...selectors) => connectToWebChat(
 )
 
 export default connectSendButton()(
-  ({ language, submitSendBox }) =>
+  ({ click, language }) =>
     <IconButton
       alt={ localize('Send', language) }
-      onClick={ submitSendBox }
+      onClick={ click }
     >
       <SendIcon />
     </IconButton>
