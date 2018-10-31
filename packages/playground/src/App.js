@@ -63,6 +63,7 @@ export default class extends React.Component {
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
     this.handleSendTypingChange = this.handleSendTypingChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
@@ -103,6 +104,7 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
+      sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
       userAvatarInitials: 'WC',
       userID
@@ -147,15 +149,20 @@ export default class extends React.Component {
   handleReliabilityChange({ target: { checked } }) {
     this.setState(
       () => ({ faulty: !checked }),
-      () => {
-        this.state.directLine.setFaulty(this.state.faulty);
-      }
+      () => this.state.directLine.setFaulty(this.state.faulty)
     );
   }
 
   handleResetClick() {
     window.sessionStorage.removeItem('REDUX_STORE');
     window.location.reload();
+  }
+
+  handleSendTimeoutChange({ target: { value } }) {
+    this.setState(
+      () => ({ sendTimeout: value }),
+      () => window.sessionStorage.setItem('PLAYGROUND_SEND_TIMEOUT', value)
+    );
   }
 
   handleSendTypingChange({ target: { checked } }) {
@@ -213,6 +220,7 @@ export default class extends React.Component {
           disabled={ state.disabled }
           locale={ state.language }
           renderMarkdown={ renderMarkdown }
+          sendTimeout={ +state.sendTimeout || undefined }
           sendTyping={ state.sendTyping }
           store={ store }
           styleSet={ styleSet }
@@ -289,6 +297,24 @@ export default class extends React.Component {
                 <option value="es-ES">Spanish (Spain)</option>
                 <option value="sv-SE">Swedish (Sweden)</option>
                 <option value="tr-TR">Turkish (Turkey)</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              Send timeout
+              <select
+                onChange={ this.handleSendTimeoutChange }
+                value={ state.sendTimeout }
+              >
+                <option value="">Default (20 seconds)</option>
+                <option value="1000">1 second</option>
+                <option value="2000">2 seconds</option>
+                <option value="5000">5 seconds</option>
+                <option value="20000">20 seconds</option>
+                <option value="60000">1 minute</option>
+                <option value="120000">2 minutes</option>
+                <option value="300000">5 minutes (&gt; browser timeout)</option>
               </select>
             </label>
           </div>

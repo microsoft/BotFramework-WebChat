@@ -27,8 +27,6 @@ import {
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
-const SEND_TIMEOUT = 5000;
-
 export default function* () {
   yield whileConnected(function* (directLine, userID) {
     for (let numActivitiesPosted = 0;; numActivitiesPosted++) {
@@ -98,12 +96,14 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
     //   - Direct Line service only respond on HTTP after bot respond to Direct Line
     // - Activity may take too long time to echo back
 
+    const sendTimeout = yield select(({ sendTimeout }) => sendTimeout);
+
     const { send: { echoBack } } = yield race({
       send: all({
         echoBack: echoBackCall,
         postActivity: observeOnce(directLine.postActivity(activity))
       }),
-      timeout: call(() => sleep(SEND_TIMEOUT).then(() => Promise.reject(new Error('timeout'))))
+      timeout: call(() => sleep(sendTimeout).then(() => Promise.reject(new Error('timeout'))))
     });
 
     yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } });
