@@ -19,6 +19,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Ignore package-lock.json, so every time the user do "npm install", they will get latest as Web Chat
-/package-lock.json
