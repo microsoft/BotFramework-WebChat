@@ -41,11 +41,15 @@ The only change needed in this sample is to change the Web Chat CDN from the ful
 ```diff
 …
 <head>
-- <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
-+ <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
+- <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++ <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
 </head>
 …
 ```
+
+> For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
+> When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
+> Or locked down on a specific version "/4.1.0/webchat.js".
 
 ## Completed code
 
@@ -56,8 +60,8 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Minimal bundle</title>
-- <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
-+   <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
+- <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
