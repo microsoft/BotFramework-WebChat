@@ -13,7 +13,7 @@
 
 # How to use
 
-> For previous versions of Web Chat (v3), you can find it [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v0.15.0).
+> For previous versions of Web Chat (v3), you can find it [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v3).
 
 First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
 Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal to use in the code below.

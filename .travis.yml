@@ -3,59 +3,70 @@ sudo: required
 language: node_js
 
 node_js:
-  - "10"
+- "10"
 
 services:
-  - docker
+- docker
 
 before_install:
-  - npm install
-  - sudo apt-get install jq
-  - npx version-from-git --travis
-  - git checkout -b temp-ci
-  - lerna version --exact --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
+- npm install
+- sudo apt-get install jq
+- npx version-from-git --travis
+- git checkout -b temp-ci
+- lerna version --exact --force-publish --no-git-tag-version --no-push --yes `cat package.json | jq -r .version`
 
 install:
-  - npm run bootstrap
-  - npm run build
-  - npm run prepublishOnly
-  - docker build -t webchat.azurecr.io/playground .
+- npm run bootstrap
+- npm run build
+- npm run prepublishOnly
+- docker build -t webchat.azurecr.io/playground .
 
 script:
-  - echo
+- echo
 
 before_deploy:
-  - git config --local user.name "Bot Framework"
-  - git config --local user.email "botframework@microsoft.com"
+- git config --local user.name "Bot Framework"
+- git config --local user.email "botframework@microsoft.com"
 
 deploy:
-  - provider: script
-    script: bash scripts/build_pages
-    skip_cleanup: true
-    on:
-      branch: master
-  - provider: script
-    script: bash scripts/deploy_cdn
-    skip_cleanup: true
-    on:
-      branch: master
-  - provider: script
-    script: bash scripts/deploy_cdn
-    skip_cleanup: true
-    on:
-      tags: true
-  - provider: script
-    script: bash scripts/lerna_publish
-    skip_cleanup: true
-    on:
-      branch: master
-  - provider: script
-    script: bash scripts/docker_push
-    on:
-      branch: master
-  - provider: pages
-    skip-cleanup: true
-    github-token: $GITHUB_TOKEN
-    local-dir: gh-pages
-    on:
-      branch: master
+- provider: script
+  script: bash scripts/build_pages
+  skip_cleanup: true
+  on:
+    branch: master
+
+- provider: script
+  script: bash scripts/deploy_cdn
+  skip_cleanup: true
+  on:
+    branch: master
+
+- provider: script
+  script: bash scripts/deploy_cdn
+  skip_cleanup: true
+  on:
+    tags: true
+
+- provider: script
+  script: bash scripts/lerna_publish
+  skip_cleanup: true
+  on:
+    branch: master
+
+- provider: script
+  script: bash scripts/lerna_publish
+  skip_cleanup: true
+  on:
+    tags: true
+
+- provider: script
+  script: bash scripts/docker_push
+  on:
+    branch: master
+
+- provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local-dir: gh-pages
+  on:
+    branch: master

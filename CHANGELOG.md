@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-- Add content to Sample README's, by [@corinagum](https://github.com/corinagum) in PR [#1235](https://github.com/Microsoft/BotFramework-WebChat/pull/1235)
-
+## [4.1.0] - 2018-10-31
 ### Added
-
-- Initial release
+- Initial release of Web Chat v4
