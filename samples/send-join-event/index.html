@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Presentation mode</title>
+    <title>Web Chat: Full-featured bundle</title>
     <!--
-      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
-      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
-      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
+      Or locked down on a specific version "/4.1.0/webchat.js".
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <style>
@@ -20,7 +20,7 @@
     </style>
   </head>
   <body>
-    <div id="webchat" role="main"></div>
+    <div id="webchat"></div>
     <script>
       (async function () {
         // In this demo, we are using Direct Line token from MockBot.
@@ -31,12 +31,14 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-          // The following code is for convenient when trying out this sample, not required for production.
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } });
-
-            // Although suggested actions were sent from the bot, we hide the send box, thus, all suggested actions are also hidden
-            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
+            dispatch({
+              type: 'WEB_CHAT/SEND_EVENT',
+              payload: {
+                name: 'webchat/join',
+                value: { language: window.navigator.language }
+              }
+            });
           }
 
           return next(action);
@@ -44,12 +46,10 @@
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          disabled: true,
-          store,
-          styleOptions: {
-            hideSendBox: true
-          }
+          store
         }, document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
   </body>

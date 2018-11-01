@@ -1,6 +1,6 @@
 import {
   put,
-  take
+  takeEvery
 } from 'redux-saga/effects';
 
 import whileConnected from './effects/whileConnected';
@@ -12,9 +12,7 @@ import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 
 export default function* () {
   yield whileConnected(function* () {
-    for (;;) {
-      const { payload: { text, via } } = yield take(SEND_MESSAGE);
-
+    yield takeEvery(SEND_MESSAGE, function* ({ payload: { text, via } }) {
       if (text) {
         yield put(postActivity({
           text,
@@ -28,6 +26,6 @@ export default function* () {
           yield put(stopSpeakingActivity());
         }
       }
-    }
+    });
   });
 }

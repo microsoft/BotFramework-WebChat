@@ -87,8 +87,14 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          // The following code is for convenient when trying out this sample, not required for production.
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'timestamp' } });
+          }
 
-        const store = window.WebChat.createStore();
+          return next(action);
+        });
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
@@ -103,7 +109,6 @@
 
         // The following code is for convenient when trying out this sample, not required for production.
         document.querySelector('#webchat > *').focus();
-        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'timestamp' } }), 1000);
       })().catch(err => console.error(err));
     </script>
   </body>

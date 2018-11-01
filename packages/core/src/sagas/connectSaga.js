@@ -18,6 +18,7 @@ import {
   CONNECT,
   CONNECT_PENDING,
   CONNECT_REJECTED,
+  CONNECT_FULFILLING,
   CONNECT_FULFILLED
 } from '../actions/connect';
 
@@ -83,6 +84,7 @@ function* connectSaga(directLine, userID) {
   try {
     try {
       yield callUntil(connectionStatusQueue.shift, [], connectionStatus => connectionStatus === ONLINE);
+      yield put({ type: CONNECT_FULFILLING, meta, payload: { directLine } });
       yield put({ type: CONNECT_FULFILLED, meta, payload: { directLine } });
     } catch (err) {
       yield put({ type: CONNECT_REJECTED, error: true, meta, payload: err });

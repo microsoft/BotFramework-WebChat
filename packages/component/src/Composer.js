@@ -15,6 +15,7 @@ import {
   disconnect,
   markActivity,
   postActivity,
+  sendEvent,
   sendFiles,
   sendMessage,
   sendPostBack,
@@ -44,6 +45,7 @@ const EMPTY_ARRAY = [];
 const DISPATCHERS = {
   markActivity,
   postActivity,
+  sendEvent,
   sendFiles,
   sendMessage,
   sendPostBack,

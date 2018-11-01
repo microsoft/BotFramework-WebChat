@@ -35,8 +35,7 @@
         const store = window.WebChat.createStore(
           {},
           ({ dispatch }) => next => action => {
-            // TODO: [P4] Investigate why we need to wait until DIRECT_LINE/CONNECTION_STATUS_UPDATE, instead of DIRECT_LINE/CONNECT_FULFILLED.
-            if (action.type === 'DIRECT_LINE/CONNECTION_STATUS_UPDATE' && action.payload.connectionStatus === 2) {
+            if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
               // After connected, we will send a message by dispatching a Redux action.
               dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'sample:backchannel' } });
             } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {

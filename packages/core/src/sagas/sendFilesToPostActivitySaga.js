@@ -1,6 +1,6 @@
 import {
   put,
-  take
+  takeEvery
 } from 'redux-saga/effects';
 
 import mime from 'mime';
@@ -15,9 +15,7 @@ const getType = mime.getType.bind(mime);
 
 export default function* () {
   yield whileConnected(function* () {
-    for (;;) {
-      const { payload: { files } } = yield take(SEND_FILES);
-
+    yield takeEvery(SEND_FILES, function* ({ payload: { files } }) {
       if (files.length) {
         yield put(postActivity({
           attachments: [].map.call(files, file => ({
@@ -33,6 +31,6 @@ export default function* () {
 
         yield put(stopSpeakingActivity());
       }
-    }
+    });
   });
 }

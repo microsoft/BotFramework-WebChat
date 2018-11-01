@@ -1,6 +1,6 @@
 import {
   put,
-  take
+  takeEvery
 } from 'redux-saga/effects';
 
 import whileConnected from './effects/whileConnected';
@@ -10,9 +10,7 @@ import postActivity from '../actions/postActivity';
 
 export default function* () {
   yield whileConnected(function* () {
-    for (;;) {
-      const { payload: { value } } = yield take(SEND_POST_BACK);
-
+    yield takeEvery(SEND_POST_BACK, function* ({ payload: { value } }) {
       if (value) {
         yield put(postActivity({
           channelData: {
@@ -23,6 +21,6 @@ export default function* () {
           value: typeof value !== 'string' ? value : undefined
         }));
       }
-    }
+    });
   });
 }
