@@ -7,10 +7,16 @@
       - Adaptive Cards
       - Cognitive Services Bing Speech
       - Markdown-It
+      - sanitize-html
 
       And then, we bring Markdown-It back to the project.
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
+    <!--
+      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat-minimal.js".
+      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat-minimal.js".
+      Or locked down on a specific version "/4.1.0/webchat-minimal.js".
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
     <script src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
     <style>
       html, body { height: 100% }

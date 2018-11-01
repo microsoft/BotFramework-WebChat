@@ -23,7 +23,7 @@ If you need to do some simple styling, you can set them thru `styleOptions`. Sty
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       const styleOptions = {
         bubbleBackground: 'rgba(0, 0, 255, .1)',
@@ -56,7 +56,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       // "styleSet" is a set of CSS rules which are generated from "styleOptions"
       const styleSet = window.WebChat.createStyleSet({
@@ -92,7 +92,7 @@ The latest Web Chat support avatar, you can customize them using `botAvatarIniti
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),

@@ -26,11 +26,10 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN, 
 The `index.html` page has one main goal:
 - To enable cognitive services to provide speech-to-text ability
 
-We'll start by using the [full-bundle CDN sample](./../full-bundle/README.md) as our Web Chat template.
+We'll start by using the [full-bundle CDN sample](../full-bundle/README.md) as our Web Chat template.
 > Cognitive Services Bing Speech package is only available in the Web Chat full bundle
 
 > **Retrieving the subscription key in the URL and fetching a token is for demonstration purposes only.** In a published bot, the secret should be stored on the server and generate a token to avoid exposing the secret. For more information, visit the [websocket protocol documenation](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) for Cognitive Services.
-
 
 First, the app must retrieve the __speech cognitive services subscription key__ when running this bot. Add the `URLSearchParams` method to retrieve the key from the URL.
 
@@ -51,13 +50,15 @@ Next, the bot needs to fetch a **token** using the subscription key when the pre
 + const TOKEN_RENEWAL_INTERVAL = 300000;
 + let accessTokenPromise;
 + let lastFetch = 0;
-
++
 + const fetchToken = () => {
 + const now = Date.now();
++
 + if (!accessTokenPromise || now - lastFetch > TOKEN_RENEWAL_INTERVAL) {
 +   console.log(`Cognitive Services: Issuing new token using subscription key`);
-
++
 +   lastFetch = now;
++
 +   accessTokenPromise = fetch(
 +   'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
 +   {
@@ -70,8 +71,10 @@ Next, the bot needs to fetch a **token** using the subscription key when the pre
 +    return Promise.reject(err);
 +  });
 + }
++
 + return accessTokenPromise;
 };
+
 window.WebChat.renderWebChat({
 …
 ```
@@ -97,7 +100,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Cognitive Services Bing Speech using JavaScript</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }

@@ -25,7 +25,7 @@ Here is how how you can add Web Chat control to you website:
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' })
@@ -50,7 +50,7 @@ You can use the full, typical webchat package that contains the most typically u
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECREET' })
@@ -78,7 +78,7 @@ See a working sample with minimal Web Chat bundle [here](https://github.com/Micr
 <html>
   <body>
     <div id="webchat"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/botchat-minimal.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' })

@@ -40,10 +40,14 @@ The `index.html` page has two main goals.
 ```diff
 …
 <head>
-+ <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
++ <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
 </head>
 …
 ```
+
+> For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
+> When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
+> Or locked down on a specific version "/4.1.0/webchat.js".
 
 Next, the code to render Web Chat must be added to the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
@@ -104,7 +108,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle</title>
-+   <script src="https://cdn.botframework.com/botframework-webchat/master/botchat.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
    <style>
 +    html, body { height: 100% }
 +    body { margin: 0 }
