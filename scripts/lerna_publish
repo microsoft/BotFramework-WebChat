@@ -18,6 +18,8 @@ then
 
   cd ../bundle
   npm publish
+
+  cd ../..
 fi
 
 # If on "master" branch, deploy to "master" tag
@@ -31,4 +33,6 @@ then
 
   cd ../bundle
   npm publish --tag master
+
+  cd ../..
 fi
