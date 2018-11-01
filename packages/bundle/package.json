@@ -48,7 +48,7 @@
     "sanitize-html": "^1.19.0",
     "store": "^2.0.12",
     "url-search-params-polyfill": "^5.0.0",
-    "web-speech-cognitive-services": "3.0.0-master.da6efbb",
+    "web-speech-cognitive-services": "^3.0.0",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
