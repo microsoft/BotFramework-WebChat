@@ -81,6 +81,7 @@ On your web site, instead of connecting to your backend thru REST/Web Socket API
 
 If you want to deep-customize Web Chat, you can break Web Chat into multiple breakaway components and join them back together.
 
+- [Minimize mode](https://microsoft.github.io/BotFramework-WebChat/minimize-mode) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/minimize-mode)
 - [Speech button](https://microsoft.github.io/BotFramework-WebChat/breakaway-speech-button) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/breakaway-speech-button)
 
 ## Timestamps

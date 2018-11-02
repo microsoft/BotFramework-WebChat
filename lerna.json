@@ -3,6 +3,7 @@
   "packages": [
     "packages/*",
     "samples/breakaway-speech-button",
+    "samples/minimize-mode",
     "samples/redux-activity-middleware"
   ],
   "version": "0.0.0"
