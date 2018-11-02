@@ -1,3 +1,7 @@
+.web-chat {
+  overflow: hidden;
+}
+
 .connect-spinner {
   display: flex;
   margin: auto;

@@ -92,7 +92,7 @@ export default class extends React.Component {
     } } = this;
 
     return (
-      <div className="web-chat">
+      <div className="minimizable-web-chat">
         {
           minimized ?
             <button

@@ -1,4 +1,4 @@
-.web-chat > button.maximize {
+.minimizable-web-chat > button.maximize {
   background-color: #39C;
   border-radius: 50%;
   border: 2px solid #39C;
@@ -15,7 +15,7 @@
   width: 64px;
 }
 
-.web-chat > button.maximize > .red-dot {
+.minimizable-web-chat > button.maximize > .red-dot {
   color: Red;
   font-size: 14px;
   position: absolute;
@@ -23,18 +23,18 @@
   top: 12px;
 }
 
-.web-chat > button.maximize:focus:not(:active),
-.web-chat > button.maximize:hover:not(:active) {
+.minimizable-web-chat > button.maximize:focus:not(:active),
+.minimizable-web-chat > button.maximize:hover:not(:active) {
   background-color: #069;
   border-color: #069;
 }
 
-.web-chat > button.maximize:active {
+.minimizable-web-chat > button.maximize:active {
   background-color: White;
   color: #39C;
 }
 
-.web-chat > .chat-box {
+.minimizable-web-chat > .chat-box {
   background-color: rgba(255, 255, 255, .8);
   backdrop-filter: blur(10px);
   border-radius: 4px;
@@ -50,25 +50,25 @@
   width: 30%;
 }
 
-.web-chat > .chat-box.left {
+.minimizable-web-chat > .chat-box.left {
   left: 20px;
 }
 
-.web-chat > .chat-box.right {
+.minimizable-web-chat > .chat-box.right {
   right: 20px;
 }
 
-.web-chat > .chat-box > header {
+.minimizable-web-chat > .chat-box > header {
   background-color: #39C;
   height: 40px;
   display: flex;
 }
 
-.web-chat > .chat-box > header > .filler {
+.minimizable-web-chat > .chat-box > header > .filler {
   flex: 0 10000 100%;
 }
 
-.web-chat > .chat-box > header > button {
+.minimizable-web-chat > .chat-box > header > button {
   width: 40px;
   height: 40px;
   background-color: Transparent;
@@ -78,15 +78,15 @@
   outline: 0;
 }
 
-.web-chat > .chat-box > header > button:focus:not(:active),
-.web-chat > .chat-box > header > button:hover:not(:active) {
+.minimizable-web-chat > .chat-box > header > button:focus:not(:active),
+.minimizable-web-chat > .chat-box > header > button:hover:not(:active) {
   color: rgba(255, 255, 255, .6);
 }
 
-.web-chat > .chat-box > header > button:focus:active {
+.minimizable-web-chat > .chat-box > header > button:focus:active {
   color: rgba(255, 255, 255, .4);
 }
 
-.web-chat > .chat-box > .react-web-chat {
+.minimizable-web-chat > .chat-box > .react-web-chat {
   flex: 1;
 }
