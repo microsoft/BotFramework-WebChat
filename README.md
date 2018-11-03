@@ -153,9 +153,25 @@ npm run build
 
 > Instead of `npm run build`, you can use `npm run watch` for watch mode.
 
+## Testing Web Chat for development purpose
+
+We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
+
+```sh
+cd packages/playground
+npm start
+```
+
+Then browse to http://localhost:3000/, and click on one of the connection options on upper right corner.
+
+- Official MockBot: we hosted a live demo bot for testing Web Chat features
+- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line services](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
+
+You are also advised to test the CDN bundles by copying the test harness from our samples.
+
 ## Building CDN bundle in development mode
 
-The standard build script does not build CDN bundle (`webchat*.js`).
+Currently, the standard build script does not build CDN bundle (`webchat*.js`).
 
 ```sh
 cd packages/bundle
@@ -172,22 +188,6 @@ If you want to build a production CDN bundle with minification, you can follow t
 cd packages/bundle
 npm run prepublishOnly
 ```
-
-## Testing Web Chat for development purpose
-
-We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
-
-```sh
-cd packages/playground
-npm start
-```
-
-Then browse to http://localhost:3000/, and click on one of the connection options on upper right corner.
-
-- Official MockBot: we hosted a live demo bot for testing Web Chat features
-- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line services](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
-
-You are also advised to test the CDN bundles by copying the test harness from our samples.
 
 # Contributions
 
