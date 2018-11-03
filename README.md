@@ -165,7 +165,7 @@ npm start
 Then browse to http://localhost:3000/, and click on one of the connection options on upper right corner.
 
 - Official MockBot: we hosted a live demo bot for testing Web Chat features
-- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line services](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
+- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line service](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
 
 You are also advised to test the CDN bundles by copying the test harness from our samples.
 
