@@ -428,6 +428,23 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: 'Kuuntelee...',
         uploadFile: 'Lataa tiedosto',
         speak: 'Puhu'
+    },
+        'he-il': {
+        title: 'צ\'אט',
+        send: 'שלח',
+        unknownFile: '[קובץ מסוג \'%1\']',
+        unknownCard: '[כרטיס לא ידוע \'%1\']',
+        receiptVat: 'מע\"מ',
+        receiptTax: 'מס',
+        receiptTotal: 'סך הכל',
+        messageRetry: 'נסה שוב',
+        messageFailed: 'השליחה נכשלה',
+        messageSending: 'שולח',
+        timeSent: ' %1',
+        consolePlaceholder: 'כתוב כאן...',
+        listeningIndicator: 'מאזין...',
+        uploadFile: 'העלה קובץ',
+        speak: 'דבר'
     }
 };
 
@@ -456,6 +473,8 @@ function mapLocale(locale: string) {
         return 'fi-fi';
     } else if (locale.startsWith('fr')) {
         return 'fr-fr';
+    } else if (locale.startsWith('he')) {
+        return 'he-il';
     } else if (locale.startsWith('hu')) {
         return 'hu-hu';
     } else if (locale.startsWith('it')) {
