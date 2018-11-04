@@ -265,6 +265,8 @@ class Composer extends React.Component {
       //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
       {
         activityRenderer,
+
+        // TODO: [P3] We should move this to bundle
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
 

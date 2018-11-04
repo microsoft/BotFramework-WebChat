@@ -21,7 +21,6 @@ import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 import concatMiddleware from './Middleware/concatMiddleware';
 import connectToWebChat from './connectToWebChat';
 import Context from './Context';
-import createAdaptiveCardsAttachmentMiddleware from './Middleware/Attachment/createAdaptiveCardMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
@@ -70,7 +69,6 @@ export {
   concatMiddleware,
   connectToWebChat,
   Context,
-  createAdaptiveCardsAttachmentMiddleware,
   createCoreActivityMiddleware,
   createCoreAttachmentMiddleware,
   createStyleSet,

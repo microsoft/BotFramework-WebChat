@@ -1,9 +1,14 @@
+import { HostConfig } from 'adaptivecards';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ErrorBox from '../ErrorBox';
 import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
+
+function isPlainObject(obj) {
+  return obj.__proto__ === Object.prototype;
+}
 
 class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
@@ -90,8 +95,11 @@ class AdaptiveCardRenderer extends React.PureComponent {
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
 
       adaptiveCard.constructor.processMarkdown = renderMarkdown || (text => text);
-      adaptiveCard.hostConfig = adaptiveCardHostConfig;
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
+
+      if (adaptiveCardHostConfig) {
+        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig) ? new HostConfig(adaptiveCardHostConfig) : adaptiveCardHostConfig;
+      }
 
       const errors = adaptiveCard.validate();
 

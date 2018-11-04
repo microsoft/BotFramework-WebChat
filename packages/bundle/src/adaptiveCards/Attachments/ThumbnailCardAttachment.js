@@ -1,7 +1,7 @@
 import memoize from 'memoize-one';
 import React from 'react';
 
-import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
+import { AdaptiveCardBuilder } from '../AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
 export default class extends React.Component {

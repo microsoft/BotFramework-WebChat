@@ -1,10 +1,9 @@
-import { HostConfig } from 'adaptivecards';
 import defaultStyleSetOptions from './defaultStyleSetOptions';
 import { primaryFont } from './Fonts';
 
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
-export default ({ accent } = defaultStyleSetOptions) => new HostConfig({
+export default ({ accent } = defaultStyleSetOptions) => ({
   containerStyles: {
     default: {
       foregroundColors: {

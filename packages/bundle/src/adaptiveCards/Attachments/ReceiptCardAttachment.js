@@ -1,7 +1,7 @@
 import memoize from 'memoize-one';
 import React from 'react';
 
-import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
+import { AdaptiveCardBuilder } from '../AdaptiveCardBuilder';
 import { localize } from '../Localization/Localize';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import connectToWebChat from '../connectToWebChat';
