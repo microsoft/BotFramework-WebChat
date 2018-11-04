@@ -25,6 +25,7 @@ export default function* () {
       function* () {
         yield put(stopSpeakingActivity());
 
+        // TODO: [P4] Should stopSpeakingActivity automatically mark all activities as spoken?
         const activities = yield select(({ activities }) => activities);
 
         for (let activity of activities) {

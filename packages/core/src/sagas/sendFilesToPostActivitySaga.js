@@ -15,8 +15,13 @@ const getType = mime.getType.bind(mime);
 
 export default function* () {
   yield whileConnected(function* () {
-    yield takeEvery(SEND_FILES, function* ({ payload: { files } }) {
-      if (files.length) {
+    yield takeEvery(
+      ({ payload, type }) =>
+        type === SEND_FILES
+        && payload
+        && payload.files
+        && payload.files.length,
+      function* ({ payload: { files } }) {
         yield put(postActivity({
           attachments: [].map.call(files, file => ({
             contentType: getType(file.name) || 'application/octet-stream',
@@ -29,8 +34,9 @@ export default function* () {
           type: 'message'
         }));
 
+        // TODO: [P4] Should we put this as an individual saga instead?
         yield put(stopSpeakingActivity());
       }
-    });
+    );
   });
 }

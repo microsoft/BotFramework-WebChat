@@ -30,8 +30,12 @@ export default function* () {
 
     for (;;) {
       let lastSend = 0;
-      const task = yield takeLatest(SET_SEND_BOX, function* ({ payload: { text } }) {
-        if (text) {
+      const task = yield takeLatest(
+        ({ payload, type }) =>
+          type === SET_SEND_BOX
+          && payload
+          && payload.text,
+        function* () {
           const interval = SEND_INTERVAL - Date.now() + lastSend;
 
           if (interval > 0) {
@@ -42,7 +46,7 @@ export default function* () {
 
           lastSend = Date.now();
         }
-      });
+      );
 
       yield takeSendTyping(false);
       yield cancel(task);
