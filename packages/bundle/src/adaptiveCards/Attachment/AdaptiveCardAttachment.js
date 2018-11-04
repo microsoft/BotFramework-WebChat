@@ -1,9 +1,8 @@
+import { AdaptiveCard } from 'adaptivecards';
 import memoize from 'memoize-one';
 import React from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-
-import { AdaptiveCard } from 'adaptivecards';
 
 function stripSubmitAction(card) {
   if (!card.actions) {

@@ -1,10 +1,14 @@
 import { HostConfig } from 'adaptivecards';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
-import ErrorBox from '../ErrorBox';
-import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
+import {
+  Components,
+  connectToWebChat,
+  getTabIndex,
+  localize
+} from 'botframework-webchat-component';
+
+const { ErrorBox } = Components;
 
 function isPlainObject(obj) {
   return obj.__proto__ === Object.prototype;

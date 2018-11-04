@@ -1,8 +1,10 @@
 import React from 'react';
 
-import AudioContent from './AudioContent';
+import { Components, connectToWebChat } from 'botframework-webchat-component';
+
 import CommonCard from './CommonCard';
-import connectToWebChat from '../connectToWebChat';
+
+const { AudioContent } = Components;
 
 export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })

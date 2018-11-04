@@ -1,10 +1,10 @@
 import memoize from 'memoize-one';
 import React from 'react';
 
+import { connectToWebChat, localize } from 'botframework-webchat-component';
+
 import { AdaptiveCardBuilder } from '../AdaptiveCardBuilder';
-import { localize } from '../Localization/Localize';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import connectToWebChat from '../connectToWebChat';
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';

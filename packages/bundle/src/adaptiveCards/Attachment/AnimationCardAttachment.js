@@ -1,11 +1,12 @@
 import memoize from 'memoize-one';
 import React from 'react';
 
+import { Components, connectToWebChat } from 'botframework-webchat-component';
+
 import { AdaptiveCardBuilder } from '../AdaptiveCardBuilder';
 import CommonCard from './CommonCard';
-import connectToWebChat from '../connectToWebChat';
-import ImageContent from './ImageContent';
-import VideoContent from './VideoContent';
+
+const { ImageContent, VideoContent } = Components;
 
 class AnimationCardAttachment extends React.Component {
   constructor(props) {
