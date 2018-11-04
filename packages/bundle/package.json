@@ -61,7 +61,7 @@
     "babel-plugin-version-transform": "^1.0.0",
     "concurrently": "^4.0.1",
     "typescript": "^3.1.6",
-    "webpack": "^4.17.2",
+    "webpack": "^4.24.0",
     "webpack-command": "^0.4.2",
     "webpack-visualizer-plugin": "^0.1.11"
   }
