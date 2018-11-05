@@ -33,8 +33,11 @@ function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-beforeEach(async () => {
+beforeAll(async () => {
   server = await createWebChatBundleServer();
+});
+
+beforeEach(async () => {
   driver = await new Builder().forBrowser('chrome').build();
 
   await driver.get(`http://localhost:${ server.port }/samples/full-bundle`);
@@ -45,10 +48,12 @@ afterEach(async () => {
     try {
       global.__coverage__ = await driver.executeScript(() => window.__coverage__);
     } finally {
-      driver.quit();
+      await driver.quit();
     }
   }
+});
 
+afterAll(async () => {
   if (server) {
     await server.close();
   }
@@ -60,5 +65,5 @@ test('setup', async () => {
   const input = await driver.findElement(By.tagName('input[type="text"]'));
 
   await input.sendKeys('accessibility', Key.RETURN);
-  await sleep(2000);
+  await sleep(5000);
 }, 60000);
