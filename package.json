@@ -37,8 +37,10 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
+    "get-port": "^4.0.0",
     "jest": "^23.6.0",
     "lerna": "^3.4.0",
-    "selenium-webdriver": "^4.0.0-alpha.1"
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "serve-handler": "^5.0.5"
   }
 }
