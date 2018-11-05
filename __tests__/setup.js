@@ -1,8 +1,8 @@
 import { Builder, By, Key } from 'selenium-webdriver';
 import { createServer } from 'http';
-import handler from 'serve-handler';
-import getPort from 'get-port';
 import { promisify } from 'util';
+import getPort from 'get-port';
+import handler from 'serve-handler';
 
 let driver;
 let server;
