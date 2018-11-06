@@ -9,13 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Translations
   - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in PR [#1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
 - Props to add `tabIndex` to activity in PR [#1161](https://github.com/Microsoft/BotFramework-WebChat/pull/1161)
+- Revert [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166) and fix tests, by [@corinagum](https://github.com/corinagum) in PR [#1215](https://github.com/Microsoft/BotFramework-WebChat/pull/1215)
 
 ### Changed
 - Bump `botframework-directlinejs` to `0.9.17` in PR [#1131](https://github.com/Microsoft/BotFramework-WebChat/pull/1131)
 - Fix `historyRef` cannot be focused because it is unmounted in Emulator, in PR [#1157](https://github.com/Microsoft/BotFramework-WebChat/pull/1157)
 - Fix for Chatdown that activities sent by the user are not displayed, in PR [#1162](https://github.com/Microsoft/BotFramework-WebChat/pull/1162)
-- Accessibility adjustment on History.tsx where clickable div is converted to button, by [@corinagum](https://github.com/corinagum) in PR [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166)
+- Accessibility adjustment on `History.tsx` where clickable `<div>` is converted to `<button>`, by [@corinagum](https://github.com/corinagum) in PR [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166)
 - Fix so that carousel buttons are updated on load, by [@corinagum](https://github.com/corinagum) in PR [#1188](https://github.com/Microsoft/BotFramework-WebChat/pull/1188)
+- Move `react` and `react-dom` to `peerDependencies` in [#1202](https://github.com/Microsoft/BotFramework-WebChat/pull/1202)
+   - The host page should already include `react` and `react-dom` as dependencies
+   - Bundle with `react@16.5.2` and `react-dom@16.5.2`
+- Bump dependencies to fix vulnerability issues in [#1202](https://github.com/Microsoft/BotFramework-WebChat/pull/1202)
+   - `gulp@^4.0.0`
+   - `http-server@^0.11.1`
+   - `node-sass@^4.9.3`
 
 ## [0.14.2] - 2018-08-16
 ### Added
@@ -28,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.14.1] - 2018-07-31
 ### Added
-- Bump [`node-sass`](https://github.com/sass/node-sass) to 4.9.2, by [@corinagum](https://github.com/corinagum) in PR [#1043](https://github.com/Microsoft/BotFramework-WebChat/pull/1043)
+- Bump [`node-sass`](https://github.com/sass/node-sass) to `4.9.2`, by [@corinagum](https://github.com/corinagum) in PR [#1043](https://github.com/Microsoft/BotFramework-WebChat/pull/1043)
 - Add TSLint, by [@adeogunsamuel](https://github.com/adeogunsamuel) in [#1017](https://github.com/Microsoft/BotFramework-WebChat/pull/1017)
 
 ### Changed
