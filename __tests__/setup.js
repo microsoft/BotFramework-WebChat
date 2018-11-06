@@ -1,8 +1,12 @@
 import { Builder, By, Key } from 'selenium-webdriver';
+import { Options as ChromeOptions } from 'selenium-webdriver/chrome';
 import { createServer } from 'http';
 import { promisify } from 'util';
 import getPort from 'get-port';
 import handler from 'serve-handler';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
+
+expect.extend({ toMatchImageSnapshot });
 
 let driver;
 let server;
@@ -38,7 +42,11 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  driver = await new Builder().forBrowser('chrome').build();
+  let builder = new Builder().forBrowser('chrome');
+  const chromeOptions = (builder.getChromeOptions() || new ChromeOptions()).windowSize({ height: 640, width: 360 });
+
+  builder = builder.setChromeOptions(chromeOptions);
+  driver = await builder.build();
 
   await driver.get(`http://localhost:${ server.port }/samples/full-bundle`);
 }, 10000);
@@ -64,6 +72,10 @@ test('setup', async () => {
 
   const input = await driver.findElement(By.tagName('input[type="text"]'));
 
-  await input.sendKeys('accessibility', Key.RETURN);
+  await input.sendKeys('layout carousel', Key.RETURN);
   await sleep(5000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot();
 }, 60000);
