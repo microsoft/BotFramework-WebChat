@@ -3,7 +3,7 @@ import { Options } from 'selenium-webdriver/chrome';
 export default function (browserName, builder) {
   switch (browserName) {
     case 'chrome-headless-mobile':
-      return builder.setChromeOptions(
+      return builder.forBrowser('chrome').setChromeOptions(
         (builder.getChromeOptions() || new Options())
           .headless()
           .setMobileEmulation({
@@ -14,15 +14,21 @@ export default function (browserName, builder) {
       );
 
     case 'chrome-headless-pc':
-      return builder.setChromeOptions(
+      return builder.forBrowser('chrome').setChromeOptions(
         (builder.getChromeOptions() || new Options())
           .headless()
           .windowSize({ height: 640, width: 360 })
       );
 
+    case 'chrome-docker':
+      return builder.forBrowser('chrome').usingServer('http://localhost:4444/wd/hub').setChromeOptions(
+        (builder.getChromeOptions() || new Options())
+          .windowSize({ height: 640, width: 360 })
+      );
+
     case 'chrome-local':
     default:
-      return builder.setChromeOptions(
+      return builder.forBrowser('chrome').setChromeOptions(
         (builder.getChromeOptions() || new Options())
           .windowSize({ height: 640, width: 360 })
       );

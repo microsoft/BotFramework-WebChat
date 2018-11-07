@@ -8,7 +8,8 @@ import handler from 'serve-handler';
 
 import setupBrowsers from './setupBrowsers';
 
-const BROWSER_NAME = 'chrome-local';
+const BROWSER_NAME = 'chrome-docker';
+// const BROWSER_NAME = 'chrome-local';
 
 expect.extend({
   toMatchImageSnapshot: configureToMatchImageSnapshot({
@@ -22,10 +23,11 @@ let serverPromise;
 global.setupWebDriver = async () => {
   if (!driverPromise) {
     driverPromise = (async () => {
-      const builder = new Builder().forBrowser('chrome');
+      const builder = new Builder();
       const { port } = await global.setupWebServer();
       const driver = await setupBrowsers(BROWSER_NAME, builder).build();
 
+      // await driver.get(`https://microsoft.github.io/BotFramework-WebChat/full-bundle`);
       await driver.get(`http://localhost:${ port }/index.html`);
 
       return { driver };
