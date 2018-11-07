@@ -2,7 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { createServer } from 'http';
 import { join } from 'path';
 import { promisify } from 'util';
-import { configureToMatchImageSnapshot, toMatchImageSnapshot } from 'jest-image-snapshot';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import getPort from 'get-port';
 import handler from 'serve-handler';
 
@@ -79,6 +79,8 @@ afterEach(async () => {
 
 afterAll(async () => {
   if (serverPromise) {
-    await (await serverPromise).close();
+    const { close } = await serverPromise;
+
+    await close();
   }
 });
