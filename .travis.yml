@@ -22,7 +22,7 @@ install:
 - docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
 
 script:
-- docker-compose up --build
+- docker-compose up --build -d
 - npm test
 - npm run coveralls
 - docker-compose down --rmi all
