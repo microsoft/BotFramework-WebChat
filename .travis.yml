@@ -19,7 +19,8 @@ install:
 - npm run bootstrap
 - npm run build
 - npm run prepublishOnly
-- docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
+# UNCOMMENT
+# - docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
 
 script:
 - docker-compose up --build -d
@@ -32,6 +33,7 @@ before_deploy:
 - git config --local user.email "botframework@microsoft.com"
 
 deploy:
+# UNCOMMENT
 # - provider: script
 #   script: bash scripts/build_pages
 #   skip_cleanup: true
