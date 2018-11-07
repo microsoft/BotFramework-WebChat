@@ -80,8 +80,6 @@ afterEach(async () => {
     try {
       global.__coverage__ = await driver.executeScript(() => window.__coverage__);
 
-      console.log(global.__coverage__);
-
       ((await driver.executeScript(() => window.__console__)) || [])
         .filter(([type]) => type !== 'info' && type !== 'log')
         .forEach(([type, message]) => {
