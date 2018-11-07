@@ -4,6 +4,9 @@ function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// selenium-webdriver API doc:
+// https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
+
 test('setup', async () => {
   const { driver } = await setupWebDriver();
 

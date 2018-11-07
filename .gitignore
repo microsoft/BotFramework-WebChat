@@ -4,3 +4,6 @@
 /gh-pages
 /lerna-debug.log
 /node_modules
+
+# Do not commit binaries
+/chromedriver*

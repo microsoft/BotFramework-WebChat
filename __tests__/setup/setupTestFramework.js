@@ -6,9 +6,10 @@ import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import getPort from 'get-port';
 import handler from 'serve-handler';
 
-import setupBrowsers from './setupBrowsers';
+import setupTestEnvironment from './setupTestEnvironment';
 
-const BROWSER_NAME = 'chrome-docker';
+const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
+// const BROWSER_NAME = 'chrome-docker';
 // const BROWSER_NAME = 'chrome-local';
 
 expect.extend({
@@ -23,12 +24,17 @@ let serverPromise;
 global.setupWebDriver = async () => {
   if (!driverPromise) {
     driverPromise = (async () => {
-      const builder = new Builder();
-      const { port } = await global.setupWebServer();
-      const driver = await setupBrowsers(BROWSER_NAME, builder).build();
+      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder());
+      const driver = builder.build();
 
-      // await driver.get(`https://microsoft.github.io/BotFramework-WebChat/full-bundle`);
-      await driver.get(`http://localhost:${ port }/index.html`);
+      // If the baseURL contains $PORT, it means it requires us to fill-in
+      if (/\$PORT/i.test(baseURL)) {
+        const { port } = await global.setupWebServer();
+
+        await driver.get(baseURL.replace(/\$PORT/ig, port));
+      } else {
+        await driver.get(baseURL);
+      }
 
       return { driver };
     })();
@@ -43,7 +49,7 @@ global.setupWebServer = async () => {
       const port = await getPort();
       const httpServer = createServer((req, res) => handler(req, res, {
         redirects: [
-          { source: '/', destination: '__tests__/setup/index.html' }
+          { source: '/', destination: '__tests__/setup/web/index.html' }
         ],
         rewrites: [
           { source: '/webchat.js', destination: 'packages/bundle/dist/webchat.js' },
@@ -73,6 +79,12 @@ afterEach(async () => {
 
     try {
       global.__coverage__ = await driver.executeScript(() => window.__coverage__);
+
+      ((await driver.executeScript(() => window.__console__)) || [])
+        .filter(({ type }) => type !== 'info' && type !== 'log')
+        .forEach(([type, message]) => {
+          console.log(`${ type }: ${ message }`);
+        });
     } finally {
       await driver.quit();
     }

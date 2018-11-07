@@ -2,6 +2,35 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle</title>
+    <script>
+    !function () {
+      'use strict';
+
+      const { console } = window;
+      const log = window.__console__ = [];
+      const push = (type, ...args) => {
+        log.push([type, args.join(' ')]);
+        console[type].apply(console, args);
+      };
+
+      window.console = {
+        error: push.bind(null, 'error'),
+        info: push.bind(null, 'info'),
+        log: push.bind(null, 'log'),
+        warn: push.bind(null, 'warn')
+      };
+
+      window.addEventListener('error', ({ colno, error, filename, lineno, message }) => {
+        push('onError', JSON.stringify({
+          colno,
+          error,
+          filename,
+          lineno,
+          message
+        }));
+      });
+    }();
+    </script>
     <!--
       For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
       When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
@@ -32,11 +61,11 @@
         const { token } = await res.json();
 
         window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({
-            domain: 'http://localhost:5000/v3/directline',
-            webSocket: false
-          })
-          // directLine: window.WebChat.createDirectLine({ token })
+          // directLine: window.WebChat.createDirectLine({
+          //   domain: 'http://localhost:5000/v3/directline',
+          //   webSocket: false
+          // })
+          directLine: window.WebChat.createDirectLine({ token })
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
