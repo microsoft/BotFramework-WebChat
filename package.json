@@ -18,6 +18,8 @@
   "keywords": [],
   "jest": {
     "collectCoverage": true,
+    "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
+    "testPathIgnorePatterns": ["<rootDir>/__tests__/setup/"],
     "testRegex": "(/__tests__/.*)\\.jsx?$"
   },
   "scripts": {
