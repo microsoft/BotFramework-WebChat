@@ -24,6 +24,7 @@ install:
 script:
 - docker-compose up --build
 - npm test
+- npm run coveralls
 - docker-compose down --rmi all
 
 before_deploy:

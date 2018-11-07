@@ -18,14 +18,18 @@
   "keywords": [],
   "jest": {
     "collectCoverage": true,
+    "coverageReporters": ["lcov", "text-summary"],
     "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
-    "testPathIgnorePatterns": ["<rootDir>/__tests__/setup/"],
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/setup/"
+    ],
     "testRegex": "(/__tests__/.*)\\.jsx?$"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run --scope=botframework-webchat* --stream build",
     "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --stream prepublishOnly",
     "test": "jest",
@@ -39,6 +43,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
+    "coveralls": "^3.0.2",
     "get-port": "^4.0.0",
     "jest": "^23.6.0",
     "jest-image-snapshot": "^2.6.0",
