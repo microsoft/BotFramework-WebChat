@@ -429,7 +429,7 @@ const localizedStrings: LocalizedStrings = {
         uploadFile: 'Lataa tiedosto',
         speak: 'Puhu'
     },
-        'he-il': {
+    'he-il': {
         title: 'צ\'אט',
         send: 'שלח',
         unknownFile: '[קובץ מסוג \'%1\']',
