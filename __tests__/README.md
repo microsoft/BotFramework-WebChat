@@ -23,5 +23,5 @@ Automated testing in Web Chat is using multiple open-source technologies.
 
 - Install latest Chrome
 - Download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to project root
-- Set environment variable `WEBCHAT_TEST_ENV=chrome-locale`
+- Set environment variable `WEBCHAT_TEST_ENV=chrome-local`
 - `npm test`
