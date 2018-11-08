@@ -19,7 +19,7 @@ install:
 - npm run bootstrap
 - npm run build
 - npm run prepublishOnly
-# - docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
+- docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
 
 script:
 - docker-compose up --build -d
@@ -34,45 +34,44 @@ before_deploy:
 - git config --local user.email "botframework@microsoft.com"
 
 deploy:
-# UNCOMMENT
-# - provider: script
-#   script: bash scripts/build_pages
-#   skip_cleanup: true
-#   on:
-#     branch: master
+- provider: script
+  script: bash scripts/build_pages
+  skip_cleanup: true
+  on:
+    branch: master
 
-# - provider: script
-#   script: bash scripts/deploy_cdn
-#   skip_cleanup: true
-#   on:
-#     branch: master
+- provider: script
+  script: bash scripts/deploy_cdn
+  skip_cleanup: true
+  on:
+    branch: master
 
-# - provider: script
-#   script: bash scripts/deploy_cdn
-#   skip_cleanup: true
-#   on:
-#     tags: true
+- provider: script
+  script: bash scripts/deploy_cdn
+  skip_cleanup: true
+  on:
+    tags: true
 
-# - provider: script
-#   script: bash scripts/lerna_publish
-#   skip_cleanup: true
-#   on:
-#     branch: master
+- provider: script
+  script: bash scripts/lerna_publish
+  skip_cleanup: true
+  on:
+    branch: master
 
-# - provider: script
-#   script: bash scripts/lerna_publish
-#   skip_cleanup: true
-#   on:
-#     tags: true
+- provider: script
+  script: bash scripts/lerna_publish
+  skip_cleanup: true
+  on:
+    tags: true
 
-# - provider: script
-#   script: bash scripts/docker_push
-#   on:
-#     branch: master
+- provider: script
+  script: bash scripts/docker_push
+  on:
+    branch: master
 
-# - provider: pages
-#   skip-cleanup: true
-#   github-token: $GITHUB_TOKEN
-#   local-dir: gh-pages
-#   on:
-#     branch: master
+- provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local-dir: gh-pages
+  on:
+    branch: master
