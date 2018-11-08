@@ -17,19 +17,16 @@
   },
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat/#readme",
   "scripts": {
-    "build": "concurrently --names \"babel-instrumented,typecheck\" \"npm run build:babel-instrumented\" \"npm run build:typecheck\"",
+    "build": "npm run build:typecheck && npm run build:babel-instrumented && webpack-cli --config webpack-instrumented.config.js --run-dev",
     "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
     "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
-    "clean": "concurrently --names \"clean:dist,clean:lib\" \"npm run clean:dist\" \"npm run clean:lib\"",
+    "clean": "npm run clean:dist && npm run clean:lib",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
-    "prepublishOnly": "npm run clean && npm run prepublishOnly:babel && npm run webpack",
-    "prepublishOnly:babel": "concurrently --names \"babel,typecheck\" \"npm run build:babel\" \"npm run build:typecheck\"",
+    "prepublishOnly": "npm run clean && npm run build:typecheck && npm run build:babel && webpack-cli --run-prod",
     "test": "jest",
-    "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\" \"webpack-cli --config webpack-watch.config.js --run-dev --watch\"",
-    "webpack": "webpack-cli --run-prod",
-    "webpack-instrumented": "webpack-cli --config webpack-instrumented.config.js --run-prod"
+    "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\" \"webpack-cli --config webpack-watch.config.js --run-dev --watch\""
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
