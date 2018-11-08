@@ -22,7 +22,7 @@
     "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
-    "prepublishOnly": "npm run clean && npm run build:typecheck && npm run build:babel",
+    "prepublishOnly": "npm run build:typecheck && npm run build:babel",
     "test": "jest",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },

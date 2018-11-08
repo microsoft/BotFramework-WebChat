@@ -151,7 +151,15 @@ npm run bootstrap
 npm run build
 ```
 
-> Instead of `npm run build`, you can use `npm run watch` for watch mode.
+## Build tasks
+
+There are 3 types of build tasks in the build process.
+
+- `npm run build`: Build for development (instrumented code for code coverage)
+   - Will bundle as `webchat-instrumented*.js`
+- `npm run watch`: Build for development with watch mode loop
+- `npm run prepublishOnly`: Build for production
+   - Will bundle as `webchat*.js`
 
 ## Testing Web Chat for development purpose
 

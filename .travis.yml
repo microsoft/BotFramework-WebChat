@@ -18,12 +18,12 @@ before_install:
 install:
 - npm run bootstrap
 - npm run build
-- docker-compose build
 - npm run prepublishOnly
 # - docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
 
 script:
 - docker-compose up --build -d
+- docker-compose exec webchat ls -la
 - npm test -- --coverageReporters text
 - docker-compose logs
 - docker-compose down --rmi all
