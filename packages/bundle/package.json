@@ -17,17 +17,16 @@
   },
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat/#readme",
   "scripts": {
-    "build": "concurrently --names \"babel,typecheck\" \"npm run build:babel\" \"npm run build:typecheck\"",
+    "build": "npm run build:typecheck && npm run build:babel-instrumented && webpack-cli --config webpack-instrumented.config.js --run-dev",
     "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "npm run clean:dist && npm run clean:lib",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
-    "prepublishOnly": "npm run clean && npm run build && npm run webpack",
+    "prepublishOnly": "npm run build:typecheck && npm run build:babel && webpack-cli --run-prod",
     "test": "jest",
-    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\"",
-    "webpack": "webpack --run-prod",
-    "webpack-dev": "webpack --run-dev --watch"
+    "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\" \"webpack-cli --config webpack-watch.config.js --run-dev --watch\""
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
@@ -58,11 +57,12 @@
     "@types/node": "^10.9.4",
     "@types/react": "^16.4.13",
     "babel-core": "7.0.0-bridge.0",
+    "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-version-transform": "^1.0.0",
     "concurrently": "^4.0.1",
     "typescript": "^3.1.6",
     "webpack": "^4.24.0",
-    "webpack-command": "^0.4.2",
+    "webpack-cli": "^3.1.2",
     "webpack-visualizer-plugin": "^0.1.11"
   }
 }

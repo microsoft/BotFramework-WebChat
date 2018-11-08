@@ -17,12 +17,14 @@
   },
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat/packages/core#readme",
   "scripts": {
-    "build": "concurrently --names \"babel,typecheck\" \"npm run build:babel\" \"npm run build:typecheck\"",
+    "build": "npm run build:typecheck && npm run build:babel-instrumented",
     "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
+    "prepublishOnly": "npm run build:typecheck && npm run build:babel",
     "test": "jest",
-    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
+    "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },
   "jest": {
     "moduleFileExtensions": [
@@ -46,6 +48,7 @@
     "@types/node": "^10.3.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
+    "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-version-transform": "^1.0.0",
     "botframework-directlinejs": "^0.10.0",
     "concurrently": "^4.0.1",

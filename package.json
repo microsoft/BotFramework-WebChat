@@ -5,16 +5,6 @@
   "files": [
     "lib/**/*"
   ],
-  "keywords": [],
-  "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run --scope=botframework-webchat* --stream build",
-    "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
-    "lerna-publish": "lerna publish",
-    "prepublishOnly": "lerna run --scope=botframework-webchat* --stream prepublishOnly",
-    "test": "lerna run --parallel --stream test",
-    "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
-  },
   "author": "Microsoft Corporation",
   "license": "MIT",
   "repository": {
@@ -25,7 +15,40 @@
     "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
   },
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat#readme",
+  "keywords": [],
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["lcov", "text-summary"],
+    "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/setup/"
+    ],
+    "testRegex": "(/__tests__/.*)\\.jsx?$"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run --scope=botframework-webchat* --stream build",
+    "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "lerna-publish": "lerna publish",
+    "prepublishOnly": "lerna run --scope=botframework-webchat* --stream prepublishOnly",
+    "test": "jest",
+    "test:all": "lerna run --parallel --stream test",
+    "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
+  },
   "devDependencies": {
-    "lerna": "^3.4.0"
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "coveralls": "^3.0.2",
+    "get-port": "^4.0.0",
+    "jest": "^23.6.0",
+    "jest-image-snapshot": "^2.6.0",
+    "lerna": "^3.4.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "serve-handler": "^5.0.5"
   }
 }

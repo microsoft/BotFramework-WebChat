@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
   <a href="https://travis-ci.org/Microsoft/BotFramework-WebChat"><img alt="Build Status" src="https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master" /></a>
+  <a href="https://coveralls.io/github/Microsoft/BotFramework-WebChat?branch=master"><img src="https://coveralls.io/repos/github/Microsoft/BotFramework-WebChat/badge.svg?branch=master" alt="Coverage Status" /></a>
 </p>
 
 # How to use
@@ -151,7 +152,15 @@ npm run bootstrap
 npm run build
 ```
 
-> Instead of `npm run build`, you can use `npm run watch` for watch mode.
+## Build tasks
+
+There are 3 types of build tasks in the build process.
+
+- `npm run build`: Build for development (instrumented code for code coverage)
+   - Will bundle as `webchat-instrumented*.js`
+- `npm run watch`: Build for development with watch mode loop
+- `npm run prepublishOnly`: Build for production
+   - Will bundle as `webchat*.js`
 
 ## Testing Web Chat for development purpose
 

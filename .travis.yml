@@ -19,10 +19,15 @@ install:
 - npm run bootstrap
 - npm run build
 - npm run prepublishOnly
-- docker build -t webchat.azurecr.io/playground .
+- docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
 
 script:
-- echo
+- docker-compose up --build -d
+- docker-compose exec webchat ls -la
+- npm test -- --coverageReporters=lcov --coverageReporters=text
+- docker-compose logs
+- docker-compose down --rmi all
+- npm run coveralls
 
 before_deploy:
 - git config --local user.name "Bot Framework"
