@@ -31,16 +31,19 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // We are creating our own version of Redux store, which include middleware and optional initial state.
+        // We are adding a new middleware to customize the behavior of DIRECT_LINE/POST_ACTIVITY.
         const store = window.WebChat.createStore(
           {},
           ({ dispatch }) => next => action => {
             if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
-              // TODO: [P4] Use `simple-update-in` package instead
+              // TODO: [P4] Use `simple-update-in` package to simplify the code.
+              //       action = updateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
               action = { ...action,
                 payload: { ...action.payload,
                   activity: { ...action.payload.activity,
                     channelData: { ...action.payload.activity.channelData,
+                      // The channelData submitted here is very similar to HTTP cookies and vulnerable to forgery attack.
+                      // Make sure you use signature to protect it and verify the signature on the bot side.
                       email: 'johndoe@example.com'
                     }
                   }
@@ -57,6 +60,11 @@
           // We will use a custom version of Redux store, which we added middleware to handle backchannel messages.
           store
         }, document.getElementById('webchat'));
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_SEND_BOX',
+          payload: { text: 'channel-data' }
+        });
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
