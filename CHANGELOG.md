@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Development build now include instrumentation code, updated build scripts
+- All: Development build now include instrumentation code, updated build scripts
    - `npm run build` will build for development with instrumentation code
    - `npm run prepublishOnly` will build for production
    - `npm run watch` will also run Webpack in watch loop
-- Automated testing using visual regression testing technique
+- All: Automated testing using visual regression testing technique
    - [Docker-based](https://github.com/SeleniumHQ/docker-selenium) automated testing using headless Chrome and [Web Driver](https://npmjs.com/packages/selenium-webdriver)
    - Screenshot comparison using [`jest-image-snapshot`](https://npmjs.com/packages/jest-image-snapshot) and [`pixelmatch`](https://npmjs.com/package/pixelmatch)
    - Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
@@ -19,7 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/Microsoft/BotFramework-WebChat/pull/1327)
 
 ### Changed
-- Bump dependencies, in [#1303](https://github.com/Microsoft/BotFramework-WebChat/pull/1303)
+- Core: Saga will run after custom middleware, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
+   - Custom middleware run before saga to allow user to modify default behavior
+- All: Bump dependencies, in [#1303](https://github.com/Microsoft/BotFramework-WebChat/pull/1303)
    - `@babel`
       - `@babel/cli@7.1.2`
       - `@babel/core@7.1.2`
@@ -45,6 +47,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1397](https://github.com/Microsoft/BotFramework-WebChat/issues/1397/) by patching activities without `from` field, in PR [#1405](https://github.com/Microsoft/BotFramework-WebChat/pull/1405)
 - Fix [#1237](https://github.com/Microsoft/BotFramework-WebChat/issues/1237). Added new sample called `migration`, by [@corinagum](https://github.com/corinagum) in PR [#1398](https://github.com/Microsoft/BotFramework-WebChat/pull/1398)
 - Fix sample names and add table to README; resolves [Issue #1332](https://github.com/Microsoft/BotFramework-WebChat/issues/1332) by [@corinagum](https://github.com/corinagum) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/1435)
+
+### Samples
+- Backchannel: Inject custom data into every `POST_ACTIVITY`, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
+- UI: Minimize mode, in [#1290](https://github.com/Microsoft/BotFramework-WebChat/pull/1290)
+- Others: Use Web Chat v3, in [#1287](https://github.com/Microsoft/BotFramework-WebChat/pull/1287)
 
 ## [4.1.0] - 2018-10-31
 ### Added
