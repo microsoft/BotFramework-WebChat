@@ -120,22 +120,26 @@
     if (!localStorage.userId) {
       localStorage.userId = BotChat.MakeId();
     }
-
+    
     BotChat.App({
 	  // TRY THIS TO TEST: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
       directLine: {
         secret: 'flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo',
-        conversationId: localStorage.conversationId,
+        conversationId: new Date().getTime() < localStorage.expiration ? localStorage.conversationId : undefined,
         webSocket: false  // web socket connection currently doesn't support conversationId preset
       },	
       // TRY THIS TO TEST: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
       bot: { id: 'feedbot-demo-webchat', name: 'DEMO webchat chatbot' },
       onConversationStarted: function(conversationId) {
         localStorage.conversationId = conversationId;
+
+        // DL keeps conversation history for a few hours only, so invalidate conversation ID after one hours
+        localStorage.expiration = new Date().getTime() + 60 * 60 * 1000
       },
       user: { id: localStorage.userId, name: 'Uživatel' },
       // OPTIONAL - locale: '...',
     }, document.getElementById("bot"));
+    
   </script>
 </body>
 
