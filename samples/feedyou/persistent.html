@@ -117,26 +117,26 @@
   </div>
   <script src="https://feedyou.blob.core.windows.net/webchat/beta-persistent/botchat-es5.js"></script>
   <script>
-    if (!localStorage.userId) {
-      localStorage.userId = BotChat.MakeId();
+    if (!sessionStorage.userId) {
+      sessionStorage.userId = BotChat.MakeId();
     }
     
     BotChat.App({
 	  // TRY THIS TO TEST: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
       directLine: {
         secret: 'flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo',
-        conversationId: new Date().getTime() < localStorage.expiration ? localStorage.conversationId : undefined,
+        conversationId: new Date().getTime() < sessionStorage.expiration ? sessionStorage.conversationId : undefined,
         webSocket: false  // web socket connection currently doesn't support conversationId preset
       },	
       // TRY THIS TO TEST: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
       bot: { id: 'feedbot-demo-webchat', name: 'DEMO webchat chatbot' },
       onConversationStarted: function(conversationId) {
-        localStorage.conversationId = conversationId;
+        sessionStorage.conversationId = conversationId;
 
         // DL keeps conversation history for a few hours only, so invalidate conversation ID after one hours
-        localStorage.expiration = new Date().getTime() + 60 * 60 * 1000
+        sessionStorage.expiration = new Date().getTime() + 60 * 60 * 1000
       },
-      user: { id: localStorage.userId, name: 'Uživatel' },
+      user: { id: sessionStorage.userId, name: 'Uživatel' },
       // OPTIONAL - locale: '...',
     }, document.getElementById("bot"));
     
