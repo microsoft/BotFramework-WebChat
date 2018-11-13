@@ -1,7 +1,7 @@
 module.exports = {
   twemoji: {
-    parse: function(...params) {
-      return twemoji.parse(...params)
+    parse: function(text) {
+      return twemoji.parse(text)
     }
   }
 }
