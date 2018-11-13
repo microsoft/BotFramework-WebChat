@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "declaration": true,
         "importHelpers": true,
+        "allowJs": true,
         "jsx": "react",
         "lib": [
             "dom",

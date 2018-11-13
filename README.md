@@ -8,6 +8,7 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
   * ability to pass some `userData` to bot using backchannel mechanism's `channelData` prop
   * preset some default values in `<App>` component - for example generate `user.id` if not set
   * support custom button click trigger for restarting conversation (`startOverTrigger` prop)
+  * make emoticons compatible using [Twemoji](https://github.com/twitter/twemoji) 
 
 ## How to add Web Chat to your website
 

@@ -14,6 +14,24 @@ export const App = (props: AppProps, container: HTMLElement) => {
     props.resize = props.hasOwnProperty('resize') ? props.resize : 'detect';
     props.locale = props.hasOwnProperty('locale') ? props.locale : 'cs-cz';
 
+    // FEEDYOU use twemoji to make emoji compatible
+    const script = document.createElement("script");
+    script.src = "https://twemoji.maxcdn.com/2/twemoji.min.js?11.2";
+    script.async = true;
+    document.body.appendChild(script);
+
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.appendChild(document.createTextNode(`
+        img.emoji {
+            height: 1em;
+            width: 1em;
+            margin: 0 .05em 0 .1em;
+            vertical-align: -0.1em;
+        }
+    `));
+    document.head.appendChild(style);
+
     ReactDOM.render(React.createElement(AppContainer, props), container);
 }
 

@@ -1,5 +1,6 @@
 import * as MarkdownIt from 'markdown-it';
 import * as React from 'react';
+import { twemoji } from './lib.js'
 
 export interface IFormattedTextProps {
     text: string,
@@ -71,6 +72,9 @@ const renderMarkdown = (
         // Replace spaces with non-breaking space Unicode characters
         __html = text.replace(/ */, '\u00A0');
     }
+
+    // FEEDYOU use twemoji to make emoji compatible
+    __html = twemoji.parse(__html)
 
     return <div className="format-markdown" dangerouslySetInnerHTML={{ __html }} />;
 }
