@@ -1,0 +1,24 @@
+{
+  "env": {
+    "test": {
+      "plugins": [
+        "babel-plugin-istanbul"
+      ]
+    }
+  },
+  "plugins": [
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread",
+    "babel-plugin-version-transform"
+  ],
+  "presets": [
+    "@babel/preset-typescript",
+    ["@babel/preset-env", {
+      "targets": {
+        "browsers": ["last 2 versions"]
+      },
+      "modules": "commonjs"
+    }],
+    "@babel/react"
+  ]
+}
