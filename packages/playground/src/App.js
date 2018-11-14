@@ -316,6 +316,7 @@ export default class extends React.Component {
                 <option value="es-ES">Spanish (Spain)</option>
                 <option value="sv-SE">Swedish (Sweden)</option>
                 <option value="tr-TR">Turkish (Turkey)</option>
+                <option value="he-IL">Hebrew עברית (Israel)</option>
               </select>
             </label>
           </div>
