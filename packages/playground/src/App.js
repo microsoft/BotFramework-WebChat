@@ -81,7 +81,15 @@ export default class extends React.Component {
     const userID = params.get('u');
     const webSocket = params.get('websocket');
 
-    document.querySelector('html').setAttribute('lang', window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
+    this.setLanguage(window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
+
+    if (speech === 'cs') {
+      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
+        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
+      });
+    } else {
+      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
+    }
 
     this.state = {
       botAvatarInitials: 'BF',
@@ -96,6 +104,7 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
+      direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
       userAvatarInitials: 'WC',
@@ -159,8 +168,14 @@ export default class extends React.Component {
   }
 
   handleLanguageChange({ target: { value } }) {
-    this.setState(() => ({ language: value }), () => {
-      document.querySelector('html').setAttribute('lang', value || window.navigator.language);
+    const lang = value || window.navigator.language;
+
+    this.setState(() => ({
+      direction: this.getDirection(lang),
+      language: value
+    }), () => {
+      this.setLanguage(lang);
+
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
   }
@@ -217,6 +232,17 @@ export default class extends React.Component {
       console.log(err);
       alert('Failed to get Direct Line token for official MockBot');
     }
+  }
+
+  setLanguage(lang) {
+    const html = document.querySelector('html');
+
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', this.getDirection(lang));
+  }
+
+  getDirection(lang) {
+    return ~['he', 'he-IL'].indexOf(lang) ? 'rtl' : 'ltr';
   }
 
   render() {
