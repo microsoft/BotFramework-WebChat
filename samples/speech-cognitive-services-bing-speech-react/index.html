@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Cognitive Services Bing Speech using React</title>
+    <!--
+      For simplicity and code clarity, we are using Babel and React from unpkg.com.
+    -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
+    <!--
+      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
+      Or locked down on a specific version "/4.1.0/webchat.js".
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+
+      #webchat,
+      #webchat > * {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel">
+      (async function () {
+        'use strict';
+
+        const { render } = window.ReactDOM;
+        const {
+          Context,
+          createCognitiveServicesWebSpeechPonyfillFactory,
+          createDirectLine,
+          ReactWebChat
+        } = window.WebChat;
+
+        // In this demo, we are using Direct Line token from MockBot.
+        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+        // You should never put the Direct Line secret in the browser or client app.
+        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        // To run this demo, set the parameter below or use the query param ?s=YOUR_BING_SPEECH_SUBSCRIPTION_KEY
+        const SUBSCRIPTION_KEY = new URLSearchParams(window.location.search).get('s');
+
+        // This part of code for fetching a token from a subscription key is for demonstration only.
+        // Client should authenticate against your server to avoid exposing the subscription key to any part of your client code.
+        // https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization
+        const TOKEN_RENEWAL_INTERVAL = 300000;
+        let accessTokenPromise;
+        let lastFetch = 0;
+
+        const fetchToken = () => {
+          const now = Date.now();
+
+          if (!accessTokenPromise || now - lastFetch > TOKEN_RENEWAL_INTERVAL) {
+            console.log(`Cognitive Services: Issuing new token using subscription key`);
+
+            lastFetch = now;
+            accessTokenPromise = fetch(
+              'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
+              {
+                headers: { 'Ocp-Apim-Subscription-Key': SUBSCRIPTION_KEY },
+                method: 'POST'
+              }
+            )
+            .then(res => res.ok ? res.text() : Promise.reject(new Error(`Failed to issue token`)))
+            .catch(err => {
+              lastFetch = 0;
+
+              return Promise.reject(err);
+            });
+          }
+
+          return accessTokenPromise;
+        };
+
+        // Pass a Web Speech ponyfill factory to renderWebChat.
+        // You can also use your own speech engine given it is complaint to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
+        render(
+          <ReactWebChat
+            directLine={ createDirectLine({ token }) }
+            webSpeechPonyfillFactory={ createCognitiveServicesWebSpeechPonyfillFactory({ fetchToken }) }
+          />,
+          document.getElementById('webchat')
+        );
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

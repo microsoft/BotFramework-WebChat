@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat samples</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <script>
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const element = document.createElement('script');
+
+          element.async = true;
+          element.onerror = reject;
+          element.onload = resolve;
+          element.src = src;
+
+          document.head.appendChild(element);
+        });
+      }
+
+      (async function () {
+        'use strict';
+
+        const [markdown] = await Promise.all([
+          fetch('README.md').then(res => res.text()),
+          loadScript('https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js')
+        ]);
+
+        const element = document.createElement('div');
+
+        element.innerHTML = window.markdownit().render(markdown);
+        document.body.appendChild(element);
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

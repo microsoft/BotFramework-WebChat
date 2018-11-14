@@ -1,0 +1,7 @@
+{
+  "public": "../../",
+  "rewrites": [
+    { "source": "/", "destination": "samples/speech-browser/index.html" },
+    { "source": "/webchat-minimal.js", "destination": "packages/bundle/dist/webchat-minimal.js" }
+  ]
+}
