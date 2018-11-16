@@ -28,6 +28,8 @@ function xMinutesAgo(date) {
 }
 
 export default {
+  'Adaptive Card parse error': 'Ошибка парсинга адаптивной карты',
+  'Adaptive Card render error': 'Ошибка отображения адаптивной карты',
   'Chat': 'Чат',
   'Listening…': 'прослушивание…',
   'retry': 'повторить',
@@ -41,5 +43,6 @@ export default {
   'Type your message': 'Введите ваше сообщение',
   'Upload file': 'Загрузить файл',
   'VAT': 'НДС',
+  'New messages': 'Новые сообщения',
   'X minutes ago': xMinutesAgo
 }
