@@ -22,7 +22,13 @@ export default function createSendBoxTextBoxStyle({
       paddingBottom: 0,
       paddingLeft: paddingRegular,
       paddingRight: paddingRegular,
-      paddingTop: 0
+      paddingTop: 0,
+      transition: 'box-shadow 0.3s ease-in-out'
+    },
+
+    '& > input:focus': {
+        border: '1px solid #77d6f5',
+        boxShadow: 'inset 0 0 3px 1px rgba(198, 198, 198, 0.5)'
     }
   };
 }
