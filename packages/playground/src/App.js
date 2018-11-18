@@ -49,7 +49,32 @@ const ROOT_CSS = css({
 const WEB_CHAT_CSS = css({
   height: '100%',
   margin: '0 auto',
-  maxWidth: 768
+  maxWidth: 768,
+
+  // scroll bar
+
+  /* width */
+  '&::-webkit-scrollbar': {
+    width: 8
+  },
+
+  /* Track */
+  '&::-webkit-scrollbar-track': {
+      borderRadius: 10,
+      backgroundColor: 'rgba(180, 187, 205, 0.2)'
+  },
+
+  /* Handle */
+  '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(180, 187, 205, 0.8)',
+      border: '1px solid rgba(120, 120, 120, .1)',
+      borderRadius: 10
+  },
+
+  /* Handle on hover */
+  '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: 'rgba(180, 187, 205, 1)'
+  }
 });
 
 export default class extends React.Component {
