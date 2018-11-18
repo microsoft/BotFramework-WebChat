@@ -19,6 +19,6 @@ export default connectToWebChat(
         (className || '') + ''
       ) }
     >
-      { children }
+      <img src={children} />
     </div>
 )
