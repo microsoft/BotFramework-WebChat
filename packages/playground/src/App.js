@@ -81,13 +81,13 @@ export default class extends React.Component {
     const userID = params.get('u');
     const webSocket = params.get('websocket');
 
-    if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
-        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-      });
-    } else {
-      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
-    }
+    // if (speech === 'cs') {
+    //   this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
+    //     fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
+    //   });
+    // } else {
+    //   this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
+    // }
 
     const lang =  window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language;
     this.setLanguage(lang);
@@ -108,7 +108,7 @@ export default class extends React.Component {
       direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
-      userAvatarInitials: 'WC',
+      userAvatarInitials: '',
       userID
     };
   }
@@ -119,6 +119,8 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+
+    this.handleUserAvatarInitialsChange('https://cdn.meetleo.co/images/GenieImage.png');
   }
 
   handleBotAvatarInitialsChange({ target: { value } }) {
@@ -177,7 +179,7 @@ export default class extends React.Component {
     window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0&u=default-user';
   }
 
-  handleUserAvatarInitialsChange({ target: { value } }) {
+  handleUserAvatarInitialsChange(value) {
     this.setState(() => ({ userAvatarInitials: value }));
   }
 

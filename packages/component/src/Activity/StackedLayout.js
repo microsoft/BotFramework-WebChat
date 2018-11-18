@@ -57,11 +57,13 @@ const connectStackedLayout = (...selectors) => connectToWebChat(
   ({
     botAvatarInitials,
     language,
-    userAvatarInitials
+    userAvatarInitials,
+    direction
   }) => ({
     botAvatarInitials,
     language,
-    userAvatarInitials
+    userAvatarInitials,
+    direction
   }),
   ...selectors
 );
@@ -75,7 +77,8 @@ export default connectStackedLayout(
     children,
     showTimestamp,
     styleSet,
-    userAvatarInitials
+    userAvatarInitials,
+    direction
   }) => {
     const fromUser = activity.from.role === 'user';
     const initials = fromUser ? userAvatarInitials : botAvatarInitials;
@@ -87,7 +90,8 @@ export default connectStackedLayout(
         className={ classNames(
           ROOT_CSS + '',
           styleSet.stackedLayout + '',
-          { 'from-user': fromUser }
+          { 'from-user': fromUser },
+          direction
         ) }
       >
         { !!initials &&
