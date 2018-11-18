@@ -42,7 +42,7 @@ const BasicSendBox = ({
   ) }>
     <SuggestedActions />
     <div className="main">
-      <UploadButton />
+      {/*<UploadButton />*/}
       { dictationStarted ?
           <DictationInterims className={ DICTATION_INTERIMS_CSS } />
         :

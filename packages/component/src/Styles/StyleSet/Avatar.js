@@ -10,7 +10,7 @@ export default function createAvatarStyle({
     ...primaryFont,
 
     alignItems: 'center',
-    backgroundColor: accent,
+    backgroundColor: 'Transparent',
     borderRadius: '50%',
     color: 'White',
     display: 'flex',

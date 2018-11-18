@@ -33,6 +33,11 @@ export default function ({
 
     '&:hover svg': {
       fill: sendBoxButtonColorOnHover
+    },
+
+    '&.btn-rtl' : {
+      transform: 'scaleX(-1)',
+      filter: 'FlipH'
     }
   };
 }

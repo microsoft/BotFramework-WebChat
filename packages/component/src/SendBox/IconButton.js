@@ -5,11 +5,12 @@ import connectToWebChat from '../connectToWebChat';
 
 export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
-)(({ alt, children, className, disabled, onClick, styleSet }) =>
+)(({ alt, children, className, disabled, onClick, styleSet, direction }) =>
   <button
     className={ classNames(
       styleSet.sendBoxButton + '',
-      (className || '') + ''
+      (className || '') + '',
+      'btn-' + direction
     ) }
     disabled= { disabled }
     onClick={ onClick }

@@ -11,11 +11,14 @@ export default function createSendBoxTextBoxStyle({
     alignItems: 'center',
 
     '& > input': {
-      border: 0,
+      border: '1px solid #cccccc',
       fontFamily: 'inherit',
-      fontSize: 'inherit',
-      height: '100%',
+      height: '35px',
+      margin: '12px',
+      borderRadius: '18px',
+      fontSize: '16px',
       outline: 0,
+      color: '#333',
       paddingBottom: 0,
       paddingLeft: paddingRegular,
       paddingRight: paddingRegular,
