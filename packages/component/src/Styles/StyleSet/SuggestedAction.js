@@ -5,6 +5,7 @@ export default function createSuggestedActionStyle({
   paddingWide,
   suggestedActionBackground,
   suggestedActionBorder,
+  suggestedActionBorderRadius,
   suggestedActionTextColor,
   suggestedActionDisabledBackground,
   suggestedActionDisabledBorder,
@@ -24,11 +25,12 @@ export default function createSuggestedActionStyle({
       height: suggestedActionHeight,
       paddingLeft: paddingWide,
       paddingRight: paddingWide,
+      borderRadius: suggestedActionBorderRadius,
 
       '&:disabled': {
         background: suggestedActionDisabledBackground,
         border: suggestedActionDisabledBorder,
-        color: suggestedActionDisabledTextColor
+        color: suggestedActionDisabledTextColor,
       },
 
       '&:not(:disabled)': {

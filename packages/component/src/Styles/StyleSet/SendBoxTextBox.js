@@ -14,7 +14,7 @@ export default function createSendBoxTextBoxStyle({
       border: '1px solid #cccccc',
       fontFamily: 'inherit',
       height: '35px',
-      margin: '12px',
+      margin: '0 12px',
       borderRadius: '18px',
       fontSize: '16px',
       outline: 0,

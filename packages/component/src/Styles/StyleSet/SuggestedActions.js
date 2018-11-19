@@ -3,6 +3,10 @@ export default function createSuggestedActionsStyle({
 }) {
   return {
     paddingLeft: paddingRegular / 2,
-    paddingRight: paddingRegular / 2
+    paddingRight: paddingRegular / 2,
+
+      '& > div > button > div.slider > div': {
+        fontSize: 30
+      }
   };
 }
