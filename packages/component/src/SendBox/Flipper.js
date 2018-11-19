@@ -43,6 +43,11 @@ const FLIPPER_CSS = css({
         left: 0
     },
 
+    '&.rtl': {
+        transform: 'scaleX(-1)',
+        filter: 'FlipH'
+    },
+
     '&.right.rtl': {
         left: 0
     },
