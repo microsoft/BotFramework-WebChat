@@ -75,6 +75,7 @@ const WEB_CHAT_CSS = css({
   '&::-webkit-scrollbar-thumb:hover': {
       backgroundColor: 'rgba(180, 187, 205, 1)'
   }
+
 });
 
 export default class extends React.Component {
