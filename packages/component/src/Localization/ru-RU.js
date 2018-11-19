@@ -9,19 +9,19 @@ function xMinutesAgo(date) {
   } else if (deltaInMinutes === 1) {
     return 'Минуту назад';
   } else if (deltaInHours < 1 && deltaInMinutes < 5) {
-    return `${ deltaInMinutes } минуты назад`;
+    return '${ deltaInMinutes } минуты назад';
   } else if (deltaInHours < 1 && deltaInMinutes >= 5) {
-    return `${ deltaInMinutes } минут назад`;
+    return '${ deltaInMinutes } минут назад';
   } else if (deltaInHours === 1) {
-    return `Час назад`;
+    return 'Час назад';
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } часа назад`;
+    return '${ deltaInHours } часа назад';
   } else if (deltaInHours <= 24) {
-    return `Сегодня`;
+    return 'Сегодня';
   } else if (deltaInHours <= 48) {
-    return `Вчера`;
+    return 'Вчера';
   } else if (deltaInHours <= 72) {
-    return `Позавчера`;
+    return 'Позавчера';
   } else {
     return new Intl.DateTimeFormat('ru-RU').format(date);
   }
@@ -31,13 +31,13 @@ export default {
   'Adaptive Card parse error': 'Ошибка парсинга адаптивной карты',
   'Adaptive Card render error': 'Ошибка отображения адаптивной карты',
   'Chat': 'Чат',
-  'Listening…': 'прослушивание…',
+  'Listening…': 'Прослушивание…',
   'retry': 'повторить',
-  'Send failed, {retry}': 'не удалось отправить, {retry}',
+  'Send failed, {retry}': 'Не удалось отправить, {retry}',
   'Send': 'Отправить',
   'Sending': 'Отправка',
   // 'Speak': '',
-  'Starting…': 'Запуск...',
+  'Starting…': 'Запуск…',
   'Tax': 'Налог',
   'Total': 'Итого',
   'Type your message': 'Введите ваше сообщение',
