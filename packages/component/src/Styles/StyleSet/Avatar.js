@@ -22,7 +22,7 @@ export default function createAvatarStyle({
     transition: 'border .3s ease-in-out',
 
       '&:hover': {
-          transition: '2px solid #77d6f5',
+          border: '2px solid #77d6f5',
       },
 
       '& img': {

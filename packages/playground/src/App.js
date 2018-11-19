@@ -145,10 +145,10 @@ export default class extends React.Component {
 
     sendBox && sendBox.focus();
 
-    this.handleUserAvatarInitialsChange('https://cdn.meetleo.co/images/GenieImage.png');
+    this.handleBotAvatarInitialsChange('https://cdn.meetleo.co/images/GenieImage.png');
   }
 
-  handleBotAvatarInitialsChange({ target: { value } }) {
+  handleBotAvatarInitialsChange(value) {
     this.setState(() => ({ botAvatarInitials: value }));
   }
 

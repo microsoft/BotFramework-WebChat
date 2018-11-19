@@ -41,10 +41,11 @@ const DEFAULT_OPTIONS = {
   subtle: DEFAULT_SUBTLE,
 
   suggestedActionBackground: 'White',
-  suggestedActionBorder: `solid 2px ${ DEFAULT_ACCENT }`,
+  suggestedActionBorder: `solid 1px ${ DEFAULT_ACCENT }`,
+  suggestedActionBorderRadius: `30`,
   suggestedActionTextColor: DEFAULT_ACCENT,
   suggestedActionDisabledBackground: 'White',
-  suggestedActionDisabledBorder: `solid 2px #E6E6E6`,
+  suggestedActionDisabledBorder: `solid 1px #E6E6E6`,
   suggestedActionDisabledTextColor: DEFAULT_SUBTLE,
   suggestedActionHeight: 50,
 
