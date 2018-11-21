@@ -219,7 +219,7 @@ export const History = connect(
         disabled: ownProps.disabled,
         // helper functions
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
-        isFromMe: (activity: Activity) => activity.from.role === 'user' || activity.from.id === stateProps.user.id,
+        isFromMe: (activity: Activity) => activity.from.role === 'user' || activity.from.id === stateProps.user.id || activity.from.role !== null,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onCardAction: ownProps.onCardAction,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
