@@ -49,7 +49,33 @@ const ROOT_CSS = css({
 const WEB_CHAT_CSS = css({
   height: '100%',
   margin: '0 auto',
-  maxWidth: 768
+  maxWidth: 768,
+
+  // scroll bar
+
+  /* width */
+  '&::-webkit-scrollbar': {
+    width: 8
+  },
+
+  /* Track */
+  '&::-webkit-scrollbar-track': {
+      borderRadius: 10,
+      backgroundColor: 'rgba(180, 187, 205, 0.2)'
+  },
+
+  /* Handle */
+  '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(180, 187, 205, 0.8)',
+      border: '1px solid rgba(120, 120, 120, .1)',
+      borderRadius: 10
+  },
+
+  /* Handle on hover */
+  '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: 'rgba(180, 187, 205, 1)'
+  }
+
 });
 
 export default class extends React.Component {
@@ -81,13 +107,13 @@ export default class extends React.Component {
     const userID = params.get('u');
     const webSocket = params.get('websocket');
 
-    if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
-        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-      });
-    } else {
-      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
-    }
+    // if (speech === 'cs') {
+    //   this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
+    //     fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
+    //   });
+    // } else {
+    //   this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
+    // }
 
     const lang =  window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language;
     this.setLanguage(lang);
@@ -108,7 +134,7 @@ export default class extends React.Component {
       direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
-      userAvatarInitials: 'WC',
+      userAvatarInitials: '',
       userID
     };
   }
@@ -119,9 +145,11 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+
+    this.handleBotAvatarInitialsChange('https://cdn.meetleo.co/images/GenieImage.png');
   }
 
-  handleBotAvatarInitialsChange({ target: { value } }) {
+  handleBotAvatarInitialsChange(value) {
     this.setState(() => ({ botAvatarInitials: value }));
   }
 
@@ -177,7 +205,7 @@ export default class extends React.Component {
     window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0&u=default-user';
   }
 
-  handleUserAvatarInitialsChange({ target: { value } }) {
+  handleUserAvatarInitialsChange(value) {
     this.setState(() => ({ userAvatarInitials: value }));
   }
 

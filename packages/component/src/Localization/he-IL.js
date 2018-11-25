@@ -9,11 +9,11 @@ function xMinutesAgo(date) {
   } else if (deltaInMinutes === 1) {
     return 'לפני דקה';
   } else if (deltaInHours < 1) {
-    return ` דקות${ deltaInMinutes } לפני `;
+    return ` לפני ${ deltaInMinutes } דקות `;
   } else if (deltaInHours === 1) {
     return `לפני שעה`;
   } else if (deltaInHours < 5) {
-    return ` שעות${ deltaInHours } לפני `;
+    return ` לפני ${ deltaInHours }שעות `;
   } else if (deltaInHours <= 24) {
     return `היום`;
   } else if (deltaInHours <= 48) {

@@ -4,7 +4,7 @@ const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 
 const DEFAULT_OPTIONS = {
   accent: DEFAULT_ACCENT,
-  avatarSize: 40,
+  avatarSize: 50,
 
   backgroundColor: 'White',
 
@@ -33,7 +33,7 @@ const DEFAULT_OPTIONS = {
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',
 
-  sendBoxHeight: 40,
+  sendBoxHeight: 50,
 
   // Visually show spoken text
   showSpokenText: false,
@@ -41,12 +41,13 @@ const DEFAULT_OPTIONS = {
   subtle: DEFAULT_SUBTLE,
 
   suggestedActionBackground: 'White',
-  suggestedActionBorder: `solid 2px ${ DEFAULT_ACCENT }`,
+  suggestedActionBorder: `solid 1px ${ DEFAULT_ACCENT }`,
+  suggestedActionBorderRadius: `30`,
   suggestedActionTextColor: DEFAULT_ACCENT,
   suggestedActionDisabledBackground: 'White',
-  suggestedActionDisabledBorder: `solid 2px #E6E6E6`,
+  suggestedActionDisabledBorder: `solid 1px #E6E6E6`,
   suggestedActionDisabledTextColor: DEFAULT_SUBTLE,
-  suggestedActionHeight: 40,
+  suggestedActionHeight: 50,
 
   timestampColor: DEFAULT_SUBTLE,
 

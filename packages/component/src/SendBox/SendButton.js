@@ -8,19 +8,22 @@ import SendIcon from './Assets/SendIcon';
 const connectSendButton = (...selectors) => connectToWebChat(
   ({
     language,
+    direction,
     submitSendBox
   }) => ({
     click: submitSendBox,
-    language
+    language,
+    direction
   }),
   ...selectors
 )
 
 export default connectSendButton()(
-  ({ click, language }) =>
+  ({ click, language, direction }) =>
     <IconButton
       alt={ localize('Send', language) }
       onClick={ click }
+      direction={ direction }
     >
       <SendIcon />
     </IconButton>
