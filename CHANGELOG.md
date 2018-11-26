@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Add more error handling to mountAdaptiveCards, by [@corinagum](https://github.com/corinagum) [#1395](https://github.com/Microsoft/BotFramework-WebChat/pull/1395)
+- Fix [#XXX](https://github.com/Microsoft/BotFramework-WebChat/issues/XXX): assume activity is not from user if `from` is falsy, by [@corinagum](https://github.com/corinagum) in PR [#1385](https://github.com/Microsoft/BotFramework-WebChat/pull/1385)
+
+## [0.15.0] - 2018-10-31
 ### Added
 - Translations
   - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in PR [#1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
@@ -24,7 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - `gulp@^4.0.0`
    - `http-server@^0.11.1`
    - `node-sass@^4.9.3`
-- Assume activity is not from user if `from` is falsy, by [@corinagum](https://github.com/corinagum) in PR [#1385](https://github.com/Microsoft/BotFramework-WebChat/pull/1385)
+- Fix [#1029](https://github.com/Microsoft/BotFramework-WebChat/issues/1029), translation for time strings in PR [#1140](https://git, by [@curia-damiano]hub.com/Microsoft/BotFramework-WebChat/pull/1140), by [@curia-damiano]
+- Bump [`botframework-directlinejs`](https://github.com/Microsoft/BotFramework-DirectLineJS/) to `0.10.0` in PR [#1270](https://github.com/Microsoft/BotFramework-WebChat/pull/1270)
 
 ## [0.14.2] - 2018-08-16
 ### Added

@@ -164,12 +164,16 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
 
         adaptiveCard.hostConfig = this.props.hostConfig || defaultHostConfig;
 
-        let errors: IValidationError[] = [];
+        let errors: Array<IValidationError|Error> = [];
 
         if (!this.props.nativeCard && this.props.jsonCard) {
-            this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
-            adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
-            errors = adaptiveCard.validate();
+            try {
+                this.props.jsonCard.version = this.props.jsonCard.version || '0.5';
+                adaptiveCard.parse(cardWithoutHttpActions(this.props.jsonCard));
+                errors = adaptiveCard.validate();
+            } catch (error) {
+                errors.push(error);
+            }
         }
 
         adaptiveCard.onExecuteAction = this.onExecuteAction.bind(this);

@@ -22,16 +22,16 @@ cp $TRAVIS_BUILD_DIR/CognitiveServices.js.map $TRAVIS_BUILD_DIR/dist
 # Upload to based on version from package.json
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/$PACKAGE_VERSION --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 
-# If TRAVIS_TAG is present, it means this is going PRODUCTION
-if [ -n "$TRAVIS_TAG" ]
-then
-# Upload to /latest/
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
-fi
+# # If TRAVIS_TAG is present, it means this is going PRODUCTION
+# if [ -n "$TRAVIS_TAG" ]
+# then
+# # Upload to /latest/
+# ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+# fi
 
-# If on "master" branch, deploy to "master" tag too
-if [ "$TRAVIS_BRANCH" = "master" ]
+# If on "v3" branch, deploy to "v3" tag too
+if [ "$TRAVIS_BRANCH" = "v3" ]
 then
-# Upload to /master/
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/master --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+# Upload to /v3/
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/v3 --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi

@@ -21,9 +21,9 @@ deploy:
       secure: "Mgt7i6P52nq77RdBUlcS1EBosxW6Qd6mM86A6RLQKzNJTWMW6GM0YhrqVHT6HQxrqcTRvuSHxJtOKyLoLPou2lWCZbsSy0ANb8tEJcurTF4lLvcTgMN+G5YD74F4RHRyLNW6rHDKvYvBl4iDLE6rW/B6Ew6uORMdlzJOJzjw075/7AoJIjB60f/Hf2aAx3q0wcWxlPyTqh6YD2mJ1GaiflTalxkYalr/Xh3bevrP4I2XyZV1vaCJqDZvrUVlYfSOCJRyBUSrCemkc6nkSTwdbY38L4k7ilrNgm5QfugoaKIPe600WCy4uPp0woz796rdurppsKeLmMSCKKu2mIqz1CT6mf8CR8hQAzGhKqsF0Rydjz6N/OF2XnFbtPZzu/FQJYED9H1UViUAHXsw528Ul9NSseMCVIZirRT+ysIB8Ny9oBddfRyifxnv2T9Zorm7y1V0nrmMXgCrZIvfgvOVXqij7euC4dgnOG4w0eG/Vd1EW87rskpZswV8gx/7ZsVOY/1NFDVxBi//EBSBOLctOSoZF8snT0+Duvw5Id3pXKvqm+ffI19xBe8Bua64fMg7dHWqZN/ixjTqeySBAYDPtRx/0wBSBwMIDh/Syux+fgjXpqf87HJc3vbjAXyuwPyO9mlblpm02JrZmG8Yik1krVvnLWzvqGqrmVKsLKmndn8="
     email: "botframework@microsoft.com"
     on:
-      branch: master
+      branch: v3
     skip_cleanup: true
-    tag: master
+    tag: v3
   - provider: npm
     api_key:
       secure: "Mgt7i6P52nq77RdBUlcS1EBosxW6Qd6mM86A6RLQKzNJTWMW6GM0YhrqVHT6HQxrqcTRvuSHxJtOKyLoLPou2lWCZbsSy0ANb8tEJcurTF4lLvcTgMN+G5YD74F4RHRyLNW6rHDKvYvBl4iDLE6rW/B6Ew6uORMdlzJOJzjw075/7AoJIjB60f/Hf2aAx3q0wcWxlPyTqh6YD2mJ1GaiflTalxkYalr/Xh3bevrP4I2XyZV1vaCJqDZvrUVlYfSOCJRyBUSrCemkc6nkSTwdbY38L4k7ilrNgm5QfugoaKIPe600WCy4uPp0woz796rdurppsKeLmMSCKKu2mIqz1CT6mf8CR8hQAzGhKqsF0Rydjz6N/OF2XnFbtPZzu/FQJYED9H1UViUAHXsw528Ul9NSseMCVIZirRT+ysIB8Ny9oBddfRyifxnv2T9Zorm7y1V0nrmMXgCrZIvfgvOVXqij7euC4dgnOG4w0eG/Vd1EW87rskpZswV8gx/7ZsVOY/1NFDVxBi//EBSBOLctOSoZF8snT0+Duvw5Id3pXKvqm+ffI19xBe8Bua64fMg7dHWqZN/ixjTqeySBAYDPtRx/0wBSBwMIDh/Syux+fgjXpqf87HJc3vbjAXyuwPyO9mlblpm02JrZmG8Yik1krVvnLWzvqGqrmVKsLKmndn8="
@@ -35,7 +35,7 @@ deploy:
     script: bash scripts/deploycdn.sh
     skip_cleanup: true
     on:
-      branch: master
+      branch: v3
   - provider: script
     script: bash scripts/deploycdn.sh
     skip_cleanup: true

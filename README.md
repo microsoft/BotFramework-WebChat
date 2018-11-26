@@ -1,6 +1,6 @@
 # Microsoft Bot Framework Web Chat
 
-***Web Chat v4 is now in public preview.** To get started, please visit the [`preview`](https://github.com/Microsoft/BotFramework-WebChat/tree/preview) branch for details.*
+***Web Chat v3 is now deprecated** For latest version, please visit the [`master`](https://github.com/Microsoft/BotFramework-WebChat/tree/master) branch for details.*
 
 ## About
 

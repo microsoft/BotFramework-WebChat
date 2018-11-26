@@ -355,7 +355,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: 'próbálja újra',
         messageFailed: 'nem sikerült elküldeni',
         messageSending: 'küldés',
-        timeSent: '%2 ekkor: %1',
+        timeSent: ' ekkor: %1',
         consolePlaceholder: 'Írja be üzenetét...',
         listeningIndicator: 'Figyelés...',
         uploadFile: '',
@@ -372,7 +372,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: 'försök igen',
         messageFailed: 'kunde inte skicka',
         messageSending: 'skickar',
-        timeSent: '%2 %1',
+        timeSent: ' %1',
         consolePlaceholder: 'Skriv ett meddelande...',
         listeningIndicator: 'Lyssnar...',
         uploadFile: '',
@@ -389,7 +389,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: 'yeniden deneyin',
         messageFailed: 'gönderilemedi',
         messageSending: 'gönderiliyor',
-        timeSent: '%2, %1',
+        timeSent: ', %1',
         consolePlaceholder: 'İletinizi yazın...',
         listeningIndicator: 'Dinliyor...',
         uploadFile: '',
@@ -406,7 +406,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: 'repetir',
         messageFailed: 'não foi possível enviar',
         messageSending: 'a enviar',
-        timeSent: '%2 em %1',
+        timeSent: ' em %1',
         consolePlaceholder: 'Escreva a sua mensagem...',
         listeningIndicator: 'A Escutar...',
         uploadFile: '',
@@ -428,6 +428,23 @@ const localizedStrings: LocalizedStrings = {
         listeningIndicator: 'Kuuntelee...',
         uploadFile: 'Lataa tiedosto',
         speak: 'Puhu'
+    },
+    'he-il': {
+        title: 'צ\'אט',
+        send: 'שלח',
+        unknownFile: '[קובץ מסוג \'%1\']',
+        unknownCard: '[כרטיס לא ידוע \'%1\']',
+        receiptVat: 'מע\"מ',
+        receiptTax: 'מס',
+        receiptTotal: 'סך הכל',
+        messageRetry: 'נסה שוב',
+        messageFailed: 'השליחה נכשלה',
+        messageSending: 'שולח',
+        timeSent: ' %1',
+        consolePlaceholder: 'כתוב כאן...',
+        listeningIndicator: 'מאזין...',
+        uploadFile: 'העלה קובץ',
+        speak: 'דבר'
     }
 };
 
@@ -456,6 +473,8 @@ function mapLocale(locale: string) {
         return 'fi-fi';
     } else if (locale.startsWith('fr')) {
         return 'fr-fr';
+    } else if (locale.startsWith('he')) {
+        return 'he-il';
     } else if (locale.startsWith('hu')) {
         return 'hu-hu';
     } else if (locale.startsWith('it')) {
