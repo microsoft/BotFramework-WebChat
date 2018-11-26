@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Add more error handling to mountAdaptiveCards, by [@corinagum](https://github.com/corinagum) [#1395](https://github.com/Microsoft/BotFramework-WebChat/pull/1395)
 
 ## [0.15.0] - 2018-10-31
 ### Added
