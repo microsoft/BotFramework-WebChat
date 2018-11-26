@@ -19,10 +19,6 @@ export class SentryBoundry extends React.Component<SentryBoundryProps, SentryBou
       environment: props.environment,
     });
 
-    console.log(
-      props
-    );
-
     this.state = { error: null };
   }
 
