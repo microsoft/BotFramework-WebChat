@@ -136,7 +136,9 @@ class AdaptiveCardContainer extends React.Component<Props, State> {
     unmountAdaptiveCards() {
         const divElement = findDOMNode(this.divRef);
 
-        [].forEach.call(divElement.children, (child: any) => divElement.removeChild(child));
+        if (divElement instanceof Element) {
+            [].forEach.call(divElement.children, (child: any) => divElement.removeChild(child));
+        }
     }
 
     mountAdaptiveCards() {
