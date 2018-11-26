@@ -25,11 +25,14 @@
   <body>
     <div id="BotChatGoesHere"></div>
     <script src="./botchat.js"></script>
+
     <script>
       var CL_BOT_VERSION = 'VERSION_HERE';
       var VENDOR_ID = 'VENDOR_ID_HERE';
       var SECRET = 'SECRET_KEY_HERE';
       var ACTION_ENDPOINT_URL = 'ACTION_ENDPOINT_URL_HERE';
+      var SENTRY_DSN = 'SENTRY_DSN_HERE';
+      var SENTRY_ENVIRONMENT = 'SENTRY_ENVIRONMENT_HERE';
       window.CMS_URL = 'CMS_HOST';
       
       var getUUID = function() {
@@ -64,6 +67,8 @@
         vendorId: VENDOR_ID,
         resize: 'detect',
         actionEndpointUrl: actionEndpointUrl,
+        sentryDsn: SENTRY_DSN,
+        sentryEnvironment: SENTRY_ENVIRONMENT,
       }, document.getElementById('BotChatGoesHere'));
     </script>
   </body>

@@ -7,12 +7,6 @@ import { IDoCardAction } from './Chat';
 
 import { prepareMenu } from './helpers/menuHelpers';
 
-declare global {
-  interface Window {
-    CMS_URL: string;
-  }
-}
-
 export interface MenuPropsInterface {
   doCardAction : IDoCardAction
 }

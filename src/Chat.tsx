@@ -30,6 +30,8 @@ export interface ChatProps {
     sendTyping?: boolean,
     showUploadButton?: boolean,
     formatOptions?: FormatOptions,
+    sentryDsn: string;
+    sentryEnvironment: string;
     resize?: 'none' | 'window' | 'detect'
 }
 
@@ -201,6 +203,12 @@ export class Chat extends React.Component<ChatProps, {}> {
             })
         }
 
+        const a = 1; 
+        if (a == 1) {
+            console.log('ERROR TEST 1')
+            throw new Error("Webchat test error local");
+        }
+
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
     }
@@ -237,6 +245,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 chatTitle: nextProps.chatTitle
             });
         }
+
     }
 
     // At startup we do three render passes:
