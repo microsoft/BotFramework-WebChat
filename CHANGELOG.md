@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - `pt-BR`, by [Diego Castro](https://github.com/dfdcastro) in PR [#1074](https://github.com/Microsoft/BotFramework-WebChat/pull/1074)
 - Props to add `tabIndex` to activity in PR [#1161](https://github.com/Microsoft/BotFramework-WebChat/pull/1161)
 - Revert [#1166](https://github.com/Microsoft/BotFramework-WebChat/pull/1166) and fix tests, by [@corinagum](https://github.com/corinagum) in PR [#1215](https://github.com/Microsoft/BotFramework-WebChat/pull/1215)
-- Make activity not from user if role is null , by [@corinagum](https://github.com/corinagum) in PR [#1385](https://github.com/Microsoft/BotFramework-WebChat/pull/1385)
 
 ### Changed
 - Bump `botframework-directlinejs` to `0.9.17` in PR [#1131](https://github.com/Microsoft/BotFramework-WebChat/pull/1131)
@@ -25,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - `gulp@^4.0.0`
    - `http-server@^0.11.1`
    - `node-sass@^4.9.3`
+- Assume activity is not from user if `from` is falsy, by [@corinagum](https://github.com/corinagum) in PR [#1385](https://github.com/Microsoft/BotFramework-WebChat/pull/1385)
 
 ## [0.14.2] - 2018-08-16
 ### Added
