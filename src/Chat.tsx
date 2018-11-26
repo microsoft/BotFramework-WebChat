@@ -203,12 +203,6 @@ export class Chat extends React.Component<ChatProps, {}> {
             })
         }
 
-        const a = 1; 
-        if (a == 1) {
-            console.log('ERROR TEST 1')
-            throw new Error("Webchat test error local");
-        }
-
         if (this.props.resize === 'window')
             window.addEventListener('resize', this.resizeListener);
     }
