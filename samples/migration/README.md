@@ -1,18 +1,19 @@
-# Sample -  Getting started with Web Chat CDN
+# Sample -  Migrating Web Chat from v3 to v4
 
-> This is a great sample for first-time Web Chat users.
+A simple web page with a maximized and full-featured Web Chat embed from a CDN. This shows the steps on how to migrate from a v3 Web Chat to v4.
 
-A simple web page with a maximized and full-featured Web Chat embed from a CDN. This includes Adaptive Cards, Cognitive Services, and Markdown-It dependencies.
+> Note: This sample is __unrelated__ to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../full-bundle/README.md).
 
 # Test out the hosted sample
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/full-bundle)
+> Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result html is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot. 
 
 # How to run locally
 
 - Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/full-bundle` in command line
-- Run `npx serve` in the full-bundle directory
+- Navigate to `/Your-Local-WebChat/samples/migration` in command line
+- Run `npx serve` in the migration directory
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
@@ -31,29 +32,63 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 ### Goals of this bot
 
-This code features the minimal scripting the bot needs to host a full-featured Web Chat.
-The `index.html` page has two main goals.
-- To import the Web Chat full bundle CDN script
-- To render Web Chat
+This code features the migration requirements to update Web Chat from v3 to v4.
+The `index.html` page in the migration directory has two main goals.
+- To import the v4 Web Chat full bundle CDN script
+- To render Web Chat using the v4 best practices
 
- We'll start by adding the CDN to the head of a blank `index.html` template.
+ We'll start by using our old v3 `index.html` as our starting point. 
 ```diff
-…
-<head>
-+ <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
-</head>
-…
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="bot"/>
+    <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+    <script>
+      BotChat.App({
+        directLine: { secret: direct_line_secret },
+        user: { id: 'userid' },
+        bot: { id: 'botid' },
+        resize: 'detect'
+      }, document.getElementById("bot"));
+    </script>
+  </body>
+</html>
 ```
 
 > For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
-Next, the code to render Web Chat must be added to the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
+Our first change is to update the CDN the webpage uses from v3 to v4.
+```diff
+…
+ <head>
+-  <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
++  <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+  </head>
+  <body>
+-   <div id="bot"/>    
++   <div id="webchat"/>
+-   <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+…
+```
+
+Next, the code to render Web Chat must be updated in the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 
 ```diff
+…
 <body>
-+ <div id="webchat"></div>
-+ <script>
+  <div id="webchat"></div>
+  <script>
+-   BotChat.App({
+-     directLine: { secret: direct_line_secret },
+-     user: { id: 'userid' },
+-     bot: { id: 'botid' },
+-     resize: 'detect'
+-   }, document.getElementById("bot"));
 +   (async function () {
 +     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
 +     const { token } = await res.json();
@@ -61,12 +96,12 @@ Next, the code to render Web Chat must be added to the body. Note that MockBot u
 +       directLine: window.WebChat.createDirectLine({ token })
 +     }, document.getElementById('webchat'));
 +   })();
-+ </script>
+  </script>
 …
 </body>
 ```
 
-## Adding features
+## Styling and Adding features
 
 Next, you can add any other structure or DOM changes that will support Web Chat.
 
@@ -81,19 +116,23 @@ MockBot also features an autofocus on the Web Chat container, as well as push of
 </script>
 ```
 
-Finally, add desired styling.
 
+Finally, we will add basic styling since there is no longer a stylesheet included on our page.
 ```diff
 …
-<style>
-+ html, body { height: 100% }
-+ body { margin: 0 }
+  <head>
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++    <style>
++      html, body { height: 100% }
++      body { margin: 0 }
 
-+ #webchat, #webchat > * {
-+   height: 100%;
-+   width: 100%;
-+ }
-</style>
++      #webchat,
++      #webchat > * {
++        height: 100%;
++        width: 100%;
++      }
++    </style>
+  </head>
 …
 ```
 
@@ -107,7 +146,7 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Full-featured bundle</title>
 +   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
-   <style>
++  <style>
 +    html, body { height: 100% }
 +    body { margin: 0 }
 +    #webchat,
@@ -115,7 +154,7 @@ Here is the finished `index.html`:
 +      height: 100%;
 +      width: 100%;
 +    }
-   </style>
++  </style>
   </head>
    <body>
 +    <div id="webchat"></div>

@@ -47,9 +47,7 @@ The only change needed in this sample is to change the Web Chat CDN from the ful
 …
 ```
 
-> For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
-> When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
-> Or locked down on a specific version "/4.1.0/webchat.js".
+> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
 ## Completed code
 
