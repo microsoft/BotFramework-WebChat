@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - `webpack`
       - `webpack@4.24.0`
       - `webpack-command@0.4.2`
-- Fix [#1237](https://github.com/Microsoft/BotFramework-WebChat/issues/1237). Added new sample called `markdown`, by [@corinagum](https://github.com/corinagum) in PR [#](https://github.com/Microsoft/BotFramework-WebChat/pull/)
+- Fix [#1237](https://github.com/Microsoft/BotFramework-WebChat/issues/1237). Added new sample called `markdown`, by [@corinagum](https://github.com/corinagum) in PR [#1398](https://github.com/Microsoft/BotFramework-WebChat/pull/1398)
 
 ## [4.1.0] - 2018-10-31
 ### Added
