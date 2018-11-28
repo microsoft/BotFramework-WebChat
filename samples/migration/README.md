@@ -1,13 +1,13 @@
 # Sample -  Migrating Web Chat from v3 to v4
 
-A simple web page with a maximized and full-featured Web Chat embed from a CDN. This shows the steps on how to migrate from a v3 Web Chat to v4.
+A simple web page with a maximized and full-featured Web Chat embed from a CDN. This shows the steps on how to migrate from a Web Chat v3 to v4.
 
 > Note: This sample is __unrelated__ to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../full-bundle/README.md).
 
 # Test out the hosted sample
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/full-bundle)
-> Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result html is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot. 
+> Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot. 
 
 # How to run locally
 
@@ -34,18 +34,18 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 This code features the migration requirements to update Web Chat from v3 to v4.
 The `index.html` page in the migration directory has two main goals.
-- To import the v4 Web Chat full bundle CDN script
+- To import the Web Chat v4 full bundle CDN script
 - To render Web Chat using the v4 best practices
 
  We'll start by using our old v3 `index.html` as our starting point. 
-```diff
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
   </head>
   <body>
-    <div id="bot"/>
+    <div id="bot" />
     <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
     <script>
       BotChat.App({
@@ -69,8 +69,8 @@ Our first change is to update the CDN the webpage uses from v3 to v4.
 +  <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
   </head>
   <body>
--   <div id="bot"/>    
-+   <div id="webchat"/>
+-   <div id="bot" />    
++   <div id="webchat" />
 -   <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
 …
 ```
@@ -92,6 +92,7 @@ Next, the code to render Web Chat must be updated in the body. Note that MockBot
 +   (async function () {
 +     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
 +     const { token } = await res.json();
++
 +     window.WebChat.renderWebChat({
 +       directLine: window.WebChat.createDirectLine({ token })
 +     }, document.getElementById('webchat'));
@@ -110,9 +111,9 @@ MockBot also features an autofocus on the Web Chat container, as well as push of
 ```diff
   (async function () {
 …
--  })();
-+    document.querySelector('#webchat > *').focus();
-+  })().catch(err => console.error(err));
+- })();
++   document.querySelector('#webchat > *').focus();
++ })().catch(err => console.error(err));
 </script>
 ```
 
@@ -122,16 +123,16 @@ Finally, we will add basic styling since there is no longer a stylesheet include
 …
   <head>
     <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
-+    <style>
-+      html, body { height: 100% }
-+      body { margin: 0 }
++   <style>
++     html, body { height: 100% }
++     body { margin: 0 }
 
-+      #webchat,
-+      #webchat > * {
-+        height: 100%;
-+        width: 100%;
-+      }
-+    </style>
++     #webchat,
++     #webchat > * {
++       height: 100%;
++       width: 100%;
++     }
++   </style>
   </head>
 …
 ```
@@ -146,30 +147,30 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Full-featured bundle</title>
 +   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
-+  <style>
-+    html, body { height: 100% }
-+    body { margin: 0 }
-+    #webchat,
-+    #webchat > * {
-+      height: 100%;
-+      width: 100%;
-+    }
-+  </style>
++   <style>
++     html, body { height: 100% }
++     body { margin: 0 }
++     #webchat,
++     #webchat > * {
++       height: 100%;
++       width: 100%;
++     }
++   </style>
   </head>
-   <body>
-+    <div id="webchat"></div>
-+    <script>
-+     (async function () {
-+       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-+       const { token } = await res.json();
+  <body>
++   <div id="webchat"></div>
++   <script>
++    (async function () {
++      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
++      const { token } = await res.json();
 
-+       window.WebChat.renderWebChat({
-+         directLine: window.WebChat.createDirectLine({ token })
-+       }, document.getElementById('webchat'));
++      window.WebChat.renderWebChat({
++        directLine: window.WebChat.createDirectLine({ token })
++      }, document.getElementById('webchat'));
 
-+       document.querySelector('#webchat > *').focus();
-+     })().catch(err => console.error(err));
-+    </script>
++      document.querySelector('#webchat > *').focus();
++    })().catch(err => console.error(err));
++   </script>
   </body>
 </html>
 ```
