@@ -29,9 +29,9 @@ cp $TRAVIS_BUILD_DIR/CognitiveServices.js.map $TRAVIS_BUILD_DIR/dist
 # ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/latest --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 # fi
 
-# If on "v3" branch, deploy to "v3" tag too
+# If on "v3" branch, deploy to "legacy" tag too
 if [ "$TRAVIS_BRANCH" = "v3" ]
 then
-# Upload to /v3/
-~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/v3 --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+# Upload to /legacy/
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/legacy --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi
