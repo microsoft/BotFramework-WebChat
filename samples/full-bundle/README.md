@@ -45,9 +45,7 @@ The `index.html` page has two main goals.
 …
 ```
 
-> For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
-> When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
-> Or locked down on a specific version "/4.1.0/webchat.js".
+> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
 Next, the code to render Web Chat must be added to the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).

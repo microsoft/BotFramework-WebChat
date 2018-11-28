@@ -48,9 +48,7 @@ We'll start by adding React and Babel to the head our template, based off of the
 …
 ```
 
-> For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
-> When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
-> Or locked down on a specific version "/4.1.0/webchat.js".
+> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
 The core of this code both creates and renders the React component that displays Web Chat.
 
