@@ -39,6 +39,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       - `webpack@4.24.0`
       - `webpack-command@0.4.2`
 
+### Fixed
+- Fix [#1397](https://github.com/Microsoft/BotFramework-WebChat/issues/1397/) by patching activities without `from` field, in PR [#1405](https://github.com/Microsoft/BotFramework-WebChat/pull/1405)
+
 ## [4.1.0] - 2018-10-31
 ### Added
 - Initial release of Web Chat v4
