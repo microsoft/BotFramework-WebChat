@@ -27,7 +27,6 @@ export default function createSuggestedActionStyle({
       paddingRight: paddingWide,
       borderRadius: suggestedActionBorderRadius,
 
-
       '&:disabled': {
         background: suggestedActionDisabledBackground,
         border: suggestedActionDisabledBorder,
