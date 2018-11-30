@@ -2,10 +2,11 @@
 
 ## Description
 
-A simple web page with a maximized Web Chat and minimal additional components.
+A simple web page with a maximized Web Chat and minimal additional components. This bundle does NOT include the following dependencies:
 
 - Adaptive Cards
 - Cognitive Services Bing Speech
+- Markdown-It
 
 # How to run
 
