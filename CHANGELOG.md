@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - Screenshot comparison using [`jest-image-snapshot`](https://npmjs.com/packages/jest-image-snapshot) and [`pixelmatch`](https://npmjs.com/package/pixelmatch)
    - Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
    - Test report is hosted on [Coveralls](https://coveralls.io/github/compulim/BotFramework-WebChat)
+- Add French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/Microsoft/BotFramework-WebChat/pull/1327)
 
 ### Changed
 - Bump dependencies, in [#1303](https://github.com/Microsoft/BotFramework-WebChat/pull/1303)
