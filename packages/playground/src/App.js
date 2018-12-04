@@ -143,6 +143,7 @@ export default class extends React.Component {
 
   handleLanguageChange({ target: { value } }) {
     const lang = value || window.navigator.language;
+
     this.setState(() => ({
       direction: this.getDirection(lang),
       language: value
