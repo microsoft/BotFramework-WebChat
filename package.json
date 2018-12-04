@@ -18,7 +18,10 @@
   "keywords": [],
   "jest": {
     "collectCoverage": true,
-    "coverageReporters": ["lcov", "text-summary"],
+    "coverageReporters": [
+      "lcov",
+      "text-summary"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/setup/"
