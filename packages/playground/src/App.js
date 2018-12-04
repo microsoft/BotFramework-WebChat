@@ -210,7 +210,7 @@ export default class extends React.Component {
   }
 
   getDirection(lang) {
-      return (['he', 'he-IL'].indexOf(lang) !== -1) ? 'rtl' : 'ltr';
+      return /^he(\-IL)?$/i.test(lang) ? 'rtl' : 'ltr';
   }
 
   render() {
