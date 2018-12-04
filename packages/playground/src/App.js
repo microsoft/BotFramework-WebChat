@@ -208,6 +208,7 @@ export default class extends React.Component {
 
   setLanguage(lang) {
       const html = document.querySelector('html');
+
       html.setAttribute('lang', lang);
       html.setAttribute('dir', this.getDirection(lang));
   }
@@ -300,6 +301,7 @@ export default class extends React.Component {
                 <option value="el-GR">Greek (Greece)</option>
                 <option value="fi-FI">Finnish (Finland)</option>
                 <option value="fr-FR">French (France)</option>
+                <option value="he-IL">Hebrew עברית (Israel)</option>
                 <option value="hu-HU">Hungarian (Hungary)</option>
                 <option value="it-IT">Italian (Italy)</option>
                 <option value="ja-JP">Japanese</option>
@@ -313,7 +315,6 @@ export default class extends React.Component {
                 <option value="es-ES">Spanish (Spain)</option>
                 <option value="sv-SE">Swedish (Sweden)</option>
                 <option value="tr-TR">Turkish (Turkey)</option>
-                <option value="he-IL">Hebrew עברית (Israel)</option>
               </select>
             </label>
           </div>
