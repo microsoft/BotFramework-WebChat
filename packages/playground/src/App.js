@@ -90,6 +90,7 @@ export default class extends React.Component {
     }
 
     const lang =  window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language;
+
     this.setLanguage(lang);
 
     this.state = {
