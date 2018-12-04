@@ -143,7 +143,10 @@ export default class extends React.Component {
 
   handleLanguageChange({ target: { value } }) {
     const lang = value || window.navigator.language;
-    this.setState(() => ({ language: value, direction: this.getDirection(lang) }), () => {
+    this.setState(() => ({
+      direction: this.getDirection(lang),
+      language: value
+    }), () => {
       this.setLanguage(lang);
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
