@@ -23,10 +23,10 @@ export default connectToWebChat(
               { children }
           </FilmStrip>
           <ScrollBar />
-          <div className={FLIPPERS_CONTAINER_CSS}>
-              <Flipper mode="left" />
-              <Flipper mode="right" />
-          </div>
+          {/*<div className={FLIPPERS_CONTAINER_CSS}>*/}
+              {/*<Flipper mode="left" />*/}
+              {/*<Flipper mode="right" />*/}
+          {/*</div>*/}
       </div>
       { showDots &&
           <Dots>

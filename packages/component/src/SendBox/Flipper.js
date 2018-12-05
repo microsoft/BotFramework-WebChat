@@ -8,15 +8,15 @@ import connectToWebChat from '../connectToWebChat';
 
 const FLIPPER_CSS = css({
     position: 'absolute',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     color: '#dcdcdc',
     borderRadius: 20,
     marginTop: -55,
     border: '1px solid #dcdcdc',
     boxShadow: '1px 1px 2px 0 #999',
     overflow: 'hidden',
-    padding: '5px 7px',
-    height: 40,
+    padding: 3,
+    height: 35,
     fontSize: 17,
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
