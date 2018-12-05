@@ -1,22 +1,22 @@
 #!/bin/bash
 
-cd samples/breakaway-speech-button
+cd samples/13.customization-speech-ui
 npm run build
 
-cd ../../samples/minimize-mode
+cd ../../samples/12.customization-minimizable-web-chat
 npm run build
 
-cd ../../samples/redux-activity-middleware
+cd ../../samples/14.customization-piping-to-redux
 npm run build
 
 cd ../../
-rsync -av --progress samples/ gh-pages/ --exclude backend-cli --exclude breakaway-speech-button --exclude minimize-mode --exclude redux-activity-middleware
+rsync -av --progress samples/ gh-pages/ --exclude backend-cli --exclude 13.customization-speech-ui --exclude 12.customization-minimizable-web-chat --exclude 14.customization-piping-to-redux
 
-mkdir gh-pages/breakaway-speech-button
-rsync -av --progress samples/breakaway-speech-button/build/ gh-pages/breakaway-speech-button/
+mkdir gh-pages/13.customization-speech-ui
+rsync -av --progress samples/13.customization-speech-ui/build/ gh-pages/13.customization-speech-ui/
 
-mkdir gh-pages/minimize-mode
-rsync -av --progress samples/minimize-mode/build/ gh-pages/minimize-mode/
+mkdir gh-pages/12.customization-minimizable-web-chat
+rsync -av --progress samples/12.customization-minimizable-web-chat/build/ gh-pages/12.customization-minimizable-web-chat/
 
-mkdir gh-pages/redux-activity-middleware
-rsync -av --progress samples/redux-activity-middleware/build/ gh-pages/redux-activity-middleware/
+mkdir gh-pages/14.customization-piping-to-redux
+rsync -av --progress samples/14.customization-piping-to-redux/build/ gh-pages/14.customization-piping-to-redux/
