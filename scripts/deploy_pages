@@ -1,15 +1,5 @@
 #!/bin/bash
 
-cd samples/13.customization-speech-ui
-npm run build
-
-cd ../../samples/12.customization-minimizable-web-chat
-npm run build
-
-cd ../../samples/14.customization-piping-to-redux
-npm run build
-
-cd ../../
 rsync -av --progress samples/ gh-pages/ --exclude backend-cli --exclude 13.customization-speech-ui --exclude 12.customization-minimizable-web-chat --exclude 14.customization-piping-to-redux
 
 mkdir gh-pages/13.customization-speech-ui

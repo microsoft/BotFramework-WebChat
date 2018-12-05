@@ -1,8 +1,8 @@
 {
-  "name": "sample-minimize-mode",
+  "name": "sample-customization-minimizable-web-chat",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/minimize-mode/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/",
   "dependencies": {
     "botframework-webchat": ">= 0.0.0-0",
     "memoize-one": "^4.0.2",

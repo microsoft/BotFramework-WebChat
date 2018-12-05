@@ -1,8 +1,8 @@
 {
-  "name": "redux-activity-middleware",
+  "name": "sample-customization-piping-to-redux",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/redux-activity-middleware/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux/",
   "dependencies": {
     "botframework-webchat": ">= 0.0.0-0",
     "react": "^16.5.1",
