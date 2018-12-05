@@ -1,7 +1,18 @@
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
-export default async ({ authorizationToken, region, subscriptionKey }) => {
-  const ponyfill = await createPonyfill({ authorizationToken, region, subscriptionKey });
+export default async function ({
+  authorizationToken,
+  region,
+  subscriptionKey,
+  textNormalization
+}) {
+  const ponyfill = await createPonyfill({
+    authorizationToken,
+    region,
+    subscriptionKey,
+    textNormalization
+  });
+
   const {
     SpeechGrammarList,
     speechSynthesis,
@@ -14,7 +25,7 @@ export default async ({ authorizationToken, region, subscriptionKey }) => {
     speechSynthesis,
     SpeechSynthesisUtterance
   });
-};
+}
 
 function injectReferenceGrammarID({ SpeechGrammarList, SpeechRecognition }, referenceGrammarID) {
   return class extends SpeechRecognition {

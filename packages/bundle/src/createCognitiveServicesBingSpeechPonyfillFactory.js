@@ -1,6 +1,6 @@
 import createPonyfill from 'web-speech-cognitive-services/lib/BingSpeech';
 
-export default async ({ authorizationToken, subscriptionKey }) => {
+export default async function ({ authorizationToken, subscriptionKey }) {
   const ponyfill = await createPonyfill({ authorizationToken, subscriptionKey });
   const {
     SpeechGrammarList,
