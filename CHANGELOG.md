@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix sample names and add table to README; resolves [Issue #1332](https://github.com/Microsoft/BotFramework-WebChat/issues/1332) by [@corinagum](https://github.com/corinagum) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/1435)
 
 ### Fixed
-- Build: Webpack watch mode now emit non-minified code for shorter dev RTT, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
+- Build: Webpack watch mode now emits non-minified code for shorter dev RTT, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
 
 ### Samples
 - Backchannel: Inject custom data into every `POST_ACTIVITY`, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)

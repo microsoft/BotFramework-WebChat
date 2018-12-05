@@ -3,11 +3,14 @@
   <head>
     <title>Web Chat: Inject data on post activity</title>
     <!--
-      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
-      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
-      Or locked down on a specific version "/4.1.0/webchat.js"
+      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
+      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+
+    <!-- We are using simple-update-in package to simplify demo code. -->
+    <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -36,19 +39,12 @@
           {},
           ({ dispatch }) => next => action => {
             if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
-              // TODO: [P4] Use `simple-update-in` package to simplify the code.
-              //       action = updateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
-              action = { ...action,
-                payload: { ...action.payload,
-                  activity: { ...action.payload.activity,
-                    channelData: { ...action.payload.activity.channelData,
-                      // The channelData submitted here is very similar to HTTP cookies and vulnerable to forgery attack.
-                      // Make sure you use signature to protect it and verify the signature on the bot side.
-                      email: 'johndoe@example.com'
-                    }
-                  }
-                }
-              };
+              // The channelData submitted here is very similar to HTTP cookies and vulnerable to forgery attack.
+              // Make sure you use signature to protect it and verify the signature on the bot side.
+
+              // To minimize unexpected behaviors, we recommend to treat the "action" object as if it is immutable.
+              // We use simple-update-in package to update "action" with partial deep cloning.
+              action = window.simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
             }
 
             return next(action);
