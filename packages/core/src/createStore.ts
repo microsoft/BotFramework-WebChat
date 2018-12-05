@@ -13,8 +13,8 @@ export default function (initialState, ...middlewares) {
     reducer,
     initialState || {},
     applyMiddleware(
-      sagaMiddleware,
-      ...middlewares
+      ...middlewares,
+      sagaMiddleware
     )
   );
 
