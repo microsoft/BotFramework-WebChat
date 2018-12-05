@@ -16,7 +16,15 @@ export default function ({
     width: sendBoxHeight,
 
     '&:not(:disabled)': {
-      cursor: 'pointer'
+      cursor: 'pointer',
+
+      '&:focus svg': {
+        fill: sendBoxButtonColorOnFocus
+      },
+
+      '&:hover svg': {
+        fill: sendBoxButtonColorOnHover
+      }
     },
 
     '& svg': {
@@ -25,14 +33,6 @@ export default function ({
 
     '&:disabled svg': {
       fill: sendBoxButtonColorOnDisabled
-    },
-
-    '&:focus svg': {
-      fill: sendBoxButtonColorOnFocus
-    },
-
-    '&:hover svg': {
-      fill: sendBoxButtonColorOnHover
     }
   };
 }

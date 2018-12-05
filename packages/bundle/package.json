@@ -29,7 +29,7 @@
     "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run watch:babel\" \"npm run watch:typecheck\" \"npm run watch:webpack\"",
     "watch:babel": "npm run build:babel-instrumented -- --watch",
     "watch:typecheck": "npm run build:typecheck -- --preserveWatchOutput --watch",
-    "watch:webpack": "webpack-cli --config webpack-watch.config.js --watch"
+    "watch:webpack": "webpack-cli --config webpack-watch.config.js --mode development --watch"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
@@ -46,7 +46,7 @@
     "react-dom": "^16.5.0",
     "sanitize-html": "^1.19.0",
     "url-search-params-polyfill": "^5.0.0",
-    "web-speech-cognitive-services": "^3.0.0",
+    "web-speech-cognitive-services": "4.0.0-master.038dccb",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
