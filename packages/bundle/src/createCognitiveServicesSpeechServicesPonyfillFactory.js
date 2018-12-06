@@ -6,6 +6,8 @@ export default async function ({
   subscriptionKey,
   textNormalization
 }) {
+  console.warn('Web Chat: Cognitive Services Speech Services support is current in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.');
+
   const ponyfill = await createPonyfill({
     authorizationToken,
     region,
