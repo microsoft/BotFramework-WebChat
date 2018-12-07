@@ -42,6 +42,7 @@ const DEFAULT_OPTIONS = {
 
   suggestedActionBackground: 'White',
   suggestedActionBorder: `solid 2px ${ DEFAULT_ACCENT }`,
+  suggestedActionBorderRadius: 0,
   suggestedActionTextColor: DEFAULT_ACCENT,
   suggestedActionDisabledBackground: 'White',
   suggestedActionDisabledBorder: `solid 2px #E6E6E6`,

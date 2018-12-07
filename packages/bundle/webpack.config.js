@@ -7,6 +7,7 @@ module.exports = {
     'webchat-es5': './lib/index-es5.js',
     'webchat-minimal': './lib/index-minimal.js'
   },
+  mode: 'production',
   output: {
     filename: '[name].js',
     libraryTarget: 'umd',

@@ -10,7 +10,8 @@ import Localize from '../Localization/Localize';
 const {
   DictateState: {
     DICTATING,
-    STARTING
+    STARTING,
+    STOPPING
   }
 } = Constants;
 
@@ -44,7 +45,18 @@ export default connectDictationInterims(
     dictateState,
     styleSet
   }) =>
-    (dictateState === STARTING || dictateState === DICTATING) && (
+    (dictateState === STARTING || dictateState === STOPPING) ?
+      <p className={ classNames(
+        styleSet.dictationInterims + '',
+        ROOT_CSS + '',
+        (className || '') + '',
+        'status'
+      ) }>
+        {
+          dictateState === STARTING && <Localize text="Starting&hellip;" />
+        }
+      </p>
+    : dictateState === DICTATING && (
       dictateInterims.length ?
         <p className={ classNames(
           styleSet.dictationInterims + '',
@@ -61,12 +73,7 @@ export default connectDictationInterims(
           (className || '') + '',
           'status'
         ) }>
-          {
-            dictateState === STARTING ?
-              <Localize text="Starting&hellip;" />
-            :
-              <Localize text="Listening&hellip;" />
-          }
+          <Localize text="Listening&hellip;" />
         </p>
     )
 )

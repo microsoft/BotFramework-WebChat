@@ -1,4 +1,5 @@
 {
+  "cleanUrls": false,
   "redirects": [
     { "source": "/", "destination": "samples/full-bundle/index.html" },
     { "source": "/webchat.js", "destination": "packages/bundle/dist/webchat.js" },

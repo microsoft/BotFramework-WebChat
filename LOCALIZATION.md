@@ -12,7 +12,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | el-gr          | @qdoop                |
 | es-es          | @SantiEspada          |
 | fi-fi          | @jsur                 |
-| fr-fr          | @meulta               |
+| fr-fr          | @meulta, @tao1        |
 | he-il          | @geea-develop         |
 | hu-hu          |                       |
 | it-it          | Maurizio Moriconi     |
@@ -24,7 +24,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | pl-pl          | @peterblazejewicz     |
 | pt-br          | @rcarubbi             |
 | pt-pt          |                       |
-| ru-ru          |                       |
+| ru-ru          | @odysseus1973         |
 | sv-se          |                       |
 | tr-tr          |                       |
 | zh-hans        | @Antimoney            |
