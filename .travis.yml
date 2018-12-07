@@ -9,7 +9,7 @@ services:
 - docker
 
 before_install:
-- npm install
+- npm ci
 - sudo apt-get install jq
 - npx version-from-git --travis
 - git checkout -b temp-ci
