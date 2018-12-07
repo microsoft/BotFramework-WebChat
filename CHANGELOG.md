@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
    - Test report is hosted on [Coveralls](https://coveralls.io/github/compulim/BotFramework-WebChat)
 - Add French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/Microsoft/BotFramework-WebChat/pull/1327)
+- Fix [#1344](https://github.com/Microsoft/BotFramework-WebChat/issues/1344), by updating `README.md` and adding validation logic for `userID` props, in [#1447](https://github.com/Microsoft/BotFramework-WebChat/pull/1447)
+   - If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
+   - If `userID` props present, they must be string and not prefixed with `dl_`, to avoid confusion between `userID` props and Direct Line embedded user ID (which is forgery-proof)
+   - If `userID` props does not pass the validation test or not specified, Web Chat will use `default-user` instead
 
 ### Changed
 - Core: Saga will run after custom middleware, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
