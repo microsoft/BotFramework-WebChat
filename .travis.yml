@@ -9,7 +9,7 @@ services:
 - docker
 
 before_install:
-- npm install
+- npm ci
 - sudo apt-get install jq
 - npx version-from-git --travis
 - git checkout -b temp-ci
@@ -20,6 +20,7 @@ install:
 - npm run build
 - npm run prepublishOnly
 - docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
+- npm run build:sample
 
 script:
 - docker-compose up --build -d
@@ -35,7 +36,7 @@ before_deploy:
 
 deploy:
 - provider: script
-  script: bash scripts/build_pages
+  script: bash scripts/deploy_pages
   skip_cleanup: true
   on:
     branch: master

@@ -75,8 +75,9 @@ const BasicTranscript = ({
   className,
   groupTimestamp,
   styleSet,
-  webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
+  webSpeechPonyfill
 }) => {
+  const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
   const visibleActivities = activities.filter(shouldShowActivity);
 
   return (
