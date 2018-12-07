@@ -13,6 +13,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | es-es          | @SantiEspada          |
 | fi-fi          | @jsur                 |
 | fr-fr          | @meulta, @tao1        |
+| he-il          | @geea-develop         |
 | hu-hu          |                       |
 | it-it          | Maurizio Moriconi     |
 | ja-jp          | @bigplants            |

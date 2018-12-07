@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
+- Added Hebrew localization, by [@geea-develop](https://github.com/geea-develop) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/1435)
 
 ## [4.2.0] - 2018-12-11
 ### Added
