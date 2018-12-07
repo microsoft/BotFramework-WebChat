@@ -33,7 +33,7 @@ const BasicSendBox = ({
   className,
   dictationStarted,
   styleSet,
-  webSpeechPonyfill = {}
+  webSpeechPonyfill
 }) =>
   <div className={ classNames(
     styleSet.sendBox + '',
@@ -48,7 +48,7 @@ const BasicSendBox = ({
         :
           <TextBox className={ TEXT_BOX_CSS } />
       }
-      { webSpeechPonyfill.SpeechRecognition ?
+      { (webSpeechPonyfill || {}).SpeechRecognition ?
           <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
         :
           <SendButton />

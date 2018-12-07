@@ -21,14 +21,16 @@ For simplicity, you can use a `<script>` tag to embed Web Chat from a CDN.
 
 Web Chat offer different bundle varieties as outlined in the table below.
 
-| | Minimal | Full | Full with ES5 polyfills |
-| - | - | - | - |
-| [Adaptive Cards](https://adaptivecards.io/) | | Yes | Yes |
-| [Cognitive Services Bing Speech](https://azure.microsoft.com/en-us/services/cognitive-services/speech/) | | Yes | Yes |
-| [DirectLineJS](https://npmjs.com/package/botframework-directlinejs) | Yes | Yes | Yes |
-| [Markdown-It](https://npmjs.com/package/markdown-it/) | | Yes | Yes |
-| [`sanitize-html`](https://npmjs.com/package/sanitize-html) | | Yes | Yes |
-| ES5 Polyfills (for IE11) | | | Yes |
+|                                                                                                                      | Minimal | Full | Full with ES5 polyfills |
+| -------------------------------------------------------------------------------------------------------------------- | ------- | ---- | ----------------------- |
+| [DirectLineJS](https://npmjs.com/package/botframework-directlinejs)                                                  | Yes     | Yes  | Yes                     |
+| [Web Speech API from browser](https://azure.microsoft.com/en-us/services/cognitive-services/speech/)                 | Yes     | Yes  | Yes                     |
+| [Adaptive Cards](https://adaptivecards.io/)                                                                          |         | Yes  | Yes                     |
+| [Cognitive Services Bing Speech](https://azure.microsoft.com/en-us/services/cognitive-services/speech/)              |         | Yes  | Yes                     |
+| [Cognitive Services Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/) |         | Yes  | Yes                     |
+| [Markdown-It](https://npmjs.com/package/markdown-it/)                                                                |         | Yes  | Yes                     |
+| [`sanitize-html`](https://npmjs.com/package/sanitize-html)                                                           |         | Yes  | Yes                     |
+| ES5 Polyfills (for IE11)                                                                                             |         |      | Yes                     |
 
 > Rich card (e.g. hero card, receipt card) requires Adaptive Cards.
 
@@ -53,9 +55,11 @@ Web Chat can be styled in many ways without too much coding.
 
 To use Cognitive Services or your own speech engine withWeb Chat, these samples will give you a headstart.
 
-- Cognitive Services Bing Speech API
+- Cognitive Services Bing Speech
    - [Using JavaScript](https://microsoft.github.io/BotFramework-WebChat/6.a.cognitive-services-bing-speech-js) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.a.cognitive-services-bing-speech-js)
    - [Using React](https://microsoft.github.io/BotFramework-WebChat/6.b.cognitive-services-bing-speech-react) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.b.cognitive-services-bing-speech-react)
+- Cognitive Services Speech Services
+   - [Using JavaScript](https://microsoft.github.io/BotFramework-WebChat/6.c.cognitive-services-speech-services-js) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.c.cognitive-services-speech-services-js)
 - [Speech thru a supported browsers](https://microsoft.github.io/BotFramework-WebChat/6.d.speech-web-browser) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.d.speech-web-browser)
    - [List of supported browsers](https://caniuse.com/#search=speech)
 

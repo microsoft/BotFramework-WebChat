@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Cognitive Services Bing Speech using JavaScript</title>
-    <!-- Cognitive Services Bing Speech adapter is only available in full bundle -->
+    <title>Web Chat: Cognitive Services Speech Services with lexical result</title>
+    <!-- Cognitive Services Speech Services adapter is only available in full bundle -->
     <!--
-      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
-      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
-      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
+      Or locked down on a specific version "/4.1.0/webchat.js".
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <style>
@@ -33,18 +33,27 @@
         const { token } = await res.json();
 
         // To run this demo, you can either use our authorization token, or provide your own subscription key thru ?s=BING_SPEECH_SUBSCRIPTION_KEY
-        const subscriptionKey = new URLSearchParams(window.location.search).get('s');
+        const searchParams = new URLSearchParams(window.location.search);
+        const subscriptionKey = searchParams.get('s');
         let webSpeechPonyfillFactory;
 
         if (subscriptionKey) {
           // In case you are using your own subscription key, please note that client should always authenticate against your server
           // to avoid exposing the subscription key to any part of your client code.
-          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ subscriptionKey });
+          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+            region: searchParams.get('r') || 'westus',
+            subscriptionKey,
+            textNormalization: 'lexical'
+          });
         } else {
-          const res = await fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' });
-          const { token: authorizationToken } = await res.json();
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+          const { region, token: authorizationToken } = await res.json();
 
-          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
+          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+            authorizationToken,
+            region,
+            textNormalization: 'lexical'
+          });
         }
 
         // Pass a Web Speech ponyfill factory to renderWebChat.
