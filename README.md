@@ -29,7 +29,8 @@ Here is how how you can add Web Chat control to you website:
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' })
+        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' }),
+        userID: 'YOUR_USER_ID'
       }, document.getElementById('webchat'));
     </script>
   </body>
@@ -54,7 +55,8 @@ You can use the full, typical webchat package that contains the most typically u
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECREET' })
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' }),
+        userID: 'YOUR_USER_ID'
       }, document.getElementById('webchat'));
     </script>
   </body>
@@ -82,7 +84,8 @@ See a working sample with minimal Web Chat bundle [here](https://github.com/Micr
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' })
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' }),
+        userID: 'YOUR_USER_ID'
       }, document.getElementById('webchat'));
     </script>
   </body>
@@ -109,7 +112,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      <ReactWebChat directLine={ this.directLine } />
+      <ReactWebChat directLine={ this.directLine } userID="YOUR_USER_ID" />
       element
     );
   }
