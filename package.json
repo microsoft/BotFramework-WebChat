@@ -35,7 +35,7 @@
     "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lerna-publish": "lerna publish",
-    "prepublishOnly": "lerna run --scope=botframework-webchat* --stream prepublishOnly",
+    "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
     "test": "jest",
     "test:all": "lerna run --parallel --stream test",
     "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
