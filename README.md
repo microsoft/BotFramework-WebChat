@@ -37,6 +37,8 @@ Here is how how you can add Web Chat control to you website:
 </html>
 ```
 
+> If `userID` is not specified, it will be default to `default-user`. Multiple users sharing the same user ID is not recommended, their user state will be shared.
+
 ![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/webchat-screenshot.png)
 
 ## Integrate with JavaScript
