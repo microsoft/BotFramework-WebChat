@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Configurable timestamp grouping</title>
+    <!--
+      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
+      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <style>
+      html, body { height: 100% }
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: 0
+      }
+
+      #webchat {
+        flex: 1;
+      }
+
+      #webchat,
+      #webchat > * {
+        height: 100%;
+        width: 100%;
+      }
+
+      #buttonBar {
+        display: flex;
+        flex-wrap: wrap;
+        left: 10px;
+        margin: 0;
+        position: absolute;
+        top: 10px;
+      }
+
+      #buttonBar > a {
+        border: solid 2px #0063B1;
+        color: #0063B1;
+        cursor: pointer;
+        font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 80%;
+        margin: 0 10px 10px 0;
+        padding: 5px 8px;
+        text-decoration: none;
+      }
+
+      #buttonBar > a.selected {
+        background-color: #0063B1;
+        color: White;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+
+    <!--
+      We will change the URL params when the user select a different timestamp.
+      If this sample is implemented over React, we can change `groupTimestamp` on-the-fly without re-render.
+    -->
+    <p id="buttonBar">
+      <a href="?ts=default">Default grouping</a>
+      <a href="?ts=false">Don't show timestamp</a>
+      <a href="?ts=0">Don't group</a>
+      <a href="?ts=2000">Group by 2 seconds</a>
+      <a href="?ts=300000">Group by 5 minutes</a>
+    </p>
+
+    <script>
+      'use strict';
+
+      const groupTimestamp = new URLSearchParams(window.location.search).get('ts') || 'default';
+
+      document.querySelectorAll('#buttonBar > a').forEach(hyperlink => {
+        if (hyperlink.getAttribute('href') === `?ts=${ groupTimestamp }`) {
+          hyperlink.className = 'selected';
+        }
+      });
+
+      (async function () {
+        // In this demo, we are using Direct Line token from MockBot.
+        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+        // You should never put the Direct Line secret in the browser or client app.
+        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        const store = window.WebChat.createStore();
+
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token }),
+
+          // You can set groupTimestamp to configure how timestamps are grouped.
+          // - Set to `undefined` to use default grouping (5 minutes)
+          // - Set to `false` to not to group timestamps, it will show on every bubble
+          // - Set to `1000` to hide timestamps if they are less than 1 second apart
+          groupTimestamp: groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp,
+          store
+        }, document.getElementById('webchat'));
+
+        // The following code is for convenient when trying out this sample, not required for production.
+        document.querySelector('#webchat > *').focus();
+        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'timestamp' } }), 1000);
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

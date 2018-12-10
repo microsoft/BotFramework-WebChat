@@ -22,7 +22,7 @@ If you need to do some simple styling, you can set them thru `styleOptions`. Sty
 <!DOCTYPE html>
 <html>
   <body>
-    <div id="webchat"></div>
+    <div id="webchat" role="main"></div>
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       const styleOptions = {
@@ -55,7 +55,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
 <!DOCTYPE html>
 <html>
   <body>
-    <div id="webchat"></div>
+    <div id="webchat" role="main"></div>
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       // "styleSet" is a set of CSS rules which are generated from "styleOptions"
@@ -91,7 +91,7 @@ The latest Web Chat support avatar, you can customize them using `botAvatarIniti
 <!DOCTYPE html>
 <html>
   <body>
-    <div id="webchat"></div>
+    <div id="webchat" role="main"></div>
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
@@ -164,7 +164,7 @@ ReactDOM.render(
 );
 ```
 
-The full sample can be found at [/samples/custom-attachment-github-repository/](samples/custom-attachment-github-repository/).
+The full sample can be found at [/samples/10.customization-card-components/](samples/10.customization-card-components/).
 
 In this sample, we are adding a new React component called `GitHubRepositoryAttachment`:
 

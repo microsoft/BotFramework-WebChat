@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Custom Redux store</title>
+    <title>Web Chat: Presentation mode</title>
     <!--
       For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
       When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
@@ -31,34 +31,19 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // We are creating our own version of Redux store, which include middleware and optional initial state.
-        const store = window.WebChat.createStore(
-          {},
-          ({ dispatch }) => next => action => {
-            // TODO: [P4] Investigate why we need to wait until DIRECT_LINE/CONNECTION_STATUS_UPDATE, instead of DIRECT_LINE/CONNECT_FULFILLED.
-            if (action.type === 'DIRECT_LINE/CONNECTION_STATUS_UPDATE' && action.payload.connectionStatus === 2) {
-              // After connected, we will send a message by dispatching a Redux action.
-              dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'sample:backchannel' } });
-            } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-              // When receiving an activity of type "event" with name of "sample:backchannel", prompt it out.
-              const { activity } = action.payload;
-
-              if (activity.type === 'event' && activity.name === 'sample:backchannel') {
-                alert(JSON.stringify(activity, null, 2));
-              }
-            }
-
-            return next(action);
-          }
-        );
+        const store = window.WebChat.createStore();
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          // We will use a custom version of Redux store, which we added middleware to handle backchannel messages.
-          store
+          disabled: true,
+          store,
+          styleOptions: {
+            hideSendBox: true
+          }
         }, document.getElementById('webchat'));
 
-        document.querySelector('#webchat > *').focus();
+        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } }), 1000);
+        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } }), 1500);
       })().catch(err => console.error(err));
     </script>
   </body>

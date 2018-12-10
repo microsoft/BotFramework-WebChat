@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Custom Redux store</title>
+    <title>Web Chat: Browser-supported speech</title>
+    <!--
+       Speech functionality is a core feature in Web Chat and does not require the full bundle.
+       You can use either the core bundle or full bundle, depending on your other bot specifications.
+    -->
     <!--
       For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
       When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
@@ -31,31 +35,12 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // We are creating our own version of Redux store, which include middleware and optional initial state.
-        const store = window.WebChat.createStore(
-          {},
-          ({ dispatch }) => next => action => {
-            // TODO: [P4] Investigate why we need to wait until DIRECT_LINE/CONNECTION_STATUS_UPDATE, instead of DIRECT_LINE/CONNECT_FULFILLED.
-            if (action.type === 'DIRECT_LINE/CONNECTION_STATUS_UPDATE' && action.payload.connectionStatus === 2) {
-              // After connected, we will send a message by dispatching a Redux action.
-              dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'sample:backchannel' } });
-            } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-              // When receiving an activity of type "event" with name of "sample:backchannel", prompt it out.
-              const { activity } = action.payload;
-
-              if (activity.type === 'event' && activity.name === 'sample:backchannel') {
-                alert(JSON.stringify(activity, null, 2));
-              }
-            }
-
-            return next(action);
-          }
-        );
-
+        // Pass a Web Speech ponyfill factory to renderWebChat.
+        // You can also use your own speech engine given it is complaint to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          // We will use a custom version of Redux store, which we added middleware to handle backchannel messages.
-          store
+          webSpeechPonyfillFactory: window.WebChat.createBrowserWebSpeechPonyfillFactory()
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
