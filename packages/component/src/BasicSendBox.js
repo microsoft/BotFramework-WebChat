@@ -35,13 +35,16 @@ const BasicSendBox = ({
   styleSet,
   webSpeechPonyfill
 }) =>
-  <div className={ classNames(
-    styleSet.sendBox + '',
-    ROOT_CSS + '',
-    (className || '') + ''
-  ) }>
+  <div 
+    className={ classNames(
+      styleSet.sendBox + '',
+      ROOT_CSS + '',
+      (className || '') + ''
+    ) }
+    role="form"
+  >
     <SuggestedActions />
-    <div className="main" role="form">
+    <div className="main">
       <UploadButton />
       { dictationStarted ?
           <DictationInterims className={ DICTATION_INTERIMS_CSS } />
