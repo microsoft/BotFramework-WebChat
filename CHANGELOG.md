@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
    - If `userID` props present, they must be string and not prefixed with `dl_`, to avoid confusion between `userID` props and Direct Line embedded user ID (which is forgery-proof)
    - If `userID` props does not pass the validation test or not specified, Web Chat will use `default-user` instead
+- Support Cognitive Services Speech Services, in PR [#1442](https://github.com/Microsoft/BotFramework-WebChat/pull/1442)
+   - [Sample for Speech Services](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.c.cognitive-services-speech-services-js) (both subscription key and authorization token flow)
+   - [Sample for using lexical result](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.e.cognitive-services-speech-services-with-lexical-result) (text normalization)
 
 ### Changed
 - Core: Saga will run after custom middleware, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
