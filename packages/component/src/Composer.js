@@ -124,6 +124,12 @@ function createCardActionLogic({ directLine, dispatch }) {
   };
 }
 
+function createDirectionLogic({ locale }) {
+  return {
+    direction: /^he(-IL)?$/.test(locale) ? 'rtl' : 'ltr'
+  };
+}
+
 function createFocusSendBoxLogic({ sendBoxRef }) {
   return {
     focusSendBox: () => {
@@ -152,9 +158,11 @@ function createLogic(props) {
   // 2. Filter out profanity
 
   // TODO: [P4] Revisit all members of context
+
   return {
     ...props,
     ...createCardActionLogic(props),
+    ...createDirectionLogic(props),
     ...createFocusSendBoxLogic(props),
     ...createStyleSetLogic(props)
   };
