@@ -83,14 +83,6 @@ export default class extends React.Component {
 
     this.setLanguage(window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
 
-    if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
-        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-      });
-    } else {
-      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
-    }
-
     this.state = {
       botAvatarInitials: 'BF',
       directLine: createFaultyDirectLine({
@@ -104,7 +96,6 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
-      direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
       userAvatarInitials: 'WC',
@@ -171,7 +162,6 @@ export default class extends React.Component {
     const lang = value || window.navigator.language;
 
     this.setState(() => ({
-      direction: this.getDirection(lang),
       language: value
     }), () => {
       this.setLanguage(lang);
@@ -238,11 +228,7 @@ export default class extends React.Component {
     const html = document.querySelector('html');
 
     html.setAttribute('lang', lang);
-    html.setAttribute('dir', this.getDirection(lang));
-  }
-
-  getDirection(lang) {
-    return /^he(-IL)?$/i.test(lang) ? 'rtl' : 'ltr';
+    html.setAttribute('dir', /^he(-IL)?$/i.test(lang) ? 'rtl' : 'ltr');
   }
 
   render() {
