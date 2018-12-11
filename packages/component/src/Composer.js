@@ -226,9 +226,7 @@ class Composer extends React.Component {
   }
 
   setLanguageFromProps(props) {
-    const lang = props.locale || window.navigator.language || 'en-US';
-
-    props.dispatch(setLanguage(lang));
+    props.dispatch(setLanguage(props.locale || window.navigator.language || 'en-US'));
   }
 
   setSendTimeoutFromProps(props) {
