@@ -19,7 +19,6 @@ import {
   sendPostBack,
   setDictateInterims,
   setDictateState,
-  setDirection,
   setLanguage,
   setSendBox,
   setSendTimeout,

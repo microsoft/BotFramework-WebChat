@@ -96,7 +96,6 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
-      direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
       userAvatarInitials: 'WC',
@@ -160,12 +159,8 @@ export default class extends React.Component {
   }
 
   handleLanguageChange({ target: { value } }) {
-    const lang = value || window.navigator.language;
-
-    this.setState(() => ({
-      language: value
-    }), () => {
-      this.setLanguage(lang);
+    this.setState(() => ({ language: value }), () => {
+      this.setLanguage(value || window.navigator.language);
 
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
