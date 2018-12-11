@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+<!-- CHANGELOG line template
+### Added/Changed/Removed
+- Added something, by [@johndoe](https://github.com/johndoe) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+
+### Fixed
+- Fix [#XXX](https://github.com/Microsoft/BotFramework-WebChat/issues/XXX). Patched something, by [@johndoe](https://github.com/johndoe) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+-->
+
 ## [Unreleased]
 
 ## [4.2.0] - 2018-12-11
@@ -18,12 +26,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - Screenshot comparison using [`jest-image-snapshot`](https://npmjs.com/packages/jest-image-snapshot) and [`pixelmatch`](https://npmjs.com/package/pixelmatch)
    - Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
    - Test report is hosted on [Coveralls](https://coveralls.io/github/compulim/BotFramework-WebChat)
-- Add French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/Microsoft/BotFramework-WebChat/pull/1327)
+- Added French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/Microsoft/BotFramework-WebChat/pull/1327)
 - Fix [#1344](https://github.com/Microsoft/BotFramework-WebChat/issues/1344), by updating `README.md` and adding validation logic for `userID` props, in [#1447](https://github.com/Microsoft/BotFramework-WebChat/pull/1447)
    - If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
    - If `userID` props present, they must be string and not prefixed with `dl_`, to avoid confusion between `userID` props and Direct Line embedded user ID (which is forgery-proof)
    - If `userID` props does not pass the validation test or not specified, Web Chat will use `default-user` instead
-- Support Cognitive Services Speech to Text and Text to Speech in PR [#1442](https://github.com/Microsoft/BotFramework-WebChat/pull/1442)
+- Added support for Cognitive Services Speech to Text and Text to Speech in PR [#1442](https://github.com/Microsoft/BotFramework-WebChat/pull/1442)
 
 ### Changed
 - Core: Saga will run after custom middleware, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
@@ -51,9 +59,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix Russian localization by [@odysseus1973](https://github.com/odysseus1973) in PR [#1377](https://github.com/Microsoft/BotFramework-WebChat/pull/1377)
 
 ### Fixed
-- Fix [#1397](https://github.com/Microsoft/BotFramework-WebChat/issues/1397/) by patching activities without `from` field, in PR [#1405](https://github.com/Microsoft/BotFramework-WebChat/pull/1405)
+- Fix [#1397](https://github.com/Microsoft/BotFramework-WebChat/issues/1397). Patched activities without `from` field, in PR [#1405](https://github.com/Microsoft/BotFramework-WebChat/pull/1405)
 - Fix [#1237](https://github.com/Microsoft/BotFramework-WebChat/issues/1237). Added new sample called `migration`, by [@corinagum](https://github.com/corinagum) in PR [#1398](https://github.com/Microsoft/BotFramework-WebChat/pull/1398)
-- Fix sample names and add table to README; resolves [Issue #1332](https://github.com/Microsoft/BotFramework-WebChat/issues/1332) by [@corinagum](https://github.com/corinagum) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/1435)
+- Fix [#1332](https://github.com/Microsoft/BotFramework-WebChat/issues/1332). Updated sample names and add table to README, by [@corinagum](https://github.com/corinagum) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/1435)
 - Fix [#1125](https://github.com/Microsoft/BotFramework-WebChat/issues/1125). Added error handling for Adaptive Card JSON render, by [@corinagum](https://github.com/corinagum) in PR [#1395](https://github.com/Microsoft/BotFramework-WebChat/pull/1395)
 - Build: Webpack watch mode now emits non-minified code for shorter dev RTT, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
 
