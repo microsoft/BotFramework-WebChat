@@ -65,7 +65,7 @@ You can use the full, typical webchat package that contains the most typically u
 </html>
 ```
 
-See a working sample with full Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/full-bundle/).
+See a working sample with full Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/1.a.getting-started-full-bundle).
 
 ### Minimal bundle
 
@@ -76,7 +76,7 @@ Instead of using the full, typical package of Web Chat, you can choose a lighter
 
 Since Adaptive Cards is not include in this bundle, rich cards that depends on Adaptive Cards will not render, e.g. hero card, receipt card, etc. List of attachments that are not supported without Adaptive Cards can be found [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Middleware/Attachment/createAdaptiveCardMiddleware.js).
 
-See a working sample with minimal Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/minimal-bundle/).
+See a working sample with minimal Web Chat bundle [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/2.a.getting-started-minimal-bundle).
 
 ```html
 <!DOCTYPE html>
@@ -123,7 +123,7 @@ export default class extends React.Component {
 
 > You can also run `npm install botframework-webchat@master` to install a development build that sync with GitHub `master` branch.
 
-See a working sample with Web Chat rendered by React [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/integrate-with-react/).
+See a working sample with Web Chat rendered by React [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/3.a.host-with-react/).
 
 # Customize Web Chat UI
 

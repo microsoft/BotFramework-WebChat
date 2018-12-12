@@ -19,7 +19,6 @@ import {
   sendPostBack,
   setDictateInterims,
   setDictateState,
-  setDirection,
   setLanguage,
   setSendBox,
   setSendTimeout,
@@ -124,6 +123,12 @@ function createCardActionLogic({ directLine, dispatch }) {
   };
 }
 
+function createDirectionLogic({ locale }) {
+  return {
+    direction: /^he(-IL)?$/.test(locale) ? 'rtl' : 'ltr'
+  };
+}
+
 function createFocusSendBoxLogic({ sendBoxRef }) {
   return {
     focusSendBox: () => {
@@ -152,9 +157,11 @@ function createLogic(props) {
   // 2. Filter out profanity
 
   // TODO: [P4] Revisit all members of context
+
   return {
     ...props,
     ...createCardActionLogic(props),
+    ...createDirectionLogic(props),
     ...createFocusSendBoxLogic(props),
     ...createStyleSetLogic(props)
   };
@@ -219,11 +226,7 @@ class Composer extends React.Component {
   }
 
   setLanguageFromProps(props) {
-    const lang = props.locale || window.navigator.language || 'en-US';
-    props.dispatch(setLanguage(lang));
-    if (['he', 'he-IL'].indexOf(lang) !== -1) {
-        props.dispatch(setDirection('rtl'));
-    }
+    props.dispatch(setLanguage(props.locale || window.navigator.language || 'en-US'));
   }
 
   setSendTimeoutFromProps(props) {

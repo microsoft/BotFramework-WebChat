@@ -81,7 +81,7 @@ export default class extends React.Component {
     const userID = params.get('u');
     const webSocket = params.get('websocket');
 
-    document.querySelector('html').setAttribute('lang', window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
+    this.setLanguage(window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
 
     this.state = {
       botAvatarInitials: 'BF',
@@ -96,7 +96,6 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
-      direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
       userAvatarInitials: 'WC',
@@ -160,13 +159,9 @@ export default class extends React.Component {
   }
 
   handleLanguageChange({ target: { value } }) {
-    const lang = value || window.navigator.language;
+    this.setState(() => ({ language: value }), () => {
+      this.setLanguage(value || window.navigator.language);
 
-    this.setState(() => ({
-      direction: this.getDirection(lang),
-      language: value
-    }), () => {
-      this.setLanguage(lang);
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
   }
@@ -226,14 +221,10 @@ export default class extends React.Component {
   }
 
   setLanguage(lang) {
-      const html = document.querySelector('html');
+    const html = document.querySelector('html');
 
-      html.setAttribute('lang', lang);
-      html.setAttribute('dir', this.getDirection(lang));
-  }
-
-  getDirection(lang) {
-      return /^he(-IL)?$/i.test(lang) ? 'rtl' : 'ltr';
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', /^he(-IL)?$/i.test(lang) ? 'rtl' : 'ltr');
   }
 
   render() {
