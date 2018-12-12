@@ -16,12 +16,12 @@ const ROOT_CSS = css({
 
   '& > .sr-only': {
     color: 'transparent',
-    height: '1px',
-    left: '-10000px',
+    height: 1,
+    left: -10000,
     overflow: 'hidden',
     position: 'absolute',
     top: 'auto',
-    width: '1px'
+    width: 1
   }
 });
 
@@ -59,7 +59,7 @@ export default connectMicrophoneButton(
     styleSet
   }) =>
     <div
-      aria-controls="sr-Microphone"
+      aria-controls="webchatSendBoxMicrophoneButton"
       className={ classNames(
         styleSet.microphoneButton + '',
         ROOT_CSS + '',
@@ -77,8 +77,7 @@ export default connectMicrophoneButton(
       <div 
         aria-live="polite"
         className="sr-only"
-        id="sr-Microphone"
-        tabIndex="-1"
+        id="webchatSendBoxMicrophoneButton"
       >
         { dictating ? localize('Microphone on', language) : localize('Microphone off', language) }
       </div>
