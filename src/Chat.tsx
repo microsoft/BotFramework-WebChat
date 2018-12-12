@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 
+import { connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
-import DatePicker from 'react-datepicker';
 import { Provider } from 'react-redux';
-import * as uuid from 'uuid/v5';
 import * as gideonBot from './api/bot';
 import { getTabIndex } from './getTabIndex';
+import { guid } from './GUID';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
-import { ChatActions, createStore, sendMessage } from './Store';
+import { ChatActions, ChatState, createStore, sendMessage } from './Store';
 import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 
@@ -23,6 +23,7 @@ export interface ChatProps {
     chatTitle?: boolean | string;
     user: User;
     bot: User;
+    activities: Activity[];
     strings: Strings;
     gid: string;
     botConnection?: IBotConnection;
@@ -38,9 +39,10 @@ export interface ChatProps {
 
 export interface State {
     open: boolean;
+    opened: boolean;
 }
 
-import { isMoment } from 'moment';
+import { FloatingIcon } from './FloatingIcon';
 import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
@@ -48,7 +50,8 @@ import { Shell, ShellFunctions } from './Shell';
 export class Chat extends React.Component<ChatProps, State> {
 
     state = {
-        open: false
+        open: false,
+        opened: false
     };
 
     private store = createStore();
@@ -132,7 +135,8 @@ export class Chat extends React.Component<ChatProps, State> {
 
     private toggle = () => {
         this.setState({
-            open: !this.state.open
+            open: !this.state.open,
+            opened: true
         });
     }
 
@@ -220,7 +224,7 @@ export class Chat extends React.Component<ChatProps, State> {
         // Generate random user ID if there is none
         if (!user) {
             user = {
-                id: uuid(window.location.href, uuid.URL)
+                id: guid()
             };
         }
 
@@ -250,9 +254,9 @@ export class Chat extends React.Component<ChatProps, State> {
 
                     gideonBot.verifyConversation(
                         this.props.gid,
-                        this.props.directLine.secret,
                         conversationId,
                         user.id,
+                        this.props.directLine.secret,
                         window.location.origin,
                          (res: any) => {
                             this.store.dispatch<ChatActions>({
@@ -261,6 +265,17 @@ export class Chat extends React.Component<ChatProps, State> {
                                     status: 1
                                 }
                             });
+
+                            // Ping server with activity every 30 seconds
+                            setInterval(() => {
+                                gideonBot.ping(
+                                    this.props.gid,
+                                    conversationId,
+                                    this.props.directLine.secret,
+                                    null,
+                                    null
+                                );
+                            }, 10000);
 
                             // Send initial message to start conversation
                             this.store.dispatch(sendMessage(state.format.strings.pingMessage, state.connection.user, state.format.locale));
@@ -344,17 +359,16 @@ export class Chat extends React.Component<ChatProps, State> {
 
     render() {
         const state = this.store.getState();
-        const { open } = this.state;
+        const { open, opened } = this.state;
+
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>
                 <div className="wc-wrap">
-                    <div
-                        className={`wc-floating`}
-                        onClick={() => {this.toggle(); }}
-                    >
-                        <img src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/gideon-horn-logo.svg"/>
-                    </div>
+                    <FloatingIcon
+                        visible={!open && !opened}
+                        clicked={() => this.toggle()}
+                    />
 
                     <div
                         className={`wc-chatview-panel ${open ? 'wc-chatview-panel__open' : 'wc-chatview-panel__closed' }`}
@@ -364,12 +378,16 @@ export class Chat extends React.Component<ChatProps, State> {
                         {
                             !!state.format.chatTitle &&
                                 <div className="wc-header">
-                                    <span>Chat with Gideon</span>
+                                    <img
+                                        className="wc-header--logo"
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/chat-header.svg" />
+
+                                    <span>Gideon</span>
 
                                     <img
                                         className="wc-header--close"
                                         onClick={() => {this.toggle(); }}
-                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/Screen+Shot+2018-08-30+at+5.55.42+PM.png" />
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/close.svg" />
                                 </div>
                         }
                         <MessagePane>
@@ -405,8 +423,6 @@ export const doCardAction = (
 
     const text = (typeof actionValue === 'string') ? actionValue as string : undefined;
     const value = (typeof actionValue === 'object') ? actionValue as object : undefined;
-
-    console.log(type);
 
     switch (type) {
         case 'imBack':
