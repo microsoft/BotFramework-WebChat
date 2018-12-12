@@ -79,7 +79,7 @@ export default connectMicrophoneButton(
         className="sr-only"
         id="webchatSendBoxMicrophoneButton"
       >
-        { dictating ? localize('Microphone on', language) : localize('Microphone off', language) }
+        { localize(dictating ? 'Microphone on' : 'Microphone off', language) }
       </div>
     </div>
 )
