@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - `botAvatarImage` and `userAvatarImage` props, as they are moved inside `styleOptions`, in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
+### Samples
+- UI: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling/), in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+
 ## [4.2.0] - 2018-12-11
 ### Added
 - Build: Development build now include instrumentation code, updated build scripts
