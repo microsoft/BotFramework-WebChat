@@ -96,16 +96,25 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
 
         if (e.key === 'Enter') {
             this.props.submitDate();
-            this.props.sendMessage(this.state.startDate.format(this.state.withTime ? dateFormatWithTime : dateFormat));
+            this.props.sendMessage(this.getDateText());
             document.removeEventListener('keypress', this.handleKeyDown.bind(this));
         }
+    }
+
+    getDateText = () => {
+        let endDate = '';
+        const startDate = this.state.startDate.format(this.state.withTime ? dateFormatWithTime : dateFormat);
+        if (this.state.withRange && this.state.endDate) {
+             endDate = ':' + this.state.endDate.format(this.state.withTime ? dateFormatWithTime : dateFormat);
+        }
+        return (startDate + endDate);
     }
 
     clickToSubmitDate(e: React.MouseEvent<HTMLButtonElement>) {
         if (!this.state.dateSelected) { return; }
 
         // this.props.submitDate();
-        this.props.sendMessage(this.state.startDate.format(this.state.withTime ? dateFormatWithTime : dateFormat));
+        this.props.sendMessage(this.getDateText());
 
         document.removeEventListener('keypress', this.handleKeyDown.bind(this));
 
