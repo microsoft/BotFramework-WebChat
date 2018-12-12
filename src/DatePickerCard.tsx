@@ -105,7 +105,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         let endDate = '';
         const startDate = this.state.startDate.format(this.state.withTime ? dateFormatWithTime : dateFormat);
         if (this.state.withRange && this.state.endDate) {
-             endDate = ':' + this.state.endDate.format(this.state.withTime ? dateFormatWithTime : dateFormat);
+             endDate = '~' + this.state.endDate.format(this.state.withTime ? dateFormatWithTime : dateFormat);
         }
         return (startDate + endDate);
     }
