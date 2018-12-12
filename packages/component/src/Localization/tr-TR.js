@@ -1,5 +1,7 @@
 export default {
   'Chat': 'Sohbet',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Dinliyor…',
   'retry': 'yeniden deneyin',
   'Send failed, {retry}': 'gönderilemedi, {retry}',

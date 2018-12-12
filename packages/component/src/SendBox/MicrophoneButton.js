@@ -12,7 +12,17 @@ import MicrophoneIcon from './Assets/MicrophoneIcon';
 const { DictateState } = Constants;
 
 const ROOT_CSS = css({
-  display: 'flex'
+  display: 'flex',
+
+  '& > .sr-only': {
+    color: 'transparent',
+    height: '1px',
+    left: '-10000px',
+    overflow: 'hidden',
+    position: 'absolute',
+    top: 'auto',
+    width: '1px'
+  }
 });
 
 const connectMicrophoneButton = (...selectors) => connectToWebChat(
@@ -48,12 +58,15 @@ export default connectMicrophoneButton(
     language,
     styleSet
   }) =>
-    <div className={ classNames(
-      styleSet.microphoneButton + '',
-      ROOT_CSS + '',
-      (className || '') + '',
-      { dictating }
-    ) }>
+    <div
+      aria-controls="sr-Microphone"
+      className={ classNames(
+        styleSet.microphoneButton + '',
+        ROOT_CSS + '',
+        (className || '') + '',
+        { dictating }
+      ) }
+    >
       <IconButton
         alt={ localize('Speak', language) }
         disabled={ disabled }
@@ -61,6 +74,14 @@ export default connectMicrophoneButton(
       >
         <MicrophoneIcon />
       </IconButton>
+      <div 
+        aria-live="polite"
+        className="sr-only"
+        id="sr-Microphone"
+        tabIndex="-1"
+      >
+        { dictating ? localize('Microphone on', language) : localize('Microphone off', language) }
+      </div>
     </div>
 )
 

@@ -21,6 +21,8 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': 'チャット',
+  'Microphone off': 'マイクオン',
+  'Microphone on': 'マイクオフ',
   'Listening': '聴いてます',
   'retry': '再送',
   'Send failed, {retry}': '送信できませんでした。{retry}',

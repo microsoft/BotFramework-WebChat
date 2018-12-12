@@ -1,5 +1,7 @@
 export default {
   'Chat': 'Συνομιλία',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Ακούγοντας…',
   'retry': 'δοκιμή',
   'Send failed, {retry}': 'αποτυχία, {retry}',

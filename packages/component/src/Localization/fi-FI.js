@@ -1,5 +1,7 @@
 export default {
   'Chat': 'Chat',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Kuuntelee…',
   'retry': 'yritä uudelleen',
   'Send failed, {retry}': 'ei voitu lähettää, {retry}',

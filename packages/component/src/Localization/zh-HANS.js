@@ -25,6 +25,8 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': '聊天',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Left': '左',
   'Listening…': '正在倾听…',
   'New messages': '新讯息',
