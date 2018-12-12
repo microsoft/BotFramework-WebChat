@@ -37,7 +37,7 @@ export interface DatePickerState {
 }
 
 const dateFormat = 'MMMM D, YYYY';
-const dateFormatWithTime = 'MMMM D, YYYY hh:mm A';
+const dateFormatWithTime = 'MMMM D, YYYY hh:mmA Z';
 
 /**
  * Date picker card which renders in response to node of types 'date' and 'handoff'
@@ -134,7 +134,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     onChange={date => this.handleDateChange(date)}
                     inline={true}
                     minDate={isHandoff && moment()}
-                    excludeTimes={getAvailableTimes(node)}
+                    // excludeTimes={getAvailableTimes(node)}
                     tabIndex={1}
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}
                     showTimeSelect={withTime}
