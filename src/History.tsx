@@ -137,11 +137,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 this.largeWidth = this.props.size.width * 2;
                 content = <this.measurableCarousel/>;
             } else {
-                const notPingMessage = (activity: Activity, index: number) => (activity.type !== 'message' || activity.text !== this.props.format.strings.pingMessage);
-                // Remove initial ping message from list of activities. User should not see this
-                const filteredActivites = this.props.activities.filter(notPingMessage);
+                const activities = filteredActivities(this.props.activities, this.props.format.strings.pingMessage);
 
-                content = filteredActivites
+                content = activities
                 .map((activity, index) =>
                     (activity.type !== 'message' || activity.text || (activity.attachments && !!activity.attachments.length)) &&
                         <WrappedActivity
@@ -149,7 +147,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                             key={ 'message' + index }
                             activity={ activity }
                             doCardAction={this.doCardAction}
-                            lastMessage={index === filteredActivites.length - 1}
+                            lastMessage={index === activities.length - 1}
                             showTimestamp={ index === this.props.activities.length - 1 || (index + 1 < this.props.activities.length && suitableInterval(activity, this.props.activities[index + 1])) }
                             selected={ this.props.isSelected(activity) }
                             fromMe={ this.props.isFromMe(activity) }
@@ -233,6 +231,15 @@ export const History = connect(
         withRef: true
     }
 )(HistoryView);
+
+export const filteredActivities = (activities: Activity[], pingMessage: string) => {
+    const notPingMessage = (activity: Activity, index: number) => {
+        return (activity.type !== 'message' || activity.text !== pingMessage);
+    };
+
+    // Remove initial ping message from list of activities. User should not see this
+    return activities.filter(notPingMessage);
+};
 
 const getComputedStyleValues = (el: HTMLElement, stylePropertyNames: string[]) => {
     const s = window.getComputedStyle(el);

@@ -1,11 +1,9 @@
 import axios from 'axios';
-import { Activity, CardAction, Message} from 'botframework-directlinejs';
 import * as React from 'react';
 import Dropzone from 'react-dropzone';
 import { connect } from 'react-redux';
-import { getAvailableTimes } from './getAvailableTimes';
 import { ChatState } from './Store';
-import { ChatActions, sendFiles , sendMessage } from './Store';
+import { sendFiles , sendMessage } from './Store';
 
 export interface Node {
     node_type: string;
@@ -108,29 +106,29 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
         };
 
         this.getSignedUrl(dataToGetSignedUrl).then((result: any) => {
-                const options = {
-                  headers: {
-                    'Content-Type': file.type
-                  }
-                };
-
-                return axios.put(result.s3Url, file, options);
-            }).then((result: any) => {
-                if (result.status === 200) {
-                  this.props.fileSelected(false);
-                  this.setState({isUploading: false, uploadPhase: 'success'});
-
-                  this.props.sendMessage(this.state.signedUrl.split('?')[0]);
-                } else {
-                    throw Error('Something went wrong. Try again.');
+            const options = {
+                headers: {
+                'Content-Type': file.type
                 }
-            }).catch(err => {
+            };
+
+            return axios.put(result.s3Url, file, options);
+        }).then((result: any) => {
+            if (result.status === 200) {
                 this.props.fileSelected(false);
-                this.setState({isUploading: false, uploadPhase: 'error'});
-                // console.log('error', err);
-                // this.props.sendMessage('Docs not uploaded successfully.');
-              });
-        }
+                this.setState({isUploading: false, uploadPhase: 'success'});
+
+                this.props.sendMessage(this.state.signedUrl.split('?')[0]);
+            } else {
+                throw Error('Something went wrong. Try again.');
+            }
+        }).catch(err => {
+            this.props.fileSelected(false);
+            this.setState({isUploading: false, uploadPhase: 'error'});
+            // console.log('error', err);
+            // this.props.sendMessage('Docs not uploaded successfully.');
+            });
+    }
 
     clickToSubmitFile(e: React.MouseEvent<HTMLDivElement>) {
         if (this.state.uploadPhase !== 'preview') { return; }
