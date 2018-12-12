@@ -43,7 +43,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         let scrollToBottomDetectionTolerance = 1;
 
         if (!this.props.hasActivityWithSuggestedActions && nextProps.hasActivityWithSuggestedActions) {
-            scrollToBottomDetectionTolerance = 40; // this should be in-sync with $actionsHeight scss var
+            scrollToBottomDetectionTolerance = 58; // this should be in-sync with $actionsHeight scss var
         }
 
         this.scrollToBottom = (Math.abs(this.scrollMe.scrollHeight - this.scrollMe.scrollTop - this.scrollMe.offsetHeight) <= scrollToBottomDetectionTolerance);

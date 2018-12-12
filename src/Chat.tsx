@@ -250,6 +250,7 @@ export class Chat extends React.Component<ChatProps, State> {
 
                     gideonBot.verifyConversation(
                         this.props.gid,
+                        this.props.directLine.secret,
                         conversationId,
                         user.id,
                         window.location.origin,

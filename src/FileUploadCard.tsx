@@ -1,11 +1,9 @@
 import axios from 'axios';
-import { Activity, CardAction, Message} from 'botframework-directlinejs';
 import * as React from 'react';
 import Dropzone from 'react-dropzone';
 import { connect } from 'react-redux';
-import { getAvailableTimes } from './getAvailableTimes';
 import { ChatState } from './Store';
-import { ChatActions, sendFiles , sendMessage } from './Store';
+import { sendFiles , sendMessage } from './Store';
 
 export interface Node {
     node_type: string;
@@ -29,6 +27,13 @@ export interface FileUploadState {
     signedUrl: string;
 }
 
+export const UPLOAD_PHASES = {
+    OPEN: 'open',
+    ERROR: 'error',
+    PREVIEW: 'preview',
+    SUCCESS: 'success'
+};
+
 /**
  * File Upload card which renders in response to node of types 'file'
  * Used for file upload
@@ -39,7 +44,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 
         this.state = {
             files: [],
-            uploadPhase: 'open',
+            uploadPhase: UPLOAD_PHASES.OPEN,
             isUploading: false,
             signedUrl: null
         };
@@ -50,26 +55,23 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
     removeFile = () => {
         this.setState({
             files: [],
-            uploadPhase: 'open'
+            uploadPhase: UPLOAD_PHASES.OPEN
         });
     }
 
     private handleKeyDown =  (e: React.KeyboardEvent<HTMLInputElement>): any => {
-        if (this.state.uploadPhase === 'open') { return; }
-        if (this.state.uploadPhase === 'error') {
-            this.setState({uploadPhase: 'open'});
-            return;
-        }
         if (e.key === 'Enter') {
-            this.submitFiles();
-            // this.props.sendFiles(this.state.files);
-            document.removeEventListener('keypress', this.handleKeyDown.bind(this));
+            if (this.state.uploadPhase === UPLOAD_PHASES.ERROR) {
+                this.clickToRetryFile();
+            } else if (this.state.uploadPhase === UPLOAD_PHASES.PREVIEW) {
+                this.clickToSubmitFile();
+            }
         }
     }
 
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
-      }
+    }
 
     handleSkipFile(e: React.MouseEvent<HTMLDivElement>) {
         this.props.sendMessage('Skip Upload');
@@ -97,6 +99,10 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
     }
 
     submitFiles = () => {
+        if (this.state.files.length === 0 || this.state.isUploading) {
+            return;
+        }
+
         this.setState({isUploading: true});
         this.props.fileSelected(true);
 
@@ -118,7 +124,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
             }).then((result: any) => {
                 if (result.status === 200) {
                   this.props.fileSelected(false);
-                  this.setState({isUploading: false, uploadPhase: 'success'});
+                  this.setState({isUploading: false, files: [], uploadPhase: 'success'});
 
                   this.props.sendMessage(this.state.signedUrl.split('?')[0]);
                 } else {
@@ -126,37 +132,31 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                 }
             }).catch(err => {
                 this.props.fileSelected(false);
-                this.setState({isUploading: false, uploadPhase: 'error'});
-                // console.log('error', err);
-                // this.props.sendMessage('Docs not uploaded successfully.');
-              });
+                this.setState({isUploading: false, files: [], uploadPhase: UPLOAD_PHASES.ERROR});
+            });
         }
 
-    clickToSubmitFile(e: React.MouseEvent<HTMLDivElement>) {
-        if (this.state.uploadPhase !== 'preview') { return; }
+    clickToSubmitFile(e?: React.MouseEvent<HTMLDivElement>) {
+        if (this.state.uploadPhase !== UPLOAD_PHASES.PREVIEW) { return; }
         this.submitFiles();
-        // this.props.submitDate();
-        // this.props.sendMessage(this.state.files);
-        document.removeEventListener('keypress', this.handleKeyDown.bind(this));
+        document.removeEventListener('keydown', this.handleKeyDown.bind(this));
 
-        e.stopPropagation();
+        const a = e ? e.stopPropagation() : null;
     }
 
-    clickToRetryFile(e: React.MouseEvent<HTMLDivElement>) {
-        if (this.state.uploadPhase !== 'error') { return; }
-        this.setState({uploadPhase: 'open'});
-        // this.props.submitDate();
-        // this.props.sendMessage(this.state.files);
-        document.removeEventListener('keypress', this.handleKeyDown.bind(this));
+    clickToRetryFile(e?: React.MouseEvent<HTMLDivElement>) {
+        if (this.state.uploadPhase !== UPLOAD_PHASES.ERROR) { return; }
+        this.setState({uploadPhase: UPLOAD_PHASES.OPEN});
+        document.removeEventListener('keydown', this.handleKeyDown.bind(this));
 
-        e.stopPropagation();
+        const a = e ? e.stopPropagation() : null;
     }
 
     onDrop(imageFiles: FileList) {
         if (imageFiles.length > 0) {
             this.setState({
                 files: imageFiles,
-                uploadPhase: 'preview'
+                uploadPhase: UPLOAD_PHASES.PREVIEW
             });
         }
     }
@@ -179,7 +179,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
             </div>
         );
 
-        if (this.state.uploadPhase === 'preview') {
+        if (this.state.uploadPhase === UPLOAD_PHASES.PREVIEW) {
             returnDropzone = (
                 <div>
                     <div className="file-upload-title">{this.state.files[0].name}</div>
@@ -196,7 +196,7 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
             );
         }
 
-        if (this.state.uploadPhase === 'error') {
+        if (this.state.uploadPhase === UPLOAD_PHASES.ERROR) {
             returnDropzone = (
                 <div>
                     <div className="file-upload-title error">Error</div>
