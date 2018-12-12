@@ -62,15 +62,7 @@ const ROOT_CSS = css({
 });
 
 const connectCarouselFilmStrip = (...selectors) => connectToWebChat(
-  ({
-    botAvatarInitials,
-    language,
-    userAvatarInitials
-  }) => ({
-    botAvatarInitials,
-    language,
-    userAvatarInitials
-  }),
+  ({ language }) => ({ language }),
   ...selectors
 )
 
@@ -79,16 +71,13 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
 )(
   ({
     activity,
-    botAvatarInitials,
     children,
     className,
     filmContext,
     showTimestamp,
     styleSet,
-    userAvatarInitials
   }) => {
     const fromUser = activity.from.role === 'user';
-    const initials = fromUser ? userAvatarInitials : botAvatarInitials;
 
     return (
       <div
@@ -99,16 +88,14 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
         ) }
         ref={ filmContext._setFilmStripRef }
       >
-        { !!initials &&
-          <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
-        }
+        <Avatar className="avatar" fromUser={ fromUser } />
         <div className="content">
           {
             !!activity.text &&
               <div className="message">
                 <Bubble
                   className="bubble"
-                  fromUser={ activity.from.role === 'user' }
+                  fromUser={ fromUser }
                 >
                   { children({
                     activity,
@@ -126,7 +113,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
               activity.attachments.map((attachment, index) =>
                 <li key={ index }>
                   <Bubble
-                    fromUser={ activity.from.role === 'user' }
+                    fromUser={ fromUser }
                     key={ index }
                   >
                     { children({ attachment }) }
