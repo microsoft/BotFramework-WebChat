@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Custom Redux store</title>
+    <title>Web Chat: Cognitive Services Bing Speech using JavaScript</title>
+    <!-- Cognitive Services Bing Speech adapter is only available in full bundle -->
     <!--
       For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
       When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
@@ -31,31 +32,27 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        // We are creating our own version of Redux store, which include middleware and optional initial state.
-        const store = window.WebChat.createStore(
-          {},
-          ({ dispatch }) => next => action => {
-            // TODO: [P4] Investigate why we need to wait until DIRECT_LINE/CONNECTION_STATUS_UPDATE, instead of DIRECT_LINE/CONNECT_FULFILLED.
-            if (action.type === 'DIRECT_LINE/CONNECTION_STATUS_UPDATE' && action.payload.connectionStatus === 2) {
-              // After connected, we will send a message by dispatching a Redux action.
-              dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'sample:backchannel' } });
-            } else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-              // When receiving an activity of type "event" with name of "sample:backchannel", prompt it out.
-              const { activity } = action.payload;
+        // To run this demo, you can either use our authorization token, or provide your own subscription key thru ?s=BING_SPEECH_SUBSCRIPTION_KEY
+        const subscriptionKey = new URLSearchParams(window.location.search).get('s');
+        let webSpeechPonyfillFactory;
 
-              if (activity.type === 'event' && activity.name === 'sample:backchannel') {
-                alert(JSON.stringify(activity, null, 2));
-              }
-            }
+        if (subscriptionKey) {
+          // In case you are using your own subscription key, please note that client should always authenticate against your server
+          // to avoid exposing the subscription key to any part of your client code.
+          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ subscriptionKey });
+        } else {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' });
+          const { token: authorizationToken } = await res.json();
 
-            return next(action);
-          }
-        );
+          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
+        }
 
+        // Pass a Web Speech ponyfill factory to renderWebChat.
+        // You can also use your own speech engine given it is compliant to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          // We will use a custom version of Redux store, which we added middleware to handle backchannel messages.
-          store
+          webSpeechPonyfillFactory
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();

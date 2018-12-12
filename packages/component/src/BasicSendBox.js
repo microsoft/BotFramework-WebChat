@@ -35,11 +35,14 @@ const BasicSendBox = ({
   styleSet,
   webSpeechPonyfill
 }) =>
-  <div className={ classNames(
-    styleSet.sendBox + '',
-    ROOT_CSS + '',
-    (className || '') + ''
-  ) }>
+  <div 
+    className={ classNames(
+      styleSet.sendBox + '',
+      ROOT_CSS + '',
+      (className || '') + ''
+    ) }
+    role="form"
+  >
     <SuggestedActions />
     <div className="main">
       <UploadButton />

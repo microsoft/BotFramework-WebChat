@@ -86,6 +86,7 @@ const BasicTranscript = ({
         ROOT_CSS + '',
         (className || '') + ''
       ) }
+      role="log"
     >
       <ScrollToBottomPanel className={ PANEL_CSS + '' }>
         <div className={ FILLER_CSS } />

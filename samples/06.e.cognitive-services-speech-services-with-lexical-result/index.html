@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Cognitive Services Speech Services with lexical result</title>
+    <!-- Cognitive Services Speech Services adapter is only available in full bundle -->
+    <!--
+      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
+      Or locked down on a specific version "/4.1.0/webchat.js".
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+
+      #webchat,
+      #webchat > * {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function () {
+        // In this demo, we are using Direct Line token from MockBot.
+        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+        // You should never put the Direct Line secret in the browser or client app.
+        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        // To run this demo, you can either use our authorization token, or provide your own subscription key thru ?s=BING_SPEECH_SUBSCRIPTION_KEY
+        const searchParams = new URLSearchParams(window.location.search);
+        const subscriptionKey = searchParams.get('s');
+        let webSpeechPonyfillFactory;
+
+        if (subscriptionKey) {
+          // In case you are using your own subscription key, please note that client should always authenticate against your server
+          // to avoid exposing the subscription key to any part of your client code.
+          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+            region: searchParams.get('r') || 'westus',
+            subscriptionKey,
+            textNormalization: 'lexical'
+          });
+        } else {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+          const { region, token: authorizationToken } = await res.json();
+
+          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+            authorizationToken,
+            region,
+            textNormalization: 'lexical'
+          });
+        }
+
+        // Pass a Web Speech ponyfill factory to renderWebChat.
+        // You can also use your own speech engine given it is compliant to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token }),
+          webSpeechPonyfillFactory
+        }, document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>
