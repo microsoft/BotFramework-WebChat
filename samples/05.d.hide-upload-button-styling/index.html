@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Hide upload button</title>
+    <!--
+      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
+      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+
+      #webchat,
+      #webchat > * {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function () {
+        // In this demo, we are using Direct Line token from MockBot.
+        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+        // You should never put the Direct Line secret in the browser or client app.
+        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token }),
+          styleOptions: {
+            hideUploadButton: true
+          }
+        }, document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

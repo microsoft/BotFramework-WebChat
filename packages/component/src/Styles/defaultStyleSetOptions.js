@@ -22,6 +22,7 @@ const DEFAULT_OPTIONS = {
   bubbleTextColor: 'Black',
 
   hideSendBox: false,
+  hideUploadButton: false,
 
   microphoneButtonColorOnDictate: '#F33',
 
