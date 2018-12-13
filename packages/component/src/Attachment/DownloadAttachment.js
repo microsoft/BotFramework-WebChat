@@ -3,6 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import DownloadIcon from './Assets/DownloadIcon';
+import { localize } from '../Localization/Localize';
 
 export default connectToWebChat(
   ({ language, styleSet }) => ({ language, styleSet })
@@ -14,6 +15,7 @@ export default connectToWebChat(
     styleSet
   }) => {
     const attachmentIndex = attachments.indexOf(attachment);
+    const label = localize('Download file', language);
     const size = attachmentSizes[attachmentIndex];
 
     return (
@@ -29,7 +31,7 @@ export default connectToWebChat(
                 <div className="size">{ format(size) }</div>
             }
           </div>
-          <DownloadIcon className="icon" language={ language } size={ 1.5 } />
+          <DownloadIcon className="icon" label={ label } size={ 1.5 } />
         </a>
       </div>
     );
