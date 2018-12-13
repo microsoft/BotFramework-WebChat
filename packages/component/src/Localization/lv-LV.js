@@ -1,5 +1,7 @@
 export default {
   'Chat': 'Tērzēšana',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Klausoties…',
   'retry': 'Mēģināt vēlreiz',
   'Send failed, {retry}': 'Neizdevās nosūtīt, {retry}',

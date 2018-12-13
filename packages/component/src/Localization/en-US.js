@@ -31,6 +31,8 @@ export default {
     'Adaptive Card parse error',
     'Adaptive Card render error',
     'Chat',
+    'Microphone off',
+    'Microphone on',
     'Left',
     'Listening…',
     'New messages',
