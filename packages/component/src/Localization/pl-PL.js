@@ -1,5 +1,6 @@
 export default {
   'Chat': 'Czat',
+  // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Słuchanie…',

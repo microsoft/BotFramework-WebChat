@@ -1,5 +1,6 @@
 export default {
   'Chat': 'Συνομιλία',
+  // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Ακούγοντας…',

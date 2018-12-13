@@ -25,6 +25,7 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': 'Discuter',
+  // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Left': 'Gauche',
