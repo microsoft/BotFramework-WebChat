@@ -149,13 +149,13 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
   if (botAvatarInitials) {
     styleOptions = { ...styleOptions, botAvatarInitials };
 
-    console.warn('Web Chat: "botAvatarInitials" is deprecated, please use "styleOptions.botAvatarInitials" instead.');
+    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead.');
   }
 
   if (userAvatarInitials) {
     styleOptions = { ...styleOptions, userAvatarInitials };
 
-    console.warn('Web Chat: "userAvatarInitials" is deprecated, please use "styleOptions.userAvatarInitials" instead.');
+    console.warn('Web Chat: "userAvatarInitials" is deprecated. Please use "styleOptions.userAvatarInitials" instead.');
   }
 
   return {
