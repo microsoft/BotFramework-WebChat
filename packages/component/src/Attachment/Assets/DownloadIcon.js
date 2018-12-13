@@ -1,7 +1,10 @@
 import React from 'react';
 
-export default ({ className, size = 1 }) =>
+import { localize } from '../../Localization/Localize';
+
+export default ({ className, language, size = 1 }) =>
   <svg
+    aria-label={ localize('Download file', language) }
     className={ className }
     height={ 20 * size }
     viewBox="0 0 12 20"

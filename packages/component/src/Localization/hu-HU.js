@@ -1,5 +1,6 @@
 export default {
   'Chat': 'Csevegés',
+  // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Figyelés…',

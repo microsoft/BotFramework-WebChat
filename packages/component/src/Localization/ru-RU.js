@@ -31,6 +31,7 @@ export default {
   'Adaptive Card parse error': 'Ошибка парсинга адаптивной карты',
   'Adaptive Card render error': 'Ошибка отображения адаптивной карты',
   'Chat': 'Чат',
+  // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Прослушивание…',

@@ -5,11 +5,12 @@ import connectToWebChat from '../connectToWebChat';
 import DownloadIcon from './Assets/DownloadIcon';
 
 export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
+  ({ language, styleSet }) => ({ language, styleSet })
 )(
   ({
     activity: { attachments = [], channelData: { attachmentSizes = [] } = {} },
     attachment,
+    language,
     styleSet
   }) => {
     const attachmentIndex = attachments.indexOf(attachment);
@@ -28,7 +29,7 @@ export default connectToWebChat(
                 <div className="size">{ format(size) }</div>
             }
           </div>
-          <DownloadIcon className="icon" size={ 1.5 } />
+          <DownloadIcon className="icon" language={ language } size={ 1.5 } />
         </a>
       </div>
     );
