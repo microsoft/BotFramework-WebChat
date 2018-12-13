@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fix [#1409](https://github.com/Microsoft/BotFramework-WebChat/issues/1409). Added microphone status as screen reader only text, by [@corinagum](https://github.com/corinagum) in PR [#1490](https://github.com/Microsoft/BotFramework-WebChat/pull/1490)
 
+- Fix [#1605](https://github.com/Microsoft/BotFramework-WebChat/issues/1305), [#1316](https://github.com/Microsoft/BotFramework-WebChat/issues/1316), [#1341](https://github.com/Microsoft/BotFramework-WebChat/issues/1341), [#1411](https://github.com/Microsoft/BotFramework-WebChat/issues/1411). Fix color contrast ratios & downloadIcon narrator accessibility by [@corinagum](https://github.com/corinagum) in PR [#1494](https://github.com/Microsoft/BotFramework-WebChat/pull/1494)
+
 ## [4.2.0] - 2018-12-11
 ### Added
 - Build: Development build now include instrumentation code, updated build scripts
