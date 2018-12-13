@@ -29,7 +29,7 @@ const DEFAULT_OPTIONS = {
   paddingRegular: 10,
   paddingWide: 20,
 
-  sendBoxButtonColor: '#999',
+  sendBoxButtonColor: '#767676',
   sendBoxButtonColorOnDisabled: '#CCC',
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',

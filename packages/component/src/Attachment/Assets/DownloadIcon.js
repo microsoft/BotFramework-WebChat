@@ -1,7 +1,8 @@
 import React from 'react';
 
-export default ({ className, size = 1 }) =>
+export default ({ className, label, size = 1 }) =>
   <svg
+    aria-label={ label }
     className={ className }
     height={ 20 * size }
     viewBox="0 0 12 20"

@@ -36,7 +36,7 @@ const ROOT_CSS = css({
     top: 0,
 
     '&:hover > svg': {
-      fill: '#999'
+      fill: '#767676'
     }
   }
 });

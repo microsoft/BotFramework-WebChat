@@ -54,8 +54,8 @@
 }
 
 .App-speech-button.dictating {
-  background-color: Red;
-  border-color: Red;
+  background-color: #EF0000;
+  border-color: #EF0000;
 }
 
 .App-speech-button.dictating > svg {

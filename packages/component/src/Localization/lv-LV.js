@@ -1,5 +1,6 @@
 export default {
   'Chat': 'Tērzēšana',
+  // 'Download file': '',
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Klausoties…',
