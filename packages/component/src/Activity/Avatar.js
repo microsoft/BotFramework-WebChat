@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import memoize from 'memoize-one';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -21,43 +20,31 @@ const connectAvatar = (...selectors) => connectToWebChat(
   ...selectors
 );
 
-class Avatar extends React.Component {
-  constructor() {
-    super();
+// TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
+//       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
-    this.createBackgroundImageStyle = memoize(backgroundImage => ({ backgroundImage: `url(${ encodeURI(backgroundImage) })` }));
-  }
-
-  render() {
-    const {
-      props: {
-        avatarImage,
-        avatarInitials,
-        className,
-        fromUser,
-        styleSet
-      }
-    } = this;
-
-    return (
-      !!(avatarImage || avatarInitials) &&
-        <div
-          className={ classNames(
-            styleSet.avatar + '',
-            { 'from-user': fromUser },
-            (className || '') + ''
-          ) }
-        >
-          { avatarInitials }
-          <div
-            aria-hidden={ true }
-            className="image"
-            style={ this.createBackgroundImageStyle(avatarImage) }
-          />
-        </div>
-    );
-  }
-}
+const Avatar = ({
+  avatarImage,
+  avatarInitials,
+  className,
+  fromUser,
+  styleSet
+}) =>
+  !!(avatarImage || avatarInitials) &&
+    <div
+      className={ classNames(
+        styleSet.avatar + '',
+        { 'from-user': fromUser },
+        (className || '') + ''
+      ) }
+    >
+      { avatarInitials }
+      <div
+        aria-hidden={ true }
+        className="image"
+        style={{ backgroundImage: `url(${ encodeURI(backgroundImage) })` }}
+      />
+    </div>
 
 export default connectAvatar(
   ({ styleSet }) => ({ styleSet })
