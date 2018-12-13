@@ -101,7 +101,7 @@ For full customizability, you can use React to recompose components of Web Chat.
 To install the production build from NPM, run `npm install botframework-webchat`.
 
 ```jsx
-import DirectLine from 'botframework-directlinejs';
+import { DirectLine } from 'botframework-directlinejs';
 import React from 'react';
 import ReactWebChat from 'botframework-webchat';
 
