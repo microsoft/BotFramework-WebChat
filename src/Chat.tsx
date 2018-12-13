@@ -40,6 +40,7 @@ export interface ChatProps {
 export interface State {
     open: boolean;
     opened: boolean;
+    orginalBodyClass: string;
 }
 
 import { FloatingIcon } from './FloatingIcon';
@@ -51,7 +52,8 @@ export class Chat extends React.Component<ChatProps, State> {
 
     state = {
         open: false,
-        opened: false
+        opened: false,
+        orginalBodyClass: document.body.className
     };
 
     private store = createStore();
@@ -140,6 +142,15 @@ export class Chat extends React.Component<ChatProps, State> {
         });
     }
 
+    private preventBodyScroll = (preventScroll: boolean) => {
+
+        if (preventScroll && document.body.className.indexOf('noScroll') === -1) {
+            document.body.className = this.state.orginalBodyClass + ' noScroll';
+        } else if (!preventScroll) {
+            document.body.className = this.state.orginalBodyClass;
+        }
+    }
+
     private setSize() {
         this.store.dispatch<ChatActions>({
             type: 'Set_Size',
@@ -213,7 +224,7 @@ export class Chat extends React.Component<ChatProps, State> {
         const botConnection = this.props.directLine
             ? (this.botConnection = new DirectLine(this.props.directLine))
             : this.props.botConnection
-            ;
+             ;
 
         if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
@@ -364,7 +375,14 @@ export class Chat extends React.Component<ChatProps, State> {
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>
-                <div className="wc-wrap">
+                <div
+                    className="wc-wrap"
+                    style={{display: 'none'}}
+                    onMouseOver={e => this.preventBodyScroll(true)}
+                    onMouseLeave={e => this.preventBodyScroll(false)}
+                    onTouchStart={e => this.preventBodyScroll(true)}
+                    onTouchEnd={e => this.preventBodyScroll(false)}
+                >
                     <FloatingIcon
                         visible={!open && !opened}
                         clicked={() => this.toggle()}

@@ -11,6 +11,10 @@
         font-size: $fontSize;
     }
 
+    body.noScroll {
+        overflow: hidden;
+    }
+
     .wc-app button {
         background-color: $c_brand;
         border: 1px solid $c05;
@@ -27,6 +31,10 @@
 
     .wc-app audio, .wc-app video {
         display: block;
+    }
+
+    .wc-wrap {
+        display: block !important;
     }
 
 /* docking */
@@ -84,7 +92,7 @@
         padding: 10px;
         position: absolute;
         right: 0;
-        top: $headerTotalHeight + 2px;
+        top: $headerTotalHeight;
         transition: transform $actionTransition;
 
         &.no-header {
