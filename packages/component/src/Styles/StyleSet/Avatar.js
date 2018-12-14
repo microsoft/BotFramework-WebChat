@@ -17,6 +17,13 @@ export default function createAvatarStyle({
     height: avatarSize,
     justifyContent: 'center',
     overflow: 'hidden',
-    width: avatarSize
+    position: 'relative',
+    width: avatarSize,
+
+    '& > .image': {
+      left: 0,
+      position: 'absolute',
+      top: 0
+    }
   };
 }
