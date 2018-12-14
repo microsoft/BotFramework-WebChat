@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import CroppedImage from '../Utils/CroppedImage';
 
 const connectAvatar = (...selectors) => connectToWebChat(
   ({
@@ -39,11 +40,15 @@ const Avatar = ({
       ) }
     >
       { avatarInitials }
-      <div
-        aria-hidden={ true }
-        className="image"
-        style={{ backgroundImage: `url(${ encodeURI(backgroundImage) })` }}
-      />
+      { !!avatarImage &&
+        <CroppedImage
+          alt=""
+          className="image"
+          height="100%"
+          src={ avatarImage }
+          width="100%"
+        />
+      }
     </div>
 
 export default connectAvatar(
