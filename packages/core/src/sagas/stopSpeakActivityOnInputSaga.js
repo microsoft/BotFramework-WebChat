@@ -1,12 +1,10 @@
 import {
   put,
-  select,
   takeEvery
 } from 'redux-saga/effects';
 
 import whileConnected from './effects/whileConnected';
 
-import markActivity from '../actions/markActivity';
 import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import { SET_SEND_BOX } from '../actions/setSendBox';
@@ -24,15 +22,6 @@ export default function* () {
       || (type === POST_ACTIVITY_PENDING && payload.activity.type === 'message'),
       function* () {
         yield put(stopSpeakingActivity());
-
-        // TODO: [P4] Should stopSpeakingActivity automatically mark all activities as spoken?
-        const activities = yield select(({ activities }) => activities);
-
-        for (let activity of activities) {
-          if (activity.channelData && activity.channelData.speak) {
-            yield put(markActivity(activity, 'speak', false));
-          }
-        }
       }
     );
   });
