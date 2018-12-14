@@ -17,9 +17,7 @@ export default function* () {
       // Currently, there are no actions that are related to card input
       // For now, we are using POST_ACTIVITY of a "message" activity
       // In the future, if we have an action for card input, we should use that instead
-      ({ payload, type }) =>
-        type === POST_ACTIVITY_PENDING
-        && payload.activity.type === 'message',
+      ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
       function* () {
         yield put(stopDictate());
       }
