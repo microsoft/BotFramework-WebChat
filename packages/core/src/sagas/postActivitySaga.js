@@ -32,7 +32,7 @@ export default function* () {
     let numActivitiesPosted = 0;
 
     yield takeEvery(POST_ACTIVITY, function* (action) {
-      yield* postActivitySaga(action, directLine, userID, numActivitiesPosted);
+      yield* postActivitySaga(action, directLine, userID, numActivitiesPosted++);
     });
   });
 }
