@@ -32,12 +32,12 @@ export default function* () {
     let numActivitiesPosted = 0;
 
     yield takeEvery(POST_ACTIVITY, function* (action) {
-      yield* postActivitySaga(action, directLine, userID, numActivitiesPosted++);
+      yield* postActivitySaga(directLine, userID, numActivitiesPosted++, action);
     });
   });
 }
 
-function* postActivitySaga({ payload: { activity } }, directLine, userID, numActivitiesPosted) {
+function* postActivitySaga(directLine, userID, numActivitiesPosted, { payload: { activity } }) {
   const locale = yield select(({ language }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
@@ -61,7 +61,7 @@ function* postActivitySaga({ payload: { activity } }, directLine, userID, numAct
     timestamp: getTimestamp()
   };
 
-  if (!numActivitiesPosted++) {
+  if (!numActivitiesPosted) {
     activity.entities = [...activity.entities || [], {
       // TODO: [P4] Currently in v3, we send the capabilities although the client might not actually have them
       //       We need to understand why we need to send these, and only send capabilities the client have
