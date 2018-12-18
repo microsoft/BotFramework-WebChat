@@ -86,8 +86,8 @@ export class AdaptiveCardBuilder {
         (textblock as any)[prop] = (template as any)[prop];
       }
 
-      textblock.text = text;
       textblock.speak = text;
+      textblock.text = text;
       container.addItem(textblock);
     }
   }
