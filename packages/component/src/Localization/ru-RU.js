@@ -9,13 +9,13 @@ function xMinutesAgo(date) {
   } else if (deltaInMinutes === 1) {
     return 'Минуту назад';
   } else if (deltaInHours < 1 && deltaInMinutes < 5) {
-    return '${ deltaInMinutes } минуты назад';
+    return `${ deltaInMinutes } минуты назад`;
   } else if (deltaInHours < 1 && deltaInMinutes >= 5) {
-    return '${ deltaInMinutes } минут назад';
+    return `${ deltaInMinutes } минут назад`;
   } else if (deltaInHours === 1) {
     return 'Час назад';
   } else if (deltaInHours < 5) {
-    return '${ deltaInHours } часа назад';
+    return `${ deltaInHours } часа назад`;
   } else if (deltaInHours <= 24) {
     return 'Сегодня';
   } else if (deltaInHours <= 48) {
