@@ -86,7 +86,7 @@ class UploadButton extends React.Component {
           role="button"
           tabIndex={ -1 }
           type="file"
-          />
+        />
         <IconButton
           aria-label={ uploadFileString }
           alt={ uploadFileString }
