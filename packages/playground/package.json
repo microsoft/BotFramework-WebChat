@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "adaptivecards": "^1.0.0",
-    "botframework-directlinejs": "0.9.18-master.3cece81",
+    "botframework-directlinejs": "^0.10.0",
     "botframework-webchat": "^0.0.0-0",
     "botframework-webchat-component": "^0.0.0-0",
     "botframework-webchat-core": "^0.0.0-0",
