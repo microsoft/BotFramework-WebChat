@@ -87,6 +87,7 @@ export class AdaptiveCardBuilder {
       }
 
       textblock.text = text;
+      textblock.speak = text;
       container.addItem(textblock);
     }
   }
