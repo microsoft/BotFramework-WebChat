@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Bumps `botframework-directlinejs` dependency in playground package to 0.10.0 [#1511](https://github.com/Microsoft/BotFramework-WebChat/pull/1511)
 - Fix [#1383](https://github.com/Microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - Added support of avatar image, thru `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 
