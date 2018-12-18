@@ -74,10 +74,11 @@ export default connectMicrophoneButton(
       >
         <MicrophoneIcon />
       </IconButton>
-      <div 
+      <div
         aria-live="polite"
         className="sr-only"
         id="webchatSendBoxMicrophoneButton"
+        role="status"
       >
         { localize(dictating ? 'Microphone on' : 'Microphone off', language) }
       </div>

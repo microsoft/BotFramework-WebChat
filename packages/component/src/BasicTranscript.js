@@ -94,7 +94,11 @@ const BasicTranscript = ({
           speechSynthesis={ speechSynthesis }
           speechSynthesisUtterance={ SpeechSynthesisUtterance }
         >
-          <ul className={ classNames(LIST_CSS + '', styleSet.activities + '') }>
+          <ul 
+            aria-live="polite"
+            className={ classNames(LIST_CSS + '', styleSet.activities + '') } 
+            role="list"
+          >
             {
               visibleActivities.map((activity, index) => {
                 const showTimestamp = shouldShowTimestamp(activity, visibleActivities[index + 1], groupTimestamp);
@@ -103,6 +107,7 @@ const BasicTranscript = ({
                   <li
                     className={ styleSet.activity }
                     key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
+                    role="listitem"
                   >
                     { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
                     { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }

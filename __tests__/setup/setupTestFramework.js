@@ -54,6 +54,9 @@ global.setupWebServer = async () => {
         rewrites: [
           { source: '/webchat.js', destination: 'packages/bundle/dist/webchat.js' },
           { source: '/webchat-es5.js', destination: 'packages/bundle/dist/webchat-es5.js' },
+          { source: '/webchat-instrumented.js', destination: 'packages/bundle/dist/webchat-instrumented.js' },
+          { source: '/webchat-instrumented-es5.js', destination: 'packages/bundle/dist/webchat-instrumented-es5.js' },
+          { source: '/webchat-instrumented-minimal.js', destination: 'packages/bundle/dist/webchat-instrumented-minimal.js' },
           { source: '/webchat-minimal.js', destination: 'packages/bundle/dist/webchat-minimal.js' }
         ],
         public: join(__dirname, '../..'),
