@@ -88,8 +88,8 @@ class UploadButton extends React.Component {
           type="file"
         />
         <IconButton
-          aria-label={ uploadFileString }
           alt={ uploadFileString }
+          aria-label={ uploadFileString }
           disabled={ disabled }
           onClick={ this.handleClick }
         >
