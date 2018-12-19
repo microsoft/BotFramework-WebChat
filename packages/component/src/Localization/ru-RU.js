@@ -23,7 +23,15 @@ function xMinutesAgo(date) {
   } else if (deltaInHours <= 72) {
     return 'Позавчера';
   } else {
-    return new Intl.DateTimeFormat('ru-RU').format(date);
+    if (window.Intl && typeof window.Intl === "object")
+    {
+      return new Intl.DateTimeFormat('ru-RU').format(date);
+    }
+    else
+    {
+      var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'  };
+      return date.toLocaleString('ru-RU', options);
+    }
   }
 }
 
