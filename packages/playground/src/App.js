@@ -4,7 +4,8 @@ import memoize from 'memoize-one';
 
 import ReactWebChat, {
   createBrowserWebSpeechPonyfillFactory,
-  createCognitiveServicesWebSpeechPonyfillFactory,
+  createCognitiveServicesBingSpeechPonyfillFactory,
+  createCognitiveServicesSpeechServicesPonyfillFactory,
   createStyleSet,
   renderMarkdown
 } from 'botframework-webchat';
@@ -77,17 +78,8 @@ export default class extends React.Component {
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
     const domain = params.get('domain');
-    const speech = params.get('speech');
     const userID = params.get('u');
     const webSocket = params.get('websocket');
-
-    if (speech === 'cs') {
-      this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
-        fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-      });
-    } else {
-      this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
-    }
 
     document.querySelector('html').setAttribute('lang', window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
 
@@ -107,7 +99,8 @@ export default class extends React.Component {
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
       userAvatarInitials: 'WC',
-      userID
+      userID,
+      webSpeechPonyfillFactory: null
     };
   }
 
@@ -117,6 +110,32 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+
+    const speech = new URLSearchParams(window.location.search).get('speech');
+
+    if (speech === 'bingspeech') {
+      const fetchAuthorizationToken = memoize(() => {
+        return fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token);
+      }, (x, y) => Math.abs(x - y) < 60000);
+
+      createCognitiveServicesBingSpeechPonyfillFactory({
+        authorizationToken: () => fetchAuthorizationToken(Date.now())
+      }).then(webSpeechPonyfillFactory => this.setState(() => ({ webSpeechPonyfillFactory })));
+    } else if (speech === 'speechservices') {
+      const fetchAuthorizationToken = memoize(() => {
+        return fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token);
+      }, (x, y) => {
+        return Math.abs(x - y) < 60000;
+      });
+
+      createCognitiveServicesSpeechServicesPonyfillFactory({
+        authorizationToken: () => fetchAuthorizationToken(Date.now()),
+        region: 'westus'
+      }).then(webSpeechPonyfillFactory => this.setState(() => ({ webSpeechPonyfillFactory })));
+    } else {
+      this.setState(() => ({ webSpeechPonyfillFactory: createBrowserWebSpeechPonyfillFactory() }));
+    }
+
   }
 
   handleBotAvatarInitialsChange({ target: { value } }) {
@@ -190,7 +209,7 @@ export default class extends React.Component {
 
       window.sessionStorage.removeItem('REDUX_STORE');
       window.location.href = '/?' + new URLSearchParams({
-        speech: 'cs',
+        speech: 'speechservices',
         websocket: 'true',
         t: token
       }).toString();
@@ -226,7 +245,7 @@ export default class extends React.Component {
           styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
           userID={ state.userID }
-          webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
+          webSpeechPonyfillFactory={ state.webSpeechPonyfillFactory }
         />
         <div className="button-bar">
           <button

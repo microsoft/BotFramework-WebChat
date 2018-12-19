@@ -71,14 +71,11 @@ export default connectStackedLayout(
 )(
   ({
     activity,
-    botAvatarInitials,
     children,
     showTimestamp,
-    styleSet,
-    userAvatarInitials
+    styleSet
   }) => {
     const fromUser = activity.from.role === 'user';
-    const initials = fromUser ? userAvatarInitials : botAvatarInitials;
     const { state } = activity.channelData || {};
     const showSendStatus = state === SENDING || state === SEND_FAILED;
 
@@ -90,9 +87,10 @@ export default connectStackedLayout(
           { 'from-user': fromUser }
         ) }
       >
-        { !!initials &&
-          <Avatar className="avatar" fromUser={ fromUser }>{ initials }</Avatar>
-        }
+        <Avatar
+          className="avatar"
+          fromUser={ fromUser }
+        />
         <div className="content">
           {
             activity.type === 'typing' ?

@@ -36,7 +36,7 @@ const ROOT_CSS = css({
     top: 0,
 
     '&:hover > svg': {
-      fill: '#999'
+      fill: '#767676'
     }
   }
 });
@@ -86,7 +86,7 @@ class SpeakActivity extends React.Component {
 }
 
 const ConnectedDevModeDecorator = connectToWebChat(
-  ({ markActivity, webSpeechPonyfill = {} }) => ({ markActivity, webSpeechPonyfill })
+  ({ markActivity, webSpeechPonyfill }) => ({ markActivity, webSpeechPonyfill })
 )(
   ({
     card,
@@ -94,7 +94,7 @@ const ConnectedDevModeDecorator = connectToWebChat(
     markActivity,
     webSpeechPonyfill
   }) =>
-    webSpeechPonyfill.speechSynthesis ?
+    (webSpeechPonyfill || {}).speechSynthesis ?
       <SpeakActivity activity={ card.activity } markActivity={ markActivity }>
         { children }
       </SpeakActivity>

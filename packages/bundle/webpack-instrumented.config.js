@@ -9,5 +9,6 @@ module.exports = {
     'webchat-instrumented': './lib/index.js',
     'webchat-instrumented-es5': './lib/index-es5.js',
     'webchat-instrumented-minimal': './lib/index-minimal.js'
-  }
+  },
+  mode: 'development'
 };

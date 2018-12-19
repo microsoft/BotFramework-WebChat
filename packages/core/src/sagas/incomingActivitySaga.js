@@ -25,11 +25,15 @@ export default function* () {
       activity = { ...activity };
 
       // Patch activity.from.role to make sure its either "bot", "user", or "channel"
-      if (!activity.from.role) {
+      if (!activity.from) {
+        activity.from = { role: 'channel' };
+      } else if (!activity.from.role) {
         if (activity.from.id === userID) {
           activity.from.role = 'user';
-        } else {
+        } else if (activity.from.id) {
           activity.from.role = 'bot';
+        } else {
+          activity.from.role = 'channel';
         }
       }
 
@@ -39,7 +43,11 @@ export default function* () {
       const activities = yield select(({ activities }) => activities);
       const lastMessageActivity = last(activities, ({ type }) => type === 'message');
 
-      if (lastMessageActivity.from.role === 'bot') {
+      if (
+        lastMessageActivity
+        && lastMessageActivity.from
+        && lastMessageActivity.from.role === 'bot'
+      ) {
         const { suggestedActions: { actions } = {} } = lastMessageActivity;
 
         yield put(setSuggestedActions(actions));
