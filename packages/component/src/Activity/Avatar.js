@@ -25,6 +25,7 @@ const connectAvatar = (...selectors) => connectToWebChat(
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
 const Avatar = ({
+  'aria-hidden': ariaHidden,
   avatarImage,
   avatarInitials,
   className,
@@ -33,6 +34,7 @@ const Avatar = ({
 }) =>
   !!(avatarImage || avatarInitials) &&
     <div
+      aria-hidden={ ariaHidden }
       className={ classNames(
         styleSet.avatar + '',
         { 'from-user': fromUser },

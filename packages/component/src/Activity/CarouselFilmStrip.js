@@ -5,13 +5,14 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
+import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
+import connectToWebChat from '../connectToWebChat';
 import SendStatus from './SendStatus';
+import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
 
-import connectToWebChat from '../connectToWebChat';
-import textFormatToContentType from '../Utils/textFormatToContentType';
 
 const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
 
@@ -62,22 +63,44 @@ const ROOT_CSS = css({
 });
 
 const connectCarouselFilmStrip = (...selectors) => connectToWebChat(
-  ({ language }) => ({ language }),
+  ({
+    language,
+    styleSet: {
+      options: {
+        botAvatarInitials,
+        userAvatarInitials
+      }
+    }
+  }, { activity }) => ({
+      avatarInitials: activity.from && activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials,
+      language
+    }),
   ...selectors
 )
 
 const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
-  ({ styleSet }) => ({ styleSet })
+  ({
+    avatarInitials,
+    language,
+    styleSet
+  }) => ({
+    avatarInitials,
+    language,
+    styleSet
+  })
 )(
   ({
     activity,
+    avatarInitials,
     children,
+    language,
     className,
     filmContext,
     showTimestamp,
     styleSet,
   }) => {
     const fromUser = activity.from.role === 'user';
+    const ariaLabel = localize('Bot said something', language, avatarInitials, activity.text, activity.timestamp)
 
     return (
       <div
@@ -88,12 +111,17 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
         ) }
         ref={ filmContext._setFilmStripRef }
       >
-        <Avatar className="avatar" fromUser={ fromUser } />
+        <Avatar
+          aria-hidden={ true }
+          className="avatar"
+          fromUser={ fromUser }
+        />
         <div className="content">
           {
             !!activity.text &&
               <div className="message">
                 <Bubble
+                  aria-label={ ariaLabel }
                   className="bubble"
                   fromUser={ fromUser }
                 >
@@ -122,8 +150,11 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
               )
             }
           </ul>
-          {
-            (
+          <div
+            aria-hidden={ true }
+            className="row"
+          >
+            {(
               activity.channelData
               && (
                 activity.channelData.state === SENDING
@@ -133,7 +164,8 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
               <SendStatus activity={ activity } />
             : showTimestamp &&
               <Timestamp activity={ activity } />
-          }
+            }
+          </div>
         </div>
       </div>
     );

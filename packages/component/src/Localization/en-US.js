@@ -1,3 +1,11 @@
+function botSaidSomething(avatarInitials, text, timestamp) {
+  return `Bot ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
+}
+
+function userSaidSomething(avatarInitials, text, timestamp) {
+  return `User ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
+}
+
 function xMinutesAgo(date) {
   const now = Date.now();
   const deltaInMs = now - new Date(date).getTime();
@@ -24,6 +32,8 @@ function xMinutesAgo(date) {
 }
 
 export default {
+  'Bot said something': botSaidSomething,
+  'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,
   ...[
     // '[File of type '%1']",
