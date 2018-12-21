@@ -94,9 +94,9 @@ const BasicTranscript = ({
           speechSynthesis={ speechSynthesis }
           speechSynthesisUtterance={ SpeechSynthesisUtterance }
         >
-          <ul 
+          <ul
             aria-live="polite"
-            className={ classNames(LIST_CSS + '', styleSet.activities + '') } 
+            className={ classNames(LIST_CSS + '', styleSet.activities + '') }
             role="list"
           >
             {
@@ -106,7 +106,7 @@ const BasicTranscript = ({
                 return (
                   <li
                     className={ styleSet.activity }
-                    key={ activity.id || (activity.channelData && activity.channelData.clientActivityID) || index }
+                    key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
                     role="listitem"
                   >
                     { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }

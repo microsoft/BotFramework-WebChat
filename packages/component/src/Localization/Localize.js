@@ -56,11 +56,11 @@ function getStrings(language) {
   }
 }
 
-function localize(text, language, args) {
+function localize(text, language, ...args) {
   const string = (getStrings(language) || {})[text] || enUS[text];
 
   if (typeof string === 'function') {
-    return string(args);
+    return string(...args);
   } else {
     return string || text;
   }
@@ -68,7 +68,7 @@ function localize(text, language, args) {
 
 export default connectToWebChat(
   ({ language }) => ({ language })
-)(({ args, language, text }) => localize(text, language, args))
+)(({ args, language, text }) => localize(text, language, ...(args || [])))
 
 export { localize }
 
