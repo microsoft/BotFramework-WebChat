@@ -22,16 +22,19 @@ function xMinutesAgo(date) {
     return 'Вчера';
   } else if (deltaInHours <= 72) {
     return 'Позавчера';
+  } else if (window.Intl) {
+    return new Intl.DateTimeFormat('ru-RU').format(date);
   } else {
-    if (window.Intl && typeof window.Intl === "object")
-    {
-      return new Intl.DateTimeFormat('ru-RU').format(date);
-    }
-    else
-    {
-      var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'  };
-      return date.toLocaleString('ru-RU', options);
-    }
+    return date.toLocaleString(
+      'ru-RU',
+      {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      }
+    );
   }
 }
 
