@@ -23,14 +23,14 @@ Web Chat offer different bundle varieties as outlined in the table below.
 
 |                                                                                                                      | Minimal | Full | Full with ES5 polyfills |
 | -------------------------------------------------------------------------------------------------------------------- | ------- | ---- | ----------------------- |
-| [DirectLineJS](https://npmjs.com/package/botframework-directlinejs)                                                  | Yes     | Yes  | Yes                     |
-| [Web Speech API from browser](https://azure.microsoft.com/en-us/services/cognitive-services/speech/)                 | Yes     | Yes  | Yes                     |
-| [Adaptive Cards](https://adaptivecards.io/)                                                                          |         | Yes  | Yes                     |
-| [Cognitive Services Bing Speech](https://azure.microsoft.com/en-us/services/cognitive-services/speech/)              |         | Yes  | Yes                     |
-| [Cognitive Services Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/) |         | Yes  | Yes                     |
-| [Markdown-It](https://npmjs.com/package/markdown-it/)                                                                |         | Yes  | Yes                     |
-| [`sanitize-html`](https://npmjs.com/package/sanitize-html)                                                           |         | Yes  | Yes                     |
-| ES5 Polyfills (for IE11)                                                                                             |         |      | Yes                     |
+| [DirectLineJS](https://npmjs.com/package/botframework-directlinejs)                                                  | :heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+| [Web Speech API from browser](https://azure.microsoft.com/en-us/services/cognitive-services/speech/)                 |:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+| [Adaptive Cards](https://adaptivecards.io/)                                                                          |         |:heavy_check_mark:|:heavy_check_mark:|
+| [Cognitive Services Bing Speech](https://azure.microsoft.com/en-us/services/cognitive-services/speech/)              |         |:heavy_check_mark:|:heavy_check_mark:|
+| [Cognitive Services Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/) |         |:heavy_check_mark:|:heavy_check_mark:|
+| [Markdown-It](https://npmjs.com/package/markdown-it/)                                                                |         |:heavy_check_mark:|:heavy_check_mark:|
+| [`sanitize-html`](https://npmjs.com/package/sanitize-html)                                                           |         |:heavy_check_mark:|:heavy_check_mark:|
+| ES5 Polyfills (for IE11)                                                                                             |         |      |:heavy_check_mark:|
 
 > Rich card (e.g. hero card, receipt card) requires Adaptive Cards.
 
