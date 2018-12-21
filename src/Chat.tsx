@@ -40,6 +40,7 @@ export interface ChatProps {
 export interface State {
     open: boolean;
     opened: boolean;
+    display: boolean;
     orginalBodyClass: string;
 }
 
@@ -53,6 +54,7 @@ export class Chat extends React.Component<ChatProps, State> {
     state = {
         open: false,
         opened: false,
+        display: false,
         orginalBodyClass: document.body.className
     };
 
@@ -269,7 +271,10 @@ export class Chat extends React.Component<ChatProps, State> {
                         user.id,
                         this.props.directLine.secret,
                         window.location.origin,
-                         (res: any) => {
+                        (res: any) => {
+                            this.setState({
+                                display: true
+                            });
                             this.store.dispatch<ChatActions>({
                                 type: 'Set_Verification',
                                 verification: {
@@ -370,14 +375,14 @@ export class Chat extends React.Component<ChatProps, State> {
 
     render() {
         const state = this.store.getState();
-        const { open, opened } = this.state;
+        const { open, opened, display } = this.state;
 
         // only render real stuff after we know our dimensions
         return (
             <Provider store={ this.store }>
                 <div
-                    className="wc-wrap"
-                    style={{display: 'none'}}
+                    className={`wc-wrap ${display ? '' : 'hide'}`}
+                    style={{ display: 'none'}}
                     onMouseOver={e => this.preventBodyScroll(true)}
                     onMouseLeave={e => this.preventBodyScroll(false)}
                     onTouchStart={e => this.preventBodyScroll(true)}

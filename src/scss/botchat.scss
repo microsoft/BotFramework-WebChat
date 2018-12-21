@@ -35,6 +35,10 @@
 
     .wc-wrap {
         display: block !important;
+
+        &.hide {
+            display: none !important;
+        }
     }
 
 /* docking */

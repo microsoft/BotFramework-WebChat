@@ -17,7 +17,7 @@ export const verifyConversation = (
         directLine
     })
     .then(res => success(res))
-    .catch(err => success(err));
+    .catch(err => error(err));
 };
 
 export const ping = (
