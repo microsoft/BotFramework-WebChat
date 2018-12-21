@@ -9,19 +9,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added/Changed/Removed
 - Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
+### Changed (for dependency bumps)
+- `core`: Bumps to [`abc@1.2.3`](https://npmjs.com/package/abc/), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+
 ### Fixed
 - Fix [#XXX](https://github.com/Microsoft/BotFramework-WebChat/issues/XXX). Patched something, by [@johndoe](https://github.com/johndoe) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
 ## [Unreleased]
 ### Added
-- Bumps [`botframework-directlinejs`](https://github.com/Microsoft/BotFramework-DirectLineJS/) dependency in playground package to `0.10.0`, in PR [#1511](https://github.com/Microsoft/BotFramework-WebChat/pull/1511)
 - Fix [#1383](https://github.com/Microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - Added support of avatar image, thru `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 
 ### Changed
 - Moved `botAvatarImage` and `userAvatarImage` to `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage` respectively, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 - Fix string interpolation error in Russian localization and fallback for browsers without Intl support by [@odysseus1973](https://github.com/odysseus1973) in PR [#1509](https://github.com/Microsoft/BotFramework-WebChat/pull/1509)
+- `playground`: Bumps to [`botframework-directlinejs@0.10.0`](https://github.com/Microsoft/BotFramework-DirectLineJS/), in PR [#1511](https://github.com/Microsoft/BotFramework-WebChat/pull/1511)
+- `playground`: Bumps to [`react-scripts@2.1.1`](https://npmjs.com/package/react-scripts/), in PR [#1535](https://github.com/Microsoft/BotFramework-WebChat/pull/1535)
 
 ### Fixed
 - Fix [#1360](https://github.com/Microsoft/BotFramework-WebChat/issues/1360). Added `roles` to components of Web Chat, by [@corinagum](https://github.com/corinagum) in PR [#1462](https://github.com/Microsoft/BotFramework-WebChat/pull/1462)
