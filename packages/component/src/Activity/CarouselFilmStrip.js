@@ -72,9 +72,9 @@ const connectCarouselFilmStrip = (...selectors) => connectToWebChat(
       }
     }
   }, { activity }) => ({
-      avatarInitials: activity.from && activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials,
-      language
-    }),
+    avatarInitials: activity.from && activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials,
+    language
+  }),
   ...selectors
 )
 

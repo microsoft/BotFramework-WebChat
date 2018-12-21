@@ -90,7 +90,7 @@ export default connectStackedLayout(
     children,
     language,
     showTimestamp,
-    styleSet,
+    styleSet
   }) => {
     const fromUser = activity.from.role === 'user';
     const { state } = activity.channelData || {};
