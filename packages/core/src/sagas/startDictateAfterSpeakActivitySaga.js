@@ -18,10 +18,11 @@ export default function* () {
 
 function* startDictateAfterSpeakActivitySaga() {
   yield takeEvery(
-    ({ payload, type }) =>
+    ({ payload, type }) => (
       type === MARK_ACTIVITY
       && payload.name === 'speak'
-      && payload.value === false,
+      && payload.value === false
+    ),
     function* ({ payload: { activityID } }) {
       const { activities } = yield select();
       const activity = activities.find(({ id }) => id === activityID);

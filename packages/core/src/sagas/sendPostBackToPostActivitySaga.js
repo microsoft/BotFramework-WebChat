@@ -10,10 +10,10 @@ import whileConnected from './effects/whileConnected';
 export default function* () {
   yield whileConnected(function* () {
     yield takeEvery(
-      ({ payload, type }) =>
+      ({ payload, type }) => (
         type === SEND_POST_BACK
-        && payload
-        && payload.value,
+        && payload.value
+      ),
       function* ({ payload: { value } }) {
         yield put(postActivity({
           channelData: {

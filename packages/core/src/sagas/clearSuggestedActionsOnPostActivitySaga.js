@@ -11,9 +11,10 @@ import setSuggestedActions from '../actions/setSuggestedActions';
 export default function* () {
   yield whileConnected(function* () {
     yield takeEvery(
-      ({ payload, type }) =>
+      ({ payload, type }) => (
         type === POST_ACTIVITY_PENDING
-        && payload.activity.type === 'message',
+        && payload.activity.type === 'message'
+      ),
       function* () {
         yield put(setSuggestedActions());
       }

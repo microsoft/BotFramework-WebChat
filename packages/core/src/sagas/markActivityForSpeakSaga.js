@@ -18,11 +18,10 @@ export default function* () {
 
 function* markActivityForSpeakSaga(userID) {
   yield takeEvery(
-    ({ payload, type }) =>
+    ({ payload, type }) => (
       type === INCOMING_ACTIVITY
-      && payload
-      && payload.activity
-      && speakableActivity(payload.activity, userID),
+      && speakableActivity(payload.activity, userID)
+    ),
     function* ({ payload: { activity } }) {
       yield put(markActivity(activity, 'speak', true));
     }

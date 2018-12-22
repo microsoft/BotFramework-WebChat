@@ -15,11 +15,10 @@ const getType = mime.getType.bind(mime);
 export default function* () {
   yield whileConnected(function* () {
     yield takeEvery(
-      ({ payload, type }) =>
+      ({ payload, type }) => (
         type === SEND_FILES
-        && payload
-        && payload.files
-        && payload.files.length,
+        && payload.files.length
+      ),
       function* ({ payload: { files } }) {
         yield put(postActivity({
           attachments: [].map.call(files, file => ({

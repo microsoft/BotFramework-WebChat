@@ -40,7 +40,7 @@ export default function* () {
       yield put(incomingActivity(activity));
 
       // Update suggested actions
-      const activities = yield select(({ activities }) => activities);
+      const { activities } = yield select();
       const lastMessageActivity = last(activities, ({ type }) => type === 'message');
 
       if (

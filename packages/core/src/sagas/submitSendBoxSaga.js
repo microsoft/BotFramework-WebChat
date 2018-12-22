@@ -13,7 +13,7 @@ import setSendBox from '../actions/setSendBox';
 export default function* () {
   yield whileConnected(function* () {
     yield takeEvery(SUBMIT_SEND_BOX, function* ({ payload: { via } }) {
-      const sendBoxValue = yield select(({ sendBoxValue }) => sendBoxValue);
+      const { sendBoxValue } = yield select();
 
       if (sendBoxValue) {
         yield put(sendMessage(sendBoxValue, via));

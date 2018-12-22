@@ -11,10 +11,10 @@ import postActivity from '../actions/postActivity';
 export default function* () {
   yield whileConnected(function* () {
     yield takeEvery(
-      ({ payload, type }) =>
+      ({ payload, type }) => (
         type === SEND_EVENT
-        && payload
-        && payload.name,
+        && payload.name
+      ),
       function* ({ payload: { name, value } }) {
         yield put(postActivity({
           name,

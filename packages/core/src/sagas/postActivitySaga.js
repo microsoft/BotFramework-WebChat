@@ -38,7 +38,7 @@ export default function* () {
 }
 
 function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { via }, payload: { activity } }) {
-  const locale = yield select(({ language }) => language);
+  const { language: locale } = yield select();
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
@@ -96,7 +96,7 @@ function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { vi
     //   - Direct Line service only respond on HTTP after bot respond to Direct Line
     // - Activity may take too long time to echo back
 
-    const sendTimeout = yield select(({ sendTimeout }) => sendTimeout);
+    const { sendTimeout } = yield select();
 
     const { send: { echoBack } } = yield race({
       send: all({

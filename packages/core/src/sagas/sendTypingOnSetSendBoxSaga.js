@@ -22,7 +22,7 @@ function takeSendTyping(value) {
 
 export default function* () {
   yield whileConnected(function* () {
-    const sendTyping = yield select(({ sendTyping }) => sendTyping);
+    const { sendTyping } = yield select();
 
     if (!sendTyping) {
       yield takeSendTyping(true);
@@ -31,10 +31,10 @@ export default function* () {
     for (;;) {
       let lastSend = 0;
       const task = yield takeLatest(
-        ({ payload, type }) =>
+        ({ payload, type }) => (
           type === SET_SEND_BOX
-          && payload
-          && payload.text,
+          && payload.text
+        ),
         function* () {
           const interval = SEND_INTERVAL - Date.now() + lastSend;
 
