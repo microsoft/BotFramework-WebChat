@@ -25,8 +25,13 @@ function findByClientActivityID(clientActivityID) {
 function upsertActivityWithSort(activities, nextActivity) {
   const {
     channelData: { clientActivityID: nextClientActivityID } = {},
-    from: { id: nextFromID } = {}
+    from: { id: nextFromID, role: nextFromRole } = {},
+    type: nextType
   } = nextActivity;
+
+  if (nextType === 'typing' && nextFromRole === 'user') {
+    return activities;
+  }
 
   const nextTimestamp = Date.parse(nextActivity.timestamp);
   const nextActivities = activities.filter(({ channelData: { clientActivityID } = {}, from, type }) =>

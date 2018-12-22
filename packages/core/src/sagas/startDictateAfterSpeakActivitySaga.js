@@ -20,18 +20,21 @@ function* startDictateAfterSpeakActivitySaga() {
   yield takeEvery(
     ({ payload, type }) =>
       type === MARK_ACTIVITY
-      && payload
       && payload.name === 'speak'
       && payload.value === false,
     function* ({ payload: { activityID } }) {
-      const activities = yield select(({ activities }) => activities);
+      const { activities } = yield select();
+      const activity = activities.find(({ id }) => id === activityID);
 
-      if (!activities.some(activity => activity.id !== activityID && activity.channelData && activity.channelData.speak === true)) {
-        // TODO: [P2] We should also check inputHint
-        //       acceptingInput = do nothing (or enable send box)
-        //       expectingInput = enable dictate
-        //       ignoringInput = do nothing (or disable send box)
-        //       https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-input-hints?view=azure-bot-service-4.0&tabs=cs
+      if (
+        activity.inputHint !== 'ignoringInput'
+        // Checks if there are no more activities that will be synthesis
+        && !activities.some(
+          ({ channelData, id }) => id !== activityID && channelData && channelData.speak === true
+        )
+      ) {
+        // We honor input hint based on this article
+        // https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-input-hints?view=azure-bot-service-4.0&tabs=cs
         yield put(startDictate());
       }
     }

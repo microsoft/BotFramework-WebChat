@@ -5,8 +5,8 @@ import {
   take
 } from 'redux-saga/effects';
 
-import { START_SPEAKING_ACTIVITY } from '../actions/startSpeakingActivity';
-import { STOP_SPEAKING_ACTIVITY } from '../actions/stopSpeakingActivity';
+import { START_SPEAKING_ACTIVITY } from '../../actions/startSpeakingActivity';
+import { STOP_SPEAKING_ACTIVITY } from '../../actions/stopSpeakingActivity';
 
 export default function (fn) {
   return call(function* () {

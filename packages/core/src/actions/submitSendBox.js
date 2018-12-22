@@ -1,6 +1,6 @@
 const SUBMIT_SEND_BOX = 'WEB_CHAT/SUBMIT_SEND_BOX';
 
-export default function submitSendBox(via) {
+export default function submitSendBox(via = 'keyboard') {
   return {
     type: SUBMIT_SEND_BOX,
     payload: { via }

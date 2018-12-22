@@ -23,7 +23,7 @@ function* markActivityForSpeakSaga(userID) {
       && payload
       && payload.activity
       && speakableActivity(payload.activity, userID),
-    function* () {
+    function* ({ payload: { activity } }) {
       yield put(markActivity(activity, 'speak', true));
     }
   );

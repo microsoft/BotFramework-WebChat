@@ -37,7 +37,7 @@ export default function* () {
   });
 }
 
-function* postActivitySaga(directLine, userID, numActivitiesPosted, { payload: { activity } }) {
+function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { via }, payload: { activity } }) {
   const locale = yield select(({ language }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
@@ -72,9 +72,9 @@ function* postActivitySaga(directLine, userID, numActivitiesPosted, { payload: {
     }];
   }
 
-  const meta = { clientActivityID };
+  const meta = { clientActivityID, via };
 
-  yield put({ type: POST_ACTIVITY_PENDING, payload: { activity }, meta });
+  yield put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity } });
 
   try {
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed

@@ -9,7 +9,6 @@ import whileConnected from './effects/whileConnected';
 
 import { SEND_FILES } from '../actions/sendFiles';
 import postActivity from '../actions/postActivity';
-import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 
 const getType = mime.getType.bind(mime);
 
@@ -33,9 +32,6 @@ export default function* () {
           },
           type: 'message'
         }));
-
-        // TODO: [P4] Should we put this as an individual saga instead?
-        yield put(stopSpeakingActivity());
       }
     );
   });
