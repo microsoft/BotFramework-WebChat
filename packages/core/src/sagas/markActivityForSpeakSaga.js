@@ -5,14 +5,14 @@ import {
 
 import speakableActivity from './definition/speakableActivity';
 import whileConnected from './effects/whileConnected';
-import whileSpeaking from './effects/whileSpeaking';
+import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import markActivity from '../actions/markActivity';
 
 export default function* () {
   yield whileConnected(function* (_, userID) {
-    yield whileSpeaking(markActivityForSpeakSaga.bind(null, userID));
+    yield whileSpeakIncomingActivity(markActivityForSpeakSaga.bind(null, userID));
   });
 }
 

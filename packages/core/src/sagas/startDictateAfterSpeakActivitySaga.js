@@ -5,14 +5,14 @@ import {
 } from 'redux-saga/effects';
 
 import whileConnected from './effects/whileConnected';
-import whileSpeaking from './effects/whileSpeaking';
+import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 
 import { MARK_ACTIVITY } from '../actions/markActivity';
 import startDictate from '../actions/startDictate';
 
 export default function* () {
   yield whileConnected(function* () {
-    yield whileSpeaking(startDictateAfterSpeakActivitySaga);
+    yield whileSpeakIncomingActivity(startDictateAfterSpeakActivitySaga);
   });
 }
 
