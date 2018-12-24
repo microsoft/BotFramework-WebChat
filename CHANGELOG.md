@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Fix [#1328](https://github.com/Microsoft/BotFramework-WebChat/issues/1328). Should not start microphone if input hint is set to `ignoringInput`, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
 - `component`: Fix outgoing typing indicators are not sent and acknowledged properly, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
 - Fix [#1402](https://github.com/Microsoft/BotFramework-WebChat/issues/1402). Add `messageBack` support, by [@corinagum](https://github.com/corinagum) in PR [#1581](https://github.com/Microsoft/BotFramework-WebChat/pull/1581)
-- Fix [#1539], outgoing typing indicators are not sent and acknowledged properly, in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Fix [#1539], outgoing typing indicators are not sent and acknowledged properly, in PR [#1541](https://github.com/Microsoft/BotFramework-WebChat/pull/1541)
 
 ### Removed
 - `botAvatarImage` and `userAvatarImage` props, as they are moved inside `styleOptions`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
@@ -61,6 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling/), in [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 - `core`: [Incoming activity to JavaScript event](https://microsoft.github.io/BotFramework-WebChat/15.b.incoming-activity-event/), in [#1567](https://github.com/Microsoft/BotFramework-WebChat/pull/1567)
 - `core`: [Send welcome event](https://microsoft.github.io/BotFramework-WebChat/15.b.backchannel-send-welcome-event/), in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
+- UI: [Send typing](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing), in [#1541](https://github.com/Microsoft/BotFramework-WebChat/pull/1541)
 
 ## [4.2.0] - 2018-12-11
 ### Added
@@ -118,7 +119,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Others: [Using Web Chat v3](https://microsoft.github.io/BotFramework-WebChat/webchat-v3/), in [#1287](https://github.com/Microsoft/BotFramework-WebChat/pull/1287)
 - Speech: [Cognitive Services Speech to Text and Text to Speech](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.c.cognitive-services-speech-services-js) (both subscription key and authorization token flow)
 - Speech: [Cognitive Services Speech to Text using lexical result](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/6.e.cognitive-services-speech-services-with-lexical-result) (text normalization)
-- UI: [Send typing](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing), in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.1.0] - 2018-10-31
 ### Added
