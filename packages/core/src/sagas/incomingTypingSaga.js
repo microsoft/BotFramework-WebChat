@@ -1,7 +1,7 @@
 import {
   call,
   put,
-  takeEvery
+  takeLatest
 } from 'redux-saga/effects';
 
 import deleteActivity from '../actions/deleteActivity';
@@ -16,7 +16,9 @@ function isTypingActivity({ type, payload }) {
 }
 
 export default function* () {
-  yield takeEvery(isTypingActivity, function* ({ payload: { activity: { id } } }) {
+  yield takeLatest(isTypingActivity, function* ({ payload: { activity } }) {
+    const id = activity.id;
+
     yield call(sleep, 5000);
     yield put(deleteActivity(id));
   });

@@ -22,7 +22,7 @@ function takeSendTyping(value) {
 
 export default function* () {
   yield whileConnected(function* () {
-    const { sendTyping } = yield select();
+    const sendTyping = yield select(({ sendTyping }) => sendTyping);
 
     if (!sendTyping) {
       yield takeSendTyping(true);
