@@ -45,6 +45,10 @@ function* observeActivity(directLine, userID) {
 }
 
 function patchActivityWithFromRole(activity, userID) {
+  // Some activities, such as "ConversationUpdate", does not have "from" defined.
+  // And although "role" is defined in Direct Line spec, it was not sent over the wire.
+  // We normalize the activity here to simplify null-check and logic later.
+
   // Patch activity.from.role to make sure its either "bot", "user", or "channel"
   if (!activity.from) {
     activity = updateIn(activity, ['from', 'role'], () => 'channel');
