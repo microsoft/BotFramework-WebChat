@@ -27,7 +27,7 @@ export default function* () {
         // We filter out speech because we will call startSpeakingActivity() for POST_ACTIVITY_PENDING dispatched by speech
         || (
           type === POST_ACTIVITY_PENDING
-          && meta.via !== 'speech'
+          && meta.method !== 'speech'
           && payload.activity.type === 'message'
         )
       ),

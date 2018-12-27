@@ -14,7 +14,7 @@ export default function* () {
     yield takeEvery(
       ({ meta, payload, type }) => (
         type === POST_ACTIVITY_PENDING
-        && meta.via === 'speech'
+        && meta.method === 'speech'
         && payload.activity.type === 'message'
       ),
       function* () {

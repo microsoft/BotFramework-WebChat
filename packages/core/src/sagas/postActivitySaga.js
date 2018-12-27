@@ -37,7 +37,7 @@ export default function* () {
   });
 }
 
-function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { via }, payload: { activity } }) {
+function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
   const locale = yield select(({ language }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
@@ -72,7 +72,7 @@ function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { vi
     }];
   }
 
-  const meta = { clientActivityID, via };
+  const meta = { clientActivityID, method };
 
   yield put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity } });
 
