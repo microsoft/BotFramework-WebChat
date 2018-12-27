@@ -36,11 +36,7 @@ function* observeActivity(directLine, userID) {
     const lastMessageActivity = last(activities, ({ type }) => type === 'message');
 
     // TODO: [P2] Consider using "definitions/activityFromBot"
-    if (
-      lastMessageActivity
-      && lastMessageActivity.from
-      && lastMessageActivity.from.role === 'bot'
-    ) {
+    if (lastMessageActivity && lastMessageActivity.from.role === 'bot') {
       const { suggestedActions: { actions } = {} } = lastMessageActivity;
 
       yield put(setSuggestedActions(actions));
