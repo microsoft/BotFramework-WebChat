@@ -13,25 +13,29 @@ import postActivity from '../actions/postActivity';
 const getType = mime.getType.bind(mime);
 
 export default function* () {
-  yield whileConnected(function* () {
-    yield takeEvery(
-      ({ payload, type }) => (
-        type === SEND_FILES
-        && payload.files.length
-      ),
-      function* ({ payload: { files } }) {
-        yield put(postActivity({
-          attachments: [].map.call(files, file => ({
-            contentType: getType(file.name) || 'application/octet-stream',
-            contentUrl: file.url,
-            name: file.name
-          })),
-          channelData: {
-            attachmentSizes: [].map.call(files, file => file.size)
-          },
-          type: 'message'
-        }));
-      }
-    );
-  });
+  yield whileConnected(sendFilesToPostActivity);
+}
+
+function* sendFilesToPostActivity() {
+  yield takeEvery(
+    ({ payload, type }) => (
+      type === SEND_FILES
+      && payload.files.length
+    ),
+    postActivityWithFiles
+  );
+}
+
+function* postActivityWithFiles({ payload: { files } }) {
+  yield put(postActivity({
+    attachments: [].map.call(files, ({ name, url }) => ({
+      contentType: getType(name) || 'application/octet-stream',
+      contentUrl: url,
+      name: name
+    })),
+    channelData: {
+      attachmentSizes: [].map.call(files, ({ size }) => size)
+    },
+    type: 'message'
+  }));
 }

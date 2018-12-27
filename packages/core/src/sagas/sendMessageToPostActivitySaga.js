@@ -9,15 +9,20 @@ import { SEND_MESSAGE } from '../actions/sendMessage';
 import postActivity from '../actions/postActivity';
 
 export default function* () {
-  yield whileConnected(function* () {
-    yield takeEvery(SEND_MESSAGE, function* ({ payload: { method, text } }) {
-      if (text) {
-        yield put(postActivity({
-          text,
-          textFormat: 'plain',
-          type: 'message'
-        }, method));
-      }
-    });
-  });
+  yield whileConnected(sendMessageToPostActivity);
+}
+
+function* sendMessageToPostActivity() {
+  yield takeEvery(({ payload, type }) => (
+    type === SEND_MESSAGE
+    && payload.text
+  ), postActivityWithMessage);
+}
+
+function* postActivityWithMessage({ payload: { method, text } }) {
+  yield put(postActivity({
+    text,
+    textFormat: 'plain',
+    type: 'message'
+  }, method));
 }

@@ -3,7 +3,8 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import speakableActivity from './definition/speakableActivity';
+import speakableActivity from '../definitions/speakableActivity';
+
 import whileConnected from './effects/whileConnected';
 import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 
@@ -12,18 +13,20 @@ import markActivity from '../actions/markActivity';
 
 export default function* () {
   yield whileConnected(function* (_, userID) {
-    yield whileSpeakIncomingActivity(markActivityForSpeakSaga.bind(null, userID));
+    yield whileSpeakIncomingActivity(markActivityForSpeakOnIncomingActivityFromOthers.bind(null, userID));
   });
 }
 
-function* markActivityForSpeakSaga(userID) {
+function* markActivityForSpeakOnIncomingActivityFromOthers(userID) {
   yield takeEvery(
     ({ payload, type }) => (
       type === INCOMING_ACTIVITY
       && speakableActivity(payload.activity, userID)
     ),
-    function* ({ payload: { activity } }) {
-      yield put(markActivity(activity, 'speak', true));
-    }
+    markActivityForSpeak
   );
+}
+
+function* markActivityForSpeak({ payload: { activity } }) {
+  yield put(markActivity(activity, 'speak', true));
 }

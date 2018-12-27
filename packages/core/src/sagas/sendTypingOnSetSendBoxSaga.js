@@ -21,36 +21,38 @@ function takeSendTyping(value) {
 }
 
 export default function* () {
-  yield whileConnected(function* () {
-    const sendTyping = yield select(({ sendTyping }) => sendTyping);
+  yield whileConnected(sendTypingOnSetSendBox);
+}
 
-    if (!sendTyping) {
-      yield takeSendTyping(true);
-    }
+function* sendTypingOnSetSendBox() {
+  const { sendTyping } = yield select();
 
-    for (;;) {
-      let lastSend = 0;
-      const task = yield takeLatest(
-        ({ payload, type }) => (
-          type === SET_SEND_BOX
-          && payload.text
-        ),
-        function* () {
-          const interval = SEND_INTERVAL - Date.now() + lastSend;
+  if (!sendTyping) {
+    yield takeSendTyping(true);
+  }
 
-          if (interval > 0) {
-            yield call(sleep, interval);
-          }
+  for (;;) {
+    let lastSend = 0;
+    const task = yield takeLatest(
+      ({ payload, type }) => (
+        type === SET_SEND_BOX
+        && payload.text
+      ),
+      function* () {
+        const interval = SEND_INTERVAL - Date.now() + lastSend;
 
-          yield put(postActivity({ type: 'typing' }));
-
-          lastSend = Date.now();
+        if (interval > 0) {
+          yield call(sleep, interval);
         }
-      );
 
-      yield takeSendTyping(false);
-      yield cancel(task);
-      yield takeSendTyping(true);
-    }
-  });
+        yield put(postActivity({ type: 'typing' }));
+
+        lastSend = Date.now();
+      }
+    );
+
+    yield takeSendTyping(false);
+    yield cancel(task);
+    yield takeSendTyping(true);
+  }
 }

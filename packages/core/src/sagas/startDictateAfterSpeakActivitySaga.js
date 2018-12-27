@@ -4,6 +4,8 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
+import speakingActivity from '../definitions/speakingActivity';
+
 import whileConnected from './effects/whileConnected';
 import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 
@@ -12,32 +14,34 @@ import startDictate from '../actions/startDictate';
 
 export default function* () {
   yield whileConnected(function* () {
-    yield whileSpeakIncomingActivity(startDictateAfterSpeakActivitySaga);
+    yield whileSpeakIncomingActivity(startDictateAfterSpeakActivity);
   });
 }
 
-function* startDictateAfterSpeakActivitySaga() {
+function* startDictateAfterSpeakActivity() {
   yield takeEvery(
     ({ payload, type }) => (
       type === MARK_ACTIVITY
       && payload.name === 'speak'
       && payload.value === false
     ),
-    function* ({ payload: { activityID } }) {
-      const { activities } = yield select();
-      const activity = activities.find(({ id }) => id === activityID);
-
-      if (
-        activity.inputHint !== 'ignoringInput'
-        // Checks if there are no more activities that will be synthesis
-        && !activities.some(
-          ({ channelData, id }) => id !== activityID && channelData && channelData.speak === true
-        )
-      ) {
-        // We honor input hint based on this article
-        // https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-input-hints?view=azure-bot-service-4.0&tabs=cs
-        yield put(startDictate());
-      }
-    }
+    startDictateAfterAllActivitiesSpoken
   );
+}
+
+function* startDictateAfterAllActivitiesSpoken({ payload: { activityID } }) {
+  const { activities } = yield select();
+  const spokenActivity = activities.find(({ id }) => id === activityID);
+
+  if (
+    spokenActivity.inputHint !== 'ignoringInput'
+    // Checks if there are no more activities that will be synthesis
+    && !activities.some(
+      activity => activity.id !== activityID && speakingActivity(activity)
+    )
+  ) {
+    // We honor input hint based on this article
+    // https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-input-hints?view=azure-bot-service-4.0&tabs=cs
+    yield put(startDictate());
+  }
 }

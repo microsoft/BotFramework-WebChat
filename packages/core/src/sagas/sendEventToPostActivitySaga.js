@@ -9,19 +9,23 @@ import { SEND_EVENT } from '../actions/sendEvent';
 import postActivity from '../actions/postActivity';
 
 export default function* () {
-  yield whileConnected(function* () {
-    yield takeEvery(
-      ({ payload, type }) => (
-        type === SEND_EVENT
-        && payload.name
-      ),
-      function* ({ payload: { name, value } }) {
-        yield put(postActivity({
-          name,
-          type: 'event',
-          value
-        }));
-      }
-    );
-  });
+  yield whileConnected(sendEventToPostActivity);
+}
+
+function* sendEventToPostActivity() {
+  yield takeEvery(
+    ({ payload, type }) => (
+      type === SEND_EVENT
+      && payload.name
+    ),
+    postActivityWithEvent
+  );
+}
+
+function* postActivityWithEvent({ payload: { name, value } }) {
+  yield put(postActivity({
+    name,
+    type: 'event',
+    value
+  }));
 }

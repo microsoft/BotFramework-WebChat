@@ -32,12 +32,12 @@ export default function* () {
     let numActivitiesPosted = 0;
 
     yield takeEvery(POST_ACTIVITY, function* (action) {
-      yield* postActivitySaga(directLine, userID, numActivitiesPosted++, action);
+      yield* postActivity(directLine, userID, numActivitiesPosted++, action);
     });
   });
 }
 
-function* postActivitySaga(directLine, userID, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
+function* postActivity(directLine, userID, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
   const locale = yield select(({ language }) => language);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
