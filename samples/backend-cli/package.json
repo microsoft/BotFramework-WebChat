@@ -33,7 +33,7 @@
     "@types/node": "^10.3.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.0.1",
-    "botframework-directlinejs": "^0.9.15",
+    "botframework-directlinejs": "^0.10.1",
     "concurrently": "^3.5.1",
     "jest": "^22.4.4",
     "rimraf": "^2.6.2",
@@ -41,7 +41,7 @@
     "typescript": "^2.9.2"
   },
   "peerDependencies": {
-    "botframework-directlinejs": "^0.9.15"
+    "botframework-directlinejs": "^0.10.1"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.0.0-beta.54",

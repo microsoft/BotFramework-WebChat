@@ -50,7 +50,7 @@
     "babel-jest": "^23.6.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-version-transform": "^1.0.0",
-    "botframework-directlinejs": "^0.10.0",
+    "botframework-directlinejs": "^0.10.1",
     "concurrently": "^4.0.1",
     "jest": "^23.6.0",
     "rimraf": "^2.6.2",
