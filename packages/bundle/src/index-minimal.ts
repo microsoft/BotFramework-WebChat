@@ -28,7 +28,8 @@ export {
   createDirectLine,
   createStore,
   createStyleSet,
-  renderWebChat
+  renderWebChat,
+  ReactWebChat
 }
 
 window['WebChat'] = {

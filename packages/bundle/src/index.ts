@@ -13,7 +13,8 @@ export default ReactWebChat
 export {
   createCognitiveServicesWebSpeechPonyfillFactory,
   renderMarkdown,
-  renderWebChat
+  renderWebChat,
+  ReactWebChat
 }
 
 window['WebChat'] = {

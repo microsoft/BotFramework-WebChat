@@ -5,7 +5,7 @@ function xMinutesAgo(date) {
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
   if (deltaInMinutes < 1) {
-    return 'הרגע';
+    return 'עכשיו';
   } else if (deltaInMinutes === 1) {
     return 'לפני דקה';
   } else if (deltaInHours < 1) {
@@ -38,7 +38,7 @@ export default {
   // Do not localize {retry}, it is a placeholder for "retry"
   'Send failed, {retry}': 'שליחה נכשלה, {retry}',
   'Send': 'שלח',
-  'Sending': 'בשליחה',
+  'Sending': 'שולח',
   'Speak': 'דבר',
   'Starting…': 'מתחיל…',
   'Tax': 'מס',
