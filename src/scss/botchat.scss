@@ -109,7 +109,7 @@
     }
 
     .wc-suggested-actions {
-        background-color: #f9f9f9;
+        background-color: #ffffff;
         bottom: $consoleHeight;
         height: 0;
         left: 0;
@@ -119,24 +119,32 @@
         transition: height $actionTransition;
 
         .wc-hscroll > ul {
-            height: $actionsHeight + 4px;
             padding: 2px 3px;
 
+            display: flex;
+            justify-content: flex-end;
+            flex-direction: column;
+            background: transparent;
+
             > li {
-                display: inline-block;
                 margin: 2px;
-                max-width: 40%;
+                padding: 10px;
+                text-align: right;
 
                 button {
-                    background-color: #fff;
-                    color: $c_brand;
+                    background-color: $c_brand;
+                    border: 1px solid #31ace2;
+                    border-radius: 10px;
+                    border-top-right-radius: 0px;
+                    color: #ffffff;
                     min-height: 32px;
-                    height: 50px;
-                    overflow: hidden;
+                    height: auto;
                     padding: 0 16px;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    width: 100%;
+                    white-space: normal;
+                    width: auto;
+                    overflow-wrap: break-word;
+                    text-align: right;
+                    padding: 10px;
                 }
 
                 button:focus,
@@ -198,6 +206,7 @@
         }
         .wc-suggested-actions {
             height: $actionsHeight;
+            overflow-y: scroll;
         }
     }
 
