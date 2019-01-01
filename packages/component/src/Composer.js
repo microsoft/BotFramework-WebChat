@@ -2,6 +2,7 @@ import {
   Composer as ScrollToBottomComposer,
   FunctionContext as ScrollToBottomFunctionContext
 } from 'react-scroll-to-bottom';
+
 import { connect } from 'react-redux';
 import { css } from 'glamor';
 import memoize from 'memoize-one';
@@ -134,9 +135,33 @@ function createFocusSendBoxLogic({ sendBoxRef }) {
   };
 }
 
-function createStyleSetLogic({ styleSet, styleOptions }) {
+function createStyleSetLogic({ styleOptions, styleSet }) {
   return {
     styleSet: styleSetToClassNames(styleSet || createStyleSet(styleOptions))
+  };
+}
+
+// TODO: [P3] Take this deprecation code out when releasing on or after 2019 December 11
+function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ...props }) {
+  // This code will take out "botAvatarInitials" and "userAvatarInitials" from props
+
+  let { styleOptions } = props;
+
+  if (botAvatarInitials) {
+    styleOptions = { ...styleOptions, botAvatarInitials };
+
+    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead.');
+  }
+
+  if (userAvatarInitials) {
+    styleOptions = { ...styleOptions, userAvatarInitials };
+
+    console.warn('Web Chat: "userAvatarInitials" is deprecated. Please use "styleOptions.userAvatarInitials" instead.');
+  }
+
+  return {
+    ...props,
+    styleOptions
   };
 }
 
@@ -152,6 +177,8 @@ function createLogic(props) {
   // 2. Filter out profanity
 
   // TODO: [P4] Revisit all members of context
+  props = patchPropsForAvatarInitials(props);
+
   return {
     ...props,
     ...createCardActionLogic(props),
@@ -240,7 +267,6 @@ class Composer extends React.Component {
         activityRenderer,
         adaptiveCardHostConfig,
         attachmentRenderer,
-        botAvatarInitials,
         children,
 
         // TODO: [P2] Add disable interactivity
@@ -252,7 +278,6 @@ class Composer extends React.Component {
         renderMarkdown,
         scrollToEnd,
         store,
-        userAvatarInitials,
         userID,
         webSpeechPonyfillFactory,
         ...propsForLogic
@@ -273,15 +298,12 @@ class Composer extends React.Component {
         adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
         attachmentRenderer,
 
-        // TODO: [P2] Move avatar initials to style options
-        botAvatarInitials,
         groupTimestamp,
         disabled,
         grammars: grammars || EMPTY_ARRAY,
         renderMarkdown,
         scrollToEnd,
         store,
-        userAvatarInitials,
         webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarID)
       }
     );
@@ -342,7 +364,6 @@ ConnectedComposerWithStore.propTypes = {
   activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
-  botAvatarInitials: PropTypes.string,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
@@ -352,7 +373,6 @@ ConnectedComposerWithStore.propTypes = {
   sendTimeout: PropTypes.number,
   sendTyping: PropTypes.bool,
   store: PropTypes.any,
-  userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
 };

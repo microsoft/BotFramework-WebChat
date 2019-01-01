@@ -84,7 +84,6 @@ export default class extends React.Component {
     document.querySelector('html').setAttribute('lang', window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
 
     this.state = {
-      botAvatarInitials: 'BF',
       directLine: createFaultyDirectLine({
         domain,
         fetch,
@@ -99,7 +98,6 @@ export default class extends React.Component {
       direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
-      userAvatarInitials: 'WC',
       userID,
       webSpeechPonyfillFactory: null
     };

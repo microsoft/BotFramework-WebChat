@@ -15,13 +15,13 @@ export default function createErrorBoxStyle() {
     WebkitOverflowScrolling: 'touch',
 
     '& > :first-child': {
-      backgroundColor: 'Red',
+      backgroundColor: '#EF0000',
       color: 'White',
       padding: '5px 10px'
     },
 
     '& > :last-child': {
-      borderColor: 'Red',
+      borderColor: '#EF0000',
       borderStyle: 'dashed',
       borderBottomWidth: 2,
       borderLeftWidth: 2,

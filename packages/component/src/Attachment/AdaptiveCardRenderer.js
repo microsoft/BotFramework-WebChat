@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ErrorBox from '../ErrorBox';
@@ -15,7 +14,8 @@ class AdaptiveCardRenderer extends React.PureComponent {
     this.contentRef = React.createRef();
 
     this.state = {
-      error: null
+      error: null,
+      sent: false
     };
   }
 
@@ -70,6 +70,18 @@ class AdaptiveCardRenderer extends React.PureComponent {
             type: typeof action.data === 'string' ? 'imBack' : 'postBack',
             value: action.data
           });
+        }
+
+        // const currentCard = findDOMNode(this.contentRef);
+        const currentCard = this.contentRef;
+        const inputs = currentCard.querySelectorAll('button, input, select, textarea');
+        if (inputs.length > 0) {
+            for (const inputsKey in inputs) {
+                if (inputs.hasOwnProperty(inputsKey)) {
+                    inputs[inputsKey].setAttribute('disabled', 'disabled');
+                    inputs[inputsKey].setAttribute('style', 'background: #dcdcdc;');
+                }
+            }
         }
       }
     } else {

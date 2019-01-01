@@ -1,5 +1,8 @@
 export default {
   'Chat': 'Chat',
+  // 'Download file': '',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Kuuntelee…',
   'retry': 'yritä uudelleen',
   'Send failed, {retry}': 'ei voitu lähettää, {retry}',

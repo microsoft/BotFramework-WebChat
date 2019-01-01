@@ -1,15 +1,7 @@
-# Sample
+# Redirect information
 
-Web Chat on React with activity decorator highlighting activities.
+Due to renaming our sample files, the sample links on our NPM page are temporarily pointing to the wrong URL. 
 
-Activities sent by the user will be highlighted in green on the right-hand side. Activities from bot will have a red band on the left-hand side.
+Please click the link below to be redirected. Sorry for the inconvenience.
 
-# How to run
-
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
-
-# Things to try out
-
-- Send normal messages
-- Type `layout carousel` and see how the decorators works with the band
+## [08.customization-user-highlighting](./../08.customization-user-highlighting/README.md)
