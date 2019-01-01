@@ -11,6 +11,8 @@ export interface MessagePaneProps {
     // activityWithDateAndTimePicker: Message;
 
     takeSuggestedAction: (message: Message) => any;
+    chooseOption: (placeholder: string) => any;
+    resetShellInput: () => any;
     sendMessage: (inputText: string) => void;
 
     children: React.ReactNode;
@@ -29,7 +31,12 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 
         this.props.takeSuggestedAction(this.props.activityWithSuggestedActions);
         this.props.doCardAction(cardAction.type, cardAction.value);
+        this.props.resetShellInput();
         e.stopPropagation();
+    }
+
+    componentDidMount() {
+        this.props.chooseOption('Choose an option above...');
     }
 
     shouldComponentUpdate(nextProps: MessagePaneProps) {
@@ -62,6 +69,8 @@ export const MultipleChoiceCard = connect(
         locale: state.format.locale
     }), {
         takeSuggestedAction: (message: Message) => ({ type: 'Take_SuggestedAction', message } as ChatActions),
+        chooseOption: (placeholder: string) => ({ type: 'Choose_Option', placeholder} as ChatActions),
+        resetShellInput: () => ({ type: 'Submit_Date' } as ChatActions),
         // only used to create helper functions below
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): MessagePaneProps => ({
@@ -70,6 +79,8 @@ export const MultipleChoiceCard = connect(
 
         // from dispatchProps
         takeSuggestedAction: dispatchProps.takeSuggestedAction,
+        chooseOption: dispatchProps.chooseOption,
+        resetShellInput: dispatchProps.resetShellInput,
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         // from ownProps
         children: ownProps.children,

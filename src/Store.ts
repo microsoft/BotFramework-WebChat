@@ -95,6 +95,9 @@ export type ShellAction = {
 }|  {
     type: 'Select_File',
     payload: boolean
+} | {
+    type: 'Choose_Option',
+    placeholder: string
 };
 
 export const shell: Reducer<ShellState> = (
@@ -178,6 +181,13 @@ export const shell: Reducer<ShellState> = (
             return {
                 ...state,
                 inputDisabled: action.payload
+            };
+
+        case 'Choose_Option':
+            return {
+                ...state,
+                inputDisabled: true,
+                placeholder: action.placeholder
             };
 
         default:
