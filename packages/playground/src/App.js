@@ -4,7 +4,8 @@ import memoize from 'memoize-one';
 
 import ReactWebChat, {
   createBrowserWebSpeechPonyfillFactory,
-  createCognitiveServicesWebSpeechPonyfillFactory,
+  createCognitiveServicesBingSpeechPonyfillFactory,
+  createCognitiveServicesSpeechServicesPonyfillFactory,
   createStyleSet,
   renderMarkdown
 } from 'botframework-webchat';
@@ -49,33 +50,7 @@ const ROOT_CSS = css({
 const WEB_CHAT_CSS = css({
   height: '100%',
   margin: '0 auto',
-  maxWidth: 768,
-
-  // scroll bar
-
-  /* width */
-  '&::-webkit-scrollbar': {
-    width: 8
-  },
-
-  /* Track */
-  '&::-webkit-scrollbar-track': {
-      borderRadius: 10,
-      backgroundColor: 'rgba(180, 187, 205, 0.2)'
-  },
-
-  /* Handle */
-  '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgba(180, 187, 205, 0.8)',
-      border: '1px solid rgba(120, 120, 120, .1)',
-      borderRadius: 10
-  },
-
-  /* Handle on hover */
-  '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: 'rgba(180, 187, 205, 1)'
-  }
-
+  maxWidth: 768
 });
 
 export default class extends React.Component {
@@ -103,20 +78,10 @@ export default class extends React.Component {
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
     const domain = params.get('domain');
-    const speech = params.get('speech');
     const userID = params.get('u');
     const webSocket = params.get('websocket');
 
-    // if (speech === 'cs') {
-    //   this.webSpeechPonyfillFactory = createCognitiveServicesWebSpeechPonyfillFactory({
-    //     fetchToken: () => fetch('https://webchat-mockbot.azurewebsites.net/speech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token),
-    //   });
-    // } else {
-    //   this.webSpeechPonyfillFactory = createBrowserWebSpeechPonyfillFactory();
-    // }
-
-    const lang =  window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language;
-    this.setLanguage(lang);
+    document.querySelector('html').setAttribute('lang', window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || window.navigator.language);
 
     this.state = {
       botAvatarInitials: 'BF',
@@ -134,8 +99,9 @@ export default class extends React.Component {
       direction: 'ltr',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTyping: true,
-      userAvatarInitials: '',
-      userID
+      userAvatarInitials: 'WC',
+      userID,
+      webSpeechPonyfillFactory: null
     };
   }
 
@@ -146,10 +112,34 @@ export default class extends React.Component {
 
     sendBox && sendBox.focus();
 
-    this.handleBotAvatarInitialsChange('https://cdn.meetleo.co/images/GenieImage.png');
+    const speech = new URLSearchParams(window.location.search).get('speech');
+
+    if (speech === 'bingspeech') {
+      const fetchAuthorizationToken = memoize(() => {
+        return fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token);
+      }, (x, y) => Math.abs(x - y) < 60000);
+
+      createCognitiveServicesBingSpeechPonyfillFactory({
+        authorizationToken: () => fetchAuthorizationToken(Date.now())
+      }).then(webSpeechPonyfillFactory => this.setState(() => ({ webSpeechPonyfillFactory })));
+    } else if (speech === 'speechservices') {
+      const fetchAuthorizationToken = memoize(() => {
+        return fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' }).then(res => res.json()).then(({ token }) => token);
+      }, (x, y) => {
+        return Math.abs(x - y) < 60000;
+      });
+
+      createCognitiveServicesSpeechServicesPonyfillFactory({
+        authorizationToken: () => fetchAuthorizationToken(Date.now()),
+        region: 'westus'
+      }).then(webSpeechPonyfillFactory => this.setState(() => ({ webSpeechPonyfillFactory })));
+    } else {
+      this.setState(() => ({ webSpeechPonyfillFactory: createBrowserWebSpeechPonyfillFactory() }));
+    }
+
   }
 
-  handleBotAvatarInitialsChange(value) {
+  handleBotAvatarInitialsChange({ target: { value } }) {
     this.setState(() => ({ botAvatarInitials: value }));
   }
 
@@ -171,7 +161,11 @@ export default class extends React.Component {
 
   handleLanguageChange({ target: { value } }) {
     const lang = value || window.navigator.language;
-    this.setState(() => ({ language: value, direction: this.getDirection(lang) }), () => {
+
+    this.setState(() => ({
+      direction: this.getDirection(lang),
+      language: value
+    }), () => {
       this.setLanguage(lang);
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
@@ -205,7 +199,7 @@ export default class extends React.Component {
     window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0&u=default-user';
   }
 
-  handleUserAvatarInitialsChange(value) {
+  handleUserAvatarInitialsChange({ target: { value } }) {
     this.setState(() => ({ userAvatarInitials: value }));
   }
 
@@ -221,7 +215,7 @@ export default class extends React.Component {
 
       window.sessionStorage.removeItem('REDUX_STORE');
       window.location.href = '/?' + new URLSearchParams({
-        speech: 'cs',
+        speech: 'speechservices',
         websocket: 'true',
         t: token
       }).toString();
@@ -233,12 +227,13 @@ export default class extends React.Component {
 
   setLanguage(lang) {
       const html = document.querySelector('html');
+
       html.setAttribute('lang', lang);
       html.setAttribute('dir', this.getDirection(lang));
   }
 
   getDirection(lang) {
-      return (['he', 'he-IL'].indexOf(lang) !== -1) ? 'rtl' : 'ltr';
+      return /^he(\-IL)?$/i.test(lang) ? 'rtl' : 'ltr';
   }
 
   render() {
@@ -267,7 +262,7 @@ export default class extends React.Component {
           styleSet={ styleSet }
           userAvatarInitials={ state.userAvatarInitials }
           userID={ state.userID }
-          webSpeechPonyfillFactory={ this.webSpeechPonyfillFactory }
+          webSpeechPonyfillFactory={ state.webSpeechPonyfillFactory }
         />
         <div className="button-bar">
           <button
@@ -325,6 +320,7 @@ export default class extends React.Component {
                 <option value="el-GR">Greek (Greece)</option>
                 <option value="fi-FI">Finnish (Finland)</option>
                 <option value="fr-FR">French (France)</option>
+                <option value="he-IL">Hebrew עברית (Israel)</option>
                 <option value="hu-HU">Hungarian (Hungary)</option>
                 <option value="it-IT">Italian (Italy)</option>
                 <option value="ja-JP">Japanese</option>
@@ -338,7 +334,6 @@ export default class extends React.Component {
                 <option value="es-ES">Spanish (Spain)</option>
                 <option value="sv-SE">Swedish (Sweden)</option>
                 <option value="tr-TR">Turkish (Turkey)</option>
-                <option value="he-IL">Hebrew עברית (Israel)</option>
               </select>
             </label>
           </div>

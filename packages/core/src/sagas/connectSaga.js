@@ -49,7 +49,15 @@ export default function* () {
       }
 
       userID = userIDFromToken;
-    } else if (!userID) {
+    } else if (userID) {
+      if (typeof userID !== 'string') {
+        console.warn('Web Chat: user ID must be a string.');
+        userID = DEFAULT_USER_ID;
+      } else if (/^dl_/.test(userID)) {
+        console.warn('Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.');
+        userID = DEFAULT_USER_ID;
+      }
+    } else {
       // Only specify "default-user" if not found from token and not passed in
       userID = DEFAULT_USER_ID;
     }

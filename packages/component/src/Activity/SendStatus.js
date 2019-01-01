@@ -58,7 +58,7 @@ export default connectSendStatus(
     retrySend,
     styleSet
   }) =>
-    <span className={ styleSet.sendStatus }>
+    <span aria-live="polite" className={ styleSet.sendStatus }>
       {
         state === SENDING ?
           <Localize text="Sending" />

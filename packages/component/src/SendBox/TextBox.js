@@ -70,7 +70,7 @@ export default connectSendTextBox(
         <TypeFocusSinkContext.Consumer>
           { ({ sendFocusRef }) =>
             <input
-                  aria-label={ typeYourMessageString }
+              aria-label={ typeYourMessageString }
               disabled={ disabled }
               onChange={ onChange }
               placeholder={ typeYourMessageString }

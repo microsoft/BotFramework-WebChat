@@ -1,13 +1,19 @@
 {
   "name": "playground",
-  "version": "0.0.1",
+  "version": "0.0.0-0",
   "private": true,
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "dependencies": {
     "adaptivecards": "^1.0.0",
-    "botframework-directlinejs": "0.9.18-master.3cece81",
-    "botframework-webchat": "file:../bundle",
-    "botframework-webchat-component": "file:../component",
-    "botframework-webchat-core": "file:../core",
+    "botframework-directlinejs": "^0.10.1",
+    "botframework-webchat": "^0.0.0-0",
+    "botframework-webchat-component": "^0.0.0-0",
+    "botframework-webchat-core": "^0.0.0-0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
@@ -21,7 +27,7 @@
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
     "react-say": "1.0.1-master.1d32161",
-    "react-scripts": "1.1.4",
+    "react-scripts": "2.1.1",
     "redux": "^4.0.0",
     "rxjs": "5",
     "web-speech-cognitive-services": "2.1.1-master.0f7758b"
@@ -32,11 +38,5 @@
     "prepublishOnly": "npm run build",
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  }
 }

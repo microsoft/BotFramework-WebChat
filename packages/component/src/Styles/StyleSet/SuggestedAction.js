@@ -26,16 +26,11 @@ export default function createSuggestedActionStyle({
       paddingLeft: paddingWide,
       paddingRight: paddingWide,
       borderRadius: suggestedActionBorderRadius,
-      boxShadow: '1px 1px 2px 0 #999',
 
-      '&:active, &:focus': {
-          boxShadow: 'inset 1px 1px 2px 0 #999',
-      },
-
-    '&:disabled': {
+      '&:disabled': {
         background: suggestedActionDisabledBackground,
         border: suggestedActionDisabledBorder,
-        color: suggestedActionDisabledTextColor,
+        color: suggestedActionDisabledTextColor
       },
 
       '&:not(:disabled)': {

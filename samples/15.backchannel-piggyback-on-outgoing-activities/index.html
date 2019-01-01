@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Inject data on post activity</title>
+    <!--
+      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
+      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+
+    <!-- We are using simple-update-in package to simplify demo code. -->
+    <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+
+      #webchat,
+      #webchat > * {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      (async function () {
+        // In this demo, we are using Direct Line token from MockBot.
+        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+        // You should never put the Direct Line secret in the browser or client app.
+        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+
+        // We are adding a new middleware to customize the behavior of DIRECT_LINE/POST_ACTIVITY.
+        const store = window.WebChat.createStore(
+          {},
+          ({ dispatch }) => next => action => {
+            if (action.type === 'DIRECT_LINE/POST_ACTIVITY') {
+              // The channelData submitted here is very similar to HTTP cookies and vulnerable to forgery attack.
+              // Make sure you use signature to protect it and verify the signature on the bot side.
+
+              // To minimize unexpected behaviors, we recommend to treat the "action" object as if it is immutable.
+              // We use simple-update-in package to update "action" with partial deep cloning.
+              action = window.simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'email'], () => 'johndoe@example.com');
+            }
+
+            return next(action);
+          }
+        );
+
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token }),
+          // We will use a custom version of Redux store, which we added middleware to handle backchannel messages.
+          store
+        }, document.getElementById('webchat'));
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_SEND_BOX',
+          payload: { text: 'channel-data' }
+        });
+
+        document.querySelector('#webchat > *').focus();
+      })().catch(err => console.error(err));
+    </script>
+  </body>
+</html>

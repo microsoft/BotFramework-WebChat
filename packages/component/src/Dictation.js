@@ -63,12 +63,14 @@ class Dictation extends React.Component {
         dictateState,
         disabled,
         language,
-        webSpeechPonyfill = {}
+        webSpeechPonyfill
       },
       handleDictate,
       handleDictating,
       handleError
     } = this;
+
+    const { SpeechGrammarList, SpeechRecognition } = webSpeechPonyfill || {};
 
     return (
       <DictateComposer
@@ -76,8 +78,8 @@ class Dictation extends React.Component {
         onDictate={ handleDictate }
         onError={ handleError }
         onProgress={ handleDictating }
-        speechRecognition={ webSpeechPonyfill.SpeechRecognition }
-        speechGrammarList={ webSpeechPonyfill.SpeechGrammarList }
+        speechRecognition={ SpeechRecognition }
+        speechGrammarList={ SpeechGrammarList }
         started={ !disabled && (dictateState === STARTING || dictateState === DICTATING) }
       />
     );

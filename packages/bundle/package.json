@@ -24,16 +24,19 @@
     "clean": "npm run clean:dist && npm run clean:lib",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
-    "prepublishOnly": "npm run build:typecheck && npm run build:babel && webpack-cli --run-prod",
+    "prepublishOnly": "npm run build:typecheck && npm run build:babel && webpack-cli",
     "test": "jest",
-    "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\" \"webpack-cli --config webpack-watch.config.js --run-dev --watch\""
+    "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run watch:babel\" \"npm run watch:typecheck\" \"npm run watch:webpack\"",
+    "watch:babel": "npm run build:babel-instrumented -- --watch",
+    "watch:typecheck": "npm run build:typecheck -- --preserveWatchOutput --watch",
+    "watch:webpack": "webpack-cli --config webpack-watch.config.js --mode development --watch"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
     "adaptivecards": "^1.0.0",
-    "botframework-directlinejs": "^0.10.0",
-    "botframework-webchat-component": "file:../component",
-    "botframework-webchat-core": "file:../core",
+    "botframework-directlinejs": "^0.10.1",
+    "botframework-webchat-component": "^0.0.0-0",
+    "botframework-webchat-core": "^0.0.0-0",
     "core-js": "^2.5.7",
     "markdown-it": "^8.4.2",
     "markdown-it-for-inline": "^0.1.1",
@@ -43,7 +46,7 @@
     "react-dom": "^16.5.0",
     "sanitize-html": "^1.19.0",
     "url-search-params-polyfill": "^5.0.0",
-    "web-speech-cognitive-services": "^3.0.0",
+    "web-speech-cognitive-services": "^4.0.0",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
