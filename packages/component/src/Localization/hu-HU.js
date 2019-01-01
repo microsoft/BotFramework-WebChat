@@ -1,5 +1,8 @@
 export default {
   'Chat': 'Csevegés',
+  // 'Download file': '',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Figyelés…',
   'retry': 'próbálja újra',
   'Send failed, {retry}': 'nem sikerült elküldeni, {retry}',

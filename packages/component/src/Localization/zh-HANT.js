@@ -25,6 +25,9 @@ function xMinutesAgo(date) {
 
 export default {
   'Chat': '聊天',
+  // 'Download file': '',
+  'Microphone off': '開啟麥克風',
+  'Microphone on': '關閉麥克風',
   'Left': '左',
   'Listening…': '正在聆聽…',
   'New messages': '新訊息',

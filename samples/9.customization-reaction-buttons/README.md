@@ -1,14 +1,7 @@
-# Sample
+# Redirect information
 
-Web Chat on React with activity decorator of buttons.
+Due to renaming our sample files, the sample links on our NPM page are temporarily pointing to the wrong URL. 
 
-After buttons are clicked, the action will send back to the bot via `sendMessage` function.
+Please click the link below to be redirected. Sorry for the inconvenience.
 
-# How to run
-
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
-
-# Things to try out
-
-- Click the 👍👎 button next to activities from bot
+## [09.customization-reaction-buttons](./../09.customization-reaction-buttons/README.md)

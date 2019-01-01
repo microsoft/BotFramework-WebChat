@@ -1,17 +1,7 @@
-# Sample
+# Redirect information
 
-Enable presentation mode by:
-- Disable interactivity in Adaptive Cards, rich card, send box, and suggested actions
-- Hide send box
+Due to renaming our sample files, the sample links on our NPM page are temporarily pointing to the wrong URL. 
 
-# How to run
+Please click the link below to be redirected. Sorry for the inconvenience.
 
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
-
-# Things to try out
-
-- Click on Adaptive Card
-   - Open URL button
-   - Submit button
-- Hide send box will also hide suggested actions
+## [05.c.presentation-mode-styling](./../05.c.presentation-mode-styling/README.md)

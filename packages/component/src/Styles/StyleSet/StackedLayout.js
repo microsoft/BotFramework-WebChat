@@ -23,12 +23,20 @@ export default function ({
       }
     },
 
-    '&.from-user > .avatar': {
+    '&.ltr.from-user > .avatar': {
       marginLeft: paddingRegular
     },
 
-    '&:not(.from-user) > .avatar': {
+    '&.ltr:not(.from-user) > .avatar': {
       marginRight: paddingRegular
+    },
+
+    '&.rtl.from-user > .avatar': {
+      marginRight: paddingRegular
+    },
+
+    '&.rtl:not(.from-user) > .avatar': {
+      marginLeft: paddingRegular
     }
   };
 }

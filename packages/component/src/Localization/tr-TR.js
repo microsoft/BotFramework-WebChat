@@ -1,5 +1,8 @@
 export default {
   'Chat': 'Sohbet',
+  // 'Download file': '',
+  // 'Microphone off': '',
+  // 'Microphone on': '',
   'Listening…': 'Dinliyor…',
   'retry': 'yeniden deneyin',
   'Send failed, {retry}': 'gönderilemedi, {retry}',

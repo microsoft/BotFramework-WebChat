@@ -22,6 +22,10 @@ function last(array, predicate) {
 export default function* () {
   yield whileConnected(function* (directLine, userID) {
     yield observeEach(directLine.activity$, function* (activity) {
+
+      if (['initialTrigger', 'webchatInitial'].indexOf(activity.name) !== -1)
+          return;
+
       activity = { ...activity };
 
       // Patch activity.from.role to make sure its either "bot", "user", or "channel"

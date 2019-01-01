@@ -1,4 +1,4 @@
-import BasicFilm from 'react-film';
+import BasicFilm from './BasicFilm';
 import classNames from 'classnames';
 import React from 'react';
 

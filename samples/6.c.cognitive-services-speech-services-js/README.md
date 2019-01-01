@@ -1,13 +1,7 @@
-# Sample - Integrating with Cognitive Services Speech Services
+# Redirect information
 
-> Cognitive Services Speech Services support is current in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.
+Due to renaming our sample files, the sample links on our NPM page are temporarily pointing to the wrong URL. 
 
-A simple page with Web Chat integrated with speech-to-text and text-to-speech feature from Cognitive Services Speech Services.
+Please click the link below to be redirected. Sorry for the inconvenience.
 
-# Test out the hosted sample
-
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/6.c.cognitive-services-speech-services-js)
-   - Click on microphone button
-   - Say "123"
-   - It should recognize as "123."
-   - It should speak out the next activities sent from the bot
+## [06.c.cognitive-services-speech-services-js](./../06.c.cognitive-services-speech-services-js/README.md)
