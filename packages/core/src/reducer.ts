@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import activities from './reducers/activities';
 import dictateInterims from './reducers/dictateInterims';
 import dictateState from './reducers/dictateState';
+import direction from './reducers/direction';
 import language from './reducers/language';
 import readyState from './reducers/readyState';
 import referenceGrammarID from './reducers/referenceGrammarID';
@@ -14,6 +15,7 @@ export default combineReducers({
   activities,
   dictateInterims,
   dictateState,
+  direction,
   language,
   readyState,
   referenceGrammarID,
