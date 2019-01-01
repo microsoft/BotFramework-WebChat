@@ -77,10 +77,12 @@ export default connectStackedLayout(
   ({
     avatarInitials,
     language,
+    direction,
     styleSet
   }) => ({
     avatarInitials,
     language,
+    direction,
     styleSet
   })
 )(
@@ -89,6 +91,7 @@ export default connectStackedLayout(
     avatarInitials,
     children,
     language,
+    direction,
     showTimestamp,
     styleSet
   }) => {

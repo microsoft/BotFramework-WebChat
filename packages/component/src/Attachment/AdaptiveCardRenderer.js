@@ -1,6 +1,4 @@
 import React from 'react';
-import { findDOMNode } from 'react-dom';
-
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ErrorBox from '../ErrorBox';
@@ -74,7 +72,8 @@ class AdaptiveCardRenderer extends React.PureComponent {
           });
         }
 
-        const currentCard = findDOMNode(this.contentRef);
+        // const currentCard = findDOMNode(this.contentRef);
+        const currentCard = this.contentRef;
         const inputs = currentCard.querySelectorAll('button, input, select, textarea');
         if (inputs.length > 0) {
             for (const inputsKey in inputs) {
