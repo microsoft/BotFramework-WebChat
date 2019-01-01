@@ -101,6 +101,8 @@ export default class extends React.Component {
       userID,
       webSpeechPonyfillFactory: null
     };
+
+    this.doc = document.querySelector('html');
   }
 
   componentDidMount() {
@@ -109,6 +111,8 @@ export default class extends React.Component {
     const sendBox = current && current.querySelector('input[type="text"]');
 
     sendBox && sendBox.focus();
+
+    this.setState({direction : this.getDirection(this.state.language)})
 
     const speech = new URLSearchParams(window.location.search).get('speech');
 
@@ -135,6 +139,15 @@ export default class extends React.Component {
       this.setState(() => ({ webSpeechPonyfillFactory: createBrowserWebSpeechPonyfillFactory() }));
     }
 
+  }
+
+  componentWillUpdate({ store }, { direction, language }) {
+    this.handleDirectionChange(direction, language);
+  }
+
+  handleDirectionChange(direction, language) {
+    this.doc.setAttribute('lang', language);
+    this.doc.setAttribute('dir', direction);
   }
 
   handleBotAvatarInitialsChange({ target: { value } }) {
@@ -164,7 +177,6 @@ export default class extends React.Component {
       direction: this.getDirection(lang),
       language: value
     }), () => {
-      this.setLanguage(lang);
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     });
   }
@@ -223,13 +235,6 @@ export default class extends React.Component {
     }
   }
 
-  setLanguage(lang) {
-      const html = document.querySelector('html');
-
-      html.setAttribute('lang', lang);
-      html.setAttribute('dir', this.getDirection(lang));
-  }
-
   getDirection(lang) {
       return /^he(-IL)?$/i.test(lang) ? 'rtl' : 'ltr';
   }
@@ -252,7 +257,8 @@ export default class extends React.Component {
           groupTimestamp={ groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp }
           directLine={ state.directLine }
           disabled={ state.disabled }
-          locale={ state.language }
+          language={ state.language }
+          direction={ state.direction }
           renderMarkdown={ renderMarkdown }
           sendTimeout={ +state.sendTimeout || undefined }
           sendTyping={ state.sendTyping }
