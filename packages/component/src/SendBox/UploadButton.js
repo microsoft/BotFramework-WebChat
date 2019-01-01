@@ -78,7 +78,7 @@ class UploadButton extends React.Component {
     return (
       <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
         <input
-          aria-label={ uploadFileString }
+          aria-hidden="true"
           disabled={ disabled }
           multiple={ true }
           onChange={ this.handleFileChange }
@@ -88,7 +88,8 @@ class UploadButton extends React.Component {
           type="file"
         />
         <IconButton
-          alt={ localize('Upload file', language) }
+          alt={ uploadFileString }
+          aria-label={ uploadFileString }
           disabled={ disabled }
           onClick={ this.handleClick }
         >

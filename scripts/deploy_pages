@@ -10,3 +10,5 @@ rsync -av --progress samples/12.customization-minimizable-web-chat/build/ gh-pag
 
 mkdir gh-pages/14.customization-piping-to-redux
 rsync -av --progress samples/14.customization-piping-to-redux/build/ gh-pages/14.customization-piping-to-redux/
+
+rsync -av --progress samples/redirects/ gh-pages/

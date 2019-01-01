@@ -1,14 +1,12 @@
 import React from 'react';
 
-export default ({ className, size = 1 }) =>
-  <svg
-    className={ className }
-    height={ 20 * size }
-    viewBox="0 0 12 20"
-    width={ 12 * size }
-  >
-    <path
-      d="M.435 20v-1.25h11.13V20H.435zM12 10.44l-6 6.113-6-6.114.87-.88 4.512 4.59V0h1.236v14.15l4.512-4.59.87.88z"
-      fillRule="evenodd"
-    />
-  </svg>
+export default ({ className, label, size = 1 }) =>
+<svg
+  aria-label={ label }
+  className={ className }
+  height={ 22 * size }
+  viewBox="0 0 31.8 46"
+  width={ 22 * size }
+>
+  <path d="M26.8,23.8l-10.9,11L5,23.8l1.6-1.6l8.2,8.3V5H17v25.5l8.2-8.3L26.8,23.8z M5.8,41v-2.2H26V41H5.8z"/>
+</svg>

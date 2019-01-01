@@ -16,7 +16,7 @@
 }
 
 .minimizable-web-chat > button.maximize > .red-dot {
-  color: Red;
+  color: #EF0000;
   font-size: 14px;
   position: absolute;
   right: 12px;

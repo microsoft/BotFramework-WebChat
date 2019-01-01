@@ -7,12 +7,14 @@ export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })
 )(
   ({
+    'aria-label': ariaLabel,
     children,
     className,
     fromUser,
     styleSet
   }) =>
     <div
+      aria-label={ ariaLabel }
       className={ classNames(
         styleSet.bubble + '',
         { 'from-user': fromUser },
