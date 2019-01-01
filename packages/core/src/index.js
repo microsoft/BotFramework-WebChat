@@ -8,7 +8,6 @@ import sendMessage from './actions/sendMessage';
 import sendPostBack from './actions/sendPostBack';
 import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
-import setDirection from './actions/setDirection';
 import setLanguage from './actions/setLanguage';
 import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
@@ -37,7 +36,6 @@ export {
   sendPostBack,
   setDictateInterims,
   setDictateState,
-  setDirection,
   setLanguage,
   setSendBox,
   setSendTimeout,
