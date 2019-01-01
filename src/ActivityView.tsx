@@ -6,6 +6,7 @@ import { IDoCardAction } from './Chat';
 import { DatePickerCard } from './DatePickerCard';
 import { FileUploadCard } from './FileUploadCard';
 import { FormattedText } from './FormattedText';
+import { MultipleChoiceCard } from './MultipleChoiceCard';
 import { FormatState, SizeState } from './Store';
 
 const Attachments = (props: {
@@ -97,6 +98,10 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
             const activityCopy: any = activity;
             return (
                 <FileUploadCard { ...props } node={activityCopy.entities[0]} />
+            );
+        } else if (type === 'imBack') {
+            return (
+                <MultipleChoiceCard { ...props } />
             );
         }
     }

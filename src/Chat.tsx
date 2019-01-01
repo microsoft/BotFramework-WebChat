@@ -413,13 +413,11 @@ export class Chat extends React.Component<ChatProps, State> {
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/close.svg" />
                                 </div>
                         }
-                        <MessagePane>
-                            <History
-                                onCardAction={ this._handleCardAction }
-                                ref={ this._saveHistoryRef }
-                                gid={ this.props.gid }
-                            />
-                        </MessagePane>
+                        <History
+                            onCardAction={ this._handleCardAction }
+                            ref={ this._saveHistoryRef }
+                            gid={ this.props.gid }
+                        />
                         <Shell ref={ this._saveShellRef } />
                         {
                             this.props.resize === 'detect' &&

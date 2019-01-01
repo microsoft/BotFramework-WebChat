@@ -1,0 +1,45 @@
+@import "colors";
+
+.wc-message-from-me{
+    &.wc-message-imBack{
+        .wc-message-content {
+            background-color: transparent;
+            border: 1px solid $c_brand;
+            border: none;
+            padding: 10px 5px;
+            box-shadow: none;
+        }
+    }
+  }
+  
+  .wc-suggested-options{
+    ul{
+      text-align: right;
+    }
+    
+    li{
+      color: $c_brand;
+      border: 2px solid $c_brand;
+      border-radius: 10px;
+      border-top-right-radius: 0px;
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      white-space: normal;
+      width: auto;
+      overflow-wrap: break-word;
+      display: inline-block;
+    }
+  
+    li:hover {
+        background-color: $c_brand;
+        color: #ffffff;
+    }
+  
+    li:active {
+        background-color: $c_brand;
+        color: #ffffff;
+    }
+    
+  }
+  

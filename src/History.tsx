@@ -294,19 +294,28 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         const { lastMessage, activity, doCardAction } = this.props;
         const activityCopy: any = activity;
         const activityRequiresAdditionalInput = activityCopy.entities && activityCopy.entities.length > 0 && activityCopy.entities[0].node_type !== null;
-        // Check if there's an additional activity to render to get the user's input
-        if (lastMessage && activityRequiresAdditionalInput) {
-            const node_type = activityCopy.entities[0].node_type;
 
-            if (node_type === 'date' || node_type === 'handoff' || node_type === 'file') {
+        // Check if there's an actions present in the activity
+        const activityWithOptions = activityCopy.suggestedActions;
+        const activityHasSuggestedActions = activityWithOptions && activityWithOptions.actions && activityWithOptions.actions.length > 0;
+
+        // Check if there's an additional activity to render to get the user's input
+        if (lastMessage && (activityRequiresAdditionalInput || activityHasSuggestedActions)) {
+            let nodeType = '';
+            if (activityRequiresAdditionalInput) {
+                nodeType = activityCopy.entities[0].node_type;
+            } else if (activityHasSuggestedActions) {
+                nodeType = activityWithOptions.actions[0].type;
+            }
+            if (nodeType === 'date' || nodeType === 'handoff' || nodeType === 'file' || nodeType === 'imBack') {
                 return (
                     <div data-activity-id={activity.id } className={wrapperClassName}>
-                        <div className={'wc-message wc-message-from-me wc-message-' + node_type} ref={ div => this.messageDiv = div }>
+                        <div className={'wc-message wc-message-from-me wc-message-' + nodeType} ref={ div => this.messageDiv = div }>
                             <div className={ contentClassName }>
                                 <ActivityView
                                     format={this.props.format}
                                     size={null}
-                                    type={node_type}
+                                    type={nodeType}
                                     activity={activity}
                                     onCardAction={ (type: CardActionTypes, value: string | object) => doCardAction(type, value) }
                                     onImageLoad={null}
@@ -363,7 +372,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         return (
-            <div>
+            <div className="wc-message-pane">
                 <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
                     <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                         <div className={ contentClassName }>
