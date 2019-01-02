@@ -1,13 +1,7 @@
-# Sample
+# Redirect information
 
-Web Chat with bot initials and user initials.
+Due to renaming our sample files, the sample links on our NPM page are temporarily pointing to the wrong URL.
 
-# How to run
+Please click the link below to be redirected. Sorry for the inconvenience.
 
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
-
-# Things to try out
-
-- Send normal messages
-- Type `layout carousel` and see how the avatar works with carousel layout
+## [04.a.display-user-bot-initials-styling](./../04.a.display-user-bot-initials-styling/README.md)
