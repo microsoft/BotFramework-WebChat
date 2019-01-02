@@ -19,7 +19,7 @@ A simple web page with a maximized Web Chat that displays individual images (ava
 ## Getting started
 
 ### Goals of this bot
-Showing user images (avatars) on Web Chat is a popular feature for Web Chat. This sample will show you how to implement your own images.
+Showing user images (avatars) on Web Chat is a popular feature. This sample will show you how to implement your own images.
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 
