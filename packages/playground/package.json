@@ -11,9 +11,9 @@
   "dependencies": {
     "adaptivecards": "^1.0.0",
     "botframework-directlinejs": "^0.10.1",
-    "botframework-webchat": "^0.0.0-0",
-    "botframework-webchat-component": "^0.0.0-0",
-    "botframework-webchat-core": "^0.0.0-0",
+    "botframework-webchat": "../bundle",
+    "botframework-webchat-component": "../component",
+    "botframework-webchat-core": "../core",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
