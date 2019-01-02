@@ -9,6 +9,13 @@ const SUGGESTED_ACTION_CSS = css({
   whiteSpace: 'initial'
 });
 
+const SUGGESTED_ACTION_BUTTON_CSS = css({
+    '&:focus, &:hover': {
+        textDecoration: 'none',
+        outline: 0
+    }
+});
+
 const connectSuggestedAction = (...selectors) => connectToWebChat(
   ({
     disabled,
@@ -39,6 +46,7 @@ export default connectSuggestedAction(
   }) =>
     <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
       <button
+        className={SUGGESTED_ACTION_BUTTON_CSS}
         disabled={ disabled }
         onClick={ click }
       >

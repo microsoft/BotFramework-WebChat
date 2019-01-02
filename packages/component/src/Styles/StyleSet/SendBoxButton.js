@@ -32,7 +32,12 @@ export default function ({
     },
 
     '&:disabled svg': {
-      fill: sendBoxButtonColorOnDisabled
+        fill: sendBoxButtonColorOnDisabled
+    },
+
+    '&.btn-rtl' : {
+      transform: 'scaleX(-1)',
+      filter: 'FlipH'
     }
   };
 }
