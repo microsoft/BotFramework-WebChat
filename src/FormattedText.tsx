@@ -23,7 +23,7 @@ export const FormattedText = (props: IFormattedTextProps) => {
 
 const renderPlainText = (text: string) => {
     const lines = text.replace('\r', '').split('\n');
-    const elements = lines.map((line, i) => <span key={i}>{line}<br /></span>);
+    const elements = lines.map((line, i) => <span key={i} dangerouslySetInnerHTML={{ __html: twemoji.parse(line)+'<br />' }} />);
     return <span className="format-plain">{elements}</span>;
 }
 

@@ -7,6 +7,7 @@ import { classList, doCardAction, IDoCardAction } from './Chat';
 import * as konsole from './Konsole';
 import { ChatActions, sendMessage } from './Store';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
+import { twemoji } from './lib.js'
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
@@ -57,7 +58,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
                 <ul>{ this.props.activityWithSuggestedActions.suggestedActions.actions.map((action, index) =>
                     <li key={ index }>
                         <button type="button" onClick={ e => this.actionClick(e, action) } title={ action.title }>
-                            { action.title }
+                            { twemoji.parse(action.title) }
                         </button>
                     </li>
                 ) }</ul>
