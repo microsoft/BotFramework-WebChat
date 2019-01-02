@@ -1,9 +1,11 @@
-import { SET_DIRECTION } from '../actions/setDirection';
+import { SET_LANGUAGE } from '../actions/setLanguage';
 
-export default function (state = 'ltr', { payload, type }) {
+const DEFAULT_STATE = 'ltr';
+
+export default function (state = DEFAULT_STATE, { payload, type }) {
   switch (type) {
-    case SET_DIRECTION:
-      state = payload.direction === 'rtl' ? 'rtl' : 'ltr';
+    case SET_LANGUAGE:
+      state = /^he(-IL)?$/i.test(payload.language) ? 'rtl' : 'ltr';
       break;
 
     default: break;
