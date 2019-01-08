@@ -7,7 +7,7 @@ import {
   Image,
   OpenUrlAction,
   Size,
-  SizeUnit,
+  SizeAndUnit,
   SubmitAction,
   TextBlock,
   TextSize,
@@ -67,10 +67,7 @@ export class AdaptiveCardBuilder {
     return sizes.map(size => {
       const column = new Column();
 
-      column.width = {
-        physicalSize: size,
-        unit: SizeUnit.Pixel
-      };
+      column.width = SizeAndUnit.parse(size);
 
       columnSet.addColumn(column);
 
