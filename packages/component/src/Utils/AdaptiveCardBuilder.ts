@@ -21,7 +21,7 @@ export interface BotFrameworkCardAction extends CardAction {
 }
 
 function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
-  if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
+  if (cardAction.type === 'imBack' || cardAction.type === 'messageBack' || cardAction.type === 'postBack') {
     const action = new SubmitAction();
     const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
 

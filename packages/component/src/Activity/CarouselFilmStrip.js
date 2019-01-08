@@ -101,6 +101,12 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
   }) => {
     const fromUser = activity.from.role === 'user';
     const ariaLabel = localize('Bot said something', language, avatarInitials, activity.text, activity.timestamp)
+    const activityDisplayText =
+      (
+        activity.channelData
+        && activity.channelData.messageBack
+        && activity.channelData.messageBack.displayText
+      ) || activity.text;
 
     return (
       <div
@@ -118,7 +124,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
         />
         <div className="content">
           {
-            !!activity.text &&
+            !!activityDisplayText &&
               <div className="message">
                 <Bubble
                   aria-label={ ariaLabel }
@@ -129,7 +135,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
                     activity,
                     attachment: {
                       contentType: textFormatToContentType(activity.textFormat),
-                      content: activity.text
+                      content: activityDisplayText
                     }
                   }) }
                 </Bubble>

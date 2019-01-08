@@ -16,10 +16,10 @@ const connectSuggestedAction = (...selectors) => connectToWebChat(
     language,
     onCardAction
   }, {
-    type, value
+    displayText, text, type, value
   }) => ({
     click: () => {
-      onCardAction({ type, value });
+      onCardAction({ displayText, text, type, value });
       focusSendBox();
     },
     disabled,
@@ -32,17 +32,17 @@ export default connectSuggestedAction(
   ({ styleSet }) => ({ styleSet })
 )(
   ({
+    buttonText,
     disabled,
     click,
-    styleSet,
-    text
+    styleSet
   }) =>
     <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
       <button
         disabled={ disabled }
         onClick={ click }
       >
-        <nobr>{ text }</nobr>
+        <nobr>{ buttonText }</nobr>
       </button>
     </div>
 )
