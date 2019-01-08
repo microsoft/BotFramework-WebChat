@@ -62,9 +62,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
         const { data: cardAction } = action || {};
 
         if (cardAction && cardAction.__isBotFrameworkCardAction) {
-          const { type, value } = cardAction;
+          const { displayText, type, value } = cardAction;
 
-          props.onCardAction({ type, value });
+          props.onCardAction({ displayText, type, value });
         } else {
           props.onCardAction({
             type: typeof action.data === 'string' ? 'imBack' : 'postBack',

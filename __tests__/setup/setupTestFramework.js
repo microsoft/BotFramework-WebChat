@@ -90,6 +90,7 @@ afterEach(async () => {
         });
     } finally {
       await driver.quit();
+      driverPromise = null;
     }
   }
 });
