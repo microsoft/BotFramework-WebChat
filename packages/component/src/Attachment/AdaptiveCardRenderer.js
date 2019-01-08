@@ -90,8 +90,10 @@ class AdaptiveCardRenderer extends React.PureComponent {
       //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
 
       adaptiveCard.constructor.onProcessMarkdown = (text, result) => {
-        result.outputHtml = renderMarkdown(text);
-        result.didProcess = true;
+        if (renderMarkdown) {
+          result.outputHtml = renderMarkdown(text);
+          result.didProcess = true;
+        }
       };
 
       adaptiveCard.hostConfig = adaptiveCardHostConfig;
