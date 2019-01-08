@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix string interpolation error in Russian localization and fallback for browsers without Intl support by [@odysseus1973](https://github.com/odysseus1973) in PR [#1509](https://github.com/Microsoft/BotFramework-WebChat/pull/1509)
 - `playground`: Bumps to [`botframework-directlinejs@0.10.0`](https://github.com/Microsoft/BotFramework-DirectLineJS/), in PR [#1511](https://github.com/Microsoft/BotFramework-WebChat/pull/1511)
 - `playground`: Bumps to [`react-scripts@2.1.1`](https://npmjs.com/package/react-scripts/), in PR [#1535](https://github.com/Microsoft/BotFramework-WebChat/pull/1535)
+- `component`: Bump to [`adaptivecards@1.1.2`](https://npmjs.com/package/adaptivecards/), in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Fixed
 - Fix [#1360](https://github.com/Microsoft/BotFramework-WebChat/issues/1360). Added `roles` to components of Web Chat, by [@corinagum](https://github.com/corinagum) in PR [#1462](https://github.com/Microsoft/BotFramework-WebChat/pull/1462)
