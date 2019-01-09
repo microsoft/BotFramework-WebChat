@@ -6,23 +6,38 @@ export default function ({
   return {
     // Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function
     // https://developer.mozilla.org/en-US/docs/Web/CSS/overflow
-    marginBottom: -17,
-    paddingLeft: paddingRegular,
-    paddingRight: paddingRegular,
+    '@supports (-moz-appearance: none)': {
+      marginBottom: -17
+    },
 
     '& > .avatar': {
       marginRight: paddingRegular
     },
 
-    '& > .content > ul': {
-      '&:not(:first-child)': {
-        marginTop: paddingRegular
+    '& > .content': {
+      '& > .message': {
+        marginLeft: paddingRegular
       },
 
-      '& > li': {
-        marginRight: paddingRegular,
-        maxWidth: bubbleMaxWidth,
-        minWidth: bubbleMinWidth
+      '& > ul': {
+        '&:not(:first-child)': {
+          marginLeft: paddingRegular,
+          marginRight: paddingRegular,
+          marginTop: paddingRegular
+        },
+
+        '& > li': {
+          maxWidth: bubbleMaxWidth,
+          minWidth: bubbleMinWidth,
+
+          '&:not(:last-child)': {
+            marginRight: paddingRegular
+          }
+        }
+      },
+
+      '& > .row': {
+        marginLeft: paddingRegular
       }
     }
   };

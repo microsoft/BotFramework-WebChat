@@ -19,5 +19,8 @@ test('setup', async () => {
 
   const base64PNG = await driver.takeScreenshot();
 
-  expect(base64PNG).toMatchImageSnapshot();
+  expect(base64PNG).toMatchImageSnapshot({
+    failureThreshold: 10,
+    failureThresholdType: 'pixel'
+  });
 }, 60000);
