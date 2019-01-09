@@ -36,6 +36,11 @@ global.setupWebDriver = async () => {
         await driver.get(baseURL);
       }
 
+      await driver.executeScript(coverage => {
+        window.__coverage__ = coverage;
+        main();
+      }, global.__coverage__);
+
       return { driver };
     })();
   }
