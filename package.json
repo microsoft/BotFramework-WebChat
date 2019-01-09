@@ -18,11 +18,16 @@
   "keywords": [],
   "jest": {
     "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "\\.json$",
+      "/node_modules/"
+    ],
     "coverageReporters": [
       "lcov",
       "text-summary"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
+    "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/setup/"
     ],

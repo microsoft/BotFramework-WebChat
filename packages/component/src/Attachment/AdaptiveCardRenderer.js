@@ -59,9 +59,10 @@ class AdaptiveCardRenderer extends React.PureComponent {
       });
     } else if (actionTypeName === 'Action.Submit') {
       if (typeof action.data !== 'undefined') {
-        const { data: cardAction } = action || {};
+        const { data: actionData } = action;
 
-        if (cardAction && cardAction.__isBotFrameworkCardAction) {
+        if (actionData && actionData.__isBotFrameworkCardAction) {
+          const { cardAction } = actionData;
           const { displayText, type, value } = cardAction;
 
           props.onCardAction({ displayText, type, value });
