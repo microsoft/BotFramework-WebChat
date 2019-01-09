@@ -375,7 +375,8 @@ export default class extends React.Component {
                 value={ state.groupTimestamp || '' }
               >
                 <option value="default">Default</option>
-                <option value="false">Don't group</option>
+                <option value="false">Don't show timestamp</option>
+                <option value="0">Don't group</option>
                 <option value="1000">1 second</option>
                 <option value="10000">10 seconds</option>
                 <option value="60000">One minute</option>
