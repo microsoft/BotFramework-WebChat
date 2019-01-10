@@ -36,3 +36,18 @@ then
 
   cd ../..
 fi
+
+# If on "qfe" branch, deploy to "qfe" tag
+if [ "$TRAVIS_BRANCH" = "qfe" ]
+then
+  cd packages/core
+  npm publish --tag qfe
+
+  cd ../component
+  npm publish --tag qfe
+
+  cd ../bundle
+  npm publish --tag qfe
+
+  cd ../..
+fi

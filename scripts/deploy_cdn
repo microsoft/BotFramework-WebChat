@@ -24,3 +24,10 @@ then
 # Upload to /master/
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/master --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
 fi
+
+# If on "qfe" branch, deploy to "qfe" tag too
+if [ "$TRAVIS_BRANCH" = "qfe" ]
+then
+# Upload to /qfe/
+~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/packages/bundle/dist --remote-path $PACKAGE_NAME/qfe --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
+fi

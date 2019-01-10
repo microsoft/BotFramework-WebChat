@@ -51,6 +51,12 @@ deploy:
   script: bash scripts/deploy_cdn
   skip_cleanup: true
   on:
+    branch: qfe
+
+- provider: script
+  script: bash scripts/deploy_cdn
+  skip_cleanup: true
+  on:
     tags: true
 
 - provider: script
@@ -58,6 +64,12 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
+
+- provider: script
+  script: bash scripts/lerna_publish
+  skip_cleanup: true
+  on:
+    branch: qfe
 
 - provider: script
   script: bash scripts/lerna_publish
