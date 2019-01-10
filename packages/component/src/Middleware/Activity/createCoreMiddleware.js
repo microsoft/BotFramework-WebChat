@@ -6,7 +6,7 @@ import StackedLayout from '../../Activity/StackedLayout';
 const RETURN_FALSE = () => false;
 
 export default function () {
-  return () => next => ({ activity, showTimestamp }) => {
+  return () => next => ({ activity, timestampClassName }) => {
     // TODO: [P4] Can we simplify these if-statement to something more readable?
 
     const { type } = activity;
@@ -36,12 +36,12 @@ export default function () {
         && (activity.attachments || []).length > 1
         && activity.attachmentLayout === 'carousel'
       ) {
-        return children => <CarouselLayout activity={ activity } showTimestamp={ showTimestamp }>{ children }</CarouselLayout>;
+        return children => <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</CarouselLayout>;
       } else {
-        return children => <StackedLayout activity={ activity } showTimestamp={ showTimestamp }>{ children }</StackedLayout>;
+        return children => <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</StackedLayout>;
       }
     } else {
-      return next({ activity, showTimestamp });
+      return next({ activity, timestampClassName });
     }
   };
 }

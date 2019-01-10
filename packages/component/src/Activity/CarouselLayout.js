@@ -14,7 +14,7 @@ const ROOT_CSS = css({
 
 export default connectToWebChat(
   ({ language, styleSet }) => ({ language, styleSet })
-)(({ activity, children, language, showTimestamp, styleSet }) => {
+)(({ activity, children, language, styleSet, timestampClassName }) => {
   const filmStyleSet = createBasicStyleSet();
 
   return (
@@ -22,7 +22,7 @@ export default connectToWebChat(
       <FilmContext.Consumer>
         { ({ scrollBarWidth }) =>
           <div className={ classNames(ROOT_CSS + '', filmStyleSet.carousel + '') }>
-            <CarouselFilmStrip activity={ activity } showTimestamp={ showTimestamp }>
+            <CarouselFilmStrip activity={ activity } timestampClassName={ timestampClassName }>
               { children }
             </CarouselFilmStrip>
             { scrollBarWidth !== '100%' &&

@@ -24,7 +24,17 @@ const FILLER_CSS = css({
 });
 
 const LIST_CSS = css({
-  listStyleType: 'none'
+  listStyleType: 'none',
+
+  '& > li:first-child, & > li .transcript-timestamp': {
+    display: 'none'
+  },
+
+  '& > li.timestamp-group-a + li.timestamp-group-b, & > li.timestamp-group-b + li.timestamp-group-a': {
+    '& .transcript-timestamp': {
+      display: 'initial'
+    }
+  }
 });
 
 function shouldShowActivity(activity) {
@@ -50,24 +60,21 @@ function shouldShowActivity(activity) {
   return false;
 }
 
-function shouldShowTimestamp(activity, nextActivity, groupTimestamp) {
+function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   if (groupTimestamp === false) {
-    return false;
-  } else {
+    return true;
+  } else if (activityX && activityY) {
     groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
 
-    if (activity.type !== 'message') {
-      // Hide timestamp for typing
-      return false;
-    } else if (nextActivity && activity.from.role === nextActivity.from.role) {
-      const time = new Date(activity.timestamp).getTime();
-      const nextTime = new Date(nextActivity.timestamp).getTime();
+    if (activityX.from.role === activityY.from.role) {
+      const timeX = new Date(activityX.timestamp).getTime();
+      const timeY = new Date(activityY.timestamp).getTime();
 
-      return (nextTime - time) > groupTimestamp;
-    } else {
-      return true;
+      return Math.abs(timeX - timeY) <= groupTimestamp;
     }
   }
+
+  return false;
 }
 
 const BasicTranscript = ({
@@ -80,6 +87,7 @@ const BasicTranscript = ({
   webSpeechPonyfill
 }) => {
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
+  let lastGroupID = 0;
 
   return (
     <div
@@ -100,17 +108,37 @@ const BasicTranscript = ({
             className={ classNames(LIST_CSS + '', styleSet.activities + '') }
             role="list"
           >
+            {/*
+              This empty <li> element is to offset the timestamp grouping calculation for the first bubble.
+              Omitting this hidden <li> will cause the first bubble to hide its timestamp.
+            */}
+            <li aria-hidden={ true } className="timestamp-group-a" role="presentation" />
             {
               activities.map((activity, index) => {
-                const showTimestamp = shouldShowTimestamp(activity, activities[index + 1], groupTimestamp);
+                if (!sameTimestampGroup(activity, activities[index + 1], groupTimestamp)) {
+                  lastGroupID = (lastGroupID + 1) % 2;
+                }
 
                 return (
                   <li
-                    className={ styleSet.activity }
+                    className={ classNames(
+                      styleSet.activity + '',
+                      {
+                        'timestamp-group-a': !lastGroupID,
+                        'timestamp-group-b': lastGroupID
+                      }
+                    ) }
                     key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
                     role="listitem"
                   >
-                    { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
+                    {
+                      activityRenderer({
+                        activity,
+                        timestampClassName: 'transcript-timestamp'
+                      })(
+                        ({ attachment }) => attachmentRenderer({ activity, attachment })
+                      )
+                    }
                     {
                       // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
                       activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
