@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - UI: [Hide upload button](https://microsoft.github.io/BotFramework-WebChat/05.d.hide-upload-button-styling/), in [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - UI: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling/), in [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 - `core`: [Programmatic access to post activity](https://microsoft.github.io/BotFramework-WebChat/15.c.programmatic-post-activity/), in [#1568](https://github.com/Microsoft/BotFramework-WebChat/pull/1568)
-- UI: [Incoming activity to JavaScript event](https://microsoft.github.io/BotFramework-WebChat/15.b.incoming-activity-event/), in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- UI: [Incoming activity to JavaScript event](https://microsoft.github.io/BotFramework-WebChat/15.b.incoming-activity-event/), in [#1567](https://github.com/Microsoft/BotFramework-WebChat/pull/1567)
 
 ## [4.2.0] - 2018-12-11
 ### Added
