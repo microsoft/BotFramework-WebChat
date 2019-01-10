@@ -19,7 +19,11 @@ function xMinutesAgo(date) {
   } else if (deltaInHours <= 48) {
     return `אתמול`;
   } else {
-    return new Intl.DateTimeFormat(['he-IL', 'hebrew']).format(date);
+    return new Intl.DateTimeFormat('he-IL', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric'
+    }).format(date);
   }
 }
 
