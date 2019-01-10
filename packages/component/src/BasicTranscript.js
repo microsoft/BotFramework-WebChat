@@ -80,7 +80,6 @@ const BasicTranscript = ({
   webSpeechPonyfill
 }) => {
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
-  const visibleActivities = activities.filter(shouldShowActivity);
 
   return (
     <div
@@ -102,8 +101,8 @@ const BasicTranscript = ({
             role="list"
           >
             {
-              visibleActivities.map((activity, index) => {
-                const showTimestamp = shouldShowTimestamp(activity, visibleActivities[index + 1], groupTimestamp);
+              activities.map((activity, index) => {
+                const showTimestamp = shouldShowTimestamp(activity, activities[index + 1], groupTimestamp);
 
                 return (
                   <li
