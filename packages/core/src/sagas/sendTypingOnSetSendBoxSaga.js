@@ -7,11 +7,14 @@ import {
   takeLatest
 } from 'redux-saga/effects';
 
-import whileConnected from './effects/whileConnected';
-
 import { SET_SEND_BOX } from '../actions/setSendBox';
 import { SET_SEND_TYPING } from '../actions/setSendTyping';
 import postActivity from '../actions/postActivity';
+
+import whileConnected from './effects/whileConnected';
+
+import sendTypingSelector from '../selectors/sendTyping';
+
 import sleep from '../utils/sleep';
 
 const SEND_INTERVAL = 3000;
@@ -25,7 +28,7 @@ export default function* () {
 }
 
 function* sendTypingOnSetSendBox() {
-  const { sendTyping } = yield select();
+  const sendTyping = yield select(sendTypingSelector);
 
   if (!sendTyping) {
     yield takeSendTyping(true);

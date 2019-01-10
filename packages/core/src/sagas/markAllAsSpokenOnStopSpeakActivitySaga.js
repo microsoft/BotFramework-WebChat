@@ -4,21 +4,21 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import speakingActivity from '../definitions/speakingActivity';
-
 import { STOP_SPEAKING_ACTIVITY } from '../actions/stopSpeakingActivity';
 import markActivity from '../actions/markActivity';
+
+import speakingActivity from '../definitions/speakingActivity';
+
+import { of as activitiesOf } from '../selectors/activities';
 
 export default function* () {
   yield takeEvery(STOP_SPEAKING_ACTIVITY, markAllAsSpoken);
 }
 
 function* markAllAsSpoken() {
-  const { activities } = yield select();
+  const speakingActivities = yield select(activitiesOf(speakingActivity));
 
-  for (let activity of activities) {
-    if (speakingActivity(activity)) {
-      yield put(markActivity(activity, 'speak', false));
-    }
+  for (let activity of speakingActivities) {
+    yield put(markActivity(activity, 'speak', false));
   }
 }

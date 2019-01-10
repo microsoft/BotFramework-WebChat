@@ -9,13 +9,15 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import sleep from '../utils/sleep';
-
 import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
 
+import languageSelector from '../selectors/language';
+import sendTimeoutSelector from '../selectors/sendTimeout';
+
 import deleteKey from '../utils/deleteKey';
 import getTimestamp from '../utils/getTimestamp';
+import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 
 import {
@@ -38,7 +40,7 @@ export default function* () {
 }
 
 function* postActivity(directLine, userID, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
-  const locale = yield select(({ language }) => language);
+  const locale = yield select(languageSelector);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
@@ -96,7 +98,7 @@ function* postActivity(directLine, userID, numActivitiesPosted, { meta: { method
     //   - Direct Line service only respond on HTTP after bot respond to Direct Line
     // - Activity may take too long time to echo back
 
-    const sendTimeout = yield select(({ sendTimeout }) => sendTimeout);
+    const sendTimeout = yield select(sendTimeoutSelector);
 
     const { send: { echoBack } } = yield race({
       send: all({

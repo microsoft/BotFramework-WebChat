@@ -5,21 +5,15 @@ import {
 
 import updateIn from 'simple-update-in';
 
-import observeEach from './effects/observeEach';
-import whileConnected from './effects/whileConnected';
-
 import incomingActivity from '../actions/incomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
 
-function last(array, predicate) {
-  for (let i = array.length - 1; i >= 0; i--) {
-    const item = array[i];
+import activityFromBot from '../definitions/activityFromBot';
 
-    if (predicate.call(array, item)) {
-      return item;
-    }
-  }
-}
+import observeEach from './effects/observeEach';
+import whileConnected from './effects/whileConnected';
+
+import { ofType as activitiesOfType } from '../selectors/activities';
 
 export default function* () {
   yield whileConnected(observeActivity);
@@ -32,11 +26,10 @@ function* observeActivity(directLine, userID) {
     yield put(incomingActivity(activity));
 
     // Update suggested actions
-    const { activities } = yield select();
-    const lastMessageActivity = last(activities, ({ type }) => type === 'message');
+    const messageActivities = yield select(activitiesOfType('message'));
+    const lastMessageActivity = messageActivities[messageActivities.length - 1];
 
-    // TODO: [P2] Consider using "definitions/activityFromBot"
-    if (lastMessageActivity && lastMessageActivity.from.role === 'bot') {
+    if (activityFromBot(lastMessageActivity)) {
       const { suggestedActions: { actions } = {} } = lastMessageActivity;
 
       yield put(setSuggestedActions(actions));

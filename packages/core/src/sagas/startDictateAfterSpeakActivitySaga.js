@@ -4,13 +4,15 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
+import { MARK_ACTIVITY } from '../actions/markActivity';
+import startDictate from '../actions/startDictate';
+
 import speakingActivity from '../definitions/speakingActivity';
 
 import whileConnected from './effects/whileConnected';
 import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 
-import { MARK_ACTIVITY } from '../actions/markActivity';
-import startDictate from '../actions/startDictate';
+import { ofID as activitiesOfID } from '../selectors/activities';
 
 export default function* () {
   yield whileConnected(function* () {
@@ -30,11 +32,11 @@ function* startDictateAfterSpeakActivity() {
 }
 
 function* startDictateAfterAllActivitiesSpoken({ payload: { activityID } }) {
-  const { activities } = yield select();
-  const spokenActivity = activities.find(({ id }) => id === activityID);
+  const [spokenActivity] = yield select(activitiesOfID(activityID));
 
   if (
-    spokenActivity.inputHint !== 'ignoringInput'
+    spokenActivity
+    && spokenActivity.inputHint !== 'ignoringInput'
     // Checks if there are no more activities that will be synthesis
     && !activities.some(
       activity => activity.id !== activityID && speakingActivity(activity)
