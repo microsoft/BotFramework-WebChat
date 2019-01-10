@@ -16,7 +16,7 @@ Web Chat client that will forward all incoming activity to JavaScript event name
 
 ## Related samples
 
-[`15.a.backchannel-piggyback-on-outgoing-activities`] is a sample which will add custom data to every outgoing activities.
+[`15.a.backchannel-piggyback-on-outgoing-activities`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/15.a.backchannel-piggyback-on-outgoing-activities) is a sample which will add custom data to every outgoing activities.
 
 ## Full list of Web Chat hosted samples
 
