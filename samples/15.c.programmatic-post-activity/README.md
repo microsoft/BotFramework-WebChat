@@ -8,7 +8,7 @@ When a button is clicked, it will programmatically send a message to the bot.
 
 # Things to try out
 
-- Click the "Help" button on uperr-left hand corner
+- Click the "Help" button on upper-left hand corner
 
 # Further reading
 
