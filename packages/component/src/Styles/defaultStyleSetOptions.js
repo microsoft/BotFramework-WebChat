@@ -35,11 +35,13 @@ const DEFAULT_OPTIONS = {
   hideSendBox: false,
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
+  sendBoxBackground: 'White',
   sendBoxButtonColor: '#767676',
   sendBoxButtonColorOnDisabled: '#CCC',
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',
   sendBoxHeight: 40,
+  sendBoxTextColor: 'Black',
 
   // Visually show spoken text
   showSpokenText: false,

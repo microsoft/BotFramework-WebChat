@@ -3,7 +3,8 @@ import {
 } from '../Fonts';
 
 export default function createSendBoxTextBoxStyle({
-  paddingRegular
+  paddingRegular,
+  sendBoxTextColor
 }) {
   return  {
     ...primaryFont,
@@ -12,6 +13,7 @@ export default function createSendBoxTextBoxStyle({
 
     '& > input': {
       border: 0,
+      color: sendBoxTextColor,
       fontFamily: 'inherit',
       fontSize: 'inherit',
       height: '100%',
