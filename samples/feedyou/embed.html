@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #000;
+        font-family: Helvetica, Arial;
+        padding: 30px;
+      }
+
+      #bot {
+        background-color: #fff;
+        width: 450px;
+        height: 700px;
+        max-height: 75%;
+        position: absolute;
+        margin: auto auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="bot"></div>
+    <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
+    <script>
+      window.onload = function() {
+        BotChat.App(
+          {
+            directLine: { secret: "..." },
+            bot: { id: "feedbot-...", name: "..." },
+            theme: { mainColor: "..." }
+            // OPTIONAL - locale: '...',
+            // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
+          },
+          document.getElementById("bot")
+        );
+      };
+    </script>
+  </body>
+</html>

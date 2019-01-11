@@ -3,7 +3,11 @@ import * as ReactDOM from 'react-dom';
 import { Chat, ChatProps } from './Chat';
 import * as konsole from './Konsole';
 
-export type AppProps = ChatProps;
+export type Theme = {
+    mainColor: string
+}
+
+export type AppProps = ChatProps & {theme?: Theme};
 
 export const App = (props: AppProps, container: HTMLElement) => {
     konsole.log("BotChat.App props", props);
@@ -13,6 +17,14 @@ export const App = (props: AppProps, container: HTMLElement) => {
     props.showUploadButton = props.hasOwnProperty('showUploadButton') ? props.showUploadButton : false;
     props.resize = props.hasOwnProperty('resize') ? props.resize : 'detect';
     props.locale = props.hasOwnProperty('locale') ? props.locale : 'cs-cz';
+
+    // FEEDYOU configurable theming
+    if (props.theme) {
+        const themeStyle = document.createElement('style');
+        themeStyle.type = 'text/css';
+        themeStyle.appendChild(document.createTextNode(ThemeTemplate(props.theme)));
+        document.head.appendChild(themeStyle);
+    }
 
     // FEEDYOU use twemoji to make emoji compatible
     const script = document.createElement("script");
@@ -49,3 +61,40 @@ export function MakeId() {
 
     return text;
 }
+
+const ThemeTemplate = (theme: Theme) => `
+    .wc-chatview-panel {
+        top: 35px;
+    }
+
+    .wc-message-groups {
+        top: 0px;
+    }
+
+    .wc-header {
+        display: none;
+    }
+
+    .wc-card button {
+        color: ${theme.mainColor};
+    }
+
+    .wc-card button:hover {
+        border-color: ${theme.mainColor};
+        color: ${theme.mainColor};
+    }
+
+    .wc-card button:active {
+        background-color: ${theme.mainColor};
+        border-color: ${theme.mainColor};
+        color: #ffffff;
+    }
+
+    .wc-message-from-me .wc-message-content {
+        background-color: ${theme.mainColor};
+    }
+
+    .wc-message-from-me svg.wc-message-callout path {
+        fill: ${theme.mainColor};
+    }
+  `
