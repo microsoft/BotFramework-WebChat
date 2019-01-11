@@ -241,11 +241,16 @@
             max-width: 80vw;
             height: calc(100vh - #{$bottom} - 20px);
 
-            @include mobileAndTablet {
-                width:350px;
-            }
         }
 
+        @include mobileAndTablet {
+            height: 100vh;
+            max-width: 100vw;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            border-radius: 0;
+        }
     }
 
     .wc-floating-wrap {
@@ -255,9 +260,14 @@
         width:150px;
         z-index: 1000;
         text-align: center;
+
+        @include mobileAndTablet {
+            right: 0px;
+        }
     }
 
     .wc-floating-message {
+        cursor: pointer;
         display: inline-block;
         word-break: break-word;
         max-height: 100px;

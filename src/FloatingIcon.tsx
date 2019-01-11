@@ -37,14 +37,16 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
         const firstActivity: any =  filtered.length > 0 ? filtered[0] : null;
 
         return (
-            <div className="wc-floating-wrap">
+            <div
+                className="wc-floating-wrap"
+                onClick={() => {this.props.clicked(); }}
+            >
                 <span className={`wc-floating-message ${visible && firstActivity != null ? 'visible' : '' }`}>
                     {firstActivity ? firstActivity.text : null}
                 </span>
 
                 <div
                     className={`wc-floating`}
-                    onClick={() => {this.props.clicked(); }}
                 >
 
                     <img src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/gideon-horn-logo.svg"/>

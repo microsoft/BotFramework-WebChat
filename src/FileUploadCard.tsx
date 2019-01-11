@@ -2,8 +2,7 @@ import axios from 'axios';
 import * as React from 'react';
 import Dropzone from 'react-dropzone';
 import { connect } from 'react-redux';
-import { ChatState } from './Store';
-import { sendFiles , sendMessage } from './Store';
+import { ChatActions, ChatState, sendFiles , sendMessage } from './Store';
 
 export interface Node {
     node_type: string;
@@ -17,8 +16,10 @@ interface FileUploadProps {
     fileSelected: (inputStatus: boolean) => void;
     sendMessage: (inputText: any) => void;
     sendFiles: (files: FileList) => void;
+    inputDisabled: boolean;
     gid: string;
-}
+    updateInput: (disabled: boolean, placeholder: string) => void;
+ }
 
 export interface FileUploadState {
     files: any;
@@ -70,7 +71,15 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
     }
 
     componentDidMount() {
+        if (!this.props.inputDisabled) {
+            this.props.updateInput(true, 'Please upload a file or skip above.');
+        }
+
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
+    }
+
+    componentWillUnmount() {
+        this.props.updateInput(false, null);
     }
 
     handleSkipFile(e: React.MouseEvent<HTMLDivElement>) {
@@ -229,13 +238,17 @@ export const FileUploadCard = connect(
     (state: ChatState) => ({
         // passed down to MessagePaneView
         locale: state.format.locale,
+        inputDisabled: state.shell.inputDisabled,
         user: state.connection.user
     }), {
         fileSelected: (inputStatus: boolean) => ({type: 'Select_File', payload: inputStatus}),
         sendMessage,
+        updateInput: (disable: boolean, placeholder: string) => ({ type: 'Update_Input', placeholder, disable, source: 'text' } as ChatActions),
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): FileUploadProps => ({
         node: ownProps.node,
+        inputDisabled: stateProps.inputDisabled,
+        updateInput: dispatchProps.updateInput,
         fileSelected: dispatchProps.fileSelected,
         sendMessage: (text: any) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),

@@ -293,11 +293,12 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
     renderAdditionalActivity(contentClassName: string, wrapperClassName: string) {
         const { lastMessage, activity, doCardAction } = this.props;
         const activityCopy: any = activity;
+        // Entities is an array for some reason
         const activityRequiresAdditionalInput = activityCopy.entities && activityCopy.entities.length > 0 && activityCopy.entities[0].node_type !== null;
 
-        // Check if there's an actions present in the activity
-        const activityWithOptions = activityCopy.suggestedActions;
-        const activityHasSuggestedActions = activityWithOptions && activityWithOptions.actions && activityWithOptions.actions.length > 0;
+        const activityActions = activityCopy.suggestedActions;
+        // Check if there are suggessted acctions in the activity
+        const activityHasSuggestedActions = activityActions && activityActions.actions && activityActions.actions.length > 0;
 
         // Check if there's an additional activity to render to get the user's input
         if (lastMessage && (activityRequiresAdditionalInput || activityHasSuggestedActions)) {
@@ -305,8 +306,9 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
             if (activityRequiresAdditionalInput) {
                 nodeType = activityCopy.entities[0].node_type;
             } else if (activityHasSuggestedActions) {
-                nodeType = activityWithOptions.actions[0].type;
+                nodeType = activityActions.actions[0].type;
             }
+
             if (nodeType === 'date' || nodeType === 'handoff' || nodeType === 'file' || nodeType === 'imBack') {
                 return (
                     <div data-activity-id={activity.id } className={wrapperClassName}>

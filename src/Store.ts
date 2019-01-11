@@ -61,7 +61,9 @@ export interface ShellState {
 
 export type ShellAction = {
     type: 'Update_Input',
-    input: string
+    input?: string
+    disable?: boolean
+    placeholder?: string;
     source: 'text' | 'speech'
 } | {
     type: 'Listening_Starting'
@@ -112,11 +114,14 @@ export const shell: Reducer<ShellState> = (
     action: ShellAction
 ) => {
     switch (action.type) {
+
         case 'Update_Input':
             return {
                 ...state,
-                input: action.input,
-                lastInputViaSpeech : action.source === 'speech'
+                input: action.input ? action.input : state.input,
+                lastInputViaSpeech : action.source === 'speech',
+                placeholder: action.placeholder !== null ? action.placeholder : defaultStrings.consolePlaceholder,
+                inputDisabled: action.disable !== null ?  action.disable : state.inputDisabled
             };
 
         case 'Listening_Start':
