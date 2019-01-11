@@ -45,10 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Fix [#1560](https://github.com/Microsoft/BotFramework-WebChat/issues/1560). Fixed carousel layout did not show date and alignment issues, by [@compulim](https://github.com/compulim) in PR [#1561](https://github.com/Microsoft/BotFramework-WebChat/pull/1561)
 - `playground`: Fix [#1562](https://github.com/Microsoft/BotFramework-WebChat/issues/1562). Fixed timestamp grouping "Don't group" and added "Don't show timestamp", by [@compulim](https://github.com/compulim) in PR [#1563](https://github.com/Microsoft/BotFramework-WebChat/pull/1563)
 - `component`: Fix [#1576](https://github.com/Microsoft/BotFramework-WebChat/issues/1576). Rich card without `tap` should be rendered properly, by [@compulim](https://github.com/compulim) in PR [#1577](https://github.com/Microsoft/BotFramework-WebChat/pull/1577)
-- Core: Some sagas missed handling successive actions, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
-- Core: `incomingActivitySaga` may throw null-ref exception if the first activity is from user, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
-- Fix [#1328](https://github.com/Microsoft/BotFramework-WebChat/issues/1328). Should not start microphone if input hint is set to `ignoringInput`, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
-- Fix outgoing typing indicators are not sent and acknowledged properly, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
+- `core`: Some sagas missed handling successive actions, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
+- `core`: `incomingActivitySaga` may throw null-ref exception if the first activity is from user, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
+- `component`: Fix [#1328](https://github.com/Microsoft/BotFramework-WebChat/issues/1328). Should not start microphone if input hint is set to `ignoringInput`, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
+- `component`: Fix outgoing typing indicators are not sent and acknowledged properly, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
 
 ### Removed
 - `botAvatarImage` and `userAvatarImage` props, as they are moved inside `styleOptions`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
