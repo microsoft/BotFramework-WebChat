@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - by [@corinagum](https://github.com/corinagum) in PR [#1528](https://github.com/Microsoft/BotFramework-WebChat/pull/1528)
 - `component`: Fix [#1560](https://github.com/Microsoft/BotFramework-WebChat/issues/1560). Fixed carousel layout did not show date and alignment issues, by [@compulim](https://github.com/compulim) in PR [#1561](https://github.com/Microsoft/BotFramework-WebChat/pull/1561)
 - `playground`: Fix [#1562](https://github.com/Microsoft/BotFramework-WebChat/issues/1562). Fixed timestamp grouping "Don't group" and added "Don't show timestamp", by [@compulim](https://github.com/compulim) in PR [#1563](https://github.com/Microsoft/BotFramework-WebChat/pull/1563)
+- `component`: Fix [#1576](https://github.com/Microsoft/BotFramework-WebChat/issues/1576). Rich card without `tap` should be rendered properly, by [@compulim](https://github.com/compulim) in PR [#1577](https://github.com/Microsoft/BotFramework-WebChat/pull/1577)
 
 ### Removed
 - `botAvatarImage` and `userAvatarImage` props, as they are moved inside `styleOptions`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
