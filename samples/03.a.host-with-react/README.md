@@ -2,7 +2,7 @@
 
 > This is a great sample for first-time Web Chat users.
 
-A simple web page with a maximized Web Chat and hosted using React. This sample makes changes that are based off of the [full-bundle CDN sample](./../full-bundle/README.md).
+A simple web page with a maximized Web Chat and hosted using React. This sample makes changes that are based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
 # Test out the hosted sample
 
@@ -34,7 +34,7 @@ The `index.html` page has two main goals.
 - To import React and Babel from [unpkg.com](https://unpkg.com/)
 - To render Web Chat via React component
 
-We'll start by adding React and Babel to the head our template, based off of the [full-bundle CDN sample](./../full-bundle/README.md).
+We'll start by adding React and Babel to the head or our template, based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
 ```diff
 …
