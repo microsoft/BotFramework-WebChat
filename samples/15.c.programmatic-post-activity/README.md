@@ -14,7 +14,7 @@ When a button is clicked, it will programmatically send a message to the bot.
 
 ## Related samples
 
-[`15.b.incoming-activity-event`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/15.a.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activity.
+[`15.b.incoming-activity-event`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/15.a.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
 
 ## Full list of Web Chat hosted samples
 
