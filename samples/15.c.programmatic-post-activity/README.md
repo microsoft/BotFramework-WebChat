@@ -1,6 +1,6 @@
 # Sample - Programmatic access to post activity
 
-When a button is clicked, it will programmatically send a message to the bot.
+When a button is clicked, an activity will be sent programmatically to the bot.
 
 # Test out the hosted sample
 
