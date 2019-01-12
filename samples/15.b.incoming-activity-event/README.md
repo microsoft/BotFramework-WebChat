@@ -1,6 +1,6 @@
 # Sample - Forward all incoming activity to JavaScript event
 
-Web Chat client that will forward all incoming activity to JavaScript event named `webchatincomingactivity`.
+Web Chat client that will forward all incoming activity to a JavaScript event named `webchatincomingactivity`.
 
 # Test out the hosted sample
 
@@ -16,7 +16,7 @@ Web Chat client that will forward all incoming activity to JavaScript event name
 
 ## Related samples
 
-[`15.a.backchannel-piggyback-on-outgoing-activities`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/15.a.backchannel-piggyback-on-outgoing-activities) is a sample which will add custom data to every outgoing activities.
+[`15.a.backchannel-piggyback-on-outgoing-activities`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/15.a.backchannel-piggyback-on-outgoing-activities) is a sample that will add custom data to every outgoing activities.
 
 ## Full list of Web Chat hosted samples
 
