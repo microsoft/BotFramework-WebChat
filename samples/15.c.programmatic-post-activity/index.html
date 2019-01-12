@@ -47,7 +47,7 @@
           store
         }, document.getElementById('webchat'));
 
-        // Hook into the button click, when clicked, will send "help" message to the bot.
+        // The help button, when clicked, will send an activity with the text "help" to the bot.
         document.querySelector('#helpButton').addEventListener('click', () => {
           store.dispatch({
             type: 'WEB_CHAT/SEND_MESSAGE',
