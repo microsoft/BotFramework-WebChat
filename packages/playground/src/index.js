@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
-import { createStore } from 'botframework-webchat';
+import { createStore, sendEvent } from 'botframework-webchat';
 
 import App from './App';
 
@@ -28,7 +28,14 @@ window.addEventListener('keydown', event => {
 });
 
 store = createStore(
-  onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY)))
+  onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY))),
+  ({ dispatch }) => next => action => {
+    if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+      dispatch(sendEvent({ name: 'webchat/join', value: { language: 'en-US' } }));
+    }
+
+    return next(action);
+  }
 );
 
 store.subscribe(() => {
