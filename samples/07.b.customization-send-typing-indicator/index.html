@@ -31,12 +31,25 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
+        // The following code is added for demo purpose only, it will send "echo-typing" to our MockBot when connection is established.
+        // When "echo-typing" is enabled on MockBot, it will echo back all typing indicator send from the user.
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'echo-typing' } });
+          }
+
+          return next(action);
+        });
+
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
 
           // Web Chat will send typing activity, on behalf of the user, when "sendTyping" is set to true.
           // The typing indicator will be send when the send box by any means, including speech.
-          sendTyping: true
+          sendTyping: true,
+
+          // The following code is added for demo purpose only.
+          store
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
