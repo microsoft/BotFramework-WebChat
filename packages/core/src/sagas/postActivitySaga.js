@@ -2,20 +2,22 @@ import {
   all,
   call,
   cancelled,
-  fork,
   put,
   race,
   select,
-  take
+  take,
+  takeEvery
 } from 'redux-saga/effects';
-
-import sleep from '../utils/sleep';
 
 import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
 
+import languageSelector from '../selectors/language';
+import sendTimeoutSelector from '../selectors/sendTimeout';
+
 import deleteKey from '../utils/deleteKey';
 import getTimestamp from '../utils/getTimestamp';
+import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 
 import {
@@ -29,16 +31,16 @@ import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
 export default function* () {
   yield whileConnected(function* (directLine, userID) {
-    for (let numActivitiesPosted = 0;; numActivitiesPosted++) {
-      const action = yield take(POST_ACTIVITY);
+    let numActivitiesPosted = 0;
 
-      yield fork(postActivity, directLine, userID, numActivitiesPosted, action);
-    }
+    yield takeEvery(POST_ACTIVITY, function* (action) {
+      yield* postActivity(directLine, userID, numActivitiesPosted++, action);
+    });
   });
 }
 
-function* postActivity(directLine, userID, numActivitiesPosted, { payload: { activity } }) {
-  const locale = yield select(({ language }) => language);
+function* postActivity(directLine, userID, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
+  const locale = yield select(languageSelector);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
@@ -72,9 +74,9 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
     }];
   }
 
-  const meta = { clientActivityID };
+  const meta = { clientActivityID, method };
 
-  yield put({ type: POST_ACTIVITY_PENDING, payload: { activity }, meta });
+  yield put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity } });
 
   try {
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
@@ -96,7 +98,7 @@ function* postActivity(directLine, userID, numActivitiesPosted, { payload: { act
     //   - Direct Line service only respond on HTTP after bot respond to Direct Line
     // - Activity may take too long time to echo back
 
-    const sendTimeout = yield select(({ sendTimeout }) => sendTimeout);
+    const sendTimeout = yield select(sendTimeoutSelector);
 
     const { send: { echoBack } } = yield race({
       send: all({

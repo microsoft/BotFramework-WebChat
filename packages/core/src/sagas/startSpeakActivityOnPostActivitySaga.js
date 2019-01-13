@@ -6,22 +6,21 @@ import {
 import whileConnected from './effects/whileConnected';
 
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
-import setSuggestedActions from '../actions/setSuggestedActions';
+import startSpeakingActivity from '../actions/startSpeakingActivity';
 
 export default function* () {
-  yield whileConnected(clearSuggestedActionsOnPostActivity);
+  yield whileConnected(startSpeakActivityOnPostActivity);
 }
 
-function* clearSuggestedActionsOnPostActivity() {
+function* startSpeakActivityOnPostActivity() {
   yield takeEvery(
-    ({ payload, type }) => (
+    ({ meta, payload, type }) => (
       type === POST_ACTIVITY_PENDING
+      && meta.method === 'speech'
       && payload.activity.type === 'message'
     ),
-    clearSuggestedActions
+    function* () {
+      yield put(startSpeakingActivity());
+    }
   );
-}
-
-function* clearSuggestedActions() {
-  yield put(setSuggestedActions());
 }

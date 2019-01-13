@@ -29,7 +29,7 @@ class Dictation extends React.Component {
     props.stopDictate();
 
     if (transcript) {
-      props.setSendBox(transcript, 'speech');
+      props.setSendBox(transcript);
       props.submitSendBox('speech');
       props.startSpeakingActivity();
     }
@@ -45,7 +45,7 @@ class Dictation extends React.Component {
     // This is for two purposes:
     // 1. Set send box will also trigger send typing
     // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
-    props.setSendBox(interims.join(' '), 'speech');
+    props.setSendBox(interims.join(' '));
   }
 
   handleError(event) {

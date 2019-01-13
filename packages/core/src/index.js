@@ -3,6 +3,7 @@ import createStore from './createStore';
 import disconnect from './actions/disconnect';
 import markActivity from './actions/markActivity';
 import postActivity from './actions/postActivity';
+import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
 import sendMessage from './actions/sendMessage';
 import sendPostBack from './actions/sendPostBack';
@@ -31,6 +32,7 @@ export {
   disconnect,
   markActivity,
   postActivity,
+  sendEvent,
   sendFiles,
   sendMessage,
   sendPostBack,

@@ -110,7 +110,10 @@ const BasicTranscript = ({
                     role="listitem"
                   >
                     { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
-                    { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
+                    {
+                      // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+                      activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
+                    }
                   </li>
                 );
               })

@@ -7,11 +7,14 @@ import {
   takeLatest
 } from 'redux-saga/effects';
 
-import whileConnected from './effects/whileConnected';
-
 import { SET_SEND_BOX } from '../actions/setSendBox';
 import { SET_SEND_TYPING } from '../actions/setSendTyping';
 import postActivity from '../actions/postActivity';
+
+import whileConnected from './effects/whileConnected';
+
+import sendTypingSelector from '../selectors/sendTyping';
+
 import sleep from '../utils/sleep';
 
 const SEND_INTERVAL = 3000;
@@ -21,32 +24,38 @@ function takeSendTyping(value) {
 }
 
 export default function* () {
-  yield whileConnected(function* () {
-    const sendTyping = yield select(({ sendTyping }) => sendTyping);
+  yield whileConnected(sendTypingOnSetSendBox);
+}
 
-    if (!sendTyping) {
-      yield takeSendTyping(true);
-    }
+function* sendTypingOnSetSendBox() {
+  const sendTyping = yield select(sendTypingSelector);
 
-    for (;;) {
-      let lastSend = 0;
-      const task = yield takeLatest(SET_SEND_BOX, function* ({ payload: { text } }) {
-        if (text) {
-          const interval = SEND_INTERVAL - Date.now() + lastSend;
+  if (!sendTyping) {
+    yield takeSendTyping(true);
+  }
 
-          if (interval > 0) {
-            yield call(sleep, interval);
-          }
+  for (;;) {
+    let lastSend = 0;
+    const task = yield takeLatest(
+      ({ payload, type }) => (
+        type === SET_SEND_BOX
+        && payload.text
+      ),
+      function* () {
+        const interval = SEND_INTERVAL - Date.now() + lastSend;
 
-          yield put(postActivity({ type: 'typing' }));
-
-          lastSend = Date.now();
+        if (interval > 0) {
+          yield call(sleep, interval);
         }
-      });
 
-      yield takeSendTyping(false);
-      yield cancel(task);
-      yield takeSendTyping(true);
-    }
-  });
+        yield put(postActivity({ type: 'typing' }));
+
+        lastSend = Date.now();
+      }
+    );
+
+    yield takeSendTyping(false);
+    yield cancel(task);
+    yield takeSendTyping(true);
+  }
 }

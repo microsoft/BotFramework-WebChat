@@ -1,8 +1,7 @@
-export default function (activity, userID) {
+export default function (activity) {
   return (
     activity
     && activity.from
-    && activity.from.id !== userID
     && activity.type === 'message'
   );
 }
