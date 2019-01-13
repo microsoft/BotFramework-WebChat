@@ -9,29 +9,37 @@ import {
 
 import { SET_SEND_BOX } from '../actions/setSendBox';
 import { SET_SEND_TYPING } from '../actions/setSendTyping';
+import { SET_SEND_TYPING_INDICATOR } from '../actions/setSendTypingIndicator';
 import postActivity, { POST_ACTIVITY } from '../actions/postActivity';
 
 import whileConnected from './effects/whileConnected';
 
-import sendTypingSelector from '../selectors/sendTyping';
+import sendTypingIndicatorSelector from '../selectors/sendTypingIndicator';
 
 import sleep from '../utils/sleep';
 
 const SEND_INTERVAL = 3000;
 
-function takeSendTyping(value) {
-  return take(({ payload, type }) => type === SET_SEND_TYPING && !payload.sendTyping === !value);
+function takeSendTypingIndicator(value) {
+  return take(
+    ({ payload, type }) => (
+      (type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value)
+
+      // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
+      || (type === SET_SEND_TYPING && !payload.sendTyping === !value)
+    )
+  );
 }
 
 export default function* () {
-  yield whileConnected(sendTypingOnSetSendBox);
+  yield whileConnected(sendTypingIndicatorOnSetSendBox);
 }
 
-function* sendTypingOnSetSendBox() {
-  const sendTyping = yield select(sendTypingSelector);
+function* sendTypingIndicatorOnSetSendBox() {
+  const sendTypingIndicator = yield select(sendTypingIndicatorSelector);
 
-  if (!sendTyping) {
-    yield takeSendTyping(true);
+  if (!sendTypingIndicator) {
+    yield takeSendTypingIndicator(true);
   }
 
   for (;;) {
@@ -61,8 +69,8 @@ function* sendTypingOnSetSendBox() {
       }
     );
 
-    yield takeSendTyping(false);
+    yield takeSendTypingIndicator(false);
     yield cancel(task);
-    yield takeSendTyping(true);
+    yield takeSendTypingIndicator(true);
   }
 }

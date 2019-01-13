@@ -25,7 +25,7 @@ import {
   setLanguage,
   setSendBox,
   setSendTimeout,
-  setSendTyping,
+  setSendTypingIndicator,
   startDictate,
   startSpeakingActivity,
   stopDictate,
@@ -222,14 +222,14 @@ class Composer extends React.Component {
 
     this.setLanguageFromProps(props);
     this.setSendTimeoutFromProps(props);
-    this.setSendTypingFromProps(props);
+    this.setSendTypingIndicatorFromProps(props);
 
     props.dispatch(createConnectAction({ directLine, userID }));
   }
 
   componentDidUpdate(prevProps) {
     const { props } = this;
-    const { directLine, locale, sendTimeout, sendTyping, userID } = props;
+    const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID } = props;
 
     if (prevProps.locale !== locale) {
       this.setLanguageFromProps(props);
@@ -239,8 +239,13 @@ class Composer extends React.Component {
       this.setSendTimeoutFromProps(props);
     }
 
-    if (!prevProps.sendTyping !== !sendTyping) {
-      this.setSendTypingFromProps(props);
+    if (
+      !prevProps.sendTypingIndicator !== !sendTypingIndicator
+
+      // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
+      || !prevProps.sendTyping !== !sendTyping
+    ) {
+      this.setSendTypingIndicatorFromProps(props);
     }
 
     if (
@@ -261,8 +266,14 @@ class Composer extends React.Component {
     props.dispatch(setSendTimeout(props.sendTimeout || 20000));
   }
 
-  setSendTypingFromProps(props) {
-    props.dispatch(setSendTyping(!!props.sendTyping));
+  setSendTypingIndicatorFromProps(props) {
+    if (typeof props.sendTyping === 'undefined') {
+      props.dispatch(setSendTypingIndicator(!!props.sendTypingIndicator));
+    } else {
+      // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
+      console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead.');
+      props.dispatch(setSendTypingIndicator(!!props.sendTyping));
+    }
   }
 
   render() {
@@ -375,7 +386,7 @@ ConnectedComposerWithStore.propTypes = {
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
   sendTimeout: PropTypes.number,
-  sendTyping: PropTypes.bool,
+  sendTypingIndicator: PropTypes.bool,
   store: PropTypes.any,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
