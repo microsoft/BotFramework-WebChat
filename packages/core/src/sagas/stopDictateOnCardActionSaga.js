@@ -5,8 +5,8 @@ import {
 
 import whileConnected from './effects/whileConnected';
 
-import stopDictate from '../actions/stopDictate';
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
+import stopDictate from '../actions/stopDictate';
 
 export default function* () {
   yield whileConnected(stopDictateOnCardAction);
