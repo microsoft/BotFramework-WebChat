@@ -34,7 +34,8 @@
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
 
-          // Web Chat will send typing activity when "sendTyping" is set to true
+          // Web Chat will send typing activity, on behalf of the user, when "sendTyping" is set to true.
+          // The typing indicator will be send when the send box by any means, including speech.
           sendTyping: true
         }, document.getElementById('webchat'));
 
