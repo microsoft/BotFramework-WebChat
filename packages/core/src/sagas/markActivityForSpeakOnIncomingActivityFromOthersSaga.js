@@ -21,7 +21,8 @@ function* markActivityForSpeakOnIncomingActivityFromOthers(userID) {
   yield takeEvery(
     ({ payload, type }) => (
       type === INCOMING_ACTIVITY
-      && speakableActivity(payload.activity, userID)
+      && speakableActivity(payload.activity)
+      && payload.activity.from.id !== userID
     ),
     markActivityForSpeak
   );
