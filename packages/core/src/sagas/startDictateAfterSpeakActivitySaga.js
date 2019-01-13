@@ -32,7 +32,8 @@ function* startDictateAfterSpeakActivity() {
 }
 
 function* startDictateAfterAllActivitiesSpoken({ payload: { activityID } }) {
-  const [spokenActivity] = yield select(activitiesOfID(activityID));
+  const activities = yield select(activitiesOfID(activityID));
+  const [spokenActivity] = activities;
 
   if (
     spokenActivity
