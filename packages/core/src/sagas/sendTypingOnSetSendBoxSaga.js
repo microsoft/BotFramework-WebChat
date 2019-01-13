@@ -9,7 +9,7 @@ import {
 
 import { SET_SEND_BOX } from '../actions/setSendBox';
 import { SET_SEND_TYPING } from '../actions/setSendTyping';
-import postActivity from '../actions/postActivity';
+import postActivity, { POST_ACTIVITY } from '../actions/postActivity';
 
 import whileConnected from './effects/whileConnected';
 
@@ -38,19 +38,26 @@ function* sendTypingOnSetSendBox() {
     let lastSend = 0;
     const task = yield takeLatest(
       ({ payload, type }) => (
-        type === SET_SEND_BOX
-        && payload.text
+        (type === SET_SEND_BOX && payload.text)
+
+        // Stop sending pending typing indicator if the user has posted anything.
+        // We send typing indicator in a debounce way (t = 0, t = 3000, t = 6000).
+        // When the user type, and then post the activity at t = 1500, we still have a pending typing indicator at t = 3000.
+        // This code is to cancel the typing indicator at t = 3000.
+        || (type === POST_ACTIVITY && payload.activity.type !== 'typing')
       ),
-      function* () {
-        const interval = SEND_INTERVAL - Date.now() + lastSend;
+      function* ({ type }) {
+        if (type === SET_SEND_BOX) {
+          const interval = SEND_INTERVAL - Date.now() + lastSend;
 
-        if (interval > 0) {
-          yield call(sleep, interval);
+          if (interval > 0) {
+            yield call(sleep, interval);
+          }
+
+          yield put(postActivity({ type: 'typing' }));
+
+          lastSend = Date.now();
         }
-
-        yield put(postActivity({ type: 'typing' }));
-
-        lastSend = Date.now();
       }
     );
 
