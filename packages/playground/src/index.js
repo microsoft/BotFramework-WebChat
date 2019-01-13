@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
-import { createStore, sendEvent } from 'botframework-webchat';
+import { createStore } from 'botframework-webchat';
 
 import App from './App';
 
@@ -31,7 +31,7 @@ store = createStore(
   onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY))),
   ({ dispatch }) => next => action => {
     if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-      dispatch(sendEvent({ name: 'webchat/join', value: { language: 'en-US' } }));
+      dispatch({ type: 'WEB_CHAT/SEND_EVENT', payload: { name: 'webchat/join', value: { language: window.navigator.language } } });
     }
 
     return next(action);
