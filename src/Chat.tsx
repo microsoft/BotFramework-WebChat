@@ -1,20 +1,18 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import { connect } from 'react-redux';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
-import * as gideonBot from './api/bot';
+import { conversationHistory, ping, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
 import { Speech } from './SpeechModule';
 import { SpeechOptions } from './SpeechOptions';
-import { ChatActions, ChatState, createStore, sendMessage } from './Store';
+import { ChatActions, createStore, sendMessage } from './Store';
 import { Strings } from './Strings';
 import { ActivityOrID, FormatOptions } from './Types';
 
@@ -223,10 +221,22 @@ export class Chat extends React.Component<ChatProps, State> {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
 
-        const botConnection = this.props.directLine
-            ? (this.botConnection = new DirectLine(this.props.directLine))
-            : this.props.botConnection
-             ;
+        const conversationId = window.localStorage.getItem('msft_conversation_id');
+        const gideonId = window.localStorage.getItem('gid');
+        let isNew = true;
+        let botConnection: any = null;
+
+        if (conversationId !== 'null' && conversationId !== 'undefined' && this.props.gid === gideonId) {
+            isNew = false;
+            botConnection = new DirectLine({
+                ...this.props.directLine,
+                conversationId
+            });
+        } else {
+            botConnection = this.props.directLine
+                        ? (this.botConnection = new DirectLine(this.props.directLine))
+                        : this.props.botConnection;
+        }
 
         if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
@@ -251,11 +261,14 @@ export class Chat extends React.Component<ChatProps, State> {
 
         const state = this.store.getState();
 
-        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe(connectionStatus => {
+        this.connectionStatusSubscription = botConnection.connectionStatus$.subscribe((connectionStatus: any) => {
             if (connectionStatus === 2) {  // wait for connection is 'OnLine' to send data to bot
 
                 const botCopy: any = botConnection;
                 const conversationId = botCopy.conversationId;
+
+                window.localStorage.setItem('msft_conversation_id', conversationId);
+                window.localStorage.setItem('gid', this.props.gid);
 
                 if (!state.connection.verification.attempted) {
                     this.store.dispatch<ChatActions>({
@@ -265,46 +278,66 @@ export class Chat extends React.Component<ChatProps, State> {
                         }
                     });
 
-                    gideonBot.verifyConversation(
+                    verifyConversation(
                         this.props.gid,
                         conversationId,
                         user.id,
                         this.props.directLine.secret,
-                        window.location.origin,
-                        (res: any) => {
-                            this.setState({
-                                display: true
-                            });
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Verification',
-                                verification: {
-                                    status: 1
-                                }
-                            });
+                        window.location.origin
+                    )
+                    .then((res: any) => {
+                        this.setState({
+                            display: true
+                        });
+                        this.store.dispatch<ChatActions>({
+                            type: 'Set_Verification',
+                            verification: {
+                                status: 1
+                            }
+                        });
 
-                            // Ping server with activity every 30 seconds
-                            setInterval(() => {
-                                gideonBot.ping(
-                                    this.props.gid,
-                                    conversationId,
-                                    this.props.directLine.secret,
-                                    null,
-                                    null
-                                );
-                            }, 10000);
+                        conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
+                        .then((res: any) => {
+                            const state = this.store.getState();
+                            const messages = res.data.messages.reverse();
+                            messages.forEach((m: any, i: number) => {
+                                const activity: Activity = {
+                                    id: m.id,
+                                    type: 'message',
+                                    from: {
+                                        id: m.sender_type === 'bot' ? '' : state.connection.user.id
+                                    },
+                                    text: m.message
+                                };
 
+                                this.store.dispatch<ChatActions>({ type: 'Receive_Message', activity });
+                            });
+                        });
+
+                        // Ping server with activity every 30 seconds
+                        setInterval(() => {
+                            ping(
+                                this.props.gid,
+                                conversationId,
+                                this.props.directLine.secret
+                            );
+                        }, 10000);
+
+                        // Only initialize convo for user if it's their first time
+                        // interacting with the chatbot
+                        if (isNew) {
                             // Send initial message to start conversation
                             this.store.dispatch(sendMessage(state.format.strings.pingMessage, state.connection.user, state.format.locale));
-                        },
-                        (err: any) => {
-                            this.store.dispatch<ChatActions>({
-                                type: 'Set_Verification',
-                                verification: {
-                                    status: 2
-                                }
-                            });
                         }
-                    );
+                    })
+                    .catch((err: any) => {
+                        this.store.dispatch<ChatActions>({
+                            type: 'Set_Verification',
+                            verification: {
+                                status: 2
+                            }
+                        });
+                    });
                 }
             }
 
@@ -319,8 +352,8 @@ export class Chat extends React.Component<ChatProps, State> {
         });
 
         this.activitySubscription = botConnection.activity$.subscribe(
-            activity => this.handleIncomingActivity(activity),
-            error => konsole.log('activity$ error', error)
+            (activity: Activity) => this.handleIncomingActivity(activity),
+            (error: Error) => konsole.log('activity$ error', error)
         );
 
         if (this.props.selectedActivity) {

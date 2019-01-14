@@ -410,6 +410,7 @@ export const history: Reducer<HistoryState> = (
             );
             if (i !== -1) {
                 const activity = state.activities[i];
+
                 return {
                     ...state,
                     activities: copyArrayWithUpdatedItem(state.activities, i, activity),
