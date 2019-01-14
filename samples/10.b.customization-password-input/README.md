@@ -1,6 +1,6 @@
 # Sample - Password input activity
 
-Show a custom activity that accept password input and submit as postback activity.
+Show a custom activity that accepts password input and submit as a postback activity.
 
 # Test out the hosted sample
 
