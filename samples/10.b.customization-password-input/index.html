@@ -142,11 +142,7 @@
         window.ReactDOM.render(
           <ReactWebChat
             activityMiddleware={ activityMiddleware }
-            directLine={ window.WebChat.createDirectLine({
-              domain: 'http://localhost:5000/v3/directline',
-              webSocket: false
-              // token
-            }) }
+            directLine={ window.WebChat.createDirectLine({ token }) }
             store={ store }
           />,
           document.getElementById('webchat')
