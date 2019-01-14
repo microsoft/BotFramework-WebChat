@@ -11,7 +11,7 @@ import {
   export default function* () {
     yield whileConnected(function* () {
       for (;;) {
-        const { payload: { displayText, text, value } } = yield take(SEND_MESSAGE_BACK);
+        const { payload: { displayText, text, value } } = yield takeEvery(SEND_MESSAGE_BACK);
 
         if (text || value) {
           yield put(postActivity({

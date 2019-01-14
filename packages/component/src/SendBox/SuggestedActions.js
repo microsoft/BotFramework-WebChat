@@ -49,7 +49,7 @@ export default connectSuggestedActions(
               type === 'messageBack' ?
                 title || displayText
               :
-                title || value
+                title || (typeof value !== 'string') ? JSON.stringify(value) : value
             }
             displayText={ displayText }
             key={ index }
