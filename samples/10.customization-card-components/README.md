@@ -1,10 +1,7 @@
-# Sample
+# Redirect information
 
-A simple web page with a maximized Web Chat and hosted using React.
+Due to renaming our sample files, the sample links on our NPM page are temporarily pointing to the wrong URL.
 
-# How to run
+Please click the link below to be redirected. Sorry for the inconvenience.
 
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
-
-# Things to try out
+## [10.a.customization-card-components](./../10.a.customization-card-components/)
