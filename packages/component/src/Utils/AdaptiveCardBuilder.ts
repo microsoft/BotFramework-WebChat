@@ -22,11 +22,12 @@ export interface BotFrameworkCardAction {
 }
 
 function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
+  const { type } = cardAction;
   if (
-    cardAction.type === 'imBack'
-    || cardAction.type === 'messageBack'
-    || cardAction.type === 'postBack'
-    || (cardAction.type === 'signin' && includesOAuthButtons)
+    type === 'imBack'
+    || type === 'messageBack'
+    || type === 'postBack'
+    || (type === 'signin' && includesOAuthButtons)
   ) {
     const action = new SubmitAction();
 
