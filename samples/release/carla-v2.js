@@ -247,7 +247,7 @@ var carlaBot = (function () {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12&autoLogAppEvents=1';
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
         fjs.parentNode.insertBefore(js, fjs);
       })(document, 'script', 'facebook-jssdk');
     };
@@ -321,10 +321,12 @@ var carlaBot = (function () {
         // FB To Call This After It Has Loaded
       window.fbAsyncInit = function() {
         FB.init({
-            appId  : appId,
-            status : true,
-            cookie : true,
-            version: 'v2.12'
+            appId: appId,
+            status: true,
+            cookie: true,
+            autoLogAppEvents: true,
+            xfbml: true,
+            version: 'v3.2'
         });
         FB.getLoginStatus(function(response) {
           if (response.status === 'connected') { // Logged In And Has Authorized App
