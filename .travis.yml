@@ -30,6 +30,10 @@ script:
 - docker-compose down --rmi all
 - npm run coveralls
 
+# Upload image snapshots to build artifact curator
+- zip image-snapshots __tests__/__image_snapshots__/**/*
+- curl -T image-snapshots.zip https://webchat-curator.azurewebsites.net/upload
+
 before_deploy:
 - git config --local user.name "Bot Framework"
 - git config --local user.email "botframework@microsoft.com"
