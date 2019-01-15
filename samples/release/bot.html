@@ -58,7 +58,7 @@
 
       }
 
-      var actionEndpointUrl = `${ACTION_ENDPOINT_URL}/api/action/welcome.greeting?userId=${userId}&vendorId=${VENDOR_ID}`;
+      var actionEndpointUrl = ACTION_ENDPOINT_URL + '/api/action/welcome.greeting?userId=' + userId + '&vendorId=' + VENDOR_ID;
 
       BotChat.App({
         secret: SECRET,
