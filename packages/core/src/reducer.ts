@@ -8,6 +8,7 @@ import readyState from './reducers/readyState';
 import referenceGrammarID from './reducers/referenceGrammarID';
 import sendBoxValue from './reducers/sendBoxValue';
 import sendTimeout from './reducers/sendTimeout';
+import sendTyping from './reducers/sendTyping';
 import suggestedActions from './reducers/suggestedActions';
 
 export default combineReducers({
@@ -19,5 +20,6 @@ export default combineReducers({
   referenceGrammarID,
   sendBoxValue,
   sendTimeout,
+  sendTyping,
   suggestedActions
 })
