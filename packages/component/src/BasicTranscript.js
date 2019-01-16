@@ -37,29 +37,6 @@ const LIST_CSS = css({
   }
 });
 
-function shouldShowActivity(activity) {
-  if (activity) {
-    if (activity.type === 'message') {
-      const { attachments = [], text } = activity;
-
-      if (
-        // Do not show postback
-        !(activity.channelData && activity.channelData.postBack)
-        // Do not show messageBack if displayText is undefined
-        && !(activity.channelData && activity.channelData.messageBack && !activity.channelData.messageBack.displayText)
-        // Do not show empty bubbles (no text and attachments, and not "typing")
-        && (text || attachments.length)
-      ) {
-        return true;
-      }
-    } else if (activity.type === 'typing') {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   if (groupTimestamp === false) {
     return true;
