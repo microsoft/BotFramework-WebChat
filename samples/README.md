@@ -8,7 +8,7 @@ Here you can find all hosted samples of [Web Chat](https://github.com/Microsoft/
 
 This section covers samples helping you to jumpstart embedding Web Chat in your existing web site.
 
-### Thru CDN
+### Through CDN
 
 For simplicity, you can use a `<script>` tag to embed Web Chat from a CDN.
 
@@ -19,7 +19,7 @@ For simplicity, you can use a `<script>` tag to embed Web Chat from a CDN.
 
 > You can look at this [sunburst chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) for better understanding on the content of various bundles.
 
-Web Chat offer different bundle varieties as outlined in the table below.
+Web Chat offers different bundle varieties as outlined in the table below.
 
 |                                                                                                                      | Minimal | Full | Full with ES5 polyfills |
 | -------------------------------------------------------------------------------------------------------------------- | ------- | ---- | ----------------------- |
@@ -34,11 +34,11 @@ Web Chat offer different bundle varieties as outlined in the table below.
 
 > Rich card (e.g. hero card, receipt card) requires Adaptive Cards.
 
-### Thru NPM (as a React component)
+### Through NPM (as a React component)
 
 You can also embed Web Chat as a React component from NPM. This is a more advanced approach and requires knowledge of React and bundling.
 
-This approach will give you lots of flexibility to style and customize the component, including breaking down Web Chat into pieces and recompose back into a component.
+This approach will give you lots of flexibility to style and customize the component, including breaking down Web Chat into pieces and recomposing them back into a component.
 
 - [Integrate with React](https://microsoft.github.io/BotFramework-WebChat/03.a.host-with-react) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/03.a.host-with-react)
 
@@ -53,7 +53,7 @@ Web Chat can be styled in many ways without too much coding.
 
 ## Speech support
 
-To use Cognitive Services or your own speech engine withWeb Chat, these samples will give you a headstart.
+To use Cognitive Services or your own speech engine with Web Chat, these samples will give you a headstart.
 
 - Cognitive Services Bing Speech
    - [Using JavaScript](https://microsoft.github.io/BotFramework-WebChat/06.a.cognitive-services-bing-speech-js) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.a.cognitive-services-bing-speech-js)
@@ -65,11 +65,11 @@ To use Cognitive Services or your own speech engine withWeb Chat, these samples 
 
 ## Customization
 
-If styling cannot met your need, you can customize Web Chat by extend the render pipeline or break it down and recompose it.
+If styling cannot meet your needs, you can customize Web Chat by extending the render pipeline or by breaking it down and recomposing it.
 
-### Activity and attachment
+### Activities and attachments
 
-To add, decorate, replace, or remove activity or attachment, these samples will give you a headstart.
+To add, decorate, replace, or remove activities or attachments, these samples will give you a headstart.
 
 - [Activity decorator: Button](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/09.customization-reaction-buttons)
 - [Activity decorator: Highlight](https://microsoft.github.io/BotFramework-WebChat/08.customization-user-highlighting) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/08.customization-user-highlighting)
@@ -78,7 +78,7 @@ To add, decorate, replace, or remove activity or attachment, these samples will 
 
 ## Backchannel
 
-On your web site, instead of connecting to your backend thru REST/Web Socket API, you can also connect thru Direct Line activities. This gives you flexibility of delivering content to your users.
+On your web site, instead of connecting to your backend thru REST/Web Socket API, you can also connect thru Direct Line activities. This gives you the flexibility of delivering content to your users.
 
 - [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/14.customization-piping-to-redux)
 
