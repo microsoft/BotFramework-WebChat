@@ -26,11 +26,13 @@ script:
 - docker-compose up --build -d
 - docker-compose exec webchat ls -la
 - npm test -- --coverageReporters=lcov --coverageReporters=text
+- ls -laR __tests__/__image_snapshots__/
 - docker-compose logs
 - docker-compose down --rmi all
 - npm run coveralls
 
 # Upload image snapshots to build artifact curator
+- ls -laR __tests__/__image_snapshots__/
 - zip image-snapshots __tests__/__image_snapshots__/**/*
 - curl -T image-snapshots.zip https://webchat-curator.azurewebsites.net/upload
 
