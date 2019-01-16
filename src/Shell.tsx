@@ -198,6 +198,7 @@ export const Shell = connect(
     (state: ChatState) => ({
         // passed down to ShellContainer
         connectionStatus: state.connection.connectionStatus,
+        user: state.connection.user,
         format: state.format,
         inputText: state.shell.input,
         showUploadButton: state.format.showUploadButton,
