@@ -34,12 +34,28 @@ export default connectSuggestedActions(
       styleSet={ styleSet.options.suggestedActionsStyleSet }
     >
       {
-        suggestedActions.map((suggestedAction, index) =>
+        suggestedActions.map((
+          {
+            displayText,
+            text,
+            title,
+            type,
+            value
+          },
+          index
+        ) =>
           <SuggestedAction
+            buttonText={
+              type === 'messageBack' ?
+                title || displayText
+              :
+                title || (typeof value !== 'string') ? JSON.stringify(value) : value
+            }
+            displayText={ displayText }
             key={ index }
-            text={ suggestedAction.title || suggestedAction.value }
-            type={ suggestedAction.type }
-            value={ suggestedAction.value }
+            text={ text }
+            type={ type }
+            value={ value }
           />
         )
       }

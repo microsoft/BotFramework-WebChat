@@ -1,0 +1,6 @@
+{
+  "imageSnapshotOptions": {
+    "failureThreshold": 10,
+    "failureThresholdType": "pixel"
+  }
+}

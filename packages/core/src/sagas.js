@@ -11,6 +11,7 @@ import removeIncomingTypingAfterIntervalSaga from './sagas/removeIncomingTypingA
 import sendEventToPostActivitySaga from './sagas/sendEventToPostActivitySaga';
 import sendFilesToPostActivitySaga from './sagas/sendFilesToPostActivitySaga';
 import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga';
+import sendMessageBackToPostActivitySaga from './sagas/sendMessageBackToPostActivitySaga';
 import sendPostBackToPostActivitySaga from './sagas/sendPostBackToPostActivitySaga';
 import sendTypingOnSetSendBoxSaga from './sagas/sendTypingOnSetSendBoxSaga';
 import startDictateAfterSpeakActivitySaga from './sagas/startDictateAfterSpeakActivitySaga';
@@ -31,6 +32,7 @@ export default function* () {
   yield fork(sendEventToPostActivitySaga);
   yield fork(sendFilesToPostActivitySaga);
   yield fork(sendMessageToPostActivitySaga);
+  yield fork(sendMessageBackToPostActivitySaga);
   yield fork(sendPostBackToPostActivitySaga);
   yield fork(sendTypingOnSetSendBoxSaga);
   yield fork(startDictateAfterSpeakActivitySaga);

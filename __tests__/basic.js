@@ -1,4 +1,5 @@
 import { By, Key } from 'selenium-webdriver';
+import { imageSnapshotOptions } from './constants.json';
 
 function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -19,8 +20,5 @@ test('setup', async () => {
 
   const base64PNG = await driver.takeScreenshot();
 
-  expect(base64PNG).toMatchImageSnapshot({
-    failureThreshold: 10,
-    failureThresholdType: 'pixel'
-  });
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 }, 60000);

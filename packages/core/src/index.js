@@ -6,6 +6,7 @@ import postActivity from './actions/postActivity';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
 import sendMessage from './actions/sendMessage';
+import sendMessageBack from './actions/sendMessageBack';
 import sendPostBack from './actions/sendPostBack';
 import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
@@ -35,6 +36,7 @@ export {
   sendEvent,
   sendFiles,
   sendMessage,
+  sendMessageBack,
   sendPostBack,
   setDictateInterims,
   setDictateState,

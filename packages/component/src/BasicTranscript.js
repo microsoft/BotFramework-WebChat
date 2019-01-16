@@ -35,6 +35,8 @@ function shouldShowActivity(activity) {
       if (
         // Do not show postback
         !(activity.channelData && activity.channelData.postBack)
+        // Do not show messageBack if displayText is undefined
+        && !(activity.channelData && activity.channelData.messageBack && !activity.channelData.messageBack.displayText)
         // Do not show empty bubbles (no text and attachments, and not "typing")
         && (text || attachments.length)
       ) {

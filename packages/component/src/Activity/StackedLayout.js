@@ -96,6 +96,12 @@ export default connectStackedLayout(
     const { state } = activity.channelData || {};
     const showSendStatus = state === SENDING || state === SEND_FAILED;
     const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, activity.text, activity.timestamp);
+    const activityDisplayText =
+      (
+        activity.channelData
+        && activity.channelData.messageBack
+        && activity.channelData.messageBack.displayText
+      ) || activity.text;
 
     return (
       <div
@@ -122,7 +128,7 @@ export default connectStackedLayout(
                 }
                 <div className="filler" />
               </div>
-            : !!activity.text &&
+            : !!activityDisplayText &&
               <div className="row message">
                 <Bubble
                   aria-label={ ariaLabel }
@@ -134,7 +140,7 @@ export default connectStackedLayout(
                       activity,
                       attachment: {
                         contentType: textFormatToContentType(activity.textFormat),
-                        content: activity.text
+                        content: activityDisplayText
                       }
                     })
                   }

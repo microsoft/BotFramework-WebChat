@@ -36,7 +36,6 @@
       When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
       Or locked down on a specific version "/4.1.0/webchat.js".
     -->
-    <script src="/webchat-instrumented.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -51,25 +50,33 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
-        // In this demo, we are using Direct Line token from MockBot.
-        // To talk to your bot, you should use the token exchanged using your Direct Line secret.
-        // You should never put the Direct Line secret in the browser or client app.
-        // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+      function main() {
+        const webChatScript = document.createElement('script');
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
+        webChatScript.setAttribute('src', '/webchat-instrumented.js');
 
-        window.WebChat.renderWebChat({
-          // directLine: window.WebChat.createDirectLine({
-          //   domain: 'http://localhost:5000/v3/directline',
-          //   webSocket: false
-          // })
-          directLine: window.WebChat.createDirectLine({ token })
-        }, document.getElementById('webchat'));
+        webChatScript.addEventListener('load', async () => {
+          // In this demo, we are using Direct Line token from MockBot.
+          // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+          // You should never put the Direct Line secret in the browser or client app.
+          // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
+
+          window.WebChat.renderWebChat({
+            // directLine: window.WebChat.createDirectLine({
+            //   domain: 'http://localhost:5000/v3/directline',
+            //   webSocket: false
+            // })
+            directLine: window.WebChat.createDirectLine({ token })
+          }, document.getElementById('webchat'));
+
+          document.querySelector('#webchat > *').focus();
+        });
+
+        document.body.appendChild(webChatScript);
+      }
     </script>
   </body>
 </html>

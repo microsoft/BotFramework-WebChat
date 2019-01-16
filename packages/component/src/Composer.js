@@ -18,6 +18,7 @@ import {
   sendEvent,
   sendFiles,
   sendMessage,
+  sendMessageBack,
   sendPostBack,
   setDictateInterims,
   setDictateState,
@@ -48,6 +49,7 @@ const DISPATCHERS = {
   sendEvent,
   sendFiles,
   sendMessage,
+  sendMessageBack,
   sendPostBack,
   setDictateInterims,
   setDictateState,
@@ -66,7 +68,7 @@ function styleSetToClassNames(styleSet) {
 
 function createCardActionLogic({ directLine, dispatch }) {
   return {
-    onCardAction: (({ type, value }) => {
+    onCardAction: (({ displayText, text, type, value }) => {
       switch (type) {
         case 'imBack':
           if (typeof value === 'string') {
@@ -75,6 +77,11 @@ function createCardActionLogic({ directLine, dispatch }) {
           } else {
             throw new Error('cannot send "imBack" with a non-string value');
           }
+
+          break;
+
+        case 'messageBack':
+          dispatch(sendMessageBack(value, text, displayText));
 
           break;
 
