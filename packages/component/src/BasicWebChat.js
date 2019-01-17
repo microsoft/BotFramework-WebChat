@@ -100,6 +100,10 @@ export default class extends React.Component {
     }
   }
 
+  defaultExternalUrlHandlerFactory({ value }) {
+    return value && window.open.bind(window, value);
+  }
+
   render() {
     const { props, state } = this;
 
@@ -109,6 +113,7 @@ export default class extends React.Component {
       <Composer
         activityRenderer={ state.activityRenderer }
         attachmentRenderer={ state.attachmentRenderer }
+        externalUrlHandlerFactory={ this.defaultExternalUrlHandlerFactory  }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
       >

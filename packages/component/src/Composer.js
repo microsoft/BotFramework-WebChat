@@ -96,9 +96,8 @@ function createCardActionLogic({ directLine, dispatch }) {
         case 'playAudio':
         case 'playVideo':
         case 'showImage':
-          // TODO: [P3] We should support ponyfill for window.open
-          //       This is as-of v3
-          window.open(value);
+          const factory = this.props.externalUrlHandlerFactory({ value });
+          factory && factory(value);
           break;
 
         case 'signin':
@@ -370,6 +369,7 @@ ConnectedComposerWithStore.propTypes = {
   attachmentRenderer: PropTypes.func,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
+  externalUrlHandlerFactory: PropTypes.func,
   grammars: PropTypes.arrayOf(PropTypes.string),
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
