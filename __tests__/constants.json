@@ -1,4 +1,7 @@
 {
+  "customDiffConfig": {
+    "threshold": 0.15
+  },
   "imageSnapshotOptions": {
     "failureThreshold": 10,
     "failureThresholdType": "pixel"
