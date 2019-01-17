@@ -6,7 +6,7 @@ Here you can find all hosted samples of [Web Chat](https://github.com/Microsoft/
 
 ## Basics
 
-This section covers samples helping you to jumpstart embedding Web Chat in your existing web site.
+This sections covers samples that help you jumpstart the process of embedding Web Chat in your exisiting web site.
 
 ### Through CDN
 
@@ -60,12 +60,12 @@ To use Cognitive Services or your own speech engine with Web Chat, these samples
    - [Using React](https://microsoft.github.io/BotFramework-WebChat/06.b.cognitive-services-bing-speech-react) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.b.cognitive-services-bing-speech-react)
 - Cognitive Services Speech Services
    - [Using JavaScript](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
-- [Speech thru a supported browsers](https://microsoft.github.io/BotFramework-WebChat/06.d.speech-web-browser) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.speech-web-browser)
+- [Speech through a supported browsers](https://microsoft.github.io/BotFramework-WebChat/06.d.speech-web-browser) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.speech-web-browser)
    - [List of supported browsers](https://caniuse.com/#search=speech)
 
 ## Customization
 
-If styling cannot meet your needs, you can customize Web Chat by extending the render pipeline or by breaking it down and recomposing it.
+If the current styling of Web Chat does not meet your needs, you can customize your project by extending the render pipeline or breaking it down and recomposing it.
 
 ### Activities and attachments
 
@@ -78,7 +78,7 @@ To add, decorate, replace, or remove activities or attachments, these samples wi
 
 ## Backchannel
 
-On your web site, instead of connecting to your backend thru REST/Web Socket API, you can also connect thru Direct Line activities. This gives you the flexibility of delivering content to your users.
+On your web site, instead of connecting to your backend through REST/Web Socket API, you can also connect through Direct Line activities. This gives you the flexibility of delivering content to your users.
 
 - [Pipe activities to Redux as actions](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/14.customization-piping-to-redux)
 
