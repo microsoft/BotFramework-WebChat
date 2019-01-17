@@ -26,14 +26,8 @@ const FILLER_CSS = css({
 const LIST_CSS = css({
   listStyleType: 'none',
 
-  '& > li:first-child, & > li .transcript-timestamp': {
+  '& > li.hide-timestamp .transcript-timestamp': {
     display: 'none'
-  },
-
-  '& > li.timestamp-group-a + li.timestamp-group-b, & > li.timestamp-group-b + li.timestamp-group-a': {
-    '& .transcript-timestamp': {
-      display: 'initial'
-    }
   }
 });
 
@@ -64,7 +58,26 @@ const BasicTranscript = ({
   webSpeechPonyfill
 }) => {
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
-  let lastGroupID = 0;
+
+  // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
+  // Until the activity pass thru middleware, we never know if it is going to show up.
+  // After we know which activities will show up, we can compute which activity will show timestamp.
+  // If the activity does not render, we will also not speaking it out (if text-to-speech is enabled).
+  const activityElements = activities.reduce((activityElements, activity) => {
+    const element = activityRenderer({
+      activity,
+      timestampClassName: 'transcript-timestamp'
+    })(
+      ({ attachment }) => attachmentRenderer({ activity, attachment })
+    );
+
+    element && activityElements.push({
+      activity,
+      element
+    });
+
+    return activityElements;
+  }, []);
 
   return (
     <div
@@ -85,44 +98,26 @@ const BasicTranscript = ({
             className={ classNames(LIST_CSS + '', styleSet.activities + '') }
             role="list"
           >
-            {/*
-              This empty <li> element is to offset the timestamp grouping calculation for the first bubble.
-              Omitting this hidden <li> will cause the first bubble to hide its timestamp.
-            */}
-            <li aria-hidden={ true } className="timestamp-group-a" role="presentation" />
             {
-              activities.map((activity, index) => {
-                if (!sameTimestampGroup(activity, activities[index + 1], groupTimestamp)) {
-                  lastGroupID = (lastGroupID + 1) % 2;
-                }
-
-                return (
-                  <li
-                    className={ classNames(
-                      styleSet.activity + '',
-                      {
-                        'timestamp-group-a': !lastGroupID,
-                        'timestamp-group-b': lastGroupID
-                      }
-                    ) }
-                    key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
-                    role="listitem"
-                  >
+              activityElements.map(({ activity, element }, index) =>
+                <li
+                  className={ classNames(
+                    styleSet.activity + '',
                     {
-                      activityRenderer({
-                        activity,
-                        timestampClassName: 'transcript-timestamp'
-                      })(
-                        ({ attachment }) => attachmentRenderer({ activity, attachment })
-                      )
+                      // Hide timestamp if same timestamp group with the next activity
+                      'hide-timestamp': sameTimestampGroup(activity, (activityElements[index + 1] || {}).activity, groupTimestamp)
                     }
-                    {
-                      // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                      activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
-                    }
-                  </li>
-                );
-              })
+                  ) }
+                  key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
+                  role="listitem"
+                >
+                  { element }
+                  {
+                    // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+                    activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
+                  }
+                </li>
+              )
             }
           </ul>
         </SayComposer>
