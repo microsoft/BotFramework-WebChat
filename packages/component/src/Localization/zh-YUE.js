@@ -40,8 +40,10 @@ export default {
   'Listening…': '聽緊你講嘢…',
   'New messages': '新訊息',
   'retry': '再嚟一次',
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Right': '右',
-  'Send failed, {retry}': '傳送唔倒，{retry}',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: '傳送唔倒。{Retry}。',
   'Sending': '而家傳送緊',
   'Starting…': '開始緊…',
   'Tax': '稅',

@@ -5,7 +5,9 @@ export default {
   // 'Microphone on': '',
   'Listening…': 'Aan het luisteren…',
   'retry': 'opnieuw',
-  'Send failed, {retry}': 'versturen mislukt, {retry}',
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'versturen mislukt, {Retry}',
   'Send': 'Verstuur',
   'Sending': 'versturen',
   'Speak': 'Spreek',

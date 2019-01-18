@@ -6,9 +6,11 @@ export default {
   'New messages': 'Nuevos mensajes',
   'Listening…': 'Escuchando…',
   'retry': 'reintentar',
-  'Send failed, {retry}': 'no enviado, {retry}',
+  'Retry': 'Reintentar', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'No enviado. {Retry}',
   'Send': 'Enviar',
-  'Sending': 'enviando',
+  'Sending': 'Enviando',
   'Speak': 'Hablar',
   'Starting…': 'Comenzando',
   'Tax': 'Impuestos',
