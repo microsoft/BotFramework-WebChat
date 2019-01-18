@@ -7,9 +7,11 @@ export default function* () {
   yield whileConnected(sendConversationUpdateOnConnect);
 }
 
-function* sendConversationUpdateOnConnect() {
+function* sendConversationUpdateOnConnect(_, userID) {
   yield put(postActivity({
     type: 'conversationUpdate',
-    membersAdded: []
+    membersAdded: [{
+      id: userID
+    }]
   }, 'code'));
 }
