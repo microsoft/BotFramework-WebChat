@@ -61,8 +61,8 @@ const BasicTranscript = ({
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
-  // After we know which activities will show up, we can compute which activity will show timestamp.
-  // If the activity does not render, we will also not speaking it out (if text-to-speech is enabled).
+  // After we know which activities will show up, we can compute which activity will show timestamps.
+  // If the activity does not render, it will not be spoken if text-to-speech is enabled.
   const activityElements = activities.reduce((activityElements, activity) => {
     const element = activityRenderer({
       activity,

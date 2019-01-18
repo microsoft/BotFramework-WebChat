@@ -1,7 +1,7 @@
 {
   "imageSnapshotOptions": {
     "customDiffConfig": {
-      "threshold": 0.15
+      "threshold": 0.14
     }
   }
 }
