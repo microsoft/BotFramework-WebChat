@@ -9,6 +9,20 @@ function sleep(ms = 1000) {
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
 describe('suggested-actions command', async () => {
+    test('should show correctly formatted buttons when suggested actions are displayed', async() => {
+        const { driver } = await setupWebDriver();
+
+        await sleep(2000);
+
+        const input = await driver.findElement(By.tagName('input[type="text"]'));
+
+        await input.sendKeys('suggested-actions', Key.RETURN);
+        await sleep(2000);
+
+        const base64PNG = await driver.takeScreenshot();
+
+        expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    }, 60000);
 
     test('should show response from bot and no text from user on imback', async () => {
         const { driver } = await setupWebDriver();
