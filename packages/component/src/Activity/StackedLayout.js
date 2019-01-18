@@ -89,8 +89,8 @@ export default connectStackedLayout(
     avatarInitials,
     children,
     language,
-    showTimestamp,
-    styleSet
+    styleSet,
+    timestampClassName
   }) => {
     const fromUser = activity.from.role === 'user';
     const { state } = activity.channelData || {};
@@ -161,20 +161,17 @@ export default connectStackedLayout(
               </div>
             )
           }
-          {
-            (showSendStatus || showTimestamp) &&
-              <div
-                aria-hidden={ true }
-                className="row"
-              >
-                { showSendStatus ?
-                    <SendStatus activity={ activity } className="timestamp" />
-                  :
-                    <Timestamp activity={ activity } className="timestamp" />
-                }
-                <div className="filler" />
-              </div>
-          }
+          <div
+            aria-hidden={ true }
+            className="row"
+          >
+            { showSendStatus ?
+                <SendStatus activity={ activity } className="timestamp" />
+              :
+                <Timestamp activity={ activity } className={ classNames('timestamp', timestampClassName) } />
+            }
+            <div className="filler" />
+          </div>
         </div>
         <div className="filler" />
       </div>

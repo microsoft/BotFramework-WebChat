@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -8,9 +9,13 @@ export default connectToWebChat(
 )(
   ({
     activity: { timestamp },
+    className,
     styleSet
   }) =>
-    <span className={ styleSet.timestamp }>
+    <span className={ classNames(
+      styleSet.timestamp + '',
+      (className || '') + ''
+    ) }>
       <TimeAgo value={ timestamp } />
     </span>
 )

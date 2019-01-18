@@ -96,8 +96,8 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
     language,
     className,
     filmContext,
-    showTimestamp,
     styleSet,
+    timestampClassName
   }) => {
     const fromUser = activity.from.role === 'user';
     const ariaLabel = localize('Bot said something', language, avatarInitials, activity.text, activity.timestamp)
@@ -168,8 +168,11 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
               )
             ) ?
               <SendStatus activity={ activity } />
-            : showTimestamp &&
-              <Timestamp activity={ activity } />
+            :
+              <Timestamp
+                activity={ activity }
+                className={ timestampClassName }
+              />
             }
           </div>
         </div>
