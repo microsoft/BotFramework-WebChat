@@ -48,8 +48,11 @@ export default connectSuggestedActions(
             buttonText={
               type === 'messageBack' ?
                 title || displayText
-              :
-                title || (typeof value !== 'string') ? JSON.stringify(value) : value
+              : title ?
+                  title
+                : (typeof value === 'string') ?
+                  value
+                  : JSON.stringify(value)
             }
             displayText={ displayText }
             key={ index }
