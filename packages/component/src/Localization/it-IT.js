@@ -1,21 +1,21 @@
 export default {
   'Chat': 'Chat',
-  // 'Download file': '',
-  // 'Microphone off': '',
-  // 'Microphone on': '',
+  'Download file': 'Download file',
+  'Microphone off': 'Microfono spento',
+  'Microphone on': 'Microfono acceso',
   'Listening…': 'Ascoltando…',
   'retry': 'riprova',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  'Retry': 'Riprova', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: 'impossibile inviare, {Retry}',
+  SEND_FAILED_KEY: 'Impossibile inviare, {Retry}',
   'Send': 'Invia',
   'Sending': 'invio',
-  // 'Speak': '',
-  // 'Starting…': '',
+  'Speak': 'Parla',
+  'Starting…': 'Inizializzando…',
   'Tax': 'Tasse',
   'Total': 'Totale',
   'Type your message': 'Scrivi il tuo messaggio',
-  // 'Upload file': '',
-  'VAT': 'VAT'
+  'Upload file': 'Carica un file',
+  'VAT': 'IVA'
   // 'X minutes ago':
 }
