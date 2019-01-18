@@ -1,19 +1,20 @@
 export default {
   'Chat': 'Chat',
-  // 'Download file': '',
-  // 'Microphone off': '',
-  // 'Microphone on': '',
+  'Microphone off': 'Apagar micrófono',
+  'Microphone on': 'Encender micrófono',
+  'Download file': 'Descargar archivo',
+  'New messages': 'Nuevos mensajes',
   'Listening…': 'Escuchando…',
   'retry': 'reintentar',
   'Send failed, {retry}': 'no enviado, {retry}',
   'Send': 'Enviar',
   'Sending': 'enviando',
-  // 'Speak': '',
-  // 'Starting…': '',
+  'Speak': 'Hablar',
+  'Starting…': 'Comenzando',
   'Tax': 'Impuestos',
   'Total': 'Total',
-  'Type your message': 'Escribe tu mensaje',
-  // 'Upload file': '',
+  'Type your message': 'Escribe tu mensaje...',
+  'Upload file': 'Subir archivo',
   'VAT': 'IVA'
   // 'X minutes ago':
 }
