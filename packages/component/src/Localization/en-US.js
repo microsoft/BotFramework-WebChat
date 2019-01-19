@@ -6,7 +6,13 @@ function userSaidSomething(avatarInitials, text, timestamp) {
   return `User ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
 }
 
-function xMinutesAgo(date) {
+function xMinutesAgo(dateStr) {
+  const date = new Date(dateStr);
+
+  if (Number.isNaN(date.valueOf())) {
+    return dateStr;
+  }
+
   const now = Date.now();
   const deltaInMs = now - new Date(date).getTime();
   const deltaInMinutes = Math.floor(deltaInMs / 60000);

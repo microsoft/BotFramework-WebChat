@@ -8,6 +8,7 @@ import {
 } from 'redux-saga/effects';
 
 import { decode } from 'jsonwebtoken';
+import random from 'math-random';
 
 import callUntil from './effects/callUntil';
 import forever from './effects/forever';
@@ -36,7 +37,9 @@ const ONLINE = 2;
 // const FAILED_TO_CONNECT = 4;
 const ENDED = 5;
 
-const DEFAULT_USER_ID = 'default-user';
+function randomUserID() {
+  return `r_${ random().toString(36).substr(2, 10) }`;
+}
 
 export default function* () {
   for (;;) {
@@ -53,14 +56,14 @@ export default function* () {
     } else if (userID) {
       if (typeof userID !== 'string') {
         console.warn('Web Chat: user ID must be a string.');
-        userID = DEFAULT_USER_ID;
+        userID = randomUserID();
       } else if (/^dl_/.test(userID)) {
         console.warn('Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.');
-        userID = DEFAULT_USER_ID;
+        userID = randomUserID();
       }
     } else {
       // Only specify "default-user" if not found from token and not passed in
-      userID = DEFAULT_USER_ID;
+      userID = randomUserID();
     }
 
     const connectTask = yield fork(connectSaga, directLine, userID);
