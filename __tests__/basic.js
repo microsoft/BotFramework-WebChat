@@ -1,9 +1,9 @@
 import { By, Key } from 'selenium-webdriver';
-import { imageSnapshotOptions } from './constants.json';
 
-import directLineConnected from './conditions/directLineConnected';
-import hasNumActivities from './conditions/hasNumActivities';
-import webChatLoaded from './conditions/webChatLoaded';
+import { imageSnapshotOptions } from './constants.json';
+import directLineConnected from './setup/conditions/directLineConnected';
+import hasNumActivities from './setup/conditions/hasNumActivities';
+import webChatLoaded from './setup/conditions/webChatLoaded';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
