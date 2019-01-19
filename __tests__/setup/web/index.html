@@ -50,6 +50,8 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
+      window.WebChatTest = { actions: [] };
+
       function main() {
         const webChatScript = document.createElement('script');
 
@@ -64,12 +66,19 @@
           const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
           const { token } = await res.json();
 
+          const store = window.WebChat.createStore({}, () => next => action => {
+            window.WebChatTest.actions.push(action);
+
+            return next(action);
+          });
+
           window.WebChat.renderWebChat({
             // directLine: window.WebChat.createDirectLine({
             //   domain: 'http://localhost:5000/v3/directline',
             //   webSocket: false
             // })
-            directLine: window.WebChat.createDirectLine({ token })
+            directLine: window.WebChat.createDirectLine({ token }),
+            store
           }, document.getElementById('webchat'));
 
           document.querySelector('#webchat > *').focus();
