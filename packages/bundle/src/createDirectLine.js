@@ -1,13 +1,13 @@
 import { DirectLine } from 'botframework-directlinejs';
 
-export default function ({ domain, fetch, secret, token, webSocket, conversationId }) {
+export default function ({conversationId, domain, fetch, secret, token, webSocket}) {
   return new DirectLine({
+    conversationId,
     domain,
     fetch,
     secret,
     token,
     webSocket,
-    conversationId,
     createFormData: attachments => {
       const formData = new FormData();
 
