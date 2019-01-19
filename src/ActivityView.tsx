@@ -1,4 +1,4 @@
-import { Activity, Attachment, AttachmentLayout } from 'botframework-directlinejs';
+import { Activity, Attachment, AttachmentLayout, DirectLineOptions } from 'botframework-directlinejs';
 import * as React from 'react';
 import { AttachmentView } from './Attachment';
 import { Carousel } from './Carousel';
@@ -48,6 +48,7 @@ export interface ActivityViewProps {
     onCardAction: IDoCardAction;
     onImageLoad: () => void;
     gid: string;
+    directLine: DirectLineOptions;
 }
 
 export class ActivityView extends React.Component<ActivityViewProps, {}> {

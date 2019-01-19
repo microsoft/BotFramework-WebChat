@@ -450,6 +450,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
                             gid={ this.props.gid }
+                            directLine={ this.props.directLine }
                         />
                         <Shell ref={ this._saveShellRef } />
                         {
