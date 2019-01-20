@@ -113,7 +113,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
 
     /**
      * Getting all the times which are not between the availability times
-     * */
+     */
     getExcludedTimes = (availabilities: any, interval: number) => {
         if (!availabilities) {
             return null;
@@ -166,7 +166,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 dateSelected: true
             });
         } else {
-            const excludedTime = (node.node_type === 'handoff') ? (startDate && startDate.month() !== date.month()) ? this.getAvailableTimes(date) : this.getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30) : null;
+            const excludedTime = (node.node_type === 'handoff') ? (startDate && startDate.month() !== date.month()) ? this.getAvailableTimes(date) : this.state.monthAvailabilities && this.getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30) : null;
             this.setState({
                 startDate: date,
                 dateSelected: true,
