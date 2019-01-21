@@ -34,16 +34,18 @@ class FloatingIconView extends React.Component<FloatingIconProps> {
             format.strings.pingMessage
         );
 
-        const firstActivity: any = filtered.length > 0 ? filtered[filtered.length - 1] : null;
+        const lastActivity: any = filtered.length > 0 ? filtered[filtered.length - 1] : null;
 
         return (
             <div
                 className="wc-floating-wrap"
                 onClick={() => this.props.clicked() }
             >
-                <span className={`wc-floating-message ${visible && firstActivity != null ? 'visible' : '' }`}>
-                    {firstActivity ? firstActivity.text : null}
-                </span>
+                {lastActivity !== null && lastActivity.text !== '' && (
+                    <span className={`wc-floating-message ${visible && lastActivity != null ? 'visible' : '' }`}>
+                        {lastActivity.text}
+                    </span>
+                )}
 
                 <div className={`wc-floating`}>
                     <img src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/gideon-horn-logo.svg"/>
