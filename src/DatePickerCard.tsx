@@ -67,32 +67,46 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     componentDidMount() {
-        this.getAvailableTimes( moment() );
+        this.getAvailableTimes( moment(), true );
     }
 
     /** Setting the availabilities and excluded times for provide date */
 
-    getAvailableTimes = ( date: moment.Moment ) => {
+    getAvailableTimes = ( date: moment.Moment, changeExcludeTime: boolean ) => {
         const {
             node,
             gid,
             directLine
         } = this.props;
         const conversationId = window.localStorage.getItem('msft_conversation_id');
-        const startDate = date.startOf('month').format('YYYY-MM-DD');
-        const endDate = date.endOf('month').format('YYYY-MM-DD');
+        const startDate = date.clone().startOf('month').format('YYYY-MM-DD');
+        const endDate = date.clone().endOf('month').format('YYYY-MM-DD');
 
         if (!node) {
             return;
         }
         if (node && node.node_type === 'handoff') {
+            const dateAvailabilitySelected = changeExcludeTime && this.state.startDate;
             availableTimes(gid, directLine.secret, conversationId, startDate, endDate)
                 .then((res: any) => {
                     const allAvailabilities = this.mapAvailabilitiesDateWise(res.data);
-                    const excludedTime = this.getExcludedTimes(allAvailabilities[date.format('YYYY-MM-DD')], 30);
+                    let getAvailForDate = date;
+
+                    if (!changeExcludeTime && (this.state.startDate && this.state.startDate.month() === date.month())) {
+                        getAvailForDate = this.state.startDate;
+                    }
+                    const excludedTime = this.getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30);
                     this.setState({
+                        startDate: dateAvailabilitySelected ? date : this.state.startDate,
+                        dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
                         monthAvailabilities: allAvailabilities,
-                        excludedTimes: excludedTime
+                        excludedTimes: dateAvailabilitySelected ? excludedTime : (this.state.startDate && this.state.startDate.month() === date.month()) ? excludedTime : this.state.excludedTimes
+                    });
+            })
+            .catch((err: any) => {
+                this.setState({
+                    startDate: dateAvailabilitySelected ? date : this.state.startDate,
+                    dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected
                 });
             });
         }
@@ -139,7 +153,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
     /** Handling the month change */
     handleMonthChange = ( date: moment.Moment ) => {
-        this.getAvailableTimes(date);
+        this.getAvailableTimes(date, false);
     }
 
     /**
@@ -166,12 +180,28 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 dateSelected: true
             });
         } else {
-            const excludedTime = (node.node_type === 'handoff') ? (startDate && startDate.month() !== date.month()) ? this.getAvailableTimes(date) : this.state.monthAvailabilities && this.getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30) : null;
-            this.setState({
-                startDate: date,
-                dateSelected: true,
-                excludedTimes: excludedTime ? excludedTime : []
-            });
+            if (node.node_type === 'handoff') {
+                if (startDate && startDate.month() !== date.month()) {
+                    this.getAvailableTimes(date, true);
+                } else if (this.state.monthAvailabilities) {
+                    const excludedTime = this.getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30);
+                    this.setState({
+                        startDate: date,
+                        dateSelected: true,
+                        excludedTimes: excludedTime ? excludedTime : []
+                    });
+                } else {
+                    this.setState({
+                        startDate: date,
+                        dateSelected: true
+                    });
+                }
+            } else {
+                this.setState({
+                    startDate: date,
+                    dateSelected: true
+                });
+            }
         }
 
     }
