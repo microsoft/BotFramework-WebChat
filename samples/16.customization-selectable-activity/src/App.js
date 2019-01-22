@@ -10,6 +10,7 @@ export default class App extends React.Component {
     this.state = {
       selectedActivity: null
     };
+    this.inspectorRef = React.createRef();
   }
 
   render() {
@@ -18,22 +19,43 @@ export default class App extends React.Component {
     return (
       <div className="app">
         <ReactWebChat activityMiddleware={ this.activityMiddleware } />
-        <Inspector inspectedObject={ selectedActivity } />
+        <Inspector inspectedObject={ selectedActivity } inspectorRef={this.inspectorRef} />
       </div>
     )
   }
 
   activityMiddleware = () => next => card => children => {
-    const selectedClass = card.activity === this.state.selectedActivity ? 'selected' : '';
+    const isSelected = card.activity === this.state.selectedActivity;
+    const selectedClass = isSelected ? 'selected' : '';
+    const label = isSelected ? 'Selected activity. Click to deselect activity.' : 'Click to inspect activity.'
 
     return (
-      <div onClick={ this.selectActivity(card.activity) } className={ `activity-wrapper ${selectedClass}` }>
+      <div
+        aria-label={ label }
+        className={ `activity-wrapper ${selectedClass}` }
+        onClick={ this.selectActivity(card.activity) }
+        onKeyDown={ this.handleKeyDown(card.activity) }
+        role="button"
+        tabIndex="0"
+      >
         { next(card)(children) }
       </div>
     )
   }
 
   selectActivity = (selectedActivity) => () => {
-    this.setState({ selectedActivity });
+    this.setState(prevState => ({
+      selectedActivity: prevState.selectedActivity === selectedActivity ? null : selectedActivity
+    }), () => {
+      if (this.state.selectedActivity) {
+        this.inspectorRef.current.focus();
+      }
+    });
+  }
+
+  handleKeyDown = (selectActivity) => (e) => {
+    if ([' ', 'Enter'].includes(e.key)) {
+      this.selectActivity(selectActivity)(e);
+    }
   }
 }
