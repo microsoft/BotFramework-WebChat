@@ -326,7 +326,7 @@ class Composer extends React.Component {
 const ConnectedComposer = connect(
   ({ referenceGrammarID }) => ({ referenceGrammarID })
 )(props =>
-  <ScrollToBottomComposer threshold={ 40 }>
+  <ScrollToBottomComposer>
     <ScrollToBottomFunctionContext.Consumer>
       { ({ scrollToEnd }) =>
         <Composer
