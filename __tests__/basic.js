@@ -2,7 +2,7 @@ import { By, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions } from './constants.json';
 import directLineConnected from './setup/conditions/directLineConnected';
-import hasNumActivities from './setup/conditions/hasNumActivities';
+import minNumActivities from './setup/conditions/minNumActivities';
 import webChatLoaded from './setup/conditions/webChatLoaded';
 
 // selenium-webdriver API doc:
@@ -17,7 +17,7 @@ test('setup', async () => {
   const input = await driver.findElement(By.tagName('input[type="text"]'));
 
   await input.sendKeys('layout carousel', Key.RETURN);
-  await driver.wait(hasNumActivities(2), 2000);
+  await driver.wait(minNumActivities(2), 2000);
 
   // TODO: [P2] Remove this sleep which wait for the image to be loaded
   await driver.sleep(1000);
