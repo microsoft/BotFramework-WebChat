@@ -4,9 +4,9 @@
     <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
     <!-- Cognitive Services Speech Services adapter is only available in full bundle -->
     <!--
-      For demonstration purpose, we are using development branch of Web Chat at "/master/webchat.js".
-      When you are using Web Chat for production, you should use the latest stable at "/latest/webchat.js".
-      Or locked down on a specific version "/4.1.0/webchat.js".
+      For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js".
+      When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
+      or lock down on a specific version with the following format: "/4.1.0/webchat.js".
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <style>
@@ -36,7 +36,7 @@
         const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
         const { region, token: authorizationToken } = await speechServicesTokenRes.json();
 
-        // We are creating a hybrid ponyfill factory that will merge result of two ponyfill factory together.
+        // We are creating a hybrid ponyfill factory that will merge the result of two ponyfill factories together.
         async function createHybridPonyfillFactory({ authorizationToken, region }) {
           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
           const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
@@ -59,8 +59,8 @@
         };
 
         // Pass a Web Speech ponyfill factory to renderWebChat.
-        // You can also use your own speech engine given it is compliant to W3C Web Speech API, https://w3c.github.io/speech-api/.
-        // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
+        // You can also use your own speech engine, given it is compliant to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // For implementation, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
           webSpeechPonyfillFactory: await createHybridPonyfillFactory({ authorizationToken, region })
