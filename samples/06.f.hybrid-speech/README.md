@@ -36,7 +36,7 @@ We will start by using the [Cognitive Services Speech Services sample](./../06.c
 
 > Web browser speech package is available in the Web Chat core bundle and the full bundle, and you can use either CDN in your bot.
 
-[TBD]
+> Note: README.md in this sample is not yet complete.
 
 ## Completed code
 
