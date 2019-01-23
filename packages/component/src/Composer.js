@@ -158,13 +158,13 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
   if (botAvatarInitials) {
     styleOptions = { ...styleOptions, botAvatarInitials };
 
-    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. This feature will be removed on or after 2019 December 11.');
+    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .');
   }
 
   if (userAvatarInitials) {
     styleOptions = { ...styleOptions, userAvatarInitials };
 
-    console.warn('Web Chat: "userAvatarInitials" is deprecated. Please use "styleOptions.userAvatarInitials" instead. This feature will be removed on or after 2019 December 11.');
+    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .');
   }
 
   return {
@@ -242,7 +242,7 @@ class Composer extends React.Component {
     if (
       !prevProps.sendTypingIndicator !== !sendTypingIndicator
 
-      // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
       || !prevProps.sendTyping !== !sendTyping
     ) {
       this.setSendTypingIndicatorFromProps(props);
@@ -270,8 +270,8 @@ class Composer extends React.Component {
     if (typeof props.sendTyping === 'undefined') {
       props.dispatch(setSendTypingIndicator(!!props.sendTypingIndicator));
     } else {
-      // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
-      console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after 2020 January 13.');
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+      console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.');
       props.dispatch(setSendTypingIndicator(!!props.sendTyping));
     }
   }

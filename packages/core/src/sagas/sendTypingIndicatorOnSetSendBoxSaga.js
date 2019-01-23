@@ -25,7 +25,7 @@ function takeSendTypingIndicator(value) {
     ({ payload, type }) => (
       (type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value)
 
-      // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
       || (type === SET_SEND_TYPING && !payload.sendTyping === !value)
     )
   );
