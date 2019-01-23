@@ -19,14 +19,11 @@ export default class extends React.Component {
       if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
         setTimeout(() => {
           dispatch({
-            type: 'DIRECT_LINE/POST_ACTIVITY',
+            type: 'WEB_CHAT/SEND_EVENT',
             payload: {
-              activity: {
-                name: 'webchat/join',
-                type: 'event',
-                value: {
-                  language: window.navigator.language
-                }
+              name: 'webchat/join',
+              value: {
+                language: window.navigator.language
               }
             }
           });
