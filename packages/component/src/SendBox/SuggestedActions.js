@@ -5,7 +5,7 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
 
-function suggestedActionText ({displayText, title, type, value}) {
+function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {
     return title || displayText
   } else if (title) {
@@ -58,7 +58,7 @@ export default connectSuggestedActions(
         ) =>
           <SuggestedAction
             buttonText={
-             suggestedActionText({displayText, title, type, value})
+             suggestedActionText({ displayText, title, type, value })
             }
             displayText={ displayText }
             key={ index }
