@@ -7,7 +7,7 @@ export default function () {
   const now = Date.now();
 
   if (!fetchPromise || (now - lastFetch) > RENEW_EVERY) {
-    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' })
+    fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
       .then(res => res.json())
       .then(({ token }) => token)
       .catch(() => { lastFetch = 0; });
