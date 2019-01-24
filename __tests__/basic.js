@@ -1,9 +1,9 @@
 import { By, Key } from 'selenium-webdriver';
-import { imageSnapshotOptions } from './constants.json';
 
-function sleep(ms = 1000) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+import { imageSnapshotOptions } from './constants.json';
+import directLineConnected from './setup/conditions/directLineConnected';
+import minNumActivitiesReached from './setup/conditions/minNumActivitiesReached';
+import webChatLoaded from './setup/conditions/webChatLoaded';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -11,12 +11,19 @@ function sleep(ms = 1000) {
 test('setup', async () => {
   const { driver } = await setupWebDriver();
 
-  await sleep(2000);
+  await driver.wait(webChatLoaded(), 2000);
+  await driver.wait(directLineConnected(), 2000);
 
   const input = await driver.findElement(By.tagName('input[type="text"]'));
 
   await input.sendKeys('layout carousel', Key.RETURN);
-  await sleep(2000);
+  await driver.wait(minNumActivitiesReached(2), 2000);
+
+  // TODO: [P2] Remove this sleep which wait for the image to be loaded
+  await driver.sleep(1000);
+
+  // Hide cursor before taking screenshot
+  await driver.executeScript(() => document.querySelector(':focus').blur());
 
   const base64PNG = await driver.takeScreenshot();
 
