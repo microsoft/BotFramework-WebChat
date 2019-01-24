@@ -118,7 +118,7 @@ export const shell: Reducer<ShellState> = (
         case 'Update_Input':
             return {
                 ...state,
-                input: action.input ? action.input : state.input,
+                input: action.input != null ? action.input : state.input,
                 lastInputViaSpeech : action.source === 'speech',
                 placeholder: action.placeholder !== null ? action.placeholder : defaultStrings.consolePlaceholder,
                 inputDisabled: action.disable !== null ?  action.disable : state.inputDisabled
