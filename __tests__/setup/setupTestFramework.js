@@ -6,6 +6,7 @@ import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import getPort from 'get-port';
 import handler from 'serve-handler';
 
+import createPageObjects from './pageObjects/index';
 import setupTestEnvironment from './setupTestEnvironment';
 
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
@@ -21,10 +22,10 @@ expect.extend({
 let driverPromise;
 let serverPromise;
 
-global.setupWebDriver = async ({ props } = {}) => {
+global.setupWebDriver = async (options = {}) => {
   if (!driverPromise) {
     driverPromise = (async () => {
-      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder());
+      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
 
       // If the baseURL contains $PORT, it means it requires us to fill-in
@@ -36,12 +37,12 @@ global.setupWebDriver = async ({ props } = {}) => {
         await driver.get(baseURL);
       }
 
-      await driver.executeScript((coverage, options) => {
+      await driver.executeScript((coverage, props) => {
         window.__coverage__ = coverage;
-        main(options);
-      }, global.__coverage__, { props });
+        main({ props });
+      }, global.__coverage__, options.props);
 
-      return { driver };
+      return { driver, pageObjects: createPageObjects(driver) };
     })();
   }
 

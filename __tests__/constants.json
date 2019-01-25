@@ -3,5 +3,9 @@
     "customDiffConfig": {
       "threshold": 0.14
     }
+  },
+  "timeouts": {
+    "directLine": 2500,
+    "navigation": 5000
   }
 }
