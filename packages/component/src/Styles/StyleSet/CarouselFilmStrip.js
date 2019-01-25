@@ -11,7 +11,7 @@ export default function ({
     },
 
     '& > .avatar': {
-      marginRight: paddingRegular
+      marginLeft: paddingRegular
     },
 
     '& > .content': {
@@ -20,9 +20,10 @@ export default function ({
       },
 
       '& > ul': {
+        marginLeft: paddingRegular,
+        marginRight: paddingRegular,
+
         '&:not(:first-child)': {
-          marginLeft: paddingRegular,
-          marginRight: paddingRegular,
           marginTop: paddingRegular
         },
 
