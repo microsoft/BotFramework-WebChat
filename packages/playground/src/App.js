@@ -95,8 +95,7 @@ export default class extends React.Component {
         domain,
         fetch,
         token: directLineToken,
-        webSocket: false
-        // webSocket: webSocket === 'true' || +webSocket
+        webSocket: webSocket === 'true' || !!+webSocket
       }),
       disabled: false,
       faulty: false,
