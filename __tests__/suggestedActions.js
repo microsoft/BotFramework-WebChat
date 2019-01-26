@@ -12,7 +12,7 @@ describe('suggested-actions command', async () => {
   test('should show correctly formatted buttons when suggested actions are displayed', async() => {
     const { driver } = await setupWebDriver();
 
-    await sleep(2000);
+    await sleep(4000);
 
     const input = await driver.findElement(By.tagName('input[type="text"]'));
 
@@ -27,7 +27,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on imback', async () => {
     const { driver } = await setupWebDriver();
 
-    await sleep(2000);
+    await sleep(4000);
 
     const input = await driver.findElement(By.tagName('input[type="text"]'));
 
@@ -49,7 +49,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on postback', async () => {
     const { driver } = await setupWebDriver();
 
-    await sleep(2000);
+    await sleep(4000);
 
     const input = await driver.findElement(By.tagName('input[type="text"]'));
 
@@ -71,7 +71,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and text from user on postback', async () => {
       const { driver } = await setupWebDriver();
 
-      await sleep(2000);
+      await sleep(4000);
 
       const input = await driver.findElement(By.tagName('input[type="text"]'));
 
@@ -94,7 +94,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on messageback', async () => {
     const { driver } = await setupWebDriver();
 
-    await sleep(2000);
+    await sleep(4000);
 
     const input = await driver.findElement(By.tagName('input[type="text"]'));
 
@@ -116,7 +116,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and text from user on messageback', async () => {
     const { driver } = await setupWebDriver();
 
-    await sleep(2000);
+    await sleep(4000);
 
     const input = await driver.findElement(By.tagName('input[type="text"]'));
 

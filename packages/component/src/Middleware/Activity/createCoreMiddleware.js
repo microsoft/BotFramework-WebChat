@@ -12,7 +12,7 @@ export default function () {
     const { type } = activity;
 
     // Filter out activities that should not be visible
-    if (type === 'event') {
+    if (type === 'conversationUpdate' || type === 'event') {
       return RETURN_FALSE;
     } else if (type === 'message') {
       const { attachments = [], text } = activity;
