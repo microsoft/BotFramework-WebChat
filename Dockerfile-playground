@@ -7,10 +7,7 @@ RUN apk update && \
 ENV PORT=80
 EXPOSE 80
 RUN npm install serve@10.0.0 -g
-ENTRYPOINT ["npx", "--no-install", "serve", "-p", "80", "/web/packages/playground/build"]
+ENTRYPOINT ["npx", "--no-install", "serve", "-p", "80", "/var/web"]
+WORKDIR /var/web
 
-ADD . /web
-WORKDIR /web
-RUN npm install && \
-    npm run bootstrap && \
-    npm run build
+ADD ./packages/playground/build /var/web
