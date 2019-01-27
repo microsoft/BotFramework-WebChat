@@ -49,13 +49,9 @@ function* observeAndPutConnectionStatusUpdate(directLine) {
     for (;;) {
       const connectionStatus = yield call(connectionStatusQueue.shift);
 
-      console.log(`DirectLineJS connectionStatus updated to: ${ connectionStatus }`);
-
       yield put(updateConnectionStatus(connectionStatus));
     }
   } finally {
-    console.log(`Stop subscribing connectionStatus from DirectLineJS.`);
-
     connectionStatusSubscription.unsubscribe();
   }
 }
@@ -134,8 +130,6 @@ function* connectSaga(directLine) {
 
 export default function* () {
   for (;;) {
-    console.log('Waiting for CONNECT');
-
     const { payload: { directLine, userID: userIDFromAction } } = yield take(CONNECT);
     const userID = rectifyUserID(directLine, userIDFromAction);
     const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
