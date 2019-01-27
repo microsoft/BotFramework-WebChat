@@ -2,6 +2,7 @@ import { By, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
+import allImagesLoaded from './setup/conditions/allImagesLoaded.js';
 import directLineConnected from './setup/conditions/directLineConnected';
 import minNumActivitiesReached from './setup/conditions/minNumActivitiesReached';
 import webChatLoaded from './setup/conditions/webChatLoaded';
@@ -19,9 +20,7 @@ test('setup', async () => {
 
   await input.sendKeys('layout carousel', Key.RETURN);
   await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-  // TODO: [P2] Remove this sleep which wait for the image to be loaded
-  await driver.sleep(1000);
+  await driver.wait(allImagesLoaded, timeouts.fetch);
 
   // Hide cursor before taking screenshot
   await pageObjects.hideCursor();

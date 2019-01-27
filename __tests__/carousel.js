@@ -1,6 +1,7 @@
 import { By, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import directLineConnected from './setup/conditions/directLineConnected';
 import minNumActivitiesReached from './setup/conditions/minNumActivitiesReached';
 import webChatLoaded from './setup/conditions/webChatLoaded';
@@ -18,10 +19,8 @@ describe('carousel without avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -50,10 +49,8 @@ describe('carousel without avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -82,10 +79,8 @@ describe('carousel without avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout double', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -102,10 +97,8 @@ describe('carousel without avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout double', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -122,10 +115,8 @@ describe('carousel without avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout single carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -142,10 +133,8 @@ describe('carousel without avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout single carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -166,10 +155,8 @@ describe('carousel with avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -198,10 +185,8 @@ describe('carousel with avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -230,10 +215,8 @@ describe('carousel with avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout double', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -250,10 +233,8 @@ describe('carousel with avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout double', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -270,10 +251,8 @@ describe('carousel with avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout single carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
@@ -290,10 +269,8 @@ describe('carousel with avatar initials', () => {
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('layout single carousel', Key.RETURN);
-    await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
-
-    // TODO: [P2] Remove this sleep which wait for the image to be loaded
-    await driver.sleep(1000);
+    await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     // Hide cursor before taking screenshot
     await pageObjects.hideCursor();
