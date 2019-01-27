@@ -63,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `bundle`: Fix [#1613](https://github.com/Microsoft/BotFramework-WebChat/issues/1613). Pass conversationId to DirectLineJS constructor, by [@neetu-das](https://github.com/neetu-das) in PR [#1614](https://github.com/Microsoft/BotFramework-WebChat/pull/1614)
 - `component`: Fix [#1626](https://github.com/Microsoft/BotFramework-WebChat/issues/1626). Fixed `Number.isNaN` is not available in IE11, by [@compulim](https://github.com/compulim) in PR [#1628](https://github.com/Microsoft/BotFramework-WebChat/pull/1628)
 - `bundle`: Fix [#1652](https://github.com/Microsoft/BotFramework-WebChat/issues/1652). Pass `pollingInterval` to DirectLineJS constructor, by [@neetu-das](https://github.com/neetu-das) in PR [#1655](https://github.com/Microsoft/BotFramework-WebChat/pull/1655)
+- `core`: Reworked logic on connect/disconnect for reliability on handling corner cases, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Removed
 - `botAvatarImage` and `userAvatarImage` props, as they are moved inside `styleOptions`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
