@@ -93,7 +93,7 @@ function rectifyUserID(directLine, userIDFromAction) {
 
 function* connectSaga(directLine) {
   // DirectLineJS start the connection only after the first subscriber for activity$, but not connectionStatus$
-  const activitySubscription = directLine.activity$.subscribe(() => 0);
+  const activitySubscription = directLine.activity$.subscribe({ next: () => 0 });
 
   try {
     for (;;) {
