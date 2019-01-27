@@ -131,11 +131,10 @@ function* connectSaga(directLine) {
 export default function* () {
   for (;;) {
     const { payload: { directLine, userID: userIDFromAction } } = yield take(CONNECT);
-    const userID = rectifyUserID(directLine, userIDFromAction);
     const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
 
     try {
-      const meta = { userID };
+      const meta = { userID: rectifyUserID(directLine, userIDFromAction) };
       let endDirectLine;
 
       yield put({ type: CONNECT_PENDING, meta });
@@ -167,8 +166,8 @@ export default function* () {
           yield take(negativeUpdateConnectionStatusAction);
         }
       } finally {
-        // It is meaningless to continue to use the Direct Line object even disconnect fail.
-        // And we will still unsubscribe to incoming activities.
+        // It is meaningless to continue to use the Direct Line object even disconnect failed.
+        // We will still unsubscribe to incoming activities and consider Direct Line object abandoned.
         yield put({ type: DISCONNECT_FULFILLED });
 
         endDirectLine();
