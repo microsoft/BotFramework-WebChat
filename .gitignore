@@ -14,6 +14,7 @@ test/mock_speech/index.js*
 test/commands_map.js*
 test/server_content.js*
 test/interfaces_sdk.js*
+public/*
 npm
 cdn
 webpacked
