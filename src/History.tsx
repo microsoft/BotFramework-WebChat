@@ -1,4 +1,4 @@
-import { Activity, CardActionTypes, Message, User } from 'botframework-directlinejs';
+import { Activity, CardActionTypes, DirectLineOptions, Message, User } from 'botframework-directlinejs';
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { ActivityView } from './ActivityView';
@@ -25,6 +25,7 @@ export interface HistoryProps {
     onCardAction: () => void;
     doCardAction: IDoCardAction;
     gid: string;
+    directLine: DirectLineOptions;
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -160,6 +161,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 this.props.onClickRetry(activity);
                             } }
                             gid={ this.props.gid }
+                            directLine={ this.props.directLine }
                         >
                             <ActivityView
                                 format={ this.props.format }
@@ -169,6 +171,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                                 onCardAction={ (type: CardActionTypes, value: string | object) => this.doCardAction(type, value) }
                                 onImageLoad={ () => this.autoscroll() }
                                 gid={ this.props.gid}
+                                directLine={ this.props.directLine }
                             />
                         </WrappedActivity>
                 );
@@ -226,7 +229,8 @@ export const History = connect(
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
         onCardAction: ownProps.onCardAction,
-        gid: ownProps.gid
+        gid: ownProps.gid,
+        directLine: ownProps.directLine
     }), {
         withRef: true
     }
@@ -277,6 +281,7 @@ export interface WrappedActivityProps {
     onClickActivity: React.MouseEventHandler<HTMLDivElement>;
     onClickRetry: React.MouseEventHandler<HTMLAnchorElement>;
     gid: string;
+    directLine?: DirectLineOptions;
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -322,6 +327,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
                                     onCardAction={ (type: CardActionTypes, value: string | object) => doCardAction(type, value) }
                                     onImageLoad={null}
                                     gid={this.props.gid}
+                                    directLine={this.props.directLine}
                                 />
                             </div>
                         </div>

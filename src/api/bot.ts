@@ -47,3 +47,13 @@ export const ping = (
         directLine
     });
 };
+
+export const availableTimes = (
+    baseUrl: string,
+    directLine: string,
+    conversationId: string,
+    startDate: string,
+    endDate: string
+): any => {
+    return axios.get(`${baseUrl}/api/v1/availabilities/available_times?directLine=${directLine}&conversation_id=${conversationId}&start_date=${startDate}&end_date=${endDate}`);
+};
