@@ -19,7 +19,7 @@ test('setup', async () => {
   const input = await driver.findElement(By.css('input[type="text"]'));
 
   await input.sendKeys('layout carousel', Key.RETURN);
-  await driver.wait(minNumActivitiesReached(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
   await driver.wait(allImagesLoaded, timeouts.fetch);
 
   // Hide cursor before taking screenshot
