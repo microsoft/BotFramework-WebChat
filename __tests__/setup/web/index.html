@@ -52,7 +52,7 @@
     <script>
       window.WebChatTest = { actions: [] };
 
-      function main() {
+      function main({ props } = {}) {
         const webChatScript = document.createElement('script');
 
         webChatScript.setAttribute('src', '/webchat-instrumented.js');
@@ -78,7 +78,8 @@
             //   webSocket: false
             // })
             directLine: window.WebChat.createDirectLine({ token }),
-            store
+            store,
+            ...props
           }, document.getElementById('webchat'));
 
           document.querySelector('#webchat > *').focus();

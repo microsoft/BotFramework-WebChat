@@ -21,7 +21,7 @@ expect.extend({
 let driverPromise;
 let serverPromise;
 
-global.setupWebDriver = async () => {
+global.setupWebDriver = async ({ props } = {}) => {
   if (!driverPromise) {
     driverPromise = (async () => {
       let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder());
@@ -36,10 +36,10 @@ global.setupWebDriver = async () => {
         await driver.get(baseURL);
       }
 
-      await driver.executeScript(coverage => {
+      await driver.executeScript((coverage, options) => {
         window.__coverage__ = coverage;
-        main();
-      }, global.__coverage__);
+        main(options);
+      }, global.__coverage__, { props });
 
       return { driver };
     })();

@@ -64,7 +64,7 @@ export default class extends React.Component {
     this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
-    this.handleSendTypingChange = this.handleSendTypingChange.bind(this);
+    this.handleSendTypingIndicatorChange = this.handleSendTypingIndicatorChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
@@ -102,7 +102,7 @@ export default class extends React.Component {
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
-      sendTyping: true,
+      sendTypingIndicator: true,
       userAvatarInitials: 'WC',
       userID,
       webSpeechPonyfillFactory: null
@@ -189,8 +189,8 @@ export default class extends React.Component {
     );
   }
 
-  handleSendTypingChange({ target: { checked } }) {
-    this.setState(() => ({ sendTyping: !!checked }));
+  handleSendTypingIndicatorChange({ target: { checked } }) {
+    this.setState(() => ({ sendTypingIndicator: !!checked }));
   }
 
   handleUseEmulatorCoreClick() {
@@ -236,7 +236,7 @@ export default class extends React.Component {
         hideSendBox,
         language,
         sendTimeout,
-        sendTyping,
+        sendTypingIndicator,
         userAvatarInitials,
         userID,
         webSpeechPonyfillFactory
@@ -259,7 +259,7 @@ export default class extends React.Component {
           locale={ language }
           renderMarkdown={ renderMarkdown }
           sendTimeout={ +sendTimeout || undefined }
-          sendTyping={ sendTyping }
+          sendTypingIndicator={ sendTypingIndicator }
           store={ store }
           styleOptions={ styleOptions }
           userID={ userID }
@@ -358,8 +358,8 @@ export default class extends React.Component {
           <div>
             <label>
               <input
-                checked={ sendTyping }
-                onChange={ this.handleSendTypingChange }
+                checked={ sendTypingIndicator }
+                onChange={ this.handleSendTypingIndicatorChange }
                 type="checkbox"
               />
               Send typing
