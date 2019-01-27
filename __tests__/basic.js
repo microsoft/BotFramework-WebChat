@@ -20,7 +20,7 @@ test('setup', async () => {
 
   await input.sendKeys('layout carousel', Key.RETURN);
   await driver.wait(minNumActivitiesReached(3), timeouts.directLine);
-  await driver.wait(allImagesLoaded, timeouts.fetch);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
 
   // Hide cursor before taking screenshot
   await pageObjects.hideCursor();
