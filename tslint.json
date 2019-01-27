@@ -11,6 +11,7 @@
     "member-ordering": false,
     "member-access": false,
     "no-shadowed-variable": false,
+    "no-bitwise": false,
     "no-console": false,
     "object-literal-sort-keys": false,
     "quotemark": [

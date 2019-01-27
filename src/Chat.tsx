@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
-import { conversationHistory, ping, verifyConversation } from './api/bot';
+import { conversationHistory, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
@@ -44,7 +44,6 @@ export interface State {
 
 import { FloatingIcon } from './FloatingIcon';
 import { History } from './History';
-import { MessagePane } from './MessagePane';
 import { Shell, ShellFunctions } from './Shell';
 
 export class Chat extends React.Component<ChatProps, State> {
@@ -139,6 +138,34 @@ export class Chat extends React.Component<ChatProps, State> {
         this.setState({
             open: !this.state.open,
             opened: true
+        });
+    }
+
+    private step = (messageId?: string|null) => {
+        const botConnection: any = this.store.getState().connection.botConnection;
+        step(this.props.gid, botConnection.conversationId, this.props.directLine.secret, messageId)
+        .then((res: any) => {
+            conversationHistory(this.props.gid, this.props.directLine.secret, botConnection.conversationId, res.data.id)
+            .then((res: any) => {
+                const messages = res.data.messages.reverse();
+                const activities: Activity[] = messages.map((m: any, i: number) => {
+                    return {
+                        id: m.id,
+                        type: 'message',
+                        from: {
+                            id: m.sender_type === 'bot' ? '' : this.store.getState().connection.user.id
+                        },
+                        text: m.message
+                    };
+                });
+
+                this.store.dispatch<ChatActions>({ type: 'Set_Messages', activities });
+            });
+
+            console.log(res);
+        })
+        .catch((err: any) => {
+            console.log(err);
         });
     }
 
@@ -267,9 +294,6 @@ export class Chat extends React.Component<ChatProps, State> {
                 const botCopy: any = botConnection;
                 const conversationId = botCopy.conversationId;
 
-                window.localStorage.setItem('msft_conversation_id', conversationId);
-                window.localStorage.setItem('gid', this.props.gid);
-
                 if (!state.connection.verification.attempted) {
                     this.store.dispatch<ChatActions>({
                         type: 'Set_Verification',
@@ -286,6 +310,10 @@ export class Chat extends React.Component<ChatProps, State> {
                         window.location.origin
                     )
                     .then((res: any) => {
+                        // Only save these when we successfully connect
+                        window.localStorage.setItem('msft_conversation_id', conversationId);
+                        window.localStorage.setItem('gid', this.props.gid);
+
                         this.setState({
                             display: true
                         });
@@ -300,8 +328,8 @@ export class Chat extends React.Component<ChatProps, State> {
                         .then((res: any) => {
                             const state = this.store.getState();
                             const messages = res.data.messages.reverse();
-                            messages.forEach((m: any, i: number) => {
-                                const activity: Activity = {
+                            const activities: Activity[] = messages.map((m: any, i: number) => {
+                                return {
                                     id: m.id,
                                     type: 'message',
                                     from: {
@@ -309,9 +337,9 @@ export class Chat extends React.Component<ChatProps, State> {
                                     },
                                     text: m.message
                                 };
-
-                                this.store.dispatch<ChatActions>({ type: 'Receive_Message', activity });
                             });
+
+                            this.store.dispatch<ChatActions>({ type: 'Set_Messages', activities });
                         });
 
                         // Ping server with activity every 30 seconds
@@ -444,13 +472,20 @@ export class Chat extends React.Component<ChatProps, State> {
                                         className="wc-header--close"
                                         onClick={() => {this.toggle(); }}
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/close.svg" />
+
+                                    <img
+                                        className="wc-header--back"
+                                        onClick={() => {this.step(); }}
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" />
                                 </div>
                         }
+
                         <History
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
                             gid={ this.props.gid }
                         />
+
                         <Shell ref={ this._saveShellRef } />
                         {
                             this.props.resize === 'detect' &&

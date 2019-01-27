@@ -15,12 +15,26 @@ export const verifyConversation = (
     });
 };
 
+export const step = (
+    baseUrl: string,
+    msftConversationId: string,
+    directLine: string,
+    messageId: string
+): any => {
+    return axios.post(`${baseUrl}/api/v1/bot/step`, {
+        msft_conversation_id: msftConversationId,
+        directLine,
+        message_id: messageId
+    });
+};
+
 export const conversationHistory = (
     baseUrl: string,
     directLine: string,
-    conversationId: string
+    conversationId: string,
+    lastMessageId: string = null
 ): any => {
-    return axios.get(`${baseUrl}/api/v1/conversations/history?conversation_id=${conversationId}&directLine=${directLine}&limit=30`);
+    return axios.get(`${baseUrl}/api/v1/conversations/history?conversation_id=${conversationId}&directLine=${directLine}&limit=30&last=${lastMessageId}`);
 };
 
 export const ping = (

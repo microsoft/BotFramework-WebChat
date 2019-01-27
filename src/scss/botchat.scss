@@ -71,11 +71,21 @@
             vertical-align: middle;
         }
 
+        $topMargin: 12px;
+
         &--close {
-            height: 26px;
+            height: 18px;
             float: right;
-            margin-top: 6px;
+            margin-top: $topMargin;
             padding-right: 20px;
+            cursor: pointer;
+        }
+
+        &--back {
+            height: 18px;
+            float: right;
+            margin-top: $topMargin;
+            padding-right: 31px;
             cursor: pointer;
         }
     }

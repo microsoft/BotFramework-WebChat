@@ -1,4 +1,7 @@
 const webpack = require('webpack');
+const path = require('path');
+const location = 'public/';
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 require('expose-loader');
 
@@ -68,10 +71,18 @@ const coreConfig = {
 
 const chatConfig = {
     entry: './src/BotChat.ts',
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/bot.html",
+            filename: "./bot.html",
+            title: `Bot Testing Page`,
+        })
+    ],
     output: {
         libraryTarget: 'umd',
         library: 'BotChat',
-        filename: './botchat.js'
+        filename: './botchat.js',
+        path: path.resolve(location),
     }
 }
 
@@ -80,7 +91,8 @@ const chatWithPolyfillConfig = {
     output: {
         libraryTarget: 'umd',
         library: 'BotChat',
-        filename: './botchat-es5.js'
+        filename: './botchat-es5.js',
+        path: path.resolve(location),
     }
 }
 
@@ -92,7 +104,8 @@ const featureConfig = {
     output: {
         libraryTarget: 'umd',
         library: '[name]',
-        filename: './[name].js'
+        filename: './[name].js',
+        path: path.resolve(location),
     }
 }
 

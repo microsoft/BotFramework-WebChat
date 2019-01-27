@@ -14,6 +14,12 @@ export const guid = () => {
     guid += screen.height || '';
     guid += screen.width || '';
     guid += screen.pixelDepth || '';
+    guid += hashCode(window.location.origin);
 
     return guid;
+};
+
+const hashCode = (str: string): any => {
+    return str.split('').reduce((prevHash, currVal) =>
+    (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 };

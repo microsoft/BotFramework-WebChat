@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<head>
+    <!-- ギデオン -->
+    <title>Gideon</title>
+    
+</head>
+
+<body>
+
+<script src="botchat.js"></script>
+<script> 
+    (function(){
+        var element = document.createElement("link");
+        element.setAttribute("rel", "stylesheet");
+        element.setAttribute("type", "text/css");
+        element.setAttribute("href", "botchat.css");
+        document.getElementsByTagName("head")[0].appendChild(element);
+
+        var element = document.createElement("div");
+        element.setAttribute("id", "bot");
+        document.body.appendChild(element);
+
+        BotChat.App({
+            directLine: { secret: 'MJfotakCJ8o.cwA.LJ0.XkTaI6IN_olmht0LpHqDMeWWqS9whgLdQLo1cj0xMW4' },
+            gid: "http://localhost:3000"
+        }, document.getElementById("bot"));
+    })();
+</script>
+</body>
+</html>

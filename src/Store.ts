@@ -366,6 +366,9 @@ export type HistoryAction = {
     type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message'
     activity: Activity
 } | {
+    type: 'Set_Messages',
+    activities: Activity[]
+} | {
     type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry',
     clientActivityId: string
 } | {
@@ -400,6 +403,13 @@ export const history: Reducer<HistoryState> = (
 ) => {
     konsole.log('history action', action);
     switch (action.type) {
+        case 'Set_Messages': {
+            return {
+                ...state,
+                activities: action.activities
+            };
+        }
+
         case 'Receive_Sent_Message': {
             if (!action.activity.channelData || !action.activity.channelData.clientActivityId) {
                 // only postBack messages don't have clientActivityId, and these shouldn't be added to the history
@@ -419,6 +429,7 @@ export const history: Reducer<HistoryState> = (
             }
             // else fall through and treat this as a new message
         }
+
         case 'Receive_Message':
             if (state.activities.find(a => a.id === action.activity.id)) { return state; } // don't allow duplicate messages
 
