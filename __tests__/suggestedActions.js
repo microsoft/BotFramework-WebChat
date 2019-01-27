@@ -7,6 +7,8 @@ import minNumActivitiesReached from './setup/conditions/minNumActivitiesReached'
 import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 import webChatLoaded from './setup/conditions/webChatLoaded';
 
+import botConnected from './setup/conditions/botConnected';
+
 function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -18,8 +20,7 @@ describe('suggested-actions command', async () => {
   test('should show correctly formatted buttons when suggested actions are displayed', async() => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(webChatLoaded(), timeouts.navigation);
-    await driver.wait(directLineConnected(), timeouts.directLine);
+    await driver.wait(botConnected(), timeouts.directLine);
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -36,8 +37,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on imback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(webChatLoaded(), timeouts.navigation);
-    await driver.wait(directLineConnected(), timeouts.directLine);
+    await driver.wait(botConnected(), timeouts.directLine);
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -61,8 +61,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on postback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(webChatLoaded(), timeouts.navigation);
-    await driver.wait(directLineConnected(), timeouts.directLine);
+    await driver.wait(botConnected(), timeouts.directLine);
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -86,8 +85,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and text from user on postback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(webChatLoaded(), timeouts.navigation);
-    await driver.wait(directLineConnected(), timeouts.directLine);
+      await driver.wait(botConnected(), timeouts.directLine);
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -112,8 +110,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on messageback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(webChatLoaded(), timeouts.navigation);
-    await driver.wait(directLineConnected(), timeouts.directLine);
+    await driver.wait(botConnected(), timeouts.directLine);
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -137,8 +134,7 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and text from user on messageback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(webChatLoaded(), timeouts.navigation);
-    await driver.wait(directLineConnected(), timeouts.directLine);
+    await driver.wait(botConnected(), timeouts.directLine);
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 

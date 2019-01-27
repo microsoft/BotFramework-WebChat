@@ -8,6 +8,7 @@ import handler from 'serve-handler';
 
 import createPageObjects from './pageObjects/index';
 import setupTestEnvironment from './setupTestEnvironment';
+import webChatLoaded from './conditions/webChatLoaded';
 
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
@@ -41,6 +42,8 @@ global.setupWebDriver = async (options = {}) => {
         window.__coverage__ = coverage;
         main({ props });
       }, global.__coverage__, options.props);
+
+      await driver.wait(webChatLoaded(), 5000);
 
       return { driver, pageObjects: createPageObjects(driver) };
     })();
