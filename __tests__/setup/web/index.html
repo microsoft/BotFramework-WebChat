@@ -66,7 +66,7 @@
           const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
           const { token } = await res.json();
 
-          const store = window.WebChat.createStore({}, () => next => action => {
+          const store = window.WebChatTest.store = window.WebChat.createStore({}, () => next => action => {
             window.WebChatTest.actions.push(action);
 
             return next(action);
