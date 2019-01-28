@@ -145,8 +145,6 @@ export class Chat extends React.Component<ChatProps, State> {
         const botConnection: any = this.store.getState().connection.botConnection;
         step(this.props.gid, botConnection.conversationId, this.props.directLine.secret, messageId)
         .then((res: any) => {
-            window.localStorage.setItem('lastId', res.data.id);
-
             conversationHistory(this.props.gid, this.props.directLine.secret, botConnection.conversationId, res.data.id)
             .then((res: any) => {
                 const messages = res.data.messages.reverse();
@@ -155,8 +153,6 @@ export class Chat extends React.Component<ChatProps, State> {
                     activities: mapMessagesToActivities(messages, this.store.getState().connection.user.id)
                 });
             });
-
-            console.log(res);
         })
         .catch((err: any) => {
             console.log(err);
@@ -318,7 +314,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             }
                         });
 
-                        conversationHistory(this.props.gid, this.props.directLine.secret, conversationId, window.localStorage.getItem('lastId'))
+                        conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
                         .then((res: any) => {
                             const state = this.store.getState();
                             const messages = res.data.messages.reverse();
