@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Activity } from 'botframework-directlinejs';
 
 export const verifyConversation = (
     baseUrl: string,
@@ -56,4 +57,19 @@ export const availableTimes = (
     endDate: string
 ): any => {
     return axios.get(`${baseUrl}/api/v1/availabilities/available_times?directLine=${directLine}&conversation_id=${conversationId}&start_date=${startDate}&end_date=${endDate}`);
+};
+
+export const mapMessagesToActivities = (messages: any, userId: any): Activity[] => {
+    return messages.map((m: any, i: number) => {
+        return {
+            id: m.id,
+            type: 'message',
+            entities: m.entities,
+            suggestedActions: m.suggestedActions,
+            from: {
+                id: m.sender_type === 'bot' ? '' : userId
+            },
+            text: m.message
+        };
+    });
 };

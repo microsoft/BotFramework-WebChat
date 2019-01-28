@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
 import { Provider } from 'react-redux';
-import { conversationHistory, ping, step, verifyConversation } from './api/bot';
+import { conversationHistory, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
 import { guid } from './GUID';
 import * as konsole from './Konsole';
@@ -145,21 +145,15 @@ export class Chat extends React.Component<ChatProps, State> {
         const botConnection: any = this.store.getState().connection.botConnection;
         step(this.props.gid, botConnection.conversationId, this.props.directLine.secret, messageId)
         .then((res: any) => {
+            window.localStorage.setItem('lastId', res.data.id);
+
             conversationHistory(this.props.gid, this.props.directLine.secret, botConnection.conversationId, res.data.id)
             .then((res: any) => {
                 const messages = res.data.messages.reverse();
-                const activities: Activity[] = messages.map((m: any, i: number) => {
-                    return {
-                        id: m.id,
-                        type: 'message',
-                        from: {
-                            id: m.sender_type === 'bot' ? '' : this.store.getState().connection.user.id
-                        },
-                        text: m.message
-                    };
+                this.store.dispatch<ChatActions>({
+                    type: 'Set_Messages',
+                    activities: mapMessagesToActivities(messages, this.store.getState().connection.user.id)
                 });
-
-                this.store.dispatch<ChatActions>({ type: 'Set_Messages', activities });
             });
 
             console.log(res);
@@ -221,7 +215,7 @@ export class Chat extends React.Component<ChatProps, State> {
 
             let key: string;
 
-            // Quirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
+            // uirks: onKeyDown we re-focus, but the newly focused element does not receive the subsequent onKeyPress event
             //         It is working in Chrome/Firefox/IE, confirmed not working in Edge/16
             //         So we are manually appending the key if they can be inputted in the box
             if (/(^|\s)Edge\/16\./.test(navigator.userAgent)) {
@@ -324,22 +318,15 @@ export class Chat extends React.Component<ChatProps, State> {
                             }
                         });
 
-                        conversationHistory(this.props.gid, this.props.directLine.secret, conversationId)
+                        conversationHistory(this.props.gid, this.props.directLine.secret, conversationId, window.localStorage.getItem('lastId'))
                         .then((res: any) => {
                             const state = this.store.getState();
                             const messages = res.data.messages.reverse();
-                            const activities: Activity[] = messages.map((m: any, i: number) => {
-                                return {
-                                    id: m.id,
-                                    type: 'message',
-                                    from: {
-                                        id: m.sender_type === 'bot' ? '' : state.connection.user.id
-                                    },
-                                    text: m.message
-                                };
-                            });
 
-                            this.store.dispatch<ChatActions>({ type: 'Set_Messages', activities });
+                            this.store.dispatch<ChatActions>({
+                                type: 'Set_Messages',
+                                activities: mapMessagesToActivities(messages, state.connection.user.id)
+                            });
                         });
 
                         // Ping server with activity every 30 seconds
