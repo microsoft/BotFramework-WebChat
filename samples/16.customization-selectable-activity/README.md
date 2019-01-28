@@ -2,25 +2,14 @@
 
 In this sample, we show how to add an activity middleware to allow the user to select an activity.
 
-## Getting Started
+# Test out the hosted sample
 
-1. Clone this project.
+- [Try out with MockBot](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity)
 
-```
-git clone https://github.com/Microsoft/BotFramework-WebChat.git
-```
+# Things to try out
 
-2. Install dependencies.
+- Click on any chat activity from the bot or user to inspect it.
 
-```
-cd BotFramework-WebChat
-npm install
-npm run bootstrap
-```
+## Full list of Web Chat hosted samples
 
-3. Start the sample.
-
-```
-cd samples/16.customization-selectable-activity
-npm start
-```
+View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
