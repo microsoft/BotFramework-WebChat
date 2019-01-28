@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import activities from './reducers/activities';
+import connectivityStatus from './reducers/connectivityStatus'
 import dictateInterims from './reducers/dictateInterims';
 import dictateState from './reducers/dictateState';
 import language from './reducers/language';
@@ -13,6 +14,7 @@ import suggestedActions from './reducers/suggestedActions';
 
 export default combineReducers({
   activities,
+  connectivityStatus,
   dictateInterims,
   dictateState,
   language,
