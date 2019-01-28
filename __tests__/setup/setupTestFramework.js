@@ -1,10 +1,12 @@
 import { Builder } from 'selenium-webdriver';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { createServer } from 'http';
 import { join } from 'path';
 import { promisify } from 'util';
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import getPort from 'get-port';
 import handler from 'serve-handler';
+
+import { timeouts } from '../constants.json';
 
 import createPageObjects from './pageObjects/index';
 import setupTestEnvironment from './setupTestEnvironment';
@@ -43,7 +45,7 @@ global.setupWebDriver = async (options = {}) => {
         main({ props });
       }, global.__coverage__, options.props);
 
-      await driver.wait(webChatLoaded(), 5000);
+      await driver.wait(webChatLoaded(), timeouts.navigation);
 
       return { driver, pageObjects: createPageObjects(driver) };
     })();
