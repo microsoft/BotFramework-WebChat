@@ -39,6 +39,10 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
+  FAILED_CONNECTION_NOTIFICATION: 'Web Chat is unable to connect.',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'Send failed. {Retry}.',
+  SLOW_CONNECTION_NOTIFICATION: 'Web Chat is taking longer than usual to connect.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,
@@ -56,8 +60,6 @@ export default {
   'Right': 'Right',
   'retry': 'retry',
   'Retry': 'Retry',
-  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY : 'Send failed. {Retry}.',
   'Send': 'Send',
   'Sending': 'Sending',
   'Speak': 'Speak',

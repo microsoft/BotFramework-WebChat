@@ -31,6 +31,10 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
+  // FAILED_CONNECTION_NOTIFICATION: '',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: '無法發送。{Retry}',
+  // SLOW_CONNECTION_NOTIFICATION: '',
   'Chat': '聊天',
   // 'Download file': '',
   'Microphone off': '開啟麥克風',
@@ -41,8 +45,6 @@ export default {
   'retry': '重試',
   'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Right': '右',
-  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: '無法發送。{Retry}',
   'Send': '發送',
   'Sending': '正在發送',
   'Speak': '發言',
