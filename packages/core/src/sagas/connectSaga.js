@@ -63,7 +63,10 @@ function negativeUpdateConnectionStatusAction({ payload, type }) {
   if (type === UPDATE_CONNECTION_STATUS) {
     const { connectionStatus } = payload;
 
-    return connectionStatus !== CONNECTING && connectionStatus !== ONLINE;
+    return (
+      connectionStatus !== CONNECTING
+      && connectionStatus !== ONLINE
+    );
   }
 }
 
@@ -117,7 +120,11 @@ function* connectSaga(directLine) {
             directLine.end();
           } catch (err) {}
         };
-      } else if (connectionStatus === ENDED || connectionStatus === EXPIRED_TOKEN || connectionStatus === FAILED_TO_CONNECT) {
+      } else if (
+        connectionStatus === ENDED
+        || connectionStatus === EXPIRED_TOKEN
+        || connectionStatus === FAILED_TO_CONNECT
+      ) {
         // If we receive anything negative, we will assume the connection is errored out
         throw new Error('Failed to connect');
       }
