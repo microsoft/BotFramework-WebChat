@@ -14,6 +14,8 @@ import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/upd
 
 import createPromiseQueue from '../createPromiseQueue';
 
+import { ConnectionStatus } from 'botframework-directlinejs';
+
 import {
   CONNECT,
   CONNECT_PENDING,
@@ -28,12 +30,13 @@ import {
   DISCONNECT_FULFILLED
 } from '../actions/disconnect';
 
-// const UNINITIALIZED = 0;
-const CONNECTING = 1;
-const ONLINE = 2;
-const EXPIRED_TOKEN = 3;
-const FAILED_TO_CONNECT = 4;
-const ENDED = 5;
+const {
+  Connecting: CONNECTING,
+  Online: ONLINE,
+  ExpiredToken: EXPIRED_TOKEN,
+  FailedToConnect: FAILED_TO_CONNECT,
+  Ended: ENDED
+} = ConnectionStatus;
 
 function randomUserID() {
   return `r_${ random().toString(36).substr(2, 10) }`;
