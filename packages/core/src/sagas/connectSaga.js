@@ -114,11 +114,7 @@ function* connectSaga(directLine) {
 
         return () => {
           activitySubscription.unsubscribe();
-
-          try {
-            // TODO: [P3] DirectLineJS will throw an error saying "conversation ended", it seems redundant
-            directLine.end();
-          } catch (err) {}
+          directLine.end();
         };
       } else if (
         connectionStatus === ENDED
