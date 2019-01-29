@@ -1,22 +1,27 @@
 import { By, Key } from 'selenium-webdriver';
-import { imageSnapshotOptions } from './constants.json';
 
-function sleep(ms = 1000) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+import { imageSnapshotOptions, timeouts } from './constants.json';
+
+import allImagesLoaded from './setup/conditions/allImagesLoaded';
+import botConnected from './setup/conditions/botConnected';
+import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
 test('setup', async () => {
-  const { driver } = await setupWebDriver();
+  const { driver, pageObjects } = await setupWebDriver();
 
-  await sleep(2000);
+  await driver.wait(botConnected(), timeouts.directLine);
 
-  const input = await driver.findElement(By.tagName('input[type="text"]'));
+  const input = await driver.findElement(By.css('input[type="text"]'));
 
   await input.sendKeys('layout carousel', Key.RETURN);
-  await sleep(2000);
+  await driver.wait(minNumActivitiesShown(3), 2000);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  // Hide cursor before taking screenshot
+  await pageObjects.hideCursor();
 
   const base64PNG = await driver.takeScreenshot();
 

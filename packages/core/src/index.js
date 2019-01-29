@@ -14,6 +14,7 @@ import setLanguage from './actions/setLanguage';
 import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTyping from './actions/setSendTyping';
+import setSendTypingIndicator from './actions/setSendTypingIndicator';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
 import stopDictate from './actions/stopDictate';
@@ -43,11 +44,14 @@ export {
   setLanguage,
   setSendBox,
   setSendTimeout,
-  setSendTyping,
+  setSendTypingIndicator,
   startDictate,
   startSpeakingActivity,
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  version
+  version,
+
+  // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020 
+  setSendTyping
 }

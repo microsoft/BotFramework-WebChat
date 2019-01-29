@@ -1,12 +1,16 @@
 import { Builder } from 'selenium-webdriver';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { createServer } from 'http';
 import { join } from 'path';
 import { promisify } from 'util';
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import getPort from 'get-port';
 import handler from 'serve-handler';
 
+import { timeouts } from '../constants.json';
+
+import createPageObjects from './pageObjects/index';
 import setupTestEnvironment from './setupTestEnvironment';
+import webChatLoaded from './conditions/webChatLoaded';
 
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
@@ -21,10 +25,10 @@ expect.extend({
 let driverPromise;
 let serverPromise;
 
-global.setupWebDriver = async () => {
+global.setupWebDriver = async (options = {}) => {
   if (!driverPromise) {
     driverPromise = (async () => {
-      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder());
+      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
 
       // If the baseURL contains $PORT, it means it requires us to fill-in
@@ -36,12 +40,14 @@ global.setupWebDriver = async () => {
         await driver.get(baseURL);
       }
 
-      await driver.executeScript(coverage => {
+      await driver.executeScript((coverage, props) => {
         window.__coverage__ = coverage;
-        main();
-      }, global.__coverage__);
+        main({ props });
+      }, global.__coverage__, options.props);
 
-      return { driver };
+      await driver.wait(webChatLoaded(), timeouts.navigation);
+
+      return { driver, pageObjects: createPageObjects(driver) };
     })();
   }
 

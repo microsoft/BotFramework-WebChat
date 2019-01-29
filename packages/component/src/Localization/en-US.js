@@ -8,13 +8,14 @@ function userSaidSomething(avatarInitials, text, timestamp) {
 
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
+  const dateTime = date.getTime();
 
-  if (Number.isNaN(date.valueOf())) {
+  if (isNaN(dateTime)) {
     return dateStr;
   }
 
   const now = Date.now();
-  const deltaInMs = now - new Date(date).getTime();
+  const deltaInMs = now - dateTime;
   const deltaInMinutes = Math.floor(deltaInMs / 60000);
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 

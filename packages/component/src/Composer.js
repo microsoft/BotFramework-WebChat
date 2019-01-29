@@ -25,7 +25,7 @@ import {
   setLanguage,
   setSendBox,
   setSendTimeout,
-  setSendTyping,
+  setSendTypingIndicator,
   startDictate,
   startSpeakingActivity,
   stopDictate,
@@ -158,13 +158,13 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
   if (botAvatarInitials) {
     styleOptions = { ...styleOptions, botAvatarInitials };
 
-    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead.');
+    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .');
   }
 
   if (userAvatarInitials) {
     styleOptions = { ...styleOptions, userAvatarInitials };
 
-    console.warn('Web Chat: "userAvatarInitials" is deprecated. Please use "styleOptions.userAvatarInitials" instead.');
+    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .');
   }
 
   return {
@@ -222,14 +222,14 @@ class Composer extends React.Component {
 
     this.setLanguageFromProps(props);
     this.setSendTimeoutFromProps(props);
-    this.setSendTypingFromProps(props);
+    this.setSendTypingIndicatorFromProps(props);
 
     props.dispatch(createConnectAction({ directLine, userID }));
   }
 
   componentDidUpdate(prevProps) {
     const { props } = this;
-    const { directLine, locale, sendTimeout, sendTyping, userID } = props;
+    const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID } = props;
 
     if (prevProps.locale !== locale) {
       this.setLanguageFromProps(props);
@@ -239,8 +239,13 @@ class Composer extends React.Component {
       this.setSendTimeoutFromProps(props);
     }
 
-    if (!prevProps.sendTyping !== !sendTyping) {
-      this.setSendTypingFromProps(props);
+    if (
+      !prevProps.sendTypingIndicator !== !sendTypingIndicator
+
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+      || !prevProps.sendTyping !== !sendTyping
+    ) {
+      this.setSendTypingIndicatorFromProps(props);
     }
 
     if (
@@ -261,8 +266,14 @@ class Composer extends React.Component {
     props.dispatch(setSendTimeout(props.sendTimeout || 20000));
   }
 
-  setSendTypingFromProps(props) {
-    props.dispatch(setSendTyping(!!props.sendTyping));
+  setSendTypingIndicatorFromProps(props) {
+    if (typeof props.sendTyping === 'undefined') {
+      props.dispatch(setSendTypingIndicator(!!props.sendTypingIndicator));
+    } else {
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+      console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.');
+      props.dispatch(setSendTypingIndicator(!!props.sendTyping));
+    }
   }
 
   render() {
@@ -326,7 +337,7 @@ class Composer extends React.Component {
 const ConnectedComposer = connect(
   ({ referenceGrammarID }) => ({ referenceGrammarID })
 )(props =>
-  <ScrollToBottomComposer threshold={ 40 }>
+  <ScrollToBottomComposer>
     <ScrollToBottomFunctionContext.Consumer>
       { ({ scrollToEnd }) =>
         <Composer
@@ -375,7 +386,7 @@ ConnectedComposerWithStore.propTypes = {
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,
   sendTimeout: PropTypes.number,
-  sendTyping: PropTypes.bool,
+  sendTypingIndicator: PropTypes.bool,
   store: PropTypes.any,
   userID: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func

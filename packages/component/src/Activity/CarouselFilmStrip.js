@@ -13,7 +13,6 @@ import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
 
-
 const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
 
 const ROOT_CSS = css({
