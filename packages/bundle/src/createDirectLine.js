@@ -1,10 +1,11 @@
 import { DirectLine } from 'botframework-directlinejs';
 
-export default function ({conversationId, domain, fetch, secret, token, webSocket}) {
+export default function ({conversationId, domain, fetch, pollingInterval, secret, token, webSocket}) {
   return new DirectLine({
     conversationId,
     domain,
     fetch,
+    pollingInterval,
     secret,
     token,
     webSocket,
