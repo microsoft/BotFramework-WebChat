@@ -11,6 +11,7 @@ export default function ({
 }) {
   return {
     ...primarySmallFont,
+    alignItems: 'center',
     color: slowConnectivityText,
     display: 'flex',
     marginBottom: connectivityMarginTopBottom,

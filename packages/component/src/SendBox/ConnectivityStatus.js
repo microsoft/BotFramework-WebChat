@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Constants } from 'botframework-webchat-core';
-
 import connectToWebChat from '../connectToWebChat';
 import { localize } from '../Localization/Localize';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';

@@ -40,10 +40,26 @@ global.setupWebDriver = async (options = {}) => {
         await driver.get(baseURL);
       }
 
-      await driver.executeScript((coverage, props) => {
-        window.__coverage__ = coverage;
-        main({ props });
-      }, global.__coverage__, options.props);
+      await driver.executeAsyncScript(
+        (coverage, props, createDirectLineFnString, setupFnString, callback) => {
+          window.__coverage__ = coverage;
+
+          const setup = setupFnString ? eval(`() => ${ setupFnString }`)() : Promise.resolve();
+
+          setup().then(() => {
+            main({
+              createDirectLine: createDirectLineFnString && eval(`() => ${ createDirectLineFnString }`)(),
+              props
+            });
+
+            callback();
+          });
+        },
+        global.__coverage__,
+        options.props,
+        options.createDirectLine && options.createDirectLine.toString(),
+        options.setup && options.setup.toString()
+      );
 
       await driver.wait(webChatLoaded(), timeouts.navigation);
 

@@ -10,6 +10,7 @@ export default function ({
 }) {
   return {
     ...primarySmallFont,
+    alignItems: 'center',
     color: failedConnectivity,
     display: 'flex',
     fontWeight: 'bold',
