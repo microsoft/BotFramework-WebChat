@@ -1,4 +1,7 @@
-// TODO: [P4] Rename styleSetOptions to styleOptions
+function fontFamily(fonts) {
+  return fonts.map(font => `'${ font }'`).join(', ');
+}
+
 const DEFAULT_ACCENT = '#0063B1';
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 
@@ -9,6 +12,11 @@ const DEFAULT_OPTIONS = {
   paddingRegular: 10,
   paddingWide: 20,
   subtle: DEFAULT_SUBTLE,
+
+  // fonts
+  primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
+  monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
+  fontSizeSmall: '80%',
 
   // Avatar
   avatarSize: 40,
