@@ -58,6 +58,7 @@ export default class extends React.Component {
 
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
     this.handleDisabledChange = this.handleDisabledChange.bind(this);
+    this.handleDisconnectClick = this.handleDisconnectClick.bind(this);
     this.handleGroupTimestampChange = this.handleGroupTimestampChange.bind(this);
     this.handleHideSendBoxChange = this.handleHideSendBoxChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
@@ -94,7 +95,7 @@ export default class extends React.Component {
         domain,
         fetch,
         token: directLineToken,
-        webSocket: webSocket === 'true' || +webSocket
+        webSocket: webSocket === 'true' || !!+webSocket
       }),
       disabled: false,
       faulty: false,
@@ -145,6 +146,10 @@ export default class extends React.Component {
 
   handleBotAvatarInitialsChange({ target: { value } }) {
     this.setState(() => ({ botAvatarInitials: value }));
+  }
+
+  handleDisconnectClick() {
+    this.props.store.dispatch({ type: 'DIRECT_LINE/DISCONNECT' });
   }
 
   handleGroupTimestampChange({ target: { value } }) {
@@ -289,6 +294,12 @@ export default class extends React.Component {
             type="button"
           >
             Start conversation with local MockBot
+          </button>
+          <button
+            onClick={ this.handleDisconnectClick }
+            type="button"
+          >
+            Disconnect
           </button>
           <div>
             <label>

@@ -6,7 +6,7 @@ import {
 } from 'redux-saga/effects';
 
 import { CONNECT_FULFILLING } from '../../actions/connect';
-import { DISCONNECT_FULFILLED } from '../../actions/disconnect';
+import { DISCONNECT_PENDING } from '../../actions/disconnect';
 
 export default function (fn) {
   return call(function* () {
@@ -14,7 +14,8 @@ export default function (fn) {
       const { meta: { userID }, payload: { directLine } } = yield take(CONNECT_FULFILLING);
       const task = yield fork(fn, directLine, userID);
 
-      yield take(DISCONNECT_FULFILLED);
+      // When we receive DISCONNECT_PENDING, the Direct Line connection is tearing down and should not be used.
+      yield take(DISCONNECT_PENDING);
       yield cancel(task);
     }
   });
