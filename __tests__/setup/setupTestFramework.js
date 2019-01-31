@@ -44,9 +44,9 @@ global.setupWebDriver = async (options = {}) => {
         (coverage, props, createDirectLineFnString, setupFnString, callback) => {
           window.__coverage__ = coverage;
 
-          const setup = setupFnString ? eval(`() => ${ setupFnString }`)() : Promise.resolve();
+          const setupPromise = setupFnString ? eval(`() => ${ setupFnString }`)()() : Promise.resolve();
 
-          setup().then(() => {
+          setupPromise.then(() => {
             main({
               createDirectLine: createDirectLineFnString && eval(`() => ${ createDirectLineFnString }`)(),
               props

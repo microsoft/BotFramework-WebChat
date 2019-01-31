@@ -5,7 +5,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 describe('offline UI', async () => {
   test('should show "unable to connect" UI when connection is slow', async() => {
-    const { driver, pageObjects } = await setupWebDriver({
+    const { driver } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
@@ -38,16 +38,13 @@ describe('offline UI', async () => {
 
     await driver.sleep(15000);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   }, 60000);
 
   test('should show "unable to connect" UI when credentials are incorrect', async() => {
-    const { driver, pageObjects } = await setupWebDriver({
+    const { driver } = await setupWebDriver({
       createDirectLine: () => {
         return window.WebChat.createDirectLine({ token: 'INVALID-TOKEN' });
       },
@@ -66,9 +63,6 @@ describe('offline UI', async () => {
         !!~window.WebChatTest.actions.findIndex(({ type }) => type === 'DIRECT_LINE/CONNECT_REJECTED')
       );
     }, timeouts.directLine);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     const base64PNG = await driver.takeScreenshot();
 

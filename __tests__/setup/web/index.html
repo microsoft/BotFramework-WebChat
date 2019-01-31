@@ -53,7 +53,7 @@
       window.WebChatTest = { actions: [] };
 
       function main({
-        createDirectLine = window.WebChat.createDirectLine,
+        createDirectLine,
         props
       } = {}) {
         const webChatScript = document.createElement('script');
@@ -74,6 +74,8 @@
 
             return next(action);
           });
+
+          createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
 
           window.WebChat.renderWebChat({
             directLine: createDirectLine({ token }),
