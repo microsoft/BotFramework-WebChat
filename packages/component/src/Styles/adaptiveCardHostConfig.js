@@ -17,7 +17,7 @@ export default ({
         },
         accent: {
           default: accent,
-          subtle: subtle
+          subtle: accent
         }
       }
     },
