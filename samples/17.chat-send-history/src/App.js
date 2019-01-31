@@ -6,6 +6,9 @@ import ReactWebChat from './WebChat';
 
 export default class App extends React.Component {
   history = new SendHistory();
+  state = {
+    isDirty: false
+  };
 
   store = createStore(
     {},
@@ -15,6 +18,7 @@ export default class App extends React.Component {
         this.history.add(action.payload.text);
       } else if (!action.fromHistory && action.type === 'WEB_CHAT/SET_SEND_BOX') {
         // sendbox was modified by the user, not history
+        this.setState({ isDirty: action.payload.text !== '' });
         this.history.reset();
       }
 
@@ -33,7 +37,7 @@ export default class App extends React.Component {
   handleKeyDown = (e) => {
     const { target } = e;
 
-    if (target.dataset.id === 'webchat-sendbox-input') {
+    if (!this.state.isDirty && target.dataset.id === 'webchat-sendbox-input') {
       let text;
 
       switch (e.key) {
@@ -43,9 +47,7 @@ export default class App extends React.Component {
           }
           break;
         case 'ArrowDown':
-          if (this.history.isActive()) {
             text = this.history.getPrevious();
-          }
           break;
         default:
           return;
