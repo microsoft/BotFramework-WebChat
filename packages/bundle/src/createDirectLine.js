@@ -9,6 +9,7 @@ export default function ({conversationId, domain, fetch, pollingInterval, secret
     secret,
     token,
     webSocket,
+    botAgent: 'webchat',
     createFormData: attachments => {
       const formData = new FormData();
 
