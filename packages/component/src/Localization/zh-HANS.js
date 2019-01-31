@@ -43,8 +43,8 @@ export default {
   'Listening…': '正在倾听…',
   'New messages': '新讯息',
   'retry': '重试',
-  'Right': '右',
   'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  'Right': '右',
   'Send': '发送',
   'Sending': '正在发送',
   'Speak': '发言',

@@ -80,13 +80,13 @@ const DEFAULT_OPTIONS = {
   videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270
 
   // Connectivity UI
+  connectivityIconPadding: PADDING_REGULAR * 1.2,
   connectivityMarginLeftRight: PADDING_REGULAR * 1.4,
   connectivityMarginTopBottom: PADDING_REGULAR * 0.8,
-  connectivityIconPadding: PADDING_REGULAR * 1.2,
   connectivityTextSize: 12,
+  failedConnectivity: '#C50F1F',
   slowConnectivity: '#EAA300',
   slowConnectivityText: '#5E5E5E',
-  failedConnectivity: '#C50F1F',
 };
 
 export default DEFAULT_OPTIONS

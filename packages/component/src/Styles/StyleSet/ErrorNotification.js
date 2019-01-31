@@ -1,9 +1,9 @@
 import { primarySmallFont } from '../Fonts';
 
 export default function ({
+  connectivityIconPadding,
   connectivityMarginLeftRight,
   connectivityMarginTopBottom,
-  connectivityIconPadding,
   connectivityTextSize,
   failedConnectivity,
 
@@ -13,12 +13,12 @@ export default function ({
     alignItems: 'center',
     color: failedConnectivity,
     display: 'flex',
+    fontSize: connectivityTextSize,
     fontWeight: 'bold',
     marginBottom: connectivityMarginTopBottom,
     marginLeft: connectivityMarginLeftRight,
     marginRight: connectivityMarginLeftRight,
     marginTop: connectivityMarginTopBottom,
-    fontSize: connectivityTextSize,
 
     '& > svg': {
       fill: failedConnectivity,

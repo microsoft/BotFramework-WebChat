@@ -12,7 +12,7 @@ export default function* detectSlowConnectionSaga() {
 
     yield take(CONNECT_PENDING);
 
-    const test = yield race({
+    const connectivityRace = yield race({
       fulfilled: take(CONNECT_FULFILLED),
       rejected: take(CONNECT_REJECTED),
       slow: call(() => {
@@ -20,7 +20,7 @@ export default function* detectSlowConnectionSaga() {
       })
     });
 
-    if ('slow' in test) {
+    if ('slow' in connectivityRace) {
       yield put({ type: CONNECT_STILL_PENDING });
     }
   }

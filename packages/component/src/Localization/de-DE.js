@@ -9,7 +9,7 @@ export default {
   // 'Microphone on': '',
   'Listening…': 'Hören…',
   'retry': 'wiederholen',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence. // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Send': 'Senden',
   'Sending': 'sendet',
   // 'Speak': '',
