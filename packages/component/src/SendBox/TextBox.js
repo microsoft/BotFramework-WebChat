@@ -71,6 +71,7 @@ export default connectSendTextBox(
           { ({ sendFocusRef }) =>
             <input
               aria-label={ typeYourMessageString }
+              data-id="webchat-sendbox-input"
               disabled={ disabled }
               onChange={ onChange }
               placeholder={ typeYourMessageString }
