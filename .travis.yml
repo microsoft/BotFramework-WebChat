@@ -4,7 +4,8 @@ node_js:
 - "6.9.4"
 
 before_install:
-- npx version-from-git --travis
+- npm install -g version-from-git
+- version-from-git --travis
 
 install:
 - npm install
