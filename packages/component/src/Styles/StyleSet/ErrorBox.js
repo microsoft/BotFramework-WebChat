@@ -1,13 +1,11 @@
-import {
-  monospaceSmallFont,
+export default function createErrorBoxStyle({
+  monospaceFont,
   primaryFont
-} from '../Fonts';
-
-export default function createErrorBoxStyle() {
+}) {
   return {
-    ...primaryFont,
     display: 'flex',
     flexDirection: 'column',
+    fontFamily: primaryFont,
     margin: 0,
     minHeight: 20,
     maxHeight: 200,
@@ -32,7 +30,7 @@ export default function createErrorBoxStyle() {
       padding: 10,
 
       '& > pre': {
-        ...monospaceSmallFont,
+        fontFamily: monospaceFont,
         fontSize: '60%',
         margin: 0
       }
