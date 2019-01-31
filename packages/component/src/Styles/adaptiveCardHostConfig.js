@@ -4,9 +4,9 @@ import defaultStyleSetOptions from './defaultStyleSetOptions';
 
 export default ({
   accent,
-  bubbleTextColor ,
+  bubbleTextColor,
   primaryFont,
-  subtle,
+  subtle
 } = defaultStyleSetOptions) => new HostConfig({
   containerStyles: {
     default: {
