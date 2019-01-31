@@ -1,10 +1,10 @@
 language: node_js
 
 node_js:
-- "7.4.0"
+- "8.9.4"
 
 before_install:
-- npm install -g npm@latest version-from-git
+- npm install -g npm@6 version-from-git
 - version-from-git --travis
 
 install:
