@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added missing Spanish (es-ES) locale by [@schgressive](https://github.com/schgressive) in PR [#1615](https://github.com/Microsoft/BotFramework-WebChat/pull/1615)
 - Fix [#1602](https://github.com/Microsoft/BotFramework-WebChat/issues/1602). Fix suggested actions regression of buttons, by [@corinagum](https://github.com/corinagum) in PR [#1616](https://github.com/Microsoft/BotFramework-WebChat/pull/1616)
 - `core`: Send `conversationUpdate` activity on connect, by [@compulim](https://github.com/compulim), in PR [#1608](https://github.com/Microsoft/BotFramework-WebChat/pull/1608)
+- `component`: Allow font family and adaptive cards text color to be set via styleOptions, by [@a-b-r-o-w-n](https://github.com/a-b-r-o-w-n), in PR [#1670](https://github.com/Microsoft/BotFramework-WebChat/pull/1670)
 
 ### Changed
 - Moved `botAvatarImage` and `userAvatarImage` to `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage` respectively, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
