@@ -19,7 +19,7 @@ export default function* () {
   yield whileConnected(observeActivity);
 }
 
-function* observeActivity(directLine, userID) {
+function* observeActivity({ directLine, userID }) {
   yield observeEach(directLine.activity$, function* (activity) {
     activity = patchActivityWithFromRole(activity, userID);
 

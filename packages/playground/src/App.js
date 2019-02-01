@@ -106,6 +106,7 @@ export default class extends React.Component {
       sendTypingIndicator: true,
       userAvatarInitials: 'WC',
       userID,
+      username: 'Web Chat user',
       webSpeechPonyfillFactory: null
     };
   }
@@ -244,6 +245,7 @@ export default class extends React.Component {
         sendTypingIndicator,
         userAvatarInitials,
         userID,
+        username,
         webSpeechPonyfillFactory
       }
     } = this;
@@ -268,6 +270,7 @@ export default class extends React.Component {
           store={ store }
           styleOptions={ styleOptions }
           userID={ userID }
+          username={ username }
           webSpeechPonyfillFactory={ webSpeechPonyfillFactory }
         />
         <div className="button-bar">

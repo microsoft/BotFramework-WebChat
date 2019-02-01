@@ -12,7 +12,7 @@ import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import markActivity from '../actions/markActivity';
 
 export default function* () {
-  yield whileConnected(function* (_, userID) {
+  yield whileConnected(function* ({ userID }) {
     yield whileSpeakIncomingActivity(markActivityForSpeakOnIncomingActivityFromOthers.bind(null, userID));
   });
 }

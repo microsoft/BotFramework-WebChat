@@ -1,17 +1,18 @@
 import { put } from 'redux-saga/effects';
-import whileConnected from './effects/whileConnected';
 
 import postActivity from '../actions/postActivity';
+import whileConnected from './effects/whileConnected';
 
 export default function* () {
   yield whileConnected(sendConversationUpdateOnConnect);
 }
 
-function* sendConversationUpdateOnConnect(_, userID) {
+function* sendConversationUpdateOnConnect({ userID, username }) {
   yield put(postActivity({
     type: 'conversationUpdate',
     membersAdded: [{
-      id: userID
+      id: userID,
+      name: username
     }]
   }, 'code'));
 }

@@ -12,7 +12,7 @@ export default function* () {
   yield whileConnected(observeConnectionStatus);
 }
 
-function* observeConnectionStatus(directLine) {
+function* observeConnectionStatus({ directLine }) {
   yield observeEach(directLine.connectionStatus$, function* (connectionStatus) {
     yield put(connectionStatusUpdate(connectionStatus));
     yield put(setReferenceGrammarID(directLine.referenceGrammarId));

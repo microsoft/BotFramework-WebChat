@@ -30,16 +30,16 @@ import {
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
 export default function* () {
-  yield whileConnected(function* (directLine, userID) {
+  yield whileConnected(function* ({ directLine, userID, username }) {
     let numActivitiesPosted = 0;
 
     yield takeEvery(POST_ACTIVITY, function* (action) {
-      yield* postActivity(directLine, userID, numActivitiesPosted++, action);
+      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
     });
   });
 }
 
-function* postActivity(directLine, userID, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
+function* postActivity(directLine, userID, username, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
   const locale = yield select(languageSelector);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
@@ -57,6 +57,7 @@ function* postActivity(directLine, userID, numActivitiesPosted, { meta: { method
     channelId: 'webchat',
     from: {
       id: userID,
+      name: username,
       role: 'user'
     },
     locale,
