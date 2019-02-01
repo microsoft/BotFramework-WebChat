@@ -3,8 +3,7 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import mime from 'mime';
-
+import mime from '../utils/mime-wrapper';
 import whileConnected from './effects/whileConnected';
 
 import { SEND_FILES } from '../actions/sendFiles';
