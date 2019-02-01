@@ -3,6 +3,10 @@
 ## Description
 A simple web page with a maximized Web Chat that displays initials for both the bot and the user.
 
+
+# Test out the hosted sample
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.a.display-user-bot-initials-styling)
+
 # How to run
 - Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/04.a.display-user-bot-images-styling` in command line

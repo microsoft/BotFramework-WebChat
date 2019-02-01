@@ -8,6 +8,10 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 - Cognitive Services Bing Speech
 - Markdown-It
 
+# Test out the hosted sample
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle)
+
+
 # How to run
 
 - Fork this repository

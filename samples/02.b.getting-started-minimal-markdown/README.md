@@ -7,6 +7,10 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 - Adaptive Cards
 - Cognitive Services Bing Speech
 
+# Test out the hosted sample
+
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown)
+
 # How to run
 
 - Fork this repository

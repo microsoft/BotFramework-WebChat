@@ -1,19 +1,23 @@
-# Sample - Display User and Bot Images on Web Chat
+# Sample - Branding Web Chat Styling
 
 ## Description
-A simple web page with a maximized Web Chat that displays individual images (avatars) for both the bot and the user.
+This sample introduces `styleSetOptions` and branding your bot through Web Chat via styling.
 
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.display-user-bot-images-styling)
+
+# MUST FIX THIS LINK. IN ALL PREVIOUS SAMPLES (1-4)
+
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling)
+
 
 # How to run
 - Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/04.b.display-user-bot-images-styling` in command line
+- Navigate to `/Your-Local-WebChat/samples/05.b.branding-webchat-styling` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
-- Type `hello`: you should see the avatars displayed by user and bot in the transcript.
+- Type `hello`: you should see the speech bubbles from the bot and user are pale blue and pale green respectively. This is different from the default grey and blue bubbles in Web Chat.
 
 # Code
 
@@ -22,27 +26,19 @@ A simple web page with a maximized Web Chat that displays individual images (ava
 ## Getting started
 
 ### Goals of this bot
-Showing user images (avatars) on Web Chat is a popular feature. This sample will show you how to implement your own images.
+
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 
-First, we want to add the `styleOptions` object to our `index.html` page. This object will be passed into Web Chat.
+First, we want to add the `styleOptions` object to our `index.html` page and add the initials as values within the object. This object will be passed into Web Chat. The keys for the bot and user initials are `botAvatarInitials` and `userAvatarInitials`, respectively.
+
+Add the initials for both the user and the bot. The new object should look like the following:
 
 ```diff
-…
   const { token } = await res.json();
-+ const styleOptions = {};
-…
-```
-
-Add the images and (if desired) the initials for both the user and the bot. The new object should look like the following:
-
-```diff
 - const styleOptions = {};
 + const styleOptions = {
-+  botAvatarImage: 'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
 +  botAvatarInitials: 'BF',
-+  userAvatarImage: 'https://github.com/compulim.png?size=64',
 +  userAvatarInitials: 'WC'
 + };
 ```
@@ -58,6 +54,8 @@ window.WebChat.renderWebChat({
  }, document.getElementById('webchat'));
  …
 ```
+
+That's it!
 
 ## Completed code
 
@@ -90,9 +88,7 @@ Here is the finished `index.html`:
         const { token } = await res.json();
 
 +       const styleOptions = {
-+         botAvatarImage: 'https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/logo_bot.svg?view=azure-bot-service-4.0',
 +         botAvatarInitials: 'BF',
-+         userAvatarImage: 'https://github.com/compulim.png?size=64',
 +         userAvatarInitials: 'WC'
 +       };
 
