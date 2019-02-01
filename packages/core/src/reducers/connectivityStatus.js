@@ -33,5 +33,5 @@ export default function(state = DEFAULT_STATE, { type }) {
 
     default: break;
   }
-  return state
+  return state;
 }
