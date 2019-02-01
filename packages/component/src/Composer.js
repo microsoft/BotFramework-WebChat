@@ -218,18 +218,18 @@ class Composer extends React.Component {
 
   componentWillMount() {
     const { props } = this;
-    const { directLine, userID } = props;
+    const { directLine, userID, username } = props;
 
     this.setLanguageFromProps(props);
     this.setSendTimeoutFromProps(props);
     this.setSendTypingIndicatorFromProps(props);
 
-    props.dispatch(createConnectAction({ directLine, userID }));
+    props.dispatch(createConnectAction({ directLine, userID, username }));
   }
 
   componentDidUpdate(prevProps) {
     const { props } = this;
-    const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID } = props;
+    const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID, username } = props;
 
     if (prevProps.locale !== locale) {
       this.setLanguageFromProps(props);
@@ -251,10 +251,11 @@ class Composer extends React.Component {
     if (
       prevProps.directLine !== directLine
       || prevProps.userID !== userID
+      || prevProps.username !== username
     ) {
       // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
       props.dispatch(disconnect());
-      props.dispatch(createConnectAction({ directLine, userID }));
+      props.dispatch(createConnectAction({ directLine, userID, username }));
     }
   }
 
@@ -294,6 +295,7 @@ class Composer extends React.Component {
         scrollToEnd,
         store,
         userID,
+        username,
         webSpeechPonyfillFactory,
         ...propsForLogic
       },
@@ -389,5 +391,6 @@ ConnectedComposerWithStore.propTypes = {
   sendTypingIndicator: PropTypes.bool,
   store: PropTypes.any,
   userID: PropTypes.string,
+  username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
 };

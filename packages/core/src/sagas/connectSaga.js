@@ -136,11 +136,21 @@ function* connectSaga(directLine) {
 
 export default function* () {
   for (;;) {
-    const { payload: { directLine, userID: userIDFromAction } } = yield take(CONNECT);
+    const {
+      payload: {
+        directLine,
+        userID: userIDFromAction,
+        username
+      }
+    } = yield take(CONNECT);
     const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
 
     try {
-      const meta = { userID: rectifyUserID(directLine, userIDFromAction) };
+      const meta = {
+        userID: rectifyUserID(directLine, userIDFromAction),
+        username
+      };
+
       let endDirectLine;
 
       yield put({ type: CONNECT_PENDING, meta });
