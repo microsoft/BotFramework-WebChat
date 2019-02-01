@@ -4,7 +4,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
 describe('offline UI', async () => {
-  test('should show "unable to connect" UI when connection is slow', async() => {
+  test('should show "slow to connect" UI when connection is slow', async() => {
     const { driver } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
