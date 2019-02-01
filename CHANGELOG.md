@@ -24,11 +24,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `core`: Added `sendEvent`, in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
 - `core`: Added `CONNECT_FULFILLING` action to workaround `redux-saga` [design decision](https://github.com/redux-saga/redux-saga/issues/1651), in PR [#1286](https://github.com/Microsoft/BotFramework-WebChat/pull/1286)
 - `component`: Added missing Spanish (es-ES) locale by [@schgressive](https://github.com/schgressive) in PR [#1615](https://github.com/Microsoft/BotFramework-WebChat/pull/1615)
-- `samples`: Added selectable chat activity sample, by [@a-b-r-o-w-n](https://github.com/a-b-r-o-w-n), in PR [#1624](https://github.com/Microsoft/BotFramework-WebChat/pull/1624)
 - Added missing Spanish (es-ES) locale by [@schgressive](https://github.com/schgressive) in PR [#1615](https://github.com/Microsoft/BotFramework-WebChat/pull/1615)
 - Fix [#1602](https://github.com/Microsoft/BotFramework-WebChat/issues/1602). Fix suggested actions regression of buttons, by [@corinagum](https://github.com/corinagum) in PR [#1616](https://github.com/Microsoft/BotFramework-WebChat/pull/1616)
 - `core`: Send `conversationUpdate` activity on connect, by [@compulim](https://github.com/compulim), in PR [#1608](https://github.com/Microsoft/BotFramework-WebChat/pull/1608)
-- `samples`: Added chat send history sample, by [@a-b-r-o-w-n](https://github.com/a-b-r-o-w-n), in PR [#1678](https://github.com/Microsoft/BotFramework-WebChat/pull/1678)
 
 ### Changed
 - Moved `botAvatarImage` and `userAvatarImage` to `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage` respectively, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
@@ -81,6 +79,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `*`: Updated [minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/) sample to use `WEB_CHAT/SEND_EVENT` action, in [#1631](https://github.com/Microsoft/BotFramework-WebChat/pull/1631)
 - `component`: [Hybrid speech engine](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech/), in [#1617](https://github.com/Microsoft/BotFramework-WebChat/pull/1617)
 - `component`: Use Speech Services token for [speech UI sample](https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui/), in [#1634](https://github.com/Microsoft/BotFramework-WebChat/pull/1634)
+- `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity/), in [#1624](https://github.com/Microsoft/BotFramework-WebChat/pull/1624)
+- `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/17.chat-send-history/), in [#1678](https://github.com/Microsoft/BotFramework-WebChat/pull/1678)
 
 ## [4.2.0] - 2018-12-11
 ### Added
