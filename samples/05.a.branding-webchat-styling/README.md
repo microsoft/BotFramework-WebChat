@@ -9,7 +9,7 @@ This sample introduces `styleSetOptions` and branding your bot through Web Chat 
 
 # How to run
 - Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.b.branding-webchat-styling` in command line
+- Navigate to `/Your-Local-WebChat/samples/05.a.branding-webchat-styling` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
@@ -124,7 +124,7 @@ Feel free to add your own `styleSetOptions.json` to override as many of these st
 
 # Further reading
 
-- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
+- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b-idiosyncratic-manual-styling) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
 
 ## Full list of Web Chat hosted samples
 
