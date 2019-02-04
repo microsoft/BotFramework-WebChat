@@ -56,7 +56,12 @@ export class AdaptiveCardBuilder {
     addButtons(buttons: CardAction[]) {
         if (buttons) {
             this.card.actions = buttons.map((button): AdaptiveCardSchema.ActionSubmit => {
-                const cardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...button };
+                const cardAction: BotFrameworkCardAction = {
+                    __isBotFrameworkCardAction: true,
+                    type: button.type,
+                    value: button.value
+                };
+
                 return {
                     title: button.title,
                     type: "Action.Submit",
