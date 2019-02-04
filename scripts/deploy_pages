@@ -1,11 +1,11 @@
 #!/bin/bash
 
-rsync -av --progress samples/ gh-pages/ \\
-  --exclude backend-cli \\
-  --exclude 12.customization-minimizable-web-chat \\
-  --exclude 13.customization-speech-ui \\
-  --exclude 14.customization-piping-to-redux \\
-  --exclude 16.customization-selectable-activity \\
+rsync -av --progress samples/ gh-pages/ \
+  --exclude backend-cli \
+  --exclude 12.customization-minimizable-web-chat \
+  --exclude 13.customization-speech-ui \
+  --exclude 14.customization-piping-to-redux \
+  --exclude 16.customization-selectable-activity \
   --exclude 17.chat-send-history
 
 mkdir gh-pages/12.customization-minimizable-web-chat
