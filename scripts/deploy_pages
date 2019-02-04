@@ -14,4 +14,7 @@ rsync -av --progress samples/14.customization-piping-to-redux/build/ gh-pages/14
 mkdir gh-pages/16.customization-selectable-activity
 rsync -av --progress samples/16.customization-selectable-activity/build/ gh-pages/16.customization-selectable-activity/
 
+mkdir gh-pages/17.chat-send-history
+rsync -av --progress samples/17.chat-send-history/build/ gh-pages/17.chat-send-history/
+
 rsync -av --progress samples/redirects/ gh-pages/
