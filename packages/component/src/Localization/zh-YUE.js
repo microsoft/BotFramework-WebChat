@@ -32,10 +32,10 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
-  FAILED_CONNECTION_NOTIFICATION: 'Web Chat 接駁唔倒。',
+  FAILED_CONNECTION_NOTIFICATION: '接駁唔倒。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: '傳送唔倒。{Retry}。',
-  SLOW_CONNECTION_NOTIFICATION: 'Web Chat 接駁嘅時間比平時長。',
+  SLOW_CONNECTION_NOTIFICATION: '接駁嘅時間比平時長。',
   'Chat': '傾偈',
   'Download file': '下載檔案',
   'Microphone off': '閂咪',
