@@ -1,12 +1,11 @@
-import { primaryFont } from '../Fonts';
-
 export default function ({
   accent,
   bubbleTextColor,
-  paddingRegular
+  paddingRegular,
+  primaryFont
 }) {
   return {
-    ...primaryFont,
+    fontFamily: primaryFont,
 
     '& > a': {
       alignItems: 'center',

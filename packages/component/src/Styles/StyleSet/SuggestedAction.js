@@ -1,8 +1,7 @@
-import { primaryFont } from  '../Fonts';
-
 export default function createSuggestedActionStyle({
   paddingRegular,
   paddingWide,
+  primaryFont,
   suggestedActionBackground,
   suggestedActionBorder,
   suggestedActionBorderRadius,
@@ -19,8 +18,7 @@ export default function createSuggestedActionStyle({
     paddingTop: paddingRegular,
 
     '& > button': {
-      ...primaryFont,
-
+      fontFamily: primaryFont,
       fontSize: 'inherit',
       height: suggestedActionHeight,
       paddingLeft: paddingWide,

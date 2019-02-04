@@ -1,15 +1,11 @@
-import {
-  primaryFont
-} from '../Fonts';
-
 export default function createSendBoxTextBoxStyle({
   paddingRegular,
+  primaryFont,
   sendBoxTextColor
 }) {
   return  {
-    ...primaryFont,
-
     alignItems: 'center',
+    fontFamily: primaryFont,
 
     '& > input': {
       border: 0,
