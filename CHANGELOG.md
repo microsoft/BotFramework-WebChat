@@ -17,4 +17,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
-- Bumps to [`botframework-directlinejs@0.11.1`](https://npmjs.com/package/botframework-directlinejs/), by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Bumps to [`botframework-directlinejs@0.11.1`](https://npmjs.com/package/botframework-directlinejs/), by [@compulim](https://github.com/compulim) in PR [#1694](https://github.com/Microsoft/BotFramework-WebChat/pull/1694)
