@@ -39,10 +39,10 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
-  FAILED_CONNECTION_NOTIFICATION: 'Web Chat is unable to connect.',
+  FAILED_CONNECTION_NOTIFICATION: 'Unable to connect.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: 'Send failed. {Retry}.',
-  SLOW_CONNECTION_NOTIFICATION: 'Web Chat is taking longer than usual to connect.',
+  SLOW_CONNECTION_NOTIFICATION: 'Taking longer than usual to connect.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,
