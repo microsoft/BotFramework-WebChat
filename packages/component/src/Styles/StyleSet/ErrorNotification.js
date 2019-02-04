@@ -1,18 +1,17 @@
-import { primarySmallFont } from '../Fonts';
-
 export default function ({
   connectivityIconPadding,
   connectivityMarginLeftRight,
   connectivityMarginTopBottom,
   connectivityTextSize,
   failedConnectivity,
+  primaryFont
 
 }) {
   return {
-    ...primarySmallFont,
     alignItems: 'center',
     color: failedConnectivity,
     display: 'flex',
+    fontFamily: primaryFont,
     fontSize: connectivityTextSize,
     fontWeight: 'bold',
     marginBottom: connectivityMarginTopBottom,
