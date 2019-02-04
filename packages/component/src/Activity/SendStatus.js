@@ -10,7 +10,7 @@ const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 // TODO: [P4] Currently, this is the only place which use a templated string
 //       We could refactor this into a general component if there are more templated strings
 function sendFailed(language, replace) {
-  const text = localize('Send failed, {retry}', language);
+  const text = localize(SEND_FAILED_KEY, language);
   const retry = localize('retry', language);
   const match = /\{retry\}/.exec(text);
 

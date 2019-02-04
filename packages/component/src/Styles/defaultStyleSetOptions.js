@@ -4,12 +4,13 @@ function fontFamily(fonts) {
 
 const DEFAULT_ACCENT = '#0063B1';
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
+const PADDING_REGULAR = 10;
 
 const DEFAULT_OPTIONS = {
   // Color and paddings
   accent: DEFAULT_ACCENT,
   backgroundColor: 'White',
-  paddingRegular: 10,
+  paddingRegular: PADDING_REGULAR,
   paddingWide: 20,
   subtle: DEFAULT_SUBTLE,
 
@@ -76,7 +77,16 @@ const DEFAULT_OPTIONS = {
   transcriptOverlayButtonColorOnHover: 'White',
 
   // Video
-  videoHeight: 270 // based on bubbleMaxWidth, 480 / 16 * 9 = 270
+  videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270
+
+  // Connectivity UI
+  connectivityIconPadding: PADDING_REGULAR * 1.2,
+  connectivityMarginLeftRight: PADDING_REGULAR * 1.4,
+  connectivityMarginTopBottom: PADDING_REGULAR * 0.8,
+  connectivityTextSize: 12,
+  failedConnectivity: '#C50F1F',
+  slowConnectivity: '#EAA300',
+  slowConnectivityText: '#5E5E5E',
 };
 
 export default DEFAULT_OPTIONS

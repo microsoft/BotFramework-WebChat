@@ -46,6 +46,10 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
+  // FAILED_CONNECTION_NOTIFICATION: '',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'Не удалось отправить, {Retry}.',
+  // SLOW_CONNECTION_NOTIFICATION: '',
   'Adaptive Card parse error': 'Ошибка парсинга адаптивной карты',
   'Adaptive Card render error': 'Ошибка отображения адаптивной карты',
   'Chat': 'Чат',
@@ -54,7 +58,7 @@ export default {
   // 'Microphone on': '',
   'Listening…': 'Прослушивание…',
   'retry': 'повторить',
-  'Send failed, {retry}': 'Не удалось отправить, {retry}',
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Send': 'Отправить',
   'Sending': 'Отправка',
   // 'Speak': '',

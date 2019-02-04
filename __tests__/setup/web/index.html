@@ -52,7 +52,10 @@
     <script>
       window.WebChatTest = { actions: [] };
 
-      function main({ props } = {}) {
+      function main({
+        createDirectLine,
+        props
+      } = {}) {
         const webChatScript = document.createElement('script');
 
         webChatScript.setAttribute('src', '/webchat-instrumented.js');
@@ -72,12 +75,10 @@
             return next(action);
           });
 
+          createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
+
           window.WebChat.renderWebChat({
-            // directLine: window.WebChat.createDirectLine({
-            //   domain: 'http://localhost:5000/v3/directline',
-            //   webSocket: false
-            // })
-            directLine: window.WebChat.createDirectLine({ token }),
+            directLine: createDirectLine({ token }),
             store,
             ...props
           }, document.getElementById('webchat'));

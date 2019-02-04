@@ -1,3 +1,7 @@
 export default async function hideCursor(driver) {
-  await driver.executeScript(() => document.querySelector(':focus').blur());
+  await driver.executeScript(() => {
+    const focusedElement = document.querySelector(':focus');
+
+    focusedElement && focusedElement.blur();
+  });
 }

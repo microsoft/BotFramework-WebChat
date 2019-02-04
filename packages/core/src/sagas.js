@@ -3,6 +3,7 @@ import { fork } from 'redux-saga/effects';
 import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
 import connectSaga from './sagas/connectSaga';
+import detectSlowConnectionSaga from './sagas/detectSlowConnectionSaga';
 import incomingActivitySaga from './sagas/incomingActivitySaga';
 import markActivityForSpeakOnIncomingActivityFromOthersSaga from './sagas/markActivityForSpeakOnIncomingActivityFromOthersSaga';
 import markAllAsSpokenOnStopSpeakActivitySaga from './sagas/markAllAsSpokenOnStopSpeakActivitySaga';
@@ -25,6 +26,7 @@ export default function* () {
   yield fork(clearSuggestedActionsOnPostActivitySaga);
   yield fork(connectionStatusUpdateSaga);
   yield fork(connectSaga);
+  yield fork(detectSlowConnectionSaga);
   yield fork(incomingActivitySaga);
   yield fork(markActivityForSpeakOnIncomingActivityFromOthersSaga);
   yield fork(markAllAsSpokenOnStopSpeakActivitySaga);

@@ -39,36 +39,34 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
+  FAILED_CONNECTION_NOTIFICATION: 'Unable to connect.',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'Send failed. {Retry}.',
+  SLOW_CONNECTION_NOTIFICATION: 'Taking longer than usual to connect.',
   'Bot said something': botSaidSomething,
   'User said something': userSaidSomething,
   'X minutes ago': xMinutesAgo,
-  ...[
-    // '[File of type '%1']",
-    // '[Unknown Card '%1']',
-    'Adaptive Card parse error',
-    'Adaptive Card render error',
-    'Chat',
-    'Download file',
-    'Microphone off',
-    'Microphone on',
-    'Left',
-    'Listening…',
-    'New messages',
-    'retry',
-    'Right',
-    // Do not localize {retry}, it is a placeholder for "retry"
-    'Send failed, {retry}',
-    'Send',
-    'Sending',
-    'Speak',
-    'Starting…',
-    'Tax',
-    'Total',
-    'Type your message',
-    'Upload file',
-    'VAT'
-  ].reduce((result, text) => ({
-    ...result,
-    [text]: text
-  }), {})
+  // '[File of type '%1']': '[File of type '%1']",
+  // '[Unknown Card '%1']': '[Unknown Card '%1']',
+  'Adaptive Card parse error' : 'Adaptive Card parse error',
+  'Adaptive Card render error': 'Adaptive Card render error',
+  'Chat': 'Chat',
+  'Download file': 'Download file',
+  'Microphone off': 'Microphone off',
+  'Microphone on': 'Microphone on',
+  'Left': 'Left',
+  'Listening…': 'Listening…',
+  'New messages': 'New messages',
+  'Right': 'Right',
+  'retry': 'retry',
+  'Retry': 'Retry',
+  'Send': 'Send',
+  'Sending': 'Sending',
+  'Speak': 'Speak',
+  'Starting…': 'Starting…',
+  'Tax': 'Tax',
+  'Total': 'Total',
+  'Type your message': 'Type your message',
+  'Upload file': 'Upload file',
+  'VAT': 'VAT'
 }
