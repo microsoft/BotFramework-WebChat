@@ -9,11 +9,18 @@ echo Will publish to CDN at $PACKAGE_NAME/$PACKAGE_VERSION/*
 # Copy files that should be distributed to CDN
 mkdir $TRAVIS_BUILD_DIR/dist
 
-cp $TRAVIS_BUILD_DIR/adaptivecards-hostconfig.json $TRAVIS_BUILD_DIR/dist
-cp $TRAVIS_BUILD_DIR/botchat-fullwindow.css $TRAVIS_BUILD_DIR/dist
-cp $TRAVIS_BUILD_DIR/botchat.css $TRAVIS_BUILD_DIR/dist
-cp $TRAVIS_BUILD_DIR/botchat.js $TRAVIS_BUILD_DIR/dist
-cp $TRAVIS_BUILD_DIR/CognitiveServices.js $TRAVIS_BUILD_DIR/dist
+sources=(
+  adaptivecards-hostconfig.json
+  botchat-fullwindow.css
+  botchat.css
+  botchat.js
+  CognitiveServices.js
+)
+
+for i in ${sources[*]}
+do
+  cp $TRAVIS_BUILD_DIR/$i $TRAVIS_BUILD_DIR/dist
+done
 
 # Upload to based on version from package.json
 ~/blobxfer upload --local-path $TRAVIS_BUILD_DIR/dist --remote-path $PACKAGE_NAME/$PACKAGE_VERSION --storage-account $CDN_BLOB_ACCOUNT --storage-account-key $CDN_BLOB_KEY
