@@ -43,13 +43,15 @@
 
 /* docking */
 
+    $chatWidth: 452px;
+
     .wc-hidden {
         visibility: hidden;
     }
 
     .wc-header {
         background-color: white;
-        box-sizing: content-box;
+        box-sizing: border-box;
         color: #444444;
         font-weight: 500;
         left: 0;
@@ -59,7 +61,8 @@
         right: 0;
         top: 0;
         z-index: 1;
-        border-bottom: 1px solid #e6eaee;
+        box-shadow: 0 4px 16px 0 rgba(156, 112, 0, 0.12);
+        width: $chatWidth;
 
         span {
             font-size: 18px;
@@ -69,14 +72,15 @@
 
         &--logo {
             vertical-align: middle;
+            max-height: 38px;
         }
 
-        $topMargin: 12px;
+        $topMargin: 10px;
 
         &--close {
-            height: 18px;
+            height: 16px;
             float: right;
-            margin-top: $topMargin;
+            margin-top: $topMargin + 2;
             padding-right: 20px;
             cursor: pointer;
         }
@@ -85,7 +89,7 @@
             height: 18px;
             float: right;
             margin-top: $topMargin;
-            padding-right: 31px;
+            padding-right: 28px;
             cursor: pointer;
         }
     }
@@ -96,6 +100,7 @@
     }
 
     .wc-message-groups {
+        box-sizing: border-box;
         bottom: $consoleHeight;
         left: 0;
         transform: translateY(0);
@@ -108,6 +113,7 @@
         right: 0;
         top: $headerTotalHeight;
         transition: transform $actionTransition;
+        width: $chatWidth;
 
         &.no-header {
             top: 0;
@@ -230,6 +236,7 @@
 
 
     .wc-chatview-panel {
+        box-sizing: border-box;
         overflow: hidden;
         position: fixed;
         right: $rightWeight + 14px;
@@ -242,12 +249,12 @@
         visibility: hidden;
         opacity: 0;
         transition:visibility 1.5s $cubic, opacity 1.5s $cubic, height 1s $cubic, width 1s $cubic;
-        
+
         &__open{
             opacity: 1;
             visibility: visible;
             display: block;
-            width: 452px;
+            width: $chatWidth;
             max-width: 80vw;
             height: calc(100vh - #{$bottom} - 20px);
 
@@ -291,7 +298,7 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
-        transition:visibility 1.5s $cubic, opacity .5s $cubic, height 1s $cubic, width 1s $cubic;
+        transition:visibility 1s $cubic, opacity .3s $cubic, height .6s $cubic, width .6s $cubic;
 
         &.visible {
             opacity: 1;
