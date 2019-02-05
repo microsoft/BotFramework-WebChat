@@ -4,6 +4,7 @@ import {
 } from 'redux-saga/effects';
 
 import mime from '../utils/mime-wrapper';
+
 import whileConnected from './effects/whileConnected';
 
 import { SEND_FILES } from '../actions/sendFiles';
