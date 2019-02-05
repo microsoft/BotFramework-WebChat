@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      background-color: #000;
+      font-family: Helvetica, Arial;
+      padding: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- PUT THIS CODE INTO THE BODY TAG (for example using GTM) -->
+  <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css" rel="stylesheet" />
+  <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
+  <script>
+    window.onload = function() {
+      BotChat.App(
+        {
+          // You will get directLine.secret, bot.id and bot.name from Feedyou
+          directLine: { secret: "flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo" },
+          bot: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' },
+          theme: { mainColor: "#e51836" },
+          header: { text: "Chatbot", textWhenCollapsed: "Click for chatbot!" }
+          // OPTIONAL - locale: '...',
+          // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
+        }
+      );
+    };
+  </script>
+  <!-- ------------------------------------------------------- -->
+
+</body>
+
+</html>

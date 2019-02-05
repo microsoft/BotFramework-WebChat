@@ -60,7 +60,9 @@ Include `botchat.css` and `botchat-es5.js` (from our https://feedyou.blob.core.w
 
 > We no longer package polyfills in `botchat.js`. If you are no on an older browser, you can use the smaller bundle `botchat.js`, which do not include polyfills for browsers which support up to ES5.
 
-You can see expandable WebChat example including customized styling in [/samples/feedyou/expandable.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/backchannel/index.html). Note that `BotChat` component is initialized only after chat window is expanded, so bot is not triggered for users who not open chat.
+You can see expandable WebChat example including customized styling in [/samples/feedyou/expandable.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/expandable.html). Note that `BotChat` component is initialized only after chat window is expanded, so bot is not triggered for users who not open chat.
+
+For the most simple way how to implement WebChat into your website for exmaple using GTM, see [/samples/feedyou/code.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/code.html).
 
 <!---
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
