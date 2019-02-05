@@ -17,7 +17,7 @@
 > For previous versions of Web Chat (v3), you can find it [here](https://github.com/Microsoft/BotFramework-WebChat/tree/v3).
 
 First, create a bot using [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/).
-Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal to use in the code below.
+Once the bot is created, you will need to [obtain the bot's Web Chat secret](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-3.0#step-1) in Azure Portal. Then use the secret to [generate a token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) and pass it to your Web Chat.
 
 Here is how how you can add Web Chat control to you website:
 
@@ -29,7 +29,7 @@ Here is how how you can add Web Chat control to you website:
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET_FROM_AZURE_PORTAL' }),
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }),
         userID: 'YOUR_USER_ID'
       }, document.getElementById('webchat'));
     </script>
@@ -57,7 +57,7 @@ You can use the full, typical webchat package that contains the most typically u
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' }),
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }),
         userID: 'YOUR_USER_ID'
       }, document.getElementById('webchat'));
     </script>
@@ -86,7 +86,7 @@ See a working sample with minimal Web Chat bundle [here](https://github.com/Micr
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
     <script>
       window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: 'YOUR_BOT_SECRET' }),
+        directLine: window.WebChat.createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }),
         userID: 'YOUR_USER_ID'
       }, document.getElementById('webchat'));
     </script>
@@ -109,7 +109,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.directLine = new DirectLine({ token: 'YOUR_BOT_SECRET' });
+    this.directLine = new DirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' });
   }
 
   render() {
