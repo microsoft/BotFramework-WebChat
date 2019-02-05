@@ -48,7 +48,7 @@ window.WebChat.renderWebChat({
 +  disabled: true,
 +  store,
 +  styleOptions: {
-+  hideSendBox: true
++    hideSendBox: true
 +  }
 }, document.getElementById('webchat'));
 ```
