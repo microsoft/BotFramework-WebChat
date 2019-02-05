@@ -4,6 +4,8 @@
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN, with cognitive services added for text-to-speech ability. This sample is implemented with React and makes changes that are based off of the [host with React sample](../03.a.host-with-react).
 
+> Please note that Bing Speech has been deprecated, and no new subscriptions can be created. This sample is still available to users who already have a Bing Speech subscription. If you do not, please see the Cognitive Services Speech Services samples.
+
 # Test out the hosted sample
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.a.cognitive-services-bing-speech-react)
@@ -170,6 +172,9 @@ Here is the finished `index.html` for authorization token flow:
 ```
 
 # Further reading
+- [Cognitive Services Speech Services](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-js) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-js)
+- [Cognitive Services Speech Services with React](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-react) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-react)
+
 
 ## Full list of Web Chat Hosted Samples
 
