@@ -37,56 +37,13 @@ We'll start by using the [host with React sample](../03.a.host-with-react) as ou
 
 There are two ways to authenticate with Cognitive Services Speech Services, either using subscription key, or time-limited authorization token.
 
+## Completed code
 
 #### Using subscription key
 
 > This approach is for demonstration purposes only. In production code, you should always store the subscription key on a secured token server. The token server should only send out limited authorization code. This [article on authorizations](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) outlines the authorization process.
 
 In this portion, we are hardcoding the subscription key in the client code.
-
-```diff
-…
-  const { token } = await res.json();
-+ const subscriptionKey = new URLSearchParams(window.location.search).get('s');
-
-+ const webSpeechPonyFillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ subscriptionKey: 'YOUR_SUBSCRIPTION_KEY' });
-
-  render(
-    <ReactWebChat
-      directLine={ createDirectLine({ token }) }
-+     webSpeechPonyfillFactory={ webSpeechPonyfillFactory }
-    />,
-    document.getElementById('webchat')
-  );
-…
-```
-
-#### Using authorization token
-
-In this sample, we are retrieving the authorization token from a token server.
-
-```diff
-…
-  const { token } = await res.json();
-+ const res = await fetch('https://YOUR_TOKEN_SERVER/', { method: 'POST' });
-
-+ const { token: authorizationToken } = await res.json();
-
-+ const webSpeechPonyFillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
-
-  render(
-    <ReactWebChat
-      directLine={ createDirectLine({ token }) }
-+     webSpeechPonyfillFactory={ webSpeechPonyfillFactory }
-    />,
-    document.getElementById('webchat')
-  );
-…
-```
-
-## Completed code
-
-### Using subscription key
 
 Here is the finished `index.html` for subscription key flow:
 
@@ -148,7 +105,9 @@ Here is the finished `index.html` for subscription key flow:
 
 ```
 
-### Using authorization token
+#### Using authorization token
+
+In this portion, we are retrieving the authorization token from a token server.
 
 Here is the finished `index.html` for authorization token flow:
 
@@ -190,9 +149,10 @@ Here is the finished `index.html` for authorization token flow:
         } = window.WebChat;
 
 +       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+
 +       const { token } = await res.json();
 
-+      let webSpeechPonyfillFactory = await createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
++       const webSpeechPonyfillFactory = await createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
 
         render(
           <ReactWebChat
