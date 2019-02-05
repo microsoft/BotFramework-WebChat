@@ -26,8 +26,17 @@ function xMinutesAgo(dateStr) {
   } else if (deltaInHours <= 48) {
     // https://zh-yue.wikipedia.org/wiki/尋日
     return `尋日`;
-  } else {
+  } else if (window.Intl) {
     return new Intl.DateTimeFormat('zh-HK').format(date);
+  } else {
+    return date.toLocaleString('zh-HK', {
+      day: '2-digit',
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   }
 }
 

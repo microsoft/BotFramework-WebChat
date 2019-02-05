@@ -25,8 +25,17 @@ function xMinutesAgo(dateStr) {
     return `今日`;
   } else if (deltaInHours <= 48) {
     return `昨日`;
-  } else {
+  } else if (window.Intl) {
     return new Intl.DateTimeFormat('zh-HANS').format(date);
+  } else {
+    return date.toLocaleString('zh-HANS', {
+      day: '2-digit',
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   }
 }
 
