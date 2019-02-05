@@ -2,11 +2,17 @@
 
 ## Description
 
-A simple web page with a maximized and full-featured Web Chat embed from a CDN, with cognitive services added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample](../1.a.getting-started-full-bundle/README.md).
+A simple web page with a maximized and full-featured Web Chat embed from a CDN, with cognitive services added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample](../01.a.getting-started-full-bundle/README.md).
 
 # Test out the hosted sample
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.a.cognitive-services-bing-speech-js)
+
+# How to run
+- Fork this repository
+- Navigate to `/Your-Local-WebChat/samples/06.a.cognitive-services-bing-speech-js` in command line
+- Run `npx serve`
+- Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
@@ -33,7 +39,7 @@ There are two ways to authenticate with Cognitive Services Speech Services, eith
 
 #### Using subscription key
 
-> This approach is for demonstration purpose only. In production code, you should always store the subscription key on a secured token server. The token server should only send out limited authorization code. This [article](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) outlines the authorization process.
+> This approach is for demonstration purposes only. In production code, you should always store the subscription key on a secured token server. The token server should only send out limited authorization code. This [article on authorization](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) outlines the authorization process.
 
 In this sample, we are hardcoding the subscription key in the client code.
 
