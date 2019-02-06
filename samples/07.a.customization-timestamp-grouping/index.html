@@ -102,7 +102,8 @@
           // You can set groupTimestamp to configure how timestamps are grouped.
           // - Set to `undefined` to use default grouping (5 minutes)
           // - Set to `false` to not to group timestamps, it will show on every bubble
-          // - Set to `1000` to hide timestamps if they are less than 1 second apart
+          // - Set to `1000` to hide timestamps if they are less than 1 second apart. This can be adjusted (in milliseconds) to any desired number
+          // - Set to `0` to show a timestamp with every message
           groupTimestamp: groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp,
           store
         }, document.getElementById('webchat'));
