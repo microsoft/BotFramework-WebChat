@@ -129,7 +129,9 @@ Here is the finished `index.html` for subscription key flow:
   </body>
 </html>
 ```
+# Further reading
+- [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

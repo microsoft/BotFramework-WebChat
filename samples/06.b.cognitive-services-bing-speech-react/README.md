@@ -178,4 +178,4 @@ Here is the finished `index.html` for authorization token flow:
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

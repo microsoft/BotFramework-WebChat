@@ -7,7 +7,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 # Test out the hosted sample
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
-> Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot. 
+> Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot.
 
 # How to run locally
 
@@ -37,7 +37,7 @@ The `index.html` page in the migration directory has two main goals.
 - To import the Web Chat v4 full bundle CDN script
 - To render Web Chat using the v4 best practices
 
- We'll start by using our old v3 `index.html` as our starting point. 
+ We'll start by using our old v3 `index.html` as our starting point.
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
@@ -69,7 +69,7 @@ Our first change is to update the CDN the webpage uses from v3 to v4.
 +  <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
   </head>
   <body>
--   <div id="bot" />    
+-   <div id="bot" />
 +   <div id="webchat" role="main" />
 -   <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
 …
@@ -191,4 +191,4 @@ Check out the hosted samples and source code for other CDN bundle options below.
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

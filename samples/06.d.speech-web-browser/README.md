@@ -89,7 +89,8 @@ Here is the finished `index.html`:
 ```
 
 # Further Reading
+- [W3C Web Speech API](https://w3c.github.io/speech-api/speechapi.html)
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
