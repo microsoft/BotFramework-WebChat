@@ -205,7 +205,7 @@ export const AttachmentView = (props: {
             }
             heroCardBuilder.addCommon(attachment.content);
             return (
-                <MessageRenderer {...attachment} onCardAction={onCardAction} />
+                <MessageRenderer {...attachment} onCardAction={onCardAction} onImageLoad={props.onImageLoad} />
             );
 
         case "application/vnd.microsoft.card.thumbnail":
