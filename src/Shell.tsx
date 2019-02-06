@@ -8,6 +8,7 @@ import { ChatState } from './Store';
 import { Strings } from './Strings';
 
 interface Props {
+    autoFocus: boolean;
     inputText: string;
     strings: Strings;
     listeningState: ListeningState;
@@ -155,7 +156,6 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         type="text"
                         className="wc-shellinput"
                         ref={ input => this.textInput = input }
-                        autoFocus
                         value={ this.props.inputText }
                         onChange={ _ => this.props.onChangeText(this.textInput.value) }
                         onKeyPress={ e => this.onKeyPress(e) }
@@ -163,6 +163,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         placeholder={ placeholder }
                         aria-label={ this.props.inputText ? null : placeholder }
                         aria-live="polite"
+                        autoFocus={ this.props.autoFocus }
                     />
                 </div>
                 <button
@@ -223,6 +224,8 @@ export const Shell = connect(
         listeningState: stateProps.listeningState,
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
+        // from ownProps
+        autoFocus: ownProps.autoFocus,
         // helper functions
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),

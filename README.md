@@ -203,6 +203,10 @@ Behavioral customization will require changing the TypeScript files in `/src`. A
 
 Web Chat uses [markdown-it](https://markdown-it.github.io/) for markdown rendering. Markdown-it offers many rendering [options](https://github.com/markdown-it/markdown-it#init-with-presets-and-options), such as HTML rendering within markdown. You can change these options in `/src/FormattedText.tsx` in your own build of Web Chat.
 
+### Auto focus
+
+You can supply `false` to `autoFocus` props to disable auto focus. If the props is not set, it will focus on send box when Web Chat is instantiated on the page. This behavior is contrary to web standard, but to maintain compatibility with previous versions.
+
 ### Contributing
 
 If you feel your change might benefit the community, please submit a [pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).

@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added `autoFocus` props to disable auto focus on send box, by default, this is set to `true`. By [@compulim](https://github.com/compulim) in PR [#1698](https://github.com/Microsoft/BotFramework-WebChat/pull/1698)
+
 ### Changed
 - Add more error handling to mountAdaptiveCards, by [@corinagum](https://github.com/corinagum) [#1395](https://github.com/Microsoft/BotFramework-WebChat/pull/1395)
 - Fix [botbuilder-tools#702](https://github.com/Microsoft/botbuilder-tools/issues/702): assume activity is not from user if `from` is falsy, by [@corinagum](https://github.com/corinagum) in PR [#1385](https://github.com/Microsoft/BotFramework-WebChat/pull/1385)

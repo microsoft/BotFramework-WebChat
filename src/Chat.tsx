@@ -16,6 +16,7 @@ import { ActivityOrID, FormatOptions } from './Types';
 
 export interface ChatProps {
     adaptiveCardsHostConfig: any;
+    autoFocus: boolean;
     bot: User;
     botConnection?: IBotConnection;
     chatTitle?: boolean | string;
@@ -300,7 +301,11 @@ export class Chat extends React.Component<ChatProps, {}> {
                         />
                     </MessagePane>
                     {
-                        !this.props.disabled && <Shell ref={ this._saveShellRef } />
+                        !this.props.disabled &&
+                            <Shell
+                                autoFocus={ this.props.autoFocus !== false }
+                                ref={ this._saveShellRef }
+                            />
                     }
                     {
                         this.props.resize === 'detect' &&
