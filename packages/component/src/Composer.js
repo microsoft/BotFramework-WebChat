@@ -66,9 +66,17 @@ function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
 }
 
-function createCardActionLogic({ directLine, dispatch }) {
+function defaultOpenUrlPonyfillFactory() {
+  const popup = window.open();
+
+  return url => popup.location.href = url;
+}
+
+function createCardActionLogic({ directLine, dispatch, openUrlPonyfillFactory = defaultOpenUrlPonyfillFactory }) {
   return {
-    onCardAction: (({ displayText, text, type, value }) => {
+    onCardAction: (cardAction => {
+      const { displayText, text, type, value } = cardAction;
+
       switch (type) {
         case 'imBack':
           if (typeof value === 'string') {
@@ -96,20 +104,18 @@ function createCardActionLogic({ directLine, dispatch }) {
         case 'playAudio':
         case 'playVideo':
         case 'showImage':
-          // TODO: [P3] We should support ponyfill for window.open
-          //       This is as-of v3
-          window.open(value);
+          openUrlPonyfillFactory({ cardAction })(value);
           break;
 
         case 'signin':
           // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
           //       This is to eliminate the delay between window.open() and location.href call
 
-          const popup = window.open();
+          const openUrl = openUrlPonyfillFactory({ cardAction });
 
           if (directLine.getSessionId)  {
             const subscription = directLine.getSessionId().subscribe(sessionId => {
-              popup.location.href = `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`;
+              openUrl(`${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`);
 
               // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
               //       Need to wait some short time here to make sure the subscription variable has setup
@@ -120,7 +126,7 @@ function createCardActionLogic({ directLine, dispatch }) {
               console.error(error);
             });
           } else {
-            popup.location.href = value;
+            openUrl(value);
           }
 
           break;
@@ -384,6 +390,7 @@ ConnectedComposerWithStore.propTypes = {
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
+  openUrlPonyfillFactory: PropTypes.func,
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToBottom: PropTypes.func,

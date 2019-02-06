@@ -30,7 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Allow font family and adaptive cards text color to be set via styleOptions, by [@a-b-r-o-w-n](https://github.com/a-b-r-o-w-n), in PR [#1670](https://github.com/Microsoft/BotFramework-WebChat/pull/1670)
 - `component`: Add fallback logic to browser which do not support `window.Intl`, by [@compulim](https://github.com/compulim), in PR [#1696](https://github.com/Microsoft/BotFramework-WebChat/pull/1696)
 - `*`: Added `username` back to activity, fixed [#1321](https://github.com/Microsoft/BotFramework-WebChat/issues/1321), by [@compulim](https://github.com/compulim), in PR [#1682](https://github.com/Microsoft/BotFramework-DirectLineJS/pull/1682)
-- `component`: Allow root component height & width customization  via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
+- `component`: Allow root component height and width customization  via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
+- `component`: Allow ponyfilling `window.open`, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Changed
 - Moved `botAvatarImage` and `userAvatarImage` to `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage` respectively, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
@@ -88,6 +89,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity/), in [#1624](https://github.com/Microsoft/BotFramework-WebChat/pull/1624)
 - `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/17.chat-send-history/), in [#1678](https://github.com/Microsoft/BotFramework-WebChat/pull/1678)
 - `*`: Update `README.md`'s for samples 05-10 [#1444](https://github.com/Microsoft/BotFramework-WebChat/issues/1444) and improve accessibility of anchors [#1681](https://github.com/Microsoft/BotFramework-WebChat/issues/1681), by [@corinagum](https://github.com/corinagum) in PR [#1710](https://github.com/Microsoft/BotFramework-WebChat/pull/1710)
+- `component`: [Customizing open URL behavior](https://microsoft.github.io/BotFramework-WebChat/18.customization-open-url), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.2.0] - 2018-12-11
 ### Added
