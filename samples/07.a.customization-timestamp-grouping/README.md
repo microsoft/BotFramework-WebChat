@@ -54,8 +54,7 @@ Here is the finished `index.html`:
 
     <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
     <style>
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }

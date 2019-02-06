@@ -51,8 +51,7 @@ Here is the finished `index.html` for subscription key flow:
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -99,8 +98,7 @@ Here is the finished `index.html` for subscription key flow:
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }

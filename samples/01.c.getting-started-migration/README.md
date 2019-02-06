@@ -127,8 +127,7 @@ Finally, we will add basic styling since there is no longer a stylesheet include
 +     html, body { height: 100% }
 +     body { margin: 0 }
 
-+     #webchat,
-+     #webchat > * {
++     #webchat {
 +       height: 100%;
 +       width: 100%;
 +     }
@@ -150,8 +149,7 @@ Here is the finished `index.html`:
 +   <style>
 +     html, body { height: 100% }
 +     body { margin: 0 }
-+     #webchat,
-+     #webchat > * {
++     #webchat {
 +       height: 100%;
 +       width: 100%;
 +     }
