@@ -76,6 +76,7 @@ To add, decorate, replace, or remove activities or attachments, these samples wi
 - [Custom attachment: GitHub repository](https://microsoft.github.io/BotFramework-WebChat/10.customization-card-components) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/10.customization-card-components)
 - [Web Chat API via Redux](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/11.customization-redux-actions)
 - [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity) [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/16.customization-selectable-activity)
+- [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/17.chat-send-history) [source](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/17.chat-send-history)
 
 ## Backchannel
 
