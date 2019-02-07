@@ -149,7 +149,7 @@ describe('suggested-actions command', async () => {
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   }, 60000);
 
-  test('should not show suggested actions not destinated for the user', async () => {
+  test('should not show suggested actions not destined for the user', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(botConnected(), timeouts.directLine);
