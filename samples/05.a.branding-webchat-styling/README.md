@@ -119,7 +119,7 @@ Here is the finished `index.html`:
 </html>
 ```
 # Other modifications
-Feel free to add your own `styleSetOptions.json` to override as many of these styles as you like!
+Feel free to add your own `styleSetOptions` object to override as many of these styles as you like!
 
 # Further reading
 

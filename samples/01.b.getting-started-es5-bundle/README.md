@@ -1,4 +1,4 @@
-# Sample -  Getting started with Web Chat CDN with ES5 polyfills
+# Sample -  Getting Started with Web Chat CDN with ES5 Polyfills
 
 > This is a great sample for first-time Web Chat users developing bots that must work on Internet Explorer 11.
 
@@ -102,19 +102,19 @@ Here is the finished `index.html`:
 
 # Further reading
 
+- [Learn more about polyfills](https://stackoverflow.com/questions/7087331/what-is-the-meaning-of-polyfills-in-html5)
+
 ## Other CDN bundles
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
-- [Full bundle](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
-- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
-- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
-
-- [Learn more about polyfills](https://stackoverflow.com/questions/7087331/what-is-the-meaning-of-polyfills-in-html5)
+- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
+- [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
+- [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
 
 ## CDN sunburst chart
 
-[This chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) provides a visual of the contents of the various Web Chat bundles
+[Web Chat bundles sunburst chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) - provides a visual of the contents of the various Web Chat bundles
 
 ## Full list of Web Chat hosted samples
 

@@ -175,17 +175,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
-## Other CDN bundles
+- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
 
-Check out the hosted samples and source code for other CDN bundle options below.
-
-- [Full bundle with polyfills for ES5 browsers](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
-- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
-- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
-
-## CDN sunburst chart
-
-[This chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) provides a visual of the contents of the various Web Chat bundles
 
 ## Full list of Web Chat hosted samples
 

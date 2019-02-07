@@ -128,7 +128,7 @@ Here is the finished `index.html` for subscription key flow:
 </html>
 ```
 # Further reading
-- [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
+- [Cognitive Speech Speech Services website](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
 
 ## Full list of Web Chat Hosted Samples
 

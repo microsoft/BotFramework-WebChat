@@ -170,8 +170,8 @@ Here is the finished `index.html` for authorization token flow:
 ```
 
 # Further reading
-- [Cognitive Services Speech Services](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-js) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-js)
-- [Cognitive Services Speech Services with React](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-react) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-react)
+- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-js)
+- [Cognitive Services Speech Services with React bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-react) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-react)
 
 
 ## Full list of Web Chat Hosted Samples
