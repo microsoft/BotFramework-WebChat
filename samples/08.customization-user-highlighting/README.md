@@ -168,3 +168,8 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 </html>
 
 ```
+# Further reading
+
+## Full list of Web Chat hosted samples
+
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
