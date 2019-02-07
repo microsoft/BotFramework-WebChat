@@ -118,7 +118,7 @@ function createCardActionLogic({ directLine, dispatch, openUrlPonyfillFactory = 
               openUrl(`${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`);
 
               // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
-              //       Need to wait some short time here to make sure the subscription variable has setup
+              //       Need to wait a short amount of time here to make sure the subscription variable has setup
               setImmediate(() => subscription.unsubscribe());
             }, error => {
               // TODO: [P3] Let the user know something failed and we cannot proceed
