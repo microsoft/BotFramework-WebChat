@@ -1,6 +1,6 @@
 # Sample - Customize open URL behavior
 
-Web Chat client that will show a confirmation dialog when opening an URL.
+Web Chat client that will show a confirmation dialog when opening a URL.
 
 # Test out the hosted sample
 
@@ -45,9 +45,9 @@ window.WebChat.renderWebChat({
 …
 ```
 
-To prevent getting blocked by popup blocker, the `window.open` call must be initiated from an user action.
+To prevent getting blocked by a popup blocker, the `window.open` call must be initiated from a user action.
 
-> Currently, when you click on "Sign in" of an OAuth card, it will fetch a `code_challenge` from our server before redirecting to the OAuth provider. To not getting blocked by popup blocker, we need to call `window.open` first, then fetch the `code_challenge`, and lastly redirect the user to OAuth provider.
+> Currently, when you click on "Sign in" of an OAuth card, it will fetch a `code_challenge` from our server before redirecting to the OAuth provider. To not getting blocked by a popup blocker, we need to call `window.open` first, then fetch the `code_challenge`, and lastly redirect the user to the OAuth provider.
 
 ## Completed code
 
@@ -108,4 +108,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
