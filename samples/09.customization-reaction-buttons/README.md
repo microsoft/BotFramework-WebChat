@@ -28,7 +28,7 @@ In this sample we will build a new React component around the `activity` sent fr
 
 Let's start building the React Component. It will have two methods, `handleDownvoteButton` and `handleUpvoteButton`. Both methods will build new activity objects to be sent to the bot. The render function contains the new markup to contain the activities made by the bot.
 
-```js
+```jsx
 class ActivityWithFeedback extends React.Component {
   handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: -1 } })
   handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: 1 } })
@@ -104,7 +104,7 @@ class ActivityWithFeedback extends React.Component {
 
 This next step is not required. Let's build a wrapper container around ActivityWithFeedback that will strip props to only contain `postActivity`.
 
-```js
+```jsx
 const ConnectedActivityWithFeedback = connectToWebChat(
   ({ postActivity }) => ({ postActivity })
 )(props => <ActivityWithFeedback { ...props } />)
@@ -112,7 +112,7 @@ const ConnectedActivityWithFeedback = connectToWebChat(
 
 Next let's build the if statement in `activityMiddleware` that will filter which activities are rendered with a new component, `ConnectedActivityWithFeedback`.
 
-```
+```jsx
 const activityMiddleware = () => next => card => {
   if (card.activity.from.role === 'bot') {
     return (

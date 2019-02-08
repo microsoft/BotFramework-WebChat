@@ -52,7 +52,7 @@ We'll start by adding React and Babel to the head or our template, based off of 
 
 The core of this code both creates and renders the React component that displays Web Chat.
 
-```js
+```jsx
 …
 const { createStore, ReactWebChat } = window.WebChat;
 const { Provider } = window.ReactRedux;

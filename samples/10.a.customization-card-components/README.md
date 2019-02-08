@@ -1,6 +1,6 @@
 # Sample - Customize Web Chat with GitHub Stargazer Components
 
-A simple web page with a maximized Web Chat and hosted using React. his sample builds on top of the ideas expressed in sample [08.customization-user-highlighting](../08.customization-user-highlighting) and creates a function-based React component to display GitHub Stargazer cards. This sample is implemented with React and makes changes that are based off of the [host with React sample](../03.a.host-with-react).
+A simple web page with a maximized Web Chat and hosted using React. This sample builds on top of the ideas expressed in sample [08.customization-user-highlighting](../08.customization-user-highlighting) and creates a function-based React component to display GitHub Stargazer cards. This sample is implemented with React and makes changes that are based off of the [host with React sample](../03.a.host-with-react).
 
 # Test out the hosted sample
 
@@ -57,7 +57,7 @@ We will be taking advantage of the activity's `contentType`, `owner` and `repo` 
 
 Let's build the structure of our component to render on GitHub repository attachments.
 
-```js
+```jsx
 const GitHubRepositoryAttachment = props =>
 <div>
   <p>
@@ -78,7 +78,7 @@ const GitHubRepositoryAttachment = props =>
 ```
 
 Next we'll create our `attachmentMiddleware` and use our `<GitHubRepositoryAttachment>` component like so:
-```js
+```jsx
 const attachmentMiddleware = () => next => card => {
   switch (card.attachment.contentType) {
     case 'application/vnd.microsoft.botframework.samples.github-repository':
