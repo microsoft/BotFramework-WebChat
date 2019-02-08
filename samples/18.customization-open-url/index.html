@@ -30,25 +30,6 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({
-              type: 'WEB_CHAT/SEND_MESSAGE',
-              payload: {
-                text: 'card sports'
-              }
-            });
-
-            dispatch({
-              type: 'WEB_CHAT/SEND_MESSAGE',
-              payload: {
-                text: 'oauth'
-              }
-            });
-          }
-
-          return next(action);
-        });
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
@@ -77,9 +58,7 @@
               default:
                 return next({ cardAction, getSignInUrl });
             }
-          },
-
-          store
+          }
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
