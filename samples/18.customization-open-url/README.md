@@ -8,8 +8,13 @@ Web Chat client that will show a confirmation dialog when opening a URL.
 
 # Things to try out
 
-- Type "card sports" in the send box
-- Click on the "Seattle vs Panthers" card
+- `"openUrl"` card action
+   - Type `card sports` in the send box
+   - Click on the "Seattle vs Panthers" card
+      - A prompt will show to ask if you want to open the URL
+- `"signin"` card action
+   - Type `oauth` in the send box
+      - Will directly send the user to GitHub authentication page
 
 # Code
 
@@ -19,7 +24,8 @@ Web Chat client that will show a confirmation dialog when opening a URL.
 
 The `index.html` page has one main goal:
 
-- To intercept all open URL actions
+- To intercept both `"openUrl"` and `"signin"` card action
+   - Other unintercepted card action, will use default behavior
 
 We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
 
@@ -27,27 +33,37 @@ We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full
 …
 window.WebChat.renderWebChat({
   directLine: window.WebChat.createDirectLine({ token }),
-+ openUrlPonyfillFactory: ({ cardAction: { type } }) => {
++ cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
++   const { type, value } = cardAction;
++
 +   switch (type) {
 +     case 'signin':
 +       const popup = window.open();
++       const url = await getSignInUrl();
 +
-+       return url => popup.location.href = url;
++       popup.location.href = url;
++
++       break;
++
++     case 'openUrl':
++       if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
++         window.open(value, '_blank');
++       }
++
++       break;
 +
 +     default:
-+       return url => {
-+         if (confirm(`Do you want to open this URL?\n\n${ url }`)) {
-+           window.open(url, '_blank');
-+         }
-+       };
++       return next({ cardAction, getSignInUrl });
 +   }
   },
 …
 ```
 
-To prevent getting blocked by a popup blocker, the `window.open` call must be initiated from a user action.
+To prevent getting blocked by a popup blocker, the `window.open()` must be called immediately inside `cardActionMiddleware`.
 
-> Currently, when you click on "Sign in" of an OAuth card, it will fetch a `code_challenge` from our server before redirecting to the OAuth provider. To not getting blocked by a popup blocker, we need to call `window.open` first, then fetch the `code_challenge`, and lastly redirect the user to the OAuth provider.
+> In this sample, we use a `confirm()` prompt for demonstration purpose only. It will cause popup blocker to block the URL. This is expected behavior.
+
+> Currently, when you click on "Sign in" of an OAuth card, it will get a fresh URL from our server before redirecting to the OAuth provider. To not getting blocked by a popup blocker, we need to call `window.open` first, then get the URL, and lastly redirect the user to the OAuth provider.
 
 ## Completed code
 
@@ -79,19 +95,27 @@ Here is the finished `index.html`:
         window.WebChat.renderWebChat({
 -         directLine: window.WebChat.createDirectLine({ token })
           directLine: window.WebChat.createDirectLine({ token }),
-+         openUrlPonyfillFactory: ({ cardAction: { type } }) => {
++         cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
++           const { type, value } = cardAction;
++
 +           switch (type) {
 +             case 'signin':
 +               const popup = window.open();
++               const url = await getSignInUrl();
 +
-+               return url => popup.location.href = url;
++               popup.location.href = url;
++
++               break;
++
++             case 'openUrl':
++               if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
++                 window.open(value, '_blank');
++               }
++
++               break;
 +
 +             default:
-+               return url => {
-+                 if (confirm(`Do you want to open this URL?\n\n${ url }`)) {
-+                   window.open(url, '_blank');
-+                 }
-+               };
++               return next({ cardAction, getSignInUrl });
 +           }
           },
         }, document.getElementById('webchat'));
