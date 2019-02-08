@@ -30,25 +30,56 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({
+              type: 'WEB_CHAT/SEND_MESSAGE',
+              payload: {
+                text: 'card sports'
+              }
+            });
+
+            dispatch({
+              type: 'WEB_CHAT/SEND_MESSAGE',
+              payload: {
+                text: 'oauth'
+              }
+            });
+          }
+
+          return next(action);
+        });
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          openUrlPonyfillFactory: ({ cardAction: { type } }) => {
+
+          // We are adding a new middleware to handle card action
+          cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+            const { type, value } = cardAction;
+
             switch (type) {
               case 'signin':
                 // For OAuth or sign-in popups, we will open the auth dialog directly.
                 const popup = window.open();
+                const url = await getSignInUrl();
 
-                return url => popup.location.href = url;
+                popup.location.href = url;
+
+                break;
+
+              case 'openUrl':
+                if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
+                  window.open(value, '_blank');
+                }
+
+                break;
 
               default:
-                return url => {
-                  if (confirm(`Do you want to open this URL?\n\n${ url }`)) {
-                    window.open(url, '_blank');
-                  }
-                };
+                return next({ cardAction, getSignInUrl });
             }
           },
+
+          store
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();

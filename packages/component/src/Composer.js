@@ -33,11 +33,14 @@ import {
   submitSendBox
 } from 'botframework-webchat-core';
 
+import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
+import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import defaultAdaptiveCardHostConfig from './Styles/adaptiveCardHostConfig';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
+import observableToPromise from './Utils/observableToPromise';
 import shallowEquals from './Utils/shallowEquals';
 
 // Flywheel object
@@ -66,75 +69,27 @@ function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
 }
 
-function defaultOpenUrlPonyfillFactory() {
-  const popup = window.open();
+function createCardActionLogic({ cardActionMiddleware, directLine, dispatch }) {
+  const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
 
-  return url => popup.location.href = url;
-}
-
-function createCardActionLogic({ directLine, dispatch, openUrlPonyfillFactory = defaultOpenUrlPonyfillFactory }) {
   return {
-    onCardAction: (cardAction => {
-      const { displayText, text, type, value } = cardAction;
+    onCardAction: cardAction => runMiddleware(({ cardAction: { type } }) => {
+      throw new Error(`Web Chat: received unknown card action "${ type }"`);
+    })({
+      cardAction,
+      getSignInUrl: cardAction.type === 'signin' ? () => {
+        const { value } = cardAction;
 
-      switch (type) {
-        case 'imBack':
-          if (typeof value === 'string') {
-            // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-            dispatch(sendMessage(value, 'imBack'));
-          } else {
-            throw new Error('cannot send "imBack" with a non-string value');
-          }
+        if (directLine.getSessionId) {
+          // TODO: [P3] We should change this one to async/await.
+          //       This is the first place in this project to use async.
+          //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
 
-          break;
-
-        case 'messageBack':
-          dispatch(sendMessageBack(value, text, displayText));
-
-          break;
-
-        case 'postBack':
-          dispatch(sendPostBack(value));
-
-          break;
-
-        case 'call':
-        case 'downloadFile':
-        case 'openUrl':
-        case 'playAudio':
-        case 'playVideo':
-        case 'showImage':
-          openUrlPonyfillFactory({ cardAction })(value);
-          break;
-
-        case 'signin':
-          // TODO: [P3] We should prime the URL into the OAuthCard directly, instead of calling getSessionId on-demand
-          //       This is to eliminate the delay between window.open() and location.href call
-
-          const openUrl = openUrlPonyfillFactory({ cardAction });
-
-          if (directLine.getSessionId)  {
-            const subscription = directLine.getSessionId().subscribe(sessionId => {
-              openUrl(`${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`);
-
-              // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
-              //       Need to wait a short amount of time here to make sure the subscription variable has setup
-              setImmediate(() => subscription.unsubscribe());
-            }, error => {
-              // TODO: [P3] Let the user know something failed and we cannot proceed
-              //       This is as-of v3 now
-              console.error(error);
-            });
-          } else {
-            openUrl(value);
-          }
-
-          break;
-
-        default:
-          console.error(`Web Chat: received unknown card action "${ type }"`);
-          break;
-      }
+          return observableToPromise(directLine.getSessionId()).then(sessionId => `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`);
+        } else {
+          return value;
+        }
+      } : null
     })
   };
 }
@@ -387,6 +342,7 @@ ConnectedComposerWithStore.propTypes = {
   activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
+  cardActionMiddleware: PropTypes.func,
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
