@@ -82,6 +82,6 @@ const renderMarkdown = (
     };
 
     return (
-        <MessageRenderer {...heroCard} />
+        <MessageRenderer {...heroCard} onImageLoad={onImageLoad}/>
     );
 };
