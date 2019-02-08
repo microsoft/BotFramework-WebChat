@@ -1,4 +1,4 @@
-# Sample - Getting Started with Web Chat CDN minimal bundle and Markdown
+# Sample - Getting Started with Web Chat CDN Minimal Bundle and Markdown
 
 ## Description
 

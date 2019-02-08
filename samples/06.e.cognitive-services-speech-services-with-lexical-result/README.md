@@ -47,7 +47,7 @@ Authorization Token:
    });
 ```
 
-#Further reading
+# Further reading
 - [Text normalization wiki](https://en.wikipedia.org/wiki/Text_normalization)
 
 ## Full list of Web Chat Hosted Samples

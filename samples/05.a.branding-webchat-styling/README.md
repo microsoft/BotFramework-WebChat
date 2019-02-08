@@ -35,7 +35,7 @@ We provide these options to override for several reasons:
 
 ### My required changes are not all specified in `defaultStyleSetOptions.js`, what do I do now?
   - Please feel free to [file a PR](https://github.com/Microsoft/BotFramework-WebChat/issues/new) requesting the feature you want to be able to brand! We welcome your input and are constantly updating `defaultStyleOptions` with commonly modified aspects of Web Chat.
-  - As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [05.b.idiosyncratic-manual-styling sample](../05.b.idiosyncratic-manual-styling/README.md). Please note that using this method creates a **high liklihood** of breaking changes when Web Chat releases new code.
+  - As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [05.b.idiosyncratic-manual-styling sample](../05.b.idiosyncratic-manual-styling/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
 
 
 ## Getting started
@@ -123,7 +123,7 @@ Feel free to add your own `styleSetOptions` object to override as many of these 
 
 # Further reading
 
-- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b-idiosyncratic-manual-styling) | [(Idiosyncratic styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
+- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling) | [(Idiosyncratic styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
 
 ## Full list of Web Chat hosted samples
 

@@ -143,10 +143,10 @@ Here is the finished `index.html`:
 
 # Further Reading
 - [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
-- [W3C Web Speech API](https://w3c.github.io/speech-api/speechapi.html)
+- [W3C Web Speech API](https://w3c.github.io/speech-api/)
 - [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
-- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-js)
+- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
 - [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
 
 ## Full list of Web Chat hosted samples

@@ -37,7 +37,7 @@ We'll start by using the [full-bundle CDN sample](../01.a.getting-started-full-b
 
 > Cognitive Services Bing Speech package is only available in the Web Chat full bundle
 
-There are two ways to authenticate with Cognitive Services Speech Services, either using subscription key, or time-limited authorization token.
+There are two ways to authenticate with Cognitive Services: either using subscription key, or time-limited authorization token.
 
 #### Using subscription key
 
@@ -156,8 +156,8 @@ Here is the finished `index.html` for authorization token flow:
 ```
 
 # Further reading
-- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-js)
-- [Cognitive Services Speech Services with React bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-bing-speech-react) | [(Cognitive Services Speech Services with React source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.d.cognitive-services-bing-speech-react)
+- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/6.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
+
 
 ## Full list of Web Chat Hosted Samples
 

@@ -4,7 +4,7 @@
 A simple web page with a maximized Web Chat that displays individual images (avatars) for both the bot and the user.
 
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.display-user-bot-images-styling)
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling)
 
 # How to run
 - Fork this repository
