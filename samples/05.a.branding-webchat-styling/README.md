@@ -123,7 +123,7 @@ Feel free to add your own `styleSetOptions` object to override as many of these 
 
 # Further reading
 
-- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b-idiosyncratic-manual-styling) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
+- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b-idiosyncratic-manual-styling) | [(Idiosyncratic styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
 
 ## Full list of Web Chat hosted samples
 
