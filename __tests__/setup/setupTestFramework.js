@@ -17,6 +17,23 @@ const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
 // const BROWSER_NAME = 'chrome-local';
 
+function marshal(props) {
+  return props && Object.keys(props).reduce((nextProps, key) => {
+    const { [key]: value } = props;
+
+    if (typeof value === 'function') {
+      nextProps[key] = `() => ${ value.toString() }`;
+      nextProps.__evalKeys.push(key);
+    } else {
+      nextProps[key] = value;
+    }
+
+    return nextProps;
+  }, {
+    __evalKeys: []
+  });
+}
+
 expect.extend({
   toMatchImageSnapshot: configureToMatchImageSnapshot({
     customSnapshotsDir: join(__dirname, '../__image_snapshots__', BROWSER_NAME)
@@ -49,27 +66,17 @@ global.setupWebDriver = async options => {
         }
 
         await driver.executeAsyncScript(
-          (coverage, props, createDirectLineFnString, setupFnString, callback) => {
+          (coverage, options, callback) => {
             window.__coverage__ = coverage;
 
-            const setupPromise = setupFnString ? eval(`() => ${ setupFnString }`)()() : Promise.resolve();
-
-            setupPromise.then(() => {
-              main({
-                createDirectLine: createDirectLineFnString && eval(`() => ${ createDirectLineFnString }`)(),
-                props
-              });
-
-              callback();
-            });
+            main(options).then(() => callback(), callback);
           },
           global.__coverage__,
-          options.props,
-          options.createDirectLine && options.createDirectLine.toString(),
-          options.setup && options.setup.toString()
+          marshal({
+            ...options,
+            props: marshal(options.props)
+          })
         );
-
-        await driver.wait(webChatLoaded(), timeouts.navigation);
 
         const pageObjects = createPageObjects(driver);
 
