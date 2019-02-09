@@ -1,3 +1,5 @@
+import { By } from 'selenium-webdriver';
+
 import { timeouts } from './constants.json';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 
@@ -11,6 +13,9 @@ test('Send typing indicator', async () => {
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
   await driver.wait(minNumActivitiesShown(3), 2000);
+
+  const input = await driver.findElement(By.css('input[type="text"]'));
+
   await input.sendKeys('ABC');
 
   // Typing indicator takes longer to come back
@@ -19,12 +24,15 @@ test('Send typing indicator', async () => {
 
 // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
 test('Send typing indicator using deprecated props', async () => {
-  const { driver } = await setupWebDriver({ props: { sendTyping: true } });
+  const { driver, pageObjects } = await setupWebDriver({ props: { sendTyping: true } });
 
   await pageObjects.pingBot();
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
   await driver.wait(minNumActivitiesShown(3), 2000);
+
+  const input = await driver.findElement(By.css('input[type="text"]'));
+
   await input.sendKeys('ABC');
 
   // Typing indicator takes longer to come back

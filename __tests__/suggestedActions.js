@@ -139,7 +139,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await pageObjects.pingBot();
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions others');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await pageObjects.hideCursor();
