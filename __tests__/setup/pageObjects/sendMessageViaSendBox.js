@@ -7,5 +7,5 @@ export default async function (driver, text) {
   const input = await driver.findElement(By.css('input[type="text"]'));
 
   await input.sendKeys(text, Key.RETURN);
-  await driver.wait(allOutgoingActivitiesSent, timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 }

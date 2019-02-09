@@ -12,7 +12,6 @@ describe('carousel without avatar initials', () => {
   test('4 attachments and no message', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -39,7 +38,6 @@ describe('carousel without avatar initials', () => {
   test('4 attachments and message', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -66,7 +64,6 @@ describe('carousel without avatar initials', () => {
   test('2 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout double');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -81,7 +78,6 @@ describe('carousel without avatar initials', () => {
   test('2 attachments with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout double');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -96,7 +92,6 @@ describe('carousel without avatar initials', () => {
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -111,7 +106,6 @@ describe('carousel without avatar initials', () => {
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -130,7 +124,6 @@ describe('carousel with avatar initials', () => {
   test('4 attachments and no message', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -157,7 +150,6 @@ describe('carousel with avatar initials', () => {
   test('4 attachments and message', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -184,7 +176,6 @@ describe('carousel with avatar initials', () => {
   test('2 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout double');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -199,7 +190,6 @@ describe('carousel with avatar initials', () => {
   test('2 attachments with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout double');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -214,7 +204,6 @@ describe('carousel with avatar initials', () => {
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
@@ -229,7 +218,6 @@ describe('carousel with avatar initials', () => {
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);

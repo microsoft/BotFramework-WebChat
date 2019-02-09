@@ -9,7 +9,6 @@ import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 test('setup', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
-  await pageObjects.pingBot();
   await pageObjects.sendMessageViaSendBox('layout carousel');
 
   await driver.wait(minNumActivitiesShown(3), 2000);

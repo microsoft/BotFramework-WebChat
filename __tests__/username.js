@@ -8,7 +8,6 @@ import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 test('send username in activity', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
-  await pageObjects.pingBot();
   await pageObjects.sendMessageViaSendBox('user name');
 
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);

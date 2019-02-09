@@ -37,6 +37,7 @@ describe('offline UI', async () => {
           })
         };
       },
+      pingBotOnLoad: false,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
 
@@ -59,6 +60,7 @@ describe('offline UI', async () => {
       createDirectLine: () => {
         return window.WebChat.createDirectLine({ token: 'INVALID-TOKEN' });
       },
+      pingBotOnLoad: false,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
 
@@ -106,8 +108,6 @@ describe('offline UI', async () => {
         document.head.appendChild(scriptElement);
       })
     });
-
-    await pageObjects.pingBot();
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -161,8 +161,6 @@ describe('offline UI', async () => {
         document.head.appendChild(scriptElement);
       })
     });
-
-    await pageObjects.pingBot();
 
     const input = await driver.findElement(By.css('input[type="text"]'));
 

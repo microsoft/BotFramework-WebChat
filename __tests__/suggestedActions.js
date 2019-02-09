@@ -13,7 +13,6 @@ describe('suggested-actions command', async () => {
   test('should show correctly formatted buttons when suggested actions are displayed', async() => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -28,7 +27,6 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on imback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -50,7 +48,6 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on postback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -72,7 +69,6 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and text from user on postback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -94,7 +90,6 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and no text from user on messageback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -116,7 +111,6 @@ describe('suggested-actions command', async () => {
   test('should show response from bot and text from user on messageback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -138,7 +132,6 @@ describe('suggested-actions command', async () => {
   test('should not show suggested actions not destined for the user', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await pageObjects.pingBot();
     await pageObjects.sendMessageViaSendBox('suggested-actions others');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);

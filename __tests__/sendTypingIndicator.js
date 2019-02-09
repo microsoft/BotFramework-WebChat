@@ -9,7 +9,6 @@ import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 test('Send typing indicator', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { sendTypingIndicator: true } });
 
-  await pageObjects.pingBot();
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
   await driver.wait(minNumActivitiesShown(3), 2000);
@@ -26,7 +25,6 @@ test('Send typing indicator', async () => {
 test('Send typing indicator using deprecated props', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { sendTyping: true } });
 
-  await pageObjects.pingBot();
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
   await driver.wait(minNumActivitiesShown(3), 2000);

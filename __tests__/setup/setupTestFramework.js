@@ -26,13 +26,20 @@ expect.extend({
 let driverPromise;
 let serverPromise;
 
-global.setupWebDriver = async (options = {}) => {
+const DEFAULT_OPTIONS = {
+  pingBotOnLoad: true
+};
+
+global.setupWebDriver = async options => {
+  options = { ...DEFAULT_OPTIONS, ...options };
+
   if (!driverPromise) {
     driverPromise = (async () => {
       let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
+      const pageObjects = createPageObjects(driver);
 
-      await retry(async () => {
+      return await retry(async () => {
         // If the baseURL contains $PORT, it means it requires us to fill-in
         if (/\$PORT/i.test(baseURL)) {
           const { port } = await global.setupWebServer();
@@ -64,9 +71,11 @@ global.setupWebDriver = async (options = {}) => {
         );
 
         await driver.wait(webChatLoaded(), timeouts.navigation);
-      }, 3);
 
-      return { driver, pageObjects: createPageObjects(driver) };
+        options.pingBotOnLoad && await pageObjects.pingBot();
+
+        return { driver, pageObjects };
+      }, 3);
     })();
   }
 
