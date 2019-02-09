@@ -26,13 +26,16 @@ function* observeActivity({ directLine, userID }) {
     yield put(incomingActivity(activity));
 
     // Update suggested actions
+    // TODO: [P3] We could put this logic inside reducer to minimize number of actions dispatched.
     const messageActivities = yield select(activitiesOfType('message'));
     const lastMessageActivity = messageActivities[messageActivities.length - 1];
 
     if (activityFromBot(lastMessageActivity)) {
-      const { suggestedActions: { actions } = {} } = lastMessageActivity;
+      const { suggestedActions: { actions, to } = {} } = lastMessageActivity;
 
-      yield put(setSuggestedActions(actions));
+      // If suggested actions is not destined to anyone, or is destined to the user, show it.
+      // In other words, if suggested actions is destined to someone else, don't show it.
+      yield put(setSuggestedActions(to && to.length && !to.includes(userID) ? null : actions));
     }
   });
 }
