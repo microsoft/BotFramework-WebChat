@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Add fallback logic to browser which do not support `window.Intl`, by [@compulim](https://github.com/compulim), in PR [#1696](https://github.com/Microsoft/BotFramework-WebChat/pull/1696)
 - `*`: Added `username` back to activity, fixed [#1321](https://github.com/Microsoft/BotFramework-WebChat/issues/1321), by [@compulim](https://github.com/compulim), in PR [#1682](https://github.com/Microsoft/BotFramework-DirectLineJS/pull/1682)
 - `component`: Allow root component height and width customization via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
-- `component`: Allow ponyfilling `window.open`, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
+- `component`: Added `cardActionMiddleware` to customize the behavior of card action, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
 
 ### Changed
 - Moved `botAvatarImage` and `userAvatarImage` to `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage` respectively, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
