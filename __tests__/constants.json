@@ -8,6 +8,7 @@
     "directLine": 5000,
     "fetch": 2500,
     "navigation": 5000,
-    "postActivity": 30000
+    "postActivity": 30000,
+    "test": 60000
   }
 }
