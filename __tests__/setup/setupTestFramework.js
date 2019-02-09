@@ -9,6 +9,7 @@ import handler from 'serve-handler';
 import { timeouts } from '../constants.json';
 
 import createPageObjects from './pageObjects/index';
+import retry from './retry';
 import setupTestEnvironment from './setupTestEnvironment';
 import webChatLoaded from './conditions/webChatLoaded';
 
@@ -31,37 +32,39 @@ global.setupWebDriver = async (options = {}) => {
       let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
 
-      // If the baseURL contains $PORT, it means it requires us to fill-in
-      if (/\$PORT/i.test(baseURL)) {
-        const { port } = await global.setupWebServer();
+      await retry(async () => {
+        // If the baseURL contains $PORT, it means it requires us to fill-in
+        if (/\$PORT/i.test(baseURL)) {
+          const { port } = await global.setupWebServer();
 
-        await driver.get(baseURL.replace(/\$PORT/ig, port));
-      } else {
-        await driver.get(baseURL);
-      }
+          await driver.get(baseURL.replace(/\$PORT/ig, port));
+        } else {
+          await driver.get(baseURL);
+        }
 
-      await driver.executeAsyncScript(
-        (coverage, props, createDirectLineFnString, setupFnString, callback) => {
-          window.__coverage__ = coverage;
+        await driver.executeAsyncScript(
+          (coverage, props, createDirectLineFnString, setupFnString, callback) => {
+            window.__coverage__ = coverage;
 
-          const setupPromise = setupFnString ? eval(`() => ${ setupFnString }`)()() : Promise.resolve();
+            const setupPromise = setupFnString ? eval(`() => ${ setupFnString }`)()() : Promise.resolve();
 
-          setupPromise.then(() => {
-            main({
-              createDirectLine: createDirectLineFnString && eval(`() => ${ createDirectLineFnString }`)(),
-              props
+            setupPromise.then(() => {
+              main({
+                createDirectLine: createDirectLineFnString && eval(`() => ${ createDirectLineFnString }`)(),
+                props
+              });
+
+              callback();
             });
+          },
+          global.__coverage__,
+          options.props,
+          options.createDirectLine && options.createDirectLine.toString(),
+          options.setup && options.setup.toString()
+        );
 
-            callback();
-          });
-        },
-        global.__coverage__,
-        options.props,
-        options.createDirectLine && options.createDirectLine.toString(),
-        options.setup && options.setup.toString()
-      );
-
-      await driver.wait(webChatLoaded(), timeouts.navigation);
+        await driver.wait(webChatLoaded(), timeouts.navigation);
+      }, 3);
 
       return { driver, pageObjects: createPageObjects(driver) };
     })();
