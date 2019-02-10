@@ -1,3 +1,9 @@
+import {
+  sendMessage,
+  sendMessageBack,
+  sendPostBack
+} from 'botframework-webchat-core';
+
 export default function createDefaultCardActionMiddleware() {
   return ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
     const { displayText, text, type, value } = cardAction;
