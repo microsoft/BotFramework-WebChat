@@ -59,8 +59,8 @@ describe('suggested-actions command', async () => {
     const postBackStringButton = buttons[2];
 
     await postBackStringButton.click();
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
     await pageObjects.hideCursor();
 
     const base64PNG = await driver.takeScreenshot();
@@ -80,8 +80,8 @@ describe('suggested-actions command', async () => {
     const postBackStringButton = buttons[3];
 
     await postBackStringButton.click();
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
     await pageObjects.hideCursor();
 
     const base64PNG = await driver.takeScreenshot();
