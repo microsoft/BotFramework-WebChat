@@ -13,11 +13,8 @@ describe('stacked without avatar initials', () => {
   test('4 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout stacked');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout stacked', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -25,16 +22,13 @@ describe('stacked without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -42,16 +36,13 @@ describe('stacked without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -59,7 +50,7 @@ describe('stacked without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 });
 
 describe('stacked with avatar initials', () => {
@@ -68,11 +59,8 @@ describe('stacked with avatar initials', () => {
   test('4 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout stacked');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout stacked', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -80,16 +68,13 @@ describe('stacked with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -97,16 +82,13 @@ describe('stacked with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -114,5 +96,5 @@ describe('stacked with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 });

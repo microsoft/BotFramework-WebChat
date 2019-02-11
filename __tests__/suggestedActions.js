@@ -1,9 +1,8 @@
-import { By, Key } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
-import botConnected from './setup/conditions/botConnected';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 
@@ -14,11 +13,8 @@ describe('suggested-actions command', async () => {
   test('should show correctly formatted buttons when suggested actions are displayed', async() => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions', Key.RETURN);
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
     await pageObjects.hideCursor();
@@ -26,16 +22,13 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should show response from bot and no text from user on imback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions', Key.RETURN);
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
     const buttons = await driver.findElements(By.css('button'));
@@ -50,16 +43,13 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should show response from bot and no text from user on postback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions', Key.RETURN);
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
     const buttons = await driver.findElements(By.css('button'));
@@ -74,16 +64,13 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should show response from bot and text from user on postback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-      await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions', Key.RETURN);
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
     const buttons = await driver.findElements(By.css('button'));
@@ -98,17 +85,13 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
-
+  }, timeouts.test);
 
   test('should show response from bot and no text from user on messageback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions', Key.RETURN);
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
     const buttons = await driver.findElements(By.css('button'));
@@ -123,16 +106,13 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should show response from bot and text from user on messageback', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions', Key.RETURN);
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
     const buttons = await driver.findElements(By.css('button'));
@@ -147,17 +127,12 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should not show suggested actions not destined for the user', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
-
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('suggested-actions others', Key.RETURN);
-    await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('suggested-actions others');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await pageObjects.hideCursor();
@@ -165,5 +140,5 @@ describe('suggested-actions command', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 });

@@ -1,7 +1,6 @@
 import { By, Condition, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
-import botConnected from './setup/conditions/botConnected';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -38,6 +37,7 @@ describe('offline UI', async () => {
           })
         };
       },
+      pingBotOnLoad: false,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
 
@@ -53,13 +53,14 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should show "unable to connect" UI when credentials are incorrect', async () => {
     const { driver } = await setupWebDriver({
       createDirectLine: () => {
         return window.WebChat.createDirectLine({ token: 'INVALID-TOKEN' });
       },
+      pingBotOnLoad: false,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
 
@@ -79,10 +80,10 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should display "Send failed. Retry" when activity is not able to send', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
@@ -108,8 +109,6 @@ describe('offline UI', async () => {
       })
     });
 
-    await driver.wait(botConnected(), timeouts.directLine);
-
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('42', Key.RETURN);
@@ -118,10 +117,10 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('should display "Send failed. Retry" when activity is sent but not acknowledged', async() => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
         const bannedClientActivityIDs = [];
@@ -163,8 +162,6 @@ describe('offline UI', async () => {
       })
     });
 
-    await driver.wait(botConnected(), timeouts.directLine);
-
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('42', Key.RETURN);
@@ -173,5 +170,5 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 });

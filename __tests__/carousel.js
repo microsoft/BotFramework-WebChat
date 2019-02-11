@@ -1,9 +1,8 @@
-import { By, Key } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
-import botConnected from './setup/conditions/botConnected';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 
 // selenium-webdriver API doc:
@@ -13,11 +12,8 @@ describe('carousel without avatar initials', () => {
   test('4 attachments and no message', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -37,16 +33,13 @@ describe('carousel without avatar initials', () => {
     await driver.sleep(1000);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('4 attachments and message', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -66,16 +59,13 @@ describe('carousel without avatar initials', () => {
     await driver.sleep(1000);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('2 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout double');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout double', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -83,16 +73,13 @@ describe('carousel without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('2 attachments with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout double');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout double', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -100,16 +87,13 @@ describe('carousel without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -117,16 +101,13 @@ describe('carousel without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -134,7 +115,7 @@ describe('carousel without avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 });
 
 describe('carousel with avatar initials', () => {
@@ -143,11 +124,8 @@ describe('carousel with avatar initials', () => {
   test('4 attachments and no message', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -167,16 +145,13 @@ describe('carousel with avatar initials', () => {
     await driver.sleep(1000);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('4 attachments and message', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -196,16 +171,13 @@ describe('carousel with avatar initials', () => {
     await driver.sleep(1000);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('2 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout double');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout double', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -213,16 +185,13 @@ describe('carousel with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('2 attachments with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout double');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout double', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -230,16 +199,13 @@ describe('carousel with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -247,16 +213,13 @@ describe('carousel with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
-    await driver.wait(botConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('layout single carousel', Key.RETURN);
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
@@ -264,5 +227,5 @@ describe('carousel with avatar initials', () => {
     await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-  }, 60000);
+  }, timeouts.test);
 });

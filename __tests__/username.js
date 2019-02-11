@@ -1,10 +1,5 @@
-import { By, Key } from 'selenium-webdriver';
-
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
-import allImagesLoaded from './setup/conditions/allImagesLoaded';
-import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
-import botConnected from './setup/conditions/botConnected';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 
 // selenium-webdriver API doc:
@@ -13,12 +8,8 @@ import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 test('send username in activity', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
-  await driver.wait(botConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('user name');
 
-  const input = await driver.findElement(By.css('input[type="text"]'));
-
-  await input.sendKeys('user name', Key.RETURN);
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   // Hide cursor before taking screenshot
@@ -27,4 +18,4 @@ test('send username in activity', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-}, 60000);
+}, timeouts.test);
