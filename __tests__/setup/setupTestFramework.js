@@ -123,7 +123,7 @@ afterEach(async () => {
       global.__coverage__ = await driver.executeScript(() => window.__coverage__);
 
       ((await driver.executeScript(() => window.__console__)) || [])
-        .filter(([type]) => type !== 'info' && type !== 'log')
+        .filter(([type]) => type === 'error' && type === 'warn')
         .forEach(([type, message]) => {
           console.log(`${ type }: ${ message }`);
         });
