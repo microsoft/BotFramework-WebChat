@@ -13,7 +13,7 @@ test('Send typing indicator', async () => {
 
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
-  await driver.wait(minNumActivitiesShown(3), 2000);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   const input = await driver.findElement(By.css('input[type="text"]'));
 
@@ -29,7 +29,7 @@ test('Send typing indicator using deprecated props', async () => {
 
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
-  await driver.wait(minNumActivitiesShown(3), 2000);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   const input = await driver.findElement(By.css('input[type="text"]'));
 
