@@ -82,7 +82,10 @@
           createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
 
           window.WebChat.renderWebChat({
-            directLine: createDirectLine({ token }),
+            directLine: createDirectLine({
+              token,
+              webSocket: false
+            }),
             store,
             username: 'Happy Web Chat user',
             ...props
