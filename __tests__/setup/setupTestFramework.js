@@ -39,8 +39,6 @@ global.setupWebDriver = async options => {
       const driver = builder.build();
 
       try {
-        const pageObjects = createPageObjects(driver);
-
         // If the baseURL contains $PORT, it means it requires us to fill-in
         if (/\$PORT/i.test(baseURL)) {
           const { port } = await global.setupWebServer();
@@ -73,11 +71,13 @@ global.setupWebDriver = async options => {
 
         await driver.wait(webChatLoaded(), timeouts.navigation);
 
+        const pageObjects = createPageObjects(driver);
+
         options.pingBotOnLoad && await pageObjects.pingBot();
 
         return { driver, pageObjects };
       } catch (err) {
-        driver.quit();
+        await driver.quit();
 
         throw err;
       }
