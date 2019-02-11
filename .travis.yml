@@ -25,7 +25,7 @@ install:
 script:
 - docker-compose up --build -d
 - docker-compose exec webchat ls -la
-- npm test -- --coverageReporters=lcov --coverageReporters=text
+- npm test -- --coverageReporters=lcov --coverageReporters=text --maxWorkers=1
 - docker-compose logs
 - docker-compose down --rmi all
 - npm run coveralls
