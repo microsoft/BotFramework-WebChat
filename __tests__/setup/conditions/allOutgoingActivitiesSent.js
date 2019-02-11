@@ -1,7 +1,7 @@
 import { Condition } from 'selenium-webdriver';
 
 export default function () {
-  return new Condition('Waiting for Direct Line to connect', async driver => {
+  return new Condition('all outgoing activities to be sent', async driver => {
     return await driver.executeScript(() => {
       const { store } = window.WebChatTest;
       const { activities } = store.getState();
