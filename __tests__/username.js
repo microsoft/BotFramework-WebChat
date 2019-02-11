@@ -14,9 +14,6 @@ test('send username in activity', async () => {
 
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
-  // Hide cursor before taking screenshot
-  await pageObjects.hideCursor();
-
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);

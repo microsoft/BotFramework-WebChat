@@ -19,9 +19,6 @@ describe('carousel without avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
@@ -44,9 +41,6 @@ describe('carousel without avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
@@ -71,9 +65,6 @@ describe('carousel without avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -84,9 +75,6 @@ describe('carousel without avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -99,9 +87,6 @@ describe('carousel without avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -112,9 +97,6 @@ describe('carousel without avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -131,9 +113,6 @@ describe('carousel with avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     const rightFlipper = await driver.findElement(By.css('button[aria-label="Right"]'));
@@ -156,9 +135,6 @@ describe('carousel with avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
@@ -183,9 +159,6 @@ describe('carousel with avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -196,9 +169,6 @@ describe('carousel with avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -211,9 +181,6 @@ describe('carousel with avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -224,9 +191,6 @@ describe('carousel with avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });

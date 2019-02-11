@@ -1,9 +1,6 @@
-import { By, Key } from 'selenium-webdriver';
-
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
-import botConnected from './setup/conditions/botConnected';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 
 // selenium-webdriver API doc:
@@ -20,9 +17,6 @@ describe('stacked without avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -34,9 +28,6 @@ describe('stacked without avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -47,9 +38,6 @@ describe('stacked without avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -66,9 +54,6 @@ describe('stacked with avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -80,9 +65,6 @@ describe('stacked with avatar initials', () => {
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
-
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
@@ -93,9 +75,6 @@ describe('stacked with avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
-
-    // Hide cursor before taking screenshot
-    await pageObjects.hideCursor();
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });

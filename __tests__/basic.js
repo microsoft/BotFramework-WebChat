@@ -16,9 +16,6 @@ test('setup', async () => {
   await driver.wait(minNumActivitiesShown(3), 2000);
   await driver.wait(allImagesLoaded(), 2000);
 
-  // Hide cursor before taking screenshot
-  await pageObjects.hideCursor();
-
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
