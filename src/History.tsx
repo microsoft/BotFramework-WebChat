@@ -36,6 +36,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
     constructor(props: HistoryProps) {
         super(props);
+
+        this.autoscroll = this.autoscroll.bind(this);
     }
 
     componentWillUpdate(nextProps: HistoryProps) {
