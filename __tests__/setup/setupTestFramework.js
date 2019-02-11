@@ -34,12 +34,13 @@ global.setupWebDriver = async options => {
   options = { ...DEFAULT_OPTIONS, ...options };
 
   if (!driverPromise) {
-    driverPromise = (async () => {
+    driverPromise = retry(async () => {
       let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
-      const pageObjects = createPageObjects(driver);
 
-      return await retry(async () => {
+      try {
+        const pageObjects = createPageObjects(driver);
+
         // If the baseURL contains $PORT, it means it requires us to fill-in
         if (/\$PORT/i.test(baseURL)) {
           const { port } = await global.setupWebServer();
@@ -75,8 +76,12 @@ global.setupWebDriver = async options => {
         options.pingBotOnLoad && await pageObjects.pingBot();
 
         return { driver, pageObjects };
-      }, 3);
-    })();
+      } catch (err) {
+        driver.quit();
+
+        throw err;
+      }
+    }, 3);
   }
 
   return await driverPromise;
