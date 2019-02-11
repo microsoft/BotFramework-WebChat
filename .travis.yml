@@ -20,13 +20,18 @@ install:
 - npm run build
 - npm run prepublishOnly
 - docker build -f Dockerfile-playground -t webchat.azurecr.io/playground .
-- npm run build:sample
+
+# Travis CI run with 2 CPU cores (https://docs.travis-ci.com/user/reference/overview/)
+- npm run build:sample -- --concurrency 2
 
 script:
 - docker-compose up --build -d
 - docker-compose exec webchat ls -la
 - npm test -- --coverageReporters=lcov --coverageReporters=text --maxWorkers=1
+
+# Enable Docker log if investigation is needed
 # - docker-compose logs
+
 - docker-compose down --rmi all
 - npm run coveralls
 
