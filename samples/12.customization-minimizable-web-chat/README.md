@@ -83,7 +83,7 @@ import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-web
 
 Set up the component the same way you would set up a regular `React.Component`
 1. Create the `constructor()` and `render()` methods.
-1. In the constructor you can set state and `createDirectLine` with your token.
+1. In the constructor you can set state and `createDirectLine` with your token. It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit this [tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 1. Inside render, be sure to return the `<ReactWebChat>` component.
 
 ```jsx
