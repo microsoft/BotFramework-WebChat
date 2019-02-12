@@ -48,7 +48,7 @@ test('card action "openUrl"', async () => {
 }, 60000);
 
 test('card action "signin"', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
+  const { driver } = await setupWebDriver({
     props: {
       cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
         if (cardAction.type === 'signin') {
@@ -77,10 +77,10 @@ test('card action "signin"', async () => {
   const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
 
   await openUrlButton.click();
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
-  // When sign in card is show, the focus moved to the "Sign in" button, need to blur it.
+  // When the "Sign in" button is clicked, the focus move to it, need to blur it.
   await driver.executeScript(() => {
     for (let element of document.querySelectorAll(':focus')) {
       element.blur();
