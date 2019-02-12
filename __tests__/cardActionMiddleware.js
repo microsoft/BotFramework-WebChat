@@ -80,6 +80,13 @@ test('card action "signin"', async () => {
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
 
+  // When sign in card is show, the focus moved to the "Sign in" button, need to blur it.
+  await driver.executeScript(() => {
+    for (let element of document.querySelectorAll(':focus')) {
+      element.blur();
+    }
+  });
+
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
