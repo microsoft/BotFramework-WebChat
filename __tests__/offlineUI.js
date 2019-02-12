@@ -5,6 +5,8 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
+jest.setTimeout(timeouts.test);
+
 const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail sending', driver => {
   return driver.executeScript(() => {
     const { store } = window.WebChatTest;
@@ -53,7 +55,7 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, timeouts.test);
+  });
 
   test('should show "unable to connect" UI when credentials are incorrect', async () => {
     const { driver } = await setupWebDriver({
@@ -80,7 +82,7 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, timeouts.test);
+  });
 
   test('should display "Send failed. Retry" when activity is not able to send', async () => {
     const { driver, pageObjects } = await setupWebDriver({
@@ -117,7 +119,7 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, timeouts.test);
+  });
 
   test('should display "Send failed. Retry" when activity is sent but not acknowledged', async() => {
     const { driver, pageObjects } = await setupWebDriver({
@@ -170,5 +172,5 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  }, timeouts.test);
+  });
 });

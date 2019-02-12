@@ -14,6 +14,9 @@
       };
 
       window.console = {
+        ...console,
+
+        debug: push.bind(null, 'debug'),
         error: push.bind(null, 'error'),
         info: push.bind(null, 'info'),
         log: push.bind(null, 'log'),
@@ -39,6 +42,7 @@
     <style>
       html, body { height: 100% }
       body { margin: 0 }
+      input, textarea, [contenteditable] { caret-color: Transparent; }
 
       #webchat,
       #webchat > * {

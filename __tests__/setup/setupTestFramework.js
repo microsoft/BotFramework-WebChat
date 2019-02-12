@@ -34,12 +34,11 @@ global.setupWebDriver = async options => {
   options = { ...DEFAULT_OPTIONS, ...options };
 
   if (!driverPromise) {
-    driverPromise = (async () => {
+    driverPromise = retry(async () => {
       let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
-      const pageObjects = createPageObjects(driver);
 
-      return await retry(async () => {
+      try {
         // If the baseURL contains $PORT, it means it requires us to fill-in
         if (/\$PORT/i.test(baseURL)) {
           const { port } = await global.setupWebServer();
@@ -72,11 +71,17 @@ global.setupWebDriver = async options => {
 
         await driver.wait(webChatLoaded(), timeouts.navigation);
 
+        const pageObjects = createPageObjects(driver);
+
         options.pingBotOnLoad && await pageObjects.pingBot();
 
         return { driver, pageObjects };
-      }, 3);
-    })();
+      } catch (err) {
+        await driver.quit();
+
+        throw err;
+      }
+    }, 3);
   }
 
   return await driverPromise;
@@ -123,7 +128,7 @@ afterEach(async () => {
       global.__coverage__ = await driver.executeScript(() => window.__coverage__);
 
       ((await driver.executeScript(() => window.__console__)) || [])
-        .filter(([type]) => type !== 'info' && type !== 'log')
+        .filter(([type]) => type === 'error' && type === 'warn')
         .forEach(([type, message]) => {
           console.log(`${ type }: ${ message }`);
         });
