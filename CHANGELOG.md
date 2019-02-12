@@ -87,6 +87,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Use Speech Services token for [speech UI sample](https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui/), in [#1634](https://github.com/Microsoft/BotFramework-WebChat/pull/1634)
 - `component`: [Selectable Activity](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity/), in [#1624](https://github.com/Microsoft/BotFramework-WebChat/pull/1624)
 - `component`: [Chat Send History](https://microsoft.github.io/BotFramework-WebChat/17.chat-send-history/), in [#1678](https://github.com/Microsoft/BotFramework-WebChat/pull/1678)
+- `*`: Update `README.md`'s for samples 05-10 [#1444](https://github.com/Microsoft/BotFramework-WebChat/issues/1444) and improve accessibility of anchors [#1681](https://github.com/Microsoft/BotFramework-WebChat/issues/1681), by [@corinagum](https://github.com/corinagum) in PR [#1710](https://github.com/Microsoft/BotFramework-WebChat/pull/1710)
 
 ## [4.2.0] - 2018-12-11
 ### Added

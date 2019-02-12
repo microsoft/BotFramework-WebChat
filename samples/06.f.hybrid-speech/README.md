@@ -36,8 +36,51 @@ We will start by using the [Cognitive Services Speech Services sample](./../06.c
 
 > Web browser speech package is available in the Web Chat core bundle and the full bundle, and you can use either CDN in your bot.
 
-> Note: README.md in this sample is not yet complete.
+This sample creates a new ponyfill factory by combining the browser speech engine for speech-to-text and Cognitive Services for text-to-speech. By creating our own ponyfill we are able to pick and choose which aspects to use from which engine.
 
+Create an async factory called `createHybridPonyfillFactory` that will build our hybrid.
+
+```js
+async function createHybridPonyfillFactory({ authorizationToken, region }) {…}
+```
+
+Create two ponyfills, one from Speech Services and the other from Web Speech.
+
+```diff
+async function createHybridPonyfillFactory({ authorizationToken, region }) {
++ const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
++ const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
+…
+};
+```
+
+Combine into one ponyfill the features you want to pull from Web Speech and Speech Services respectively
+
+```diff
+…
++ return options => {
++   const speechServicesPonyfill = speechServicesPonyfillFactory(options);
++   const webSpeechPonyfill = webSpeechPonyfillFactory(options);
+
++   return {
++     SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,
++     SpeechRecognition: webSpeechPonyfill.SpeechRecognition,
+
++     speechSynthesis: speechServicesPonyfill.speechSynthesis,
++     SpeechSynthesisUtterance: speechServicesPonyfill.SpeechSynthesisUtterance
++   }
+  };
+
+```
+
+Finally, pass your new ponyfill factory into `renderWebChat`.
+
+```diff
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   webSpeechPonyfillFactory: await createHybridPonyfillFactory({ authorizationToken, region })
+  }, document.getElementById('webchat'));
+```
 ## Completed code
 
 Here is the finished `index.html`:
@@ -52,8 +95,7 @@ Here is the finished `index.html`:
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -100,7 +142,13 @@ Here is the finished `index.html`:
 ```
 
 # Further Reading
+- [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
+- [W3C Web Speech API](https://w3c.github.io/speech-api/)
+- [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
+
+- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
+- [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

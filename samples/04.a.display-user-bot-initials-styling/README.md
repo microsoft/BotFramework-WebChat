@@ -3,6 +3,10 @@
 ## Description
 A simple web page with a maximized Web Chat that displays initials for both the bot and the user.
 
+
+# Test out the hosted sample
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.a.display-user-bot-initials-styling)
+
 # How to run
 - Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/04.a.display-user-bot-images-styling` in command line
@@ -64,8 +68,7 @@ Here is the finished `index.html`:
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -97,3 +100,11 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+
+# Further reading
+
+- [Branding Web Chat styling](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding Web Chat source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling/)
+
+## Full list of Web Chat hosted samples
+
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

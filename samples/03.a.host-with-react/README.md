@@ -52,7 +52,7 @@ We'll start by adding React and Babel to the head or our template, based off of 
 
 The core of this code both creates and renders the React component that displays Web Chat.
 
-```js
+```jsx
 …
 const { createStore, ReactWebChat } = window.WebChat;
 const { Provider } = window.ReactRedux;
@@ -88,7 +88,7 @@ Here is the finished `index.html`:
     <style>
       html, body { height: 100% }
       body { margin: 0 }
-      #webchat, #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -127,4 +127,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

@@ -1,4 +1,4 @@
-# Sample - Getting Started with Web Chat CDN minimal bundle and Markdown
+# Sample - Getting Started with Web Chat CDN Minimal Bundle and Markdown
 
 ## Description
 
@@ -6,6 +6,10 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 
 - Adaptive Cards
 - Cognitive Services Bing Speech
+
+# Test out the hosted sample
+
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown)
 
 # How to run
 
@@ -64,8 +68,7 @@ Here is the finished `index.html`:
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -91,3 +94,22 @@ Here is the finished `index.html`:
 </html>
 
 ```
+
+# Further reading
+
+## Other CDN bundles
+
+Check out the hosted samples and source code for other CDN bundle options below.
+
+- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
+- [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
+- [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
+
+
+## CDN sunburst chart
+
+[Web Chat bundles sunburst chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) - provides a visual of the contents of the various Web Chat bundles
+
+## Full list of Web Chat hosted samples
+
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
