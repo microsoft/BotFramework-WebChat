@@ -39,6 +39,7 @@ This sample is the first of the 'advanced' tutorials, where Web Chat evolves bey
 First let's set up the project.
 
 ```sh
+cd C:\Users\You\Documents
 npx create-react-app 12.customization-minimizable-web-chat
 cd 12.customization-minimizable-web-chat
 npm i botframework-webchat memoize-one
@@ -206,8 +207,6 @@ render() {
 
 1. Create the `constructor()`
    1. In the constructor, create the store with `createStore()`
-   1. Create a filter that sends a message from the bot when the `CONNECT_FULFILLED` action type is detected
-   1. Dispatch an action on `'DIRECT_LINE/CONNECT_FULFILLED'`
    1. If the role of incoming activities is `'bot'`, set the state `newMessage: true`. This will be used to indicate when new messages have arrived to the bot when the chat is minimized
    1. Set the initial state.
 
