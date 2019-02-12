@@ -42,9 +42,6 @@ test('card action "openUrl"', async () => {
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
 
-  // Hide cursor before taking screenshot
-  await pageObjects.hideCursor();
-
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
@@ -82,9 +79,6 @@ test('card action "signin"', async () => {
   await openUrlButton.click();
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
-
-  // Hide cursor before taking screenshot
-  await pageObjects.hideCursor();
 
   const base64PNG = await driver.takeScreenshot();
 
