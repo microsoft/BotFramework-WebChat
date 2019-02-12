@@ -101,6 +101,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
         const className = classList(
             'wc-console',
+            this.props.inputDisabled && 'wc-console__disabled',
             this.props.inputText.length > 0 && 'has-text',
             showUploadButton && 'has-upload-button'
         );
