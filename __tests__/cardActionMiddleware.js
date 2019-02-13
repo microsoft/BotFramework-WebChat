@@ -3,7 +3,6 @@ import { By, Key } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
-import botConnected from './setup/conditions/botConnected';
 import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 
@@ -28,19 +27,15 @@ test('card action "openUrl"', async () => {
     }
   });
 
-  await driver.wait(botConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card-actions');
 
-  const input = await driver.findElement(By.css('input[type="text"]'));
-
-  await input.sendKeys('card-actions', Key.RETURN);
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
   const openUrlButton = await driver.findElement(By.css('[role="form"] ul > li:first-child button'));
 
   await openUrlButton.click();
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
-  await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -48,7 +43,7 @@ test('card action "openUrl"', async () => {
 }, 60000);
 
 test('card action "signin"', async () => {
-  const { driver } = await setupWebDriver({
+  const { driver, pageObjects } = await setupWebDriver({
     props: {
       cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
         if (cardAction.type === 'signin') {
@@ -67,17 +62,12 @@ test('card action "signin"', async () => {
     }
   });
 
-  await driver.wait(botConnected(), timeouts.directLine);
-
-  const input = await driver.findElement(By.css('input[type="text"]'));
-
-  await input.sendKeys('oauth', Key.RETURN);
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('oauth');
 
   const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
 
   await openUrlButton.click();
-  await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
   // When the "Sign in" button is clicked, the focus move to it, need to blur it.

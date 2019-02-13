@@ -13,14 +13,14 @@ test('Send typing indicator', async () => {
 
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
-  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   const input = await driver.findElement(By.css('input[type="text"]'));
 
   await input.sendKeys('ABC');
 
   // Typing indicator takes longer to come back
-  await driver.wait(minNumActivitiesShown(4), 5000);
+  await driver.wait(minNumActivitiesShown(3), 5000);
 });
 
 // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
@@ -29,12 +29,12 @@ test('Send typing indicator using deprecated props', async () => {
 
   await pageObjects.sendMessageViaSendBox('echo-typing');
 
-  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   const input = await driver.findElement(By.css('input[type="text"]'));
 
   await input.sendKeys('ABC');
 
   // Typing indicator takes longer to come back
-  await driver.wait(minNumActivitiesShown(4), 5000);
+  await driver.wait(minNumActivitiesShown(3), 5000);
 });

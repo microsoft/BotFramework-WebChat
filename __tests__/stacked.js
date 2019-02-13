@@ -14,7 +14,7 @@ describe('stacked without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout stacked');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -25,7 +25,7 @@ describe('stacked without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -36,7 +36,7 @@ describe('stacked without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -51,7 +51,7 @@ describe('stacked with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout stacked');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -62,7 +62,7 @@ describe('stacked with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -73,7 +73,7 @@ describe('stacked with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);

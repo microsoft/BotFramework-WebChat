@@ -16,7 +16,7 @@ describe('carousel without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -39,7 +39,7 @@ describe('carousel without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -62,7 +62,7 @@ describe('carousel without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout double');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -73,7 +73,7 @@ describe('carousel without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout double');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -84,7 +84,7 @@ describe('carousel without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -95,7 +95,7 @@ describe('carousel without avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -110,7 +110,7 @@ describe('carousel with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -133,7 +133,7 @@ describe('carousel with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -156,7 +156,7 @@ describe('carousel with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout double');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -167,7 +167,7 @@ describe('carousel with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout double');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -178,7 +178,7 @@ describe('carousel with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -189,7 +189,7 @@ describe('carousel with avatar initials', () => {
 
     await pageObjects.sendMessageViaSendBox('layout single carousel');
 
-    await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
