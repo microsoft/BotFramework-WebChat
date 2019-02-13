@@ -222,10 +222,12 @@ export default function (dispatch) {
 
 
 # Further reading
+[Redux Documentation](https://redux.js.org/)
 
 [Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions) | [Customization of Redux Actions source code](./../11.customization-redux-actions)
 
 [Minimizable Web Chat bot ](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat) | [Minimizable Web Chat source code](./../12.customization-minimizable-web-chat)
+
 
 ## Full list of Web Chat hosted samples
 
