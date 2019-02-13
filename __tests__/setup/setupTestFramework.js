@@ -6,12 +6,9 @@ import { promisify } from 'util';
 import getPort from 'get-port';
 import handler from 'serve-handler';
 
-import { timeouts } from '../constants.json';
-
 import createPageObjects from './pageObjects/index';
 import retry from './retry';
 import setupTestEnvironment from './setupTestEnvironment';
-import webChatLoaded from './conditions/webChatLoaded';
 
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
