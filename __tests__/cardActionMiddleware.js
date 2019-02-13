@@ -34,8 +34,8 @@ test('card action "openUrl"', async () => {
   const openUrlButton = await driver.findElement(By.css('[role="form"] ul > li:first-child button'));
 
   await openUrlButton.click();
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
