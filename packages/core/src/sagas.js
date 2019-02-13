@@ -9,7 +9,6 @@ import markActivityForSpeakOnIncomingActivityFromOthersSaga from './sagas/markAc
 import markAllAsSpokenOnStopSpeakActivitySaga from './sagas/markAllAsSpokenOnStopSpeakActivitySaga';
 import postActivitySaga from './sagas/postActivitySaga';
 import removeIncomingTypingAfterIntervalSaga from './sagas/removeIncomingTypingAfterIntervalSaga';
-import sendConversationUpdateOnConnectSaga from './sagas/sendConversationUpdateOnConnectSaga';
 import sendEventToPostActivitySaga from './sagas/sendEventToPostActivitySaga';
 import sendFilesToPostActivitySaga from './sagas/sendFilesToPostActivitySaga';
 import sendMessageToPostActivitySaga from './sagas/sendMessageToPostActivitySaga';
@@ -32,7 +31,6 @@ export default function* () {
   yield fork(markAllAsSpokenOnStopSpeakActivitySaga);
   yield fork(postActivitySaga);
   yield fork(removeIncomingTypingAfterIntervalSaga);
-  yield fork(sendConversationUpdateOnConnectSaga);
   yield fork(sendEventToPostActivitySaga);
   yield fork(sendFilesToPostActivitySaga);
   yield fork(sendMessageToPostActivitySaga);
