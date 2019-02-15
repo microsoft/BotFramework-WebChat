@@ -85,7 +85,7 @@ describe('offline UI', async () => {
   });
 
   test('should display "Send failed. Retry" when activity is not able to send', async () => {
-    const { driver, pageObjects } = await setupWebDriver({
+    const { driver } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
@@ -122,7 +122,7 @@ describe('offline UI', async () => {
   });
 
   test('should display "Send failed. Retry" when activity is sent but not acknowledged', async() => {
-    const { driver, pageObjects } = await setupWebDriver({
+    const { driver } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
         const bannedClientActivityIDs = [];

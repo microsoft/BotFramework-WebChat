@@ -75,6 +75,20 @@
         });
       }
 
+      async function retry(fn, retries) {
+        let lastErr;
+
+        for (; retries >= 0; retries--) {
+          try {
+            return await fn();
+          } catch (err) {
+            lastErr = err;
+          }
+        }
+
+        throw lastErr;
+      }
+
       async function main(options) {
         let { createDirectLine, props, setup } = unmarshal(options);
 
@@ -84,8 +98,18 @@
 
         await loadScript('/webchat-instrumented.js');
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
+        const { token } = await retry(async () => {
+          try {
+            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST', timeout: 2000 });
+
+            return await res.json();
+          } catch (err) {
+            console.error('Failed to fetch Direct Line token from Mockbot.');
+            console.error(err);
+
+            throw err;
+          }
+        }, 3);
 
         const store = window.WebChatTest.store = window.WebChat.createStore({}, () => next => action => {
           window.WebChatTest.actions.push(action);

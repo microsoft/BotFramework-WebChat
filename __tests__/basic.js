@@ -13,7 +13,7 @@ test('setup', async () => {
 
   await pageObjects.sendMessageViaSendBox('layout carousel');
 
-  await driver.wait(minNumActivitiesShown(3), 2000);
+  await driver.wait(minNumActivitiesShown(2), 2000);
   await driver.wait(allImagesLoaded(), 2000);
 
   const base64PNG = await driver.takeScreenshot();
