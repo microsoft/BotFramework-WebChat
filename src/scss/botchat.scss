@@ -48,7 +48,7 @@
     .wc-hidden {
         visibility: hidden;
     }
-    
+
     .wc-footer {
       position: absolute;
       width: 156px;
@@ -57,7 +57,10 @@
       font-weight: 500;
       margin-left: 150px;
       margin-bottom: 9px;
-      
+
+      a {
+        text-decoration: none;
+      }
       span {
         width: 74px;
         height: 17px;
@@ -73,13 +76,13 @@
       &--logo {
           vertical-align: middle;
           max-height: 24px;
-          padding-left: 6px;
+          margin-top: 0.15em;
+          padding-left: 0.25em;
       }
-  
+
     }
 
     .wc-header {
-        background-color: white;
         box-sizing: border-box;
         color: #444444;
         font-weight: 500;
@@ -93,35 +96,49 @@
         box-shadow: 0 4px 16px 0 rgba(156, 112, 0, 0.12);
         width: $chatWidth;
 
+        $logo-size: 42px;
+
+        .wc-header--attourney-logo-container {
+          width: 38px;
+          height: 38px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
         span {
             font-size: 18px;
-            margin-left: 7px;
-            font-family: Lato;
-            font-weight: 400;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: normal;
-            letter-spacing: 0.5px;
-            color: #444444;
+            vertical-align: middle;
+            margin-left: 12px;
+            // font-family: Lato;
+            // font-weight: 400;
+            // font-style: normal;
+            // font-stretch: normal;
+            // line-height: normal;
+            // letter-spacing: 0.5px;
+            // color: #444444;
         }
 
         &--logo {
+            position: absolute;
             vertical-align: middle;
-            max-height: 55px;
+            max-height: $logo-size;
+            min-height: $logo-size;
+            min-width: $logo-size;
+            max-width: $logo-size;
         }
 
         $topMargin: 10px;
 
         &--close {
-            height: 18px;
+            height: 16px;
             float: right;
-            margin-top: $topMargin + 4;
-            padding-right: 24.5px;
+            margin-top: $topMargin + 2;
+            padding-right: 0px;
             cursor: pointer;
         }
 
         &--back {
-            height: 22px;
+            height: 18px;
             float: right;
             margin-top: $topMargin;
             padding-right: 28px;
@@ -459,8 +476,8 @@
         font-size: 11px;
         margin-top: 5px;
     }
-    
-    
+
+
 
 /* cards */
 
@@ -710,7 +727,7 @@
         }
     }
 
-/* Joe's solution to find FROM ME at a higher level */ 
+/* Joe's solution to find FROM ME at a higher level */
     .from-me + .from-bot::before {
       content: "Gideon";
       color: $c05;
@@ -902,14 +919,14 @@
                 background-color: transparent;
             }
         }
-        
+
         .chat-signature {
           background-color: pink;
           text-align: center;
           top: 0;
           left: 31px;
         }
-    
+
 
         .wc-mic,
         .wc-send {

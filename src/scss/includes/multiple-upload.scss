@@ -11,12 +11,12 @@
         }
     }
   }
-  
+
   .wc-suggested-options{
     ul{
       text-align: right;
     }
-    
+
     li{
       color: $c_brand;
       border: 2px solid $c_brand;
@@ -31,16 +31,15 @@
       overflow-wrap: break-word;
       display: inline-block;
     }
-  
+
     li:hover {
         background-color: $c_brand;
         color: #ffffff;
     }
-  
+
     li:active {
         background-color: $c_brand;
         color: #ffffff;
     }
-    
+
   }
-  

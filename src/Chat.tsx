@@ -447,8 +447,9 @@ export class Chat extends React.Component<ChatProps, State> {
                                 <div className="wc-header">
                                     <img
                                         className="wc-header--logo"
-                                        src="assets/gMark.png"
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot-header-default-v1.1.2.png"
                                       />
+                                      <div className="wc-header--attourney-logo-container"/>
 
                                   <span>Gideon</span>
 
@@ -473,12 +474,13 @@ export class Chat extends React.Component<ChatProps, State> {
                         <Shell ref={ this._saveShellRef } />
 
                               <div className="wc-footer">
-
-                                <span>Powered by</span>
-                                <img
-                                    className="wc-footer--logo"
-                                    src="assets/logotype.svg"
-                                  />
+                                <a href="https://gideon.legal">
+                                  <span>Powered by</span>
+                                  <img
+                                      className="wc-footer--logo"
+                                      src="https://s3.amazonaws.com/com.gideon.static.dev/logotype-v1.1.0.svg"
+                                    />
+                                </a>
 
                               </div>
 
