@@ -447,9 +447,10 @@ export class Chat extends React.Component<ChatProps, State> {
                                 <div className="wc-header">
                                     <img
                                         className="wc-header--logo"
-                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/chat-header.svg" />
+                                        src="assets/gMark.png"
+                                      />
 
-                                    <span>Gideon</span>
+                                  <span>Gideon</span>
 
                                     <img
                                         className="wc-header--close"
@@ -462,7 +463,6 @@ export class Chat extends React.Component<ChatProps, State> {
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" />
                                 </div>
                         }
-
                         <History
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
@@ -471,6 +471,17 @@ export class Chat extends React.Component<ChatProps, State> {
                         />
 
                         <Shell ref={ this._saveShellRef } />
+
+                              <div className="wc-footer">
+
+                                <span>Powered by</span>
+                                <img
+                                    className="wc-footer--logo"
+                                    src="assets/logotype.svg"
+                                  />
+
+                              </div>
+
                         {
                             this.props.resize === 'detect' &&
                                 <ResizeDetector onresize={ this.resizeListener } />

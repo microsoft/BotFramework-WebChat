@@ -7,6 +7,7 @@ $gd_dark_sky_blue: #31ace2;
 .react-datepicker__header--time {
     padding-bottom: 8px;
     height: 63px;
+    
 }
 
 $width: 280px;
@@ -14,6 +15,7 @@ $width: 280px;
 .gd-date-picker {
     max-width: $width;
     padding:2px;
+    
 
 
     &.withTime {
@@ -49,21 +51,23 @@ $width: 280px;
 
     .gd-submit-date-button {
         width: 100%;
-        height: 40px;
+        height: 42px;
         background: white;
         border-bottom-left-radius: $messageBorderRadius - 2px;
         border-bottom-right-radius: $messageBorderRadius - 2px;
         margin-top: -0.4em;
         border:0;
         color:$gd_dark_sky_blue;
+        font-family: Lato;
         font-size: 14px;
+        font-weight: 400;
         font-weight: bold;
     }
     
     .gd-selected-date-container {
         font-size: 14px;
         text-align: center;
-        height: 59px;
+        height: 54px;
         display: inline-block;
         width: 100%;
         position: relative;
@@ -76,7 +80,9 @@ $width: 280px;
 
         .gd-selected-date {
             color: #ffffff;
-            top: 36%;
+            font-family: Lato;
+            font-size: 14px;
+            top: 31%;
             left: 0;
             margin: auto;
             right: 0;
@@ -100,6 +106,7 @@ $width: 280px;
         border-radius: 0;
         border: 0;
         border-bottom: 1px solid $gd_dark_sky_blue !important;
+        font-family: Lato;
         
         &__navigation--previous {
             border-right-color: $gd_dark_sky_blue;
