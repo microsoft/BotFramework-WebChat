@@ -57,7 +57,7 @@ export default {
   'Send': 'Senden',
   'Sending': 'sendet…',
   'Speak': 'Sprechen',
-  'Starting…': 'startet…',
+  'Starting…': 'Startet…',
   'Tax': 'Steuer',
   'Total': 'Total',
   'Type your message': 'Verfasse eine Nachricht',
