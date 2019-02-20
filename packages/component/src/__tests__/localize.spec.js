@@ -1,4 +1,4 @@
-import { localize } from './Localization/Localize';
+import { localize } from '../Localization/Localize';
 
 test('Japanese timestamp localization now', () => {
   const expected = 'たった今';

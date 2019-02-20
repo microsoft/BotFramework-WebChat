@@ -64,6 +64,7 @@
     "babel-plugin-version-transform": "^1.0.0",
     "concurrently": "^4.0.1",
     "css-loader": "^2.1.0",
+    "jest": "23.6.0",
     "style-loader": "^0.23.1",
     "typescript": "^3.1.6",
     "webpack": "^4.24.0",

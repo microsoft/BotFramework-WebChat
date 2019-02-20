@@ -54,7 +54,7 @@
     "babel-plugin-version-transform": "^1.0.0",
     "botframework-directlinejs": "^0.11.4",
     "concurrently": "^4.0.1",
-    "jest": "^23.6.0",
+    "jest": "23.6.0",
     "react": "^16.4.1",
     "rimraf": "^2.6.2",
     "ts-jest": "^23.10.4",
@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "adaptivecards": "~1.1.2",
+    "babel-jest": "^24.1.0",
     "botframework-webchat-core": "^0.0.0-0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
