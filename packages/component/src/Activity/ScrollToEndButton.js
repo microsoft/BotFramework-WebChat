@@ -17,6 +17,7 @@ const ScrollToEndButton = connectToWebChat(
       (className || '') + ''
     ) }
     onClick={ scrollToEnd }
+    type="button"
   >
     <Localize text="New messages" />
   </button>
