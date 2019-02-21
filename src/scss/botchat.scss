@@ -79,10 +79,10 @@
           margin-top: 0.15em;
           padding-left: 0.25em;
       }
-
     }
 
     .wc-header {
+        background-color: #fff;
         box-sizing: border-box;
         color: #444444;
         font-weight: 500;
@@ -304,6 +304,7 @@
         visibility: hidden;
         opacity: 0;
         transition:visibility 1.5s $cubic, opacity 1.5s $cubic, height 1s $cubic, width 1s $cubic;
+        background: white;
 
         &__open{
             opacity: 1;
