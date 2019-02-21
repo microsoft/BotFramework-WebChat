@@ -447,9 +447,11 @@ export class Chat extends React.Component<ChatProps, State> {
                                 <div className="wc-header">
                                     <img
                                         className="wc-header--logo"
-                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/chat-header.svg" />
+                                        src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot-header-default-v1.1.2.png"
+                                      />
+                                      <div className="wc-header--attourney-logo-container"/>
 
-                                    <span>Gideon</span>
+                                  <span>Gideon</span>
 
                                     <img
                                         className="wc-header--close"
@@ -462,7 +464,6 @@ export class Chat extends React.Component<ChatProps, State> {
                                         src="https://s3.amazonaws.com/com.gideon.static.dev/chatbot/back.svg" />
                                 </div>
                         }
-
                         <History
                             onCardAction={ this._handleCardAction }
                             ref={ this._saveHistoryRef }
@@ -471,6 +472,18 @@ export class Chat extends React.Component<ChatProps, State> {
                         />
 
                         <Shell ref={ this._saveShellRef } />
+
+                              <div className="wc-footer">
+                                <a href="https://gideon.legal">
+                                  <span>Powered by</span>
+                                  <img
+                                      className="wc-footer--logo"
+                                      src="https://s3.amazonaws.com/com.gideon.static.dev/logotype-v1.1.0.svg"
+                                    />
+                                </a>
+
+                              </div>
+
                         {
                             this.props.resize === 'detect' &&
                                 <ResizeDetector onresize={ this.resizeListener } />

@@ -11,17 +11,17 @@
         }
     }
   }
-  
+
   .wc-suggested-options{
     ul{
       text-align: right;
     }
-    
+
     li{
       color: $c_brand;
       border: 2px solid $c_brand;
       border-radius: 10px;
-      border-top-right-radius: 0px;
+      // border-top-right-radius: 0px;
       padding: 10px;
       margin-bottom: 10px;
       margin-right: 5px;
@@ -31,16 +31,15 @@
       overflow-wrap: break-word;
       display: inline-block;
     }
-  
+
     li:hover {
         background-color: $c_brand;
         color: #ffffff;
     }
-  
+
     li:active {
         background-color: $c_brand;
         color: #ffffff;
     }
-    
+
   }
-  

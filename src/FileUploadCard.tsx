@@ -194,8 +194,11 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
                     <div className="file-upload-title">{this.state.files[0].name}</div>
                     <div className="file_chunk no-border">
                         <div className="drop-text add-padding">
-                            <div className="fileAttach"></div>
+                            <div className="fileAttach">
+                            {/*<img src="/assets/file.svg">*/}
+                            </div>
                             <span className="bold-line">{this.state.files[0].name} </span>
+                            <br />
                             <br />
                             <a onClick={this.removeFile} className="remove_link" href="#"> remove file</a>
                         </div>
@@ -237,16 +240,16 @@ class FileUpload extends React.Component<FileUploadProps, FileUploadState> {
 export const FileUploadCard = connect(
     (state: ChatState) => ({
         // passed down to MessagePaneView
-        locale: state.format.locale,
+        locale:                                                                                                                                                                                                                                                                                                                          state.format.locale,
         inputDisabled: state.shell.inputDisabled,
         user: state.connection.user
     }), {
-        fileSelected: (inputStatus: boolean) => ({type: 'Select_File', payload: inputStatus}),
+        fileSelected:                                                                                                                                                                                                                                                                                                                          (inputStatus: boolean) => ({type:                                                                                                                                                                                                                                                                                                                          'Select_File', payload: inputStatus}),
         sendMessage,
-        updateInput: (disable: boolean, placeholder: string) => ({ type: 'Update_Input', placeholder, disable, source: 'text' } as ChatActions),
+        updateInput: (disable: boolean, placeholder: string) => ({ type:                                                                                                                                                                                                                                                                                                                          'Update_Input', placeholder, disable, source: 'text' } as ChatActions),
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): FileUploadProps => ({
-        node: ownProps.node,
+        node:                                                                                                                                                                                                                                                                                                                          ownProps.node,
         inputDisabled: stateProps.inputDisabled,
         updateInput: dispatchProps.updateInput,
         fileSelected: dispatchProps.fileSelected,
