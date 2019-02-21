@@ -36,10 +36,10 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
-  // FAILED_CONNECTION_NOTIFICATION: '',
+  FAILED_CONNECTION_NOTIFICATION: '接続できませんでした。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: '送信できませんでした。{Retry}。',
-  // SLOW_CONNECTION_NOTIFICATION: '',
+  SLOW_CONNECTION_NOTIFICATION: '接続するのにはいつもより長くかかります。',
   'Chat': 'チャット',
   'Download file': 'ダウンロード',
   'Microphone off': 'マイクオン',
