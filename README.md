@@ -30,16 +30,21 @@ Here is how how you can add Web Chat control to your website:
     <script>
       window.WebChat.renderWebChat({
         directLine: window.WebChat.createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }),
-        userID: 'YOUR_USER_ID'
+        userID: 'YOUR_USER_ID',
+        username: 'Web Chat User',
+        locale: 'en-US',
+        botAvatarInitials: 'WC',
+        userAvatarInitials: 'WW'
       }, document.getElementById('webchat'));
     </script>
   </body>
 </html>
 ```
+> `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method.
 
-> If `userID` is not specified, it will default to `default-user`. Multiple users sharing the same user ID is not recommended; their user state will be shared.
+> If `userID` is not specified, it will default to a random user ID. Multiple users sharing the same user ID is not recommended; their user state will be shared.
 
-![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/webchat-screenshot.png)
+![Screenshot of Web Chat](https://user-images.githubusercontent.com/14900841/53262388-4b1c2300-368b-11e9-9347-600d7871a184.png)
 
 ## Integrate with JavaScript
 
