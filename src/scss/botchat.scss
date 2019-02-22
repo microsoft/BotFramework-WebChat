@@ -6,9 +6,14 @@
 
 /* reset */
 
+    #bot * {
+      box-sizing: border-box;
+    }
+
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
         font-family: $fontFamily;
         font-size: $fontSize;
+        line-height: 1em;
     }
 
     body.noScroll {
@@ -27,6 +32,10 @@
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
         margin: 0;
         padding: 0;
+    }
+    
+    .wc-app p {
+      color: inherit;
     }
 
     .wc-app audio, .wc-app video {
@@ -64,13 +73,7 @@
       span {
         width: 74px;
         height: 17px;
-        font-family: Lato;
         font-size: 14px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: normal;
         color: $c_timestamp;
       }
       &--logo {
@@ -109,13 +112,6 @@
             font-size: 18px;
             vertical-align: middle;
             margin-left: 12px;
-            // font-family: Lato;
-            // font-weight: 400;
-            // font-style: normal;
-            // font-stretch: normal;
-            // line-height: normal;
-            // letter-spacing: 0.5px;
-            // color: #444444;
         }
 
         &--logo {
@@ -343,7 +339,6 @@
         cursor: pointer;
         display: inline-block;
         word-break: break-word;
-        max-height: 100px;
         overflow: hidden;
         background: white;
         padding:12px;
@@ -740,7 +735,6 @@
       font-stretch: normal;
       line-height: normal;
       letter-spacing: 0.03em;
-      font-family: Lato;
       font-size: 12px;
     }
 
@@ -800,6 +794,8 @@
 
 /* console */
 
+
+
     .wc-console {
         bottom: 0;
         box-sizing: border-box;
@@ -855,15 +851,13 @@
         input[type=text],
         textarea {
             border: none;
-            height: 40px;
+            height: 60px;
             outline: none;
             padding: 0;
             resize: none;
             width: 100%;
-            font-size: 16px;
             padding-top:11.5px;
             padding-bottom: 12px;
-            font-family: Lato;
             letter-spacing: 0.4px;
         }
 
@@ -992,6 +986,9 @@
 
     .format-markdown>p {
         margin-bottom: 0px;
+        line-height: 1em;
+        color: inherit;
+        font-size: inherit;
     }
 
     .format-markdown code {

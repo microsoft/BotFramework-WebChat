@@ -2,14 +2,8 @@ $gd_dark_sky_blue: #31ace2;
 
 .file-upload-title{
     background-color: $gd_dark_sky_blue;
-    font-family: Lato;
     font-size: 14px;
-    font-weight: 400;
     font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
     max-width: 250px;
     text-align: center;
     color: #ffffff;
@@ -69,7 +63,6 @@ $gd_dark_sky_blue: #31ace2;
 a.remove_link{
     color: $gd_dark_sky_blue;
     text-decoration: underline;
-    font-family: Lato;
     font-size: 14px;
     
 }
@@ -82,6 +75,7 @@ div.no-border{
     border: none !important;
 }
 
+  .wc-app {
 /** Spinner CSS**/
 /* Absolute CSS Spinner */
 /*
@@ -152,6 +146,7 @@ div.no-border{
     top: 50%;
     left: 50%;
   }
+}
   
   /* Animation */
   

@@ -58,9 +58,7 @@ $width: 280px;
         margin-top: -0.4em;
         border:0;
         color:$gd_dark_sky_blue;
-        font-family: Lato;
         font-size: 14px;
-        font-weight: 400;
         font-weight: bold;
     }
     
@@ -80,13 +78,9 @@ $width: 280px;
 
         .gd-selected-date {
             color: #ffffff;
-            font-family: Lato;
-            font-size: 14px;
-            top: 31%;
+            top: 38%;
             left: 0;
-            margin: auto;
             right: 0;
-            bottom: 0;
         }
 
         .gd-selected-time {
@@ -106,7 +100,6 @@ $width: 280px;
         border-radius: 0;
         border: 0;
         border-bottom: 1px solid $gd_dark_sky_blue !important;
-        font-family: Lato;
         
         &__navigation--previous {
             border-right-color: $gd_dark_sky_blue;
