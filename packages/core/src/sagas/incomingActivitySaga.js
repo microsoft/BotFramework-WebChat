@@ -43,7 +43,7 @@ export default function* () {
       const activities = yield select(({ activities }) => activities);
       const lastMessageActivity = last(activities, ({ type }) => type === 'message');
 
-      if (lastMessageActivity.from.role === 'bot') {
+      if (lastMessageActivity && lastMessageActivity.from && lastMessageActivity.from.role === 'bot') {
         const { suggestedActions: { actions } = {} } = lastMessageActivity;
 
         yield put(setSuggestedActions(actions));
