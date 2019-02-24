@@ -23,7 +23,7 @@ function xMinutesAgo(date) {
         day: 'numeric',
         month: 'numeric',
         year: 'numeric'
-    }).format(date);
+    }).format(new Date(date));
   }
 }
 
