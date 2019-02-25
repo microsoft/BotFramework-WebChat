@@ -10,6 +10,46 @@ You can find the full list of all settings that you can easily modify in Web Cha
 
 These settings will generate a *style set*, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
 
+
+## Set the size of the Web Chat container
+
+It is now possible to adjust the size of the Web Chat container using `styleSetOptions`. The following example has a `body` background-color of `paleturquoise` to show the Web Chat container (section with white background).
+
+```js
+…
+<head>
+  <style>
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      background-color: paleturquoise;
+    }
+
+    #webchat {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="webchat" role="main"></div>
+  <script>
+    (async function () {
+    window.WebChat.renderWebChat({
+      directLine: window.WebChat.createDirectLine({ token }),
+      styleOptions: {
+        rootHeight: '100%',
+        rootWidth: '50%'
+      }
+    }, document.getElementById('webchat'));
+    })()
+  </script>
+…
+```
+Here is the result:
+
+<img alt="Web Chat with root height and root width set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/rootHeightWidth.png" width="600"/>
+
 ## Change font or color
 
 Instead of using the default background color and the fonts used inside of the chat bubbles, you can customize those to match the style of the target web page. The code snippet below allows you to change the background color of messages from the user and from the bot.
