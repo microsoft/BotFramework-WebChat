@@ -64,7 +64,10 @@
       bottom: 0;
       color: #444444;
       font-weight: 500;
-      margin-left: 150px;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
       margin-bottom: 9px;
 
       a {
@@ -97,7 +100,7 @@
         top: 0;
         z-index: 1;
         box-shadow: 0 4px 16px 0 rgba(156, 112, 0, 0.12);
-        width: $chatWidth;
+        max-width: $chatWidth;
 
         $logo-size: 42px;
 
@@ -164,7 +167,7 @@
         right: 0;
         top: $headerTotalHeight;
         transition: transform $actionTransition;
-        width: $chatWidth;
+        max-width: $chatWidth;
 
         &.no-header {
             top: 0;
@@ -299,7 +302,7 @@
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
-        transition:visibility 1.5s $cubic, opacity 1.5s $cubic, height 1s $cubic, width 1s $cubic;
+        transition:visibility 1s $cubic, opacity 1s $cubic, height 0.5s $cubic, width 0.5s $cubic;
         background: white;
 
         &__open{
@@ -801,7 +804,7 @@
         box-sizing: border-box;
         background: white;
         height: $consoleHeight;
-        width: $chatWidth;
+        max-width: $chatWidth;
         left: 0;
         position: absolute;
         right: 0;
