@@ -10,7 +10,7 @@
 <body>
 
 <script src="botchat.js"></script>
-<script> 
+<script>
     (function(){
         var element = document.createElement("link");
         element.setAttribute("rel", "stylesheet");
@@ -23,8 +23,11 @@
         document.body.appendChild(element);
 
         BotChat.App({
-            directLine: { secret: 'MJfotakCJ8o.cwA.LJ0.XkTaI6IN_olmht0LpHqDMeWWqS9whgLdQLo1cj0xMW4' },
-            gid: "http://localhost:3000"
+          //  directLine: { secret: 'MJfotakCJ8o.cwA.LJ0.XkTaI6IN_olmht0LpHqDMeWWqS9whgLdQLo1cj0xMW4' },
+          //  gid: 'https://gideon-dev.herokuapp.com'
+            directLine: { secret: 'GaRM_zwyAjE.cwA.Bfo.n1taE5VMAn6YvZ1UtFDx3p5VFayw9TFfBxa12GIBENA' },
+            gid: 'https://gideon-prod.herokuapp.com'
+            
         }, document.getElementById("bot"));
     })();
 </script>

@@ -6,9 +6,14 @@
 
 /* reset */
 
+    #bot * {
+      box-sizing: border-box;
+    }
+
     body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
         font-family: $fontFamily;
         font-size: $fontSize;
+        line-height: 1em;
     }
 
     body.noScroll {
@@ -28,6 +33,10 @@
         margin: 0;
         padding: 0;
     }
+    
+    .wc-app p {
+      color: inherit;
+    }
 
     .wc-app audio, .wc-app video {
         display: block;
@@ -43,13 +52,44 @@
 
 /* docking */
 
+    $chatWidth: 452px;
+
     .wc-hidden {
         visibility: hidden;
     }
 
+    .wc-footer {
+      position: absolute;
+      width: 156px;
+      bottom: 0;
+      color: #444444;
+      font-weight: 500;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      margin-bottom: 9px;
+
+      a {
+        text-decoration: none;
+      }
+      span {
+        width: 74px;
+        height: 17px;
+        font-size: 14px;
+        color: $c_timestamp;
+      }
+      &--logo {
+          vertical-align: middle;
+          max-height: 22px;
+          margin-top: 0.15em;
+          padding-left: 0.25em;
+      }
+    }
+
     .wc-header {
-        background-color: white;
-        box-sizing: content-box;
+        background-color: #fff;
+        box-sizing: border-box;
         color: #444444;
         font-weight: 500;
         left: 0;
@@ -59,25 +99,40 @@
         right: 0;
         top: 0;
         z-index: 1;
-        border-bottom: 1px solid #e6eaee;
+        box-shadow: 0 4px 16px 0 rgba(156, 112, 0, 0.12);
+        max-width: $chatWidth;
+
+        $logo-size: 42px;
+
+        .wc-header--attourney-logo-container {
+          width: 38px;
+          height: 38px;
+          display: inline-block;
+          vertical-align: middle;
+        }
 
         span {
             font-size: 18px;
             vertical-align: middle;
-            margin-left: 17px;
+            margin-left: 12px;
         }
 
         &--logo {
+            position: absolute;
             vertical-align: middle;
+            max-height: $logo-size;
+            min-height: $logo-size;
+            min-width: $logo-size;
+            max-width: $logo-size;
         }
 
-        $topMargin: 12px;
+        $topMargin: 10px;
 
         &--close {
-            height: 18px;
+            height: 16px;
             float: right;
-            margin-top: $topMargin;
-            padding-right: 20px;
+            margin-top: $topMargin + 2;
+            padding-right: 0px;
             cursor: pointer;
         }
 
@@ -85,7 +140,7 @@
             height: 18px;
             float: right;
             margin-top: $topMargin;
-            padding-right: 31px;
+            padding-right: 28px;
             cursor: pointer;
         }
     }
@@ -96,6 +151,7 @@
     }
 
     .wc-message-groups {
+        box-sizing: border-box;
         bottom: $consoleHeight;
         left: 0;
         transform: translateY(0);
@@ -103,11 +159,15 @@
         background: white;
         overflow-x: hidden;
         overflow-y: scroll;
-        padding: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 16px;
+        padding-right: 10px;
         position: absolute;
         right: 0;
         top: $headerTotalHeight;
         transition: transform $actionTransition;
+        max-width: $chatWidth;
 
         &.no-header {
             top: 0;
@@ -230,6 +290,7 @@
 
 
     .wc-chatview-panel {
+        box-sizing: border-box;
         overflow: hidden;
         position: fixed;
         right: $rightWeight + 14px;
@@ -241,13 +302,14 @@
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16), 0 4px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
-        transition:visibility 1.5s $cubic, opacity 1.5s $cubic, height 1s $cubic, width 1s $cubic;
-        
+        transition:visibility 1s $cubic, opacity 1s $cubic, height 0.5s $cubic, width 0.5s $cubic;
+        background: white;
+
         &__open{
             opacity: 1;
             visibility: visible;
             display: block;
-            width: 452px;
+            width: $chatWidth;
             max-width: 80vw;
             height: calc(100vh - #{$bottom} - 20px);
 
@@ -280,7 +342,6 @@
         cursor: pointer;
         display: inline-block;
         word-break: break-word;
-        max-height: 100px;
         overflow: hidden;
         background: white;
         padding:12px;
@@ -291,7 +352,7 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.26);
         visibility: hidden;
         opacity: 0;
-        transition:visibility 1.5s $cubic, opacity .5s $cubic, height 1s $cubic, width 1s $cubic;
+        transition:visibility 1s $cubic, opacity .3s $cubic, height .6s $cubic, width .6s $cubic;
 
         &.visible {
             opacity: 1;
@@ -332,7 +393,7 @@
         animation: animationFrames 2s;
         animation-iteration-count: 1;
         clear: both;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         overflow: hidden;
         position: relative;
         /*transition: max-height 2s ease-in-out;*/
@@ -373,7 +434,7 @@
     .wc-message-content {
         border-radius: 2px;
         box-shadow: 0px 1px 1px 0px $c_shadow;
-        padding: 15px ;
+        padding: 18px;
         word-break: break-word;
         border-radius: $messageBorderRadius;
         font-size: $message_font_size;
@@ -414,6 +475,8 @@
         font-size: 11px;
         margin-top: 5px;
     }
+
+
 
 /* cards */
 
@@ -663,6 +726,21 @@
         }
     }
 
+/* Joe's solution to find FROM ME at a higher level */
+    .from-me + .from-bot::before {
+      content: "Gideon";
+      color: $c05;
+      float: left;
+      margin-left: 8px;
+      margin-bottom: 4px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.03em;
+      font-size: 12px;
+    }
+
 /* from me */
 
     .wc-message-from-me {
@@ -719,46 +797,71 @@
 
 /* console */
 
+
+
     .wc-console {
-        border-top: solid 1px #cedcdb;
         bottom: 0;
         box-sizing: border-box;
         background: white;
         height: $consoleHeight;
+        max-width: $chatWidth;
         left: 0;
         position: absolute;
         right: 0;
+        transition: background-color .4s;
+
+
+        &::before {
+          content: '';
+          display: block;
+          height: 2px;
+          width: 100%;
+          background-image: linear-gradient(90deg, #eabd4c, #f6e083, #c3c3c3, #dddddd);
+          background-position: 0%;
+          background-size: 300%;
+          transition: background-position .4s;
+        }
+
+        &__disabled {
+          background-color: #eff0f1;
+        }
+
+        &__disabled::before {
+          background-position: 100%;
+        }
 
         > .wc-upload,
         > .wc-textbox,
         > .wc-send,
         > .wc-mic {
             position: absolute;
-            top: 0;
+            top: 2px;
             vertical-align: middle;
         }
 
         label, button {
             cursor: pointer;
             display: inline-block;
-            height: 40px;
+            outline:0;
         }
 
         svg {
             fill: $c03;
-            margin: 11px;
+            margin-top: 11px;
+            margin-right: 16px;
         }
 
         input[type=text],
         textarea {
             border: none;
-            height: 100%;
+            height: 60px;
             outline: none;
             padding: 0;
             resize: none;
             width: 100%;
-            font-size: 16px;
-            padding-bottom: 2px; // center
+            padding-top:11.5px;
+            padding-bottom: 12px;
+            letter-spacing: 0.4px;
         }
 
         ::-webkit-input-placeholder {color: #979999; opacity: 1;}
@@ -806,13 +909,21 @@
 
         .wc-textbox {
             bottom: 0;
-            left: 11px;
-            right: 49px;
+            left: 31px;
+            right: 71px;
 
             input {
                 background-color: transparent;
             }
         }
+
+        .chat-signature {
+          background-color: pink;
+          text-align: center;
+          top: 0;
+          left: 31px;
+        }
+
 
         .wc-mic,
         .wc-send {
@@ -828,8 +939,7 @@
 
         .wc-send {
             svg {
-                height: 18px;
-                width: 27px;
+                width: 40px;
             }
         }
 
@@ -844,8 +954,8 @@
         }
     }
 
-    .wc-console.has-text .wc-send svg {
-        fill: $c07;
+    .wc-console .wc-send svg .sendArrow {
+        fill: white;
     }
 
 /* animation */
@@ -879,6 +989,9 @@
 
     .format-markdown>p {
         margin-bottom: 0px;
+        line-height: 1em;
+        color: inherit;
+        font-size: inherit;
     }
 
     .format-markdown code {

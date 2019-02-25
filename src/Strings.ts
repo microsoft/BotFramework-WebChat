@@ -35,7 +35,7 @@ const localizedStrings: LocalizedStrings = {
         messageSending: 'sending',
         timeSent: ' at %1',
         pingMessage: 'GIDEON_MESSAGE_START',
-        consolePlaceholder: 'Type your message...',
+        consolePlaceholder: 'Type a reply...',
         listeningIndicator: 'Listening...',
         uploadFile: 'Upload file',
         speak: 'Speak'

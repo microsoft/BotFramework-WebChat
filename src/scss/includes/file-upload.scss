@@ -2,18 +2,13 @@ $gd_dark_sky_blue: #31ace2;
 
 .file-upload-title{
     background-color: $gd_dark_sky_blue;
-    font-family: Lato;
     font-size: 14px;
     font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
     max-width: 250px;
     text-align: center;
     color: #ffffff;
-    padding: 10px 5px 20px;
-    border-top-left-radius: 14px;
+    padding: 17px 5px 20px;
+    border-top-left-radius: 13px;
 }
 
 .file-upload-title + div{
@@ -22,6 +17,7 @@ $gd_dark_sky_blue: #31ace2;
     display: flex;    
     align-items: center;    
     justify-content: center;
+    
 }
 
 .wc-message-from-me{
@@ -48,8 +44,8 @@ $gd_dark_sky_blue: #31ace2;
 .upload-skip {
     color: $gd_dark_sky_blue;
     text-align: center;
-    padding: 13px 0px;
-    border-top: 2px solid $gd_dark_sky_blue;
+    padding: 14px 0px;
+    border-top: 1px solid $gd_dark_sky_blue;
     cursor: pointer;
     font-weight: 600;
 }
@@ -65,7 +61,10 @@ $gd_dark_sky_blue: #31ace2;
 }
 
 a.remove_link{
+    color: $gd_dark_sky_blue;
     text-decoration: underline;
+    font-size: 14px;
+    
 }
 
 .add-padding{
@@ -76,6 +75,7 @@ div.no-border{
     border: none !important;
 }
 
+  .wc-app {
 /** Spinner CSS**/
 /* Absolute CSS Spinner */
 /*
@@ -146,6 +146,7 @@ div.no-border{
     top: 50%;
     left: 50%;
   }
+}
   
   /* Animation */
   

@@ -7,6 +7,7 @@ $gd_dark_sky_blue: #31ace2;
 .react-datepicker__header--time {
     padding-bottom: 8px;
     height: 63px;
+    
 }
 
 $width: 280px;
@@ -14,6 +15,7 @@ $width: 280px;
 .gd-date-picker {
     max-width: $width;
     padding:2px;
+    
 
 
     &.withTime {
@@ -49,7 +51,7 @@ $width: 280px;
 
     .gd-submit-date-button {
         width: 100%;
-        height: 40px;
+        height: 42px;
         background: white;
         border-bottom-left-radius: $messageBorderRadius - 2px;
         border-bottom-right-radius: $messageBorderRadius - 2px;
@@ -63,7 +65,7 @@ $width: 280px;
     .gd-selected-date-container {
         font-size: 14px;
         text-align: center;
-        height: 59px;
+        height: 54px;
         display: inline-block;
         width: 100%;
         position: relative;
@@ -76,11 +78,9 @@ $width: 280px;
 
         .gd-selected-date {
             color: #ffffff;
-            top: 36%;
+            top: 38%;
             left: 0;
-            margin: auto;
             right: 0;
-            bottom: 0;
         }
 
         .gd-selected-time {

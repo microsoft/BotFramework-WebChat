@@ -101,6 +101,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
 
         const className = classList(
             'wc-console',
+            this.props.inputDisabled && 'wc-console__disabled',
             this.props.inputText.length > 0 && 'has-text',
             showUploadButton && 'has-upload-button'
         );
@@ -165,7 +166,8 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         disabled={ this.props.inputDisabled }
                     />
                 </div>
-                {/* <button
+
+                <button
                     className={ sendButtonClassName }
                     onClick={ () => this.onClickSend() }
                     aria-label={ this.props.strings.send }
@@ -174,10 +176,15 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                     tabIndex={ 0 }
                     type="button"
                 >
-                    <svg>
-                        <path d="M26.79 9.38A0.31 0.31 0 0 0 26.79 8.79L0.41 0.02C0.36 0 0.34 0 0.32 0 0.14 0 0 0.13 0 0.29 0 0.33 0.01 0.37 0.03 0.41L3.44 9.08 0.03 17.76A0.29 0.29 0 0 0 0.01 17.8 0.28 0.28 0 0 0 0.01 17.86C0.01 18.02 0.14 18.16 0.3 18.16A0.3 0.3 0 0 0 0.41 18.14L26.79 9.38ZM0.81 0.79L24.84 8.79 3.98 8.79 0.81 0.79ZM3.98 9.37L24.84 9.37 0.81 17.37 3.98 9.37Z" />
-                    </svg>
-                </button> */}
+
+                   <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+                     <title>wc-send</title>
+                     <circle  className="sendFilling" cx="20" cy="20" r="20"/>
+                     <path  className="sendArrow" d="M31.38,20.59a1.56,1.56,0,0,1-.32.47l-8,8-2.12-2.12,5.44-5.44H9v-3H26.52L21.35,13,23.53,11l7.56,8A1.51,1.51,0,0,1,31.38,20.59Z"/>
+                   </svg>
+
+                </button >
+
                 <button
                     className={ micButtonClassName }
                     onClick={ () => this.onClickMic() }
@@ -192,11 +199,11 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         <path d="M 29 46 C 35.065 46 40 41.065 40 35 L 40 11 C 40 4.935 35.065 0 29 0 C 22.935 0 18 4.935 18 11 L 18 35 C 18 41.065 22.935 46 29 46 Z M 20 11 C 20 6.037 24.038 2 29 2 C 33.962 2 38 6.037 38 11 L 38 35 C 38 39.963 33.962 44 29 44 C 24.038 44 20 39.963 20 35 L 20 11 Z"/>
                     </svg>
                 </button>
-            </div>
+
+            </div >
         );
     }
 }
-
 export const Shell = connect(
     (state: ChatState) => ({
         // passed down to ShellContainer
@@ -235,4 +242,4 @@ export const Shell = connect(
     }), {
         withRef: true
     }
-)(ShellContainer);
+) ( ShellContainer );
