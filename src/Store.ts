@@ -602,6 +602,12 @@ const speakOnMessageReceivedEpic: Epic<ChatActions, ChatState> = (action$, store
     .filter(action => (action.activity as Message) && store.getState().shell.lastInputViaSpeech)
     .map(action => speakFromMsg(action.activity as Message, store.getState().format.locale) as ShellAction);
 
+// FEEDYOU show upload button only when last message's inputHint=='expectingUpload'
+// TODO do not overwrite Chat.props.showUploadButton=true
+const showUploadBasedOnInputHint: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Receive_Message')
+    .map(action => ({ type: 'Toggle_Upload_Button', showUploadButton: action.activity.inputHint === 'expectingUpload' } as FormatAction))
+    
 const stopSpeakingEpic: Epic<ChatActions, ChatState> = (action$) =>
     action$.ofType(
         'Update_Input',
@@ -725,6 +731,7 @@ export const createStore = () =>
             sendTypingEpic,
             speakSSMLEpic,
             speakOnMessageReceivedEpic,
+            showUploadBasedOnInputHint,
             startListeningEpic,
             stopListeningEpic,
             stopSpeakingEpic,

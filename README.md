@@ -10,6 +10,7 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
   * support custom button click trigger for restarting conversation (`startOverTrigger` prop)
   * make emoticons compatible using [Twemoji](https://github.com/twitter/twemoji) 
   * configurable style themes (currently only `theme.mainColor` prop)
+  * auto show upload button when `inputHint` property of last incoming activity was `expectingUpload`
 
 ## How to add Web Chat to your website
 
