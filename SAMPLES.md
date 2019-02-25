@@ -48,7 +48,7 @@ It is now possible to adjust the size of the Web Chat container using `styleSetO
 ```
 Here is the result:
 
-![Web Chat with rootHeight and rootWidth set](https://user-images.githubusercontent.com/14900841/53263432-4442df80-368e-11e9-88e7-3831284ee452.png)
+<img alt="Web Chat with root height and root width set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/rootHeightWidth.png" width="600"/>
 
 ## Change font or color
 

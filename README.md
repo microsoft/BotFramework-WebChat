@@ -44,7 +44,7 @@ Here is how how you can add Web Chat control to your website:
 
 > If `userID` is not specified, it will default to a random user ID. Multiple users sharing the same user ID is not recommended; their user state will be shared.
 
-![Screenshot of Web Chat](https://user-images.githubusercontent.com/14900841/53262388-4b1c2300-368b-11e9-9347-600d7871a184.png)
+![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/weatherquery.png.jpg)
 
 ## Integrate with JavaScript
 
