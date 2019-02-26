@@ -10,7 +10,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | da-dk          | Thomas Skødt Andersen |
 | de-de          | @matmuenzel           |
 | el-gr          | @qdoop                |
-| es-es          | @SantiEspada          |
+| es-es          | @SantiEspada, @ckgrafico          |
 | fi-fi          | @jsur                 |
 | fr-fr          | @meulta, @tao1        |
 | hu-hu          |                       |
