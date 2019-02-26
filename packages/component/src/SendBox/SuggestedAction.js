@@ -27,7 +27,6 @@ const connectSuggestedAction = (...selectors) => connectToWebChat(
   }) => ({
     click: () => {
       onCardAction({ type, value });
-      focusSendBox();
     },
     disabled,
     language
@@ -49,6 +48,7 @@ export default connectSuggestedAction(
         className={SUGGESTED_ACTION_BUTTON_CSS}
         disabled={ disabled }
         onClick={ click }
+        type='button'
       >
         <nobr>{ text }</nobr>
       </button>
