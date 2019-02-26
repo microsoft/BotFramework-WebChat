@@ -3,7 +3,8 @@ import {
 } from '../Fonts';
 
 export default function createSendBoxTextBoxStyle({
-  paddingRegular
+  paddingRegular,
+  sendBoxTextBoxBorderColor
 }) {
   return  {
     ...primaryFont,
@@ -27,7 +28,7 @@ export default function createSendBoxTextBoxStyle({
     },
 
     '& > input:focus': {
-        border: '1px solid #77d6f5',
+        border: '1px solid ' + sendBoxTextBoxBorderColor,
         boxShadow: 'inset 0 0 3px 1px rgba(198, 198, 198, 0.5)'
     }
   };
