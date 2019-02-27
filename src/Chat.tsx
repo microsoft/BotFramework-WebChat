@@ -240,26 +240,20 @@ export class Chat extends React.Component<ChatProps, State> {
 
         const conversationId = window.localStorage.getItem('msft_conversation_id');
         const gideonId = window.localStorage.getItem('gid');
-        const isNew = true;
+        let isNew = true;
         let botConnection: any = null;
 
-        botConnection = this.props.directLine
-        ? (this.botConnection = new DirectLine(this.props.directLine))
-        : this.props.botConnection;
-
-        // KJ disabling 2/14/19 to fix
-
-        // if (conversationId !== 'null' && conversationId !== 'undefined' && this.props.gid === gideonId) {
-        //     isNew = false;
-        //     botConnection = new DirectLine({
-        //         ...this.props.directLine,
-        //         conversationId
-        //     });
-        // } else {
-        //     botConnection = this.props.directLine
-        //                 ? (this.botConnection = new DirectLine(this.props.directLine))
-        //                 : this.props.botConnection;
-        // }
+        if (conversationId !== 'null' && conversationId !== 'undefined' && this.props.gid === gideonId) {
+            isNew = false;
+            botConnection = new DirectLine({
+                ...this.props.directLine,
+                conversationId
+            });
+        } else {
+            botConnection = this.props.directLine
+                        ? (this.botConnection = new DirectLine(this.props.directLine))
+                        : this.props.botConnection;
+        }
 
         if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
