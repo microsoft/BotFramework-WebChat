@@ -201,7 +201,7 @@ export const History = connect(
         format: state.format,
         size: state.size,
         activities: state.history.activities,
-        hasActivityWithSuggestedActions: !!activityWithSuggestedActions(state.history.activities),
+        hasActivityWithSuggestedActions: !!activityWithSuggestedActions(filteredActivities(state.history.activities, state.format.strings.pingMessage)),
         // only used to create helper functions below
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,

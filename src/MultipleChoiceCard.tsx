@@ -3,6 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { activityWithSuggestedActions } from './activityWithSuggestedActions';
 import { doCardAction, IDoCardAction } from './Chat';
+import { filteredActivities } from './History';
 import { ChatState } from './Store';
 import { ChatActions, sendMessage } from './Store';
 
@@ -62,7 +63,7 @@ class SuggestedActions extends React.Component<MessagePaneProps, {}> {
 export const MultipleChoiceCard = connect(
     (state: ChatState) => ({
         // passed down to MessagePaneView
-        activityWithSuggestedActions: activityWithSuggestedActions(state.history.activities),
+        activityWithSuggestedActions: activityWithSuggestedActions(filteredActivities(state.history.activities, state.format.strings.pingMessage)),
         // only used to create helper functions below
         botConnection: state.connection.botConnection,
         user: state.connection.user,
