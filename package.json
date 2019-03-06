@@ -39,7 +39,9 @@
       "ts",
       "tsx"
     ],
-    "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setup/setupTestFramework.js"
+    ],
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/setup/",
       "<rootDir>/packages/playground/",
@@ -66,16 +68,17 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.3.4",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
+    "@babel/runtime": "^7.3.4",
+    "babel-jest": "^24.1.0",
     "coveralls": "^3.0.2",
     "get-port": "^4.0.0",
-    "jest": "^23.6.0",
-    "jest-image-snapshot": "^2.6.0",
-    "lerna": "^3.4.0",
+    "jest": "^24.1.0",
+    "jest-image-snapshot": "^2.8.1",
+    "lerna": "^3.13.1",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "serve-handler": "^5.0.5"
   }
