@@ -79,8 +79,6 @@ export class Chat extends React.Component<ChatProps, State> {
     constructor(props: ChatProps) {
         super(props);
 
-        konsole.log('BotChat.Chat props', props);
-
         this.store.dispatch<ChatActions>({
             type: 'Set_Locale',
             locale: props.locale || (window.navigator as any).userLanguage || window.navigator.language || 'en'
@@ -238,22 +236,10 @@ export class Chat extends React.Component<ChatProps, State> {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
 
-        const conversationId = window.localStorage.getItem('msft_conversation_id');
-        const gideonId = window.localStorage.getItem('gid');
-        let isNew = true;
-        let botConnection: any = null;
-
-        if (conversationId !== 'null' && conversationId !== 'undefined' && this.props.gid === gideonId) {
-            isNew = false;
-            botConnection = new DirectLine({
-                ...this.props.directLine,
-                conversationId
-            });
-        } else {
-            botConnection = this.props.directLine
-                        ? (this.botConnection = new DirectLine(this.props.directLine))
-                        : this.props.botConnection;
-        }
+        const isNew = true;
+        const botConnection: IBotConnection = this.props.directLine
+                    ? (this.botConnection = new DirectLine(this.props.directLine))
+                    : this.props.botConnection;
 
         if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
@@ -301,8 +287,9 @@ export class Chat extends React.Component<ChatProps, State> {
                     )
                     .then((res: any) => {
                         // Only save these when we successfully connect
-                        window.localStorage.setItem('msft_conversation_id', conversationId);
-                        window.localStorage.setItem('gid', this.props.gid);
+                        // uncomment when re-enabling chat history
+                        // window.localStorage.setItem('msft_conversation_id', conversationId);
+                        // window.localStorage.setItem('gid', this.props.gid);
 
                         this.setState({
                             display: true
