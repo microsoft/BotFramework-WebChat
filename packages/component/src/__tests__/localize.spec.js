@@ -1,4 +1,4 @@
-import { localize } from './Localization/Localize';
+import { localize } from '../Localization/Localize';
 
 test('Japanese timestamp localization now', () => {
   const expected = 'たった今';
@@ -6,7 +6,7 @@ test('Japanese timestamp localization now', () => {
   testJapaneseTime(Date.now() - 1000, expected);
   testJapaneseTime(Date.now() - 30000, expected);
   testJapaneseTime(Date.now() - 50000, expected);
-  testJapaneseTime(Date.now() - 59999, expected);
+  testJapaneseTime(Date.now() - 59000, expected);
 });
 
 test('Japanese timestamp localization within 1 hour', () => {
