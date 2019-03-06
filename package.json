@@ -19,11 +19,11 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "**/packages/**/src/**/*.{js,jsx,ts}",
-      "!**/*.spec.js",
-      "!**/playground/**",
+      "**/packages/**/src/**/*.{js,jsx,ts,tsx}",
+      "!**/*.{spec,test}.{js,jsx,ts,tsx}",
+      "!**/*.json",
       "!**/node_modules/**",
-      "!**/*.json"
+      "!**/packages/playground/**"
     ],
     "coverageReporters": [
       "lcov",
@@ -36,16 +36,17 @@
     "moduleFileExtensions": [
       "js",
       "jsx",
-      "ts"
+      "ts",
+      "tsx"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/__tests__/setup/setupTestFramework.js",
     "testPathIgnorePatterns": [
       "<rootDir>/__tests__/setup/",
-      "<rootDir>/packages/playground/"
+      "<rootDir>/packages/playground/",
+      "<rootDir>/samples/"
     ],
-    "testRegex": "/__tests__/.*\\.[jt]sx?$",
     "transform": {
-      "^.+\\.(t|j)sx?$": "./babel-jest-config.js"
+      "\\.[jt]sx?$": "./babel-jest-config.js"
     }
   },
   "scripts": {
