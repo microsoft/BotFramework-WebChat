@@ -7,6 +7,7 @@ import {
   Image,
   OpenUrlAction,
   Size,
+  SizeAndUnit,
   SubmitAction,
   TextBlock,
   TextSize,
@@ -15,25 +16,26 @@ import {
 
 import { CardAction } from 'botframework-directlinejs';
 
-export interface BotFrameworkCardAction extends CardAction {
+export interface BotFrameworkCardAction {
   __isBotFrameworkCardAction: boolean;
+  cardAction: CardAction;
 }
 
 function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
-  if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
+  const { type } = cardAction;
+  if (
+    type === 'imBack'
+    || type === 'messageBack'
+    || type === 'postBack'
+    || (type === 'signin' && includesOAuthButtons)
+  ) {
     const action = new SubmitAction();
-    const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
 
-    action.data = botFrameworkCardAction;
-    action.title = cardAction.title;
+    action.data = {
+      __isBotFrameworkCardAction: true,
+      cardAction
+    };
 
-    return action;
-  } else if (cardAction.type === 'signin' && includesOAuthButtons) {
-    // Create a button specific for OAuthCard 'signin' actions (cardAction.type == signin and button action is Action.Submit)
-    const action = new SubmitAction();
-    const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
-
-    action.data = botFrameworkCardAction;
     action.title = cardAction.title;
 
     return action;
@@ -66,7 +68,8 @@ export class AdaptiveCardBuilder {
     return sizes.map(size => {
       const column = new Column();
 
-      column.width = size;
+      column.width = SizeAndUnit.parse(size);
+
       columnSet.addColumn(column);
 
       return column;

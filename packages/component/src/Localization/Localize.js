@@ -114,7 +114,7 @@ function normalizeLanguage(language) {
   } else if (language.startsWith('pl')) {
     return 'pl-PL';
   } else if (language.startsWith('pt')) {
-    if (language === 'pt-BR') {
+    if (language === 'pt-br') {
       return 'pt-BR';
     } else {
       return 'pt-PT';

@@ -5,6 +5,18 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
 
+function suggestedActionText({ displayText, title, type, value }) {
+  if (type === 'messageBack') {
+    return title || displayText
+  } else if (title) {
+    return title;
+  } else if (typeof value === 'string') {
+    return value;
+  } else {
+    return JSON.stringify(value);
+  }
+}
+
 const connectSuggestedActions = (...selectors) => connectToWebChat(
   ({
     language,
@@ -34,12 +46,25 @@ export default connectSuggestedActions(
       styleSet={ styleSet.options.suggestedActionsStyleSet }
     >
       {
-        suggestedActions.map((suggestedAction, index) =>
+        suggestedActions.map((
+          {
+            displayText,
+            text,
+            title,
+            type,
+            value
+          },
+          index
+        ) =>
           <SuggestedAction
+            buttonText={
+             suggestedActionText({ displayText, title, type, value })
+            }
+            displayText={ displayText }
             key={ index }
-            text={ suggestedAction.title || suggestedAction.value }
-            type={ suggestedAction.type }
-            value={ suggestedAction.value }
+            text={ text }
+            type={ type }
+            value={ value }
           />
         )
       }

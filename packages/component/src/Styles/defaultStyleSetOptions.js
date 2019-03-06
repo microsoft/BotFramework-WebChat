@@ -1,14 +1,23 @@
-// TODO: [P4] Rename styleSetOptions to styleOptions
+function fontFamily(fonts) {
+  return fonts.map(font => `'${ font }'`).join(', ');
+}
+
 const DEFAULT_ACCENT = '#0063B1';
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
+const PADDING_REGULAR = 10;
 
 const DEFAULT_OPTIONS = {
   // Color and paddings
   accent: DEFAULT_ACCENT,
   backgroundColor: 'White',
-  paddingRegular: 10,
+  paddingRegular: PADDING_REGULAR,
   paddingWide: 20,
   subtle: DEFAULT_SUBTLE,
+
+  // fonts
+  primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
+  monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
+  fontSizeSmall: '80%',
 
   // Avatar
   avatarSize: 40,
@@ -31,15 +40,21 @@ const DEFAULT_OPTIONS = {
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
   bubbleTextColor: 'Black',
 
+  // Root
+  rootHeight: '100%',
+  rootWidth: '100%',
+  
   // Send box
   hideSendBox: false,
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
+  sendBoxBackground: 'White',
   sendBoxButtonColor: '#767676',
   sendBoxButtonColorOnDisabled: '#CCC',
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',
   sendBoxHeight: 40,
+  sendBoxTextColor: 'Black',
 
   // Visually show spoken text
   showSpokenText: false,
@@ -66,7 +81,16 @@ const DEFAULT_OPTIONS = {
   transcriptOverlayButtonColorOnHover: 'White',
 
   // Video
-  videoHeight: 270 // based on bubbleMaxWidth, 480 / 16 * 9 = 270
+  videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270
+
+  // Connectivity UI
+  connectivityIconPadding: PADDING_REGULAR * 1.2,
+  connectivityMarginLeftRight: PADDING_REGULAR * 1.4,
+  connectivityMarginTopBottom: PADDING_REGULAR * 0.8,
+  connectivityTextSize: 12,
+  failedConnectivity: '#C50F1F',
+  slowConnectivity: '#EAA300',
+  slowConnectivityText: '#5E5E5E',
 };
 
 export default DEFAULT_OPTIONS

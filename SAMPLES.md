@@ -6,9 +6,49 @@ Follow the instructions on the [README.md](README.md) page to integrate the Web 
 
 The latest version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. Below are several examples of how to customize those elements of the Web Chat UI.
 
-You can find the full list of all settings that the Web Chat control understands [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Styles/defaultStyleSetOptions.js).
+You can find the full list of all settings that you can easily modify in Web Chat on the [`defaultStyleSetOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Styles/defaultStyleSetOptions.js).
 
-These settings will generate a *style set*, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set [here](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
+These settings will generate a *style set*, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
+
+
+## Set the size of the Web Chat container
+
+It is now possible to adjust the size of the Web Chat container using `styleSetOptions`. The following example has a `body` background-color of `paleturquoise` to show the Web Chat container (section with white background).
+
+```js
+…
+<head>
+  <style>
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      background-color: paleturquoise;
+    }
+
+    #webchat {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="webchat" role="main"></div>
+  <script>
+    (async function () {
+    window.WebChat.renderWebChat({
+      directLine: window.WebChat.createDirectLine({ token }),
+      styleOptions: {
+        rootHeight: '100%',
+        rootWidth: '50%'
+      }
+    }, document.getElementById('webchat'));
+    })()
+  </script>
+…
+```
+Here is the result:
+
+<img alt="Web Chat with root height and root width set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/rootHeightWidth.png" width="600"/>
 
 ## Change font or color
 
@@ -16,7 +56,7 @@ Instead of using the default background color and the fonts used inside of the c
 
 <img alt="Screenshot with custom style options" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/sample-custom-style-options.png" width="396" />
 
-If you need to do some simple styling, you can set them thru `styleOptions`. Style options are set of predefined styles that you can modify directly, and Web Chat will compute the whole stylesheet based on it.
+If you need to do some simple styling, you can set them via `styleOptions`. Style options are set of predefined styles that you can modify directly, and Web Chat will compute the whole stylesheet based on it.
 
 ```html
 <!DOCTYPE html>
@@ -164,7 +204,7 @@ ReactDOM.render(
 );
 ```
 
-The full sample can be found at [/samples/10.customization-card-components/](samples/10.customization-card-components/).
+The full sample can be found at [/samples/10.a.customization-card-components/](samples/10.a.customization-card-components/).
 
 In this sample, we are adding a new React component called `GitHubRepositoryAttachment`:
 
@@ -178,7 +218,7 @@ const GitHubRepositoryAttachment = props =>
   </div>;
 ```
 
-Then, we create a middleware that will render the new React component when the bot send attachment of content type `application/vnd.microsoft.botframework.samples.github-repository`. Otherwise, it will continue on the middleware by calling `next(card)`.
+Then, we create a middleware that will render the new React component when the bot sends an attachment of content type `application/vnd.microsoft.botframework.samples.github-repository`. Otherwise, it will continue on the middleware by calling `next(card)`.
 
 ```jsx
 const attachmentMiddleware = () => next => card => {

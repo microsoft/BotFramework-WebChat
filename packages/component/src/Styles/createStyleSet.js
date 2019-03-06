@@ -12,6 +12,7 @@ import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
+import createErrorNotificationStyle from './StyleSet/ErrorNotification';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -31,6 +32,7 @@ import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
 import createVimeoContentStyle from './StyleSet/VimeoContent';
+import createWarningNotificationStyle from './StyleSet/WarningNotification';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 
 import defaultStyleSetOptions from './defaultStyleSetOptions';
@@ -55,6 +57,7 @@ export default function createStyleSet(options) {
     dictationInterims: createDictationInterimsStyle(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),
+    errorNotification: createErrorNotificationStyle(options),
     microphoneButton: createMicrophoneButtonStyle(options),
     options: {
       ...options,
@@ -77,6 +80,7 @@ export default function createStyleSet(options) {
     videoAttachment: createVideoAttachmentStyle(options),
     videoContent: createVideoContentStyle(options),
     vimeoContent: createVimeoContentStyle(options),
+    warningNotification: createWarningNotificationStyle(options),
     youTubeContent: createYouTubeContentStyle(options)
   };
 }

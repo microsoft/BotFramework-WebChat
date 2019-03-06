@@ -89,7 +89,7 @@ Finally, add desired styling.
 + html, body { height: 100% }
 + body { margin: 0 }
 
-+ #webchat, #webchat > * {
++ #webchat {
 +   height: 100%;
 +   width: 100%;
 + }
@@ -110,8 +110,7 @@ Here is the finished `index.html`:
    <style>
 +    html, body { height: 100% }
 +    body { margin: 0 }
-+    #webchat,
-+    #webchat > * {
++    #webchat {
 +      height: 100%;
 +      width: 100%;
 +    }
@@ -141,14 +140,14 @@ Here is the finished `index.html`:
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
-- [Full bundle with polyfills for ES5 browsers](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
-- [Minimal bundle](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
-- [Minimal bundle with Markdown](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(source)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
+- [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
+- [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
+- [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
 
 ## CDN sunburst chart
 
-[This chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) provides a visual of the contents of the various Web Chat bundles
+[Web Chat bundles sunburst chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) - provides a visual of the contents of the various Web Chat bundles
 
 ## Full list of Web Chat hosted samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

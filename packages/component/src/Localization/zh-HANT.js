@@ -1,6 +1,13 @@
-function xMinutesAgo(date) {
+function xMinutesAgo(dateStr) {
+  const date = new Date(dateStr);
+  const dateTime = date.getTime();
+
+  if (isNaN(dateTime)) {
+    return dateStr;
+  }
+
   const now = Date.now();
-  const deltaInMs = now - new Date(date).getTime();
+  const deltaInMs = now - dateTime;
   const deltaInMinutes = Math.floor(deltaInMs / 60000);
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
@@ -18,22 +25,35 @@ function xMinutesAgo(date) {
     return `今日`;
   } else if (deltaInHours <= 48) {
     return `昨日`;
+  } else if (window.Intl) {
+    return new Intl.DateTimeFormat('zh-HANT').format(date);
   } else {
-    return new Intl.DateTimeFormat('zh-HK').format(date);
+    return date.toLocaleString('zh-HANT', {
+      day: '2-digit',
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   }
 }
 
 export default {
+  FAILED_CONNECTION_NOTIFICATION: '接駁失敗。',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: '無法發送。{Retry}',
+  SLOW_CONNECTION_NOTIFICATION: '接駁時間比平時長。',
   'Chat': '聊天',
-  // 'Download file': '',
-  'Microphone off': '開啟麥克風',
-  'Microphone on': '關閉麥克風',
+  'Download file': '下載檔案',
+  'Microphone off': '關掉麥克風',
+  'Microphone on': '開啟麥克風',
   'Left': '左',
   'Listening…': '正在聆聽…',
   'New messages': '新訊息',
   'retry': '重試',
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Right': '右',
-  'Send failed, {retry}': '無法發送，{retry}',
   'Send': '發送',
   'Sending': '正在發送',
   'Speak': '發言',

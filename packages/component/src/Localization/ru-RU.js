@@ -1,6 +1,13 @@
-function xMinutesAgo(date) {
+function xMinutesAgo(dateStr) {
+  const date = new Date(dateStr);
+  const dateTime = date.getTime();
+
+  if (isNaN(dateTime)) {
+    return dateStr;
+  }
+
   const now = Date.now();
-  const deltaInMs = now - new Date(date).getTime();
+  const deltaInMs = now - dateTime;
   const deltaInMinutes = Math.floor(deltaInMs / 60000);
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
@@ -39,18 +46,22 @@ function xMinutesAgo(date) {
 }
 
 export default {
+  FAILED_CONNECTION_NOTIFICATION: 'Ошибка подключения.',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'Не удалось отправить, {Retry}.',
+  SLOW_CONNECTION_NOTIFICATION: 'Требуется больше времени, чем обычно.',
   'Adaptive Card parse error': 'Ошибка парсинга адаптивной карты',
   'Adaptive Card render error': 'Ошибка отображения адаптивной карты',
   'Chat': 'Чат',
-  // 'Download file': '',
-  // 'Microphone off': '',
-  // 'Microphone on': '',
+  'Download file': 'Скачать файл',
+  'Microphone off': 'Микрофон влючен',
+  'Microphone on': 'Микрофон выключен',
   'Listening…': 'Прослушивание…',
   'retry': 'повторить',
-  'Send failed, {retry}': 'Не удалось отправить, {retry}',
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Send': 'Отправить',
   'Sending': 'Отправка',
-  // 'Speak': '',
+  'Speak': 'Говорить',
   'Starting…': 'Запуск…',
   'Tax': 'Налог',
   'Total': 'Итого',

@@ -1,5 +1,11 @@
-export default function ({ backgroundColor }) {
+export default function ({
+  backgroundColor,
+  rootHeight,
+  rootWidth
+}) {
   return {
-    backgroundColor
+    backgroundColor,
+    height: rootHeight,
+    width: rootWidth
   };
 }

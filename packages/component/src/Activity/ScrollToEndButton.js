@@ -1,5 +1,4 @@
 import {
-  FunctionContext as ScrollToBottomFunctionContext,
   StateContext as ScrollToBottomStateContext
 } from 'react-scroll-to-bottom';
 
@@ -11,13 +10,14 @@ import Localize from '../Localization/Localize';
 
 const ScrollToEndButton = connectToWebChat(
   ({ scrollToEnd, styleSet }) => ({ scrollToEnd, styleSet })
-)(({ children, className, scrollToEnd, styleSet }) =>
+)(({ className, scrollToEnd, styleSet }) =>
   <button
     className={ classNames(
       styleSet.scrollToEndButton + '',
       (className || '') + ''
     ) }
     onClick={ scrollToEnd }
+    type="button"
   >
     <Localize text="New messages" />
   </button>
@@ -25,5 +25,5 @@ const ScrollToEndButton = connectToWebChat(
 
 export default props =>
   <ScrollToBottomStateContext.Consumer>
-    { ({ animating, atEnd }) => !animating && !atEnd && <ScrollToEndButton { ...props } /> }
+    { ({ sticky }) => !sticky && <ScrollToEndButton { ...props } /> }
   </ScrollToBottomStateContext.Consumer>

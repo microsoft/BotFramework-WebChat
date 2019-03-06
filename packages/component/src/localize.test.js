@@ -1,4 +1,4 @@
-import Localization, { localize } from './Localization/Localize';
+import { localize } from './Localization/Localize';
 
 test('Japanese timestamp localization now', () => {
   const expected = 'たった今';
@@ -46,6 +46,12 @@ test('Japanese timestamp localization longer than yesterday', () => {
 
   testJapaneseTime(Date.now() - (oneHour * 49), formatter(Date.now() - (oneHour * 49)));
   testJapaneseTime(Date.now() - (oneHour * 120), formatter(Date.now() - (oneHour * 120)));
+});
+
+test('Japanese timestamp invalid', () => {
+  const formatter = new Intl.DateTimeFormat('ja-JP').format;
+
+  testJapaneseTime('invalid date', 'invalid date');
 });
 
 function testJapaneseTime(testDate, expectedResult) {

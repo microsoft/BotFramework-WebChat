@@ -2,11 +2,19 @@
 
 ## Description
 
-A simple web page with a maximized and full-featured Web Chat embed from a CDN, with cognitive services added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample](../1.a.getting-started-full-bundle/README.md).
+A simple web page with a maximized and full-featured Web Chat embed from a CDN, with cognitive services added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample](../01.a.getting-started-full-bundle/README.md).
+
+> Please note that Bing Speech has been deprecated, and no new subscriptions can be created. This sample is still available to users who already have a Bing Speech subscription. If you do not, please see the Cognitive Services Speech Services samples.
 
 # Test out the hosted sample
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.a.cognitive-services-bing-speech-js)
+
+# How to run
+- Fork this repository
+- Navigate to `/Your-Local-WebChat/samples/06.a.cognitive-services-bing-speech-js` in command line
+- Run `npx serve`
+- Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
@@ -25,15 +33,15 @@ The `index.html` page has one main goal:
 
 - To enable Cognitive Services Bing Speech to provide speech-to-text ability
 
-We'll start by using the [full-bundle CDN sample](../1.a.getting-started-full-bundle/README.md) as our Web Chat template.
+We'll start by using the [full-bundle CDN sample](../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
 
 > Cognitive Services Bing Speech package is only available in the Web Chat full bundle
 
-There are two ways to authenticate with Cognitive Services Speech Services, either using subscription key, or time-limited authorization token.
+There are two ways to authenticate with Cognitive Services: either using subscription key, or time-limited authorization token.
 
 #### Using subscription key
 
-> This approach is for demonstration purpose only. In production code, you should always store the subscription key on a secured token server. The token server should only send out limited authorization code. This [article](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) outlines the authorization process.
+> This approach is for demonstration purposes only. In production code, you should always store the subscription key on a secured token server. The token server should only send out limited authorization code. This [article on authorization](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) outlines the authorization process.
 
 In this sample, we are hardcoding the subscription key in the client code.
 
@@ -81,8 +89,7 @@ Here is the finished `index.html` for subscription key flow:
         html, body { height: 100% }
         body { margin: 0 }
 
-        #webchat,
-        #webchat > * {
+        #webchat {
           height: 100%;
           width: 100%;
         }
@@ -121,8 +128,7 @@ Here is the finished `index.html` for authorization token flow:
         html, body { height: 100% }
         body { margin: 0 }
 
-        #webchat,
-        #webchat > * {
+        #webchat {
           height: 100%;
           width: 100%;
         }
@@ -150,7 +156,9 @@ Here is the finished `index.html` for authorization token flow:
 ```
 
 # Further reading
+- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/6.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
+
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of available samples by clicking [here](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

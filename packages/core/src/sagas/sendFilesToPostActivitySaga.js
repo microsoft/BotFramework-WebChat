@@ -1,38 +1,41 @@
 import {
   put,
-  take
+  takeEvery
 } from 'redux-saga/effects';
 
-import mime from 'mime';
+import mime from '../utils/mime-wrapper';
 
 import whileConnected from './effects/whileConnected';
 
 import { SEND_FILES } from '../actions/sendFiles';
 import postActivity from '../actions/postActivity';
-import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 
 const getType = mime.getType.bind(mime);
 
 export default function* () {
-  yield whileConnected(function* () {
-    for (;;) {
-      const { payload: { files } } = yield take(SEND_FILES);
+  yield whileConnected(sendFilesToPostActivity);
+}
 
-      if (files.length) {
-        yield put(postActivity({
-          attachments: [].map.call(files, file => ({
-            contentType: getType(file.name) || 'application/octet-stream',
-            contentUrl: file.url,
-            name: file.name
-          })),
-          channelData: {
-            attachmentSizes: [].map.call(files, file => file.size)
-          },
-          type: 'message'
-        }));
+function* sendFilesToPostActivity() {
+  yield takeEvery(
+    ({ payload, type }) => (
+      type === SEND_FILES
+      && payload.files.length
+    ),
+    postActivityWithFiles
+  );
+}
 
-        yield put(stopSpeakingActivity());
-      }
-    }
-  });
+function* postActivityWithFiles({ payload: { files } }) {
+  yield put(postActivity({
+    attachments: [].map.call(files, ({ name, url }) => ({
+      contentType: getType(name) || 'application/octet-stream',
+      contentUrl: url,
+      name: name
+    })),
+    channelData: {
+      attachmentSizes: [].map.call(files, ({ size }) => size)
+    },
+    type: 'message'
+  }));
 }

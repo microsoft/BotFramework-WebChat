@@ -9,3 +9,5 @@
 # Do not commit binaries
 /chromedriver*
 chromedriver.exe
+
+/image-snapshots.zip

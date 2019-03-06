@@ -25,10 +25,17 @@ install:
 script:
 - docker-compose up --build -d
 - docker-compose exec webchat ls -la
-- npm test -- --coverageReporters=lcov --coverageReporters=text
-- docker-compose logs
+- npm test -- --coverageReporters=lcov --coverageReporters=text --maxWorkers=1
+
+# Enable Docker log if investigation is needed
+# - docker-compose logs
+
 - docker-compose down --rmi all
 - npm run coveralls
+
+# Upload image snapshots to build artifact curator
+- zip -r image-snapshots __tests__/__image_snapshots__/
+- curl -T image-snapshots.zip https://webchat-curator.azurewebsites.net/upload
 
 before_deploy:
 - git config --local user.name "Bot Framework"

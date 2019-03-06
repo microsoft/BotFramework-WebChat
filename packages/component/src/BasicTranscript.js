@@ -24,48 +24,28 @@ const FILLER_CSS = css({
 });
 
 const LIST_CSS = css({
-  listStyleType: 'none'
+  listStyleType: 'none',
+
+  '& > li.hide-timestamp .transcript-timestamp': {
+    display: 'none'
+  }
 });
 
-function shouldShowActivity(activity) {
-  if (activity) {
-    if (activity.type === 'message') {
-      const { attachments = [], text } = activity;
+function sameTimestampGroup(activityX, activityY, groupTimestamp) {
+  if (groupTimestamp === false) {
+    return true;
+  } else if (activityX && activityY) {
+    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
 
-      if (
-        // Do not show postback
-        !(activity.channelData && activity.channelData.postBack)
-        // Do not show empty bubbles (no text and attachments, and not "typing")
-        && (text || attachments.length)
-      ) {
-        return true;
-      }
-    } else if (activity.type === 'typing') {
-      return true;
+    if (activityX.from.role === activityY.from.role) {
+      const timeX = new Date(activityX.timestamp).getTime();
+      const timeY = new Date(activityY.timestamp).getTime();
+
+      return Math.abs(timeX - timeY) <= groupTimestamp;
     }
   }
 
   return false;
-}
-
-function shouldShowTimestamp(activity, nextActivity, groupTimestamp) {
-  if (groupTimestamp === false) {
-    return false;
-  } else {
-    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
-
-    if (activity.type !== 'message') {
-      // Hide timestamp for typing
-      return false;
-    } else if (nextActivity && activity.from.role === nextActivity.from.role) {
-      const time = new Date(activity.timestamp).getTime();
-      const nextTime = new Date(nextActivity.timestamp).getTime();
-
-      return (nextTime - time) > groupTimestamp;
-    } else {
-      return true;
-    }
-  }
 }
 
 const BasicTranscript = ({
@@ -78,7 +58,26 @@ const BasicTranscript = ({
   webSpeechPonyfill
 }) => {
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
-  const visibleActivities = activities.filter(shouldShowActivity);
+
+  // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
+  // Until the activity pass thru middleware, we never know if it is going to show up.
+  // After we know which activities will show up, we can compute which activity will show timestamps.
+  // If the activity does not render, it will not be spoken if text-to-speech is enabled.
+  const activityElements = activities.reduce((activityElements, activity) => {
+    const element = activityRenderer({
+      activity,
+      timestampClassName: 'transcript-timestamp'
+    })(
+      ({ attachment }) => attachmentRenderer({ activity, attachment })
+    );
+
+    element && activityElements.push({
+      activity,
+      element
+    });
+
+    return activityElements;
+  }, []);
 
   return (
     <div
@@ -100,20 +99,25 @@ const BasicTranscript = ({
             role="list"
           >
             {
-              visibleActivities.map((activity, index) => {
-                const showTimestamp = shouldShowTimestamp(activity, visibleActivities[index + 1], groupTimestamp);
-
-                return (
-                  <li
-                    className={ styleSet.activity }
-                    key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
-                    role="listitem"
-                  >
-                    { activityRenderer({ activity, showTimestamp })(({ attachment }) => attachmentRenderer({ activity, attachment })) }
-                    { activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } /> }
-                  </li>
-                );
-              })
+              activityElements.map(({ activity, element }, index) =>
+                <li
+                  className={ classNames(
+                    styleSet.activity + '',
+                    {
+                      // Hide timestamp if same timestamp group with the next activity
+                      'hide-timestamp': sameTimestampGroup(activity, (activityElements[index + 1] || {}).activity, groupTimestamp)
+                    }
+                  ) }
+                  key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
+                  role="listitem"
+                >
+                  { element }
+                  {
+                    // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+                    activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
+                  }
+                </li>
+              )
             }
           </ul>
         </SayComposer>

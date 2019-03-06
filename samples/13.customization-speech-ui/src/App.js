@@ -1,10 +1,10 @@
 import './App.css';
-import { Components, createDirectLine, createCognitiveServicesWebSpeechPonyfillFactory } from 'botframework-webchat';
+import { Components, createDirectLine, createCognitiveServicesSpeechServicesPonyfillFactory } from 'botframework-webchat';
 import React, { Component } from 'react';
 
 import CustomDictationInterims from './CustomDictationInterims';
 import CustomMicrophoneButton from './CustomMicrophoneButton';
-import fetchBingSpeechToken from './fetchBingSpeechToken';
+import fetchSpeechServicesToken from './fetchSpeechServicesToken';
 import LastBotActivity from './LastBotActivity';
 
 const { Composer } = Components;
@@ -25,7 +25,11 @@ export default class App extends Component {
     this.setState(() => ({
       directLine: createDirectLine({
         token,
-        webSpeechPonyfillFactory: createCognitiveServicesWebSpeechPonyfillFactory(fetchBingSpeechToken)
+        webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({
+          // TODO: [P3] Fetch token should be able to return different region
+          region: 'westus',
+          token: fetchSpeechServicesToken
+        })
       })
     }));
   }

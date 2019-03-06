@@ -91,14 +91,21 @@ export default connectStackedLayout(
     avatarInitials,
     children,
     language,
+    styleSet,
+    timestampClassName,
     direction,
-    showTimestamp,
-    styleSet
+    showTimestamp
   }) => {
     const fromUser = activity.from.role === 'user';
     const { state } = activity.channelData || {};
     const showSendStatus = state === SENDING || state === SEND_FAILED;
     const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, activity.text, activity.timestamp);
+    const activityDisplayText =
+      (
+        activity.channelData
+        && activity.channelData.messageBack
+        && activity.channelData.messageBack.displayText
+      ) || activity.text;
 
     return (
       <div
@@ -126,7 +133,7 @@ export default connectStackedLayout(
                 }
                 <div className="filler" />
               </div>
-            : !!activity.text &&
+            : !!activityDisplayText &&
               <div className="row message">
                 <Bubble
                   aria-label={ ariaLabel }
@@ -138,7 +145,7 @@ export default connectStackedLayout(
                       activity,
                       attachment: {
                         contentType: textFormatToContentType(activity.textFormat),
-                        content: activity.text
+                        content: activityDisplayText
                       }
                     })
                   }
@@ -159,20 +166,17 @@ export default connectStackedLayout(
               </div>
             )
           }
-          {
-            (showSendStatus || showTimestamp) &&
-              <div
-                aria-hidden={ true }
-                className="row"
-              >
-                { showSendStatus ?
-                    <SendStatus activity={ activity } className="timestamp" />
-                  :
-                    <Timestamp activity={ activity } className="timestamp" />
-                }
-                <div className="filler" />
-              </div>
-          }
+          <div
+            aria-hidden={ true }
+            className="row"
+          >
+            { showSendStatus ?
+                <SendStatus activity={ activity } className="timestamp" />
+              :
+                <Timestamp activity={ activity } className={ classNames('timestamp', timestampClassName) } />
+            }
+            <div className="filler" />
+          </div>
         </div>
         <div className="filler" />
       </div>
