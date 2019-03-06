@@ -1,6 +1,13 @@
-function xMinutesAgo(date) {
+function xMinutesAgo(dateStr) {
+  const date = new Date(dateStr);
+  const dateTime = date.getTime();
+
+  if (isNaN(dateTime)) {
+    return dateStr;
+  }
+
   const now = Date.now();
-  const deltaInMs = now - new Date(date).getTime();
+  const deltaInMs = now - dateTime;
   const deltaInMinutes = Math.floor(deltaInMs / 60000);
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
@@ -18,12 +25,25 @@ function xMinutesAgo(date) {
     return `Aujourd'hui`;
   } else if (deltaInHours <= 48) {
     return `Hier`;
-  } else {
+  } else if (window.Intl) {
     return new Intl.DateTimeFormat('fr-FR').format(date);
+  } else {
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   }
 }
 
 export default {
+  // FAILED_CONNECTION_NOTIFICATION: '',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: 'Échec d\'envoi, {Retry}.',
+  // SLOW_CONNECTION_NOTIFICATION: '',
   'Chat': 'Discuter',
   // 'Download file': '',
   // 'Microphone off': '',
@@ -33,7 +53,7 @@ export default {
   'New messages': 'Nouveaux messages',
   'retry': 'Réessayer',
   'Right': 'Droite',
-  'Send failed, {retry}': 'Échec d\'envoi, {retry}',
+  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Send': 'Envoyer',
   'Sending': 'Envoi…',
   'Speak': 'Parlez',

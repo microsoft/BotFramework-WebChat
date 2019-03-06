@@ -104,8 +104,10 @@ const ConnectedDevModeDecorator = connectToWebChat(
 
 export default function () {
   return () => next => card => {
-    return (children =>
-      <ConnectedDevModeDecorator card={ card }>{ next(card)(children) }</ConnectedDevModeDecorator>
-    );
+    return (children => {
+      const content = next(card)(children);
+
+      return !!content && <ConnectedDevModeDecorator card={ card }>{ content }</ConnectedDevModeDecorator>;
+    });
   };
 }

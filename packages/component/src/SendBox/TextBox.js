@@ -26,7 +26,7 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
     disabled,
     language,
     onChange: ({ target: { value } }) => {
-      setSendBox(value, 'keyboard');
+      setSendBox(value);
     },
     onSubmit: event => {
       event.preventDefault();
@@ -36,7 +36,7 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
 
       if (sendBoxValue) {
         scrollToEnd();
-        submitSendBox('keyboard');
+        submitSendBox();
       }
     },
     value: sendBoxValue
@@ -71,6 +71,7 @@ export default connectSendTextBox(
           { ({ sendFocusRef }) =>
             <input
               aria-label={ typeYourMessageString }
+              data-id="webchat-sendbox-input"
               disabled={ disabled }
               onChange={ onChange }
               placeholder={ typeYourMessageString }

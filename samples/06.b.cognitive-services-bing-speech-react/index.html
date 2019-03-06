@@ -19,8 +19,7 @@
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -35,7 +34,7 @@
         const { render } = window.ReactDOM;
         const {
           Context,
-          createCognitiveServicesWebSpeechPonyfillFactory,
+          createCognitiveServicesBingSpeechPonyfillFactory,
           createDirectLine,
           ReactWebChat
         } = window.WebChat;
@@ -55,12 +54,12 @@
         if (subscriptionKey) {
           // In case you are using your own subscription key, please note that client should always authenticate against your server
           // to avoid exposing the subscription key to any part of your client code.
-          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ subscriptionKey });
+          webSpeechPonyfillFactory = await createCognitiveServicesBingSpeechPonyfillFactory({ subscriptionKey });
         } else {
           const res = await fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' });
           const { token: authorizationToken } = await res.json();
 
-          webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
+          webSpeechPonyfillFactory = await createCognitiveServicesBingSpeechPonyfillFactory({ authorizationToken });
         }
 
         // Pass a Web Speech ponyfill factory to renderWebChat.

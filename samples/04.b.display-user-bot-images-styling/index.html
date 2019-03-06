@@ -12,15 +12,14 @@
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
     </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <div id="webchat" role="main"></div>
     <script>
       (async function () {
         // In this demo, we are using Direct Line token from MockBot.

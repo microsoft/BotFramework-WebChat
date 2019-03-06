@@ -9,10 +9,12 @@ import connectionStatusUpdate from '../actions/connectionStatusUpdate';
 import setReferenceGrammarID from '../actions/setReferenceGrammarID';
 
 export default function* () {
-  yield whileConnected(function* (directLine) {
-    yield observeEach(directLine.connectionStatus$, function* (connectionStatus) {
-      yield put(connectionStatusUpdate(connectionStatus));
-      yield put(setReferenceGrammarID(directLine.referenceGrammarId));
-    });
+  yield whileConnected(observeConnectionStatus);
+}
+
+function* observeConnectionStatus({ directLine }) {
+  yield observeEach(directLine.connectionStatus$, function* (connectionStatus) {
+    yield put(connectionStatusUpdate(connectionStatus));
+    yield put(setReferenceGrammarID(directLine.referenceGrammarId));
   });
 }

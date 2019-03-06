@@ -12,8 +12,7 @@
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -30,8 +29,17 @@
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          // The following code is for convenience only. It not required for production.
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } });
 
-        const store = window.WebChat.createStore();
+            // Although suggested actions were sent from the bot, we hide the send box, thus, all suggested actions are also hidden
+            dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
+          }
+
+          return next(action);
+        });
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
@@ -41,9 +49,6 @@
             hideSendBox: true
           }
         }, document.getElementById('webchat'));
-
-        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'card inputs' } }), 1000);
-        setTimeout(() => store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } }), 1500);
       })().catch(err => console.error(err));
     </script>
   </body>

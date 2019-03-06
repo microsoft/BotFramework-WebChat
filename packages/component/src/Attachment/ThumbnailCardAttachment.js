@@ -39,7 +39,7 @@ export default class extends React.Component {
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ content.tap }
+        tapAction={ content && content.tap }
       />
     );
   }

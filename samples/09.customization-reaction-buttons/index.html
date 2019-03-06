@@ -15,13 +15,12 @@
       When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
       or lock down on a specific version with the following format: "/4.1.0/webchat.js".
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
 
-      #webchat,
-      #webchat > * {
+      #webchat {
         height: 100%;
         width: 100%;
       }
@@ -66,8 +65,8 @@
         });
 
         class ActivityWithFeedback extends React.Component {
-          handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, score: -1 } })
-          handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, score: 1 } })
+          handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: -1 } })
+          handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: 1 } })
 
           render() {
             const { props } = this;
@@ -96,7 +95,7 @@
           if (card.activity.from.role === 'bot') {
             return (
               children =>
-                <ConnectedActivityWithFeedback activityID={ card.activity.id }>
+                <ConnectedActivityWithFeedback key={card.activity.id} activityID={ card.activity.id }>
                   { next(card)(children) }
                 </ConnectedActivityWithFeedback>
             );

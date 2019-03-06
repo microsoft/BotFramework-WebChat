@@ -1,9 +1,9 @@
 const SEND_MESSAGE = 'WEB_CHAT/SEND_MESSAGE';
 
-export default function sendMessage(text, via) {
+export default function sendMessage(text, method) {
   return {
     type: SEND_MESSAGE,
-    payload: { text, via }
+    payload: { method, text }
   };
 }
 

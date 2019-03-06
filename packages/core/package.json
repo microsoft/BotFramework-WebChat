@@ -50,7 +50,7 @@
     "babel-jest": "^23.6.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-version-transform": "^1.0.0",
-    "botframework-directlinejs": "^0.10.1",
+    "botframework-directlinejs": "^0.11.4",
     "concurrently": "^4.0.1",
     "jest": "^23.6.0",
     "rimraf": "^2.6.2",
@@ -61,6 +61,7 @@
   "dependencies": {
     "@babel/runtime": "^7.1.2",
     "jsonwebtoken": "^8.3.0",
+    "math-random": "^1.0.4",
     "mime": "^2.3.1",
     "redux": "^4.0.0",
     "redux-promise-middleware": "^5.1.1",

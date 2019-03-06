@@ -1,14 +1,12 @@
-import {
-  primarySmallFont
-} from '../Fonts';
-
 export default function createTimestampStyle({
-  timestampColor
+  timestampColor,
+  primaryFont,
+  fontSizeSmall
 }) {
   return {
-    ...primarySmallFont,
-
     color: timestampColor,
+    fontFamily: primaryFont,
+    fontSize: fontSizeSmall,
     paddingTop: 5
   };
 }

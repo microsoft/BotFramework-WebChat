@@ -9,8 +9,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "adaptivecards": "^1.0.0",
-    "botframework-directlinejs": "^0.10.1",
+    "adaptivecards": "~1.1.2",
+    "botframework-directlinejs": "^0.11.4",
     "botframework-webchat": "^0.0.0-0",
     "botframework-webchat-component": "^0.0.0-0",
     "botframework-webchat-core": "^0.0.0-0",

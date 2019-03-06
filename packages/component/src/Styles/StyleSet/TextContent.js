@@ -1,13 +1,10 @@
-import {
-  primaryFont
-} from '../Fonts';
-
 export default function ({
   bubbleMinHeight,
+  primaryFont,
   paddingRegular
 }) {
   return {
-    ...primaryFont,
+    fontFamily: primaryFont,
     margin: 0,
     minHeight: bubbleMinHeight - paddingRegular * 2,
     padding: paddingRegular,

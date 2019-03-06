@@ -1,7 +1,5 @@
-import { createStore } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
-import memoize from 'memoize-one';
 import React from 'react';
 
 import BasicSendBox from './BasicSendBox';
@@ -30,7 +28,6 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createMemoizedStore = memoize(() => createStore());
     this.sendBoxRef = React.createRef();
 
     this.state = {

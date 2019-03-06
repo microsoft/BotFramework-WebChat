@@ -8,6 +8,10 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 - Cognitive Services Bing Speech
 - Markdown-It
 
+# Test out the hosted sample
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle)
+
+
 # How to run
 
 - Fork this repository
@@ -35,7 +39,7 @@ The `index.html` page has two main goals.
 - To import the Web Chat core bundle CDN script
 - To render Web Chat
 
-This sample starts with the [full-bundle CDN sample](./../full-bundle/README.md) as the base template.
+This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 
 The only change needed in this sample is to change the Web Chat CDN from the full bundle to minimal bundle.
 
@@ -48,7 +52,7 @@ The only change needed in this sample is to change the Web Chat CDN from the ful
 …
 ```
 
-> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat-minimal.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat-minimal.js", or lock down on a specific version with the following format: "/4.1.0/webchat-minimal.js".
 
 ## Completed code
 
@@ -59,7 +63,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Minimal bundle</title>
-- <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+-   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
 +   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
     <style>
       html, body { height: 100% }
@@ -88,3 +92,21 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+
+# Further reading
+
+## Other CDN bundles
+
+Check out the hosted samples and source code for other CDN bundle options below.
+
+- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
+- [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
+- [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
+
+## CDN sunburst chart
+
+[Web Chat bundles sunburst chart](http://cdn.botframework.com/botframework-webchat/master/stats.html) - provides a visual of the contents of the various Web Chat bundles
+
+## Full list of Web Chat hosted samples
+
+View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)

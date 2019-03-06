@@ -2,6 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';
 
+import ConnectivityStatus from './SendBox/ConnectivityStatus';
 import connectToWebChat from './connectToWebChat';
 import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
@@ -43,6 +44,7 @@ const BasicSendBox = ({
     ) }
     role="form"
   >
+    <ConnectivityStatus />
     <SuggestedActions />
     <div className="main">
       { !styleSet.options.hideUploadButton &&

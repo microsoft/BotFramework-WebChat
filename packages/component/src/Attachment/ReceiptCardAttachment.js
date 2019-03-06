@@ -83,7 +83,7 @@ class ReceiptCardAttachment extends React.Component {
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content, language) }
-        tapAction={ content.tap }
+        tapAction={ content && content.tap }
       />
     );
   }
