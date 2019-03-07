@@ -5,6 +5,8 @@ var carlaBot = (function () {
   var _chatContainer = document.createElement('div');
   var _chatWidget = document.createElement('div');
   var _fbRoot = document.createElement('div');
+  var _chatIframe = document.createElement('iframe');
+  var botUrl;
 
   var __carlaChatBotStatesKeys = {
     LOCAL_STORAGE: '__kian_chat_state',
@@ -33,7 +35,7 @@ var carlaBot = (function () {
       return state && (state === __carlaChatBotStatesKeys.OPENED || state === __carlaChatBotStatesKeys.COLLAPSED);
     }
 
-    function setInitialState(isSmallScreen) {
+    function setInitialState() {
       var configuredInitialState = carlaBotConfigs.CHAT_INITIAL_STATE;
 
       if (_isValidState(configuredInitialState)) {
@@ -48,7 +50,7 @@ var carlaBot = (function () {
         }
       }
 
-      if (isSmallScreen || !_isValidState(_currentState)) {
+      if (__carlaBotHelpers.isSmallScreen() || !_isValidState(_currentState)) {
         _currentState = __carlaBotDefaults.KIAN_DEFAULT_CHAT_STATE;
       }
     }
@@ -133,15 +135,13 @@ var carlaBot = (function () {
       return chatHeader;
     }
 
-    function createIFrame(botUrl) {
-      var chatIframe = document.createElement('iframe');
-      chatIframe.frameborder = 0;
-      chatIframe.src = botUrl;
-      chatIframe.className = '__carla-iframe';
+    function createIFrame() {
+      _chatIframe.frameborder = 0;
+      _chatIframe.src = botUrl;
+      _chatIframe.className = '__carla-iframe';
       chatIframeStyle = 'height: ' + getChatHeight(true);
-      chatIframe.setAttribute('style', chatIframeStyle);
-
-      return chatIframe;
+      _chatIframe.setAttribute('style', chatIframeStyle);
+      return _chatIframe;
     }
 
     function createChatContainer() {
@@ -174,67 +174,76 @@ var carlaBot = (function () {
       return _chatWidget;
     }
 
+    function isSmallScreen(){
+        return document.documentElement.clientWidth <= 768;
+    }
+
     return {
       createChatContainer: createChatContainer,
       createChatWidget: createChatWidget,
       createChatHeader: createChatHeader,
       createIFrame: createIFrame,
-      getChatHeight: getChatHeight
+      getChatHeight: getChatHeight,
+      isSmallScreen: isSmallScreen,
     };
 
   })();
 
   // Carla bot event handlers
   var __carlaEventHandlers = (function () {
-    var _closeChat = function () {
-      __carlaBotStateController.setState(__carlaChatBotStatesKeys.COLLAPSED);
-      _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
-      _chatWidget.style.display = 'block';
+    var closeChat = function () {
+        var currentState = __carlaBotStateController.getState();
+        if (currentState === __carlaChatBotStatesKeys.OPENED) {
+            __carlaBotStateController.setState(__carlaChatBotStatesKeys.COLLAPSED);
+            _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
+            _chatWidget.style.display = 'block';
+        }
     };
 
-    var _openChat = function (botUrl, chatIframe, isSmallScreen) {
-      if (isSmallScreen) {
+    var openChat = function () {
+      if (__carlaBotHelpers.isSmallScreen()) {
         window.open(botUrl);
         return;
       }
-      if (!_chatContainer.contains(chatIframe)) {
-        _chatContainer.appendChild(chatIframe);
+      if (!_chatContainer.contains(_chatIframe)) {
+        _chatContainer.appendChild(_chatIframe);
       }
       __carlaBotStateController.setState(__carlaChatBotStatesKeys.OPENED);
       _chatWidget.style.display = 'none';
       _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
     };
 
-    function chatHeaderClick() {
-      var currentState = __carlaBotStateController.getState();
-      if (currentState === __carlaChatBotStatesKeys.OPENED) {
-        _closeChat();
-      }
-    };
+    var displayTeaser = function () {
+            document
+            .body
+            .appendChild(_chatWidget);
+    }
 
-    function chatWidgetClick(botUrl, chatIframe, isSmallScreen) {
-      _openChat(botUrl, chatIframe, isSmallScreen);
-    };
-
-    function onDocumentReady(isSmallScreen) {
-      document.onreadystatechange = function () {
-        if (document.readyState === 'complete') {
-          if (!isSmallScreen) {
+    var displayBot = function () {
+        if(document.contains(_chatWidget)){
+            return;
+        }
+        if (!__carlaBotHelpers.isSmallScreen()) {
             document
               .body
               .appendChild(_chatContainer);
           }
-          document
-            .body
-            .appendChild(_chatWidget);
+    }
+
+    function onDocumentReady() {
+      document.onreadystatechange = function () {
+        if (document.readyState === 'complete') {
+            displayBot();
+            displayTeaser();
         }
       };
     }
 
     return {
       onDocumentReady: onDocumentReady,
-      chatHeaderClick: chatHeaderClick,
-      chatWidgetClick: chatWidgetClick
+      closeChat: closeChat,
+      openChat: openChat,
+      displayBot: displayBot
     };
 
   })();
@@ -266,36 +275,41 @@ var carlaBot = (function () {
           _fbRoot.style.display = "none";
           break;
 
+        case "none":
+          _chatContainer.style.visibility = "hidden";
+          _chatWidget.style.visibility = "hidden";
+          _fbRoot.style.display = "none";
+          break;
+
           default :
           _chatToDisplay("web");
       }
     };
 
-    var initCarlaBot = function (botUrl) {
-      var _isSmallScreen = document.documentElement.clientWidth <= 768;
+    var initCarlaBot = function () {
+      __carlaBotStateController.setInitialState();
 
-      __carlaBotStateController.setInitialState(_isSmallScreen);
+      var _chatIFrame = __carlaBotHelpers.createIFrame();
 
       __carlaBotHelpers.createChatContainer();
 
       var chatHeader = __carlaBotHelpers.createChatHeader();
       _chatContainer.appendChild(chatHeader);
 
-      var chatIFrame = __carlaBotHelpers.createIFrame(botUrl);
 
       if (__carlaBotStateController.getState() === __carlaChatBotStatesKeys.OPENED) {
-        _chatContainer.appendChild(chatIFrame);
+        _chatContainer.appendChild(_chatIFrame);
       }
 
       __carlaBotHelpers.createChatWidget();
 
-      _chatWidget.addEventListener('click', function (event) {
-        __carlaEventHandlers.chatWidgetClick(botUrl, chatIFrame, _isSmallScreen);
-      });
       chatHeader.addEventListener('click', function (event) {
-        __carlaEventHandlers.chatHeaderClick(chatIFrame, _isSmallScreen);
+        __carlaEventHandlers.closeChat();
       });
-      __carlaEventHandlers.onDocumentReady(_isSmallScreen);
+
+      _chatWidget.addEventListener('click', function (event) {
+        __carlaEventHandlers.openChat();
+      });
 
     }
 
@@ -359,10 +373,30 @@ var carlaBot = (function () {
   })();
 
   var initBot = function (botParams) {
-    __carlaBotLoaders.initCarlaBot(botParams.botUrl);
+    botUrl = botParams.botUrl;
+    __carlaBotLoaders.initCarlaBot();
     __carlaBotLoaders.initFBChatPlugin(botParams.appId, botParams.fbPageId);
   }
 
-  return {init: initBot};
+  var displayBot = function (botParams) {
+    initBot(botParams);
+    __carlaEventHandlers.onDocumentReady();
+  }
+
+  var openChat = function () {
+    __carlaEventHandlers.displayBot();
+    __carlaEventHandlers.openChat();
+  }
+
+  /* Please bear with the name mismatching it is done for backward compactibility
+    The `init` bot now initializes and displays the bot
+    While `load` just initializes the bot to be displayed when you open the chat
+  */
+  return {
+      init: displayBot,
+      load: initBot,
+      openChat: openChat,
+      closeChat:  __carlaEventHandlers.closeChat,
+    };
 
 })();
