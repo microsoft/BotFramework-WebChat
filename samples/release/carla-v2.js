@@ -94,7 +94,7 @@ var carlaBot = (function () {
         }
         height = visibleHeight;
       } else if (state === __carlaChatBotStatesKeys.MINIMIZED ){
-        height = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT;;
+        height = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT;
       } else {
         height = hiddenHeight;
       }
@@ -185,10 +185,11 @@ var carlaBot = (function () {
     function createChatWidget() {
       var state = __carlaBotStateController.getState();
       _chatWidget.className = '__carla-chat-teaser';
+      var isOpened = (state === __carlaChatBotStatesKeys.OPENED);
+      var isMinimized = (state === __carlaChatBotStatesKeys.MINIMIZED);
+      var displayValue = (isOpened || isMinimized) ? 'none' : 'block';
       chatWidgetStyle = [
-        'display: ' + (state === __carlaChatBotStatesKeys.OPENED || state === __carlaChatBotStatesKeys.MINIMIZED
-          ? 'none'
-          : 'block'),
+        'display: ' + displayValue,
         _getChatWindowPlacement()
       ].join(';');
       _chatWidget.setAttribute('style', chatWidgetStyle);
