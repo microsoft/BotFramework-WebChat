@@ -5,13 +5,15 @@ var carlaBot = (function () {
   var _chatContainer = document.createElement('div');
   var _chatWidget = document.createElement('div');
   var _fbRoot = document.createElement('div');
+  var _minimizeButton = document.createElement('div');
   var _chatIframe = document.createElement('iframe');
   var botUrl;
 
   var __carlaChatBotStatesKeys = {
     LOCAL_STORAGE: '__kian_chat_state',
     OPENED: 'opened',
-    COLLAPSED: 'collapsed'
+    COLLAPSED: 'collapsed',
+    MINIMIZED: 'minimized',
   }
 
   // The app default which will handle the user invalid configs too
@@ -32,7 +34,7 @@ var carlaBot = (function () {
     var _currentState;
 
     function _isValidState(state) {
-      return state && (state === __carlaChatBotStatesKeys.OPENED || state === __carlaChatBotStatesKeys.COLLAPSED);
+      return state && (state === __carlaChatBotStatesKeys.OPENED || state === __carlaChatBotStatesKeys.COLLAPSED || state === __carlaChatBotStatesKeys.MINIMIZED );
     }
 
     function setInitialState() {
@@ -91,6 +93,8 @@ var carlaBot = (function () {
           visibleHeight = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEIGHT;
         }
         height = visibleHeight;
+      } else if (state === __carlaChatBotStatesKeys.MINIMIZED ){
+        height = __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT;
       } else {
         height = hiddenHeight;
       }
@@ -122,6 +126,7 @@ var carlaBot = (function () {
     };
 
     function createChatHeader() {
+      var state = __carlaBotStateController.getState();
       var chatHeader = document.createElement('div');
       chatHeader.className = '__carla-chat-header';
       chatHeader.innerText = carlaBotConfigs.KIAN_CHAT_CONTAINER_HEADER_TEXT || __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT;
@@ -131,6 +136,28 @@ var carlaBot = (function () {
       var closeButton = document.createElement('div');
       closeButton.className = 'close-button';
       chatHeader.appendChild(closeButton);
+
+      var minimizeButtonclass = 'minimize-button';
+
+      if(state === __carlaChatBotStatesKeys.MINIMIZED ){
+        minimizeButtonclass += ' open';
+      }
+
+      // Needed for broader surface area for clicking
+      var _minimizeButtonWrapper = document.createElement('div');
+      _minimizeButtonWrapper.className = 'minimize-wrapper';
+
+      _minimizeButton.className = minimizeButtonclass;
+      _minimizeButtonWrapper.appendChild(_minimizeButton);
+      chatHeader.appendChild(_minimizeButtonWrapper);
+
+      closeButton.addEventListener('click', function (event) {
+        __carlaEventHandlers.closeChat();
+      });
+
+      _minimizeButtonWrapper.addEventListener('click', function (event) {
+        __carlaEventHandlers.minimizeChat();
+      });
 
       return chatHeader;
     }
@@ -158,10 +185,11 @@ var carlaBot = (function () {
     function createChatWidget() {
       var state = __carlaBotStateController.getState();
       _chatWidget.className = '__carla-chat-teaser';
+      var isOpened = (state === __carlaChatBotStatesKeys.OPENED);
+      var isMinimized = (state === __carlaChatBotStatesKeys.MINIMIZED);
+      var displayValue = (isOpened || isMinimized) ? 'none' : 'block';
       chatWidgetStyle = [
-        'display: ' + (state === __carlaChatBotStatesKeys.OPENED
-          ? 'none'
-          : 'block'),
+        'display: ' + displayValue,
         _getChatWindowPlacement()
       ].join(';');
       _chatWidget.setAttribute('style', chatWidgetStyle);
@@ -193,7 +221,7 @@ var carlaBot = (function () {
   var __carlaEventHandlers = (function () {
     var closeChat = function () {
         var currentState = __carlaBotStateController.getState();
-        if (currentState === __carlaChatBotStatesKeys.OPENED) {
+        if (currentState === __carlaChatBotStatesKeys.OPENED || currentState === __carlaChatBotStatesKeys.MINIMIZED) {
             __carlaBotStateController.setState(__carlaChatBotStatesKeys.COLLAPSED);
             _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
             _chatWidget.style.display = 'block';
@@ -209,8 +237,20 @@ var carlaBot = (function () {
         _chatContainer.appendChild(_chatIframe);
       }
       __carlaBotStateController.setState(__carlaChatBotStatesKeys.OPENED);
+      _minimizeButton.classList.remove("open");
       _chatWidget.style.display = 'none';
       _chatContainer.style.height = __carlaBotHelpers.getChatHeight();
+    };
+
+    var minimizeChat = function () {
+        var currentState = __carlaBotStateController.getState();
+        if (currentState === __carlaChatBotStatesKeys.MINIMIZED) {
+            openChat();
+        }else if (currentState === __carlaChatBotStatesKeys.OPENED){
+             _minimizeButton.classList.add("open");
+            __carlaBotStateController.setState(__carlaChatBotStatesKeys.MINIMIZED);
+            _chatContainer.style.height = __carlaBotHelpers.getChatHeight(); // __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT + 'px';
+        }
     };
 
     var displayTeaser = function () {
@@ -243,6 +283,7 @@ var carlaBot = (function () {
       onDocumentReady: onDocumentReady,
       closeChat: closeChat,
       openChat: openChat,
+      minimizeChat: minimizeChat,
       displayBot: displayBot
     };
 
@@ -302,10 +343,6 @@ var carlaBot = (function () {
       }
 
       __carlaBotHelpers.createChatWidget();
-
-      chatHeader.addEventListener('click', function (event) {
-        __carlaEventHandlers.closeChat();
-      });
 
       _chatWidget.addEventListener('click', function (event) {
         __carlaEventHandlers.openChat();
