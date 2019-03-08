@@ -26,7 +26,6 @@
   color: #fff;
   border-radius: 5px 5px 0 0;
   box-sizing: border-box;
-  cursor: pointer;
   padding: 12px;
 }
 
@@ -47,7 +46,37 @@
   cursor: pointer;
 }
 
-.__carla-chat-header .close-button:hover::before {
+.__carla-chat-header .minimize-wrapper{
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+
+.__carla-chat-header .minimize-button {
+  position: absolute;
+  display: block;
+  top: 8px;
+  transition: all ease-out .4s;
+  width: 15px;
+  height: 10px;
+  border-top: 4px solid rgba(255, 255, 255, .6);
+  transform: rotate(0deg);
+}
+
+.__carla-chat-header .minimize-button.open{
+  width: 10px;
+  border-top: 4px solid rgba(255, 255, 255, .6);
+  border-left: 4px solid rgba(255, 255, 255, .6);
+  transform: rotate(45deg);
+}
+
+.__carla-chat-header .minimize-wrapper:hover .minimize-button{
+    border-color:  rgba(255, 255, 255, 1);
+}
+.__carla-chat-header .close-button:hover::before{
   color: rgba(255, 255, 255, 1);
 }
 
