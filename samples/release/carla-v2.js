@@ -26,7 +26,8 @@ var carlaBot = (function () {
     CHAT_CONTAINER_DEFAULT_PLACEMENT: 'left',
     KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT: 'Chat with Kian',
     KIAN_CHAT_DEFAULT_WIDGET_TEXT: 'Let\'s chat!',
-    KIAN_DEFAULT_CHAT_STATE: __carlaChatBotStatesKeys.COLLAPSED
+    KIAN_DEFAULT_CHAT_STATE: __carlaChatBotStatesKeys.COLLAPSED,
+    CHAT_HEADER_BACKGROUND: '#c4172c',
   }
 
   // The chat state controller
@@ -130,7 +131,10 @@ var carlaBot = (function () {
       var chatHeader = document.createElement('div');
       chatHeader.className = '__carla-chat-header';
       chatHeader.innerText = carlaBotConfigs.KIAN_CHAT_CONTAINER_HEADER_TEXT || __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT;
-      chatHeaderStyle = 'height: ' + __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT + 'px;';
+      var backgroundColor = carlaBotConfigs.CHAT_HEADER_BACKGROUND || __carlaBotDefaults.CHAT_HEADER_BACKGROUND;
+      var chatHeaderColor = 'background-color: ' + backgroundColor;
+      var chatHeaderHeight = 'height: ' + __carlaBotDefaults.CHAT_CONTAINER_DEFAULT_HEADER_HEIGHT + 'px';
+      var chatHeaderStyle = chatHeaderHeight + ';' + chatHeaderColor;
       chatHeader.setAttribute('style', chatHeaderStyle);
 
       var closeButton = document.createElement('div');
