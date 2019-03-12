@@ -18,8 +18,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Changed
+### Fixed
+- Accessibility: Fix [#1802](https://github.com/Microsoft/BotFramework-WebChat/issues/1802) "Upload file" button is not narrated in non-`en-US` environment, by [@compulim](https://github.com/compulim) in PR [#1804](https://github.com/Microsoft/BotFramework-WebChat/pulls/1804)
 
+## [0.11.4-ibiza.279522f] - 2019-03-05
+
+### Changed
 - Bumps to [`botframework-directlinejs@0.11.2`](https://npmjs.com/package/botframework-directlinejs/), by [@compulim](https://github.com/compulim) in PR [#1700](https://github.com/Microsoft/BotFramework-WebChat/pull/1700)
 
 ## [0.11.4-ibiza.46df236] - 2019-02-05
