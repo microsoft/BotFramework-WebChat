@@ -7,7 +7,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | Language code  | Translator            |
 | -------------- | --------------------- |
 | cs-cz          | @msimecek             |
-| da-dk          | Thomas Skødt Andersen |
+| da-dk          | @Simon_lfr, Thomas Skødt Andersen |
 | de-de          | @matmuenzel           |
 | el-gr          | @qdoop                |
 | es-es          | @SantiEspada, @ckgrafico          |
