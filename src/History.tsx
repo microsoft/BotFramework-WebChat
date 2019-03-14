@@ -155,10 +155,9 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             <div
                 className={ groupsClassName }
                 ref={ div => this.scrollMe = div || this.scrollMe }
-                role="log"
                 tabIndex={ 0 }
             >
-                <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
+                <div aria-live="polite" className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }} role="list">
                     { content }
                 </div>
             </div>
@@ -281,7 +280,7 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         );
 
         return (
-            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
+            <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity } role="listitem">
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">
