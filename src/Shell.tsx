@@ -112,6 +112,7 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
         return (
             <div className={ className }>
                 <label
+                    aria-label={ this.props.strings.uploadFile }
                     className="wc-upload"
                     onKeyPress={ evt => this.handleUploadButtonKeyPress(evt) }
                     tabIndex={ 0 }
@@ -126,7 +127,6 @@ class ShellContainer extends React.Component<Props> implements ShellFunctions {
                         ref={ input => this.fileInput = input }
                         multiple
                         onChange={ () => this.onChangeFile() }
-                        aria-label={ this.props.strings.uploadFile }
                         role="button"
                     />
                 </label>
