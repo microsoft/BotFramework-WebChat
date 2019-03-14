@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Expand german locale by [@matmuenzel](https://github.com/matmuenzel) in PR [#1740](https://github.com/Microsoft/BotFramework-WebChat/pull/1740)
 - Update Russian and Japanese locale by [@corinagum](https://github.com/corinagum) in PR [#1747](https://github.com/Microsoft/BotFramework-WebChat/pull/1747)
 - Update Spanish by [@ckgrafico](https://github.com/ckgrafico) in PR [#1757](https://github.com/Microsoft/BotFramework-WebChat/pull/1757)
+- Update Swedish by [@pekspro](https://github.com/pekspro) in PR [#1797](https://github.com/Microsoft/BotFramework-WebChat/pull/1797)
 - Update Dutch locale by [@imicknl](https://github.com/imicknl) in PR [#1812](https://github.com/Microsoft/BotFramework-WebChat/pull/1812)
 
 ### Fixed
