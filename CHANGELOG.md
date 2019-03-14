@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Accessibility: Fix [#1802](https://github.com/Microsoft/BotFramework-WebChat/issues/1802) "Upload file" button is not narrated in non-`en-US` environment, by [@compulim](https://github.com/compulim) in PR [#1804](https://github.com/Microsoft/BotFramework-WebChat/pull/1804)
+- Accessibility: Fix [#1805](https://github.com/Microsoft/BotFramework-WebChat/issues/1805), incoming activities are not narrative, by [@compulim](https://github.com/compulim) in PR [#1806](https://github.com/Microsoft/BotFramework-WebChat/pulls/1806)
 
 ## [0.11.4-ibiza.279522f] - 2019-03-05
 
