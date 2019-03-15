@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update Russian and Japanese locale by [@corinagum](https://github.com/corinagum) in PR [#1747](https://github.com/Microsoft/BotFramework-WebChat/pull/1747)
 - Update Spanish by [@ckgrafico](https://github.com/ckgrafico) in PR [#1757](https://github.com/Microsoft/BotFramework-WebChat/pull/1757)
 - Update Swedish by [@pekspro](https://github.com/pekspro) in PR [#1797](https://github.com/Microsoft/BotFramework-WebChat/pull/1797)
+- Update Dutch locale by [@imicknl](https://github.com/imicknl) in PR [#1812](https://github.com/Microsoft/BotFramework-WebChat/pull/1812)
 
 ### Fixed
 - Fix [#1360](https://github.com/Microsoft/BotFramework-WebChat/issues/1360). Added `roles` to components of Web Chat, by [@corinagum](https://github.com/corinagum) in PR [#1462](https://github.com/Microsoft/BotFramework-WebChat/pull/1462)
