@@ -1,13 +1,15 @@
 import { DirectLine } from 'botframework-directlinejs';
 
-export default function ({conversationId, domain, fetch, pollingInterval, secret, token, webSocket}) {
+export default function ({conversationId, domain, fetch, pollingInterval, secret, streamUrl, token, watermark, webSocket}) {
   return new DirectLine({
     conversationId,
     domain,
     fetch,
     pollingInterval,
     secret,
+    streamUrl,
     token,
+    watermark,
     webSocket,
     botAgent: 'webchat',
     createFormData: attachments => {

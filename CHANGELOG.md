@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
+
+### Fixed
+- Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
+
+## [4.3.0] - 2019-03-04
+
 ### Added
 - Fix [#1383](https://github.com/Microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - Added support of avatar image, thru `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
@@ -31,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `*`: Added `username` back to activity, fixed [#1321](https://github.com/Microsoft/BotFramework-WebChat/issues/1321), by [@compulim](https://github.com/compulim), in PR [#1682](https://github.com/Microsoft/BotFramework-DirectLineJS/pull/1682)
 - `component`: Allow root component height and width customization via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
 - `component`: Added `cardActionMiddleware` to customize the behavior of card action, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
+- `bundle`: Add `watermark` and `streamUrl` parameters to createDirectLine, by [@corinagum](https://github.com/corinagum), in PR [#1817](https://github.com/Microsoft/BotFramework-WebChat/pull/1817)
 
 ### Changed
 
@@ -46,6 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update Russian and Japanese locale by [@corinagum](https://github.com/corinagum) in PR [#1747](https://github.com/Microsoft/BotFramework-WebChat/pull/1747)
 - Update Spanish by [@ckgrafico](https://github.com/ckgrafico) in PR [#1757](https://github.com/Microsoft/BotFramework-WebChat/pull/1757)
 - Update Danish by [@simon_lfr](https://github.com/LTank) in PR [#1810](https://github.com/Microsoft/BotFramework-WebChat/pull/1810)
+- Update Swedish by [@pekspro](https://github.com/pekspro) in PR [#1797](https://github.com/Microsoft/BotFramework-WebChat/pull/1797)
+- Update Dutch locale by [@imicknl](https://github.com/imicknl) in PR [#1812](https://github.com/Microsoft/BotFramework-WebChat/pull/1812)
 
 ### Fixed
 - Fix [#1360](https://github.com/Microsoft/BotFramework-WebChat/issues/1360). Added `roles` to components of Web Chat, by [@corinagum](https://github.com/corinagum) in PR [#1462](https://github.com/Microsoft/BotFramework-WebChat/pull/1462)
