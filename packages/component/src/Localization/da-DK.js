@@ -69,7 +69,7 @@ export default {
   'New messages': 'Ny besked',
   'Right': 'Højre',
   'retry': 'prøv igen',
-  'Retry': '{prøv igen}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  'Retry': 'prøv igen', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Sending': 'Sender',
   'Starting…': 'Starter...',
   'Tax': 'Skat',
@@ -79,5 +79,4 @@ export default {
   'Speak': 'Tal',
   'Upload file': 'Upload fil',
   'Type your message': 'Skriv din besked'
-  // 'X minutes ago':
 };
