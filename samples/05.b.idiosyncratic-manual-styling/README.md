@@ -52,14 +52,14 @@ First, we want to overwrite the current `styleSet` by using the `createStyleSet`
 …
 ```
 
-Finally, make sure the `styleOptions` object is passed into Web Chat, like so:
+Finally, make sure the `styleSet` object is passed into Web Chat, like so:
 
 ```diff
 …
 window.WebChat.renderWebChat({
 -       directLine: window.WebChat.createDirectLine({ token })
 +       directLine: window.WebChat.createDirectLine({ token }),
-+       styleOptions
++       styleSet
  }, document.getElementById('webchat'));
  …
 ```
