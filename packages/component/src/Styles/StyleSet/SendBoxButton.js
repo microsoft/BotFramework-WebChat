@@ -16,7 +16,6 @@ export default function ({
     width: sendBoxHeight,
 
     '&:not(:disabled)': {
-
       '&:focus svg': {
         fill: sendBoxButtonColorOnFocus
       },

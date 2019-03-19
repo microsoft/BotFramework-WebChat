@@ -14,6 +14,7 @@ export default function createSendStatusStyle({
       backgroundColor: 'transparent',
       border: 0,
       color: accent,
+      cursor: 'pointer',
       fontFamily: 'inherit',
       padding: 0
     }
