@@ -27,7 +27,6 @@ const ROOT_CSS = css({
   '& > button.debug': {
     backgroundColor: 'Transparent',
     border: 0,
-    cursor: 'pointer',
     outline: 0,
     padding: 10,
     position: 'absolute',
