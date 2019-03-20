@@ -5,7 +5,6 @@
   bottom: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, .2);
   color: White;
-  cursor: pointer;
   font-size: 30px;
   height: 64px;
   outline: 0;
@@ -74,7 +73,6 @@
   background-color: Transparent;
   border: 0;
   color: White;
-  cursor: pointer;
   outline: 0;
 }
 
