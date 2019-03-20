@@ -55,11 +55,22 @@ $width: 280px;
         background: white;
         border-bottom-left-radius: $messageBorderRadius - 2px;
         border-bottom-right-radius: $messageBorderRadius - 2px;
-        margin-top: -0.4em;
         border:0;
         color:$gd_dark_sky_blue;
         font-size: 14px;
         font-weight: bold;
+    }
+
+    .gd-no-workable-appointment {
+        background: white;
+        border: 0;
+        border-bottom: 2px solid $gd_dark_sky_blue;
+        color: $gd_dark_sky_blue;
+        font-size: 14px;
+        font-weight: bold;
+        height: 42px;
+        margin-top: -.15em;
+        width: 100%;
     }
     
     .gd-selected-date-container {

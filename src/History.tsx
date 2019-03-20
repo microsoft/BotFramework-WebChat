@@ -68,8 +68,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
                 // Next time we need to get the content width (on a resize) we can use this margin to get the maximum content width
                 const carouselMargin = this.props.size.width - maxContentWidth;
 
-                konsole.log('history measureMessage ' + carouselMargin);
-
                 // Finally, save it away in the Store, which will force another re-render
                 this.props.setMeasurements(carouselMargin);
 

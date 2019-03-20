@@ -22,6 +22,7 @@ interface DatePickerProps {
     withTime: boolean;
     gid: string;
     directLine?: DirectLineOptions;
+    conversationId: string;
 }
 
 export interface MessageWithDate extends Message {
@@ -76,9 +77,9 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         const {
             node,
             gid,
-            directLine
+            directLine,
+            conversationId
         } = this.props;
-        const conversationId = window.localStorage.getItem('msft_conversation_id');
         const startDate = date.clone().startOf('month').format('YYYY-MM-DD');
         const endDate = date.clone().endOf('month').format('YYYY-MM-DD');
 
@@ -236,6 +237,12 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         e.stopPropagation();
     }
 
+    clickNoWorkableAppointment(e: React.MouseEvent<HTMLButtonElement>) {
+        this.props.sendMessage('None of these appointments work for me');
+        document.removeEventListener('keypress', this.handleKeyDown.bind(this));
+        e.stopPropagation();
+    }
+
     render() {
         const { startDate, endDate, withTime } = this.state;
         const { node } = this.props;
@@ -265,8 +272,11 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     showTimeSelect={withTime}
                 />
 
+                <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
+                    None of these appointments work for me
+                </button>
                 <button type="button" className="gd-submit-date-button" onClick={e => this.clickToSubmitDate(e) } title="Submit">
-                    Press enter to submit
+                    Submit
                 </button>
             </div>
         );
@@ -274,24 +284,30 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
 }
 
 export const DatePickerCard = connect(
-    (state: ChatState) => ({
-        // passed down to MessagePaneView
-        locale: state.format.locale,
-        user: state.connection.user
-    }), {
+    (state: ChatState) => {
+        return {
+            // passed down to MessagePaneView
+            locale: state.format.locale,
+            user: state.connection.user,
+            conversationId: state.connection.botConnection.conversationId
+        };
+    }, {
         selectDate: (date: moment.Moment) => ({ type: 'Select_Date', date: date.format('DD MMM YYYY') } as ChatActions),
         submitDate: () => ({ type: 'Submit_Date' } as ChatActions),
         // only used to create helper functions below
         sendMessage
-    }, (stateProps: any, dispatchProps: any, ownProps: any): DatePickerProps => ({
-        // from stateProps
-        node: ownProps.node,
-        withTime: ownProps.withTime,
-        // from dispatchProps
-        selectDate: dispatchProps.selectDate,
-        submitDate: dispatchProps.submitDate,
-        sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
-        gid: ownProps.gid,
-        directLine: ownProps.directLine
-    })
+    }, (stateProps: any, dispatchProps: any, ownProps: any): DatePickerProps => {
+        return {
+            // from stateProps
+            node: ownProps.node,
+            withTime: ownProps.withTime,
+            // from dispatchProps
+            selectDate: dispatchProps.selectDate,
+            submitDate: dispatchProps.submitDate,
+            sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
+            gid: ownProps.gid,
+            directLine: ownProps.directLine,
+            conversationId: stateProps.conversationId
+        };
+    }
 )(DatePicker);
