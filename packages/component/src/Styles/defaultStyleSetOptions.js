@@ -14,6 +14,9 @@ const DEFAULT_OPTIONS = {
   paddingWide: 20,
   subtle: DEFAULT_SUBTLE,
 
+  // Word break
+  messageActivityWordBreak: 'break-word', // 'normal' || 'break-all' || 'break-word' || 'keep-all'
+
   // fonts
   primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
   monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
@@ -43,7 +46,7 @@ const DEFAULT_OPTIONS = {
   // Root
   rootHeight: '100%',
   rootWidth: '100%',
-  
+
   // Send box
   hideSendBox: false,
   hideUploadButton: false,
