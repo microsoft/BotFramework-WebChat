@@ -80,8 +80,11 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case INCOMING_ACTIVITY:
-      if (state.length === 1 && state[0].from && state[0].from.id === '') {
-        state.splice(0,1)
+      if (state.length > 1 && state.length < 5) {
+        state.forEach((a, i) => {
+          if (a.from && a.from.id === '')
+            state.splice(i,1)
+        })
       }
       // UpdateActivity is not supported right now because we ignore duplicated activity ID
       if (!~state.findIndex(({ id }) => id === payload.activity.id)) {
