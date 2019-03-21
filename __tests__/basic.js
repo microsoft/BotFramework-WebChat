@@ -21,8 +21,23 @@ test('setup', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('long urls', async () => {
+test('long URLs with break-word', async () => {
   const { driver, pageObjects} = await setupWebDriver();
+
+  await pageObjects.sendMessageViaSendBox('https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/')
+
+  await driver.wait(minNumActivitiesShown(2), 2000);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('long URLs with break-all', async () => {
+  const WEB_CHAT_PROPS = { styleOptions: { messageActivityWordBreak: 'break-all' } };
+
+  const { driver, pageObjects} = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
   await pageObjects.sendMessageViaSendBox('https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/')
 
