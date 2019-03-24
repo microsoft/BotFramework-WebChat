@@ -80,9 +80,9 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case INCOMING_ACTIVITY:
-      if (state.length > 1 && state.length < 5) {
+      if (state.length > 1 && state.length < 3) {
         state.forEach((a, i) => {
-          if (a.from && a.from.id === '')
+          if (!a.from || a.from.id === '')
             state.splice(i,1)
         })
       }
