@@ -1,6 +1,6 @@
 import { Action, AdaptiveCard, HostConfig, IValidationError, OpenUrlAction, SubmitAction } from 'adaptivecards';
 import { IAction, IAdaptiveCard, IOpenUrlAction, IShowCardAction, ISubmitAction } from 'adaptivecards/lib/schema';
-import { CardAction } from 'botframework-directlinejs/built/directLine';
+import { CardActionTypes } from 'botframework-directlinejs/built/directLine';
 import * as MarkdownIt from 'markdown-it';
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
@@ -26,8 +26,10 @@ export interface State {
     errors?: string[];
 }
 
-export interface BotFrameworkCardAction extends CardAction {
+export interface BotFrameworkCardAction {
     __isBotFrameworkCardAction: boolean;
+    type: CardActionTypes;
+    value: any;
 }
 
 const markdownIt = new MarkdownIt({
