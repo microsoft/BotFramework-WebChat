@@ -55,7 +55,7 @@ export class AdaptiveCardBuilder {
     private static addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
         if (cardAction.type === 'imBack' || cardAction.type === 'postBack') {
             const action = new SubmitAction();
-            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
+            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, type: cardAction.type, value: cardAction.value };
 
             action.data = botFrameworkCardAction;
             action.title = cardAction.title;
@@ -64,7 +64,7 @@ export class AdaptiveCardBuilder {
         } else if (cardAction.type === 'signin' && includesOAuthButtons) {
             // Create a button specific for OAuthCard 'signin' actions (cardAction.type == signin and button action is Action.Submit)
             const action = new SubmitAction();
-            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
+            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, type: cardAction.type, value: cardAction.value };
 
             action.data = botFrameworkCardAction;
             action.title = cardAction.title;
@@ -72,7 +72,7 @@ export class AdaptiveCardBuilder {
             return action;
         } else {
             const action = new OpenUrlAction();
-            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, ...cardAction };
+            const botFrameworkCardAction: BotFrameworkCardAction = { __isBotFrameworkCardAction: true, type: cardAction.type, value: cardAction.value };
 
             action.title = cardAction.title;
             action.url = cardAction.type === 'call' ? 'tel:' + cardAction.value : cardAction.value;
