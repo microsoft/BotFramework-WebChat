@@ -401,7 +401,6 @@ export const history: Reducer<HistoryState> = (
     },
     action: HistoryAction
 ) => {
-    konsole.log('history action', action);
     switch (action.type) {
         case 'Set_Messages': {
             return {

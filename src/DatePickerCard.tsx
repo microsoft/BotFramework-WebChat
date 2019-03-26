@@ -39,10 +39,34 @@ export interface DatePickerState {
     withTime: boolean;
     excludedTimes: moment.Moment[];
     monthAvailabilities: any;
+    loading: boolean;
 }
 
 const dateFormat = 'MMMM D, YYYY';
 const dateFormatWithTime = 'MMMM D, YYYY hh:mmA Z';
+
+/**
+ * Getting all the times which are not between the availability times
+ */
+const getExcludedTimes = (availabilities: any, interval: number) => {
+    const periodsInADay = moment.duration(1, 'day').as('minutes');
+
+    const excludedTimes = [];
+    const startTimeMoment = moment('00:00', 'hh:mm');
+    for (let i: number = 0; i <= periodsInADay; i += interval) {
+        startTimeMoment.add(i === 0 ? 0 : interval, 'minutes');
+        const excludeTime = availabilities.some((avail: any) => {
+            const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
+            const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
+            return startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[]');
+        });
+        if (!excludeTime) {
+            excludedTimes.push(startTimeMoment.format('hh:mm A'));
+        }
+    }
+
+    return excludedTimes.map(time => moment(time, 'hh:mm A'));
+};
 
 /**
  * Date picker card which renders in response to node of types 'date' and 'handoff'
@@ -60,8 +84,9 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
             withRange: props.node.custom_attributes.includes('range'),
             withTime: props.withTime || props.node.custom_attributes.includes('time') || props.node.node_type === 'handoff',
             showTimeSelectClass: 'hide-time-select',
-            excludedTimes: null,
-            monthAvailabilities: null
+            excludedTimes: [],
+            monthAvailabilities: null,
+            loading: true
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -72,7 +97,6 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     /** Setting the availabilities and excluded times for provide date */
-
     getAvailableTimes = ( date: moment.Moment, changeExcludeTime: boolean ) => {
         const {
             node,
@@ -88,6 +112,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         }
         if (node && node.node_type === 'handoff') {
             const dateAvailabilitySelected = changeExcludeTime && this.state.startDate;
+            this.setState({loading: true});
             availableTimes(gid, directLine.secret, conversationId, startDate, endDate)
                 .then((res: any) => {
                     const allAvailabilities = this.mapAvailabilitiesDateWise(res.data);
@@ -96,18 +121,20 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     if (!changeExcludeTime && (this.state.startDate && this.state.startDate.month() === date.month())) {
                         getAvailForDate = this.state.startDate;
                     }
-                    const excludedTime = this.getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30);
+                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30);
                     this.setState({
                         startDate: dateAvailabilitySelected ? date : this.state.startDate,
                         dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
                         monthAvailabilities: allAvailabilities,
-                        excludedTimes: dateAvailabilitySelected ? excludedTime : (this.state.startDate && this.state.startDate.month() === date.month()) ? excludedTime : this.state.excludedTimes
+                        excludedTimes: excludedTime,
+                        loading: false
                     });
             })
             .catch((err: any) => {
                 this.setState({
                     startDate: dateAvailabilitySelected ? date : this.state.startDate,
-                    dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected
+                    dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
+                    loading: false
                 });
             });
         }
@@ -126,32 +153,6 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
         return dateWiseAvailabilities;
      }
 
-    /**
-     * Getting all the times which are not between the availability times
-     */
-    getExcludedTimes = (availabilities: any, interval: number) => {
-        if (!availabilities) {
-            return null;
-        }
-
-        const periodsInADay = moment.duration(1, 'day').as('minutes');
-
-        const excludedTimes = [];
-        const startTimeMoment = moment('00:00', 'hh:mm');
-        for (let i: number = 0; i <= periodsInADay; i += interval) {
-            startTimeMoment.add(i === 0 ? 0 : interval, 'minutes');
-            const excludeTime = availabilities.some((avail: any) => {
-                const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
-                const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
-                return startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[]');
-            });
-            if (!excludeTime) {
-                excludedTimes.push(startTimeMoment.format('hh:mm A'));
-            }
-        }
-
-        return excludedTimes.map(time => moment(time, 'hh:mm A'));
-    }
     /** Handling the month change */
     handleMonthChange = ( date: moment.Moment ) => {
         this.getAvailableTimes(date, false);
@@ -185,7 +186,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 if (startDate && startDate.month() !== date.month()) {
                     this.getAvailableTimes(date, true);
                 } else if (this.state.monthAvailabilities) {
-                    const excludedTime = this.getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30);
+                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30);
                     this.setState({
                         startDate: date,
                         dateSelected: true,
@@ -244,22 +245,20 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
     }
 
     render() {
-        const { startDate, endDate, withTime } = this.state;
+        const { startDate, endDate, withTime, loading } = this.state;
         const { node } = this.props;
         const isHandoff = node.node_type === 'handoff';
 
         return (
             <div className={`gd-date-picker ${withTime && 'withTime'}`}>
                 <div className="gd-selected-date-container">
-                    <span className="gd-selected-date">{startDate ? startDate.format('MMMM D, YYYY') : 'Select a date'}</span>
-
+                    <span className="gd-selected-date">{loading ? 'Loading...' : startDate ? startDate.format('MMMM D, YYYY') : 'Select a date'}</span>
                     {(withTime && startDate) &&
-                    <span className="gd-selected-time">at {startDate && startDate.format('hh:mm A')}</span>
-                }
+                        <span className="gd-selected-time">at {startDate && startDate.format('hh:mm A')}</span>
+                    }
                 </div>
 
-                <ReactDatePicker
-                    endDate={this.state.endDate}
+                <ReactDatePicker endDate={this.state.endDate}
                     startDate={this.state.startDate}
                     selected={this.state.startDate}
                     onChange={date => this.handleDateChange(date)}
@@ -271,7 +270,6 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     dateFormat={withTime ? dateFormatWithTime : dateFormat}
                     showTimeSelect={withTime}
                 />
-
                 <button type="button" className="gd-no-workable-appointment" onClick={e => this.clickNoWorkableAppointment(e) } title="nomatch">
                     None of these appointments work for me
                 </button>

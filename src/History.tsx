@@ -128,7 +128,6 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
     }
 
     render() {
-        konsole.log('History props', this);
         let content;
         if (this.props.size.width !== undefined) {
             if (this.props.format.carouselMargin === undefined) {
