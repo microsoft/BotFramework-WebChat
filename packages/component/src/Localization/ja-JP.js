@@ -37,6 +37,8 @@ function xMinutesAgo(dateStr) {
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: '接続できませんでした。',
+  INITIAL_CONNECTION_NOTIFICATION: '接続中...',
+  INTERRUPTED_CONNECTION_NOTIFICATION: 'ネットワーク中断しました。 再接続中...',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: '送信できませんでした。{Retry}。',
   SLOW_CONNECTION_NOTIFICATION: '接続するのにはいつもより長くかかります。',
