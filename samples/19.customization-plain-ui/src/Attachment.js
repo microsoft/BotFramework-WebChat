@@ -6,15 +6,13 @@ const Attachment = ({
   contentType,
   name
 }) => {
-  console.log(contentType);
-
   switch (contentType) {
     case 'image/gif':
     case 'image/jpeg':
     case 'image/png':
     case 'image/svg':
     case 'image/svg+xml':
-      return <img src={ contentUrl } />;
+      return <img alt={ name } src={ contentUrl } />;
 
     case 'text/markdown':
     case 'text/plain':
