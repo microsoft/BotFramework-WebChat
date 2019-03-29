@@ -101,6 +101,8 @@
   <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
   <script>
     $(function() {
+      // Note that `BotChat` component is initialized only after chat window is expanded, so bot is not triggered for users who not open chat.	    
+	    
       // OPTIONAL - auto expand after given delay
       // setTimeout(function() { $('#bot-wrapper').hasClass('collapsed') && $('#bot-header').click() }, 3000);
 
