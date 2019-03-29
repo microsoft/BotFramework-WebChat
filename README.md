@@ -40,7 +40,11 @@ Include `botchat.css` and `botchat-es5.js` (from our https://feedyou.blob.core.w
       BotChat.App({
         directLine: { secret: '...' },                  
         bot: { id: 'feedbot-...', name: '...' }
-      }, document.getElementById("bot"));
+        theme: { mainColor: "#e51836" },
+        header: { text: "Chatbot", textWhenCollapsed: "Click for chatbot!" }
+        // OPTIONAL - locale: '...', // en/cs/...
+        // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
+      });
     </script>
   </body>
 </html>
