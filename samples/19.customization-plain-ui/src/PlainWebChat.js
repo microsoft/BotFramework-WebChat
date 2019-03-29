@@ -10,7 +10,7 @@ const PlainWebChat = ({
   activities,
   sendMessage
 }) => {
-  const [sendBoxValue, setSendBoxValue] = useState('image');
+  const [sendBoxValue, setSendBoxValue] = useState('');
 
   return (
     <div>
