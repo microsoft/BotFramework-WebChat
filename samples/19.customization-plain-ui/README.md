@@ -6,6 +6,15 @@ This sample show how to use Web Chat without its UI component.
 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/19.customization-plain-ui)
 
+# Things to try out
+
+- Type `image` in the send box
+   - It should show an image
+- Type `suggested-actions` in the send box
+   - `imBack`, `messageBack`, and `postBack` button should work as expected
+- Type `card bingsports` in the send box
+   - Unsupported attachment will be rendered as preformatted JSON
+
 # Code
 
 This project is based on [`create-react-app`](https://github.com/facebook/create-react-app).
