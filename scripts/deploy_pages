@@ -22,5 +22,3 @@ rsync -av --progress samples/16.customization-selectable-activity/build/ gh-page
 
 mkdir gh-pages/17.chat-send-history
 rsync -av --progress samples/17.chat-send-history/build/ gh-pages/17.chat-send-history/
-
-rsync -av --progress samples/redirects/ gh-pages/

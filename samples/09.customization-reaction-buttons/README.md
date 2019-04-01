@@ -73,7 +73,6 @@ Next, add styling via glamor and the classes that will be applied in this compon
 +     '& > li > button': {
 +       background: 'White',
 +       border: 'solid 1px #E6E6E6',
-+       cursor: 'pointer',
 +       marginBottom: 2,
 +       padding: '2px 5px 5px'
 +     }
@@ -179,7 +178,6 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 +           '& > li > button': {
 +             background: 'White',
 +             border: 'solid 1px #E6E6E6',
-+             cursor: 'pointer',
 +             marginBottom: 2,
 +             padding: '2px 5px 5px'
 +           }

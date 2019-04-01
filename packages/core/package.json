@@ -23,21 +23,7 @@
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
     "prepublishOnly": "npm run build:typecheck && npm run build:babel",
-    "test": "jest",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "testMatch": [
-      "**/__tests__/**/*.[jt]s?(x)",
-      "**/?(*.)(spec|test).[jt]s?(x)"
-    ],
-    "transform": {
-      "^.+\\.[jt]sx?$": "babel-jest"
-    }
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
@@ -46,17 +32,12 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.1.0",
     "@types/node": "^10.3.3",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-version-transform": "^1.0.0",
     "botframework-directlinejs": "^0.11.4",
     "concurrently": "^4.0.1",
-    "jest": "^23.6.0",
     "rimraf": "^2.6.2",
-    "ts-jest": "^23.10.4",
-    "typescript": "^3.1.6",
-    "zen-observable": "^0.8.9"
+    "typescript": "^3.1.6"
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",

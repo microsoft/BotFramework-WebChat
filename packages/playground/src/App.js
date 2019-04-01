@@ -33,7 +33,6 @@ const ROOT_CSS = css({
     '& > button': {
       backgroundColor: 'rgba(128, 128, 128, .2)',
       border: 0,
-      cursor: 'pointer',
       outline: 0,
       marginBottom: 10,
       padding: '5px 10px',

@@ -7,10 +7,10 @@ If you want to help to translate Web Chat to different language, please submit a
 | Language code  | Translator            |
 | -------------- | --------------------- |
 | cs-cz          | @msimecek             |
-| da-dk          | Thomas Skødt Andersen |
+| da-dk          | @Simon_lfr, Thomas Skødt Andersen |
 | de-de          | @matmuenzel           |
 | el-gr          | @qdoop                |
-| es-es          | @SantiEspada          |
+| es-es          | @SantiEspada, @ckgrafico          |
 | fi-fi          | @jsur                 |
 | fr-fr          | @meulta, @tao1        |
 | hu-hu          |                       |
@@ -24,7 +24,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | pt-br          | @rcarubbi, @pedropacheco92|
 | pt-pt          |                       |
 | ru-ru          | @odysseus1973, @seaen |
-| sv-se          |                       |
+| sv-se          | @pekspro              |
 | tr-tr          |                       |
 | zh-hans        | @Antimoney            |
 | zh-hant        | @compulim             |

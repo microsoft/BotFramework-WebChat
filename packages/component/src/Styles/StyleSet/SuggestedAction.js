@@ -34,8 +34,7 @@ export default function createSuggestedActionStyle({
       '&:not(:disabled)': {
         background: suggestedActionBackground,
         border: suggestedActionBorder,
-        color: suggestedActionTextColor,
-        cursor: 'pointer'
+        color: suggestedActionTextColor
       }
     }
   };

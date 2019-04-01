@@ -17,6 +17,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
+
+### Fixed
+- Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
+- Fix [#1767](https://github.com/Microsoft/BotFramework-WebChat/issues/1767). Remove `cursor: pointer` from buttons, by [@corinagum](https://github.com/corinagum) in PR [#1819](https://github.com/Microsoft/BotFramework-WebChat/pull/1819)
+- Fix [#1774](https://github.com/Microsoft/BotFramework-WebChat/issues/1774). Add `styleSetOption` to allow word break. Default to `break-word`, by [@corinagum](https://github.com/corinagum) in PR [#1832](https://github.com/Microsoft/BotFramework-WebChat/pull/1832)
+- Fix [#1847](https://github.com/Microsoft/BotFramework-WebChat/issues/1847). Bump react-say, which adds babel-runtime dependency, by [@corinagum](https://github.com/corinagum) in PR [#1849](https://github.com/Microsoft/BotFramework-WebChat/pull/1849)
+
+## [4.3.0] - 2019-03-04
+
 ### Added
 - Fix [#1383](https://github.com/Microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - Added support of avatar image, thru `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
@@ -31,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `*`: Added `username` back to activity, fixed [#1321](https://github.com/Microsoft/BotFramework-WebChat/issues/1321), by [@compulim](https://github.com/compulim), in PR [#1682](https://github.com/Microsoft/BotFramework-DirectLineJS/pull/1682)
 - `component`: Allow root component height and width customization via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
 - `component`: Added `cardActionMiddleware` to customize the behavior of card action, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
+- `bundle`: Add `watermark` and `streamUrl` parameters to createDirectLine, by [@corinagum](https://github.com/corinagum), in PR [#1817](https://github.com/Microsoft/BotFramework-WebChat/pull/1817)
 
 ### Changed
 
@@ -44,6 +54,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Bump to [`react-film@1.1.2`](https://npmjs.com/package/react-film/) and [`react-scroll-to-bottom@1.3.1`](https://npmjs.com/package/react-scroll-to-bottom/), by [@compulim](https://github.com/compulim), in PR [#1621](https://github.com/Microsoft/BotFramework-WebChat/pull/1621) and PR [#1725](https://github.com/Microsoft/BotFramework-WebChat/pull/1725)
 - Expand german locale by [@matmuenzel](https://github.com/matmuenzel) in PR [#1740](https://github.com/Microsoft/BotFramework-WebChat/pull/1740)
 - Update Russian and Japanese locale by [@corinagum](https://github.com/corinagum) in PR [#1747](https://github.com/Microsoft/BotFramework-WebChat/pull/1747)
+- Update Spanish by [@ckgrafico](https://github.com/ckgrafico) in PR [#1757](https://github.com/Microsoft/BotFramework-WebChat/pull/1757)
+- Update Danish by [@simon_lfr](https://github.com/LTank) in PR [#1810](https://github.com/Microsoft/BotFramework-WebChat/pull/1810)
+- Update Swedish by [@pekspro](https://github.com/pekspro) in PR [#1797](https://github.com/Microsoft/BotFramework-WebChat/pull/1797)
+- Update Dutch locale by [@imicknl](https://github.com/imicknl) in PR [#1812](https://github.com/Microsoft/BotFramework-WebChat/pull/1812)
 
 ### Fixed
 - Fix [#1360](https://github.com/Microsoft/BotFramework-WebChat/issues/1360). Added `roles` to components of Web Chat, by [@corinagum](https://github.com/corinagum) in PR [#1462](https://github.com/Microsoft/BotFramework-WebChat/pull/1462)

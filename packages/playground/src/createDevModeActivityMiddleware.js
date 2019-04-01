@@ -28,7 +28,6 @@ const ROOT_CSS = css({
   '& > button': {
     backgroundColor: 'transparent',
     border: 0,
-    cursor: 'pointer',
     margin: 0,
     outline: 0,
     padding: 0,
