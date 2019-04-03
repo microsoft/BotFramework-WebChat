@@ -93,7 +93,7 @@ const DEFAULT_OPTIONS = {
   connectivityTextSize: 12,
   failedConnectivity: '#C50F1F',
   slowConnectivity: '#EAA300',
-  slowConnectivityText: '#5E5E5E',
+  notificationText: '#5E5E5E',
 };
 
 export default DEFAULT_OPTIONS

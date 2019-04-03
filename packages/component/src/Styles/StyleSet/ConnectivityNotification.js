@@ -1,11 +1,10 @@
 export default function ({
-  connectivityIconPadding,
   connectivityMarginLeftRight,
   connectivityMarginTopBottom,
   connectivityTextSize,
-  primaryFont,
-  slowConnectivity,
   notificationText,
+  primaryFont
+
 }) {
   return {
     alignItems: 'center',
@@ -16,11 +15,6 @@ export default function ({
     marginBottom: connectivityMarginTopBottom,
     marginLeft: connectivityMarginLeftRight,
     marginRight: connectivityMarginLeftRight,
-    marginTop: connectivityMarginTopBottom,
-
-    '& > svg': {
-      fill: slowConnectivity,
-      paddingRight: connectivityIconPadding,
-    }
+    marginTop: connectivityMarginTopBottom
   };
 }

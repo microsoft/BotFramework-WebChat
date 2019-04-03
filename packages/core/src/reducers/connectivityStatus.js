@@ -2,33 +2,66 @@ import {
   CONNECT_FULFILLED,
   CONNECT_PENDING,
   CONNECT_REJECTED,
-  CONNECT_STILL_PENDING
+  CONNECT_STILL_PENDING,
+  CONNECT_TIMEOUT_COMPLETE
 } from '../actions/connect';
 
 import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
 
-const DEFAULT_STATE = 'notconnected';
+const DEFAULT_STATE = {
+  status: 'uninitialized',
+  timeoutCompleted: false
+};
 
-export default function(state = DEFAULT_STATE, { type }) {
-  switch(type) {
+export default function ( state = DEFAULT_STATE, { type } ) {
+  switch ( type ) {
     case CONNECT_PENDING:
-      state = 'connecting';
+      if ( state.status !== 'uninitialized' ) {
+        state = {
+          ...state,
+          status: 'reconnecting',
+          timeoutCompleted: false
+        };
+      }
       break;
 
     case CONNECT_FULFILLED:
-      state = 'connected';
+      state = {
+        ...state,
+        status: 'connected',
+        timeoutCompleted: false
+      }
       break;
 
     case CONNECT_REJECTED:
-      state = 'error';
+      state = {
+        ...state,
+        status: 'error',
+        timeoutCompleted: false
+      }
       break;
 
     case CONNECT_STILL_PENDING:
-      state = 'connectingslow';
+      state = {
+        ...state,
+        status: 'connectingslow',
+        timeoutCompleted: false
+      }
       break;
 
     case DISCONNECT_FULFILLED:
-      state = 'notconnected';
+      state = {
+        ...state,
+        status: 'notconnected',
+        timeoutCompleted: false
+      }
+      break;
+
+    case CONNECT_TIMEOUT_COMPLETE:
+      state = {
+        ...state,
+        timeoutCompleted: true
+      }
       break;
 
     default: break;

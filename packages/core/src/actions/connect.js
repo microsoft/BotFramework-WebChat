@@ -4,8 +4,9 @@ const CONNECT_FULFILLING = `${ CONNECT }_FULFILLING`;
 const CONNECT_PENDING = `${ CONNECT }_PENDING`;
 const CONNECT_REJECTED = `${ CONNECT }_REJECTED`;
 const CONNECT_STILL_PENDING = `${ CONNECT }_STILL_PENDING`;
+const CONNECT_TIMEOUT_COMPLETE = `${ CONNECT }_TIMEOUT_COMPLETE`
 
-export default function ({ directLine, userID, username }) {
+export default function ( { directLine, userID, username } ) {
   return {
     type: CONNECT,
     payload: {
@@ -22,5 +23,6 @@ export {
   CONNECT_FULFILLING,
   CONNECT_PENDING,
   CONNECT_REJECTED,
-  CONNECT_STILL_PENDING
+  CONNECT_STILL_PENDING,
+  CONNECT_TIMEOUT_COMPLETE
 }

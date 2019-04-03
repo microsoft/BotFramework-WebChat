@@ -9,6 +9,7 @@ import createAvatarStyle from './StyleSet/Avatar';
 import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
+import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createDownloadAttachmentStyle from './StyleSet/DownloadAttachment';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -54,6 +55,7 @@ export default function createStyleSet(options) {
     bubble: createBubbleStyle(options),
     carouselFilmStrip: createCarouselFilmStrip(options),
     carouselFlipper: createCarouselFlipper(options),
+    connectivityNotification: createConnectivityNotification(options),
     dictationInterims: createDictationInterimsStyle(options),
     downloadAttachment: createDownloadAttachmentStyle(options),
     errorBox: createErrorBoxStyle(options),
