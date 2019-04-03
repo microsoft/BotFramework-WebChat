@@ -4,7 +4,6 @@ export default function ({
   connectivityTextSize,
   notificationText,
   primaryFont
-
 }) {
   return {
     alignItems: 'center',

@@ -30,7 +30,7 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         ...state,
         status: 'connected',
         timeoutCompleted: false
-      }
+      };
       break;
 
     case CONNECT_REJECTED:
@@ -38,7 +38,7 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         ...state,
         status: 'error',
         timeoutCompleted: false
-      }
+      };
       break;
 
     case CONNECT_STILL_PENDING:
@@ -46,7 +46,7 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         ...state,
         status: 'connectingslow',
         timeoutCompleted: false
-      }
+      };
       break;
 
     case DISCONNECT_FULFILLED:
@@ -54,14 +54,14 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         ...state,
         status: 'notconnected',
         timeoutCompleted: false
-      }
+      };
       break;
 
     case CONNECT_TIMEOUT_COMPLETE:
       state = {
         ...state,
         timeoutCompleted: true
-      }
+      };
       break;
 
     default: break;
