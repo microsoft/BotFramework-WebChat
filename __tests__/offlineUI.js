@@ -51,7 +51,7 @@ describe('offline UI', async () => {
       })
     });
 
-    await driver.sleep(15600);
+    await driver.sleep(15000);
 
     const base64PNG = await driver.takeScreenshot();
 
