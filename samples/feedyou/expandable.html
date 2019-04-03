@@ -50,41 +50,6 @@
       padding: 8px;
       cursor: pointer;
     }
-
-    .wc-chatview-panel {
-    	top: 35px;
-    }
-
-    .wc-message-groups {
-    	top: 0px;
-    }
-
-    .wc-header {
-      display: none;
-    }
-
-    .wc-card button {
-      color: #e51836;
-    }
-
-    .wc-card button:hover {
-      border-color: #e51836;
-      color: #e51836;
-    }
-
-    .wc-card button:active {
-      background-color: #e51836;
-      border-color: #e51836;
-      color: #ffffff;
-    }
-
-    .wc-message-from-me .wc-message-content {
-      background-color: #e51836;
-    }
-
-    .wc-message-from-me svg.wc-message-callout path {
-      fill: #e51836;
-    }
   </style>
 </head>
 
@@ -112,6 +77,7 @@
 	    		BotChat.App({
 			      directLine: { secret: '...' },
 			      bot: { id: 'feedbot-...', name: '...' },
+			      theme: { mainColor: "red" },
             // OPTIONAL - locale: '...',
             // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
 			    }, document.getElementById("bot"));

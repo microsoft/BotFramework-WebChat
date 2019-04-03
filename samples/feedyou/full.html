@@ -13,42 +13,43 @@
       font-family: Helvetica, Arial;
       padding: 30px;
 
+      display: -ms-flexbox;
+      display: -webkit-flex;
       display: flex;
+      -webkit-flex-direction: row;
+      -ms-flex-direction: row;
       flex-direction: row;
+      -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+      -webkit-justify-content: center;
+      -ms-flex-pack: center;
       justify-content: center;
+      -webkit-align-items: flex-end;
+      -ms-flex-align: end;
       align-items: flex-end;
     }
 
-    h1 {
-      font-family: "Helvetica";
-      color: #D83838;
-    }
-
-    body>p {
-      color: #fff;
-      width: 600px;
-    }
-
-    .header h1 {
-      color: #D83838;
-    }
-
     #logo {
-      background-color: black;
-  		height: 120px;
-  		text-align: center;
-  		padding-top: 0px;
-  		padding-bottom: 5px;
+      height: 120px;
+
+      background-color: transparent;
+      text-align: center;
+      padding-top: 0px;
+      padding-bottom: 5px;
     }
 
     #logo img {
       height: 70%;
       padding-top: 15px;
     }
+    
+    #bot-wrapper .wc-message-groups {
+      top: 128px;
+    }
 
     #bot-wrapper {
-      background-color: #fff;
+      background-color: transparent;
       max-width: 600px;
       width: 95%;
       height: 1000px;
@@ -65,41 +66,9 @@
       height: 22px;
       padding: 8px;
       font-size: 115%;
-    }
 
-    .wc-header {
-      display: none;
-    }
-
-    .wc-message-groups {
-      top: 163px;
-    }
-
-    .wc-adaptive-card {
-      max-width: 100%;
-    }
-
-    .wc-card button {
-      color: #D83838;
-    }
-
-    .wc-card button:hover {
-      border-color: #D83838;
-      color: #D83838;
-    }
-
-    .wc-card button:active {
-      background-color: #D83838;
-      border-color: #D83838;
-      color: #ffffff;
-    }
-
-    .wc-message-from-me .wc-message-content {
-      background-color: #D83838;
-    }
-
-    .wc-message-from-me svg.wc-message-callout path {
-      fill: #D83838;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
     }
   </style>
 </head>
@@ -118,12 +87,11 @@
   <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
   <script>
     BotChat.App({
-	  // TRY THIS TO TEST: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
-      directLine: { secret: 'flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo' },	
-      // TRY THIS TO TEST: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
-      bot: { id: 'feedbot-demo-webchat', name: 'DEMO webchat chatbot' },
-      // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
+      directLine: { secret: '...' },	// TRY THIS TO TEST: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
+      bot: { id: '...', name: '...' },  // TRY THIS TO TEST: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
+      theme: { mainColor: "green" },
       // OPTIONAL - locale: '...',
+      // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
     }, document.getElementById("bot"));
   </script>
 </body>

@@ -101,11 +101,16 @@ const ThemeTemplate = (theme: Theme) => `
 
     .wc-app .wc-message-groups {
         top: 0px;
+        background-color: white;
     }
 
     .wc-app .wc-header {
         display: none;
     }
+
+    .wc-app .wc-console {
+        background-color: white;
+    } 
 
     .wc-app .wc-card button {
         color: ${theme.mainColor};
