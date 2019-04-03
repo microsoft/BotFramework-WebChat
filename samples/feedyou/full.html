@@ -8,8 +8,17 @@
   <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat-fullwindow.css" rel="stylesheet" />
   <title>Chatbot</title>
   <style>
+     html { 
+       background-color: black;
+
+        /* background: url('https://example.com/background.jpg') no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover; */
+    }
+
     body {
-      background-color: black;
       font-family: Helvetica, Arial;
       padding: 30px;
 
@@ -40,13 +49,18 @@
     }
 
     #logo img {
-      height: 70%;
+      max-height: 70%;
       padding-top: 15px;
     }
     
-    #bot-wrapper .wc-message-groups {
-      top: 128px;
+    #bot-wrapper .wc-chatview-panel {
+      top: 0px;
     }
+
+    /* #bot-wrapper .wc-message-groups {
+      border-left: 2px #00aa80 solid;
+      border-right: 2px #00aa80 solid;
+    } */ 
 
     #bot-wrapper {
       background-color: transparent;
@@ -56,11 +70,19 @@
       max-height: 98.5%;
       min-height: 500px;
 
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+
       position: absolute;
       bottom: 0;
     }
 
     #bot-wrapper #bot {
+      position: relative;
       height: 100%;
       background-color: white;
     }
@@ -68,7 +90,7 @@
     #bot-header {
       color: white;
       background-color: #D83838;
-      height: 22px;
+      height: 25px;
       padding: 8px;
       font-size: 115%;
 
