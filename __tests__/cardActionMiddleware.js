@@ -3,8 +3,9 @@ import { By, Key } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
-import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
+import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
+import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -27,6 +28,7 @@ test('card action "openUrl"', async () => {
     }
   });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('card-actions');
 
   await driver.wait(suggestedActionsShowed(), timeouts.directLine);
@@ -62,6 +64,7 @@ test('card action "signin"', async () => {
     }
   });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('oauth');
 
   const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
