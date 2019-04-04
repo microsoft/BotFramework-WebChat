@@ -1,6 +1,7 @@
 import { By, Condition, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -110,7 +111,7 @@ describe('offline UI', async () => {
         document.head.appendChild(scriptElement);
       })
     });
-
+    await driver.wait(uiConnected(), 10000);
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('42', Key.RETURN);
@@ -164,6 +165,7 @@ describe('offline UI', async () => {
       })
     });
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     const input = await driver.findElement(By.css('input[type="text"]'));
 
     await input.sendKeys('42', Key.RETURN);
@@ -172,5 +174,44 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should display the "Connecting..." connectivity status when connecting for the first time', async() => {
+    const { driver } = await setupWebDriver({
+      createDirectline: options => {
+        const workingDirectLine = window.WebChat.createDirectLine(options);
+
+        return {
+          activity$: workingDirectLine.activity$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+
+          connectionStatus$: new Observable(observer => {
+            const subscription = workingDirectLine.connectionStatus$.subscribe( {
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                connectionStatus == 1 && observer.next(connectionStatus);
+              }
+            });
+
+            return subscription.unsubscribe();
+          })
+        };
+      },
+      pingBotOnLoad: false,
+      setup: () => new Promise(resolve => {
+        const scriptElement = document.createElement('script');
+
+        scriptElement.onload = resolve;
+        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
+
+        document.head.appendChild(scriptElement);
+
+      })
+    });
+
+    const base64PNG = await driver.takeScreenshot();
+
+    // Snapshots are intentionally not compared because the spinner will cause the snapshot to fail regularly
   });
 });

@@ -2,6 +2,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -12,6 +13,7 @@ describe('stacked without avatar initials', () => {
   test('4 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout stacked');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
@@ -23,6 +25,7 @@ describe('stacked without avatar initials', () => {
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
@@ -34,6 +37,7 @@ describe('stacked without avatar initials', () => {
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
@@ -49,6 +53,7 @@ describe('stacked with avatar initials', () => {
   test('4 attachments', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout stacked');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
@@ -60,6 +65,7 @@ describe('stacked with avatar initials', () => {
   test('1 attachment', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
@@ -71,6 +77,7 @@ describe('stacked with avatar initials', () => {
   test('1 attachment with wide screen', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
+    await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);

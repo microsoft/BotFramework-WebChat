@@ -49,6 +49,8 @@ function xMinutesAgo(dateStr) {
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Unable to connect.',
+  INITIAL_CONNECTION_NOTIFICATION: 'Connecting...',
+  INTERRUPTED_CONNECTION_NOTIFICATION: 'Network interruption occurred. Reconnecting…',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: 'Send failed. {Retry}.',
   SLOW_CONNECTION_NOTIFICATION: 'Taking longer than usual to connect.',
