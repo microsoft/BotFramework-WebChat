@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1767](https://github.com/Microsoft/BotFramework-WebChat/issues/1767). Remove `cursor: pointer` from buttons, by [@corinagum](https://github.com/corinagum) in PR [#1819](https://github.com/Microsoft/BotFramework-WebChat/pull/1819)
 - Fix [#1774](https://github.com/Microsoft/BotFramework-WebChat/issues/1774). Add `styleSetOption` to allow word break. Default to `break-word`, by [@corinagum](https://github.com/corinagum) in PR [#1832](https://github.com/Microsoft/BotFramework-WebChat/pull/1832)
 - Fix [#1847](https://github.com/Microsoft/BotFramework-WebChat/issues/1847). Bump react-say, which adds babel-runtime dependency, by [@corinagum](https://github.com/corinagum) in PR [#1849](https://github.com/Microsoft/BotFramework-WebChat/pull/1849)
+- Fix [#1768](https://github.com/Microsoft/BotFramework-WebChat/issues/1768). Add style option to modify all Send Box borders, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.3.0] - 2019-03-04
 
