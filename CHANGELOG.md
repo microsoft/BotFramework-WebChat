@@ -45,7 +45,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Added `cardActionMiddleware` to customize the behavior of card action, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
 - `bundle`: Add `watermark` and `streamUrl` parameters to createDirectLine, by [@corinagum](https://github.com/corinagum), in PR [#1817](https://github.com/Microsoft/BotFramework-WebChat/pull/1817)
 
-
 ### Changed
 
 - Bumped `botframework-directlinejs` to 0.11.4 in PR [#1783](https://github.com/Microsoft/BotFramework-WebChat/pull/1783)
