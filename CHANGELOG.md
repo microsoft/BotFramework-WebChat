@@ -23,7 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1767](https://github.com/Microsoft/BotFramework-WebChat/issues/1767). Remove `cursor: pointer` from buttons, by [@corinagum](https://github.com/corinagum) in PR [#1819](https://github.com/Microsoft/BotFramework-WebChat/pull/1819)
 - Fix [#1774](https://github.com/Microsoft/BotFramework-WebChat/issues/1774). Add `styleSetOption` to allow word break. Default to `break-word`, by [@corinagum](https://github.com/corinagum) in PR [#1832](https://github.com/Microsoft/BotFramework-WebChat/pull/1832)
 - Fix [#1847](https://github.com/Microsoft/BotFramework-WebChat/issues/1847). Bump react-say, which adds babel-runtime dependency, by [@corinagum](https://github.com/corinagum) in PR [#1849](https://github.com/Microsoft/BotFramework-WebChat/pull/1849)
+- Add [#1524](https://github.com/Microsoft/BotFramework-WebChat/issues/1524) Offline UI connecting for the first time, by [@corinagum](https://github.com/corinagum), in PR [#1866](https://github.com/Microsoft/BotFramework-WebChat/pull/1866)
 - Fix [#1768](https://github.com/Microsoft/BotFramework-WebChat/issues/1768). Add style option to modify all Send Box borders, by [@corinagum](https://github.com/corinagum) in PR [#1871](https://github.com/Microsoft/BotFramework-WebChat/pull/1871)
+- Fix [#1827](https://github.com/Microsoft/BotFramework-WebChat/issues/1827). Remove renderer for unknown activities, by [@corinagum](https://github.com/corinagum) in PR [#1873](https://github.com/Microsoft/BotFramework-WebChat/pull/1873)
 
 ## [4.3.0] - 2019-03-04
 
@@ -42,7 +44,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Allow root component height and width customization via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
 - `component`: Added `cardActionMiddleware` to customize the behavior of card action, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
 - `bundle`: Add `watermark` and `streamUrl` parameters to createDirectLine, by [@corinagum](https://github.com/corinagum), in PR [#1817](https://github.com/Microsoft/BotFramework-WebChat/pull/1817)
-- Add [#1523](https://github.com/Microsoft/BotFramework-WebChat/issues/1523) Offline UI connecting for the first time, by [@corinagum](https://github.com/corinagum), in PR [#1866](https://github.com/Microsoft/BotFramework-WebChat/pull/1866)
 
 ### Changed
 
