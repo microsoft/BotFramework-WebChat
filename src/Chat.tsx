@@ -294,6 +294,12 @@ export class Chat extends React.Component<ChatProps, State> {
                         this.setState({
                             display: true
                         });
+
+                        const { bot_display_options } = res.data;
+                        if (bot_display_options && bot_display_options.open_on_load) {
+                            this.toggle();
+                        }
+
                         this.store.dispatch<ChatActions>({
                             type: 'Set_Verification',
                             verification: {
