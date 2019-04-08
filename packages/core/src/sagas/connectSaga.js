@@ -181,7 +181,7 @@ export default function* () {
         let gotDisconnectAction;
 
         for (let numConnect = 0;; numConnect++) {
-          // This code section use all() because we want to make sure CONNECT_FULFILLED is dispatched
+          // This code section uses all() because we want to ensure CONNECT_FULFILLED is dispatched
           // before we dispatch any connection-related actions, including DISCONNECT_FULFILLING and RECONNECT_PENDING.
           const {
             disconnection: {
