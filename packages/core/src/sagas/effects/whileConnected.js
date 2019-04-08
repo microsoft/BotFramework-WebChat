@@ -7,15 +7,17 @@ import {
 
 import { CONNECT_FULFILLING } from '../../actions/connect';
 import { DISCONNECT_PENDING } from '../../actions/disconnect';
+import { RECONNECT_PENDING, RECONNECT_FULFILLING } from '../../actions/reconnect';
 
 export default function (fn) {
   return call(function* () {
     for (;;) {
-      const { meta: { userID, username }, payload: { directLine } } = yield take(CONNECT_FULFILLING);
+      const { meta: { userID, username }, payload: { directLine } } = yield take([CONNECT_FULFILLING, RECONNECT_FULFILLING]);
       const task = yield fork(fn, { directLine, userID, username });
 
-      // When we receive DISCONNECT_PENDING, the Direct Line connection is tearing down and should not be used.
-      yield take(DISCONNECT_PENDING);
+      // When we receive DISCONNECT_PENDING or RECONNECT_PENDING, the Direct Line connection is currently busy and should not be used.
+
+      yield take([DISCONNECT_PENDING, RECONNECT_PENDING]);
       yield cancel(task);
     }
   });
