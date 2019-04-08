@@ -79,7 +79,7 @@ const DEFAULT_OPTIONS = {
   // Timestamp
   timestampColor: DEFAULT_SUBTLE,
 
-  // Transcript overlay buttons (e.g. carousel and scroll to bottom)
+  // Transcript overlay buttons (e.g. carousel and suggested action flippers, scroll to bottom, etc.)
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',
