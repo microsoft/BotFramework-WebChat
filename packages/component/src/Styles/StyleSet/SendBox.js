@@ -13,7 +13,7 @@ export default function createSendBoxStyle({
       borderLeft: sendBoxBorderLeft,
       borderRight: sendBoxBorderRight,
       borderTop: sendBoxBorderTop,
-      height: sendBoxHeight
+      minHeight: sendBoxHeight
     }
   };
 }

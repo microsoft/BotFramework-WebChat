@@ -9,7 +9,7 @@ import connectToWebChat from '../connectToWebChat';
 const ROOT_CSS = css({
   display: 'flex',
 
-  '& > input': {
+  '& > div, input': {
     flex: 1
   }
 });
@@ -27,6 +27,18 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
     language,
     onChange: ({ target: { value } }) => {
       setSendBox(value);
+    },
+    onKeyPress: event => {
+      const { key, shiftKey } = event;
+
+      if (key === 'Enter' && !shiftKey) {
+        event.preventDefault();
+        if(sendBoxValue) {
+          setSendBox(sendBoxValue.trim());
+          scrollToEnd();
+          submitSendBox();
+        }
+      }
     },
     onSubmit: event => {
       event.preventDefault();
@@ -51,16 +63,19 @@ export default connectSendTextBox(
   disabled,
   language,
   onChange,
+  onKeyPress,
   onSubmit,
   styleSet,
   value
 }) => {
   const typeYourMessageString = localize('Type your message', language);
+  const { options: { sendBoxScrollingTextInput }} = styleSet;
 
   return (
     <form
       className={ classNames(
         ROOT_CSS + '',
+        styleSet.sendBoxTextarea + '',
         styleSet.sendBoxTextBox + '',
         (className || '') + '',
       ) }
@@ -69,7 +84,8 @@ export default connectSendTextBox(
       {
         <TypeFocusSinkContext.Consumer>
           { ({ sendFocusRef }) =>
-            <input
+           sendBoxScrollingTextInput
+            ? <input
               aria-label={ typeYourMessageString }
               data-id="webchat-sendbox-input"
               disabled={ disabled }
@@ -79,6 +95,20 @@ export default connectSendTextBox(
               type="text"
               value={ value }
             />
+            : <div>
+                <textarea 
+                  aria-label={ typeYourMessageString }
+                  data-id="webchat-sendbox-input"
+                  disabled={ disabled }
+                  onChange={ onChange }
+                  onKeyPress= { onKeyPress }
+                  placeholder={ typeYourMessageString }
+                  ref={ sendFocusRef }
+                  rows="1"
+                  value={ value }
+                />
+                <div>{ value + '\n' }</div>
+              </div>
           }
         </TypeFocusSinkContext.Consumer>
       }

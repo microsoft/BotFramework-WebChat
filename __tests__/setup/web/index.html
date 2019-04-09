@@ -90,7 +90,7 @@
       }
 
       async function main(options) {
-        let { createDirectLine, props, setup } = unmarshal(options);
+        let { createDirectLine, props, setup, styleSet } = unmarshal(options);
 
         props = unmarshal(props);
 
@@ -118,10 +118,12 @@
         });
 
         createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
+        styleSet || (styleSet = {});
 
         window.WebChat.renderWebChat({
           directLine: createDirectLine({ token }),
           store,
+          styleSet: window.WebChat.createStyleSet(styleSet),
           username: 'Happy Web Chat user',
           ...props
         }, document.getElementById('webchat'));
