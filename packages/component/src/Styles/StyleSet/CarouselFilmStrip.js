@@ -37,7 +37,7 @@ export default function ({
         }
       },
 
-      '& > .row': {
+      '& > .webchat__row': {
         marginLeft: paddingRegular
       }
     }

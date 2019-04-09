@@ -25,7 +25,7 @@ const ROOT_CSS = css({
     flexGrow: 1,
     overflow: 'hidden',
 
-    '& > .row': {
+    '& > .webchat__row': {
       display: 'flex',
 
       '& > .bubble, & > .timestamp': {
@@ -47,7 +47,7 @@ const ROOT_CSS = css({
   '&.from-user': {
     flexDirection: 'row-reverse',
 
-    '& > .content > .row': {
+    '& > .content > .webchat__row': {
       flexDirection: 'row-reverse'
     }
   }
@@ -119,7 +119,7 @@ export default connectStackedLayout(
         <div className="content">
           {
             activity.type === 'typing' ?
-              <div className="row typing">
+              <div className="webchat__row typing">
                 {
                   children({
                     activity,
@@ -129,7 +129,7 @@ export default connectStackedLayout(
                 <div className="filler" />
               </div>
             : !!activityDisplayText &&
-              <div className="row message">
+              <div className="webchat__row message">
                 <Bubble
                   aria-label={ ariaLabel }
                   className="bubble"
@@ -150,7 +150,7 @@ export default connectStackedLayout(
           }
           {
             (activity.attachments || []).map((attachment, index) =>
-              <div className="row attachment" key={ index }>
+              <div className="webchat__row attachment" key={ index }>
                 <Bubble
                   className="attachment bubble"
                   fromUser={ fromUser }
@@ -163,7 +163,7 @@ export default connectStackedLayout(
           }
           <div
             aria-hidden={ true }
-            className="row"
+            className="webchat__row"
           >
             { showSendStatus ?
                 <SendStatus activity={ activity } className="timestamp" />
