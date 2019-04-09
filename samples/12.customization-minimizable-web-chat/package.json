@@ -5,7 +5,7 @@
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/",
   "dependencies": {
     "botframework-webchat": ">= 0.0.0-0",
-    "memoize-one": "^4.0.2",
+    "memoize-one": "^5.0.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-scripts": "2.1.1"
