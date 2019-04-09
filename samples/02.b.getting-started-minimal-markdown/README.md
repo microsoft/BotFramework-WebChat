@@ -40,7 +40,7 @@ The `index.html` page has two main goals.
 
 This sample starts with the [minimal-bundle CDN sample](./../02.b.getting-started-minimal-bundle/README.md) as the base template.
 
-The only change needed in this sample is to add the Markdown-It dependency to our `head`.
+First, add the Markdown-It dependency to our `head`.
 
 ```diff
 …
@@ -50,8 +50,16 @@ The only change needed in this sample is to add the Markdown-It dependency to ou
 </head>
 …
 ```
-
 > For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat-minimal.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat-minimal.js", or lock down on a specific version with the following format: "/4.1.0/webchat-minimal.js".
+
+Next, add bind the markdown-it object to `renderMarkdown`:
+
+```diff
+…
+ directLine: window.WebChat.createDirectLine({ token }),
++         renderMarkdown: markdownIt.render.bind(markdownIt)
+        }, document.getElementById('webchat'));
+…
 
 ## Completed code
 
@@ -84,7 +92,7 @@ Here is the finished `index.html`:
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
-          renderMarkdown: markdownIt.render.bind(markdownIt)
++         renderMarkdown: markdownIt.render.bind(markdownIt)
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
