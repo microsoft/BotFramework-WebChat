@@ -12,6 +12,25 @@
   <a href="https://coveralls.io/github/Microsoft/BotFramework-WebChat?branch=master"><img src="https://coveralls.io/repos/github/Microsoft/BotFramework-WebChat/badge.svg?branch=master" alt="Coverage Status" /></a>
 </p>
 
+# Migrating from v3 to v4 of Web Chat
+
+There are three paths that migration might take when bumping to v4. First please compare your beginning scenarios:
+
+### My current site uses an `iframe` obtained from Azure Bot Services (which uses v3 of Web Chat). I want to upgrade to v4.
+- At this time, it is not possible to upgrade to v4 of Web Chat by pasting an `iframe` into your site. Please follow the implementation of sample [`01.a.getting-started-full-bundle`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle) to upgrade to Web Chat v4.
+
+### My bot's webpage rendering Web Chat v3 has little to no customization of add-ons that v3 did not provide. I did not fork Web Chat, and I am using the Web Chat CDN (`botchat.js`).
+- Please follow the implementation of sample [`01.c.getting-started-migration`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.c.getting-started-migration) to convert your webpage from v3 to v4 of Web Chat.
+
+### My bot's version of Web Chat is from a fork of v3 of Web Chat. I have implemented a lot of customization in my version of Web Chat, and I am concerned Web Chat v4 is not compatible with my needs.
+- One of our team's favorite things about v4 of Web Chat is the ability to add customization **without the need to fork Web Chat**. Although this creates additional overhead for v3 users that forked Web Chat, we will do our best to support customers making the bump. Please use the following suggestions:
+  1. Take a look at the implementation of sample [`01.c.getting-started-migration`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.c.getting-started-migration). This is a great starting place to get Web Chat up and running.
+  1. Next, please go through the [samples list](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples) to compare your customization requirements to what Web Chat has already provided support for. These samples are made up of commonly asked-for features for Web Chat.
+  1. If one or more of your features is not available in the samples, please look through our [open and closed issues](https://github.com/Microsoft/BotFramework-WebChat/issues?utf8=%E2%9C%93&q=is%3Aissue+) to search for requests for samples and/or customization support for a feature you are looking for. Adding your comment to open issues will help the team prioritize requests that are in high demand, and we encourage participation in our community.
+  1. If you did not find your feature in the list of open requests, please feel free to [file your own request](https://github.com/Microsoft/BotFramework-WebChat/issues/new). Just like the item above, other customers adding comments to your open issue will help us prioritize which features are most commonly needed across Web Chat users.
+  1. Finally, if you need your feature as soon as possible, we welcome [pull requests](https://github.com/Microsoft/BotFramework-WebChat/compare) to Web Chat. If you have the coding experience to implement the feature yourself, we would very much appreciate the additional support! Creating the feature yourself will mean that it is available for your use on Web Chat more quickly, and that other customers looking for the same or similar feature may make use of your contribution.
+
+
 # How to use
 
 > For previous versions of Web Chat (v3), visit the [Web Chat v3 branch](https://github.com/Microsoft/BotFramework-WebChat/tree/v3).
