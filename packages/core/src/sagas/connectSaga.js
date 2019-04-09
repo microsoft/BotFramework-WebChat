@@ -163,6 +163,8 @@ function* takeDisconnectAsError() {
 }
 
 function* runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
+  // We cannot use saga cancel() here, because cancelling saga will prohibit us from sending *_REJECTED.
+  // Without REJECTED, it impact our assumptions around PENDING/FULFILLED/REJECTED.
   return runAsyncEffect(
     baseAction,
     function* () {
@@ -219,6 +221,7 @@ export default function* () {
 
         // If it is not disconnect action, connectionStatus will not be undefined.
         if (connectionStatus === CONNECTING) {
+          // If DirectLineJS changed connectionStatus to CONNECTING, we will treat it as reconnect status.
           yield runAsyncEffectUntilDisconnect(
             {
               type: RECONNECT,
