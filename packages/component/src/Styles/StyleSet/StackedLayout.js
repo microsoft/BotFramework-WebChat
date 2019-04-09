@@ -8,7 +8,7 @@ export default function ({
     marginRight: paddingRegular,
 
     '& > .content': {
-      '& > .row': {
+      '& > .webchat-row': {
         '& > .bubble, & > .timestamp': {
           maxWidth: bubbleMaxWidth
         },

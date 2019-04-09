@@ -157,7 +157,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
           </ul>
           <div
             aria-hidden={ true }
-            className="row"
+            className="webchat-row"
           >
             {(
               activity.channelData
