@@ -4,7 +4,6 @@ import {
   cancel,
   cancelled,
   fork,
-  join,
   put,
   race,
   take,
@@ -199,63 +198,63 @@ export default function* () {
 
     // We will dispatch CONNECT_PENDING, wait for connect completed, errored, or cancelled (thru disconnect).
     // Then dispatch CONNECT_FULFILLED/CONNECT_REJECTED as needed.
-    const endDirectLine = yield runAsyncEffectUntilDisconnect(
-      {
-        type: CONNECT,
-        meta,
-        payload: { directLine }
-      },
-      () => call(connectSaga, directLine)
-    );
-
-    console.log(endDirectLine);
-
     try {
-      for (;;) {
-        // We are waiting for connection status change or disconnect action.
-        const {
-          updateConnectionStatusAction: {
-            payload: { connectionStatus } = {}
-          } = {}
-        } = yield race({
-          _: take(DISCONNECT),
-          updateConnectionStatusAction: take(UPDATE_CONNECTION_STATUS)
-        });
+      const endDirectLine = yield runAsyncEffectUntilDisconnect(
+        {
+          type: CONNECT,
+          meta,
+          payload: { directLine }
+        },
+        () => call(connectSaga, directLine)
+      );
 
-        // If it is not disconnect action, connectionStatus will not be undefined.
-        if (connectionStatus === CONNECTING) {
-          // If DirectLineJS changed connectionStatus to CONNECTING, we will treat it as reconnect status.
-          yield runAsyncEffectUntilDisconnect(
-            {
-              type: RECONNECT,
-              meta,
-              payload: { directLine }
-            },
-            () => call(reconnectSaga)
-          );
-        } else if (connectionStatus !== ONLINE) {
-          if (typeof connectionStatus !== 'undefined') {
-            // We need to kill the connection because DirectLineJS want to close it.
-            throw new Error(`Connection status changed to ${ connectionStatus }`);
-          } else {
-            // Someone dispatched disconnect action.
-            break;
+      try {
+        for (;;) {
+          // We are waiting for connection status change or disconnect action.
+          const {
+            updateConnectionStatusAction: {
+              payload: { connectionStatus } = {}
+            } = {}
+          } = yield race({
+            _: take(DISCONNECT),
+            updateConnectionStatusAction: take(UPDATE_CONNECTION_STATUS)
+          });
+
+          // If it is not disconnect action, connectionStatus will not be undefined.
+          if (connectionStatus === CONNECTING) {
+            // If DirectLineJS changed connectionStatus to CONNECTING, we will treat it as reconnect status.
+            yield runAsyncEffectUntilDisconnect(
+              {
+                type: RECONNECT,
+                meta,
+                payload: { directLine }
+              },
+              () => call(reconnectSaga)
+            );
+          } else if (connectionStatus !== ONLINE) {
+            if (typeof connectionStatus !== 'undefined') {
+              // We need to kill the connection because DirectLineJS want to close it.
+              throw new Error(`Connection status changed to ${ connectionStatus }`);
+            } else {
+              // Someone dispatched disconnect action.
+              break;
+            }
           }
         }
+      } finally {
+        endDirectLine();
       }
-    } catch (err) {
-      disconnectMeta = { err };
+    } catch (error) {
+      disconnectMeta = { error };
     } finally {
-      endDirectLine();
-
       yield cancel(updateConnectionStatusTask);
-    }
 
-    // Even if the connection is interrupted, we will still emit DISCONNECT_PENDING.
-    // This will makes handling logic easier. If CONNECT_FULFILLED, we guarantee DISCONNECT_PENDING.
-    yield forkPut(
-      { type: DISCONNECT_PENDING, meta: disconnectMeta, payload: { directLine } },
-      { type: DISCONNECT_FULFILLED, meta: disconnectMeta, payload: { directLine } }
-    );
+      // Even if the connection is interrupted, we will still emit DISCONNECT_PENDING.
+      // This will makes handling logic easier. If CONNECT_FULFILLED, we guarantee DISCONNECT_PENDING.
+      yield forkPut(
+        { type: DISCONNECT_PENDING, meta: disconnectMeta, payload: { directLine } },
+        { type: DISCONNECT_FULFILLED, meta: disconnectMeta, payload: { directLine } }
+      );
+    }
   }
 }
