@@ -13,28 +13,27 @@ export default function createSendBoxTextareaStyle({
     paddingTop: paddingRegular,
 
     '& > div': {
+      color: sendBoxTextColor,
       fontFamily: 'inherit',
       fontSize: 'inherit',
       height: '100%',
       maxHeight: sendBoxMaxHeight,
-      paddingBottom: 0,
-      paddingTop: 0,
       position:'relative',
       width: 'inherit',
 
       '& > div': {
-        color: sendBoxTextColor,
+        color: 'inherit',
         fontFamily: 'inherit',
         fontSize: 'inherit',
         height: '100%',
-        overflow: 'scroll',
+        overflowY: 'scroll',
         whiteSpace: 'pre-wrap',
-        width: '100%',
+        width: 'inherit',
       },
 
       '& > textarea': {
         border: 0,
-        color: sendBoxTextColor,
+        color: 'inherit',
         fontFamily: 'inherit',
         fontSize: 'inherit',
         height: '100%',

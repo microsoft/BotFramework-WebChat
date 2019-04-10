@@ -63,7 +63,7 @@ const DEFAULT_OPTIONS = {
   sendBoxBorderLeft: '',
   sendBoxBorderRight: '',
   sendBoxBorderTop: 'solid 1px #E6E6E6',
-  sendBoxScrollingTextInput: true,
+  sendBoxTextWrap: false,
 
   // Visually show spoken text
   showSpokenText: false,
