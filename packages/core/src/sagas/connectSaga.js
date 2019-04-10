@@ -175,6 +175,7 @@ function* runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
 
       return result;
     }
+  );
 }
 
 export default function* () {
