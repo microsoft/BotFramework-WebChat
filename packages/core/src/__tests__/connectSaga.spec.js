@@ -12,12 +12,17 @@ beforeEach(() => {
   const sagaMiddleware = createSagaMiddleware();
 
   store = createStore(
-    ({ actions = [] } = {}, action) => ({
-      actions: [
-        ...actions,
-        action
-      ]
-    }),
+    ({ actionTypes = [] } = {}, { type }) => {
+      if (/^DIRECT_LINE\/(DIS|RE)?CONNECT/.test(type)) {
+        // We are only interested in CONNECT_*, RECONNECT_*, and DISCONNECT_* actions.
+
+        return {
+          actionTypes: [...actionTypes, type]
+        };
+      } else {
+        return { actionTypes };
+      }
+    },
     applyMiddleware(sagaMiddleware)
   );
 
@@ -40,20 +45,6 @@ function sleep(ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function assertActionTypes(actual, expectedTypes) {
-  // console.log(store.getState().actions.map(({ type }) => type));
-
-  const actualTypes = [];
-
-  actual.forEach(({ type }) => {
-    if (expectedTypes[actualTypes.length] === type) {
-      actualTypes.push(type);
-    }
-  });
-
-  expect(expectedTypes).toEqual(actualTypes);
-}
-
 test('Connect successfully', async () => {
   store.dispatch({
     type: 'DIRECT_LINE/CONNECT',
@@ -65,7 +56,7 @@ test('Connect successfully', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING'
   ]);
@@ -74,7 +65,7 @@ test('Connect successfully', async () => {
 
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -93,7 +84,7 @@ test('Connect failed initially', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING'
   ]);
@@ -102,10 +93,12 @@ test('Connect failed initially', async () => {
 
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
-    'DIRECT_LINE/CONNECT_REJECTED'
+    'DIRECT_LINE/CONNECT_REJECTED',
+    'DIRECT_LINE/DISCONNECT_PENDING',
+    'DIRECT_LINE/DISCONNECT_FULFILLED'
   ]);
 });
 
@@ -121,7 +114,7 @@ test('Connection failed after established', async () => {
 
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -144,7 +137,7 @@ test('Request to disconnect before connection established', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/DISCONNECT',
@@ -171,7 +164,7 @@ test('Request to disconnect after connection established', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -195,7 +188,7 @@ test('Reconnect after connection established', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -208,7 +201,7 @@ test('Reconnect after connection established', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -233,7 +226,7 @@ test('Reconnect failed', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -263,7 +256,7 @@ test('Request to disconnect when reconnecting', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
@@ -295,7 +288,7 @@ test('Request to disconnect after reconnected', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  assertActionTypes(store.getState().actions, [
+  expect(store.getState().actionTypes).toEqual([
     'DIRECT_LINE/CONNECT',
     'DIRECT_LINE/CONNECT_PENDING',
     'DIRECT_LINE/CONNECT_FULFILLING',
