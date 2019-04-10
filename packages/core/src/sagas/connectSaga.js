@@ -1,11 +1,15 @@
 import {
+  all,
   call,
   cancel,
   cancelled,
   fork,
   put,
+  race,
   take,
 } from 'redux-saga/effects';
+
+import forkPut from './effects/forkPut';
 
 import { decode } from 'jsonwebtoken';
 import random from 'math-random';
@@ -16,13 +20,7 @@ import createPromiseQueue from '../createPromiseQueue';
 
 import { ConnectionStatus } from 'botframework-directlinejs';
 
-import {
-  CONNECT,
-  CONNECT_PENDING,
-  CONNECT_REJECTED,
-  CONNECT_FULFILLING,
-  CONNECT_FULFILLED
-} from '../actions/connect';
+import { CONNECT } from '../actions/connect';
 
 import {
   DISCONNECT,
@@ -30,63 +28,51 @@ import {
   DISCONNECT_FULFILLED
 } from '../actions/disconnect';
 
+import { RECONNECT } from '../actions/reconnect';
+
 const {
   Connecting: CONNECTING,
   Online: ONLINE,
-  ExpiredToken: EXPIRED_TOKEN,
-  FailedToConnect: FAILED_TO_CONNECT,
-  Ended: ENDED
+  Uninitialized: UNINITIALIZED
 } = ConnectionStatus;
 
 function randomUserID() {
-  return `r_${ random().toString( 36 ).substr( 2, 10 ) }`;
+  return `r_${ random().toString(36).substr(2, 10) }`;
 }
 
-function* observeAndPutConnectionStatusUpdate( directLine ) {
+function* observeAndPutConnectionStatusUpdate(directLine) {
   const connectionStatusQueue = createPromiseQueue();
-  const connectionStatusSubscription = directLine.connectionStatus$.subscribe( {
-    next: connectionStatusQueue.push
-  } );
+  const connectionStatusSubscription = directLine.connectionStatus$.subscribe({ next: connectionStatusQueue.push });
 
   try {
-    for ( ; ; ) {
-      const connectionStatus = yield call( connectionStatusQueue.shift );
+    for (;;) {
+      const connectionStatus = yield call(connectionStatusQueue.shift);
 
-      yield put( updateConnectionStatus( connectionStatus ) );
+      yield put(updateConnectionStatus(connectionStatus));
     }
   } finally {
     connectionStatusSubscription.unsubscribe();
   }
 }
 
-function negativeUpdateConnectionStatusAction( { payload, type } ) {
-  if ( type === UPDATE_CONNECTION_STATUS ) {
-    const { connectionStatus } = payload;
-
-    return (
-      connectionStatus !== CONNECTING
-      && connectionStatus !== ONLINE
-    );
-  }
-}
-
-function rectifyUserID( directLine, userIDFromAction ) {
+function rectifyUserID(directLine, userIDFromAction) {
   const { token } = directLine;
-  const { user: userIDFromToken } = decode( token ) || {};
+  const { user: userIDFromToken } = decode(token) || {};
 
-  if ( userIDFromToken ) {
-    if ( userIDFromAction && userIDFromAction !== userIDFromToken ) {
-      console.warn( 'Web Chat: user ID is both specified in the Direct Line token and passed in, will use the user ID from the token.' );
+  if (userIDFromToken) {
+    if (userIDFromAction && userIDFromAction !== userIDFromToken) {
+      console.warn('Web Chat: user ID is both specified in the Direct Line token and passed in, will use the user ID from the token.');
     }
 
     return userIDFromToken;
-  } else if ( userIDFromAction ) {
-    if ( typeof userIDFromAction !== 'string' ) {
-      console.warn( 'Web Chat: user ID must be a string.' );
+  } else if (userIDFromAction) {
+    if (typeof userIDFromAction !== 'string') {
+      console.warn('Web Chat: user ID must be a string.');
 
       return randomUserID();
-    } else if ( /^dl_/.test( userIDFromAction ) ) {
-      console.warn( 'Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.' );
+    } else if (/^dl_/.test(userIDFromAction)) {
+
+      console.warn('Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.');
 
       return randomUserID();
     }
@@ -97,99 +83,178 @@ function rectifyUserID( directLine, userIDFromAction ) {
   return userIDFromAction;
 }
 
-function* connectSaga( directLine ) {
+// We could make this a Promise instead of saga (function generator) to make the code cleaner, if:
+// 1. We found a way to cancel Promise
+// 2. subscribe() are shared amongst all subscriptions, e.g. turn Observable into events
+function* connectSaga(directLine) {
   // DirectLineJS starts the connection only after the first subscriber for activity$, not connectionStatus$
-  const activitySubscription = directLine.activity$.subscribe( { next: () => 0 } );
+  const activitySubscription = directLine.activity$.subscribe({ next: () => 0 });
+  const unsubscribeActivity = activitySubscription.unsubscribe.bind(activitySubscription);
 
   try {
-    for ( ; ; ) {
-      const { payload: { connectionStatus } } = yield take( UPDATE_CONNECTION_STATUS );
+    for (;;) {
+      const { payload: { connectionStatus } } = yield take(UPDATE_CONNECTION_STATUS);
 
-      // We will ignore DISCONNECT actions until we connect
-
-      if ( connectionStatus === ONLINE ) {
+      if (connectionStatus === ONLINE) {
         // TODO: [P2] DirectLineJS should kill the connection when we unsubscribe
         //       But currently in v3, DirectLineJS does not have this functionality
         //       Thus, we need to call "end()" explicitly
 
         return () => {
-          activitySubscription.unsubscribe();
+          unsubscribeActivity();
           directLine.end();
         };
-      } else if (
-        connectionStatus === ENDED
-        || connectionStatus === EXPIRED_TOKEN
-        || connectionStatus === FAILED_TO_CONNECT
-      ) {
-        // If we receive anything negative, we will assume the connection is errored out
-        throw new Error( 'Failed to connect' );
+      } else if (connectionStatus !== UNINITIALIZED && connectionStatus !== CONNECTING) {
+        throw new Error(`Failed to connect, DirectLineJS returned ${ connectionStatus }.`);
       }
     }
-  } finally {
-    if ( yield cancelled() ) {
-      activitySubscription.unsubscribe();
+  } catch (err) {
+    // We will unsubscribe if we failed to connect or got cancelled only.
+    // We should not unsubscribe in happy case, because DirectLineJS should relying on the subscription to connect/disconnect.
+    unsubscribeActivity();
 
-      throw new Error( 'Cancelled' );
+    throw err;
+  } finally {
+    if (yield cancelled()) {
+      unsubscribeActivity();
     }
   }
 }
 
+function* reconnectSaga() {
+  for (;;) {
+    const { payload: { connectionStatus } } = yield take(UPDATE_CONNECTION_STATUS);
+
+    if (connectionStatus === ONLINE) {
+      break;
+    } else if (connectionStatus !== CONNECTING) {
+      throw new Error(`Failed to reconnect, DirectLineJS returned ${ connectionStatus }.`);
+    }
+  }
+}
+
+// This is similar to behavior of redux-promise-middleware, but using saga instead of Promise.
+// We guarantee PENDING -> FULFILLING -> FULFILLED, or PENDING -> REJECTED. This will help us simplify logic in other part of code.
+// Note that after the saga is cancelled, subsequent call to put() will silently ignored.
+function* runAsyncEffect({ type, meta, payload }, callEffectFactory) {
+  try {
+    yield forkPut({ type: `${ type }_PENDING`, meta, payload });
+
+    const result = yield callEffectFactory();
+
+    yield forkPut(
+      { type: `${ type }_FULFILLING`, meta, payload },
+      { type: `${ type }_FULFILLED`, meta, payload }
+    );
+
+    return result;
+  } catch (payload) {
+    yield forkPut({ type: `${ type }_REJECTED`, error: true, meta, payload });
+
+    throw payload;
+  }
+}
+
+function* takeDisconnectAsError() {
+  yield take(DISCONNECT);
+
+  throw new Error('disconnected');
+}
+
+function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
+  // We cannot use saga cancel() here, because cancelling saga will prohibit us from sending *_REJECTED.
+  // Without REJECTED, it impact our assumptions around PENDING/FULFILLED/REJECTED.
+  return runAsyncEffect(
+    baseAction,
+    function* () {
+      const { result } = yield race({
+        _: takeDisconnectAsError(),
+        result: callEffectFactory()
+      });
+
+      return result;
+    }
+  );
+}
+
 export default function* () {
-  for ( ; ; ) {
+  for (;;) {
     const {
       payload: {
         directLine,
         userID: userIDFromAction,
         username
       }
-    } = yield take( CONNECT );
-    const updateConnectionStatusTask = yield fork( observeAndPutConnectionStatusUpdate, directLine );
+    } = yield take(CONNECT);
 
+    const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
+    let disconnectMeta;
+
+    // TODO: [P2] Checks if this attached subtask will get killed if the parent task is complete (peacefully), errored out, or cancelled.
+    const meta = {
+      userID: rectifyUserID(directLine, userIDFromAction),
+      username
+    };
+
+    // We will dispatch CONNECT_PENDING, wait for connect completed, errored, or cancelled (thru disconnect).
+    // Then dispatch CONNECT_FULFILLED/CONNECT_REJECTED as needed.
     try {
-      const meta = {
-        userID: rectifyUserID( directLine, userIDFromAction ),
-        username
-      };
-
-      let endDirectLine;
-
-      yield put( { type: CONNECT_PENDING, meta } );
+      const endDirectLine = yield runAsyncEffectUntilDisconnect(
+        {
+          type: CONNECT,
+          meta,
+          payload: { directLine }
+        },
+        () => call(connectSaga, directLine)
+      );
 
       try {
-        endDirectLine = yield call( connectSaga, directLine );
-      } catch ( err ) {
-        yield put( { type: CONNECT_REJECTED, error: true, meta, payload: err } );
+        for (;;) {
+          // We are waiting for connection status change or disconnect action.
+          const {
+            updateConnectionStatusAction: {
+              payload: { connectionStatus } = {}
+            } = {}
+          } = yield race({
+            _: take(DISCONNECT),
+            updateConnectionStatusAction: take(UPDATE_CONNECTION_STATUS)
+          });
 
-        continue;
-      }
-
-      // At this point, we established connection to Direct Line.
-      // If there are any errors from this point, we need to make sure we call endDirectLine() to release resources.
-      try {
-        yield put( { type: CONNECT_FULFILLING, meta, payload: { directLine } } );
-        yield put( { type: CONNECT_FULFILLED, meta, payload: { directLine } } );
-
-        const terminateAction = yield take( [ DISCONNECT, negativeUpdateConnectionStatusAction ] );
-
-        // Even if the connection is interrupted, we will still emit DISCONNECT_PENDING.
-        // This will makes handling logic easier. If CONNECT_FULFILLED, we guarantee DISCONNECT_PENDING.
-        yield put( { type: DISCONNECT_PENDING } );
-
-        endDirectLine();
-
-        if ( terminateAction.type === DISCONNECT ) {
-          // For graceful disconnect, we wait until Direct Line say it is ended
-          yield take( negativeUpdateConnectionStatusAction );
+          // If it is not disconnect action, connectionStatus will not be undefined.
+          if (connectionStatus === CONNECTING) {
+            // If DirectLineJS changed connectionStatus to CONNECTING, we will treat it as reconnect status.
+            yield runAsyncEffectUntilDisconnect(
+              {
+                type: RECONNECT,
+                meta,
+                payload: { directLine }
+              },
+              () => call(reconnectSaga)
+            );
+          } else if (connectionStatus !== ONLINE) {
+            if (typeof connectionStatus !== 'undefined') {
+              // We need to kill the connection because DirectLineJS want to close it.
+              throw new Error(`Connection status changed to ${ connectionStatus }`);
+            } else {
+              // Someone dispatched disconnect action.
+              break;
+            }
+          }
         }
       } finally {
-        // It is meaningless to continue to use the Direct Line object even disconnect failed.
-        // We will still unsubscribe to incoming activities and consider Direct Line object abandoned.
-        yield put( { type: DISCONNECT_FULFILLED } );
-
         endDirectLine();
       }
+    } catch (error) {
+      disconnectMeta = { error };
     } finally {
-      yield cancel( updateConnectionStatusTask );
+      yield cancel(updateConnectionStatusTask);
+
+      // Even if the connection is interrupted, we will still emit DISCONNECT_PENDING.
+      // This will makes handling logic easier. If CONNECT_FULFILLED, we guarantee DISCONNECT_PENDING.
+      yield forkPut(
+        { type: DISCONNECT_PENDING, meta: disconnectMeta, payload: { directLine } },
+        { type: DISCONNECT_FULFILLED, meta: disconnectMeta, payload: { directLine } }
+      );
     }
   }
 }

@@ -13,16 +13,17 @@ const DEFAULT_STATE = {
   timeoutCompleted: false
 };
 
-export default function ( state = DEFAULT_STATE, { type } ) {
-  switch ( type ) {
+export default function (state = DEFAULT_STATE, { type, meta }) {
+  switch (type) {
     case CONNECT_PENDING:
-      if ( state.status !== 'uninitialized' ) {
+      if (state.status !== 'uninitialized') {
         state = {
           ...state,
           status: 'reconnecting',
           timeoutCompleted: false
         };
       }
+
       break;
 
     case CONNECT_FULFILLED:
@@ -31,6 +32,7 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         status: 'connected',
         timeoutCompleted: false
       };
+
       break;
 
     case CONNECT_REJECTED:
@@ -39,6 +41,7 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         status: 'error',
         timeoutCompleted: false
       };
+
       break;
 
     case CONNECT_STILL_PENDING:
@@ -47,14 +50,16 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         status: 'connectingslow',
         timeoutCompleted: false
       };
+
       break;
 
     case DISCONNECT_FULFILLED:
       state = {
         ...state,
-        status: 'notconnected',
+        status: meta.error ? 'error' : 'notconnected',
         timeoutCompleted: false
       };
+
       break;
 
     case CONNECT_TIMEOUT_COMPLETE:
@@ -62,9 +67,11 @@ export default function ( state = DEFAULT_STATE, { type } ) {
         ...state,
         timeoutCompleted: true
       };
+
       break;
 
     default: break;
   }
+
   return state;
 }

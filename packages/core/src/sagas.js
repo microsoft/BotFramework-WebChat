@@ -22,6 +22,8 @@ import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInput
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 
 export default function* () {
+  // TODO: [P2] Since fork() silently catches all exceptions, we need to find a way to console.error them out.
+
   yield fork(clearSuggestedActionsOnPostActivitySaga);
   yield fork(connectionStatusUpdateSaga);
   yield fork(connectSaga);
