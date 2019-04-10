@@ -296,15 +296,15 @@ var carlaBot = (function () {
   // Carla bot loading handler
   var __carlaBotLoaders = (function () {
 
-    var _loadFaceBookSDK = function () {
-      (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-        fjs.parentNode.insertBefore(js, fjs);
-      })(document, 'script', 'facebook-jssdk');
-    };
+    // var _loadFaceBookSDK = function () {
+    //   (function(d, s, id){
+    //     var js, fjs = d.getElementsByTagName(s)[0];
+    //     if (d.getElementById(id)) return;
+    //     js = d.createElement(s); js.id = id;
+    //     js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+    //     fjs.parentNode.insertBefore(js, fjs);
+    //   })(document, 'script', 'facebook-jssdk');
+    // };
 
     var _chatToDisplay = function (chat) {
       switch (chat) {
@@ -355,54 +355,56 @@ var carlaBot = (function () {
     }
 
     var initFBChatPlugin = function (appId, fbPageId) {
-      if (!appId || !fbPageId) {
-        _chatToDisplay("web");
-        return false;
-      }
+      _chatToDisplay("web");
+      return false;
+      // if (!appId || !fbPageId) {
+      //   _chatToDisplay("web");
+      //   return false;
+      // }
 
-      _loadFaceBookSDK();
+      // _loadFaceBookSDK();
 
-      _fbRoot.style.display = "none";
-      _fbRoot.id = "fb-root";
-      document.body.appendChild(_fbRoot);
+      // _fbRoot.style.display = "none";
+      // _fbRoot.id = "fb-root";
+      // document.body.appendChild(_fbRoot);
 
-      var fbChatContainer = document.createElement('div');
-      fbChatContainer.className = 'fb-customerchat';
-      fbChatContainer.setAttribute('page_id', fbPageId);
-      fbChatContainer.setAttribute('theme_color', "#c4172c");
-      fbChatContainer.setAttribute('logged_in_greeting', __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT);
-      _fbRoot.appendChild(fbChatContainer);
+      // var fbChatContainer = document.createElement('div');
+      // fbChatContainer.className = 'fb-customerchat';
+      // fbChatContainer.setAttribute('page_id', fbPageId);
+      // fbChatContainer.setAttribute('theme_color', "#c4172c");
+      // fbChatContainer.setAttribute('logged_in_greeting', __carlaBotDefaults.KIAN_CHAT_CONTAINER_DEFAULT_HEADER_TEXT);
+      // _fbRoot.appendChild(fbChatContainer);
 
-        // FB To Call This After It Has Loaded
-      window.fbAsyncInit = function() {
-        FB.init({
-            appId: appId,
-            status: true,
-            cookie: true,
-            autoLogAppEvents: true,
-            xfbml: true,
-            version: 'v3.2'
-        });
-        FB.getLoginStatus(function(response) {
-          if (response.status === 'connected') { // Logged In And Has Authorized App
-            _chatToDisplay("fb");
-          } else if (response.status === 'not_authorized') { // Logged In But Hasn't Authorized App
-            FB.login();
-          } else { // Not Logged In
-            _chatToDisplay("web");
-          }
-        });
+      //   // FB To Call This After It Has Loaded
+      // window.fbAsyncInit = function() {
+      //   FB.init({
+      //       appId: appId,
+      //       status: true,
+      //       cookie: true,
+      //       autoLogAppEvents: true,
+      //       xfbml: true,
+      //       version: 'v3.2'
+      //   });
+      //   FB.getLoginStatus(function(response) {
+      //     if (response.status === 'connected') { // Logged In And Has Authorized App
+      //       _chatToDisplay("fb");
+      //     } else if (response.status === 'not_authorized') { // Logged In But Hasn't Authorized App
+      //       FB.login();
+      //     } else { // Not Logged In
+      //       _chatToDisplay("web");
+      //     }
+      //   });
 
-        // Subscribe To Authentication Events Especially After When User Gives Authorization To App
-        FB.Event.subscribe('auth.statusChange', function(response) {
-          if (response.status === 'connected') {
-            _chatToDisplay("fb");
-          } else {
-            _chatToDisplay("web");
-          }
-        });
+      //   // Subscribe To Authentication Events Especially After When User Gives Authorization To App
+      //   FB.Event.subscribe('auth.statusChange', function(response) {
+      //     if (response.status === 'connected') {
+      //       _chatToDisplay("fb");
+      //     } else {
+      //       _chatToDisplay("web");
+      //     }
+      //   });
 
-      };
+      // };
 
     };
 
