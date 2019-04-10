@@ -162,13 +162,13 @@ function* takeDisconnectAsError() {
   throw new Error('disconnected');
 }
 
-function* runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
+function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   // We cannot use saga cancel() here, because cancelling saga will prohibit us from sending *_REJECTED.
   // Without REJECTED, it impact our assumptions around PENDING/FULFILLED/REJECTED.
   return runAsyncEffect(
     baseAction,
     function* () {
-      const { result } = race({
+      const { result } = yield race({
         _: takeDisconnectAsError(),
         result: callEffectFactory()
       });
@@ -207,6 +207,8 @@ export default function* () {
       },
       () => call(connectSaga, directLine)
     );
+
+    console.log(endDirectLine);
 
     try {
       for (;;) {
