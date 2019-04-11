@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Allow root component height and width customization via `styleOptions.rootHeight` and `styleOptions.rootWidth`, by [@tonyanziano](https://github.com/tonyanziano), in PR [#1702](https://github.com/Microsoft/BotFramework-WebChat/pull/1702)
 - `component`: Added `cardActionMiddleware` to customize the behavior of card action, by [@compulim](https://github.com/compulim), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
 - `bundle`: Add `watermark` and `streamUrl` parameters to createDirectLine, by [@corinagum](https://github.com/corinagum), in PR [#1817](https://github.com/Microsoft/BotFramework-WebChat/pull/1817)
-- `component`: Added `textarea` option to `SendBox` per issues [#17](https://github.com/Microsoft/BotFramework-WebChat/issues/17) and [#124](https://github.com/Microsoft/BotFramework-WebChat/issues/124), by [@tdurnford](https://github.com/tdurnford), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- `component`: Added `textarea` option to `SendBox` per issues [#17](https://github.com/Microsoft/BotFramework-WebChat/issues/17) and [#124](https://github.com/Microsoft/BotFramework-WebChat/issues/124), by [@tdurnford](https://github.com/tdurnford), in PR [#1889](https://github.com/Microsoft/BotFramework-WebChat/pull/1889)
 
 ### Changed
 
