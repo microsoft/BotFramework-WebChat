@@ -1,6 +1,8 @@
 import { By, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+
+import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 
 // selenium-webdriver API doc:
@@ -80,6 +82,7 @@ test('textarea send on enter', async () => {
 
   await textarea.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', Key.ENTER);
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
