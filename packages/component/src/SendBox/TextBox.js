@@ -69,7 +69,7 @@ export default connectSendTextBox(
   value
 }) => {
   const typeYourMessageString = localize('Type your message', language);
-  const { options: { sendBoxScrollingTextInput }} = styleSet;
+  const { options: { sendBoxTextWrap }} = styleSet;
 
   return (
     <form
@@ -84,7 +84,7 @@ export default connectSendTextBox(
       {
         <TypeFocusSinkContext.Consumer>
           { ({ sendFocusRef }) =>
-           sendBoxScrollingTextInput
+           !sendBoxTextWrap
             ? <input
               aria-label={ typeYourMessageString }
               data-id="webchat-sendbox-input"
