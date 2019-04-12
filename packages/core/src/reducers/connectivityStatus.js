@@ -6,6 +6,11 @@ import {
   CONNECT_TIMEOUT_COMPLETE
 } from '../actions/connect';
 
+import {
+  RECONNECT_PENDING,
+  RECONNECT_FULFILLED
+} from '../actions/reconnect';
+
 import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
 
 const DEFAULT_STATE = {
@@ -26,12 +31,30 @@ export default function (state = DEFAULT_STATE, { type, meta }) {
 
       break;
 
+    case RECONNECT_PENDING:
+      state = {
+        ...state,
+        status: 'reconnecting',
+        timeoutCompleted: false
+      }
+
+      break;
+
     case CONNECT_FULFILLED:
       state = {
         ...state,
         status: 'connected',
         timeoutCompleted: false
       };
+
+      break;
+
+    case RECONNECT_FULFILLED:
+      state = {
+        ...state,
+        status: 'reconnected',
+        timeoutCompleted: false
+      }
 
       break;
 

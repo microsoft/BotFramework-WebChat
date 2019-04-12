@@ -18,19 +18,21 @@ class connectConnectivityAlert extends React.Component {
     }
 
     if ( status === 'uninitialized' || ( status === 'connected' && timeoutCompleted === false && connectingSlow === false ) ) {
-      this.timerId = setTimeout( () => {
-        if ( status === 'connected' ) {
-          this.props.dispatch( { type: 'DIRECT_LINE/CONNECT_TIMEOUT_COMPLETE' } );
-        }
+      if ( status === 'connected' ) {
+        this.timerId = this.dispatchConnectivityTimeout();
         this.timerId = null;
-      }, 400 );
+      }
       return (
         <React.Fragment>
           <SpinnerAnimation />
           {localize( 'INITIAL_CONNECTION_NOTIFICATION', language )}
         </React.Fragment>
       );
-    } else if ( status === 'reconnecting' ) {
+    } else if ( status === 'reconnecting' || (status === 'reconnected' && timeoutCompleted === false && connectingSlow === false)) {
+      if ( status === 'reconnected' ) {
+        this.timerId = this.dispatchConnectivityTimeout();
+        this.timerId = null;
+      }
       return (
         <React.Fragment>
           <SpinnerAnimation />
@@ -52,6 +54,12 @@ class connectConnectivityAlert extends React.Component {
         </React.Fragment>
       );
     }
+  }
+
+  dispatchConnectivityTimeout() {
+    setTimeout( () => {
+      this.props.dispatch( { type: 'DIRECT_LINE/CONNECT_TIMEOUT_COMPLETE' } );
+    }, 400 );
   }
 
   constructor( props ) {
@@ -95,7 +103,7 @@ class connectConnectivityAlert extends React.Component {
         className={classnames( {
           [ styleSet.errorNotification ]: ( status === 'error' ),
           [ styleSet.warningNotification ]: status === 'connectingslow' || status === 'reconnecting',
-          [ styleSet.connectivityNotification ]: status === 'connected' || status === 'uninitialized' || status === 'reconnecting'
+          [ styleSet.connectivityNotification ]: status === 'connected' || status === 'uninitialized' || status === 'reconnecting' || status === 'reconnected'
         } )}
         role="status"
       >
