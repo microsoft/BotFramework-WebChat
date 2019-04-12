@@ -296,7 +296,7 @@ export interface Verification {
 
 export interface ConnectionState {
     connectionStatus: ConnectionStatus;
-    botConnection: IBotConnection;
+    botConnection: IBotConnection & { conversationId?: string };
     selectedActivity: BehaviorSubject<ActivityOrID>;
     user: User;
     bot: User;
