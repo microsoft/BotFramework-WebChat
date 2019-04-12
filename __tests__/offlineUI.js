@@ -77,7 +77,7 @@ describe('offline UI', async () => {
     await driver.wait(async driver => {
       return await driver.executeScript(() =>
         !!~window.WebChatTest.actions.findIndex(({ type }) => type === 'DIRECT_LINE/CONNECT_REJECTED')
-      );
+     );
     }, timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
@@ -186,15 +186,15 @@ describe('offline UI', async () => {
           postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
 
           connectionStatus$: new Observable(observer => {
-            const subscription = workingDirectLine.connectionStatus$.subscribe( {
+            const subscription = workingDirectLine.connectionStatus$.subscribe({
               complete: () => observer.complete(),
               error: err => observer.error(err),
               next: connectionStatus => {
-                connectionStatus == 1 && observer.next(connectionStatus);
+                connectionStatus === 1 && observer.next(connectionStatus);
               }
             });
 
-            return subscription.unsubscribe();
+            return () => subscription.unsubscribe();
           })
         };
       },
@@ -213,5 +213,82 @@ describe('offline UI', async () => {
     const base64PNG = await driver.takeScreenshot();
 
     // Snapshots are intentionally not compared because the spinner will cause the snapshot to fail regularly
+  });
+
+  test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', async () => {
+    const { driver } = await setupWebDriver({
+      createDirectLine: options => {
+        const reconnectingDirectLine = window.WebChat.createDirectLine(options);
+
+        return {
+          activity$: reconnectingDirectLine.activity$,
+          postActivity: reconnectingDirectLine.postActivity.bind(reconnectingDirectLine),
+
+          connectionStatus$: new Observable(observer => {
+            const subscription = reconnectingDirectLine.connectionStatus$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                observer.next(connectionStatus);
+                connectionStatus === 2 && observer.next(1);
+              }
+            });
+
+            return () => subscription.unsubscribe();
+          })
+        };
+      },
+      pingBotOnLoad: false,
+      setup: () => new Promise(resolve => {
+        const scriptElement = document.createElement('script');
+        scriptElement.onload = resolve;
+        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
+
+        document.head.appendChild(scriptElement);
+      })
+    });
+
+    await driver.sleep(600);
+    const base64PNG = await driver.takeScreenshot();
+
+    // Snapshots are intentionally not compared because the spinner will cause the snapshot to fail regularly
+  });
+
+  test('should show "slow to connect" UI when reconnection is slow', async () => {
+    const { driver } = await setupWebDriver({
+      createDirectLine: options => {
+        const reconnectingDirectLine = window.WebChat.createDirectLine(options);
+
+        return {
+          activity$: reconnectingDirectLine.activity$,
+          postActivity: reconnectingDirectLine.postActivity.bind(reconnectingDirectLine),
+
+          connectionStatus$: new Observable(observer => {
+            const subscription = reconnectingDirectLine.connectionStatus$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                observer.next(connectionStatus);
+                connectionStatus === 2 && observer.next(1);
+              }
+            });
+
+            return () => subscription.unsubscribe();
+          })
+        };
+      },
+      pingBotOnLoad: false,
+      setup: () => new Promise(resolve => {
+        const scriptElement = document.createElement('script');
+        scriptElement.onload = resolve;
+        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
+
+        document.head.appendChild(scriptElement);
+      })
+    });
+
+    await driver.sleep(17000);
+    const base64PNG = await driver.takeScreenshot();
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });
