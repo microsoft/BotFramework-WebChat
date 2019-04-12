@@ -1,5 +1,4 @@
 export default function createSendBoxTextBoxStyle({
-  paddingRegular,
   primaryFont,
   sendBoxTextColor
 }) {
@@ -14,10 +13,7 @@ export default function createSendBoxTextBoxStyle({
       fontSize: 'inherit',
       height: '100%',
       outline: 0,
-      paddingBottom: 0,
-      paddingLeft: paddingRegular,
-      paddingRight: paddingRegular,
-      paddingTop: 0
+      padding: 0
     }
   };
 }

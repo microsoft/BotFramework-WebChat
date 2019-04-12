@@ -19,6 +19,7 @@ import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
+import createSendBoxTextareaStyle from './StyleSet/SendBoxTextarea';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
@@ -69,6 +70,7 @@ export default function createStyleSet(options) {
     scrollToEndButton: createScrollToEndButtonStyle(options),
     sendBox: createSendBoxStyle(options),
     sendBoxButton: createSendBoxButtonStyle(options),
+    sendBoxTextarea: createSendBoxTextareaStyle(options),
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
     sendStatus: createSendStatusStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),
