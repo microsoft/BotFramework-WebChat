@@ -1,0 +1,35 @@
+{
+  "name": "botframework-webchat-embed",
+  "version": "4.0.0-0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "npm run build:babel && webpack-cli --mode development",
+    "build:babel": "babel --extensions .js,.ts --ignore **/*.spec.js,**/*.spec.ts,**/*.test.js,**/*.test.ts,__test__/**/*.js,__test__/**/*.ts --out-dir lib --source-maps inline --verbose src",
+    "build:webpack": "webpack-cli --mode development",
+    "clean": "npm run clean:dist && npm run clean:lib",
+    "clean:dist": "rimraf dist",
+    "clean:lib": "rimraf lib",
+    "prepublishOnly": "npm run build:babel && webpack-cli",
+    "watch": "concurrently --names \"babel,webpack\" \"npm run watch:babel\" \"npm run watch:webpack\"",
+    "watch:babel": "npm run build:babel -- --watch",
+    "watch:webpack": "webpack-cli --config webpack-watch.config.js --watch"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "html-webpack-plugin": "^3.2.0",
+    "pug": "^2.0.3",
+    "pug-loader": "^2.4.0",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0",
+    "webpack-visualizer-plugin": "^0.1.11"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.4.3"
+  }
+}
