@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Added handling of reconnection, by [@compulim](https://github.com/compulim), in PR [#1880](https://github.com/Microsoft/BotFramework-WebChat/pull/1880)
+- Deployment: Bumps to [`blobxfer@1.7.1`](https://github.com/azure/blobxfer/), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
+- Deployment: Adds `charset` to content type of JavaScript files on CDN, in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
 
 ### Fixed
 - Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
