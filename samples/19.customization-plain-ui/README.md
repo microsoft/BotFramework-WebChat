@@ -19,7 +19,7 @@ This sample shows how to use Web Chat without its UI component.
 
 This project is based on [`create-react-app`](https://github.com/facebook/create-react-app).
 
-The completed code contains multiple files. You can start by reading [`App.js`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/19.customization-plain-ui/src/App.js).
+The completed code contains multiple files. You can start by reading [`App.js`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/19.customization-plain-ui/src/App.js), which replaces the default Web Chat renderer with PlainWebChat and uses its own UI.
 
 ## Goals of this bot
 
