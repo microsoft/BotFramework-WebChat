@@ -1,6 +1,6 @@
 import createElement from '../createElement';
 
-export default function setupLegacyVersionFamily({ botId, webChatEmbedURL }, { secret, token }, features = []) {
+export default function setupLegacyVersionFamily({ botId, webChatLegacyEmbedURL }, { secret, token }, features = []) {
   return new Promise((resolve, reject) => {
     // Version 1 also depends on your token.
     // If you are using a token on Aries, you get Aries (v1).
@@ -26,7 +26,7 @@ export default function setupLegacyVersionFamily({ botId, webChatEmbedURL }, { s
           {
             error: reject,
             load: resolve,
-            src: `${ webChatEmbedURL }embed/${ encodeURI(botId) }?${ params }`,
+            src: `${ webChatLegacyEmbedURL }/${ encodeURI(botId) }?${ params }`,
             style: {
               border: '0',
               height: '100%',
