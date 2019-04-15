@@ -21,7 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
 - Fix [#1767](https://github.com/Microsoft/BotFramework-WebChat/issues/1767). Remove `cursor: pointer` from buttons, by [@corinagum](https://github.com/corinagum) in PR [#1819](https://github.com/Microsoft/BotFramework-WebChat/pull/1819)
-- `component`: Bump to [`react-film@1.2.0`](https://npmjs.com/package/react-film/) by [@corinagum](https://github.com/corinagum), in PR [#1826](https://github.com/Microsoft/BotFramework-WebChat/pull/1826)
+
+### Changed
+- `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1826](https://github.com/Microsoft/BotFramework-WebChat/pull/1826)
 
 ## [4.3.0] - 2019-03-04
 

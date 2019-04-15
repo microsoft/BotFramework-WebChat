@@ -94,7 +94,8 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
     children,
     language,
     className,
-    filmContext,
+    itemContainerRef,
+    scrollableRef,
     styleSet,
     timestampClassName
   }) => {
@@ -114,7 +115,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
           styleSet.carouselFilmStrip + '',
           (className || '') + ''
         ) }
-        ref={ filmContext._setFilmStripRef }
+        ref={ scrollableRef }
       >
         <Avatar
           aria-hidden={ true }
@@ -141,7 +142,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
                 <div className="filler" />
               </div>
           }
-          <ul>
+          <ul ref={ itemContainerRef }>
             {
               activity.attachments.map((attachment, index) =>
                 <li key={ index }>
@@ -182,9 +183,10 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
 
 export default props =>
   <FilmContext.Consumer>
-    { filmContext =>
+    { ({ itemContainerRef, scrollableRef }) =>
       <ConnectedCarouselFilmStrip
-        filmContext={ filmContext }
+        itemContainerRef={ itemContainerRef }
+        scrollableRef={ scrollableRef }
         { ...props }
       />
     }
