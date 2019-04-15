@@ -1,6 +1,6 @@
 # Customizing Web Chat with a plain HTML UI
 
-This sample show how to use Web Chat without its UI component.
+This sample shows how to use Web Chat without its UI component.
 
 # Test out the hosted sample
 
