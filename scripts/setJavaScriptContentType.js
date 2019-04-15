@@ -54,4 +54,4 @@ async function main(accountName, accountKey, container, prefix) {
   );
 }
 
-main(...process.argv.slice(2)).catch(err => console.error(err));
+main(process.env.CDN_BLOB_ACCOUNT, process.env.CDN_BLOB_KEY, ...process.argv.slice(2)).catch(err => console.error(err));
