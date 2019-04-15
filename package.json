@@ -64,6 +64,7 @@
     "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
   },
   "devDependencies": {
+    "@azure/storage-blob": "^10.3.0",
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
