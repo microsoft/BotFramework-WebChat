@@ -3,7 +3,7 @@ import React from 'react';
 
 const PostBackButton = ({ cardAction, sendPostBack }) =>
   <button
-    // Web Chat do the heavylifting for us by exposing a "sendPostBack" function.
+    // Web Chat does the heavylifting for us by exposing a "sendPostBack" function.
     onClick={ () => sendPostBack(cardAction.value) }
     type="button"
   >
