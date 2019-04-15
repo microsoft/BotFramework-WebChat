@@ -35,6 +35,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1826](https://github.com/Microsoft/BotFramework-WebChat/pull/1826)
 
+### Changed
+- `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1826](https://github.com/Microsoft/BotFramework-WebChat/pull/1826)
+
 ## [4.3.0] - 2019-03-04
 
 ### Added
