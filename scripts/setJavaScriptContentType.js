@@ -2,10 +2,10 @@ const { extname } = require('path');
 
 const {
   Aborter,
+  AnonymousCredential,
   BlobURL,
   ContainerURL,
   ServiceURL,
-  SharedKeyCredential,
   StorageURL
 } = require('@azure/storage-blob');
 
@@ -14,11 +14,11 @@ const BLOB_OPERATION_TIMEOUT = 15000;
 const TARGET_EXTNAME = '.js';
 const TARGET_CONTENT_TYPE = 'text/javascript; charset=utf-8';
 
-async function main(accountName, accountKey, container, prefix) {
+async function main(accountName, accountSAS, container, prefix) {
   const containerURL = ContainerURL.fromServiceURL(
     new ServiceURL(
-      `https://${ accountName }.blob.core.windows.net`,
-      StorageURL.newPipeline(new SharedKeyCredential(accountName, accountKey))
+      `https://${ accountName }.blob.core.windows.net${ accountSAS }`,
+      StorageURL.newPipeline(new AnonymousCredential())
     ),
     container
   );
