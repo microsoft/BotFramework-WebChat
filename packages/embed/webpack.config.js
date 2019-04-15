@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Visualizer = require('webpack-visualizer-plugin');
 
@@ -18,6 +19,9 @@ module.exports = {
     path: resolve(__dirname, 'dist')
   },
   plugins: [
+    new CopyWebpackPlugin([
+      { from: 'public', to: '.' }
+    ]),
     new HtmlWebpackPlugin({
       inject: false,
       template: 'src/index.pug',

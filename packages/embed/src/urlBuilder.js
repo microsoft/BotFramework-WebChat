@@ -1,5 +1,4 @@
-const EMBED_CONFIGURATION_BASE_URL = 'https://bc638d4a.ngrok.io/embedconfig/';
-const SERVICING_PLAN_BASE_URL = 'https://cdnbotframeworkdev.blob.core.windows.net/webchat-servicingplan/';
+const EMBED_CONFIGURATION_BASE_URL = 'https://2ed06e2b.ngrok.io/embedconfig/';
 
 function embedConfigurationURL(botId, { secret, token, userId }) {
   const urlSearchParams = new URLSearchParams({
@@ -11,17 +10,8 @@ function embedConfigurationURL(botId, { secret, token, userId }) {
   return `${ EMBED_CONFIGURATION_BASE_URL }${ encodeURI(botId) }?${ urlSearchParams.toString() }`
 }
 
-function servicingPlanURL(environment = 'production') {
-  switch (environment) {
-    case 'scratch':
-      return `${ SERVICING_PLAN_BASE_URL }scratch.json`;
-
-    case 'ppe':
-      return `${ SERVICING_PLAN_BASE_URL }ppe.json`;
-
-    default:
-      return `${ SERVICING_PLAN_BASE_URL }production.json`;
-  }
+function servicingPlanURL() {
+  return 'servicingplan.json';
 }
 
 export {

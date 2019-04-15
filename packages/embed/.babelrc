@@ -1,11 +1,12 @@
 {
   "plugins": [
-    "@babel/plugin-proposal-object-rest-spread"
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-transform-runtime"
   ],
   "presets": [
     ["@babel/preset-env", {
       "targets": {
-        "browsers": ["last 2 versions"]
+        "ie": "11"
       },
       "modules": "commonjs"
     }]

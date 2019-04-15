@@ -1,20 +1,13 @@
-import '@babel/polyfill';
+// import '@babel/polyfill';
 
+import { embedConfigurationURL, servicingPlanURL } from './urlBuilder';
+import { error, log, warn } from './logger';
 import arrayify from './arrayify';
-import createElement from './createElement';
 import fetchJSON from './fetchJSON';
 import loadAsset from './loadAsset';
-import { embedConfigurationURL, servicingPlanURL } from './urlBuilder';
+import setup from './setups/index';
 
 const MAX_VERSION_REDIRECTIONS = 10;
-
-function createLog(log, prefix) {
-  return message => log([prefix, message].join(' '));
-}
-
-const error = createLog(console.error.bind(console), 'Web Chat:');
-const log = createLog(console.log.bind(console), 'Web Chat:');
-const warn = createLog(console.warn.bind(console), 'Web Chat:');
 
 function execRedirectRules(bot, redirects, version) {
   const featurePattern = /^feature:(.+)/;
@@ -103,117 +96,6 @@ function findService(servicingPlan, bot, requestedVersion = 'default') {
   throw new Error(`Maximum version redirections exceeded, probably problem with our servicing plan.`);
 }
 
-async function getBingSpeechToken(directLineToken, bingSpeechTokenURL) {
-  const res = await fetch(
-    `${ bingSpeechTokenURL }?goodForInMinutes=10`,
-    {
-      headers: { Authorization: `Bearer ${ directLineToken }` }
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error('Failed to get Bing Speech token');
-  }
-
-  const { access_Token: accessToken } = await res.json();
-
-  return accessToken;
-}
-
-function setupVersionFamily1({ botId }, { secret, token }) {
-  // Version 1 also depends on your token.
-  // If you are using a token on Aries, you get Aries (v1).
-  // If you are using a token on Scorpio, you get Scorpio (v3).
-
-  const root = document.getElementById('root');
-  const params = new URLSearchParams();
-
-  secret && params.set('s', secret);
-  token && params.set('t', token);
-
-  root.appendChild(createElement(
-    'iframe',
-    { src: `https://webchat.botframework.com/embed/${ encodeURI(botId) }?${ params }` }
-  ));
-
-  root.style = 'overflow: hidden;';
-}
-
-function setupVersionFamily3(
-  {
-    botId,
-    directLineURL: domain,
-    speechTokenURL,
-    userId,
-    webSocket
-  },
-  {
-    secret,
-    token,
-    username
-  }
-) {
-  let speechOptions;
-
-  if (speechTokenURL && speechTokenURL.bingSpeech && token) {
-    speechOptions = {
-      speechRecognizer: new CognitiveServices.SpeechRecognizer({
-        fetchCallback: () => getBingSpeechToken(token, speechTokenURL.bingSpeech),
-        fetchOnExpiryCallback: () => getBingSpeechToken(token, speechTokenURL.bingSpeech)
-      }),
-      speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
-    };
-  }
-
-  window.BotChat.App({
-    directLine: { domain, secret, token, webSocket },
-    bot: { id: botId },
-    locale: navigator.language,
-    resize: 'window',
-    speechOptions,
-    user: {
-      // Starting from Web Chat v4, we will automatically randomize a user ID
-      // TODO: Use RNG or server-generated user ID
-      id: userId,
-      name: username || 'You'
-    }
-  }, document.getElementById('root'));
-}
-
-function setupVersionFamily4(
-  {
-    botIconURL,
-    directLineURL: domain,
-    userId,
-    webSocket
-  }, {
-    secret,
-    token,
-    username
-  }
-) {
-  const directLine = window.WebChat.createDirectLine({ domain, secret, token, webSocket });
-
-  // TODO: Should we support Bing Speech in Web Chat v4?
-
-  window.WebChat.renderWebChat({
-    directLine,
-    locale: navigator.language,
-    styleOptions: {
-      // TODO: We could move this line inside ASP.NET handler.
-      //       This is essentially filling it out with default URL if it is empty.
-      //       But in Web Chat v4, we prefer it to be empty instead.
-      botAvatarImage: botIconURL === '//bot-framework.azureedge.net/bot-icons-v1/bot-framework-default.png' ? null : botIconURL
-    },
-    userId,
-    username
-  }, document.getElementById('root'));
-
-  const webChatVersionMeta = document.querySelector('head > meta[name="botframework-webchat:bundle:version"]');
-
-  webChatVersionMeta && log(`Web Chat v4 is loaded and reporting version "${ webChatVersionMeta.getAttribute('content') }".`);
-}
-
 function parseParams(search) {
   const params = new URLSearchParams(search);
 
@@ -247,8 +129,10 @@ async function main() {
     fetchJSON(
       embedConfigurationURL(botId, { secret, token, userId: params.userId }),
       { credentials: 'include' }
-    ).catch(() => Promise.reject('Failed to fetch bot definition.')),
-    fetchJSON(servicingPlanURL('scratch')).catch(() => Promise.reject(`Failed to fetch servicing plan.`))
+    ).catch(() => Promise.reject('Failed to fetch bot configuration.')),
+    fetchJSON(
+      servicingPlanURL()
+    ).catch(() => Promise.reject(`Failed to fetch servicing plan.`))
   ]);
 
   const {
@@ -263,19 +147,7 @@ async function main() {
 
   deprecation && warn(deprecation);
 
-  switch (versionFamily) {
-    case '1':
-      setupVersionFamily1(bot, params);
-      break;
-
-    case '3':
-      setupVersionFamily3(bot, params);
-      break;
-
-    default:
-      setupVersionFamily4(bot, params);
-      break;
-  }
+  await setup(versionFamily, bot, params);
 }
 
 main().catch(({ stack = '' }) => error(['Unhandled exception caught when loading.', '', ...stack.split('\n')].join('\n')));
