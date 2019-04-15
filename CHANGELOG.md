@@ -33,10 +33,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1837](https://github.com/Microsoft/BotFramework-WebChat/issues/1837), [#1643](https://github.com/Microsoft/BotFramework-WebChat/issues/1643). Fix style conflicts with bootstrap and bump `memoize-one`, by [@corinagum](https://github.com/corinagum) in PR [#1884](https://github.com/Microsoft/BotFramework-WebChat/pull/1884)
 
 ### Changed
-- `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1826](https://github.com/Microsoft/BotFramework-WebChat/pull/1826)
+- `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1900](https://github.com/Microsoft/BotFramework-WebChat/pull/1900)
 
-### Changed
-- `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1826](https://github.com/Microsoft/BotFramework-WebChat/pull/1826)
 
 ## [4.3.0] - 2019-03-04
 
