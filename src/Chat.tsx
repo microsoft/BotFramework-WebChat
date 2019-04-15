@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Activity, CardActionTypes, DirectLine, DirectLineOptions, IBotConnection, User } from 'botframework-directlinejs';
+import { isMobile } from 'react-device-detect';
 import { Provider } from 'react-redux';
 import { conversationHistory, mapMessagesToActivities, ping, step, verifyConversation } from './api/bot';
 import { getTabIndex } from './getTabIndex';
@@ -301,7 +302,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         });
 
                         const { bot_display_options } = res.data;
-                        if (bot_display_options && bot_display_options.open_on_load) {
+                        if (!isMobile && bot_display_options && bot_display_options.open_on_load) {
                             this.toggle();
                         }
 
