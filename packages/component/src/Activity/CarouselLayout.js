@@ -18,7 +18,7 @@ export default connectToWebChat(
   const filmStyleSet = createBasicStyleSet();
 
   return (
-    <Composer>
+    <Composer numItems={ React.Children.count(children) }>
       <FilmContext.Consumer>
         { ({ scrollBarWidth }) =>
           <div className={ classNames(ROOT_CSS + '', filmStyleSet.carousel + '') }>
