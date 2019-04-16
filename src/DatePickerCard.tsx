@@ -44,21 +44,24 @@ export interface DatePickerState {
 
 const dateFormat = 'MMMM D, YYYY';
 const dateFormatWithTime = 'MMMM D, YYYY hh:mmA Z';
+const appointmentBuffer = 30; // minutes
 
 /**
  * Getting all the times which are not between the availability times
  */
-const getExcludedTimes = (availabilities: any, interval: number) => {
+const getExcludedTimes = (availabilities: any, interval: number, date: moment.Moment) => {
     const periodsInADay = moment.duration(1, 'day').as('minutes');
 
     const excludedTimes = [];
     const startTimeMoment = moment('00:00', 'hh:mm');
+    const dateCopy = date.clone().startOf('day');
     for (let i: number = 0; i <= periodsInADay; i += interval) {
         startTimeMoment.add(i === 0 ? 0 : interval, 'minutes');
+        dateCopy.add(i === 0 ? 0 : interval, 'minutes');
         const excludeTime = availabilities.some((avail: any) => {
             const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
             const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
-            const isFuture = startTimeMoment.isAfter(moment().utc());
+            const isFuture = dateCopy.isAfter(moment().utc().add(appointmentBuffer, 'minutes'));
             return isFuture && startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[]');
         });
         if (!excludeTime) {
@@ -122,7 +125,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                     if (!changeExcludeTime && (this.state.startDate && this.state.startDate.month() === date.month())) {
                         getAvailForDate = this.state.startDate;
                     }
-                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30);
+                    const excludedTime = getExcludedTimes(allAvailabilities[getAvailForDate.format('YYYY-MM-DD')], 30, date);
                     this.setState({
                         startDate: dateAvailabilitySelected ? date : this.state.startDate,
                         dateSelected: dateAvailabilitySelected ? true : this.state.dateSelected,
@@ -187,7 +190,7 @@ class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
                 if (startDate && startDate.month() !== date.month()) {
                     this.getAvailableTimes(date, true);
                 } else if (this.state.monthAvailabilities) {
-                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30);
+                    const excludedTime = getExcludedTimes(this.state.monthAvailabilities[date.format('YYYY-MM-DD')], 30, date);
                     this.setState({
                         startDate: date,
                         dateSelected: true,
