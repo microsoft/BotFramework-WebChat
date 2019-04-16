@@ -1,4 +1,4 @@
-const EMBED_CONFIGURATION_BASE_URL = 'https://2ed06e2b.ngrok.io/v4/embedconfig/';
+const EMBED_CONFIGURATION_BASE_URL = 'https://6709bd40.ngrok.io/v4/embedconfig/';
 
 function embedConfigurationURL(botId, { secret, token, userId }) {
   const urlSearchParams = new URLSearchParams({

@@ -145,7 +145,7 @@ async function main() {
 
   // TODO: We should add subresource integrity
   // https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
-  // <script src="https://example.com/example-framework.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" crossorigin="anonymous"></script>
+  // script src="https://example.com/example-framework.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" crossorigin="anonymous"
   // Content-Security-Policy: require-sri-for script style;
   await Promise.all(arrayify(assets).map(loadAsset));
 

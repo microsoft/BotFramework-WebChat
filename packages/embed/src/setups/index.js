@@ -1,12 +1,12 @@
-import setupAntares from './antares';
+import setupAries from './aries';
 import setupScorpio from './scorpio';
 import setupVersion3 from './version3';
 import setupVersion4 from './version4';
 
 export default async function setup(versionFamily, ...args) {
   switch (versionFamily) {
-    case 'antares':
-      await setupAntares(...args);
+    case 'aries':
+      await setupAries(...args);
       break;
 
     case 'scorpio':

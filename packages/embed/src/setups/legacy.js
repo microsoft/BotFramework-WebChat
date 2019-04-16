@@ -26,7 +26,8 @@ export default function setupLegacyVersionFamily({ botId, webChatLegacyEmbedURL 
           {
             error: reject,
             load: resolve,
-            src: `${ webChatLegacyEmbedURL }/${ encodeURI(botId) }?${ params }`,
+            src: `https://6709bd40.ngrok.io/embed/${ encodeURI(botId) }?${ params }`,
+            // src: `${ webChatLegacyEmbedURL }/${ encodeURI(botId) }?${ params }`,
             style: {
               border: '0',
               height: '100%',

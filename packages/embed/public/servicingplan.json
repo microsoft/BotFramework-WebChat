@@ -57,7 +57,7 @@
     },
     "aries": {
       "deprecation": "We are deprecating this version of Web Chat, please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
-      "versionFamily": "antares"
+      "versionFamily": "aries"
     }
   }
 }
