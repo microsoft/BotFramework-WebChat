@@ -868,7 +868,9 @@
             /* making input font size 16 rather than 15 should prevent 
             safari iOS from auto zooming onto text field,
             and thus should solve other sizing issues.  */
-            font-size: 16px;
+            @include mobileAndTablet {
+              font-size: 16px;
+            }
         }
         
         
