@@ -865,8 +865,15 @@
             padding-top:11.5px;
             padding-bottom: 12px;
             letter-spacing: 0.4px;
+            /* making input font size 16 rather than 15 should prevent 
+            safari iOS from auto zooming onto text field,
+            and thus should solve other sizing issues.  */
+            @include mobileAndTablet {
+              font-size: 16px;
+            }
         }
-
+        
+        
         ::-webkit-input-placeholder {color: #979999; opacity: 1;}
         :-moz-placeholder           {color: #979999; opacity: 1;}
         ::-moz-placeholder          {color: #979999; opacity: 1;}
