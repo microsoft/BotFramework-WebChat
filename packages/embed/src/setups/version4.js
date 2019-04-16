@@ -30,10 +30,7 @@ export default function setupVersionFamily4(
     directLine,
     locale: navigator.language,
     styleOptions: {
-      // TODO: We could move this line inside ASP.NET handler.
-      //       This is essentially filling it out with default URL if it is empty.
-      //       But in Web Chat v4, we prefer it to be empty instead.
-      botAvatarImage: botIconURL === '//bot-framework.azureedge.net/bot-icons-v1/bot-framework-default.png' ? null : botIconURL
+      botAvatarImage: botIconURL
     },
     userId,
     username

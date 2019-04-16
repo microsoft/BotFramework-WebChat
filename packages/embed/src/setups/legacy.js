@@ -1,7 +1,7 @@
 import { legacyEmbedURL } from '../urlBuilder';
 import createElement from '../createElement';
 
-export default function setupLegacyVersionFamily({ botId, webChatLegacyEmbedURL }, { secret, token }, features = []) {
+export default function setupLegacyVersionFamily({ botId }, { secret, token }, features = []) {
   return new Promise((resolve, reject) => {
     // Version 1 also depends on your token.
     // If you are using a token on Aries, you get Aries (v1).

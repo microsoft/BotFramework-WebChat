@@ -57,8 +57,6 @@ export default function setupVersionFamily3(
     resize: 'window',
     speechOptions,
     user: {
-      // Starting from Web Chat v4, we will automatically randomize a user ID
-      // TODO: Use RNG or server-generated user ID
       id: userId,
       name: username || 'You'
     }
