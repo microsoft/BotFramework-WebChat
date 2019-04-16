@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 const Visualizer = require('webpack-visualizer-plugin');
 
 module.exports = {
@@ -17,6 +18,21 @@ module.exports = {
       test: /adaptivecards-default\.css$/,
       use: ['style-loader', 'css-loader']
     }]
+  },
+  optimization: {
+    minimizer: [
+      // Webpack use terser for minification
+      // https://webpack.js.org/configuration/mode#usage
+      // https://webpack.js.org/plugins/terser-webpack-plugin/#terseroptions
+      new TerserPlugin({
+        terserOptions: {
+          // https://github.com/terser-js/terser#minify-options
+          output: {
+            ascii_only: true
+          }
+        }
+      })
+    ]
   },
   output: {
     filename: '[name].js',
