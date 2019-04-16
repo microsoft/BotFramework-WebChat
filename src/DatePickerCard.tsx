@@ -58,7 +58,8 @@ const getExcludedTimes = (availabilities: any, interval: number) => {
         const excludeTime = availabilities.some((avail: any) => {
             const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
             const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
-            return startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[]');
+            const isFuture = startTimeMoment.isAfter(moment().utc());
+            return isFuture && startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[]');
         });
         if (!excludeTime) {
             excludedTimes.push(startTimeMoment.format('hh:mm A'));
