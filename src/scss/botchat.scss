@@ -27,6 +27,9 @@
         color: $c01;
         cursor: pointer;
         transition: color .2s ease, background-color .2s ease;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;    
     }
 
     .wc-app h1, .wc-app h2, .wc-app h3, .wc-app h4, .wc-app p, .wc-app ul, .wc-app ol {
