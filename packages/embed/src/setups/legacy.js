@@ -1,3 +1,4 @@
+import { legacyEmbedURL } from '../urlBuilder';
 import createElement from '../createElement';
 
 export default function setupLegacyVersionFamily({ botId, webChatLegacyEmbedURL }, { secret, token }, features = []) {
@@ -26,8 +27,7 @@ export default function setupLegacyVersionFamily({ botId, webChatLegacyEmbedURL 
           {
             error: reject,
             load: resolve,
-            src: `https://6709bd40.ngrok.io/embed/${ encodeURI(botId) }?${ params }`,
-            // src: `${ webChatLegacyEmbedURL }/${ encodeURI(botId) }?${ params }`,
+            src: legacyEmbedURL(botId, params),
             style: {
               border: '0',
               height: '100%',
