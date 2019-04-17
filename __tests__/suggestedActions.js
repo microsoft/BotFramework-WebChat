@@ -2,6 +2,7 @@ import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
+import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
@@ -20,6 +21,7 @@ describe('suggested-actions command', async () => {
     await pageObjects.sendMessageViaSendBox('suggested-actions');
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
+    await driver.wait( allImagesLoaded(), 2000 );
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -138,6 +140,36 @@ describe('suggested-actions command', async () => {
     await pageObjects.sendMessageViaSendBox('suggested-actions others');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show suggested actions with images', async () => {
+    const { driver, pageObjects } = await setupWebDriver();
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('emptycard');
+
+    await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
+    await driver.wait( allImagesLoaded(), 2000 );
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show suggested actions with larger images', async () => {
+
+    const styleOptions = { suggestedActionHeight: 80, suggestedActionImageHeight: 60 };
+    const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions } });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('emptycard');
+
+    await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
+    await driver.wait( allImagesLoaded(), 2000 );
 
     const base64PNG = await driver.takeScreenshot();
 
