@@ -49,6 +49,7 @@ export default connectSuggestedActions(
         suggestedActions.map((
           {
             displayText,
+            image,
             text,
             title,
             type,
@@ -61,6 +62,7 @@ export default connectSuggestedActions(
              suggestedActionText({ displayText, title, type, value })
             }
             displayText={ displayText }
+            image={ image }
             key={ index }
             text={ text }
             type={ type }

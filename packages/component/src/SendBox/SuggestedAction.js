@@ -33,8 +33,9 @@ export default connectSuggestedAction(
 )(
   ({
     buttonText,
-    disabled,
     click,
+    disabled,
+    image,
     styleSet
   }) =>
     <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
@@ -42,6 +43,7 @@ export default connectSuggestedAction(
         disabled={ disabled }
         onClick={ click }
       >
+        <img src={ image } />
         <nobr>{ buttonText }</nobr>
       </button>
     </div>
