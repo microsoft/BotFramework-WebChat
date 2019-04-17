@@ -93,10 +93,23 @@ function findService(servicingPlan, bot, requestedVersion = 'default') {
   throw new Error(`Maximum version redirections exceeded, probably problem with our servicing plan.`);
 }
 
+const AZURE_EFFECTIVE_LOCALE_PATTERN = /^([A-Za-z]{2})\.([A-Za-z]{2})$/;
+
+function normalizeLanguage(language) {
+  const match = AZURE_EFFECTIVE_LOCALE_PATTERN.exec(language);
+
+  if (match) {
+    return `${ match[1] }-${ match[2].toUpperCase() }`;
+  } else {
+    return language;
+  }
+}
+
 function parseParams(search) {
   const params = new URLSearchParams(search);
 
   const botId = params.get('b') || undefined;
+  const language = normalizeLanguage(params.get('l') || navigator.language);
   const token = params.get('t') || undefined;
   const userId = params.get('userid') || undefined;
   const username = params.get('username') || undefined;
@@ -106,6 +119,7 @@ function parseParams(search) {
 
   return {
     botId,
+    language,
     secret,
     token,
     userId,

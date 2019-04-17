@@ -7,6 +7,7 @@ export default function setupVersionFamily4(
     userId,
     webSocket
   }, {
+    language,
     secret,
     token,
     username
@@ -27,7 +28,7 @@ export default function setupVersionFamily4(
 
   window.WebChat.renderWebChat({
     directLine,
-    locale: navigator.language,
+    locale: language,
     styleOptions: {
       botAvatarImage: botIconURL
     },

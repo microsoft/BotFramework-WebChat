@@ -24,6 +24,7 @@ export default function setupVersionFamily3(
     webSocket
   },
   {
+    language,
     secret,
     token,
     username
@@ -53,7 +54,7 @@ export default function setupVersionFamily3(
   window.BotChat.App({
     directLine: { domain, secret, token, webSocket },
     bot: { id: botId },
-    locale: navigator.language,
+    locale: language,
     resize: 'window',
     speechOptions,
     user: {

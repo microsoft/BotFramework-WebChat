@@ -1,7 +1,11 @@
 import { legacyEmbedURL } from '../urlBuilder';
 import createElement from '../createElement';
 
-export default function setupLegacyVersionFamily({ botId }, { secret, token }, features = []) {
+function azureEffectiveLocale(language) {
+  return language.toLowerCase().replace(/-/, '.');
+}
+
+export default function setupLegacyVersionFamily({ botId }, { language, secret, token }, features = []) {
   return new Promise((resolve, reject) => {
     // Version 1 also depends on your token.
     // If you are using a token on Aries, you get Aries (v1).
@@ -10,6 +14,7 @@ export default function setupLegacyVersionFamily({ botId }, { secret, token }, f
     const params = new URLSearchParams();
 
     features.length && params.set('features', features.join(','));
+    language && params.set('l', azureEffectiveLocale(language));
     secret && params.set('s', secret);
     token && params.set('t', token);
 
