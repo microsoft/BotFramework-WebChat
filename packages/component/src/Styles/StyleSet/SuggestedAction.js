@@ -24,7 +24,7 @@ export default function createSuggestedActionStyle({
       display: 'flex',
       fontFamily: primaryFont,
       fontSize: 'inherit',
-      minHeight: suggestedActionHeight,
+      height: suggestedActionHeight,
       paddingLeft: paddingWide,
       paddingRight: paddingWide,
 

@@ -159,4 +159,20 @@ describe('suggested-actions command', async () => {
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
+
+  test('should show suggested actions with larger images', async () => {
+
+    const styleOptions = { suggestedActionHeight: 80, suggestedActionImageHeight: 60 };
+    const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions } });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+    await pageObjects.sendMessageViaSendBox('emptycard');
+
+    await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
+    await driver.wait( allImagesLoaded(), 2000 );
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
 });
