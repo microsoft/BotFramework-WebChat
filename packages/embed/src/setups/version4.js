@@ -41,5 +41,5 @@ export default function setupVersionFamily4(
 
   const webChatVersionMeta = document.querySelector('head > meta[name="botframework-webchat:bundle:version"]');
 
-  webChatVersionMeta && log(`Web Chat v4 is loaded and reporting version "${ webChatVersionMeta.getAttribute('content') }".`);
+  return { version: webChatVersionMeta.getAttribute('content') };
 }

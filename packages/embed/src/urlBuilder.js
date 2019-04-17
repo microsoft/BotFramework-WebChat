@@ -1,4 +1,4 @@
-const WEB_CHAT_SERVICE_BASE_URL = 'https://6709bd40.ngrok.io/';
+const WEB_CHAT_SERVICE_BASE_URL = 'https://e6d6d9b4.ngrok.io/';
 
 function embedConfigurationURL(botId, { secret, token, userId }) {
   const urlSearchParams = new URLSearchParams({
@@ -7,7 +7,17 @@ function embedConfigurationURL(botId, { secret, token, userId }) {
     ...(userId ? { userid: userId } : {})
   });
 
-  return `${ WEB_CHAT_SERVICE_BASE_URL }v4/embedconfig/${ encodeURI(botId) }?${ urlSearchParams.toString() }`
+  return `${ WEB_CHAT_SERVICE_BASE_URL }v4/embed/config/${ encodeURI(botId) }?${ urlSearchParams.toString() }`
+}
+
+function embedTelemetryURL(botId, { secret, token }, points) {
+  const urlSearchParams = new URLSearchParams({
+    ...((secret && !token) ? { s: secret } : {}),
+    ...(token ? { t: token } : {}),
+    p: points
+  });
+
+  return `${ WEB_CHAT_SERVICE_BASE_URL }v4/embed/telemetry/${ encodeURI(botId) }?${ urlSearchParams.toString() }`
 }
 
 function legacyEmbedURL(botId, params) {
@@ -22,6 +32,7 @@ function servicingPlanURL() {
 
 export {
   embedConfigurationURL,
+  embedTelemetryURL,
   legacyEmbedURL,
   servicingPlanURL
 }

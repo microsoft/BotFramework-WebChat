@@ -63,4 +63,6 @@ export default function setupVersionFamily3(
   }, root);
 
   document.body.append(root);
+
+  return { version: '3' };
 }

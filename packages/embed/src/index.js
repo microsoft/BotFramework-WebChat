@@ -1,6 +1,6 @@
 // import '@babel/polyfill';
 
-import { embedConfigurationURL, servicingPlanURL } from './urlBuilder';
+import { embedConfigurationURL, embedTelemetryURL, servicingPlanURL } from './urlBuilder';
 import { error, log, warn } from './logger';
 import fetchJSON from './fetchJSON';
 import loadAsset from './loadAsset';
@@ -142,11 +142,29 @@ async function main() {
     }
   } = findService(servicingPlan, bot, version);
 
-  await Promise.all(assets.map(loadAsset));
+  assets && await Promise.all(assets.map(loadAsset));
 
   deprecation && warn(deprecation);
 
-  await setup(versionFamily, bot, params);
+  const { version: actualVersion } = await setup(versionFamily, bot, params);
+  const dataPoints = {
+    [`actualversion:${ actualVersion }`]: 1,
+    [`expectversion:${ (version || '').substr(0, 10) }`]: version,
+    [`userid:${ bot.userIdSource }`]: 1,
+    speech: bot.speech,
+    websocket: bot.webSocket
+  };
+
+  await fetch(
+    embedTelemetryURL(
+      botId,
+      { secret, token },
+      Object.keys(dataPoints).filter(name => dataPoints[name])
+    ),
+    {
+      mode: 'no-cors'
+    }
+  ).then(res => res.text());
 }
 
 main().catch(({ stack = '' }) => error(['Unhandled exception caught when loading.', '', ...stack.split('\n')].join('\n')));

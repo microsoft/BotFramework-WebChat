@@ -6,19 +6,15 @@ import setupVersion4 from './version4';
 export default async function setup(versionFamily, ...args) {
   switch (versionFamily) {
     case 'aries':
-      await setupAries(...args);
-      break;
+      return await setupAries(...args);
 
     case 'scorpio':
-      await setupScorpio(...args);
-      break;
+      return await setupScorpio(...args);
 
     case '3':
-      await setupVersion3(...args);
-      break;
+      return await setupVersion3(...args);
 
     default:
-      await setupVersion4(...args);
-      break;
+      return await setupVersion4(...args);
   }
 }
