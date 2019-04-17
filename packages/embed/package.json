@@ -3,6 +3,7 @@
   "version": "4.0.0-0",
   "description": "",
   "main": "src/index.js",
+  "private": true,
   "scripts": {
     "build": "npm run build:babel && webpack-cli --mode development",
     "build:babel": "babel --extensions .js,.ts --ignore **/*.spec.js,**/*.spec.ts,**/*.test.js,**/*.test.ts,__test__/**/*.js,__test__/**/*.ts --out-dir lib --source-maps inline --verbose src",
