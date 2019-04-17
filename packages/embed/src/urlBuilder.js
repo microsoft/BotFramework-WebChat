@@ -1,4 +1,4 @@
-const WEB_CHAT_SERVICE_BASE_URL = 'https://e6d6d9b4.ngrok.io/';
+const WEB_CHAT_SERVICE_BASE_URL = 'https://webchat.botframework.com/';
 
 function embedConfigurationURL(botId, { secret, token, userId }) {
   const urlSearchParams = new URLSearchParams({
