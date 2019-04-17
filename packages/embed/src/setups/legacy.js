@@ -25,8 +25,8 @@ export default function setupLegacyVersionFamily({ botId }, { secret, token }, f
         createElement(
           'iframe',
           {
-            error: reject,
-            load: resolve,
+            onError: reject,
+            onLoad: resolve,
             src: legacyEmbedURL(botId, params),
             style: {
               border: '0',
