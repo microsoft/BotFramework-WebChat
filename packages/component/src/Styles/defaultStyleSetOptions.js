@@ -13,6 +13,7 @@ const DEFAULT_OPTIONS = {
   paddingRegular: PADDING_REGULAR,
   paddingWide: 20,
   subtle: DEFAULT_SUBTLE,
+  cardEmphasisBackgroundColor: '#E6E6E6',
 
   // Word break
   messageActivityWordBreak: 'break-word', // 'normal' || 'break-all' || 'break-word' || 'keep-all'

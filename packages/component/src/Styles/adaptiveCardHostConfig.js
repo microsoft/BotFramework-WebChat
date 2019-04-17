@@ -5,6 +5,7 @@ import defaultStyleSetOptions from './defaultStyleSetOptions';
 export default ({
   accent,
   bubbleTextColor,
+  cardEmphasisBackgroundColor,
   primaryFont,
   subtle
 } = defaultStyleSetOptions) => new HostConfig({
@@ -22,6 +23,7 @@ export default ({
       }
     },
     emphasis: {
+      backgroundColor: cardEmphasisBackgroundColor,
       default: {
         default: bubbleTextColor,
         subtle: subtle
