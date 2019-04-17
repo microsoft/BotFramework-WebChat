@@ -10,7 +10,7 @@ function loadScript(src, integrity) {
       'script',
       {
         async: true,
-        crossorigin: 'anonymous',
+        crossOrigin: 'anonymous',
         integrity,
         onError: reject,
         onLoad: resolve,
@@ -24,7 +24,7 @@ function loadStylesheet(href, integrity) {
   document.head.appendChild(createElement(
     'link',
     {
-      crossorigin: 'anonymous',
+      crossOrigin: 'anonymous',
       href,
       integrity,
       rel: 'stylesheet'
