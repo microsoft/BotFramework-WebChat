@@ -89,7 +89,7 @@
           padding-left: 0.25em;
       }
     }
-
+    
     .wc-header {
         background-color: #fff;
         box-sizing: border-box;
@@ -824,7 +824,13 @@
           background-size: 300%;
           transition: background-position .4s;
         }
-
+        
+        &::after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        
         &__disabled {
           background-color: #eff0f1;
         }
