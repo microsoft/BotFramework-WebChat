@@ -172,6 +172,7 @@ var carlaBot = (function () {
       _chatIframe.className = '__carla-iframe';
       chatIframeStyle = 'height: ' + getChatHeight(true);
       _chatIframe.setAttribute('style', chatIframeStyle);
+      _chatIframe.setAttribute('allow', 'geolocation');
       return _chatIframe;
     }
 
