@@ -1,5 +1,4 @@
 import createElement from '../createElement';
-import { log } from '../logger';
 
 export default function setupVersionFamily4(
   {

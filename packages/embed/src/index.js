@@ -1,5 +1,3 @@
-// import '@babel/polyfill';
-
 import { embedConfigurationURL, embedTelemetryURL, servicingPlanURL } from './urlBuilder';
 import { error, log, warn } from './logger';
 import fetchJSON from './fetchJSON';
