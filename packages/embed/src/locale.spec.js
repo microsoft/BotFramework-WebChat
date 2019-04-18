@@ -8,6 +8,10 @@ test('Normalize "ja.ja-jp"', () => {
   expect(normalize('ja.ja-jp')).toBe('ja-JP');
 });
 
+test('Normalize "zh-hant.zh-hk"', () => {
+  expect(normalize('zh-hant.zh-hk')).toBe('zh-HK');
+});
+
 test('Normalizing "en"', () => {
   expect(normalize('en')).toBe('en');
 });
