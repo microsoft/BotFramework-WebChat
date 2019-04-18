@@ -1,8 +1,18 @@
 import { legacyEmbedURL } from '../urlBuilder';
 import createElement from '../createElement';
 
-function azureEffectiveLocale(language) {
-  return language.toLowerCase().replace(/-/, '.');
+const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})(-([A-Za-z]{2}))?$/;
+
+function toAzureLocale(language) {
+  const match = JAVASCRIPT_LOCALE_PATTERN.exec(language);
+
+  if (match) {
+    if (match[2]) {
+      return `${ match[1] }.${ match[1] }-${ match[2].toLowerCase() }`;
+    } else {
+      return match[1];
+    }
+  }
 }
 
 export default function setupLegacyVersionFamily({ botId }, { language, secret, token }, features = []) {
@@ -14,7 +24,7 @@ export default function setupLegacyVersionFamily({ botId }, { language, secret, 
     const params = new URLSearchParams();
 
     features.length && params.set('features', features.join(','));
-    language && params.set('l', azureEffectiveLocale(language));
+    language && params.set('l', toAzureLocale(language));
     secret && params.set('s', secret);
     token && params.set('t', token);
 
