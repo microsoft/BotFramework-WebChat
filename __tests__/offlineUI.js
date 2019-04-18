@@ -77,7 +77,7 @@ describe('offline UI', async () => {
     await driver.wait(async driver => {
       return await driver.executeScript(() =>
         !!~window.WebChatTest.actions.findIndex(({ type }) => type === 'DIRECT_LINE/CONNECT_REJECTED')
-     );
+      );
     }, timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
@@ -242,6 +242,7 @@ describe('offline UI', async () => {
       pingBotOnLoad: false,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
+
         scriptElement.onload = resolve;
         scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
 
@@ -283,6 +284,7 @@ describe('offline UI', async () => {
       pingBotOnLoad: false,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
+
         scriptElement.onload = resolve;
         scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
 
@@ -291,7 +293,9 @@ describe('offline UI', async () => {
     });
 
     await driver.sleep(17000);
+
     const base64PNG = await driver.takeScreenshot();
+
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });

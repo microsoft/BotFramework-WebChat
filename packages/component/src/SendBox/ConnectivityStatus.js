@@ -46,77 +46,57 @@ class ConnectivityDebounce extends React.Component {
   }
 }
 
-class ConnectConnectivityAlert extends React.Component {
-  constructor(props) {
-    super(props);
+const connectConnectivityStatus = (...selectors) => connectToWebChat(
+  ({ connectivityStatus, language }) => ({ connectivityStatus, language }),
+  ...selectors
+)
 
-    this.state = {
-      connectivityStatus: props.connectivityStatus,
-      language: props.language,
-      styleSet: props.styleSet
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(() => ({
-      connectivityStatus: nextProps.connectivityStatus,
-      language: nextProps.language,
-      styleSet: nextProps.styleSet
-    }));
-  }
-
-  render() {
-    const { connectivityStatus, language, styleSet } = this.state;
-
-    return (
-      <div
-        aria-live="polite"
-        className={
-          classNames({
-            [styleSet.errorNotification]:
-              connectivityStatus === 'error'
-              || connectivityStatus === 'notconnected',
-            [styleSet.warningNotification]:
-              connectivityStatus === 'connectingslow',
-            [styleSet.connectivityNotification]:
-              connectivityStatus === 'uninitialized'
-              || connectivityStatus === 'connected'
-              || connectivityStatus === 'reconnected'
-              || connectivityStatus === 'reconnecting'
-          })
+export default connectConnectivityStatus(
+  ({ styleSet }) => ({ styleSet })
+)(
+  ({ connectivityStatus, language, styleSet }) =>
+    <div
+      aria-live="polite"
+      className={
+        classNames({
+          [styleSet.errorNotification]:
+            connectivityStatus === 'error'
+            || connectivityStatus === 'notconnected',
+          [styleSet.warningNotification]:
+            connectivityStatus === 'connectingslow',
+          [styleSet.connectivityNotification]:
+            connectivityStatus === 'uninitialized'
+            || connectivityStatus === 'connected'
+            || connectivityStatus === 'reconnected'
+            || connectivityStatus === 'reconnecting'
+        })
+      }
+      role="status"
+    >
+      <ConnectivityDebounce
+        debounce={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }>
+        { () =>
+          connectivityStatus === 'connectingslow' ?
+            <React.Fragment>
+              <WarningNotificationIcon />
+              { localize('SLOW_CONNECTION_NOTIFICATION', language) }
+            </React.Fragment>
+          : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
+            <React.Fragment>
+              <ErrorNotificationIcon />
+              { localize('FAILED_CONNECTION_NOTIFICATION', language) }
+            </React.Fragment>
+          : connectivityStatus === 'uninitialized' ?
+            <React.Fragment>
+              <SpinnerAnimation />
+              { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
+            </React.Fragment>
+          : connectivityStatus === 'reconnecting' &&
+            <React.Fragment>
+              <SpinnerAnimation />
+              { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
+            </React.Fragment>
         }
-        role="status"
-      >
-        <ConnectivityDebounce
-          debounce={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }>
-          { () =>
-            connectivityStatus === 'connectingslow' ?
-              <React.Fragment>
-                <WarningNotificationIcon />
-                { localize('SLOW_CONNECTION_NOTIFICATION', language) }
-              </React.Fragment>
-            : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
-              <React.Fragment>
-                <ErrorNotificationIcon />
-                { localize('FAILED_CONNECTION_NOTIFICATION', language) }
-              </React.Fragment>
-            : connectivityStatus === 'uninitialized' ?
-              <React.Fragment>
-                <SpinnerAnimation />
-                { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
-              </React.Fragment>
-            : connectivityStatus === 'reconnecting' &&
-              <React.Fragment>
-                <SpinnerAnimation />
-                { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
-              </React.Fragment>
-          }
-        </ConnectivityDebounce>
-      </div>
-    );
-  }
-}
-
-export default connectToWebChat(
-  ({ connectivityStatus, language, styleSet }) => ({ connectivityStatus, language, styleSet })
-)(ConnectConnectivityAlert)
+      </ConnectivityDebounce>
+    </div>
+  )
