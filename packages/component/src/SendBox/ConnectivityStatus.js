@@ -5,109 +5,115 @@ import { localize } from '../Localization/Localize';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
-class connectConnectivityAlert extends React.Component {
-
-  connectivityStatusText() {
-    const { connectivityStatus: { status, timeoutCompleted }, language } = this.props;
-    const { connectingSlow } = this.state;
-
-    if ( this.timerId ) {
-      clearTimeout( this.timerId );
-    }
-
-    if ( status === 'uninitialized' || ( status === 'connected' && timeoutCompleted === false && connectingSlow === false ) ) {
-      if ( status === 'connected' ) {
-        this.timerId = this.dispatchConnectivityTimeout();
-        this.timerId = null;
-      }
-      return (
-        <React.Fragment>
-          <SpinnerAnimation />
-          {localize( 'INITIAL_CONNECTION_NOTIFICATION', language )}
-        </React.Fragment>
-      );
-    } else if ( status === 'reconnecting' || (status === 'reconnected' && timeoutCompleted === false && connectingSlow === false)) {
-      if ( status === 'reconnected' ) {
-        this.timerId = this.dispatchConnectivityTimeout();
-        this.timerId = null;
-      }
-      return (
-        <React.Fragment>
-          <SpinnerAnimation />
-          {localize( 'INTERRUPTED_CONNECTION_NOTIFICATION', language )}
-        </React.Fragment>
-      );
-    } else if ( status === 'connectingslow' ) {
-      return (
-        <React.Fragment>
-          <WarningNotificationIcon />
-          {localize( 'SLOW_CONNECTION_NOTIFICATION', language )}
-        </React.Fragment>
-      );
-    } else if ( status === 'error' ) {
-      return (
-        <React.Fragment>
-          <ErrorNotificationIcon />
-          {localize( 'FAILED_CONNECTION_NOTIFICATION', language )}
-        </React.Fragment>
-      );
-    }
-  }
-
-  dispatchConnectivityTimeout() {
-    setTimeout( () => {
-      this.props.dispatch( { type: 'DIRECT_LINE/CONNECT_TIMEOUT_COMPLETE' } );
-    }, 400 );
-  }
-
-  constructor( props ) {
-    super( props );
+class ConnectivityDebounce extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      connectivityStatus: props.connectivityStatus,
-      connectingSlow: false,
-      language: props.language,
-      styleSet: props.styleSet,
+      renderConnectivity: props.renderConnectivity,
+      since: Date.now()
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { debounce } = nextProps;
+    if (
+      debounce !== this.props.debounce
+      || nextProps.renderConnectivity !== this.props.renderConnectivity
+    ) {
+      clearTimeout(this.timeout);
+
+      this.timeout = setTimeout(() => {
+        this.setState(() => ({
+          renderConnectivity: nextProps.renderConnectivity,
+          since: Date.now()
+        }));
+      }, Math.max(0, debounce - Date.now() + this.state.since ));
     }
   }
 
-  componentDidUpdate( props ) {
-    const { connectivityStatus: { status } } = props;
-    const { connectingSlow } = this.state
-
-    if ( status === 'connectingslow' && connectingSlow === false ) {
-      this.setState( () => ( { connectingSlow: true } ) );
-    }
-  }
-
-  static getDerivedStateFromProps( props, state ) {
-    if ( props !== state ) {
-      state = {
-        connectivityStatus: props.connectivityStatus,
-        connectingSlow: false,
-        language: props.language,
-        styleSet: props.styleSet,
-      }
-    }
-    return state;
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
   }
 
   render() {
-    const { connectivityStatus, styleSet } = this.state;
-    const { status } = connectivityStatus;
+    const { renderConnectivity } = this.state;
+
+    return typeof renderConnectivity === 'function' ? renderConnectivity() : false;
+  }
+
+}
+
+class ConnectConnectivityAlert extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      language: props.language,
+      styleSet: props.styleSet,
+      connectivityStatus: props.connectivityStatus
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(() => ({
+      language: nextProps.language,
+      styleSet: nextProps.styleSet,
+      connectivityStatus: nextProps.connectivityStatus
+    }));
+  }
+
+  render() {
+    const { connectivityStatus, language, styleSet } = this.state;
+
     return (
       <div
-        aria-live="polite"
-        className={classnames( {
-          [ styleSet.errorNotification ]: ( status === 'error' ),
-          [ styleSet.warningNotification ]: status === 'connectingslow' || status === 'reconnecting',
-          [ styleSet.connectivityNotification ]: status === 'connected' || status === 'uninitialized' || status === 'reconnecting' || status === 'reconnected'
-        } )}
-        role="status"
+        aria-live='polite'
+        className={
+          classNames( {
+            [ styleSet.errorNotification ]:
+              connectivityStatus === 'error'
+              || connectivityStatus === 'notconnected',
+            [ styleSet.warningNotification ]:
+              connectivityStatus === 'connectingslow',
+            [ styleSet.connectivityNotification ]:
+              connectivityStatus === 'uninitialized'
+              || connectivityStatus === 'connected'
+              || connectivityStatus === 'reconnected'
+              || connectivityStatus === 'reconnecting'
+
+          } )
+        }
+        role='status'
       >
-        {this.connectivityStatusText()}
+        <ConnectivityDebounce
+          debounce={ (connectivityStatus === 'uninitialized') || (connectivityStatus === 'error') ? 0 : 400 }
+          renderConnectivity={ () => {
+            return (connectivityStatus === 'connectingslow') ?
+              <React.Fragment>
+                <WarningNotificationIcon />
+                { localize('SLOW_CONNECTION_NOTIFICATION', language) }
+              </React.Fragment>
+            : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
+              <React.Fragment>
+                <ErrorNotificationIcon />
+                { localize('FAILED_CONNECTION_NOTIFICATION', language) }
+              </React.Fragment>
+            : (connectivityStatus === 'uninitialized') ?
+              <React.Fragment>
+                <SpinnerAnimation />
+                { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
+              </React.Fragment>
+            : (connectivityStatus === 'reconnecting') ?
+              <React.Fragment>
+                <SpinnerAnimation />
+                { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
+              </React.Fragment>
+            : false
+          } }
+        />
       </div>
     );
   }
@@ -115,4 +121,4 @@ class connectConnectivityAlert extends React.Component {
 
 export default connectToWebChat(
   ( { connectivityStatus, language, styleSet } ) => ( { connectivityStatus, language, styleSet } )
-)( connectConnectivityAlert )
+)( ConnectConnectivityAlert )

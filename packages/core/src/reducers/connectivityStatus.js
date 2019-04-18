@@ -3,7 +3,6 @@ import {
   CONNECT_PENDING,
   CONNECT_REJECTED,
   CONNECT_STILL_PENDING,
-  CONNECT_TIMEOUT_COMPLETE
 } from '../actions/connect';
 
 import {
@@ -13,84 +12,35 @@ import {
 
 import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
 
-const DEFAULT_STATE = {
-  status: 'uninitialized',
-  timeoutCompleted: false
-};
+const DEFAULT_STATE =  'uninitialized';
 
 export default function (state = DEFAULT_STATE, { type, meta }) {
   switch (type) {
     case CONNECT_PENDING:
-      if (state.status !== 'uninitialized') {
-        state = {
-          ...state,
-          status: 'reconnecting',
-          timeoutCompleted: false
-        };
-      }
-
-      break;
-
     case RECONNECT_PENDING:
-      state = {
-        ...state,
-        status: 'reconnecting',
-        timeoutCompleted: false
+      if (state !== 'uninitialized') {
+        state = 'reconnecting';
       }
-
       break;
 
     case CONNECT_FULFILLED:
-      state = {
-        ...state,
-        status: 'connected',
-        timeoutCompleted: false
-      };
-
+      state = 'connected';
       break;
 
     case RECONNECT_FULFILLED:
-      state = {
-        ...state,
-        status: 'reconnected',
-        timeoutCompleted: false
-      }
-
+      state =  'reconnected';
       break;
 
     case CONNECT_REJECTED:
-      state = {
-        ...state,
-        status: 'error',
-        timeoutCompleted: false
-      };
-
+      state = 'error';
       break;
 
     case CONNECT_STILL_PENDING:
-      state = {
-        ...state,
-        status: 'connectingslow',
-        timeoutCompleted: false
-      };
-
+      state = 'connectingslow';
       break;
 
     case DISCONNECT_FULFILLED:
-      state = {
-        ...state,
-        status: meta.error ? 'error' : 'notconnected',
-        timeoutCompleted: false
-      };
-
-      break;
-
-    case CONNECT_TIMEOUT_COMPLETE:
-      state = {
-        ...state,
-        timeoutCompleted: true
-      };
-
+      state = meta.error ? 'error' : 'notconnected'
       break;
 
     default: break;

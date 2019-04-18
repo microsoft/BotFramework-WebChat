@@ -209,10 +209,11 @@ describe('offline UI', async () => {
 
       })
     });
-
-    const base64PNG = await driver.takeScreenshot();
-
     // Snapshots are intentionally not compared because the spinner will cause the snapshot to fail regularly
+    // Uncomment the following lines to re-capture snapshot or do a manual comparison
+
+    // const base64PNG = await driver.takeScreenshot();
+    // expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', async () => {
@@ -248,10 +249,12 @@ describe('offline UI', async () => {
       })
     });
 
-    await driver.sleep(600);
-    const base64PNG = await driver.takeScreenshot();
-
     // Snapshots are intentionally not compared because the spinner will cause the snapshot to fail regularly
+    // Uncomment the following lines to re-capture snapshot or do a manual comparison
+
+    // await driver.sleep(600);
+    // const base64PNG = await driver.takeScreenshot();
+    // expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should show "slow to connect" UI when reconnection is slow', async () => {
