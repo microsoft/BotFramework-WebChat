@@ -7,7 +7,7 @@ function embedConfigurationURL(botId, { secret, token, userId }) {
     ...(userId ? { userid: userId } : {})
   });
 
-  return `${ WEB_CHAT_SERVICE_BASE_URL }v4/embed/config/${ encodeURI(botId) }?${ urlSearchParams.toString() }`
+  return `${ WEB_CHAT_SERVICE_BASE_URL }embed/${ encodeURI(botId) }/config?${ urlSearchParams.toString() }`
 }
 
 function embedTelemetryURL(botId, { secret, token }, points) {
@@ -17,7 +17,7 @@ function embedTelemetryURL(botId, { secret, token }, points) {
     p: points
   });
 
-  return `${ WEB_CHAT_SERVICE_BASE_URL }v4/embed/telemetry/${ encodeURI(botId) }?${ urlSearchParams.toString() }`
+  return `${ WEB_CHAT_SERVICE_BASE_URL }embed/${ encodeURI(botId) }/telemetry?${ urlSearchParams.toString() }`
 }
 
 function legacyEmbedURL(botId, params) {
