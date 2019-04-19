@@ -62,7 +62,7 @@ const getExcludedTimes = (availabilities: any, interval: number, date: moment.Mo
             const beforeTime = moment(moment(avail.start_time).utc().format('HH:mm'), 'hh:mm');
             const afterTime = moment(moment(avail.end_time).utc().format('HH:mm'), 'hh:mm');
             const isFuture = dateCopy.isAfter(moment().utc().add(appointmentBuffer, 'minutes'));
-            return isFuture && startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[]');
+            return isFuture && startTimeMoment.isBetween(beforeTime, afterTime, 'hours', '[]') && startTimeMoment.isBetween(beforeTime, afterTime, 'minutes', '[)');
         });
         if (!excludeTime) {
             excludedTimes.push(startTimeMoment.format('hh:mm A'));
