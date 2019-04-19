@@ -23,6 +23,7 @@ import createSendBoxTextareaStyle from './StyleSet/SendBoxTextarea';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
+import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet';
@@ -30,6 +31,7 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
 import createTypingActivityStyle from './StyleSet/TypingActivity';
+import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
@@ -74,12 +76,14 @@ export default function createStyleSet(options) {
     sendBoxTextBox: createSendBoxTextBoxStyle(options),
     sendStatus: createSendStatusStyle(options),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(options),
+    spinnerAnimation: createSpinnerAnimationStyle(options),
     stackedLayout: createStackedLayoutStyle(options),
     suggestedAction: createSuggestedActionStyle(options),
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
     timestamp: createTimestampStyle(options),
     typingActivity: createTypingActivityStyle(options),
+    typingAnimation: createTypingAnimationStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),
     videoContent: createVideoContentStyle(options),
