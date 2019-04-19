@@ -1,4 +1,5 @@
 import { By, Condition, Key } from 'selenium-webdriver';
+import { ConnectionStatus } from 'botframework-directlinejs';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import uiConnected from './setup/conditions/uiConnected';
@@ -7,6 +8,12 @@ import uiConnected from './setup/conditions/uiConnected';
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
 jest.setTimeout(timeouts.test);
+
+const {
+  Connecting: CONNECTING,
+  Online: ONLINE,
+  Uninitialized: UNINITIALIZED
+} = ConnectionStatus;
 
 const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail sending', driver => {
   return driver.executeScript(() => {
@@ -19,6 +26,7 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 
 describe('offline UI', async () => {
   test('should show "slow to connect" UI when connection is slow', async () => {
+
     const { driver } = await setupWebDriver({
       createDirectLine: options => {
         const workingDirectLine = window.WebChat.createDirectLine(options);
@@ -32,7 +40,7 @@ describe('offline UI', async () => {
               complete: () => observer.complete(),
               error: err => observer.error(err),
               next: connectionStatus => {
-                connectionStatus !== 2 && observer.next(connectionStatus);
+                connectionStatus !== ONLINE && observer.next(connectionStatus);
               }
             });
 
@@ -190,7 +198,7 @@ describe('offline UI', async () => {
               complete: () => observer.complete(),
               error: err => observer.error(err),
               next: connectionStatus => {
-                connectionStatus === 1 && observer.next(connectionStatus);
+                connectionStatus === UNINITIALIZED && observer.next(connectionStatus);
               }
             });
 
@@ -231,7 +239,7 @@ describe('offline UI', async () => {
               error: err => observer.error(err),
               next: connectionStatus => {
                 observer.next(connectionStatus);
-                connectionStatus === 2 && observer.next(1);
+                connectionStatus === ONLINE && observer.next(CONNECTING);
               }
             });
 
@@ -273,7 +281,7 @@ describe('offline UI', async () => {
               error: err => observer.error(err),
               next: connectionStatus => {
                 observer.next(connectionStatus);
-                connectionStatus === 2 && observer.next(1);
+                connectionStatus === ONLINE && observer.next(CONNECTING);
               }
             });
 
