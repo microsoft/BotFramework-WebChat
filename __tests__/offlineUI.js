@@ -231,7 +231,10 @@ describe('offline UI', async () => {
   });
 
   test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', async () => {
+    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+
     const { driver } = await setupWebDriver({
+      props: { WEB_CHAT_PROPS },
       createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // These Direct Line Connection Status variables must be declared within scope
