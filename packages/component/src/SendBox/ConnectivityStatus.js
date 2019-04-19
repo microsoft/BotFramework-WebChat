@@ -7,31 +7,31 @@ import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
 
-class ConnectivityDebounce extends React.Component {
+class DebouncedConnectivityStatus extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      renderConnectivity: props.children,
+      children: props.children,
       since: Date.now()
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { children, debounce } = nextProps;
+    const { children, interval } = nextProps;
 
     if (
       children !== this.props.children
-      || debounce !== this.props.debounce
+      || interval !== this.props.interval
     ) {
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
         this.setState(() => ({
-          renderConnectivity: children,
+          children,
           since: Date.now()
         }));
-      }, Math.max(0, debounce - Date.now() + this.state.since));
+      }, Math.max(0, interval - Date.now() + this.state.since));
     }
   }
 
@@ -40,9 +40,7 @@ class ConnectivityDebounce extends React.Component {
   }
 
   render() {
-    const { renderConnectivity } = this.state;
-
-    return typeof renderConnectivity === 'function' ? renderConnectivity() : false;
+    return typeof this.state.children === 'function' ? this.state.children() : false;
   }
 }
 
@@ -73,8 +71,8 @@ export default connectConnectivityStatus(
       }
       role="status"
     >
-      <ConnectivityDebounce
-        debounce={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }>
+      <DebouncedConnectivityStatus
+        interval={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }>
         { () =>
           connectivityStatus === 'connectingslow' ?
             <React.Fragment>
@@ -97,6 +95,6 @@ export default connectConnectivityStatus(
               { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
             </React.Fragment>
         }
-      </ConnectivityDebounce>
+      </DebouncedConnectivityStatus>
     </div>
   )
