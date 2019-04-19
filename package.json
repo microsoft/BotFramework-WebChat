@@ -53,7 +53,8 @@
     "redux-observable": "0.13.0",
     "rxjs": "5.4.3",
     "simple-update-in": "^1.2.0",
-    "tslib": "1.7.1"
+    "tslib": "1.7.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.21",
@@ -78,7 +79,6 @@
     "tslint": "5.10.0",
     "tslint-loader": "3.6.0",
     "typescript": "2.3",
-    "uuid": "^3.3.2",
     "webpack": "2.3.3"
   },
   "files": [

@@ -241,11 +241,14 @@ export class Chat extends React.Component<ChatProps, State> {
     componentDidMount() {
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
+        const msftUserId = window.localStorage.getItem('msft_user_id');
 
         const isNew = true;
-        const botConnection: IBotConnection = this.props.directLine
-                    ? (this.botConnection = new DirectLine(this.props.directLine))
-                    : this.props.botConnection;
+        let botConnection: any = null;
+
+        botConnection = this.props.directLine ?
+            (this.botConnection = new DirectLine(this.props.directLine)) :
+            this.props.botConnection;
 
         if (this.props.resize === 'window') {
             window.addEventListener('resize', this.resizeListener);
@@ -254,9 +257,13 @@ export class Chat extends React.Component<ChatProps, State> {
         let user = this.props.user;
 
         // Generate random user ID if there is none
-        if (!user) {
+        if (!user && !msftUserId) {
             user = {
                 id: guid()
+            };
+        } else if (msftUserId) {
+            user = {
+                id: msftUserId
             };
         }
 
@@ -294,8 +301,9 @@ export class Chat extends React.Component<ChatProps, State> {
                     .then((res: any) => {
                         // Only save these when we successfully connect
                         // uncomment when re-enabling chat history
-                        // window.localStorage.setItem('msft_conversation_id', conversationId);
-                        // window.localStorage.setItem('gid', this.props.gid);
+                        window.localStorage.setItem('msft_conversation_id', conversationId);
+                        window.localStorage.setItem('gid', this.props.gid);
+                        window.localStorage.setItem('msft_user_id', user.id);
 
                         this.setState({
                             display: true
