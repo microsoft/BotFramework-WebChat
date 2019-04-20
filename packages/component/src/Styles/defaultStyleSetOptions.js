@@ -102,6 +102,15 @@ const DEFAULT_OPTIONS = {
   failedConnectivity: '#C50F1F',
   slowConnectivity: '#EAA300',
   notificationText: '#5E5E5E',
+
+  typingAnimationBackgroundImage: null,
+  typingAnimationHeight: 20,
+  typingAnimationWidth: 64,
+
+  spinnerAnimationBackgroundImage: null,
+  spinnerAnimationHeight: 16,
+  spinnerAnimationWidth: 16,
+  spinnerAnimationPaddingRight: 12
 };
 
 export default DEFAULT_OPTIONS

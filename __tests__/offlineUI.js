@@ -1,6 +1,7 @@
 import { By, Condition, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import staticSpinner from './setup/assets/staticSpinner';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -18,9 +19,17 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 });
 
 describe('offline UI', async () => {
-  test('should show "slow to connect" UI when connection is slow', async () => {
+  test('should show "taking longer than usual to connect" UI when connection is slow', async () => {
+
+    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+
     const { driver } = await setupWebDriver({
+      props: { WEB_CHAT_PROPS },
       createDirectLine: options => {
+        // This part of code is running in the JavaScript VM in Chromium.
+        // This variable must be declared within scope
+        const ONLINE = 2;
+
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
         return {
@@ -32,7 +41,7 @@ describe('offline UI', async () => {
               complete: () => observer.complete(),
               error: err => observer.error(err),
               next: connectionStatus => {
-                connectionStatus !== 2 && observer.next(connectionStatus);
+                connectionStatus !== ONLINE && observer.next(connectionStatus);
               }
             });
 
@@ -177,8 +186,15 @@ describe('offline UI', async () => {
   });
 
   test('should display the "Connecting..." connectivity status when connecting for the first time', async() => {
+    const WEB_CHAT_PROPS = { spinnerAnimationBackgroundImage: staticSpinner };
+
     const { driver } = await setupWebDriver({
+      props: WEB_CHAT_PROPS,
       createDirectline: options => {
+        // This part of code is running in the JavaScript VM in Chromium.
+        // This Direct Line Connection Status variable must be declared within scope
+        const UNINITIALIZED = 0;
+
         const workingDirectLine = window.WebChat.createDirectLine(options);
 
         return {
@@ -186,15 +202,15 @@ describe('offline UI', async () => {
           postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
 
           connectionStatus$: new Observable(observer => {
-            const subscription = workingDirectLine.connectionStatus$.subscribe( {
+            const subscription = workingDirectLine.connectionStatus$.subscribe({
               complete: () => observer.complete(),
               error: err => observer.error(err),
               next: connectionStatus => {
-                connectionStatus == 1 && observer.next(connectionStatus);
+                connectionStatus === UNINITIALIZED && observer.next(connectionStatus);
               }
             });
 
-            return subscription.unsubscribe();
+            return () => subscription.unsubscribe();
           })
         };
       },
@@ -211,7 +227,101 @@ describe('offline UI', async () => {
     });
 
     const base64PNG = await driver.takeScreenshot();
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
 
-    // Snapshots are intentionally not compared because the spinner will cause the snapshot to fail regularly
+  test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', async () => {
+    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+
+    const { driver } = await setupWebDriver({
+      props: { WEB_CHAT_PROPS },
+      createDirectLine: options => {
+        // This part of code is running in the JavaScript VM in Chromium.
+        // These Direct Line Connection Status variables must be declared within scope
+        const CONNECTING = 1;
+
+        const ONLINE = 2;
+
+        const reconnectingDirectLine = window.WebChat.createDirectLine(options);
+
+        return {
+          activity$: reconnectingDirectLine.activity$,
+          postActivity: reconnectingDirectLine.postActivity.bind(reconnectingDirectLine),
+
+          connectionStatus$: new Observable(observer => {
+            const subscription = reconnectingDirectLine.connectionStatus$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                observer.next(connectionStatus);
+                connectionStatus === ONLINE && observer.next(CONNECTING);
+              }
+            });
+
+            return () => subscription.unsubscribe();
+          })
+        };
+      },
+      pingBotOnLoad: false,
+      setup: () => new Promise(resolve => {
+        const scriptElement = document.createElement('script');
+
+        scriptElement.onload = resolve;
+        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
+
+        document.head.appendChild(scriptElement);
+      })
+    });
+
+    await driver.sleep(600);
+    const base64PNG = await driver.takeScreenshot();
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show "Taking longer than usual to connect" UI when reconnection is slow', async () => {
+    const { driver } = await setupWebDriver({
+      createDirectLine: options => {
+        // This part of code is running in the JavaScript VM in Chromium.
+        // These Direct Line Connection Status variables must be declared within scope
+        const CONNECTING = 1;
+
+        const ONLINE = 2;
+
+        const reconnectingDirectLine = window.WebChat.createDirectLine(options);
+
+        return {
+          activity$: reconnectingDirectLine.activity$,
+          postActivity: reconnectingDirectLine.postActivity.bind(reconnectingDirectLine),
+
+          connectionStatus$: new Observable(observer => {
+            const subscription = reconnectingDirectLine.connectionStatus$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                observer.next(connectionStatus);
+                connectionStatus === ONLINE && observer.next(CONNECTING);
+              }
+            });
+
+            return () => subscription.unsubscribe();
+          })
+        };
+      },
+      pingBotOnLoad: false,
+      setup: () => new Promise(resolve => {
+        const scriptElement = document.createElement('script');
+
+        scriptElement.onload = resolve;
+        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
+
+        document.head.appendChild(scriptElement);
+      })
+    });
+
+    await driver.sleep(17000);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });

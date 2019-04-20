@@ -1,5 +1,4 @@
 import {
-  all,
   call,
   cancel,
   cancelled,
@@ -128,14 +127,14 @@ function* reconnectSaga() {
     if (connectionStatus === ONLINE) {
       break;
     } else if (connectionStatus !== CONNECTING) {
-      throw new Error(`Failed to reconnect, DirectLineJS returned ${ connectionStatus }.`);
+      throw new Error(`Failed to reconnect. DirectLineJS returned ${ connectionStatus }.`);
     }
   }
 }
 
 // This is similar to behavior of redux-promise-middleware, but using saga instead of Promise.
 // We guarantee PENDING -> FULFILLING -> FULFILLED, or PENDING -> REJECTED. This will help us simplify logic in other part of code.
-// Note that after the saga is cancelled, subsequent call to put() will silently ignored.
+// Note that after the saga is cancelled, subsequent call to put() will be ignored silently.
 function* runAsyncEffect({ type, meta, payload }, callEffectFactory) {
   try {
     yield forkPut({ type: `${ type }_PENDING`, meta, payload });
@@ -163,7 +162,7 @@ function* takeDisconnectAsError() {
 
 function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   // We cannot use saga cancel() here, because cancelling saga will prohibit us from sending *_REJECTED.
-  // Without REJECTED, it impact our assumptions around PENDING/FULFILLED/REJECTED.
+  // Without REJECTED, it impacts our assumptions around PENDING/FULFILLED/REJECTED.
   return runAsyncEffect(
     baseAction,
     function* () {

@@ -66,7 +66,10 @@ global.setupWebDriver = async options => {
           (coverage, options, callback) => {
             window.__coverage__ = coverage;
 
-            main(options).then(() => callback(), callback);
+            main(options).then(() => callback(), err => {
+              console.error(err);
+              callback(err);
+            });
           },
           global.__coverage__,
           marshal({
