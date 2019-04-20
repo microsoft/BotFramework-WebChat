@@ -1,8 +1,8 @@
-import { embedConfigurationURL, embedTelemetryURL, servicingPlanURL } from './urlBuilder';
+import { embedConfigurationURL, embedTelemetryURL } from './urlBuilder';
 import { error, log, warn } from './logger';
 import { normalize as normalizeLocale } from './locale';
 import fetchJSON from './fetchJSON';
-import loadAsset from './loadAsset';
+import servicingPlan from '../servicingPlan.json';
 import setup from './setups/index';
 
 const MAX_VERSION_REDIRECTIONS = 10;
@@ -85,10 +85,7 @@ function findService(servicingPlan, bot, requestedVersion = 'default') {
       '.'
     ].join(''));
 
-    return {
-      service,
-      version: requestedVersion
-    };
+    return service;
   }
 
   throw new Error(`Maximum version redirections exceeded, probably problem with our servicing plan.`);
@@ -125,29 +122,17 @@ async function main() {
     throw new Error(`You must specify either secret or token.`);
   }
 
-  const [bot, servicingPlan] = await Promise.all([
-    fetchJSON(
-      embedConfigurationURL(botId, { secret, token, userId: params.userId }),
-      { credentials: 'include' }
-    ).catch(() => Promise.reject('Failed to fetch bot configuration.')),
-    fetchJSON(
-      servicingPlanURL()
-    ).catch(() => Promise.reject(`Failed to fetch servicing plan.`))
-  ]);
+  const bot = await fetchJSON(
+    embedConfigurationURL(botId, { secret, token, userId: params.userId }),
+    { credentials: 'include' }
+  ).catch(() => Promise.reject('Failed to fetch bot configuration.'));
 
-  const {
-    service: {
-      assets,
-      deprecation,
-      versionFamily
-    }
-  } = findService(servicingPlan, bot, version);
-
-  assets && await Promise.all(assets.map(loadAsset));
+  const service = findService(servicingPlan, bot, version);
+  const { deprecation } = service;
 
   deprecation && warn(deprecation);
 
-  const { version: actualVersion } = await setup(versionFamily, bot, params);
+  const { version: actualVersion } = await setup(service, bot, params);
   const dataPoints = {
     [`actualversion:${ actualVersion }`]: 1,
     [`expectversion:${ (version || '').substr(0, 10) }`]: version,

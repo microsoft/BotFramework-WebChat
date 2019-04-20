@@ -1,5 +1,5 @@
 import { legacyEmbedURL } from '../urlBuilder';
-import createElement from '../createElement';
+import createElement from './createElement';
 
 const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})(-([A-Za-z]{2}))?$/;
 
@@ -15,7 +15,7 @@ function toAzureLocale(language) {
   }
 }
 
-export default function setupLegacyVersionFamily({ botId }, { language, secret, token }, features = []) {
+export default function setupLegacyVersionFamily(_, { botId }, { language, secret, token }, features = []) {
   return new Promise((resolve, reject) => {
     // Version 1 also depends on your token.
     // If you are using a token on Aries, you get Aries (v1).

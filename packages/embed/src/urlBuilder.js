@@ -26,13 +26,8 @@ function legacyEmbedURL(botId, params) {
   return `${ WEB_CHAT_SERVICE_BASE_URL }embed/${ botId }?${ urlSearchParams.toString() }`;
 }
 
-function servicingPlanURL() {
-  return 'servicingplan.json';
-}
-
 export {
   embedConfigurationURL,
   embedTelemetryURL,
-  legacyEmbedURL,
-  servicingPlanURL
+  legacyEmbedURL
 }

@@ -1,3 +1,5 @@
+import loadAsset from './loadAsset';
+
 async function getBingSpeechToken(directLineToken, bingSpeechTokenURL) {
   const res = await fetch(
     `${ bingSpeechTokenURL }?goodForInMinutes=10`,
@@ -15,21 +17,24 @@ async function getBingSpeechToken(directLineToken, bingSpeechTokenURL) {
   return accessToken;
 }
 
-export default function setupVersionFamily3(
+export default async function setupVersionFamily3(
   {
+    assets
+  }, {
     botId,
     directLineURL: domain,
     speechTokenURL,
     userId,
     webSocket
-  },
-  {
+  }, {
     language,
     secret,
     token,
     username
   }
 ) {
+  assets && await Promise.all(assets.map(loadAsset));
+
   let speechOptions;
 
   if (speechTokenURL && speechTokenURL.bingSpeech && token) {
