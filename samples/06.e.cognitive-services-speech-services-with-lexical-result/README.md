@@ -6,7 +6,7 @@ A simple page with Web Chat integrated with speech-to-text and text-to-speech fe
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/6.e.cognitive-services-speech-services-with-lexical-result)
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.e.cognitive-services-speech-services-with-lexical-result)
 
 # How to run locally
 
