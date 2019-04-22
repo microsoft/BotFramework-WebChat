@@ -4,6 +4,7 @@ import { normalize as normalizeLocale } from './locale';
 import fetchJSON from './fetchJSON';
 import servicingPlan from '../servicingPlan.json';
 import setup from './setups/index';
+import loadIFRAME from './setups/loadIFRAME';
 
 const MAX_VERSION_REDIRECTIONS = 10;
 
@@ -123,9 +124,22 @@ async function main() {
   }
 
   const bot = await fetchJSON(
-    embedConfigurationURL(botId, { secret, token, userId: params.userId }),
+    embedConfigurationURL(
+      botId,
+      {
+        secret,
+        token,
+        userId: params.userId
+      }
+    ),
     { credentials: 'include' }
-  ).catch(() => Promise.reject('Failed to fetch bot configuration.'));
+  ).catch(async err => {
+    await loadIFRAME('/404.html');
+
+    return Promise.reject(err);
+  });
+
+  document.title = bot.botName;
 
   const service = findService(servicingPlan, bot, version);
   const { deprecation } = service;
@@ -147,9 +161,7 @@ async function main() {
       { secret, token },
       Object.keys(dataPoints).filter(name => dataPoints[name])
     ),
-    {
-      mode: 'no-cors'
-    }
+    { mode: 'no-cors' }
   ).then(res => res.text());
 }
 
