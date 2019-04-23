@@ -15,7 +15,7 @@
       "assets": [
         ["https://cdn.botframework.com/botframework-webchat/4.1.0/webchat-es5.js", "sha384-mnfZXpnonQRGSyBxCG62K8B9+1RNnVJ2/hfbGVH5lJAAqLy/ZVMQLCn2FDTRs6MP"]
       ],
-      "deprecation": "We are deprecating this version of Web Chat, please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
       "versionFamily": "4"
     },
     "4.2": {
