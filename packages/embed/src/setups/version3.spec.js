@@ -37,8 +37,8 @@ test('Load Web Chat v3 without speech token', async () => {
 
   const setupTask = setupVersion3({
     assets: [
-      ['botchat.css', 'a1b2c3d']
-      ['botchat.js', 'a1b2c3d']
+      ['botchat.css', 'sha384-a1b2c3d'],
+      ['botchat.js', 'sha384-a1b2c3d']
     ]
   }, {
     botId: 'webchat-mockbot',
@@ -52,12 +52,12 @@ test('Load Web Chat v3 without speech token', async () => {
     username: 'William'
   });
 
-  // expect(document.head).toHaveProperty('outerHTML', '<head><script crossorigin="anonymous" src="webchat.js"></script><script crossorigin="anonymous" src="a1b2c3d"></script></head>');
   [].forEach.call(document.head.querySelectorAll('script'), target => target.dispatchEvent(new Event('load')));
 
   const { version } = await setupTask;
 
-  expect(window.BotChat.App).toHaveBeenCalledTimes(1);
+  expect(document.head).toHaveProperty('outerHTML', '<head><link crossorigin="anonymous" href="botchat.css" integrity="sha384-a1b2c3d" rel="stylesheet"><script async="true" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="botchat.js"></script></head>');
   expect(document.body).toHaveProperty('outerHTML', '<body><div><div id="webchat"></div></div></body>');
+  expect(window.BotChat.App).toHaveBeenCalledTimes(1);
   expect(version).toBe('3');
 });

@@ -38,7 +38,9 @@ test('Load Web Chat v4', async () => {
   };
 
   const setupTask = setupVersion4({
-    assets: ['webchat.js', 'a1b2c3d']
+    assets: [
+      ['webchat.js', 'sha384-a1b2c3d']
+    ]
   }, {
     botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
     directLineURL: 'https://directline.botframework.com',
@@ -51,7 +53,7 @@ test('Load Web Chat v4', async () => {
     username: 'William'
   });
 
-  expect(document.head).toHaveProperty('outerHTML', '<head><script crossorigin="anonymous" src="webchat.js"></script><script crossorigin="anonymous" src="a1b2c3d"></script></head>');
+  expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="webchat.js"></script></head>');
   [].forEach.call(document.head.querySelectorAll('script'), target => target.dispatchEvent(new Event('load')));
 
   const { version } = await setupTask;

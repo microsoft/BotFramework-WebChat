@@ -22,7 +22,7 @@ describe('Load a JavaScript file', () => {
       document.head.querySelector('script').dispatchEvent(event);
 
       expect(loadTask).rejects.toBe(event);
-      expect(document.head).toHaveProperty('outerHTML', '<head><script crossorigin="anonymous" src="index.js"></script></head>');
+      expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" src="index.js"></script></head>');
     });
 
     test('succeeded', async () => {
@@ -30,21 +30,18 @@ describe('Load a JavaScript file', () => {
 
       await loadTask;
 
-      expect(document.head).toHaveProperty('outerHTML', '<head><script crossorigin="anonymous" src="index.js"></script></head>');
+      expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" src="index.js"></script></head>');
     });
   });
 
-  // TODO: jsdom does not support "integrity" attribute yet, the HTML generated does not contains "integrity" attribute.
-  //       Try to re-enable the test below in future build.
+  test('with subresource integrity', async () => {
+    loadTask = loadAsset(['index.js', 'sha384-a1b2c3d']);
 
-  // test('with subresource integrity', async () => {
-  //   loadTask = loadAsset(['index.js', 'a1b2c3d']);
+    document.head.querySelector('script').dispatchEvent(new Event('load'));
+    expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="index.js"></script></head>');
 
-  //   document.head.querySelector('script').dispatchEvent(new Event('load'));
-  //   expect(document.head).toHaveProperty('outerHTML', '<head><script crossorigin="anonymous" integrity="a1b2c3d" src="index.js"></script></head>');
-
-  //   await loadTask;
-  // });
+    await loadTask;
+  });
 });
 
 describe('Load a stylesheet file', () => {
@@ -54,12 +51,9 @@ describe('Load a stylesheet file', () => {
     expect(document.head).toHaveProperty('outerHTML', '<head><link crossorigin="anonymous" href="index.css" rel="stylesheet"></head>');
   });
 
-  // TODO: jsdom does not support "integrity" attribute yet, the HTML generated does not contains "integrity" attribute.
-  //       Try to re-enable the test below in future build.
+  test('with subresource integrity', () => {
+    loadAsset(['index.css', 'sha384-a1b2c3d']);
 
-  // test('with subresource integrity', () => {
-  //   loadAsset(['index.css', 'a1b2c3d']);
-
-  //   expect(document.head).toHaveProperty('outerHTML', '<head><link crossorigin="anonymous" href="index.css" integrity="a1b2c3d" rel="stylesheet"></head>');
-  // });
+    expect(document.head).toHaveProperty('outerHTML', '<head><link crossorigin="anonymous" href="index.css" integrity="sha384-a1b2c3d" rel="stylesheet"></head>');
+  });
 });

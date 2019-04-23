@@ -33,7 +33,7 @@ function loadStylesheet(href, integrity) {
 }
 
 export default async function loadAsset(src) {
-  const [assetURL, integrity] = Array.isArray(src) ? src : [src, ''];
+  const [assetURL, integrity] = Array.isArray(src) ? src : [src, undefined];
 
   return /\.css$/i.test(assetURL) ? loadStylesheet(assetURL, integrity) : await loadScript(assetURL, integrity);
 }
