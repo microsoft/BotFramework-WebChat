@@ -15,7 +15,7 @@ function toAzureLocale(language) {
   }
 }
 
-export default async function setupLegacyVersionFamily(_, { botId }, { language, secret, token }, features = []) {
+export default async function setupLegacyVersionFamily(_, { botId, userId }, { language, secret, token, username }, features = []) {
   // Version 1 also depends on your token.
   // If you are using a token on Aries, you get Aries (v1).
   // If you are using a token on Scorpio, you get Scorpio (v3).
@@ -27,6 +27,8 @@ export default async function setupLegacyVersionFamily(_, { botId }, { language,
   azureLocale && params.set('l', azureLocale);
   secret && params.set('s', secret);
   token && params.set('t', token);
+  userId && params.set('userid', userId);
+  username && params.set('username', username);
 
   await loadIFRAME(legacyEmbedURL(botId, params));
 }
