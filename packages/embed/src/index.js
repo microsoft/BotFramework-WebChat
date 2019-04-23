@@ -89,7 +89,7 @@ export function findService(servicingPlan, bot, requestedVersion = 'default') {
     return service;
   }
 
-  throw new Error(`Maximum version redirections exceeded, probably problem with our servicing plan.`);
+  throw new Error(`Maximum version redirections exceeded. This is probably problem with our servicing plan.`);
 }
 
 function parseParams(search) {
