@@ -21,7 +21,7 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 describe('offline UI', async () => {
   test('should show "taking longer than usual to connect" UI when connection is slow', async () => {
 
-    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+    const WEB_CHAT_PROPS = { spinnerAnimationBackgroundImage: staticSpinner };
 
     const { driver } = await setupWebDriver({
       props: { WEB_CHAT_PROPS },
@@ -231,7 +231,7 @@ describe('offline UI', async () => {
   });
 
   test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', async () => {
-    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
+    const WEB_CHAT_PROPS = { spinnerAnimationBackgroundImage: staticSpinner };
 
     const { driver } = await setupWebDriver({
       props: { WEB_CHAT_PROPS },
