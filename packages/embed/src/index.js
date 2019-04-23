@@ -115,11 +115,13 @@ function parseParams(search) {
   };
 }
 
-async function main() {
-  const params = parseParams(location.search);
+export async function main(search) {
+  const params = parseParams(search);
   const { botId, secret, token, version } = params;
 
   if (!secret && !token) {
+    await loadIFRAME('/404.html');
+
     throw new Error(`You must specify either secret or token.`);
   }
 
@@ -165,4 +167,4 @@ async function main() {
   ).then(res => res.text());
 }
 
-main().catch(({ stack = '' }) => error(['Unhandled exception caught when loading.', '', ...stack.split('\n')].join('\n')));
+main(location.search).catch(({ stack = '' }) => error(['Unhandled exception caught when loading.', '', ...stack.split('\n')].join('\n')));
