@@ -13,6 +13,8 @@ export default function createElement(tagName, attributes, ...children) {
       Object.keys(styles).forEach(name => {
         elementStyle[name] = styles[name];
       });
+    } else if (typeof value === 'boolean') {
+      value && element.setAttribute(name, '');
     } else if (typeof value !== 'undefined') {
       element.setAttribute(name, value);
     }

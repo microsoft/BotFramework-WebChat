@@ -29,3 +29,15 @@ test('Create an element with stylesheet', () => {
 
   expect(image).toHaveProperty('outerHTML', '<img style="background-color: Black;">');
 });
+
+test('Create an element with boolean attribute of true', () => {
+  const checkbox = createElement('input', { disabled: true, type: 'checkbox' });
+
+  expect(checkbox).toHaveProperty('outerHTML', '<input disabled="" type="checkbox">');
+});
+
+test('Create an element with boolean attribute of false', () => {
+  const checkbox = createElement('input', { disabled: false, type: 'checkbox' });
+
+  expect(checkbox).toHaveProperty('outerHTML', '<input type="checkbox">');
+});
