@@ -21,9 +21,10 @@ export default async function setupLegacyVersionFamily(_, { botId }, { language,
   // If you are using a token on Scorpio, you get Scorpio (v3).
 
   const params = new URLSearchParams();
+  const azureLocale = language && toAzureLocale(language);
 
   features.length && params.set('features', features.join(','));
-  language && params.set('l', toAzureLocale(language));
+  azureLocale && params.set('l', azureLocale);
   secret && params.set('s', secret);
   token && params.set('t', token);
 
