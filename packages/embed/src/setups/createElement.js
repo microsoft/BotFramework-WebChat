@@ -20,7 +20,10 @@ export default function createElement(tagName, attributes, ...children) {
     }
   });
 
-  children.forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child));
+  const childrenFragment = document.createDocumentFragment();
+
+  children.forEach(child => childrenFragment.appendChild(typeof child === 'string' ? document.createTextNode(child) : child));
+  element.appendChild(childrenFragment);
 
   return element;
 }
