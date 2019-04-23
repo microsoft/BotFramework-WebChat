@@ -62,7 +62,7 @@ test('Load Web Chat v3 without speech token', async () => {
   expect(version).toBe('3');
 });
 
-test('Load Bing speech token', async () => {
+test('Load Bing speech token succeeded', async () => {
   window.fetch = jest.fn(() => ({
     ok: true,
     json: () => Promise.resolve({ access_Token: 'a1b2c3d' })
@@ -77,4 +77,10 @@ test('Load Bing speech token', async () => {
       headers: { Authorization: 'Bearer token' }
     }
   );
+});
+
+test('Load Bing speech token failed', async () => {
+  window.fetch = jest.fn(() => ({ ok: false }));
+
+  await expect(require('./version3').getBingSpeechToken('token', 'http://webchat.botframework.com/bing-speech-token')).rejects.toThrow('Failed to get Bing Speech token');
 });
