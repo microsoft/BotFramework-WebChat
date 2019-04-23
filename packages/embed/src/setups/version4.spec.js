@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import createElement from './createElement';
 import setupVersion4 from './version4';
 
 beforeEach(() => {
@@ -22,14 +23,17 @@ test('Load Web Chat v4', async () => {
         username: 'William'
       });
 
-      element.appendChild(document.createElement('div'));
+      element.appendChild(createElement('div', { id: 'webchat' }));
 
-      const meta = document.createElement('meta');
-
-      meta.setAttribute('name', 'botframework-webchat:bundle:version');
-      meta.setAttribute('content', '0.0.0');
-
-      document.head.appendChild(meta);
+      document.head.appendChild(
+        createElement(
+          'meta',
+          {
+            content: '4.0.0',
+            name: 'botframework-webchat:bundle:version'
+          }
+        )
+      );
     })
   };
 
@@ -60,7 +64,7 @@ test('Load Web Chat v4', async () => {
     webSocket: true
   });
 
-  expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%;"><div style="height: 100%;"></div></div></body>');
+  expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%;"><div id="webchat" style="height: 100%;"></div></div></body>');
 
-  expect(version).toBe('0.0.0');
+  expect(version).toBe('4.0.0');
 });
