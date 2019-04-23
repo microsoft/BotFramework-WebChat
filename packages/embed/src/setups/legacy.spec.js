@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import setupLegacyVersionFamily from './legacy';
 
 afterEach(() => {

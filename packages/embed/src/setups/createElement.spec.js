@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import createElement from './createElement';
 
 test('Create an element with attribute', () => {

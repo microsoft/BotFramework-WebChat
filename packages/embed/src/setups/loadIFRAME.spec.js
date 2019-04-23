@@ -1,10 +1,13 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import loadIFRAME from './loadIFRAME';
 
 test('Load a page', async () => {
   const loadTask = loadIFRAME('index.html');
-  const target = document.body.querySelector('iframe');
 
-  target.dispatchEvent(new Event('load'));
+  document.body.querySelector('iframe').dispatchEvent(new Event('load'));
 
   await loadTask;
 
