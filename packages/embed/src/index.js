@@ -31,7 +31,7 @@ function execRedirectRules(bot, redirects, version) {
   }
 }
 
-function findService(servicingPlan, bot, requestedVersion = 'default') {
+export function findService(servicingPlan, bot, requestedVersion = 'default') {
   const traversedVersions = [];
   const logs = [];
   let publicOnly = true;
@@ -115,7 +115,7 @@ function parseParams(search) {
   };
 }
 
-export async function main(search) {
+export default async function main(search) {
   const params = parseParams(search);
   const { botId, secret, token, version } = params;
 

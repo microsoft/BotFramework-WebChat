@@ -4,6 +4,11 @@
 
 import createElement from './setups/createElement';
 
+beforeEach(() => {
+  window.console.log = () => 0;
+  window.console.warn = () => 0;
+});
+
 test('Setup version 4', async () => {
   jest.mock('./fetchJSON', () => jest.fn(() => Promise.resolve({
     botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
@@ -18,7 +23,6 @@ test('Setup version 4', async () => {
 
   jest.mock('./setups/loadAsset', () => jest.fn(() => Promise.resolve()));
 
-  window.console.log = () => 0;
   window.fetch = jest.fn(() => Promise.resolve({ text: () => '' }));
   window.WebChat = {
     createDirectLine: jest.fn(options => options),
@@ -27,7 +31,7 @@ test('Setup version 4', async () => {
     })
   };
 
-  const mainTask = require('./index').main('?b=webchat-mockbot&l=ja.ja-jp&s=secret&userid=ww&username=William&v=4');
+  const mainTask = require('./index').default('?b=webchat-mockbot&l=ja.ja-jp&s=secret&userid=ww&username=William&v=4');
 
   [].forEach.call(document.querySelectorAll('script'), target => target.dispatchEvent(new Event('load')));
 
@@ -55,4 +59,93 @@ test('Setup version 4', async () => {
   });
 
   expect(document.body.querySelectorAll('#webchat')).toHaveProperty('length', 1);
+});
+
+test('Find default version', () => {
+  const targetVersion = {
+    assets: [
+      ['webchat.js', 'sha384-a1b2c3d']
+    ],
+    versionFamily: '4'
+  };
+
+  const service = require('./index').findService({
+    versions: {
+      'default': {
+        redirects: [
+          ['*', '4.3.0']
+        ]
+      },
+      '4.3.0': targetVersion
+    }
+  });
+
+  expect(service).toBe(targetVersion);
+});
+
+test('Find targeted version using query parameters', () => {
+  const targetVersion = {
+    assets: [
+      ['webchat.js', 'sha384-a1b2c3d']
+    ],
+    versionFamily: '4'
+  };
+
+  const service = require('./index').findService({
+    versions: {
+      'default': {
+        redirects: [
+          ['*', '4.1.0']
+        ]
+      },
+      '4.3.0': targetVersion
+    }
+  }, {}, '4.3.0');
+
+  expect(service).toBe(targetVersion);
+});
+
+test('Find targeted version using features', () => {
+  const targetVersion = {
+    assets: [
+      ['webchat.js', 'sha384-a1b2c3d']
+    ],
+    versionFamily: '4'
+  };
+
+  const service = require('./index').findService({
+    versions: {
+      'default': {
+        redirects: [
+          ['feature:nextmajor', '4.3.0'],
+          ['*', '4.2.0']
+        ]
+      },
+      '4.3.0': targetVersion
+    }
+  }, { features: ['nextmajor'] });
+
+  expect(service).toBe(targetVersion);
+});
+
+test('Missing version should redirect to default version', () => {
+  const targetVersion = {
+    assets: [
+      ['webchat.js', 'sha384-a1b2c3d']
+    ],
+    versionFamily: '4'
+  };
+
+  const service = require('./index').findService({
+    versions: {
+      'default': {
+        redirects: [
+          ['*', '4.3.0']
+        ]
+      },
+      '4.3.0': targetVersion
+    }
+  }, {}, '4.0.0');
+
+  expect(service).toBe(targetVersion);
 });
