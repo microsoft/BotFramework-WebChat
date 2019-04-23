@@ -9,7 +9,7 @@ beforeEach(() => {
   delete window.BotChat;
 });
 
-test('Load Web Chat v3 without speech token', async () => {
+test('Load Web Chat v3 without a speech token', async () => {
   window.BotChat = {
     App: jest.fn((props, element) => {
       expect(props).toEqual({
