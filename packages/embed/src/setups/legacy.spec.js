@@ -35,15 +35,14 @@ test('Test loading a bot with a 2-letter ISO language and a secret', async () =>
     }, {
       language: 'fr',
       secret: 'secret'
-    },
-    ['webchataries']
+    }
   );
 
   document.body.querySelector('iframe').dispatchEvent(new Event('load'));
 
   await iframeTask;
 
-  expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%; overflow: hidden;"><iframe src="/embed/webchat-mockbot?features=webchataries&amp;l=fr&amp;s=secret" style="border: 0px; height: 100%; width: 100%;"></iframe></div></body>');
+  expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%; overflow: hidden;"><iframe src="/embed/webchat-mockbot?l=fr&amp;s=secret" style="border: 0px; height: 100%; width: 100%;"></iframe></div></body>');
 });
 
 test('Test loading a bot with unknown language and a token', async () => {
