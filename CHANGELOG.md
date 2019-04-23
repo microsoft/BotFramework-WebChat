@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1837](https://github.com/Microsoft/BotFramework-WebChat/issues/1837), [#1643](https://github.com/Microsoft/BotFramework-WebChat/issues/1643). Fix style conflicts with bootstrap and bump `memoize-one`, by [@corinagum](https://github.com/corinagum) in PR [#1884](https://github.com/Microsoft/BotFramework-WebChat/pull/1884)
 - Fix [#1877](https://github.com/Microsoft/BotFramework-WebChat/issues/1877). Add viewport meta tag and fix a few sample links, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 - Fix [#1789](https://github.com/Microsoft/BotFramework-WebChat/issues/1789). Return focus Send Box after Send Button is pushed, by [@corinagum](https://github.com/corinagum) in PR [#1915](https://github.com/Microsoft/BotFramework-WebChat/pull/1915)
-- Fix [#1920](https://github.com/Microsoft/BotFramework-WebChat/issues/1920). Added disabled property to send button, by [@tdurnford](https://github.com/tdurnford) in PR [#1911](https://github.com/Microsoft/BotFramework-WebChat/pull/1911)
+- Fix [#1920](https://github.com/Microsoft/BotFramework-WebChat/issues/1920). Added disabled property to send button, by [@tdurnford](https://github.com/tdurnford) in PR [#1922](https://github.com/Microsoft/BotFramework-WebChat/pull/1922)
 
 ### Changed
 - `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1900](https://github.com/Microsoft/BotFramework-WebChat/pull/1900)
