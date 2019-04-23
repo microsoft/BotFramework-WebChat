@@ -20,6 +20,10 @@ test('Normalizing "zh-HK"', () => {
   expect(normalize('zh-HK')).toBe('zh-HK');
 });
 
+test('Normalizing "*"', () => {
+  expect(normalize('*')).toBe('en');
+});
+
 test('Convert "en-US" to Azure locale', () => {
   expect(toAzureLocale('en-US')).toBe('en.en-us');
 });

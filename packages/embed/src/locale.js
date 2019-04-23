@@ -1,5 +1,5 @@
 const AZURE_LOCALE_PATTERN = /^([a-z]{2})(-([a-z]+))?\.([a-z]{2})-([a-z]{2})$/;
-const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})(-([A-Za-z]{2}))?$/;
+const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})(-([A-Za-z]+))?$/;
 
 function normalize(language) {
   const azureLocaleMatch = AZURE_LOCALE_PATTERN.exec(language);
@@ -8,11 +8,7 @@ function normalize(language) {
   if (javaScriptLocaleMatch) {
     return language;
   } else if (azureLocaleMatch) {
-    if (azureLocaleMatch[4]) {
-      return `${ azureLocaleMatch[4] }-${ azureLocaleMatch[5].toUpperCase() }`;
-    } else {
-      return azureLocaleMatch[1];
-    }
+    return `${ azureLocaleMatch[4] }-${ azureLocaleMatch[5].toUpperCase() }`;
   } else {
     return 'en';
   }
