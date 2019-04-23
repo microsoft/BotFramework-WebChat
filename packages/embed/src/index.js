@@ -125,21 +125,25 @@ export default async function main(search) {
     throw new Error(`You must specify either a secret or a token.`);
   }
 
-  const bot = await fetchJSON(
-    embedConfigurationURL(
-      botId,
-      {
-        secret,
-        token,
-        userId: params.userId
-      }
-    ),
-    { credentials: 'include' }
-  ).catch(async err => {
+  let bot;
+
+  try {
+    bot = await fetchJSON(
+      embedConfigurationURL(
+        botId,
+        {
+          secret,
+          token,
+          userId: params.userId
+        }
+      ),
+      { credentials: 'include' }
+    );
+  } catch (err) {
     await loadIFRAME('/404.html');
 
-    return Promise.reject(err);
-  });
+    throw err;
+  }
 
   document.title = bot.botName;
 
@@ -157,14 +161,16 @@ export default async function main(search) {
     websocket: bot.webSocket
   };
 
-  await fetch(
+  const res = await fetch(
     embedTelemetryURL(
       botId,
       { secret, token },
       Object.keys(dataPoints).filter(name => dataPoints[name])
     ),
     { mode: 'no-cors' }
-  ).then(res => res.text());
+  );
+
+  res.text();
 }
 
 main(location.search).catch(({ stack = '' }) => error(['Unhandled exception caught when loading.', '', ...stack.split('\n')].join('\n')));
