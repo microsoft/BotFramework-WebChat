@@ -4,7 +4,7 @@ import setupVersion3 from './version3';
 import setupVersion4 from './version4';
 
 export default async function setup(...args) {
-  const [{ versionFamily }] = args;
+  const [{ versionFamily } = {}] = args;
 
   switch (versionFamily) {
     case 'aries':
