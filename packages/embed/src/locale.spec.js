@@ -35,3 +35,7 @@ test('Convert "en" to Azure locale', () => {
 test('Convert "zh-HK" to Azure locale', () => {
   expect(toAzureLocale('zh-HK')).toBe('zh.zh-hk');
 });
+
+test('Convert "*" to Azure locale', () => {
+  expect(toAzureLocale('*')).toEqual(undefined);
+});
