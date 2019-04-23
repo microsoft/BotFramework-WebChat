@@ -46,5 +46,5 @@ export default async function setupVersionFamily4(
 
   const webChatVersionMeta = document.querySelector('head > meta[name="botframework-webchat:bundle:version"]');
 
-  return { version: webChatVersionMeta.getAttribute('content') };
+  return { version: webChatVersionMeta && webChatVersionMeta.getAttribute('content') };
 }
