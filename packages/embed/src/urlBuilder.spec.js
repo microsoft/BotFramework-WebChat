@@ -11,9 +11,9 @@ test('Create embed configuration URL with both secret and token', () => {
 });
 
 test('Create embed configuration URL with secret only', () => {
-  const actual = embedConfigurationURL('webchat-mockbot', { secret: 'secret', userId: 'u-12345' });
+  const actual = embedConfigurationURL('webchat-mockbot', { secret: 'secret' });
 
-  expect(actual).toBe('/embed/webchat-mockbot/config?s=secret&userid=u-12345');
+  expect(actual).toBe('/embed/webchat-mockbot/config?s=secret');
 });
 
 test('Create embed telemetry URL with both secret and token', () => {
