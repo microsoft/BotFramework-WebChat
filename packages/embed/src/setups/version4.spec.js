@@ -50,7 +50,7 @@ test('Load Web Chat v4', async () => {
   expect(document.head).toHaveProperty('outerHTML', '<head><script crossorigin="anonymous" src="webchat.js"></script><script crossorigin="anonymous" src="a1b2c3d"></script></head>');
   [].forEach.call(document.head.querySelectorAll('script'), target => target.dispatchEvent(new Event('load')));
 
-  await setupTask;
+  const { version } = await setupTask;
 
   expect(window.WebChat.createDirectLine).toHaveBeenCalledTimes(1);
   expect(window.WebChat.createDirectLine).toHaveBeenCalledWith({
@@ -61,4 +61,6 @@ test('Load Web Chat v4', async () => {
   });
 
   expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%;"><div style="height: 100%;"></div></div></body>');
+
+  expect(version).toBe('0.0.0');
 });
