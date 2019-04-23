@@ -54,7 +54,7 @@
         ["https://cdn.botframework.com/botframework-webchat/0.15.1-v3.748a85f/botchat.css", "sha384-8YvGdKHzrMf2YkNui5JiWOWZ59qz1ykx/TcxiAHYRfFaa9h2VLeHJpc+XwBp+LCT"],
         ["https://cdn.botframework.com/botframework-webchat/0.15.1-v3.748a85f/CognitiveServices.js", "sha384-mo2lsOKpPbZIW3xvVHn24h7xiVrIBw4neSHYFeJQ/ownFh8WbB8E6w0fq0jOBA5i"]
       ],
-      "deprecation": "We are deprecating this version of Web Chat, please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
       "versionFamily": "3"
     },
     "1": {
