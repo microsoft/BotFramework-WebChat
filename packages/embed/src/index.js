@@ -122,7 +122,7 @@ export default async function main(search) {
   if (!secret && !token) {
     await loadIFRAME('/404.html');
 
-    throw new Error(`You must specify either secret or token.`);
+    throw new Error(`You must specify either a secret or a token.`);
   }
 
   const bot = await fetchJSON(
