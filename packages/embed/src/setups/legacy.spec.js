@@ -4,7 +4,7 @@
 
 import setupLegacyVersionFamily from './legacy';
 
-afterEach(() => {
+beforeEach(() => {
   document.body.innerHTML = '';
 });
 
