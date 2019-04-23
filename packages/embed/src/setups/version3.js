@@ -1,6 +1,6 @@
 import loadAsset from './loadAsset';
 
-async function getBingSpeechToken(directLineToken, bingSpeechTokenURL) {
+export async function getBingSpeechToken(directLineToken, bingSpeechTokenURL) {
   const res = await fetch(
     `${ bingSpeechTokenURL }?goodForInMinutes=10`,
     {

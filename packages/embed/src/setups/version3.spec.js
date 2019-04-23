@@ -3,7 +3,7 @@
  */
 
 import createElement from './createElement';
-import setupVersion3 from './version3';
+import setupVersion3, { getBingSpeechToken } from './version3';
 
 beforeEach(() => {
   delete window.BotChat;
@@ -60,4 +60,21 @@ test('Load Web Chat v3 without speech token', async () => {
   expect(document.body).toHaveProperty('outerHTML', '<body><div><div id="webchat"></div></div></body>');
   expect(window.BotChat.App).toHaveBeenCalledTimes(1);
   expect(version).toBe('3');
+});
+
+test('Load Bing speech token', async () => {
+  window.fetch = jest.fn(() => ({
+    ok: true,
+    json: () => Promise.resolve({ access_Token: 'a1b2c3d' })
+  }));
+
+  await expect(require('./version3').getBingSpeechToken('token', 'http://webchat.botframework.com/bing-speech-token')).resolves.toBe('a1b2c3d');
+
+  expect(window.fetch).toHaveBeenCalledTimes(1);
+  expect(window.fetch).toHaveBeenCalledWith(
+    'http://webchat.botframework.com/bing-speech-token?goodForInMinutes=10',
+    {
+      headers: { Authorization: 'Bearer token' }
+    }
+  );
 });
