@@ -50,7 +50,7 @@ export function findService(servicingPlan, bot, requestedVersion = 'default') {
       !service
       || (publicOnly && service.private)
     ) {
-      warn(`There is no version "${ requestedVersion }" or it is marked as private, falling back to "default".`);
+      warn(`There is no version "${ requestedVersion }" or it is marked as private; falling back to "default".`);
 
       requestedVersion = 'default';
       publicOnly = true;
