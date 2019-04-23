@@ -69,7 +69,7 @@ export function findService(servicingPlan, bot, requestedVersion = 'default') {
         requestedVersion = actualVersion;
         publicOnly = false;
       } else {
-        warn(`Version "${ requestedVersion }" did not have a fallback plan, falling back to default version.`);
+        warn(`Version "${ requestedVersion }" did not have a fallback plan; falling back to default version.`);
 
         requestedVersion = 'default';
         publicOnly = true;
