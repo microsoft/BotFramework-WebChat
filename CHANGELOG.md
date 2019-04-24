@@ -18,11 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Changed
+### Added
 - Added handling of reconnection, by [@compulim](https://github.com/compulim), in PR [#1880](https://github.com/Microsoft/BotFramework-WebChat/pull/1880)
-- Deployment: Bumps to [`blobxfer@1.7.1`](https://github.com/azure/blobxfer/), by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
-- Deployment: Adds `charset` to content type of JavaScript files on CDN, by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
-- Build: Bumps to [`@babel/*`](https://babeljs.io/), by [@corinagum](https://github.com/corinagum), in PR [#1918](https://github.com/Microsoft/BotFramework-WebChat/pull/1918)
 
 ### Fixed
 - Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
@@ -34,12 +31,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1827](https://github.com/Microsoft/BotFramework-WebChat/issues/1827). Remove renderer for unknown activities, by [@corinagum](https://github.com/corinagum) in PR [#1873](https://github.com/Microsoft/BotFramework-WebChat/pull/1873)
 - Fix [#1586](https://github.com/Microsoft/BotFramework-WebChat/issues/1586). Fix theming of suggested actions buttons, by [@corinagum](https://github.com/corinagum) in PR [#1883](https://github.com/Microsoft/BotFramework-WebChat/pull/1883)
 - Fix [#1837](https://github.com/Microsoft/BotFramework-WebChat/issues/1837), [#1643](https://github.com/Microsoft/BotFramework-WebChat/issues/1643). Fix style conflicts with bootstrap and bump `memoize-one`, by [@corinagum](https://github.com/corinagum) in PR [#1884](https://github.com/Microsoft/BotFramework-WebChat/pull/1884)
-- Fix [#1877](https://github.com/Microsoft/BotFramework-WebChat/issues/1877). Add viewport meta tag and fix a few sample links, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Fix [#1877](https://github.com/Microsoft/BotFramework-WebChat/issues/1877). Add viewport meta tag and fix a few sample links, by [@corinagum](https://github.com/corinagum) in PR [#1919](https://github.com/Microsoft/BotFramework-WebChat/pull/1919)
 - Fix [#1789](https://github.com/Microsoft/BotFramework-WebChat/issues/1789). Return focus Send Box after Send Button is pushed, by [@corinagum](https://github.com/corinagum) in PR [#1915](https://github.com/Microsoft/BotFramework-WebChat/pull/1915)
 
 ### Changed
-- `component`: Bumps to [`react-film@1.2.1-master.86ba8c1`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1900](https://github.com/Microsoft/BotFramework-WebChat/pull/1900)
-
+- Deployment: Bumps to [`blobxfer@1.7.1`](https://github.com/azure/blobxfer/), by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
+- Deployment: Adds `charset` to content type of JavaScript files on CDN, by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
+- `component`: Bumps to [`react-film@1.2.1-master.db29968`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1900](https://github.com/Microsoft/BotFramework-WebChat/pull/1900) and PR [#1924](https://github.com/Microsoft/BotFramework-WebChat/pull/1924)
+- Build: Bumps to [`@babel/*`](https://babeljs.io/), by [@corinagum](https://github.com/corinagum), in PR [#1918](https://github.com/Microsoft/BotFramework-WebChat/pull/1918)
+- `component`: Carousel flippers on carousel layout and suggested actions will use initial cursor style, by [@compulim](https://github.com/compulim), in PR [#1924](https://github.com/Microsoft/BotFramework-WebChat/pull/1924)
 
 ## [4.3.0] - 2019-03-04
 
