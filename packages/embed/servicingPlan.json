@@ -1,0 +1,74 @@
+{
+  "versions": {
+    "default": {
+      "redirects": [
+        ["*", "4"]
+      ]
+    },
+    "4": {
+      "redirects": [
+        ["feature:nextminor", "4.3"],
+        ["*", "4.2"]
+      ]
+    },
+    "4.1": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.1.0/webchat-es5.js", "sha384-mnfZXpnonQRGSyBxCG62K8B9+1RNnVJ2/hfbGVH5lJAAqLy/ZVMQLCn2FDTRs6MP"]
+      ],
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
+      "versionFamily": "4"
+    },
+    "4.2": {
+      "redirects": [
+        ["*", "4.2.0"]
+      ]
+    },
+    "4.2.0": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.2.0/webchat-es5.js", "sha384-mxlEYS2qt/3iHC748utECrCVf0hajMFlSagfVC4tndB8RnL7VBqA+P+8+1nLCjeJ"]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.3": {
+      "redirects": [
+        ["*", "4.3.0"]
+      ]
+    },
+    "4.3.0": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/4.3.0/webchat-es5.js", "sha384-5FCUGwMb1Z5wKD2JEO4gFUcePQJR40wa7HvXRY6Uj2wHH1mdIhzVV2UW94QkN72r"]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "3": {
+      "redirects": [
+        ["*", "0.15.1-v3.748a85f"]
+      ]
+    },
+    "0.15.1-v3.748a85f": {
+      "assets": [
+        ["https://cdn.botframework.com/botframework-webchat/0.15.1-v3.748a85f/botchat-es5.js", "sha384-0pLcui3szrd7qfPpQ69V+B4XII//4xRsGSvn1Fw3yY5vP9l2tOL/5SCRycCds7E2"],
+        ["https://cdn.botframework.com/botframework-webchat/0.15.1-v3.748a85f/botchat-fullwindow.css", "sha384-d2ldTKPGlBhcYVQbM587nBLzfRsS5LStX2wlPLJz1gayAnXaLrFjojXsIssVHjWW"],
+        ["https://cdn.botframework.com/botframework-webchat/0.15.1-v3.748a85f/botchat.css", "sha384-8YvGdKHzrMf2YkNui5JiWOWZ59qz1ykx/TcxiAHYRfFaa9h2VLeHJpc+XwBp+LCT"],
+        ["https://cdn.botframework.com/botframework-webchat/0.15.1-v3.748a85f/CognitiveServices.js", "sha384-mo2lsOKpPbZIW3xvVHn24h7xiVrIBw4neSHYFeJQ/ownFh8WbB8E6w0fq0jOBA5i"]
+      ],
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
+      "versionFamily": "3"
+    },
+    "1": {
+      "redirects": [
+        ["*", "aries"]
+      ]
+    },
+    "scorpio": {
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
+      "versionFamily": "scorpio"
+    },
+    "aries": {
+      "deprecation": "We are deprecating this version of Web Chat. Please upgrade as soon as possible. We will automatically upgrade this site on or after 2021-05-07.",
+      "versionFamily": "aries"
+    }
+  }
+}
