@@ -22,7 +22,7 @@ describe('Load a JavaScript file', () => {
       document.head.querySelector('script').dispatchEvent(event);
 
       expect(loadTask).rejects.toBe(event);
-      expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" src="index.js"></script></head>');
+      expect(document.head).toHaveProperty('outerHTML', '<head><script async="" crossorigin="anonymous" src="index.js"></script></head>');
     });
 
     test('succeeded', async () => {
@@ -30,7 +30,7 @@ describe('Load a JavaScript file', () => {
 
       await loadTask;
 
-      expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" src="index.js"></script></head>');
+      expect(document.head).toHaveProperty('outerHTML', '<head><script async="" crossorigin="anonymous" src="index.js"></script></head>');
     });
   });
 
@@ -38,7 +38,7 @@ describe('Load a JavaScript file', () => {
     loadTask = loadAsset(['index.js', 'sha384-a1b2c3d']);
 
     document.head.querySelector('script').dispatchEvent(new Event('load'));
-    expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="index.js"></script></head>');
+    expect(document.head).toHaveProperty('outerHTML', '<head><script async="" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="index.js"></script></head>');
 
     await loadTask;
   });

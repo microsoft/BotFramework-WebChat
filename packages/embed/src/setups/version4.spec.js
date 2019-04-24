@@ -53,7 +53,7 @@ test('Load Web Chat v4', async () => {
     username: 'William'
   });
 
-  expect(document.head).toHaveProperty('outerHTML', '<head><script async="true" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="webchat.js"></script></head>');
+  expect(document.head).toHaveProperty('outerHTML', '<head><script async="" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="webchat.js"></script></head>');
   [].forEach.call(document.head.querySelectorAll('script'), target => target.dispatchEvent(new Event('load')));
 
   const { version } = await setupTask;

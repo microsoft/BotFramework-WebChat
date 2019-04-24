@@ -56,7 +56,7 @@ test('Load Web Chat v3 without a speech token', async () => {
 
   const { version } = await setupTask;
 
-  expect(document.head).toHaveProperty('outerHTML', '<head><link crossorigin="anonymous" href="botchat.css" integrity="sha384-a1b2c3d" rel="stylesheet"><script async="true" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="botchat.js"></script></head>');
+  expect(document.head).toHaveProperty('outerHTML', '<head><link crossorigin="anonymous" href="botchat.css" integrity="sha384-a1b2c3d" rel="stylesheet"><script async="" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="botchat.js"></script></head>');
   expect(document.body).toHaveProperty('outerHTML', '<body><div><div id="webchat"></div></div></body>');
   expect(window.BotChat.App).toHaveBeenCalledTimes(1);
   expect(version).toBe('3');
