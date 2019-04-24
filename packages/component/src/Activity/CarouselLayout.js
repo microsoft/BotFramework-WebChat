@@ -15,7 +15,7 @@ const ROOT_CSS = css({
 export default connectToWebChat(
   ({ language, styleSet }) => ({ language, styleSet })
 )(({ activity, children, language, styleSet, timestampClassName }) => {
-  const filmStyleSet = createBasicStyleSet();
+  const filmStyleSet = createBasicStyleSet({ cursor: null });
 
   return (
     <Composer numItems={ React.Children.count(children) }>
