@@ -65,11 +65,11 @@ test('Normalizing "tr.tr-tr"', () => {
 });
 
 test('Normalizing "zh-hans.zh-cn"', () => {
-  expect(normalize('zh-hans.zh-cn')).toBe('zh-Hans');
+  expect(normalize('zh-hans.zh-cn')).toBe('zh-HANS');
 });
 
 test('Normalizing "zh-hant.zh-tw"', () => {
-  expect(normalize('zh-hant.zh-tw')).toBe('zh-Hant');
+  expect(normalize('zh-hant.zh-tw')).toBe('zh-HANT');
 });
 
 test('Normalizing "en.zh-hk" should become "en-US"', () => {
