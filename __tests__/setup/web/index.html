@@ -111,8 +111,15 @@
           }
         }, 3);
 
-        const store = window.WebChatTest.store = window.WebChat.createStore({}, () => next => action => {
+        const store = window.WebChatTest.store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
           window.WebChatTest.actions.push(action);
+
+          if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity && action.payload.activity.text === 'error') {
+            dispatch({
+              type: 'DIRECT_LINE/POST_ACTIVITY',
+              payload: {}
+            });
+          }
 
           return next(action);
         });

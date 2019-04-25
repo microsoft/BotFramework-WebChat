@@ -1,6 +1,7 @@
 import { By, Condition, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import staticSpinner from './setup/assets/staticSpinner';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -21,10 +22,7 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 describe('offline UI', async () => {
   test('should show "taking longer than usual to connect" UI when connection is slow', async () => {
 
-    const WEB_CHAT_PROPS = { spinnerAnimationBackgroundImage: staticSpinner };
-
     const { driver } = await setupWebDriver({
-      props: { WEB_CHAT_PROPS },
       createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // This variable must be declared within scope
@@ -186,10 +184,9 @@ describe('offline UI', async () => {
   });
 
   test('should display the "Connecting..." connectivity status when connecting for the first time', async() => {
-    const WEB_CHAT_PROPS = { spinnerAnimationBackgroundImage: staticSpinner };
+    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
 
     const { driver } = await setupWebDriver({
-      props: WEB_CHAT_PROPS,
       createDirectline: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // This Direct Line Connection Status variable must be declared within scope
@@ -215,6 +212,7 @@ describe('offline UI', async () => {
         };
       },
       pingBotOnLoad: false,
+      props: WEB_CHAT_PROPS,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
 
@@ -227,14 +225,14 @@ describe('offline UI', async () => {
     });
 
     const base64PNG = await driver.takeScreenshot();
+
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should display "Network interruption occurred. Reconnecting…" status when connection is interrupted', async () => {
-    const WEB_CHAT_PROPS = { spinnerAnimationBackgroundImage: staticSpinner };
+    const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
 
     const { driver } = await setupWebDriver({
-      props: { WEB_CHAT_PROPS },
       createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // These Direct Line Connection Status variables must be declared within scope
@@ -263,6 +261,7 @@ describe('offline UI', async () => {
         };
       },
       pingBotOnLoad: false,
+      props: WEB_CHAT_PROPS,
       setup: () => new Promise(resolve => {
         const scriptElement = document.createElement('script');
 
@@ -319,6 +318,20 @@ describe('offline UI', async () => {
     });
 
     await driver.sleep(17000);
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should show "Render error" connectivity status when a JavaScript error is present in the code.', async () => {
+    const { driver } = await setupWebDriver();
+    await driver.wait(uiConnected(), timeouts.directLine);
+    const input = await driver.findElement(By.css('input[type="text"]'));
+
+
+    await input.sendKeys('error', Key.RETURN);
+    await driver.wait(minNumActivitiesShown(2), 3000);
 
     const base64PNG = await driver.takeScreenshot();
 
