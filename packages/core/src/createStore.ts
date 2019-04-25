@@ -8,7 +8,16 @@ export type State = {}
 export type ChatStore = Store<State>
 
 export default function (initialState, ...middlewares) {
-  const sagaMiddleware = createSagaMiddleware();
+  const sagaMiddleware = createSagaMiddleware({
+    onError: (...args) => {
+      const [err] = args;
+
+      console.error(err);
+
+      store.dispatch({ type: 'WEB_CHAT/SAGA_ERROR' });
+    }
+   });
+
   const store: Store<State> = createStore(
     reducer,
     initialState || {},

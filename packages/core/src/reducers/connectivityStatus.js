@@ -12,6 +12,8 @@ import {
 
 import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
 
+import { SAGA_ERROR } from '../actions/sagaError';
+
 const DEFAULT_STATE =  'uninitialized';
 
 export default function (state = DEFAULT_STATE, { type, meta }) {
@@ -41,6 +43,10 @@ export default function (state = DEFAULT_STATE, { type, meta }) {
 
     case DISCONNECT_FULFILLED:
       state = meta.error ? 'error' : 'notconnected'
+      break;
+
+    case SAGA_ERROR:
+      state = 'sagaerror'
       break;
 
     default: break;
