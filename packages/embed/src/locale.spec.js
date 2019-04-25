@@ -109,12 +109,12 @@ test('Convert "zh-CN" to Azure locale', () => {
   expect(toAzureLocale('zh-CN')).toBe('zh-hans.zh-cn');
 });
 
-test('Convert "zh-Hant" to Azure locale', () => {
-  expect(toAzureLocale('zh-Hant')).toBe('zh-hant.zh-tw');
+test('Convert "zh-HANT" to Azure locale', () => {
+  expect(toAzureLocale('zh-HANT')).toBe('zh-hant.zh-tw');
 });
 
-test('Convert "zh-Hans" to Azure locale', () => {
-  expect(toAzureLocale('zh-Hans')).toBe('zh-hans.zh-cn');
+test('Convert "zh-HANS" to Azure locale', () => {
+  expect(toAzureLocale('zh-HANS')).toBe('zh-hans.zh-cn');
 });
 
 test('Convert "zh-HK" to Azure locale', () => {
