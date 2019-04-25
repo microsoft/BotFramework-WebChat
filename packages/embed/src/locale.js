@@ -1,4 +1,6 @@
 // Supported Azure language as of 2019-04-25
+// The first part is language (localization), the second part is regional format (internationalization)
+
 // en.en-us
 // cs.cs-cz
 // de.de-de
