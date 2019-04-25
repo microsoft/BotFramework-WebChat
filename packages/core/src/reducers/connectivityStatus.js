@@ -42,11 +42,11 @@ export default function (state = DEFAULT_STATE, { type, meta }) {
       break;
 
     case DISCONNECT_FULFILLED:
-      state = meta.error ? 'error' : 'notconnected'
+      state = meta.error ? 'error' : 'notconnected';
       break;
 
     case SAGA_ERROR:
-      state = 'sagaerror'
+      state = 'sagaerror';
       break;
 
     default: break;
