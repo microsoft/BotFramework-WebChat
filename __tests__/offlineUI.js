@@ -188,7 +188,7 @@ describe('offline UI', async () => {
     const WEB_CHAT_PROPS = { styleOptions: { spinnerAnimationBackgroundImage: staticSpinner } };
 
     const { driver } = await setupWebDriver({
-      createDirectline: options => {
+      createDirectLine: options => {
         // This part of code is running in the JavaScript VM in Chromium.
         // This Direct Line Connection Status variable must be declared within scope
         const UNINITIALIZED = 0;
