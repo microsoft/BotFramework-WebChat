@@ -49,17 +49,25 @@ describe('offline UI', async () => {
         };
       },
       pingBotOnLoad: false,
-      setup: () => new Promise(resolve => {
-        const scriptElement = document.createElement('script');
-
-        scriptElement.onload = resolve;
-        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-        document.head.appendChild(scriptElement);
+      setup: () =>
+      Promise.all([
+        window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js'),
+      ]).then(() => {
+        window.WebChatTest.clock = lolex.install();
       })
     });
 
-    await driver.sleep(15000);
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Taking longer than usual to connect"
+      window.WebChatTest.clock.tick(14600); // Go to t=15s
+    });
+
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Taking longer than usual to connect"
+    });
+
+    await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING'), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
 
@@ -263,17 +271,30 @@ describe('offline UI', async () => {
       },
       pingBotOnLoad: false,
       props: WEB_CHAT_PROPS,
-      setup: () => new Promise(resolve => {
-        const scriptElement = document.createElement('script');
-
-        scriptElement.onload = resolve;
-        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-        document.head.appendChild(scriptElement);
+      setup: () =>
+      Promise.all([
+        window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+        window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+      ]).then(() => {
+        window.WebChatTest.clock = lolex.install();
       })
     });
 
-    await driver.sleep(600);
+    await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_PENDING'), timeouts.directLine);
+    await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_FULFILLED'), timeouts.directLine);
+    await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_PENDING'), timeouts.directLine);
+
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Network interruption occured"
+      window.WebChatTest.clock.tick(200);
+    });
+
+    // TODO: [P4] Understand why we need to fire tick() using two cross-VM calls
+    //       When we put everything in a single cross-VM call, the last tick has no effect
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Network interruption occured."
+    });
+
     const base64PNG = await driver.takeScreenshot();
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
@@ -320,7 +341,7 @@ describe('offline UI', async () => {
     await driver.wait(actionDispatched('DIRECT_LINE/RECONNECT_PENDING'), timeouts.directLine);
 
     await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(400); // "Connecting" will gone after 400ms, turning into "Network interruption occurred. Reconnecting..."
+      window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms
       window.WebChatTest.clock.tick(14600); // Go to t=15s
     });
 
