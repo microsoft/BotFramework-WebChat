@@ -29,7 +29,7 @@ test('card action "openUrl"', async () => {
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('card-actions');
+  await pageObjects.sendMessageViaSendBox('card-actions', { waitForSend: true });
 
   await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
@@ -65,7 +65,7 @@ test('card action "signin"', async () => {
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('oauth');
+  await pageObjects.sendMessageViaSendBox('oauth', { waitForSend: true });
 
   const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
 

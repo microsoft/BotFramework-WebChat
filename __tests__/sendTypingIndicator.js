@@ -11,7 +11,7 @@ jest.setTimeout(timeouts.test);
 test('Send typing indicator', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { sendTypingIndicator: true } });
 
-  await pageObjects.sendMessageViaSendBox('echo-typing');
+  await pageObjects.sendMessageViaSendBox('echo-typing', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -27,7 +27,7 @@ test('Send typing indicator', async () => {
 test('Send typing indicator using deprecated props', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { sendTyping: true } });
 
-  await pageObjects.sendMessageViaSendBox('echo-typing');
+  await pageObjects.sendMessageViaSendBox('echo-typing', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 

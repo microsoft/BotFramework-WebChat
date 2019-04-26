@@ -32,7 +32,7 @@ test('should focus send box when message is being sent', async () => {
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('Hello, World!');
+  await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: true });
   await driver.wait(minNumActivitiesShown(1), 2000);
 
   const base64PNG = await driver.takeScreenshot();
