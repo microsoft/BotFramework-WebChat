@@ -320,7 +320,14 @@ describe('offline UI', async () => {
     await driver.wait(actionDispatched('DIRECT_LINE/RECONNECT_PENDING'), timeouts.directLine);
 
     await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(17000);
+      window.WebChatTest.clock.tick(400); // "Connecting" will gone after 400ms, turning into "Network interruption occurred. Reconnecting..."
+      window.WebChatTest.clock.tick(14600); // Go to t=15s
+    });
+
+    // TODO: [P4] Understand why we need to fire tick() using two cross-VM calls
+    //       When we put everything in a single cross-VM call, the last tick has no effect
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Taking longer than usual to connect"
     });
 
     const base64PNG = await driver.takeScreenshot();
