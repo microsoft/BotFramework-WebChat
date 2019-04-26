@@ -331,7 +331,7 @@ describe('offline UI', async () => {
 
 
     await input.sendKeys('error', Key.RETURN);
-    await driver.wait(minNumActivitiesShown(2), 3000);
+    await driver.wait(minNumActivitiesShown(2), 1000);
 
     const base64PNG = await driver.takeScreenshot();
 
