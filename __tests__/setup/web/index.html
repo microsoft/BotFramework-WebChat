@@ -88,8 +88,10 @@
         throw lastErr;
       }
 
+      const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
+
       async function main(options) {
-        let { createDirectLine, createStyleSet, props, setup } = unmarshal(options);
+        let { createDirectLine, props, setup, storeMiddleware = PASSTHRU_MIDDLEWARE, styleInputBackground = false } = unmarshal(options);
 
         props = unmarshal(props);
 
@@ -110,17 +112,18 @@
           }
         }, 3);
 
-        const store = window.WebChatTest.store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
-          window.WebChatTest.actions.push(action);
+        const store = window.WebChatTest.store = window.WebChat.createStore({}, store => {
+          const setupMiddleware = storeMiddleware(store);
 
-          if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity && action.payload.activity.text === 'error') {
-            dispatch({
-              type: 'DIRECT_LINE/POST_ACTIVITY',
-              payload: {}
-            });
-          }
+          return next => {
+            const processAction = setupMiddleware(next);
 
-          return next(action);
+            return action => {
+              window.WebChatTest.actions.push(action);
+
+              return processAction(action);
+            };
+          };
         });
 
         createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
