@@ -113,13 +113,13 @@ Then, we gradually migrate sites to our new version using a mechanism we call di
 
 ### What URL parameters are supported?
 
-| URL parameters   | Notes                                                                                                     |
-|------------------|-----------------------------------------------------------------------------------------------------------|
-| ?b=              | Bot ID                                                                                                    |
-| ?l=ja.ja-jp      | Language to use, in Azure locale format (first part is localization, second part is internationalization) |
-| ?l=zh-HK         | Language to use, in ISO format                                                                            |
-| ?s=              | Secret for accessing the bot. If token is specified, this will be ignored                                 |
-| ?t=              | Token for accessing the bot                                                                               |
-| ?userid=dl_12345 | User ID to use when sending the activity. If user ID is available in token, this will be ignored          |
-| ?username=WW     | Username to show, only for v3 or lower                                                                    |
-| ?v=4             | Specify version                                                                                           |
+| URL parameters     | Notes                                                                                                     |
+|--------------------|-----------------------------------------------------------------------------------------------------------|
+| `?b=`              | Bot ID                                                                                                    |
+| `?l=ja.ja-jp`      | Language to use, in Azure locale format (first part is localization, second part is internationalization) |
+| `?l=zh-HK`         | Language to use, in ISO format                                                                            |
+| `?s=`              | Secret for accessing the bot. If token is specified, this will be ignored                                 |
+| `?t=`              | Token for accessing the bot                                                                               |
+| `?userid=dl_12345` | User ID to use when sending the activity. If user ID is available in token, this will be ignored          |
+| `?username=WW`     | Username to show, only for v3 or lower                                                                    |
+| `?v=4`             | Specify version                                                                                           |
