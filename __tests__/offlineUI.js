@@ -21,7 +21,7 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 });
 
 describe('offline UI', async () => {
-  test('should show "taking longer than usual to connect" UI when connection is slow', async () => {
+  test('should show "Taking longer than usual to connect" UI when connection is slow', async () => {
 
     const { driver } = await setupWebDriver({
       createDirectLine: options => {
