@@ -296,6 +296,7 @@ describe('offline UI', async () => {
     });
 
     const base64PNG = await driver.takeScreenshot();
+
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
