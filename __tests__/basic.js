@@ -80,19 +80,3 @@ test('unknown activities do not render anything in the transcript', async () => 
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
-
-describe('Sendbox UX', async () => {
-  test('should have a yellow background when focused', async () => {
-
-    const { driver, pageObjects } = await setupWebDriver({ styleInputBackground: true });
-
-    await driver.wait( uiConnected(), timeouts.directLine );
-    await pageObjects.sendMessageViaSendBox('them vanilllllla wafers');
-
-    await driver.wait(minNumActivitiesShown(1), 2000);
-
-    const base64PNG = await driver.takeScreenshot();
-
-    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  });
-})
