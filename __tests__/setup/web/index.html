@@ -53,8 +53,6 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      window.WebChatTest = { actions: [] };
-
       function unmarshal({ __evalKeys, ...obj } = {}) {
         __evalKeys && __evalKeys.forEach(key => {
           obj[key] = eval(obj[key])();
@@ -67,7 +65,8 @@
         return new Promise((resolve, reject) => {
           const script = document.createElement('script');
 
-          script.setAttribute('src', '/webchat-instrumented.js');
+          script.setAttribute('async', '');
+          script.setAttribute('src', src);
           script.addEventListener('load', resolve);
           script.addEventListener('error', ({ error }) => reject(error));
 
@@ -136,6 +135,11 @@
 
         document.querySelector('#webchat > *').focus();
       }
+
+      window.WebChatTest = {
+        actions: [],
+        loadScript
+      };
     </script>
   </body>
 </html>

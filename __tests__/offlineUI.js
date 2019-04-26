@@ -1,6 +1,7 @@
 import { By, Condition, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import actionDispatched from './setup/conditions/actionDispatched';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import staticSpinner from './setup/assets/staticSpinner';
 import uiConnected from './setup/conditions/uiConnected';
@@ -307,17 +308,20 @@ describe('offline UI', async () => {
         };
       },
       pingBotOnLoad: false,
-      setup: () => new Promise(resolve => {
-        const scriptElement = document.createElement('script');
-
-        scriptElement.onload = resolve;
-        scriptElement.setAttribute('src', 'https://unpkg.com/core-js@2.6.3/client/core.min.js');
-
-        document.head.appendChild(scriptElement);
-      })
+      setup: () =>
+        Promise.all([
+          window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js'),
+          window.WebChatTest.loadScript('https://unpkg.com/lolex@4.0.1/lolex.js')
+        ]).then(() => {
+          window.WebChatTest.clock = lolex.install();
+        })
     });
 
-    await driver.sleep(17000);
+    await driver.wait(actionDispatched('DIRECT_LINE/RECONNECT_PENDING'), timeouts.directLine);
+
+    await driver.executeScript(() => {
+      window.WebChatTest.clock.tick(17000);
+    });
 
     const base64PNG = await driver.takeScreenshot();
 
