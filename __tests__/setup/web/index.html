@@ -91,7 +91,7 @@
       const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
 
       async function main(options) {
-        let { createDirectLine, props, setup, storeMiddleware = PASSTHRU_MIDDLEWARE, styleInputBackground = false } = unmarshal(options);
+        let { createDirectLine, createStyleSet, props, setup, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
 
         props = unmarshal(props);
 
