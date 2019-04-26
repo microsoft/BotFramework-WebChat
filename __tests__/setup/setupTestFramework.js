@@ -10,7 +10,6 @@ import createPageObjects from './pageObjects/index';
 import retry from './retry';
 import setupTestEnvironment from './setupTestEnvironment';
 
-
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
 // const BROWSER_NAME = 'chrome-local';
