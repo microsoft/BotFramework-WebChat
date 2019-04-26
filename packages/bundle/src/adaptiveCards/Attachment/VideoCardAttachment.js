@@ -1,8 +1,9 @@
 import React from 'react';
 
+import { Components, connectToWebChat } from 'botframework-webchat-component';
 import CommonCard from './CommonCard';
-import connectToWebChat from '../connectToWebChat';
-import VideoContent from './VideoContent';
+
+const { VideoContent } = Components;
 
 export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })

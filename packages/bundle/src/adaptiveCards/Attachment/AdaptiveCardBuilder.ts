@@ -49,7 +49,7 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
   }
 }
 
-export class AdaptiveCardBuilder {
+export default class AdaptiveCardBuilder {
   card: AdaptiveCard;
   container: Container;
 
