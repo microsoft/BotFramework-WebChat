@@ -110,3 +110,16 @@ We understand that some time, you will want to lock down to every single bit of 
 From time to time, when we release new version of Web Chat, we will update the servicing plan in this repository and upload it to our server. It give our users transparency on when we push out a new version and how it is getting done.
 
 Then, we gradually migrate sites to our new version using a mechanism we call dial. We turn the dial from 0% to 100%, then everyone will get the latest version. We can cherry-pick specific site into certain version, or out.
+
+### What URL parameters are supported?
+
+| URL parameters   | Notes                                                                                                     |
+|------------------|-----------------------------------------------------------------------------------------------------------|
+| ?b=              | Bot ID                                                                                                    |
+| ?l=ja.ja-jp      | Language to use, in Azure locale format (first part is localization, second part is internationalization) |
+| ?l=zh-HK         | Language to use, in ISO format                                                                            |
+| ?s=              | Secret for accessing the bot. If token is specified, this will be ignored                                 |
+| ?t=              | Token for accessing the bot                                                                               |
+| ?userid=dl_12345 | User ID to use when sending the activity. If user ID is available in token, this will be ignored          |
+| ?username=WW     | Username to show, only for v3 or lower                                                                    |
+| ?v=4             | Specify version                                                                                           |
