@@ -329,7 +329,7 @@ describe('offline UI', async () => {
   });
 
   test('should show "Render error" connectivity status when a JavaScript error is present in the code.', async () => {
-    const { driver } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       storeMiddleware: ({ dispatch }) => next => action => {
         if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' && action.payload.activity && action.payload.activity.text === 'error') {
           dispatch({
@@ -343,10 +343,7 @@ describe('offline UI', async () => {
     });
 
     await driver.wait(uiConnected(), timeouts.directLine);
-
-    const input = await driver.findElement(By.css('input[type="text"]'));
-
-    await input.sendKeys('error', Key.RETURN);
+    await pageObjects.sendMessageViaSendBox('error', { waitForSend: false });
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
