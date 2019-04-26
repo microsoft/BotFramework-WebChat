@@ -345,6 +345,7 @@ describe('offline UI', async () => {
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('error', { waitForSend: false });
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(actionDispatched('WEB_CHAT/SAGA_ERROR'), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
 
