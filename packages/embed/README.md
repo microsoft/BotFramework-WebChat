@@ -51,7 +51,7 @@ if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id/gem
 
 Until migration to v4 has completed worldwide, your bot may not immediately update to the new embed page on Azure Portal.
 
-Append the following code in FiddlerScript `OnPeekAtResponseHeaders` function. It will force your bot to use Gemini regardless of the deployment phase.
+Append the following code in the FiddlerScript `OnPeekAtResponseHeaders` function. It will force your bot to use Gemini regardless of the deployment phase.
 
 When combined with the FiddlerScript above, "Test in Web Chat" in Azure Portal will point to the locally-developed version of the Gemini page.
 
