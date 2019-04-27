@@ -76,7 +76,7 @@ Press <kbd>F12</kbd> and look at the console. It should say something similar to
 Web Chat: Selecting version "default" -> "4" -> "4.3" -> "4.3.0".
 ```
 
-The line above means, the version specifier is not specified. And Web Chat use "default" version, which forward to major version 4, then minor version 4.3, then patch version 4.3.0.
+In the above code, the version specifier is not specified. Web Chat is using the "default" version, which forwards to major version 4, then minor version 4.3, then patch version 4.3.0.
 
 ### Why I am not seeing Web Chat v4 on my page?
 
