@@ -68,7 +68,7 @@ if (oSession.uriContains("https://webchat.botframework.com/embed/your-bot-id?fea
 
 Below are common questions about the new Gemini page.
 
-### What is the version of Web Chat I am using on my page?
+### What version of Web Chat am I using on my site?
 
 Press <kbd>F12</kbd> and look at the console. It should say something similar to the following:
 
