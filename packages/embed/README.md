@@ -38,7 +38,7 @@ There are two public surfaces we need to test:
 
 In order to test your local build, you can use Fiddler to modify the traffic to serve the Gemini page locally.
 
-Append the following code in FiddlerScript `OnBeforeRequest` function.
+Append the following code in the FiddlerScript `OnBeforeRequest` function.
 
 ```js
 if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id/gemini')) {
