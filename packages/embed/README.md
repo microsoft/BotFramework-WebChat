@@ -66,7 +66,7 @@ if (oSession.uriContains("https://webchat.botframework.com/embed/your-bot-id?fea
 
 ## FAQs
 
-These are common questions around the new Gemini page.
+Below are common questions about the new Gemini page.
 
 ### What is the version of Web Chat I am using on my page?
 
