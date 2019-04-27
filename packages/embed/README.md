@@ -76,40 +76,40 @@ Press <kbd>F12</kbd> and look at the console. It should say something similar to
 Web Chat: Selecting version "default" -> "4" -> "4.3" -> "4.3.0".
 ```
 
-In the above code, the version specifier is not specified. Web Chat is using the "default" version, which forwards to major version 4, then minor version 4.3, then patch version 4.3.0.
+In the above code, the version specifier is not specified. Web Chat is using the "default" version, which forwards to major version 4, then minor version 4.3, then patch version 4.3.0. You can select version by appending the URL query parameter `v` with the version number. For example, if you prefer 4.3, you should append `&v=4.3` to the URL.
 
 ### Why I am not seeing Web Chat v4 on my page?
 
-Look at the <kbd>F12</kbd> console log and see how version selection is being done.
+Look at the console log on your web page by pressing <kbd>F12</kbd> to see view the version of Web Chat.
 
-If you don't see the line, it is probably because the new Gemini page is not rolled out completely. If your bot is in, the URL should become https://webchat.botframework.com/embed/your-bot-id/gemini. If your bot is not in, it will not have `/gemini` appended.
+If you don't see the above line, this probably means that the new Gemini page has not completely rolled out. If your bot is using Gemini, the URL will be https://webchat.botframework.com/embed/your-bot-id/gemini. If your bot is not in, it will not have `/gemini` appended.
 
-### I want to go back to previous versions
+### I want to go back to previous versions of Web Chat
 
 There are a handful of versions we support:
 
 - Majors
-   - `4` will serve the latest minor version of `4.*`. As of time of this writing, it is `4.3.0`
-   - `3` will serve the latest minor version of `0.*`. As of time of this writing, it is `0.15.1-v3.748a85f`
-   - `scorpio` will serve the version before Gemini page is introduced. As of time of this writing, it is `0.11.4-ibiza.f373b1d`
+   - `4` will serve the latest minor version of `4.*`. At the time this document was created, that version was `4.3.0`
+   - `3` will serve the latest minor version of `0.*`.At the time this document was created, it is `0.15.1-v3.748a85f`
+   - `scorpio` will serve the version before Gemini page is introduced. At the time this document was created,, it is `0.11.4-ibiza.f373b1d`
       - This will be same as "Enable preview" checkbox checked
    - `aries` will serve the version before Gemini page is introduced
-      - This will be same as "Enable preview" checkbox unchecked
-      - This version will show a bot icon and welcome message on the top of the page
+      - This is the same as having the "Enable preview" checkbox unchecked
+      - This version will show a bot icon and welcome message at the top of the page
 - Minors
-   - `4.2` will serve the latest patch version of `4.2.*`. As of time of this writing, it is `4.2.0`
+   - `4.2` will serve the latest patch version of `4.2.*`. At the time this document was created, it is `4.2.0`
 
-However, we do not support specifying patch versions, e.g. `4.2.1`. This is because patch versions are for important security fixes, we will roll it out to users who are on the same minor version and guarantee security fixes will not introduce breaking changes.
+However, we do not support specifying patch versions, e.g. `4.2.1`. This is because patch versions are for important security fixes. We will roll it out to users who are on the same minor version and we guarantee that security fixes will not introduce breaking changes.
 
 ### I really don't like the versioning system
 
-We understand that some time, you will want to lock down to every single bit of code. Feel free to clone our code and build your own copy. This will make sure your bits are locked down and controlled by your system. But it also means we will not be able to serve you any new features or security fixes.
+We understand that sometimes, you will want to lock down to every single bit of code. Feel free to clone our code and build your own copy. This will ensure that your bits are locked down and controlled by your system. But it also means we will not be able to serve you any new features or security fixes.
 
-### How staged deployment work?
+### How does staged deployment work?
 
-From time to time, when we release new version of Web Chat, we will update the servicing plan in this repository and upload it to our server. It give our users transparency on when we push out a new version and how it is getting done.
+From time to time, when we release a new version of Web Chat, we will update the servicing plan in this repository and upload it to our server. This gives our users transparency on when we push out a new version and how it is done.
 
-Then, we gradually migrate sites to our new version using a mechanism we call dial. We turn the dial from 0% to 100%, then everyone will get the latest version. We can cherry-pick specific site into certain version, or out.
+We gradually migrate customers' sites to our new version using a mechanism we call a dial. When we finish turning the dial from 0% to 100%, all customers have been switched to the latest version. We can also cherry-pick specific sites into specific version, or out.
 
 ### What URL parameters are supported?
 
