@@ -27,6 +27,8 @@ To generate SHA384 for a specific asset from an URL, run the following command i
 curl https://cdn.botframework.com/botframework-webchat/4.3.0/webchat.js | openssl dgst -sha384 -binary | openssl base64 -A
 ```
 
+[This script](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity#Tools_for_generating_SRI_hashes) will fetch the asset from CDN, pipe it into OpenSSL for digest, and output as BASE64.
+
 ## Test locally
 
 There are two public surfaces we need to test:
