@@ -47,6 +47,8 @@ if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id/gem
 }
 ```
 
+This code snippet will intercept all requests destinated to https://webchat.botframework.com/embed/your-bot-id/gemini. Instead of serving the request from webchat.botframework.com, with the script, Fiddler will serve the content from local file at C:\Users\JohnDoe\...\index.html instead.
+
 ### Testing on Azure Portal
 
 Until migration to v4 has completed worldwide, your bot may not immediately update to the new embed page on Azure Portal.
@@ -63,6 +65,8 @@ if (oSession.uriContains("https://webchat.botframework.com/embed/your-bot-id?fea
     oSession.oResponse.headers.Add('location', oSession.PathAndQuery.replace('your-bot-id?', 'your-bot-id/gemini?b=your-bot-id&v=4.3&'));
 }
 ```
+
+This code snippet will intercept requests to the original embed page and forward it to the new Gemini embed page.
 
 ## FAQs
 
