@@ -13,7 +13,11 @@ function acuteNubSVG(
   const horizontalTransform = side === 'bot' ? '' : `translate(${ halfNubSize } 0) scale(-1 1) translate(${ -halfNubSize } 0)`;
   const verticalTransform = upSideDown ? `translate(0 ${ halfNubSize }) scale(1 -1) translate(0 ${ -halfNubSize })` : '';
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${ nubSize } ${ nubSize }"><g transform="${ horizontalTransform } ${ verticalTransform }"><path d="M${ nubSize } ${ halfStrokeWidth } L${ strokeWidth } ${ halfStrokeWidth } L${ nubSize + strokeWidth } ${ nubSize + halfStrokeWidth }" fill="${ Color((backgroundColor || '').toLowerCase()).rgb().string() }" stroke="${ Color((color || '').toLowerCase()).rgb().string() }" stroke-width="${ strokeWidth }px" /></g></svg>`;
+  const p1 = [nubSize, halfStrokeWidth].join(' ');
+  const p2 = [strokeWidth, halfStrokeWidth].join(' ');
+  const p3 = [nubSize + strokeWidth, nubSize + halfStrokeWidth].join(' ');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${ nubSize } ${ nubSize }"><g transform="${ horizontalTransform } ${ verticalTransform }"><path d="M${ p1 } L${ p2 } L${ p3 }" fill="${ Color((backgroundColor || '').toLowerCase()).rgb().string() }" stroke="${ Color((color || '').toLowerCase()).rgb().string() }" stroke-width="${ strokeWidth }px" /></g></svg>`;
 }
 
 function isPositive(value) {
