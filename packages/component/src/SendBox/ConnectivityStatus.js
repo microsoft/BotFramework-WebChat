@@ -87,7 +87,7 @@ export default connectConnectivityStatus(
               { localize('RENDER_ERROR_NOTIFICATION', language) }
             </div>
           : connectivityStatus === 'reconnected' || connectivityStatus === 'connected' &&
-          <div className={ styleSet.connectivityNotificationEmpty } />
+            false
         }
       </DebouncedConnectivityStatus>
     </div>
