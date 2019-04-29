@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Added handling of reconnection, by [@compulim](https://github.com/compulim), in PR [#1880](https://github.com/Microsoft/BotFramework-WebChat/pull/1880)
-- Added embed page, by [@compulim](https://github.com/compulim), in PR [#1910](https://github.com/Microsoft/BotFramework-WebChat/pull/1910) and PR [#1928](https://github.com/Microsoft/BotFramework-WebChat/pull/1928)
+- Added embed page, by [@compulim](https://github.com/compulim), in PR [#1910](https://github.com/Microsoft/BotFramework-WebChat/pull/1910), PR [#1928](https://github.com/Microsoft/BotFramework-WebChat/pull/1928) and PR [#1938](https://github.com/Microsoft/BotFramework-WebChat/pull/1938)
 
 ### Fixed
 - Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
