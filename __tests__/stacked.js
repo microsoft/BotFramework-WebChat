@@ -14,7 +14,7 @@ describe('stacked without avatar initials', () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('layout stacked');
+    await pageObjects.sendMessageViaSendBox('layout stacked', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
@@ -26,7 +26,7 @@ describe('stacked without avatar initials', () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('layout single');
+    await pageObjects.sendMessageViaSendBox('layout single', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
@@ -38,7 +38,7 @@ describe('stacked without avatar initials', () => {
     const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('layout single');
+    await pageObjects.sendMessageViaSendBox('layout single', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
@@ -54,7 +54,7 @@ describe('stacked with avatar initials', () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('layout stacked');
+    await pageObjects.sendMessageViaSendBox('layout stacked', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
@@ -66,7 +66,7 @@ describe('stacked with avatar initials', () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('layout single');
+    await pageObjects.sendMessageViaSendBox('layout single', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
@@ -78,7 +78,7 @@ describe('stacked with avatar initials', () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('layout single');
+    await pageObjects.sendMessageViaSendBox('layout single', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);

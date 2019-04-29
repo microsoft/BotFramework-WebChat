@@ -58,6 +58,7 @@ export default class extends React.Component {
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
     this.handleDisabledChange = this.handleDisabledChange.bind(this);
     this.handleDisconnectClick = this.handleDisconnectClick.bind(this);
+    this.handleErrorClick = this.handleErrorClick.bind(this);
     this.handleGroupTimestampChange = this.handleGroupTimestampChange.bind(this);
     this.handleHideSendBoxChange = this.handleHideSendBoxChange.bind(this);
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
@@ -162,6 +163,10 @@ export default class extends React.Component {
 
   handleDisabledChange({ target: { checked } }) {
     this.setState(() => ({ disabled: checked }));
+  }
+
+  handleErrorClick() {
+    this.props.store.dispatch({ type: 'DIRECT_LINE/POST_ACTIVITY' });
   }
 
   handleHideSendBoxChange({ target: { checked } }) {
@@ -302,6 +307,12 @@ export default class extends React.Component {
             type="button"
           >
             Disconnect
+          </button>
+          <button
+            onClick={ this.handleErrorClick }
+            type="button"
+          >
+            Inject error
           </button>
           <div>
             <label>

@@ -59,7 +59,8 @@ export default connectConnectivityStatus(
         classNames({
           [styleSet.errorNotification]:
             connectivityStatus === 'error'
-            || connectivityStatus === 'notconnected',
+            || connectivityStatus === 'notconnected'
+            || connectivityStatus === 'sagaerror',
           [styleSet.warningNotification]:
             connectivityStatus === 'connectingslow',
           [styleSet.connectivityNotification]:
@@ -89,10 +90,15 @@ export default connectConnectivityStatus(
               <SpinnerAnimation />
               { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
             </React.Fragment>
-          : connectivityStatus === 'reconnecting' &&
+          : connectivityStatus === 'reconnecting' ?
             <React.Fragment>
               <SpinnerAnimation />
               { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
+            </React.Fragment>
+          : connectivityStatus === 'sagaerror' &&
+            <React.Fragment>
+              <ErrorNotificationIcon />
+              { localize('RENDER_ERROR_NOTIFICATION', language) }
             </React.Fragment>
         }
       </DebouncedConnectivityStatus>

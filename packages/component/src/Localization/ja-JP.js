@@ -40,6 +40,7 @@ export default {
   INITIAL_CONNECTION_NOTIFICATION: '接続中...',
   INTERRUPTED_CONNECTION_NOTIFICATION: 'ネットワーク中断しました。 再接続中...',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  RENDER_ERROR_NOTIFICATION: 'レンダリングエラーが発生しました。コンソールを確認するか、ボットの開発者に連絡してください。',
   SEND_FAILED_KEY: '送信できませんでした。{Retry}。',
   SLOW_CONNECTION_NOTIFICATION: '接続するのにはいつもより長くかかります。',
   'Chat': 'チャット',

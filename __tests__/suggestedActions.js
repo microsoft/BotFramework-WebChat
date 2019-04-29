@@ -18,7 +18,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
     await driver.wait( allImagesLoaded(), 2000 );
@@ -32,7 +32,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
@@ -53,7 +53,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
@@ -74,7 +74,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
@@ -95,7 +95,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
@@ -116,7 +116,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions');
+    await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
 
     await driver.wait(suggestedActionsShowed(), timeouts.directLine);
 
@@ -137,7 +137,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('suggested-actions others');
+    await pageObjects.sendMessageViaSendBox('suggested-actions others', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -150,7 +150,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('emptycard');
+    await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
     await driver.wait( allImagesLoaded(), 2000 );
@@ -166,7 +166,7 @@ describe('suggested-actions command', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions } });
 
     await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('emptycard');
+    await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
     await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
     await driver.wait( allImagesLoaded(), 2000 );

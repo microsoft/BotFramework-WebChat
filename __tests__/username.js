@@ -12,7 +12,7 @@ test('send username in activity', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('user name');
+  await pageObjects.sendMessageViaSendBox('user name', { waitForSend: true });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
