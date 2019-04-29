@@ -34,6 +34,10 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
             marginRight: paddingRegular
           }
         }
+      },
+
+      '& > .indented': {
+        marginLeft: paddingRegular
       }
     }
   };

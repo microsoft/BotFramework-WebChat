@@ -16,6 +16,26 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
       marginRight: paddingRegular
     },
 
+    '&:not(.from-user)': {
+      '&.indented-content > .avatar': {
+        marginRight: paddingRegular
+      },
+
+      '& > .content > .indented': {
+        marginLeft: paddingRegular
+      }
+    },
+
+    '&.from-user': {
+      '&.indented-content > .avatar': {
+        marginLeft: paddingRegular
+      },
+
+      '& > .content > .indented': {
+        marginRight: paddingRegular
+      }
+    },
+
     '& > .content': {
       '& > .webchat__row': {
         '& > .bubble, & > .timestamp': {
@@ -30,14 +50,6 @@ export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidt
       '& > *:not(:first-child):not(:last-child)': {
         marginTop: paddingRegular
       }
-    },
-
-    '&.from-user > .avatar': {
-      marginLeft: paddingRegular
-    },
-
-    '&:not(.from-user) > .avatar': {
-      marginRight: paddingRegular
     }
   };
 }

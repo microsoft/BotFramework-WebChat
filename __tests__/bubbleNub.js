@@ -48,8 +48,10 @@ describe('bubble nub', () => {
         bubbleBorderWidth: 2,
         bubbleFromUserBorderColor: 'green',
         bubbleFromUserBorderRadius: 10,
+        bubbleFromUserNubOffset: 0,
         bubbleFromUserNubSize: 10,
         bubbleFromUserBorderWidth: 2,
+        bubbleNubOffset: 0,
         bubbleNubSize: 10
       }
     };

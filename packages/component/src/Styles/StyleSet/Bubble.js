@@ -47,7 +47,8 @@ export default function createBubbleStyle({
   bubbleNubOffset,
   bubbleNubSize,
   bubbleTextColor,
-  messageActivityWordBreak
+  messageActivityWordBreak,
+  paddingRegular
 }) {
   if (bubbleFromUserNubOffset === 'top') {
     bubbleFromUserNubOffset = 0;
@@ -64,8 +65,8 @@ export default function createBubbleStyle({
   const botNubUpSideDown = !isPositive(bubbleNubOffset);
   const userNubUpSideDown = !isPositive(bubbleFromUserNubOffset);
 
-  const botNub = acuteNubSVG(bubbleNubSize, bubbleBackground, bubbleBorderColor, bubbleBorderWidth, 'bot', botNubUpSideDown);
-  const userNub = acuteNubSVG(bubbleFromUserNubSize, bubbleFromUserBackground, bubbleFromUserBorderColor, bubbleFromUserBorderWidth, 'user', userNubUpSideDown);
+  const botNubSVG = acuteNubSVG(bubbleNubSize, bubbleBackground, bubbleBorderColor, bubbleBorderWidth, 'bot', botNubUpSideDown);
+  const userNubSVG = acuteNubSVG(bubbleFromUserNubSize, bubbleFromUserBackground, bubbleFromUserBorderColor, bubbleFromUserBorderWidth, 'user', userNubUpSideDown);
 
   const botNubCornerRadius = Math.min(bubbleBorderRadius, Math.abs(bubbleNubOffset));
   const userNubCornerRadius = Math.min(bubbleFromUserBorderRadius, Math.abs(bubbleFromUserNubOffset));
@@ -76,53 +77,59 @@ export default function createBubbleStyle({
     wordBreak: messageActivityWordBreak,
 
     '&:not(.from-user)': {
+      '&.has-nub': {
+        '& > .content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+      },
+
       '& > .content': {
         background: bubbleBackground,
         borderColor: bubbleBorderColor,
         borderRadius: bubbleBorderRadius,
         borderStyle: bubbleBorderStyle,
         borderWidth: bubbleBorderWidth,
-        color: bubbleTextColor,
-        overflow: 'hidden'
+        color: bubbleTextColor
       },
 
-      '&:not(.hide-nub) > .content': {
+      '&.has-nub > .content': {
         // Hide border radius if there is a nub on the top/bottom left corner
         ...(bubbleNubSize && botNubUpSideDown) ? { borderBottomLeftRadius: botNubCornerRadius } : {},
         ...(bubbleNubSize && !botNubUpSideDown) ? { borderTopLeftRadius: botNubCornerRadius } : {}
       },
 
       '& > .nub': {
-        backgroundImage: `url("${ svgToDataURI(botNub).replace(/"/g, '\'') }")`,
+        backgroundImage: `url("${ svgToDataURI(botNubSVG).replace(/"/g, '\'') }")`,
         bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
-        left: bubbleBorderWidth - bubbleNubSize,
+        left: bubbleBorderWidth - bubbleNubSize + paddingRegular,
         top: isPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
         width: bubbleNubSize
       }
     },
 
     '&.from-user': {
+      '&.has-nub': {
+        '& > .content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+      },
+
       '& > .content': {
         background: bubbleFromUserBackground,
         borderColor: bubbleFromUserBorderColor,
         borderRadius: bubbleFromUserBorderRadius,
         borderStyle: bubbleFromUserBorderStyle,
         borderWidth: bubbleFromUserBorderWidth,
-        color: bubbleFromUserTextColor,
-        overflow: 'hidden'
+        color: bubbleFromUserTextColor
       },
 
-      '&:not(.hide-nub) > .content': {
+      '&.has-nub > .content': {
         // Hide border radius if there is a nub on the top/bottom right corner
         ...(bubbleFromUserNubSize && userNubUpSideDown) ? { borderBottomRightRadius: userNubCornerRadius } : {},
         ...(bubbleFromUserNubSize && !userNubUpSideDown) ? { borderTopRightRadius: userNubCornerRadius } : {}
       },
 
       '& > .nub': {
-        backgroundImage: `url("${ svgToDataURI(userNub).replace(/"/g, '\'') }")`,
+        backgroundImage: `url("${ svgToDataURI(userNubSVG).replace(/"/g, '\'') }")`,
         height: bubbleFromUserNubSize,
-        right: bubbleFromUserBorderWidth - bubbleFromUserNubSize,
+        right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
         top: isPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
         width: bubbleFromUserNubSize

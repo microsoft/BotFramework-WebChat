@@ -30,12 +30,14 @@ const ROOT_CSS = css({
 
   '& > .content': {
     flexGrow: 1,
+    overflow: 'hidden',
 
     '& > .webchat__row': {
       display: 'flex',
 
       '& > .bubble, & > .timestamp': {
-        flexGrow: 1
+        flexGrow: 1,
+        overflow: 'hidden'
       },
 
       '& > .filler': {
@@ -101,6 +103,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     avatarInitials,
     plainText
   );
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
   return (
     <div
@@ -110,7 +113,8 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         {
           'extra-left-indent': fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
           'extra-right-indent': !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
-          'from-user': fromUser
+          'from-user': fromUser,
+          'indented-content': avatarInitials && !indented
         }
       )}
     >
@@ -132,7 +136,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         ) : (
           !!activityDisplayText && (
             <div aria-label={ariaLabel} className="webchat__row message">
-              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub="visible">
                 {children({
                   activity,
                   attachment: {
@@ -147,12 +151,12 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         )}
         {attachments.map((attachment, index) => (
           <div className="webchat__row attachment" key={index}>
-            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} hideNub={true} key={index}>
+            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index}>
               {children({ attachment })}
             </Bubble>
           </div>
         ))}
-        <div className="webchat__row">
+        <div className={ classNames('webchat__row', { indented }) }>
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (

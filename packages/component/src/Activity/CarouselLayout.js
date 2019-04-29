@@ -9,6 +9,7 @@ import connectToWebChat from '../connectToWebChat';
 import CarouselFilmStrip from './CarouselFilmStrip';
 
 const ROOT_CSS = css({
+  overflow: 'hidden',
   position: 'relative'
 });
 

@@ -42,7 +42,8 @@ const ROOT_CSS = css({
       display: 'flex',
 
       '& > .bubble': {
-        flexGrow: 1
+        flexGrow: 1,
+        overflow: 'hidden'
       },
 
       '& > .filler': {
@@ -87,7 +88,6 @@ const WebChatCarouselFilmStrip = ({
   children,
   className,
   itemContainerRef,
-  language,
   scrollableRef,
   styleSet,
   timestampClassName
@@ -102,6 +102,7 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
   return (
     <div
@@ -110,7 +111,7 @@ const WebChatCarouselFilmStrip = ({
         styleSet.carouselFilmStrip + '',
         className + '',
         {
-          'indented-content': avatarInitials || (fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize),
+          'indented-content': avatarInitials && !indented,
           'indented-right': !styleSet.options.userAvatarInitials && !!styleSet.options.bubbleFromUserNubSize
         }
       )}
@@ -120,7 +121,7 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub="visible">
               {children({
                 activity,
                 attachment: {
@@ -132,16 +133,16 @@ const WebChatCarouselFilmStrip = ({
             <div className="filler" />
           </div>
         )}
-        <ul ref={itemContainerRef}>
+        <ul className={ classNames({ indented }) } ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble fromUser={fromUser} hideNub={true} key={index}>
+              <Bubble fromUser={fromUser} nub="collapse" key={index}>
                 {children({ attachment })}
               </Bubble>
             </li>
           ))}
         </ul>
-        <div className="webchat__row">
+        <div className={ classNames('webchat__row', { indented }) }>
           {state === SENDING || state === SEND_FAILED ? (
             <SendStatus activity={activity} />
           ) : (
