@@ -55,51 +55,39 @@ export default connectConnectivityStatus(
   ({ connectivityStatus, language, styleSet }) =>
     <div
       aria-live="polite"
-      className={
-        classNames({
-          [styleSet.errorNotification]:
-            connectivityStatus === 'error'
-            || connectivityStatus === 'notconnected'
-            || connectivityStatus === 'sagaerror',
-          [styleSet.warningNotification]:
-            connectivityStatus === 'connectingslow',
-          [styleSet.connectivityNotification]:
-            connectivityStatus === 'uninitialized'
-            || connectivityStatus === 'connected'
-            || connectivityStatus === 'reconnected'
-            || connectivityStatus === 'reconnecting'
-        })
-      }
       role="status"
     >
       <DebouncedConnectivityStatus
-        interval={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }>
+        interval={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }
+      >
         { () =>
           connectivityStatus === 'connectingslow' ?
-            <React.Fragment>
+            <div className={ styleSet.warningNotification }>
               <WarningNotificationIcon />
               { localize('SLOW_CONNECTION_NOTIFICATION', language) }
-            </React.Fragment>
+            </div>
           : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
-            <React.Fragment>
+            <div className={ styleSet.errorNotification }>
               <ErrorNotificationIcon />
               { localize('FAILED_CONNECTION_NOTIFICATION', language) }
-            </React.Fragment>
+            </div>
           : connectivityStatus === 'uninitialized' ?
-            <React.Fragment>
+            <div className={ styleSet.connectivityNotification }>
               <SpinnerAnimation />
               { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
-            </React.Fragment>
+            </div>
           : connectivityStatus === 'reconnecting' ?
-            <React.Fragment>
+            <div className={ styleSet.connectivityNotification }>
               <SpinnerAnimation />
               { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
-            </React.Fragment>
-          : connectivityStatus === 'sagaerror' &&
-            <React.Fragment>
+            </div>
+          : connectivityStatus === 'sagaerror' ?
+            <div className={ styleSet.errorNotification }>
               <ErrorNotificationIcon />
               { localize('RENDER_ERROR_NOTIFICATION', language) }
-            </React.Fragment>
+            </div>
+          : connectivityStatus === 'reconnected' || connectivityStatus === 'connected' &&
+          <div className={ styleSet.connectivityNotificationEmpty } />
         }
       </DebouncedConnectivityStatus>
     </div>
