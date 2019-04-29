@@ -30,14 +30,12 @@ const ROOT_CSS = css({
 
   '& > .content': {
     flexGrow: 1,
-    overflow: 'hidden',
 
     '& > .webchat__row': {
       display: 'flex',
 
       '& > .bubble, & > .timestamp': {
-        flexGrow: 1,
-        overflow: 'hidden'
+        flexGrow: 1
       },
 
       '& > .filler': {
@@ -105,7 +103,22 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
   );
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', { 'from-user': fromUser })}>
+    <div
+      className={classNames(
+        ROOT_CSS + '',
+        styleSet.stackedLayout + '',
+        {
+          'extra-left-indent': fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
+          'extra-right-indent': !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
+          'from-user': fromUser
+        }
+      )}
+    >
+      {
+        !avatarInitials
+        && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize)
+        && <div className="avatar" />
+      }
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {type === 'typing' ? (
@@ -134,7 +147,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         )}
         {attachments.map((attachment, index) => (
           <div className="webchat__row attachment" key={index}>
-            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index}>
+            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} hideNub={true} key={index}>
               {children({ attachment })}
             </Bubble>
           </div>

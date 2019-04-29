@@ -1,12 +1,31 @@
+import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, styleSet }) => (
-  <div aria-hidden={ariaHidden} className={classNames(styleSet.bubble + '', { 'from-user': fromUser }, className + '')}>
-    {children}
+const ROOT_CSS = css({
+  position: 'relative',
+
+  '& > .content': {
+    flex: 1
+  },
+
+  '& > .nub': {
+    position: 'absolute'
+  }
+});
+
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, hideNub, styleSet }) => (
+  <div aria-hidden={ariaHidden} className={classNames(ROOT_CSS + '', styleSet.bubble + '', { 'from-user': fromUser, 'hide-nub': hideNub }, (className + '') || '')}>
+    <div className="content">
+      {children}
+    </div>
+    {
+      !hideNub
+      && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize)
+      && <div className="nub" /> }
   </div>
 );
 
@@ -14,7 +33,8 @@ Bubble.defaultProps = {
   'aria-hidden': true,
   children: undefined,
   className: '',
-  fromUser: false
+  fromUser: false,
+  hideNub: false
 };
 
 Bubble.propTypes = {
@@ -22,6 +42,7 @@ Bubble.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,
+  hideNub: PropTypes.bool,
   styleSet: PropTypes.shape({
     bubble: PropTypes.any.isRequired
   }).isRequired

@@ -1,6 +1,6 @@
 import { Options } from 'selenium-webdriver/chrome';
 
-export default function setupTestEnvironment(browserName, builder, { height, width } = {}) {
+export default function setupTestEnvironment(browserName, builder, { height = 640, width = 360, zoom = 1 } = {}) {
   switch (browserName) {
     case 'chrome-local':
       return {
@@ -8,7 +8,7 @@ export default function setupTestEnvironment(browserName, builder, { height, wid
         builder: builder
           .forBrowser('chrome')
           .setChromeOptions(
-            (builder.getChromeOptions() || new Options()).windowSize({ height: height || 640, width: width || 360 })
+            (builder.getChromeOptions() || new Options()).windowSize({ height: height * zoom, width: width * zoom })
           )
       };
 
@@ -22,7 +22,7 @@ export default function setupTestEnvironment(browserName, builder, { height, wid
           .setChromeOptions(
             (builder.getChromeOptions() || new Options())
               .headless()
-              .windowSize({ height: height || 640, width: width || 360 })
+              .windowSize({ height: height * zoom, width: width * zoom })
           )
       };
   }

@@ -65,6 +65,7 @@ export default class extends React.Component {
     this.handleResetClick = this.handleResetClick.bind(this);
     this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
     this.handleSendTypingIndicatorChange = this.handleSendTypingIndicatorChange.bind(this);
+    this.handleShowNubChange = this.handleShowNubChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
@@ -72,7 +73,18 @@ export default class extends React.Component {
     this.mainRef = React.createRef();
     this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
-    this.createMemoizedStyleOptions = memoize((hideSendBox, botAvatarInitials, userAvatarInitials) => ({
+    this.createMemoizedStyleOptions = memoize((hideSendBox, botAvatarInitials, userAvatarInitials, showNub) => ({
+      bubbleBorderColor: 'Red',
+      bubbleBorderRadius: 10,
+      bubbleBorderWidth: 3,
+      bubbleFromUserBorderColor: 'Green',
+      bubbleFromUserBorderRadius: 10,
+      bubbleFromUserBorderWidth: 3,
+      bubbleFromUserNubSize: showNub ? 10 : 0,
+      bubbleFromUserNubOffset: -5,
+      bubbleNubOffset: 5,
+      bubbleNubSize: showNub ? 10 : 0,
+
       botAvatarInitials,
       hideSendBox,
       userAvatarInitials
@@ -103,6 +115,7 @@ export default class extends React.Component {
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTypingIndicator: true,
+      showNub: true,
       userAvatarInitials: 'WC',
       userID,
       username: 'Web Chat user',
@@ -214,6 +227,10 @@ export default class extends React.Component {
     this.setState(() => ({ sendTypingIndicator: !!checked }));
   }
 
+  handleShowNubChange({ target: { checked } }) {
+    this.setState(() => ({ showNub: checked }));
+  }
+
   handleUseEmulatorCoreClick() {
     window.sessionStorage.removeItem('REDUX_STORE');
     window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0&u=default-user';
@@ -260,13 +277,14 @@ export default class extends React.Component {
         language,
         sendTimeout,
         sendTypingIndicator,
+        showNub,
         userAvatarInitials,
         userID,
         username,
         webSpeechPonyfillFactory
       }
     } = this;
-    const styleOptions = this.createMemoizedStyleOptions(hideSendBox, botAvatarInitials, userAvatarInitials);
+    const styleOptions = this.createMemoizedStyleOptions(hideSendBox, botAvatarInitials, userAvatarInitials, showNub);
 
     return (
       <div className={ROOT_CSS} ref={this.mainRef}>
@@ -412,6 +430,16 @@ export default class extends React.Component {
                 type="input"
                 value={userAvatarInitials}
               />
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                checked={ this.state.showNub }
+                onChange={ this.handleShowNubChange }
+                type="checkbox"
+              />
+              Show bubble nub
             </label>
           </div>
         </div>

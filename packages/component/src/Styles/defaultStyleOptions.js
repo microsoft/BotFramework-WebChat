@@ -34,16 +34,24 @@ const DEFAULT_OPTIONS = {
 
   // Bubble
   bubbleBackground: 'White',
-  bubbleBorder: 'solid 1px #E6E6E6',
+  bubbleBorderColor: '#E6E6E6',
   bubbleBorderRadius: 2,
+  bubbleBorderStyle: 'solid',
+  bubbleBorderWidth: 1,
   bubbleFromUserBackground: 'White',
-  bubbleFromUserBorder: 'solid 1px #E6E6E6',
+  bubbleFromUserBorderColor: '#E6E6E6',
   bubbleFromUserBorderRadius: 2,
+  bubbleFromUserBorderStyle: 'solid',
+  bubbleFromUserBorderWidth: 1,
+  bubbleFromUserNubOffset: 'bottom',
+  bubbleFromUserNubSize: 0,
   bubbleFromUserTextColor: 'Black',
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinHeight: 40,
   bubbleMinWidth: 250, // min screen width = 300px, Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
+  bubbleNubOffset: 'bottom',
+  bubbleNubSize: 0,
   bubbleTextColor: 'Black',
 
   // Markdown

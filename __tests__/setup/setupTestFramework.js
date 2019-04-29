@@ -72,6 +72,10 @@ global.setupWebDriver = async options => {
           (coverage, options, callback) => {
             window.__coverage__ = coverage;
 
+            if (options.zoom) {
+              document.body.style.zoom = options.zoom;
+            }
+
             main(options).then(
               () => callback(),
               err => {

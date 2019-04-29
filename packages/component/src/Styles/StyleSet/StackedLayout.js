@@ -1,7 +1,20 @@
 export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
-    marginLeft: paddingRegular,
-    marginRight: paddingRegular,
+    '&.extra-left-indent': {
+      marginLeft: paddingRegular * 2
+    },
+
+    '&:not(.extra-left-indent)': {
+      marginLeft: paddingRegular
+    },
+
+    '&.extra-right-indent': {
+      marginRight: paddingRegular * 2
+    },
+
+    '&:not(.extra-right-indent)': {
+      marginRight: paddingRegular
+    },
 
     '& > .content': {
       '& > .webchat__row': {

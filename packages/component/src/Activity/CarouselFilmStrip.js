@@ -42,8 +42,7 @@ const ROOT_CSS = css({
       display: 'flex',
 
       '& > .bubble': {
-        flexGrow: 1,
-        overflow: 'hidden'
+        flexGrow: 1
       },
 
       '& > .filler': {
@@ -84,9 +83,11 @@ const connectCarouselFilmStrip = (...selectors) =>
 
 const WebChatCarouselFilmStrip = ({
   activity,
+  avatarInitials,
   children,
   className,
   itemContainerRef,
+  language,
   scrollableRef,
   styleSet,
   timestampClassName
@@ -103,7 +104,18 @@ const WebChatCarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '')} ref={scrollableRef}>
+    <div
+      className={classNames(
+        ROOT_CSS + '',
+        styleSet.carouselFilmStrip + '',
+        className + '',
+        {
+          'indented-content': avatarInitials || (fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize),
+          'indented-right': !styleSet.options.userAvatarInitials && !!styleSet.options.bubbleFromUserNubSize
+        }
+      )}
+      ref={scrollableRef}
+    >
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {!!activityDisplayText && (
@@ -123,7 +135,7 @@ const WebChatCarouselFilmStrip = ({
         <ul ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble fromUser={fromUser} key={index}>
+              <Bubble fromUser={fromUser} hideNub={true} key={index}>
                 {children({ attachment })}
               </Bubble>
             </li>

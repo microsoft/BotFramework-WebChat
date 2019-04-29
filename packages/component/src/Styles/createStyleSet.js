@@ -42,10 +42,67 @@ import defaultStyleOptions from './defaultStyleOptions';
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
+function parseBorder(border) {
+  let colors = [];
+  let styles = [];
+  let widths = [];
+
+  border.split(' ').forEach(value => {
+    const width = parseInt(value);
+    const styleMatch = STYLE_PATTERN.exec(value);
+
+    if (!isNaN(width)) {
+      widths.push(width);
+    } else if (styleMatch) {
+      styles.push(styleMatch);
+    } else {
+      colors.push(value);
+    }
+  });
+
+  return {
+    colors,
+    styles,
+    widths
+  };
+}
+
+const PIXEL_UNIT_PATTERN = /^\d+px$/;
+const STYLE_PATTERN = /none|hidden|dotted|dashed|solid|groove|ridge|inset|outset|initial|inherit/;
+
 export default function createStyleSet(options) {
   options = { ...defaultStyleOptions, ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)
+
+  // TODO: [P4] Deprecate this code after bump to v5
+  const { bubbleBorder, bubbleFromUserBorder } = options;
+
+  if (bubbleBorder) {
+    console.warn('Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.');
+
+    const { colors, styles, widths } = parseBorder(bubbleBorder);
+
+    options.bubbleBorderColor = colors[0];
+    options.bubbleBorderStyle = styles[0];
+
+    if (PIXEL_UNIT_PATTERN.test(widths[0])) {
+      options.bubbleBorderWidth = parseInt(widths[0]);
+    }
+  }
+
+  if (bubbleFromUserBorder) {
+    console.warn('Web Chat: styleSet.bubbleFromUserBorder is being deprecated. Please use bubbleFromUserBorderColor, bubbleFromUserBorderStyle, and, bubbleFromUserBorderWidth.');
+
+    const { colors, styles, widths } = parseBorder(bubbleFromUserBorder);
+
+    options.bubbleFromUserBorderColor = colors[0];
+    options.bubbleFromUserBorderStyle = styles[0];
+
+    if (PIXEL_UNIT_PATTERN.test(widths[0])) {
+      options.bubbleFromUserBorderWidth = parseInt(widths[0]);
+    }
+  }
 
   return {
     activities: createActivitiesStyle(options),

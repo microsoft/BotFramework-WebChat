@@ -6,19 +6,22 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
       marginBottom: -17
     },
 
-    '& > .avatar': {
+    paddingLeft: paddingRegular,
+
+    '&.indented-content > .content': {
       marginLeft: paddingRegular
     },
 
+    '&.indented-right > .content': {
+      paddingRight: paddingRegular * 2
+    },
+
+    '&:not(.indented-right) > .content': {
+      paddingRight: paddingRegular
+    },
+
     '& > .content': {
-      '& > .message': {
-        marginLeft: paddingRegular
-      },
-
       '& > ul': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular,
-
         '&:not(:first-child)': {
           marginTop: paddingRegular
         },
@@ -31,10 +34,6 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
             marginRight: paddingRegular
           }
         }
-      },
-
-      '& > .webchat__row': {
-        marginLeft: paddingRegular
       }
     }
   };
