@@ -22,25 +22,26 @@ Write-Host "git pull origin $branchName"
 git pull origin $branchName
 #git checkout -b $newBranch $branchName
 
-$result = git status
-Write-Host "git status result: [$result]"
+#$result = git status
+#Write-Host "git status result: [$result]"
 
-Write-Host "Debug 1 =============================================================="
-Get-ChildItem -Recurse -Force
+#Write-Host "Debug 1 =============================================================="
+#Get-ChildItem -Recurse -Force
 
 Write-Host "Deleting the old files from $repoRootPath"
 Get-Childitem -Recurse | Remove-Item -Force -Recurse
 
-Write-Host "Debug 2 =============================================================="
-Get-ChildItem -Recurse -Force
+#Write-Host "Debug 2 =============================================================="
+#Get-ChildItem -Recurse -Force
 
 Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
 Copy-Item $newFilesPath/*.* -Destination $repoRootPath -Recurse
 
-Write-Host "Debug 3 =============================================================="
-Get-ChildItem -Recurse -Force
+#Write-Host "Debug 3 =============================================================="
+#Get-ChildItem -Recurse -Force
 
-Write-Host "Debug 4 =============================================================="
+#Write-Host "Debug 4 =============================================================="
+Write-Host "git add"
 git add .
 git add -u
 $result = git status
@@ -63,5 +64,5 @@ git push origin $branchName
 if ($LASTEXITCODE -eq 0) {
     Write-Host 'Writing Push Location section to the build summary page'
     Add-Content -Path "$newFilesPath\PushLocation.md" -Value "Bits pushed to GitHub here: [https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath](https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath)"
-    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push Location;] $newFilesPath\PushLocation.md"
+    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push_Location;] $newFilesPath\PushLocation.md"
 }
