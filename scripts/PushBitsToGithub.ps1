@@ -30,8 +30,8 @@ Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
 Copy-Item $newFilesPath/*.* -Destination $repoRootPath -Recurse
 
 Write-Host "Remove the git history"
-# Remove the current .git
-rm -rf .git
+# Remove the current .git folder
+Remove-Item -Recurse -Force .git
 # Reconstruct the repo
 git init
 
