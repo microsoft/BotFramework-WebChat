@@ -12,11 +12,11 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
       marginLeft: paddingRegular
     },
 
-    '&.indented-right > .content': {
+    '&.extra-right-indent > .content': {
       paddingRight: paddingRegular * 2
     },
 
-    '&:not(.indented-right) > .content': {
+    '&:not(.extra-right-indent) > .content': {
       paddingRight: paddingRegular
     },
 
