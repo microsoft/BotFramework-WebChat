@@ -32,10 +32,7 @@
         const { token } = await res.json();
 
         window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-          styleOptions: {
-            bubbleNubBackground: 'Yellow'
-          }
+          directLine: window.WebChat.createDirectLine({ token })
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
