@@ -64,5 +64,5 @@ git push origin $branchName
 if ($LASTEXITCODE -eq 0) {
     Write-Host 'Writing Push Location section to the build summary page'
     Add-Content -Path "$newFilesPath\PushLocation.md" -Value "Bits pushed to GitHub here: [https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath](https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath)"
-    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push_Location;] $newFilesPath/PushLocation.md"
+    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push_Location;] $newFilesPath\PushLocation.md"
 }
