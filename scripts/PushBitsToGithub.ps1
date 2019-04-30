@@ -15,6 +15,9 @@ Set-Location -Path $repoRootPath
 git config --global user.email "v-bruhal@micrsoft.com"
 git config --global user.name "BruceHaley"
 
+# Preserve line endings (presumably LF)
+git config --global core.autocrlf input
+
 Write-Host "git checkout $branchName"
 git checkout $branchName
 Write-Host "git pull origin $branchName"
