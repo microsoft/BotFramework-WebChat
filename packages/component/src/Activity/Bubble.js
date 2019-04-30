@@ -18,12 +18,12 @@ const ROOT_CSS = css({
 });
 
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub, styleSet }) => (
-  <div aria-hidden={ariaHidden} className={classNames(ROOT_CSS + '', styleSet.bubble + '', { 'from-user': fromUser, indent: nub === 'hidden', 'has-nub': nub === 'visible' }, (className + '') || '')}>
+  <div aria-hidden={ariaHidden} className={classNames(ROOT_CSS + '', styleSet.bubble + '', { 'from-user': fromUser, indent: !nub, 'has-nub': nub }, (className + '') || '')}>
     <div className="content">
       {children}
     </div>
     {
-      nub === 'visible'
+      nub
       && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize)
       && <div className="nub" /> }
   </div>

@@ -136,7 +136,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         ) : (
           !!activityDisplayText && (
             <div aria-label={ariaLabel} className="webchat__row message">
-              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub="visible">
+              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
                 {children({
                   activity,
                   attachment: {
@@ -151,7 +151,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         )}
         {attachments.map((attachment, index) => (
           <div className="webchat__row attachment" key={index}>
-            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index}>
+            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
           </div>

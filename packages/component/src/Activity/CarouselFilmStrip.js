@@ -121,7 +121,7 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub="visible">
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
                 attachment: {
@@ -136,7 +136,7 @@ const WebChatCarouselFilmStrip = ({
         <ul className={ classNames({ indented }) } ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble fromUser={fromUser} nub="collapse" key={index}>
+              <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>
             </li>
