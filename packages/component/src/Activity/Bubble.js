@@ -9,6 +9,7 @@ const ROOT_CSS = css({
   position: 'relative',
 
   '& > .content': {
+    // This is for hiding content outside of the bubble, for example, content outside of border radius
     overflow: 'hidden'
   },
 
