@@ -172,7 +172,7 @@ We gradually migrate customers' sites to our new version using a mechanism we ca
 
 ### What is Gemini, Scorpio and Aries?
 
-Historically, we codename the embed page with Zodiac signs.
+Historically, we use Zodiac signs as code name to version the embed page.
 
 - Gemini: this version of embed page
    - Supports multiple versions of Web Chat, backward- and forward-compatible
