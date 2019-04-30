@@ -29,7 +29,7 @@ test('Create embed telemetry URL with secret only', () => {
 });
 
 test('Create legacy embed URL', () => {
-  const actual = legacyEmbedURL('webchat-mockbot', { s: 'secret' });
+  const actual = legacyEmbedURL('webchat-mockbot', new URLSearchParams({ s: 'secret' }));
 
   expect(actual).toBe('/embed/webchat-mockbot?s=secret');
 });

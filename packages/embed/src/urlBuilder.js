@@ -18,9 +18,7 @@ function embedTelemetryURL(botId, { secret, token }, points) {
   return `/embed/${ botId }/telemetry?${ urlSearchParams.toString() }`
 }
 
-function legacyEmbedURL(botId, params) {
-  const urlSearchParams = new URLSearchParams(params);
-
+function legacyEmbedURL(botId, urlSearchParams) {
   return `/embed/${ botId }?${ urlSearchParams.toString() }`;
 }
 
