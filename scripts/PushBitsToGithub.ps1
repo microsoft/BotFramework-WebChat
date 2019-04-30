@@ -4,12 +4,13 @@
 #
 param
 ( 
-    [string]$sourcePath,            #$(System.ArtifactsDirectory)
+    [string]$newFilesPath,          #"$(System.ArtifactsDirectory)/pages"
     [string]$branchName,            #gh-pages-bh
-    [string]$repoDestinationPath    #.
+    [string]$repoRootPath           #"$(Build.SourcesFolder)"
 )
 
 #$newBranch = "$branchName-new";
+Set-Location -Path $repoRootPath
 
 # Set default identity
 git config --global user.email "v-bruhal@micrsoft.com"
@@ -19,10 +20,17 @@ git checkout $branchName
 git pull origin $branchName
 #git checkout -b $newBranch $branchName
 
-Write-Host "Deleting the old files from ./$repoDestinationPath"
-Remove-Item -Force ("./$repoDestinationPath/*.*")
-Write-Host "Copying the new files from $sourcePath\*\** to ./$repoDestinationPath"
-Copy-item -Force ("$sourcePath\*\**") -Destination ("./$repoDestinationPath")
+Get-ChildItem -Recurse
+
+Write-Host "Deleting the old files from $repoRootPath"
+Get-Childitem -Recurse -Force | Remove-Item -Force -Recurse
+
+Get-ChildItem -Recurse
+
+Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
+Copy-Item $newFilesPath -Destination $repoRootPath -Recurse
+
+Get-ChildItem -Recurse
 
 git add .
 git add -u
@@ -40,6 +48,6 @@ git push origin $branchName
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host 'Writing Push Location section to the build summary page'
-    Add-Content -Path "$sourcePath\PushLocation.md" -Value "Bits pushed to GitHub here: [https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoDestinationPath](https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoDestinationPath)"
-    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push Location;] $sourcePath\PushLocation.md"
+    Add-Content -Path "$newFilesPath\PushLocation.md" -Value "Bits pushed to GitHub here: [https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath](https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath)"
+    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push Location;] $newFilesPath\PushLocation.md"
 }
