@@ -16,22 +16,28 @@ Set-Location -Path $repoRootPath
 git config --global user.email "v-bruhal@micrsoft.com"
 git config --global user.name "BruceHaley"
 
+Write-Host "git checkout $branchName"
 git checkout $branchName
+Write-Host "git pull origin $branchName"
 git pull origin $branchName
 #git checkout -b $newBranch $branchName
 
+Write-Host "Debug 1 =============================================================="
 Get-ChildItem -Recurse
 
 Write-Host "Deleting the old files from $repoRootPath"
 Get-Childitem -Recurse -Force | Remove-Item -Force -Recurse
 
+Write-Host "Debug 2 =============================================================="
 Get-ChildItem -Recurse
 
 Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
 Copy-Item $newFilesPath -Destination $repoRootPath -Recurse
 
+Write-Host "Debug 3 =============================================================="
 Get-ChildItem -Recurse
 
+Write-Host "Debug 4 =============================================================="
 git add .
 git add -u
 $result = git status
