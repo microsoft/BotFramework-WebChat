@@ -22,20 +22,23 @@ Write-Host "git pull origin $branchName"
 git pull origin $branchName
 #git checkout -b $newBranch $branchName
 
+$result = git status
+Write-Host "git status result: [$result]"
+
 Write-Host "Debug 1 =============================================================="
-Get-ChildItem -Recurse
+Get-ChildItem -Recurse -Force
 
 Write-Host "Deleting the old files from $repoRootPath"
-Get-Childitem -Recurse -Force | Remove-Item -Force -Recurse
+Get-Childitem -Recurse | Remove-Item -Force -Recurse
 
 Write-Host "Debug 2 =============================================================="
-Get-ChildItem -Recurse
+Get-ChildItem -Recurse -Force
 
 Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
 Copy-Item $newFilesPath -Destination $repoRootPath -Recurse
 
 Write-Host "Debug 3 =============================================================="
-Get-ChildItem -Recurse
+Get-ChildItem -Recurse -Force
 
 Write-Host "Debug 4 =============================================================="
 git add .
