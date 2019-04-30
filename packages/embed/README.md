@@ -1,23 +1,57 @@
 # botframework-webchat-embed
 
-This package is the embed page hosting at https://webchat.botframework.com/.
+This package contains the source code for the embed page at https://webchat.botframework.com/.
 
-For transparency and completeness, we are maintaining the code here. This code is coupled to our servers. In order to host this page, you will need to decouple it or provide the same set of REST APIs.
+> For transparency and completeness, we are maintaining the code here. This code is coupled to our servers. In order to host this page on your own website, you will need to decouple it or provide the same set of REST APIs.
 
-## Build
+## Background
+
+Web Chat offers multiple levels of integration options. In this package, we focus on embedding `<iframe>` element in your web page.
+
+`<iframe>` is the simplest way to connect your website to Azure Bot Services. If you prefer more advanced features or customization options, please refer to [this migration guide](https://github.com/microsoft/botframework-webchat/blob/master/README.md#migrating-from-v3-to-v4-of-web-chat) for details.
+
+There are a few features unique to `<iframe>`:
+
+- Reading configurations from Azure Bot Services
+- Simplified version selection
+   - Based on the versions you selected (latest, specific major, or specific minor), we will serve Web Chat client with latest security fixes
+   - Please refer to [this section](#i-want-to-go-back-to-previous-versions-of-web-chat) to specifying version to use
+- Same experince as "Test in Web Chat" blade in Azure Portal
+
+## How to use
+
+To use the embed page, you will need the site secret from your Azure Bot Services page. Once you have the secret, add the following to your page.
+
+```html
+<iframe src="https://webchat.botframework.com/embed/your-bot-id?s=your-site-secret"></iframe>
+```
+
+For production use, we strongly prefer you to use token instead of secret. Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token out of secret.
+
+```html
+<iframe src="https://webchat.botframework.com/embed/your-bot-id?t=your-site-token"></iframe>
+```
+
+Please look at [this table](#what-url-parameters-are-supported) for list of URL parameters supported.
+
+## Development
+
+### Building the page
+
+Follow steps below to build the embed page locally.
 
 1. `npm install`
 1. `npm run prepublishOnly`
-1. Publishes the build artifact at `/dist/index.html`, to our internal repository
+1. Publishes the build artifact at `/dist/index.html`
    1. Verifies the file size, it should be less than 30 KB
 
-## Updating servicing plan
+### Updating servicing plan
 
 `servicingPlan.json` is the deployment plan. It provides details about where to locate assets, how to set up, and when to deprecate our older bits.
 
 When modifying the servicing plan to point to newer assets, make sure it is pointing to immutable copies on CDN. For example, assets with hashed filenames. Since we are using subresource integrity, this will make sure servicing plan and assets can be invalidated on CDN cache asynchronously.
 
-### Generating hash for subresource integrity
+#### Generating hash for subresource integrity
 
 For traceability of deployment, we are using [subresource integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity).
 
@@ -29,14 +63,14 @@ curl https://cdn.botframework.com/botframework-webchat/4.3.0/webchat.js | openss
 
 [This script](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity#Tools_for_generating_SRI_hashes) will fetch the asset from CDN, pipe it into OpenSSL for digest, and output as BASE64.
 
-## Test locally
+### Test locally
 
 There are two public surfaces we need to test:
 
 - Embed page, i.e. https://webchat.botframework.com/embed/your-bot-id
 - Azure Portal "Test in Web Chat" blade
 
-### Testing the embed page
+#### Testing the embed page
 
 In order to test your local build, you can use Fiddler to modify the traffic to serve the Gemini page locally.
 
@@ -51,7 +85,7 @@ if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id/gem
 
 This code snippet will intercept all requests destinated to https://webchat.botframework.com/embed/your-bot-id/gemini. Instead of serving the request from webchat.botframework.com, with the script, Fiddler will serve the content from local file at C:\Users\JohnDoe\...\index.html instead.
 
-### Testing on Azure Portal
+#### Testing on Azure Portal
 
 Until migration to v4 has completed worldwide, your bot may not immediately update to the new embed page on Azure Portal.
 
@@ -73,6 +107,12 @@ This code snippet will intercept requests to the original embed page and forward
 ## FAQs
 
 Below are common questions about the new Gemini page.
+
+### Why use `<iframe>` instead of other integration options?
+
+Integrating Web Chat using `<iframe>` is the simplest way to connect your website with Azure Bot Services.
+
+Although `<iframe>` do not support a wide variety of customization options, it help you to connect easier by filling out options, such as bot avatar initials, user ID, etc. We also maintain versions for you to make sure your client is up-to-date and secure all the time.
 
 ### What version of Web Chat am I using on my site?
 
@@ -129,3 +169,20 @@ We gradually migrate customers' sites to our new version using a mechanism we ca
 | `?userid=dl_12345` | User ID to use when sending the activity. If user ID is available in token, this will be ignored          |
 | `?username=WW`     | Username to show, only for v3 or lower                                                                    |
 | `?v=4`             | Specify version                                                                                           |
+
+### What is Gemini, Scorpio and Aries?
+
+Historically, we codename the embed page with Zodiac signs.
+
+- Gemini: this version of embed page
+   - Supports multiple versions of Web Chat, backward- and forward-compatible
+      - Latest version is maintained at [`botframework-webchat@latest`](https://www.npmjs.com/package/botframework-webchat/)
+      - v3 is maintained at [`botframework-webchat@legacy`](https://www.npmjs.com/package/botframework-webchat/v/legacy), latest is 0.15.1
+   - Supports falling back to previous versions of embed page, include Scorpio and Aries
+- Scorpio: Web Chat v3 of version 0.11.4
+   - Adaptive Cards 0.6.1
+   - OAuth card is not supported
+   - This is maintained at [`botframework-webchat@ibiza`](https://www.npmjs.com/package/botframework-webchat/v/ibiza)
+   - Note: 0.11.4 is not the latest version of Web Chat v3, the latest is 0.15.1
+- Aries: Web Chat v1
+   - Written in ASP.NET and Angular
