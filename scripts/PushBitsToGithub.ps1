@@ -35,7 +35,7 @@ Write-Host "Debug 2 ============================================================
 Get-ChildItem -Recurse -Force
 
 Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
-Copy-Item $newFilesPath -Destination $repoRootPath -Recurse
+Copy-Item $newFilesPath/*.* -Destination $repoRootPath -Recurse
 
 Write-Host "Debug 3 =============================================================="
 Get-ChildItem -Recurse -Force
