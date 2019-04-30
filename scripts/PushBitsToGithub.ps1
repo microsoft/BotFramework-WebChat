@@ -43,7 +43,10 @@ git add -u
 $result = git status
 Write-Host "git status result: [$result]"
 
-if ($result.StartsWith('nothing to commit') -eq $true) {
+if ($result -eq $null) {
+    Write-Host "##vso[task.logissue type=error;] Fatal error: No git repository here."
+    throw;
+} else if ($result.StartsWith('nothing to commit') -eq $true) {
     Write-Host "##vso[task.logissue type=error;] Quit without publishing: Everything up-to-date. Looks like these bits are already in GitHub."
     throw;
 }
