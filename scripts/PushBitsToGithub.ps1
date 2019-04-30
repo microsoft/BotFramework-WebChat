@@ -1,15 +1,14 @@
 #
-# Pushes files to Github branch gh-pages-bh. Used in the build Publish-WebChat-pages-to-github.
+# Pushes files to Github branch gh-pages. Used in the build Publish-WebChat-pages-to-github.
 # Note: git logs normal progress to stderr. Therefore, keep "Fail on standard error" disabled.
 #
 param
 ( 
     [string]$newFilesPath,          #"$(System.ArtifactsDirectory)/pages"
-    [string]$branchName,            #gh-pages-bh
+    [string]$branchName,            #gh-pages
     [string]$repoRootPath           #"$(Build.SourcesFolder)"
 )
 
-#$newBranch = "$branchName-new";
 Set-Location -Path $repoRootPath
 
 # Set default identity
@@ -20,27 +19,13 @@ Write-Host "git checkout $branchName"
 git checkout $branchName
 Write-Host "git pull origin $branchName"
 git pull origin $branchName
-#git checkout -b $newBranch $branchName
-
-#$result = git status
-#Write-Host "git status result: [$result]"
-
-#Write-Host "Debug 1 =============================================================="
-#Get-ChildItem -Recurse -Force
 
 Write-Host "Deleting the old files from $repoRootPath"
 Get-Childitem -Recurse | Remove-Item -Force -Recurse
 
-#Write-Host "Debug 2 =============================================================="
-#Get-ChildItem -Recurse -Force
-
 Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
 Copy-Item $newFilesPath/*.* -Destination $repoRootPath -Recurse
 
-#Write-Host "Debug 3 =============================================================="
-#Get-ChildItem -Recurse -Force
-
-#Write-Host "Debug 4 =============================================================="
 Write-Host "git add"
 git add .
 git add -u
@@ -61,8 +46,8 @@ git commit -m "Automated push from build $Env:Build_BuildNumber"
 Write-Host "git push origin $branchName"
 git push origin $branchName
 
-if ($LASTEXITCODE -eq 0) {
-    Add-Content -Path "./PushLocation.md" -Value "Bits pushed to GitHub here: [https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath](https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath)"
-    Write-Host 'Writing Push Location section to the build summary page'
-    Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push_Location;] ./PushLocation.md"
-}
+#if ($LASTEXITCODE -eq 0) {
+#    Write-Host 'Writing Push Location section to the build summary page'
+#    Add-Content -Path "./PushLocation.md" -Value "Bits pushed to GitHub here: [https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath](https://github.com/Microsoft/botbuilder-webchat/tree/$branchName/$repoRootPath)"
+# Broken:   Write-Host "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Push_Location;] ./PushLocation.md"
+#}
