@@ -42,7 +42,6 @@ export default function createBubbleStyle({
   bubbleFromUserNubOffset,
   bubbleFromUserNubSize,
   bubbleFromUserTextColor,
-  bubbleMaxWidth,
   bubbleMinHeight,
   bubbleNubOffset,
   bubbleNubSize,
@@ -72,9 +71,9 @@ export default function createBubbleStyle({
   const userNubCornerRadius = Math.min(bubbleFromUserBorderRadius, Math.abs(bubbleFromUserNubOffset));
 
   return {
-    maxWidth: bubbleMaxWidth,
-    minHeight: bubbleMinHeight,
-    wordBreak: messageActivityWordBreak,
+    '& > .content': {
+      wordBreak: messageActivityWordBreak
+    },
 
     '&:not(.from-user)': {
       '&.has-nub': {
@@ -87,7 +86,8 @@ export default function createBubbleStyle({
         borderRadius: bubbleBorderRadius,
         borderStyle: bubbleBorderStyle,
         borderWidth: bubbleBorderWidth,
-        color: bubbleTextColor
+        color: bubbleTextColor,
+        minHeight: bubbleMinHeight - bubbleBorderWidth * 2
       },
 
       '&.has-nub > .content': {
@@ -117,7 +117,8 @@ export default function createBubbleStyle({
         borderRadius: bubbleFromUserBorderRadius,
         borderStyle: bubbleFromUserBorderStyle,
         borderWidth: bubbleFromUserBorderWidth,
-        color: bubbleFromUserTextColor
+        color: bubbleFromUserTextColor,
+        minHeight: bubbleMinHeight - bubbleFromUserBorderWidth * 2
       },
 
       '&.has-nub > .content': {

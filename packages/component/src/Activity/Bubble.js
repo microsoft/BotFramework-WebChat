@@ -9,7 +9,6 @@ const ROOT_CSS = css({
   position: 'relative',
 
   '& > .content': {
-    flex: 1,
     overflow: 'hidden'
   },
 
