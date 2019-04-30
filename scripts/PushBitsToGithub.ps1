@@ -53,7 +53,8 @@ if ($result -eq $null) {
 Write-Host 'git commit -m...'
 git commit -m "Automated push from build $Env:Build_BuildNumber"
 
-git remote add origin https://github.com/Microsoft/BotFramework-WebChat
+Write-Host 'git remote add...'
+git remote add origin "https://github.com/Microsoft/BotFramework-WebChat/tree/$branchName"
 
 Write-Host "git push origin $branchName"
 git push -u --force origin $branchName
