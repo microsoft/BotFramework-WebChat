@@ -14,9 +14,9 @@ There are a few features unique to `<iframe>`:
 
 - Reading configurations from Azure Bot Services
 - Simplified version selection
-   - Based on the versions you selected (latest, specific major, or specific minor), we will serve Web Chat client with latest security fixes
-   - Please refer to [this section](#i-want-to-go-back-to-previous-versions-of-web-chat) to specifying version to use
-- Same experince as "Test in Web Chat" blade in Azure Portal
+   - Based on the versions you selected (latest, specific major, or specific minor), we will serve the Web Chat client with latest security fixes
+   - Please refer to the [I want to go back](#i-want-to-go-back-to-previous-versions-of-web-chat) to specify the version you want to use
+- This creates the same experience as "Test in Web Chat" blade in Azure Portal
 
 ## How to use
 
@@ -49,7 +49,7 @@ Follow steps below to build the embed page locally.
 
 `servicingPlan.json` is the deployment plan. It provides details about where to locate assets, how to set up, and when to deprecate our older bits.
 
-When modifying the servicing plan to point to newer assets, make sure it is pointing to immutable copies on CDN. For example, assets with hashed filenames. Since we are using subresource integrity, this will make sure servicing plan and assets can be invalidated on CDN cache asynchronously.
+When modifying the servicing plan to point to newer assets, make sure it is pointing to immutable copies on CDN. For example, you want to use assets with hashed filenames. Since we are using subresource integrity, this will make sure the servicing plan and assets can be invalidated on CDN cache asynchronously.
 
 #### Generating hash for subresource integrity
 
@@ -106,13 +106,13 @@ This code snippet will intercept requests to the original embed page and forward
 
 ## FAQs
 
-Below are common questions about the new Gemini page.
+Below are common questions about the new Gemini deployment of Web Chat.
 
 ### Why use `<iframe>` instead of other integration options?
 
 Integrating Web Chat using `<iframe>` is the simplest way to connect your website with Azure Bot Services.
 
-Although `<iframe>` do not support a wide variety of customization options, it help you to connect easier by filling out options, such as bot avatar initials, user ID, etc. We also maintain versions for you to make sure your client is up-to-date and secure all the time.
+Although `<iframe>` does not support a wide variety of customization options, it helps you connect more easily by filling out options, such as bot avatar initials, user ID, etc. We also maintain versions for you to make sure your client is up-to-date and secure all the time.
 
 ### What version of Web Chat am I using on my site?
 
@@ -137,9 +137,9 @@ There are a handful of versions we support:
 - Majors
    - `4` will serve the latest minor version of `4.*`. At the time this document was created, that version was `4.3.0`
    - `3` will serve the latest minor version of `0.*`.At the time this document was created, it is `0.15.1-v3.748a85f`
-   - `scorpio` will serve the version before Gemini page is introduced. At the time this document was created,, it is `0.11.4-ibiza.f373b1d`
-      - This will be same as "Enable preview" checkbox checked
-   - `aries` will serve the version before Gemini page is introduced
+   - `scorpio` will serve the version before Gemini page was introduced. At the time this document was created, `scorpio` is version `0.11.4-ibiza.f373b1d`
+      - This is the as having the "Enable preview" checkbox checked
+   - `aries` will serve the version before Gemini page was introduced
       - This is the same as having the "Enable preview" checkbox unchecked
       - This version will show a bot icon and welcome message at the top of the page
 - Minors
@@ -174,11 +174,11 @@ We gradually migrate customers' sites to our new version using a mechanism we ca
 
 Historically, we use Zodiac signs as code name to version the embed page.
 
-- Gemini: this version of embed page
-   - Supports multiple versions of Web Chat, backward- and forward-compatible
+- Gemini: the latest version of embed page
+   - Supports multiple versions of Web Chat, backwards- and forwards-compatible
       - Latest version is maintained at [`botframework-webchat@latest`](https://www.npmjs.com/package/botframework-webchat/)
       - v3 is maintained at [`botframework-webchat@legacy`](https://www.npmjs.com/package/botframework-webchat/v/legacy), latest is 0.15.1
-   - Supports falling back to previous versions of embed page, include Scorpio and Aries
+   - Supports falling back to previous versions of embed page include Scorpio and Aries
 - Scorpio: Web Chat v3 of version 0.11.4
    - Adaptive Cards 0.6.1
    - OAuth card is not supported
