@@ -8,7 +8,7 @@ export default function ({
   return {
     backgroundColor: 'Transparent',
     border: 0,
-    height: sendBoxHeight,
+    height: '100%',
     outline: 0,
     padding: 0,
 
