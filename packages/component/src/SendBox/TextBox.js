@@ -75,7 +75,7 @@ export default connectSendTextBox(
     <form
       className={ classNames(
         ROOT_CSS + '',
-        styleSet.sendBoxTextarea + '',
+        styleSet.sendBoxTextArea + '',
         styleSet.sendBoxTextBox + '',
         (className || '') + '',
       ) }
@@ -96,7 +96,7 @@ export default connectSendTextBox(
               value={ value }
             />
             : <div>
-                <textarea 
+                <textarea
                   aria-label={ typeYourMessageString }
                   data-id="webchat-sendbox-input"
                   disabled={ disabled }

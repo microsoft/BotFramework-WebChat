@@ -1,4 +1,4 @@
-export default function createSendBoxTextareaStyle({
+export default function createSendBoxTextAreaStyle({
   paddingRegular,
   primaryFont,
   sendBoxMaxHeight,
