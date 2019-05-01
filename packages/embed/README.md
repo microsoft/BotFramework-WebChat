@@ -26,7 +26,7 @@ To use the embed page, you will need the site secret from your Azure Bot Service
 <iframe src="https://webchat.botframework.com/embed/your-bot-id?s=your-site-secret"></iframe>
 ```
 
-For production use, we strongly prefer you to use token instead of secret. Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token out of secret.
+**For production use, we strongly prefer you to use token instead of secret.** Please refer to [this article](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication) for how to generate token out of secret.
 
 ```html
 <iframe src="https://webchat.botframework.com/embed/your-bot-id?t=your-site-token"></iframe>
@@ -43,7 +43,7 @@ Follow steps below to build the embed page locally.
 1. `npm install`
 1. `npm run prepublishOnly`
 1. Publishes the build artifact at `/dist/index.html`
-   1. Verifies the file size, it should be less than 30 KB
+   1. Verifies the file size. It should be less than 30 KB
 
 ### Updating servicing plan
 
