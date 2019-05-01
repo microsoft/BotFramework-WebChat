@@ -55,7 +55,7 @@ class UploadButton extends React.Component {
     this.inputRef = React.createRef();
   }
 
-  handleClick(event) {
+  handleClick() {
     const { current } = this.inputRef;
 
     current && current.click();

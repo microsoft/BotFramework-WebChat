@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1920](https://github.com/Microsoft/BotFramework-WebChat/issues/1920). Added disabled property to send button, by [@tdurnford](https://github.com/tdurnford) in PR [#1922](https://github.com/Microsoft/BotFramework-WebChat/pull/1922)
 - Fix [#1525](https://github.com/Microsoft/BotFramework-WebChat/issues/1525). Add JavaScript error Offline UI, by [@corinagum](https://github.com/corinagum) in PR [#1927](https://github.com/Microsoft/BotFramework-WebChat/pull/1927)
 - Fix [#1934](https://github.com/Microsoft/BotFramework-WebChat/issues/1934). Fix spacing of empty ConnectivityStatus component, by [@corinagum](https://github.com/corinagum) in PR [#1939](https://github.com/Microsoft/BotFramework-WebChat/pull/1939)
+- Fix [#1943](https://github.com/Microsoft/BotFramework-WebChat/issues/1943). Fix extra vertical padding in IE11 and Firefox, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Changed
 - Deployment: Bumps to [`blobxfer@1.7.1`](https://github.com/azure/blobxfer/), by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
