@@ -8,7 +8,7 @@
       When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
       or lock down on a specific version with the following format: "/4.1.0/webchat.js".
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -38,10 +38,14 @@
         });
 
         // You can also modify the style set by the actual CSS
-        styleSet.textContent = { ...styleSet.textContent,
-          fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
-          fontWeight: 'bold'
-        };
+        styleSet.textContent = Object.assign(
+          {},
+          styleSet.textContent,
+          {
+            fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
+            fontWeight: 'bold'
+          }
+        );
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),

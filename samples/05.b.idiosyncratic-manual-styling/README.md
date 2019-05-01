@@ -45,10 +45,14 @@ First, we want to overwrite the current `styleSet` by using the `createStyleSet`
 +  bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
 + });
 
-+ styleSet.textContent = { ...styleSet.textContent,
-+   fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
-+   fontWeight: 'bold'
-+ };
++ styleSet.textContent = Object.assign(
++   {},
++   styleSet.textContent,
++   {
++     fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
++     fontWeight: 'bold'
++   }
++ );
 …
 ```
 
@@ -98,10 +102,14 @@ Here is the finished `index.html`:
 +         bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
 +       });
 
-+       styleSet.textContent = { ...styleSet.textContent,
-+         fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
-+         fontWeight: 'bold'
-+       };
++       styleSet.textContent = Object.assign(
++         {},
++         styleSet.textContent,
++         {
++           fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
++           fontWeight: 'bold'
++         }
++       );
 
         window.WebChat.renderWebChat({
 -         directLine: window.WebChat.createDirectLine({ token })
