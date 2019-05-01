@@ -8,6 +8,7 @@ export default function createSendBoxStyle({
 }) {
   return {
     '& > .main': {
+      alignItems: 'stretch',
       backgroundColor: sendBoxBackground,
       borderBottom: sendBoxBorderBottom,
       borderLeft: sendBoxBorderLeft,
