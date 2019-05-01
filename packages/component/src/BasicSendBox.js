@@ -55,11 +55,13 @@ const BasicSendBox = ({
         :
           <TextBox className={ TEXT_BOX_CSS } />
       }
-      { (webSpeechPonyfill || {}).SpeechRecognition ?
-          <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
-        :
-          <SendButton />
-      }
+      <div>
+        { (webSpeechPonyfill || {}).SpeechRecognition ?
+            <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
+          :
+            <SendButton />
+        }
+      </div>
     </div>
   </div>
 
