@@ -29,12 +29,6 @@ Get-Childitem -Recurse | Remove-Item -Force -Recurse
 Write-Host "Copying the new files from $newFilesPath to $repoRootPath"
 Copy-Item $newFilesPath/*.* -Destination $repoRootPath -Recurse
 
-Write-Host "Remove the git history"
-# Remove the current .git folder
-Remove-Item -Recurse -Force .git
-# Reconstruct the repo
-git init
-
 Write-Host "git add"
 git add .
 git add -u
@@ -52,12 +46,8 @@ if ($result -eq $null) {
 }
 Write-Host 'git commit -m...'
 git commit -m "Automated push from build $Env:Build_BuildNumber"
-
-#Write-Host 'git remote add...'
-#git remote add origin "https://github.com/Microsoft/BotFramework-WebChat/tree/$branchName"
-
 Write-Host "git push origin $branchName"
-git push -u --force origin $branchName
+git push origin $branchName
 
 #if ($LASTEXITCODE -eq 0) {
 #    Write-Host 'Writing Push Location section to the build summary page'
