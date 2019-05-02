@@ -42,9 +42,7 @@ export default class App extends React.Component {
 
       switch (e.key) {
         case 'ArrowUp':
-          if (target.selectionStart === 0) {
-            text = this.history.getNext();
-          }
+          text = this.history.getNext();
           break;
         case 'ArrowDown':
             text = this.history.getPrevious();
