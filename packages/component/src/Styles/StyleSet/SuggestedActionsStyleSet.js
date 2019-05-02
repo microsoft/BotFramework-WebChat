@@ -2,6 +2,7 @@ import { css } from 'glamor';
 import { createBasicStyleSet } from 'react-film';
 
 export default function createSuggestedActionsStyleSet({
+  paddingRegular,
   transcriptOverlayButtonBackground,
   transcriptOverlayButtonBackgroundOnDisabled,
   transcriptOverlayButtonBackgroundOnFocus,
@@ -16,7 +17,7 @@ export default function createSuggestedActionsStyleSet({
     flipperBoxWidth: 40,
     flipperSize: 20,
     scrollBarHeight: 6,
-    scrollBarMargin: 2,
+    scrollBarMargin: 2
   });
 
   const flipper = css({
@@ -51,6 +52,20 @@ export default function createSuggestedActionsStyleSet({
       },
       [`& .${ leftFlipper + '' } > div.slider`]: { left: 0 },
       [`& .${ rightFlipper + '' } > div.slider`]: { right: 0 }
+    },
+
+    '& > div': {
+      scrollbarWidth: 'none',
+
+      '& > ul > li': {
+        '&:first-child': {
+          paddingLeft: paddingRegular / 2
+        },
+
+        '&:last-child': {
+          paddingRight: paddingRegular / 2
+        }
+      }
     }
   });
 
