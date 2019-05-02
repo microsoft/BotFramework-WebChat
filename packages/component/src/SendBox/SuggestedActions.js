@@ -42,6 +42,7 @@ export default connectSuggestedActions(
         styleSet.suggestedActions + '',
         className
       ) }
+      height={ styleSet.options.suggestedActionHeight + styleSet.options.paddingRegular * 2 }
       showDots={ false }
       styleSet={ styleSet.options.suggestedActionsStyleSet }
     >

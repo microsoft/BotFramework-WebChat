@@ -18,6 +18,14 @@ export default function createSuggestedActionStyle({
     paddingRight: paddingRegular / 2,
     paddingTop: paddingRegular,
 
+    '&:first-child': {
+      paddingLeft: paddingRegular
+    },
+
+    '&:last-child': {
+      paddingRight: paddingRegular
+    },
+
     '& > button': {
       alignItems: 'center',
       borderRadius: suggestedActionBorderRadius,
