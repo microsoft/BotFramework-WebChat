@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
-  <a href="https://fuselabs.visualstudio.com/BotFramework-WebChat/_build/latest?definitionId=498"><img alt="Build Status" src="https://fuselabs.visualstudio.com/BotFramework-WebChat/_apis/build/status/BotFramework-WebChat-daily?branchName=master" /></a>
+  <img alt="Build Status" src="https://fuselabs.visualstudio.com/BotFramework-WebChat/_apis/build/status/BotFramework-WebChat-daily?branchName=master" />
   <a href="https://coveralls.io/github/Microsoft/BotFramework-WebChat?branch=master"><img src="https://coveralls.io/repos/github/Microsoft/BotFramework-WebChat/badge.svg?branch=master" alt="Coverage Status" /></a>
 </p>
 
