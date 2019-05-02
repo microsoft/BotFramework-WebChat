@@ -15,8 +15,8 @@ There are a few features unique to `<iframe>`:
 - Reading configurations from Azure Bot Services
 - Simplified version selection
    - Based on the versions you selected (latest, specific major, or specific minor), we will serve the Web Chat client with latest security fixes
-   - Please refer to the [I want to go back](#i-want-to-go-back-to-previous-versions-of-web-chat) to specify the version you want to use
-- This creates the same experience as "Test in Web Chat" blade in Azure Portal
+   - Please refer to the [I want to go back documentation](#i-want-to-go-back-to-previous-versions-of-web-chat) to specify the version you want to use
+- This creates the same experience as the "Test in Web Chat" blade in Azure Portal
 
 ## How to use
 
