@@ -38,10 +38,14 @@
         });
 
         // You can also modify the style set by the actual CSS
-        styleSet.textContent = { ...styleSet.textContent,
-          fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
-          fontWeight: 'bold'
-        };
+        styleSet.textContent = Object.assign(
+          {},
+          styleSet.textContent,
+          {
+            fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
+            fontWeight: 'bold'
+          }
+        );
 
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
