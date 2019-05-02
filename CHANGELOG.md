@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1934](https://github.com/Microsoft/BotFramework-WebChat/issues/1934). Fix spacing of empty ConnectivityStatus component, by [@corinagum](https://github.com/corinagum) in PR [#1939](https://github.com/Microsoft/BotFramework-WebChat/pull/1939)
 - Fix [#1943](https://github.com/Microsoft/BotFramework-WebChat/issues/1943). Fix extra vertical padding in IE11 and Firefox, by [@compulim](https://github.com/compulim) in PR [#1949](https://github.com/Microsoft/BotFramework-WebChat/pull/1949)
 - Fix [#1945](https://github.com/Microsoft/BotFramework-WebChat/issues/1945). QA fixes for 4.4, by [@corinagum](https://github.com/johndoe) in PR [#1950](https://github.com/Microsoft/BotFramework-WebChat/pull/1950)
-- Fix [#1947](https://github.com/Microsoft/BotFramework-WebChat/issues/1947). Fix scrollbar in suggested action should be hidden in Firefox, remove gaps, and use style set for customizing `react-film`, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Fix [#1947](https://github.com/Microsoft/BotFramework-WebChat/issues/1947). Fix scrollbar in suggested action should be hidden in Firefox, remove gaps, and use style set for customizing `react-film`, by [@compulim](https://github.com/compulim) in PR [#1953](https://github.com/Microsoft/BotFramework-WebChat/pull/1953)
 
 ### Changed
 - Deployment: Bumps to [`blobxfer@1.7.1`](https://github.com/azure/blobxfer/), by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
