@@ -71,8 +71,6 @@ Here is how how you can add Web Chat control to your website:
 
 Web Chat is designed to integrate with your existing web site using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
 
-### Full bundle
-
 You can use the full, typical webchat package that contains the most typically used features.
 
 ```html
@@ -92,33 +90,6 @@ You can use the full, typical webchat package that contains the most typically u
 ```
 
 See the working sample of the [full Web Chat bundle](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle).
-
-### Minimal bundle
-
-Instead of using the full, typical package of Web Chat, you can choose a lighter-weight sample with fewer features. This bundle does **not** contain:
-- Adaptive Cards
-- Cognitive Services
-- Markdown-It
-
-Since Adaptive Cards is not included in this bundle, rich cards that depend on Adaptive Cards will not render, e.g. hero cards, receipt cards, etc. A list of attachments that are not supported without Adaptive Cards can be found on the [`createAdaptiveCardMiddleware.js` file](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Middleware/Attachment/createAdaptiveCardMiddleware.js).
-
-See a working sample of the [minimal Web Chat bundle](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle).
-
-```html
-<!DOCTYPE html>
-<html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
-    <script>
-      window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }),
-        userID: 'YOUR_USER_ID'
-      }, document.getElementById('webchat'));
-    </script>
-  </body>
-</html>
-```
 
 ## Integrate with React
 
