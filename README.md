@@ -169,65 +169,8 @@ Web Chat is designed to be customizable without forking the source code. The tab
 
 See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
 
-# Building the project
-
-> If you need to build this project for customization purposes, we strongly advise you to refer to our [samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples). If you cannot find any samples that fulfill your customization needs and you don't know how to do that, please [send your dream to us](https://github.com/Microsoft/BotFramework-WebChat/issues/).
->
-> Forking Web Chat to make your own customizations means you will lose access to our latest updates. Maintaining forks also introduces chores that are substantially more complicated than a version bump.
-
-To build Web Chat, you will need to make sure both your Node.js and NPM is latest version (either LTS or current).
-
-```sh
-npm install
-npm run bootstrap
-npm run build
-```
-
-## Build tasks
-
-There are 3 types of build tasks in the build process.
-
-- `npm run build`: Build for development (instrumented code for code coverage)
-   - Will bundle as `webchat-instrumented*.js`
-- `npm run watch`: Build for development with watch mode loop
-- `npm run prepublishOnly`: Build for production
-   - Will bundle as `webchat*.js`
-
-## Testing Web Chat for development purpose
-
-We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
-
-```sh
-cd packages/playground
-npm start
-```
-
-Then browse to http://localhost:3000/, and click on one of the connection options on the upper right corner.
-
-- Official MockBot: we hosted a live demo bot for testing Web Chat features
-- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line service](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
-
-You are also advised to test the CDN bundles by copying the test harness from our samples.
-
-## Building CDN bundle in development mode
-
-Currently, the standard build script does not build the CDN bundle (`webchat*.js`).
-
-```sh
-cd packages/bundle
-npm run webpack-dev
-```
-
-> By default, this script will run in watch mode.
-
-## Building CDN bundle in production mode
-
-If you want to build a production CDN bundle with minification, you can follow these steps.
-
-```sh
-cd packages/bundle
-npm run prepublishOnly
-```
+# Contributing
+See our [Contributing page](https://github.com/Microsoft/BotFramework-WebChat/tree/master/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
 
 # Samples list
 
