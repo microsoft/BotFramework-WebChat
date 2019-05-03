@@ -18,7 +18,7 @@ There are three possible paths that migration might take when migrating from v3 
 
 ### My current website integrate Web Chat using an `<iframe>` element obtained from Azure Bot Services. I want to upgrade to v4.
 
-Starting from May 2019, we are rolling out v4 to websites that integrate Web Chat using `<iframe>` element. Please refer to [the embed documentation](https://github.com/Microsoft/BotFramework-WebChat/treemaster/packages/embed/README.md) for information on integrating Web Chat using `<iframe>`.
+Starting from May 2019, we are rolling out v4 to websites that integrate Web Chat using `<iframe>` element. Please refer to [the embed documentation](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/embed) for information on integrating Web Chat using `<iframe>`.
 
 ### My website is integrated with Web Chat v3 and uses customization options provided by Web Chat, no customization at all, or very little of my own customization that was not available with Web Chat.
 
