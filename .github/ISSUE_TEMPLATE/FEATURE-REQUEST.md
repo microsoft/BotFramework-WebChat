@@ -9,7 +9,7 @@
 **Describe the suggestion or request in detail**
 <!-- A clear and concise description of what you want to happen. -->
 
-**Describe alternatives you've considered**
+**Describe alternatives you have considered**
 <!-- A clear and concise description of any alternative solutions or features you've considered. -->
 
 **Additional context**
