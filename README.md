@@ -3,13 +3,14 @@
 ### [Click here to find out what's new for //build2019!](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
 
 # Bot Framework Web Chat
+<a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
+<a href="https://travis-ci.org/Microsoft/BotFramework-WebChat"><img alt="Build Status" src="https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master" /></a>
+<a href="https://coveralls.io/github/Microsoft/BotFramework-WebChat?branch=master"><img src="https://coveralls.io/repos/github/Microsoft/BotFramework-WebChat/badge.svg?branch=master" alt="Coverage Status" /></a>
+
 This repository contains code for the Bot Framework Web Chat component.  The Bot Framework Web Chat component is a highly-customizable web-based client for the Bot Framework V4 SDK. The Bot Framework SDK v4 enable developers to model conversation and build sophisticated bot applications.
 
 This repo is part the [Microsoft Bot Framework](https://github.com/microsoft/botframework) - a comprehensive framework for building enterprise-grade conversational AI experiences.
 
-<a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
-<a href="https://travis-ci.org/Microsoft/BotFramework-WebChat"><img alt="Build Status" src="https://travis-ci.org/Microsoft/BotFramework-WebChat.svg?branch=master" /></a>
-<a href="https://coveralls.io/github/Microsoft/BotFramework-WebChat?branch=master"><img src="https://coveralls.io/repos/github/Microsoft/BotFramework-WebChat/badge.svg?branch=master" alt="Coverage Status" /></a>
 
 ## Migrating from Web Chat v3 to v4
 
