@@ -3,8 +3,6 @@
 ### [Click here to find out what's new for //build2019!](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
 
 # Bot Framework Web Chat
-Web Chat is a highly-customizable web-based client for Azure Bot Services.
-
 This repository contains code for the Bot Framework Web Chat component.  The Bot Framework Web Chat component is a highly-customizable web-based client for the Bot Framework V4 SDK. The Bot Framework SDK v4 enable developers to model conversation and build sophisticated bot applications.
 
 This repo is part the [Microsoft Bot Framework](https://github.com/microsoft/botframework) - a comprehensive framework for building enterprise-grade conversational AI experiences.
