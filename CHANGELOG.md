@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `*`: Bump to:
    - [`lerna@3.13.4`](https://npmjs.com/package/lerna/),
    - [`react-scripts@3.0.0`](https://npmjs.com/package/react-scripts/),
-   - [`webpack@4.30.0`](https://npmjs.com/package/webpack/), by [@corinagum](https://github.com/corinagum), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+   - [`webpack@4.30.0`](https://npmjs.com/package/webpack/), by [@corinagum](https://github.com/corinagum), in PR [#1965](https://github.com/Microsoft/BotFramework-WebChat/pull/1965)
 
 <!-- ### Fixed
 - Fix [#XXX](https://github.com/Microsoft/BotFramework-WebChat/issues/XXX). Patched something, by [@johndoe](https://github.com/johndoe) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
