@@ -1,7 +1,7 @@
 import memoize from 'memoize-one';
 import React from 'react';
 
-import { AdaptiveCardBuilder } from '../Utils/AdaptiveCardBuilder';
+import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
 export default class extends React.Component {
@@ -11,8 +11,9 @@ export default class extends React.Component {
     this.buildCard = memoize((adaptiveCards, content) => {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
 
-      builder.addCommonHeaders(content);
-      builder.addButtons(content.buttons, true);
+      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
+
+      builder.addCommon(content);
 
       return builder.card;
     });
@@ -27,7 +28,10 @@ export default class extends React.Component {
     } = this;
 
     return (
-      <AdaptiveCardRenderer adaptiveCard={ content && this.buildCard(adaptiveCards, content) } />
+      <AdaptiveCardRenderer
+        adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
+        tapAction={ content && content.tap }
+      />
     );
   }
 }

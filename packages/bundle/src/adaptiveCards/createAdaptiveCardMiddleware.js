@@ -1,14 +1,14 @@
 import React from 'react';
 
-import AdaptiveCardAttachment from '../../Attachment/AdaptiveCardAttachment';
-import AnimationCardAttachment from '../../Attachment/AnimationCardAttachment';
-import AudioCardAttachment from '../../Attachment/AudioCardAttachment';
-import HeroCardAttachment from '../../Attachment/HeroCardAttachment';
-import OAuthCardAttachment from '../../Attachment/OAuthCardAttachment';
-import ReceiptCardAttachment from '../../Attachment/ReceiptCardAttachment';
-import SignInCardAttachment from '../../Attachment/SignInCardAttachment';
-import ThumbnailCardAttachment from '../../Attachment/ThumbnailCardAttachment';
-import VideoCardAttachment from '../../Attachment/VideoCardAttachment';
+import AdaptiveCardAttachment from './Attachment/AdaptiveCardAttachment';
+import AnimationCardAttachment from './Attachment/AnimationCardAttachment';
+import AudioCardAttachment from './Attachment/AudioCardAttachment';
+import HeroCardAttachment from './Attachment/HeroCardAttachment';
+import OAuthCardAttachment from './Attachment/OAuthCardAttachment';
+import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
+import SignInCardAttachment from './Attachment/SignInCardAttachment';
+import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
+import VideoCardAttachment from './Attachment/VideoCardAttachment';
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function (props) {

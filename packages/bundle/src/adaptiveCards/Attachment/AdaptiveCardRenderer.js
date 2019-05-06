@@ -1,9 +1,13 @@
+import { HostConfig } from 'adaptivecards';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
-import ErrorBox from '../ErrorBox';
-import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
+import { Components, connectToWebChat, getTabIndex, localize } from 'botframework-webchat-component';
+
+const { ErrorBox } = Components;
+
+function isPlainObject(obj) {
+  return obj.__proto__ === Object.prototype;
+}
 
 class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
@@ -97,8 +101,11 @@ class AdaptiveCardRenderer extends React.PureComponent {
         }
       };
 
-      adaptiveCard.hostConfig = adaptiveCardHostConfig;
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
+
+      if (adaptiveCardHostConfig) {
+        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig) ? new HostConfig(adaptiveCardHostConfig) : adaptiveCardHostConfig;
+      }
 
       const errors = adaptiveCard.validate();
 

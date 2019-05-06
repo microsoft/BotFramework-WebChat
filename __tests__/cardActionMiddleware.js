@@ -67,6 +67,7 @@ test('card action "signin"', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('oauth', { waitForSend: true });
 
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
 
   await openUrlButton.click();
