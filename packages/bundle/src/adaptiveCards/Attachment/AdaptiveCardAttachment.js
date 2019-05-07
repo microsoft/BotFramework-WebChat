@@ -1,4 +1,5 @@
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
@@ -27,7 +28,7 @@ export default class AdaptiveCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAdaptiveCard = memoize((adaptiveCards, content, renderMarkdown) => {
+    this.createAdaptiveCard = memoize((adaptiveCards, content) => {
       const card = new adaptiveCards.AdaptiveCard();
       const errors = [];
 
@@ -49,11 +50,18 @@ export default class AdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCards, attachment, renderMarkdown } } = this;
-    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
+    const { props: { adaptiveCards, attachment } } = this;
+    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content);
 
     return (
       <AdaptiveCardRenderer adaptiveCard={ card } />
     );
   }
 }
+
+AdaptiveCardAttachment.propTypes = {
+  adaptiveCards: PropTypes.any,
+  attachment: PropTypes.shape({
+    content: PropTypes.any
+  })
+};

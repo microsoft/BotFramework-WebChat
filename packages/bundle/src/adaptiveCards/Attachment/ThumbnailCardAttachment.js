@@ -1,10 +1,11 @@
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-export default class extends React.Component {
+export default class ThumbnailCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
@@ -44,3 +45,10 @@ export default class extends React.Component {
     );
   }
 }
+
+ThumbnailCardAttachment.propTypes = {
+  adaptiveCards: PropTypes.any,
+  attachment: PropTypes.shape({
+    content: PropTypes.any
+  })
+};

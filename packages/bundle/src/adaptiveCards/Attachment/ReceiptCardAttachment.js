@@ -1,7 +1,8 @@
+import { connectToWebChat, localize } from 'botframework-webchat-component';
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import { connectToWebChat, localize } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
@@ -87,6 +88,14 @@ class ReceiptCardAttachment extends React.Component {
     );
   }
 }
+
+ReceiptCardAttachment.propTypes = {
+  adaptiveCards: PropTypes.any,
+  attachment: PropTypes.shape({
+    content: PropTypes.any
+  }),
+  language: PropTypes.string
+};
 
 export default connectToWebChat(
   ({ language }) => ({ language })

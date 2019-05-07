@@ -1,7 +1,8 @@
+import { Components, connectToWebChat } from 'botframework-webchat-component';
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Components, connectToWebChat } from 'botframework-webchat-component';
 import { AdaptiveCardBuilder } from './AdaptiveCardBuilder';
 import CommonCard from './CommonCard';
 
@@ -56,6 +57,14 @@ class AnimationCardAttachment extends React.Component {
     );
   }
 }
+
+AnimationCardAttachment.propTypes = {
+  adaptiveCards: PropTypes.any,
+  attachment: PropTypes.shape({
+    content: PropTypes.any
+  }),
+  styleSet: PropTypes.any
+};
 
 export default connectToWebChat(
   ({ styleSet }) => ({ styleSet })

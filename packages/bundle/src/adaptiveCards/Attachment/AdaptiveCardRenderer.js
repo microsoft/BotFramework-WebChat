@@ -1,4 +1,5 @@
 import { HostConfig } from 'adaptivecards';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Components, connectToWebChat, getTabIndex, localize } from 'botframework-webchat-component';
@@ -176,6 +177,17 @@ class AdaptiveCardRenderer extends React.PureComponent {
     );
   }
 }
+
+AdaptiveCardRenderer.propTypes = {
+  adaptiveCard: PropTypes.any,
+  adaptiveCardHostConfig: PropTypes.any,
+  disabled: PropTypes.bool,
+  language: PropTypes.string,
+  onCardAction: PropTypes.func,
+  renderMarkdown: PropTypes.func,
+  styleSet: PropTypes.any,
+  tapAction: PropTypes.any
+};
 
 export default connectToWebChat(
   ({
