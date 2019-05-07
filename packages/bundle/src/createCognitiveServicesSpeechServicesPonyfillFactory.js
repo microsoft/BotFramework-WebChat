@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 export default async function ({

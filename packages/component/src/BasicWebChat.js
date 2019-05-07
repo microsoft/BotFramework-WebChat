@@ -1,5 +1,6 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import BasicSendBox from './BasicSendBox';
@@ -24,7 +25,7 @@ const SEND_BOX_CSS = css( {
   flexShrink: 0
 } );
 
-export default class extends React.Component {
+export default class BasicWebChat extends React.Component {
   constructor( props ) {
     super( props );
 
@@ -122,3 +123,7 @@ export default class extends React.Component {
     );
   }
 }
+
+BasicWebChat.propTypes = {
+  attachmentMiddleware: PropTypes.func
+};

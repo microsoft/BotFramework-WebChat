@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",
+    "eslint": "^5.16.0",
     "jsonwebtoken": "^8.3.0",
     "math-random": "^1.0.4",
     "mime": "^2.3.1",

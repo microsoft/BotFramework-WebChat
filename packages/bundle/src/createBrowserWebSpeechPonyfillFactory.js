@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 export default function () {
   if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
     console.warn('Web Chat: This browser does not support Web Speech API Speech Recognition.');

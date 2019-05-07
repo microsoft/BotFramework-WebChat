@@ -1,6 +1,7 @@
 import * as adaptiveCards from 'adaptivecards';
 import memoize from 'memoize-one';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import BasicWebChat, { concatMiddleware } from 'botframework-webchat-component';
 
@@ -9,7 +10,7 @@ import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdapt
 import renderMarkdown from './renderMarkdown';
 
 // Add additional props to <WebChat>, so it support additional features
-export default class extends React.Component {
+export default class FullReactWebChat extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,3 +34,7 @@ export default class extends React.Component {
     );
   }
 }
+
+FullReactWebChat.propTypes = {
+  attachmentMiddleware: PropTypes.func
+};
