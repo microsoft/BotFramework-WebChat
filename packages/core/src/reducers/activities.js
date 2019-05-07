@@ -77,7 +77,7 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case POST_ACTIVITY_FULFILLED:
-      state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], activity =>
+      state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], () =>
         // We will replace the activity with the version from the server
         updateIn(payload.activity, ['channelData', 'state'], () => SENT)
       );

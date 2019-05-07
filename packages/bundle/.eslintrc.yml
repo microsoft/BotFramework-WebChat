@@ -1,0 +1,2 @@
+extends:
+- plugin:react/recommended
