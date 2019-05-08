@@ -5,18 +5,18 @@ import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
 
-function getStateFromProps({ language, value }) {
-  return {
-    text: localize('X minutes ago', language, value),
-    timer: nextTimer(value)
-  };
-}
-
 function nextTimer(date) {
   const time = new Date(date).getTime();
   const now = Date.now();
 
   return time > now ? time : Math.ceil((now - time) / 60000) * 60000 + time;
+}
+
+function getStateFromProps({ language, value }) {
+  return {
+    text: localize('X minutes ago', language, value),
+    timer: nextTimer(value)
+  };
 }
 
 class TimeAgo extends React.Component {
@@ -28,16 +28,18 @@ class TimeAgo extends React.Component {
     this.state = getStateFromProps(props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.updateText(nextProps);
+  componentWillReceiveProps({ language, value }) {
+    this.updateText({ language, value });
   }
 
   handleInterval() {
-    this.updateText(this.props);
+    const { language, value } = this.props;
+
+    this.updateText({ language, value });
   }
 
-  updateText(props) {
-    this.setState(() => getStateFromProps(props));
+  updateText({ language, value }) {
+    this.setState(() => getStateFromProps({ language, value }));
   }
 
   render() {
