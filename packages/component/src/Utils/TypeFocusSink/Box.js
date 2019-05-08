@@ -77,7 +77,7 @@ export default class Box extends React.Component {
 }
 
 Box.propTypes = {
-  children: PropTypes.oneOf([
+  children: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.func
   ]),

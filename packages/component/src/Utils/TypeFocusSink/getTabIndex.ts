@@ -17,7 +17,7 @@ const IE_FOCUSABLE_LIST = [
 const IS_FIREFOX = /Firefox\//i.test(userAgent);
 const IS_IE = /Trident\//i.test(userAgent);
 
-export default function getTabIndex(element: HTMLElement) {
+export default function getTabIndex(element) {
   const { tabIndex } = element;
 
   if (IS_IE) {
@@ -35,4 +35,4 @@ export default function getTabIndex(element: HTMLElement) {
   }
 
   return tabIndex;
-};
+}

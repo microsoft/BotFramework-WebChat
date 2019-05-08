@@ -45,7 +45,7 @@ class DebouncedConnectivityStatus extends React.Component {
 }
 
 DebouncedConnectivityStatus.propTypes = {
-  children: PropTypes.oneOf([PropTypes.array, PropTypes.func]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
   interval: PropTypes.number
 };
 

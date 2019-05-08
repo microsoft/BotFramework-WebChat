@@ -255,8 +255,8 @@ class Composer extends React.Component {
         renderMarkdown,
         scrollToEnd,
         store,
-        userID,
-        username,
+        userID: _userID, // We want to remove userID and username from propsForLogic
+        username: _username,
         webSpeechPonyfillFactory,
         ...propsForLogic
       },
@@ -339,18 +339,34 @@ export default ConnectedComposerWithStore
 //       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
 //       we should clean up the responsibility between Context and Redux store
 //       We should decide which data is needed for React but not in other environment such as CLI/VSCode
-ConnectedComposerWithStore.propTypes = {
+Composer.propTypes = {
   activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
-  groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.funcj]),
+  dispatch: PropTypes.func,
+  directLine: PropTypes.shape({
+    activity$: PropTypes.func.isRequired,
+    connectionStatus$: PropTypes.func.isRequired,
+    end: PropTypes.func,
+    getSessionId: PropTypes.func.isRequired,
+    postActivity: PropTypes.func.isRequired,
+    referenceGrammarID: PropTypes.string,
+    token: PropTypes.string
+  }).isRequired,
   disabled: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
+  groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  locale: PropTypes.string,
+  referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
+  scrollToEnd: PropTypes.func,
   sendTimeout: PropTypes.number,
+  sendTyping: PropTypes.bool,
   sendTypingIndicator: PropTypes.bool,
   store: PropTypes.any,
+  styleOptions: PropTypes.any,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
