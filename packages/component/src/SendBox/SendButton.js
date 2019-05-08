@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
@@ -25,15 +26,25 @@ const connectSendButton = (...selectors) => connectToWebChat(
   ...selectors
 )
 
-export default connectSendButton()(
-  ({ click, disabled, language }) =>
-    <IconButton
-      alt={ localize('Send', language) }
-      disabled={ disabled }
-      onClick={ click }
-    >
-      <SendIcon />
-    </IconButton>
-)
+const SendButton = ({ click, disabled, language }) =>
+  <IconButton
+    alt={ localize('Send', language) }
+    disabled={ disabled }
+    onClick={ click }
+  >
+    <SendIcon />
+  </IconButton>;
+
+SendButton.defaultProps = {
+  disabled: false
+};
+
+SendButton.propTypes = {
+  click: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  language: PropTypes.string.isRequired
+};
+
+export default connectSendButton()(SendButton)
 
 export { connectSendButton }

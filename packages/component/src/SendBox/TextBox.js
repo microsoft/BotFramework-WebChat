@@ -1,5 +1,6 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
@@ -56,9 +57,7 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
   ...selectors
 )
 
-export default connectSendTextBox(
-  ({ styleSet }) => ({ styleSet })
-)(({
+const TextBox = ({
   className,
   disabled,
   language,
@@ -117,6 +116,31 @@ export default connectSendTextBox(
       }
     </form>
   );
-})
+};
+
+TextBox.defaultProps = {
+  className: '',
+  disabled: false,
+  value: ''
+};
+
+TextBox.propTypes = {
+  className: PropTypes.string,
+  disabled: PropTypes.bool,
+  language: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onKeyPress: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  styleSet: PropTypes.shape({
+    options: PropTypes.shape({
+      sendBoxTextWrap: PropTypes.string.isRequired
+    }).isRequired
+  }).isRequired,
+  value: PropTypes.string
+};
+
+export default connectSendTextBox(
+  ({ styleSet }) => ({ styleSet })
+)(TextBox)
 
 export { connectSendTextBox }

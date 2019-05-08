@@ -2,6 +2,7 @@
 
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -30,9 +31,7 @@ const connectSuggestedActions = (...selectors) => connectToWebChat(
   ...selectors
 )
 
-export default connectSuggestedActions(
-  ({ styleSet }) => ({ styleSet })
-)(({
+const SuggestedActions = ({
   className,
   styleSet,
   suggestedActions
@@ -70,7 +69,34 @@ export default connectSuggestedActions(
           />
         )
       }
-    </BasicFilm>
-)
+    </BasicFilm>;
+
+SuggestedActions.defaultProps = {
+  className: ''
+};
+
+SuggestedActions.propTypes = {
+  className: PropTypes.string,
+  styleSet: PropTypes.shape({
+    option: PropTypes.shape({
+      suggestedActionsStyleSet: PropTypes.any.isRequired
+    }).isRequired,
+    suggestedActions: PropTypes.any.isRequired
+  }).isRequired,
+  suggestedActions: PropTypes.arrayOf(
+    PropTypes.shape({
+      displayText: PropTypes.string,
+      image: PropTypes.string,
+      text: PropTypes.string,
+      title: PropTypes.string,
+      type: PropTypes.string.isRequired,
+      value: PropTypes.any
+    })
+  ).isRequired
+};
+
+export default connectSuggestedActions(
+  ({ styleSet }) => ({ styleSet })
+)(SuggestedActions)
 
 export { connectSuggestedActions }

@@ -1,10 +1,16 @@
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["getStateFromProps"] }] */
-
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
+
+function getStateFromProps({ language, value }) {
+  return {
+    text: localize('X minutes ago', language, value),
+    timer: nextTimer(value)
+  };
+}
 
 function nextTimer(date) {
   const time = new Date(date).getTime();
@@ -19,7 +25,7 @@ class TimeAgo extends React.Component {
 
     this.handleInterval = this.handleInterval.bind(this);
 
-    this.state = this.getStateFromProps(props);
+    this.state = getStateFromProps(props);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -31,14 +37,7 @@ class TimeAgo extends React.Component {
   }
 
   updateText(props) {
-    this.setState(() => this.getStateFromProps(props));
-  }
-
-  getStateFromProps({ language, value }) {
-    return {
-      text: localize('X minutes ago', language, value),
-      timer: nextTimer(value)
-    };
+    this.setState(() => getStateFromProps(props));
   }
 
   render() {
@@ -52,6 +51,11 @@ class TimeAgo extends React.Component {
     );
   }
 }
+
+TimeAgo.propTypes = {
+  language: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired
+};
 
 export default connectToWebChat(
   ({ language }) => ({ language })

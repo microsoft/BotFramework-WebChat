@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -52,6 +53,25 @@ const Avatar = ({
         />
       }
     </div>
+
+Avatar.defaultProps = {
+  'aria-hidden': false,
+  avatarImage: '',
+  avatarInitials: '',
+  className: '',
+  fromUser: false
+};
+
+Avatar.propTypes = {
+  'aria-hidden': PropTypes.bool,
+  avatarImage: PropTypes.string,
+  avatarInitials: PropTypes.string,
+  className: PropTypes.string,
+  fromUser: PropTypes.bool,
+  styleSet: PropTypes.shape({
+    avatar: PropTypes.any.isRequired
+  }).isRequired
+};
 
 export default connectAvatar(
   ({ styleSet }) => ({ styleSet })
