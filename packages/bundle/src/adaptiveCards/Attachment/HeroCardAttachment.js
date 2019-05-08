@@ -38,8 +38,8 @@ export default class HeroCardAttachment extends React.Component {
 }
 
 HeroCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any
-  })
+    content: PropTypes.any.isRequired
+  }).isRequired
 };

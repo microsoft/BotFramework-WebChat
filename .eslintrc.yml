@@ -12,7 +12,8 @@ parserOptions:
   ecmaVersion: 10
   sourceType: module
 rules:
-  # Add more rules later
+  # Only list rules that are not in *:recommended set
+  # If rules are set to disable the one in *:recommended, please elaborate the reason
   no-async-promise-executor: error
   no-await-in-loop: error
   no-console:
@@ -27,9 +28,10 @@ rules:
   accessor-pairs: error
   block-scoped-var: error
   class-methods-use-this: error
-  complexity:
-  - error
-  - 5
+  # Re-enable later
+  # complexity:
+  # - error
+  # - 5
   curly: error
   default-case: error
   dot-notation: error
@@ -53,7 +55,8 @@ rules:
   no-iterator: error
   no-labels: error
   no-lone-blocks: error
-  no-magic-numbers: error
+  # Re-enable later
+  # no-magic-numbers: error
   no-multi-spaces: error
   no-multi-str: error
   no-new: error
@@ -68,7 +71,10 @@ rules:
   no-sequences: error
   no-throw-literal: error
   no-unmodified-loop-condition: error
-  no-unused-expressions: error
+  no-unused-expressions:
+  - error
+  - allowShortCircuit: true
+    allowTernary: true
   no-useless-call: error
   no-useless-catch: error
   no-useless-concat: error
@@ -82,10 +88,11 @@ rules:
   wrap-iife: error
   yoda: error
   no-label-var: error
-  no-shadow:
-  - error
-  - builtinGlobals: true
-    hoist: all
+  # Re-enable later
+  # no-shadow:
+  # - error
+  # - builtinGlobals: true
+  #   hoist: all
   no-shadow-restricted-names: error
   no-undef-init: error
   no-undefined: error
@@ -115,9 +122,9 @@ rules:
   generator-star-spacing:
   - error
   - after
-  no-confusing-arrow:
-  - error
-  - allowParens: true
+  # no-confusing-arrow: // Will produce shorter code if allowed
+  # - error
+  # - allowParens: true // This will conflict with no-extra-parens
   no-duplicate-imports: error
   no-useless-computed-key: error
   no-useless-constructor: error
@@ -132,10 +139,10 @@ rules:
   prefer-template: error
   rest-spread-spacing:
   - error
-  - always
-  sort-imports:
-  - error
-  - ignoreCase: true
+  - never
+  # sort-imports: // Cannot group global or local imports and sort in differently
+  # - error
+  # - ignoreCase: true
   template-curly-spacing:
   - error
   - always
@@ -153,7 +160,7 @@ rules:
   - error
   - forbid:
     - id
-  react/forbid-prop-types: error
+  # react/forbid-prop-types: error // How to deal with Adaptive Card schema?
   react/no-access-state-in-setstate: error
   react/no-array-index-key: error
   react/no-danger: error
@@ -175,7 +182,7 @@ rules:
   react/state-in-constructor: error
   react/static-property-placement:
   - error
-  - static public field
+  - property assignment
   react/style-prop-object: error
   react/void-dom-elements-no-children: error
   react/jsx-boolean-value:
@@ -195,8 +202,12 @@ rules:
   - error
   - multiline-multiprop
   react/jsx-handler-names: error
-  react/jsx-indent: error
-  react/jsx-indent-props: error
+  react/jsx-indent:
+  - error
+  - 2
+  react/jsx-indent-props:
+  - error
+  - 2
   react/jsx-max-props-per-line:
   - error
   - maximum: 1
@@ -213,14 +224,13 @@ rules:
   react/jsx-props-no-multi-spaces: error
   react/jsx-sort-default-props: error
   react/jsx-sort-props: error
-  react/jsx-space-before-closing: error
   react/jsx-tag-spacing:
   - error
   - afterOpening: never
     beforeClosing: never
     beforeSelfClosing: always
     closingSlash: never
-  react/jsx-wrap-multilines: error
+  # react/jsx-wrap-multilines: error // Conflict with no-extra-parens
 settings:
   react:
     version: detect

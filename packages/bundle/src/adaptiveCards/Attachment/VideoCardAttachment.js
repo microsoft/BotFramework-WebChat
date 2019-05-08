@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: "off" */
+
 import React from 'react';
 
 import { Components, connectToWebChat } from 'botframework-webchat-component';

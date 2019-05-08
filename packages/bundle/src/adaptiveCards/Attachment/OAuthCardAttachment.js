@@ -34,8 +34,8 @@ export default class OAuthCardAttachment extends React.Component {
 }
 
 OAuthCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any
-  })
+    content: PropTypes.any.isRequired
+  }).isRequired
 };

@@ -40,10 +40,10 @@ export default function (props) {
     }
 
     AdaptiveCardMiddleware.propTypes = {
-      activity: PropTypes.any,
+      activity: PropTypes.any.isRequired,
       attachment: PropTypes.shape({
-        contentType: PropTypes.string
-      })
+        contentType: PropTypes.string.isRequired
+      }).isRequired
     };
 
     return AdaptiveCardMiddleware;

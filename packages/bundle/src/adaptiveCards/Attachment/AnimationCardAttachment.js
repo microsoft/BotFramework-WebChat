@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: "off" */
+
 import { Components, connectToWebChat } from 'botframework-webchat-component';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
@@ -34,7 +36,7 @@ class AnimationCardAttachment extends React.Component {
             content.media.map((media, index) =>
               <li key={ index }>
                 {
-                  /\.gif$/i.test(media.url) ?
+                  /\.gif$/iu.test(media.url) ?
                     <ImageContent
                       alt={ media.profile }
                       src={ media.url }
@@ -59,11 +61,13 @@ class AnimationCardAttachment extends React.Component {
 }
 
 AnimationCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any
-  }),
-  styleSet: PropTypes.any
+    content: PropTypes.any.isRequired
+  }).isRequired,
+  styleSet: PropTypes.shape({
+    animationCardAttachment: PropTypes.any.isRequired
+  }).isRequired
 };
 
 export default connectToWebChat(

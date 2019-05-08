@@ -4,8 +4,6 @@ import React from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-import { AdaptiveCard } from 'adaptivecards';
-
 function stripSubmitAction(card) {
   if (!card.actions) {
     return card;
@@ -40,7 +38,7 @@ export default class AdaptiveCardAttachment extends React.Component {
         ...content
       }));
 
-      AdaptiveCard.onParseError = null;
+      adaptiveCards.AdaptiveCard.onParseError = null;
 
       return {
         card,
@@ -50,8 +48,8 @@ export default class AdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCards, attachment } } = this;
-    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content);
+    const { props: { adaptiveCards, attachment: { content } } } = this;
+    const { card } = this.createAdaptiveCard(adaptiveCards, content);
 
     return (
       <AdaptiveCardRenderer adaptiveCard={ card } />
@@ -60,8 +58,9 @@ export default class AdaptiveCardAttachment extends React.Component {
 }
 
 AdaptiveCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  // TODO: [P2] We should rename adaptiveCards to adaptiveCardsPolyfill
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.any
-  })
+  }).isRequired
 };

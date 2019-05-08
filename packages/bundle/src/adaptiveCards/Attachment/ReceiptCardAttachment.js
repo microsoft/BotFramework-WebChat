@@ -90,11 +90,11 @@ class ReceiptCardAttachment extends React.Component {
 }
 
 ReceiptCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any
-  }),
-  language: PropTypes.string
+    content: PropTypes.any.isRequired
+  }).isRequired,
+  language: PropTypes.string.isRequired
 };
 
 export default connectToWebChat(

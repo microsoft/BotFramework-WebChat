@@ -1,6 +1,8 @@
-import React from 'react';
+/* eslint react/no-array-index-key: "off" */
 
 import { Components, connectToWebChat } from 'botframework-webchat-component';
+import React from 'react';
+
 import CommonCard from './CommonCard';
 
 const { AudioContent } = Components;
