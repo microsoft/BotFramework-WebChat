@@ -1,5 +1,6 @@
 /* eslint react/no-array-index-key: "off" */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Components, connectToWebChat } from 'botframework-webchat-component';
@@ -42,8 +43,7 @@ const VideoCardAttachment = ({
   </div>;
 
 VideoCardAttachment.defaultProps = {
-  adaptiveCards: null,
-  attacment: {}
+  adaptiveCards: null
 };
 
 VideoCardAttachment.propTypes = {
@@ -61,7 +61,7 @@ VideoCardAttachment.propTypes = {
         })
       )
     })
-  }),
+  }).isRequired,
   styleSet: PropTypes.shape({
     audioCardAttachment: PropTypes.any.isRequired
   }).isRequired

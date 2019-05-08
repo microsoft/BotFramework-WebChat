@@ -57,7 +57,9 @@ rules:
   react/jsx-closing-tag-location: error
   react/jsx-curly-spacing:
   - error
-  - when: always
+  - spacing:
+      objectLiterals: never
+    when: always
   react/jsx-equals-spacing:
   - error
   - never
