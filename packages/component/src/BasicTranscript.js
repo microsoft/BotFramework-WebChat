@@ -1,8 +1,9 @@
 import { Composer as SayComposer } from 'react-say';
 import { css } from 'glamor';
-import classNames from 'classnames';
-import React from 'react';
 import { Panel as ScrollToBottomPanel } from 'react-scroll-to-bottom';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
@@ -126,6 +127,25 @@ const BasicTranscript = ({
     </div>
   );
 }
+
+BasicTranscript.propTypes = {
+  activityRenderer: PropTypes.func,
+  activities: PropTypes.array,
+  attachmentRenderer: PropTypes.func,
+  className: PropTypes.string,
+  groupTimestamp: PropTypes.oneOfType([
+    PropTypes.oneOf(false),
+    PropTypes.number
+  ]),
+  styleSet: PropTypes.shape({
+    activities: PropTypes.any.isRequired,
+    activity: PropTypes.any.isRequired
+  }).isRequired,
+  webSpeechPonyfill: PropTypes.shape({
+    speechSynthesis: PropTypes.any,
+    SpeechSynthesisUtterance: PropTypes.any
+  })
+};
 
 export default connectToWebChat(
   ({

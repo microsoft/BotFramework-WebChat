@@ -1,11 +1,19 @@
+import PropTypes from 'prop-types';
+
 import React from 'react';
 
 import connectToWebChat from '../../connectToWebChat';
 
-const ConnectTypingAnimation = connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(({ styleSet }) =>
-  <div className={ styleSet.typingAnimation } />
-)
+const TypingAnimation = ({ styleSet }) => <div className={ styleSet.typingAnimation } />;
 
-export default () => <ConnectTypingAnimation />
+TypingAnimation.propTypes = {
+  styleSet: PropTypes.shape({
+    typingAnimation: PropTypes.any
+  })
+};
+
+const ConnectedTypingAnimation = connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(TypingAnimation)
+
+export default ConnectedTypingAnimation

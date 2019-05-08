@@ -1,5 +1,6 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ConnectivityStatus from './SendBox/ConnectivityStatus';
@@ -64,6 +65,17 @@ const BasicSendBox = ({
       </div>
     </div>
   </div>
+
+BasicSendBox.propTypes = {
+  className: PropTypes.string,
+  dictationStarted: PropTypes.bool,
+  styleSet: PropTypes.shape({
+    sendBox: PropTypes.any
+  }),
+  webSpeechPonyfill: PropTypes.shape({
+    SpeechRecognition: PropTypes.any
+  })
+};
 
 export default connectToWebChat(
   ({

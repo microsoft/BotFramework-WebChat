@@ -22,6 +22,7 @@ export default connectToWebChat(
       <div className={ styleSet.downloadAttachment }>
         <a
           href={ attachment.contentUrl }
+          rel="noopener noreferrer"
           target="_blank"
         >
           <div className="details">
