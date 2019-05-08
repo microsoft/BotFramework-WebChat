@@ -11,9 +11,9 @@ const ImageAttachment = ({ attachment }) =>
 
 ImageAttachment.propTypes = {
   attachment: PropTypes.shape({
-    contentUrl: PropTypes.string,
+    contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string
-  })
+  }).isRequired
 };
 
 export default ImageAttachment

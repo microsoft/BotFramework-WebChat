@@ -86,9 +86,9 @@ function createCardActionLogic({ cardActionMiddleware, directLine, dispatch }) {
           //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
 
           return observableToPromise(directLine.getSessionId()).then(sessionId => `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`);
-        } else {
-          return value;
         }
+
+        return value;
       } : null
     })
   };
@@ -156,6 +156,24 @@ function createLogic(props) {
   };
 }
 
+function setLanguageFromProps({ dispatch, locale }) {
+  dispatch(setLanguage(locale));
+}
+
+function setSendTimeoutFromProps({ dispatch, sendTimeout }) {
+  dispatch(setSendTimeout(sendTimeout));
+}
+
+function setSendTypingIndicatorFromProps({ dispatch, sendTyping, sendTypingIndicator }) {
+  if (typeof sendTyping === 'undefined') {
+    dispatch(setSendTypingIndicator(!!sendTypingIndicator));
+  } else {
+    // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+    console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.');
+    dispatch(setSendTypingIndicator(!!sendTyping));
+  }
+}
+
 class Composer extends React.Component {
   constructor(props) {
     super(props);
@@ -173,7 +191,7 @@ class Composer extends React.Component {
     );
 
     this.state = {
-      hoistedDispatchers: mapMap(DISPATCHERS, dispatcher => (...args) => this.props.dispatch(dispatcher.apply(this, args)))
+      hoistedDispatchers: mapMap(DISPATCHERS, dispatcher => (...args) => props.dispatch(dispatcher.apply(this, args)))
     };
   }
 
@@ -181,9 +199,9 @@ class Composer extends React.Component {
     const { props } = this;
     const { directLine, userID, username } = props;
 
-    this.setLanguageFromProps(props);
-    this.setSendTimeoutFromProps(props);
-    this.setSendTypingIndicatorFromProps(props);
+    setLanguageFromProps(props);
+    setSendTimeoutFromProps(props);
+    setSendTypingIndicatorFromProps(props);
 
     props.dispatch(createConnectAction({ directLine, userID, username }));
   }
@@ -193,11 +211,11 @@ class Composer extends React.Component {
     const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID, username } = props;
 
     if (prevProps.locale !== locale) {
-      this.setLanguageFromProps(props);
+      setLanguageFromProps(props);
     }
 
     if (prevProps.sendTimeout !== sendTimeout) {
-      this.setSendTimeoutFromProps(props);
+      setSendTimeoutFromProps(props);
     }
 
     if (
@@ -206,7 +224,7 @@ class Composer extends React.Component {
       // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
       || !prevProps.sendTyping !== !sendTyping
     ) {
-      this.setSendTypingIndicatorFromProps(props);
+      setSendTypingIndicatorFromProps(props);
     }
 
     if (
@@ -217,24 +235,6 @@ class Composer extends React.Component {
       // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
       props.dispatch(disconnect());
       props.dispatch(createConnectAction({ directLine, userID, username }));
-    }
-  }
-
-  setLanguageFromProps(props) {
-    props.dispatch(setLanguage(props.locale || window.navigator.language || 'en-US'));
-  }
-
-  setSendTimeoutFromProps(props) {
-    props.dispatch(setSendTimeout(props.sendTimeout || 20000));
-  }
-
-  setSendTypingIndicatorFromProps(props) {
-    if (typeof props.sendTyping === 'undefined') {
-      props.dispatch(setSendTypingIndicator(!!props.sendTypingIndicator));
-    } else {
-      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.');
-      props.dispatch(setSendTypingIndicator(!!props.sendTyping));
     }
   }
 
@@ -274,7 +274,7 @@ class Composer extends React.Component {
       {
         activityRenderer,
         // TODO: [P3] We should move adaptiveCardHostConfig to bundle
-        adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(this.props.styleOptions),
+        adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(propsForLogic.styleOptions),
         attachmentRenderer,
 
         groupTimestamp,
@@ -339,13 +339,35 @@ export default ConnectedComposerWithStore
 //       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
 //       we should clean up the responsibility between Context and Redux store
 //       We should decide which data is needed for React but not in other environment such as CLI/VSCode
+
+Composer.defaultProps = {
+  activityRenderer: null,
+  adaptiveCardHostConfig: null,
+  attachmentRenderer: null,
+  cardActionMiddleware: null,
+  children: false,
+  disabled: false,
+  grammars: [],
+  groupTimestamp: true,
+  locale: window.navigator.language || 'en-US',
+  referenceGrammarID: '',
+  renderMarkdown: text => text,
+  sendTimeout: 20000,
+  sendTyping: false,
+  sendTypingIndicator: false,
+  store: null,
+  styleOptions: {},
+  userID: '',
+  username: '',
+  webSpeechPonyfillFactory: null
+};
+
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
   adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.funcj]),
-  dispatch: PropTypes.func,
+  children: PropTypes.any,
   directLine: PropTypes.shape({
     activity$: PropTypes.func.isRequired,
     connectionStatus$: PropTypes.func.isRequired,
@@ -356,12 +378,13 @@ Composer.propTypes = {
     token: PropTypes.string
   }).isRequired,
   disabled: PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
-  scrollToEnd: PropTypes.func,
+  scrollToEnd: PropTypes.func.isRequired,
   sendTimeout: PropTypes.number,
   sendTyping: PropTypes.bool,
   sendTypingIndicator: PropTypes.bool,

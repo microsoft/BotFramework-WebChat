@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: "off" */
+
 import { css } from 'glamor';
 import { Context as FilmContext } from 'react-film';
 import classNames from 'classnames';
@@ -102,11 +104,10 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
     const fromUser = activity.from.role === 'user';
     const ariaLabel = localize('Bot said something', language, avatarInitials, activity.text, activity.timestamp)
     const activityDisplayText =
-      (
-        activity.channelData
-        && activity.channelData.messageBack
-        && activity.channelData.messageBack.displayText
-      ) || activity.text;
+      activity.channelData
+      && activity.channelData.messageBack
+      && activity.channelData.messageBack.displayText
+      || activity.text;
 
     return (
       <div
@@ -160,19 +161,18 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
             aria-hidden={ true }
             className="webchat__row"
           >
-            {(
+            {
               activity.channelData
               && (
                 activity.channelData.state === SENDING
                 || activity.channelData.state === SEND_FAILED
-              )
-            ) ?
-              <SendStatus activity={ activity } />
-            :
-              <Timestamp
-                activity={ activity }
-                className={ timestampClassName }
-              />
+              ) ?
+                <SendStatus activity={ activity } />
+              :
+                <Timestamp
+                  activity={ activity }
+                  className={ timestampClassName }
+                />
             }
           </div>
         </div>

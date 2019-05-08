@@ -82,12 +82,19 @@ const VideoContent = ({ alt, autoPlay, loop, poster, src }) => {
   }
 }
 
+VideoContent.defaultProps = {
+  alt: '',
+  autoPlay: false,
+  loop: false,
+  poster: ''
+};
+
 VideoContent.propTypes = {
   alt: PropTypes.string,
   autoPlay: PropTypes.bool,
   loop: PropTypes.bool,
   poster: PropTypes.string,
-  src: PropTypes.string
+  src: PropTypes.string.isRequired
 };
 
 export default VideoContent

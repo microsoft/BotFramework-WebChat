@@ -10,8 +10,8 @@ const SpinnerAnimation = ({
 
 SpinnerAnimation.propTypes = {
   styleSet: PropTypes.shape({
-    spinnerAnimation: PropTypes.any
-  })
+    spinnerAnimation: PropTypes.any.isRequired
+  }).isRequired
 };
 
 const ConnectedSpinnerAnimation = connectToWebChat(

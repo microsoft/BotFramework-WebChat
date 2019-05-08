@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
@@ -12,19 +13,16 @@ const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 function sendFailed(language, replace) {
   const text = localize('SEND_FAILED_KEY', language);
   const retry = localize('Retry', language);
-  const match = /\{Retry\}/.exec(text);
+  const match = /\{Retry\}/u.exec(text);
 
-  if (match) {
-    return (
-      <React.Fragment>
-        { text.substr(0, match.index) }
-        { replace(retry) }
-        { text.substr(match.index + match[0].length) }
-      </React.Fragment>
-    );
-  } else {
-    return text;
-  }
+  return match ?
+    <>
+      { text.substr(0, match.index) }
+      { replace(retry) }
+      { text.substr(match.index + match[0].length) }
+    </>
+  :
+    text;
 }
 
 const connectSendStatus = (...selectors) => connectToWebChat(
@@ -49,34 +47,47 @@ const connectSendStatus = (...selectors) => connectToWebChat(
   ...selectors
 )
 
+const SendStatus = ({
+  activity: { channelData: { state } = {} },
+  language,
+  retrySend,
+  styleSet
+}) =>
+  <span aria-live="polite" className={ styleSet.sendStatus }>
+    {
+      state === SENDING ?
+        <Localize text="Sending" />
+      : state === SEND_FAILED ?
+        sendFailed(
+          language,
+          retry =>
+            <button
+              onClick={ retrySend }
+              type="button"
+            >
+              { retry }
+            </button>
+        )
+      :
+        false
+    }
+  </span>;
+
+SendStatus.propTypes = {
+  activity: PropTypes.shape({
+    channelData: PropTypes.shape({
+      state: PropTypes.string
+    })
+  }).isRequired,
+  language: PropTypes.string.isRequired,
+  retrySend: PropTypes.func.isRequired,
+  styleSet: PropTypes.shape({
+    sendStatus: PropTypes.any.isRequired
+  }).isRequired
+};
+
 export default connectSendStatus(
   ({ styleSet }) => ({ styleSet })
-)(
-  ({
-    activity: { channelData: { state } = {} },
-    language,
-    retrySend,
-    styleSet
-  }) =>
-    <span aria-live="polite" className={ styleSet.sendStatus }>
-      {
-        state === SENDING ?
-          <Localize text="Sending" />
-        : state === SEND_FAILED ?
-          sendFailed(
-            language,
-            retry =>
-              <button
-                onClick={ retrySend }
-                type="button"
-              >
-                { retry }
-              </button>
-          )
-        :
-          false
-      }
-    </span>
-)
+)(SendStatus)
 
 export { connectSendStatus }

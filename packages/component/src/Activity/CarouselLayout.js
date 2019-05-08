@@ -1,6 +1,7 @@
 import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from 'react-film';
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
@@ -12,9 +13,13 @@ const ROOT_CSS = css({
   position: 'relative'
 });
 
-export default connectToWebChat(
-  ({ language, styleSet }) => ({ language, styleSet })
-)(({ activity, children, language, styleSet, timestampClassName }) => {
+const CarouselLayout = ({
+  activity,
+  children,
+  language,
+  styleSet,
+  timestampClassName
+}) => {
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 
   return (
@@ -26,7 +31,7 @@ export default connectToWebChat(
               { children }
             </CarouselFilmStrip>
             { scrollBarWidth !== '100%' &&
-              <React.Fragment>
+              <>
                 <Flipper
                   aria-label={ localize('Left', language) }
                   className={ classNames(
@@ -35,7 +40,9 @@ export default connectToWebChat(
                   ) }
                   mode="left"
                 >
-                  <div className="button">&lt;</div>
+                  <div className="button">
+                    { '<' }
+                  </div>
                 </Flipper>
                 <Flipper
                   aria-label={ localize('Right', language) }
@@ -45,13 +52,34 @@ export default connectToWebChat(
                   ) }
                   mode="right"
                 >
-                  <div className="button">&gt;</div>
+                  <div className="button">
+                    { '>' }
+                  </div>
                 </Flipper>
-              </React.Fragment>
+              </>
             }
           </div>
         }
       </FilmContext.Consumer>
     </Composer>
   );
-})
+};
+
+CarouselLayout.defaultProps = {
+  children: false,
+  timestampClassName: ''
+};
+
+CarouselLayout.propTypes = {
+  activity: PropTypes.any.isRequired,
+  children: PropTypes.any,
+  language: PropTypes.string.isRequired,
+  styleSet: PropTypes.shape({
+    carouselFlipper: PropTypes.any.isRequired
+  }).isRequired,
+  timestampClassName: PropTypes.string
+};
+
+export default connectToWebChat(
+  ({ language, styleSet }) => ({ language, styleSet })
+)(CarouselLayout)

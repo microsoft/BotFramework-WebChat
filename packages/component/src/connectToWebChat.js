@@ -3,13 +3,6 @@ import React from 'react';
 
 import Context from './Context';
 
-function combineSelectors(...selectors) {
-  return (...args) => selectors.reduce((result, selector) => ({
-    ...result,
-    ...removeUndefinedValues((selector && selector(...args)) || {})
-  }), {});
-}
-
 function removeUndefinedValues(map) {
   return Object.keys(map).reduce((result, key) => {
     const value = map[key];
@@ -22,6 +15,13 @@ function removeUndefinedValues(map) {
   }, {});
 }
 
+function combineSelectors(...selectors) {
+  return (...args) => selectors.reduce((result, selector) => ({
+    ...result,
+    ...removeUndefinedValues(selector && selector(...args) || {})
+  }), {});
+}
+
 export default function (...selectors) {
   const combinedSelector = combineSelectors(...selectors);
 
@@ -30,13 +30,12 @@ export default function (...selectors) {
       (state, { context, _, ...ownProps }) => combinedSelector({ ...state, ...context }, ownProps)
     )(Component);
 
-    const WebChatConnectedComponent = props => (
+    const WebChatConnectedComponent = props =>
       <Context.Consumer>
         {
           context => <ConnectedComponent { ...props } context={ context } store={ context.store } />
         }
-      </Context.Consumer>
-    );
+      </Context.Consumer>;
 
     return WebChatConnectedComponent;
   };

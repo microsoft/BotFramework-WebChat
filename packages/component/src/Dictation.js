@@ -79,21 +79,26 @@ class Dictation extends React.Component {
         onDictate={ handleDictate }
         onError={ handleError }
         onProgress={ handleDictating }
-        speechRecognition={ SpeechRecognition }
         speechGrammarList={ SpeechGrammarList }
+        speechRecognition={ SpeechRecognition }
         started={ !disabled && (dictateState === STARTING || dictateState === DICTATING) }
       />
     );
   }
 }
 
+Dictation.defaultProps = {
+  disabled: false,
+  webSpeechPonyfill: null
+};
+
 Dictation.propTypes = {
-  dictateState: PropTypes.string,
+  dictateState: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
-  language: PropTypes.string,
+  language: PropTypes.string.isRequired,
   webSpeechPonyfill: PropTypes.shape({
-    SpeechGrammarList: PropTypes.any,
-    SpeechRecognition: PropTypes.any
+    SpeechGrammarList: PropTypes.any.isRequired,
+    SpeechRecognition: PropTypes.any.isRequired
   })
 };
 

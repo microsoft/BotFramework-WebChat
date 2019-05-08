@@ -8,8 +8,8 @@ const TypingAnimation = ({ styleSet }) => <div className={ styleSet.typingAnimat
 
 TypingAnimation.propTypes = {
   styleSet: PropTypes.shape({
-    typingAnimation: PropTypes.any
-  })
+    typingAnimation: PropTypes.any.isRequired
+  }).isRequired
 };
 
 const ConnectedTypingAnimation = connectToWebChat(

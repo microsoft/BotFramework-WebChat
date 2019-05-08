@@ -109,7 +109,7 @@ const BasicTranscript = ({
                       'hide-timestamp': sameTimestampGroup(activity, (activityElements[index + 1] || {}).activity, groupTimestamp)
                     }
                   ) }
-                  key={ (activity.channelData && activity.channelData.clientActivityID) || activity.id || index }
+                  key={ activity.channelData && activity.channelData.clientActivityID || activity.id || index }
                   role="listitem"
                 >
                   { element }
@@ -128,22 +128,28 @@ const BasicTranscript = ({
   );
 }
 
+BasicTranscript.defaultProps = {
+  className: '',
+  groupTimestamp: true,
+  webSpeechPonyfill: null
+};
+
 BasicTranscript.propTypes = {
-  activityRenderer: PropTypes.func,
-  activities: PropTypes.array,
-  attachmentRenderer: PropTypes.func,
+  activities: PropTypes.array.isRequired,
+  activityRenderer: PropTypes.func.isRequired,
+  attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string,
   groupTimestamp: PropTypes.oneOfType([
-    PropTypes.oneOf(false),
-    PropTypes.number
+    PropTypes.bool.isRequired,
+    PropTypes.number.isRequired
   ]),
   styleSet: PropTypes.shape({
     activities: PropTypes.any.isRequired,
     activity: PropTypes.any.isRequired
   }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
-    speechSynthesis: PropTypes.any,
-    SpeechSynthesisUtterance: PropTypes.any
+    speechSynthesis: PropTypes.any.isRequired,
+    SpeechSynthesisUtterance: PropTypes.any.isRequired
   })
 };
 

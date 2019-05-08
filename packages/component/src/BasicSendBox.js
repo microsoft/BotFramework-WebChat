@@ -51,13 +51,15 @@ const BasicSendBox = ({
       { !styleSet.options.hideUploadButton &&
         <UploadButton />
       }
-      { dictationStarted ?
+      {
+        dictationStarted ?
           <DictationInterims className={ DICTATION_INTERIMS_CSS } />
         :
           <TextBox className={ TEXT_BOX_CSS } />
       }
       <div>
-        { (webSpeechPonyfill || {}).SpeechRecognition ?
+        {
+          (webSpeechPonyfill || {}).SpeechRecognition ?
             <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
           :
             <SendButton />
@@ -66,12 +68,18 @@ const BasicSendBox = ({
     </div>
   </div>
 
+BasicSendBox.defaultProps = {
+  className: '',
+  dictationStarted: false,
+  webSpeechPonyfill: null
+};
+
 BasicSendBox.propTypes = {
   className: PropTypes.string,
   dictationStarted: PropTypes.bool,
   styleSet: PropTypes.shape({
-    sendBox: PropTypes.any
-  }),
+    sendBox: PropTypes.any.isRequired
+  }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
     SpeechRecognition: PropTypes.any
   })

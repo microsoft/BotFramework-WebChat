@@ -25,6 +25,60 @@ const SEND_BOX_CSS = css({
   flexShrink: 0
 });
 
+function createActivityRenderer(additionalMiddleware) {
+  const activityMiddleware = concatMiddleware(
+    additionalMiddleware,
+    createCoreActivityMiddleware()
+  )({});
+
+  return (...args) => {
+    try {
+      return activityMiddleware(
+        ({ activity }) => () => {
+          throw new Error(`No activity found for type ${ activity.type }`);
+        }
+      )(...args);
+    } catch ( err ) {
+      const FailedRenderActivity = () =>
+        <ErrorBox message="Failed to render activity">
+          <pre>
+            { JSON.stringify(err, null, 2) }
+          </pre>
+        </ErrorBox>;
+
+      return FailedRenderActivity;
+    }
+  };
+}
+
+function createAttachmentRenderer(additionalMiddleware) {
+  const attachmentMiddleware = concatMiddleware(
+    additionalMiddleware,
+    createCoreAttachmentMiddleware()
+  )({});
+
+  return (...args) => {
+    try {
+      return attachmentMiddleware(
+        ({ attachment }) =>
+          <ErrorBox message="No renderer for this attachment">
+            <pre>
+              { JSON.stringify(attachment, null, 2) }
+            </pre>
+          </ErrorBox>
+      )(...args);
+    } catch (err) {
+      return (
+        <ErrorBox message="Failed to render attachment">
+          <pre>
+            { JSON.stringify(err, null, 2) }
+          </pre>
+        </ErrorBox>
+      );
+    }
+  }
+}
+
 export default class BasicWebChat extends React.Component {
   constructor(props) {
     super(props);
@@ -32,68 +86,23 @@ export default class BasicWebChat extends React.Component {
     this.sendBoxRef = React.createRef();
 
     this.state = {
-      activityRenderer: this.createActivityRenderer(props.activityMiddleware),
-      attachmentRenderer: this.createAttachmentRenderer(props.attachmentMiddleware)
+      activityRenderer: createActivityRenderer(props.activityMiddleware),
+      attachmentRenderer: createAttachmentRenderer(props.attachmentMiddleware)
     };
   }
 
   // TODO: [P2] Move to React 16 APIs
-  componentWillReceiveProps({ activityMiddleware, attachmentMiddleware }) {
+  componentWillReceiveProps({ activityMiddleware: nextActivityMiddleware, attachmentMiddleware: nextAttachmentMiddleware }) {
+    const { activityMiddleware, attachmentMiddleware } = this.props;
+
     if (
-      this.props.activityMiddleware !== activityMiddleware
-      || this.props.attachmentMiddleware !== attachmentMiddleware
+      activityMiddleware !== nextActivityMiddleware
+      || attachmentMiddleware !== nextAttachmentMiddleware
     ) {
       this.setState(() => ({
-        activityRenderer: this.createActivityRenderer(activityMiddleware),
-        attachmentRenderer: this.createAttachmentRenderer(attachmentMiddleware)
+        activityRenderer: createActivityRenderer(nextActivityMiddleware),
+        attachmentRenderer: createAttachmentRenderer(nextAttachmentMiddleware)
       }));
-    }
-  }
-
-  createActivityRenderer(additionalMiddleware) {
-    const activityMiddleware = concatMiddleware(
-      additionalMiddleware,
-      createCoreActivityMiddleware()
-    )({});
-
-    return (...args) => {
-      try {
-        return activityMiddleware(
-          ({ activity }) => () => {
-            throw new Error(`No activity found for type ${ activity.type }`);
-          }
-        )(...args);
-      } catch ( err ) {
-        return () => (
-          <ErrorBox message="Failed to render activity">
-            <pre>{ JSON.stringify(err, null, 2) }</pre>
-          </ErrorBox>
-        );
-      }
-    };
-  }
-
-  createAttachmentRenderer(additionalMiddleware) {
-    const attachmentMiddleware = concatMiddleware(
-      additionalMiddleware,
-      createCoreAttachmentMiddleware()
-    )({});
-
-    return (...args) => {
-      try {
-        return attachmentMiddleware(
-          ({ attachment }) =>
-            <ErrorBox message="No renderer for this attachment">
-              <pre>{ JSON.stringify(attachment, null, 2) }</pre>
-            </ErrorBox>
-        )(...args);
-      } catch (err) {
-        return (
-          <ErrorBox message="Failed to render attachment">
-            <pre>{ JSON.stringify(err, null, 2) }</pre>
-          </ErrorBox>
-        );
-      }
     }
   }
 
@@ -126,6 +135,11 @@ export default class BasicWebChat extends React.Component {
     );
   }
 }
+
+BasicWebChat.defaultProps = {
+  activityMiddleware: null,
+  attachmentMiddleware: null
+};
 
 BasicWebChat.propTypes = {
   activityMiddleware: PropTypes.func,
