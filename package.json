@@ -57,6 +57,7 @@
     "build:sample": "lerna run --scope=sample-* --stream build",
     "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "eslint": "lerna run --scope=botframework-webchat* --parallel --stream eslint",
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
     "test": "jest --no-cache",
