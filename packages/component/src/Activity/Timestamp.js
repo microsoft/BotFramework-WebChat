@@ -13,7 +13,7 @@ const Timestamp = ({
   <span
     className={ classNames(
       styleSet.timestamp + '',
-      (className || '') + ''
+      className + ''
     ) }
   >
     <TimeAgo value={ timestamp } />
@@ -25,7 +25,7 @@ Timestamp.defaultProps = {
 
 Timestamp.propTypes = {
   activity: PropTypes.shape({
-    timestamp: PropTypes.number.isRequired
+    timestamp: PropTypes.string.isRequired
   }).isRequired,
   className: PropTypes.string,
   styleSet: PropTypes.shape({

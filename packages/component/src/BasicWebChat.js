@@ -35,7 +35,7 @@ function createActivityRenderer(additionalMiddleware) {
     try {
       return activityMiddleware(
         ({ activity }) => () => {
-          throw new Error(`No activity found for type ${ activity.type }`);
+          console.warn(`No activity found for type "${ activity.type }".`);
         }
       )(...args);
     } catch ( err ) {
@@ -107,27 +107,38 @@ export default class BasicWebChat extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
+    const {
+      props,
+      props: { className },
+      state: {
+        activityRenderer,
+        attachmentRenderer
+      }
+    } = this;
 
     // TODO: [P2] Implement "scrollToBottom" feature
 
     return (
       <Composer
-        activityRenderer={ state.activityRenderer }
-        attachmentRenderer={ state.attachmentRenderer }
+        activityRenderer={ activityRenderer }
+        attachmentRenderer={ attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
         { ...props }
       >
-        {({ styleSet }) =>
+        { ({ styleSet }) =>
           <TypeFocusSinkBox
-            className={ classNames( ROOT_CSS + '', styleSet.root + '', ( props.className || '' ) + '' ) }
+            className={ classNames(
+              ROOT_CSS + '',
+              styleSet.root + '',
+              className + ''
+            ) }
             role="complementary"
             sendFocusRef={ this.sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' } />
             {
               !styleSet.options.hideSendBox &&
-                <BasicSendBox className={ SEND_BOX_CSS } />
+                <BasicSendBox className={ SEND_BOX_CSS + '' } />
             }
           </TypeFocusSinkBox>
         }

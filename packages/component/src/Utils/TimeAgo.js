@@ -56,7 +56,7 @@ class TimeAgo extends React.Component {
 
 TimeAgo.propTypes = {
   language: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired
+  value: PropTypes.string.isRequired
 };
 
 export default connectToWebChat(

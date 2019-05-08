@@ -76,7 +76,7 @@ const TextBox = ({
         ROOT_CSS + '',
         styleSet.sendBoxTextArea + '',
         styleSet.sendBoxTextBox + '',
-        (className || '') + '',
+        className + '',
       ) }
       onSubmit={ onSubmit }
     >
@@ -133,7 +133,7 @@ TextBox.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   styleSet: PropTypes.shape({
     options: PropTypes.shape({
-      sendBoxTextWrap: PropTypes.string.isRequired
+      sendBoxTextWrap: PropTypes.bool.isRequired
     }).isRequired
   }).isRequired,
   value: PropTypes.string

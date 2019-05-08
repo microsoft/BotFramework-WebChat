@@ -64,7 +64,7 @@ const MicrophoneButton = ({
     className={ classNames(
       styleSet.microphoneButton + '',
       ROOT_CSS + '',
-      (className || '') + '',
+      className + '',
       { dictating }
     ) }
   >

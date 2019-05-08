@@ -41,7 +41,7 @@ const BasicSendBox = ({
     className={ classNames(
       styleSet.sendBox + '',
       ROOT_CSS + '',
-      (className || '') + ''
+      className + ''
     ) }
     role="form"
   >
@@ -53,14 +53,14 @@ const BasicSendBox = ({
       }
       {
         dictationStarted ?
-          <DictationInterims className={ DICTATION_INTERIMS_CSS } />
+          <DictationInterims className={ DICTATION_INTERIMS_CSS + '' } />
         :
-          <TextBox className={ TEXT_BOX_CSS } />
+          <TextBox className={ TEXT_BOX_CSS + '' } />
       }
       <div>
         {
           (webSpeechPonyfill || {}).SpeechRecognition ?
-            <MicrophoneButton className={ MICROPHONE_BUTTON_CSS } />
+            <MicrophoneButton className={ MICROPHONE_BUTTON_CSS + '' } />
           :
             <SendButton />
         }

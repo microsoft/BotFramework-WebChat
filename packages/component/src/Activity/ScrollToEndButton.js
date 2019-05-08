@@ -13,7 +13,7 @@ const ScrollToEndButton = ({ className, scrollToEnd, styleSet }) =>
   <button
     className={ classNames(
       styleSet.scrollToEndButton + '',
-      (className || '') + ''
+      className + ''
     ) }
     onClick={ scrollToEnd }
     type="button"

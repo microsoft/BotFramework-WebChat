@@ -39,7 +39,7 @@ const Avatar = ({
       className={ classNames(
         styleSet.avatar + '',
         { 'from-user': fromUser },
-        (className || '') + ''
+        className + ''
       ) }
     >
       { avatarInitials }

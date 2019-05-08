@@ -198,11 +198,12 @@ AdaptiveCardRenderer.propTypes = {
   styleSet: PropTypes.shape({
     adaptiveCardRenderer: PropTypes.any.isRequired
   }).isRequired,
-  tapAction: PropTypes.any.isRequired
+  tapAction: PropTypes.any
 };
 
 AdaptiveCardRenderer.defaultProps = {
-  disabled: false
+  disabled: false,
+  tapAction: null
 };
 
 export default connectToWebChat(

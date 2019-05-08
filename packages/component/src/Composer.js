@@ -369,8 +369,12 @@ Composer.propTypes = {
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,
   directLine: PropTypes.shape({
-    activity$: PropTypes.func.isRequired,
-    connectionStatus$: PropTypes.func.isRequired,
+    activity$: PropTypes.shape({
+      subscribe: PropTypes.func.isRequired
+    }).isRequired,
+    connectionStatus$: PropTypes.shape({
+      subscribe: PropTypes.func.isRequired
+    }).isRequired,
     end: PropTypes.func,
     getSessionId: PropTypes.func.isRequired,
     postActivity: PropTypes.func.isRequired,

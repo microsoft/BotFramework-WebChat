@@ -93,7 +93,7 @@ Dictation.defaultProps = {
 };
 
 Dictation.propTypes = {
-  dictateState: PropTypes.string.isRequired,
+  dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
   webSpeechPonyfill: PropTypes.shape({

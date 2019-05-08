@@ -49,7 +49,7 @@ AudioCardAttachment.defaultProps = {
 AudioCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any,
   attachment: PropTypes.shape({
-    content: {
+    content: PropTypes.shape({
       autostart: PropTypes.bool,
       autoloop: PropTypes.bool,
       image: PropTypes.shape({
@@ -60,7 +60,7 @@ AudioCardAttachment.propTypes = {
           url: PropTypes.string.isRequired
         }).isRequired
       ).isRequired
-    }
+    })
   }).isRequired,
   styleSet: PropTypes.shape({
     audioCardAttachment: PropTypes.any.isRequired

@@ -78,7 +78,7 @@ SuggestedActions.defaultProps = {
 SuggestedActions.propTypes = {
   className: PropTypes.string,
   styleSet: PropTypes.shape({
-    option: PropTypes.shape({
+    options: PropTypes.shape({
       suggestedActionsStyleSet: PropTypes.any.isRequired
     }).isRequired,
     suggestedActions: PropTypes.any.isRequired

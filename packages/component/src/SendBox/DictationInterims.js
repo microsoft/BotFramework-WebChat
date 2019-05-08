@@ -92,7 +92,7 @@ DictationInterims.defaultProps = {
 DictationInterims.propTypes = {
   className: PropTypes.string,
   dictateInterims: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dictateState: PropTypes.string.isRequired,
+  dictateState: PropTypes.number.isRequired,
   styleSet: PropTypes.shape({
     dictationInterims: PropTypes.any.isRequired
   }).isRequired

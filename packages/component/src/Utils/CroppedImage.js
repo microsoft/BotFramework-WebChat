@@ -18,7 +18,7 @@ const ROOT_CSS = css({
   }
 });
 
-export default class Bubble extends React.Component {
+export default class CroppedImage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -46,15 +46,15 @@ export default class Bubble extends React.Component {
   }
 }
 
-Bubble.defaultProps = {
+CroppedImage.defaultProps = {
   alt: '',
   className: ''
 };
 
-Bubble.propTypes = {
+CroppedImage.propTypes = {
   alt: PropTypes.string,
   className: PropTypes.string,
   height: PropTypes.number.isRequired,
   src: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };

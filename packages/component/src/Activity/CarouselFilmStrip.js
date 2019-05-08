@@ -114,7 +114,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
         className={ classNames(
           ROOT_CSS + '',
           styleSet.carouselFilmStrip + '',
-          (className || '') + ''
+          className + ''
         ) }
         ref={ scrollableRef }
       >

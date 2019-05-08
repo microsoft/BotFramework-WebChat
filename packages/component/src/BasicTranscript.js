@@ -84,7 +84,7 @@ const BasicTranscript = ({
     <div
       className={ classNames(
         ROOT_CSS + '',
-        (className || '') + ''
+        className + ''
       ) }
       role="log"
     >
