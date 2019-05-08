@@ -27,15 +27,17 @@ export default function (...selectors) {
 
   return Component => {
     const ConnectedComponent = connect(
-      (state, { context, store, ...ownProps }) => combinedSelector({ ...state, ...context }, ownProps)
+      (state, { context, _, ...ownProps }) => combinedSelector({ ...state, ...context }, ownProps)
     )(Component);
 
-    return props => (
+    const WebChatConnectedComponent = props => (
       <Context.Consumer>
         {
           context => <ConnectedComponent { ...props } context={ context } store={ context.store } />
         }
       </Context.Consumer>
     );
+
+    return WebChatConnectedComponent;
   };
 }

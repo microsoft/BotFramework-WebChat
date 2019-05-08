@@ -1,7 +1,8 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
+import { Constants } from 'botframework-webchat-core';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Constants } from 'botframework-webchat-core';
 import connectToWebChat from './connectToWebChat';
 
 const {
@@ -85,6 +86,16 @@ class Dictation extends React.Component {
     );
   }
 }
+
+Dictation.propTypes = {
+  dictateState: PropTypes.string,
+  disabled: PropTypes.bool,
+  language: PropTypes.string,
+  webSpeechPonyfill: PropTypes.shape({
+    SpeechGrammarList: PropTypes.any,
+    SpeechRecognition: PropTypes.any
+  })
+};
 
 export default connectToWebChat(
   ({

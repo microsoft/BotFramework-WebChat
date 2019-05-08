@@ -38,9 +38,13 @@ export default function () {
         && (activity.attachments || []).length > 1
         && activity.attachmentLayout === 'carousel'
       ) {
-        return children => <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</CarouselLayout>;
+        const CarouselActivity = children => <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</CarouselLayout>;
+
+        return CarouselActivity;
       } else {
-        return children => <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</StackedLayout>;
+        const StackedActivity = children => <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</StackedLayout>;
+
+        return StackedActivity;
       }
     } else {
       return next({ activity, timestampClassName });

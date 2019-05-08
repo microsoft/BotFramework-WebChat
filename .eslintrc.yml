@@ -24,6 +24,9 @@ rules:
   - allow:
     - error
     - warn
+  no-unused-vars:
+  - error
+  - argsIgnorePattern: ^_$
 settings:
   react:
     version: detect
