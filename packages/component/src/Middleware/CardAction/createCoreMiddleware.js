@@ -44,7 +44,9 @@ export default function createDefaultCardActionMiddleware() {
 
         const popup = window.open();
 
-        getSignInUrl().then(url => popup.location.href = url);
+        getSignInUrl().then(url => {
+          popup.location.href = url;
+        });
 
         break;
       }

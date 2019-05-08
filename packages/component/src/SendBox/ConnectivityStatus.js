@@ -18,20 +18,22 @@ class DebouncedConnectivityStatus extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { children, interval } = nextProps;
+    const { children, interval } = this.props;
+    const { children: nextChildren, interval: nextInterval } = nextProps;
+    const { since } = this.state;
 
     if (
-      children !== this.props.children
-      || interval !== this.props.interval
+      nextChildren !== children
+      || nextInterval !== interval
     ) {
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
         this.setState(() => ({
-          children,
+          children: nextChildren,
           since: Date.now()
         }));
-      }, Math.max(0, interval - Date.now() + this.state.since));
+      }, Math.max(0, nextInterval - Date.now() + since));
     }
   }
 
@@ -40,13 +42,19 @@ class DebouncedConnectivityStatus extends React.Component {
   }
 
   render() {
-    return typeof this.state.children === 'function' ? this.state.children() : false;
+    const { children } = this.state;
+
+    return typeof children === 'function' ? children() : false;
   }
 }
 
+DebouncedConnectivityStatus.defaultProps = {
+  children: false
+};
+
 DebouncedConnectivityStatus.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-  interval: PropTypes.number
+  children: PropTypes.any,
+  interval: PropTypes.number.isRequired
 };
 
 const connectConnectivityStatus = (...selectors) => connectToWebChat(
@@ -60,7 +68,7 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) =>
     role="status"
   >
     <DebouncedConnectivityStatus
-      interval={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }
+      interval={ connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : 400 }
     >
       { () =>
         connectivityStatus === 'connectingslow' ?
@@ -68,7 +76,7 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) =>
             <WarningNotificationIcon />
             { localize('SLOW_CONNECTION_NOTIFICATION', language) }
           </div>
-        : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
+        : connectivityStatus === 'error' || connectivityStatus === 'notconnected' ?
           <div className={ styleSet.errorNotification }>
             <ErrorNotificationIcon />
             { localize('FAILED_CONNECTION_NOTIFICATION', language) }
@@ -95,13 +103,13 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) =>
   </div>
 
 ConnectivityStatus.propTypes = {
-  connectivityStatus: PropTypes.string,
-  language: PropTypes.string,
+  connectivityStatus: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
   styleSet: PropTypes.shape({
-    connectivityNotification: PropTypes.any,
-    errorNotification: PropTypes.any,
-    warningNotification: PropTypes.any
-  })
+    connectivityNotification: PropTypes.any.isRequired,
+    errorNotification: PropTypes.any.isRequired,
+    warningNotification: PropTypes.any.isRequired
+  }).isRequired
 };
 
 export default connectConnectivityStatus(

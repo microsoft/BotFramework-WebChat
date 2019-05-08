@@ -19,9 +19,9 @@ export default function () {
 
       if (
         // Do not show postback
-        (activity.channelData && activity.channelData.postBack)
+        activity.channelData && activity.channelData.postBack
         // Do not show messageBack if displayText is undefined
-        || (activity.channelData && activity.channelData.messageBack && !activity.channelData.messageBack.displayText)
+        || activity.channelData && activity.channelData.messageBack && !activity.channelData.messageBack.displayText
         // Do not show empty bubbles (no text and attachments, and not "typing")
         || !(text || attachments.length)
       ) {
@@ -38,16 +38,22 @@ export default function () {
         && (activity.attachments || []).length > 1
         && activity.attachmentLayout === 'carousel'
       ) {
-        const CarouselActivity = children => <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</CarouselLayout>;
+        const CarouselActivity = children =>
+          <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>
+            { children }
+          </CarouselLayout>;
 
         return CarouselActivity;
-      } else {
-        const StackedActivity = children => <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>{ children }</StackedLayout>;
-
-        return StackedActivity;
       }
-    } else {
-      return next({ activity, timestampClassName });
+
+      const StackedActivity = children =>
+        <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>
+          { children }
+        </StackedLayout>;
+
+      return StackedActivity;
     }
+
+    return next({ activity, timestampClassName });
   };
 }

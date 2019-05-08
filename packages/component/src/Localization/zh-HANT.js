@@ -27,16 +27,16 @@ function xMinutesAgo(dateStr) {
     return `昨日`;
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('zh-HANT').format(date);
-  } else {
-    return date.toLocaleString('zh-HANT', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
   }
+
+  return date.toLocaleString('zh-HANT', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
 }
 
 export default {

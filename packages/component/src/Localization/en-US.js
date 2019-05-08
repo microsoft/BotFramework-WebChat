@@ -1,11 +1,3 @@
-function botSaidSomething(avatarInitials, text, timestamp) {
-  return `Bot ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
-}
-
-function userSaidSomething(avatarInitials, text, timestamp) {
-  return `User ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
-}
-
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();
@@ -35,16 +27,24 @@ function xMinutesAgo(dateStr) {
     return `Yesterday`;
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('en-US').format(date);
-  } else {
-    return date.toLocaleString('en-US', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
   }
+
+  return date.toLocaleString('en-US', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
+
+function botSaidSomething(avatarInitials, text, timestamp) {
+  return `Bot ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
+}
+
+function userSaidSomething(avatarInitials, text, timestamp) {
+  return `User ${ avatarInitials } said, ${ text }, ${ xMinutesAgo(timestamp) }`;
 }
 
 export default {

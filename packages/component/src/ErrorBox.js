@@ -11,7 +11,11 @@ export default connectToWebChat(
     styleSet
   }) =>
     <div className={ styleSet.errorBox }>
-      <div>{ message }</div>
-      <div>{ children }</div>
+      <div>
+        { message }
+      </div>
+      <div>
+        { children }
+      </div>
     </div>
 )

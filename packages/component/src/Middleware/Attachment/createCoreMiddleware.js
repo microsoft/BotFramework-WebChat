@@ -14,24 +14,24 @@ export default function () {
     const Attachment = ({ activity, attachment, attachment: { contentType } }) =>
       activity.type === 'typing' ?
         <TypingActivity />
-      : /^audio\//.test(contentType) ?
+      : /^audio\//u.test(contentType) ?
         <AudioAttachment activity={ activity } attachment={ attachment } />
-      : /^image\//.test(contentType) ?
+      : /^image\//u.test(contentType) ?
         <ImageAttachment activity={ activity } attachment={ attachment } />
-      : /^video\//.test(contentType) ?
+      : /^video\//u.test(contentType) ?
         <VideoAttachment activity={ activity } attachment={ attachment } />
-      : (attachment.contentUrl || contentType === 'application/octet-stream') ?
+      : attachment.contentUrl || contentType === 'application/octet-stream' ?
         <DownloadAttachment activity={ activity } attachment={ attachment } />
-      : /^text\//.test(contentType) ?
+      : /^text\//u.test(contentType) ?
         <TextAttachment activity={ activity } attachment={ attachment } />
       :
         next({ activity, attachment });
 
     Attachment.propTypes = {
-      activity: PropTypes.any,
+      activity: PropTypes.any.isRequired,
       attachment: PropTypes.shape({
-        contentType: PropTypes.string
-      })
+        contentType: PropTypes.string.isRequired
+      }).isRequired
     };
 
     return Attachment;
