@@ -5,10 +5,10 @@ export default function observableToPromise(observable) {
 
       // HACK: Sometimes, the call complete asynchronously and we cannot unsubscribe
       //       Need to wait some short time here to make sure the subscription variable has setup
-      setImmediate(() => subscription.unsubscribe());
+      setTimeout(() => subscription.unsubscribe(), 0);
     }, error => {
       reject(error);
-      setImmediate(() => subscription.unsubscribe());
+      setTimeout(() => subscription.unsubscribe(), 0);
     });
   });
 }

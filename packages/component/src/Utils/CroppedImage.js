@@ -1,6 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const ROOT_CSS = css({
@@ -44,3 +45,11 @@ export default class Bubble extends React.Component {
     );
   }
 }
+
+Bubble.propTypes = {
+  alt: PropTypes.string,
+  className: PropTypes.string,
+  height: PropTypes.number,
+  src: PropTypes.string,
+  width: PropTypes.number
+};

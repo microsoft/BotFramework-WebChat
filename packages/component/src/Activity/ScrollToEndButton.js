@@ -8,7 +8,7 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import Localize from '../Localization/Localize';
 
-const ScrollToEndButton = connectToWebChat(
+const ConnectedScrollToEndButton = connectToWebChat(
   ({ scrollToEnd, styleSet }) => ({ scrollToEnd, styleSet })
 )(({ className, scrollToEnd, styleSet }) =>
   <button
@@ -23,7 +23,9 @@ const ScrollToEndButton = connectToWebChat(
   </button>
 )
 
-export default props =>
+const ScrollToEndButton = props =>
   <ScrollToBottomStateContext.Consumer>
-    { ({ sticky }) => !sticky && <ScrollToEndButton { ...props } /> }
+    { ({ sticky }) => !sticky && <ConnectedScrollToEndButton { ...props } /> }
   </ScrollToBottomStateContext.Consumer>
+
+export default ScrollToEndButton

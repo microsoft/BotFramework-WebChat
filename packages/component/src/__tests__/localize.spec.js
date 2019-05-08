@@ -49,8 +49,6 @@ test('Japanese timestamp localization longer than yesterday', () => {
 });
 
 test('Japanese timestamp invalid', () => {
-  const formatter = new Intl.DateTimeFormat('ja-JP').format;
-
   testJapaneseTime('invalid date', 'invalid date');
 });
 

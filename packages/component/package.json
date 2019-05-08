@@ -18,7 +18,7 @@
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component#readme",
   "scripts": {
     "build": "npm run build:typecheck && npm run build:babel-instrumented",
-    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
     "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",

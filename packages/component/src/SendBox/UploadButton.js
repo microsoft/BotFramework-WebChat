@@ -1,5 +1,6 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -99,6 +100,15 @@ class UploadButton extends React.Component {
     );
   }
 }
+
+UploadButton.propTypes = {
+  disabled: PropTypes.bool,
+  language: PropTypes.string,
+  sendFiles: PropTypes.func,
+  styleSet: PropTypes.shape({
+    uploadButton: PropTypes.any
+  }).isRequired
+};
 
 export default connectUploadButton(
   ({ styleSet }) => ({ styleSet })

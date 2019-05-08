@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
@@ -44,51 +44,66 @@ class DebouncedConnectivityStatus extends React.Component {
   }
 }
 
+DebouncedConnectivityStatus.propTypes = {
+  children: PropTypes.oneOf([PropTypes.array, PropTypes.func]),
+  interval: PropTypes.number
+};
+
 const connectConnectivityStatus = (...selectors) => connectToWebChat(
   ({ connectivityStatus, language }) => ({ connectivityStatus, language }),
   ...selectors
 )
 
+const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) =>
+  <div
+    aria-live="polite"
+    role="status"
+  >
+    <DebouncedConnectivityStatus
+      interval={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }
+    >
+      { () =>
+        connectivityStatus === 'connectingslow' ?
+          <div className={ styleSet.warningNotification }>
+            <WarningNotificationIcon />
+            { localize('SLOW_CONNECTION_NOTIFICATION', language) }
+          </div>
+        : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
+          <div className={ styleSet.errorNotification }>
+            <ErrorNotificationIcon />
+            { localize('FAILED_CONNECTION_NOTIFICATION', language) }
+          </div>
+        : connectivityStatus === 'uninitialized' ?
+          <div className={ styleSet.connectivityNotification }>
+            <SpinnerAnimation />
+            { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
+          </div>
+        : connectivityStatus === 'reconnecting' ?
+          <div className={ styleSet.connectivityNotification }>
+            <SpinnerAnimation />
+            { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
+          </div>
+        : connectivityStatus === 'sagaerror' ?
+          <div className={ styleSet.errorNotification }>
+            <ErrorNotificationIcon />
+            { localize('RENDER_ERROR_NOTIFICATION', language) }
+          </div>
+        : connectivityStatus === 'reconnected' || connectivityStatus === 'connected' &&
+          false
+      }
+    </DebouncedConnectivityStatus>
+  </div>
+
+ConnectivityStatus.propTypes = {
+  connectivityStatus: PropTypes.string,
+  language: PropTypes.string,
+  styleSet: PropTypes.shape({
+    connectivityNotification: PropTypes.any,
+    errorNotification: PropTypes.any,
+    warningNotification: PropTypes.any
+  })
+};
+
 export default connectConnectivityStatus(
   ({ styleSet }) => ({ styleSet })
-)(
-  ({ connectivityStatus, language, styleSet }) =>
-    <div
-      aria-live="polite"
-      role="status"
-    >
-      <DebouncedConnectivityStatus
-        interval={ (connectivityStatus === 'uninitialized' || connectivityStatus === 'error') ? 0 : 400 }
-      >
-        { () =>
-          connectivityStatus === 'connectingslow' ?
-            <div className={ styleSet.warningNotification }>
-              <WarningNotificationIcon />
-              { localize('SLOW_CONNECTION_NOTIFICATION', language) }
-            </div>
-          : (connectivityStatus === 'error' || connectivityStatus === 'notconnected') ?
-            <div className={ styleSet.errorNotification }>
-              <ErrorNotificationIcon />
-              { localize('FAILED_CONNECTION_NOTIFICATION', language) }
-            </div>
-          : connectivityStatus === 'uninitialized' ?
-            <div className={ styleSet.connectivityNotification }>
-              <SpinnerAnimation />
-              { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
-            </div>
-          : connectivityStatus === 'reconnecting' ?
-            <div className={ styleSet.connectivityNotification }>
-              <SpinnerAnimation />
-              { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
-            </div>
-          : connectivityStatus === 'sagaerror' ?
-            <div className={ styleSet.errorNotification }>
-              <ErrorNotificationIcon />
-              { localize('RENDER_ERROR_NOTIFICATION', language) }
-            </div>
-          : connectivityStatus === 'reconnected' || connectivityStatus === 'connected' &&
-            false
-        }
-      </DebouncedConnectivityStatus>
-    </div>
-  )
+)(ConnectivityStatus)

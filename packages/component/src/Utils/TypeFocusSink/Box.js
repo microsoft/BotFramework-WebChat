@@ -77,5 +77,14 @@ export default class Box extends React.Component {
 }
 
 Box.propTypes = {
-  disabled: PropTypes.bool
+  children: PropTypes.oneOf([
+    PropTypes.array,
+    PropTypes.func
+  ]),
+  disabled: PropTypes.bool,
+  sendFocusRef: PropTypes.shape({
+    current: PropTypes.shape({
+      focus: PropTypes.func
+    })
+  })
 };

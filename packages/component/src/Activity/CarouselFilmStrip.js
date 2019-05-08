@@ -181,7 +181,7 @@ const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
   }
 )
 
-export default props =>
+const CarouselFilmStrip = props =>
   <FilmContext.Consumer>
     { ({ itemContainerRef, scrollableRef }) =>
       <ConnectedCarouselFilmStrip
@@ -191,5 +191,7 @@ export default props =>
       />
     }
   </FilmContext.Consumer>
+
+export default CarouselFilmStrip
 
 export { connectCarouselFilmStrip }
