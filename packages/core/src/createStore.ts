@@ -1,3 +1,6 @@
+// This is for the racing between sagaMiddleware and store
+/* eslint no-use-before-define: "off" */
+
 import { applyMiddleware, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 

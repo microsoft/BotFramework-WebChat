@@ -8,18 +8,14 @@ import {
   take,
 } from 'redux-saga/effects';
 
-import forkPut from './effects/forkPut';
-
+import { ConnectionStatus } from 'botframework-directlinejs';
 import { decode } from 'jsonwebtoken';
 import random from 'math-random';
 
-import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
-
-import createPromiseQueue from '../createPromiseQueue';
-
-import { ConnectionStatus } from 'botframework-directlinejs';
-
 import { CONNECT } from '../actions/connect';
+import createPromiseQueue from '../createPromiseQueue';
+import forkPut from './effects/forkPut';
+import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
 
 import {
   DISCONNECT,
@@ -69,7 +65,7 @@ function rectifyUserID(directLine, userIDFromAction) {
       console.warn('Web Chat: user ID must be a string.');
 
       return randomUserID();
-    } else if (/^dl_/.test(userIDFromAction)) {
+    } else if (/^dl_/u.test(userIDFromAction)) {
 
       console.warn('Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.');
 

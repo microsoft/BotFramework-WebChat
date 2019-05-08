@@ -38,8 +38,8 @@ function upsertActivityWithSort(activities, nextActivity) {
     // We will remove all "typing" and "sending messages" activities
     // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
     !(
-      (type === 'typing' && from.id === nextFromID)
-      || (nextClientActivityID && clientActivityID === nextClientActivityID)
+      type === 'typing' && from.id === nextFromID
+      || nextClientActivityID && clientActivityID === nextClientActivityID
     )
   );
 
@@ -49,7 +49,7 @@ function upsertActivityWithSort(activities, nextActivity) {
 
   // TODO: [P4] Move "typing" into Constants.ActivityType
   const indexToInsert = nextActivity.type === 'typing' ? -1 : nextActivities.findIndex(({ channelData: { state } = {}, timestamp, type }) =>
-    (Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED) || type === 'typing'
+    Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED || type === 'typing'
   );
 
   // If no right place are found, append it

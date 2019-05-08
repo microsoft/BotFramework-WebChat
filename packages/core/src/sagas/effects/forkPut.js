@@ -12,7 +12,7 @@ import { fork, put } from 'redux-saga/effects';
 
 export default function forkPut(...actions) {
   return fork(function* () {
-    for (let action of actions) {
+    for (const action of actions) {
       yield put(action);
     }
   });

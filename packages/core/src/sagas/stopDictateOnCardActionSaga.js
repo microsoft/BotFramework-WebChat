@@ -3,14 +3,9 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import whileConnected from './effects/whileConnected';
-
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import stopDictate from '../actions/stopDictate';
-
-export default function* () {
-  yield whileConnected(stopDictateOnCardAction);
-}
+import whileConnected from './effects/whileConnected';
 
 function* stopDictateOnCardAction() {
   // TODO: [P2] We should stop speech input when the user click on anything on a card, including open URL which doesn't generate postActivity
@@ -25,4 +20,8 @@ function* stopDictateOnCardAction() {
       yield put(stopDictate());
     }
   );
+}
+
+export default function* () {
+  yield whileConnected(stopDictateOnCardAction);
 }
