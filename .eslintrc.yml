@@ -27,7 +27,10 @@ rules:
   require-atomic-updates: error
   accessor-pairs: error
   block-scoped-var: error
-  class-methods-use-this: error
+  class-methods-use-this:
+  - error
+  - exceptMethods:
+    - render
   # Re-enable later
   # complexity:
   # - error
@@ -57,7 +60,9 @@ rules:
   no-lone-blocks: error
   # Re-enable later
   # no-magic-numbers: error
-  no-multi-spaces: error
+  no-multi-spaces:
+  - error
+  - ignoreEOLComments: true
   no-multi-str: error
   no-new: error
   no-new-func: error
@@ -136,7 +141,7 @@ rules:
   prefer-destructuring: error
   prefer-rest-params: error
   prefer-spread: error
-  prefer-template: error
+  # prefer-template: error // This will force, a + '', into, `${ a }`, which increase code length
   rest-spread-spacing:
   - error
   - never

@@ -1,3 +1,6 @@
+// This is required for aria-controls.
+/* eslint react/forbid-dom-props: "off" */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import React from 'react';

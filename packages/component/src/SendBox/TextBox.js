@@ -84,30 +84,33 @@ export default connectSendTextBox(
       {
         <TypeFocusSinkContext.Consumer>
           { ({ sendFocusRef }) =>
-           !sendBoxTextWrap
-            ? <input
-              aria-label={ typeYourMessageString }
-              data-id="webchat-sendbox-input"
-              disabled={ disabled }
-              onChange={ onChange }
-              placeholder={ typeYourMessageString }
-              ref={ sendFocusRef }
-              type="text"
-              value={ value }
-            />
-            : <div>
+            !sendBoxTextWrap ?
+              <input
+                aria-label={ typeYourMessageString }
+                data-id="webchat-sendbox-input"
+                disabled={ disabled }
+                onChange={ onChange }
+                placeholder={ typeYourMessageString }
+                ref={ sendFocusRef }
+                type="text"
+                value={ value }
+              />
+            :
+              <div>
                 <textarea
                   aria-label={ typeYourMessageString }
                   data-id="webchat-sendbox-input"
                   disabled={ disabled }
                   onChange={ onChange }
-                  onKeyPress= { onKeyPress }
+                  onKeyPress={ onKeyPress }
                   placeholder={ typeYourMessageString }
                   ref={ sendFocusRef }
                   rows="1"
                   value={ value }
                 />
-                <div>{ value + '\n' }</div>
+                <div>
+                  { value + '\n' }
+                </div>
               </div>
           }
         </TypeFocusSinkContext.Consumer>

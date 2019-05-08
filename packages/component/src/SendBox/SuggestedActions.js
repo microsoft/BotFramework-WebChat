@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: "off" */
+
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
 import React from 'react';
@@ -12,9 +14,9 @@ function suggestedActionText({ displayText, title, type, value }) {
     return title;
   } else if (typeof value === 'string') {
     return value;
-  } else {
-    return JSON.stringify(value);
   }
+
+  return JSON.stringify(value);
 }
 
 const connectSuggestedActions = (...selectors) => connectToWebChat(
@@ -58,9 +60,7 @@ export default connectSuggestedActions(
           index
         ) =>
           <SuggestedAction
-            buttonText={
-             suggestedActionText({ displayText, title, type, value })
-            }
+            buttonText={ suggestedActionText({ displayText, title, type, value }) }
             displayText={ displayText }
             image={ image }
             key={ index }

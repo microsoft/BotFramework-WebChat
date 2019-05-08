@@ -13,7 +13,7 @@ export default ({
       foregroundColors: {
         default: {
           default: bubbleTextColor,
-          subtle: subtle
+          subtle
         },
         accent: {
           default: accent,
@@ -25,7 +25,7 @@ export default ({
       backgroundColor: cardEmphasisBackgroundColor,
       default: {
         default: bubbleTextColor,
-        subtle: subtle
+        subtle
       }
     }
   },

@@ -1,3 +1,5 @@
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["getStateFromProps"] }] */
+
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
@@ -8,11 +10,7 @@ function nextTimer(date) {
   const time = new Date(date).getTime();
   const now = Date.now();
 
-  if (time > now) {
-    return time;
-  } else {
-    return Math.ceil((now - time) / 60000) * 60000 + time;
-  }
+  return time > now ? time : Math.ceil((now - time) / 60000) * 60000 + time;
 }
 
 class TimeAgo extends React.Component {
@@ -36,10 +34,10 @@ class TimeAgo extends React.Component {
     this.setState(() => this.getStateFromProps(props));
   }
 
-  getStateFromProps(props) {
+  getStateFromProps({ language, value }) {
     return {
-      text: localize('X minutes ago', props.language, props.value),
-      timer: nextTimer(props.value)
+      text: localize('X minutes ago', language, value),
+      timer: nextTimer(value)
     };
   }
 
@@ -47,10 +45,10 @@ class TimeAgo extends React.Component {
     const { state } = this;
 
     return (
-      <React.Fragment>
+      <>
         { state.text }
         <Timer at={ state.timer } onInterval={ this.handleInterval } />
-      </React.Fragment>
+      </>
     );
   }
 }

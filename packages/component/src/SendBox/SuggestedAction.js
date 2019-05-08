@@ -42,9 +42,12 @@ export default connectSuggestedAction(
       <button
         disabled={ disabled }
         onClick={ click }
+        type="button"
       >
         {image && <img src={ image } />}
-        <nobr>{ buttonText }</nobr>
+        <nobr>
+          { buttonText }
+        </nobr>
       </button>
     </div>
 )

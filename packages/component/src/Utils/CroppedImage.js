@@ -34,7 +34,7 @@ export default class Bubble extends React.Component {
 
     return (
       <div
-        className={ classNames(ROOT_CSS + '', (className || '') + '') }
+        className={ classNames(ROOT_CSS + '', className + '') }
         style={ sizeStyle }
       >
         <img
@@ -46,10 +46,15 @@ export default class Bubble extends React.Component {
   }
 }
 
+Bubble.defaultProps = {
+  alt: '',
+  className: ''
+};
+
 Bubble.propTypes = {
   alt: PropTypes.string,
   className: PropTypes.string,
-  height: PropTypes.number,
-  src: PropTypes.string,
-  width: PropTypes.number
+  height: PropTypes.number.isRequired,
+  src: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired
 };

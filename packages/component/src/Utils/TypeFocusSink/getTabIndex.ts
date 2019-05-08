@@ -14,8 +14,8 @@ const IE_FOCUSABLE_LIST = [
   'textarea'
 ];
 
-const IS_FIREFOX = /Firefox\//i.test(userAgent);
-const IS_IE = /Trident\//i.test(userAgent);
+const IS_FIREFOX = /Firefox\//iu.test(userAgent);
+const IS_IE = /Trident\//iu.test(userAgent);
 
 export default function getTabIndex(element) {
   const { tabIndex } = element;
@@ -29,7 +29,7 @@ export default function getTabIndex(element) {
   } else if (!~tabIndex) {
     const attr = element.getAttribute('tabindex');
 
-    if (attr === null || (attr === '' && !IS_FIREFOX)) {
+    if (attr === null || attr === '' && !IS_FIREFOX) {
       return null;
     }
   }

@@ -1,3 +1,6 @@
+// This is for defaultProps: { children: undefined }
+/* eslint no-undefined: "off" */
+
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -26,20 +29,27 @@ export default class Box extends React.Component {
   }
 
   focus() {
-    const { current } = this.props.sendFocusRef;
+    const { sendFocusRef: { current } } = this.props;
 
     current && current.focus();
   }
 
   handleKeyDownCapture(event) {
-    const target = event.target;
+    const {
+      altKey,
+      ctrlKey,
+      key,
+      metaKey,
+      target
+    } = event;
+
     const tabIndex = getTabIndex(target);
 
     if (
-      event.altKey
-      || (event.ctrlKey && event.key !== 'v')
-      || event.metaKey
-      || (!inputtableKey(event.key) && event.key !== 'Backspace')
+      altKey
+      || ctrlKey && key !== 'v'
+      || metaKey
+      || !inputtableKey(key) && key !== 'Backspace'
     ) {
       // Ignore if one of the utility key (except SHIFT) is pressed
       // E.g. CTRL-C on a link in one of the message should not jump to chat box
@@ -76,15 +86,17 @@ export default class Box extends React.Component {
   }
 }
 
+Box.defaultProps = {
+  children: undefined,
+  disabled: false
+};
+
 Box.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.func
-  ]),
+  children: PropTypes.any,
   disabled: PropTypes.bool,
   sendFocusRef: PropTypes.shape({
     current: PropTypes.shape({
       focus: PropTypes.func
     })
-  })
+  }).isRequired
 };

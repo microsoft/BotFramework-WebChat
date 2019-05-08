@@ -1,9 +1,9 @@
 function setTimeoutOrSync(fn, ms) {
   if (ms > 0) {
     return setTimeout(fn, ms);
-  } else {
-    fn();
   }
+
+  fn();
 }
 
 export default function (fn, ms = 1000) {
@@ -11,13 +11,13 @@ export default function (fn, ms = 1000) {
   let lastCall = 0;
   let nextArguments;
 
-  return function () {
-    nextArguments = arguments;
+  return function (...args) {
+    nextArguments = args;
 
     if (!scheduled) {
       scheduled = setTimeoutOrSync(() => {
         lastCall = Date.now();
-        fn.apply(null, nextArguments);
+        fn(...nextArguments);
         scheduled = null;
       }, lastCall + ms - Date.now());
     }
