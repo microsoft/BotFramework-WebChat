@@ -1,4 +1,4 @@
-# ![Bot Framework Web Chat](./docs/media/BotFrameworkWebChat_header.png)
+# ![Bot Framework Web Chat](./media/BotFrameworkWebChat_header.png)
 
 ### [Click here to find out what's new for //build2019!](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
 
@@ -64,8 +64,7 @@ Here is how how you can add Web Chat control to your website:
 </html>
 ```
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](#web-chat-api-reference) section of this `README`.
-
-![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/docs/weatherquery.png.jpg)
+![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
 ## Integrate with JavaScript
 
