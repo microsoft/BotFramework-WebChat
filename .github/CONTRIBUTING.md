@@ -1,3 +1,5 @@
+# Contributing
+
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.microsoft.com.
@@ -52,7 +54,7 @@ Currently, the standard build script does not build the CDN bundle (`webchat*.js
 
 ```sh
 cd packages/bundle
-npm run webpack-dev
+npm run watch
 ```
 
 > By default, this script will run in watch mode.
