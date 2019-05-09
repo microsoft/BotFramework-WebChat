@@ -28,9 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`react-scripts@3.0.0`](https://npmjs.com/package/react-scripts/),
    - [`webpack@4.30.0`](https://npmjs.com/package/webpack/), by [@corinagum](https://github.com/corinagum), in PR [#1965](https://github.com/Microsoft/BotFramework-WebChat/pull/1965)
 
-<!-- ### Fixed
-- Fix [#XXX](https://github.com/Microsoft/BotFramework-WebChat/issues/XXX). Patched something, by [@johndoe](https://github.com/johndoe) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
--->
+### Fixed
+- Fix [#1974](https://github.com/Microsoft/BotFramework-WebChat/issues/1974). Update `/docs/` folder to `/media/` and delete unused images, by [@corinagum](https://github.com/corinagum) in PR [#1975](https://github.com/Microsoft/BotFramework-WebChat/pull/1975)
+
 
 ## [4.4.1] - 2019-05-02
 
