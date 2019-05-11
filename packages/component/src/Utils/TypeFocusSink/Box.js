@@ -29,7 +29,11 @@ export default class Box extends React.Component {
   }
 
   focus() {
-    const { sendFocusRef: { current } } = this.props;
+    const {
+      sendFocusRef: {
+        current
+      }
+    } = this.props;
 
     current && current.focus();
   }
@@ -68,18 +72,36 @@ export default class Box extends React.Component {
   }
 
   render() {
-    const { props: { children, disabled, sendFocusRef, ...otherProps }, state } = this;
-    const context = this.createContext(state.context, sendFocusRef);
+    const {
+      focus,
+      handleKeyDownCapture,
+      props: {
+        children,
+        disabled,
+        sendFocusRef,
+        ...otherProps
+      },
+      state: {
+        context: stateContext
+      }
+    } = this;
+
+    const context = this.createContext(stateContext, sendFocusRef);
 
     return (
       <Context.Provider value={ context }>
         <div
           { ...otherProps }
-          onKeyDownCapture={ !disabled && this.handleKeyDownCapture }
+          onKeyDownCapture={ !disabled && handleKeyDownCapture }
           style={ DEFAULT_STYLE }
           tabIndex={ -1 }
         >
-          { typeof children === 'function' ? children({ focus: this.focus }) : children }
+          {
+            typeof children === 'function' ?
+              children({ focus })
+            :
+              children
+          }
         </div>
       </Context.Provider>
     );
