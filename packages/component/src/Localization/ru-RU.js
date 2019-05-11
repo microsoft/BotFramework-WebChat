@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 72, 60000, 3600000] }] */
+
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();

@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { localize } from '../Localization/Localize';
 
 function testJapaneseTime(testDate, expectedResult) {

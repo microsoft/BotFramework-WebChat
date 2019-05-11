@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [25, 75] }] */
+
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';

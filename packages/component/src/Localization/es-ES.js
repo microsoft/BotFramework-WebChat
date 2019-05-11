@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
+
 function xMinutesAgo(date) {
   const now = Date.now();
   const deltaInMs = now - new Date(date).getTime();

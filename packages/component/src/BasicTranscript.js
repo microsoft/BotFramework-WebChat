@@ -32,11 +32,13 @@ const LIST_CSS = css({
   }
 });
 
+const DEFAULT_GROUP_TIMESTAMP = 300000; // 5 minutes
+
 function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   if (groupTimestamp === false) {
     return true;
   } else if (activityX && activityY) {
-    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : 5 * 60 * 1000;
+    groupTimestamp = typeof groupTimestamp === 'number' ? groupTimestamp : DEFAULT_GROUP_TIMESTAMP;
 
     if (activityX.from.role === activityY.from.role) {
       const timeX = new Date(activityX.timestamp).getTime();

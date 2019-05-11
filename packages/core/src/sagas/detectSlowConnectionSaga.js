@@ -10,6 +10,8 @@ import {
 import { RECONNECT_PENDING } from '../actions/reconnect';
 import sleep from '../utils/sleep';
 
+const SLOW_CONNECTION_AFTER = 15000;
+
 export default function* detectSlowConnectionSaga() {
   for (;;) {
     yield take([CONNECT_PENDING, RECONNECT_PENDING]);
@@ -17,7 +19,7 @@ export default function* detectSlowConnectionSaga() {
     const connectivityRace = yield race({
       fulfilled: take(CONNECT_FULFILLED),
       rejected: take(CONNECT_REJECTED),
-      slow: call(() => sleep(15000))
+      slow: call(() => sleep(SLOW_CONNECTION_AFTER))
     });
 
     if ('slow' in connectivityRace) {

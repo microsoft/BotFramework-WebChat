@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 75] }] */
+
 import { connectToWebChat, localize } from 'botframework-webchat-component';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';

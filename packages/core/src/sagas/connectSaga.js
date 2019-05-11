@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 10] }] */
+
 import {
   call,
   cancel,
@@ -10,11 +12,11 @@ import {
 
 import { ConnectionStatus } from 'botframework-directlinejs';
 import { decode } from 'jsonwebtoken';
-import random from 'math-random';
 
 import { CONNECT } from '../actions/connect';
 import createPromiseQueue from '../createPromiseQueue';
 import forkPut from './effects/forkPut';
+import uniqueID from '../utils/uniqueID';
 import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
 
 import {
@@ -32,7 +34,7 @@ const {
 } = ConnectionStatus;
 
 function randomUserID() {
-  return `r_${ random().toString(36).substr(2, 10) }`;
+  return `r_${ uniqueID().substr(0, 10) }`;
 }
 
 function* observeAndPutConnectionStatusUpdate(directLine) {

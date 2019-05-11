@@ -5,11 +5,13 @@ import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
 
+const TIMER_INTERVAL = 60000;
+
 function nextTimer(date) {
   const time = new Date(date).getTime();
   const now = Date.now();
 
-  return time > now ? time : Math.ceil((now - time) / 60000) * 60000 + time;
+  return time > now ? time : Math.ceil((now - time) / TIMER_INTERVAL) * TIMER_INTERVAL + time;
 }
 
 function getStateFromProps({ language, value }) {

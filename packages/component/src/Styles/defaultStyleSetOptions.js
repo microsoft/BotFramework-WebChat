@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 function fontFamily(fonts) {
   return fonts.map(font => `'${ font }'`).join(', ');
 }

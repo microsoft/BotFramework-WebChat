@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 2] }] */
+
 import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
 import React from 'react';

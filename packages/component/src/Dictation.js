@@ -113,6 +113,13 @@ Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
+  onError: PropTypes.func.isRequired,
+  setDictateInterims: PropTypes.func.isRequired,
+  setDictateState: PropTypes.func.isRequired,
+  setSendBox: PropTypes.func.isRequired,
+  startSpeakingActivity: PropTypes.func.isRequired,
+  stopDictate: PropTypes.func.isRequired,
+  submitSendBox: PropTypes.func.isRequired,
   webSpeechPonyfill: PropTypes.shape({
     SpeechGrammarList: PropTypes.any.isRequired,
     SpeechRecognition: PropTypes.any.isRequired

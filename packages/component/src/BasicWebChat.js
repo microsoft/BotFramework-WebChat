@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';

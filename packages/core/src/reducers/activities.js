@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, -1] }] */
+
 import updateIn from 'simple-update-in';
 
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';

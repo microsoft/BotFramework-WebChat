@@ -7,6 +7,8 @@ import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
 
+const CONNECTIVITY_STATUS_DEBOUNCE = 400;
+
 class DebouncedConnectivityStatus extends React.Component {
   constructor(props) {
     super(props);
@@ -68,7 +70,7 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) =>
     role="status"
   >
     <DebouncedConnectivityStatus
-      interval={ connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : 400 }
+      interval={ connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : CONNECTIVITY_STATUS_DEBOUNCE }
     >
       { () =>
         connectivityStatus === 'connectingslow' ?

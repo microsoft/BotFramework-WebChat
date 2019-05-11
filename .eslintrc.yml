@@ -58,8 +58,11 @@ rules:
   no-iterator: error
   no-labels: error
   no-lone-blocks: error
-  # Re-enable later
-  # no-magic-numbers: error
+  no-magic-numbers:
+  - error
+  - ignore:
+    - 0
+    - 1
   no-multi-spaces:
   - error
   - ignoreEOLComments: true
@@ -93,15 +96,19 @@ rules:
   wrap-iife: error
   yoda: error
   no-label-var: error
+
   # Re-enable later
   # no-shadow:
   # - error
   # - builtinGlobals: true
   #   hoist: all
+
   no-shadow-restricted-names: error
   no-undef-init: error
+
   # "undefined" is commonly used for defaults
   # no-undefined: off
+
   no-unused-vars:
   - error
   - argsIgnorePattern: ^_$
@@ -128,9 +135,12 @@ rules:
   generator-star-spacing:
   - error
   - after
-  # no-confusing-arrow: // Will produce shorter code if allowed
+
+  # Will produce shorter code if allowed
+  # no-confusing-arrow:
   # - error
-  # - allowParens: true // This will conflict with no-extra-parens
+  # - allowParens: true # This will conflict with no-extra-parens
+
   no-duplicate-imports: error
   no-useless-computed-key: error
   no-useless-constructor: error
@@ -142,13 +152,19 @@ rules:
   prefer-destructuring: error
   prefer-rest-params: error
   prefer-spread: error
-  # prefer-template: error // This will force, a + '', into, `${ a }`, which increase code length
+
+  # This will force, a + '', into, `${ a }`, which increase code length
+  # prefer-template: error
+
   rest-spread-spacing:
   - error
   - never
-  # sort-imports: // Cannot group global or local imports and sort in differently
+
+  # Cannot group global or local imports and sort in differently
+  # sort-imports:
   # - error
   # - ignoreCase: true
+
   template-curly-spacing:
   - error
   - always
