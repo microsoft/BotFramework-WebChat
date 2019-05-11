@@ -33,14 +33,12 @@ class FullReactWebChat extends React.Component {
   }
 }
 
-FullReactWebChat.propTypes = {
-  attachmentMiddleware: PropTypes.func
-};
-
-/* eslint no-undefined: "off" */
-
 FullReactWebChat.defaultProps = {
   attachmentMiddleware: undefined
+};
+
+FullReactWebChat.propTypes = {
+  attachmentMiddleware: PropTypes.func
 };
 
 export default FullReactWebChat

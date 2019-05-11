@@ -1,12 +1,11 @@
 // This is required for aria-controls.
 /* eslint react/forbid-dom-props: "off" */
 
+import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import { Constants } from 'botframework-webchat-core';
 
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';

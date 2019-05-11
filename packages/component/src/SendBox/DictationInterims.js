@@ -38,7 +38,7 @@ const connectDictationInterims = (...selectors) => connectToWebChat(
 
 const DictationInterims = ({
   className,
-  dictateInterims,
+  dictateInterims = [],
   dictateState,
   styleSet
 }) =>
@@ -86,7 +86,7 @@ const DictationInterims = ({
   )
 
 DictationInterims.defaultProps = {
-  className: '',
+  className: ''
 };
 
 DictationInterims.propTypes = {

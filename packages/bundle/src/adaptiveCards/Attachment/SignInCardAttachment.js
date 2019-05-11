@@ -16,12 +16,8 @@ const SignInCardAttachment = ({
     />
   </div>;
 
-SignInCardAttachment.defaultProps = {
-  adaptiveCards: null
-};
-
 SignInCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
     animationCardAttachment: PropTypes.any.isRequired

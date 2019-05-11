@@ -24,7 +24,7 @@ const Bubble = ({
 
 Bubble.defaultProps = {
   'aria-label': '',
-  children: false,
+  children: undefined,
   className: '',
   fromUser: false
 };

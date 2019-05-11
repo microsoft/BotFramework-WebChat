@@ -15,13 +15,17 @@ export default function () {
     if (type === 'conversationUpdate' || type === 'event') {
       return RETURN_FALSE;
     } else if (type === 'message') {
-      const { attachments = [], text } = activity;
+      const {
+        attachments = [],
+        channelData,
+        text
+      } = activity;
 
       if (
         // Do not show postback
-        activity.channelData && activity.channelData.postBack
+        channelData && channelData.postBack
         // Do not show messageBack if displayText is undefined
-        || activity.channelData && activity.channelData.messageBack && !activity.channelData.messageBack.displayText
+        || channelData && channelData.messageBack && !channelData.messageBack.displayText
         // Do not show empty bubbles (no text and attachments, and not "typing")
         || !(text || attachments.length)
       ) {

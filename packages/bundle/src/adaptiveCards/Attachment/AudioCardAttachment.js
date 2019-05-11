@@ -13,10 +13,12 @@ const AudioCardAttachment = ({
   attachment,
   attachment: {
     content: {
-      autostart,
-      autoloop,
-      image,
-      media
+      autostart = false,
+      autoloop = false,
+      image: {
+        url: imageURL = ''
+      },
+      media = []
     } = {}
   } = {},
   styleSet
@@ -29,7 +31,7 @@ const AudioCardAttachment = ({
             <AudioContent
               autoPlay={ autostart }
               loop={ autoloop }
-              poster={ image && image.url }
+              poster={ imageURL }
               src={ url }
             />
           </li>
@@ -42,12 +44,8 @@ const AudioCardAttachment = ({
     />
   </div>;
 
-AudioCardAttachment.defaultProps = {
-  adaptiveCards: null
-};
-
 AudioCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       autostart: PropTypes.bool,

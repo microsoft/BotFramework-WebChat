@@ -108,8 +108,10 @@ export default class BasicWebChat extends React.Component {
 
   render() {
     const {
-      props,
-      props: { className },
+      props: {
+        className,
+        ...otherProps
+      },
       state: {
         activityRenderer,
         attachmentRenderer
@@ -123,7 +125,7 @@ export default class BasicWebChat extends React.Component {
         activityRenderer={ activityRenderer }
         attachmentRenderer={ attachmentRenderer }
         sendBoxRef={ this.sendBoxRef }
-        { ...props }
+        { ...otherProps }
       >
         { ({ styleSet }) =>
           <TypeFocusSinkBox
@@ -148,8 +150,8 @@ export default class BasicWebChat extends React.Component {
 }
 
 BasicWebChat.defaultProps = {
-  activityMiddleware: null,
-  attachmentMiddleware: null,
+  activityMiddleware: undefined,
+  attachmentMiddleware: undefined,
   className: ''
 };
 

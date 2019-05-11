@@ -22,14 +22,17 @@ export default class CommonCard extends React.Component {
     const {
       props: {
         adaptiveCards,
-        attachment: { content } = {}
+        attachment: {
+          content,
+          content: { tap } = {}
+        } = {}
       }
     } = this;
 
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ content && content.tap }
+        tapAction={ tap }
       />
     );
   }
@@ -38,6 +41,8 @@ export default class CommonCard extends React.Component {
 CommonCard.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any.isRequired
+    content: PropTypes.shape({
+      tap: PropTypes.any
+    }).isRequired
   }).isRequired
 };

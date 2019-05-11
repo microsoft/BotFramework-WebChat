@@ -29,13 +29,13 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   componentDidUpdate({ adaptiveCard: prevAdaptiveCard }) {
-    const { props: { adaptiveCard } } = this;
+    const { adaptiveCard } = this.props;
 
     prevAdaptiveCard !== adaptiveCard && this.renderCard();
   }
 
   handleClick({ target }) {
-    const { props: { disabled, onCardAction, tapAction } } = this;
+    const { disabled, onCardAction, tapAction } = this.props;
 
     // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
     if (!disabled) {
@@ -50,15 +50,15 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   handleExecuteAction(action) {
-    const { props } = this;
+    const { disabled, onCardAction } = this.props;
 
     // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
-    if (props.disabled) { return; }
+    if (disabled) { return; }
 
     const actionTypeName = action.getJsonTypeName();
 
     if (actionTypeName === 'Action.OpenUrl') {
-      props.onCardAction({
+      onCardAction({
         type: 'openUrl',
         value: action.url
       });
@@ -70,9 +70,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
           const { cardAction } = actionData;
           const { displayText, type, value } = cardAction;
 
-          props.onCardAction({ displayText, type, value });
+          onCardAction({ displayText, type, value });
         } else {
-          props.onCardAction({
+          onCardAction({
             type: typeof action.data === 'string' ? 'imBack' : 'postBack',
             value: action.data
           });
@@ -121,6 +121,8 @@ class AdaptiveCardRenderer extends React.PureComponent {
       const errors = adaptiveCard.validate();
 
       if (errors.length) {
+        // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
+
         return this.setState(() => ({ error: errors }));
       }
 
@@ -198,12 +200,12 @@ AdaptiveCardRenderer.propTypes = {
   styleSet: PropTypes.shape({
     adaptiveCardRenderer: PropTypes.any.isRequired
   }).isRequired,
-  tapAction: PropTypes.any
+  tapAction: PropTypes.func
 };
 
 AdaptiveCardRenderer.defaultProps = {
   disabled: false,
-  tapAction: null
+  tapAction: undefined
 };
 
 export default connectToWebChat(

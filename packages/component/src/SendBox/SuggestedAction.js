@@ -17,7 +17,10 @@ const connectSuggestedAction = (...selectors) => connectToWebChat(
     language,
     onCardAction
   }, {
-    displayText, text, type, value
+    displayText,
+    text,
+    type,
+    value
   }) => ({
     click: () => {
       onCardAction({ displayText, text, type, value });
@@ -36,7 +39,12 @@ const SuggestedAction = ({
   image,
   styleSet
 }) =>
-  <div className={ classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS) }>
+  <div
+    className={ classNames(
+      styleSet.suggestedAction + '',
+      SUGGESTED_ACTION_CSS
+    ) }
+  >
     <button
       disabled={ disabled }
       onClick={ click }

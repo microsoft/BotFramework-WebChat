@@ -16,7 +16,9 @@ const VideoCardAttachment = ({
       media,
       autostart,
       autoloop,
-      image,
+      image: {
+        url: imageURL
+      } = {},
     } = {}
   } = {},
   styleSet
@@ -24,13 +26,13 @@ const VideoCardAttachment = ({
   <div className={ styleSet.audioCardAttachment }>
     <ul className="media-list">
       {
-        media.map((media, index) =>
+        media.map(({ url }, index) =>
           <li key={ index }>
             <VideoContent
               autoPlay={ autostart }
               loop={ autoloop }
-              poster={ image && image.url }
-              src={ media.url }
+              poster={ imageURL }
+              src={ url }
             />
           </li>
         )
@@ -42,12 +44,8 @@ const VideoCardAttachment = ({
     />
   </div>;
 
-VideoCardAttachment.defaultProps = {
-  adaptiveCards: null
-};
-
 VideoCardAttachment.propTypes = {
-  adaptiveCards: PropTypes.any,
+  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       autoloop: PropTypes.bool,

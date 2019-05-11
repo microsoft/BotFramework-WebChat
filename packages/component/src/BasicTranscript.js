@@ -131,7 +131,7 @@ const BasicTranscript = ({
 BasicTranscript.defaultProps = {
   className: '',
   groupTimestamp: true,
-  webSpeechPonyfill: null
+  webSpeechPonyfill: undefined
 };
 
 BasicTranscript.propTypes = {

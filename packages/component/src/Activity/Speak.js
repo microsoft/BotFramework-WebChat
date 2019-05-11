@@ -17,14 +17,12 @@ const connectSpeakActivity = (...selectors) => connectToWebChat(
     activity
   }) => ({
     language,
-    markAsSpoken: () => {
-      markActivity(activity, 'speak', false)
-    },
+    markAsSpoken: () => markActivity(activity, 'speak', false),
     selectVoice: voices =>
-      [].find.call(voices, voice => voice.lang === activity.locale)
-      || [].find.call(voices, voice => voice.lang === language)
-      || [].find.call(voices, voice => voice.lang === window.navigator.language)
-      || [].find.call(voices, voice => voice.lang === 'en-US')
+      [].find.call(voices, ({ lang }) => lang === activity.locale)
+      || [].find.call(voices, ({ lang }) => lang === language)
+      || [].find.call(voices, ({ lang }) => lang === window.navigator.language)
+      || [].find.call(voices, ({ lang }) => lang === 'en-US')
       || voices[0]
   }),
   ...selectors
@@ -40,12 +38,26 @@ const Speak = ({
     return false;
   }
 
-  const lines = [activity.speak || activity.text];
+  const {
+    attachments = [],
+    speak,
+    text
+  } = activity;
 
-  (activity.attachments || []).forEach(({ content, contentType }) => {
+  const lines = [speak || text];
+
+  attachments.forEach(({
+    content: {
+      speak,
+      subtitle,
+      text,
+      title
+    } = {},
+    contentType
+  }) => {
     switch (contentType) {
       case 'application/vnd.microsoft.card.adaptive':
-        lines.push(content.speak);
+        lines.push(speak);
         break;
 
       case 'application/vnd.microsoft.card.animation':
@@ -53,13 +65,13 @@ const Speak = ({
       case 'application/vnd.microsoft.card.video':
       case 'application/vnd.microsoft.card.hero':
       case 'application/vnd.microsoft.card.thumbnail':
-        lines.push(content.title);
-        lines.push(content.subtitle);
-        lines.push(content.text);
+        lines.push(title);
+        lines.push(subtitle);
+        lines.push(text);
         break;
 
       case 'application/vnd.microsoft.card.receipt':
-        lines.push(content.title);
+        lines.push(title);
         break;
 
       default: break;
@@ -67,7 +79,7 @@ const Speak = ({
   });
 
   return (
-    <>
+    <React.Fragment>
       <Say
         onEnd={ markAsSpoken }
         speak={ lines.filter(line => line).join('\r\n') }
@@ -80,12 +92,20 @@ const Speak = ({
             voice={ selectVoice }
           />
       }
-    </>
+    </React.Fragment>
   );
 };
 
 Speak.propTypes = {
   activity: PropTypes.shape({
+    attachments: PropTypes.arrayOf(
+      PropTypes.shape({
+        speak: PropTypes.string,
+        subtitle: PropTypes.string,
+        text: PropTypes.string,
+        title: PropTypes.string
+      })
+    ),
     speak: PropTypes.string,
     text: PropTypes.string
   }).isRequired,

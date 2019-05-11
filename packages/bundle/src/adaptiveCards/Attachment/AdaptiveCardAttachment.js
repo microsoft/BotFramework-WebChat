@@ -61,6 +61,6 @@ AdaptiveCardAttachment.propTypes = {
   // TODO: [P2] We should rename adaptiveCards to adaptiveCardsPolyfill
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any
+    content: PropTypes.any.isRequired
   }).isRequired
 };

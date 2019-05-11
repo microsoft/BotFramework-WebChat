@@ -91,6 +91,7 @@ export default class AdaptiveCardBuilder {
 
       textblock.speak = text;
       textblock.text = text;
+
       container.addItem(textblock);
     }
   }

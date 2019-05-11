@@ -49,7 +49,7 @@ class DebouncedConnectivityStatus extends React.Component {
 }
 
 DebouncedConnectivityStatus.defaultProps = {
-  children: false
+  children: undefined
 };
 
 DebouncedConnectivityStatus.propTypes = {

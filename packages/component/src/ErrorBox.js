@@ -18,7 +18,7 @@ const ErrorBox = ({
   </div>;
 
 ErrorBox.defaultProps = {
-  children: false,
+  children: undefined,
   message: ''
 };
 

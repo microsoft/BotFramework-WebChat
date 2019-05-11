@@ -341,11 +341,11 @@ export default ConnectedComposerWithStore
 //       We should decide which data is needed for React but not in other environment such as CLI/VSCode
 
 Composer.defaultProps = {
-  activityRenderer: null,
-  adaptiveCardHostConfig: null,
-  attachmentRenderer: null,
-  cardActionMiddleware: null,
-  children: false,
+  activityRenderer: undefined,
+  adaptiveCardHostConfig: undefined,
+  attachmentRenderer: undefined,
+  cardActionMiddleware: undefined,
+  children: undefined,
   disabled: false,
   grammars: [],
   groupTimestamp: true,
@@ -353,13 +353,13 @@ Composer.defaultProps = {
   referenceGrammarID: '',
   renderMarkdown: text => text,
   sendTimeout: 20000,
-  sendTyping: false,
+  sendTyping: undefined,
   sendTypingIndicator: false,
-  store: null,
+  store: undefined,
   styleOptions: {},
   userID: '',
   username: '',
-  webSpeechPonyfillFactory: null
+  webSpeechPonyfillFactory: undefined
 };
 
 Composer.propTypes = {

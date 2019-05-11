@@ -100,7 +100,8 @@ rules:
   #   hoist: all
   no-shadow-restricted-names: error
   no-undef-init: error
-  no-undefined: error
+  # "undefined" is commonly used for defaults
+  # no-undefined: off
   no-unused-vars:
   - error
   - argsIgnorePattern: ^_$

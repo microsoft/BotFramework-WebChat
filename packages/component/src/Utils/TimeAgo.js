@@ -43,13 +43,16 @@ class TimeAgo extends React.Component {
   }
 
   render() {
-    const { state } = this;
+    const { text, timer } = this.state;
 
     return (
-      <>
-        { state.text }
-        <Timer at={ state.timer } onInterval={ this.handleInterval } />
-      </>
+      <React.Fragment>
+        { text }
+        <Timer
+          at={ timer }
+          onInterval={ this.handleInterval }
+        />
+      </React.Fragment>
     );
   }
 }

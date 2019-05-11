@@ -31,7 +31,7 @@ const CarouselLayout = ({
               { children }
             </CarouselFilmStrip>
             { scrollBarWidth !== '100%' &&
-              <>
+              <React.Fragment>
                 <Flipper
                   aria-label={ localize('Left', language) }
                   className={ classNames(
@@ -56,7 +56,7 @@ const CarouselLayout = ({
                     { '>' }
                   </div>
                 </Flipper>
-              </>
+              </React.Fragment>
             }
           </div>
         }
@@ -66,7 +66,7 @@ const CarouselLayout = ({
 };
 
 CarouselLayout.defaultProps = {
-  children: false,
+  children: undefined,
   timestampClassName: ''
 };
 

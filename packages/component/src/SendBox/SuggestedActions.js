@@ -34,7 +34,7 @@ const connectSuggestedActions = (...selectors) => connectToWebChat(
 const SuggestedActions = ({
   className,
   styleSet,
-  suggestedActions
+  suggestedActions = []
 }) =>
   !!suggestedActions.length &&
     <BasicFilm

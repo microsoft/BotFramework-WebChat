@@ -34,7 +34,8 @@ const connectSendTextBox = (...selectors) => connectToWebChat(
 
       if (key === 'Enter' && !shiftKey) {
         event.preventDefault();
-        if(sendBoxValue) {
+
+        if (sendBoxValue) {
           setSendBox(sendBoxValue.trim());
           scrollToEnd();
           submitSendBox();

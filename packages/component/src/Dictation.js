@@ -23,39 +23,55 @@ class Dictation extends React.Component {
   }
 
   handleDictate({ result: { transcript } = {} }) {
-    const { props } = this;
+    const {
+      setDictateInterims,
+      setDictateState,
+      setSendBox,
+      startSpeakingActivity,
+      stopDictate,
+      submitSendBox
+    } = this.props;
 
-    props.setDictateInterims([]);
-    props.setDictateState(IDLE);
-    props.stopDictate();
+    setDictateInterims([]);
+    setDictateState(IDLE);
+    stopDictate();
 
     if (transcript) {
-      props.setSendBox(transcript);
-      props.submitSendBox('speech');
-      props.startSpeakingActivity();
+      setSendBox(transcript);
+      submitSendBox('speech');
+      startSpeakingActivity();
     }
   }
 
   handleDictating({ results = [] }) {
-    const { props } = this;
+    const {
+      setDictateInterims,
+      setDictateState,
+      setSendBox
+    } = this.props;
+
     const interims = results.map(({ transcript }) => transcript);
 
-    props.setDictateInterims(interims);
-    props.setDictateState(DICTATING);
+    setDictateInterims(interims);
+    setDictateState(DICTATING);
 
     // This is for two purposes:
     // 1. Set send box will also trigger send typing
     // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
-    props.setSendBox(interims.join(' '));
+    setSendBox(interims.join(' '));
   }
 
   handleError(event) {
-    const { props } = this;
+    const {
+      onError,
+      setDictateState,
+      stopDictate
+    } = this.props;
 
-    props.setDictateState(IDLE);
-    props.stopDictate();
+    setDictateState(IDLE);
+    stopDictate();
 
-    props.onError && props.onError(event);
+    onError && onError(event);
   }
 
   render() {
@@ -64,14 +80,15 @@ class Dictation extends React.Component {
         dictateState,
         disabled,
         language,
-        webSpeechPonyfill
+        webSpeechPonyfill: {
+          SpeechGrammarList,
+          SpeechRecognition
+        } = {}
       },
       handleDictate,
       handleDictating,
       handleError
     } = this;
-
-    const { SpeechGrammarList, SpeechRecognition } = webSpeechPonyfill || {};
 
     return (
       <DictateComposer
@@ -89,7 +106,7 @@ class Dictation extends React.Component {
 
 Dictation.defaultProps = {
   disabled: false,
-  webSpeechPonyfill: null
+  webSpeechPonyfill: undefined
 };
 
 Dictation.propTypes = {

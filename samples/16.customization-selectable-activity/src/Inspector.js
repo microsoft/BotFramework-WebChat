@@ -2,10 +2,10 @@ import React, { Component } from "react";
 
 function NothingSelected() {
   return (
-    <>
+    <React.Fragment>
       <h4>Nothing selected</h4>
       <p>Click on any message sent from the user or the bot to inspect it.</p>
-    </>
+    </React.Fragment>
   )
 }
 

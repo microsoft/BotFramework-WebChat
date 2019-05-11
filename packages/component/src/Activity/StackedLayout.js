@@ -64,8 +64,14 @@ const connectStackedLayout = (...selectors) => connectToWebChat(
         userAvatarInitials
       }
     }
-  }, { activity }) => ({
-    avatarInitials: activity.from && activity.from.role === 'user' ? userAvatarInitials : botAvatarInitials,
+  }, {
+    activity: {
+      from: {
+        role
+      } = {}
+    }
+  }) => ({
+    avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
     language,
 
     // TODO: [P4] We want to deprecate botAvatarInitials/userAvatarInitials because they are not as helpful as avatarInitials
@@ -83,15 +89,27 @@ const StackedLayout = ({
   styleSet,
   timestampClassName
 }) => {
-  const fromUser = activity.from.role === 'user';
-  const { state } = activity.channelData || {};
+  const {
+    attachments = [],
+    channelData: {
+      messageBack: {
+        displayText: messageBackDisplayText
+      } = {},
+      state
+    } = {},
+    from: {
+      role
+    } = {},
+    text,
+    textFormat,
+    timestamp,
+    type
+  } = activity;
+
+  const fromUser = role === 'user';
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, activity.text, activity.timestamp);
-  const activityDisplayText =
-    activity.channelData
-    && activity.channelData.messageBack
-    && activity.channelData.messageBack.displayText
-    || activity.text;
+  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, text, timestamp);
+  const activityDisplayText = messageBackDisplayText || text;
 
   return (
     <div
@@ -108,7 +126,7 @@ const StackedLayout = ({
       />
       <div className="content">
         {
-          activity.type === 'typing' ?
+          type === 'typing' ?
             <div className="webchat__row typing">
               {
                 children({
@@ -129,8 +147,8 @@ const StackedLayout = ({
                   children({
                     activity,
                     attachment: {
-                      contentType: textFormatToContentType(activity.textFormat),
-                      content: activityDisplayText
+                      content: activityDisplayText,
+                      contentType: textFormatToContentType(textFormat)
                     }
                   })
                 }
@@ -139,7 +157,7 @@ const StackedLayout = ({
             </div>
         }
         {
-          (activity.attachments || []).map((attachment, index) =>
+          attachments.map((attachment, index) =>
             <div className="webchat__row attachment" key={ index }>
               <Bubble
                 className="attachment bubble"
@@ -170,7 +188,7 @@ const StackedLayout = ({
 };
 
 StackedLayout.defaultProps = {
-  children: false,
+  children: undefined,
   timestampClassName: ''
 };
 
@@ -183,9 +201,11 @@ StackedLayout.propTypes = {
       })
     }),
     from: PropTypes.shape({
-      role: PropTypes.string
+      role: PropTypes.string.isRequired
     }).isRequired,
     text: PropTypes.string,
+    textFormat: PropTypes.string,
+    timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,
   avatarInitials: PropTypes.string.isRequired,

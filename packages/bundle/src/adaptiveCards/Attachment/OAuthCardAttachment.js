@@ -13,7 +13,7 @@ export default class OAuthCardAttachment extends React.Component {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
 
       builder.addCommonHeaders(content);
-      builder.addButtons(content.buttons, true);
+      builder.addButtons((content || {}).buttons, true);
 
       return builder.card;
     });
@@ -23,7 +23,9 @@ export default class OAuthCardAttachment extends React.Component {
     const {
       props: {
         adaptiveCards,
-        attachment: { content } = {}
+        attachment: {
+          content
+        } = {}
       }
     } = this;
 
@@ -36,6 +38,8 @@ export default class OAuthCardAttachment extends React.Component {
 OAuthCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any.isRequired
+    content: PropTypes.shape({
+      buttons: PropTypes.array
+    }).isRequired
   }).isRequired
 };

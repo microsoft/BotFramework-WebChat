@@ -4,12 +4,12 @@ import React from 'react';
 export default class Timer extends React.Component {
   componentDidMount() {
     const { at } = this.props;
+
     this.schedule(at);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps({ at: nextAt }) {
     const { at } = this.props;
-    const { at: nextAt } = nextProps;
 
     if (at !== nextAt) {
       this.schedule(nextAt);
@@ -38,7 +38,7 @@ export default class Timer extends React.Component {
 }
 
 Timer.defaultProps = {
-  onInterval: null
+  onInterval: undefined
 };
 
 Timer.propTypes = {

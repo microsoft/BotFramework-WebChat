@@ -14,60 +14,84 @@ class ReceiptCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.buildCard = memoize((adaptiveCards, content, language) => {
+    this.buildCard = memoize((
+      adaptiveCards,
+      {
+        buttons,
+        facts,
+        items,
+        tax,
+        title,
+        total,
+        vat
+      },
+      language
+    ) => {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
       const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
 
-      builder.addTextBlock(content.title, { size: TextSize.Medium, weight: TextWeight.Bolder });
+      builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder });
 
-      const columns = builder.addColumnSet([75, 25]);
+      if (facts) {
+        const [firstFactColumn, lastFactColumn] = builder.addColumnSet([75, 25]);
+
+        // tslint:disable-next-line:no-unused-expression
+        facts.map(({ key, value }) => {
+          builder.addTextBlock(key, { size: TextSize.Medium }, firstFactColumn);
+          builder.addTextBlock(value, { size: TextSize.Medium, horizontalAlignment: HorizontalAlignment.Right }, lastFactColumn);
+        });
+      }
 
       // tslint:disable-next-line:no-unused-expression
-      content.facts && content.facts.map(fact => {
-        builder.addTextBlock(fact.key, { size: TextSize.Medium }, columns[0]);
-        builder.addTextBlock(fact.value, { size: TextSize.Medium, horizontalAlignment: HorizontalAlignment.Right }, columns[1]);
-      });
+      items && items.map(({
+        image: {
+          tap,
+          url
+        } = {},
+        price,
+        subtitle,
+        title
+      }) => {
+        let itemColumns;
 
-      // tslint:disable-next-line:no-unused-expression
-      content.items && content.items.map(item => {
-        if (item.image) {
-          const columns = builder.addColumnSet([15, 75, 10]);
+        if (url) {
+          const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
-          builder.addImage(item.image.url, columns[0], item.image.tap);
-          builder.addTextBlock(item.title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, columns[1]);
-          builder.addTextBlock(item.subtitle, { size: TextSize.Medium, wrap: true }, columns[1]);
-          builder.addTextBlock(item.price, { horizontalAlignment: HorizontalAlignment.Right }, columns[2]);
+          itemColumns = columns;
+          builder.addImage(url, itemImageColumn, tap);
         } else {
-          const columns = builder.addColumnSet([75, 25]);
-
-          builder.addTextBlock(item.title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, columns[0]);
-          builder.addTextBlock(item.subtitle, { size: TextSize.Medium, wrap: true }, columns[0]);
-          builder.addTextBlock(item.price, { horizontalAlignment: HorizontalAlignment.Right }, columns[1]);
+          itemColumns = builder.addColumnSet([75, 25]);
         }
+
+        const [itemTitleColumn, itemPriceColumn] = itemColumns;
+
+        builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, itemTitleColumn);
+        builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: true }, itemTitleColumn);
+        builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
       });
 
-      if (!nullOrUndefined(content.vat)) {
+      if (!nullOrUndefined(vat)) {
         const vatCol = builder.addColumnSet([75, 25]);
 
         builder.addTextBlock(localize('VAT', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
-        builder.addTextBlock(content.vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
+        builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
       }
 
-      if (!nullOrUndefined(content.tax)) {
+      if (!nullOrUndefined(tax)) {
         const taxCol = builder.addColumnSet([75, 25]);
 
         builder.addTextBlock(localize('Tax', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
-        builder.addTextBlock(content.tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
+        builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
       }
 
-      if (!nullOrUndefined(content.total)) {
+      if (!nullOrUndefined(total)) {
         const totalCol = builder.addColumnSet([75, 25]);
 
         builder.addTextBlock(localize('Total', language), { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
-        builder.addTextBlock(content.total, { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[1]);
+        builder.addTextBlock(total, { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[1]);
       }
 
-      builder.addButtons(content.buttons);
+      builder.addButtons(buttons);
 
       return builder.card;
     });
@@ -76,7 +100,9 @@ class ReceiptCardAttachment extends React.Component {
   render() {
     const {
       adaptiveCards,
-      attachment: { content } = {},
+      attachment: {
+        content
+      } = {},
       language
     } = this.props;
 
@@ -92,7 +118,30 @@ class ReceiptCardAttachment extends React.Component {
 ReceiptCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any.isRequired
+    content: PropTypes.shape({
+      buttons: PropTypes.array,
+      fact: PropTypes.arrayOf(
+        PropTypes.shape({
+          key: PropTypes.string,
+          value: PropTypes.string
+        })
+      ),
+      items: PropTypes.arrayOf(
+        PropTypes.shape({
+          image: PropTypes.shape({
+            tap: PropTypes.any,
+            url: PropTypes.string.isRequired
+          }),
+          price: PropTypes.string.isRequired,
+          subtitle: PropTypes.string,
+          title: PropTypes.string.isRequired
+        })
+      ),
+      tax: PropTypes.string,
+      title: PropTypes.string,
+      total: PropTypes.string,
+      vat: PropTypes.string
+    }).isRequired
   }).isRequired,
   language: PropTypes.string.isRequired
 };

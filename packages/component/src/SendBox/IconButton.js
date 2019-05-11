@@ -20,10 +20,10 @@ const IconButton = ({ alt, children, className, disabled, onClick, styleSet }) =
 
 IconButton.defaultProps = {
   alt: '',
-  children: false,
+  children: undefined,
   className: '',
   disabled: false,
-  onClick: null
+  onClick: undefined
 };
 
 IconButton.propTypes = {

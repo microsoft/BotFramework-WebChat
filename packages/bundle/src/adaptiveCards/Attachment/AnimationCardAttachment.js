@@ -26,25 +26,33 @@ class AnimationCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCards, attachment, styleSet } } = this;
-    const { content = {} } = attachment || {};
+    const {
+      adaptiveCards,
+      attachment,
+      attachment: {
+        content: {
+          media = []
+        } = {}
+      } = {},
+      styleSet
+    } = this.props;
 
     return (
       <div className={ styleSet.animationCardAttachment }>
         <ul className="media-list">
           {
-            content.media.map((media, index) =>
+            media.map(({ profile = '', url }, index) =>
               <li key={ index }>
                 {
-                  /\.gif$/iu.test(media.url) ?
+                  /\.gif$/iu.test(url) ?
                     <ImageContent
-                      alt={ media.profile }
-                      src={ media.url }
+                      alt={ profile }
+                      src={ url }
                     />
                   :
                     <VideoContent
-                      alt={ media.profile }
-                      src={ media.url }
+                      alt={ profile }
+                      src={ url }
                     />
                 }
               </li>
@@ -63,7 +71,14 @@ class AnimationCardAttachment extends React.Component {
 AnimationCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
-    content: PropTypes.any.isRequired
+    content: PropTypes.shape({
+      media: PropTypes.arrayOf(
+        PropTypes.shape({
+          profile: PropTypes.string,
+          url: PropTypes.string.isRequired
+        })
+      ).isRequired
+    }).isRequired
   }).isRequired,
   styleSet: PropTypes.shape({
     animationCardAttachment: PropTypes.any.isRequired

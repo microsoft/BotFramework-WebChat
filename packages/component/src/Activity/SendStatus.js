@@ -1,7 +1,6 @@
+import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import { Constants } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import Localize, { localize } from '../Localization/Localize';
@@ -16,11 +15,11 @@ function sendFailed(language, replace) {
   const match = /\{Retry\}/u.exec(text);
 
   return match ?
-    <>
+    <React.Fragment>
       { text.substr(0, match.index) }
       { replace(retry) }
       { text.substr(match.index + match[0].length) }
-    </>
+    </React.Fragment>
   :
     text;
 }
@@ -48,7 +47,11 @@ const connectSendStatus = (...selectors) => connectToWebChat(
 )
 
 const SendStatus = ({
-  activity: { channelData: { state } = {} },
+  activity: {
+    channelData: {
+      state
+    } = {}
+  },
   language,
   retrySend,
   styleSet

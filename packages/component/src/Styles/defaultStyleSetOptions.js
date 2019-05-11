@@ -10,18 +10,18 @@ const DEFAULT_OPTIONS = {
   // Color and paddings
   accent: DEFAULT_ACCENT,
   backgroundColor: 'White',
+  cardEmphasisBackgroundColor: '#F0F0F0',
   paddingRegular: PADDING_REGULAR,
   paddingWide: 20,
   subtle: DEFAULT_SUBTLE,
-  cardEmphasisBackgroundColor: '#F0F0F0',
 
   // Word break
   messageActivityWordBreak: 'break-word', // 'normal' || 'break-all' || 'break-word' || 'keep-all'
 
-  // fonts
-  primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
-  monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
+  // Fonts
   fontSizeSmall: '80%',
+  monospaceFont: fontFamily(['Consolas', 'Courier New', 'monospace']),
+  primaryFont: fontFamily(['Calibri', 'Helvetica Neue', 'Arial', 'sans-serif']),
 
   // Avatar
   avatarSize: 40,

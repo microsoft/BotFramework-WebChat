@@ -1,3 +1,4 @@
+import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -11,8 +12,6 @@ import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
 import UploadButton from './SendBox/UploadButton';
-
-import { Constants } from 'botframework-webchat-core';
 
 const {
   DictateState: {
@@ -71,7 +70,7 @@ const BasicSendBox = ({
 BasicSendBox.defaultProps = {
   className: '',
   dictationStarted: false,
-  webSpeechPonyfill: null
+  webSpeechPonyfill: undefined
 };
 
 BasicSendBox.propTypes = {

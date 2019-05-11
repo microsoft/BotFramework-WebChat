@@ -73,7 +73,7 @@ rules:
   - allow: literal
   react/jsx-fragments:
   - error
-  - syntax
+  - element
   react/jsx-pascal-case: error
   react/jsx-props-no-multi-spaces: error
   react/jsx-sort-default-props: error
