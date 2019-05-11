@@ -8,6 +8,7 @@ export default function createAvatarStyle({
     backgroundColor: accent,
     borderRadius: '50%',
     color: 'White',
+    // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
     display: 'flex',
     fontFamily: primaryFont,
     height: avatarSize,

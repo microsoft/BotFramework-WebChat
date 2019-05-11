@@ -6,10 +6,12 @@ export default function ({
   paddingRegular
 }) {
   return {
+    // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
     display: 'flex',
     flexDirection: 'column',
 
     '& > ul.media-list': {
+      // TODO: [P2] We should not set "listStyleType" in styleSet, the user have no good reasons to change this.
       listStyleType: 'none',
       margin: paddingRegular,
       padding: 0
