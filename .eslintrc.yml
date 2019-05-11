@@ -31,10 +31,7 @@ rules:
   - error
   - exceptMethods:
     - render
-  # Re-enable later
-  # complexity:
-  # - error
-  # - 5
+  complexity: error
   curly: error
   default-case: error
   dot-notation: error
@@ -136,7 +133,7 @@ rules:
   - error
   - after
 
-  # Will produce shorter code if allowed
+  # Will produce shorter code if "off"
   # no-confusing-arrow:
   # - error
   # - allowParens: true # This will conflict with no-extra-parens
