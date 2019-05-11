@@ -114,6 +114,7 @@ export default class BasicWebChat extends React.Component {
         className,
         ...otherProps
       },
+      sendBoxRef,
       state: {
         activityRenderer,
         attachmentRenderer
@@ -126,7 +127,7 @@ export default class BasicWebChat extends React.Component {
       <Composer
         activityRenderer={ activityRenderer }
         attachmentRenderer={ attachmentRenderer }
-        sendBoxRef={ this.sendBoxRef }
+        sendBoxRef={ sendBoxRef }
         { ...otherProps }
       >
         { ({ styleSet }) =>
@@ -137,7 +138,7 @@ export default class BasicWebChat extends React.Component {
               className + ''
             ) }
             role="complementary"
-            sendFocusRef={ this.sendBoxRef }
+            sendFocusRef={ sendBoxRef }
           >
             <BasicTranscript className={ TRANSCRIPT_CSS + '' } />
             {

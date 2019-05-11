@@ -20,11 +20,10 @@ const VimeoContent = ({
   }).toString();
 
   return (
-    // TODO: We should encodeURI the URL
     <iframe
       aria-label={ alt }
       className={ styleSet.vimeoContent }
-      src={ `https://player.vimeo.com/video/${ embedID }?${ search }` }
+      src={ `https://player.vimeo.com/video/${ encodeURI(embedID) }?${ search }` }
     />
   );
 };

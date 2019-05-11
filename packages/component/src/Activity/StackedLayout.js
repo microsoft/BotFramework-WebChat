@@ -69,7 +69,7 @@ const connectStackedLayout = (...selectors) => connectToWebChat(
       from: {
         role
       } = {}
-    }
+    } = {}
   }) => ({
     avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
     language,

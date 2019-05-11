@@ -34,7 +34,10 @@ export default class CroppedImage extends React.Component {
 
     return (
       <div
-        className={ classNames(ROOT_CSS + '', className + '') }
+        className={ classNames(
+          ROOT_CSS + '',
+          className + ''
+        ) }
         style={ sizeStyle }
       >
         <img

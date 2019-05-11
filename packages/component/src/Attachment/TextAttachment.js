@@ -3,11 +3,16 @@ import React from 'react';
 
 import TextContent from './TextContent';
 
-const TextAttachment = ({ attachment }) =>
-  !!attachment.content &&
+const TextAttachment = ({
+  attachment: {
+    content,
+    contentType
+  } = {}
+}) =>
+  !!content &&
     <TextContent
-      contentType={ attachment.contentType }
-      text={ attachment.content }
+      contentType={ contentType }
+      text={ content }
     />
 
 TextAttachment.propTypes = {

@@ -24,7 +24,7 @@
     "clean": "npm run clean:dist && npm run clean:lib",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
-    "eslint": "eslint src/**/*.js src/**/*.ts",
+    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx?",
     "prepublishOnly": "npm run build:typecheck && npm run build:babel && webpack-cli",
     "watch": "concurrently --names \"babel,typecheck,webpack\" \"npm run watch:babel\" \"npm run watch:typecheck\" \"npm run watch:webpack\"",
     "watch:babel": "npm run build:babel-instrumented -- --watch",

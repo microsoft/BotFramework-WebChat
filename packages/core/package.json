@@ -22,7 +22,7 @@
     "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
-    "eslint": "eslint src/**/*.js src/**/*.ts",
+    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx?",
     "prepublishOnly": "npm run build:typecheck && npm run build:babel",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },

@@ -87,8 +87,10 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   renderCard() {
-    const { current } = this.contentRef;
     const {
+      contentRef: {
+        current
+      },
       props: {
         adaptiveCard,
         adaptiveCardHostConfig,

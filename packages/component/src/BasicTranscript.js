@@ -98,7 +98,10 @@ const BasicTranscript = ({
         >
           <ul
             aria-live="polite"
-            className={ classNames(LIST_CSS + '', styleSet.activities + '') }
+            className={ classNames(
+              LIST_CSS + '',
+              styleSet.activities + ''
+            ) }
             role="list"
           >
             {

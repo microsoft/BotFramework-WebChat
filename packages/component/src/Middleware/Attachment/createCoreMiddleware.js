@@ -11,7 +11,14 @@ import VideoAttachment from '../../Attachment/VideoAttachment';
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function () {
   return () => next => {
-    const Attachment = ({ activity, attachment, attachment: { contentType } }) =>
+    const Attachment = ({
+      activity = {},
+      attachment,
+      attachment: {
+        contentType,
+        contentUrl
+      } = {}
+    }) =>
       activity.type === 'typing' ?
         <TypingActivity />
       : /^audio\//u.test(contentType) ?
@@ -20,7 +27,7 @@ export default function () {
         <ImageAttachment activity={ activity } attachment={ attachment } />
       : /^video\//u.test(contentType) ?
         <VideoAttachment activity={ activity } attachment={ attachment } />
-      : attachment.contentUrl || contentType === 'application/octet-stream' ?
+      : contentUrl || contentType === 'application/octet-stream' ?
         <DownloadAttachment activity={ activity } attachment={ attachment } />
       : /^text\//u.test(contentType) ?
         <TextAttachment activity={ activity } attachment={ attachment } />
@@ -30,7 +37,8 @@ export default function () {
     Attachment.propTypes = {
       activity: PropTypes.any.isRequired,
       attachment: PropTypes.shape({
-        contentType: PropTypes.string.isRequired
+        contentType: PropTypes.string.isRequired,
+        contentUrl: PropTypes.string.isRequired
       }).isRequired
     };
 

@@ -11,6 +11,7 @@ parserOptions:
     jsx: true
   ecmaVersion: 10
   sourceType: module
+root: true
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason

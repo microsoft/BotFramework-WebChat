@@ -41,7 +41,7 @@ const SuggestedActions = ({
       autoCenter={ false }
       className={ classNames(
         styleSet.suggestedActions + '',
-        className
+        className + ''
       ) }
       showDots={ false }
       styleSet={ styleSet.options.suggestedActionsStyleSet }

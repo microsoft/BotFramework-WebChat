@@ -47,8 +47,9 @@ const BasicSendBox = ({
     <ConnectivityStatus />
     <SuggestedActions />
     <div className="main">
-      { !styleSet.options.hideUploadButton &&
-        <UploadButton />
+      {
+        !styleSet.options.hideUploadButton &&
+          <UploadButton />
       }
       {
         dictationStarted ?

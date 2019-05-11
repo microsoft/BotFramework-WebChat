@@ -7,23 +7,6 @@ import Localize, { localize } from '../Localization/Localize';
 
 const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
 
-// TODO: [P4] Currently, this is the only place which use a templated string
-//       We could refactor this into a general component if there are more templated strings
-function sendFailed(language, replace) {
-  const text = localize('SEND_FAILED_KEY', language);
-  const retry = localize('Retry', language);
-  const match = /\{Retry\}/u.exec(text);
-
-  return match ?
-    <React.Fragment>
-      { text.substr(0, match.index) }
-      { replace(retry) }
-      { text.substr(match.index + match[0].length) }
-    </React.Fragment>
-  :
-    text;
-}
-
 const connectSendStatus = (...selectors) => connectToWebChat(
   ({
     focusSendBox,
@@ -55,26 +38,42 @@ const SendStatus = ({
   language,
   retrySend,
   styleSet
-}) =>
-  <span aria-live="polite" className={ styleSet.sendStatus }>
-    {
-      state === SENDING ?
-        <Localize text="Sending" />
-      : state === SEND_FAILED ?
-        sendFailed(
-          language,
-          retry =>
+}) => {
+  // TODO: [P4] Currently, this is the only place which use a templated string
+  //       We could refactor this into a general component if there are more templated strings
+  const sendFailedText = localize('SEND_FAILED_KEY', language);
+  const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
+
+  return (
+    <span aria-live="polite" className={ styleSet.sendStatus }>
+      {
+        state === SENDING ?
+          <Localize text="Sending" />
+        : state === SEND_FAILED ?
+          sendFailedRetryMatch ?
+            <React.Fragment>
+              { sendFailedText.substr(0, sendFailedRetryMatch.index) }
+              <button
+                onClick={ retrySend }
+                type="button"
+              >
+                { localize('Retry', language) }
+              </button>
+              { sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length) }
+            </React.Fragment>
+          :
             <button
               onClick={ retrySend }
               type="button"
             >
-              { retry }
+              { sendFailedText }
             </button>
-        )
-      :
-        false
-    }
-  </span>;
+        :
+          false
+      }
+    </span>
+  );
+}
 
 SendStatus.propTypes = {
   activity: PropTypes.shape({

@@ -26,8 +26,16 @@ const CarouselLayout = ({
     <Composer numItems={ React.Children.count(children) }>
       <FilmContext.Consumer>
         { ({ scrollBarWidth }) =>
-          <div className={ classNames(ROOT_CSS + '', filmStyleSet.carousel + '') }>
-            <CarouselFilmStrip activity={ activity } timestampClassName={ timestampClassName }>
+          <div
+            className={ classNames(
+              ROOT_CSS + '',
+              filmStyleSet.carousel + ''
+            ) }
+          >
+            <CarouselFilmStrip
+              activity={ activity }
+              timestampClassName={ timestampClassName }
+            >
               { children }
             </CarouselFilmStrip>
             { scrollBarWidth !== '100%' &&

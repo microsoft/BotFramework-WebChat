@@ -15,7 +15,7 @@ const VideoAttachment = ({ attachment, styleSet }) =>
   <div
     className={ classNames(
       ROOT_CSS + '',
-      styleSet.videoAttachment
+      styleSet.videoAttachment + ''
     ) }
   >
     <VideoContent

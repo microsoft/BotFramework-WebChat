@@ -7,7 +7,12 @@ import DownloadIcon from './Assets/DownloadIcon';
 import { localize } from '../Localization/Localize';
 
 const DownloadAttachment = ({
-  activity: { attachments = [], channelData: { attachmentSizes = [] } = {} },
+  activity: {
+    attachments = [],
+    channelData: {
+      attachmentSizes = []
+    } = {}
+  } = {},
   attachment,
   language,
   styleSet

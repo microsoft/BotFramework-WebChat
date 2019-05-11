@@ -7,7 +7,11 @@ import connectToWebChat from '../connectToWebChat';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
-  whiteSpace: 'initial'
+  whiteSpace: 'initial',
+
+  '& > button': {
+    display: 'flex'
+  }
 });
 
 const connectSuggestedAction = (...selectors) => connectToWebChat(
@@ -42,7 +46,7 @@ const SuggestedAction = ({
   <div
     className={ classNames(
       styleSet.suggestedAction + '',
-      SUGGESTED_ACTION_CSS
+      SUGGESTED_ACTION_CSS + ''
     ) }
   >
     <button

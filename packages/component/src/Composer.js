@@ -156,15 +156,15 @@ function createLogic(props) {
   };
 }
 
-function setLanguageFromProps({ dispatch, locale }) {
+function dispatchSetLanguageFromProps({ dispatch, locale }) {
   dispatch(setLanguage(locale));
 }
 
-function setSendTimeoutFromProps({ dispatch, sendTimeout }) {
+function dispatchSetSendTimeoutFromProps({ dispatch, sendTimeout }) {
   dispatch(setSendTimeout(sendTimeout));
 }
 
-function setSendTypingIndicatorFromProps({ dispatch, sendTyping, sendTypingIndicator }) {
+function dispatchSetSendTypingIndicatorFromProps({ dispatch, sendTyping, sendTypingIndicator }) {
   if (typeof sendTyping === 'undefined') {
     dispatch(setSendTypingIndicator(!!sendTypingIndicator));
   } else {
@@ -199,9 +199,9 @@ class Composer extends React.Component {
     const { props } = this;
     const { directLine, userID, username } = props;
 
-    setLanguageFromProps(props);
-    setSendTimeoutFromProps(props);
-    setSendTypingIndicatorFromProps(props);
+    dispatchSetLanguageFromProps(props);
+    dispatchSetSendTimeoutFromProps(props);
+    dispatchSetSendTypingIndicatorFromProps(props);
 
     props.dispatch(createConnectAction({ directLine, userID, username }));
   }
@@ -211,11 +211,11 @@ class Composer extends React.Component {
     const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID, username } = props;
 
     if (prevProps.locale !== locale) {
-      setLanguageFromProps(props);
+      dispatchSetLanguageFromProps(props);
     }
 
     if (prevProps.sendTimeout !== sendTimeout) {
-      setSendTimeoutFromProps(props);
+      dispatchSetSendTimeoutFromProps(props);
     }
 
     if (
@@ -224,7 +224,7 @@ class Composer extends React.Component {
       // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
       || !prevProps.sendTyping !== !sendTyping
     ) {
-      setSendTypingIndicatorFromProps(props);
+      dispatchSetSendTypingIndicatorFromProps(props);
     }
 
     if (
@@ -255,8 +255,8 @@ class Composer extends React.Component {
         renderMarkdown,
         scrollToEnd,
         store,
-        userID: _userID, // We want to remove userID and username from propsForLogic
-        username: _username,
+        userID: _userID, // Ignoring eslint no-unused-vars: we just want to remove userID and username from propsForLogic
+        username: _username, // Ignoring eslint no-unused-vars: we just want to remove userID and username from propsForLogic
         webSpeechPonyfillFactory,
         ...propsForLogic
       },

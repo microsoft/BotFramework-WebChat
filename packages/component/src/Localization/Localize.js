@@ -65,26 +65,26 @@ function normalizeLanguage(language) {
     return 'nl-NL';
   } else if (language.startsWith('pl')) {
     return 'pl-PL';
+  } else if (language === 'pt-br') {
+    return 'pt-BR';
   } else if (language.startsWith('pt')) {
-    return language === 'pt-br' ? 'pt-BR' : 'pt-PT';
+    return 'pt-PT';
   } else if (language.startsWith('ru')) {
     return 'ru-RU';
   } else if (language.startsWith('sv')) {
     return 'sv-SE';
   } else if (language.startsWith('tr')) {
     return 'tr-TR';
+  } else if (language === 'zh-yue') {
+    return 'zh-YUE';
+  } else if (
+    language === 'zh-hant'
+    || language === 'zh-hk'
+    || language === 'zh-mo'
+    || language === 'zh-tw'
+  ) {
+    return 'zh-HANT';
   } else if (language.startsWith('zh')) {
-    if (language === 'zh-yue') {
-      return 'zh-YUE';
-    } else if (
-      language === 'zh-hant'
-      || language === 'zh-hk'
-      || language === 'zh-mo'
-      || language === 'zh-tw'
-    ) {
-      return 'zh-HANT';
-    }
-
     return 'zh-HANS';
   }
 

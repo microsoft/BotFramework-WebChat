@@ -1,10 +1,10 @@
 /* global global:readonly, VERSION:readonly */
+/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
 import { version as componentVersion } from 'botframework-webchat-component';
 import { version as coreVersion } from 'botframework-webchat-core';
 
 function setMetaTag(name, content) {
-  /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
   try {
     const { document } = global;
 

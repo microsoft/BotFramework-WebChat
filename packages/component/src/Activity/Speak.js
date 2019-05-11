@@ -18,12 +18,17 @@ const connectSpeakActivity = (...selectors) => connectToWebChat(
   }) => ({
     language,
     markAsSpoken: () => markActivity(activity, 'speak', false),
-    selectVoice: voices =>
-      [].find.call(voices, ({ lang }) => lang === activity.locale)
-      || [].find.call(voices, ({ lang }) => lang === language)
-      || [].find.call(voices, ({ lang }) => lang === window.navigator.language)
-      || [].find.call(voices, ({ lang }) => lang === 'en-US')
-      || voices[0]
+    selectVoice: voices => {
+      voices = [].slice.call(voices);
+
+      return (
+        voices.find(({ lang }) => lang === activity.locale)
+        || voices.find(({ lang }) => lang === language)
+        || voices.find(({ lang }) => lang === window.navigator.language)
+        || voices.find(({ lang }) => lang === 'en-US')
+        || voices[0]
+      );
+    }
   }),
   ...selectors
 );
@@ -78,17 +83,19 @@ const Speak = ({
     }
   });
 
+  const singleLine = lines.filter(line => line).join('\r\n');
+
   return (
     <React.Fragment>
       <Say
         onEnd={ markAsSpoken }
-        speak={ lines.filter(line => line).join('\r\n') }
+        speak={ singleLine }
         voice={ selectVoice }
       />
       {
         !!styleSet.options.showSpokenText &&
           <SayAlt
-            speak={ lines.filter(line => line).join('\r\n') }
+            speak={ singleLine }
             voice={ selectVoice }
           />
       }

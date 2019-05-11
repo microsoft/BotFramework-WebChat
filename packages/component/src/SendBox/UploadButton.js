@@ -78,7 +78,12 @@ class UploadButton extends React.Component {
     const uploadFileString = localize('Upload file', language);
 
     return (
-      <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
+      <div
+        className={ classNames(
+          ROOT_CSS + '',
+          styleSet.uploadButton + ''
+        ) }
+      >
         <input
           aria-hidden="true"
           disabled={ disabled }
