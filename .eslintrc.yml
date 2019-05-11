@@ -14,6 +14,8 @@ parserOptions:
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason
+
+  # Group - Best Practices
   no-async-promise-executor: error
   no-await-in-loop: error
   no-console:
@@ -92,6 +94,8 @@ rules:
   require-unicode-regexp: error
   wrap-iife: error
   yoda: error
+
+  # Group - Variables
   no-label-var: error
 
   # Re-enable later
@@ -111,6 +115,8 @@ rules:
   - argsIgnorePattern: ^_$
     varsIgnorePattern: ^_
   no-use-before-define: error
+
+  # Group - Node.js and CommonJS
   callback-return: error
   global-require: error
   handle-callback-err: error
@@ -119,6 +125,8 @@ rules:
   no-new-require: error
   no-path-concat: error
   no-sync: error
+
+  # Group - ECMAScript 6
   arrow-body-style:
   - error
   - as-needed
