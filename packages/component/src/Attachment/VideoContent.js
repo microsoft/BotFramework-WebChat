@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import HTMLVideoContent from './HTMLVideoContent';
@@ -29,7 +30,7 @@ function parseURL(url) {
   return { hostname, pathname, search };
 }
 
-export default ({ alt, autoPlay, loop, poster, src }) => {
+const VideoContent = ({ alt, autoPlay, loop, poster, src }) => {
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();
   const searchParams = new URLSearchParams(search);
@@ -80,3 +81,20 @@ export default ({ alt, autoPlay, loop, poster, src }) => {
       );
   }
 }
+
+VideoContent.defaultProps = {
+  alt: '',
+  autoPlay: false,
+  loop: false,
+  poster: ''
+};
+
+VideoContent.propTypes = {
+  alt: PropTypes.string,
+  autoPlay: PropTypes.bool,
+  loop: PropTypes.bool,
+  poster: PropTypes.string,
+  src: PropTypes.string.isRequired
+};
+
+export default VideoContent

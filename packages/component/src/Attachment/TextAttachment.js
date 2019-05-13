@@ -1,10 +1,25 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import TextContent from './TextContent';
 
-export default ({ attachment }) =>
-  !!attachment.content &&
+const TextAttachment = ({
+  attachment: {
+    content,
+    contentType
+  } = {}
+}) =>
+  !!content &&
     <TextContent
-      text={ attachment.content }
-      contentType={ attachment.contentType }
+      contentType={ contentType }
+      text={ content }
     />
+
+TextAttachment.propTypes = {
+  attachment: PropTypes.shape({
+    content: PropTypes.string.isRequired,
+    contentType: PropTypes.string.isRequired
+  }).isRequired
+};
+
+export default TextAttachment

@@ -3,22 +3,9 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import whileConnected from './effects/whileConnected';
-
 import { SEND_MESSAGE_BACK } from '../actions/sendMessageBack';
 import postActivity from '../actions/postActivity';
-
-export default function* () {
-  yield whileConnected(sendMessageBackToPostActivity);
-}
-
-function* sendMessageBackToPostActivity() {
-  yield takeEvery(
-    SEND_MESSAGE_BACK,
-    postActivityWithMessageBack
-  );
-}
-
+import whileConnected from './effects/whileConnected';
 
 function* postActivityWithMessageBack({ payload: { displayText, text, value }}) {
   if (text || value) {
@@ -33,4 +20,15 @@ function* postActivityWithMessageBack({ payload: { displayText, text, value }}) 
       value
     }));
   }
+}
+
+function* sendMessageBackToPostActivity() {
+  yield takeEvery(
+    SEND_MESSAGE_BACK,
+    postActivityWithMessageBack
+  );
+}
+
+export default function* () {
+  yield whileConnected(sendMessageBackToPostActivity);
 }

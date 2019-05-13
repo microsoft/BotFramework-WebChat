@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 10] }] */
+
 import {
   call,
   cancel,
@@ -8,18 +10,14 @@ import {
   take,
 } from 'redux-saga/effects';
 
-import forkPut from './effects/forkPut';
-
-import { decode } from 'jsonwebtoken';
-import random from 'math-random';
-
-import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
-
-import createPromiseQueue from '../createPromiseQueue';
-
 import { ConnectionStatus } from 'botframework-directlinejs';
+import { decode } from 'jsonwebtoken';
 
 import { CONNECT } from '../actions/connect';
+import createPromiseQueue from '../createPromiseQueue';
+import forkPut from './effects/forkPut';
+import uniqueID from '../utils/uniqueID';
+import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
 
 import {
   DISCONNECT,
@@ -36,7 +34,7 @@ const {
 } = ConnectionStatus;
 
 function randomUserID() {
-  return `r_${ random().toString(36).substr(2, 10) }`;
+  return `r_${ uniqueID().substr(0, 10) }`;
 }
 
 function* observeAndPutConnectionStatusUpdate(directLine) {
@@ -69,7 +67,7 @@ function rectifyUserID(directLine, userIDFromAction) {
       console.warn('Web Chat: user ID must be a string.');
 
       return randomUserID();
-    } else if (/^dl_/.test(userIDFromAction)) {
+    } else if (/^dl_/u.test(userIDFromAction)) {
 
       console.warn('Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.');
 

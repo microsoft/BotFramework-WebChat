@@ -1,54 +1,56 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
+
+function xMinutesAgo(dateStr) {
+  const date = new Date(dateStr);
+  const dateTime = date.getTime();
+
+  if (isNaN(dateTime)) {
+    return dateStr;
+  }
+
+  const now = Date.now();
+  const deltaInMs = now - dateTime;
+  const deltaInMinutes = Math.floor(deltaInMs / 60000);
+  const deltaInHours = Math.floor(deltaInMs / 3600000);
+
+  if (deltaInMinutes < 1) {
+    return 'Alldeles nyss';
+  } else if (deltaInMinutes === 1) {
+    return 'För en minut sen';
+  } else if (deltaInHours < 1) {
+    return `${ deltaInMinutes } minuter sedan`;
+  } else if (deltaInHours === 1) {
+    return `En timme sen`;
+  } else if (deltaInHours < 5) {
+    return `${ deltaInHours } timmar sen`;
+  } else if (deltaInHours <= 24) {
+    return `Idag`;
+  } else if (deltaInHours <= 48) {
+    return `Igår`;
+  } else if (window.Intl) {
+    return new Intl.DateTimeFormat('sv-SE').format(date);
+  }
+
+  return date.toLocaleString('sv-SE', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+}
+
 function botSaidSomething(avatarInitials, text, timestamp) {
-    return `Bot ${avatarInitials} sa, ${text}, ${xMinutesAgo(timestamp)}`;
+  return `Bot ${ avatarInitials } sa, ${ text }, ${ xMinutesAgo(timestamp) }`;
 }
 
 function userSaidSomething(avatarInitials, text, timestamp) {
-    return `Användare ${avatarInitials} sa, ${text}, ${xMinutesAgo(timestamp)}`;
-}
-
-function xMinutesAgo(dateStr) {
-    const date = new Date(dateStr);
-    const dateTime = date.getTime();
-
-    if (isNaN(dateTime)) {
-        return dateStr;
-    }
-
-    const now = Date.now();
-    const deltaInMs = now - dateTime;
-    const deltaInMinutes = Math.floor(deltaInMs / 60000);
-    const deltaInHours = Math.floor(deltaInMs / 3600000);
-
-    if (deltaInMinutes < 1) {
-        return 'Alldeles nyss';
-    } else if (deltaInMinutes === 1) {
-        return 'För en minut sen';
-    } else if (deltaInHours < 1) {
-        return `${deltaInMinutes} minuter sedan`;
-    } else if (deltaInHours === 1) {
-        return `En timme sen`;
-    } else if (deltaInHours < 5) {
-        return `${deltaInHours} timmar sen`;
-    } else if (deltaInHours <= 24) {
-        return `Idag`;
-    } else if (deltaInHours <= 48) {
-        return `Igår`;
-    } else if (window.Intl) {
-        return new Intl.DateTimeFormat('sv-SE').format(date);
-    } else {
-        return date.toLocaleString('sv-SE', {
-            day: '2-digit',
-            hour: '2-digit',
-            hour12: false,
-            minute: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    }
+  return `Användare ${ avatarInitials } sa, ${ text }, ${ xMinutesAgo(timestamp) }`;
 }
 
 export default {
-   FAILED_CONNECTION_NOTIFICATION: 'Kunde inte ansluta.',
+  FAILED_CONNECTION_NOTIFICATION: 'Kunde inte ansluta.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: 'kunde inte skicka, {Retry}.',
   SLOW_CONNECTION_NOTIFICATION: 'Det tar längre än vanligt att ansluta.',
@@ -79,4 +81,3 @@ export default {
   'Upload file': 'Ladd upp fil',
   'VAT': 'Moms'
 };
-

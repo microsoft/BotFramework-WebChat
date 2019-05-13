@@ -1,25 +1,39 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [25, 75] }] */
+
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-export default class extends React.Component {
+export default class ThumbnailCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.buildCard = memoize((adaptiveCards, content) => {
+    this.buildCard = memoize((
+      adaptiveCards,
+      content
+    ) => {
       const builder = new AdaptiveCardBuilder(adaptiveCards);
       const { TextSize, TextWeight } = adaptiveCards;
+      const {
+        buttons,
+        images,
+        subtitle,
+        text,
+        title
+      } = content;
 
-      if (content.images && content.images.length) {
-        const columns = builder.addColumnSet([75, 25]);
+      if (images && images.length) {
+        const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
+        const [{ tap, url }] = images;
 
-        builder.addTextBlock(content.title, { size: TextSize.Medium, weight: TextWeight.Bolder }, columns[0]);
-        builder.addTextBlock(content.subtitle, { isSubtle: true, wrap: true }, columns[0]);
-        builder.addImage(content.images[0].url, columns[1], content.images[0].tap);
-        builder.addTextBlock(content.text, { wrap: true });
-        builder.addButtons(content.buttons);
+        builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder }, firstColumn);
+        builder.addTextBlock(subtitle, { isSubtle: true, wrap: true }, firstColumn);
+        builder.addImage(url, lastColumn, tap);
+        builder.addTextBlock(text, { wrap: true });
+        builder.addButtons(buttons);
       } else {
         builder.addCommon(content);
       }
@@ -30,17 +44,37 @@ export default class extends React.Component {
 
   render() {
     const {
-      props: {
-        adaptiveCards,
-        attachment: { content } = {}
-      }
-    } = this;
+      adaptiveCards,
+      attachment: {
+        content,
+        content: { tap } = {}
+      } = {}
+    } = this.props;
 
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ content && content.tap }
+        tapAction={ tap }
       />
     );
   }
 }
+
+ThumbnailCardAttachment.propTypes = {
+  adaptiveCards: PropTypes.any.isRequired,
+  attachment: PropTypes.shape({
+    content: PropTypes.shape({
+      buttons: PropTypes.array,
+      images: PropTypes.arrayOf(
+        PropTypes.shape({
+          tap: PropTypes.any,
+          url: PropTypes.string.isRequired
+        })
+      ),
+      subtitle: PropTypes.string,
+      tap: PropTypes.any,
+      text: PropTypes.string,
+      title: PropTypes.string,
+    }).isRequired
+  }).isRequired
+};

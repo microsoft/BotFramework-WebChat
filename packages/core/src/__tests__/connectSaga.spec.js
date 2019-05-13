@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import connectSaga from '../sagas/connectSaga';
 import Observable from 'core-js/library/es7/observable';
 
@@ -12,29 +14,24 @@ beforeEach(() => {
   const sagaMiddleware = createSagaMiddleware();
 
   store = createStore(
-    ({ actionTypes = [] } = {}, { type }) => {
-      if (/^DIRECT_LINE\/(DIS|RE)?CONNECT/.test(type)) {
+    ({ actionTypes = [] } = {}, { type }) =>
+      /^DIRECT_LINE\/(DIS|RE)?CONNECT/u.test(type) ?
         // We are only interested in CONNECT_*, RECONNECT_*, and DISCONNECT_* actions.
-
-        return {
-          actionTypes: [...actionTypes, type]
-        };
-      } else {
-        return { actionTypes };
-      }
-    },
+        { actionTypes: [...actionTypes, type] }
+      :
+        { actionTypes },
     applyMiddleware(sagaMiddleware)
   );
 
   sagaMiddleware.run(connectSaga);
 
   directLine = {
-    activity$: new Observable(() => {}),
+    activity$: new Observable(() => () => 0),
     connectionStatus$: new Observable(observer => {
       connectionStatusObserver = observer;
       observer.next(0);
     }),
-    end: () => {},
+    end: () => 0,
     postActivity: () => new Observable(observer => {
       observer.next({ id: '' });
     })

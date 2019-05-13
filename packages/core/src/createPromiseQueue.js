@@ -15,13 +15,10 @@ export default function () {
     }
   };
 
-  const shift = () => {
-    if (queue.length) {
-      return Promise.resolve(queue.shift());
-    } else {
-      return (deferred || (deferred = createDeferred())).promise;
-    }
-  };
+  const shift = () => queue.length ?
+    Promise.resolve(queue.shift())
+  :
+    (deferred || (deferred = createDeferred())).promise;
 
   return {
     push,

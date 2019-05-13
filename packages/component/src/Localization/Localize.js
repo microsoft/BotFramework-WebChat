@@ -1,3 +1,6 @@
+// Localize is designed to be elaboratively return multiple results and possibly exceeding complexity requirement
+/* eslint complexity: "off" */
+
 import connectToWebChat from '../connectToWebChat';
 
 import csCZ from './cs-CZ';
@@ -24,53 +27,6 @@ import trTR from './tr-TR';
 import zhHANS from './zh-HANS';
 import zhHANT from './zh-HANT';
 import zhYUE from './zh-YUE';
-
-function getStrings(language) {
-  switch (normalizeLanguage(language || '')) {
-    case 'cs-CZ': return csCZ;
-    case 'da-DK': return daDK;
-    case 'de-DE': return deDE;
-    case 'el-GR': return elGR;
-    case 'es-ES': return esES;
-    case 'fi-FI': return fiFI;
-    case 'fr-FR': return frFR;
-    case 'hu-HU': return huHU;
-    case 'it-IT': return itIT;
-    case 'ja-JP': return jaJP;
-    case 'ko-KR': return koKR;
-    case 'lv-LV': return lvLV;
-    case 'nb-NO': return nbNO;
-    case 'nl-NL': return nlNL;
-    case 'pl-PL': return plPL;
-    case 'pt-BR': return ptBR;
-    case 'pt-PT': return ptPT;
-    case 'ru-RU': return ruRU;
-    case 'sv-SE': return svSE;
-    case 'tr-TR': return trTR;
-    case 'zh-HANS': return zhHANS;
-    case 'zh-HANT': return zhHANT;
-    case 'zh-YUE': return zhYUE;
-
-    default:
-      return enUS;
-  }
-}
-
-function localize(text, language, ...args) {
-  const string = (getStrings(language) || {})[text] || enUS[text];
-
-  if (typeof string === 'function') {
-    return string(...args);
-  } else {
-    return string || text;
-  }
-}
-
-export default connectToWebChat(
-  ({ language }) => ({ language })
-)(({ args, language, text }) => localize(text, language, ...(args || [])))
-
-export { localize }
 
 function normalizeLanguage(language) {
   language = language.toLowerCase();
@@ -109,32 +65,77 @@ function normalizeLanguage(language) {
     return 'nl-NL';
   } else if (language.startsWith('pl')) {
     return 'pl-PL';
+  } else if (language === 'pt-br') {
+    return 'pt-BR';
   } else if (language.startsWith('pt')) {
-    if (language === 'pt-br') {
-      return 'pt-BR';
-    } else {
-      return 'pt-PT';
-    }
+    return 'pt-PT';
   } else if (language.startsWith('ru')) {
     return 'ru-RU';
   } else if (language.startsWith('sv')) {
     return 'sv-SE';
   } else if (language.startsWith('tr')) {
     return 'tr-TR';
+  } else if (language === 'zh-yue') {
+    return 'zh-YUE';
+  } else if (
+    language === 'zh-hant'
+    || language === 'zh-hk'
+    || language === 'zh-mo'
+    || language === 'zh-tw'
+  ) {
+    return 'zh-HANT';
   } else if (language.startsWith('zh')) {
-    if (language === 'zh-yue') {
-      return 'zh-YUE';
-    } else if (
-      language === 'zh-hant'
-      || language === 'zh-hk'
-      || language === 'zh-mo'
-      || language === 'zh-tw'
-    ) {
-      return 'zh-HANT';
-    } else {
-      return 'zh-HANS';
-    }
+    return 'zh-HANS';
   }
 
   return 'en-US';
 }
+
+function getStrings(language) {
+  switch (normalizeLanguage(language || '')) {
+    case 'cs-CZ': return csCZ;
+    case 'da-DK': return daDK;
+    case 'de-DE': return deDE;
+    case 'el-GR': return elGR;
+    case 'es-ES': return esES;
+    case 'fi-FI': return fiFI;
+    case 'fr-FR': return frFR;
+    case 'hu-HU': return huHU;
+    case 'it-IT': return itIT;
+    case 'ja-JP': return jaJP;
+    case 'ko-KR': return koKR;
+    case 'lv-LV': return lvLV;
+    case 'nb-NO': return nbNO;
+    case 'nl-NL': return nlNL;
+    case 'pl-PL': return plPL;
+    case 'pt-BR': return ptBR;
+    case 'pt-PT': return ptPT;
+    case 'ru-RU': return ruRU;
+    case 'sv-SE': return svSE;
+    case 'tr-TR': return trTR;
+    case 'zh-HANS': return zhHANS;
+    case 'zh-HANT': return zhHANT;
+    case 'zh-YUE': return zhYUE;
+
+    default:
+      return enUS;
+  }
+}
+
+function localize(text, language, ...args) {
+  const string = (getStrings(language) || {})[text] || enUS[text];
+
+  if (typeof string === 'function') {
+    return string(...args);
+  }
+
+  return string || text;
+}
+
+export default connectToWebChat(
+  ({ language }) => ({ language })
+)(
+  ({ args, language, text }) => localize(text, language, ...args || [])
+)
+
+export { localize }

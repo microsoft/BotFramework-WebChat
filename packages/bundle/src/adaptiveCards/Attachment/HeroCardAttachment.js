@@ -1,10 +1,11 @@
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-export default class extends React.Component {
+export default class HeroCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,15 +24,27 @@ export default class extends React.Component {
     const {
       props: {
         adaptiveCards,
-        attachment: { content } = {}
+        attachment: {
+          content,
+          content: { tap } = {}
+        } = {}
       }
     } = this;
 
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ content && content.tap }
+        tapAction={ tap }
       />
     );
   }
 }
+
+HeroCardAttachment.propTypes = {
+  adaptiveCards: PropTypes.any.isRequired,
+  attachment: PropTypes.shape({
+    content: PropTypes.shape({
+      tap: PropTypes.any
+    }).isRequired
+  }).isRequired
+};

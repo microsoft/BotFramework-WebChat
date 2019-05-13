@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 72, 60000, 3600000] }] */
+
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();
@@ -31,18 +33,18 @@ function xMinutesAgo(dateStr) {
     return 'Позавчера';
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('ru-RU').format(date);
-  } else {
-    return date.toLocaleString(
-      'ru-RU',
-      {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      }
-    );
   }
+
+  return date.toLocaleString(
+    'ru-RU',
+    {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }
+  );
 }
 
 export default {

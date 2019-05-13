@@ -10,6 +10,7 @@ export default function ({
     '& > a': {
       alignItems: 'center',
       color: bubbleTextColor,
+      // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
       display: 'flex',
       padding: paddingRegular,
       textDecoration: 'none',

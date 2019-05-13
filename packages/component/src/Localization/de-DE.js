@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
+
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();
@@ -27,16 +29,16 @@ function xMinutesAgo(dateStr) {
     return `gestern`;
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('de-DE').format(date);
-  } else {
-    return date.toLocaleString('de-DE', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
   }
+
+  return date.toLocaleString('de-DE', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
 }
 
 export default {

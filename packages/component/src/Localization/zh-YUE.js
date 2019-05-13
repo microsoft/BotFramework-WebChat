@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
+
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();
@@ -28,16 +30,16 @@ function xMinutesAgo(dateStr) {
     return `尋日`;
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('zh-HK').format(date);
-  } else {
-    return date.toLocaleString('zh-HK', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
   }
+
+  return date.toLocaleString('zh-HK', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
 }
 
 export default {

@@ -1,12 +1,20 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(({ styleSet }) =>
+const TypingActivity = ({ styleSet }) =>
   <div className={ styleSet.typingActivity }>
     <TypingAnimation />
-  </div>
-)
+  </div>;
+
+TypingActivity.propTypes = {
+  styleSet: PropTypes.shape({
+    typingActivity: PropTypes.any.isRequired
+  }).isRequired
+};
+
+export default connectToWebChat(
+  ({ styleSet }) => ({ styleSet })
+)(TypingActivity)

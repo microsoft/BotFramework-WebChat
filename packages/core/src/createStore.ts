@@ -1,11 +1,11 @@
-import { applyMiddleware, createStore, Store } from 'redux';
+// This is for the racing between sagaMiddleware and store
+/* eslint no-use-before-define: "off" */
+
+import { applyMiddleware, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
 import reducer from './reducer';
 import sagas from './sagas';
-
-export type State = {}
-export type ChatStore = Store<State>
 
 export default function (initialState, ...middlewares) {
   const sagaMiddleware = createSagaMiddleware({
@@ -18,7 +18,7 @@ export default function (initialState, ...middlewares) {
     }
    });
 
-  const store: Store<State> = createStore(
+  const store = createStore(
     reducer,
     initialState || {},
     applyMiddleware(

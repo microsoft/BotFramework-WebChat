@@ -1,5 +1,8 @@
+/* eslint react/no-array-index-key: "off" */
+
 import BasicFilm from 'react-film';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
@@ -12,9 +15,9 @@ function suggestedActionText({ displayText, title, type, value }) {
     return title;
   } else if (typeof value === 'string') {
     return value;
-  } else {
-    return JSON.stringify(value);
   }
+
+  return JSON.stringify(value);
 }
 
 const connectSuggestedActions = (...selectors) => connectToWebChat(
@@ -28,19 +31,17 @@ const connectSuggestedActions = (...selectors) => connectToWebChat(
   ...selectors
 )
 
-export default connectSuggestedActions(
-  ({ styleSet }) => ({ styleSet })
-)(({
+const SuggestedActions = ({
   className,
   styleSet,
-  suggestedActions
+  suggestedActions = []
 }) =>
   !!suggestedActions.length &&
     <BasicFilm
       autoCenter={ false }
       className={ classNames(
         styleSet.suggestedActions + '',
-        className
+        className + ''
       ) }
       showDots={ false }
       styleSet={ styleSet.options.suggestedActionsStyleSet }
@@ -58,9 +59,7 @@ export default connectSuggestedActions(
           index
         ) =>
           <SuggestedAction
-            buttonText={
-             suggestedActionText({ displayText, title, type, value })
-            }
+            buttonText={ suggestedActionText({ displayText, title, type, value }) }
             displayText={ displayText }
             image={ image }
             key={ index }
@@ -70,7 +69,34 @@ export default connectSuggestedActions(
           />
         )
       }
-    </BasicFilm>
-)
+    </BasicFilm>;
+
+SuggestedActions.defaultProps = {
+  className: ''
+};
+
+SuggestedActions.propTypes = {
+  className: PropTypes.string,
+  styleSet: PropTypes.shape({
+    options: PropTypes.shape({
+      suggestedActionsStyleSet: PropTypes.any.isRequired
+    }).isRequired,
+    suggestedActions: PropTypes.any.isRequired
+  }).isRequired,
+  suggestedActions: PropTypes.arrayOf(
+    PropTypes.shape({
+      displayText: PropTypes.string,
+      image: PropTypes.string,
+      text: PropTypes.string,
+      title: PropTypes.string,
+      type: PropTypes.string.isRequired,
+      value: PropTypes.any
+    })
+  ).isRequired
+};
+
+export default connectSuggestedActions(
+  ({ styleSet }) => ({ styleSet })
+)(SuggestedActions)
 
 export { connectSuggestedActions }

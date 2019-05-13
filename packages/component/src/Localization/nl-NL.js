@@ -1,10 +1,4 @@
-function botSaidSomething(avatarInitials, text, timestamp) {
-  return `Bot ${avatarInitials} zei; ${text}, ${xMinutesAgo(timestamp)}`;
-}
-
-function userSaidSomething(avatarInitials, text, timestamp) {
-  return `Gebruiker ${avatarInitials} zei; ${text}, ${xMinutesAgo(timestamp)}`;
-}
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
 
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
@@ -24,40 +18,49 @@ function xMinutesAgo(dateStr) {
   } else if (deltaInMinutes === 1) {
     return 'Een minuut geleden';
   } else if (deltaInHours < 1) {
-    return `${deltaInMinutes} minuten geleden`;
+    return `${ deltaInMinutes } minuten geleden`;
   } else if (deltaInHours === 1) {
     return `Een uur geleden`;
   } else if (deltaInHours < 5) {
-    return `${deltaInHours} uur geleden`;
+    return `${ deltaInHours } uur geleden`;
   } else if (deltaInHours <= 24) {
     return `Vandaag`;
   } else if (deltaInHours <= 48) {
     return `Gisteren`;
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('nl-NL').format(date);
-  } else {
-    return date.toLocaleString('nl-NL', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
   }
+
+  return date.toLocaleString('nl-NL', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
+
+function botSaidSomething(avatarInitials, text, timestamp) {
+  return `Bot ${ avatarInitials } zei; ${ text }, ${ xMinutesAgo(timestamp) }`;
+}
+
+function userSaidSomething(avatarInitials, text, timestamp) {
+  return `Gebruiker ${ avatarInitials } zei; ${ text }, ${ xMinutesAgo(timestamp) }`;
 }
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Verbinding maken niet mogelijk.',
   SEND_FAILED_KEY: 'Versturen mislukt, {retry}.',
   SLOW_CONNECTION_NOTIFICATION: 'Verbinding maken duurt langer dan normaal…',
+  'Bot said something': botSaidSomething,
   'Chat': 'Chat',
   'Download file': 'Bestand downloaden',
+  'Listening…': 'Aan het luisteren…',
   'Microphone off': 'Microfoon uit',
   'Microphone on': 'Microfoon aan',
-  'Listening…': 'Aan het luisteren…',
+  'Retry': 'Opnieuw proberen',
   'retry': 'probeer opnieuw',
-  'Retry': 'Opnieuw proberen', 
   'Send': 'Verstuur',
   'Sending': 'versturen',
   'Speak': 'Spreek',
@@ -66,6 +69,7 @@ export default {
   'Total': 'Totaal',
   'Type your message': 'Typ je bericht',
   'Upload file': 'Bestand uploaden',
+  'User said something': userSaidSomething,
   'VAT': 'VAT',
   'X minutes ago': xMinutesAgo
 }

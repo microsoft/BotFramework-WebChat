@@ -68,7 +68,7 @@ export default class extends React.Component {
         className={ classNames(
           ROOT_CSS + '',
           { 'debug-view': debugView },
-          (className || '') + ''
+          className + ''
         ) }
       >
         { children }

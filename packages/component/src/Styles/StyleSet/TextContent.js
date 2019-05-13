@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 export default function ({
   bubbleMinHeight,
   primaryFont,

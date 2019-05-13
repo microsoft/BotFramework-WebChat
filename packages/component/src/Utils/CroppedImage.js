@@ -1,6 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const ROOT_CSS = css({
@@ -17,7 +18,7 @@ const ROOT_CSS = css({
   }
 });
 
-export default class Bubble extends React.Component {
+export default class CroppedImage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,7 +34,10 @@ export default class Bubble extends React.Component {
 
     return (
       <div
-        className={ classNames(ROOT_CSS + '', (className || '') + '') }
+        className={ classNames(
+          ROOT_CSS + '',
+          className + ''
+        ) }
         style={ sizeStyle }
       >
         <img
@@ -44,3 +48,16 @@ export default class Bubble extends React.Component {
     );
   }
 }
+
+CroppedImage.defaultProps = {
+  alt: '',
+  className: ''
+};
+
+CroppedImage.propTypes = {
+  alt: PropTypes.string,
+  className: PropTypes.string,
+  height: PropTypes.number.isRequired,
+  src: PropTypes.string.isRequired,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+};
