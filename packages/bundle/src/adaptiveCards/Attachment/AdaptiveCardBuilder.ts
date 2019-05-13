@@ -23,13 +23,15 @@ export interface BotFrameworkCardAction {
 
 function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
   const { type } = cardAction;
+  let action;
+
   if (
     type === 'imBack'
     || type === 'messageBack'
     || type === 'postBack'
-    || (type === 'signin' && includesOAuthButtons)
+    || type === 'signin' && includesOAuthButtons
   ) {
-    const action = new SubmitAction();
+    action = new SubmitAction();
 
     action.data = {
       __isBotFrameworkCardAction: true,
@@ -37,19 +39,17 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
     };
 
     action.title = cardAction.title;
-
-    return action;
   } else {
-    const action = new OpenUrlAction();
+    action = new OpenUrlAction();
 
     action.title = cardAction.title;
-    action.url = cardAction.type === 'call' ? 'tel:' + cardAction.value : cardAction.value;
-
-    return action;
+    action.url = cardAction.type === 'call' ? `tel:${ cardAction.value }` : cardAction.value;
   }
+
+  return action;
 }
 
-export class AdaptiveCardBuilder {
+export default class AdaptiveCardBuilder {
   card: AdaptiveCard;
   container: Container;
 
@@ -86,11 +86,12 @@ export class AdaptiveCardBuilder {
 
       // tslint:disable-next-line:forin
       for (const prop in template) {
-        (textblock as any)[prop] = (template as any)[prop];
+        textblock[prop] = template[prop];
       }
 
       textblock.speak = text;
       textblock.text = text;
+
       container.addItem(textblock);
     }
   }

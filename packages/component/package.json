@@ -18,17 +18,17 @@
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component#readme",
   "scripts": {
     "build": "npm run build:typecheck && npm run build:babel-instrumented",
-    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
     "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
+    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx?",
     "prepublishOnly": "npm run build:typecheck && npm run build:babel",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
@@ -43,12 +43,14 @@
     "typescript": "^3.1.6"
   },
   "dependencies": {
-    "adaptivecards": "~1.1.3",
-    "botframework-webchat-core": "^0.0.0-0",
+    "botframework-webchat-core": "0.0.0-0",
     "bytes": "^3.0.0",
     "classnames": "^2.2.6",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.13.0",
     "glamor": "^2.20.40",
     "memoize-one": "^5.0.2",
+    "prop-types": "^15.7.2",
     "react-dictate-button": "^1.1.3",
     "react-film": "1.2.1-master.db29968",
     "react-redux": "^5.0.7",

@@ -11,10 +11,9 @@ import {
 } from '../actions/reconnect';
 
 import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
-
 import { SAGA_ERROR } from '../actions/sagaError';
 
-const DEFAULT_STATE =  'uninitialized';
+const DEFAULT_STATE = 'uninitialized';
 
 export default function (state = DEFAULT_STATE, { type, meta }) {
   switch (type) {
@@ -23,6 +22,7 @@ export default function (state = DEFAULT_STATE, { type, meta }) {
       if (state !== 'uninitialized') {
         state = 'reconnecting';
       }
+
       break;
 
     case CONNECT_FULFILLED:
@@ -30,7 +30,7 @@ export default function (state = DEFAULT_STATE, { type, meta }) {
       break;
 
     case RECONNECT_FULFILLED:
-      state =  'reconnected';
+      state = 'reconnected';
       break;
 
     case CONNECT_REJECTED:

@@ -3,6 +3,7 @@ export default function createErrorBoxStyle({
   primaryFont
 }) {
   return {
+    // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
     display: 'flex',
     flexDirection: 'column',
     fontFamily: primaryFont,

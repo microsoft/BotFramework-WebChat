@@ -1,13 +1,15 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class Timer extends React.Component {
   componentDidMount() {
-    this.schedule(this.props.at);
+    const { at } = this.props;
+
+    this.schedule(at);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps({ at: nextAt }) {
     const { at } = this.props;
-    const { at: nextAt } = nextProps;
 
     if (at !== nextAt) {
       this.schedule(nextAt);
@@ -34,3 +36,12 @@ export default class Timer extends React.Component {
     return false;
   }
 }
+
+Timer.defaultProps = {
+  onInterval: undefined
+};
+
+Timer.propTypes = {
+  at: PropTypes.number.isRequired,
+  onInterval: PropTypes.func
+};

@@ -1,31 +1,11 @@
-import React from 'react';
-
 import { Constants } from 'botframework-webchat-core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import Localize, { localize } from '../Localization/Localize';
 
 const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
-
-// TODO: [P4] Currently, this is the only place which use a templated string
-//       We could refactor this into a general component if there are more templated strings
-function sendFailed(language, replace) {
-  const text = localize('SEND_FAILED_KEY', language);
-  const retry = localize('Retry', language);
-  const match = /\{Retry\}/.exec(text);
-
-  if (match) {
-    return (
-      <React.Fragment>
-        { text.substr(0, match.index) }
-        { replace(retry) }
-        { text.substr(match.index + match[0].length) }
-      </React.Fragment>
-    );
-  } else {
-    return text;
-  }
-}
 
 const connectSendStatus = (...selectors) => connectToWebChat(
   ({
@@ -49,34 +29,67 @@ const connectSendStatus = (...selectors) => connectToWebChat(
   ...selectors
 )
 
-export default connectSendStatus(
-  ({ styleSet }) => ({ styleSet })
-)(
-  ({
-    activity: { channelData: { state } = {} },
-    language,
-    retrySend,
-    styleSet
-  }) =>
+const SendStatus = ({
+  activity: {
+    channelData: {
+      state
+    } = {}
+  },
+  language,
+  retrySend,
+  styleSet
+}) => {
+  // TODO: [P4] Currently, this is the only place which use a templated string
+  //       We could refactor this into a general component if there are more templated strings
+  const sendFailedText = localize('SEND_FAILED_KEY', language);
+  const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
+
+  return (
     <span aria-live="polite" className={ styleSet.sendStatus }>
       {
         state === SENDING ?
           <Localize text="Sending" />
         : state === SEND_FAILED ?
-          sendFailed(
-            language,
-            retry =>
+          sendFailedRetryMatch ?
+            <React.Fragment>
+              { sendFailedText.substr(0, sendFailedRetryMatch.index) }
               <button
                 onClick={ retrySend }
                 type="button"
               >
-                { retry }
+                { localize('Retry', language) }
               </button>
-          )
+              { sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length) }
+            </React.Fragment>
+          :
+            <button
+              onClick={ retrySend }
+              type="button"
+            >
+              { sendFailedText }
+            </button>
         :
           false
       }
     </span>
-)
+  );
+}
+
+SendStatus.propTypes = {
+  activity: PropTypes.shape({
+    channelData: PropTypes.shape({
+      state: PropTypes.string
+    })
+  }).isRequired,
+  language: PropTypes.string.isRequired,
+  retrySend: PropTypes.func.isRequired,
+  styleSet: PropTypes.shape({
+    sendStatus: PropTypes.any.isRequired
+  }).isRequired
+};
+
+export default connectSendStatus(
+  ({ styleSet }) => ({ styleSet })
+)(SendStatus)
 
 export { connectSendStatus }

@@ -1,9 +1,16 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 2] }] */
+
+import { HostConfig } from 'adaptivecards';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
-import ErrorBox from '../ErrorBox';
-import getTabIndex from '../Utils/TypeFocusSink/getTabIndex';
+import { Components, connectToWebChat, getTabIndex, localize } from 'botframework-webchat-component';
+
+const { ErrorBox } = Components;
+
+function isPlainObject(obj) {
+  return Object.getPrototypeOf(obj) === Object.prototype;
+}
 
 class AdaptiveCardRenderer extends React.PureComponent {
   constructor(props) {
@@ -23,37 +30,37 @@ class AdaptiveCardRenderer extends React.PureComponent {
     this.renderCard();
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.adaptiveCard !== this.props.adaptiveCard) {
-      this.renderCard();
-    }
+  componentDidUpdate({ adaptiveCard: prevAdaptiveCard }) {
+    const { adaptiveCard } = this.props;
+
+    prevAdaptiveCard !== adaptiveCard && this.renderCard();
   }
 
   handleClick({ target }) {
+    const { disabled, onCardAction, tapAction } = this.props;
+
     // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
-    if (this.props.disabled) { return; }
+    if (!disabled) {
+      const tabIndex = getTabIndex(target);
 
-    const tabIndex = getTabIndex(target);
-
-    // If the user is clicking on something that is already clickable, do not allow them to click the card.
-    // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
-    if (typeof tabIndex !== 'number' || tabIndex < 0) {
-      const { props: { onCardAction, tapAction } } = this;
-
-      tapAction && onCardAction(tapAction);
+      // If the user is clicking on something that is already clickable, do not allow them to click the card.
+      // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
+      if (typeof tabIndex !== 'number' || tabIndex < 0) {
+        tapAction && onCardAction(tapAction);
+      }
     }
   }
 
   handleExecuteAction(action) {
-    const { props } = this;
+    const { disabled, onCardAction } = this.props;
 
     // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
-    if (props.disabled) { return; }
+    if (disabled) { return; }
 
     const actionTypeName = action.getJsonTypeName();
 
     if (actionTypeName === 'Action.OpenUrl') {
-      props.onCardAction({
+      onCardAction({
         type: 'openUrl',
         value: action.url
       });
@@ -65,9 +72,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
           const { cardAction } = actionData;
           const { displayText, type, value } = cardAction;
 
-          props.onCardAction({ displayText, type, value });
+          onCardAction({ displayText, type, value });
         } else {
-          props.onCardAction({
+          onCardAction({
             type: typeof action.data === 'string' ? 'imBack' : 'postBack',
             value: action.data
           });
@@ -80,8 +87,20 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   renderCard() {
-    const { current } = this.contentRef;
-    const { props: { adaptiveCard, adaptiveCardHostConfig, renderMarkdown } } = this;
+    const {
+      contentRef: {
+        current
+      },
+      props: {
+        adaptiveCard,
+        adaptiveCardHostConfig,
+        disabled,
+        renderMarkdown
+      },
+      state: {
+        error
+      }
+    } = this;
 
     if (current && adaptiveCard) {
       // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
@@ -97,12 +116,17 @@ class AdaptiveCardRenderer extends React.PureComponent {
         }
       };
 
-      adaptiveCard.hostConfig = adaptiveCardHostConfig;
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
+
+      if (adaptiveCardHostConfig) {
+        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig) ? new HostConfig(adaptiveCardHostConfig) : adaptiveCardHostConfig;
+      }
 
       const errors = adaptiveCard.validate();
 
       if (errors.length) {
+        // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
+
         return this.setState(() => ({ error: errors }));
       }
 
@@ -110,19 +134,17 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
       try {
         element = adaptiveCard.render();
-      } catch (err) {
-        return this.setState(() => ({ errors: err }));
+      } catch (error) {
+        return this.setState(() => ({ error }));
       }
 
       if (!element) {
         return this.setState(() => ({ error: 'Adaptive Card rendered as empty element' }));
       }
 
-      if (this.state.error) {
-        this.setState(() => ({ error: null }));
-      }
+      error && this.setState(() => ({ error: null }));
 
-      if (this.props.disabled) {
+      if (disabled) {
         const hyperlinks = element.querySelectorAll('a');
         const inputs = element.querySelectorAll('button, input, select, textarea');
 
@@ -139,7 +161,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
         });
       }
 
-      const firstChild = current.children[0];
+      const [firstChild] = current.children;
 
       if (firstChild) {
         current.replaceChild(element, firstChild);
@@ -158,7 +180,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
     return (
       error ?
         <ErrorBox message={ localize('Adaptive Card render error', language) }>
-          <pre>{ JSON.stringify(error, null, 2) }</pre>
+          <pre>
+            { JSON.stringify(error, null, 2) }
+          </pre>
         </ErrorBox>
       :
         <div
@@ -169,6 +193,24 @@ class AdaptiveCardRenderer extends React.PureComponent {
     );
   }
 }
+
+AdaptiveCardRenderer.propTypes = {
+  adaptiveCard: PropTypes.any.isRequired,
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
+  disabled: PropTypes.bool,
+  language: PropTypes.string.isRequired,
+  onCardAction: PropTypes.func.isRequired,
+  renderMarkdown: PropTypes.func.isRequired,
+  styleSet: PropTypes.shape({
+    adaptiveCardRenderer: PropTypes.any.isRequired
+  }).isRequired,
+  tapAction: PropTypes.func
+};
+
+AdaptiveCardRenderer.defaultProps = {
+  disabled: false,
+  tapAction: undefined
+};
 
 export default connectToWebChat(
   ({

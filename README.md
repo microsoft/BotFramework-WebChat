@@ -1,24 +1,25 @@
-<p align="center">
-  <a href="https://azure.microsoft.com/en-us/services/bot-service/">
-    <img src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/abs-logo.png" alt="Azure Bot Services logo" width="240" />
-  </a>
-</p>
+# ![Bot Framework Web Chat](./media/BotFrameworkWebChat_header.png)
 
-<p align="center">A highly-customizable web-based client for Azure Bot Services.</p>
+### [Click here to find out what's new for //build2019!](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
 
+# Bot Framework Web Chat
 <p align="center">
   <a href="https://badge.fury.io/js/botframework-webchat"><img alt="npm version" src="https://badge.fury.io/js/botframework-webchat.svg" /></a>
   <img alt="Build Status" src="https://fuselabs.visualstudio.com/BotFramework-WebChat/_apis/build/status/BotFramework-WebChat-daily?branchName=master" />
   <a href="https://coveralls.io/github/Microsoft/BotFramework-WebChat?branch=master"><img src="https://coveralls.io/repos/github/Microsoft/BotFramework-WebChat/badge.svg?branch=master" alt="Coverage Status" /></a>
 </p>
 
+This repository contains code for the Bot Framework Web Chat component.  The Bot Framework Web Chat component is a highly-customizable web-based client for the Bot Framework V4 SDK. The Bot Framework SDK v4 enable developers to model conversation and build sophisticated bot applications.
+
+This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/botframework) - a comprehensive framework for building enterprise-grade conversational AI experiences.
+
 ## Migrating from Web Chat v3 to v4
 
 There are three possible paths that migration might take when migrating from v3 to v4. First, please compare your beginning scenario:
 
-### My current website integrate Web Chat using an `<iframe>` element obtained from Azure Bot Services. I want to upgrade to v4.
+### My current website integrates Web Chat using an `<iframe>` element obtained from Azure Bot Services. I want to upgrade to v4.
 
-Starting from May 2019, we are rolling out v4 to websites that integrate Web Chat using `<iframe>` element. Please refer to [the embed documentation](https://github.com/Microsoft/BotFramework-WebChat/treemaster/packages/embed/README.md) for information on integrating Web Chat using `<iframe>`.
+Starting from May 2019, we are rolling out v4 to websites that integrate Web Chat using `<iframe>` element. Please refer to [the embed documentation](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/embed) for information on integrating Web Chat using `<iframe>`.
 
 ### My website is integrated with Web Chat v3 and uses customization options provided by Web Chat, no customization at all, or very little of my own customization that was not available with Web Chat.
 
@@ -64,14 +65,11 @@ Here is how how you can add Web Chat control to your website:
 </html>
 ```
 > `userID`, `username`, `locale`, `botAvatarInitials`, and `userAvatarInitials` are all optional parameters to pass into the `renderWebChat` method. To learn more about Web Chat props, look at the [Web Chat API Reference](#web-chat-api-reference) section of this `README`.
-
-![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/doc/weatherquery.png.jpg)
+![Screenshot of Web Chat](https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/weatherquery.png.jpg)
 
 ## Integrate with JavaScript
 
-Web Chat is designed to integrate with your existing web site using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
-
-### Full bundle
+Web Chat is designed to integrate with your existing website using JavaScript or React. Integrating with JavaScript will give you moderate styling and customizability.
 
 You can use the full, typical webchat package that contains the most typically used features.
 
@@ -92,33 +90,6 @@ You can use the full, typical webchat package that contains the most typically u
 ```
 
 See the working sample of the [full Web Chat bundle](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle).
-
-### Minimal bundle
-
-Instead of using the full, typical package of Web Chat, you can choose a lighter-weight sample with fewer features. This bundle does **not** contain:
-- Adaptive Cards
-- Cognitive Services
-- Markdown-It
-
-Since Adaptive Cards is not included in this bundle, rich cards that depend on Adaptive Cards will not render, e.g. hero cards, receipt cards, etc. A list of attachments that are not supported without Adaptive Cards can be found on the [`createAdaptiveCardMiddleware.js` file](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Middleware/Attachment/createAdaptiveCardMiddleware.js).
-
-See a working sample of the [minimal Web Chat bundle](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle).
-
-```html
-<!DOCTYPE html>
-<html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
-    <script>
-      window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ token: 'YOUR_DIRECT_LINE_TOKEN' }),
-        userID: 'YOUR_USER_ID'
-      }, document.getElementById('webchat'));
-    </script>
-  </body>
-</html>
-```
 
 ## Integrate with React
 
@@ -168,66 +139,6 @@ Web Chat is designed to be customizable without forking the source code. The tab
 | Recompose the whole UI | | :heavy_check_mark: |
 
 See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
-
-# Building the project
-
-> If you need to build this project for customization purposes, we strongly advise you to refer to our [samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples). If you cannot find any samples that fulfill your customization needs and you don't know how to do that, please [send your dream to us](https://github.com/Microsoft/BotFramework-WebChat/issues/).
->
-> Forking Web Chat to make your own customizations means you will lose access to our latest updates. Maintaining forks also introduces chores that are substantially more complicated than a version bump.
-
-To build Web Chat, you will need to make sure both your Node.js and NPM is latest version (either LTS or current).
-
-```sh
-npm install
-npm run bootstrap
-npm run build
-```
-
-## Build tasks
-
-There are 3 types of build tasks in the build process.
-
-- `npm run build`: Build for development (instrumented code for code coverage)
-   - Will bundle as `webchat-instrumented*.js`
-- `npm run watch`: Build for development with watch mode loop
-- `npm run prepublishOnly`: Build for production
-   - Will bundle as `webchat*.js`
-
-## Testing Web Chat for development purpose
-
-We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
-
-```sh
-cd packages/playground
-npm start
-```
-
-Then browse to http://localhost:3000/, and click on one of the connection options on the upper right corner.
-
-- Official MockBot: we hosted a live demo bot for testing Web Chat features
-- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line service](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
-
-You are also advised to test the CDN bundles by copying the test harness from our samples.
-
-## Building CDN bundle in development mode
-
-Currently, the standard build script does not build the CDN bundle (`webchat*.js`).
-
-```sh
-cd packages/bundle
-npm run webpack-dev
-```
-
-> By default, this script will run in watch mode.
-
-## Building CDN bundle in production mode
-
-If you want to build a production CDN bundle with minification, you can follow these steps.
-
-```sh
-cd packages/bundle
-npm run prepublishOnly
-```
 
 # Samples list
 
@@ -298,10 +209,15 @@ There are several properties that you might pass into your Web Chat React Compon
 | `username`                 | Specify a username.                                                                                                                                                                                                                                                                                                                       |
 | `webSpeechPonyFillFactory` | Specify the Web Speech object for text-to-speech and speech-to-text.                                                                                                                                                                                                                                                                      |
 
-# Contributions
+## Contributing
 
-Like us? [Star us](https://github.com/Microsoft/BotFramework-WebChat/stargazers).
+See our [Contributing page](https://github.com/Microsoft/BotFramework-WebChat/tree/master/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
 
-Want to make it better? [File an issue](https://github.com/Microsoft/BotFramework-WebChat/issues).
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-Don't like something you see? [Submit a pull request](https://github.com/Microsoft/BotFramework-WebChat/pulls).
+## Reporting Security Issues
+Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the [MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
+
+Copyright (c) Microsoft Corporation. All rights reserved.

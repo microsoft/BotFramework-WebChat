@@ -3,27 +3,43 @@ import {
 } from 'react-scroll-to-bottom';
 
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import Localize from '../Localization/Localize';
 
-const ScrollToEndButton = connectToWebChat(
-  ({ scrollToEnd, styleSet }) => ({ scrollToEnd, styleSet })
-)(({ className, scrollToEnd, styleSet }) =>
+const ScrollToEndButton = ({ className, scrollToEnd, styleSet }) =>
   <button
     className={ classNames(
       styleSet.scrollToEndButton + '',
-      (className || '') + ''
+      className + ''
     ) }
     onClick={ scrollToEnd }
     type="button"
   >
     <Localize text="New messages" />
-  </button>
-)
+  </button>;
 
-export default props =>
+ScrollToEndButton.defaultProps = {
+  className: ''
+};
+
+ScrollToEndButton.propTypes = {
+  className: PropTypes.string,
+  scrollToEnd: PropTypes.func.isRequired,
+  styleSet: PropTypes.shape({
+    scrollToEndButton: PropTypes.any.isRequired
+  }).isRequired
+};
+
+const WebChatConnectedScrollToEndButton = connectToWebChat(
+  ({ scrollToEnd, styleSet }) => ({ scrollToEnd, styleSet })
+)(ScrollToEndButton)
+
+const ConnectedScrollToEndButton = props =>
   <ScrollToBottomStateContext.Consumer>
-    { ({ sticky }) => !sticky && <ScrollToEndButton { ...props } /> }
+    { ({ sticky }) => !sticky && <WebChatConnectedScrollToEndButton { ...props } /> }
   </ScrollToBottomStateContext.Consumer>
+
+export default ConnectedScrollToEndButton

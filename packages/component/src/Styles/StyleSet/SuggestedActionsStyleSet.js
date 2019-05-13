@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { css } from 'glamor';
 import { createBasicStyleSet } from 'react-film';
 

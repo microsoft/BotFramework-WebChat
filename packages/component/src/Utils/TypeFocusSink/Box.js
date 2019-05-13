@@ -1,3 +1,6 @@
+// This is for defaultProps: { children: undefined }
+/* eslint no-undefined: "off" */
+
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -26,20 +29,31 @@ export default class Box extends React.Component {
   }
 
   focus() {
-    const { current } = this.props.sendFocusRef;
+    const {
+      sendFocusRef: {
+        current
+      }
+    } = this.props;
 
     current && current.focus();
   }
 
   handleKeyDownCapture(event) {
-    const target = event.target;
+    const {
+      altKey,
+      ctrlKey,
+      key,
+      metaKey,
+      target
+    } = event;
+
     const tabIndex = getTabIndex(target);
 
     if (
-      event.altKey
-      || (event.ctrlKey && event.key !== 'v')
-      || event.metaKey
-      || (!inputtableKey(event.key) && event.key !== 'Backspace')
+      altKey
+      || ctrlKey && key !== 'v'
+      || metaKey
+      || !inputtableKey(key) && key !== 'Backspace'
     ) {
       // Ignore if one of the utility key (except SHIFT) is pressed
       // E.g. CTRL-C on a link in one of the message should not jump to chat box
@@ -58,24 +72,53 @@ export default class Box extends React.Component {
   }
 
   render() {
-    const { props: { children, disabled, sendFocusRef, ...otherProps }, state } = this;
-    const context = this.createContext(state.context, sendFocusRef);
+    const {
+      focus,
+      handleKeyDownCapture,
+      props: {
+        children,
+        disabled,
+        sendFocusRef,
+        ...otherProps
+      },
+      state: {
+        context: stateContext
+      }
+    } = this;
+
+    const context = this.createContext(stateContext, sendFocusRef);
 
     return (
       <Context.Provider value={ context }>
         <div
           { ...otherProps }
-          onKeyDownCapture={ !disabled && this.handleKeyDownCapture }
+          onKeyDownCapture={ !disabled && handleKeyDownCapture }
           style={ DEFAULT_STYLE }
           tabIndex={ -1 }
         >
-          { typeof children === 'function' ? children({ focus: this.focus }) : children }
+          {
+            typeof children === 'function' ?
+              children({ focus })
+            :
+              children
+          }
         </div>
       </Context.Provider>
     );
   }
 }
 
+Box.defaultProps = {
+  children: undefined,
+  disabled: false
+};
+
 Box.propTypes = {
-  disabled: PropTypes.bool
+  children: PropTypes.any,
+  disabled: PropTypes.bool,
+  sendFocusRef: PropTypes.shape({
+    current: PropTypes.shape({
+      focus: PropTypes.func
+    })
+  }).isRequired
 };

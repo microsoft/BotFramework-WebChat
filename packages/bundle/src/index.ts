@@ -1,3 +1,6 @@
+/* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
+// window['WebChat'] is required for TypeScript
+
 export * from './index-minimal';
 
 import addVersion from './addVersion';

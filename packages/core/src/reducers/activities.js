@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, -1] }] */
+
 import updateIn from 'simple-update-in';
 
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
@@ -38,8 +40,8 @@ function upsertActivityWithSort(activities, nextActivity) {
     // We will remove all "typing" and "sending messages" activities
     // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
     !(
-      (type === 'typing' && from.id === nextFromID)
-      || (nextClientActivityID && clientActivityID === nextClientActivityID)
+      type === 'typing' && from.id === nextFromID
+      || nextClientActivityID && clientActivityID === nextClientActivityID
     )
   );
 
@@ -49,7 +51,7 @@ function upsertActivityWithSort(activities, nextActivity) {
 
   // TODO: [P4] Move "typing" into Constants.ActivityType
   const indexToInsert = nextActivity.type === 'typing' ? -1 : nextActivities.findIndex(({ channelData: { state } = {}, timestamp, type }) =>
-    (Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED) || type === 'typing'
+    Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED || type === 'typing'
   );
 
   // If no right place are found, append it
@@ -77,7 +79,7 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case POST_ACTIVITY_FULFILLED:
-      state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], activity =>
+      state = updateIn(state, [findByClientActivityID(meta.clientActivityID)], () =>
         // We will replace the activity with the version from the server
         updateIn(payload.activity, ['channelData', 'state'], () => SENT)
       );

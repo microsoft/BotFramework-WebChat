@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "private": true,
   "files": [
     "lib/**/*"
@@ -57,6 +57,7 @@
     "build:sample": "lerna run --scope=sample-* --stream build",
     "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "eslint": "lerna run --scope=botframework-webchat* --parallel --stream eslint",
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
     "test": "jest --no-cache",
@@ -79,7 +80,7 @@
     "get-port": "^4.0.0",
     "jest": "^24.1.0",
     "jest-image-snapshot": "^2.8.1",
-    "lerna": "^3.13.3",
+    "lerna": "^3.13.4",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "serve-handler": "^5.0.5"
   }

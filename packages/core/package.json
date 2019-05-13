@@ -18,10 +18,11 @@
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat/packages/core#readme",
   "scripts": {
     "build": "npm run build:typecheck && npm run build:babel-instrumented",
-    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__test__/**/*.js,__test__/**/*.ts,__test__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
+    "build:babel": "babel --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --source-maps inline --verbose src",
     "build:babel-instrumented": "npm run build:babel -- --env-name test",
     "build:typecheck": "tsc",
     "clean": "rimraf lib",
+    "eslint": "eslint src/**/*.js src/**/*.ts --ignore-pattern *.spec.[jt]sx? --ignore-pattern *.test.[jt]sx?",
     "prepublishOnly": "npm run build:typecheck && npm run build:babel",
     "watch": "concurrently --names \"babel,typecheck\" \"npm run build:babel-instrumented -- --watch\" \"npm run build:typecheck -- --preserveWatchOutput --watch\""
   },
@@ -41,6 +42,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",
+    "eslint": "^5.16.0",
     "jsonwebtoken": "^8.3.0",
     "math-random": "^1.0.4",
     "mime": "^2.3.1",

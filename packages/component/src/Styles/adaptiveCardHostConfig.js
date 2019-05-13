@@ -1,4 +1,3 @@
-import { HostConfig } from 'adaptivecards';
 import defaultStyleSetOptions from './defaultStyleSetOptions';
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
@@ -8,13 +7,13 @@ export default ({
   cardEmphasisBackgroundColor,
   primaryFont,
   subtle
-} = defaultStyleSetOptions) => new HostConfig({
+} = defaultStyleSetOptions) => ({
   containerStyles: {
     default: {
       foregroundColors: {
         default: {
           default: bubbleTextColor,
-          subtle: subtle
+          subtle
         },
         accent: {
           default: accent,
@@ -26,7 +25,7 @@ export default ({
       backgroundColor: cardEmphasisBackgroundColor,
       default: {
         default: bubbleTextColor,
-        subtle: subtle
+        subtle
       }
     }
   },

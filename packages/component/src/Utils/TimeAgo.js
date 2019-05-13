@@ -1,18 +1,24 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
 
+const TIMER_INTERVAL = 60000;
+
 function nextTimer(date) {
   const time = new Date(date).getTime();
   const now = Date.now();
 
-  if (time > now) {
-    return time;
-  } else {
-    return Math.ceil((now - time) / 60000) * 60000 + time;
-  }
+  return time > now ? time : Math.ceil((now - time) / TIMER_INTERVAL) * TIMER_INTERVAL + time;
+}
+
+function getStateFromProps({ language, value }) {
+  return {
+    text: localize('X minutes ago', language, value),
+    timer: nextTimer(value)
+  };
 }
 
 class TimeAgo extends React.Component {
@@ -21,39 +27,42 @@ class TimeAgo extends React.Component {
 
     this.handleInterval = this.handleInterval.bind(this);
 
-    this.state = this.getStateFromProps(props);
+    this.state = getStateFromProps(props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.updateText(nextProps);
+  componentWillReceiveProps({ language, value }) {
+    this.updateText({ language, value });
   }
 
   handleInterval() {
-    this.updateText(this.props);
+    const { language, value } = this.props;
+
+    this.updateText({ language, value });
   }
 
-  updateText(props) {
-    this.setState(() => this.getStateFromProps(props));
-  }
-
-  getStateFromProps(props) {
-    return {
-      text: localize('X minutes ago', props.language, props.value),
-      timer: nextTimer(props.value)
-    };
+  updateText({ language, value }) {
+    this.setState(() => getStateFromProps({ language, value }));
   }
 
   render() {
-    const { state } = this;
+    const { text, timer } = this.state;
 
     return (
       <React.Fragment>
-        { state.text }
-        <Timer at={ state.timer } onInterval={ this.handleInterval } />
+        { text }
+        <Timer
+          at={ timer }
+          onInterval={ this.handleInterval }
+        />
       </React.Fragment>
     );
   }
 }
+
+TimeAgo.propTypes = {
+  language: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired
+};
 
 export default connectToWebChat(
   ({ language }) => ({ language })

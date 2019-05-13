@@ -1,11 +1,11 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
-import AttachmentIcon from './Assets/AttachmentIcon';
-
 import { localize } from '../Localization/Localize';
+import AttachmentIcon from './Assets/AttachmentIcon';
+import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 
 const ROOT_CSS = css({
@@ -61,8 +61,10 @@ class UploadButton extends React.Component {
     current && current.click();
   }
 
-  handleFileChange(event) {
-    this.props.sendFiles(event.target.files);
+  handleFileChange({ target: { files } }) {
+    const { sendFiles } = this.props;
+
+    sendFiles(files);
 
     const { current } = this.inputRef;
 
@@ -76,7 +78,12 @@ class UploadButton extends React.Component {
     const uploadFileString = localize('Upload file', language);
 
     return (
-      <div className={ classNames(ROOT_CSS + '', styleSet.uploadButton + '') }>
+      <div
+        className={ classNames(
+          ROOT_CSS + '',
+          styleSet.uploadButton + ''
+        ) }
+      >
         <input
           aria-hidden="true"
           disabled={ disabled }
@@ -99,6 +106,19 @@ class UploadButton extends React.Component {
     );
   }
 }
+
+UploadButton.defaultProps = {
+  disabled: false
+};
+
+UploadButton.propTypes = {
+  disabled: PropTypes.bool,
+  language: PropTypes.string.isRequired,
+  sendFiles: PropTypes.func.isRequired,
+  styleSet: PropTypes.shape({
+    uploadButton: PropTypes.any.isRequired
+  }).isRequired
+};
 
 export default connectUploadButton(
   ({ styleSet }) => ({ styleSet })

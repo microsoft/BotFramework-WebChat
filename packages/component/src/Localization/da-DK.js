@@ -1,10 +1,4 @@
-function botSaidSomething(avatarInitials, text, timestamp) {
-  return `Bot ${ avatarInitials } sagde, ${ text }, ${ xMinutesAgo(timestamp) }`;
-}
-
-function userSaidSomething(avatarInitials, text, timestamp) {
-  return `Bruger ${ avatarInitials } sagde, ${ text }, ${ xMinutesAgo(timestamp) }`;
-}
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
 
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
@@ -35,18 +29,25 @@ function xMinutesAgo(dateStr) {
     return `Igår`;
   } else if (window.Intl) {
     return new Intl.DateTimeFormat('da-DK').format(date);
-  } else {
-    return date.toLocaleString('da-DK', {
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false,
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
   }
+
+  return date.toLocaleString('da-DK', {
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
 }
 
+function botSaidSomething(avatarInitials, text, timestamp) {
+  return `Bot ${ avatarInitials } sagde, ${ text }, ${ xMinutesAgo(timestamp) }`;
+}
+
+function userSaidSomething(avatarInitials, text, timestamp) {
+  return `Bruger ${ avatarInitials } sagde, ${ text }, ${ xMinutesAgo(timestamp) }`;
+}
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Kunne ikke tilslutte',

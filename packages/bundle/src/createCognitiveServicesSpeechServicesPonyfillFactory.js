@@ -1,5 +1,16 @@
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
+function injectReferenceGrammarID({ SpeechGrammarList, SpeechRecognition }, referenceGrammarID) {
+  return class extends SpeechRecognition {
+    start() {
+      this.grammars = new SpeechGrammarList();
+      this.grammars.referenceGrammar = referenceGrammarID || '';
+
+      return super.start();
+    }
+  };
+}
+
 export default async function ({
   authorizationToken,
   region,
@@ -27,15 +38,4 @@ export default async function ({
     speechSynthesis,
     SpeechSynthesisUtterance
   });
-}
-
-function injectReferenceGrammarID({ SpeechGrammarList, SpeechRecognition }, referenceGrammarID) {
-  return class extends SpeechRecognition {
-    start() {
-      this.grammars = new SpeechGrammarList();
-      this.grammars.referenceGrammar = referenceGrammarID || '';
-
-      return super.start();
-    }
-  };
 }

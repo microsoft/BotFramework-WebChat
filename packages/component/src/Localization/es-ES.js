@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
+
 function xMinutesAgo(date) {
   const now = Date.now();
   const deltaInMs = now - new Date(date).getTime();
@@ -9,18 +11,18 @@ function xMinutesAgo(date) {
   } else if (deltaInMinutes === 1) {
     return 'Hace un minuto';
   } else if (deltaInHours < 1) {
-    return `Hace ${deltaInMinutes} minutos`;
+    return `Hace ${ deltaInMinutes } minutos`;
   } else if (deltaInHours === 1) {
     return `Hace una hora`;
   } else if (deltaInHours < 5) {
-    return `Hace ${deltaInHours} horas`;
+    return `Hace ${ deltaInHours } horas`;
   } else if (deltaInHours <= 24) {
     return `Hoy`;
   } else if (deltaInHours <= 48) {
     return `Ayer`;
-  } else {
-    return new Intl.DateTimeFormat('es-ES').format(date);
   }
+
+  return new Intl.DateTimeFormat('es-ES').format(date);
 }
 
 export default {

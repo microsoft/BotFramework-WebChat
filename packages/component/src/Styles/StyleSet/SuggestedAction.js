@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 export default function createSuggestedActionStyle({
   paddingRegular,
   paddingWide,
@@ -21,7 +23,6 @@ export default function createSuggestedActionStyle({
     '& > button': {
       alignItems: 'center',
       borderRadius: suggestedActionBorderRadius,
-      display: 'flex',
       fontFamily: primaryFont,
       fontSize: 'inherit',
       height: suggestedActionHeight,
@@ -41,8 +42,8 @@ export default function createSuggestedActionStyle({
       },
 
       '& > img': {
-          height: suggestedActionImageHeight,
-          paddingRight: paddingRegular
+        height: suggestedActionImageHeight,
+        paddingRight: paddingRegular
       }
     }
   };

@@ -29,16 +29,6 @@ import {
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
-export default function* () {
-  yield whileConnected(function* ({ directLine, userID, username }) {
-    let numActivitiesPosted = 0;
-
-    yield takeEvery(POST_ACTIVITY, function* (action) {
-      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
-    });
-  });
-}
-
 function* postActivity(directLine, userID, username, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
   const locale = yield select(languageSelector);
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
@@ -117,4 +107,14 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       yield put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: new Error('cancelled') });
     }
   }
+}
+
+export default function* () {
+  yield whileConnected(function* ({ directLine, userID, username }) {
+    let numActivitiesPosted = 0;
+
+    yield takeEvery(POST_ACTIVITY, function* (action) {
+      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
+    });
+  });
 }

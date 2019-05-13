@@ -1,9 +1,8 @@
 import memoize from 'memoize-one';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-
-import { AdaptiveCard } from 'adaptivecards';
 
 function stripSubmitAction(card) {
   if (!card.actions) {
@@ -27,7 +26,7 @@ export default class AdaptiveCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAdaptiveCard = memoize((adaptiveCards, content, renderMarkdown) => {
+    this.createAdaptiveCard = memoize((adaptiveCards, content) => {
       const card = new adaptiveCards.AdaptiveCard();
       const errors = [];
 
@@ -39,7 +38,7 @@ export default class AdaptiveCardAttachment extends React.Component {
         ...content
       }));
 
-      AdaptiveCard.onParseError = null;
+      adaptiveCards.AdaptiveCard.onParseError = null;
 
       return {
         card,
@@ -49,11 +48,19 @@ export default class AdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCards, attachment, renderMarkdown } } = this;
-    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
+    const { props: { adaptiveCards, attachment: { content } } } = this;
+    const { card } = this.createAdaptiveCard(adaptiveCards, content);
 
     return (
       <AdaptiveCardRenderer adaptiveCard={ card } />
     );
   }
 }
+
+AdaptiveCardAttachment.propTypes = {
+  // TODO: [P2] We should rename adaptiveCards to adaptiveCardsPolyfill
+  adaptiveCards: PropTypes.any.isRequired,
+  attachment: PropTypes.shape({
+    content: PropTypes.any.isRequired
+  }).isRequired
+};
