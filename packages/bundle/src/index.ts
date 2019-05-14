@@ -7,7 +7,7 @@ import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
-import createStyleSet from './adaptiveCards/createStyleSetWithAdaptiveCards';
+import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
 import ReactWebChat from './FullReactWebChat';
 import renderMarkdown from './renderMarkdown';
 
