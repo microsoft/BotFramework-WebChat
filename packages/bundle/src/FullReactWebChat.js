@@ -37,7 +37,7 @@ class FullReactWebChat extends React.Component {
         }
         renderMarkdown={ renderMarkdown }
         styleOptions={ styleOptions }
-        styleSet={ styleSet || createStyleSet(styleOptions)}
+        styleSet={ styleSet || createStyleSet(styleOptions) }
         { ...otherProps }
       />
     );
@@ -45,11 +45,16 @@ class FullReactWebChat extends React.Component {
 }
 
 FullReactWebChat.defaultProps = {
-  attachmentMiddleware: undefined
+  attachmentMiddleware: undefined,
+  styleOptions: undefined,
+  styleSet: undefined,
 };
 
 FullReactWebChat.propTypes = {
-  attachmentMiddleware: PropTypes.func
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
+  attachmentMiddleware: PropTypes.func,
+  styleOptions: PropTypes.any,
+  styleSet: PropTypes.any,
 };
 
 export default FullReactWebChat

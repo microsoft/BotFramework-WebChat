@@ -120,6 +120,7 @@ class ReceiptCardAttachment extends React.Component {
 }
 
 ReceiptCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({

@@ -359,6 +359,7 @@ Composer.defaultProps = {
 
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
+  adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,

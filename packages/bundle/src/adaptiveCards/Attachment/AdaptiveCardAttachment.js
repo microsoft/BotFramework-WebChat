@@ -53,8 +53,8 @@ export default class AdaptiveCardAttachment extends React.Component {
 
     return (
       <AdaptiveCardRenderer
-        adaptiveCardHostConfig={ adaptiveCardHostConfig }
         adaptiveCard={ card }
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
       />
     );
   }
@@ -62,8 +62,10 @@ export default class AdaptiveCardAttachment extends React.Component {
 
 AdaptiveCardAttachment.propTypes = {
   // TODO: [P2] We should rename adaptiveCards to adaptiveCardsPolyfill
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.any.isRequired
-  }).isRequired
+  }).isRequired,
+  renderMarkdown: PropTypes.any.isRequired
 };

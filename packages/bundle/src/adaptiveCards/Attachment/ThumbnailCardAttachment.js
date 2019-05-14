@@ -62,6 +62,7 @@ export default class ThumbnailCardAttachment extends React.Component {
 }
 
 ThumbnailCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
