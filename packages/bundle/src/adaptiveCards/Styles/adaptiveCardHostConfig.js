@@ -1,4 +1,4 @@
-import defaultStyleOptions from 'botframework-webchat-component/src/Styles/defaultStyleOptions';
+import { defaultStyleOptions } from 'botframework-webchat-component';
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
 export default ({

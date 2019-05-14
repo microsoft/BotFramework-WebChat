@@ -23,8 +23,7 @@ export default class CommonCard extends React.Component {
         adaptiveCardHostConfig,
         adaptiveCards,
         attachment: {
-          content,
-          content: { tap } = {}
+          content
         } = {}
       }
     } = this;
@@ -33,7 +32,7 @@ export default class CommonCard extends React.Component {
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
         adaptiveCardHostConfig={ adaptiveCardHostConfig }
-        tapAction={ content && tap }
+        tapAction={ content && content.tap }
       />
     );
   }
