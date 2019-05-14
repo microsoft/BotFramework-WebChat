@@ -23,6 +23,7 @@ export default class HeroCardAttachment extends React.Component {
   render() {
     const {
       props: {
+        adaptiveCardHostConfig,
         adaptiveCards,
         attachment: {
           content,
@@ -34,7 +35,8 @@ export default class HeroCardAttachment extends React.Component {
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ tap }
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
+        tapAction={ content && content.tap }
       />
     );
   }

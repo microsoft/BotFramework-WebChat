@@ -5,28 +5,39 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardMiddleware';
-import renderMarkdown from './renderMarkdown';
 
+import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
+import renderMarkdown from './renderMarkdown';
+import defaultAdaptiveCardHostConfig from './adaptiveCards/Styles/adaptiveCardHostConfig'
 // Add additional props to <WebChat>, so it support additional features
 class FullReactWebChat extends React.Component {
   constructor(props) {
     super(props);
 
-    const adaptiveCardsAttachmentMiddleware = createAdaptiveCardsAttachmentMiddleware({ adaptiveCards });
-
-    this.createAttachmentMiddleware = memoize(middlewareFromProps => concatMiddleware(
+    this.createAttachmentMiddleware = memoize((adaptiveCardHostConfig, middlewareFromProps, styleOptions) => concatMiddleware(
       middlewareFromProps,
-      adaptiveCardsAttachmentMiddleware
+      createAdaptiveCardsAttachmentMiddleware({
+        adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(styleOptions),
+        adaptiveCards
+      })
     ));
   }
 
   render() {
-    const { attachmentMiddleware, ...otherProps } = this.props;
+    const { adaptiveCardHostConfig, attachmentMiddleware, styleOptions, styleSet, ...otherProps } = this.props;
 
     return (
       <BasicWebChat
-        attachmentMiddleware={ this.createAttachmentMiddleware(attachmentMiddleware) }
+        attachmentMiddleware={
+          this.createAttachmentMiddleware(
+            adaptiveCardHostConfig,
+            attachmentMiddleware,
+            styleOptions
+          )
+        }
         renderMarkdown={ renderMarkdown }
+        styleOptions={ styleOptions }
+        styleSet={ styleSet || createStyleSet(styleOptions)}
         { ...otherProps }
       />
     );

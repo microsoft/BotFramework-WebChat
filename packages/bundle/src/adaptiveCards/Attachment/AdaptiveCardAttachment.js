@@ -48,11 +48,14 @@ export default class AdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCards, attachment: { content } } } = this;
-    const { card } = this.createAdaptiveCard(adaptiveCards, content);
+    const { props: { adaptiveCardHostConfig, adaptiveCards, attachment, renderMarkdown } } = this;
+    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
 
     return (
-      <AdaptiveCardRenderer adaptiveCard={ card } />
+      <AdaptiveCardRenderer
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
+        adaptiveCard={ card }
+      />
     );
   }
 }

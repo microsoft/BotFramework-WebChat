@@ -33,6 +33,7 @@ import Context from './Context';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
+import defaultStyleOptions from './Styles/defaultStyleOptions'
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
 declare var VERSION
@@ -92,6 +93,7 @@ export {
   createCoreActivityMiddleware,
   createCoreAttachmentMiddleware,
   createStyleSet,
+  defaultStyleOptions,
   getTabIndex,
   localize,
   version

@@ -22,6 +22,7 @@ export default class OAuthCardAttachment extends React.Component {
   render() {
     const {
       props: {
+        adaptiveCardHostConfig,
         adaptiveCards,
         attachment: {
           content
@@ -30,7 +31,10 @@ export default class OAuthCardAttachment extends React.Component {
     } = this;
 
     return (
-      <AdaptiveCardRenderer adaptiveCard={ content && this.buildCard(adaptiveCards, content) } />
+      <AdaptiveCardRenderer
+        adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
+      />
     );
   }
 }
