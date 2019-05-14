@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix [#1974](https://github.com/Microsoft/BotFramework-WebChat/issues/1974). Update `/docs/` folder to `/media/` and delete unused images, by [@corinagum](https://github.com/corinagum) in PR [#1975](https://github.com/Microsoft/BotFramework-WebChat/pull/1975)
-- Fix [#1980](https://github.com/Microsoft/BotFramework-WebChat/issues/1980). Changed sendBoxTextArea styles to break words longer than the textarea, by [@tdurnford](https://github.com/tdurnford) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- Fix [#1980](https://github.com/Microsoft/BotFramework-WebChat/issues/1980). Changed sendBoxTextArea styles to break words longer than the textarea, by [@tdurnford](https://github.com/tdurnford) in PR [#1986](https://github.com/Microsoft/BotFramework-WebChat/pull/1986)
 
 
 ## [4.4.1] - 2019-05-02
