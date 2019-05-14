@@ -26,9 +26,10 @@ export default function createSendBoxTextAreaStyle({
         fontFamily: 'inherit',
         fontSize: 'inherit',
         height: '100%',
-        overflowY: 'scroll',
+        overflowY: 'auto',
         whiteSpace: 'pre-wrap',
         width: 'inherit',
+        wordBreak: 'break-word'
       },
 
       '& > textarea': {
@@ -43,7 +44,8 @@ export default function createSendBoxTextAreaStyle({
         position: 'absolute',
         resize: 'none',
         top: 0,
-        width: '100%'
+        width: '100%',
+        wordBreak: 'break-word'
       }
     }
   }
