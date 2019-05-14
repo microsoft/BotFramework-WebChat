@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix [#1974](https://github.com/Microsoft/BotFramework-WebChat/issues/1974). Update `/docs/` folder to `/media/` and delete unused images, by [@corinagum](https://github.com/corinagum) in PR [#1975](https://github.com/Microsoft/BotFramework-WebChat/pull/1975)
+- Fix [#1429](https://github.com/Microsoft/BotFramework-WebChat/issues/1429). Changed Markdown-it options to render newline characters correctly, by [@tdurnford](https://github.com/tdurnford) in PR [#1987](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 
 ## [4.4.1] - 2019-05-02
