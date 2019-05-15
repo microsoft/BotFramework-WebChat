@@ -1,9 +1,8 @@
+import AdaptiveCardBuilder from './AdaptiveCardBuilder';
+import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import AdaptiveCardBuilder from './AdaptiveCardBuilder';
-import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
 export default class CommonCard extends React.Component {
   constructor(props) {
@@ -21,10 +20,10 @@ export default class CommonCard extends React.Component {
   render() {
     const {
       props: {
+        adaptiveCardHostConfig,
         adaptiveCards,
         attachment: {
-          content,
-          content: { tap } = {}
+          content
         } = {}
       }
     } = this;
@@ -32,13 +31,15 @@ export default class CommonCard extends React.Component {
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ tap }
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
+        tapAction={ content && content.tap }
       />
     );
   }
 }
 
 CommonCard.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({

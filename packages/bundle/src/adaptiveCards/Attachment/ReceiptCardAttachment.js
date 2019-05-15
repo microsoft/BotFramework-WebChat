@@ -101,6 +101,7 @@ class ReceiptCardAttachment extends React.Component {
 
   render() {
     const {
+      adaptiveCardHostConfig,
       adaptiveCards,
       attachment: {
         content
@@ -111,6 +112,7 @@ class ReceiptCardAttachment extends React.Component {
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content, language) }
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
         tapAction={ content && content.tap }
       />
     );
@@ -118,6 +120,7 @@ class ReceiptCardAttachment extends React.Component {
 }
 
 ReceiptCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({

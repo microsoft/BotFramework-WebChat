@@ -44,23 +44,25 @@ export default class ThumbnailCardAttachment extends React.Component {
 
   render() {
     const {
-      adaptiveCards,
-      attachment: {
-        content,
-        content: { tap } = {}
-      } = {}
-    } = this.props;
+      props: {
+        adaptiveCardHostConfig,
+        adaptiveCards,
+        attachment: { content } = {}
+      }
+    } = this;
 
     return (
       <AdaptiveCardRenderer
         adaptiveCard={ content && this.buildCard(adaptiveCards, content) }
-        tapAction={ tap }
+        adaptiveCardHostConfig={ adaptiveCardHostConfig }
+        tapAction={ content && content.tap }
       />
     );
   }
 }
 
 ThumbnailCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
