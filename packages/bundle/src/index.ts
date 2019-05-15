@@ -7,6 +7,7 @@ import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
+import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
 import ReactWebChat from './FullReactWebChat';
 import renderMarkdown from './renderMarkdown';
 
@@ -17,6 +18,7 @@ export default ReactWebChat
 export {
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
+  createStyleSet,
   renderMarkdown,
   renderWebChat
 }
@@ -25,6 +27,7 @@ window['WebChat'] = {
   ...window['WebChat'],
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
+  createStyleSet,
   ReactWebChat,
   renderMarkdown,
   renderWebChat
