@@ -1,4 +1,4 @@
-import defaultStyleSetOptions from './defaultStyleSetOptions';
+import { defaultStyleOptions } from 'botframework-webchat-component';
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
 export default ({
@@ -7,7 +7,7 @@ export default ({
   cardEmphasisBackgroundColor,
   primaryFont,
   subtle
-} = defaultStyleSetOptions) => ({
+} = defaultStyleOptions) => ({
   containerStyles: {
     default: {
       foregroundColors: {
