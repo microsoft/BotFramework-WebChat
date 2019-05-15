@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+    <script src="https://cdn.botframework.com/botframework-webchat/4.4.1/webchat.js"></script>
+    <style type="text/css">
+      html, body {
+        background-color: #F7F7F7;
+        height: 100%;
+      }
+
+      body { margin: 0; }
+
+      #webchat {
+        background-color: White;
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, .08);
+        height: calc(100% - 20px);
+        left: 10px;
+        overflow: hidden;
+        position: fixed;
+        top: 10px;
+        width: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="webchat"></div>
+    <script>
+      async function fetchJSON(url, options = {}) {
+        const res = await fetch(
+          url,
+          {
+            ...options,
+            headers: {
+              ...options.headers,
+              accept: 'application/json'
+            }
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch JSON due to ${ res.status }`);
+        }
+
+        return await res.json();
+      }
+
+      (async function main() {
+        const store = WebChat.createStore({}, ({ dispatch }) => {
+          let accessToken;
+          let connected;
+          let provider;
+
+          return next => action => {
+            let shouldSendAccessToken;
+
+            if (action.type === 'WEB_CHAT/SEND_ACCESS_TOKEN') {
+              accessToken = action.payload.accessToken;
+              provider = action.payload.provider;
+              shouldSendAccessToken = connected;
+            } else if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+              shouldSendAccessToken = !!accessToken;
+              connected = true;
+            } else if (action.type === 'DIRECT_LINE/DISCONNECT_PENDING') {
+              connected = false;
+            } else if (
+              action.type === 'DIRECT_LINE/INCOMING_ACTIVITY'
+              && action.payload.activity.type === 'event'
+              && action.payload.activity.name === 'oauth/signout'
+            ) {
+              window.dispatchEvent(new Event('signout'));
+            }
+
+            if (shouldSendAccessToken) {
+              console.log(`Sending access token "${ (accessToken || '').substr(0, 5) }" of provider "${ provider }".`);
+
+              dispatch({
+                type: 'WEB_CHAT/SEND_EVENT',
+                payload: {
+                  name: 'oauth/setaccesstoken',
+                  value: {
+                    accessToken,
+                    provider
+                  }
+                }
+              });
+            }
+
+            return next(action);
+          };
+        });
+
+        window.addEventListener('accesstokenchange', ({ data: { accessToken, provider } }) => {
+          store.dispatch({
+            type: 'WEB_CHAT/SEND_ACCESS_TOKEN',
+            payload: { accessToken, provider }
+          });
+        });
+
+        const { token } = await fetchJSON('/api/directline/token');
+
+        WebChat.renderWebChat({
+          cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+            const { type, value } = cardAction;
+
+            if (type === 'openUrl' && value === 'about:blank#signin-aad') {
+              const signInEvent = new Event('signin');
+
+              signInEvent.data = { provider: 'aad' };
+              window.dispatchEvent(signInEvent);
+            } else if (type === 'openUrl' && value === 'about:blank#signin-github') {
+              const signInEvent = new Event('signin');
+
+              signInEvent.data = { provider: 'github' };
+              window.dispatchEvent(signInEvent);
+            } else {
+              return next({ cardAction, getSignInUrl });
+            }
+          },
+          directLine: WebChat.createDirectLine({ token }),
+          store
+        }, document.getElementById('webchat'));
+      })().catch(err => console.error(err));
+    </script>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
