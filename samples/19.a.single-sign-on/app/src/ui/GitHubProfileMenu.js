@@ -11,7 +11,6 @@ import connectGitHubSignInButton from '../gitHubProfile/hoc/signInButton';
 import connectGitHubSignOutButton from '../gitHubProfile/hoc/signOutButton';
 import GitHubProfileComposer from '../gitHubProfile/Composer';
 
-const GITHUB_OAUTH_ACCESS_TOKEN = 'GITHUB_OAUTH_ACCESS_TOKEN';
 const SETTINGS_URL = '/api/github/settings';
 
 async function fetchSettings() {
@@ -75,7 +74,9 @@ const GitHubProfileMenu = ({
         className="sso__profileAvatar"
         onClick={ signedIn ? handleToggleExpand : handleSignIn }
         style={ avatarStyle }
-      />
+      >
+        { signedIn && <div className="sso__profileAvatarBadge sso__profileAvatarBadge__gitHub" /> }
+      </button>
       {
         signedIn && expanded &&
           <ul className="sso__profileMenu">
@@ -140,22 +141,11 @@ const ComposedGitHubProfileMenu = compose(
 )(GitHubProfileMenu);
 
 const ConnectedGitHubProfileMenu = ({
-  onSignedInChange
+  accessToken,
+  onAccessTokenChange
 }) => {
-  const [accessToken, setAccessTokenInternal] = useState(sessionStorage.getItem(GITHUB_OAUTH_ACCESS_TOKEN));
   const [oauthAuthorizeURL, setOAuthAuthorizeURL] = useState('');
   const [oauthReviewAccessURL, setOAuthReviewAccessURL] = useState('');
-
-  useMemo(() => {
-    console.log(`Dispatching "accesstokenchange" event for GitHub token "${ (accessToken || '').substr(0, 5) }".`);
-
-    const event = new Event('accesstokenchange');
-
-    event.data = { accessToken, provider: 'github' };
-    window.dispatchEvent(event);
-
-    onSignedInChange && onSignedInChange(!!accessToken);
-  }, [accessToken]);
 
   useMemo(async () => {
     const { authorizeURL, clientId } = await fetchSettings();
@@ -164,17 +154,11 @@ const ConnectedGitHubProfileMenu = ({
     setOAuthReviewAccessURL(`https://github.com/settings/connections/applications/${ clientId }`);
   }, []);
 
-  const setAccessToken = accessToken => {
-    setAccessTokenInternal(accessToken);
-    accessToken ? sessionStorage.setItem(GITHUB_OAUTH_ACCESS_TOKEN, accessToken) : sessionStorage.removeItem(GITHUB_OAUTH_ACCESS_TOKEN);
-    onSignedInChange && onSignedInChange(!!accessToken);
-  };
-
   return (
     <GitHubProfileComposer
       accessToken={ accessToken }
       oauthAuthorizeURL={ oauthAuthorizeURL }
-      onAccessTokenChange={ setAccessToken }
+      onAccessTokenChange={ onAccessTokenChange }
     >
       <ComposedGitHubProfileMenu
         oauthReviewAccessURL={ oauthReviewAccessURL }
@@ -188,6 +172,8 @@ ConnectedGitHubProfileMenu.defaultProps = {
 };
 
 ConnectedGitHubProfileMenu.propTypes = {
+  accessToken: PropTypes.string.isRequired,
+  onAccessTokenChange: PropTypes.func.isRequired,
   onSignedInChange: PropTypes.func
 };
 

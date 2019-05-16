@@ -80,6 +80,7 @@
   cursor: pointer;
   height: 40px;
   outline: 0;
+  position: relative;
   transition: border-color 300ms;
   width: 40px;
 }
@@ -92,4 +93,30 @@
 .sso__profileAvatar:active {
   border-color: #CCC;
   transition: border-color 0s;
+}
+
+.sso__profileAvatarBadge {
+  background-color: White;
+  border: solid 1px White;
+  bottom: -2px;
+  color: White;
+  height: 10px;
+  position: absolute;
+  right: -2px;
+  width: 10px;
+}
+
+.sso__profileAvatarBadge__gitHub {
+  background-image: url(/images/GitHub-Mark-32px.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border-radius: 5px;
+}
+
+.sso__profileAvatarBadge__microsoft {
+  background-image: url(/images/Microsoft-32px.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
 }

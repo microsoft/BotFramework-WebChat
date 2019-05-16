@@ -11,7 +11,6 @@ import connectMicrosoftGraphSignInButton from '../microsoftGraphProfile/hoc/sign
 import connectMicrosoftGraphSignOutButton from '../microsoftGraphProfile/hoc/signOutButton';
 import MicrosoftGraphProfileComposer from '../microsoftGraphProfile/Composer';
 
-const AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY = 'MICROSOFT_OAUTH_ACCESS_TOKEN';
 const AAD_SETTINGS_URL = '/api/aad/settings';
 
 async function fetchSettings() {
@@ -71,7 +70,9 @@ const MicrosoftGraphProfileMenu = ({
         className="sso__profileAvatar"
         onClick={ signedIn ? handleToggleExpand : handleSignIn }
         style={ avatarStyle }
-      />
+      >
+        { signedIn && <div className="sso__profileAvatarBadge sso__profileAvatarBadge__microsoft" /> }
+      </button>
       {
         signedIn && expanded &&
           <ul className="sso__profileMenu">
@@ -140,21 +141,10 @@ const ComposedMicrosoftGraphProfileMenu = compose(
 )(MicrosoftGraphProfileMenu);
 
 const ConnectedMicrosoftGraphProfileMenu = ({
-  onSignedInChange
+  accessToken,
+  onAccessTokenChange
 }) => {
-  const [accessToken, setAccessTokenInternal] = useState(sessionStorage.getItem(AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY));
   const [oauthAuthorizeURL, setOAuthAuthorizeURL ] = useState('');
-
-  useMemo(() => {
-    console.log(`Dispatching "accesstokenchange" event for Microsoft Graph token "${ (accessToken || '').substr(0, 5) }".`);
-
-    const event = new Event('accesstokenchange');
-
-    event.data = { accessToken, provider: 'microsoft' };
-    window.dispatchEvent(event);
-
-    onSignedInChange && onSignedInChange(!!accessToken);
-  }, [accessToken]);
 
   useMemo(async () => {
     const { authorizeURL } = await fetchSettings();
@@ -162,17 +152,11 @@ const ConnectedMicrosoftGraphProfileMenu = ({
     setOAuthAuthorizeURL(authorizeURL);
   }, []);
 
-  const setAccessToken = accessToken => {
-    setAccessTokenInternal(accessToken);
-    accessToken ? sessionStorage.setItem(AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY, accessToken) : sessionStorage.removeItem(AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY);
-    onSignedInChange && onSignedInChange(!!accessToken);
-  };
-
   return (
     <MicrosoftGraphProfileComposer
       accessToken={ accessToken }
       oauthAuthorizeURL={ oauthAuthorizeURL }
-      onAccessTokenChange={ setAccessToken }
+      onAccessTokenChange={ onAccessTokenChange }
     >
       <ComposedMicrosoftGraphProfileMenu />
     </MicrosoftGraphProfileComposer>
@@ -184,6 +168,8 @@ ConnectedMicrosoftGraphProfileMenu.defaultProps = {
 };
 
 ConnectedMicrosoftGraphProfileMenu.propTypes = {
+  accessToken: PropTypes.string.isRequired,
+  onAccessTokenChange: PropTypes.func.isRequired,
   onSignedInChange: PropTypes.func
 };
 
