@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.0.0",
+    "http-proxy": "^1.17.0",
     "math-random": "^1.0.4",
     "node-fetch": "^2.5.0",
     "restify": "^8.3.2"
