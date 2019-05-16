@@ -27,10 +27,15 @@
         height: 100%;
       }
 
-      body { margin: 0; }
+      body {
+        background-image: url(/images/BotServices.svg);
+        background-position: 100% 100%;
+        background-repeat: no-repeat;
+        background-size: auto 50%;
+        margin: 0;
+      }
 
       #webchat {
-        background-color: White;
         border-radius: 4px;
         box-shadow: 0 0 8px rgba(0, 0, 0, .08);
         height: calc(100% - 20px);
@@ -138,7 +143,10 @@
             }
           },
           directLine: WebChat.createDirectLine({ token }),
-          store
+          store,
+          styleOptions: {
+            backgroundColor: 'rgba(255, 255, 255, .8)'
+          }
         }, document.getElementById('webchat'));
       })().catch(err => console.error(err));
     </script>
