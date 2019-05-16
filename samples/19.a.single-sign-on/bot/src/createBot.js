@@ -13,11 +13,14 @@ module.exports = () => {
     const { activity: { name, type, value } } = context;
 
     if (type === 'event' && name === 'oauth/setaccesstoken') {
-      await context.sendActivity({ type: 'typing' });
-
       const oauthStateManager = createOAuthStateManager(context);
       const oauthState = await oauthStateManager.getState();
       const { accessToken, provider } = value;
+
+      // No-op if access token is not changed
+      if (accessToken === oauthState.accessToken) {
+        return;
+      }
 
       oauthState.accessToken = accessToken;
       oauthState.provider = provider;
@@ -27,6 +30,8 @@ module.exports = () => {
       if (accessToken) {
         // For async operations that is outside of BotBuilder, we should use proactive messaging.
         const reference = TurnContext.getConversationReference(context.activity);
+
+        await context.sendActivity({ type: 'typing' });
 
         switch (provider) {
           case 'github':
@@ -79,11 +84,11 @@ module.exports = () => {
             buttons: [{
               title: 'Sign into Azure Active Directory',
               type: 'openUrl',
-              value: 'about:blank#signin-aad'
+              value: 'about:blank#sign-into-aad'
             }, {
               title: 'Sign into GitHub',
               type: 'openUrl',
-              value: 'about:blank#signin-github'
+              value: 'about:blank#sign-into-github'
             }],
             text: 'Please sign in before continue.'
           },

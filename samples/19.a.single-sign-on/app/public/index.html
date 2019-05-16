@@ -123,12 +123,12 @@
           cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
             const { type, value } = cardAction;
 
-            if (type === 'openUrl' && value === 'about:blank#signin-aad') {
+            if (type === 'openUrl' && value === 'about:blank#sign-into-aad') {
               const signInEvent = new Event('signin');
 
               signInEvent.data = { provider: 'aad' };
               window.dispatchEvent(signInEvent);
-            } else if (type === 'openUrl' && value === 'about:blank#signin-github') {
+            } else if (type === 'openUrl' && value === 'about:blank#sign-into-github') {
               const signInEvent = new Event('signin');
 
               signInEvent.data = { provider: 'github' };

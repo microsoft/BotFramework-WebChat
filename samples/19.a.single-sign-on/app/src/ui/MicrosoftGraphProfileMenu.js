@@ -11,30 +11,30 @@ import connectMicrosoftGraphSignInButton from '../microsoftGraphProfile/hoc/sign
 import connectMicrosoftGraphSignOutButton from '../microsoftGraphProfile/hoc/signOutButton';
 import MicrosoftGraphProfileComposer from '../microsoftGraphProfile/Composer';
 
-const AAD_OAUTH_ACCESS_TOKEN = 'MICROSOFT_OAUTH_ACCESS_TOKEN';
-const AAD_OAUTH_REVIEW_ACCESS_URL = '/api/aad/oauth/review_access_url';
+const AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY = 'MICROSOFT_OAUTH_ACCESS_TOKEN';
+const AAD_SETTINGS_URL = '/api/aad/settings';
 
-async function fetchOAuthReviewAccessURL() {
+async function fetchSettings() {
   try {
-    const { url } = await fetchJSON(AAD_OAUTH_REVIEW_ACCESS_URL);
+    const { authorizeURL, clientId } = await fetchJSON(AAD_SETTINGS_URL);
 
-    return url;
+    return { authorizeURL, clientId };
   } catch (err) {
-    throw new Error('OAuth: Failed to get review access URL');
+    throw new Error('OAuth: Failed to fetch settings');
   }
 }
 
-const ProfileMenu = ({
+const MicrosoftGraphProfileMenu = ({
   avatarURL,
   name,
   onSignIn,
   onSignOut
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [oauthReviewAccessURL, setOAuthReviewAccessURL] = useState('');
+  const signedIn = !!onSignOut;
 
   useEffect(() => {
-    window.addEventListener('signin', ({ data: { provider } = {} }) => provider === 'aad' && onSignIn());
+    window.addEventListener('signin', ({ data: { provider } = {} }) => provider === 'aad' && onSignIn && onSignIn());
 
     return () => window.removeEventListener('signin', onSignIn);
   });
@@ -45,10 +45,8 @@ const ProfileMenu = ({
     return () => window.removeEventListener('signout', onSignOut);
   });
 
-  useMemo(async () => setOAuthReviewAccessURL(await fetchOAuthReviewAccessURL()), []);
-
   const avatarStyle = useMemo(() => ({
-    backgroundImage: `url(${ avatarURL || '/images/Microsoft-Graph-64px-EEE-White.png' })`
+    backgroundImage: `url(${ avatarURL || '/images/Microsoft-Graph-64px-DDD-White.png' })`
   }), [avatarURL]);
 
   const handleSignIn = useCallback(() => {
@@ -71,11 +69,11 @@ const ProfileMenu = ({
       <button
         aria-label="Open profile menu"
         className="sso__profileAvatar"
-        onClick={ handleToggleExpand }
+        onClick={ signedIn ? handleToggleExpand : handleSignIn }
         style={ avatarStyle }
       />
       {
-        expanded &&
+        signedIn && expanded &&
           <ul className="sso__profileMenu">
             {
               name &&
@@ -86,20 +84,13 @@ const ProfileMenu = ({
                 </li>
             }
             {
-              onSignIn &&
+              onSignOut &&
                 <li className="sso__profileMenuItem">
-                  <button
-                    onClick={ handleSignIn }
-                    type="button"
+                  <a
+                    href="https://portal.office.com/account/#apps"
+                    rel="noopener noreferrer"
+                    target="_blank"
                   >
-                    Sign in
-                  </button>
-                </li>
-            }
-            {
-              onSignOut && oauthReviewAccessURL &&
-                <li className="sso__profileMenuItem">
-                  <a href={ oauthReviewAccessURL } rel="noopener noreferrer" target="_blank">
                     Review access on Office.com
                   </a>
                 </li>
@@ -121,7 +112,7 @@ const ProfileMenu = ({
   );
 }
 
-ProfileMenu.defaultProps = {
+MicrosoftGraphProfileMenu.defaultProps = {
   accessToken: '',
   avatarURL: '',
   name: '',
@@ -131,7 +122,7 @@ ProfileMenu.defaultProps = {
   setAccessToken: undefined
 };
 
-ProfileMenu.propTypes = {
+MicrosoftGraphProfileMenu.propTypes = {
   accessToken: PropTypes.string,
   avatarURL: PropTypes.string,
   name: PropTypes.string,
@@ -141,39 +132,59 @@ ProfileMenu.propTypes = {
   setAccessToken: PropTypes.func
 };
 
-const ComposedProfileMenu = compose(
+const ComposedMicrosoftGraphProfileMenu = compose(
   connectMicrosoftGraphProfileAvatar(),
   connectMicrosoftGraphProfileName(),
   connectMicrosoftGraphSignInButton(({ onClick }) => ({ onSignIn: onClick })),
   connectMicrosoftGraphSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
-)(ProfileMenu);
+)(MicrosoftGraphProfileMenu);
 
-const ConnectedProfileMenu = () => {
-  const [accessToken, setAccessTokenInternal] = useState(sessionStorage.getItem(AAD_OAUTH_ACCESS_TOKEN));
+const ConnectedMicrosoftGraphProfileMenu = ({
+  onSignedInChange
+}) => {
+  const [accessToken, setAccessTokenInternal] = useState(sessionStorage.getItem(AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY));
+  const [oauthAuthorizeURL, setOAuthAuthorizeURL ] = useState('');
 
   useMemo(() => {
-    console.log('Dispatching "accesstokenchange" event.');
+    console.log(`Dispatching "accesstokenchange" event for Microsoft Graph token "${ (accessToken || '').substr(0, 5) }".`);
 
     const event = new Event('accesstokenchange');
 
     event.data = { accessToken, provider: 'microsoft' };
     window.dispatchEvent(event);
+
+    onSignedInChange && onSignedInChange(!!accessToken);
   }, [accessToken]);
+
+  useMemo(async () => {
+    const { authorizeURL } = await fetchSettings();
+
+    setOAuthAuthorizeURL(authorizeURL);
+  }, []);
 
   const setAccessToken = accessToken => {
     setAccessTokenInternal(accessToken);
-    accessToken ? sessionStorage.setItem(AAD_OAUTH_ACCESS_TOKEN, accessToken) : sessionStorage.removeItem(AAD_OAUTH_ACCESS_TOKEN);
+    accessToken ? sessionStorage.setItem(AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY, accessToken) : sessionStorage.removeItem(AAD_OAUTH_ACCESS_TOKEN_STORAGE_KEY);
+    onSignedInChange && onSignedInChange(!!accessToken);
   };
 
   return (
     <MicrosoftGraphProfileComposer
       accessToken={ accessToken }
-      oauthAuthorizeURL="/api/aad/oauth/authorize"
+      oauthAuthorizeURL={ oauthAuthorizeURL }
       onAccessTokenChange={ setAccessToken }
     >
-      <ComposedProfileMenu />
+      <ComposedMicrosoftGraphProfileMenu />
     </MicrosoftGraphProfileComposer>
   );
 };
 
-export default ConnectedProfileMenu
+ConnectedMicrosoftGraphProfileMenu.defaultProps = {
+  onSignedInChange: undefined
+};
+
+ConnectedMicrosoftGraphProfileMenu.propTypes = {
+  onSignedInChange: PropTypes.func
+};
+
+export default ConnectedMicrosoftGraphProfileMenu

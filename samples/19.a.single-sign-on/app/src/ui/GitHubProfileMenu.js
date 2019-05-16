@@ -12,29 +12,33 @@ import connectGitHubSignOutButton from '../gitHubProfile/hoc/signOutButton';
 import GitHubProfileComposer from '../gitHubProfile/Composer';
 
 const GITHUB_OAUTH_ACCESS_TOKEN = 'GITHUB_OAUTH_ACCESS_TOKEN';
-const OAUTH_REVIEW_ACCESS_URL = '/api/github/oauth/review_access_url';
+const SETTINGS_URL = '/api/github/settings';
 
-async function fetchOAuthReviewAccessURL() {
+async function fetchSettings() {
   try {
-    const { url } = await fetchJSON(OAUTH_REVIEW_ACCESS_URL);
+    const { authorizeURL, clientId } = await fetchJSON(SETTINGS_URL);
 
-    return url;
+    return {
+      authorizeURL,
+      clientId
+    };
   } catch (err) {
-    throw new Error('OAuth: Failed to get review access URL');
+    throw new Error('OAuth: Failed to fetch settings');
   }
 }
 
-const ProfileMenu = ({
+const GitHubProfileMenu = ({
   avatarURL,
   name,
+  oauthReviewAccessURL,
   onSignIn,
   onSignOut
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [oauthReviewAccessURL, setOAuthReviewAccessURL] = useState('');
+  const signedIn = !!onSignOut;
 
   useEffect(() => {
-    window.addEventListener('signin', ({ data: { provider } = {} }) => provider === 'github' && onSignIn());
+    window.addEventListener('signin', ({ data: { provider } = {} }) => provider === 'github' && onSignIn && onSignIn());
 
     return () => window.removeEventListener('signin', onSignIn);
   });
@@ -45,10 +49,8 @@ const ProfileMenu = ({
     return () => window.removeEventListener('signout', onSignOut);
   });
 
-  useMemo(async () => setOAuthReviewAccessURL(await fetchOAuthReviewAccessURL()), []);
-
   const avatarStyle = useMemo(() => ({
-    backgroundImage: `url(${ avatarURL || '/images/GitHub-Mark-64px-EEE-White.png' })`
+    backgroundImage: `url(${ avatarURL || '/images/GitHub-Mark-64px-DDD-White.png' })`
   }), [avatarURL]);
 
   const handleSignIn = useCallback(() => {
@@ -71,11 +73,11 @@ const ProfileMenu = ({
       <button
         aria-label="Open profile menu"
         className="sso__profileAvatar"
-        onClick={ handleToggleExpand }
+        onClick={ signedIn ? handleToggleExpand : handleSignIn }
         style={ avatarStyle }
       />
       {
-        expanded &&
+        signedIn && expanded &&
           <ul className="sso__profileMenu">
             {
               name &&
@@ -83,17 +85,6 @@ const ProfileMenu = ({
                   <span>
                     Signed in as <strong>{ name }</strong>
                   </span>
-                </li>
-            }
-            {
-              onSignIn &&
-                <li className="sso__profileMenuItem">
-                  <button
-                    onClick={ handleSignIn }
-                    type="button"
-                  >
-                    Sign in
-                  </button>
                 </li>
             }
             {
@@ -121,7 +112,7 @@ const ProfileMenu = ({
   );
 }
 
-ProfileMenu.defaultProps = {
+GitHubProfileMenu.defaultProps = {
   accessToken: '',
   avatarURL: '',
   name: '',
@@ -131,7 +122,7 @@ ProfileMenu.defaultProps = {
   setAccessToken: undefined
 };
 
-ProfileMenu.propTypes = {
+GitHubProfileMenu.propTypes = {
   accessToken: PropTypes.string,
   avatarURL: PropTypes.string,
   name: PropTypes.string,
@@ -141,39 +132,63 @@ ProfileMenu.propTypes = {
   setAccessToken: PropTypes.func
 };
 
-const ComposedProfileMenu = compose(
+const ComposedGitHubProfileMenu = compose(
   connectGitHubProfileAvatar(),
   connectGitHubProfileName(),
   connectGitHubSignInButton(({ onClick }) => ({ onSignIn: onClick })),
   connectGitHubSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
-)(ProfileMenu);
+)(GitHubProfileMenu);
 
-const ConnectedProfileMenu = () => {
+const ConnectedGitHubProfileMenu = ({
+  onSignedInChange
+}) => {
   const [accessToken, setAccessTokenInternal] = useState(sessionStorage.getItem(GITHUB_OAUTH_ACCESS_TOKEN));
+  const [oauthAuthorizeURL, setOAuthAuthorizeURL] = useState('');
+  const [oauthReviewAccessURL, setOAuthReviewAccessURL] = useState('');
 
   useMemo(() => {
-    console.log('Dispatching "accesstokenchange" event.');
+    console.log(`Dispatching "accesstokenchange" event for GitHub token "${ (accessToken || '').substr(0, 5) }".`);
 
     const event = new Event('accesstokenchange');
 
     event.data = { accessToken, provider: 'github' };
     window.dispatchEvent(event);
+
+    onSignedInChange && onSignedInChange(!!accessToken);
   }, [accessToken]);
+
+  useMemo(async () => {
+    const { authorizeURL, clientId } = await fetchSettings();
+
+    setOAuthAuthorizeURL(authorizeURL);
+    setOAuthReviewAccessURL(`https://github.com/settings/connections/applications/${ clientId }`);
+  }, []);
 
   const setAccessToken = accessToken => {
     setAccessTokenInternal(accessToken);
     accessToken ? sessionStorage.setItem(GITHUB_OAUTH_ACCESS_TOKEN, accessToken) : sessionStorage.removeItem(GITHUB_OAUTH_ACCESS_TOKEN);
+    onSignedInChange && onSignedInChange(!!accessToken);
   };
 
   return (
     <GitHubProfileComposer
       accessToken={ accessToken }
-      oauthAuthorizeURL="/api/github/oauth/authorize"
+      oauthAuthorizeURL={ oauthAuthorizeURL }
       onAccessTokenChange={ setAccessToken }
     >
-      <ComposedProfileMenu />
+      <ComposedGitHubProfileMenu
+        oauthReviewAccessURL={ oauthReviewAccessURL }
+      />
     </GitHubProfileComposer>
   );
 };
 
-export default ConnectedProfileMenu
+ConnectedGitHubProfileMenu.defaultProps = {
+  onSignedInChange: undefined
+};
+
+ConnectedGitHubProfileMenu.propTypes = {
+  onSignedInChange: PropTypes.func
+};
+
+export default ConnectedGitHubProfileMenu

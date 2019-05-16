@@ -12,7 +12,12 @@ export default async function fetchProfilePhotoInBase64(accessToken) {
     );
 
     if (!res.ok) {
-      throw new Error('Microsoft Graph: Failed to fetch user profile photo.');
+      if (res.status === 401) {
+        // Personal account do not have profile photo
+        return 'images/Microsoft-Graph-64px.png';
+      } else {
+        throw new Error('Microsoft Graph: Failed to fetch user profile photo.');
+      }
     }
 
     return `data:${ res.headers.get('content-type') };base64,${ encode(await res.arrayBuffer()) }`;
