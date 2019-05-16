@@ -18,7 +18,10 @@ module.exports = () => {
       const { accessToken, provider } = value;
 
       // No-op if access token is not changed
-      if (accessToken === oauthState.accessToken) {
+      if (
+        accessToken === oauthState.accessToken
+        && provider === oauthState.provider
+      ) {
         return;
       }
 
