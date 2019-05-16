@@ -4,7 +4,6 @@ const createBotAdapter = require('./createBotAdapter');
 const createOAuthStateManager = require('./createOAuthStateManager');
 const fetchGitHubProfileName = require('./fetchGitHubProfileName');
 const fetchMicrosoftGraphProfileName = require('./fetchMicrosoftGraphProfileName');
-const resumeContext = require('./utils/resumeContext');
 
 module.exports = () => {
   const bot = new ActivityHandler();
@@ -40,9 +39,10 @@ module.exports = () => {
           case 'github':
             fetchGitHubProfileName(accessToken).then(async name => {
               const adapter = createBotAdapter();
-              const resumedContext = await resumeContext(adapter, reference);
 
-              resumedContext.respondWith(resumedContext.sendActivity(`Welcome back, ${ name } (via GitHub).`));
+              await adapter.continueConversation(reference, async context => {
+                await context.sendActivity(`Welcome back, ${ name } (via GitHub).`);
+              });
             });
 
             break;
@@ -50,9 +50,10 @@ module.exports = () => {
           case 'microsoft':
             fetchMicrosoftGraphProfileName(accessToken).then(async name => {
               const adapter = createBotAdapter();
-              const resumedContext = await resumeContext(adapter, reference);
 
-              resumedContext.respondWith(resumedContext.sendActivity(`Welcome back, ${ name } (via AAD).`));
+              await adapter.continueConversation(reference, async context => {
+                await context.sendActivity(`Welcome back, ${ name } (via AAD).`);
+              });
             });
 
             break;

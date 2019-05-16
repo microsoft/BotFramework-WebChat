@@ -5,16 +5,20 @@ const httpProxy = require('http-proxy');
 const restify = require('restify');
 
 const server = restify.createServer();
-const { PORT = 5000 } = process.env;
+const {
+  PORT = 5000,
+  PROXY_BOT_URL,
+  STATIC_FILES
+} = process.env;
 
 server.use(restify.plugins.queryParser());
 
 const proxy = httpProxy.createProxyServer();
 
 // To simplify deployment for our demo, we aggregate web and bot server into a single endpoint.
-server.post('/api/messages', (req, res) => {
+PROXY_BOT_URL && server.post('/api/messages', (req, res) => {
   proxy.web(req, res, {
-    target: 'http://localhost:3978'
+    target: PROXY_BOT_URL
   });
 });
 
@@ -25,11 +29,15 @@ server.get('/api/directline/token', require('./routes/directLine/token'));
 server.get('/api/github/oauth/authorize', require('./routes/github/oauth/authorize'));
 server.get('/api/github/oauth/callback', require('./routes/github/oauth/callback'));
 server.get('/api/github/settings', require('./routes/github/settings'));
-server.get('/**/*', restify.plugins.serveStatic({
+
+STATIC_FILES && server.get('/**/*', restify.plugins.serveStatic({
   default: 'index.html',
-  directory: join(__dirname, '../../app/build')
+  directory: join(__dirname, '..', STATIC_FILES)
 }));
 
 server.listen(PORT, () => {
   console.log(`Rest API server is listening to port ${ PORT }`);
+
+  PROXY_BOT_URL && console.log(`Will redirect /api/messages to ${ PROXY_BOT_URL }`);
+  STATIC_FILES && console.log(`Will serve static content from ${ STATIC_FILES }`);
 });

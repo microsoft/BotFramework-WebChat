@@ -1,0 +1,7 @@
+FROM node:12
+EXPOSE 80
+WORKDIR /var/bot/
+ENTRYPOINT node .
+ENV NODE_ENV production
+ADD bot/ /var/bot/
+RUN npm ci
