@@ -1,9 +1,40 @@
 const { ActivityHandler, TurnContext } = require('botbuilder');
+const { compareTwoStrings, findBestMatch } = require('string-similarity');
 
 const createBotAdapter = require('./createBotAdapter');
 const createOAuthStateManager = require('./createOAuthStateManager');
 const fetchGitHubProfileName = require('./fetchGitHubProfileName');
 const fetchMicrosoftGraphProfileName = require('./fetchMicrosoftGraphProfileName');
+
+const QUESTIONS = {
+  bye1: 'bye',
+  bye2: 'goodbye',
+  hello1: 'hello',
+  hello2: 'hi',
+  order: 'where are my orders',
+  time: 'what time is it'
+};
+
+const SUGGESTED_ACTIONS = {
+  suggestedActions: {
+    actions: [{
+      type: 'imBack',
+      value: 'What time is it?'
+    }, {
+      type: 'imBack',
+      value: 'Where are my orders?'
+    }],
+    to: []
+  }
+};
+
+function guessQuestion(message) {
+  const match = findBestMatch(message, Object.values(QUESTIONS));
+
+  if (match.bestMatch.rating > .5) {
+    return Object.keys(QUESTIONS)[match.bestMatchIndex];
+  }
+}
 
 module.exports = () => {
   const bot = new ActivityHandler();
@@ -41,7 +72,10 @@ module.exports = () => {
               const adapter = createBotAdapter();
 
               await adapter.continueConversation(reference, async context => {
-                await context.sendActivity(`Welcome back, ${ name } (via GitHub).`);
+                await context.sendActivity({
+                  text: `Welcome back, ${ name } (via GitHub).`,
+                  ...SUGGESTED_ACTIONS
+                });
               });
             });
 
@@ -52,14 +86,17 @@ module.exports = () => {
               const adapter = createBotAdapter();
 
               await adapter.continueConversation(reference, async context => {
-                await context.sendActivity(`Welcome back, ${ name } (via AAD).`);
+                await context.sendActivity({
+                  text: `Welcome back, ${ name } (via Azure AD).`,
+                  ...SUGGESTED_ACTIONS
+                });
               });
             });
 
             break;
         }
       } else {
-        await context.sendActivity('See you next time!');
+        await context.sendActivity('See you later!');
       }
     }
 
@@ -71,7 +108,14 @@ module.exports = () => {
     const oauthState = await oauthStateManager.getState();
     const { activity: { text } } = context;
 
-    if (/^\s*bye\s*$/iu.test(text)) {
+    const match = guessQuestion(text);
+
+    if (/^hello\d+$/.test(match)) {
+      await context.sendActivity({
+        text: 'Hello there. What can I help you?',
+        ...SUGGESTED_ACTIONS
+      });
+    } else if (/^bye\d+$/.test(match)) {
       oauthState.accessToken ='';
       oauthState.provider = '';
 
@@ -80,27 +124,46 @@ module.exports = () => {
         name: 'oauth/signout',
         type: 'event'
       });
-    } else if (!oauthState.accessToken) {
+    } else if (match === 'time') {
+      const now = new Date();
+
       await context.sendActivity({
-        type: 'message',
-        attachments: [{
-          content: {
-            buttons: [{
-              title: 'Sign into Azure Active Directory',
-              type: 'openUrl',
-              value: 'about:blank#sign-into-aad'
-            }, {
-              title: 'Sign into GitHub',
-              type: 'openUrl',
-              value: 'about:blank#sign-into-github'
-            }],
-            text: 'Please sign in before continue.'
-          },
-          contentType: 'application/vnd.microsoft.card.hero',
-        }]
+        text: `The time is now ${ now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }. What can I help?`,
+        ...SUGGESTED_ACTIONS
       });
+    } else if (
+      match === 'order'
+    ) {
+      if (oauthState.accessToken) {
+        await context.sendActivity({
+          text: 'There is a package arriving later today.',
+          ...SUGGESTED_ACTIONS
+        });
+      } else {
+        await context.sendActivity({
+          type: 'message',
+          attachments: [{
+            content: {
+              buttons: [{
+                title: 'Sign into Azure Active Directory',
+                type: 'openUrl',
+                value: 'about:blank#sign-into-aad'
+              }, {
+                title: 'Sign into GitHub',
+                type: 'openUrl',
+                value: 'about:blank#sign-into-github'
+              }],
+              text: 'Please sign in before I can help tracking your orders.'
+            },
+            contentType: 'application/vnd.microsoft.card.hero',
+          }]
+        });
+      }
     } else {
-      await context.sendActivity('I don\'t know this command.');
+      await context.sendActivity({
+        text: 'Sorry, I don\'t know what you mean.',
+        ...SUGGESTED_ACTIONS
+      });
     }
 
     await next();

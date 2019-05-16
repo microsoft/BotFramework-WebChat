@@ -13,7 +13,8 @@
     "botbuilder": "^4.4.0",
     "botbuilder-dialogs": "^4.4.0",
     "dotenv": "^8.0.0",
-    "restify": "^8.3.2"
+    "restify": "^8.3.2",
+    "string-similarity": "^3.0.0"
   },
   "devDependencies": {
     "node-dev": "^4.0.0"
