@@ -42,6 +42,8 @@ export default function () {
         && (activity.attachments || []).length > 1
         && activity.attachmentLayout === 'carousel'
       ) {
+        // The following line is not a React functional component, it's a middleware function.
+        // Note that "children" is not a props, but first argument.
         const CarouselActivity = children =>
           <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>
             { children }
@@ -50,6 +52,8 @@ export default function () {
         return CarouselActivity;
       }
 
+      // The following line is not a React functional component, it's a middleware function.
+      // Note that "children" is not a props, but first argument.
       const StackedActivity = children =>
         <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>
           { children }
