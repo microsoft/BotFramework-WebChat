@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
@@ -48,15 +47,6 @@ export default function () {
             { children }
           </CarouselLayout>;
 
-        CarouselActivity.defaultProps = {
-          timestampClassName: ''
-        };
-
-        CarouselActivity.propTypes = {
-          activity: PropTypes.any.isRequired,
-          timestampClassName: PropTypes.string
-        };
-
         return CarouselActivity;
       }
 
@@ -64,15 +54,6 @@ export default function () {
         <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>
           { children }
         </StackedLayout>;
-
-      StackedActivity.defaultProps = {
-        timestampClassName: ''
-      };
-
-      StackedActivity.propTypes = {
-        activity: PropTypes.any.isRequired,
-        timestampClassName: PropTypes.string
-      };
 
       return StackedActivity;
     }
