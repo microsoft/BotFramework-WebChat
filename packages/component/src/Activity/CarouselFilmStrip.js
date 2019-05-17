@@ -110,11 +110,10 @@ const WebChatCarouselFilmStrip = ({
     } = {},
     text,
     textFormat,
-    timestamp
   } = activity;
 
   const fromUser = role === 'user';
-  const ariaLabel = localize('Bot said something', language, avatarInitials, text, timestamp)
+  const ariaLabel = localize('Bot said something', language, avatarInitials, text)
   const activityDisplayText = messageBackDisplayText || text;
 
   return (

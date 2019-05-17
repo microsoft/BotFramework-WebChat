@@ -102,13 +102,12 @@ const StackedLayout = ({
     } = {},
     text,
     textFormat,
-    timestamp,
     type
   } = activity;
 
   const fromUser = role === 'user';
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, text, timestamp);
+  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, text);
   const activityDisplayText = messageBackDisplayText || text;
 
   return (
@@ -137,9 +136,13 @@ const StackedLayout = ({
               <div className="filler" />
             </div>
           : !!activityDisplayText &&
-            <div className="webchat__row message">
+            <div
+              aria-label={ ariaLabel }
+              className="webchat__row message"
+            >
               <Bubble
-                aria-label={ ariaLabel }
+                // aria-label={ ariaLabel }
+                aria-live="off"
                 className="bubble"
                 fromUser={ fromUser }
               >
