@@ -37,6 +37,6 @@
 import Mime from 'mime/Mime';
 
 export default new Mime(
-  require('mime/types/standard.json'),
-  require('mime/types/other.json')
+  require('mime/types/standard'),
+  require('mime/types/other')
 )
