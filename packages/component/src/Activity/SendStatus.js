@@ -45,7 +45,7 @@ const SendStatus = ({
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
 
   return (
-    <span aria-live="polite" className={ styleSet.sendStatus }>
+    <span className={ styleSet.sendStatus }>
       {
         state === SENDING ?
           <Localize text="Sending" />
