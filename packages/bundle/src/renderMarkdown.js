@@ -45,7 +45,7 @@ const SANITIZE_HTML_OPTIONS = {
 };
 
 const customMarkdownIt = new MarkdownIt({
-  breaks: true,
+  breaks: false,
   html: false,
   linkify: true,
   typographer: true,

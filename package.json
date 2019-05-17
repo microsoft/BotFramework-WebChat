@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.4.1",
+  "version": "4.4.2-0",
   "private": true,
   "files": [
     "lib/**/*"
@@ -80,7 +80,7 @@
     "get-port": "^4.0.0",
     "jest": "^24.1.0",
     "jest-image-snapshot": "^2.8.1",
-    "lerna": "^3.13.4",
+    "lerna": "^3.14.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "serve-handler": "^5.0.5"
   }
