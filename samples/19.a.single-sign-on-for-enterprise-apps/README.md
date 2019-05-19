@@ -1,4 +1,4 @@
-# Single sign-on demo for Web Chat on an enterprise app
+# Single sign-on demo for enterprise apps
 
 In this demo, we will show you how to authorize an user to access resources on an enterprise app with a bot. Two types of resources are used to demonstrate the interoperability of OAuth, including [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) and [GitHub API](https://developer.github.com/v3/).
 
