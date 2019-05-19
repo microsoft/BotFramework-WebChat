@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Samples
 
-- `*`: [Single-sign on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps/), in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+- `*`: [Single-sign on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps/), in [#2002](https://github.com/Microsoft/BotFramework-WebChat/pull/2002)
 
 ## [4.4.1] - 2019-05-02
 
