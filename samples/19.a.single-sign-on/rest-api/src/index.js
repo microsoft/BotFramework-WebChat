@@ -1,12 +1,26 @@
 require('dotenv').config();
 
+const random = require('math-random');
+
+// Default environment variables
+process.env = {
+  AAD_OAUTH_SCOPE = 'User.Read',
+  GITHUB_OAUTH_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token',
+  GITHUB_OAUTH_CLIENT_ID = 'https://github.com/login/oauth/authorize',
+  GITHUB_OAUTH_SCOPE = 'user:email',
+  GITHUB_OAUTH_STATE_SALT = random.toString(36).substr(2),
+  PORT = '5000',
+  STATIC_FILES = 'public',
+  ...process.env,
+};
+
 const { join } = require('path');
 const httpProxy = require('http-proxy');
 const restify = require('restify');
 
 const server = restify.createServer();
 const {
-  PORT = 5000,
+  PORT,
   PROXY_BOT_URL,
   STATIC_FILES
 } = process.env;
