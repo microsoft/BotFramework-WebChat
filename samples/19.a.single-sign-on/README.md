@@ -35,7 +35,7 @@ This demo does not include any threat models and is designed for educational pur
 
 > For quickstart, you can browse to https://webchat-sso.azurewebsites.net/ to try out this demo in our hosted environment.
 
-This demo will integrate with multiple services. There are multiple series of steps you need to complete in order to integrate them.
+This demo integrates with multiple services. There are multiple series of steps you need to complete in order to put the demo to work.
 
 1. [Clone the code](#clone-the-code)
 1. [Setup OAuth via Azure Active Directory](#setup-oauth-via-azure-active-directory)
@@ -51,16 +51,16 @@ To play around the code of this demo, you will need to clone the code and run lo
 1. Create two files for environment variables, `/bot/.env` and `/rest-api/.env`
    - In `/rest-api/.env`
       - Write `AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback`
-         - When Azure Active Directory complete the authorization flow, it will send the browser to this URL. This URL must be accessible by the end-user
+         - When Azure Active Directory complete the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from end-user machine
       - Write `GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback`
-         - Same as Azure Active Directory, this is the URL endpoint for GitHub to send its result
+         - Same as Azure Active Directory, this is the URL for GitHub to send its result
 
 ## Setup OAuth via Azure Active Directory
 
 If you want to authenticate on Azure Active Directory, follow the steps below.
 
-1. Go to [your Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
-1. Create a new application
+- Go to [your Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
+- Create a new application
    1. Select "App registrations"
    1. Click "New registration"
    1. Give it a name
@@ -69,10 +69,6 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
       1. Enter `http://localhost:3000/api/aad/oauth/callback` as redirect URI
          - This must match `AAD_OAUTH_REDIRECT_URI` in `/rest-api/.env` we saved earlier
    - Click "Register"
-- Enable "Implicit Grant" flow
-   1. Select "Authentication"
-   1. In the "Advanced Settings" section, check "Access tokens"
-   1. Click "Save" button to save the changes
 - Save the authorization endpoints
    1. Select "Overview"
    1. Click "Endpoints" on the main pane
@@ -89,6 +85,10 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. In the "Client secrets" section, create a "New client secret"
    1. Save the client secret to `/rest-api/.env` file
       - `AAD_OAUTH_CLIENT_SECRET=<your app client secret>`
+- Enable "Implicit Grant" flow
+   1. Select "Authentication"
+   1. In the "Advanced Settings" section, check "Access tokens"
+   1. Click "Save" button to save the changes
 
 ## Setup OAuth via GitHub
 
