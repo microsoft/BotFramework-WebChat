@@ -1,4 +1,4 @@
-# Single sign-on demo for Web Chat
+# Single sign-on demo for Web Chat on an enterprise app
 
 In this demo, we will show you how to authorize an user to access resources on an enterprise app with a bot. Two types of resources are used to demonstrate the interoperability of OAuth, including [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) and [GitHub API](https://developer.github.com/v3/).
 
@@ -35,7 +35,7 @@ This demo does not include any threat models and is designed for educational pur
 
 > For quickstart, you can browse to https://webchat-sso.azurewebsites.net/ to try out this demo in our hosted environment.
 
-This demo integrates with multiple services. There are multiple series of steps you need to complete in order to put the demo to work.
+This demo integrates with multiple services. There are multiple services you need to setup in order to host the demo.
 
 1. [Clone the code](#clone-the-code)
 1. [Setup OAuth via Azure Active Directory](#setup-oauth-via-azure-active-directory)
@@ -45,7 +45,7 @@ This demo integrates with multiple services. There are multiple series of steps 
 
 ## Clone the code
 
-To play around the code of this demo, you will need to clone the code and run locally.
+To host this demo, you will need to clone the code and run locally.
 
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/rest-api/.env`
@@ -110,7 +110,7 @@ If you want to authenticate on GitHub, follow the steps below.
 
 ## Setup Azure Bot Services
 
-> We prefer [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) for during development. This will help you to diagnose problems locally without deploying to the server.
+> We prefer [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you to diagnose problems locally without deploying to the server and speed up your dev work.
 
 You can follow [our instructions](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0) here to setup a new Bot Channel Registration.
 
@@ -139,6 +139,18 @@ During development, you will run your bot locally. You can use [ngrok](https://n
    1. `npm start`
 1. Browse to http://localhost:3000/ to start the demo
 
+# Frequently asked questions
+
+## How can I reset my authorization?
+
+In the demo, after you signed in, click the profile photo on upper-right hand corner, select "Review access on Office.com" or "Review access on GitHub". Then, you will be redirected to the OAuth provider page to remove your authorization.
+
+- For GitHub, you can click the "Revoke access" button
+- For Azure Active Directory
+   1. In the dashboard page, wait until "App permissions" load, you see how many apps you authorized
+   1. Click "Change app permissions"
+   1. In the "You can revoke permission for these apps" section, click the "Revoke" button below your app registration
+
 # Design considerations
 
 ## Organization of JavaScript code
@@ -163,12 +175,14 @@ Since this demo is focused around the interactions between bot and web app, we p
 
 # Further studies
 
-This sample is limited in scope to reduce complexity and lower learning curve. In your production system, you should consider enhancing it.
+To reduce complexity and lower learning curve, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
 - Using refresh token
    - Save the refresh token on the server side of your web app, never expose it to the browser or the bot
    - Bot accessing the resources will requires to obtain an access token from web app, and cached using conversation state
    - This will also smoothen UX by reducing the need of UI popups
+- Threat-modelling
+   - IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
 
 # Caveats
 
@@ -178,4 +192,4 @@ In order to use the website to sign in, the developer will need to set redirect 
 
 In order to use the bot to sign in, in the OAuth provider, the developer will need to set redirect URI to https://token.botframework.com/.auth/web/redirect.
 
-Most OAuth provider, does not support multiple redirect URIs. Thus, we need to use redirect URI from web API to make sure existing flows are not disturbed.
+Some OAuth provider does not support multiple redirect URIs. Thus, we need to use redirect URI from web API to make sure existing flows are not disturbed.
