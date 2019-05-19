@@ -58,6 +58,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1971](https://github.com/Microsoft/BotFramework-WebChat/issues/1971). Fix mobile UX of Sendbox, SendButton, and SuggestedAction focus, by [@corinagum](https://github.com/corinagum) in PR [#2087](https://github.com/Microsoft/BotFramework-WebChat/pull/2087)
 -  Fix [#1627](https://github.com/Microsoft/BotFramework-WebChat/issues/1627). Fixed timestamps randomly stopped from updating, by [@compulim](https://github.com/compulim) in PR [#2090](https://github.com/Microsoft/BotFramework-WebChat/pull/2090)
 
+### Samples
+
+- `*`: [Single-sign on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps/), in [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+
 ## [4.4.1] - 2019-05-02
 
 ### Added
