@@ -6,13 +6,13 @@ You can browse to https://webchat-sso.azurewebsites.net/ to try out this demo.
 
 # Background
 
-Different companies may use different access delegation technologies to protect their valuable resources. In our demo, we are targeting OAuth 2.0 ([RFC 6749](https://tools.ietf.org/html/rfc6749)) only.
+Different companies may use different access delegation technologies to protect their resources. In our demo, we are targeting OAuth 2.0 ([RFC 6749](https://tools.ietf.org/html/rfc6749)).
 
-Although OAuth and OpenID are often related to each other, they solve different problems. OAuth is for authorization and access delegation, while OpenID is for authentication and identify an individual user.
+Although OAuth and [OpenID](https://openid.net/) are often related to each other, they solve different problems. OAuth is for authorization and access delegation, while OpenID is for authentication and user identity.
 
-Instead of OpenID, most enterprise apps use OAuth and a graph API to identify an individual user. In this demo, we will demonstrate how to use OAuth to identify an user.
+Instead of OpenID, most enterprise apps use OAuth plus a graph API to identify an individual user. In this demo, we will demonstrate how to use OAuth to obtain access to graph API and use the API to identifying the accessor.
 
-This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0.
+This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0.
 
 # Assumptions
 
