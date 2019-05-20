@@ -88,3 +88,15 @@ test('textarea send on enter', async () => {
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('textarea long text', async () => {
+  const { driver } = await setupWebDriver({ props: { styleOptions }});
+
+  const textarea = await driver.findElement(By.tagName('textarea'));
+
+  await textarea.sendKeys('https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleSetOptions.js');
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
