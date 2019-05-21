@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1980](https://github.com/Microsoft/BotFramework-WebChat/issues/1980). Changed sendBoxTextArea styles to break words longer than the textarea, by [@tdurnford](https://github.com/tdurnford) in PR [#1986](https://github.com/Microsoft/BotFramework-WebChat/pull/1986)
 - Fix [#1969](https://github.com/Microsoft/BotFramework-WebChat/issues/1969). Move `styleSet`s related to Adaptive Cards to full bundle, by [@corinagum](https://github.com/corinagum) in PR [#1987](https://github.com/Microsoft/BotFramework-WebChat/pull/1987)
 - Fix [#1429](https://github.com/Microsoft/BotFramework-WebChat/issues/1429). Changed Markdown-it options to render newline characters correctly, by [@tdurnford](https://github.com/tdurnford) in PR [#1988](https://github.com/Microsoft/BotFramework-WebChat/pull/1988)
+- Fix [#1736](https://github.com/Microsoft/BotFramework-WebChat/issues/1736). Fixed only first activity in a batch is spoken, by [@compulim](https://github.com/compulim) in PR [#2016](https://github.com/Microsoft/BotFramework-WebChat/pull/2016)
 
 ## [4.4.1] - 2019-05-02
 
