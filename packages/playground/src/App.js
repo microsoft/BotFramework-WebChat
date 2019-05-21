@@ -107,7 +107,7 @@ export default class extends React.Component {
       userAvatarInitials: 'WC',
       userID,
       username: 'Web Chat user',
-      webSpeechPonyfillFactory: null
+      webSpeechPonyfillFactory: undefined
     };
   }
 
@@ -263,7 +263,7 @@ export default class extends React.Component {
         <ReactWebChat
           activityMiddleware={ this.activityMiddleware }
           attachmentMiddleware={ this.attachmentMiddleware }
-          className={ WEB_CHAT_CSS }
+          className={ WEB_CHAT_CSS + '' }
           groupTimestamp={ groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp }
           directLine={ directLine }
           disabled={ disabled }

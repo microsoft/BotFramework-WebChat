@@ -6,7 +6,7 @@ Follow the instructions on the [README.md](README.md) page to integrate the Web 
 
 The latest version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. Below are several examples of how to customize those elements of the Web Chat UI.
 
-You can find the full list of all settings that you can easily modify in Web Chat on the [`defaultStyleSetOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component/src/Styles/defaultStyleSetOptions.js).
+You can find the full list of all settings that you can easily modify in Web Chat on the [`defaultStyleSetOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
 
 These settings will generate a *style set*, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
 
