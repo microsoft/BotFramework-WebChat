@@ -51,8 +51,8 @@ function userSaidSomething(avatarInitials, text, timestamp) {
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Não foi possível ligar.',
-  INITIAL_CONNECTION_NOTIFICATION: 'A ligar...',
-  INTERRUPTED_CONNECTION_NOTIFICATION: 'Interrupção de Rede. Reconectando...',
+  INITIAL_CONNECTION_NOTIFICATION: 'A ligar…',
+  INTERRUPTED_CONNECTION_NOTIFICATION: 'Interrupção de Rede. Reconectando…',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   RENDER_ERROR_NOTIFICATION: 'Ocorreu um erro a renderizar. Por favor verifique a consola ou contacte o developer do bot.',
   SEND_FAILED_KEY: 'O envio falhou. {Retry}.',
@@ -69,7 +69,7 @@ export default {
   'Microphone off': 'Desligar microfone',
   'Microphone on': 'Ligar microfone',
   'Left': 'Esquerda',
-  'Listening…': 'A escutar...',
+  'Listening…': 'A escutar…',
   'New messages': 'Novas mensagens',
   'Right': 'Direita',
   'retry': 'tentar novamente',
@@ -77,7 +77,7 @@ export default {
   'Send': 'Enviar',
   'Sending': 'A enviar',
   'Speak': 'Falar',
-  'Starting…': 'A iniciar...',
+  'Starting…': 'A iniciar…',
   'Tax': 'Imposto',
   'Total': 'Total',
   'Type your message': 'Escreva a sua mensagem',
