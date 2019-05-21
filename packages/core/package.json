@@ -45,7 +45,7 @@
     "eslint": "^5.16.0",
     "jsonwebtoken": "^8.3.0",
     "math-random": "^1.0.4",
-    "mime": "^2.3.1",
+    "mime": "2.4.3",
     "redux": "^4.0.0",
     "redux-promise-middleware": "^5.1.1",
     "redux-saga": "^0.16.0",
