@@ -141,8 +141,7 @@ const StackedLayout = ({
               className="webchat__row message"
             >
               <Bubble
-                // aria-label={ ariaLabel }
-                aria-live="off"
+                aria-hidden={ true }
                 className="bubble"
                 fromUser={ fromUser }
               >
@@ -163,6 +162,7 @@ const StackedLayout = ({
           attachments.map((attachment, index) =>
             <div className="webchat__row attachment" key={ index }>
               <Bubble
+                aria-hidden={ true }
                 className="attachment bubble"
                 fromUser={ fromUser }
                 key={ index }
@@ -172,15 +172,16 @@ const StackedLayout = ({
             </div>
           )
         }
-        <div
-          aria-hidden={ true }
-          className="webchat__row"
-        >
+        <div className="webchat__row">
           {
             showSendStatus ?
               <SendStatus activity={ activity } className="timestamp" />
             :
-              <Timestamp activity={ activity } className={ classNames('timestamp', timestampClassName) } />
+              <Timestamp
+                activity={ activity }
+                aria-hidden={ true }
+                className={ classNames('timestamp', timestampClassName) }
+              />
           }
           <div className="filler" />
         </div>
