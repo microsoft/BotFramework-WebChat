@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
@@ -43,36 +42,22 @@ export default function () {
         && (activity.attachments || []).length > 1
         && activity.attachmentLayout === 'carousel'
       ) {
+        // The following line is not a React functional component, it's a middleware function.
+        // Note that "children" is not a props, but first argument.
         const CarouselActivity = children =>
           <CarouselLayout activity={ activity } timestampClassName={ timestampClassName }>
             { children }
           </CarouselLayout>;
 
-        CarouselActivity.defaultProps = {
-          timestampClassName: ''
-        };
-
-        CarouselActivity.propTypes = {
-          activity: PropTypes.any.isRequired,
-          timestampClassName: PropTypes.string
-        };
-
         return CarouselActivity;
       }
 
+      // The following line is not a React functional component, it's a middleware function.
+      // Note that "children" is not a props, but first argument.
       const StackedActivity = children =>
         <StackedLayout activity={ activity } timestampClassName={ timestampClassName }>
           { children }
         </StackedLayout>;
-
-      StackedActivity.defaultProps = {
-        timestampClassName: ''
-      };
-
-      StackedActivity.propTypes = {
-        activity: PropTypes.any.isRequired,
-        timestampClassName: PropTypes.string
-      };
 
       return StackedActivity;
     }
