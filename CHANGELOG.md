@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fix [#1974](https://github.com/Microsoft/BotFramework-WebChat/issues/1974). Update `/docs/` folder to `/media/` and delete unused images, by [@corinagum](https://github.com/corinagum) in PR [#1975](https://github.com/Microsoft/BotFramework-WebChat/pull/1975)
 - Fix [#1969](https://github.com/Microsoft/BotFramework-WebChat/issues/1969). Move `styleSet`s related to Adaptive Cards to full bundle, by [@corinagum](https://github.com/corinagum) in PR [#1987](https://github.com/Microsoft/BotFramework-WebChat/pull/1987)
+- Fix [#1876](https://github.com/Microsoft/BotFramework-WebChat/issues/1876). A11y fixes on Web Chat transcript, by [@corinagum](https://github.com/corinagum) in PR [#2018](https://github.com/Microsoft/BotFramework-WebChat/pull/2018)
 
 
 ## [4.4.1] - 2019-05-02
