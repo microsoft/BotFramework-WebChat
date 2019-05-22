@@ -191,4 +191,4 @@ In order to use the website to sign in, the developer will need to set the redir
 
 In order to use the bot to sign in, in the OAuth provider, the developer will need to set the redirect URI to https://token.botframework.com/.auth/web/redirect.
 
-Some OAuth provider does not support multiple redirect URIs. Thus, we need to use redirect URI from web API to make sure existing flows are not disturbed.
+Some OAuth providers do not support multiple redirect URIs. Thus, we need to use a redirect URI from the web API to make sure existing flows are not disturbed.
