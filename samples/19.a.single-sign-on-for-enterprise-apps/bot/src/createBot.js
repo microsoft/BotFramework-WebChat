@@ -128,7 +128,7 @@ module.exports = () => {
       const now = new Date();
 
       await context.sendActivity({
-        text: `The time is now ${ now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }. What can I help?`,
+        text: `The time is now ${ now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }. What can I do to help?`,
         ...SUGGESTED_ACTIONS
       });
     } else if (
