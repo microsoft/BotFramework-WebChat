@@ -146,7 +146,7 @@ After having signed in on this app, click the profile photo on the upper-right h
 
 - For GitHub, you can click the "Revoke access" button
 - For Azure Active Directory
-   1. In the dashboard page, wait until "App permissions" load, you see how many apps you authorized
+   1. On the AAD dashboard page, wait until "App permissions" loads. Here you see how many apps you have authorized
    1. Click "Change app permissions"
    1. In the "You can revoke permission for these apps" section, click the "Revoke" button below your app registration
 
