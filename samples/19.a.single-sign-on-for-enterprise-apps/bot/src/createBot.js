@@ -11,7 +11,7 @@ const QUESTIONS = {
   bye2: 'goodbye',
   hello1: 'hello',
   hello2: 'hi',
-  order: 'where are my orders',
+  order: 'what are my orders',
   time: 'what time is it'
 };
 
