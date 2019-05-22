@@ -22,7 +22,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | nl-nl          | @iMicknl              |
 | pl-pl          | @peterblazejewicz     |
 | pt-br          | @rcarubbi, @pedropacheco92|
-| pt-pt          |                       |
+| pt-pt          | @bodyzatva            |
 | ru-ru          | @odysseus1973, @seaen |
 | sv-se          | @pekspro              |
 | tr-tr          |                       |

@@ -106,6 +106,7 @@ class Dictation extends React.Component {
 
 Dictation.defaultProps = {
   disabled: false,
+  onError: undefined,
   webSpeechPonyfill: undefined
 };
 
@@ -113,7 +114,7 @@ Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
-  onError: PropTypes.func.isRequired,
+  onError: PropTypes.func,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
   setSendBox: PropTypes.func.isRequired,
