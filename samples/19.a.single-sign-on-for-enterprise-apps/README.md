@@ -178,7 +178,7 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
 
 - Using refresh token
    - Save the refresh token on the server side of your web app, never expose it to the browser or the bot
-   - Bot accessing the resources will requires to obtain an access token from web app, and cached using conversation state
+   - Bot accessing the resources will be required to obtain an access token from the web app and cached using conversation state
    - This will also smoothen UX by reducing the need of UI popups
 - Threat-modelling
    - IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
