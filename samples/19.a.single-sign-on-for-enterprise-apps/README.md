@@ -135,7 +135,6 @@ During development, you will run your bot locally. You can use [ngrok](https://n
 
 1. Under `app`, `bot`, and `rest-api` folder, run the following
    1. `npm install`
-   1. `npm run build`
    1. `npm start`
 1. Browse to http://localhost:3000/ to start the demo
 
