@@ -49,7 +49,7 @@ To host this demo, you will need to clone the code and run locally.
 
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/rest-api/.env`
-   - In `/rest-api/.env`
+   - In `/rest-api/.env`:
       - Write `AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback`
          - When Azure Active Directory complete the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from end-user machine
       - Write `GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback`
