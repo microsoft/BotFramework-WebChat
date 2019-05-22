@@ -142,7 +142,7 @@ During development, you will run your bot locally. You can use [ngrok](https://n
 
 ## How can I reset my authorization?
 
-In the demo, after you signed in, click the profile photo on upper-right hand corner, select "Review access on Office.com" or "Review access on GitHub". Then, you will be redirected to the OAuth provider page to remove your authorization.
+After having signed in on this app, click the profile photo on the upper-right hand corner, select "Review access on Office.com" or "Review access on GitHub". Then, you will be redirected to the OAuth provider page to remove your authorization.
 
 - For GitHub, you can click the "Revoke access" button
 - For Azure Active Directory
