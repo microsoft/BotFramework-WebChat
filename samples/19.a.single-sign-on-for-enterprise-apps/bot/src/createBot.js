@@ -112,7 +112,7 @@ module.exports = () => {
 
     if (/^hello\d+$/.test(match)) {
       await context.sendActivity({
-        text: 'Hello there. What can I help you?',
+        text: 'Hello there. What can I help you with?',
         ...SUGGESTED_ACTIONS
       });
     } else if (/^bye\d+$/.test(match)) {
