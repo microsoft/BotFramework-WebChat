@@ -123,7 +123,7 @@ You can follow [our instructions](https://docs.microsoft.com/en-us/azure/bot-ser
 During development, you will run your bot locally. You can use [ngrok](https://ngrok.com/) to expose your bot server.
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
-1. Update your Bot Channel Registration, you can use [AZ CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
+1. Update your Bot Channel Registration. You can use [AZ CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
    - Via AZ CLI
       - Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
    - Via Azure Portal
