@@ -4,13 +4,13 @@ const random = require('math-random');
 
 // Default environment variables
 process.env = {
-  AAD_OAUTH_SCOPE = 'User.Read',
-  GITHUB_OAUTH_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token',
-  GITHUB_OAUTH_CLIENT_ID = 'https://github.com/login/oauth/authorize',
-  GITHUB_OAUTH_SCOPE = 'user:email',
-  GITHUB_OAUTH_STATE_SALT = random.toString(36).substr(2),
-  PORT = '5000',
-  STATIC_FILES = 'public',
+  AAD_OAUTH_SCOPE: 'User.Read',
+  GITHUB_OAUTH_ACCESS_TOKEN_URL: 'https://github.com/login/oauth/access_token',
+  GITHUB_OAUTH_CLIENT_ID: 'https://github.com/login/oauth/authorize',
+  GITHUB_OAUTH_SCOPE: 'user:email',
+  GITHUB_OAUTH_STATE_SALT: random.toString(36).substr(2),
+  PORT: '5000',
+  STATIC_FILES: 'public',
   ...process.env,
 };
 
