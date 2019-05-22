@@ -61,7 +61,7 @@ module.exports = () => {
       await oauthStateManager.saveChanges();
 
       if (accessToken) {
-        // For async operations that is outside of BotBuilder, we should use proactive messaging.
+        // For async operations that are outside of BotBuilder, we should use proactive messaging.
         const reference = TurnContext.getConversationReference(context.activity);
 
         await context.sendActivity({ type: 'typing' });
