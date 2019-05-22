@@ -59,7 +59,7 @@ To host this demo, you will need to clone the code and run locally.
 
 If you want to authenticate on Azure Active Directory, follow the steps below.
 
-- Go to [your Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
+- Go to your [Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
 - Create a new application
    1. Select "App registrations"
    1. Click "New registration"
