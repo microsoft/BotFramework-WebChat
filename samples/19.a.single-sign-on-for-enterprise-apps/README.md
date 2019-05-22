@@ -162,7 +162,7 @@ You are not required to code your web app in React or use Web Chat via `<script>
 
 Since the demo is running in a heterogeneous environment (both React and pure JavaScript), additional wire-ups are required. We use DOM events to wire up the enterprise app (authentication UI) and Web Chat.
 
-In your production system, you are probably in an homogenous environment (either React or pure JavaScript), you may want to use Redux or other mechanisms to wire up different UI components.
+In your production system, since you are probably in a homogenous environment (either React or pure JavaScript), you may want to use Redux or other mechanisms to wire up different UI components.
 
 ## OAuth access token vs. refresh token
 
