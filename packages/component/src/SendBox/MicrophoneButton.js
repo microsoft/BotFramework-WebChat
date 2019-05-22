@@ -16,6 +16,7 @@ const { DictateState } = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
+  height: '100%',
 
   '& > .sr-only': {
     color: 'transparent',
