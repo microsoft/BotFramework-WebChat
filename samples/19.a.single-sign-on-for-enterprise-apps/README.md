@@ -168,7 +168,7 @@ In your production system, since you are probably in a homogenous environment (e
 
 To make this demo simpler to understand, we are using the access token, a.k.a. "Implicit Grant" flow, in which the access token is considered as secure inside the browser.
 
-In your production scenario, instead of access token, you may want to use refresh token, a.k.a. "Authorization Code Grant" flow. But this will increase the complexity of this demo because it requires server-to-server communications and secured persistent storage.
+In your production scenario, you may want to use the refresh token, a.k.a. "Authorization Code Grant" flow, instead of the access token. We did not use the Authorization Code Grant flow in this sample: it would increase the complexity of this demo because it requires server-to-server communications and secured persistent storage.
 
 Since this demo is focused around the interactions between bot and web app, we prefer to use access token to keep the code easier to understand.
 
