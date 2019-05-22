@@ -25,7 +25,7 @@ This demo does not include any threat models and is designed for educational pur
 # Goals
 
 - Website supports both anonymous and authenticated access. Forced page refresh and/or new conversation is not mandated
-- End-user is able to sign in thru the web page, and recognized by the bot immediately
+- End-user is able to sign in through the web page, and is recognized by the bot immediately
 - End-user is able to sign in thru the bot, and recognized by the web page immediately
 - End-user is able to sign in thru the web page, and sign out thru the bot
 - End-user is able to sign in thru the bot, and sign out thru the web page
