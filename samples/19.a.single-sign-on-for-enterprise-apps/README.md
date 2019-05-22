@@ -154,7 +154,7 @@ After having signed in on this app, click the profile photo on the upper-right h
 
 ## Organization of JavaScript code
 
-In our demo, we built an enteprise single-page app using React. Then, we use `<script>` tag to embed Web Chat. This is for separating the code so developers reading this sample can study the changes and easier understanding the interactions between them.
+In our demo, we built an enteprise single-page app using React. Then, we use a `<script>` tag to embed Web Chat. This is for separating the code so developers reading this sample can study the changes and more easily understand the interactions between them.
 
 You are not required to code your web app in React or use Web Chat via `<script>` tag. In fact, you can write both your web app and embed Web Chat using JavaScript or React.
 
