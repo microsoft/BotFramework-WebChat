@@ -28,7 +28,7 @@ This demo does not include any threat models and is designed for educational pur
 - End-user is able to sign in through the web page, and is recognized by the bot immediately
 - End-user is able to sign in through the bot, and is recognized by the web page immediately
 - End-user is able to sign in through the web page and sign out though the bot
-- End-user is able to sign in thru the bot, and sign out thru the web page
+- End-user is able to sign in through the bot and sign out through the web page
 - OAuth access token is saved as part of the conversation state or user state
 
 # How to run this demo
