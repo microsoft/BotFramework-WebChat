@@ -5,14 +5,14 @@ import {
 } from 'redux-saga/effects';
 
 import { MARK_ACTIVITY } from '../actions/markActivity';
-import { ofID as activitiesOfID } from '../selectors/activities';
+import selectActivities from '../selectors/activities';
 import speakingActivity from '../definitions/speakingActivity';
 import startDictate from '../actions/startDictate';
 import whileConnected from './effects/whileConnected';
 import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 
 function* startDictateAfterAllActivitiesSpoken({ payload: { activityID } }) {
-  const activities = yield select(activitiesOfID(activityID));
+  const activities = yield select(selectActivities);
   const [spokenActivity] = activities;
 
   if (
