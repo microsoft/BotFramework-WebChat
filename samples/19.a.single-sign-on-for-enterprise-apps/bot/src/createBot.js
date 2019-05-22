@@ -153,7 +153,7 @@ module.exports = () => {
                 type: 'openUrl',
                 value: 'about:blank#sign-into-github'
               }],
-              text: 'Please sign in before I can help tracking your orders.'
+              text: 'Please sign in so I can help tracking your orders.'
             },
             contentType: 'application/vnd.microsoft.card.hero',
           }]
