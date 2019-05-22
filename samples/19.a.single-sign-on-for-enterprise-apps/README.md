@@ -187,7 +187,7 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
 
 ## More than one redirect URIs
 
-In order to use the website to sign in, the developer will need to set redirect URI to their own web API.
+In order to use the website to sign in, the developer will need to set the redirect URI to their own web API.
 
 In order to use the bot to sign in, in the OAuth provider, the developer will need to set redirect URI to https://token.botframework.com/.auth/web/redirect.
 
