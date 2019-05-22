@@ -66,7 +66,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. Give it a name
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "web" as type
-      1. Enter `http://localhost:3000/api/aad/oauth/callback` as redirect URI
+      1. Enter `http://localhost:3000/api/aad/oauth/callback` as the redirect URI
          - This must match `AAD_OAUTH_REDIRECT_URI` in `/rest-api/.env` we saved earlier
    - Click "Register"
 - Save the authorization endpoints
