@@ -166,7 +166,7 @@ In your production system, since you are probably in a homogenous environment (e
 
 ## OAuth access token vs. refresh token
 
-To make this demo simpler to understand, we are using access token, a.k.a. "Implicit Grant" flow, which the access token is consider as secure inside the browser.
+To make this demo simpler to understand, we are using the access token, a.k.a. "Implicit Grant" flow, in which the access token is considered as secure inside the browser.
 
 In your production scenario, instead of access token, you may want to use refresh token, a.k.a. "Authorization Code Grant" flow. But this will increase the complexity of this demo because it requires server-to-server communications and secured persistent storage.
 
