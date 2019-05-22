@@ -177,7 +177,7 @@ Since this demo is focused around the interactions between bot and web app, we p
 To reduce complexity and lower the learning curve, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
 - Using refresh token
-   - Save the refresh token on the server side of your web app, never expose it to the browser or the bot
+   - Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
    - Bot accessing the resources will be required to obtain an access token from the web app and cached using conversation state
    - This will also create a smooth UX by reducing the need for UI popups
 - Threat-modelling
