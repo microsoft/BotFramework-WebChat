@@ -13,7 +13,7 @@ export default async function fetchProfilePhotoInBase64(accessToken) {
 
     if (!res.ok) {
       if (res.status === 401) {
-        // Personal account do not have profile photo
+        // Personal account does not have profile photo
         return 'images/Microsoft-Graph-64px.png';
       } else {
         throw new Error('Microsoft Graph: Failed to fetch user profile photo.');
