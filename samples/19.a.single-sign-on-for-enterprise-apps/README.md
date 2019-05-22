@@ -16,7 +16,7 @@ This demo does not include any threat models and is designed for educational pur
 
 # Assumptions
 
-- Developer have an existing enterprise web app that use OAuth to access protected resources
+- Developer has an existing enterprise web app that uses OAuth to access protected resources
    - We assume the OAuth access token lives in the browser memory and is accessible using JavaScript
       - Access token can live in browser memory but must be secured during transmit thru the use of TLS
       - More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
