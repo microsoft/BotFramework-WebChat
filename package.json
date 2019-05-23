@@ -93,7 +93,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@babel/runtime": "^7.4.3",
-    "babel-jest": "^24.8.0",
+    "babel-jest": "^24.1.0",
     "coveralls": "^3.0.2",
     "eslint-plugin-prettier": "^3.1.0",
     "get-port": "^4.0.0",
