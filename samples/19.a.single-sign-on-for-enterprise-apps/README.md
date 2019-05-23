@@ -112,7 +112,7 @@ If you want to authenticate on GitHub, follow the steps below.
 
 > We prefer to use [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
-You can follow [our instructions](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0) here to setup a new Bot Channel Registration.
+You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    - `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
