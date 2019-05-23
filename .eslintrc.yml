@@ -11,6 +11,8 @@ parserOptions:
     jsx: true
   ecmaVersion: 10
   sourceType: module
+plugins:
+- prettier
 root: true
 rules:
   # Only list rules that are not in *:recommended set
@@ -24,7 +26,6 @@ rules:
   - allow:
     - error
     - warn
-  no-extra-parens: error
   no-misleading-character-class: error
   no-template-curly-in-string: error
   require-atomic-updates: error
@@ -138,14 +139,11 @@ rules:
   - error
   - after: true
     before: true
-  generator-star-spacing:
-  - error
-  - after
 
   # Will produce shorter code if "off"
   # no-confusing-arrow:
   # - error
-  # - allowParens: true # This will conflict with no-extra-parens
+  # - allowParens: true # This will conflict with no-extra-parens and prettier
 
   no-duplicate-imports: error
   no-useless-computed-key: error
@@ -171,12 +169,12 @@ rules:
   # - error
   # - ignoreCase: true
 
-  template-curly-spacing:
-  - error
-  - always
   yield-star-spacing:
   - error
   - after
+
+  # plugins
+  prettier/prettier: error
 settings:
   react:
     version: detect

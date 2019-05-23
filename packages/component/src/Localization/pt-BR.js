@@ -52,7 +52,7 @@ export default {
   'Microphone on': 'Microfone ligado',
   'Listening…': 'Ouvindo…',
   'retry': 'repetir',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  'Retry': 'Repetir', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
   'Send': 'Enviar',
   'Sending': 'enviando',
   'Speak': 'Falar',
