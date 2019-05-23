@@ -17,7 +17,7 @@ module.exports = (_, res) => {
     redirect_uri: `${ GITHUB_OAUTH_REDIRECT_URI }?${ new URLSearchParams({ seed }) }`,
     response_type: 'code',
     scope: GITHUB_OAUTH_SCOPE,
-    ...state || {}
+    state
   });
 
   res.setHeader('location', `${ GITHUB_OAUTH_AUTHORIZE_URL }?${ params }`);
