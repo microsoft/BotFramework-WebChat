@@ -1,6 +1,4 @@
-export default function ({
-  videoHeight
-}) {
+export default function({ videoHeight }) {
   return {
     height: videoHeight,
     width: '100%'

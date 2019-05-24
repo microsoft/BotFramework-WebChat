@@ -1,6 +1,4 @@
-export default function ({
-  videoHeight
-}) {
+export default function({ videoHeight }) {
   return {
     border: 0,
     height: videoHeight,

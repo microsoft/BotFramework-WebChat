@@ -7,4 +7,4 @@ export default function sendMessage(text, method) {
   };
 }
 
-export { SEND_MESSAGE }
+export { SEND_MESSAGE };

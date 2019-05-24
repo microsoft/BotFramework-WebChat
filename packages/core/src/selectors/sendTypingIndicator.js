@@ -1,1 +1,1 @@
-export default ({ sendTypingIndicator }) => sendTypingIndicator
+export default ({ sendTypingIndicator }) => sendTypingIndicator;

@@ -10,16 +10,20 @@ beforeEach(() => {
 });
 
 test('Setup version 4', async () => {
-  jest.mock('./fetchJSON', () => jest.fn(() => Promise.resolve({
-    botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
-    botId: 'webchat-mockbot',
-    botName: 'MockBot',
-    directLineURL: 'https://directline.botframework.com',
-    features: [],
-    userId: 'u-12345',
-    userIdSrc: 'cookie',
-    webSocket: true
-  })));
+  jest.mock('./fetchJSON', () =>
+    jest.fn(() =>
+      Promise.resolve({
+        botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
+        botId: 'webchat-mockbot',
+        botName: 'MockBot',
+        directLineURL: 'https://directline.botframework.com',
+        features: [],
+        userId: 'u-12345',
+        userIdSrc: 'cookie',
+        webSocket: true
+      })
+    )
+  );
 
   jest.mock('./setups/loadAsset', () => jest.fn(() => Promise.resolve()));
 
@@ -39,7 +43,9 @@ test('Setup version 4', async () => {
 
   expect(document.title).toBe('MockBot');
   expect(require('./fetchJSON')).toHaveBeenCalledTimes(1);
-  expect(require('./fetchJSON')).toHaveBeenCalledWith('/embed/webchat-mockbot/config?s=secret&userid=ww', { credentials: 'include' });
+  expect(require('./fetchJSON')).toHaveBeenCalledWith('/embed/webchat-mockbot/config?s=secret&userid=ww', {
+    credentials: 'include'
+  });
   expect(window.WebChat.createDirectLine).toHaveBeenCalledTimes(1);
   expect(window.WebChat.renderWebChat).toHaveBeenCalledTimes(1);
 
@@ -63,18 +69,14 @@ test('Setup version 4', async () => {
 
 test('Find default version', () => {
   const targetVersion = {
-    assets: [
-      ['webchat.js', 'sha384-a1b2c3d']
-    ],
+    assets: [['webchat.js', 'sha384-a1b2c3d']],
     versionFamily: '4'
   };
 
   const service = require('./index').findService({
     versions: {
-      'default': {
-        redirects: [
-          ['*', '4.3.0']
-        ]
+      default: {
+        redirects: [['*', '4.3.0']]
       },
       '4.3.0': targetVersion
     }
@@ -85,67 +87,65 @@ test('Find default version', () => {
 
 test('Find targeted version using query parameters', () => {
   const targetVersion = {
-    assets: [
-      ['webchat.js', 'sha384-a1b2c3d']
-    ],
+    assets: [['webchat.js', 'sha384-a1b2c3d']],
     versionFamily: '4'
   };
 
-  const service = require('./index').findService({
-    versions: {
-      'default': {
-        redirects: [
-          ['*', '4.1.0']
-        ]
-      },
-      '4.3.0': targetVersion
-    }
-  }, {}, '4.3.0');
+  const service = require('./index').findService(
+    {
+      versions: {
+        default: {
+          redirects: [['*', '4.1.0']]
+        },
+        '4.3.0': targetVersion
+      }
+    },
+    {},
+    '4.3.0'
+  );
 
   expect(service).toBe(targetVersion);
 });
 
 test('Find targeted version using features', () => {
   const targetVersion = {
-    assets: [
-      ['webchat.js', 'sha384-a1b2c3d']
-    ],
+    assets: [['webchat.js', 'sha384-a1b2c3d']],
     versionFamily: '4'
   };
 
-  const service = require('./index').findService({
-    versions: {
-      'default': {
-        redirects: [
-          ['feature:nextmajor', '4.3.0'],
-          ['*', '4.2.0']
-        ]
-      },
-      '4.3.0': targetVersion
-    }
-  }, { features: ['nextmajor'] });
+  const service = require('./index').findService(
+    {
+      versions: {
+        default: {
+          redirects: [['feature:nextmajor', '4.3.0'], ['*', '4.2.0']]
+        },
+        '4.3.0': targetVersion
+      }
+    },
+    { features: ['nextmajor'] }
+  );
 
   expect(service).toBe(targetVersion);
 });
 
 test('Missing version should redirect to default version', () => {
   const targetVersion = {
-    assets: [
-      ['webchat.js', 'sha384-a1b2c3d']
-    ],
+    assets: [['webchat.js', 'sha384-a1b2c3d']],
     versionFamily: '4'
   };
 
-  const service = require('./index').findService({
-    versions: {
-      'default': {
-        redirects: [
-          ['*', '4.3.0']
-        ]
-      },
-      '4.3.0': targetVersion
-    }
-  }, {}, '4.0.0');
+  const service = require('./index').findService(
+    {
+      versions: {
+        default: {
+          redirects: [['*', '4.3.0']]
+        },
+        '4.3.0': targetVersion
+      }
+    },
+    {},
+    '4.0.0'
+  );
 
   expect(service).toBe(targetVersion);
 });

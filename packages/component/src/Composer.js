@@ -65,31 +65,37 @@ const DISPATCHERS = {
 };
 
 function styleSetToClassNames(styleSet) {
-  return mapMap(styleSet, (style, key) => key === 'options' ? style : css(style));
+  return mapMap(styleSet, (style, key) => (key === 'options' ? style : css(style)));
 }
 
 function createCardActionLogic({ cardActionMiddleware, directLine, dispatch }) {
   const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
 
   return {
-    onCardAction: cardAction => runMiddleware(({ cardAction: { type } }) => {
-      throw new Error(`Web Chat: received unknown card action "${ type }"`);
-    })({
-      cardAction,
-      getSignInUrl: cardAction.type === 'signin' ? () => {
-        const { value } = cardAction;
+    onCardAction: cardAction =>
+      runMiddleware(({ cardAction: { type } }) => {
+        throw new Error(`Web Chat: received unknown card action "${type}"`);
+      })({
+        cardAction,
+        getSignInUrl:
+          cardAction.type === 'signin'
+            ? () => {
+                const { value } = cardAction;
 
-        if (directLine.getSessionId) {
-          // TODO: [P3] We should change this one to async/await.
-          //       This is the first place in this project to use async.
-          //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
+                if (directLine.getSessionId) {
+                  // TODO: [P3] We should change this one to async/await.
+                  //       This is the first place in this project to use async.
+                  //       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
 
-          return observableToPromise(directLine.getSessionId()).then(sessionId => `${ value }${ encodeURIComponent(`&code_challenge=${ sessionId }`) }`);
-        }
+                  return observableToPromise(directLine.getSessionId()).then(
+                    sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
+                  );
+                }
 
-        return value;
-      } : null
-    })
+                return value;
+              }
+            : null
+      })
   };
 }
 
@@ -118,13 +124,17 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
   if (botAvatarInitials) {
     styleOptions = { ...styleOptions, botAvatarInitials };
 
-    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .');
+    console.warn(
+      'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
+    );
   }
 
   if (userAvatarInitials) {
     styleOptions = { ...styleOptions, userAvatarInitials };
 
-    console.warn('Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .');
+    console.warn(
+      'Web Chat: "botAvatarInitials" is deprecated. Please use "styleOptions.botAvatarInitials" instead. "botAvatarInitials" will be removed on or after December 11 2019 .'
+    );
   }
 
   return {
@@ -168,7 +178,9 @@ function dispatchSetSendTypingIndicatorFromProps({ dispatch, sendTyping, sendTyp
     dispatch(setSendTypingIndicator(!!sendTypingIndicator));
   } else {
     // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-    console.warn('Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.');
+    console.warn(
+      'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
+    );
     dispatch(setSendTypingIndicator(!!sendTyping));
   }
 }
@@ -177,17 +189,14 @@ class Composer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createContextFromProps = memoize(
-      createLogic,
-      shallowEquals
+    this.createContextFromProps = memoize(createLogic, shallowEquals);
+
+    this.createWebSpeechPonyfill = memoize(
+      (webSpeechPonyfillFactory, referenceGrammarID) =>
+        webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID })
     );
 
-    this.createWebSpeechPonyfill = memoize((webSpeechPonyfillFactory, referenceGrammarID) => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID }));
-
-    this.mergeContext = memoize(
-      (...contexts) => Object.assign({}, ...contexts),
-      shallowEquals
-    );
+    this.mergeContext = memoize((...contexts) => Object.assign({}, ...contexts), shallowEquals);
 
     this.state = {
       hoistedDispatchers: mapMap(DISPATCHERS, dispatcher => (...args) => props.dispatch(dispatcher.apply(this, args)))
@@ -218,19 +227,14 @@ class Composer extends React.Component {
     }
 
     if (
-      !prevProps.sendTypingIndicator !== !sendTypingIndicator
-
+      !prevProps.sendTypingIndicator !== !sendTypingIndicator ||
       // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      || !prevProps.sendTyping !== !sendTyping
+      !prevProps.sendTyping !== !sendTyping
     ) {
       dispatchSetSendTypingIndicatorFromProps(props);
     }
 
-    if (
-      prevProps.directLine !== directLine
-      || prevProps.userID !== userID
-      || prevProps.username !== username
-    ) {
+    if (prevProps.directLine !== directLine || prevProps.userID !== userID || prevProps.username !== username) {
       // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
       props.dispatch(disconnect());
       props.dispatch(createConnectAction({ directLine, userID, username }));
@@ -285,28 +289,21 @@ class Composer extends React.Component {
     // TODO: [P3] Check how many times we do re-render context
 
     return (
-      <Context.Provider value={ context }>
-        { typeof children === 'function' ? children(context) : children }
+      <Context.Provider value={context}>
+        {typeof children === 'function' ? children(context) : children}
         <Dictation />
       </Context.Provider>
     );
   }
 }
 
-const ConnectedComposer = connect(
-  ({ referenceGrammarID }) => ({ referenceGrammarID })
-)(props =>
+const ConnectedComposer = connect(({ referenceGrammarID }) => ({ referenceGrammarID }))(props => (
   <ScrollToBottomComposer>
     <ScrollToBottomFunctionContext.Consumer>
-      { ({ scrollToEnd }) =>
-        <Composer
-          scrollToEnd={ scrollToEnd }
-          { ...props }
-        />
-      }
+      {({ scrollToEnd }) => <Composer scrollToEnd={scrollToEnd} {...props} />}
     </ScrollToBottomFunctionContext.Consumer>
   </ScrollToBottomComposer>
-);
+));
 
 // We will create a Redux store if it was not passed in
 class ConnectedComposerWithStore extends React.Component {
@@ -319,16 +316,11 @@ class ConnectedComposerWithStore extends React.Component {
   render() {
     const { props } = this;
 
-    return (
-      <ConnectedComposer
-        { ...props }
-        store={ props.store || this.createMemoizedStore() }
-      />
-    );
+    return <ConnectedComposer {...props} store={props.store || this.createMemoizedStore()} />;
   }
 }
 
-export default ConnectedComposerWithStore
+export default ConnectedComposerWithStore;
 
 // TODO: [P3] We should consider moving some props to Redux store
 //       Although we use `connectToWebChat` to hide the details of accessor of Redux store,

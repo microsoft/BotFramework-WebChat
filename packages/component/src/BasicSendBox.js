@@ -14,10 +14,7 @@ import TextBox from './SendBox/TextBox';
 import UploadButton from './SendBox/UploadButton';
 
 const {
-  DictateState: {
-    DICTATING,
-    STARTING
-  }
+  DictateState: { DICTATING, STARTING }
 } = Constants;
 
 const ROOT_CSS = css({
@@ -30,43 +27,27 @@ const DICTATION_INTERIMS_CSS = css({ flex: 10000 });
 const MICROPHONE_BUTTON_CSS = css({ flex: 1 });
 const TEXT_BOX_CSS = css({ flex: 10000 });
 
-const BasicSendBox = ({
-  className,
-  dictationStarted,
-  styleSet,
-  webSpeechPonyfill
-}) =>
-  <div
-    className={ classNames(
-      styleSet.sendBox + '',
-      ROOT_CSS + '',
-      className + ''
-    ) }
-    role="form"
-  >
+const BasicSendBox = ({ className, dictationStarted, styleSet, webSpeechPonyfill }) => (
+  <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
     <ConnectivityStatus />
     <SuggestedActions />
     <div className="main">
-      {
-        !styleSet.options.hideUploadButton &&
-          <UploadButton />
-      }
-      {
-        dictationStarted ?
-          <DictationInterims className={ DICTATION_INTERIMS_CSS + '' } />
-        :
-          <TextBox className={ TEXT_BOX_CSS + '' } />
-      }
+      {!styleSet.options.hideUploadButton && <UploadButton />}
+      {dictationStarted ? (
+        <DictationInterims className={DICTATION_INTERIMS_CSS + ''} />
+      ) : (
+        <TextBox className={TEXT_BOX_CSS + ''} />
+      )}
       <div>
-        {
-          (webSpeechPonyfill || {}).SpeechRecognition ?
-            <MicrophoneButton className={ MICROPHONE_BUTTON_CSS + '' } />
-          :
-            <SendButton />
-        }
+        {(webSpeechPonyfill || {}).SpeechRecognition ? (
+          <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} />
+        ) : (
+          <SendButton />
+        )}
       </div>
     </div>
   </div>
+);
 
 BasicSendBox.defaultProps = {
   className: '',
@@ -85,14 +66,8 @@ BasicSendBox.propTypes = {
   })
 };
 
-export default connectToWebChat(
-  ({
-    dictateState,
-    styleSet,
-    webSpeechPonyfill
-  }) => ({
-    dictationStarted: dictateState === STARTING || dictateState === DICTATING,
-    styleSet,
-    webSpeechPonyfill
-  })
-)(BasicSendBox)
+export default connectToWebChat(({ dictateState, styleSet, webSpeechPonyfill }) => ({
+  dictationStarted: dictateState === STARTING || dictateState === DICTATING,
+  styleSet,
+  webSpeechPonyfill
+}))(BasicSendBox);

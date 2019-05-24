@@ -39,6 +39,4 @@ Bubble.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(Bubble)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(Bubble);

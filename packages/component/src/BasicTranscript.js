@@ -70,14 +70,13 @@ const BasicTranscript = ({
     const element = activityRenderer({
       activity,
       timestampClassName: 'transcript-timestamp'
-    })(
-      ({ attachment }) => attachmentRenderer({ activity, attachment })
-    );
+    })(({ attachment }) => attachmentRenderer({ activity, attachment }));
 
-    element && activityElements.push({
-      activity,
-      element
-    });
+    element &&
+      activityElements.push({
+        activity,
+        element
+      });
 
     return activityElements;
   }, []);
@@ -133,7 +132,7 @@ const BasicTranscript = ({
       <ScrollToEndButton />
     </div>
   );
-}
+};
 
 BasicTranscript.defaultProps = {
   className: '',
@@ -146,10 +145,7 @@ BasicTranscript.propTypes = {
   activityRenderer: PropTypes.func.isRequired,
   attachmentRenderer: PropTypes.func.isRequired,
   className: PropTypes.string,
-  groupTimestamp: PropTypes.oneOfType([
-    PropTypes.bool.isRequired,
-    PropTypes.number.isRequired
-  ]),
+  groupTimestamp: PropTypes.oneOfType([PropTypes.bool.isRequired, PropTypes.number.isRequired]),
   styleSet: PropTypes.shape({
     activities: PropTypes.any.isRequired,
     activity: PropTypes.any.isRequired
@@ -161,14 +157,7 @@ BasicTranscript.propTypes = {
 };
 
 export default connectToWebChat(
-  ({
-    activities,
-    activityRenderer,
-    attachmentRenderer,
-    groupTimestamp,
-    styleSet,
-    webSpeechPonyfill
-  }) => ({
+  ({ activities, activityRenderer, attachmentRenderer, groupTimestamp, styleSet, webSpeechPonyfill }) => ({
     activities,
     activityRenderer,
     attachmentRenderer,
@@ -176,4 +165,4 @@ export default connectToWebChat(
     styleSet,
     webSpeechPonyfill
   })
-)(BasicTranscript)
+)(BasicTranscript);

@@ -14,13 +14,15 @@ class FullReactWebChat extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAttachmentMiddleware = memoize((adaptiveCardHostConfig, middlewareFromProps, styleOptions) => concatMiddleware(
-      middlewareFromProps,
-      createAdaptiveCardsAttachmentMiddleware({
-        adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(styleOptions),
-        adaptiveCards
-      })
-    ));
+    this.createAttachmentMiddleware = memoize((adaptiveCardHostConfig, middlewareFromProps, styleOptions) =>
+      concatMiddleware(
+        middlewareFromProps,
+        createAdaptiveCardsAttachmentMiddleware({
+          adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(styleOptions),
+          adaptiveCards
+        })
+      )
+    );
   }
 
   render() {
@@ -28,17 +30,15 @@ class FullReactWebChat extends React.Component {
 
     return (
       <BasicWebChat
-        attachmentMiddleware={
-          this.createAttachmentMiddleware(
-            adaptiveCardHostConfig,
-            attachmentMiddleware,
-            styleOptions
-          )
-        }
-        renderMarkdown={ renderMarkdown }
-        styleOptions={ styleOptions }
-        styleSet={ styleSet || createStyleSet(styleOptions) }
-        { ...otherProps }
+        attachmentMiddleware={this.createAttachmentMiddleware(
+          adaptiveCardHostConfig,
+          attachmentMiddleware,
+          styleOptions
+        )}
+        renderMarkdown={renderMarkdown}
+        styleOptions={styleOptions}
+        styleSet={styleSet || createStyleSet(styleOptions)}
+        {...otherProps}
       />
     );
   }
@@ -58,4 +58,4 @@ FullReactWebChat.propTypes = {
   styleSet: PropTypes.any
 };
 
-export default FullReactWebChat
+export default FullReactWebChat;

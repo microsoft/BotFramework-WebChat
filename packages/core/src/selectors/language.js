@@ -1,1 +1,1 @@
-export default ({ language }) => language
+export default ({ language }) => language;

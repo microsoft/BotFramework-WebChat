@@ -7,4 +7,4 @@ export default function setSendTimeout(sendTimeout) {
   };
 }
 
-export { SET_SEND_TIMEOUT }
+export { SET_SEND_TIMEOUT };

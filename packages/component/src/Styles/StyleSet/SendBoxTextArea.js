@@ -2,7 +2,7 @@ export default function createSendBoxTextAreaStyle({
   paddingRegular,
   primaryFont,
   sendBoxMaxHeight,
-  sendBoxTextColor,
+  sendBoxTextColor
 }) {
   return {
     alignItems: 'center',
@@ -18,7 +18,7 @@ export default function createSendBoxTextAreaStyle({
       fontSize: 'inherit',
       height: '100%',
       maxHeight: sendBoxMaxHeight,
-      position:'relative',
+      position: 'relative',
       width: 'inherit',
 
       '& > div': {
@@ -48,5 +48,5 @@ export default function createSendBoxTextAreaStyle({
         wordBreak: 'break-word'
       }
     }
-  }
+  };
 }

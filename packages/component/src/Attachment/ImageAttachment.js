@@ -3,11 +3,7 @@ import React from 'react';
 
 import ImageContent from './ImageContent';
 
-const ImageAttachment = ({ attachment }) =>
-  <ImageContent
-    alt={ attachment.name }
-    src={ attachment.contentUrl }
-  />
+const ImageAttachment = ({ attachment }) => <ImageContent alt={attachment.name} src={attachment.contentUrl} />;
 
 ImageAttachment.propTypes = {
   attachment: PropTypes.shape({
@@ -16,4 +12,4 @@ ImageAttachment.propTypes = {
   }).isRequired
 };
 
-export default ImageAttachment
+export default ImageAttachment;

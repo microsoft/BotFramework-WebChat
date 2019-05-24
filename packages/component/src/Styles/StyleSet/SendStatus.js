@@ -1,9 +1,4 @@
-export default function createSendStatusStyle({
-  accent,
-  fontSizeSmall,
-  primaryFont,
-  timestampColor
-}) {
+export default function createSendStatusStyle({ accent, fontSizeSmall, primaryFont, timestampColor }) {
   return {
     color: timestampColor,
     fontFamily: primaryFont,

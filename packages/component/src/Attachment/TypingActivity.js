@@ -4,10 +4,11 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
 
-const TypingActivity = ({ styleSet }) =>
-  <div className={ styleSet.typingActivity }>
+const TypingActivity = ({ styleSet }) => (
+  <div className={styleSet.typingActivity}>
     <TypingAnimation />
-  </div>;
+  </div>
+);
 
 TypingActivity.propTypes = {
   styleSet: PropTypes.shape({
@@ -15,6 +16,4 @@ TypingActivity.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(TypingActivity)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(TypingActivity);

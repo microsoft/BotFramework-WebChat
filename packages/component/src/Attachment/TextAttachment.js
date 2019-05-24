@@ -3,17 +3,8 @@ import React from 'react';
 
 import TextContent from './TextContent';
 
-const TextAttachment = ({
-  attachment: {
-    content,
-    contentType
-  } = {}
-}) =>
-  !!content &&
-    <TextContent
-      contentType={ contentType }
-      text={ content }
-    />
+const TextAttachment = ({ attachment: { content, contentType } = {} }) =>
+  !!content && <TextContent contentType={contentType} text={content} />;
 
 TextAttachment.propTypes = {
   attachment: PropTypes.shape({
@@ -22,4 +13,4 @@ TextAttachment.propTypes = {
   }).isRequired
 };
 
-export default TextAttachment
+export default TextAttachment;

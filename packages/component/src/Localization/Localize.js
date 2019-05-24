@@ -55,11 +55,7 @@ function normalizeLanguage(language) {
     return 'ko-KR';
   } else if (language.startsWith('lv')) {
     return 'lv-LV';
-  } else if (
-    language.startsWith('nb')
-    || language.startsWith('nn')
-    || language.startsWith('no')
-  ) {
+  } else if (language.startsWith('nb') || language.startsWith('nn') || language.startsWith('no')) {
     return 'nb-NO';
   } else if (language.startsWith('nl')) {
     return 'nl-NL';
@@ -77,12 +73,7 @@ function normalizeLanguage(language) {
     return 'tr-TR';
   } else if (language === 'zh-yue') {
     return 'zh-YUE';
-  } else if (
-    language === 'zh-hant'
-    || language === 'zh-hk'
-    || language === 'zh-mo'
-    || language === 'zh-tw'
-  ) {
+  } else if (language === 'zh-hant' || language === 'zh-hk' || language === 'zh-mo' || language === 'zh-tw') {
     return 'zh-HANT';
   } else if (language.startsWith('zh')) {
     return 'zh-HANS';
@@ -93,29 +84,52 @@ function normalizeLanguage(language) {
 
 function getStrings(language) {
   switch (normalizeLanguage(language || '')) {
-    case 'cs-CZ': return csCZ;
-    case 'da-DK': return daDK;
-    case 'de-DE': return deDE;
-    case 'el-GR': return elGR;
-    case 'es-ES': return esES;
-    case 'fi-FI': return fiFI;
-    case 'fr-FR': return frFR;
-    case 'hu-HU': return huHU;
-    case 'it-IT': return itIT;
-    case 'ja-JP': return jaJP;
-    case 'ko-KR': return koKR;
-    case 'lv-LV': return lvLV;
-    case 'nb-NO': return nbNO;
-    case 'nl-NL': return nlNL;
-    case 'pl-PL': return plPL;
-    case 'pt-BR': return ptBR;
-    case 'pt-PT': return ptPT;
-    case 'ru-RU': return ruRU;
-    case 'sv-SE': return svSE;
-    case 'tr-TR': return trTR;
-    case 'zh-HANS': return zhHANS;
-    case 'zh-HANT': return zhHANT;
-    case 'zh-YUE': return zhYUE;
+    case 'cs-CZ':
+      return csCZ;
+    case 'da-DK':
+      return daDK;
+    case 'de-DE':
+      return deDE;
+    case 'el-GR':
+      return elGR;
+    case 'es-ES':
+      return esES;
+    case 'fi-FI':
+      return fiFI;
+    case 'fr-FR':
+      return frFR;
+    case 'hu-HU':
+      return huHU;
+    case 'it-IT':
+      return itIT;
+    case 'ja-JP':
+      return jaJP;
+    case 'ko-KR':
+      return koKR;
+    case 'lv-LV':
+      return lvLV;
+    case 'nb-NO':
+      return nbNO;
+    case 'nl-NL':
+      return nlNL;
+    case 'pl-PL':
+      return plPL;
+    case 'pt-BR':
+      return ptBR;
+    case 'pt-PT':
+      return ptPT;
+    case 'ru-RU':
+      return ruRU;
+    case 'sv-SE':
+      return svSE;
+    case 'tr-TR':
+      return trTR;
+    case 'zh-HANS':
+      return zhHANS;
+    case 'zh-HANT':
+      return zhHANT;
+    case 'zh-YUE':
+      return zhYUE;
 
     default:
       return enUS;
@@ -132,10 +146,8 @@ function localize(text, language, ...args) {
   return string || text;
 }
 
-export default connectToWebChat(
-  ({ language }) => ({ language })
-)(
-  ({ args, language, text }) => localize(text, language, ...args || [])
-)
+export default connectToWebChat(({ language }) => ({ language }))(({ args, language, text }) =>
+  localize(text, language, ...(args || []))
+);
 
-export { localize }
+export { localize };

@@ -72,7 +72,7 @@ function toAzureLocale(language) {
 
     case 'zh-CN':
     case 'zh-SG':
-      return `zh-hans.${ language.toLowerCase() }`;
+      return `zh-hans.${language.toLowerCase()}`;
 
     case 'zh-HANS':
       return 'zh-hans.zh-cn';
@@ -83,17 +83,14 @@ function toAzureLocale(language) {
     case 'zh-HK':
     case 'zh-MO':
     case 'zh-TW':
-      return `zh-hant.${ language.toLowerCase() }`;
+      return `zh-hant.${language.toLowerCase()}`;
   }
 
   const match = JAVASCRIPT_LOCALE_PATTERN.exec(language);
 
   if (match) {
-    return `${ match[1] }.${ match[1] }-${ match[2].toLowerCase() }`;
+    return `${match[1]}.${match[1]}-${match[2].toLowerCase()}`;
   }
 }
 
-export {
-  normalize,
-  toAzureLocale
-}
+export { normalize, toAzureLocale };

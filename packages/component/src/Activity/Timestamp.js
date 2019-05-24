@@ -37,6 +37,4 @@ Timestamp.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(Timestamp)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(Timestamp);

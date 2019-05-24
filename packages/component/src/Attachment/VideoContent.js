@@ -5,12 +5,12 @@ import HTMLVideoContent from './HTMLVideoContent';
 import VimeoContent from './VimeoContent';
 import YouTubeContent from './YouTubeContent';
 
-const YOUTUBE_DOMAIN = "youtube.com";
-const YOUTUBE_WWW_DOMAIN = "www.youtube.com";
-const YOUTUBE_SHORT_DOMAIN = "youtu.be";
-const YOUTUBE_WWW_SHORT_DOMAIN = "www.youtu.be";
-const VIMEO_DOMAIN = "vimeo.com";
-const VIMEO_WWW_DOMAIN = "www.vimeo.com";
+const YOUTUBE_DOMAIN = 'youtube.com';
+const YOUTUBE_WWW_DOMAIN = 'www.youtube.com';
+const YOUTUBE_SHORT_DOMAIN = 'youtu.be';
+const YOUTUBE_WWW_SHORT_DOMAIN = 'www.youtu.be';
+const VIMEO_DOMAIN = 'vimeo.com';
+const VIMEO_WWW_DOMAIN = 'www.vimeo.com';
 
 // This is a workaround
 // - Today, there is no good URL polyfill for older browser
@@ -38,49 +38,20 @@ const VideoContent = ({ alt, autoPlay, loop, poster, src }) => {
   switch (hostname) {
     case VIMEO_DOMAIN:
     case VIMEO_WWW_DOMAIN:
-      return (
-        <VimeoContent
-          alt={ alt }
-          autoPlay={ autoPlay }
-          embedID={ lastSegment }
-          loop={ loop }
-        />
-      );
+      return <VimeoContent alt={alt} autoPlay={autoPlay} embedID={lastSegment} loop={loop} />;
 
     case YOUTUBE_DOMAIN:
     case YOUTUBE_WWW_DOMAIN:
-      return (
-        <YouTubeContent
-          alt={ alt }
-          autoPlay={ autoPlay }
-          embedID={ searchParams.get('v') }
-          loop={ loop }
-        />
-      );
+      return <YouTubeContent alt={alt} autoPlay={autoPlay} embedID={searchParams.get('v')} loop={loop} />;
 
     case YOUTUBE_SHORT_DOMAIN:
     case YOUTUBE_WWW_SHORT_DOMAIN:
-      return (
-        <YouTubeContent
-          alt={ alt }
-          autoPlay={ autoPlay }
-          embedID={ lastSegment }
-          loop={ loop }
-        />
-      );
+      return <YouTubeContent alt={alt} autoPlay={autoPlay} embedID={lastSegment} loop={loop} />;
 
     default:
-      return (
-        <HTMLVideoContent
-          alt={ alt }
-          autoPlay={ autoPlay }
-          loop={ loop }
-          poster={ poster }
-          src={ src }
-        />
-      );
+      return <HTMLVideoContent alt={alt} autoPlay={autoPlay} loop={loop} poster={poster} src={src} />;
   }
-}
+};
 
 VideoContent.defaultProps = {
   alt: '',
@@ -97,4 +68,4 @@ VideoContent.propTypes = {
   src: PropTypes.string.isRequired
 };
 
-export default VideoContent
+export default VideoContent;

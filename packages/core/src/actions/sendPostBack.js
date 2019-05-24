@@ -7,4 +7,4 @@ export default function sendPostback(value) {
   };
 }
 
-export { SEND_POST_BACK }
+export { SEND_POST_BACK };

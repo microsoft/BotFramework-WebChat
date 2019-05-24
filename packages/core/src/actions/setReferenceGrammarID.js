@@ -7,4 +7,4 @@ export default function setReferenceGrammarID(referenceGrammarID) {
   };
 }
 
-export { SET_REFERENCE_GRAMMAR_ID }
+export { SET_REFERENCE_GRAMMAR_ID };

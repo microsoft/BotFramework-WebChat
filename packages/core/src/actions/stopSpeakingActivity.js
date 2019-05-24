@@ -6,4 +6,4 @@ export default function stopSpeakingActivity() {
   };
 }
 
-export { STOP_SPEAKING_ACTIVITY }
+export { STOP_SPEAKING_ACTIVITY };

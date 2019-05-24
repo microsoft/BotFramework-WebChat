@@ -26,10 +26,10 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
   let action;
 
   if (
-    type === 'imBack'
-    || type === 'messageBack'
-    || type === 'postBack'
-    || type === 'signin' && includesOAuthButtons
+    type === 'imBack' ||
+    type === 'messageBack' ||
+    type === 'postBack' ||
+    (type === 'signin' && includesOAuthButtons)
   ) {
     action = new SubmitAction();
 
@@ -43,7 +43,7 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
     action = new OpenUrlAction();
 
     action.title = cardAction.title;
-    action.url = cardAction.type === 'call' ? `tel:${ cardAction.value }` : cardAction.value;
+    action.url = cardAction.type === 'call' ? `tel:${cardAction.value}` : cardAction.value;
   }
 
   return action;
@@ -98,8 +98,8 @@ export default class AdaptiveCardBuilder {
 
   addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
     cardActions && cardActions.forEach(cardAction => {
-      this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
-    });
+        this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
+      });
   }
 
   addCommonHeaders(content: ICommonContent) {

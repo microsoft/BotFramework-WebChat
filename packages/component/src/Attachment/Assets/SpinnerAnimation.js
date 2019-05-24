@@ -3,7 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../../connectToWebChat';
 
-const SpinnerAnimation = ({ styleSet }) => <div className={ styleSet.spinnerAnimation } />;
+const SpinnerAnimation = ({ styleSet }) => <div className={styleSet.spinnerAnimation} />;
 
 SpinnerAnimation.propTypes = {
   styleSet: PropTypes.shape({
@@ -11,8 +11,6 @@ SpinnerAnimation.propTypes = {
   }).isRequired
 };
 
-const ConnectedSpinnerAnimation = connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(SpinnerAnimation);
+const ConnectedSpinnerAnimation = connectToWebChat(({ styleSet }) => ({ styleSet }))(SpinnerAnimation);
 
-export default ConnectedSpinnerAnimation
+export default ConnectedSpinnerAnimation;

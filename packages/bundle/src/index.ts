@@ -13,7 +13,7 @@ import renderMarkdown from './renderMarkdown';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-export default ReactWebChat
+export default ReactWebChat;
 
 export {
   createCognitiveServicesBingSpeechPonyfillFactory,
@@ -21,7 +21,7 @@ export {
   createStyleSet,
   renderMarkdown,
   renderWebChat
-}
+};
 
 window['WebChat'] = {
   ...window['WebChat'],

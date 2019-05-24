@@ -7,7 +7,7 @@ import createSagaMiddleware from 'redux-saga';
 import reducer from './reducer';
 import sagas from './sagas';
 
-export default function (initialState, ...middlewares) {
+export default function createWebChatStore(initialState, ...middlewares) {
   const sagaMiddleware = createSagaMiddleware({
     onError: (...args) => {
       const [err] = args;
@@ -16,16 +16,9 @@ export default function (initialState, ...middlewares) {
 
       store.dispatch({ type: 'WEB_CHAT/SAGA_ERROR' });
     }
-   });
+  });
 
-  const store = createStore(
-    reducer,
-    initialState || {},
-    applyMiddleware(
-      ...middlewares,
-      sagaMiddleware
-    )
-  );
+  const store = createStore(reducer, initialState || {}, applyMiddleware(...middlewares, sagaMiddleware));
 
   sagaMiddleware.run(sagas);
 

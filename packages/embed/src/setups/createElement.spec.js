@@ -11,7 +11,7 @@ test('Create an element with attribute', () => {
 });
 
 test('Create an element with two children', () => {
-  const ul = createElement('ul', {}, createElement('li', {}, 'Buy eggs'), createElement('li', {}, 'Buy milk'))
+  const ul = createElement('ul', {}, createElement('li', {}, 'Buy eggs'), createElement('li', {}, 'Buy milk'));
 
   expect(ul).toHaveProperty('outerHTML', '<ul><li>Buy eggs</li><li>Buy milk</li></ul>');
 });

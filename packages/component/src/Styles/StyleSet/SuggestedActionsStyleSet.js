@@ -49,11 +49,11 @@ export default function createSuggestedActionsStyleSet({
   const rightFlipper = css(originalStyleSet.rightFlipper, flipper);
   const carousel = css(originalStyleSet.carousel, {
     '&:hover, &.scrolling': {
-      [`& .${ leftFlipper + '' } > div.slider, & .${ rightFlipper + '' } > div.slider`]: {
+      [`& .${leftFlipper + ''} > div.slider, & .${rightFlipper + ''} > div.slider`]: {
         transitionDelay: '0s'
       },
-      [`& .${ leftFlipper + '' } > div.slider`]: { left: 0 },
-      [`& .${ rightFlipper + '' } > div.slider`]: { right: 0 }
+      [`& .${leftFlipper + ''} > div.slider`]: { left: 0 },
+      [`& .${rightFlipper + ''} > div.slider`]: { right: 0 }
     },
 
     '& > div': {

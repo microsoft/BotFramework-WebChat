@@ -14,7 +14,9 @@ import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
 
-const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
+const {
+  ActivityClientState: { SENDING, SEND_FAILED }
+} = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -55,51 +57,32 @@ const ROOT_CSS = css({
   }
 });
 
-const connectStackedLayout = (...selectors) => connectToWebChat(
-  ({
-    language,
-    styleSet: {
-      options: {
-        botAvatarInitials,
-        userAvatarInitials
-      }
-    }
-  }, {
-    activity: {
-      from: {
-        role
-      } = {}
-    } = {}
-  }) => ({
-    avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
-    language,
+const connectStackedLayout = (...selectors) =>
+  connectToWebChat(
+    (
+      {
+        language,
+        styleSet: {
+          options: { botAvatarInitials, userAvatarInitials }
+        }
+      },
+      { activity: { from: { role } = {} } = {} }
+    ) => ({
+      avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
+      language,
 
-    // TODO: [P4] We want to deprecate botAvatarInitials/userAvatarInitials because they are not as helpful as avatarInitials
-    botAvatarInitials,
-    userAvatarInitials
-  }),
-  ...selectors
-);
+      // TODO: [P4] We want to deprecate botAvatarInitials/userAvatarInitials because they are not as helpful as avatarInitials
+      botAvatarInitials,
+      userAvatarInitials
+    }),
+    ...selectors
+  );
 
-const StackedLayout = ({
-  activity,
-  avatarInitials,
-  children,
-  language,
-  styleSet,
-  timestampClassName
-}) => {
+const StackedLayout = ({ activity, avatarInitials, children, language, styleSet, timestampClassName }) => {
   const {
     attachments = [],
-    channelData: {
-      messageBack: {
-        displayText: messageBackDisplayText
-      } = {},
-      state
-    } = {},
-    from: {
-      role
-    } = {},
+    channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
+    from: { role } = {},
     text,
     textFormat,
     type
@@ -111,18 +94,8 @@ const StackedLayout = ({
   const activityDisplayText = messageBackDisplayText || text;
 
   return (
-    <div
-      className={ classNames(
-        ROOT_CSS + '',
-        styleSet.stackedLayout + '',
-        { 'from-user': fromUser }
-      ) }
-    >
-      <Avatar
-        aria-hidden={ true }
-        className="avatar"
-        fromUser={ fromUser }
-      />
+    <div className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', { 'from-user': fromUser })}>
+      <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {
           type === 'typing' ?
@@ -221,16 +194,10 @@ StackedLayout.propTypes = {
   timestampClassName: PropTypes.string
 };
 
-export default connectStackedLayout(
-  ({
-    avatarInitials,
-    language,
-    styleSet
-  }) => ({
-    avatarInitials,
-    language,
-    styleSet
-  })
-)(StackedLayout)
+export default connectStackedLayout(({ avatarInitials, language, styleSet }) => ({
+  avatarInitials,
+  language,
+  styleSet
+}))(StackedLayout);
 
-export { connectStackedLayout }
+export { connectStackedLayout };

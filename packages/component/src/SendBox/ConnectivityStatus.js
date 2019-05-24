@@ -24,10 +24,7 @@ class DebouncedConnectivityStatus extends React.Component {
     const { children: nextChildren, interval: nextInterval } = nextProps;
     const { since } = this.state;
 
-    if (
-      nextChildren !== children
-      || nextInterval !== interval
-    ) {
+    if (nextChildren !== children || nextInterval !== interval) {
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
@@ -59,50 +56,49 @@ DebouncedConnectivityStatus.propTypes = {
   interval: PropTypes.number.isRequired
 };
 
-const connectConnectivityStatus = (...selectors) => connectToWebChat(
-  ({ connectivityStatus, language }) => ({ connectivityStatus, language }),
-  ...selectors
-)
+const connectConnectivityStatus = (...selectors) =>
+  connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
 
-const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) =>
-  <div
-    aria-live="polite"
-    role="status"
-  >
+const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => (
+  <div aria-live="polite" role="status">
     <DebouncedConnectivityStatus
-      interval={ connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : CONNECTIVITY_STATUS_DEBOUNCE }
+      interval={
+        connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : CONNECTIVITY_STATUS_DEBOUNCE
+      }
     >
-      { () =>
-        connectivityStatus === 'connectingslow' ?
-          <div className={ styleSet.warningNotification }>
+      {() =>
+        connectivityStatus === 'connectingslow' ? (
+          <div className={styleSet.warningNotification}>
             <WarningNotificationIcon />
-            { localize('SLOW_CONNECTION_NOTIFICATION', language) }
+            {localize('SLOW_CONNECTION_NOTIFICATION', language)}
           </div>
-        : connectivityStatus === 'error' || connectivityStatus === 'notconnected' ?
-          <div className={ styleSet.errorNotification }>
+        ) : connectivityStatus === 'error' || connectivityStatus === 'notconnected' ? (
+          <div className={styleSet.errorNotification}>
             <ErrorNotificationIcon />
-            { localize('FAILED_CONNECTION_NOTIFICATION', language) }
+            {localize('FAILED_CONNECTION_NOTIFICATION', language)}
           </div>
-        : connectivityStatus === 'uninitialized' ?
-          <div className={ styleSet.connectivityNotification }>
+        ) : connectivityStatus === 'uninitialized' ? (
+          <div className={styleSet.connectivityNotification}>
             <SpinnerAnimation />
-            { localize('INITIAL_CONNECTION_NOTIFICATION', language) }
+            {localize('INITIAL_CONNECTION_NOTIFICATION', language)}
           </div>
-        : connectivityStatus === 'reconnecting' ?
-          <div className={ styleSet.connectivityNotification }>
+        ) : connectivityStatus === 'reconnecting' ? (
+          <div className={styleSet.connectivityNotification}>
             <SpinnerAnimation />
-            { localize('INTERRUPTED_CONNECTION_NOTIFICATION', language) }
+            {localize('INTERRUPTED_CONNECTION_NOTIFICATION', language)}
           </div>
-        : connectivityStatus === 'sagaerror' ?
-          <div className={ styleSet.errorNotification }>
+        ) : connectivityStatus === 'sagaerror' ? (
+          <div className={styleSet.errorNotification}>
             <ErrorNotificationIcon />
-            { localize('RENDER_ERROR_NOTIFICATION', language) }
+            {localize('RENDER_ERROR_NOTIFICATION', language)}
           </div>
-        : connectivityStatus === 'reconnected' || connectivityStatus === 'connected' &&
-          false
+        ) : (
+          connectivityStatus === 'reconnected' || (connectivityStatus === 'connected' && false)
+        )
       }
     </DebouncedConnectivityStatus>
   </div>
+);
 
 ConnectivityStatus.propTypes = {
   connectivityStatus: PropTypes.string.isRequired,
@@ -114,6 +110,4 @@ ConnectivityStatus.propTypes = {
   }).isRequired
 };
 
-export default connectConnectivityStatus(
-  ({ styleSet }) => ({ styleSet })
-)(ConnectivityStatus)
+export default connectConnectivityStatus(({ styleSet }) => ({ styleSet }))(ConnectivityStatus);

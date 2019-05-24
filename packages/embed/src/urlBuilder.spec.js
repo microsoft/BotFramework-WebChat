@@ -1,8 +1,4 @@
-import {
-  embedConfigurationURL,
-  embedTelemetryURL,
-  legacyEmbedURL
-} from './urlBuilder';
+import { embedConfigurationURL, embedTelemetryURL, legacyEmbedURL } from './urlBuilder';
 
 test('Create embed configuration URL with both secret and token', () => {
   const actual = embedConfigurationURL('webchat-mockbot', { secret: 'secret', token: 'token', userId: 'u-12345' });

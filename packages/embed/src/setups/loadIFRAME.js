@@ -11,19 +11,16 @@ export default function loadIFRAME(src) {
             overflow: 'hidden'
           }
         },
-        createElement(
-          'iframe',
-          {
-            onError: reject,
-            onLoad: resolve,
-            src,
-            style: {
-              border: '0',
-              height: '100%',
-              width: '100%'
-            }
+        createElement('iframe', {
+          onError: reject,
+          onLoad: resolve,
+          src,
+          style: {
+            border: '0',
+            height: '100%',
+            width: '100%'
           }
-        )
+        })
       )
     );
   });

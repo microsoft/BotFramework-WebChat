@@ -1,8 +1,4 @@
-export default function createTimestampStyle({
-  timestampColor,
-  primaryFont,
-  fontSizeSmall
-}) {
+export default function createTimestampStyle({ timestampColor, primaryFont, fontSizeSmall }) {
   return {
     color: timestampColor,
     fontFamily: primaryFont,

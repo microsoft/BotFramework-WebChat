@@ -1,4 +1,6 @@
-const { navigator: { userAgent } } = window;
+const {
+  navigator: { userAgent }
+} = window;
 
 const IE_FOCUSABLE_LIST = [
   'a',
@@ -29,7 +31,7 @@ export default function getTabIndex(element) {
   } else if (!~tabIndex) {
     const attr = element.getAttribute('tabindex');
 
-    if (attr === null || attr === '' && !IS_FIREFOX) {
+    if (attr === null || (attr === '' && !IS_FIREFOX)) {
       return null;
     }
   }

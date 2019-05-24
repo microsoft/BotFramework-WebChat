@@ -26,34 +26,36 @@ test('Load Web Chat v4', async () => {
       element.appendChild(createElement('div', { id: 'webchat' }));
 
       document.head.appendChild(
-        createElement(
-          'meta',
-          {
-            content: '4.0.0',
-            name: 'botframework-webchat:bundle:version'
-          }
-        )
+        createElement('meta', {
+          content: '4.0.0',
+          name: 'botframework-webchat:bundle:version'
+        })
       );
     })
   };
 
-  const setupTask = setupVersion4({
-    assets: [
-      ['webchat.js', 'sha384-a1b2c3d']
-    ]
-  }, {
-    botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
-    directLineURL: 'https://directline.botframework.com',
-    userId: 'u-12345',
-    webSocket: true
-  }, {
-    language: 'ja-JP',
-    secret: 'secret',
-    token: 'token',
-    username: 'William'
-  });
+  const setupTask = setupVersion4(
+    {
+      assets: [['webchat.js', 'sha384-a1b2c3d']]
+    },
+    {
+      botIconURL: 'https://webchat.botframework.com/images/default-bot-icon.png',
+      directLineURL: 'https://directline.botframework.com',
+      userId: 'u-12345',
+      webSocket: true
+    },
+    {
+      language: 'ja-JP',
+      secret: 'secret',
+      token: 'token',
+      username: 'William'
+    }
+  );
 
-  expect(document.head).toHaveProperty('outerHTML', '<head><script async="" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="webchat.js"></script></head>');
+  expect(document.head).toHaveProperty(
+    'outerHTML',
+    '<head><script async="" crossorigin="anonymous" integrity="sha384-a1b2c3d" src="webchat.js"></script></head>'
+  );
   [].forEach.call(document.head.querySelectorAll('script'), target => target.dispatchEvent(new Event('load')));
 
   const { version } = await setupTask;
@@ -66,7 +68,10 @@ test('Load Web Chat v4', async () => {
     webSocket: true
   });
 
-  expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%;"><div id="webchat" style="height: 100%;"></div></div></body>');
+  expect(document.body).toHaveProperty(
+    'outerHTML',
+    '<body><div style="height: 100%;"><div id="webchat" style="height: 100%;"></div></div></body>'
+  );
 
   expect(version).toBe('4.0.0');
 });

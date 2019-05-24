@@ -7,4 +7,4 @@ export default function sendEvent(name, value) {
   };
 }
 
-export { SEND_EVENT }
+export { SEND_EVENT };

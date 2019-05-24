@@ -11,4 +11,4 @@ export default function markActivity({ id: activityID }, name, value) {
   };
 }
 
-export { MARK_ACTIVITY }
+export { MARK_ACTIVITY };

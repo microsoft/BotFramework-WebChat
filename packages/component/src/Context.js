@@ -4,4 +4,4 @@ const context = React.createContext();
 
 context.displayName = 'WebChatContext';
 
-export default context
+export default context;

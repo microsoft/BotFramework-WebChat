@@ -9,4 +9,4 @@ export default function setSuggestedActions(suggestedActions = EMPTY_ARRAY) {
   };
 }
 
-export { SET_SUGGESTED_ACTIONS }
+export { SET_SUGGESTED_ACTIONS };

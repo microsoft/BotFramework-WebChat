@@ -1,8 +1,4 @@
-import {
-  put,
-  select,
-  takeEvery
-} from 'redux-saga/effects';
+import { put, select, takeEvery } from 'redux-saga/effects';
 
 import { of as activitiesOf } from '../selectors/activities';
 import { STOP_SPEAKING_ACTIVITY } from '../actions/stopSpeakingActivity';
@@ -17,6 +13,6 @@ function* markAllAsSpoken() {
   }
 }
 
-export default function* () {
+export default function*() {
   yield takeEvery(STOP_SPEAKING_ACTIVITY, markAllAsSpoken);
 }

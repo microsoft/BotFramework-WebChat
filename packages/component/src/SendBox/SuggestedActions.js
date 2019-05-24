@@ -10,7 +10,7 @@ import SuggestedAction from './SuggestedAction';
 
 function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {
-    return title || displayText
+    return title || displayText;
   } else if (title) {
     return title;
   } else if (typeof value === 'string') {
@@ -20,56 +20,36 @@ function suggestedActionText({ displayText, title, type, value }) {
   return JSON.stringify(value);
 }
 
-const connectSuggestedActions = (...selectors) => connectToWebChat(
-  ({
-    language,
-    suggestedActions
-  }) => ({
-    language,
-    suggestedActions
-  }),
-  ...selectors
-)
+const connectSuggestedActions = (...selectors) =>
+  connectToWebChat(
+    ({ language, suggestedActions }) => ({
+      language,
+      suggestedActions
+    }),
+    ...selectors
+  );
 
-const SuggestedActions = ({
-  className,
-  styleSet,
-  suggestedActions = []
-}) =>
-  !!suggestedActions.length &&
+const SuggestedActions = ({ className, styleSet, suggestedActions = [] }) =>
+  !!suggestedActions.length && (
     <BasicFilm
-      autoCenter={ false }
-      className={ classNames(
-        styleSet.suggestedActions + '',
-        className + ''
-      ) }
-      showDots={ false }
-      styleSet={ styleSet.options.suggestedActionsStyleSet }
+      autoCenter={false}
+      className={classNames(styleSet.suggestedActions + '', className + '')}
+      showDots={false}
+      styleSet={styleSet.options.suggestedActionsStyleSet}
     >
-      {
-        suggestedActions.map((
-          {
-            displayText,
-            image,
-            text,
-            title,
-            type,
-            value
-          },
-          index
-        ) =>
-          <SuggestedAction
-            buttonText={ suggestedActionText({ displayText, title, type, value }) }
-            displayText={ displayText }
-            image={ image }
-            key={ index }
-            text={ text }
-            type={ type }
-            value={ value }
-          />
-        )
-      }
-    </BasicFilm>;
+      {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
+        <SuggestedAction
+          buttonText={suggestedActionText({ displayText, title, type, value })}
+          displayText={displayText}
+          image={image}
+          key={index}
+          text={text}
+          type={type}
+          value={value}
+        />
+      ))}
+    </BasicFilm>
+  );
 
 SuggestedActions.defaultProps = {
   className: ''
@@ -95,8 +75,6 @@ SuggestedActions.propTypes = {
   ).isRequired
 };
 
-export default connectSuggestedActions(
-  ({ styleSet }) => ({ styleSet })
-)(SuggestedActions)
+export default connectSuggestedActions(({ styleSet }) => ({ styleSet }))(SuggestedActions);
 
-export { connectSuggestedActions }
+export { connectSuggestedActions };

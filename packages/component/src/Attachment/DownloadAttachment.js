@@ -7,12 +7,7 @@ import DownloadIcon from './Assets/DownloadIcon';
 import { localize } from '../Localization/Localize';
 
 const DownloadAttachment = ({
-  activity: {
-    attachments = [],
-    channelData: {
-      attachmentSizes = []
-    } = {}
-  } = {},
+  activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
   attachment,
   language,
   styleSet
@@ -22,24 +17,13 @@ const DownloadAttachment = ({
   const size = attachmentSizes[attachmentIndex];
 
   return (
-    <div className={ styleSet.downloadAttachment }>
-      <a
-        href={ attachment.contentUrl }
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+    <div className={styleSet.downloadAttachment}>
+      <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
         <div className="details">
-          <div className="name">
-            { attachment.name }
-          </div>
-          {
-            typeof size === 'number' &&
-              <div className="size">
-                { format(size) }
-              </div>
-          }
+          <div className="name">{attachment.name}</div>
+          {typeof size === 'number' && <div className="size">{format(size)}</div>}
         </div>
-        <DownloadIcon className="icon" label={ label } size={ 1.5 } />
+        <DownloadIcon className="icon" label={label} size={1.5} />
       </a>
     </div>
   );
@@ -62,6 +46,4 @@ DownloadAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ language, styleSet }) => ({ language, styleSet })
-)(DownloadAttachment)
+export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(DownloadAttachment);

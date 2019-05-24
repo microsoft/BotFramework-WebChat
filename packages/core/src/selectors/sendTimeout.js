@@ -1,1 +1,1 @@
-export default ({ sendTimeout }) => sendTimeout
+export default ({ sendTimeout }) => sendTimeout;

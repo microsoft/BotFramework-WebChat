@@ -1,11 +1,6 @@
 import { call, put, race, take } from 'redux-saga/effects';
 
-import {
-  CONNECT_FULFILLED,
-  CONNECT_PENDING,
-  CONNECT_REJECTED,
-  CONNECT_STILL_PENDING
-} from '../actions/connect';
+import { CONNECT_FULFILLED, CONNECT_PENDING, CONNECT_REJECTED, CONNECT_STILL_PENDING } from '../actions/connect';
 
 import { RECONNECT_PENDING } from '../actions/reconnect';
 import sleep from '../utils/sleep';

@@ -58,31 +58,20 @@ export default class extends React.Component {
 
   render() {
     const {
-      props: { debug, children, className },
+      props: { debug, children, className }
     } = this;
 
     const debugView = this.state.debugView && !!debug;
 
     return (
-      <div
-        className={ classNames(
-          ROOT_CSS + '',
-          { 'debug-view': debugView },
-          className + ''
-        ) }
-      >
-        { children }
-        { !!debugView && <pre>{ JSON.stringify(debug, null, 2) }</pre> }
-        { !!debug &&
-          <button
-            className="debug"
-            onClick={ this.handleDebugViewClick }
-            tabIndex={ -1 }
-            type="button"
-          >
+      <div className={classNames(ROOT_CSS + '', { 'debug-view': debugView }, className + '')}>
+        {children}
+        {!!debugView && <pre>{JSON.stringify(debug, null, 2)}</pre>}
+        {!!debug && (
+          <button className="debug" onClick={this.handleDebugViewClick} tabIndex={-1} type="button">
             &hellip;
           </button>
-        }
+        )}
       </div>
     );
   }

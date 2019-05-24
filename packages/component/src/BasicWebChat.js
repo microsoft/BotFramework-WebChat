@@ -28,25 +28,19 @@ const SEND_BOX_CSS = css({
 });
 
 function createActivityRenderer(additionalMiddleware) {
-  const activityMiddleware = concatMiddleware(
-    additionalMiddleware,
-    createCoreActivityMiddleware()
-  )({});
+  const activityMiddleware = concatMiddleware(additionalMiddleware, createCoreActivityMiddleware())({});
 
   return (...args) => {
     try {
-      return activityMiddleware(
-        ({ activity }) => () => {
-          console.warn(`No activity found for type "${ activity.type }".`);
-        }
-      )(...args);
-    } catch ( err ) {
-      const FailedRenderActivity = () =>
+      return activityMiddleware(({ activity }) => () => {
+        console.warn(`No activity found for type "${activity.type}".`);
+      })(...args);
+    } catch (err) {
+      const FailedRenderActivity = () => (
         <ErrorBox message="Failed to render activity">
-          <pre>
-            { JSON.stringify(err, null, 2) }
-          </pre>
-        </ErrorBox>;
+          <pre>{JSON.stringify(err, null, 2)}</pre>
+        </ErrorBox>
+      );
 
       return FailedRenderActivity;
     }
@@ -54,31 +48,23 @@ function createActivityRenderer(additionalMiddleware) {
 }
 
 function createAttachmentRenderer(additionalMiddleware) {
-  const attachmentMiddleware = concatMiddleware(
-    additionalMiddleware,
-    createCoreAttachmentMiddleware()
-  )({});
+  const attachmentMiddleware = concatMiddleware(additionalMiddleware, createCoreAttachmentMiddleware())({});
 
   return (...args) => {
     try {
-      return attachmentMiddleware(
-        ({ attachment }) =>
-          <ErrorBox message="No renderer for this attachment">
-            <pre>
-              { JSON.stringify(attachment, null, 2) }
-            </pre>
-          </ErrorBox>
-      )(...args);
+      return attachmentMiddleware(({ attachment }) => (
+        <ErrorBox message="No renderer for this attachment">
+          <pre>{JSON.stringify(attachment, null, 2)}</pre>
+        </ErrorBox>
+      ))(...args);
     } catch (err) {
       return (
         <ErrorBox message="Failed to render attachment">
-          <pre>
-            { JSON.stringify(err, null, 2) }
-          </pre>
+          <pre>{JSON.stringify(err, null, 2)}</pre>
         </ErrorBox>
       );
     }
-  }
+  };
 }
 
 export default class BasicWebChat extends React.Component {
@@ -94,13 +80,13 @@ export default class BasicWebChat extends React.Component {
   }
 
   // TODO: [P2] Move to React 16 APIs
-  componentWillReceiveProps({ activityMiddleware: nextActivityMiddleware, attachmentMiddleware: nextAttachmentMiddleware }) {
+  componentWillReceiveProps({
+    activityMiddleware: nextActivityMiddleware,
+    attachmentMiddleware: nextAttachmentMiddleware
+  }) {
     const { activityMiddleware, attachmentMiddleware } = this.props;
 
-    if (
-      activityMiddleware !== nextActivityMiddleware
-      || attachmentMiddleware !== nextAttachmentMiddleware
-    ) {
+    if (activityMiddleware !== nextActivityMiddleware || attachmentMiddleware !== nextAttachmentMiddleware) {
       this.setState(() => ({
         activityRenderer: createActivityRenderer(nextActivityMiddleware),
         attachmentRenderer: createAttachmentRenderer(nextAttachmentMiddleware)
@@ -110,43 +96,30 @@ export default class BasicWebChat extends React.Component {
 
   render() {
     const {
-      props: {
-        className,
-        ...otherProps
-      },
+      props: { className, ...otherProps },
       sendBoxRef,
-      state: {
-        activityRenderer,
-        attachmentRenderer
-      }
+      state: { activityRenderer, attachmentRenderer }
     } = this;
 
     // TODO: [P2] Implement "scrollToBottom" feature
 
     return (
       <Composer
-        activityRenderer={ activityRenderer }
-        attachmentRenderer={ attachmentRenderer }
-        sendBoxRef={ sendBoxRef }
-        { ...otherProps }
+        activityRenderer={activityRenderer}
+        attachmentRenderer={attachmentRenderer}
+        sendBoxRef={sendBoxRef}
+        {...otherProps}
       >
-        { ({ styleSet }) =>
+        {({ styleSet }) => (
           <TypeFocusSinkBox
-            className={ classNames(
-              ROOT_CSS + '',
-              styleSet.root + '',
-              className + ''
-            ) }
+            className={classNames(ROOT_CSS + '', styleSet.root + '', className + '')}
             role="complementary"
-            sendFocusRef={ sendBoxRef }
+            sendFocusRef={sendBoxRef}
           >
-            <BasicTranscript className={ TRANSCRIPT_CSS + '' } />
-            {
-              !styleSet.options.hideSendBox &&
-                <BasicSendBox className={ SEND_BOX_CSS + '' } />
-            }
+            <BasicTranscript className={TRANSCRIPT_CSS + ''} />
+            {!styleSet.options.hideSendBox && <BasicSendBox className={SEND_BOX_CSS + ''} />}
           </TypeFocusSinkBox>
-        }
+        )}
       </Composer>
     );
   }

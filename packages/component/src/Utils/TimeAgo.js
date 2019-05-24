@@ -49,11 +49,8 @@ class TimeAgo extends React.Component {
 
     return (
       <React.Fragment>
-        { text }
-        <Timer
-          at={ timer }
-          onInterval={ this.handleInterval }
-        />
+        {text}
+        <Timer at={timer} onInterval={this.handleInterval} />
       </React.Fragment>
     );
   }
@@ -64,6 +61,4 @@ TimeAgo.propTypes = {
   value: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(
-  ({ language }) => ({ language })
-)(TimeAgo)
+export default connectToWebChat(({ language }) => ({ language }))(TimeAgo);

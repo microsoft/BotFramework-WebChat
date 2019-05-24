@@ -5,40 +5,28 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import Localize, { localize } from '../Localization/Localize';
 
-const { ActivityClientState: { SEND_FAILED, SENDING } } = Constants;
+const {
+  ActivityClientState: { SEND_FAILED, SENDING }
+} = Constants;
 
-const connectSendStatus = (...selectors) => connectToWebChat(
-  ({
-    focusSendBox,
-    language,
-    postActivity
-  }, {
-    activity
-  }) => ({
-    language,
-    retrySend: evt => {
-      evt.preventDefault();
+const connectSendStatus = (...selectors) =>
+  connectToWebChat(
+    ({ focusSendBox, language, postActivity }, { activity }) => ({
+      language,
+      retrySend: evt => {
+        evt.preventDefault();
 
-      postActivity(activity);
+        postActivity(activity);
 
-      // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
-      // We want to make sure the user stay inside Web Chat
-      focusSendBox();
-    }
-  }),
-  ...selectors
-)
+        // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
+        // We want to make sure the user stay inside Web Chat
+        focusSendBox();
+      }
+    }),
+    ...selectors
+  );
 
-const SendStatus = ({
-  activity: {
-    channelData: {
-      state
-    } = {}
-  },
-  language,
-  retrySend,
-  styleSet
-}) => {
+const SendStatus = ({ activity: { channelData: { state } = {} }, language, retrySend, styleSet }) => {
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
   const sendFailedText = localize('SEND_FAILED_KEY', language);
@@ -62,18 +50,15 @@ const SendStatus = ({
               { sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length) }
             </React.Fragment>
           :
-            <button
-              onClick={ retrySend }
-              type="button"
-            >
-              { sendFailedText }
-            </button>
-        :
-          false
-      }
+          <button onClick={retrySend} type="button">
+            {sendFailedText}
+          </button>
+          : (
+        false
+      )}
     </span>
   );
-}
+};
 
 SendStatus.propTypes = {
   activity: PropTypes.shape({
@@ -88,8 +73,6 @@ SendStatus.propTypes = {
   }).isRequired
 };
 
-export default connectSendStatus(
-  ({ styleSet }) => ({ styleSet })
-)(SendStatus)
+export default connectSendStatus(({ styleSet }) => ({ styleSet }))(SendStatus);
 
-export { connectSendStatus }
+export { connectSendStatus };

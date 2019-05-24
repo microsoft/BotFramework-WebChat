@@ -1,15 +1,12 @@
-export default function ({
-  accent,
-  paddingRegular
-}) {
+export default function AdaptiveCardRenderer({ accent, paddingRegular }) {
   return {
     '& .ac-pushButton': {
-        backgroundColor: 'White',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        color: accent,
-        fontWeight: 'bold',
-        padding: paddingRegular
+      backgroundColor: 'White',
+      borderStyle: 'solid',
+      borderWidth: 1,
+      color: accent,
+      fontWeight: 'bold',
+      padding: paddingRegular
     },
 
     '& .ac-multichoiceInput': {

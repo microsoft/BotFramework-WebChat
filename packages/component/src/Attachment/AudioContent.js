@@ -3,21 +3,9 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const AudioContent = ({
-  autoPlay,
-  loop,
-  poster,
-  src,
-  styleSet
-}) =>
-  <audio
-    autoPlay={ autoPlay }
-    className={ styleSet.audioContent }
-    controls={ true }
-    loop={ loop }
-    poster={ poster }
-    src={ src }
-  />;
+const AudioContent = ({ autoPlay, loop, poster, src, styleSet }) => (
+  <audio autoPlay={autoPlay} className={styleSet.audioContent} controls={true} loop={loop} poster={poster} src={src} />
+);
 
 AudioContent.defaultProps = {
   autoPlay: false,
@@ -35,6 +23,4 @@ AudioContent.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(AudioContent)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(AudioContent);

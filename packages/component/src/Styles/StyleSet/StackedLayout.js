@@ -1,8 +1,4 @@
-export default function ({
-  bubbleMaxWidth,
-  bubbleMinWidth,
-  paddingRegular
-}) {
+export default function({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
     marginLeft: paddingRegular,
     marginRight: paddingRegular,

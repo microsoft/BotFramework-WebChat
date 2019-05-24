@@ -1,4 +1,4 @@
-export default function () {
+export default function createBrowserWebSpeechPonyfillFactory() {
   if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
     console.warn('Web Chat: This browser does not support Web Speech API Speech Recognition.');
   }

@@ -7,4 +7,4 @@ export default function updateConnectionStatus(connectionStatus) {
   };
 }
 
-export { UPDATE_CONNECTION_STATUS }
+export { UPDATE_CONNECTION_STATUS };

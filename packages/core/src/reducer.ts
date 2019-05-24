@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import activities from './reducers/activities';
-import connectivityStatus from './reducers/connectivityStatus'
+import connectivityStatus from './reducers/connectivityStatus';
 import dictateInterims from './reducers/dictateInterims';
 import dictateState from './reducers/dictateState';
 import language from './reducers/language';
@@ -27,4 +27,4 @@ export default combineReducers({
 
   // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
   sendTyping: sendTypingIndicator
-})
+});

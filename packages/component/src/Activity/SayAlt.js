@@ -8,11 +8,7 @@ const ROOT_CSS = css({
   margin: 0
 });
 
-const SayAlt = ({ speak }) =>
-  !!speak &&
-    <pre className={ ROOT_CSS }>
-      { speak }
-    </pre>
+const SayAlt = ({ speak }) => !!speak && <pre className={ROOT_CSS}>{speak}</pre>;
 
 SayAlt.defaultProps = {
   speak: ''
@@ -22,4 +18,4 @@ SayAlt.propTypes = {
   speak: PropTypes.string
 };
 
-export default SayAlt
+export default SayAlt;

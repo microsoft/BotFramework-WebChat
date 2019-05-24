@@ -4,13 +4,11 @@ import React from 'react';
 import AudioContent from './AudioContent';
 import connectToWebChat from '../connectToWebChat';
 
-const AudioAttachment = ({ attachment, styleSet }) =>
-  <div className={ styleSet.audioAttachment }>
-    <AudioContent
-      alt={ attachment.name }
-      src={ attachment.contentUrl }
-    />
-  </div>;
+const AudioAttachment = ({ attachment, styleSet }) => (
+  <div className={styleSet.audioAttachment}>
+    <AudioContent alt={attachment.name} src={attachment.contentUrl} />
+  </div>
+);
 
 AudioAttachment.propTypes = {
   attachment: PropTypes.shape({
@@ -22,6 +20,4 @@ AudioAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(AudioAttachment)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(AudioAttachment);

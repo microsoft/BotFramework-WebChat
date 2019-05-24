@@ -6,11 +6,7 @@ import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { MARK_ACTIVITY } from '../actions/markActivity';
 
-import {
-  POST_ACTIVITY_FULFILLED,
-  POST_ACTIVITY_PENDING,
-  POST_ACTIVITY_REJECTED
-} from '../actions/postActivity';
+import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED } from '../actions/postActivity';
 
 import { SEND_FAILED, SENDING, SENT } from '../constants/ActivityClientState';
 
@@ -36,13 +32,14 @@ function upsertActivityWithSort(activities, nextActivity) {
   }
 
   const nextTimestamp = Date.parse(nextActivity.timestamp);
-  const nextActivities = activities.filter(({ channelData: { clientActivityID } = {}, from, type }) =>
-    // We will remove all "typing" and "sending messages" activities
-    // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
-    !(
-      type === 'typing' && from.id === nextFromID
-      || nextClientActivityID && clientActivityID === nextClientActivityID
-    )
+  const nextActivities = activities.filter(
+    ({ channelData: { clientActivityID } = {}, from, type }) =>
+      // We will remove all "typing" and "sending messages" activities
+      // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
+      !(
+        (type === 'typing' && from.id === nextFromID) ||
+        (nextClientActivityID && clientActivityID === nextClientActivityID)
+      )
   );
 
   // Then, find the right (sorted) place to insert the new activity at, based on timestamp, and must be before "typing"
@@ -50,9 +47,13 @@ function upsertActivityWithSort(activities, nextActivity) {
   // If we are inserting "typing", we will always append it
 
   // TODO: [P4] Move "typing" into Constants.ActivityType
-  const indexToInsert = nextActivity.type === 'typing' ? -1 : nextActivities.findIndex(({ channelData: { state } = {}, timestamp, type }) =>
-    Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED || type === 'typing'
-  );
+  const indexToInsert =
+    nextActivity.type === 'typing'
+      ? -1
+      : nextActivities.findIndex(
+          ({ channelData: { state } = {}, timestamp, type }) =>
+            (Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED) || type === 'typing'
+        );
 
   // If no right place are found, append it
   nextActivities.splice(~indexToInsert ? indexToInsert : nextActivities.length, 0, nextActivity);
@@ -60,14 +61,18 @@ function upsertActivityWithSort(activities, nextActivity) {
   return nextActivities;
 }
 
-export default function (state = DEFAULT_STATE, { meta, payload, type }) {
+export default function(state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
     case DELETE_ACTIVITY:
       state = updateIn(state, [({ id }) => id === payload.activityID]);
       break;
 
     case MARK_ACTIVITY:
-      state = updateIn(state, [({ id }) => id === payload.activityID, 'channelData', payload.name], () => payload.value);
+      state = updateIn(
+        state,
+        [({ id }) => id === payload.activityID, 'channelData', payload.name],
+        () => payload.value
+      );
       break;
 
     case POST_ACTIVITY_PENDING:
@@ -75,7 +80,11 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
       break;
 
     case POST_ACTIVITY_REJECTED:
-      state = updateIn(state, [findByClientActivityID(meta.clientActivityID), 'channelData', 'state'], () => SEND_FAILED);
+      state = updateIn(
+        state,
+        [findByClientActivityID(meta.clientActivityID), 'channelData', 'state'],
+        () => SEND_FAILED
+      );
       break;
 
     case POST_ACTIVITY_FULFILLED:
@@ -94,7 +103,8 @@ export default function (state = DEFAULT_STATE, { meta, payload, type }) {
 
       break;
 
-    default: break;
+    default:
+      break;
   }
 
   return state;

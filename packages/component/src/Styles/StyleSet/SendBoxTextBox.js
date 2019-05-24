@@ -1,7 +1,4 @@
-export default function createSendBoxTextBoxStyle({
-  primaryFont,
-  sendBoxTextColor
-}) {
+export default function createSendBoxTextBoxStyle({ primaryFont, sendBoxTextColor }) {
   return {
     alignItems: 'center',
     fontFamily: primaryFont,
