@@ -18,11 +18,11 @@ function xMinutesAgo(dateStr) {
   } else if (deltaInMinutes === 1) {
     return 'Een minuut geleden';
   } else if (deltaInHours < 1) {
-    return `${ deltaInMinutes } minuten geleden`;
+    return `${deltaInMinutes} minuten geleden`;
   } else if (deltaInHours === 1) {
     return `Een uur geleden`;
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } uur geleden`;
+    return `${deltaInHours} uur geleden`;
   } else if (deltaInHours <= 24) {
     return `Vandaag`;
   } else if (deltaInHours <= 48) {
@@ -41,35 +41,35 @@ function xMinutesAgo(dateStr) {
   });
 }
 
-function botSaidSomething(avatarInitials, text) {
-  return `Bot ${ avatarInitials } zei; ${ text }`;
+function botSaidSomething(avatarInitials, text, timestamp) {
+  return `Bot ${avatarInitials} zei; ${text}, ${xMinutesAgo(timestamp)}`;
 }
 
-function userSaidSomething(avatarInitials, text) {
-  return `Gebruiker ${ avatarInitials } zei; ${ text }`;
+function userSaidSomething(avatarInitials, text, timestamp) {
+  return `Gebruiker ${avatarInitials} zei; ${text}, ${xMinutesAgo(timestamp)}`;
 }
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Verbinding maken niet mogelijk.',
-  SEND_FAILED_KEY: 'Versturen mislukt, {retry}.',
+  SEND_FAILED_KEY: `Versturen mislukt, ${retry}.`,
   SLOW_CONNECTION_NOTIFICATION: 'Verbinding maken duurt langer dan normaal…',
   'Bot said something': botSaidSomething,
-  'Chat': 'Chat',
+  Chat: 'Chat',
   'Download file': 'Bestand downloaden',
   'Listening…': 'Aan het luisteren…',
   'Microphone off': 'Microfoon uit',
   'Microphone on': 'Microfoon aan',
-  'Retry': 'Opnieuw proberen',
-  'retry': 'probeer opnieuw',
-  'Send': 'Verstuur',
-  'Sending': 'versturen',
-  'Speak': 'Spreek',
+  Retry: 'Opnieuw proberen',
+  retry: 'probeer opnieuw',
+  Send: 'Verstuur',
+  Sending: 'versturen',
+  Speak: 'Spreek',
   'Starting…': 'Starten…',
-  'Tax': 'BTW',
-  'Total': 'Totaal',
+  Tax: 'BTW',
+  Total: 'Totaal',
   'Type your message': 'Typ je bericht',
   'Upload file': 'Bestand uploaden',
   'User said something': userSaidSomething,
-  'VAT': 'VAT',
+  VAT: 'VAT',
   'X minutes ago': xMinutesAgo
-}
+};

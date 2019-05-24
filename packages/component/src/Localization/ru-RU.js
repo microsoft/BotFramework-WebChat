@@ -18,13 +18,13 @@ function xMinutesAgo(dateStr) {
   } else if (deltaInMinutes === 1) {
     return 'Минуту назад';
   } else if (deltaInHours < 1 && deltaInMinutes < 5) {
-    return `${ deltaInMinutes } минуты назад`;
+    return `${deltaInMinutes} минуты назад`;
   } else if (deltaInHours < 1 && deltaInMinutes >= 5) {
-    return `${ deltaInMinutes } минут назад`;
+    return `${deltaInMinutes} минут назад`;
   } else if (deltaInHours === 1) {
     return 'Час назад';
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } часа назад`;
+    return `${deltaInHours} часа назад`;
   } else if (deltaInHours <= 24) {
     return 'Сегодня';
   } else if (deltaInHours <= 48) {
@@ -35,41 +35,38 @@ function xMinutesAgo(dateStr) {
     return new Intl.DateTimeFormat('ru-RU').format(date);
   }
 
-  return date.toLocaleString(
-    'ru-RU',
-    {
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }
-  );
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 }
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Ошибка подключения.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: 'Не удалось отправить, {Retry}.',
+  SEND_FAILED_KEY: `Не удалось отправить, ${Retry}.`,
   SLOW_CONNECTION_NOTIFICATION: 'Требуется больше времени, чем обычно.',
   'Adaptive Card parse error': 'Ошибка парсинга адаптивной карты',
   'Adaptive Card render error': 'Ошибка отображения адаптивной карты',
-  'Chat': 'Чат',
+  Chat: 'Чат',
   'Download file': 'Скачать файл',
   'Microphone off': 'Микрофон влючен',
   'Microphone on': 'Микрофон выключен',
   'Listening…': 'Прослушивание…',
-  'retry': 'повторить',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
-  'Send': 'Отправить',
-  'Sending': 'Отправка',
-  'Speak': 'Говорить',
+  retry: 'повторить',
+  Retry: `${retry}`, // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  Send: 'Отправить',
+  Sending: 'Отправка',
+  Speak: 'Говорить',
   'Starting…': 'Запуск…',
-  'Tax': 'Налог',
-  'Total': 'Итого',
+  Tax: 'Налог',
+  Total: 'Итого',
   'Type your message': 'Введите ваше сообщение',
   'Upload file': 'Загрузить файл',
-  'VAT': 'НДС',
+  VAT: 'НДС',
   'New messages': 'Новые сообщения',
   'X minutes ago': xMinutesAgo
-}
+};

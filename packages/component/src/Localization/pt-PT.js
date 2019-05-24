@@ -18,11 +18,11 @@ function xMinutesAgo(dateStr) {
   } else if (deltaInMinutes === 1) {
     return 'Um minuto atrás';
   } else if (deltaInHours < 1) {
-    return `${ deltaInMinutes } minutos atrás`;
+    return `${deltaInMinutes} minutos atrás`;
   } else if (deltaInHours === 1) {
     return `Uma hora atrás`;
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } horas atrás`;
+    return `${deltaInHours} horas atrás`;
   } else if (deltaInHours <= 24) {
     return `Hoje`;
   } else if (deltaInHours <= 48) {
@@ -43,24 +43,24 @@ function xMinutesAgo(dateStr) {
 
 export default {
   // FAILED_CONNECTION_NOTIFICATION: '',
-  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: 'não foi possível enviar, {Retry}.',
+  // Do not localize ${Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  SEND_FAILED_KEY: `não foi possível enviar, ${Retry}.`,
   SLOW_CONNECTION_NOTIFICATION: 'A ligação está a demorar mais tempo que o normal.',
-  'Chat': 'Chat',
+  Chat: 'Chat',
   'Download file': 'Download ficheiro',
   'Microphone off': 'Microfone desligado',
   'Microphone on': 'Microfone ligado',
   'Listening…': 'A Escutar…',
-  'retry': 'repetir',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
-  'Send': 'Enviar',
-  'Sending': 'a enviar',
-  'Speak': 'Falar',
+  retry: 'repetir',
+  Retry: `${retry}`, // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  Send: 'Enviar',
+  Sending: 'a enviar',
+  Speak: 'Falar',
   'Starting…': 'A iniciar…',
-  'Tax': 'Imposto',
-  'Total': 'Total',
+  Tax: 'Imposto',
+  Total: 'Total',
   'Type your message': 'Escreva a sua mensagem',
   'Upload file': 'Upload de ficheiro',
-  'VAT': 'IVA',
+  VAT: 'IVA',
   'X minutes ago': xMinutesAgo
-}
+};

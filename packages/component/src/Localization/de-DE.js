@@ -14,15 +14,15 @@ function xMinutesAgo(dateStr) {
   const deltaInHours = Math.floor(deltaInMs / 3600000);
 
   if (deltaInMinutes < 1) {
-    return "jetzt";
+    return 'jetzt';
   } else if (deltaInMinutes === 1) {
     return 'Vor einer Minute';
   } else if (deltaInHours < 1) {
-    return `Vor ${ deltaInMinutes } Minuten`;
+    return `Vor ${deltaInMinutes} Minuten`;
   } else if (deltaInHours === 1) {
     return `Vor eine Stunde`;
   } else if (deltaInHours < 5) {
-    return `Vor ${ deltaInHours } Stunden`;
+    return `Vor ${deltaInHours} Stunden`;
   } else if (deltaInHours <= 24) {
     return `heute`;
   } else if (deltaInHours <= 48) {
@@ -42,28 +42,28 @@ function xMinutesAgo(dateStr) {
 }
 
 export default {
-   FAILED_CONNECTION_NOTIFICATION: 'Keine Verbindung',
+  FAILED_CONNECTION_NOTIFICATION: 'Keine Verbindung',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: 'konnte nicht senden, {Retry}.',
+  SEND_FAILED_KEY: `konnte nicht senden, ${Retry}.`,
   SLOW_CONNECTION_NOTIFICATION: 'Eingeschränkte Konnektivität',
-  'Chat': 'Chat',
+  Chat: 'Chat',
   'Download file': 'Datei herunterladen',
   'Microphone off': 'Mikrofon aus',
   'Microphone on': 'Mikrofon aus',
-  'Left': 'Links',
+  Left: 'Links',
   'Listening…': 'hört zu…',
   'New messages': 'Neue Nachrichten',
-  'retry': 'wiederholen',
-  'Right': 'Rechts',
-  'Retry': 'Wiederholen', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
-  'Send': 'Senden',
-  'Sending': 'sendet…',
-  'Speak': 'Sprechen',
+  retry: 'wiederholen',
+  Retry: 'Wiederholen', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  Right: 'Rechts',
+  Send: 'Senden',
+  Sending: 'sendet…',
+  Speak: 'Sprechen',
   'Starting…': 'Startet…',
-  'Tax': 'Steuer',
-  'Total': 'Total',
+  Tax: 'Steuer',
+  Total: 'Total',
   'Type your message': 'Verfasse eine Nachricht',
   'Upload file': 'Datei hochladen',
-  'VAT': 'MwSt',
+  VAT: 'MwSt',
   'X minutes ago': xMinutesAgo
-}
+};
