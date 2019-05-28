@@ -151,7 +151,6 @@ const WebChatCarouselFilmStrip = ({
             attachments.map((attachment, index) =>
               <li key={ index }>
                 <Bubble
-                  aria-hidden={ false }
                   fromUser={ fromUser }
                   key={ index }
                 >
