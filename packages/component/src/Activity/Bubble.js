@@ -5,14 +5,14 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 
 const Bubble = ({
-  'aria-label': ariaLabel,
+  'aria-hidden': ariaHidden,
   children,
   className,
   fromUser,
   styleSet
 }) =>
   <div
-    aria-label={ ariaLabel }
+    aria-hidden={ ariaHidden }
     className={ classNames(
       styleSet.bubble + '',
       { 'from-user': fromUser },
@@ -23,14 +23,14 @@ const Bubble = ({
   </div>;
 
 Bubble.defaultProps = {
-  'aria-label': '',
+  'aria-hidden': true,
   children: undefined,
   className: '',
   fromUser: false
 };
 
 Bubble.propTypes = {
-  'aria-label': PropTypes.string,
+  'aria-hidden': PropTypes.bool,
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,

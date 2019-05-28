@@ -8,7 +8,6 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -88,11 +87,9 @@ const connectCarouselFilmStrip = (...selectors) => connectToWebChat(
 
 const WebChatCarouselFilmStrip = ({
   activity,
-  avatarInitials,
   children,
   className,
   itemContainerRef,
-  language,
   scrollableRef,
   styleSet,
   timestampClassName
@@ -110,11 +107,9 @@ const WebChatCarouselFilmStrip = ({
     } = {},
     text,
     textFormat,
-    timestamp
   } = activity;
 
   const fromUser = role === 'user';
-  const ariaLabel = localize('Bot said something', language, avatarInitials, text, timestamp)
   const activityDisplayText = messageBackDisplayText || text;
 
   return (
@@ -136,7 +131,7 @@ const WebChatCarouselFilmStrip = ({
           !!activityDisplayText &&
             <div className="message">
               <Bubble
-                aria-label={ ariaLabel }
+                aria-hidden={ true }
                 className="bubble"
                 fromUser={ fromUser }
               >
@@ -165,16 +160,14 @@ const WebChatCarouselFilmStrip = ({
             )
           }
         </ul>
-        <div
-          aria-hidden={ true }
-          className="webchat__row"
-        >
+        <div className="webchat__row">
           {
             state === SENDING || state === SEND_FAILED ?
               <SendStatus activity={ activity } />
             :
               <Timestamp
                 activity={ activity }
+                aria-hidden={ true }
                 className={ timestampClassName }
               />
           }
@@ -185,7 +178,6 @@ const WebChatCarouselFilmStrip = ({
 };
 
 WebChatCarouselFilmStrip.defaultProps = {
-  avatarInitials: '',
   children: undefined,
   className: '',
   timestampClassName: ''
@@ -207,11 +199,9 @@ WebChatCarouselFilmStrip.propTypes = {
     textFormat: PropTypes.string,
     timestamp: PropTypes.string
   }).isRequired,
-  avatarInitials: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
     carouselFilmStrip: PropTypes.any.isRequired

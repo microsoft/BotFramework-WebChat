@@ -102,13 +102,12 @@ const StackedLayout = ({
     } = {},
     text,
     textFormat,
-    timestamp,
     type
   } = activity;
 
   const fromUser = role === 'user';
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, text, timestamp);
+  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, text);
   const activityDisplayText = messageBackDisplayText || text;
 
   return (
@@ -137,9 +136,12 @@ const StackedLayout = ({
               <div className="filler" />
             </div>
           : !!activityDisplayText &&
-            <div className="webchat__row message">
+            <div
+              aria-label={ ariaLabel }
+              className="webchat__row message"
+            >
               <Bubble
-                aria-label={ ariaLabel }
+                aria-hidden={ true }
                 className="bubble"
                 fromUser={ fromUser }
               >
@@ -160,6 +162,7 @@ const StackedLayout = ({
           attachments.map((attachment, index) =>
             <div className="webchat__row attachment" key={ index }>
               <Bubble
+                aria-hidden={ true }
                 className="attachment bubble"
                 fromUser={ fromUser }
                 key={ index }
@@ -169,15 +172,16 @@ const StackedLayout = ({
             </div>
           )
         }
-        <div
-          aria-hidden={ true }
-          className="webchat__row"
-        >
+        <div className="webchat__row">
           {
             showSendStatus ?
               <SendStatus activity={ activity } className="timestamp" />
             :
-              <Timestamp activity={ activity } className={ classNames('timestamp', timestampClassName) } />
+              <Timestamp
+                activity={ activity }
+                aria-hidden={ true }
+                className={ classNames('timestamp', timestampClassName) }
+              />
           }
           <div className="filler" />
         </div>

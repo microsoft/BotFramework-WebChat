@@ -97,7 +97,9 @@ const BasicTranscript = ({
           speechSynthesisUtterance={ SpeechSynthesisUtterance }
         >
           <ul
+            aria-atomic="false"
             aria-live="polite"
+            aria-relevant="additions text"
             className={ classNames(
               LIST_CSS + '',
               styleSet.activities + ''
