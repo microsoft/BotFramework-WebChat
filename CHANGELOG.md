@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1969](https://github.com/Microsoft/BotFramework-WebChat/issues/1969). Move `styleSet`s related to Adaptive Cards to full bundle, by [@corinagum](https://github.com/corinagum) in PR [#1987](https://github.com/Microsoft/BotFramework-WebChat/pull/1987)
 - Fix [#1429](https://github.com/Microsoft/BotFramework-WebChat/issues/1429). Changed Markdown-it options to render newline characters correctly, by [@tdurnford](https://github.com/tdurnford) in PR [#1988](https://github.com/Microsoft/BotFramework-WebChat/pull/1988)
 - Fix [#2008](https://github.com/Microsoft/BotFramework-WebChat/issues/2008). Fixed playground due to recent eslint changes, by [@compulim](https://github.com/compulim) in PR [#2009](https://github.com/Microsoft/BotFramework-WebChat/pull/2009)
-- Fix [#1876](https://github.com/Microsoft/BotFramework-WebChat/issues/1876). A11y fixes on Web Chat transcript, by [@corinagum](https://github.com/corinagum) in PR [#2018](https://github.com/Microsoft/BotFramework-WebChat/pull/2018)
+- Fix [#1876](https://github.com/Microsoft/BotFramework-WebChat/issues/1876). Accessibility fixes on Web Chat transcript, by [@corinagum](https://github.com/corinagum) in PR [#2018](https://github.com/Microsoft/BotFramework-WebChat/pull/2018)
 
 ## [4.4.1] - 2019-05-02
 
