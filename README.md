@@ -35,7 +35,6 @@ Include `botchat.css`, `botchat-es5.js` (from our https://feedyou.blob.core.wind
     <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css" rel="stylesheet" />
   </head>
   <body>
-    <div id="bot" />
     <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
     <script>
       BotChat.App({
@@ -44,6 +43,7 @@ Include `botchat.css`, `botchat-es5.js` (from our https://feedyou.blob.core.wind
         theme: { mainColor: "#e51836" },
         header: { text: "Chatbot", textWhenCollapsed: "Click for chatbot!" }
         // OPTIONAL - locale: '...', // en/cs/...
+        // OPTIONAL - introDialog: { id: 'some-dialog-id-to-start-with' },
         // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
       });
     </script>
@@ -53,7 +53,7 @@ Include `botchat.css`, `botchat-es5.js` (from our https://feedyou.blob.core.wind
 
 > If you don't want to use polyfills for older browsers, you can use `botchat.js` instead of default `botchat-es5.js`.
 
-If you want to make the expansion logic by yourself or you want to put bot directly into some element in your page, you can check out our examples:
+If you want to make the expansion logic by yourself or you want to put bot directly into some existing element on your page, you can check out our examples:
   - [/samples/feedyou/code.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/code.html) show the most simple way how to inject webchat into your page which you can also use with GTM or some other tag manager
   -	[/samples/feedyou/embed.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/embed.html)	when you want to embed bot into given element of your page
   -	[/samples/feedyou/expandable.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/expandable.html) when you want to make expansion logic by yourself (note that `BotChat` component is initialized only after chat window is expanded, so bot is not triggered for users who not open chat)
