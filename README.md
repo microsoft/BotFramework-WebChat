@@ -11,6 +11,7 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
   * make emoticons compatible using [Twemoji](https://github.com/twitter/twemoji) 
   * configurable style themes (currently only `theme.mainColor` prop)
   * auto show upload button when `inputHint` property of last incoming activity was `expectingUpload`
+  * force intro dialog ID using `introDialog.id` property
 
 ## How to add Web Chat to your website
 

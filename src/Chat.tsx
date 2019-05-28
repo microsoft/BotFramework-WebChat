@@ -31,6 +31,7 @@ export interface ChatProps {
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect',
     userData?: {},
+    introDialog?: {id?: string},
     startOverTrigger?: (trigger: () => void) => void,
     onConversationStarted?: (callback: (conversationId: string) => void) => void
 }
@@ -206,6 +207,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     const newActivity = {
                         ...activity,
                         channelData: {
+                            ...activity.channelData,
                             userData: {
                                 ...(this.props.userData || {}),
                                 ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {})
@@ -245,7 +247,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                 from: this.props.user,
                 name: 'beginIntroDialog',
                 type: 'event',
-                value: ''
+                value: '',
+                channelData: this.props.introDialog && this.props.introDialog.id ? {id: this.props.introDialog.id} : undefined
             }).subscribe(function (id: any) {
                 konsole.log('"beginIntroDialog" event sent');
             });
