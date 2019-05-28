@@ -42,6 +42,7 @@ Include `botchat.css`, `botchat-es5.js` (from our https://feedyou.blob.core.wind
         theme: { mainColor: "#e51836" },
         header: { text: "Chatbot", textWhenCollapsed: "Click for chatbot!" }
         // OPTIONAL - locale: '...', // en/cs/...
+        // OPTIONAL - introDialog: { id: 'some-dialog-id-to-start-with' },
         // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
       });
     </script>
