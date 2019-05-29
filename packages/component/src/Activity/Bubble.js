@@ -4,23 +4,11 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const Bubble = ({
-  'aria-hidden': ariaHidden,
-  children,
-  className,
-  fromUser,
-  styleSet
-}) =>
-  <div
-    aria-hidden={ ariaHidden }
-    className={ classNames(
-      styleSet.bubble + '',
-      { 'from-user': fromUser },
-      className + ''
-    ) }
-  >
-    { children }
-  </div>;
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, styleSet }) => (
+  <div aria-hidden={ariaHidden} className={classNames(styleSet.bubble + '', { 'from-user': fromUser }, className + '')}>
+    {children}
+  </div>
+);
 
 Bubble.defaultProps = {
   'aria-hidden': true,

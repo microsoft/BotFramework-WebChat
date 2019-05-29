@@ -97,65 +97,43 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     <div className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', { 'from-user': fromUser })}>
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
-        {
-          type === 'typing' ?
-            <div className="webchat__row typing">
-              {
-                children({
+        {type === 'typing' ? (
+          <div className="webchat__row typing">
+            {children({
+              activity,
+              attachment: { contentType: 'typing' }
+            })}
+            <div className="filler" />
+          </div>
+        ) : (
+          !!activityDisplayText && (
+            <div aria-label={ariaLabel} className="webchat__row message">
+              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+                {children({
                   activity,
-                  attachment: { contentType: 'typing' }
-                })
-              }
-              <div className="filler" />
-            </div>
-          : !!activityDisplayText &&
-            <div
-              aria-label={ ariaLabel }
-              className="webchat__row message"
-            >
-              <Bubble
-                aria-hidden={ true }
-                className="bubble"
-                fromUser={ fromUser }
-              >
-                {
-                  children({
-                    activity,
-                    attachment: {
-                      content: activityDisplayText,
-                      contentType: textFormatToContentType(textFormat)
-                    }
-                  })
-                }
+                  attachment: {
+                    content: activityDisplayText,
+                    contentType: textFormatToContentType(textFormat)
+                  }
+                })}
               </Bubble>
               <div className="filler" />
-            </div>
-        }
-        {
-          attachments.map((attachment, index) =>
-            <div className="webchat__row attachment" key={ index }>
-              <Bubble
-                aria-hidden={ true }
-                className="attachment bubble"
-                fromUser={ fromUser }
-                key={ index }
-              >
-                { children({ attachment }) }
-              </Bubble>
             </div>
           )
-        }
+        )}
+        {attachments.map((attachment, index) => (
+          <div className="webchat__row attachment" key={index}>
+            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index}>
+              {children({ attachment })}
+            </Bubble>
+          </div>
+        ))}
         <div className="webchat__row">
-          {
-            showSendStatus ?
-              <SendStatus activity={ activity } className="timestamp" />
-            :
-              <Timestamp
-                activity={ activity }
-                aria-hidden={ true }
-                className={ classNames('timestamp', timestampClassName) }
-              />
-          }
+          {showSendStatus ? (
+            <SendStatus activity={activity} className="timestamp" />
+          ) : (
+            <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
+          )}
           <div className="filler" />
         </div>
       </div>

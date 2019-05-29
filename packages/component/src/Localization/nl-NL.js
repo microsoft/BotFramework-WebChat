@@ -51,7 +51,7 @@ function userSaidSomething(avatarInitials, text, timestamp) {
 
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Verbinding maken niet mogelijk.',
-  SEND_FAILED_KEY: `Versturen mislukt, ${retry}.`,
+  SEND_FAILED_KEY: 'Versturen mislukt, {Retry}.',
   SLOW_CONNECTION_NOTIFICATION: 'Verbinding maken duurt langer dan normaal…',
   'Bot said something': botSaidSomething,
   Chat: 'Chat',
@@ -59,8 +59,7 @@ export default {
   'Listening…': 'Aan het luisteren…',
   'Microphone off': 'Microfoon uit',
   'Microphone on': 'Microfoon aan',
-  Retry: 'Opnieuw proberen',
-  retry: 'probeer opnieuw',
+  Retry: 'probeer opnieuw',
   Send: 'Verstuur',
   Sending: 'versturen',
   Speak: 'Spreek',

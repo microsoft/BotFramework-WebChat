@@ -15,7 +15,11 @@
     "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
   },
   "homepage": "https://github.com/Microsoft/BotFramework-WebChat#readme",
-  "keywords": [],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -51,6 +55,16 @@
       "\\.[jt]sx?$": "./babel-jest-config.js"
     }
   },
+  "keywords": [],
+  "lint-staged": {
+    "linters": {
+      "*.{js,jsx,md,ts,tsx}": [
+        "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx,md}",
+        "prettier --write __tests__/**/*.{js,jsx,ts,tsx,md}",
+        "git add"
+      ]
+    }
+  },
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run --scope=botframework-webchat* --stream build",
@@ -78,9 +92,11 @@
     "babel-jest": "^24.1.0",
     "coveralls": "^3.0.2",
     "get-port": "^4.0.0",
+    "husky": "^2.3.0",
     "jest": "^24.1.0",
     "jest-image-snapshot": "^2.8.1",
     "lerna": "^3.14.0",
+    "lint-staged": "^8.1.7",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "serve-handler": "^5.0.5"
   }

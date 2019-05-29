@@ -13,11 +13,13 @@ jest.setTimeout(timeouts.test);
 const styleOptions = { sendBoxTextWrap: true };
 
 test('textarea input scroll', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
-  await textarea.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+  await textarea.sendKeys(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  );
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -25,11 +27,13 @@ test('textarea input scroll', async () => {
 });
 
 test('textarea input resize after delete', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
-  await textarea.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+  await textarea.sendKeys(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+  );
   await textarea.sendKeys(Key.chord([Key.CONTROL, 'a']), Key.BACK_SPACE);
 
   const base64PNG = await driver.takeScreenshot();
@@ -38,11 +42,13 @@ test('textarea input resize after delete', async () => {
 });
 
 test('textarea input with whitespace', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
-  await textarea.sendKeys('Lorem ipsum dolor       sit amet, consectetur       adipiscing elit, sed do eiusmod tempor        incididunt ut labore et        dolore magna      aliqua.');
+  await textarea.sendKeys(
+    'Lorem ipsum dolor       sit amet, consectetur       adipiscing elit, sed do eiusmod tempor        incididunt ut labore et        dolore magna      aliqua.'
+  );
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -50,7 +56,7 @@ test('textarea input with whitespace', async () => {
 });
 
 test('textarea input shift enter', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -64,11 +70,13 @@ test('textarea input shift enter', async () => {
 });
 
 test('textarea input multiple lines', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
-  await textarea.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+  await textarea.sendKeys(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  );
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -76,11 +84,14 @@ test('textarea input multiple lines', async () => {
 });
 
 test('textarea send on enter', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
-  await textarea.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', Key.ENTER);
+  await textarea.sendKeys(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    Key.ENTER
+  );
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
@@ -90,11 +101,13 @@ test('textarea send on enter', async () => {
 });
 
 test('textarea long text', async () => {
-  const { driver } = await setupWebDriver({ props: { styleOptions }});
+  const { driver } = await setupWebDriver({ props: { styleOptions } });
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
-  await textarea.sendKeys('https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleSetOptions.js');
+  await textarea.sendKeys(
+    'https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleSetOptions.js'
+  );
 
   const base64PNG = await driver.takeScreenshot();
 

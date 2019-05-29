@@ -96,7 +96,7 @@ const WebChatCarouselFilmStrip = ({
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
     from: { role } = {},
     text,
-    textFormat,
+    textFormat
   } = activity;
 
   const fromUser = role === 'user';
@@ -106,25 +106,20 @@ const WebChatCarouselFilmStrip = ({
     <div className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '')} ref={scrollableRef}>
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
-        {
-          !!activityDisplayText &&
-            <div className="message">
-              <Bubble
-                aria-hidden={ true }
-                className="bubble"
-                fromUser={ fromUser }
-              >
-                { children({
-                  activity,
-                  attachment: {
-                    content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
-                  }
-                }) }
-              </Bubble>
-              <div className="filler" />
+        {!!activityDisplayText && (
+          <div className="message">
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+              {children({
+                activity,
+                attachment: {
+                  content: activityDisplayText,
+                  contentType: textFormatToContentType(textFormat)
+                }
+              })}
+            </Bubble>
+            <div className="filler" />
           </div>
-        }
+        )}
         <ul ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
@@ -135,16 +130,11 @@ const WebChatCarouselFilmStrip = ({
           ))}
         </ul>
         <div className="webchat__row">
-          {
-            state === SENDING || state === SEND_FAILED ?
-              <SendStatus activity={ activity } />
-            :
-              <Timestamp
-                activity={ activity }
-                aria-hidden={ true }
-                className={ timestampClassName }
-              />
-          }
+          {state === SENDING || state === SEND_FAILED ? (
+            <SendStatus activity={activity} />
+          ) : (
+            <Timestamp activity={activity} aria-hidden={true} className={timestampClassName} />
+          )}
         </div>
       </div>
     </div>

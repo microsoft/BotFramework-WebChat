@@ -1,4 +1,4 @@
-export default async function (fn, retries) {
+export default async function(fn, retries) {
   let lastErr;
 
   for (; retries >= 0; retries--) {

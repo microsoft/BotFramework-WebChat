@@ -33,12 +33,12 @@ import Context from './Context';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import defaultStyleOptions from './Styles/defaultStyleOptions'
+import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
-declare var VERSION
+declare var VERSION;
 
-const version = VERSION
+const version = VERSION;
 
 const Components = {
   Composer,
@@ -83,7 +83,7 @@ const Components = {
   connectUploadButton
 };
 
-export default BasicWebChat
+export default BasicWebChat;
 
 export {
   Components,
@@ -97,4 +97,4 @@ export {
   getTabIndex,
   localize,
   version
-}
+};

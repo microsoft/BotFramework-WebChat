@@ -82,50 +82,35 @@ const BasicTranscript = ({
   }, []);
 
   return (
-    <div
-      className={ classNames(
-        ROOT_CSS + '',
-        className + ''
-      ) }
-      role="log"
-    >
-      <ScrollToBottomPanel className={ PANEL_CSS + '' }>
-        <div className={ FILLER_CSS } />
-        <SayComposer
-          speechSynthesis={ speechSynthesis }
-          speechSynthesisUtterance={ SpeechSynthesisUtterance }
-        >
+    <div className={classNames(ROOT_CSS + '', className + '')} role="log">
+      <ScrollToBottomPanel className={PANEL_CSS + ''}>
+        <div className={FILLER_CSS} />
+        <SayComposer speechSynthesis={speechSynthesis} speechSynthesisUtterance={SpeechSynthesisUtterance}>
           <ul
             aria-atomic="false"
             aria-live="polite"
             aria-relevant="additions text"
-            className={ classNames(
-              LIST_CSS + '',
-              styleSet.activities + ''
-            ) }
+            className={classNames(LIST_CSS + '', styleSet.activities + '')}
             role="list"
           >
-            {
-              activityElements.map(({ activity, element }, index) =>
-                <li
-                  className={ classNames(
-                    styleSet.activity + '',
-                    {
-                      // Hide timestamp if same timestamp group with the next activity
-                      'hide-timestamp': sameTimestampGroup(activity, (activityElements[index + 1] || {}).activity, groupTimestamp)
-                    }
-                  ) }
-                  key={ activity.channelData && activity.channelData.clientActivityID || activity.id || index }
-                  role="listitem"
-                >
-                  { element }
-                  {
-                    // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                    activity.channelData && activity.channelData.speak && <SpeakActivity activity={ activity } />
-                  }
-                </li>
-              )
-            }
+            {activityElements.map(({ activity, element }, index) => (
+              <li
+                className={classNames(styleSet.activity + '', {
+                  // Hide timestamp if same timestamp group with the next activity
+                  'hide-timestamp': sameTimestampGroup(
+                    activity,
+                    (activityElements[index + 1] || {}).activity,
+                    groupTimestamp
+                  )
+                })}
+                key={(activity.channelData && activity.channelData.clientActivityID) || activity.id || index}
+                role="listitem"
+              >
+                {element}
+                {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+              </li>
+            ))}
           </ul>
         </SayComposer>
       </ScrollToBottomPanel>

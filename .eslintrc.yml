@@ -1,0 +1,182 @@
+env:
+  browser: true
+  es6: true
+  jest: true
+extends:
+- eslint:recommended
+globals:
+  React: readonly
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 10
+  sourceType: module
+root: true
+rules:
+  # Only list rules that are not in *:recommended set
+  # If rules are set to disable the one in *:recommended, please elaborate the reason
+
+  # Group - Best Practices
+  no-async-promise-executor: error
+  no-await-in-loop: error
+  no-console:
+  - error
+  - allow:
+    - error
+    - warn
+  # no-extra-parens: error # conflicts with prettier
+  no-misleading-character-class: error
+  no-template-curly-in-string: error
+  require-atomic-updates: error
+  accessor-pairs: error
+  block-scoped-var: error
+  class-methods-use-this:
+  - error
+  - exceptMethods:
+    - render
+  complexity: error
+  curly: error
+  default-case: error
+  dot-notation: error
+  eqeqeq: error
+  max-classes-per-file:
+  - error
+  - 2
+  no-alert: error
+  no-caller: error
+  no-div-regex: error
+  no-else-return: error
+  no-empty-function: error
+  no-eq-null: error
+  no-eval: error
+  no-extend-native: error
+  no-extra-bind: error
+  no-extra-label: error
+  no-implicit-globals: error
+  no-implied-eval: error
+  no-invalid-this: error
+  no-iterator: error
+  no-labels: error
+  no-lone-blocks: error
+  no-magic-numbers:
+  - error
+  - ignore:
+    - 0
+    - 1
+  no-multi-spaces:
+  - error
+  - ignoreEOLComments: true
+  no-multi-str: error
+  no-new: error
+  no-new-func: error
+  no-new-wrappers: error
+  no-octal-escape: error
+  no-proto: error
+  no-return-assign: error
+  no-return-await: error
+  no-script-url: error
+  no-self-compare: error
+  no-sequences: error
+  no-throw-literal: error
+  no-unmodified-loop-condition: error
+  no-unused-expressions:
+  - error
+  - allowShortCircuit: true
+    allowTernary: true
+  no-useless-call: error
+  no-useless-catch: error
+  no-useless-concat: error
+  no-useless-return: error
+  no-void: error
+  no-with: error
+  prefer-promise-reject-errors: error
+  radix: error
+  require-await: error
+  require-unicode-regexp: error
+  wrap-iife: error
+  yoda: error
+
+  # Group - Variables
+  no-label-var: error
+
+  # Re-enable later
+  # no-shadow:
+  # - error
+  # - builtinGlobals: true
+  #   hoist: all
+
+  no-shadow-restricted-names: error
+  no-undef-init: error
+
+  # "undefined" is commonly used for defaults
+  # no-undefined: off
+
+  no-unused-vars:
+  - error
+  - argsIgnorePattern: ^_$
+    varsIgnorePattern: ^_
+  no-use-before-define: error
+
+  # Group - Node.js and CommonJS
+  callback-return: error
+  global-require: error
+  handle-callback-err: error
+  no-buffer-constructor: error
+  no-mixed-requires: error
+  no-new-require: error
+  no-path-concat: error
+  no-sync: error
+
+  # Group - ECMAScript 6
+  arrow-body-style:
+  - error
+  - as-needed
+  arrow-parens:
+  - error
+  - as-needed
+  arrow-spacing:
+  - error
+  - after: true
+    before: true
+  # generator-star-spacing: # conflicts with prettier
+  # - error
+  # - after
+
+  # Will produce shorter code if "off"
+  # no-confusing-arrow:
+  # - error
+  # - allowParens: true # This will conflict with no-extra-parens
+
+  no-duplicate-imports: error
+  no-useless-computed-key: error
+  no-useless-constructor: error
+  no-useless-rename: error
+  no-var: error
+  object-shorthand: error
+  prefer-arrow-callback: error
+  prefer-const: error
+  prefer-destructuring: error
+  prefer-rest-params: error
+  prefer-spread: error
+
+  # This will force, a + '', into, `${ a }`, which increase code length
+  # prefer-template: error
+
+  rest-spread-spacing:
+  - error
+  - never
+
+  # Cannot group global or local imports and sort in differently
+  # sort-imports:
+  # - error
+  # - ignoreCase: true
+
+  template-curly-spacing:
+  - error
+  - never
+  yield-star-spacing:
+  - error
+  - after
+settings:
+  react:
+    version: detect

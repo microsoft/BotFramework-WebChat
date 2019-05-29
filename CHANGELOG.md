@@ -23,17 +23,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ### Added
+
 - `*`: Added [`eslint`](https://npmjs.com/package/eslint/) to static code analysis, by [@compulim](https://github.com/compulim), in PR [#1970](https://github.com/microsoft/BotFramework-WebChat/pull/1970)
 - Added pt-PT language, by [@bodyzatva](https://github.com/bodyzatva) in PR [#2005](https://github.com/microsoft/BotFramework-WebChat/pull/2005) and PR [#2020](https://github.com/Microsoft/BotFramework-WebChat/pull/2020)
 
 ### Changed
+
 - `*`: Bumps to [`lerna@3.13.4`](https://npmjs.com/package/lerna/), by [@corinagum](https://github.com/corinagum), in PR [#1989](https://github.com/Microsoft/BotFramework-WebChat/pull/1989)
 - `*`: Bump to:
-   - [`lerna@3.13.4`](https://npmjs.com/package/lerna/),
-   - [`react-scripts@3.0.0`](https://npmjs.com/package/react-scripts/),
-   - [`webpack@4.30.0`](https://npmjs.com/package/webpack/), by [@corinagum](https://github.com/corinagum), in PR [#1965](https://github.com/Microsoft/BotFramework-WebChat/pull/1965)
+  - [`lerna@3.13.4`](https://npmjs.com/package/lerna/),
+  - [`react-scripts@3.0.0`](https://npmjs.com/package/react-scripts/),
+  - [`webpack@4.30.0`](https://npmjs.com/package/webpack/), by [@corinagum](https://github.com/corinagum), in PR [#1965](https://github.com/Microsoft/BotFramework-WebChat/pull/1965)
 
 ### Fixed
+
 - Fix [#1974](https://github.com/Microsoft/BotFramework-WebChat/issues/1974). Update `/docs/` folder to `/media/` and delete unused images, by [@corinagum](https://github.com/corinagum) in PR [#1975](https://github.com/Microsoft/BotFramework-WebChat/pull/1975)
 - Fix [#1980](https://github.com/Microsoft/BotFramework-WebChat/issues/1980). Changed sendBoxTextArea styles to break words longer than the textarea, by [@tdurnford](https://github.com/tdurnford) in PR [#1986](https://github.com/Microsoft/BotFramework-WebChat/pull/1986)
 - Fix [#1969](https://github.com/Microsoft/BotFramework-WebChat/issues/1969). Move `styleSet`s related to Adaptive Cards to full bundle, by [@corinagum](https://github.com/corinagum) in PR [#1987](https://github.com/Microsoft/BotFramework-WebChat/pull/1987)
@@ -45,10 +48,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.4.1] - 2019-05-02
 
 ### Added
+
 - Added handling of reconnection, by [@compulim](https://github.com/compulim), in PR [#1880](https://github.com/Microsoft/BotFramework-WebChat/pull/1880)
 - Added embed page, by [@compulim](https://github.com/compulim), in PR [#1910](https://github.com/Microsoft/BotFramework-WebChat/pull/1910), PR [#1928](https://github.com/Microsoft/BotFramework-WebChat/pull/1928) and PR [#1938](https://github.com/Microsoft/BotFramework-WebChat/pull/1938)
 
 ### Changed
+
 - Deployment: Bumps to [`blobxfer@1.7.1`](https://github.com/azure/blobxfer/), by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
 - Deployment: Adds `charset` to content type of JavaScript files on CDN, by [@compulim](https://github.com/compulim), in PR [#1897](https://github.com/Microsoft/BotFramework-WebChat/pull/1897)
 - `component`: Bumps to [`react-film@1.2.1-master.db29968`](https://npmjs.com/package/react-film/), by [@corinagum](https://github.com/corinagum) and [@compulim](https://github.com/compulim), in PR [#1900](https://github.com/Microsoft/BotFramework-WebChat/pull/1900) and PR [#1924](https://github.com/Microsoft/BotFramework-WebChat/pull/1924)
@@ -56,6 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Carousel flippers on carousel layout and suggested actions will use initial cursor style, by [@compulim](https://github.com/compulim), in PR [#1924](https://github.com/Microsoft/BotFramework-WebChat/pull/1924)
 
 ### Fixed
+
 - Fix [#1423](https://github.com/Microsoft/BotFramework-WebChat/issues/1423). Added sample for hosting WebChat in Angular, by [@omarsourour](https://github.com/omarsourour) in PR [#1813](https://github.com/Microsoft/BotFramework-WebChat/pull/1813)
 - Fix [#1767](https://github.com/Microsoft/BotFramework-WebChat/issues/1767). Remove `cursor: pointer` from buttons, by [@corinagum](https://github.com/corinagum) in PR [#1819](https://github.com/Microsoft/BotFramework-WebChat/pull/1819)
 - Fix [#1774](https://github.com/Microsoft/BotFramework-WebChat/issues/1774). Add `styleSetOption` to allow word break. Default to `break-word`, by [@corinagum](https://github.com/corinagum) in PR [#1832](https://github.com/Microsoft/BotFramework-WebChat/pull/1832)
@@ -79,6 +85,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.3.0] - 2019-03-04
 
 ### Added
+
 - Fix [#1383](https://github.com/Microsoft/BotFramework-WebChat/issues/1383). Added options to hide upload button, by [@compulim](https://github.com/compulim) in PR [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - Added support of avatar image, thru `styleOptions.botAvatarImage` and `styleOptions.userAvatarImage`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 - Added ability to style sendbox background and text color, thru `styleOptions.sendBoxBackground` and `styleOptions.sendBoxTextColor`, in PR [#1575](https://github.com/Microsoft/BotFramework-WebChat/pull/1575)
@@ -114,10 +121,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update Dutch locale by [@imicknl](https://github.com/imicknl) in PR [#1812](https://github.com/Microsoft/BotFramework-WebChat/pull/1812)
 
 ### Fixed
+
 - Fix [#1360](https://github.com/Microsoft/BotFramework-WebChat/issues/1360). Added `roles` to components of Web Chat, by [@corinagum](https://github.com/corinagum) in PR [#1462](https://github.com/Microsoft/BotFramework-WebChat/pull/1462)
 - Fix [#1409](https://github.com/Microsoft/BotFramework-WebChat/issues/1409). Added microphone status as screen reader only text, by [@corinagum](https://github.com/corinagum) in PR [#1490](https://github.com/Microsoft/BotFramework-WebChat/pull/1490)
 - Fix [#1605](https://github.com/Microsoft/BotFramework-WebChat/issues/1305), [#1316](https://github.com/Microsoft/BotFramework-WebChat/issues/1316), [#1341](https://github.com/Microsoft/BotFramework-WebChat/issues/1341), [#1411](https://github.com/Microsoft/BotFramework-WebChat/issues/1411). Fix color contrast ratios & downloadIcon narrator accessibility by [@corinagum](https://github.com/corinagum) in PR [#1494](https://github.com/Microsoft/BotFramework-WebChat/pull/1494)
-- Fix [#1264](https://github.com/Microsoft/BotFramework-WebChat/issues/1264), [#1308](https://github.com/Microsoft/BotFramework-WebChat/issues/1308), [#1318](https://github.com/Microsoft/BotFramework-WebChat/issues/1318), [#1334](https://github.com/Microsoft/BotFramework-WebChat/issues/1334),[#1425](https://github.com/Microsoft/BotFramework-WebChat/issues/1425). Update icons with accessibilty, Sent message accessibility, and fix sample README.md,  [@corinagum](https://github.com/corinagum) in PR [#1506](https://github.com/Microsoft/BotFramework-WebChat/pull/1506) and [#1542](https://github.com/Microsoft/BotFramework-WebChat/pull/1542)
+- Fix [#1264](https://github.com/Microsoft/BotFramework-WebChat/issues/1264), [#1308](https://github.com/Microsoft/BotFramework-WebChat/issues/1308), [#1318](https://github.com/Microsoft/BotFramework-WebChat/issues/1318), [#1334](https://github.com/Microsoft/BotFramework-WebChat/issues/1334),[#1425](https://github.com/Microsoft/BotFramework-WebChat/issues/1425). Update icons with accessibilty, Sent message accessibility, and fix sample README.md, [@corinagum](https://github.com/corinagum) in PR [#1506](https://github.com/Microsoft/BotFramework-WebChat/pull/1506) and [#1542](https://github.com/Microsoft/BotFramework-WebChat/pull/1542)
 - Fix [#1512](https://github.com/Microsoft/BotFramework-WebChat/issues/1512). Fix #1512: fix sanitization of anchors (allow title attributes), by [@corinagum](https://github.com/corinagum) in PR [#1530](https://github.com/Microsoft/BotFramework-WebChat/pull/1530)
 - Fix [#1499](https://github.com/Microsoft/BotFramework-WebChat/issues/1499).
   - Fix screen reader handling of name, activity, and timestamp,
@@ -146,10 +154,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: Fix [#1625](https://github.com/Microsoft/BotFramework-WebChat/issues/1625) to update `README.md` by [@corinagum](https://github.com/corinagum) in PR [#1752](https://github.com/Microsoft/BotFramework-WebChat/pull/1752)
 
 ### Removed
+
 - `botAvatarImage` and `userAvatarImage` props, as they are moved inside `styleOptions`, in PR [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
 - `sendTyping` props is now renamed to `sendTypingIndicator`, by [@compulim](https://github.com/compulim), in PR [#1584](https://github.com/Microsoft/BotFramework-WebChat/pull/1584)
 
 ### Samples
+
 - `core`: [Programmatic access to post activity](https://microsoft.github.io/BotFramework-WebChat/15.c.programmatic-post-activity/), in [#1568](https://github.com/Microsoft/BotFramework-WebChat/pull/1568)
 - `component`: [Hide upload button](https://microsoft.github.io/BotFramework-WebChat/05.d.hide-upload-button-styling/), in [#1491](https://github.com/Microsoft/BotFramework-WebChat/pull/1491)
 - `component`: [Avatar image](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling/), in [#1486](https://github.com/Microsoft/BotFramework-WebChat/pull/1486)
@@ -166,49 +176,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `component`: [Customizing open URL behavior](https://microsoft.github.io/BotFramework-WebChat/18.customization-open-url), in PR [#1704](https://github.com/Microsoft/BotFramework-WebChat/pull/1704)
 
 ## [4.2.0] - 2018-12-11
+
 ### Added
+
 - Build: Development build now include instrumentation code, updated build scripts
-   - `npm run build` will build for development with instrumentation code
-   - `npm run prepublishOnly` will build for production
-   - `npm run watch` will also run Webpack in watch loop
+  - `npm run build` will build for development with instrumentation code
+  - `npm run prepublishOnly` will build for production
+  - `npm run watch` will also run Webpack in watch loop
 - Build: Automated testing using visual regression testing technique in [#1323](https://github.com/Microsoft/BotFramework-WebChat/pull/1323)
-   - [Docker-based](https://github.com/SeleniumHQ/docker-selenium) automated testing using headless Chrome and [Web Driver](https://npmjs.com/packages/selenium-webdriver)
-   - Screenshot comparison using [`jest-image-snapshot`](https://npmjs.com/packages/jest-image-snapshot) and [`pixelmatch`](https://npmjs.com/package/pixelmatch)
-   - Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
-   - Test report is hosted on [Coveralls](https://coveralls.io/github/compulim/BotFramework-WebChat)
+  - [Docker-based](https://github.com/SeleniumHQ/docker-selenium) automated testing using headless Chrome and [Web Driver](https://npmjs.com/packages/selenium-webdriver)
+  - Screenshot comparison using [`jest-image-snapshot`](https://npmjs.com/packages/jest-image-snapshot) and [`pixelmatch`](https://npmjs.com/package/pixelmatch)
+  - Code is instrumented using [`istanbul`](https://npmjs.com/package/istanbul)
+  - Test report is hosted on [Coveralls](https://coveralls.io/github/compulim/BotFramework-WebChat)
 - Added French localization, by [@tao1](https://github.com/tao1) in PR [#1327](https://github.com/Microsoft/BotFramework-WebChat/pull/1327)
 - Fix [#1344](https://github.com/Microsoft/BotFramework-WebChat/issues/1344), by updating `README.md` and adding validation logic for `userID` props, in [#1447](https://github.com/Microsoft/BotFramework-WebChat/pull/1447)
-   - If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
-   - If `userID` props present, they must be string and not prefixed with `dl_`, to avoid confusion between `userID` props and Direct Line embedded user ID (which is forgery-proof)
-   - If `userID` props does not pass the validation test or not specified, Web Chat will use `default-user` instead
+  - If `userID` props present and also embedded in Direct Line token, will use the one from Direct Line token
+  - If `userID` props present, they must be string and not prefixed with `dl_`, to avoid confusion between `userID` props and Direct Line embedded user ID (which is forgery-proof)
+  - If `userID` props does not pass the validation test or not specified, Web Chat will use `default-user` instead
 - Added support for Cognitive Services Speech to Text and Text to Speech in PR [#1442](https://github.com/Microsoft/BotFramework-WebChat/pull/1442)
 
 ### Changed
+
 - Core: Saga will run after custom middleware, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
-   - Custom middleware run before saga to allow user to modify default behavior
+  - Custom middleware run before saga to allow user to modify default behavior
 - Build: Bump dependencies, in [#1303](https://github.com/Microsoft/BotFramework-WebChat/pull/1303)
-   - `@babel`
-      - `@babel/cli@7.1.2`
-      - `@babel/core@7.1.2`
-      - `@babel/plugin-proposal-class-properties@7.1.0`
-      - `@babel/plugin-proposal-object-rest-spread@7.0.0`
-      - `@babel/plugin-transform-runtime@7.1.0`
-      - `@babel/preset-env@7.1.0`
-      - `@babel/preset-react@7.0.0`
-      - `@babel/preset-typescript@7.1.0`
-      - `@babel/runtime@7.1.2`
-   - `concurrently@4.0.1`
-   - `jest`
-      - `babel-jest@23.6.0`
-      - `jest@23.6.0`
-      - `ts-jest@23.10.4`
-   - `typescript@3.1.6`
-   - `webpack`
-      - `webpack@4.24.0`
-      - `webpack-command@0.4.2`
+  - `@babel`
+    - `@babel/cli@7.1.2`
+    - `@babel/core@7.1.2`
+    - `@babel/plugin-proposal-class-properties@7.1.0`
+    - `@babel/plugin-proposal-object-rest-spread@7.0.0`
+    - `@babel/plugin-transform-runtime@7.1.0`
+    - `@babel/preset-env@7.1.0`
+    - `@babel/preset-react@7.0.0`
+    - `@babel/preset-typescript@7.1.0`
+    - `@babel/runtime@7.1.2`
+  - `concurrently@4.0.1`
+  - `jest`
+    - `babel-jest@23.6.0`
+    - `jest@23.6.0`
+    - `ts-jest@23.10.4`
+  - `typescript@3.1.6`
+  - `webpack`
+    - `webpack@4.24.0`
+    - `webpack-command@0.4.2`
 - Fix Russian localization by [@odysseus1973](https://github.com/odysseus1973) in PR [#1377](https://github.com/Microsoft/BotFramework-WebChat/pull/1377)
 
 ### Fixed
+
 - Fix [#1397](https://github.com/Microsoft/BotFramework-WebChat/issues/1397). Patched activities without `from` field, in PR [#1405](https://github.com/Microsoft/BotFramework-WebChat/pull/1405)
 - Fix [#1237](https://github.com/Microsoft/BotFramework-WebChat/issues/1237). Added new sample called `migration`, by [@corinagum](https://github.com/corinagum) in PR [#1398](https://github.com/Microsoft/BotFramework-WebChat/pull/1398)
 - Fix [#1332](https://github.com/Microsoft/BotFramework-WebChat/issues/1332). Updated sample names and add table to README, by [@corinagum](https://github.com/corinagum) in PR [#1435](https://github.com/Microsoft/BotFramework-WebChat/pull/1435)
@@ -216,6 +230,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Build: Webpack watch mode now emits non-minified code for shorter dev RTT, in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
 
 ### Samples
+
 - Backchannel: [Inject custom data into every `POST_ACTIVITY`](https://microsoft.github.io/BotFramework-WebChat/15.backchannel-piggyback-on-outgoing-activities/), in [#1331](https://github.com/Microsoft/BotFramework-WebChat/pull/1331)
 - UI: [Minimizable Web Chat](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/), in [#1290](https://github.com/Microsoft/BotFramework-WebChat/pull/1290)
 - Others: [Using Web Chat v3](https://microsoft.github.io/BotFramework-WebChat/webchat-v3/), in [#1287](https://github.com/Microsoft/BotFramework-WebChat/pull/1287)
@@ -223,5 +238,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Speech: [Cognitive Services Speech to Text using lexical result](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.e.cognitive-services-speech-services-with-lexical-result) (text normalization)
 
 ## [4.1.0] - 2018-10-31
+
 ### Added
+
 - Initial release of Web Chat v4

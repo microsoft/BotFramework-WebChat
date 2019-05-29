@@ -8,8 +8,7 @@ The latest version of Web Chat control provides rich customization options: you 
 
 You can find the full list of all settings that you can easily modify in Web Chat on the [`defaultStyleSetOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
 
-These settings will generate a *style set*, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
-
+These settings will generate a _style set_, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
 
 ## Set the size of the Web Chat container
 
@@ -46,6 +45,7 @@ It is now possible to adjust the size of the Web Chat container using `styleSetO
   </script>
 …
 ```
+
 Here is the result:
 
 <img alt="Web Chat with root height and root width set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/rootHeightWidth.png" width="600"/>
@@ -66,16 +66,21 @@ If you need to do some simple styling, you can set them via `styleOptions`. Styl
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
       const styleOptions = {
-        bubbleBackground: 'rgba(0, 0, 255, .1)',
-        bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+        bubbleBackground: "rgba(0, 0, 255, .1)",
+        bubbleFromUserBackground: "rgba(0, 255, 0, .1)"
       };
 
-      window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+      window.WebChat.renderWebChat(
+        {
+          directLine: window.WebChat.createDirectLine({
+            secret: "YOUR_BOT_SECRET"
+          }),
 
-        // Passing "styleOptions" when rendering Web Chat
-        styleOptions
-      }, document.getElementById('webchat'));
+          // Passing "styleOptions" when rendering Web Chat
+          styleOptions
+        },
+        document.getElementById("webchat")
+      );
     </script>
   </body>
 </html>
@@ -100,22 +105,28 @@ For deeper styling, you can also modify the style set manually by setting the CS
     <script>
       // "styleSet" is a set of CSS rules which are generated from "styleOptions"
       const styleSet = window.WebChat.createStyleSet({
-        bubbleBackground: 'rgba(0, 0, 255, .1)',
-        bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+        bubbleBackground: "rgba(0, 0, 255, .1)",
+        bubbleFromUserBackground: "rgba(0, 255, 0, .1)"
       });
 
       // After generated, you can modify the CSS rules
-      styleSet.textContent = { ...styleSet.textContent,
-        fontFamily: '\'Comic Sans MS\', \'Arial\', sans-serif',
-        fontWeight: 'bold'
+      styleSet.textContent = {
+        ...styleSet.textContent,
+        fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
+        fontWeight: "bold"
       };
 
-      window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+      window.WebChat.renderWebChat(
+        {
+          directLine: window.WebChat.createDirectLine({
+            secret: "YOUR_BOT_SECRET"
+          }),
 
-        // Passing "styleSet" when rendering Web Chat
-        styleSet
-      }, document.getElementById('webchat'));
+          // Passing "styleSet" when rendering Web Chat
+          styleSet
+        },
+        document.getElementById("webchat")
+      );
     </script>
   </body>
 </html>
@@ -134,13 +145,18 @@ The latest Web Chat support avatar, you can customize them using `botAvatarIniti
     <div id="webchat" role="main"></div>
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script>
-      window.WebChat.renderWebChat({
-        directLine: window.WebChat.createDirectLine({ secret: 'YOUR_BOT_SECRET' }),
+      window.WebChat.renderWebChat(
+        {
+          directLine: window.WebChat.createDirectLine({
+            secret: "YOUR_BOT_SECRET"
+          }),
 
-        // Passing avatar initials when rendering Web Chat
-        botAvatarInitials: 'BF',
-        userAvatarInitials: 'WC'
-      }, document.getElementById('webchat'));
+          // Passing avatar initials when rendering Web Chat
+          botAvatarInitials: "BF",
+          userAvatarInitials: "WC"
+        },
+        document.getElementById("webchat")
+      );
     </script>
   </body>
 </html>
@@ -171,23 +187,54 @@ If you want to display a deck of GitHub repository cards, you can create a new R
 <img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/sample-custom-github-repository-attachment.png" width="396" />
 
 ```jsx
-import ReactWebChat from 'botframework-webchat';
-import ReactDOM from 'react-dom';
+import ReactWebChat from "botframework-webchat";
+import ReactDOM from "react-dom";
 
 // Create a new React component that accept render a GitHub repository attachment
-const GitHubRepositoryAttachment = props =>
-  <div style={{ fontFamily: '\'Calibri\', \'Helvetica Neue\', Arial, sans-serif', margin: 20, textAlign: 'center' }}>
-    <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true"><path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+const GitHubRepositoryAttachment = props => (
+  <div
+    style={{
+      fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif",
+      margin: 20,
+      textAlign: "center"
+    }}
+  >
+    <svg
+      height="64"
+      viewBox="0 0 16 16"
+      version="1.1"
+      width="64"
+      aria-hidden="true"
+    >
+      <path
+        fillRule="evenodd"
+        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+      />
+    </svg>
     <p>
-      <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
+      <a
+        href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(
+          props.repo
+        )}`}
+        target="_blank"
+      >
+        {props.owner}/<br />
+        {props.repo}
+      </a>
     </p>
-  </div>;
+  </div>
+);
 
 // Creating a new middleware pipeline that will render <GitHubRepositoryAttachment> for specific type of attachment
 const attachmentMiddleware = () => next => card => {
   switch (card.attachment.contentType) {
-    case 'application/vnd.microsoft.botframework.samples.github-repository':
-      return <GitHubRepositoryAttachment owner={ card.attachment.content.owner } repo={ card.attachment.content.repo } />;
+    case "application/vnd.microsoft.botframework.samples.github-repository":
+      return (
+        <GitHubRepositoryAttachment
+          owner={card.attachment.content.owner}
+          repo={card.attachment.content.repo}
+        />
+      );
 
     default:
       return next(card);
@@ -197,10 +244,10 @@ const attachmentMiddleware = () => next => card => {
 ReactDOM.render(
   <ReactWebChat
     // Prepending the new middleware pipeline
-    attachmentMiddleware={ attachmentMiddleware }
-    directLine={ window.WebChat.createDirectLine({ token }) }
+    attachmentMiddleware={attachmentMiddleware}
+    directLine={window.WebChat.createDirectLine({ token })}
   />,
-  document.getElementById('webchat')
+  document.getElementById("webchat")
 );
 ```
 
@@ -209,13 +256,39 @@ The full sample can be found at [/samples/10.a.customization-card-components/](s
 In this sample, we are adding a new React component called `GitHubRepositoryAttachment`:
 
 ```jsx
-const GitHubRepositoryAttachment = props =>
-  <div style={{ fontFamily: '\'Calibri\', \'Helvetica Neue\', Arial, sans-serif', margin: 20, textAlign: 'center' }}>
-    <svg height="64" viewBox="0 0 16 16" version="1.1" width="64" aria-hidden="true"><path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+const GitHubRepositoryAttachment = props => (
+  <div
+    style={{
+      fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif",
+      margin: 20,
+      textAlign: "center"
+    }}
+  >
+    <svg
+      height="64"
+      viewBox="0 0 16 16"
+      version="1.1"
+      width="64"
+      aria-hidden="true"
+    >
+      <path
+        fillRule="evenodd"
+        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+      />
+    </svg>
     <p>
-      <a href={ `https://github.com/${ encodeURI(props.owner) }/${ encodeURI(props.repo) }` } target="_blank">{ props.owner }/<br />{ props.repo }</a>
+      <a
+        href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(
+          props.repo
+        )}`}
+        target="_blank"
+      >
+        {props.owner}/<br />
+        {props.repo}
+      </a>
     </p>
-  </div>;
+  </div>
+);
 ```
 
 Then, we create a middleware that will render the new React component when the bot sends an attachment of content type `application/vnd.microsoft.botframework.samples.github-repository`. Otherwise, it will continue on the middleware by calling `next(card)`.
@@ -223,8 +296,13 @@ Then, we create a middleware that will render the new React component when the b
 ```jsx
 const attachmentMiddleware = () => next => card => {
   switch (card.attachment.contentType) {
-    case 'application/vnd.microsoft.botframework.samples.github-repository':
-      return <GitHubRepositoryAttachment owner={ card.attachment.content.owner } repo={ card.attachment.content.repo } />;
+    case "application/vnd.microsoft.botframework.samples.github-repository":
+      return (
+        <GitHubRepositoryAttachment
+          owner={card.attachment.content.owner}
+          repo={card.attachment.content.repo}
+        />
+      );
 
     default:
       return next(card);

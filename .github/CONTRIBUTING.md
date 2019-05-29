@@ -1,6 +1,6 @@
 # Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.microsoft.com.
 
@@ -27,10 +27,10 @@ npm run build
 There are 3 types of build tasks in the build process.
 
 - `npm run build`: Build for development (instrumented code for code coverage)
-   - Will bundle as `webchat-instrumented*.js`
+  - Will bundle as `webchat-instrumented*.js`
 - `npm run watch`: Build for development with watch mode loop
 - `npm run prepublishOnly`: Build for production
-   - Will bundle as `webchat*.js`
+  - Will bundle as `webchat*.js`
 
 ## Testing Web Chat for development purpose
 

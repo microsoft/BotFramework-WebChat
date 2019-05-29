@@ -97,7 +97,8 @@ export default class AdaptiveCardBuilder {
   }
 
   addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
-    cardActions && cardActions.forEach(cardAction => {
+    cardActions &&
+      cardActions.forEach(cardAction => {
         this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
       });
   }

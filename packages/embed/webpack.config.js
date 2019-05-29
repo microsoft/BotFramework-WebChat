@@ -9,9 +9,7 @@ module.exports = {
   },
   mode: 'production',
   module: {
-    rules: [
-      { loader: 'pug-loader', test: /\.pug$/ }
-    ]
+    rules: [{ loader: 'pug-loader', test: /\.pug$/ }]
   },
   output: {
     filename: '[name].js',
@@ -19,9 +17,7 @@ module.exports = {
     path: resolve(__dirname, 'dist')
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: 'public', to: '.' }
-    ]),
+    new CopyWebpackPlugin([{ from: 'public', to: '.' }]),
     new HtmlWebpackPlugin({
       inject: false,
       template: 'src/index.pug',

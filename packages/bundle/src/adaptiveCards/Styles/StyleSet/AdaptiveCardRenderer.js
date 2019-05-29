@@ -1,4 +1,4 @@
-export default function AdaptiveCardRenderer({ accent, paddingRegular }) {
+export default function({ accent, paddingRegular }) {
   return {
     '& .ac-pushButton': {
       backgroundColor: 'White',

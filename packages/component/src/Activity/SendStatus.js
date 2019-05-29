@@ -33,27 +33,24 @@ const SendStatus = ({ activity: { channelData: { state } = {} }, language, retry
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
 
   return (
-    <span className={ styleSet.sendStatus }>
-      {
-        state === SENDING ?
-          <Localize text="Sending" />
-        : state === SEND_FAILED ?
-          sendFailedRetryMatch ?
-            <React.Fragment>
-              { sendFailedText.substr(0, sendFailedRetryMatch.index) }
-              <button
-                onClick={ retrySend }
-                type="button"
-              >
-                { localize('Retry', language) }
-              </button>
-              { sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length) }
-            </React.Fragment>
-          :
+    <span className={styleSet.sendStatus}>
+      {state === SENDING ? (
+        <Localize text="Sending" />
+      ) : state === SEND_FAILED ? (
+        sendFailedRetryMatch ? (
+          <React.Fragment>
+            {sendFailedText.substr(0, sendFailedRetryMatch.index)}
+            <button onClick={retrySend} type="button">
+              {localize('Retry', language)}
+            </button>
+            {sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length)}
+          </React.Fragment>
+        ) : (
           <button onClick={retrySend} type="button">
             {sendFailedText}
           </button>
-          : (
+        )
+      ) : (
         false
       )}
     </span>
