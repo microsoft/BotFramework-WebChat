@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix [#1736](https://github.com/Microsoft/BotFramework-WebChat/issues/1736). Fixed only first activity in a batch is spoken, by [@compulim](https://github.com/compulim) in PR [#2016](https://github.com/Microsoft/BotFramework-WebChat/pull/2016)
 - Fix [#2008](https://github.com/Microsoft/BotFramework-WebChat/issues/2008). Fixed playground due to recent eslint changes, by [@compulim](https://github.com/compulim) in PR [#2009](https://github.com/Microsoft/BotFramework-WebChat/pull/2009)
 - Fix [#1876](https://github.com/Microsoft/BotFramework-WebChat/issues/1876). Accessibility fixes on Web Chat transcript, by [@corinagum](https://github.com/corinagum) in PR [#2018](https://github.com/Microsoft/BotFramework-WebChat/pull/2018)
+- Fix [#1982](https://github.com/Microsoft/BotFramework-WebChat/issues/1982). Move to prettier!, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.4.1] - 2019-05-02
 
