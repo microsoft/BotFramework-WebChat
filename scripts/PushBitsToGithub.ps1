@@ -6,7 +6,7 @@ param
 ( 
     [string]$newFilesPath,          #"$(System.ArtifactsDirectory)/pages"
     [string]$branchName,            #gh-pages
-    [string]$repoRootPath           #"$(Build.SourcesFolder)"
+    [string]$repoRootPath           #"$(Build.SourcesDirectory)"
 )
 
 Set-Location -Path $repoRootPath
