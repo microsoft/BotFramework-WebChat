@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- `core`: Bumps to [`mime@2.4.3`](https://npmjs.com/package/mime/), by [@toanzian](https://github.com/toanzian), in PR [#1998](https://github.com/Microsoft/BotFramework-WebChat/pull/1998)
+
+## [4.4.1] - 2019-05-02
+
 ### Added
 - Added handling of reconnection, by [@compulim](https://github.com/compulim), in PR [#1880](https://github.com/Microsoft/BotFramework-WebChat/pull/1880)
 - Added embed page, by [@compulim](https://github.com/compulim), in PR [#1910](https://github.com/Microsoft/BotFramework-WebChat/pull/1910), PR [#1928](https://github.com/Microsoft/BotFramework-WebChat/pull/1928) and PR [#1938](https://github.com/Microsoft/BotFramework-WebChat/pull/1938)
