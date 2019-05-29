@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.2] - 2019-05-29
+
 ### Changed
 
 - `core`: Bumps to [`mime@2.4.3`](https://npmjs.com/package/mime/), by [@toanzian](https://github.com/toanzian), in PR [#1998](https://github.com/Microsoft/BotFramework-WebChat/pull/1998)
