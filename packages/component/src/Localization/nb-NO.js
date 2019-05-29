@@ -8,8 +8,7 @@ export default {
   // 'Microphone off': '',
   // 'Microphone on': '',
   'Listening…': 'Lytter…',
-  retry: 'prøv igjen',
-  Retry: `${retry}`, // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
+  Retry: 'prøv igjen',
   Send: 'Send',
   Sending: 'sender',
   Speak: 'Snakk',
