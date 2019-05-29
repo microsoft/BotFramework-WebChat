@@ -26,16 +26,16 @@ Please paste these values to places marked by `...` in examples.
 
 ### What you will need to do on your website
 
-Include `botchat.css`, `botchat-es5.js` (from our https://feedyou.blob.core.windows.net/webchat/latest CDN) and following code into your website and paste required values you got from Feedyou. It will create expandable webchat in bottom right corner for you.
+Include `botchat.css`, `botchat-es5.js` (from our https://feedyou.azureedge.net/webchat/latest/... CDN) and following code into your website and paste required values you got from Feedyou. It will create expandable webchat in bottom right corner for you.
 
 ```HTML
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css" rel="stylesheet" />
+    <link href="https://feedyou.azureedge.net/webchat/latest/botchat.css" rel="stylesheet" />
   </head>
   <body>
-    <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
+    <script src="https://feedyou.azureedge.net/webchat/latest/botchat-es5.js"></script>
     <script>
       BotChat.App({
         directLine: { secret: '...' },                  
