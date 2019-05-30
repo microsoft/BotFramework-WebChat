@@ -10,7 +10,7 @@ import { fork, put } from 'redux-saga/effects';
 
 // This is a helper function for this purpose.
 
-export default function forkPut(...actions) {
+export default function forkPutEffect(...actions) {
   return fork(function*() {
     for (const action of actions) {
       yield put(action);
