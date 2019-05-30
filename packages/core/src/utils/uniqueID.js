@@ -2,7 +2,7 @@
 
 import random from 'math-random';
 
-export default function() {
+export default function uniqueID() {
   return (
     Date.now() +
     random()
