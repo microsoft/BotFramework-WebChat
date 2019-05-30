@@ -1,6 +1,6 @@
 import { Condition } from 'selenium-webdriver';
 
-export default function() {
+export default function allImagesLoaded() {
   return new Condition(
     'Waiting for all images to be loaded',
     async driver =>
