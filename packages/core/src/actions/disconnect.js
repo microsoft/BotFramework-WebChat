@@ -3,7 +3,7 @@ const DISCONNECT_PENDING = `${DISCONNECT}_PENDING`;
 const DISCONNECT_REJECTED = `${DISCONNECT}_REJECTED`;
 const DISCONNECT_FULFILLED = `${DISCONNECT}_FULFILLED`;
 
-export default function() {
+export default function disconnect() {
   return {
     type: DISCONNECT
   };
