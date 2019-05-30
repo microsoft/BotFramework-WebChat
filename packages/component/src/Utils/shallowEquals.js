@@ -1,4 +1,4 @@
-export default function(x, y) {
+export default function shallowEquals(x, y) {
   if (x === y) {
     return true;
   }
