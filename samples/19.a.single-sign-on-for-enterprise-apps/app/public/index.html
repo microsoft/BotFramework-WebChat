@@ -51,6 +51,7 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="webchat"></div>
     <script>
+      // This is a helper function for fetching JSON resources.
       async function fetchJSON(url, options = {}) {
         const res = await fetch(
           url,
@@ -64,7 +65,7 @@
         );
 
         if (!res.ok) {
-          throw new Error(`Failed to fetch JSON due to ${ res.status }`);
+            throw new Error(`Failed to fetch JSON due to ${ res.status }`);
         }
 
         return await res.json();
@@ -72,6 +73,7 @@
 
       (async function main() {
         const store = WebChat.createStore({}, ({ dispatch }) => {
+          // We are using a Redux middleware to intercept actions in Web Chat and dispatch additional actions.
           let accessToken;
           let connected;
           let provider;
@@ -79,26 +81,36 @@
           return next => action => {
             let shouldSendAccessToken;
 
-            if (action.type === 'WEB_CHAT/SEND_ACCESS_TOKEN') {
+            if (action.type === 'CUSTOM/SEND_ACCESS_TOKEN') {
+              // This is a custom action from the code on this page.
+              // When we receive SEND_ACCESS_TOKEN action, we should send it to the bot.
+              // - If we are connected, send it to the bot (shouldSendAccessToken is truthy)
+              // - If we are not connected, save the token in the memory and wait until CONNECT_FULFILLED
               accessToken = action.payload.accessToken;
               provider = action.payload.provider;
               shouldSendAccessToken = connected;
             } else if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+              // Handle the case that we receive SEND_ACCESS_TOKEN but we are not connected at that moment.
+              // Now, we are connected to the bot and should send the token to the bot.
               shouldSendAccessToken = !!accessToken;
               connected = true;
             } else if (action.type === 'DIRECT_LINE/DISCONNECT_PENDING') {
+              // We are disconnecting.
+              // Set connected to false so we don't send the access token automatically until CONNECT_FULFILLED.
               connected = false;
             } else if (
               action.type === 'DIRECT_LINE/INCOMING_ACTIVITY'
               && action.payload.activity.type === 'event'
               && action.payload.activity.name === 'oauth/signout'
             ) {
+              // If the bot is sending an event activity named "oauth/signout", we should ask the page to sign out.
               window.dispatchEvent(new Event('signout'));
             }
 
             if (shouldSendAccessToken) {
               console.log(`Sending access token "${ (accessToken || '').substr(0, 5) }" of provider "${ provider }".`);
 
+              // Sending the access token via event activity named "oauth/setaccesstoken"
               dispatch({
                 type: 'WEB_CHAT/SEND_EVENT',
                 payload: {
@@ -116,29 +128,38 @@
         });
 
         window.addEventListener('accesstokenchange', ({ data: { accessToken, provider } }) => {
+          // If we receive "accesstokenchange" from the page, that means we are recently signed in or out.
+          // We should send the new token to the bot. If we send an empty string, the bot would know we are signed out.
           store.dispatch({
-            type: 'WEB_CHAT/SEND_ACCESS_TOKEN',
+            type: 'CUSTOM/SEND_ACCESS_TOKEN',
             payload: { accessToken, provider }
           });
         });
 
+        // This is for obtaining Direct Line token from the bot.
+        // In production system, we should avoid using Direct Line secret to connect to the bot.
         const { token } = await fetchJSON('/api/directline/token');
 
         WebChat.renderWebChat({
           cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+            // To sign in, the bot will send a card action with a custom URL.
+            // For best compatibility, we are using "about:blank" as the placeholder.
             const { type, value } = cardAction;
 
             if (type === 'openUrl' && value === 'about:blank#sign-into-aad') {
+              // Request the page to start sign-in flow for Azure Active Directory.
               const signInEvent = new Event('signin');
 
               signInEvent.data = { provider: 'aad' };
               window.dispatchEvent(signInEvent);
             } else if (type === 'openUrl' && value === 'about:blank#sign-into-github') {
+              // Request the page to start sign-in flow for GitHub OAuth app.
               const signInEvent = new Event('signin');
 
               signInEvent.data = { provider: 'github' };
               window.dispatchEvent(signInEvent);
             } else {
+              // Non-SSO related actions, fallback to default behavior.
               return next({ cardAction, getSignInUrl });
             }
           },
