@@ -1,6 +1,6 @@
 import { Condition } from 'selenium-webdriver';
 
-export default function() {
+export default function allOutgoingActivitiesSent() {
   return new Condition('all outgoing activities to be sent', async driver => {
     return await driver.executeScript(() => {
       const { store } = window.WebChatTest;
