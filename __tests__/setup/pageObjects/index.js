@@ -10,7 +10,7 @@ function mapMap(map, mapper) {
   }, {});
 }
 
-export default function(driver) {
+export default function pageObjects(driver) {
   return mapMap(
     {
       dispatchAction,
