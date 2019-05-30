@@ -1,6 +1,6 @@
 const STOP_DICTATE = 'WEB_CHAT/STOP_DICTATE';
 
-export default function() {
+export default function stopDictate() {
   return { type: STOP_DICTATE };
 }
 
