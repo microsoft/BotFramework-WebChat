@@ -94,4 +94,4 @@ rules:
     beforeClosing: never
     beforeSelfClosing: always
     closingSlash: never
-  react/jsx-wrap-multilines: error # Conflicts with no-extra-parens
+  react/jsx-wrap-multilines: error
