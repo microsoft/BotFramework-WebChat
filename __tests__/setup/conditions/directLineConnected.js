@@ -1,6 +1,6 @@
 import { Condition } from 'selenium-webdriver';
 
-export default function() {
+export default function directLineConnected() {
   return new Condition(
     'Direct Line to connect',
     async driver =>
