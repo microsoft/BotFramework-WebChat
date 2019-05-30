@@ -17,6 +17,6 @@ function* submitSendBox() {
   });
 }
 
-export default function*() {
+export default function* submitSendBoxSaga() {
   yield whileConnected(submitSendBox);
 }
