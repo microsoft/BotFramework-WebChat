@@ -2,8 +2,8 @@ import { call } from 'redux-saga/effects';
 
 import createPromiseQueue from '../../createPromiseQueue';
 
-export default function(observable, saga) {
-  return call(function*() {
+export default function observeEachEffect(observable, saga) {
+  return call(function* observeEach() {
     const queue = createPromiseQueue();
     const subscription = observable.subscribe({ next: queue.push });
 

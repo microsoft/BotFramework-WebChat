@@ -109,11 +109,11 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
   }
 }
 
-export default function*() {
-  yield whileConnected(function*({ directLine, userID, username }) {
+export default function* postActivitySaga() {
+  yield whileConnected(function* postActivityWhileConnected({ directLine, userID, username }) {
     let numActivitiesPosted = 0;
 
-    yield takeEvery(POST_ACTIVITY, function*(action) {
+    yield takeEvery(POST_ACTIVITY, function* postActivity(action) {
       yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
     });
   });

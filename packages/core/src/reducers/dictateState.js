@@ -6,7 +6,7 @@ import { STOP_DICTATE } from '../actions/stopDictate';
 
 const DEFAULT_STATE = IDLE;
 
-export default function(state = DEFAULT_STATE, { payload, type }) {
+export default function dictateState(state = DEFAULT_STATE, { payload, type }) {
   switch (type) {
     case SET_DICTATE_STATE:
       state = payload.dictateState;

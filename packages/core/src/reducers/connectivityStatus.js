@@ -7,7 +7,7 @@ import { SAGA_ERROR } from '../actions/sagaError';
 
 const DEFAULT_STATE = 'uninitialized';
 
-export default function(state = DEFAULT_STATE, { type, meta }) {
+export default function connectivityStatus(state = DEFAULT_STATE, { type, meta }) {
   switch (type) {
     case CONNECT_PENDING:
     case RECONNECT_PENDING:

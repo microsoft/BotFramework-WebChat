@@ -61,7 +61,7 @@ function upsertActivityWithSort(activities, nextActivity) {
   return nextActivities;
 }
 
-export default function(state = DEFAULT_STATE, { meta, payload, type }) {
+export default function activities(state = DEFAULT_STATE, { meta, payload, type }) {
   switch (type) {
     case DELETE_ACTIVITY:
       state = updateIn(state, [({ id }) => id === payload.activityID]);

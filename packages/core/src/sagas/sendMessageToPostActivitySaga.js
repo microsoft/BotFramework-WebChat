@@ -21,6 +21,6 @@ function* sendMessageToPostActivity() {
   yield takeEvery(({ payload, type }) => type === SEND_MESSAGE && payload.text, postActivityWithMessage);
 }
 
-export default function*() {
+export default function* sendMessageToPostActivitySaga() {
   yield whileConnected(sendMessageToPostActivity);
 }

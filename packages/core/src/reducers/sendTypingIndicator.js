@@ -3,7 +3,7 @@ import { SET_SEND_TYPING_INDICATOR } from '../actions/setSendTypingIndicator';
 
 const DEFAULT_STATE = false;
 
-export default function(state = DEFAULT_STATE, { payload, type }) {
+export default function sendTypingIndicator(state = DEFAULT_STATE, { payload, type }) {
   switch (type) {
     // TODO: [P3] Take this deprecation code out when releasing on or after 2020 January 13
     case SET_SEND_TYPING:

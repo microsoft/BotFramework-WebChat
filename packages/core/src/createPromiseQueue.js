@@ -1,6 +1,6 @@
 import createDeferred from './createDeferred';
 
-export default function() {
+export default function createPromiseQueue() {
   let deferred;
   const queue = [];
 

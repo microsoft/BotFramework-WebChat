@@ -4,8 +4,8 @@ import { CONNECT_FULFILLING } from '../../actions/connect';
 import { DISCONNECT_PENDING } from '../../actions/disconnect';
 import { RECONNECT_PENDING, RECONNECT_FULFILLING } from '../../actions/reconnect';
 
-export default function(fn) {
-  return call(function*() {
+export default function whileConnectedEffect(fn) {
+  return call(function* whileConnected() {
     for (;;) {
       const {
         meta: { userID, username },

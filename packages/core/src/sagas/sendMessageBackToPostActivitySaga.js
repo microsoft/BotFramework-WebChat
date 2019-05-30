@@ -25,6 +25,6 @@ function* sendMessageBackToPostActivity() {
   yield takeEvery(SEND_MESSAGE_BACK, postActivityWithMessageBack);
 }
 
-export default function*() {
+export default function* sendMessageBackToPostActivitySaga() {
   yield whileConnected(sendMessageBackToPostActivity);
 }

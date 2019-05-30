@@ -15,6 +15,6 @@ function* clearSuggestedActionsOnPostActivity() {
   );
 }
 
-export default function*() {
+export default function* clearSuggestedActionsOnPostActivitySaga() {
   yield whileConnected(clearSuggestedActionsOnPostActivity);
 }

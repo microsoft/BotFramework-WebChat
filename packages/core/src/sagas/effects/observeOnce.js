@@ -1,7 +1,7 @@
 import { call } from 'redux-saga/effects';
 
-export default function(observable) {
-  return call(function*() {
+export default function observeOnceEffect(observable) {
+  return call(function* observeOnce() {
     let subscription;
 
     try {

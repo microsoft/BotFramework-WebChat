@@ -13,6 +13,6 @@ function* markAllAsSpoken() {
   }
 }
 
-export default function*() {
+export default function* markAllAsSpokenOnStopSpeakActivitySaga() {
   yield takeEvery(STOP_SPEAKING_ACTIVITY, markAllAsSpoken);
 }

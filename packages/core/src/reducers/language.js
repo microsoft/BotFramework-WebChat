@@ -2,7 +2,7 @@ import { SET_LANGUAGE } from '../actions/setLanguage';
 
 const DEFAULT_STATE = 'en-US';
 
-export default function(state = DEFAULT_STATE, { payload, type }) {
+export default function language(state = DEFAULT_STATE, { payload, type }) {
   switch (type) {
     case SET_LANGUAGE:
       state = payload.language;

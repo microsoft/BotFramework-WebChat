@@ -27,6 +27,6 @@ function* sendFilesToPostActivity() {
   yield takeEvery(({ payload, type }) => type === SEND_FILES && payload.files.length, postActivityWithFiles);
 }
 
-export default function*() {
+export default function* sendFilesToPostActivitySaga() {
   yield whileConnected(sendFilesToPostActivity);
 }

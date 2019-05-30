@@ -24,6 +24,6 @@ function* sendPostBackToPostActivity() {
   yield takeEvery(({ payload, type }) => type === SEND_POST_BACK && payload.value, postActivityWithPostBack);
 }
 
-export default function*() {
+export default function* sendPostBackToPostActivitySaga() {
   yield whileConnected(sendPostBackToPostActivity);
 }

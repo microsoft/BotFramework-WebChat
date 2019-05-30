@@ -149,7 +149,7 @@ function* takeDisconnectAsError() {
 function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   // We cannot use saga cancel() here, because cancelling saga will prohibit us from sending *_REJECTED.
   // Without REJECTED, it impacts our assumptions around PENDING/FULFILLED/REJECTED.
-  return runAsyncEffect(baseAction, function*() {
+  return runAsyncEffect(baseAction, function* runUntilDisconnect() {
     const { result } = yield race({
       _: takeDisconnectAsError(),
       result: callEffectFactory()
@@ -159,7 +159,7 @@ function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   });
 }
 
-export default function*() {
+export default function* connectSaga() {
   for (;;) {
     const {
       payload: { directLine, userID: userIDFromAction, username }

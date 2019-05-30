@@ -14,6 +14,6 @@ function* startSpeakActivityOnPostActivity() {
   );
 }
 
-export default function*() {
+export default function* startSpeakActivityOnPostActivitySaga() {
   yield whileConnected(startSpeakActivityOnPostActivity);
 }

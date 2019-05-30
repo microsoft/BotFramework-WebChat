@@ -13,12 +13,12 @@ function* stopDictateOnCardAction() {
     // For now, we are using POST_ACTIVITY of a "message" activity
     // In the future, if we have an action for card input, we should use that instead
     ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
-    function*() {
+    function* putStopDictate() {
       yield put(stopDictate());
     }
   );
 }
 
-export default function*() {
+export default function* stopDictateOnCardActionSaga() {
   yield whileConnected(stopDictateOnCardAction);
 }

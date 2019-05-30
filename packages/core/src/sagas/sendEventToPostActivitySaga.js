@@ -18,6 +18,6 @@ function* sendEventToPostActivity() {
   yield takeEvery(({ payload, type }) => type === SEND_EVENT && payload.name, postActivityWithEvent);
 }
 
-export default function*() {
+export default function* sendEventToPostActivitySaga() {
   yield whileConnected(sendEventToPostActivity);
 }

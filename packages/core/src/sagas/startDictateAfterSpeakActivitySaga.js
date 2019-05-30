@@ -30,8 +30,8 @@ function* startDictateAfterSpeakActivity() {
   );
 }
 
-export default function*() {
-  yield whileConnected(function*() {
+export default function* startDictateAfterSpeakActivitySaga() {
+  yield whileConnected(function* startDictateAfterSpeakActivityWhileConnected() {
     yield whileSpeakIncomingActivity(startDictateAfterSpeakActivity);
   });
 }

@@ -57,6 +57,6 @@ function* sendTypingIndicatorOnSetSendBox() {
   }
 }
 
-export default function*() {
+export default function* sendTypingIndicatorOnSetSendBoxSaga() {
   yield whileConnected(sendTypingIndicatorOnSetSendBox);
 }

@@ -16,7 +16,7 @@ async function waitForPong(driver, expectedValue) {
   );
 }
 
-export default async function(driver) {
+export default async function pingBot(driver) {
   const timestamp = Date.now();
 
   await driver.wait(directLineConnected(), timeouts.directLine);

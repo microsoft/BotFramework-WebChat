@@ -18,8 +18,8 @@ function* markActivityForSpeakOnIncomingActivityFromOthers(userID) {
   );
 }
 
-export default function*() {
-  yield whileConnected(function*({ userID }) {
+export default function* markActivityForSpeakOnIncomingActivityFromOthersSaga() {
+  yield whileConnected(function* markActivityForSpeakOnIncomingActivityFromOthersSaga({ userID }) {
     yield whileSpeakIncomingActivity(markActivityForSpeakOnIncomingActivityFromOthers.bind(null, userID));
   });
 }

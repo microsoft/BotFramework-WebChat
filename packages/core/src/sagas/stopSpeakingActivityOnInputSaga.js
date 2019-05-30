@@ -22,6 +22,6 @@ function* stopSpeakingActivityOnInput() {
   );
 }
 
-export default function*() {
+export default function* stopSpeakingActivityOnInputSaga() {
   yield whileConnected(stopSpeakingActivityOnInput);
 }
