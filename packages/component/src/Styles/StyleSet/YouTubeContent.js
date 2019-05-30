@@ -1,4 +1,4 @@
-export default function({ videoHeight }) {
+export default function createYouTubeContentStyle({ videoHeight }) {
   return {
     border: 0,
     height: videoHeight,
