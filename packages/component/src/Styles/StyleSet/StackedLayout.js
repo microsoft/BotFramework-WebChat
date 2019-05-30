@@ -1,4 +1,4 @@
-export default function({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
+export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
     marginLeft: paddingRegular,
     marginRight: paddingRegular,
