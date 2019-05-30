@@ -13,7 +13,7 @@ export default function(fn, ms = DEFAULT_DEBOUNCE_INTERVAL) {
   let lastCall = 0;
   let nextArguments;
 
-  return function(...args) {
+  return function debounce(...args) {
     nextArguments = args;
 
     if (!scheduled) {
