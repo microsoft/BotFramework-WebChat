@@ -1,6 +1,6 @@
 import { Options } from 'selenium-webdriver/chrome';
 
-export default function(browserName, builder, { height, width } = {}) {
+export default function setupTestEnvironment(browserName, builder, { height, width } = {}) {
   switch (browserName) {
     case 'chrome-local':
       return {
