@@ -1,6 +1,6 @@
 const SAGA_ERROR = 'WEB_CHAT/SAGA_ERROR';
 
-export default function() {
+export default function sagaError() {
   return {
     type: SAGA_ERROR
   };
