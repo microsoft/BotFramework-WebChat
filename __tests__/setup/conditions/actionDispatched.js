@@ -1,6 +1,6 @@
 import { Condition } from 'selenium-webdriver';
 
-export default function(type) {
+export default function actionDispatched(type) {
   return new Condition(
     'Action to dispatch',
     async driver =>
