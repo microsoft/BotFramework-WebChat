@@ -159,7 +159,7 @@ function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   });
 }
 
-export default function* connectSaga() {
+export default function*() {
   for (;;) {
     const {
       payload: { directLine, userID: userIDFromAction, username }
