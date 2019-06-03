@@ -27,7 +27,10 @@ test('long URLs with break-word', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/', { waitForSend: true })
+  await pageObjects.sendMessageViaSendBox(
+    'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/',
+    { waitForSend: true }
+  );
 
   await driver.wait(minNumActivitiesShown(2), 2000);
   await driver.wait(allImagesLoaded(), 2000);
@@ -43,7 +46,10 @@ test('long URLs with break-all', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
   await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/', { waitForSend: true })
+  await pageObjects.sendMessageViaSendBox(
+    'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/',
+    { waitForSend: true }
+  );
 
   await driver.wait(minNumActivitiesShown(2), 2000);
   await driver.wait(allImagesLoaded(), 2000);
@@ -58,7 +64,9 @@ test('long URLs with keep-all', async () => {
 
   const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-  await pageObjects.sendMessageViaSendBox('箸より重いものを持ったことがない箸より重いものを持ったことがない', { waitForSend: true });
+  await pageObjects.sendMessageViaSendBox('箸より重いものを持ったことがない箸より重いものを持ったことがない', {
+    waitForSend: true
+  });
 
   await driver.wait(minNumActivitiesShown(2), 2000);
   await driver.wait(allImagesLoaded(), 2000);

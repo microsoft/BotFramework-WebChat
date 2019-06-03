@@ -2,9 +2,7 @@
 //       Later, we will rewrite these attachments without Adaptive Cards
 //       We are leaving the CSS here as-is for now
 
-export default function ({
-  paddingRegular
-}) {
+export default function AudioCardAttachment({ paddingRegular }) {
   return {
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
     display: 'flex',

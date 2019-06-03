@@ -1,6 +1,6 @@
 import createDeferred from './createDeferred';
 
-export default function () {
+export default function createPromiseQueue() {
   let deferred;
   const queue = [];
 
@@ -15,13 +15,11 @@ export default function () {
     }
   };
 
-  const shift = () => queue.length ?
-    Promise.resolve(queue.shift())
-  :
-    (deferred || (deferred = createDeferred())).promise;
+  const shift = () =>
+    queue.length ? Promise.resolve(queue.shift()) : (deferred || (deferred = createDeferred())).promise;
 
   return {
     push,
     shift
-  }
+  };
 }

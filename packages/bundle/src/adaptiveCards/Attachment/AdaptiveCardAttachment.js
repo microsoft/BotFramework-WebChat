@@ -12,12 +12,7 @@ function stripSubmitAction(card) {
   // Filter out HTTP action buttons
   const nextActions = card.actions
     .filter(action => action.type !== 'Action.Submit')
-    .map(action =>
-      action.type === 'Action.ShowCard' ?
-        { ...action, card: stripSubmitAction(action.card) }
-      :
-        action
-    );
+    .map(action => (action.type === 'Action.ShowCard' ? { ...action, card: stripSubmitAction(action.card) } : action));
 
   return { ...card, nextActions };
 }
@@ -33,10 +28,12 @@ export default class AdaptiveCardAttachment extends React.Component {
       // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
       adaptiveCards.AdaptiveCard.onParseError = error => errors.push(error);
 
-      card.parse(stripSubmitAction({
-        version: '1.0',
-        ...content
-      }));
+      card.parse(
+        stripSubmitAction({
+          version: '1.0',
+          ...content
+        })
+      );
 
       adaptiveCards.AdaptiveCard.onParseError = null;
 
@@ -48,15 +45,12 @@ export default class AdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { adaptiveCardHostConfig, adaptiveCards, attachment, renderMarkdown } } = this;
+    const {
+      props: { adaptiveCardHostConfig, adaptiveCards, attachment, renderMarkdown }
+    } = this;
     const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
 
-    return (
-      <AdaptiveCardRenderer
-        adaptiveCard={ card }
-        adaptiveCardHostConfig={ adaptiveCardHostConfig }
-      />
-    );
+    return <AdaptiveCardRenderer adaptiveCard={card} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
   }
 }
 

@@ -1,8 +1,4 @@
-export default function createSingleCardActivityStyle({
-  bubbleMaxWidth,
-  bubbleMinWidth,
-  paddingRegular
-}) {
+export default function createSingleCardActivityStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
     '& > .bubble-box': {
       maxWidth: bubbleMaxWidth,

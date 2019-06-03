@@ -7,4 +7,4 @@ export default function submitSendBox(method = 'keyboard') {
   };
 }
 
-export { SUBMIT_SEND_BOX }
+export { SUBMIT_SEND_BOX };

@@ -7,4 +7,4 @@ export default function sendFiles(files) {
   };
 }
 
-export { SEND_FILES }
+export { SEND_FILES };

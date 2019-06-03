@@ -6,4 +6,4 @@ const context = React.createContext({
 
 context.displayName = 'TypeFocusSinkContext';
 
-export default context
+export default context;

@@ -3,13 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const VimeoContent = ({
-  alt,
-  autoPlay,
-  embedID,
-  loop,
-  styleSet
-}) => {
+const VimeoContent = ({ alt, autoPlay, embedID, loop, styleSet }) => {
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     badge: 0,
@@ -21,9 +15,9 @@ const VimeoContent = ({
 
   return (
     <iframe
-      aria-label={ alt }
-      className={ styleSet.vimeoContent }
-      src={ `https://player.vimeo.com/video/${ encodeURI(embedID) }?${ search }` }
+      aria-label={alt}
+      className={styleSet.vimeoContent}
+      src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
     />
   );
 };
@@ -44,6 +38,4 @@ VimeoContent.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(VimeoContent)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(VimeoContent);

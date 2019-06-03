@@ -1,4 +1,4 @@
-# Sample -  Integrating Web Chat using React
+# Sample - Integrating Web Chat using React
 
 > This is a great sample for first-time Web Chat users.
 
@@ -6,22 +6,22 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.a.host-with-react)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/03.a.host-with-react)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/03.a.host-with-react` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/03.a.host-with-react` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `help`: you should see a full list of MockBot features
-- Type `markdown`: you should see the sample of Markdown
-- Type `card weather`: you should see a weather card built using Adaptive Cards
-- Type `layout carousel`: you should see a carousel of cards
-   - Resize the window and see how the carousel change its size
+-  Type `help`: you should see a full list of MockBot features
+-  Type `markdown`: you should see the sample of Markdown
+-  Type `card weather`: you should see a weather card built using Adaptive Cards
+-  Type `layout carousel`: you should see a carousel of cards
+   -  Resize the window and see how the carousel change its size
 
 # Code
 
@@ -31,8 +31,8 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 The `index.html` page has two main goals.
 
-- To import React and Babel from [unpkg.com](https://unpkg.com/)
-- To render Web Chat via React component
+-  To import React and Babel from [unpkg.com](https://unpkg.com/)
+-  To render Web Chat via React component
 
 We'll start by adding React and Babel to the head or our template, based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 

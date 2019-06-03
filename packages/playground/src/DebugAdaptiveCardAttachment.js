@@ -43,23 +43,25 @@ export default class DebugAdaptiveCardAttachment extends React.Component {
   }
 
   render() {
-    const { props: { attachment, children }, state: { ignoreDeprecations } } = this;
+    const {
+      props: { attachment, children },
+      state: { ignoreDeprecations }
+    } = this;
     const { errors } = this.createAdaptiveCard(attachment.content);
     const deprecations = errors.filter(({ error }) => error === ValidationError.Deprecated);
     const otherErrors = errors.filter(({ error }) => error !== ValidationError.Deprecated);
 
-    return (
-      otherErrors.length ?
-        <ErrorBox message="Adaptive Card parse error">
-          <pre>{ JSON.stringify(otherErrors, null, 2) }</pre>
-        </ErrorBox>
-      : (!ignoreDeprecations && deprecations.length) ?
-        <ErrorBox message="Adaptive Card parse error">
-          <button onClick={ this.handleIgnoreDeprecationClick }>Ignore deprecations</button>
-          <pre>{ JSON.stringify(deprecations, null, 2) }</pre>
-        </ErrorBox>
-      :
-        children
+    return otherErrors.length ? (
+      <ErrorBox message="Adaptive Card parse error">
+        <pre>{JSON.stringify(otherErrors, null, 2)}</pre>
+      </ErrorBox>
+    ) : !ignoreDeprecations && deprecations.length ? (
+      <ErrorBox message="Adaptive Card parse error">
+        <button onClick={this.handleIgnoreDeprecationClick}>Ignore deprecations</button>
+        <pre>{JSON.stringify(deprecations, null, 2)}</pre>
+      </ErrorBox>
+    ) : (
+      children
     );
   }
 }

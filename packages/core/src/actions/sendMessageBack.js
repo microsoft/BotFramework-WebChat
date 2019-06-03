@@ -7,4 +7,4 @@ export default function sendMessageback(value, text, displayText) {
   };
 }
 
-export { SEND_MESSAGE_BACK }
+export { SEND_MESSAGE_BACK };

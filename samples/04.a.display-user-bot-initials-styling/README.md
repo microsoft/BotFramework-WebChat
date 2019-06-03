@@ -1,20 +1,23 @@
 # Sample - Display User and Bot Initials on Web Chat
 
 ## Description
+
 A simple web page with a maximized Web Chat that displays initials for both the bot and the user.
 
-
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.a.display-user-bot-initials-styling)
+
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.a.display-user-bot-initials-styling)
 
 # How to run
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/04.a.display-user-bot-images-styling` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/04.a.display-user-bot-images-styling` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
-- Type `hello`: you should see the initials displayed next to user and bot speech bubbles in the transcript.
+
+-  Type `hello`: you should see the initials displayed next to user and bot speech bubbles in the transcript.
 
 # Code
 
@@ -23,7 +26,8 @@ A simple web page with a maximized Web Chat that displays initials for both the 
 ## Getting started
 
 ### Goals of this bot
- This sample will show you how to implement your own initials displayed next to .
+
+This sample will show you how to implement your own initials displayed next to .
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 
@@ -103,7 +107,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Branding Web Chat styling](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding Web Chat source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling/)
+-  [Branding Web Chat styling](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding Web Chat source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling/)
 
 ## Full list of Web Chat hosted samples
 

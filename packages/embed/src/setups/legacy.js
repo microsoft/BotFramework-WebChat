@@ -8,14 +8,19 @@ function toAzureLocale(language) {
 
   if (match) {
     if (match[2]) {
-      return `${ match[1] }.${ match[1] }-${ match[3].toLowerCase() }`;
+      return `${match[1]}.${match[1]}-${match[3].toLowerCase()}`;
     } else {
       return match[1];
     }
   }
 }
 
-export default async function setupLegacyVersionFamily(_, { botId, userId }, { language, secret, token, username }, features = []) {
+export default async function setupLegacyVersionFamily(
+  _,
+  { botId, userId },
+  { language, secret, token, username },
+  features = []
+) {
   // Version 1 also depends on your token.
   // If you are using a token on Aries, you get Aries (v1).
   // If you are using a token on Scorpio, you get Scorpio (v3).

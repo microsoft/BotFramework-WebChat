@@ -4,19 +4,17 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const IconButton = ({ alt, children, className, disabled, onClick, styleSet }) =>
+const IconButton = ({ alt, children, className, disabled, onClick, styleSet }) => (
   <button
-    className={ classNames(
-      styleSet.sendBoxButton + '',
-      className + ''
-    ) }
-    disabled={ disabled }
-    onClick={ onClick }
-    title={ alt }
+    className={classNames(styleSet.sendBoxButton + '', className + '')}
+    disabled={disabled}
+    onClick={onClick}
+    title={alt}
     type="button"
   >
-    { children }
+    {children}
   </button>
+);
 
 IconButton.defaultProps = {
   alt: '',
@@ -37,6 +35,4 @@ IconButton.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(IconButton)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(IconButton);

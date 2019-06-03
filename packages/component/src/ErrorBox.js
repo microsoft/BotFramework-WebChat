@@ -3,19 +3,12 @@ import React from 'react';
 
 import connectToWebChat from './connectToWebChat';
 
-const ErrorBox = ({
-  children,
-  message,
-  styleSet
-}) =>
-  <div className={ styleSet.errorBox }>
-    <div>
-      { message }
-    </div>
-    <div>
-      { children }
-    </div>
-  </div>;
+const ErrorBox = ({ children, message, styleSet }) => (
+  <div className={styleSet.errorBox}>
+    <div>{message}</div>
+    <div>{children}</div>
+  </div>
+);
 
 ErrorBox.defaultProps = {
   children: undefined,
@@ -30,6 +23,4 @@ ErrorBox.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(ErrorBox)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ErrorBox);

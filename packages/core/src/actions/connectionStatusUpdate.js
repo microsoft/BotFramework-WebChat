@@ -2,11 +2,11 @@
 //       But today, both actions behave differently, this one only dispatch after connected and not dispatched when disconnected.
 const CONNECTION_STATUS_UPDATE = 'DIRECT_LINE/CONNECTION_STATUS_UPDATE';
 
-export default function (connectionStatus) {
+export default function connectionStatusUpdate(connectionStatus) {
   return {
     type: CONNECTION_STATUS_UPDATE,
     payload: { connectionStatus }
   };
 }
 
-export { CONNECTION_STATUS_UPDATE }
+export { CONNECTION_STATUS_UPDATE };

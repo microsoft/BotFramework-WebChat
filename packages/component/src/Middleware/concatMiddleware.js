@@ -1,6 +1,6 @@
-export default function (...middlewares) {
+export default function concatMiddleware(...middlewares) {
   return options => {
-    const setup = middlewares.reduce((setup, middleware) => middleware ? [...setup, middleware(options)] : setup, []);
+    const setup = middlewares.reduce((setup, middleware) => (middleware ? [...setup, middleware(options)] : setup), []);
 
     return last => {
       const stack = setup.slice();

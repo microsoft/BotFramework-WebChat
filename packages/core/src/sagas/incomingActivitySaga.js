@@ -1,7 +1,4 @@
-import {
-  put,
-  select
-} from 'redux-saga/effects';
+import { put, select } from 'redux-saga/effects';
 import updateIn from 'simple-update-in';
 
 import { ofType as activitiesOfType } from '../selectors/activities';
@@ -33,7 +30,7 @@ function patchActivityWithFromRole(activity, userID) {
 }
 
 function* observeActivity({ directLine, userID }) {
-  yield observeEach(directLine.activity$, function* (activity) {
+  yield observeEach(directLine.activity$, function* observeActivity(activity) {
     activity = patchActivityWithFromRole(activity, userID);
 
     yield put(incomingActivity(activity));
@@ -53,6 +50,6 @@ function* observeActivity({ directLine, userID }) {
   });
 }
 
-export default function* () {
+export default function* incomingActivitySaga() {
   yield whileConnected(observeActivity);
 }

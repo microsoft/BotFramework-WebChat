@@ -5,21 +5,11 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import TimeAgo from '../Utils/TimeAgo';
 
-const Timestamp = ({
-  activity: { timestamp },
-  'aria-hidden': ariaHidden,
-  className,
-  styleSet
-}) =>
-  <span
-    aria-hidden={ ariaHidden }
-    className={ classNames(
-      styleSet.timestamp + '',
-      className + ''
-    ) }
-  >
-    <TimeAgo value={ timestamp } />
-  </span>;
+const Timestamp = ({ activity: { timestamp }, 'aria-hidden': ariaHidden, className, styleSet }) => (
+  <span aria-hidden={ariaHidden} className={classNames(styleSet.timestamp + '', className + '')}>
+    <TimeAgo value={timestamp} />
+  </span>
+);
 
 Timestamp.defaultProps = {
   'aria-hidden': true,
@@ -37,6 +27,4 @@ Timestamp.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(Timestamp)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(Timestamp);

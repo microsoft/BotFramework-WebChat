@@ -4,24 +4,26 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/10.a.customization-card-components` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/10.a.customization-card-components` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
-- Notice that the command `sample:github-repository` is pre-filled in the Send Box. Press enter.
-- Notice Mock Bot displays the new GitHub card components.
+
+-  Notice that the command `sample:github-repository` is pre-filled in the Send Box. Press enter.
+-  Notice Mock Bot displays the new GitHub card components.
 
 # Code
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Overview
+
 We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
 
 When the command `sample:github-repository` is sent to Mock Bot, the bot will send an attachment of cards. Instead of using Adaptive Cards to display these, we will instead build our own component and use `attachmentMiddleware` to intercept those cards.
@@ -53,18 +55,21 @@ Let's take a look at the activity with attachments to be sent from Mock Bot:
     }]
   }
 ```
+
 We will be taking advantage of the activity's `contentType`, `owner` and `repo` data.
 
 Let's build the structure of our component to render on GitHub repository attachments.
 
 ```jsx
-const GitHubRepositoryAttachment = props =>
-<div>
-  <p>
-    <a>[GitHub repo link]</a>
-  </p>
-</div>
+const GitHubRepositoryAttachment = props => (
+   <div>
+      <p>
+         <a>[GitHub repo link]</a>
+      </p>
+   </div>
+);
 ```
+
 Next, add the GitHub octocat svg and pull in information from `props` in our anchor. Then add styling to the containing `div`.
 
 ```diff
@@ -78,15 +83,21 @@ const GitHubRepositoryAttachment = props =>
 ```
 
 Next we'll create our `attachmentMiddleware` and use our `<GitHubRepositoryAttachment>` component like so:
+
 ```jsx
 const attachmentMiddleware = () => next => card => {
-  switch (card.attachment.contentType) {
-    case 'application/vnd.microsoft.botframework.samples.github-repository':
-      return <GitHubRepositoryAttachment owner={ card.attachment.content.owner } repo={ card.attachment.content.repo } />;
+   switch (card.attachment.contentType) {
+      case 'application/vnd.microsoft.botframework.samples.github-repository':
+         return (
+            <GitHubRepositoryAttachment
+               owner={card.attachment.content.owner}
+               repo={card.attachment.content.repo}
+            />
+         );
 
-    default:
-      return next(card);
-  }
+      default:
+         return next(card);
+   }
 };
 ```
 

@@ -1,11 +1,4 @@
-import {
-  call,
-  cancel,
-  put,
-  select,
-  take,
-  takeLatest
-} from 'redux-saga/effects';
+import { call, cancel, put, select, take, takeLatest } from 'redux-saga/effects';
 
 import { SET_SEND_BOX } from '../actions/setSendBox';
 import { SET_SEND_TYPING } from '../actions/setSendTyping';
@@ -20,10 +13,9 @@ const SEND_INTERVAL = 3000;
 function takeSendTypingIndicator(value) {
   return take(
     ({ payload, type }) =>
-      type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value
-
+      (type === SET_SEND_TYPING_INDICATOR && !payload.sendTypingIndicator === !value) ||
       // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      || type === SET_SEND_TYPING && !payload.sendTyping === !value
+      (type === SET_SEND_TYPING && !payload.sendTyping === !value)
   );
 }
 
@@ -38,14 +30,13 @@ function* sendTypingIndicatorOnSetSendBox() {
     let lastSend = 0;
     const task = yield takeLatest(
       ({ payload, type }) =>
-        type === SET_SEND_BOX && payload.text
-
+        (type === SET_SEND_BOX && payload.text) ||
         // Stop sending pending typing indicator if the user has posted anything.
         // We send typing indicator in a debounce way (t = 0, t = 3000, t = 6000).
         // When the user type, and then post the activity at t = 1500, we still have a pending typing indicator at t = 3000.
         // This code is to cancel the typing indicator at t = 3000.
-        || type === POST_ACTIVITY && payload.activity.type !== 'typing',
-      function* ({ type }) {
+        (type === POST_ACTIVITY && payload.activity.type !== 'typing'),
+      function*({ type }) {
         if (type === SET_SEND_BOX) {
           const interval = SEND_INTERVAL - Date.now() + lastSend;
 
@@ -66,6 +57,6 @@ function* sendTypingIndicatorOnSetSendBox() {
   }
 }
 
-export default function* () {
+export default function* sendTypingIndicatorOnSetSendBoxSaga() {
   yield whileConnected(sendTypingIndicatorOnSetSendBox);
 }

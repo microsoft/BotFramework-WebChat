@@ -7,4 +7,4 @@ export default function setLanguage(language) {
   };
 }
 
-export { SET_LANGUAGE }
+export { SET_LANGUAGE };

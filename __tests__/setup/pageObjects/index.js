@@ -10,10 +10,13 @@ function mapMap(map, mapper) {
   }, {});
 }
 
-export default function (driver) {
-  return mapMap({
-    dispatchAction,
-    pingBot,
-    sendMessageViaSendBox
-  }, fn => fn.bind(null, driver));
+export default function pageObjects(driver) {
+  return mapMap(
+    {
+      dispatchAction,
+      pingBot,
+      sendMessageViaSendBox
+    },
+    fn => fn.bind(null, driver)
+  );
 }

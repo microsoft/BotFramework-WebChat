@@ -31,7 +31,10 @@ store = createStore(
   onErrorResumeNext(() => JSON.parse(window.sessionStorage.getItem(REDUX_STORE_KEY))),
   ({ dispatch }) => next => action => {
     if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-      dispatch({ type: 'WEB_CHAT/SEND_EVENT', payload: { name: 'webchat/join', value: { language: window.navigator.language } } });
+      dispatch({
+        type: 'WEB_CHAT/SEND_EVENT',
+        payload: { name: 'webchat/join', value: { language: window.navigator.language } }
+      });
     }
 
     return next(action);
@@ -42,9 +45,6 @@ store.subscribe(() => {
   sessionStorage.setItem(REDUX_STORE_KEY, JSON.stringify(store.getState()));
 });
 
-ReactDOM.render(
-  <App store={ store }/>,
-  document.getElementById('root')
-);
+ReactDOM.render(<App store={store} />, document.getElementById('root'));
 
 registerServiceWorker();

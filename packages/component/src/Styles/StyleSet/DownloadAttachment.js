@@ -1,9 +1,4 @@
-export default function ({
-  accent,
-  bubbleTextColor,
-  paddingRegular,
-  primaryFont
-}) {
+export default function createDownloadAttachmentStyle({ accent, bubbleTextColor, paddingRegular, primaryFont }) {
   return {
     fontFamily: primaryFont,
 

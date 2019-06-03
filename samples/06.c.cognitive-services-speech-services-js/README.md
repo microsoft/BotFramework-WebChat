@@ -1,25 +1,28 @@
 # Sample - Integrating with Cognitive Services Speech Services
 
 ## Description
+
 > Cognitive Services Speech Services support is current in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.
 
 A simple page with Web Chat integrated with speech-to-text and text-to-speech feature from Cognitive Services Speech Services.
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js)
 
 # How to run
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/06.c.cognitive-services-speech-services-js` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/06.c.cognitive-services-speech-services-js` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
-- Click on microphone button
-- Say "123"
-- It should recognize as "123."
-- It should speak out the next activities sent from the bot
+
+-  Click on microphone button
+-  Say "123"
+-  It should recognize as "123."
+-  It should speak out the next activities sent from the bot
 
 # Code
 
@@ -28,7 +31,6 @@ A simple page with Web Chat integrated with speech-to-text and text-to-speech fe
 ### Goals of this bot
 
 Cognitive Services Speech Services has published a new API to provide speech recognition and synthesis. Web Chat uses the W3C Speech API standard, and supports interfacing Speech Services through an adapter.
-
 
 ## Completed code
 
@@ -127,8 +129,10 @@ Here is the finished `index.html` for subscription key flow:
   </body>
 </html>
 ```
+
 # Further reading
-- [Cognitive Speech Speech Services website](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
+
+-  [Cognitive Speech Speech Services website](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
 
 ## Full list of Web Chat Hosted Samples
 

@@ -11,5 +11,8 @@ test('Load using Aries', async () => {
 
   await loadTask;
 
-  expect(document.body).toHaveProperty('outerHTML', '<body><div style="height: 100%; overflow: hidden;"><iframe src="/embed/webchat-mockbot?features=webchataries&amp;l=ja.ja-jp&amp;s=secret" style="border: 0px; height: 100%; width: 100%;"></iframe></div></body>');
+  expect(document.body).toHaveProperty(
+    'outerHTML',
+    '<body><div style="height: 100%; overflow: hidden;"><iframe src="/embed/webchat-mockbot?features=webchataries&amp;l=ja.ja-jp&amp;s=secret" style="border: 0px; height: 100%; width: 100%;"></iframe></div></body>'
+  );
 });

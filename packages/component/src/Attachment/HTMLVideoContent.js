@@ -3,23 +3,17 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const HTMLVideoContent = ({
-  alt,
-  autoPlay,
-  loop,
-  poster,
-  src,
-  styleSet
-}) =>
+const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src, styleSet }) => (
   <video
-    aria-label={ alt }
-    autoPlay={ autoPlay }
-    className={ styleSet.videoContent }
-    controls={ true }
-    loop={ loop }
-    poster={ poster }
-    src={ src }
-  />;
+    aria-label={alt}
+    autoPlay={autoPlay}
+    className={styleSet.videoContent}
+    controls={true}
+    loop={loop}
+    poster={poster}
+    src={src}
+  />
+);
 
 HTMLVideoContent.defaultProps = {
   alt: '',
@@ -39,6 +33,4 @@ HTMLVideoContent.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(HTMLVideoContent)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(HTMLVideoContent);

@@ -24,7 +24,7 @@ rules:
   - allow:
     - error
     - warn
-  no-extra-parens: error
+  # no-extra-parens: error # conflicts with prettier
   no-misleading-character-class: error
   no-template-curly-in-string: error
   require-atomic-updates: error
@@ -138,9 +138,9 @@ rules:
   - error
   - after: true
     before: true
-  generator-star-spacing:
-  - error
-  - after
+  # generator-star-spacing: # conflicts with prettier
+  # - error
+  # - after
 
   # Will produce shorter code if "off"
   # no-confusing-arrow:
@@ -173,7 +173,7 @@ rules:
 
   template-curly-spacing:
   - error
-  - always
+  - never
   yield-star-spacing:
   - error
   - after

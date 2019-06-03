@@ -74,7 +74,6 @@ test('Normalizing "zh-hant.zh-tw"', () => {
 
 test('Normalizing "en.zh-hk" should become "en-US"', () => {
   expect(normalize('en.zh-hk')).toBe('en-US');
-
 });
 
 test('Normalizing "en"', () => {

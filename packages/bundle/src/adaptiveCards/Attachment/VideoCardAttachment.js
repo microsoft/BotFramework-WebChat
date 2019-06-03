@@ -11,38 +11,20 @@ const { VideoContent } = Components;
 const VideoCardAttachment = ({
   adaptiveCards,
   attachment,
-  attachment: {
-    content: {
-      media,
-      autostart,
-      autoloop,
-      image: {
-        url: imageURL
-      } = {},
-    } = {}
-  } = {},
+  attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {},
   styleSet
-}) =>
-  <div className={ styleSet.audioCardAttachment }>
+}) => (
+  <div className={styleSet.audioCardAttachment}>
     <ul className="media-list">
-      {
-        media.map(({ url }, index) =>
-          <li key={ index }>
-            <VideoContent
-              autoPlay={ autostart }
-              loop={ autoloop }
-              poster={ imageURL }
-              src={ url }
-            />
-          </li>
-        )
-      }
+      {media.map(({ url }, index) => (
+        <li key={index}>
+          <VideoContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
+        </li>
+      ))}
     </ul>
-    <CommonCard
-      adaptiveCards={ adaptiveCards }
-      attachment={ attachment }
-    />
-  </div>;
+    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+  </div>
+);
 
 VideoCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
@@ -65,6 +47,4 @@ VideoCardAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(VideoCardAttachment)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(VideoCardAttachment);

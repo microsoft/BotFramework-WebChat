@@ -3,6 +3,7 @@ extends:
 - plugin:@typescript-eslint/recommended
 parser: "@typescript-eslint/parser"
 plugins:
+- prettier
 - "@typescript-eslint"
 rules:
   # We will rework on these rules
@@ -11,6 +12,9 @@ rules:
   "@typescript-eslint/indent": off
   "@typescript-eslint/no-explicit-any": off
   "@typescript-eslint/interface-name-prefix": off
+
+  # plugins
+  prettier/prettier: error
 
   react/button-has-type: error
   react/default-props-match-prop-types: error
@@ -55,11 +59,6 @@ rules:
   - error
   - tag-aligned
   react/jsx-closing-tag-location: error
-  react/jsx-curly-spacing:
-  - error
-  - spacing:
-      objectLiterals: never
-    when: always
   react/jsx-equals-spacing:
   - error
   - never
@@ -79,9 +78,9 @@ rules:
     when: multiline
   react/jsx-no-bind: error
   react/jsx-no-literals: error
-  react/jsx-one-expression-per-line:
-  - error
-  - allow: literal
+  # react/jsx-one-expression-per-line: #conflicts with prettier
+  # - error
+  # - allow: literal
   react/jsx-fragments:
   - error
   - syntax
@@ -95,4 +94,4 @@ rules:
     beforeClosing: never
     beforeSelfClosing: always
     closingSlash: never
-  # react/jsx-wrap-multilines: error // Conflict with no-extra-parens
+  react/jsx-wrap-multilines: error

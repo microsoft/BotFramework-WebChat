@@ -55,7 +55,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
     const { disabled, onCardAction } = this.props;
 
     // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
-    if (disabled) { return; }
+    if (disabled) {
+      return;
+    }
 
     const actionTypeName = action.getJsonTypeName();
 
@@ -88,18 +90,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   renderCard() {
     const {
-      contentRef: {
-        current
-      },
-      props: {
-        adaptiveCard,
-        adaptiveCardHostConfig,
-        disabled,
-        renderMarkdown
-      },
-      state: {
-        error
-      }
+      contentRef: { current },
+      props: { adaptiveCard, adaptiveCardHostConfig, disabled, renderMarkdown },
+      state: { error }
     } = this;
 
     if (current && adaptiveCard) {
@@ -119,7 +112,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
       adaptiveCard.onExecuteAction = this.handleExecuteAction;
 
       if (adaptiveCardHostConfig) {
-        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig) ? new HostConfig(adaptiveCardHostConfig) : adaptiveCardHostConfig;
+        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig)
+          ? new HostConfig(adaptiveCardHostConfig)
+          : adaptiveCardHostConfig;
       }
 
       const errors = adaptiveCard.validate();
@@ -177,19 +172,12 @@ class AdaptiveCardRenderer extends React.PureComponent {
       state: { error }
     } = this;
 
-    return (
-      error ?
-        <ErrorBox message={ localize('Adaptive Card render error', language) }>
-          <pre>
-            { JSON.stringify(error, null, 2) }
-          </pre>
-        </ErrorBox>
-      :
-        <div
-          className={ styleSet.adaptiveCardRenderer }
-          onClick={ this.handleClick }
-          ref={ this.contentRef }
-        />
+    return error ? (
+      <ErrorBox message={localize('Adaptive Card render error', language)}>
+        <pre>{JSON.stringify(error, null, 2)}</pre>
+      </ErrorBox>
+    ) : (
+      <div className={styleSet.adaptiveCardRenderer} onClick={this.handleClick} ref={this.contentRef} />
     );
   }
 }
@@ -212,20 +200,11 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(
-  ({
-    disabled,
-    language,
-    onCardAction,
-    renderMarkdown,
-    styleSet,
-    tapAction
-  }) => ({
-    disabled,
-    language,
-    onCardAction,
-    renderMarkdown,
-    styleSet,
-    tapAction
-  })
-)(AdaptiveCardRenderer)
+export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, styleSet, tapAction }) => ({
+  disabled,
+  language,
+  onCardAction,
+  renderMarkdown,
+  styleSet,
+  tapAction
+}))(AdaptiveCardRenderer);

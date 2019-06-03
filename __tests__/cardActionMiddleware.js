@@ -18,7 +18,7 @@ test('card action "openUrl"', async () => {
           dispatch({
             type: 'WEB_CHAT/SEND_MESSAGE',
             payload: {
-              text: `Navigating to ${ cardAction.value }`
+              text: `Navigating to ${cardAction.value}`
             }
           });
         } else {
@@ -53,7 +53,7 @@ test('card action "signin"', async () => {
             dispatch({
               type: 'WEB_CHAT/SEND_MESSAGE',
               payload: {
-                text: `Signing into ${ new URL(url).host }`
+                text: `Signing into ${new URL(url).host}`
               }
             });
           });

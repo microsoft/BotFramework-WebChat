@@ -5,17 +5,18 @@ import directLineConnected from '../conditions/directLineConnected';
 import dispatchAction from './dispatchAction';
 
 async function waitForPong(driver, expectedValue) {
-  return await driver.executeScript(expectedValue =>
-    window.WebChatTest.store.getState().activities.some(({ name, type, value }) =>
-      name === 'webchat/pong'
-      && type === 'event'
-      && value === expectedValue
-    ),
+  return await driver.executeScript(
+    expectedValue =>
+      window.WebChatTest.store
+        .getState()
+        .activities.some(
+          ({ name, type, value }) => name === 'webchat/pong' && type === 'event' && value === expectedValue
+        ),
     expectedValue
   );
 }
 
-export default async function (driver) {
+export default async function pingBot(driver) {
   const timestamp = Date.now();
 
   await driver.wait(directLineConnected(), timeouts.directLine);

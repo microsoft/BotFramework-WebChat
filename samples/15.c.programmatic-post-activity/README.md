@@ -4,11 +4,11 @@ When the 'Help' button is clicked, an activity will be sent programmatically to 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.c.programmatic-post-activity)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.c.programmatic-post-activity)
 
 # Things to try out
 
-- Click the "Help" button on upper-left hand corner
+-  Click the "Help" button on upper-left hand corner
 
 # Code
 
@@ -47,6 +47,7 @@ Finally, let's connect the button to Web Chat by adding an event listener and di
 ```
 
 ## Completed Code
+
 Here is the finished `index.html`:
 
 ```diff

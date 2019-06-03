@@ -6,30 +6,28 @@ import createElement from './createElement';
 
 function loadScript(src, integrity) {
   return new Promise((resolve, reject) => {
-    document.head.appendChild(createElement(
-      'script',
-      {
+    document.head.appendChild(
+      createElement('script', {
         async: true,
         crossOrigin: 'anonymous',
         integrity,
         onError: reject,
         onLoad: resolve,
         src
-      }
-    ));
+      })
+    );
   });
 }
 
 function loadStylesheet(href, integrity) {
-  document.head.appendChild(createElement(
-    'link',
-    {
+  document.head.appendChild(
+    createElement('link', {
       crossOrigin: 'anonymous',
       href,
       integrity,
       rel: 'stylesheet'
-    }
-  ));
+    })
+  );
 }
 
 export default async function loadAsset(src) {

@@ -1,6 +1,4 @@
-import {
-  SpeechRecognition
-} from 'web-speech-cognitive-services';
+import { SpeechRecognition } from 'web-speech-cognitive-services';
 
 export default speechToken => {
   return class extends SpeechRecognition {
@@ -10,4 +8,4 @@ export default speechToken => {
       this.speechToken = speechToken;
     }
   };
-}
+};

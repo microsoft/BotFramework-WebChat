@@ -30,41 +30,25 @@ export default class Box extends React.Component {
 
   focus() {
     const {
-      sendFocusRef: {
-        current
-      }
+      sendFocusRef: { current }
     } = this.props;
 
     current && current.focus();
   }
 
   handleKeyDownCapture(event) {
-    const {
-      altKey,
-      ctrlKey,
-      key,
-      metaKey,
-      target
-    } = event;
+    const { altKey, ctrlKey, key, metaKey, target } = event;
 
     const tabIndex = getTabIndex(target);
 
-    if (
-      altKey
-      || ctrlKey && key !== 'v'
-      || metaKey
-      || !inputtableKey(key) && key !== 'Backspace'
-    ) {
+    if (altKey || (ctrlKey && key !== 'v') || metaKey || (!inputtableKey(key) && key !== 'Backspace')) {
       // Ignore if one of the utility key (except SHIFT) is pressed
       // E.g. CTRL-C on a link in one of the message should not jump to chat box
       // E.g. "A" or "Backspace" should jump to chat box
       return;
     }
 
-    if (
-      typeof tabIndex !== 'number'
-      || tabIndex < 0
-    ) {
+    if (typeof tabIndex !== 'number' || tabIndex < 0) {
       event.stopPropagation();
 
       this.focus();
@@ -75,33 +59,16 @@ export default class Box extends React.Component {
     const {
       focus,
       handleKeyDownCapture,
-      props: {
-        children,
-        disabled,
-        sendFocusRef,
-        ...otherProps
-      },
-      state: {
-        context: stateContext
-      }
+      props: { children, disabled, sendFocusRef, ...otherProps },
+      state: { context: stateContext }
     } = this;
 
     const context = this.createContext(stateContext, sendFocusRef);
 
     return (
-      <Context.Provider value={ context }>
-        <div
-          { ...otherProps }
-          onKeyDownCapture={ !disabled && handleKeyDownCapture }
-          style={ DEFAULT_STYLE }
-          tabIndex={ -1 }
-        >
-          {
-            typeof children === 'function' ?
-              children({ focus })
-            :
-              children
-          }
+      <Context.Provider value={context}>
+        <div {...otherProps} onKeyDownCapture={!disabled && handleKeyDownCapture} style={DEFAULT_STYLE} tabIndex={-1}>
+          {typeof children === 'function' ? children({ focus }) : children}
         </div>
       </Context.Provider>
     );

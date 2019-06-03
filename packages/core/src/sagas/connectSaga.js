@@ -1,14 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 10] }] */
 
-import {
-  call,
-  cancel,
-  cancelled,
-  fork,
-  put,
-  race,
-  take,
-} from 'redux-saga/effects';
+import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
 
 import { ConnectionStatus } from 'botframework-directlinejs';
 import { decode } from 'jsonwebtoken';
@@ -19,22 +11,14 @@ import forkPut from './effects/forkPut';
 import uniqueID from '../utils/uniqueID';
 import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
 
-import {
-  DISCONNECT,
-  DISCONNECT_PENDING,
-  DISCONNECT_FULFILLED
-} from '../actions/disconnect';
+import { DISCONNECT, DISCONNECT_PENDING, DISCONNECT_FULFILLED } from '../actions/disconnect';
 
 import { RECONNECT } from '../actions/reconnect';
 
-const {
-  Connecting: CONNECTING,
-  Online: ONLINE,
-  Uninitialized: UNINITIALIZED
-} = ConnectionStatus;
+const { Connecting: CONNECTING, Online: ONLINE, Uninitialized: UNINITIALIZED } = ConnectionStatus;
 
 function randomUserID() {
-  return `r_${ uniqueID().substr(0, 10) }`;
+  return `r_${uniqueID().substr(0, 10)}`;
 }
 
 function* observeAndPutConnectionStatusUpdate(directLine) {
@@ -58,7 +42,9 @@ function rectifyUserID(directLine, userIDFromAction) {
 
   if (userIDFromToken) {
     if (userIDFromAction && userIDFromAction !== userIDFromToken) {
-      console.warn('Web Chat: user ID is both specified in the Direct Line token and passed in, will use the user ID from the token.');
+      console.warn(
+        'Web Chat: user ID is both specified in the Direct Line token and passed in, will use the user ID from the token.'
+      );
     }
 
     return userIDFromToken;
@@ -68,8 +54,9 @@ function rectifyUserID(directLine, userIDFromAction) {
 
       return randomUserID();
     } else if (/^dl_/u.test(userIDFromAction)) {
-
-      console.warn('Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.');
+      console.warn(
+        'Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.'
+      );
 
       return randomUserID();
     }
@@ -90,7 +77,9 @@ function* connectSaga(directLine) {
 
   try {
     for (;;) {
-      const { payload: { connectionStatus } } = yield take(UPDATE_CONNECTION_STATUS);
+      const {
+        payload: { connectionStatus }
+      } = yield take(UPDATE_CONNECTION_STATUS);
 
       if (connectionStatus === ONLINE) {
         // TODO: [P2] DirectLineJS should kill the connection when we unsubscribe
@@ -102,7 +91,7 @@ function* connectSaga(directLine) {
           directLine.end();
         };
       } else if (connectionStatus !== UNINITIALIZED && connectionStatus !== CONNECTING) {
-        throw new Error(`Failed to connect, DirectLineJS returned ${ connectionStatus }.`);
+        throw new Error(`Failed to connect, DirectLineJS returned ${connectionStatus}.`);
       }
     }
   } catch (err) {
@@ -120,12 +109,14 @@ function* connectSaga(directLine) {
 
 function* reconnectSaga() {
   for (;;) {
-    const { payload: { connectionStatus } } = yield take(UPDATE_CONNECTION_STATUS);
+    const {
+      payload: { connectionStatus }
+    } = yield take(UPDATE_CONNECTION_STATUS);
 
     if (connectionStatus === ONLINE) {
       break;
     } else if (connectionStatus !== CONNECTING) {
-      throw new Error(`Failed to reconnect. DirectLineJS returned ${ connectionStatus }.`);
+      throw new Error(`Failed to reconnect. DirectLineJS returned ${connectionStatus}.`);
     }
   }
 }
@@ -135,18 +126,15 @@ function* reconnectSaga() {
 // Note that after the saga is cancelled, subsequent call to put() will be ignored silently.
 function* runAsyncEffect({ type, meta, payload }, callEffectFactory) {
   try {
-    yield forkPut({ type: `${ type }_PENDING`, meta, payload });
+    yield forkPut({ type: `${type}_PENDING`, meta, payload });
 
     const result = yield callEffectFactory();
 
-    yield forkPut(
-      { type: `${ type }_FULFILLING`, meta, payload },
-      { type: `${ type }_FULFILLED`, meta, payload }
-    );
+    yield forkPut({ type: `${type}_FULFILLING`, meta, payload }, { type: `${type}_FULFILLED`, meta, payload });
 
     return result;
   } catch (payload) {
-    yield forkPut({ type: `${ type }_REJECTED`, error: true, meta, payload });
+    yield forkPut({ type: `${type}_REJECTED`, error: true, meta, payload });
 
     throw payload;
   }
@@ -161,27 +149,20 @@ function* takeDisconnectAsError() {
 function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   // We cannot use saga cancel() here, because cancelling saga will prohibit us from sending *_REJECTED.
   // Without REJECTED, it impacts our assumptions around PENDING/FULFILLED/REJECTED.
-  return runAsyncEffect(
-    baseAction,
-    function* () {
-      const { result } = yield race({
-        _: takeDisconnectAsError(),
-        result: callEffectFactory()
-      });
+  return runAsyncEffect(baseAction, function* runUntilDisconnect() {
+    const { result } = yield race({
+      _: takeDisconnectAsError(),
+      result: callEffectFactory()
+    });
 
-      return result;
-    }
-  );
+    return result;
+  });
 }
 
-export default function* () {
+export default function*() {
   for (;;) {
     const {
-      payload: {
-        directLine,
-        userID: userIDFromAction,
-        username
-      }
+      payload: { directLine, userID: userIDFromAction, username }
     } = yield take(CONNECT);
 
     const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
@@ -208,11 +189,7 @@ export default function* () {
       try {
         for (;;) {
           // We are waiting for connection status change or disconnect action.
-          const {
-            updateConnectionStatusAction: {
-              payload: { connectionStatus } = {}
-            } = {}
-          } = yield race({
+          const { updateConnectionStatusAction: { payload: { connectionStatus } = {} } = {} } = yield race({
             _: take(DISCONNECT),
             updateConnectionStatusAction: take(UPDATE_CONNECTION_STATUS)
           });
@@ -231,7 +208,7 @@ export default function* () {
           } else if (connectionStatus !== ONLINE) {
             if (typeof connectionStatus !== 'undefined') {
               // We need to kill the connection because DirectLineJS want to close it.
-              throw new Error(`Connection status changed to ${ connectionStatus }`);
+              throw new Error(`Connection status changed to ${connectionStatus}`);
             } else {
               // Someone dispatched disconnect action.
               break;

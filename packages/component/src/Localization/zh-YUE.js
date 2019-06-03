@@ -18,11 +18,11 @@ function xMinutesAgo(dateStr) {
   } else if (deltaInMinutes === 1) {
     return '一分鐘前';
   } else if (deltaInHours < 1) {
-    return `${ deltaInMinutes } 分鐘前`;
+    return `${deltaInMinutes} 分鐘前`;
   } else if (deltaInHours === 1) {
     return `一個鐘前`;
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } 個鐘前`;
+    return `${deltaInHours} 個鐘前`;
   } else if (deltaInHours <= 24) {
     return `今日`;
   } else if (deltaInHours <= 48) {
@@ -45,26 +45,25 @@ function xMinutesAgo(dateStr) {
 export default {
   FAILED_CONNECTION_NOTIFICATION: '接駁唔倒。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  SEND_FAILED_KEY: '傳送唔倒。{Retry}。',
+  SEND_FAILED_KEY: `傳送唔倒。{Retry}。`,
   SLOW_CONNECTION_NOTIFICATION: '接駁嘅時間比平時長。',
-  'Chat': '傾偈',
+  Chat: '傾偈',
   'Download file': '下載檔案',
   'Microphone off': '閂咪',
   'Microphone on': '開咪',
-  'Left': '左',
+  Left: '左',
   'Listening…': '聽緊你講嘢…',
   'New messages': '新訊息',
-  'retry': '再嚟一次',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
-  'Right': '右',
-  'Sending': '而家傳送緊',
+  Retry: '再嚟一次',
+  Right: '右',
+  Sending: '而家傳送緊',
   'Starting…': '開始緊…',
-  'Tax': '稅',
-  'Total': '總共',
-  'VAT': '消費稅',
-  'Send': '傳送',
-  'Speak': '講嘢',
+  Tax: '稅',
+  Total: '總共',
+  VAT: '消費稅',
+  Send: '傳送',
+  Speak: '講嘢',
   'Upload file': '上載檔案',
   'Type your message': '請打你嘅訊息',
   'X minutes ago': xMinutesAgo
-}
+};

@@ -1,7 +1,4 @@
-export default function createDictationInterimsStyle({
-  paddingRegular,
-  primaryFont
-}) {
+export default function createDictationInterimsStyle({ paddingRegular, primaryFont }) {
   return {
     fontFamily: primaryFont,
     margin: 0,
@@ -11,7 +8,7 @@ export default function createDictationInterimsStyle({
     paddingTop: 0,
 
     '&.dictating > span:not(:first-child), &.status': {
-      opacity: .5
+      opacity: 0.5
     }
   };
 }

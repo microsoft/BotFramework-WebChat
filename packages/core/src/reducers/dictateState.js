@@ -1,9 +1,4 @@
-import {
-  DICTATING,
-  IDLE,
-  STARTING,
-  STOPPING
-} from '../constants/DictateState';
+import { DICTATING, IDLE, STARTING, STOPPING } from '../constants/DictateState';
 
 import { SET_DICTATE_STATE } from '../actions/setDictateState';
 import { START_DICTATE } from '../actions/startDictate';
@@ -11,7 +6,7 @@ import { STOP_DICTATE } from '../actions/stopDictate';
 
 const DEFAULT_STATE = IDLE;
 
-export default function (state = DEFAULT_STATE, { payload, type }) {
+export default function dictateState(state = DEFAULT_STATE, { payload, type }) {
   switch (type) {
     case SET_DICTATE_STATE:
       state = payload.dictateState;
@@ -31,7 +26,8 @@ export default function (state = DEFAULT_STATE, { payload, type }) {
 
       break;
 
-    default: break;
+    default:
+      break;
   }
 
   return state;

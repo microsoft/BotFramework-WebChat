@@ -1,6 +1,4 @@
-export default function createActivityStyle({
-  paddingRegular
-}) {
+export default function createActivityStyle({ paddingRegular }) {
   return {
     marginBottom: paddingRegular,
 

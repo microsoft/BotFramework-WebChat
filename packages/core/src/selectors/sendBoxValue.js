@@ -1,1 +1,1 @@
-export default ({ sendBoxValue }) => sendBoxValue
+export default ({ sendBoxValue }) => sendBoxValue;

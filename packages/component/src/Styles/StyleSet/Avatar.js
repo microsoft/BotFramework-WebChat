@@ -1,8 +1,4 @@
-export default function createAvatarStyle({
-  accent,
-  avatarSize,
-  primaryFont
-}) {
+export default function createAvatarStyle({ accent, avatarSize, primaryFont }) {
   return {
     alignItems: 'center',
     backgroundColor: accent,

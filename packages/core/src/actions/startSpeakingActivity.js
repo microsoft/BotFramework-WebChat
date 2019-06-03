@@ -6,4 +6,4 @@ export default function startSpeakingActivity() {
   };
 }
 
-export { START_SPEAKING_ACTIVITY }
+export { START_SPEAKING_ACTIVITY };

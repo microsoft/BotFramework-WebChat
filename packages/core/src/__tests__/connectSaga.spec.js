@@ -15,11 +15,10 @@ beforeEach(() => {
 
   store = createStore(
     ({ actionTypes = [] } = {}, { type }) =>
-      /^DIRECT_LINE\/(DIS|RE)?CONNECT/u.test(type) ?
-        // We are only interested in CONNECT_*, RECONNECT_*, and DISCONNECT_* actions.
-        { actionTypes: [...actionTypes, type] }
-      :
-        { actionTypes },
+      /^DIRECT_LINE\/(DIS|RE)?CONNECT/u.test(type)
+        ? // We are only interested in CONNECT_*, RECONNECT_*, and DISCONNECT_* actions.
+          { actionTypes: [...actionTypes, type] }
+        : { actionTypes },
     applyMiddleware(sagaMiddleware)
   );
 
@@ -32,9 +31,10 @@ beforeEach(() => {
       observer.next(0);
     }),
     end: () => 0,
-    postActivity: () => new Observable(observer => {
-      observer.next({ id: '' });
-    })
+    postActivity: () =>
+      new Observable(observer => {
+        observer.next({ id: '' });
+      })
   };
 });
 
@@ -53,10 +53,7 @@ test('Connect successfully', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  expect(store.getState().actionTypes).toEqual([
-    'DIRECT_LINE/CONNECT',
-    'DIRECT_LINE/CONNECT_PENDING'
-  ]);
+  expect(store.getState().actionTypes).toEqual(['DIRECT_LINE/CONNECT', 'DIRECT_LINE/CONNECT_PENDING']);
 
   connectionStatusObserver.next(2);
 
@@ -81,10 +78,7 @@ test('Connect failed initially', async () => {
   // TODO: [P4] Investigates why we need to sleep 0 here
   await sleep(0);
 
-  expect(store.getState().actionTypes).toEqual([
-    'DIRECT_LINE/CONNECT',
-    'DIRECT_LINE/CONNECT_PENDING'
-  ]);
+  expect(store.getState().actionTypes).toEqual(['DIRECT_LINE/CONNECT', 'DIRECT_LINE/CONNECT_PENDING']);
 
   connectionStatusObserver.next(4);
 

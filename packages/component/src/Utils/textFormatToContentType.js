@@ -1,4 +1,4 @@
-export default function (textFormat) {
+export default function textFormatToContentType(textFormat) {
   switch (textFormat) {
     case 'plain':
       return 'text/plain';

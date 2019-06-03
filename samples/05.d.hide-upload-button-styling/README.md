@@ -1,19 +1,21 @@
 # Sample - Disable the Upload Button
 
-- Prevent users from sending attachments to the bot by disabling the upload button.
+-  Prevent users from sending attachments to the bot by disabling the upload button.
 
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.d.hide-upload-button-styling)
+
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.d.hide-upload-button-styling)
 
 # How to run
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.d.hide-upload-button-styling` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/05.d.hide-upload-button-styling` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Note that there is no upload button in the Send Box
+-  Note that there is no upload button in the Send Box
 
 # Code
 
@@ -33,7 +35,6 @@ window.WebChat.renderWebChat({
 + }
 }, document.getElementById('webchat'));
 ```
-
 
 ## Completed code
 
@@ -76,9 +77,10 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+
 # Further reading
 
-- [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
+-  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
 
 ## Full list of Web Chat hosted samples
 

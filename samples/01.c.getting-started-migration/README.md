@@ -1,28 +1,28 @@
-# Sample -  Migrating Web Chat from v3 to v4
+# Sample - Migrating Web Chat from v3 to v4
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN. This shows the steps on how to migrate from a Web Chat v3 to v4.
 
-> Note: This sample is __unrelated__ to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
+> Note: This sample is **unrelated** to the version of **Bot Framework** that the bot is using. This sample makes changes from the v3 Web Chat samples to ultimately match the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
-> Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot.
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
+   > Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot.
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/01.c.getting-started-migration` in command line
-- Run `npx serve` in the migration directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/01.c.getting-started-migration` in command line
+-  Run `npx serve` in the migration directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `help`: you should see a full list of MockBot features
-- Type `markdown`: you should see the sample of Markdown
-- Type `card weather`: you should see a weather card built using Adaptive Cards
-- Type `layout carousel`: you should see a carousel of cards
-   - Resize the window and see how the carousel changes size
+-  Type `help`: you should see a full list of MockBot features
+-  Type `markdown`: you should see the sample of Markdown
+-  Type `card weather`: you should see a weather card built using Adaptive Cards
+-  Type `layout carousel`: you should see a carousel of cards
+   -  Resize the window and see how the carousel changes size
 
 # Code
 
@@ -34,34 +34,43 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 This code features the migration requirements to update Web Chat from v3 to v4.
 The `index.html` page in the migration directory has two main goals.
-- To import the Web Chat v4 full bundle CDN script
-- To render Web Chat using the v4 best practices
 
- We'll start by using our old v3 `index.html` as our starting point.
+-  To import the Web Chat v4 full bundle CDN script
+-  To render Web Chat using the v4 best practices
+
+We'll start by using our old v3 `index.html` as our starting point.
+
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="bot" />
-    <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
-    <script>
-      BotChat.App({
-        directLine: { secret: direct_line_secret },
-        user: { id: 'userid' },
-        bot: { id: 'botid' },
-        resize: 'detect'
-      }, document.getElementById("bot"));
-    </script>
-  </body>
+   <head>
+      <link
+         href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css"
+         rel="stylesheet"
+      />
+   </head>
+   <body>
+      <div id="bot" />
+      <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+      <script>
+         BotChat.App(
+            {
+               directLine: { secret: direct_line_secret },
+               user: { id: 'userid' },
+               bot: { id: 'botid' },
+               resize: 'detect'
+            },
+            document.getElementById('bot')
+         );
+      </script>
+   </body>
 </html>
 ```
 
 > For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
 Our first change is to update the CDN the webpage uses from v3 to v4.
+
 ```diff
 …
  <head>
@@ -76,6 +85,7 @@ Our first change is to update the CDN the webpage uses from v3 to v4.
 ```
 
 Next, the code to render Web Chat must be updated in the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
+
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 
 ```diff
@@ -117,8 +127,8 @@ MockBot also features an autofocus on the Web Chat container, as well as push of
 </script>
 ```
 
-
 Finally, we will add basic styling since there is no longer a stylesheet included on our page.
+
 ```diff
 …
   <head>
@@ -175,8 +185,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
-
+-  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
 
 ## Full list of Web Chat hosted samples
 

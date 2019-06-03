@@ -8,32 +8,19 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const TextContent = ({
-  contentType,
-  renderMarkdown,
-  styleSet,
-  text
-}) =>
-  contentType === 'text/markdown' && renderMarkdown ?
+const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
+  contentType === 'text/markdown' && renderMarkdown ? (
     <div
-      className={ classNames(
-        'markdown',
-        styleSet.textContent + ''
-      ) }
+      className={classNames('markdown', styleSet.textContent + '')}
       dangerouslySetInnerHTML={{ __html: renderMarkdown(text || '') }}
     />
-  :
-    (text || '').split('\n').map((line, index) =>
-      <p
-        className={ classNames(
-          'plain',
-          styleSet.textContent + ''
-        ) }
-        key={ index }
-      >
-        { line.trim() }
+  ) : (
+    (text || '').split('\n').map((line, index) => (
+      <p className={classNames('plain', styleSet.textContent + '')} key={index}>
+        {line.trim()}
       </p>
-    );
+    ))
+  );
 
 TextContent.defaultProps = {
   contentType: 'text/markdown',
@@ -49,6 +36,4 @@ TextContent.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(
-  ({ renderMarkdown, styleSet }) => ({ renderMarkdown, styleSet })
-)(TextContent)
+export default connectToWebChat(({ renderMarkdown, styleSet }) => ({ renderMarkdown, styleSet }))(TextContent);

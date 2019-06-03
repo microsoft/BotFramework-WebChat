@@ -26,43 +26,22 @@ class AnimationCardAttachment extends React.Component {
   }
 
   render() {
-    const {
-      adaptiveCards,
-      attachment,
-      attachment: {
-        content: {
-          media = []
-        } = {}
-      } = {},
-      styleSet
-    } = this.props;
+    const { adaptiveCards, attachment, attachment: { content: { media = [] } = {} } = {}, styleSet } = this.props;
 
     return (
-      <div className={ styleSet.animationCardAttachment }>
+      <div className={styleSet.animationCardAttachment}>
         <ul className="media-list">
-          {
-            media.map(({ profile = '', url }, index) =>
-              <li key={ index }>
-                {
-                  /\.gif$/iu.test(url) ?
-                    <ImageContent
-                      alt={ profile }
-                      src={ url }
-                    />
-                  :
-                    <VideoContent
-                      alt={ profile }
-                      src={ url }
-                    />
-                }
-              </li>
-            )
-          }
+          {media.map(({ profile = '', url }, index) => (
+            <li key={index}>
+              {/\.gif$/iu.test(url) ? (
+                <ImageContent alt={profile} src={url} />
+              ) : (
+                <VideoContent alt={profile} src={url} />
+              )}
+            </li>
+          ))}
         </ul>
-        <CommonCard
-          adaptiveCards={ adaptiveCards }
-          attachment={ attachment }
-        />
+        <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
       </div>
     );
   }
@@ -85,6 +64,4 @@ AnimationCardAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(AnimationCardAttachment)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(AnimationCardAttachment);

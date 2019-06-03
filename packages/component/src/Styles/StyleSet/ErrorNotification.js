@@ -1,11 +1,10 @@
-export default function ({
+export default function createErrorNotificationStyle({
   connectivityIconPadding,
   connectivityMarginLeftRight,
   connectivityMarginTopBottom,
   connectivityTextSize,
   failedConnectivity,
   primaryFont
-
 }) {
   return {
     alignItems: 'center',
@@ -21,7 +20,7 @@ export default function ({
 
     '& > svg': {
       fill: failedConnectivity,
-      paddingRight: connectivityIconPadding,
-    },
+      paddingRight: connectivityIconPadding
+    }
   };
 }

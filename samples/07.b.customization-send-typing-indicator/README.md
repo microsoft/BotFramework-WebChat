@@ -1,23 +1,28 @@
 # Sample - Enable Typing Indicator
+
 This sample shows Web Chat users how to enable the typing indicator activity from the user, which on Mock Bot is displayed as an animated gif. This is a helpful feature in multi-user chats.
 
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing-indicator)
+
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing-indicator)
 
 # How to run
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/07.b.customization-send-typing-indicator` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/07.b.customization-send-typing-indicator` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
-- Note that when you as the user type, there is a typing indicator gif in the transcript. This is activated by the `sendTypingIndicator`.
+
+-  Note that when you as the user type, there is a typing indicator gif in the transcript. This is activated by the `sendTypingIndicator`.
 
 # Code
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Overview
+
 > Note: this `README.md` skips over a lot of the HTML and CSS in this sample -- the skipped markup and code is to visibly show the `sendTypingIndicator`.
 
 All you need to do is add the `sendTypingIndicator` option to the `renderWebChat` method. The default value is `false`.
@@ -30,6 +35,7 @@ All you need to do is add the `sendTypingIndicator` option to the `renderWebChat
 }, document.getElementById('webchat'));
 
 ```
+
 ## Completed code
 
 Here is the finished `index.html`:
@@ -71,6 +77,7 @@ Here is the finished `index.html`:
 </html>
 
 ```
+
 # Further reading
 
 ## Full list of Web Chat hosted samples

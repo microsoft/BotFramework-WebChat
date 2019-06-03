@@ -1,11 +1,11 @@
-export default function ({
+export default function createWarningNotificationStyle({
   connectivityIconPadding,
   connectivityMarginLeftRight,
   connectivityMarginTopBottom,
   connectivityTextSize,
   primaryFont,
   slowConnectivity,
-  notificationText,
+  notificationText
 }) {
   return {
     alignItems: 'center',
@@ -21,7 +21,7 @@ export default function ({
 
     '& > svg': {
       fill: slowConnectivity,
-      paddingRight: connectivityIconPadding,
+      paddingRight: connectivityIconPadding
     }
   };
 }

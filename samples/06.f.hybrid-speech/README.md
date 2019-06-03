@@ -4,21 +4,21 @@ A simple web page that uses separate speech engines for speech-to-text and text-
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/06.f.hybrid-speech` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/06.f.hybrid-speech` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Use the microphone button: you should be able to provide commands to the bot via speech
-- Speak `help`: you should see a full list of MockBot features
-- Speak `card weather`: you should see a weather card built using Adaptive Cards
-- Speak `carousel`: you should see a carousel of cards
+-  Use the microphone button: you should be able to provide commands to the bot via speech
+-  Speak `help`: you should see a full list of MockBot features
+-  Speak `card weather`: you should see a weather card built using Adaptive Cards
+-  Speak `carousel`: you should see a carousel of cards
 
 # Code
 
@@ -28,9 +28,9 @@ A simple web page that uses separate speech engines for speech-to-text and text-
 
 The `index.html` page has one main goal:
 
-- To enable speech by using different engines:
-   - Speech-to-text: browser-supported speech engine
-   - Text-to-speech: Cognitive Services Speech Services engine
+-  To enable speech by using different engines:
+   -  Speech-to-text: browser-supported speech engine
+   -  Text-to-speech: Cognitive Services Speech Services engine
 
 We will start by using the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js/README.md) as our Web Chat template.
 
@@ -81,6 +81,7 @@ Finally, pass your new ponyfill factory into `renderWebChat`.
 +   webSpeechPonyfillFactory: await createHybridPonyfillFactory({ authorizationToken, region })
   }, document.getElementById('webchat'));
 ```
+
 ## Completed code
 
 Here is the finished `index.html`:
@@ -142,12 +143,13 @@ Here is the finished `index.html`:
 ```
 
 # Further Reading
-- [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
-- [W3C Web Speech API](https://w3c.github.io/speech-api/)
-- [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
-- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
-- [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
+-  [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
+-  [W3C Web Speech API](https://w3c.github.io/speech-api/)
+-  [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
+
+-  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
+-  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech) | [(Speech Web browser source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech)
 
 ## Full list of Web Chat hosted samples
 

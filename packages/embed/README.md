@@ -12,11 +12,11 @@ Web Chat offers multiple levels of integration options. In this package, we focu
 
 There are a few features unique to `<iframe>`:
 
-- Reading configurations from Azure Bot Services
-- Simplified version selection
-   - Based on the versions you selected (latest, specific major, or specific minor), we will serve the Web Chat client with latest security fixes
-   - Please refer to the [I want to go back documentation](#i-want-to-go-back-to-previous-versions-of-web-chat) to specify the version you want to use
-- This creates the same experience as the "Test in Web Chat" blade in Azure Portal
+-  Reading configurations from Azure Bot Services
+-  Simplified version selection
+   -  Based on the versions you selected (latest, specific major, or specific minor), we will serve the Web Chat client with latest security fixes
+   -  Please refer to the [I want to go back documentation](#i-want-to-go-back-to-previous-versions-of-web-chat) to specify the version you want to use
+-  This creates the same experience as the "Test in Web Chat" blade in Azure Portal
 
 ## How to use
 
@@ -67,8 +67,8 @@ curl https://cdn.botframework.com/botframework-webchat/4.3.0/webchat.js | openss
 
 There are two public surfaces we need to test:
 
-- Embed page, i.e. https://webchat.botframework.com/embed/your-bot-id
-- Azure Portal "Test in Web Chat" blade
+-  Embed page, i.e. https://webchat.botframework.com/embed/your-bot-id
+-  Azure Portal "Test in Web Chat" blade
 
 #### Testing the embed page
 
@@ -78,8 +78,9 @@ Append the following code in the FiddlerScript `OnBeforeRequest` function.
 
 ```js
 if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id/gemini')) {
-    oSession['x-replywithfile'] = 'C:\\Users\\JohnDoe\\Source\\Repos\\BotFramework-WebChat\\packages\\embed\\dist\\index.html';
-    oSession["ui-backcolor"] = "Yellow";
+   oSession['x-replywithfile'] =
+      'C:\\Users\\JohnDoe\\Source\\Repos\\BotFramework-WebChat\\packages\\embed\\dist\\index.html';
+   oSession['ui-backcolor'] = 'Yellow';
 }
 ```
 
@@ -94,11 +95,14 @@ Append the following code in the FiddlerScript `OnPeekAtResponseHeaders` functio
 When combined with the FiddlerScript above, "Test in Web Chat" in Azure Portal will point to the locally-developed version of the Gemini page.
 
 ```js
-if (oSession.uriContains("https://webchat.botframework.com/embed/your-bot-id?features=webchatpreview&t=")) {
-    oSession["ui-backcolor"] = "Yellow";
-    oSession.oResponse.headers.HTTPResponseCode = 302;
-    oSession.oResponse.headers.HTTPResponseStatus = '302 Moved';
-    oSession.oResponse.headers.Add('location', oSession.PathAndQuery.replace('your-bot-id?', 'your-bot-id/gemini?b=your-bot-id&v=4.3&'));
+if (oSession.uriContains('https://webchat.botframework.com/embed/your-bot-id?features=webchatpreview&t=')) {
+   oSession['ui-backcolor'] = 'Yellow';
+   oSession.oResponse.headers.HTTPResponseCode = 302;
+   oSession.oResponse.headers.HTTPResponseStatus = '302 Moved';
+   oSession.oResponse.headers.Add(
+      'location',
+      oSession.PathAndQuery.replace('your-bot-id?', 'your-bot-id/gemini?b=your-bot-id&v=4.3&')
+   );
 }
 ```
 
@@ -134,16 +138,16 @@ If you don't see the above line, this probably means that the new Gemini page ha
 
 There are a handful of versions we support:
 
-- Majors
-   - `4` will serve the latest minor version of `4.*`. At the time this document was created, that version was `4.3.0`
-   - `3` will serve the latest minor version of `0.*`.At the time this document was created, it is `0.15.1-v3.748a85f`
-   - `scorpio` will serve the version before Gemini page was introduced. At the time this document was created, `scorpio` is version `0.11.4-ibiza.f373b1d`
-      - This is the as having the "Enable preview" checkbox checked
-   - `aries` will serve the version before Gemini page was introduced
-      - This is the same as having the "Enable preview" checkbox unchecked
-      - This version will show a bot icon and welcome message at the top of the page
-- Minors
-   - `4.2` will serve the latest patch version of `4.2.*`. At the time this document was created, it is `4.2.0`
+-  Majors
+   -  `4` will serve the latest minor version of `4.*`. At the time this document was created, that version was `4.3.0`
+   -  `3` will serve the latest minor version of `0.*`.At the time this document was created, it is `0.15.1-v3.748a85f`
+   -  `scorpio` will serve the version before Gemini page was introduced. At the time this document was created, `scorpio` is version `0.11.4-ibiza.f373b1d`
+      -  This is the as having the "Enable preview" checkbox checked
+   -  `aries` will serve the version before Gemini page was introduced
+      -  This is the same as having the "Enable preview" checkbox unchecked
+      -  This version will show a bot icon and welcome message at the top of the page
+-  Minors
+   -  `4.2` will serve the latest patch version of `4.2.*`. At the time this document was created, it is `4.2.0`
 
 However, we do not support specifying patch versions, e.g. `4.2.1`. This is because patch versions are for important security fixes. We will roll it out to users who are on the same minor version and we guarantee that security fixes will not introduce breaking changes.
 
@@ -160,7 +164,7 @@ We gradually migrate customers' sites to our new version using a mechanism we ca
 ### What URL parameters are supported?
 
 | URL parameters     | Notes                                                                                                     |
-|--------------------|-----------------------------------------------------------------------------------------------------------|
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
 | `?b=`              | Bot ID                                                                                                    |
 | `?l=ja.ja-jp`      | Language to use, in Azure locale format (first part is localization, second part is internationalization) |
 | `?l=zh-HK`         | Language to use, in ISO format                                                                            |
@@ -174,15 +178,15 @@ We gradually migrate customers' sites to our new version using a mechanism we ca
 
 Historically, we use Zodiac signs as code name to version the embed page.
 
-- Gemini: the latest version of embed page
-   - Supports multiple versions of Web Chat, backwards- and forwards-compatible
-      - Latest version is maintained at [`botframework-webchat@latest`](https://www.npmjs.com/package/botframework-webchat/)
-      - v3 is maintained at [`botframework-webchat@legacy`](https://www.npmjs.com/package/botframework-webchat/v/legacy), latest is 0.15.1
-   - Supports falling back to previous versions of embed page include Scorpio and Aries
-- Scorpio: Web Chat v3 of version 0.11.4
-   - Adaptive Cards 0.6.1
-   - OAuth card is not supported
-   - This is maintained at [`botframework-webchat@ibiza`](https://www.npmjs.com/package/botframework-webchat/v/ibiza)
-   - Note: 0.11.4 is not the latest version of Web Chat v3, the latest is 0.15.1
-- Aries: Web Chat v1
-   - Written in ASP.NET and Angular
+-  Gemini: the latest version of embed page
+   -  Supports multiple versions of Web Chat, backwards- and forwards-compatible
+      -  Latest version is maintained at [`botframework-webchat@latest`](https://www.npmjs.com/package/botframework-webchat/)
+      -  v3 is maintained at [`botframework-webchat@legacy`](https://www.npmjs.com/package/botframework-webchat/v/legacy), latest is 0.15.1
+   -  Supports falling back to previous versions of embed page include Scorpio and Aries
+-  Scorpio: Web Chat v3 of version 0.11.4
+   -  Adaptive Cards 0.6.1
+   -  OAuth card is not supported
+   -  This is maintained at [`botframework-webchat@ibiza`](https://www.npmjs.com/package/botframework-webchat/v/ibiza)
+   -  Note: 0.11.4 is not the latest version of Web Chat v3, the latest is 0.15.1
+-  Aries: Web Chat v1
+   -  Written in ASP.NET and Angular

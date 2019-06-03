@@ -1,24 +1,27 @@
 # Sample - Presentation Mode
 
 Enable presentation mode by:
-- Disabling interactivity in Adaptive Cards, rich cards, send box, and suggested actions
-- Hide the send box
+
+-  Disabling interactivity in Adaptive Cards, rich cards, send box, and suggested actions
+-  Hide the send box
 
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.c.presentation-mode-styling)
+
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.c.presentation-mode-styling)
 
 # How to run
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.c.presentation-mode-styling` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/05.c.presentation-mode-styling` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Mock Bot programmatically adds the commands that normally display suggested actions and the inputs Adaptive Card.
-- Notice that the Adaptive Card displayed with inputs is disabled
-- Suggested actions are disabled
-- There is no Send Box
+-  Mock Bot programmatically adds the commands that normally display suggested actions and the inputs Adaptive Card.
+-  Notice that the Adaptive Card displayed with inputs is disabled
+-  Suggested actions are disabled
+-  There is no Send Box
 
 # Code
 
@@ -52,7 +55,6 @@ window.WebChat.renderWebChat({
 +  }
 }, document.getElementById('webchat'));
 ```
-
 
 ## Completed code
 
@@ -102,9 +104,10 @@ Here is the finished `index.html`:
   </body>
 </html>
 ```
+
 # Further reading
 
-- [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
+-  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
 
 ## Full list of Web Chat hosted samples
 

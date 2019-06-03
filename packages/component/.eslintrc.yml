@@ -1,6 +1,11 @@
 extends:
 - plugin:react/recommended
+plugins:
+- prettier
 rules:
+# plugins
+  prettier/prettier: error
+
   react/button-has-type: error
   react/default-props-match-prop-types: error
   react/destructuring-assignment: error
@@ -44,11 +49,6 @@ rules:
   - error
   - tag-aligned
   react/jsx-closing-tag-location: error
-  react/jsx-curly-spacing:
-  - error
-  - spacing:
-      objectLiterals: never
-    when: always
   react/jsx-equals-spacing:
   - error
   - never
@@ -68,9 +68,9 @@ rules:
     when: multiline
   react/jsx-no-bind: error
   react/jsx-no-literals: error
-  react/jsx-one-expression-per-line:
-  - error
-  - allow: literal
+  # react/jsx-one-expression-per-line: #conflicts with prettier
+  # - error
+  # - allow: literal
   react/jsx-fragments:
   - error
   - element
@@ -84,4 +84,4 @@ rules:
     beforeClosing: never
     beforeSelfClosing: always
     closingSlash: never
-  # react/jsx-wrap-multilines: error // Conflict with no-extra-parens
+  react/jsx-wrap-multilines: error # Conflict with no-extra-parens

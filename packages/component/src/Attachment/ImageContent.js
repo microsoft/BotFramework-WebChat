@@ -4,17 +4,9 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
 
-const ImageContent = ({
-  alt,
-  src,
-  styleSet
-}) =>
-  <CroppedImage
-    alt={ alt }
-    height={ styleSet.options.bubbleImageHeight }
-    src={ src }
-    width="100%"
-  />;
+const ImageContent = ({ alt, src, styleSet }) => (
+  <CroppedImage alt={alt} height={styleSet.options.bubbleImageHeight} src={src} width="100%" />
+);
 
 ImageContent.defaultProps = {
   alt: ''
@@ -30,6 +22,4 @@ ImageContent.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(ImageContent)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ImageContent);

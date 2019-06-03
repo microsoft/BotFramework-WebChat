@@ -1,13 +1,4 @@
-import {
-  all,
-  call,
-  cancelled,
-  put,
-  race,
-  select,
-  take,
-  takeEvery
-} from 'redux-saga/effects';
+import { all, call, cancelled, put, race, select, take, takeEvery } from 'redux-saga/effects';
 
 import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
@@ -35,11 +26,13 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
 
   activity = {
     ...deleteKey(activity, 'id'),
-    attachments: attachments && attachments.map(({ contentType, contentUrl, name }) => ({
-      contentType,
-      contentUrl,
-      name
-    })),
+    attachments:
+      attachments &&
+      attachments.map(({ contentType, contentUrl, name }) => ({
+        contentType,
+        contentUrl,
+        name
+      })),
     channelData: {
       clientActivityID,
       ...deleteKey(activity.channelData, 'state')
@@ -55,14 +48,17 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
   };
 
   if (!numActivitiesPosted) {
-    activity.entities = [...activity.entities || [], {
-      // TODO: [P4] Currently in v3, we send the capabilities although the client might not actually have them
-      //       We need to understand why we need to send these, and only send capabilities the client have
-      requiresBotState: true,
-      supportsListening: true,
-      supportsTts: true,
-      type: 'ClientCapabilities'
-    }];
+    activity.entities = [
+      ...(activity.entities || []),
+      {
+        // TODO: [P4] Currently in v3, we send the capabilities although the client might not actually have them
+        //       We need to understand why we need to send these, and only send capabilities the client have
+        requiresBotState: true,
+        supportsListening: true,
+        supportsTts: true,
+        type: 'ClientCapabilities'
+      }
+    ];
   }
 
   const meta = { clientActivityID, method };
@@ -73,9 +69,11 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
     //         So, we setup expectation first, then postActivity afterward
 
-    const echoBackCall = call(function* () {
+    const echoBackCall = call(function*() {
       for (;;) {
-        const { payload: { activity } } = yield take(INCOMING_ACTIVITY);
+        const {
+          payload: { activity }
+        } = yield take(INCOMING_ACTIVITY);
         const { channelData = {}, id } = activity;
 
         if (channelData.clientActivityID === clientActivityID && id) {
@@ -91,7 +89,9 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
 
     const sendTimeout = yield select(sendTimeoutSelector);
 
-    const { send: { echoBack } } = yield race({
+    const {
+      send: { echoBack }
+    } = yield race({
       send: all({
         echoBack: echoBackCall,
         postActivity: observeOnce(directLine.postActivity(activity))
@@ -109,11 +109,11 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
   }
 }
 
-export default function* () {
-  yield whileConnected(function* ({ directLine, userID, username }) {
+export default function* postActivitySaga() {
+  yield whileConnected(function* postActivityWhileConnected({ directLine, userID, username }) {
     let numActivitiesPosted = 0;
 
-    yield takeEvery(POST_ACTIVITY, function* (action) {
+    yield takeEvery(POST_ACTIVITY, function* postActivityWrapper(action) {
       yield* postActivity(directLine, userID, username, numActivitiesPosted++, action);
     });
   });

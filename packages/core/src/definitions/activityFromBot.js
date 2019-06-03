@@ -1,1 +1,1 @@
-export default activity => activity && activity.from.role === 'bot'
+export default activity => activity && activity.from.role === 'bot';

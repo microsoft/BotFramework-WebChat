@@ -1,7 +1,4 @@
-import {
-  put,
-  takeEvery
-} from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
@@ -13,13 +10,11 @@ function* clearSuggestedActions() {
 
 function* clearSuggestedActionsOnPostActivity() {
   yield takeEvery(
-    ({ payload, type }) =>
-      type === POST_ACTIVITY_PENDING
-      && payload.activity.type === 'message',
+    ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
     clearSuggestedActions
   );
 }
 
-export default function* () {
+export default function* clearSuggestedActionsOnPostActivitySaga() {
   yield whileConnected(clearSuggestedActionsOnPostActivity);
 }

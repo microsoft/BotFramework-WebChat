@@ -1,6 +1,4 @@
-export default function ({
-  videoHeight
-}) {
+export default function createVimeoContentStyle({ videoHeight }) {
   return {
     border: 0,
     height: videoHeight,

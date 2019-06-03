@@ -13,21 +13,13 @@ test('should focus send box when message is being sent', async () => {
     createStyleSet: styleOptions => {
       const styleSet = window.WebChat.createStyleSet(styleOptions);
 
-      return Object.assign(
-        {},
-        styleSet,
-        {
-          sendBox: Object.assign(
-            {},
-            styleSet.sendBox,
-            {
-              '& > .main > form > input:focus': {
-                backgroundColor: 'Yellow'
-              }
-            }
-          )
-        }
-      );
+      return Object.assign({}, styleSet, {
+        sendBox: Object.assign({}, styleSet.sendBox, {
+          '& > .main > form > input:focus': {
+            backgroundColor: 'Yellow'
+          }
+        })
+      });
     }
   });
 

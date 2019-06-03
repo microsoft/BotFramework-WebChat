@@ -6,11 +6,7 @@ import React from 'react';
 import connectToWebChat from './connectToWebChat';
 
 const {
-  DictateState: {
-    DICTATING,
-    IDLE,
-    STARTING
-  }
+  DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
 class Dictation extends React.Component {
@@ -44,11 +40,7 @@ class Dictation extends React.Component {
   }
 
   handleDictating({ results = [] }) {
-    const {
-      setDictateInterims,
-      setDictateState,
-      setSendBox
-    } = this.props;
+    const { setDictateInterims, setDictateState, setSendBox } = this.props;
 
     const interims = results.map(({ transcript }) => transcript);
 
@@ -62,11 +54,7 @@ class Dictation extends React.Component {
   }
 
   handleError(event) {
-    const {
-      onError,
-      setDictateState,
-      stopDictate
-    } = this.props;
+    const { onError, setDictateState, stopDictate } = this.props;
 
     setDictateState(IDLE);
     stopDictate();
@@ -76,15 +64,7 @@ class Dictation extends React.Component {
 
   render() {
     const {
-      props: {
-        dictateState,
-        disabled,
-        language,
-        webSpeechPonyfill: {
-          SpeechGrammarList,
-          SpeechRecognition
-        } = {}
-      },
+      props: { dictateState, disabled, language, webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {} },
       handleDictate,
       handleDictating,
       handleError
@@ -92,13 +72,13 @@ class Dictation extends React.Component {
 
     return (
       <DictateComposer
-        lang={ language }
-        onDictate={ handleDictate }
-        onError={ handleError }
-        onProgress={ handleDictating }
-        speechGrammarList={ SpeechGrammarList }
-        speechRecognition={ SpeechRecognition }
-        started={ !disabled && (dictateState === STARTING || dictateState === DICTATING) }
+        lang={language}
+        onDictate={handleDictate}
+        onError={handleError}
+        onProgress={handleDictating}
+        speechGrammarList={SpeechGrammarList}
+        speechRecognition={SpeechRecognition}
+        started={!disabled && (dictateState === STARTING || dictateState === DICTATING)}
       />
     );
   }
@@ -151,4 +131,4 @@ export default connectToWebChat(
     submitSendBox,
     webSpeechPonyfill
   })
-)(Dictation)
+)(Dictation);

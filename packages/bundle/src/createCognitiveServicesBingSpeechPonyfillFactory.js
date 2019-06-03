@@ -11,13 +11,12 @@ function injectReferenceGrammarID({ SpeechGrammarList, SpeechRecognition }, refe
   };
 }
 
-export default async function ({ authorizationToken, subscriptionKey }) {
+export default async function createCognitiveServicesBingSpeechPonyfillFactory({
+  authorizationToken,
+  subscriptionKey
+}) {
   const ponyfill = await createPonyfill({ authorizationToken, subscriptionKey });
-  const {
-    SpeechGrammarList,
-    speechSynthesis,
-    SpeechSynthesisUtterance
-  } = ponyfill;
+  const { SpeechGrammarList, speechSynthesis, SpeechSynthesisUtterance } = ponyfill;
 
   return ({ referenceGrammarID }) => ({
     SpeechGrammarList,

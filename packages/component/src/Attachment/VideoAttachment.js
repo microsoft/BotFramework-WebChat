@@ -11,18 +11,11 @@ const ROOT_CSS = css({
   flexDirection: 'column'
 });
 
-const VideoAttachment = ({ attachment, styleSet }) =>
-  <div
-    className={ classNames(
-      ROOT_CSS + '',
-      styleSet.videoAttachment + ''
-    ) }
-  >
-    <VideoContent
-      alt={ attachment.name }
-      src={ attachment.contentUrl }
-    />
-  </div>;
+const VideoAttachment = ({ attachment, styleSet }) => (
+  <div className={classNames(ROOT_CSS + '', styleSet.videoAttachment + '')}>
+    <VideoContent alt={attachment.name} src={attachment.contentUrl} />
+  </div>
+);
 
 VideoAttachment.propTypes = {
   attachment: PropTypes.shape({
@@ -34,6 +27,4 @@ VideoAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(VideoAttachment)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(VideoAttachment);

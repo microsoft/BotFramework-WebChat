@@ -1,8 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const { createTransformer } = require('babel-jest');
+const fs = require("fs");
+const path = require("path");
+const { createTransformer } = require("babel-jest");
 
-const stringifiedBabelOptions = fs.readFileSync(path.join(__dirname, '.babelrc'), 'utf8');
+const stringifiedBabelOptions = fs.readFileSync(
+  path.join(__dirname, ".babelrc"),
+  "utf8"
+);
 const babelOptions = JSON.parse(stringifiedBabelOptions);
 const transformer = createTransformer(babelOptions);
 

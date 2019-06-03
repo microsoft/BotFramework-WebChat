@@ -1,7 +1,4 @@
-import {
-  put,
-  takeEvery
-} from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import markActivity from '../actions/markActivity';
@@ -16,15 +13,13 @@ function* markActivityForSpeak({ payload: { activity } }) {
 function* markActivityForSpeakOnIncomingActivityFromOthers(userID) {
   yield takeEvery(
     ({ payload, type }) =>
-      type === INCOMING_ACTIVITY
-      && speakableActivity(payload.activity)
-      && payload.activity.from.id !== userID,
+      type === INCOMING_ACTIVITY && speakableActivity(payload.activity) && payload.activity.from.id !== userID,
     markActivityForSpeak
   );
 }
 
-export default function* () {
-  yield whileConnected(function* ({ userID }) {
+export default function* markActivityForSpeakOnIncomingActivityFromOthersSaga() {
+  yield whileConnected(function* markActivityForSpeakOnIncomingActivityFromOthersSaga({ userID }) {
     yield whileSpeakIncomingActivity(markActivityForSpeakOnIncomingActivityFromOthers.bind(null, userID));
   });
 }

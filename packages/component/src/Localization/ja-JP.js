@@ -16,9 +16,9 @@ function xMinutesAgo(dateStr) {
   if (deltaInMinutes < 1) {
     return 'たった今';
   } else if (deltaInHours < 1) {
-    return `${ deltaInMinutes } 分前`;
+    return `${deltaInMinutes} 分前`;
   } else if (deltaInHours < 5) {
-    return `${ deltaInHours } 時間前`;
+    return `${deltaInHours} 時間前`;
   } else if (deltaInHours <= 24) {
     return '今日';
   } else if (deltaInHours <= 48) {
@@ -41,22 +41,22 @@ export default {
   FAILED_CONNECTION_NOTIFICATION: '接続できませんでした。',
   INITIAL_CONNECTION_NOTIFICATION: '接続中...',
   INTERRUPTED_CONNECTION_NOTIFICATION: 'ネットワーク中断しました。 再接続中...',
+  RENDER_ERROR_NOTIFICATION:
+    'レンダリングエラーが発生しました。コンソールを確認するか、ボットの開発者に連絡してください。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
-  RENDER_ERROR_NOTIFICATION: 'レンダリングエラーが発生しました。コンソールを確認するか、ボットの開発者に連絡してください。',
-  SEND_FAILED_KEY: '送信できませんでした。{Retry}。',
+  SEND_FAILED_KEY: `送信できませんでした。{Retry}。`,
   SLOW_CONNECTION_NOTIFICATION: '接続するのにはいつもより長くかかります。',
-  'Chat': 'チャット',
+  Chat: 'チャット',
   'Download file': 'ダウンロード',
   'Microphone off': 'マイクオン',
   'Microphone on': 'マイクオフ',
-  'Listening': '聴いてます',
-  'retry': '再送',
-  'Retry': '{retry}', // Please alter this value if 'Retry' at the beginning of a sentence is written differently than at the end of a sentence.
-  'Sending': '送信中',
-  'Tax': '税',
+  Listening: '聴いてます',
+  Retry: '再送',
+  Sending: '送信中',
+  Tax: '税',
   'Type your message': 'メッセージを入力してください',
-  'Total': '合計',
-  'VAT': '消費税',
-  'Send': '送信',
+  Total: '合計',
+  VAT: '消費税',
+  Send: '送信',
   'X minutes ago': xMinutesAgo
-}
+};

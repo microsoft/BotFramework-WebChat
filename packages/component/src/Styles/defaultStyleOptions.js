@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: "off" */
 
 function fontFamily(fonts) {
-  return fonts.map(font => `'${ font }'`).join(', ');
+  return fonts.map(font => `'${font}'`).join(', ');
 }
 
 const DEFAULT_ACCENT = '#0063B1';
@@ -73,7 +73,7 @@ const DEFAULT_OPTIONS = {
 
   // Suggested actions
   suggestedActionBackground: 'White',
-  suggestedActionBorder: `solid 2px ${ DEFAULT_ACCENT }`,
+  suggestedActionBorder: `solid 2px ${DEFAULT_ACCENT}`,
   suggestedActionBorderRadius: 0,
   suggestedActionImageHeight: 20,
   suggestedActionTextColor: DEFAULT_ACCENT,
@@ -115,4 +115,4 @@ const DEFAULT_OPTIONS = {
   spinnerAnimationPaddingRight: 12
 };
 
-export default DEFAULT_OPTIONS
+export default DEFAULT_OPTIONS;

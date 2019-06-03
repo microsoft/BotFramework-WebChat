@@ -4,24 +4,25 @@ This sample builds on top of the ideas expressed in sample [08.customization-use
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/09.customization-reaction-buttons` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/09.customization-reaction-buttons` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Click the 👍👎 button next to activities from bot
+-  Click the 👍👎 button next to activities from bot
 
 # Code
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Overview
+
 We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
 
 In this sample we will build a new React component around the `activity` sent from the bot so that it includes two reaction buttons. Depending on which button is clicked, a new activity will be sent to the bot indicating which button the user has selected.
@@ -30,24 +31,36 @@ Let's start building the React Component. It will have two methods, `handleDownv
 
 ```jsx
 class ActivityWithFeedback extends React.Component {
-  handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: -1 } })
-  handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: 1 } })
+   handleDownvoteButton = () =>
+      this.props.postActivity({
+         type: 'message',
+         name: 'evaluate-activity',
+         value: { activityID: this.props.activityID, helpful: -1 }
+      });
+   handleUpvoteButton = () =>
+      this.props.postActivity({
+         type: 'message',
+         name: 'evaluate-activity',
+         value: { activityID: this.props.activityID, helpful: 1 }
+      });
 
-  render() {
-    const { props } = this;
+   render() {
+      const { props } = this;
 
-    return (
-      <div>
-        <ul>
-          <li><button onClick={ this.handleUpvoteButton }>👍</button></li>
-          <li><button onClick={ this.handleDownvoteButton }>👎</button></li>
-        </ul>
-        <div>
-          { props.children }
-        </div>
-      </div>
-    );
-  }
+      return (
+         <div>
+            <ul>
+               <li>
+                  <button onClick={this.handleUpvoteButton}>👍</button>
+               </li>
+               <li>
+                  <button onClick={this.handleDownvoteButton}>👎</button>
+               </li>
+            </ul>
+            <div>{props.children}</div>
+         </div>
+      );
+   }
 }
 ```
 
@@ -104,27 +117,27 @@ class ActivityWithFeedback extends React.Component {
 This next step is not required. Let's build a wrapper container around ActivityWithFeedback that will strip props to only contain `postActivity`.
 
 ```jsx
-const ConnectedActivityWithFeedback = connectToWebChat(
-  ({ postActivity }) => ({ postActivity })
-)(props => <ActivityWithFeedback { ...props } />)
+const ConnectedActivityWithFeedback = connectToWebChat(({ postActivity }) => ({
+   postActivity
+}))(props => <ActivityWithFeedback {...props} />);
 ```
 
 Next let's build the if statement in `activityMiddleware` that will filter which activities are rendered with a new component, `ConnectedActivityWithFeedback`.
 
 ```jsx
 const activityMiddleware = () => next => card => {
-  if (card.activity.from.role === 'bot') {
-    return (
-      children =>
-        <ConnectedActivityWithFeedback activityID={ card.activity.id }>
-          { next(card)(children) }
-        </ConnectedActivityWithFeedback>
-    );
-  } else {
-    return next(card);
-  }
+   if (card.activity.from.role === 'bot') {
+      return children => (
+         <ConnectedActivityWithFeedback activityID={card.activity.id}>
+            {next(card)(children)}
+         </ConnectedActivityWithFeedback>
+      );
+   } else {
+      return next(card);
+   }
 };
 ```
+
 Make sure `activityMiddleware` is passed into the the Web Chat component, and that's it.
 
 ## Completed code
@@ -239,6 +252,7 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 </html>
 
 ```
+
 # Further reading
 
 [User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/08.customization-user-highlighting) | [(User highlighting source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/08.customization-user-highlighting)

@@ -36,7 +36,4 @@
 
 import Mime from 'mime/Mime';
 
-export default new Mime(
-  require('mime/types/standard'),
-  require('mime/types/other')
-)
+export default new Mime(require('mime/types/standard'), require('mime/types/other'));

@@ -4,17 +4,11 @@ import React from 'react';
 
 import CommonCard from './CommonCard';
 
-const SignInCardAttachment = ({
-  adaptiveCards,
-  attachment,
-  styleSet
-}) =>
-  <div className={ styleSet.animationCardAttachment }>
-    <CommonCard
-      adaptiveCards={ adaptiveCards }
-      attachment={ attachment }
-    />
-  </div>;
+const SignInCardAttachment = ({ adaptiveCards, attachment, styleSet }) => (
+  <div className={styleSet.animationCardAttachment}>
+    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+  </div>
+);
 
 SignInCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
@@ -24,6 +18,4 @@ SignInCardAttachment.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(SignInCardAttachment)
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(SignInCardAttachment);

@@ -29,61 +29,36 @@ const ROOT_CSS = css({
   }
 });
 
-const connectMicrophoneButton = (...selectors) => connectToWebChat(
-  ({
-    disabled,
-    dictateState,
-    language,
-    startDictate,
-    stopDictate
-  }) => ({
-    click: () => {
-      if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
-        stopDictate();
-      } else {
-        startDictate();
-      }
-    },
-    dictating: dictateState === DictateState.DICTATING,
-    disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
-    language
-  }),
-  ...selectors
-);
+const connectMicrophoneButton = (...selectors) =>
+  connectToWebChat(
+    ({ disabled, dictateState, language, startDictate, stopDictate }) => ({
+      click: () => {
+        if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
+          stopDictate();
+        } else {
+          startDictate();
+        }
+      },
+      dictating: dictateState === DictateState.DICTATING,
+      disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
+      language
+    }),
+    ...selectors
+  );
 
-const MicrophoneButton = ({
-  className,
-  click,
-  dictating,
-  disabled,
-  language,
-  styleSet
-}) =>
+const MicrophoneButton = ({ className, click, dictating, disabled, language, styleSet }) => (
   <div
     aria-controls="webchatSendBoxMicrophoneButton"
-    className={ classNames(
-      styleSet.microphoneButton + '',
-      ROOT_CSS + '',
-      className + '',
-      { dictating }
-    ) }
+    className={classNames(styleSet.microphoneButton + '', ROOT_CSS + '', className + '', { dictating })}
   >
-    <IconButton
-      alt={ localize('Speak', language) }
-      disabled={ disabled }
-      onClick={ click }
-    >
+    <IconButton alt={localize('Speak', language)} disabled={disabled} onClick={click}>
       <MicrophoneIcon />
     </IconButton>
-    <div
-      aria-live="polite"
-      className="sr-only"
-      id="webchatSendBoxMicrophoneButton"
-      role="status"
-    >
-      { localize(dictating ? 'Microphone on' : 'Microphone off', language) }
+    <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
+      {localize(dictating ? 'Microphone on' : 'Microphone off', language)}
     </div>
-  </div>;
+  </div>
+);
 
 MicrophoneButton.defaultProps = {
   className: '',
@@ -102,8 +77,6 @@ MicrophoneButton.propTypes = {
   }).isRequired
 };
 
-export default connectMicrophoneButton(
-  ({ styleSet }) => ({ styleSet })
-)(MicrophoneButton)
+export default connectMicrophoneButton(({ styleSet }) => ({ styleSet }))(MicrophoneButton);
 
-export { connectMicrophoneButton }
+export { connectMicrophoneButton };

@@ -8,12 +8,12 @@ function setTimeoutOrSync(fn, ms) {
   fn();
 }
 
-export default function (fn, ms = DEFAULT_DEBOUNCE_INTERVAL) {
+export default function createDebounce(fn, ms = DEFAULT_DEBOUNCE_INTERVAL) {
   let scheduled;
   let lastCall = 0;
   let nextArguments;
 
-  return function (...args) {
+  return function debounce(...args) {
     nextArguments = args;
 
     if (!scheduled) {

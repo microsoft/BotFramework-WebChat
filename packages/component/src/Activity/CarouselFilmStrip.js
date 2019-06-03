@@ -15,7 +15,9 @@ import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
 
-const { ActivityClientState: { SENDING, SEND_FAILED } } = Constants;
+const {
+  ActivityClientState: { SENDING, SEND_FAILED }
+} = Constants;
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -63,27 +65,22 @@ const ROOT_CSS = css({
   }
 });
 
-const connectCarouselFilmStrip = (...selectors) => connectToWebChat(
-  ({
-    language,
-    styleSet: {
-      options: {
-        botAvatarInitials,
-        userAvatarInitials
-      }
-    }
-  }, {
-    activity: {
-      from: {
-        role
-      } = {}
-    } = {}
-  }) => ({
-    avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
-    language
-  }),
-  ...selectors
-)
+const connectCarouselFilmStrip = (...selectors) =>
+  connectToWebChat(
+    (
+      {
+        language,
+        styleSet: {
+          options: { botAvatarInitials, userAvatarInitials }
+        }
+      },
+      { activity: { from: { role } = {} } = {} }
+    ) => ({
+      avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
+      language
+    }),
+    ...selectors
+  );
 
 const WebChatCarouselFilmStrip = ({
   activity,
@@ -96,81 +93,48 @@ const WebChatCarouselFilmStrip = ({
 }) => {
   const {
     attachments = [],
-    channelData: {
-      messageBack: {
-        displayText: messageBackDisplayText
-      } = {},
-      state
-    } = {},
-    from: {
-      role
-    } = {},
+    channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
+    from: { role } = {},
     text,
-    textFormat,
+    textFormat
   } = activity;
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
 
   return (
-    <div
-      className={ classNames(
-        ROOT_CSS + '',
-        styleSet.carouselFilmStrip + '',
-        className + ''
-      ) }
-      ref={ scrollableRef }
-    >
-      <Avatar
-        aria-hidden={ true }
-        className="avatar"
-        fromUser={ fromUser }
-      />
+    <div className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '')} ref={scrollableRef}>
+      <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
-        {
-          !!activityDisplayText &&
-            <div className="message">
-              <Bubble
-                aria-hidden={ true }
-                className="bubble"
-                fromUser={ fromUser }
-              >
-                { children({
-                  activity,
-                  attachment: {
-                    content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
-                  }
-                }) }
+        {!!activityDisplayText && (
+          <div className="message">
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+              {children({
+                activity,
+                attachment: {
+                  content: activityDisplayText,
+                  contentType: textFormatToContentType(textFormat)
+                }
+              })}
+            </Bubble>
+            <div className="filler" />
+          </div>
+        )}
+        <ul ref={itemContainerRef}>
+          {attachments.map((attachment, index) => (
+            <li key={index}>
+              <Bubble fromUser={fromUser} key={index}>
+                {children({ attachment })}
               </Bubble>
-              <div className="filler" />
-            </div>
-        }
-        <ul ref={ itemContainerRef }>
-          {
-            attachments.map((attachment, index) =>
-              <li key={ index }>
-                <Bubble
-                  fromUser={ fromUser }
-                  key={ index }
-                >
-                  { children({ attachment }) }
-                </Bubble>
-              </li>
-            )
-          }
+            </li>
+          ))}
         </ul>
         <div className="webchat__row">
-          {
-            state === SENDING || state === SEND_FAILED ?
-              <SendStatus activity={ activity } />
-            :
-              <Timestamp
-                activity={ activity }
-                aria-hidden={ true }
-                className={ timestampClassName }
-              />
-          }
+          {state === SENDING || state === SEND_FAILED ? (
+            <SendStatus activity={activity} />
+          ) : (
+            <Timestamp activity={activity} aria-hidden={true} className={timestampClassName} />
+          )}
         </div>
       </div>
     </div>
@@ -209,29 +173,20 @@ WebChatCarouselFilmStrip.propTypes = {
   timestampClassName: PropTypes.string
 };
 
-const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(
-  ({
-    avatarInitials,
-    language,
-    styleSet
-  }) => ({
-    avatarInitials,
-    language,
-    styleSet
-  })
-)(WebChatCarouselFilmStrip)
+const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language, styleSet }) => ({
+  avatarInitials,
+  language,
+  styleSet
+}))(WebChatCarouselFilmStrip);
 
-const CarouselFilmStrip = props =>
+const CarouselFilmStrip = props => (
   <FilmContext.Consumer>
-    { ({ itemContainerRef, scrollableRef }) =>
-      <ConnectedCarouselFilmStrip
-        itemContainerRef={ itemContainerRef }
-        scrollableRef={ scrollableRef }
-        { ...props }
-      />
-    }
+    {({ itemContainerRef, scrollableRef }) => (
+      <ConnectedCarouselFilmStrip itemContainerRef={itemContainerRef} scrollableRef={scrollableRef} {...props} />
+    )}
   </FilmContext.Consumer>
+);
 
-export default CarouselFilmStrip
+export default CarouselFilmStrip;
 
-export { connectCarouselFilmStrip }
+export { connectCarouselFilmStrip };

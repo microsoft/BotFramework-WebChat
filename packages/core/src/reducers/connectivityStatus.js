@@ -1,21 +1,13 @@
-import {
-  CONNECT_FULFILLED,
-  CONNECT_PENDING,
-  CONNECT_REJECTED,
-  CONNECT_STILL_PENDING,
-} from '../actions/connect';
+import { CONNECT_FULFILLED, CONNECT_PENDING, CONNECT_REJECTED, CONNECT_STILL_PENDING } from '../actions/connect';
 
-import {
-  RECONNECT_PENDING,
-  RECONNECT_FULFILLED
-} from '../actions/reconnect';
+import { RECONNECT_PENDING, RECONNECT_FULFILLED } from '../actions/reconnect';
 
 import { DISCONNECT_FULFILLED } from '../../lib/actions/disconnect';
 import { SAGA_ERROR } from '../actions/sagaError';
 
 const DEFAULT_STATE = 'uninitialized';
 
-export default function (state = DEFAULT_STATE, { type, meta }) {
+export default function connectivityStatus(state = DEFAULT_STATE, { type, meta }) {
   switch (type) {
     case CONNECT_PENDING:
     case RECONNECT_PENDING:
@@ -49,7 +41,8 @@ export default function (state = DEFAULT_STATE, { type, meta }) {
       state = 'sagaerror';
       break;
 
-    default: break;
+    default:
+      break;
   }
 
   return state;

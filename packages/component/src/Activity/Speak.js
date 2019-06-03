@@ -9,57 +9,36 @@ import SayAlt from './SayAlt';
 //       And it has better DOM position for showing visual spoken text
 
 // TODO: [P3] We should add a "spoken" or "speakState" flag to indicate whether this activity is going to speak, or spoken
-const connectSpeakActivity = (...selectors) => connectToWebChat(
-  ({
-    language,
-    markActivity
-  }, {
-    activity
-  }) => ({
-    language,
-    markAsSpoken: () => markActivity(activity, 'speak', false),
-    selectVoice: voices => {
-      voices = [].slice.call(voices);
+const connectSpeakActivity = (...selectors) =>
+  connectToWebChat(
+    ({ language, markActivity }, { activity }) => ({
+      language,
+      markAsSpoken: () => markActivity(activity, 'speak', false),
+      selectVoice: voices => {
+        voices = [].slice.call(voices);
 
-      return (
-        voices.find(({ lang }) => lang === activity.locale)
-        || voices.find(({ lang }) => lang === language)
-        || voices.find(({ lang }) => lang === window.navigator.language)
-        || voices.find(({ lang }) => lang === 'en-US')
-        || voices[0]
-      );
-    }
-  }),
-  ...selectors
-);
+        return (
+          voices.find(({ lang }) => lang === activity.locale) ||
+          voices.find(({ lang }) => lang === language) ||
+          voices.find(({ lang }) => lang === window.navigator.language) ||
+          voices.find(({ lang }) => lang === 'en-US') ||
+          voices[0]
+        );
+      }
+    }),
+    ...selectors
+  );
 
-const Speak = ({
-  activity,
-  markAsSpoken,
-  selectVoice,
-  styleSet
-}) => {
+const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
   if (!activity) {
     return false;
   }
 
-  const {
-    attachments = [],
-    speak,
-    text
-  } = activity;
+  const { attachments = [], speak, text } = activity;
 
   const lines = [speak || text];
 
-  attachments.forEach(({
-    content: {
-      speak,
-      subtitle,
-      text,
-      title
-    } = {},
-    contentType
-  }) => {
+  attachments.forEach(({ content: { speak, subtitle, text, title } = {}, contentType }) => {
     switch (contentType) {
       case 'application/vnd.microsoft.card.adaptive':
         lines.push(speak);
@@ -79,7 +58,8 @@ const Speak = ({
         lines.push(title);
         break;
 
-      default: break;
+      default:
+        break;
     }
   });
 
@@ -87,18 +67,8 @@ const Speak = ({
 
   return (
     <React.Fragment>
-      <Say
-        onEnd={ markAsSpoken }
-        speak={ singleLine }
-        voice={ selectVoice }
-      />
-      {
-        !!styleSet.options.showSpokenText &&
-          <SayAlt
-            speak={ singleLine }
-            voice={ selectVoice }
-          />
-      }
+      <Say onEnd={markAsSpoken} speak={singleLine} voice={selectVoice} />
+      {!!styleSet.options.showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
     </React.Fragment>
   );
 };
@@ -125,8 +95,6 @@ Speak.propTypes = {
   }).isRequired
 };
 
-export default connectSpeakActivity(
-  ({ styleSet }) => ({ styleSet })
-)(Speak)
+export default connectSpeakActivity(({ styleSet }) => ({ styleSet }))(Speak);
 
-export { connectSpeakActivity }
+export { connectSpeakActivity };

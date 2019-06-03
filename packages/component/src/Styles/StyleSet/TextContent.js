@@ -1,10 +1,6 @@
 /* eslint no-magic-numbers: "off" */
 
-export default function ({
-  bubbleMinHeight,
-  primaryFont,
-  paddingRegular
-}) {
+export default function createTextContentStyle({ bubbleMinHeight, primaryFont, paddingRegular }) {
   return {
     fontFamily: primaryFont,
     margin: 0,

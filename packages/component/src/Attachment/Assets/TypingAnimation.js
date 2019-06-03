@@ -3,7 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../../connectToWebChat';
 
-const TypingAnimation = ({ styleSet }) => <div className={ styleSet.typingAnimation } />;
+const TypingAnimation = ({ styleSet }) => <div className={styleSet.typingAnimation} />;
 
 TypingAnimation.propTypes = {
   styleSet: PropTypes.shape({
@@ -11,8 +11,6 @@ TypingAnimation.propTypes = {
   }).isRequired
 };
 
-const ConnectedTypingAnimation = connectToWebChat(
-  ({ styleSet }) => ({ styleSet })
-)(TypingAnimation)
+const ConnectedTypingAnimation = connectToWebChat(({ styleSet }) => ({ styleSet }))(TypingAnimation);
 
-export default ConnectedTypingAnimation
+export default ConnectedTypingAnimation;

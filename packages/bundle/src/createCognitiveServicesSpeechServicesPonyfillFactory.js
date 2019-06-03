@@ -11,13 +11,15 @@ function injectReferenceGrammarID({ SpeechGrammarList, SpeechRecognition }, refe
   };
 }
 
-export default async function ({
+export default async function createCognitiveServicesSpeechServicesPonyfillFactory({
   authorizationToken,
   region,
   subscriptionKey,
   textNormalization
 }) {
-  console.warn('Web Chat: Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.');
+  console.warn(
+    'Web Chat: Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.'
+  );
 
   const ponyfill = await createPonyfill({
     authorizationToken,
@@ -26,11 +28,7 @@ export default async function ({
     textNormalization
   });
 
-  const {
-    SpeechGrammarList,
-    speechSynthesis,
-    SpeechSynthesisUtterance
-  } = ponyfill;
+  const { SpeechGrammarList, speechSynthesis, SpeechSynthesisUtterance } = ponyfill;
 
   return ({ referenceGrammarID }) => ({
     SpeechGrammarList,
