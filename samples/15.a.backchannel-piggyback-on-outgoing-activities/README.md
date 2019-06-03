@@ -21,8 +21,9 @@ If you haven't viewed it already, review and understanding of sample 11, which t
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
+
 - Type `channel-data`
-   - This command will dump the channel data property bag received on the bot side
+  - This command will dump the channel data property bag received on the bot side
 
 # Code
 
@@ -61,6 +62,7 @@ const store = window.WebChat.createStore(
 All 'DIRECT_LINE/POST_ACTIVITY' sent on this bot will now have an email added to the channel data.
 
 ## Completed Code
+
 Here is the finished `index.html`:
 
 ```diff

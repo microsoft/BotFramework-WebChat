@@ -1,13 +1,15 @@
-# Sample -  Getting Started with Web Chat CDN with ES5 Polyfills
+# Sample - Getting Started with Web Chat CDN with ES5 Polyfills
 
 > This is a great sample for first-time Web Chat users developing bots that must work on Internet Explorer 11.
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN. This includes Adaptive Cards, Cognitive Services, and Markdown-It dependencies. This sample makes changes that are based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
 ## Why use this bundle?
+
 If you know that many of your Web Chat users will be using Internet Explorer 11, we strongly recommend that you use this bundle instead of the `full-bundle`. Otherwise, your bot may not function as expected in IE11. Please note that Web Chat does not support IE<11.
 
 ## What are polyfills?
+
 Polyfills are important for browsers that do not have native technology that is expected in modern browsers. By using a polyfill, you as the developer can ensure that your app works, in this case, on Internet Explorer 11.
 
 # Test out the hosted sample
@@ -27,7 +29,7 @@ Polyfills are important for browsers that do not have native technology that is 
 - Type `markdown`: you should see the sample of Markdown
 - Type `card weather`: you should see a weather card built using Adaptive Cards
 - Type `layout carousel`: you should see a carousel of cards
-   - Resize the window and see how the carousel changes size
+  - Resize the window and see how the carousel changes size
 
 # Code
 
@@ -39,12 +41,14 @@ Polyfills are important for browsers that do not have native technology that is 
 
 This code features the minimal scripting the bot needs to host a full-featured Web Chat, with IE11 backwards compatibility. We will simply be modifying our dependencies in the `script` tag on our `index.html`, based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 The `index.html` page has two main goals.
+
 - To import the Web Chat full bundle CDN script
 - To render Web Chat in Internet Explorer 11
 
- We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
+We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
 
- Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Chat.
+Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Chat.
+
 ```diff
 …
 <head>

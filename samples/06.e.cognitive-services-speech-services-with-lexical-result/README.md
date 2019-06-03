@@ -16,9 +16,10 @@ A simple page with Web Chat integrated with speech-to-text and text-to-speech fe
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
-   - Click on microphone button
-   - Say 123
-   - It should recognize as "one two three", instead of "123."
+
+- Click on microphone button
+- Say 123
+- It should recognize as "one two three", instead of "123."
 
 ### Goals of this bot
 
@@ -27,6 +28,7 @@ We'll start by using the [Cognitive Services Speech Services sample](./../06.c.c
 The main change you will need to make, regardless of whether you are using the subscription key or authorization token, is adding the value `'lexical'` to a `textNormalization` key in your `webSpeechPonyFillFactory` object.
 
 Subscription key:
+
 ```diff
 webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
   region: searchParams.get('r') || 'westus',
@@ -36,6 +38,7 @@ webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechSer
 ```
 
 Authorization Token:
+
 ```diff
    const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
    const { region, token: authorizationToken } = await res.json();
@@ -48,6 +51,7 @@ Authorization Token:
 ```
 
 # Further reading
+
 - [Text normalization wiki](https://en.wikipedia.org/wiki/Text_normalization)
 
 ## Full list of Web Chat Hosted Samples

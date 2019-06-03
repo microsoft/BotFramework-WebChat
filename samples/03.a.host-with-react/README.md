@@ -1,4 +1,4 @@
-# Sample -  Integrating Web Chat using React
+# Sample - Integrating Web Chat using React
 
 > This is a great sample for first-time Web Chat users.
 
@@ -21,7 +21,7 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 - Type `markdown`: you should see the sample of Markdown
 - Type `card weather`: you should see a weather card built using Adaptive Cards
 - Type `layout carousel`: you should see a carousel of cards
-   - Resize the window and see how the carousel change its size
+  - Resize the window and see how the carousel change its size
 
 # Code
 

@@ -1,4 +1,4 @@
-# Sample -  Getting started with Web Chat CDN
+# Sample - Getting started with Web Chat CDN
 
 > This is a great sample for first-time Web Chat users.
 
@@ -21,7 +21,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 - Type `markdown`: you should see the sample of Markdown
 - Type `card weather`: you should see a weather card built using Adaptive Cards
 - Type `layout carousel`: you should see a carousel of cards
-   - Resize the window and see how the carousel changes size
+  - Resize the window and see how the carousel changes size
 
 # Code
 
@@ -33,10 +33,12 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 This code features the minimal scripting the bot needs to host a full-featured Web Chat.
 The `index.html` page has two main goals.
+
 - To import the Web Chat full bundle CDN script
 - To render Web Chat
 
- We'll start by adding the CDN to the head of a blank `index.html` template.
+We'll start by adding the CDN to the head of a blank `index.html` template.
+
 ```diff
 …
 <head>
@@ -48,6 +50,7 @@ The `index.html` page has two main goals.
 > For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
 Next, the code to render Web Chat must be added to the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
+
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
 
 ```diff

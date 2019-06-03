@@ -1,6 +1,7 @@
 # Customize Web Chat by Using Middleware to Dispatch Incoming Activities
 
 ## Description
+
 This app pipes Redux action activities via middleware to your Redux store. (This store is separate from Web Chat's Redux store). By selecting a suggested action in the bot, the user can affect the UI (background color) of Web Chat through the bot.
 
 If you haven't viewed them already, review and understanding of samples 11 and 12 would be extremely beneficial for this sample, linked in [further reading](#further-reading).
@@ -18,6 +19,7 @@ If you haven't viewed them already, review and understanding of samples 11 and 1
 - Browse to [http://localhost:3000/](http://localhost:3000/)
 
 # Things to try out
+
 - Type `sample:redux-middleware`
 - Select one of the suggested actions
 - Notice the background color of the bot changes
@@ -35,22 +37,25 @@ Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. Thi
 ```jsx
 color = color.trim();
 
-  if (color) {
-    const action = {
-      type: 'SET_BACKGROUND_COLOR',
-      payload: { color }
-    };
+if (color) {
+  const action = {
+    type: "SET_BACKGROUND_COLOR",
+    payload: { color }
+  };
 
-    context.sendActivity({
-      type: 'message',
-      text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${ JSON.stringify(action, null, 2) }\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
-      ...SUGGESTED_ACTIONS
-    });
-  }
+  context.sendActivity({
+    type: "message",
+    text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
+      action,
+      null,
+      2
+    )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
+    ...SUGGESTED_ACTIONS
+  });
+}
+```
 
-  ```
-
-  > This code adds the color that was sent to the action and then dispatches it, as well as sends a message from the bot to the user. This means that Web Chat must have a reducer that will set the color when the action is received.
+> This code adds the color that was sent to the action and then dispatches it, as well as sends a message from the bot to the user. This means that Web Chat must have a reducer that will set the color when the action is received.
 
 Here is `dispatchIncomingActivityMiddleware` with differences from [11.customization-redux-actions](./../11.customization-redux-actions) highlighted:
 
@@ -139,6 +144,7 @@ export default connect(
 ```
 
 `WebChat.js`:
+
 ```diff
 import React from 'react';
 
@@ -200,15 +206,15 @@ export default class extends React.Component {
 Completed code for `dispatchIncomingActivityMiddleware.js`:
 
 ```js
-export default function (dispatch) {
+export default function(dispatch) {
   return () => next => action => {
-    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+    if (action.type === "DIRECT_LINE/INCOMING_ACTIVITY") {
       const { activity } = action.payload;
 
       if (
-        activity.type === 'event'
-        && activity.from.role === 'bot'
-        && activity.name === 'redux action'
+        activity.type === "event" &&
+        activity.from.role === "bot" &&
+        activity.name === "redux action"
       ) {
         dispatch(activity.value);
       }
@@ -217,17 +223,15 @@ export default function (dispatch) {
     return next(action);
   };
 }
-
 ```
 
-
 # Further reading
+
 [Redux Documentation](https://redux.js.org/)
 
 [Customization of Redux Actions bot](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions) | [Customization of Redux Actions source code](./../11.customization-redux-actions)
 
 [Minimizable Web Chat bot ](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat) | [Minimizable Web Chat source code](./../12.customization-minimizable-web-chat)
-
 
 ## Full list of Web Chat hosted samples
 

@@ -49,6 +49,7 @@ First, let's style our new containers using glamor. The container for activities
 ```
 
 Next, create the `activityMiddleware` which will be passed into the bot. We will return the content of the activity with a new wrapper that will display our new classes when the correct criterion are met.
+
 ```js
 const activityMiddleware = () => next => card => {
   return (
@@ -73,7 +74,6 @@ const activityMiddleware = () => next => card => {
 };
 ```
 
-
 `{ next(card)(children) }` indicates the middleware can pass to the next renderer. The subsequent results of those middleware calls will be what is displayed inside the `<div>`. Make sure to add this into `activityMiddleware` like so:
 
 ```diff
@@ -89,8 +89,8 @@ const activityMiddleware = () => next => card => {
 
 Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
-
 ## Completed code
+
 ```diff
 <!DOCTYPE html>
 <html lang="en-US">
@@ -168,6 +168,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 </html>
 
 ```
+
 # Further reading
 
 - CSS in JavaScript - [glamor npm](https://www.npmjs.com/package/glamor)

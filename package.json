@@ -59,8 +59,8 @@
   "lint-staged": {
     "linters": {
       "*.{js,jsx,md,ts,tsx}": [
-        "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx,md}",
-        "prettier --write __tests__/**/*.{js,jsx,ts,tsx,md}",
+        "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}",
+        "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
         "git add"
       ]
     }
@@ -74,6 +74,7 @@
     "eslint": "lerna run --scope=botframework-webchat* --parallel --stream eslint",
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
+    "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
     "test": "jest --no-cache",
     "test:all": "lerna run --parallel --stream test",
     "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"

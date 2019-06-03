@@ -13,7 +13,6 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 - Run `npx serve` in the full-bundle directory
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
-
 # Things to try out
 
 - Type `sample:password-input` to get the password input box
@@ -23,6 +22,7 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Overview
+
 We'll start by using the [host with React sample](../03.a.host-with-react) as our Web Chat React template.
 
 First we will build a class-based React component called `PasswordInputActivity`. This component will have a state object with `code` and `submitted` values, set to an empty string and false, respectively.
@@ -40,7 +40,7 @@ class PasswordInputActivity extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      code: '',
+      code: "",
       submitted: false
     };
   }
@@ -57,20 +57,20 @@ class PasswordInputActivity extends React.Component {
   }
 
   render() {
-    const { state: { code, submitted } } = this;
+    const {
+      state: { code, submitted }
+    } = this;
 
     return (
-      <form
-        onSubmit={ this.handleSubmit }
-      >
+      <form onSubmit={this.handleSubmit}>
         <label>
           <span>Please input your 2FA code</span>
           <input
-            autoFocus={ true }
-            disabled={ submitted }
-            onChange={ this.handleCodeChange }
+            autoFocus={true}
+            disabled={submitted}
+            onChange={this.handleCodeChange}
             type="password"
-            value={ code }
+            value={code}
           />
         </label>
       </form>
@@ -78,52 +78,53 @@ class PasswordInputActivity extends React.Component {
   }
 }
 ```
+
 This next step is not required. Let's build a wrapper container around ActivityWithFeedback that will strip props to only contain `sendPostBack`.
+
 ```jsx
-const ConnectedPasswordInputActivity = connectToWebChat(
-  ({ sendPostBack }) => ({ sendPostBack })
-)(props => <PasswordInputActivity { ...props } />)
+const ConnectedPasswordInputActivity = connectToWebChat(({ sendPostBack }) => ({
+  sendPostBack
+}))(props => <PasswordInputActivity {...props} />);
 ```
 
 Next we will build our CSS and apply class names to our component.
-```js
 
+```js
 const { css } = window.Glamor;
 
 const PASSWORD_INPUT_CSS = css({
-  backgroundColor: 'Red',
+  backgroundColor: "Red",
   borderRadius: 3,
-  color: 'White',
-  display: 'flex',
+  color: "White",
+  display: "flex",
   margin: 10,
   padding: 5,
 
-  '& > label': {
-    display: 'flex',
+  "& > label": {
+    display: "flex",
     flex: 1,
-    fontFamily: 'Calibri, \'Helvetica Neue\', Arial, sans-serif',
+    fontFamily: "Calibri, 'Helvetica Neue', Arial, sans-serif",
 
-    '& > span': {
+    "& > span": {
       padding: 10
     },
 
-    '& > input': {
+    "& > input": {
       border: 0,
       borderRadius: 3,
       flex: 1,
-      letterSpacing: '.5em',
+      letterSpacing: ".5em",
       outline: 0,
-      padding: '0 10px',
-      width: '100%',
+      padding: "0 10px",
+      width: "100%",
 
-      '&:disabled': {
-        backgroundColor: 'rgba(255, 255, 255, .5)',
-        color: 'White'
+      "&:disabled": {
+        backgroundColor: "rgba(255, 255, 255, .5)",
+        color: "White"
       }
     }
   }
 });
-
 ```
 
 Add the `PASSWORD_INPUT_CSS` class to the `jsx`:
@@ -147,13 +148,16 @@ return (
   </form>
 );
 ```
+
 Finally, set up `activityMiddleware` to add the `<ConnectedPasswordInputActivity />` component to `passwordInput` event activities.
 
 ```jsx
 const activityMiddleware = () => next => card => {
-  const { activity: { name, type } } = card;
+  const {
+    activity: { name, type }
+  } = card;
 
-  if (type === 'event' && name === 'passwordInput') {
+  if (type === "event" && name === "passwordInput") {
     return () => <ConnectedPasswordInputActivity />;
   } else {
     return next(card);
@@ -174,6 +178,7 @@ window.ReactDOM.render(
 ```
 
 ## Completed code
+
 ```diff
 <!DOCTYPE html>
 <html lang="en-US">

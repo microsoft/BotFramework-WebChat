@@ -1,18 +1,22 @@
 # Sample - Display User and Bot Images on Web Chat
 
 ## Description
+
 A simple web page with a maximized Web Chat that displays individual images (avatars) for both the bot and the user.
 
 # Test out the hosted sample
+
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling)
 
 # How to run
+
 - Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/04.b.display-user-bot-images-styling` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
+
 - Type `hello`: you should see the avatars displayed by user and bot in the transcript.
 
 # Code
@@ -22,6 +26,7 @@ A simple web page with a maximized Web Chat that displays individual images (ava
 ## Getting started
 
 ### Goals of this bot
+
 Showing user images (avatars) on Web Chat is a popular feature. This sample will show you how to implement your own images.
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.

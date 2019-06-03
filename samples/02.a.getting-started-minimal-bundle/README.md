@@ -9,8 +9,8 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 - Markdown-It
 
 # Test out the hosted sample
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle)
 
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle)
 
 # How to run
 
@@ -36,6 +36,7 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies and functionality.
 
 The `index.html` page has two main goals.
+
 - To import the Web Chat core bundle CDN script
 - To render Web Chat
 

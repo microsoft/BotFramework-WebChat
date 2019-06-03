@@ -1,4 +1,4 @@
-# Sample -  Adding Web Browser Speech
+# Sample - Adding Web Browser Speech
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN, with browser speech added for text-to-speech ability. This sample makes changes that are based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
@@ -88,6 +88,7 @@ Here is the finished `index.html`:
 ```
 
 # Further Reading
+
 - [W3C Web Speech API](https://w3c.github.io/speech-api/)
 
 ## Full list of Web Chat hosted samples

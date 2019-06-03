@@ -29,8 +29,8 @@ A simple web page that uses separate speech engines for speech-to-text and text-
 The `index.html` page has one main goal:
 
 - To enable speech by using different engines:
-   - Speech-to-text: browser-supported speech engine
-   - Text-to-speech: Cognitive Services Speech Services engine
+  - Speech-to-text: browser-supported speech engine
+  - Text-to-speech: Cognitive Services Speech Services engine
 
 We will start by using the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js/README.md) as our Web Chat template.
 
@@ -81,6 +81,7 @@ Finally, pass your new ponyfill factory into `renderWebChat`.
 +   webSpeechPonyfillFactory: await createHybridPonyfillFactory({ authorizationToken, region })
   }, document.getElementById('webchat'));
 ```
+
 ## Completed code
 
 Here is the finished `index.html`:
@@ -142,6 +143,7 @@ Here is the finished `index.html`:
 ```
 
 # Further Reading
+
 - [Cognitive Speech Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/)
 - [W3C Web Speech API](https://w3c.github.io/speech-api/)
 - [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)

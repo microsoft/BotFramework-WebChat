@@ -9,12 +9,12 @@ Web Chat client that will show a confirmation dialog when opening a URL.
 # Things to try out
 
 - `"openUrl"` card action
-   - Type `card sports` in the send box
-   - Click on the "Seattle vs Panthers" card
-      - A prompt will show to ask if you want to open the URL
+  - Type `card sports` in the send box
+  - Click on the "Seattle vs Panthers" card
+    - A prompt will show to ask if you want to open the URL
 - `"signin"` card action
-   - Type `oauth` in the send box
-      - Will directly send the user to GitHub authentication page
+  - Type `oauth` in the send box
+    - Will directly send the user to GitHub authentication page
 
 # Code
 
@@ -25,7 +25,7 @@ Web Chat client that will show a confirmation dialog when opening a URL.
 The `index.html` page has one main goal:
 
 - To intercept both `"openUrl"` and `"signin"` card action
-   - Other unintercepted card action, will use default behavior
+  - Other unintercepted card action, will use default behavior
 
 We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
 

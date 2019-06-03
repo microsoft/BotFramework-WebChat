@@ -1,19 +1,22 @@
 # Sample - Idiosyncratic manual styling
 
 ## Description
+
 This sample introduces the ability to overwrite `createStyleSet`, which is the unsupported way of changing the appearance of Web Chat.
 
 # Test out the hosted sample
+
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling)
 
-
 # How to run
+
 - Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/05.b.idiosyncratic-manual-styling` in command line
 - Run `npx serve`
 - Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
+
 - Type `hello`: you should see the speech bubbles from the bot and user are pale blue and pale green respectively, and the font has been changed to Comic Sans. This is different from the default grey and blue bubbles and font in Web Chat.
 
 # Code
@@ -21,17 +24,16 @@ This sample introduces the ability to overwrite `createStyleSet`, which is the u
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
 ## Overriding `createStyleSet`
+
 > Please note that this method of styling Web Chat is **not recommended** and **not supported**. If you need to make styling changes, we **strongly recommend** using the strategy available in [05.a-branding-webchat-styling](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling). Please take a look at that sample before you decide to use manual styling.
 
 If there are aspects of Web Chat that you want to change in appearance, and do not wish to file a PR with us, you are welcome to use idiosyncratic styling. Please note that this strategy is not protected by the Web Chat repo's team from the possibility of breaking changes in the future. This means that if you use the `/latest/` release of Web Chat, your styling may suddenly break when we create a new release.
 
 To see what style sets are overwrite-able, please look at the [`createStyleSet` Java Script file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
 
-
 ## Getting started
 
 ### Goals of this bot
-
 
 This sample starts with the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as the base template.
 

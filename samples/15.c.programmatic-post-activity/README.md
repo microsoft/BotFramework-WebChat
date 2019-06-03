@@ -47,6 +47,7 @@ Finally, let's connect the button to Web Chat by adding an event listener and di
 ```
 
 ## Completed Code
+
 Here is the finished `index.html`:
 
 ```diff

@@ -35,6 +35,7 @@ A simple web page with a maximized Web Chat and minimal additional components. T
 This code features the minimal scripting the bot needs to host Web Chat with minimum dependencies, but has `Markdown-It` added for Markdown support.
 
 The `index.html` page has two main goals.
+
 - To import the Web Chat minimal bundle CDN script
 - Enable markdown rendering
 
@@ -50,11 +51,12 @@ First, add the Markdown-It dependency to our `head`.
 </head>
 …
 ```
+
 > For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat-minimal.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat-minimal.js", or lock down on a specific version with the following format: "/4.1.0/webchat-minimal.js".
 
 Next, add and bind the markdown-it object to `renderMarkdown`:
 
-```diff
+````diff
 …
  directLine: window.WebChat.createDirectLine({ token }),
 +         renderMarkdown: markdownIt.render.bind(markdownIt)
@@ -101,7 +103,7 @@ Here is the finished `index.html`:
   </body>
 </html>
 
-```
+````
 
 # Further reading
 
@@ -112,7 +114,6 @@ Check out the hosted samples and source code for other CDN bundle options below.
 - [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
 - [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
 - [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
-
 
 ## CDN sunburst chart
 

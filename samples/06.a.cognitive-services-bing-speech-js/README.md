@@ -11,6 +11,7 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN, 
 - [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.a.cognitive-services-bing-speech-js/)
 
 # How to run
+
 - Fork this repository
 - Navigate to `/Your-Local-WebChat/samples/06.a.cognitive-services-bing-speech-js` in command line
 - Run `npx serve`
@@ -156,8 +157,8 @@ Here is the finished `index.html` for authorization token flow:
 ```
 
 # Further reading
-- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
 
+- [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/06.c.cognitive-services-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js)
 
 ## Full list of Web Chat Hosted Samples
 
