@@ -41,12 +41,12 @@ function xMinutesAgo(dateStr) {
   });
 }
 
-function botSaidSomething(avatarInitials, text, timestamp) {
-  return `Bot ${avatarInitials} sagde, ${text}, ${xMinutesAgo(timestamp)}`;
+function botSaidSomething(avatarInitials, text) {
+  return `Bot ${avatarInitials} sagde, ${text}`;
 }
 
-function userSaidSomething(avatarInitials, text, timestamp) {
-  return `Bruger ${avatarInitials} sagde, ${text}, ${xMinutesAgo(timestamp)}`;
+function userSaidSomething(avatarInitials, text) {
+  return `Bruger ${avatarInitials} sagde, ${text}`;
 }
 
 export default {
