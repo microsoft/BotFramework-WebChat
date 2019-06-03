@@ -6,14 +6,16 @@ param
 ( 
     [string]$newFilesPath,          #"$(System.ArtifactsDirectory)/pages"
     [string]$branchName,            #gh-pages
-    [string]$repoRootPath           #"$(Build.SourcesFolder)"
+    [string]$repoRootPath,          #"$(Build.SourcesDirectory)"
+    [string]$repoUserName,          #"NameOfUser"
+    [string]$repoUserEmail          #"user@domain.com"
 )
 
 Set-Location -Path $repoRootPath
 
 # Set default identity
-git config --global user.email "v-bruhal@micrsoft.com"
-git config --global user.name "BruceHaley"
+git config --global user.email $repoUserEmail
+git config --global user.name $repoUserName
 
 # Preserve line endings (presumably LF)
 git config --global core.autocrlf input
