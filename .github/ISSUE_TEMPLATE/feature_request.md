@@ -1,9 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ""
+title: ''
 labels: Enhancement, Pending
-assignees: ""
+assignees: ''
 ---
 
 ## Feature Request

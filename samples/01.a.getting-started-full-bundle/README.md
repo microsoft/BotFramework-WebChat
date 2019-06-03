@@ -6,22 +6,22 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/01.a.getting-started-full-bundle` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/01.a.getting-started-full-bundle` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `help`: you should see a full list of MockBot features
-- Type `markdown`: you should see the sample of Markdown
-- Type `card weather`: you should see a weather card built using Adaptive Cards
-- Type `layout carousel`: you should see a carousel of cards
-  - Resize the window and see how the carousel changes size
+-  Type `help`: you should see a full list of MockBot features
+-  Type `markdown`: you should see the sample of Markdown
+-  Type `card weather`: you should see a weather card built using Adaptive Cards
+-  Type `layout carousel`: you should see a carousel of cards
+   -  Resize the window and see how the carousel changes size
 
 # Code
 
@@ -34,8 +34,8 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 This code features the minimal scripting the bot needs to host a full-featured Web Chat.
 The `index.html` page has two main goals.
 
-- To import the Web Chat full bundle CDN script
-- To render Web Chat
+-  To import the Web Chat full bundle CDN script
+-  To render Web Chat
 
 We'll start by adding the CDN to the head of a blank `index.html` template.
 
@@ -143,9 +143,9 @@ Here is the finished `index.html`:
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
-- [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
-- [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
-- [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
+-  [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.b.getting-started-es5-bundle)
+-  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
+-  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
 
 ## CDN sunburst chart
 

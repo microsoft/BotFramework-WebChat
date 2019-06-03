@@ -4,18 +4,18 @@ A full-featured Web Chat with a custom Redux store where one can listen for all 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/11.customization-redux-actions)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/11.customization-redux-actions` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/11.customization-redux-actions` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `sample:backchannel`, you should see an `alert` prompt with the JSON of an activity
+-  Type `sample:backchannel`, you should see an `alert` prompt with the JSON of an activity
 
 # Code
 
@@ -142,9 +142,9 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- Article on [Redux Middleware](https://medium.com/@jacobp100/you-arent-using-redux-middleware-enough-94ffe991e6)
+-  Article on [Redux Middleware](https://medium.com/@jacobp100/you-arent-using-redux-middleware-enough-94ffe991e6)
 
-- [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux/) | [Piping to Redux source code](./../14.customization-piping-to-redux)
+-  [Piping to Redux bot](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux/) | [Piping to Redux source code](./../14.customization-piping-to-redux)
 
 ## Full list of Web Chat hosted samples
 

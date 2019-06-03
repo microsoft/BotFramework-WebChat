@@ -63,7 +63,8 @@
         "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
         "git add"
       ]
-    }
+    },
+    "ignore": ["**/**/*.md"]
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",

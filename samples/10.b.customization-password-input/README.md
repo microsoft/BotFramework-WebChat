@@ -4,18 +4,18 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.b.customization-password-input)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.b.customization-password-input)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/10.b.customization-password-input` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/10.b.customization-password-input` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `sample:password-input` to get the password input box
+-  Type `sample:password-input` to get the password input box
 
 # Code
 
@@ -33,49 +33,49 @@ This component will render a simple form that asks the user to input their 2-Fac
 
 ```jsx
 class PasswordInputActivity extends React.Component {
-  constructor(props) {
-    super(props);
+   constructor(props) {
+      super(props);
 
-    this.handleCodeChange = this.handleCodeChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleCodeChange = this.handleCodeChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
 
-    this.state = {
-      code: "",
-      submitted: false
-    };
-  }
+      this.state = {
+         code: '',
+         submitted: false
+      };
+   }
 
-  handleCodeChange({ target: { value: code } }) {
-    this.setState(() => ({ code }));
-  }
+   handleCodeChange({ target: { value: code } }) {
+      this.setState(() => ({ code }));
+   }
 
-  handleSubmit(event) {
-    event.preventDefault();
+   handleSubmit(event) {
+      event.preventDefault();
 
-    this.props.sendPostBack({ code: this.state.code });
-    this.setState(() => ({ submitted: true }));
-  }
+      this.props.sendPostBack({ code: this.state.code });
+      this.setState(() => ({ submitted: true }));
+   }
 
-  render() {
-    const {
-      state: { code, submitted }
-    } = this;
+   render() {
+      const {
+         state: { code, submitted }
+      } = this;
 
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          <span>Please input your 2FA code</span>
-          <input
-            autoFocus={true}
-            disabled={submitted}
-            onChange={this.handleCodeChange}
-            type="password"
-            value={code}
-          />
-        </label>
-      </form>
-    );
-  }
+      return (
+         <form onSubmit={this.handleSubmit}>
+            <label>
+               <span>Please input your 2FA code</span>
+               <input
+                  autoFocus={true}
+                  disabled={submitted}
+                  onChange={this.handleCodeChange}
+                  type="password"
+                  value={code}
+               />
+            </label>
+         </form>
+      );
+   }
 }
 ```
 
@@ -83,7 +83,7 @@ This next step is not required. Let's build a wrapper container around ActivityW
 
 ```jsx
 const ConnectedPasswordInputActivity = connectToWebChat(({ sendPostBack }) => ({
-  sendPostBack
+   sendPostBack
 }))(props => <PasswordInputActivity {...props} />);
 ```
 
@@ -93,37 +93,37 @@ Next we will build our CSS and apply class names to our component.
 const { css } = window.Glamor;
 
 const PASSWORD_INPUT_CSS = css({
-  backgroundColor: "Red",
-  borderRadius: 3,
-  color: "White",
-  display: "flex",
-  margin: 10,
-  padding: 5,
+   backgroundColor: 'Red',
+   borderRadius: 3,
+   color: 'White',
+   display: 'flex',
+   margin: 10,
+   padding: 5,
 
-  "& > label": {
-    display: "flex",
-    flex: 1,
-    fontFamily: "Calibri, 'Helvetica Neue', Arial, sans-serif",
-
-    "& > span": {
-      padding: 10
-    },
-
-    "& > input": {
-      border: 0,
-      borderRadius: 3,
+   '& > label': {
+      display: 'flex',
       flex: 1,
-      letterSpacing: ".5em",
-      outline: 0,
-      padding: "0 10px",
-      width: "100%",
+      fontFamily: "Calibri, 'Helvetica Neue', Arial, sans-serif",
 
-      "&:disabled": {
-        backgroundColor: "rgba(255, 255, 255, .5)",
-        color: "White"
+      '& > span': {
+         padding: 10
+      },
+
+      '& > input': {
+         border: 0,
+         borderRadius: 3,
+         flex: 1,
+         letterSpacing: '.5em',
+         outline: 0,
+         padding: '0 10px',
+         width: '100%',
+
+         '&:disabled': {
+            backgroundColor: 'rgba(255, 255, 255, .5)',
+            color: 'White'
+         }
       }
-    }
-  }
+   }
 });
 ```
 
@@ -153,15 +153,15 @@ Finally, set up `activityMiddleware` to add the `<ConnectedPasswordInputActivity
 
 ```jsx
 const activityMiddleware = () => next => card => {
-  const {
-    activity: { name, type }
-  } = card;
+   const {
+      activity: { name, type }
+   } = card;
 
-  if (type === "event" && name === "passwordInput") {
-    return () => <ConnectedPasswordInputActivity />;
-  } else {
-    return next(card);
-  }
+   if (type === 'event' && name === 'passwordInput') {
+      return () => <ConnectedPasswordInputActivity />;
+   } else {
+      return next(card);
+   }
 };
 ```
 

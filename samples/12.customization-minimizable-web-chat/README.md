@@ -8,22 +8,22 @@ This app is built with `create-react-app`. If you have not used this package bef
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/12.customization-minimizable-web-chat` in command line
-- Run `npm install`
-- Run `npm start`
-- Browse to [http://localhost:3000/](http://localhost:3000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/12.customization-minimizable-web-chat` in command line
+-  Run `npm install`
+-  Run `npm start`
+-  Browse to [http://localhost:3000/](http://localhost:3000/)
 
 # Things to try out
 
-- Type `card bingsports` and notice the Adaptive Card
-- Minimize the Web Chat component by clicking the minimize button Web Chat header
-- Click the Web Chat button to toggle Web Chat (visually, this is the blue button on the bottom right side of the page)
-- Note that conversation state is preserved
+-  Type `card bingsports` and notice the Adaptive Card
+-  Minimize the Web Chat component by clicking the minimize button Web Chat header
+-  Click the Web Chat button to toggle Web Chat (visually, this is the blue button on the bottom right side of the page)
+-  Note that conversation state is preserved
 
 # Code
 
@@ -75,12 +75,12 @@ First we will render Web Chat. To test, you can temporarily add `<WebChat>` to y
 In the `WebChat.js` file, import `memoize`, `React`, `ReactWebChat`, `createDirectLine`, and `createStyleSet` from our packages.
 
 ```jsx
-import memoize from "memoize-one";
-import React from "react";
+import memoize from 'memoize-one';
+import React from 'react';
 import ReactWebChat, {
-  createDirectLine,
-  createStyleSet
-} from "botframework-webchat";
+   createDirectLine,
+   createStyleSet
+} from 'botframework-webchat';
 ```
 
 Set up the component the same way you would set up a regular `React.Component`
@@ -134,19 +134,19 @@ Let's move on to building the `<MinimizableWebChat>` component.
 Import `React`, `createStore`, and `createStyleSet`. Then import your newly made component, `WebChat`.
 
 ```jsx
-import React from "react";
-import { createStore, createStyleSet } from "botframework-webchat";
+import React from 'react';
+import { createStore, createStyleSet } from 'botframework-webchat';
 
-import WebChat from "./WebChat";
+import WebChat from './WebChat';
 ```
 
 1. Create the `render()` method
    1. Create the state object. It should track the following:
-      - If the chat is minimized
-      - If there are new messages
-      - Which side of the window the chat should display on
-      - The store
-      - The bot token, if fetched
+      -  If the chat is minimized
+      -  If there are new messages
+      -  Which side of the window the chat should display on
+      -  The store
+      -  The bot token, if fetched
    1. Build the component in the return statement
       1. Depending on whether it is minimized, the ternary statement will switch between two different renders: minimized and maximized
       1. Render the `<WebChat>` component when the state is not minimized
@@ -392,187 +392,201 @@ export default App;
 Completed `MinimizableWebChat.js`
 
 ```jsx
-import React from "react";
-import { createStore, createStyleSet } from "botframework-webchat";
+import React from 'react';
+import { createStore, createStyleSet } from 'botframework-webchat';
 
-import WebChat from "./WebChat";
+import WebChat from './WebChat';
 
-import "./fabric-icons-inline.css";
-import "./MinimizableWebChat.css";
+import './fabric-icons-inline.css';
+import './MinimizableWebChat.css';
 
 export default class extends React.Component {
-  constructor(props) {
-    super(props);
+   constructor(props) {
+      super(props);
 
-    this.handleFetchToken = this.handleFetchToken.bind(this);
-    this.handleMaximizeButtonClick = this.handleMaximizeButtonClick.bind(this);
-    this.handleMinimizeButtonClick = this.handleMinimizeButtonClick.bind(this);
-    this.handleSwitchButtonClick = this.handleSwitchButtonClick.bind(this);
-
-    const store = createStore({}, ({ dispatch }) => next => action => {
-      if (action.type === "DIRECT_LINE/INCOMING_ACTIVITY") {
-        if (action.payload.activity.from.role === "bot") {
-          this.setState(() => ({ newMessage: true }));
-        }
-      }
-
-      return next(action);
-    });
-
-    this.state = {
-      minimized: true,
-      newMessage: false,
-      side: "right",
-      store,
-      styleSet: createStyleSet({
-        backgroundColor: "Transparent"
-      }),
-      token: null
-    };
-  }
-
-  async handleFetchToken() {
-    if (!this.state.token) {
-      const res = await fetch(
-        "https://webchat-mockbot.azurewebsites.net/directline/token",
-        { method: "POST" }
+      this.handleFetchToken = this.handleFetchToken.bind(this);
+      this.handleMaximizeButtonClick = this.handleMaximizeButtonClick.bind(
+         this
       );
-      const { token } = await res.json();
+      this.handleMinimizeButtonClick = this.handleMinimizeButtonClick.bind(
+         this
+      );
+      this.handleSwitchButtonClick = this.handleSwitchButtonClick.bind(this);
 
-      this.setState(() => ({ token }));
-    }
-  }
+      const store = createStore({}, ({ dispatch }) => next => action => {
+         if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+            if (action.payload.activity.from.role === 'bot') {
+               this.setState(() => ({ newMessage: true }));
+            }
+         }
 
-  handleMaximizeButtonClick() {
-    this.setState(() => ({
-      minimized: false,
-      newMessage: false
-    }));
-  }
+         return next(action);
+      });
 
-  handleMinimizeButtonClick() {
-    this.setState(() => ({
-      minimized: true,
-      newMessage: false
-    }));
-  }
+      this.state = {
+         minimized: true,
+         newMessage: false,
+         side: 'right',
+         store,
+         styleSet: createStyleSet({
+            backgroundColor: 'Transparent'
+         }),
+         token: null
+      };
+   }
 
-  handleSwitchButtonClick() {
-    this.setState(({ side }) => ({
-      side: side === "left" ? "right" : "left"
-    }));
-  }
+   async handleFetchToken() {
+      if (!this.state.token) {
+         const res = await fetch(
+            'https://webchat-mockbot.azurewebsites.net/directline/token',
+            { method: 'POST' }
+         );
+         const { token } = await res.json();
 
-  render() {
-    const {
-      state: { minimized, newMessage, side, store, styleSet, token }
-    } = this;
+         this.setState(() => ({ token }));
+      }
+   }
 
-    return (
-      <div className="minimizable-web-chat">
-        {minimized ? (
-          <button className="maximize" onClick={this.handleMaximizeButtonClick}>
-            <span
-              className={
-                token
-                  ? "ms-Icon ms-Icon--MessageFill"
-                  : "ms-Icon ms-Icon--Message"
-              }
-            />
-            {newMessage && (
-              <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />
+   handleMaximizeButtonClick() {
+      this.setState(() => ({
+         minimized: false,
+         newMessage: false
+      }));
+   }
+
+   handleMinimizeButtonClick() {
+      this.setState(() => ({
+         minimized: true,
+         newMessage: false
+      }));
+   }
+
+   handleSwitchButtonClick() {
+      this.setState(({ side }) => ({
+         side: side === 'left' ? 'right' : 'left'
+      }));
+   }
+
+   render() {
+      const {
+         state: { minimized, newMessage, side, store, styleSet, token }
+      } = this;
+
+      return (
+         <div className="minimizable-web-chat">
+            {minimized ? (
+               <button
+                  className="maximize"
+                  onClick={this.handleMaximizeButtonClick}
+               >
+                  <span
+                     className={
+                        token
+                           ? 'ms-Icon ms-Icon--MessageFill'
+                           : 'ms-Icon ms-Icon--Message'
+                     }
+                  />
+                  {newMessage && (
+                     <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />
+                  )}
+               </button>
+            ) : (
+               <div
+                  className={
+                     side === 'left' ? 'chat-box left' : 'chat-box right'
+                  }
+               >
+                  <header>
+                     <div className="filler" />
+                     <button
+                        className="switch"
+                        onClick={this.handleSwitchButtonClick}
+                     >
+                        <span className="ms-Icon ms-Icon--Switch" />
+                     </button>
+                     <button
+                        className="minimize"
+                        onClick={this.handleMinimizeButtonClick}
+                     >
+                        <span className="ms-Icon ms-Icon--ChromeMinimize" />
+                     </button>
+                  </header>
+                  <WebChat
+                     className="react-web-chat"
+                     onFetchToken={this.handleFetchToken}
+                     store={store}
+                     styleSet={styleSet}
+                     token={token}
+                  />
+               </div>
             )}
-          </button>
-        ) : (
-          <div className={side === "left" ? "chat-box left" : "chat-box right"}>
-            <header>
-              <div className="filler" />
-              <button className="switch" onClick={this.handleSwitchButtonClick}>
-                <span className="ms-Icon ms-Icon--Switch" />
-              </button>
-              <button
-                className="minimize"
-                onClick={this.handleMinimizeButtonClick}
-              >
-                <span className="ms-Icon ms-Icon--ChromeMinimize" />
-              </button>
-            </header>
-            <WebChat
-              className="react-web-chat"
-              onFetchToken={this.handleFetchToken}
-              store={store}
-              styleSet={styleSet}
-              token={token}
-            />
-          </div>
-        )}
-      </div>
-    );
-  }
+         </div>
+      );
+   }
 }
 ```
 
 Completed `WebChat.js`
 
 ```jsx
-import memoize from "memoize-one";
-import React from "react";
+import memoize from 'memoize-one';
+import React from 'react';
 import ReactWebChat, {
-  createDirectLine,
-  createStyleSet
-} from "botframework-webchat";
+   createDirectLine,
+   createStyleSet
+} from 'botframework-webchat';
 
-import "./WebChat.css";
+import './WebChat.css';
 
 export default class extends React.Component {
-  constructor(props) {
-    super(props);
+   constructor(props) {
+      super(props);
 
-    this.createDirectLine = memoize(token => createDirectLine({ token }));
+      this.createDirectLine = memoize(token => createDirectLine({ token }));
 
-    this.state = {
-      styleSet: createStyleSet({
-        backgroundColor: "Transparent"
-      })
-    };
-  }
+      this.state = {
+         styleSet: createStyleSet({
+            backgroundColor: 'Transparent'
+         })
+      };
+   }
 
-  componentDidMount() {
-    !this.props.token && this.props.onFetchToken();
-  }
+   componentDidMount() {
+      !this.props.token && this.props.onFetchToken();
+   }
 
-  render() {
-    const {
-      props: { className, store, token },
-      state: { styleSet }
-    } = this;
+   render() {
+      const {
+         props: { className, store, token },
+         state: { styleSet }
+      } = this;
 
-    return token ? (
-      <ReactWebChat
-        className={`${className || ""} web-chat`}
-        directLine={this.createDirectLine(token)}
-        store={store}
-        styleSet={styleSet}
-      />
-    ) : (
-      <div className={`${className || ""} connect-spinner`}>
-        <div className="content">
-          <div className="icon">
-            <span className="ms-Icon ms-Icon--Robot" />
-          </div>
-          <p>Please wait while we are connecting.</p>
-        </div>
-      </div>
-    );
-  }
+      return token ? (
+         <ReactWebChat
+            className={`${className || ''} web-chat`}
+            directLine={this.createDirectLine(token)}
+            store={store}
+            styleSet={styleSet}
+         />
+      ) : (
+         <div className={`${className || ''} connect-spinner`}>
+            <div className="content">
+               <div className="icon">
+                  <span className="ms-Icon ms-Icon--Robot" />
+               </div>
+               <p>Please wait while we are connecting.</p>
+            </div>
+         </div>
+      );
+   }
 }
 ```
 
 # Further reading
 
-- [`create-react-app` getting started](https://facebook.github.io/create-react-app/docs/getting-started)
-- [Composing Components in React](https://reactjs.org/docs/components-and-props.html#composing-components)
-- [Demystifying this.bind in React](https://hackernoon.com/demystifying-this-bind-in-react-87f1c843b8b7)
+-  [`create-react-app` getting started](https://facebook.github.io/create-react-app/docs/getting-started)
+-  [Composing Components in React](https://reactjs.org/docs/components-and-props.html#composing-components)
+-  [Demystifying this.bind in React](https://hackernoon.com/demystifying-this-bind-in-react-87f1c843b8b7)
 
 ## Full list of Web Chat hosted samples
 

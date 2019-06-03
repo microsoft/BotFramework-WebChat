@@ -6,23 +6,23 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
-  > Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot.
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
+   > Although there are two separate samples, one named `full-bundle` and the other named `migration`, the end-result HTML is exactly the same. Therefore, the `migration` sample links to the same `full-bundle` bot.
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/01.c.getting-started-migration` in command line
-- Run `npx serve` in the migration directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/01.c.getting-started-migration` in command line
+-  Run `npx serve` in the migration directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `help`: you should see a full list of MockBot features
-- Type `markdown`: you should see the sample of Markdown
-- Type `card weather`: you should see a weather card built using Adaptive Cards
-- Type `layout carousel`: you should see a carousel of cards
-  - Resize the window and see how the carousel changes size
+-  Type `help`: you should see a full list of MockBot features
+-  Type `markdown`: you should see the sample of Markdown
+-  Type `card weather`: you should see a weather card built using Adaptive Cards
+-  Type `layout carousel`: you should see a carousel of cards
+   -  Resize the window and see how the carousel changes size
 
 # Code
 
@@ -35,35 +35,35 @@ A simple web page with a maximized and full-featured Web Chat embed from a CDN. 
 This code features the migration requirements to update Web Chat from v3 to v4.
 The `index.html` page in the migration directory has two main goals.
 
-- To import the Web Chat v4 full bundle CDN script
-- To render Web Chat using the v4 best practices
+-  To import the Web Chat v4 full bundle CDN script
+-  To render Web Chat using the v4 best practices
 
 We'll start by using our old v3 `index.html` as our starting point.
 
 ```html
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <link
-      href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="bot" />
-    <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
-    <script>
-      BotChat.App(
-        {
-          directLine: { secret: direct_line_secret },
-          user: { id: "userid" },
-          bot: { id: "botid" },
-          resize: "detect"
-        },
-        document.getElementById("bot")
-      );
-    </script>
-  </body>
+   <head>
+      <link
+         href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css"
+         rel="stylesheet"
+      />
+   </head>
+   <body>
+      <div id="bot" />
+      <script src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"></script>
+      <script>
+         BotChat.App(
+            {
+               directLine: { secret: direct_line_secret },
+               user: { id: 'userid' },
+               bot: { id: 'botid' },
+               resize: 'detect'
+            },
+            document.getElementById('bot')
+         );
+      </script>
+   </body>
 </html>
 ```
 
@@ -185,7 +185,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
+-  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
 
 ## Full list of Web Chat hosted samples
 

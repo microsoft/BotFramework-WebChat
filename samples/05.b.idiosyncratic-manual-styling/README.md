@@ -6,18 +6,18 @@ This sample introduces the ability to overwrite `createStyleSet`, which is the u
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling)
 
 # How to run
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.b.idiosyncratic-manual-styling` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/05.b.idiosyncratic-manual-styling` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `hello`: you should see the speech bubbles from the bot and user are pale blue and pale green respectively, and the font has been changed to Comic Sans. This is different from the default grey and blue bubbles and font in Web Chat.
+-  Type `hello`: you should see the speech bubbles from the bot and user are pale blue and pale green respectively, and the font has been changed to Comic Sans. This is different from the default grey and blue bubbles and font in Web Chat.
 
 # Code
 
@@ -128,7 +128,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
+-  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling)
 
 ## Full list of Web Chat hosted samples
 

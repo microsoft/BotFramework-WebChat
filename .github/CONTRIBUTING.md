@@ -26,11 +26,11 @@ npm run build
 
 There are 3 types of build tasks in the build process.
 
-- `npm run build`: Build for development (instrumented code for code coverage)
-  - Will bundle as `webchat-instrumented*.js`
-- `npm run watch`: Build for development with watch mode loop
-- `npm run prepublishOnly`: Build for production
-  - Will bundle as `webchat*.js`
+-  `npm run build`: Build for development (instrumented code for code coverage)
+   -  Will bundle as `webchat-instrumented*.js`
+-  `npm run watch`: Build for development with watch mode loop
+-  `npm run prepublishOnly`: Build for production
+   -  Will bundle as `webchat*.js`
 
 ## Testing Web Chat for development purpose
 
@@ -43,8 +43,8 @@ npm start
 
 Then browse to http://localhost:3000/, and click on one of the connection options on the upper right corner.
 
-- Official MockBot: we hosted a live demo bot for testing Web Chat features
-- Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line service](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
+-  Official MockBot: we hosted a live demo bot for testing Web Chat features
+-  Emulator Core: it will connect to http://localhost:5000/v3/directline for [emulated Direct Line service](https://github.com/Microsoft/BotFramework-Emulator/tree/master/packages/emulator/cli/)
 
 You are also advised to test the CDN bundles by copying the test harness from our samples.
 

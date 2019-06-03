@@ -4,18 +4,18 @@ This sample shows Web Chat users how to enable the typing indicator activity fro
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing-indicator)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/07.b.customization-send-typing-indicator)
 
 # How to run
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/07.b.customization-send-typing-indicator` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/07.b.customization-send-typing-indicator` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Note that when you as the user type, there is a typing indicator gif in the transcript. This is activated by the `sendTypingIndicator`.
+-  Note that when you as the user type, there is a typing indicator gif in the transcript. This is activated by the `sendTypingIndicator`.
 
 # Code
 

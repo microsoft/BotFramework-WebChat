@@ -4,11 +4,11 @@ This sample shows how to implement a welcome activity when the bot first starts.
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.d.backchannel-send-welcome-event)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/15.d.backchannel-send-welcome-event)
 
 # Things to try out
 
-- Note the welcome event that appears from the bot when you first open the page.
+-  Note the welcome event that appears from the bot when you first open the page.
 
 # Code
 
@@ -41,12 +41,12 @@ On your bot, you will need to add a filter to post the welcome message when `web
 Mock Bot welcome message:
 
 ```js
-if (context.activity.name === "webchat/join") {
-  await context.sendActivity(
-    `Got \`webchat/join\` event, your language is \`${
-      (context.activity.value || {}).language
-    }\``
-  );
+if (context.activity.name === 'webchat/join') {
+   await context.sendActivity(
+      `Got \`webchat/join\` event, your language is \`${
+         (context.activity.value || {}).language
+      }\``
+   );
 }
 ```
 

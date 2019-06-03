@@ -4,18 +4,18 @@ This sample builds on top of the ideas expressed in sample [08.customization-use
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/09.customization-reaction-buttons` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/09.customization-reaction-buttons` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Click the 👍👎 button next to activities from bot
+-  Click the 👍👎 button next to activities from bot
 
 # Code
 
@@ -31,36 +31,36 @@ Let's start building the React Component. It will have two methods, `handleDownv
 
 ```jsx
 class ActivityWithFeedback extends React.Component {
-  handleDownvoteButton = () =>
-    this.props.postActivity({
-      type: "message",
-      name: "evaluate-activity",
-      value: { activityID: this.props.activityID, helpful: -1 }
-    });
-  handleUpvoteButton = () =>
-    this.props.postActivity({
-      type: "message",
-      name: "evaluate-activity",
-      value: { activityID: this.props.activityID, helpful: 1 }
-    });
+   handleDownvoteButton = () =>
+      this.props.postActivity({
+         type: 'message',
+         name: 'evaluate-activity',
+         value: { activityID: this.props.activityID, helpful: -1 }
+      });
+   handleUpvoteButton = () =>
+      this.props.postActivity({
+         type: 'message',
+         name: 'evaluate-activity',
+         value: { activityID: this.props.activityID, helpful: 1 }
+      });
 
-  render() {
-    const { props } = this;
+   render() {
+      const { props } = this;
 
-    return (
-      <div>
-        <ul>
-          <li>
-            <button onClick={this.handleUpvoteButton}>👍</button>
-          </li>
-          <li>
-            <button onClick={this.handleDownvoteButton}>👎</button>
-          </li>
-        </ul>
-        <div>{props.children}</div>
-      </div>
-    );
-  }
+      return (
+         <div>
+            <ul>
+               <li>
+                  <button onClick={this.handleUpvoteButton}>👍</button>
+               </li>
+               <li>
+                  <button onClick={this.handleDownvoteButton}>👎</button>
+               </li>
+            </ul>
+            <div>{props.children}</div>
+         </div>
+      );
+   }
 }
 ```
 
@@ -118,7 +118,7 @@ This next step is not required. Let's build a wrapper container around ActivityW
 
 ```jsx
 const ConnectedActivityWithFeedback = connectToWebChat(({ postActivity }) => ({
-  postActivity
+   postActivity
 }))(props => <ActivityWithFeedback {...props} />);
 ```
 
@@ -126,15 +126,15 @@ Next let's build the if statement in `activityMiddleware` that will filter which
 
 ```jsx
 const activityMiddleware = () => next => card => {
-  if (card.activity.from.role === "bot") {
-    return children => (
-      <ConnectedActivityWithFeedback activityID={card.activity.id}>
-        {next(card)(children)}
-      </ConnectedActivityWithFeedback>
-    );
-  } else {
-    return next(card);
-  }
+   if (card.activity.from.role === 'bot') {
+      return children => (
+         <ConnectedActivityWithFeedback activityID={card.activity.id}>
+            {next(card)(children)}
+         </ConnectedActivityWithFeedback>
+      );
+   } else {
+      return next(card);
+   }
 };
 ```
 

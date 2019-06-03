@@ -14,22 +14,22 @@ Polyfills are important for browsers that do not have native technology that is 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/01.b.getting-started-es5-bundle` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/01.b.getting-started-es5-bundle` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `help`: you should see a full list of MockBot features
-- Type `markdown`: you should see the sample of Markdown
-- Type `card weather`: you should see a weather card built using Adaptive Cards
-- Type `layout carousel`: you should see a carousel of cards
-  - Resize the window and see how the carousel changes size
+-  Type `help`: you should see a full list of MockBot features
+-  Type `markdown`: you should see the sample of Markdown
+-  Type `card weather`: you should see a weather card built using Adaptive Cards
+-  Type `layout carousel`: you should see a carousel of cards
+   -  Resize the window and see how the carousel changes size
 
 # Code
 
@@ -42,8 +42,8 @@ Polyfills are important for browsers that do not have native technology that is 
 This code features the minimal scripting the bot needs to host a full-featured Web Chat, with IE11 backwards compatibility. We will simply be modifying our dependencies in the `script` tag on our `index.html`, based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 The `index.html` page has two main goals.
 
-- To import the Web Chat full bundle CDN script
-- To render Web Chat in Internet Explorer 11
+-  To import the Web Chat full bundle CDN script
+-  To render Web Chat in Internet Explorer 11
 
 We'll start by using the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md) as our Web Chat template.
 
@@ -106,15 +106,15 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Learn more about polyfills](https://stackoverflow.com/questions/7087331/what-is-the-meaning-of-polyfills-in-html5)
+-  [Learn more about polyfills](https://stackoverflow.com/questions/7087331/what-is-the-meaning-of-polyfills-in-html5)
 
 ## Other CDN bundles
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
-- [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
-- [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
-- [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
+-  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle) | [(Full bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/01.a.getting-started-full-bundle)
+-  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/02.a.getting-started-minimal-bundle) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.a.getting-started-minimal-bundle)
+-  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/02.b.getting-started-minimal-markdown) | [(Minimal bundle source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/02.b.getting-started-minimal-markdown)
 
 ## CDN sunburst chart
 

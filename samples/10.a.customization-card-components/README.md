@@ -4,19 +4,19 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/10.a.customization-card-components` in command line
-- Run `npx serve` in the full-bundle directory
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/10.a.customization-card-components` in command line
+-  Run `npx serve` in the full-bundle directory
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Notice that the command `sample:github-repository` is pre-filled in the Send Box. Press enter.
-- Notice Mock Bot displays the new GitHub card components.
+-  Notice that the command `sample:github-repository` is pre-filled in the Send Box. Press enter.
+-  Notice Mock Bot displays the new GitHub card components.
 
 # Code
 
@@ -62,11 +62,11 @@ Let's build the structure of our component to render on GitHub repository attach
 
 ```jsx
 const GitHubRepositoryAttachment = props => (
-  <div>
-    <p>
-      <a>[GitHub repo link]</a>
-    </p>
-  </div>
+   <div>
+      <p>
+         <a>[GitHub repo link]</a>
+      </p>
+   </div>
 );
 ```
 
@@ -86,18 +86,18 @@ Next we'll create our `attachmentMiddleware` and use our `<GitHubRepositoryAttac
 
 ```jsx
 const attachmentMiddleware = () => next => card => {
-  switch (card.attachment.contentType) {
-    case "application/vnd.microsoft.botframework.samples.github-repository":
-      return (
-        <GitHubRepositoryAttachment
-          owner={card.attachment.content.owner}
-          repo={card.attachment.content.repo}
-        />
-      );
+   switch (card.attachment.contentType) {
+      case 'application/vnd.microsoft.botframework.samples.github-repository':
+         return (
+            <GitHubRepositoryAttachment
+               owner={card.attachment.content.owner}
+               repo={card.attachment.content.repo}
+            />
+         );
 
-    default:
-      return next(card);
-  }
+      default:
+         return next(card);
+   }
 };
 ```
 

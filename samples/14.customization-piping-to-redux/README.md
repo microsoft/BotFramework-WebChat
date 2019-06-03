@@ -8,21 +8,21 @@ If you haven't viewed them already, review and understanding of samples 11 and 1
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux)
 
 # How to run locally
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/14.customization-piping-to-redux` in command line
-- Run `npm install`
-- Run `npm start`
-- Browse to [http://localhost:3000/](http://localhost:3000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/14.customization-piping-to-redux` in command line
+-  Run `npm install`
+-  Run `npm start`
+-  Browse to [http://localhost:3000/](http://localhost:3000/)
 
 # Things to try out
 
-- Type `sample:redux-middleware`
-- Select one of the suggested actions
-- Notice the background color of the bot changes
+-  Type `sample:redux-middleware`
+-  Select one of the suggested actions
+-  Notice the background color of the bot changes
 
 # Code
 
@@ -38,20 +38,20 @@ Part of our focus in this sample is on `dispatchIncomingActivityMiddleware`. Thi
 color = color.trim();
 
 if (color) {
-  const action = {
-    type: "SET_BACKGROUND_COLOR",
-    payload: { color }
-  };
+   const action = {
+      type: 'SET_BACKGROUND_COLOR',
+      payload: { color }
+   };
 
-  context.sendActivity({
-    type: "message",
-    text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
-      action,
-      null,
-      2
-    )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
-    ...SUGGESTED_ACTIONS
-  });
+   context.sendActivity({
+      type: 'message',
+      text: `Will send Redux action in another "message" activity.\n\n\`\`\`\n${JSON.stringify(
+         action,
+         null,
+         2
+      )}\n\`\`\`\n\nFeel free to let me know if you changed your mind.`,
+      ...SUGGESTED_ACTIONS
+   });
 }
 ```
 
@@ -207,21 +207,21 @@ Completed code for `dispatchIncomingActivityMiddleware.js`:
 
 ```js
 export default function(dispatch) {
-  return () => next => action => {
-    if (action.type === "DIRECT_LINE/INCOMING_ACTIVITY") {
-      const { activity } = action.payload;
+   return () => next => action => {
+      if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+         const { activity } = action.payload;
 
-      if (
-        activity.type === "event" &&
-        activity.from.role === "bot" &&
-        activity.name === "redux action"
-      ) {
-        dispatch(activity.value);
+         if (
+            activity.type === 'event' &&
+            activity.from.role === 'bot' &&
+            activity.name === 'redux action'
+         ) {
+            dispatch(activity.value);
+         }
       }
-    }
 
-    return next(action);
-  };
+      return next(action);
+   };
 }
 ```
 

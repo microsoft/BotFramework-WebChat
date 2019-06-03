@@ -6,18 +6,18 @@ This sample introduces `styleSetOptions` and branding your bot through Web Chat 
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling)
 
 # How to run
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/05.a.branding-webchat-styling` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/05.a.branding-webchat-styling` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `hello`: you should see the speech bubbles from the bot and user are pale blue and pale green respectively. This is different from the default grey and blue bubbles in Web Chat.
+-  Type `hello`: you should see the speech bubbles from the bot and user are pale blue and pale green respectively. This is different from the default grey and blue bubbles in Web Chat.
 
 # Code
 
@@ -34,15 +34,15 @@ You may have noticed that Web Chat provides two different ways to change the app
 
 We provide these options to override for several reasons:
 
-- These are commonly re-styled DOM elements that bot creators want modify in order to provide a specific brand experience
-- Although we support the modification of styling, we want it to be obvious to the user that **we do not guarantee our DOM will always stay the same**, which is why Web Chat uses CSS-in-JS (`glamor`), which generates the class names for Web Chat
-- We encourage our users to use CSS selectors, such as `& > button > div > ul > li:nth-child`, as opposed to accessing the element by it's class name (e.g. `& > .css-1a2b3c4`) because of the high likelihood that the project will have future class and DOM changes. CSS selectors provide high specificity without the need of using `!important`, and provides implicit information of what element is being styled
-- `styleSetOptions` is our way of preserving your modifications (without breaking changes!) but allowing the repo to continue to facilitate natural DOM changes that come with an actively updated project
+-  These are commonly re-styled DOM elements that bot creators want modify in order to provide a specific brand experience
+-  Although we support the modification of styling, we want it to be obvious to the user that **we do not guarantee our DOM will always stay the same**, which is why Web Chat uses CSS-in-JS (`glamor`), which generates the class names for Web Chat
+-  We encourage our users to use CSS selectors, such as `& > button > div > ul > li:nth-child`, as opposed to accessing the element by it's class name (e.g. `& > .css-1a2b3c4`) because of the high likelihood that the project will have future class and DOM changes. CSS selectors provide high specificity without the need of using `!important`, and provides implicit information of what element is being styled
+-  `styleSetOptions` is our way of preserving your modifications (without breaking changes!) but allowing the repo to continue to facilitate natural DOM changes that come with an actively updated project
 
 ### My required changes are not all specified in `defaultStyleSetOptions.js`, what do I do now?
 
-- Please feel free to [file a PR](https://github.com/Microsoft/BotFramework-WebChat/issues/new) requesting the feature you want to be able to brand! We welcome your input and are constantly updating `defaultStyleOptions` with commonly modified aspects of Web Chat.
-- As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [05.b.idiosyncratic-manual-styling sample](../05.b.idiosyncratic-manual-styling/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
+-  Please feel free to [file a PR](https://github.com/Microsoft/BotFramework-WebChat/issues/new) requesting the feature you want to be able to brand! We welcome your input and are constantly updating `defaultStyleOptions` with commonly modified aspects of Web Chat.
+-  As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [05.b.idiosyncratic-manual-styling sample](../05.b.idiosyncratic-manual-styling/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
 
 ## Getting started
 
@@ -130,7 +130,7 @@ Feel free to add your own `styleSetOptions` object to override as many of these 
 
 # Further reading
 
-- [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling) | [(Idiosyncratic styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
+-  [Idiosyncratic manual styling](https://microsoft.github.io/BotFramework-WebChat/05.b.idiosyncratic-manual-styling) | [(Idiosyncratic styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.b.idiosyncratic-manual-styling/)
 
 ## Full list of Web Chat hosted samples
 

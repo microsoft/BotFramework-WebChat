@@ -61,28 +61,28 @@ If you need to do some simple styling, you can set them via `styleOptions`. Styl
 ```html
 <!DOCTYPE html>
 <html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <script>
-      const styleOptions = {
-        bubbleBackground: "rgba(0, 0, 255, .1)",
-        bubbleFromUserBackground: "rgba(0, 255, 0, .1)"
-      };
+   <body>
+      <div id="webchat" role="main"></div>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script>
+         const styleOptions = {
+            bubbleBackground: 'rgba(0, 0, 255, .1)',
+            bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+         };
 
-      window.WebChat.renderWebChat(
-        {
-          directLine: window.WebChat.createDirectLine({
-            secret: "YOUR_BOT_SECRET"
-          }),
+         window.WebChat.renderWebChat(
+            {
+               directLine: window.WebChat.createDirectLine({
+                  secret: 'YOUR_BOT_SECRET'
+               }),
 
-          // Passing "styleOptions" when rendering Web Chat
-          styleOptions
-        },
-        document.getElementById("webchat")
-      );
-    </script>
-  </body>
+               // Passing 'styleOptions' when rendering Web Chat
+               styleOptions
+            },
+            document.getElementById('webchat')
+         );
+      </script>
+   </body>
 </html>
 ```
 
@@ -99,36 +99,36 @@ For deeper styling, you can also modify the style set manually by setting the CS
 ```html
 <!DOCTYPE html>
 <html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <script>
-      // "styleSet" is a set of CSS rules which are generated from "styleOptions"
-      const styleSet = window.WebChat.createStyleSet({
-        bubbleBackground: "rgba(0, 0, 255, .1)",
-        bubbleFromUserBackground: "rgba(0, 255, 0, .1)"
-      });
+   <body>
+      <div id="webchat" role="main"></div>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script>
+         // "styleSet" is a set of CSS rules which are generated from "styleOptions"
+         const styleSet = window.WebChat.createStyleSet({
+            bubbleBackground: 'rgba(0, 0, 255, .1)',
+            bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
+         });
 
-      // After generated, you can modify the CSS rules
-      styleSet.textContent = {
-        ...styleSet.textContent,
-        fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
-        fontWeight: "bold"
-      };
+         // After generated, you can modify the CSS rules
+         styleSet.textContent = {
+            ...styleSet.textContent,
+            fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
+            fontWeight: 'bold'
+         };
 
-      window.WebChat.renderWebChat(
-        {
-          directLine: window.WebChat.createDirectLine({
-            secret: "YOUR_BOT_SECRET"
-          }),
+         window.WebChat.renderWebChat(
+            {
+               directLine: window.WebChat.createDirectLine({
+                  secret: 'YOUR_BOT_SECRET'
+               }),
 
-          // Passing "styleSet" when rendering Web Chat
-          styleSet
-        },
-        document.getElementById("webchat")
-      );
-    </script>
-  </body>
+               // Passing 'styleSet' when rendering Web Chat
+               styleSet
+            },
+            document.getElementById('webchat')
+         );
+      </script>
+   </body>
 </html>
 ```
 
@@ -141,24 +141,24 @@ The latest Web Chat support avatar, you can customize them using `botAvatarIniti
 ```html
 <!DOCTYPE html>
 <html>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <script>
-      window.WebChat.renderWebChat(
-        {
-          directLine: window.WebChat.createDirectLine({
-            secret: "YOUR_BOT_SECRET"
-          }),
+   <body>
+      <div id="webchat" role="main"></div>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <script>
+         window.WebChat.renderWebChat(
+            {
+               directLine: window.WebChat.createDirectLine({
+                  secret: 'YOUR_BOT_SECRET'
+               }),
 
-          // Passing avatar initials when rendering Web Chat
-          botAvatarInitials: "BF",
-          userAvatarInitials: "WC"
-        },
-        document.getElementById("webchat")
-      );
-    </script>
-  </body>
+               // Passing avatar initials when rendering Web Chat
+               botAvatarInitials: 'BF',
+               userAvatarInitials: 'WC'
+            },
+            document.getElementById('webchat')
+         );
+      </script>
+   </body>
 </html>
 ```
 
@@ -175,10 +175,10 @@ userAvatarInitials: 'WC'
 
 With the latest version of Web Chat, you can also render activities or attachments that Web Chat does not support out-of-the-box. Activities and attachments render are sent thru a customizable pipeline that modeled after [Redux middleware](https://redux.js.org/api/applymiddleware). The pipeline is flexible enough that you can do the following tasks easily:
 
-- Decorate existing activities/attachments
-- Add new activities/attachments
-- Replace existing activities/attachments (or remove them)
-- Daisy chain middleware together
+-  Decorate existing activities/attachments
+-  Add new activities/attachments
+-  Replace existing activities/attachments (or remove them)
+-  Daisy chain middleware together
 
 ## Show GitHub repository as an attachment
 
@@ -187,67 +187,67 @@ If you want to display a deck of GitHub repository cards, you can create a new R
 <img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/sample-custom-github-repository-attachment.png" width="396" />
 
 ```jsx
-import ReactWebChat from "botframework-webchat";
-import ReactDOM from "react-dom";
+import ReactWebChat from 'botframework-webchat';
+import ReactDOM from 'react-dom';
 
 // Create a new React component that accept render a GitHub repository attachment
 const GitHubRepositoryAttachment = props => (
-  <div
-    style={{
-      fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif",
-      margin: 20,
-      textAlign: "center"
-    }}
-  >
-    <svg
-      height="64"
-      viewBox="0 0 16 16"
-      version="1.1"
-      width="64"
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-      />
-    </svg>
-    <p>
-      <a
-        href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(
-          props.repo
-        )}`}
-        target="_blank"
+   <div
+      style={{
+         fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif",
+         margin: 20,
+         textAlign: 'center'
+      }}
+   >
+      <svg
+         height="64"
+         viewBox="0 0 16 16"
+         version="1.1"
+         width="64"
+         aria-hidden="true"
       >
-        {props.owner}/<br />
-        {props.repo}
-      </a>
-    </p>
-  </div>
+         <path
+            fillRule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+         />
+      </svg>
+      <p>
+         <a
+            href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(
+               props.repo
+            )}`}
+            target="_blank"
+         >
+            {props.owner}/<br />
+            {props.repo}
+         </a>
+      </p>
+   </div>
 );
 
 // Creating a new middleware pipeline that will render <GitHubRepositoryAttachment> for specific type of attachment
 const attachmentMiddleware = () => next => card => {
-  switch (card.attachment.contentType) {
-    case "application/vnd.microsoft.botframework.samples.github-repository":
-      return (
-        <GitHubRepositoryAttachment
-          owner={card.attachment.content.owner}
-          repo={card.attachment.content.repo}
-        />
-      );
+   switch (card.attachment.contentType) {
+      case 'application/vnd.microsoft.botframework.samples.github-repository':
+         return (
+            <GitHubRepositoryAttachment
+               owner={card.attachment.content.owner}
+               repo={card.attachment.content.repo}
+            />
+         );
 
-    default:
-      return next(card);
-  }
+      default:
+         return next(card);
+   }
 };
 
 ReactDOM.render(
-  <ReactWebChat
-    // Prepending the new middleware pipeline
-    attachmentMiddleware={attachmentMiddleware}
-    directLine={window.WebChat.createDirectLine({ token })}
-  />,
-  document.getElementById("webchat")
+   <ReactWebChat
+      // Prepending the new middleware pipeline
+      attachmentMiddleware={attachmentMiddleware}
+      directLine={window.WebChat.createDirectLine({ token })}
+   />,
+   document.getElementById('webchat')
 );
 ```
 
@@ -257,37 +257,37 @@ In this sample, we are adding a new React component called `GitHubRepositoryAtta
 
 ```jsx
 const GitHubRepositoryAttachment = props => (
-  <div
-    style={{
-      fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif",
-      margin: 20,
-      textAlign: "center"
-    }}
-  >
-    <svg
-      height="64"
-      viewBox="0 0 16 16"
-      version="1.1"
-      width="64"
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-      />
-    </svg>
-    <p>
-      <a
-        href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(
-          props.repo
-        )}`}
-        target="_blank"
+   <div
+      style={{
+         fontFamily: "'Calibri', 'Helvetica Neue', Arial, sans-serif",
+         margin: 20,
+         textAlign: 'center'
+      }}
+   >
+      <svg
+         height="64"
+         viewBox="0 0 16 16"
+         version="1.1"
+         width="64"
+         aria-hidden="true"
       >
-        {props.owner}/<br />
-        {props.repo}
-      </a>
-    </p>
-  </div>
+         <path
+            fillRule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+         />
+      </svg>
+      <p>
+         <a
+            href={`https://github.com/${encodeURI(props.owner)}/${encodeURI(
+               props.repo
+            )}`}
+            target="_blank"
+         >
+            {props.owner}/<br />
+            {props.repo}
+         </a>
+      </p>
+   </div>
 );
 ```
 
@@ -295,18 +295,18 @@ Then, we create a middleware that will render the new React component when the b
 
 ```jsx
 const attachmentMiddleware = () => next => card => {
-  switch (card.attachment.contentType) {
-    case "application/vnd.microsoft.botframework.samples.github-repository":
-      return (
-        <GitHubRepositoryAttachment
-          owner={card.attachment.content.owner}
-          repo={card.attachment.content.repo}
-        />
-      );
+   switch (card.attachment.contentType) {
+      case 'application/vnd.microsoft.botframework.samples.github-repository':
+         return (
+            <GitHubRepositoryAttachment
+               owner={card.attachment.content.owner}
+               repo={card.attachment.content.repo}
+            />
+         );
 
-    default:
-      return next(card);
-  }
+      default:
+         return next(card);
+   }
 };
 ```
 
@@ -314,34 +314,34 @@ The activity sent from the bot looks like the following:
 
 ```json
 {
-  "type": "message",
-  "from": {
-    "role": "bot"
-  },
-  "attachmentLayout": "carousel",
-  "attachments": [
-    {
-      "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
-      "content": {
-        "owner": "Microsoft",
-        "repo": "BotFramework-WebChat"
+   "type": "message",
+   "from": {
+      "role": "bot"
+   },
+   "attachmentLayout": "carousel",
+   "attachments": [
+      {
+         "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
+         "content": {
+            "owner": "Microsoft",
+            "repo": "BotFramework-WebChat"
+         }
+      },
+      {
+         "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
+         "content": {
+            "owner": "Microsoft",
+            "repo": "BotFramework-Emulator"
+         }
+      },
+      {
+         "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
+         "content": {
+            "owner": "Microsoft",
+            "repo": "BotFramework-DirectLineJS"
+         }
       }
-    },
-    {
-      "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
-      "content": {
-        "owner": "Microsoft",
-        "repo": "BotFramework-Emulator"
-      }
-    },
-    {
-      "contentType": "application/vnd.microsoft.botframework.samples.github-repository",
-      "content": {
-        "owner": "Microsoft",
-        "repo": "BotFramework-DirectLineJS"
-      }
-    }
-  ]
+   ]
 }
 ```
 

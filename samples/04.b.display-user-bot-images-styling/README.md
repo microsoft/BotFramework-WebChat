@@ -6,18 +6,18 @@ A simple web page with a maximized Web Chat that displays individual images (ava
 
 # Test out the hosted sample
 
-- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/04.b.display-user-bot-images-styling)
 
 # How to run
 
-- Fork this repository
-- Navigate to `/Your-Local-WebChat/samples/04.b.display-user-bot-images-styling` in command line
-- Run `npx serve`
-- Browse to [http://localhost:5000/](http://localhost:5000/)
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/04.b.display-user-bot-images-styling` in command line
+-  Run `npx serve`
+-  Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
-- Type `hello`: you should see the avatars displayed by user and bot in the transcript.
+-  Type `hello`: you should see the avatars displayed by user and bot in the transcript.
 
 # Code
 
@@ -115,7 +115,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
-- [Branding Web Chat styling](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding Styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling/)
+-  [Branding Web Chat styling](https://microsoft.github.io/BotFramework-WebChat/05.a.branding-webchat-styling) | [(Branding Styling source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/05.a.branding-webchat-styling/)
 
 ## Full list of Web Chat hosted samples
 

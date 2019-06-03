@@ -1,9 +1,9 @@
 ---
 name: Question template
 about: Ask a question not related to implementation here
-title: ""
+title: ''
 labels: Pending, Question
-assignees: ""
+assignees: ''
 ---
 
 🚨 The issue tracker is not for implementation questions 🚨

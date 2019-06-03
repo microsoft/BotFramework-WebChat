@@ -1,9 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ""
+title: ''
 labels: Bug, Pending
-assignees: ""
+assignees: ''
 ---
 
 ### [GitHub issues](https://github.com/Microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the Support section to get support related to Bot Framework and Web Chat.
