@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat.css" rel="stylesheet" />
-  <link href="https://feedyou.blob.core.windows.net/webchat/latest/botchat-fullwindow.css" rel="stylesheet" />
+  <link href="../../botchat.css" rel="stylesheet" />
+  <link href="../../botchat-fullwindow.css" rel="stylesheet" />
   <title>Chatbot</title>
   <style>
     body {
@@ -67,8 +67,39 @@
       font-size: 115%;
     }
 
-    #bot-wrapper .wc-app .wc-chatview-panel {
+    .wc-header {
+      display: none;
+    }
+
+    .wc-message-groups {
       top: 163px;
+    }
+
+    .wc-adaptive-card {
+      max-width: 100%;
+    }
+
+    .wc-card button {
+      color: #D83838;
+    }
+
+    .wc-card button:hover {
+      border-color: #D83838;
+      color: #D83838;
+    }
+
+    .wc-card button:active {
+      background-color: #D83838;
+      border-color: #D83838;
+      color: #ffffff;
+    }
+
+    .wc-message-from-me .wc-message-content {
+      background-color: #D83838;
+    }
+
+    .wc-message-from-me svg.wc-message-callout path {
+      fill: #D83838;
     }
   </style>
 </head>
@@ -84,31 +115,17 @@
     </div>
     <div id="bot" />
   </div>
-  <script src="https://feedyou.blob.core.windows.net/webchat/latest/botchat-es5.js"></script>
+  <script src="../../botchat-es5.js"></script>
   <script>
-    if (!sessionStorage.userId) {
-      sessionStorage.userId = BotChat.MakeId();
-    }
-    
     BotChat.App({
-      // YOU WILL RECIEVE FOLLOWING ... VALUES FROM FEEDYOU
-      bot: { id: 'feedbot-...', name: '...' }, // TRY THESE DURING TESTING: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
-      directLine: {
-        secret: '...', // TRY THIS DURING TESTING: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
-        conversationId: new Date().getTime() < sessionStorage.expiration ? sessionStorage.conversationId : undefined,
-        webSocket: false  // web socket connection currently doesn't support conversationId preset
-      },	
-      onConversationStarted: function(conversationId) {
-        sessionStorage.conversationId = conversationId;
-
-        // DL keeps conversation history for a few hours only, so invalidate conversation ID after one hour
-        sessionStorage.expiration = new Date().getTime() + 60 * 60 * 1000
-      },
-      user: { id: sessionStorage.userId, name: 'Uživatel' },
-      theme: { mainColor: '#D83838' }
-      // SEE https://github.com/wearefeedyou/feedbot-webchat FOR OPTIONAL PARAMS
+	  // TRY THIS TO TEST: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
+      directLine: { secret: 'QKck0lZx6rc.4-oOkMzAfYB0WqRJFjoISIr5GnrYggRBh5GKJCcqBEc' },	
+      // TRY THIS TO TEST: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
+      bot: { id: 'feedbot-grafton-cz', name: 'DEMO webchat chatbot' },
+      showUploadButton: true,
+      // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
+      // OPTIONAL - locale: '...',
     }, document.getElementById("bot"));
-    
   </script>
 </body>
 

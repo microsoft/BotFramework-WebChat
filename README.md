@@ -1,6 +1,6 @@
 # Feedyou fork of Microsoft Bot Framework WebChat
 
-Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API. This repo is customized fork of [BotBuilder-WebChat](https://github.com/Microsoft/BotFramework-WebChat) by [Feedyou](https://feedyou.agency). This features were added in comparsion with `BotBuilder-WebChat`:
+Embeddable web chat control for the [Microsoft Bot Framework](http://www.botframework.com) using the [DirectLine](https://docs.botframework.com/en-us/restapi/directline3/) API. This repo is customized fork of [BotBuilder-WebChat](https://github.com/Microsoft/BotFramework-WebChat) by [Feedyou](https://feedyou.agency). This features were added by Feedyou in comparsion with `BotBuilder-WebChat`:
   * show typing indicator on startup until the first message is recieved
   * increase typing indicator timeout from 3 to 20 seconds
   * show `imBack` buttons only for the last activity
@@ -60,6 +60,39 @@ If you want to make the expansion logic by yourself or you want to put bot direc
   - [/samples/feedyou/full.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/full.html) when webchat should be the main element on the page
   -	[/samples/feedyou/persistent.html](https://github.com/wearefeedyou/feedbot-webchat/blob/master/samples/feedyou/persistent.html) special configuration which allows to persist bot history between page reloads (by disabling WebSocket and using HTTP pooling instead)
   
+#### Advanced configuration
+You can use following optional settings during `BotChat.App` call:
+
+```javascript
+bot: {
+  id: string,
+  name?: string
+},
+user?: {
+  id?: string,
+  name?: string
+},
+directLine: {
+  secret: string,
+  conversationId?: string,
+  webSocket?: boolean = true
+},
+theme?: {
+  mainColor?: string
+},
+header?: {
+  text?: string,
+  textWhenCollapsed?: string,
+},
+introDialog?: {
+  id?: string // overrides default bot dialog which is started when user opens webchat
+},
+locale?: 'cs' | 'en' | 'sk' | 'sr' | 'hu' = 'cs', 
+userData?: object, // allows to preset some data we already know about user (email, phone, etc.)
+startOverTrigger?: (trigger: () => void) => void, // can be used to binding onclick event on element which can be used to restart conversation
+onConversationStarted?: (callback: (conversationId: string) => void) => void // can be used to store conversationId for new conversations (useful for history persistence)
+```
+
 <!---
 * `/samples/standalone` has a slightly more sophisticated version of this code, great for testing
 * You can reference to latest release like this, [https://cdn.botframework.com/botframework-webchat/latest/botchat.js](https://cdn.botframework.com/botframework-webchat/latest/botchat.js). Make sure you use the same version for both `botchat.css` and `botchat.js`.
@@ -71,7 +104,7 @@ If you want to make the expansion logic by yourself or you want to put bot direc
 * Running Web Chat inline may not work for some web pages. Read on for a solution.
 -->
 
-### Advanced configuration
+### Advanced customization
 If you want to use WebChat directly as the component in your React app or you just want to customize it more than described above, check out the [advanced README](https://github.com/wearefeedyou/feedbot-webchat/blob/master/README-ADVANCED.md) or contact [Feedyou](mailto:hello@feedyou.agency) directly.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

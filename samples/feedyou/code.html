@@ -21,14 +21,13 @@
     window.onload = function() {
       BotChat.App(
         {
-          // You will get directLine.secret, bot.id and bot.name from Feedyou
-          directLine: { secret: "flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo" },
-          bot: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' },
+          // YOU WILL RECIEVE FOLLOWING ... VALUES FROM FEEDYOU
+          directLine: { secret: "..." }, // TRY THIS DURING TESTING: flYcEctmv88.cwA.PSk.iaausLq-Qu1ctHCDVtBStyXtukwWaKdmj9Tzp64J8Jo
+          bot: { id: 'feedbot-...', name: '...' }, // TRY THESE DURING TESTING: { id: 'feedbot-demo-webchat', name: 'DEMO WebChat' }
           
           theme: { mainColor: "#e51836" },
           header: { text: "Chatbot", textWhenCollapsed: "Click for chatbot!" }
-          // OPTIONAL - locale: '...',
-          // OPTIONAL - user: { id: '...some by-user unique ID', name: 'User name' },
+          // SEE https://github.com/wearefeedyou/feedbot-webchat FOR OPTIONAL PARAMS
         }
       );
     };
