@@ -14,7 +14,7 @@ const DEFAULT_OPTIONS = {
   backgroundColor: 'White',
   cardEmphasisBackgroundColor: '#F0F0F0',
   paddingRegular: PADDING_REGULAR,
-  paddingWide: 20,
+  paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
 
   // Word break
