@@ -23,10 +23,16 @@ class FullReactWebChat extends React.Component {
         })
       )
     );
+
+    this.memoizeStyleSet = memoize((styleSet, styleOptions) => styleSet || createStyleSet(styleOptions));
+    this.memoizeRenderMarkdown = memoize((renderMarkdown, styleSet) => markdown => renderMarkdown(markdown, styleSet));
   }
 
   render() {
     const { adaptiveCardHostConfig, attachmentMiddleware, styleOptions, styleSet, ...otherProps } = this.props;
+
+    const memoizedStyleSet = this.memoizeStyleSet(styleSet, styleOptions);
+    const memoizedRenderMarkdown = this.memoizeRenderMarkdown(renderMarkdown, memoizedStyleSet);
 
     return (
       <BasicWebChat
@@ -35,7 +41,7 @@ class FullReactWebChat extends React.Component {
           attachmentMiddleware,
           styleOptions
         )}
-        renderMarkdown={renderMarkdown}
+        renderMarkdown={ memoizedRenderMarkdown }
         styleOptions={styleOptions}
         styleSet={styleSet || createStyleSet(styleOptions)}
         {...otherProps}
