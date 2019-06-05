@@ -67,3 +67,13 @@ If you want to build a production CDN bundle with minification, you can follow t
 cd packages/bundle
 npm run prepublishOnly
 ```
+
+## Submitting a Pull Request
+
+The Web Chat team welcomes Pull Requests from the community. Before committing code, please run the following command:
+
+```
+npm run eslint
+```
+
+eslint and prettier will ensure that your code follows our linting guidelines without too much effort. If you have any questions about this process, please feel free to leave comments in your Pull Request.
