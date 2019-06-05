@@ -64,7 +64,9 @@
         "git add"
       ]
     },
-    "ignore": ["**/**/*.md"]
+    "ignore": [
+      "**/**/*.md"
+    ]
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -93,12 +95,14 @@
     "@babel/runtime": "^7.4.3",
     "babel-jest": "^24.1.0",
     "coveralls": "^3.0.2",
+    "eslint-plugin-prettier": "^3.1.0",
     "get-port": "^4.0.0",
     "husky": "^2.3.0",
     "jest": "^24.1.0",
     "jest-image-snapshot": "^2.8.1",
     "lerna": "^3.14.0",
     "lint-staged": "^8.1.7",
+    "prettier": "^1.17.1",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "serve-handler": "^5.0.5"
   }
