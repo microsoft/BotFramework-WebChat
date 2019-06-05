@@ -30,7 +30,7 @@ You may have noticed that Web Chat provides two different ways to change the app
 1. 'Branding' your bot via `styleSetOptions` (recommended)
 1. Idiosyncratic styling via overriding `createStyleSet` (not recommended)
 
-`styleSetOptions` is the Web Chat supported method of changing existing DOM elements in the application, and the currently available options are listed on the [`defaultStyleSetOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleSetOptions.js). These options will continue to be updated as we make further as the project grows.
+`styleSetOptions` is the Web Chat supported method of changing existing DOM elements in the application, and the currently available options are listed on the [`defaultStyleOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js). These options will continue to be updated as we make further as the project grows.
 
 We provide these options to override for several reasons:
 
@@ -39,7 +39,7 @@ We provide these options to override for several reasons:
 -  We encourage our users to use CSS selectors, such as `& > button > div > ul > li:nth-child`, as opposed to accessing the element by it's class name (e.g. `& > .css-1a2b3c4`) because of the high likelihood that the project will have future class and DOM changes. CSS selectors provide high specificity without the need of using `!important`, and provides implicit information of what element is being styled
 -  `styleSetOptions` is our way of preserving your modifications (without breaking changes!) but allowing the repo to continue to facilitate natural DOM changes that come with an actively updated project
 
-### My required changes are not all specified in `defaultStyleSetOptions.js`, what do I do now?
+### My required changes are not all specified in `defaultStyleOptions.js`, what do I do now?
 
 -  Please feel free to [file a PR](https://github.com/Microsoft/BotFramework-WebChat/issues/new) requesting the feature you want to be able to brand! We welcome your input and are constantly updating `defaultStyleOptions` with commonly modified aspects of Web Chat.
 -  As a last resort, idiosyncratic styling is available, but not supported by our team. You may use this method by following the [05.b.idiosyncratic-manual-styling sample](../05.b.idiosyncratic-manual-styling/README.md). Please note that using this method creates a **high likelihood** of breaking changes when Web Chat releases new code.
