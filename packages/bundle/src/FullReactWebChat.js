@@ -41,7 +41,7 @@ class FullReactWebChat extends React.Component {
           attachmentMiddleware,
           styleOptions
         )}
-        renderMarkdown={ memoizedRenderMarkdown }
+        renderMarkdown={memoizedRenderMarkdown}
         styleOptions={styleOptions}
         styleSet={styleSet || createStyleSet(styleOptions)}
         {...otherProps}

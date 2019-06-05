@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1] }] */
+
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
@@ -70,9 +72,9 @@ const customMarkdownIt = new MarkdownIt({
   }
 });
 
-export default function render(markdown, { options: { markdownRespectCRLF }}) {
+export default function render(markdown, { options: { markdownRespectCRLF } }) {
   if (markdownRespectCRLF) {
-    markdown = markdown.replace(/\n\r|\r\n/g, carriageReturn => carriageReturn === '\n\r'? '\r\n': '\n\r');
+    markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
   const html = customMarkdownIt.render(markdown);
 
