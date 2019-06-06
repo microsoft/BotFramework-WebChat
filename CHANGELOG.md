@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1829](https://github.com/microsoft/BotFramework-WebChat/issues/1829). Fixed long text not being synthesized by Cognitive Services by bumping to [`react-say@1.2.0`](https://github.com/compulim/react-say), by [@compulim](https://github.com/compulim) in PR [#2035](https://github.com/Microsoft/BotFramework-WebChat/pull/2035)
 -  Fix [#1982](https://github.com/Microsoft/BotFramework-WebChat/issues/1982). Move to prettier! by [@corinagum](https://github.com/corinagum) in PR [#2038](https://github.com/Microsoft/BotFramework-WebChat/pull/2038)
 -  Fix [#1429](https://github.com/Microsoft/BotFramework-WebChat/issues/1429). Added markdown string preprocessing so the renderer will respect CRLF carriage returns (\r\n), by [@tdurnford](https://github.com/tdurnford) in PR [#2055](https://github.com/Microsoft/BotFramework-WebChat/pull/2055)
--  Fix [#2057](https://github.com/Microsoft/BotFramework-WebChat/issues/2057). Added sip protocol to sanitize html options, by [@tdurnford](https://github.com/tdurnford) in PR [#2061](https://github.com/Microsoft/BotFramework-WebChat/pull/2061)
+-  Fix [#2057](https://github.com/Microsoft/BotFramework-WebChat/issues/2057). Added sip protocol to sanitize HTML options, by [@tdurnford](https://github.com/tdurnford) in PR [#2061](https://github.com/Microsoft/BotFramework-WebChat/pull/2061)
 
 ## [4.4.1] - 2019-05-02
 
