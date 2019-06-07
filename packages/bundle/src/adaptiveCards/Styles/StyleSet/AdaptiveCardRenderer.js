@@ -5,7 +5,7 @@ export default function({ accent, paddingRegular, primaryFont }) {
       borderStyle: 'solid',
       borderWidth: 1,
       color: accent,
-      fontWeight: 'bold',
+      fontWeight: 600,
       padding: paddingRegular
     },
 
@@ -13,7 +13,7 @@ export default function({ accent, paddingRegular, primaryFont }) {
       padding: paddingRegular
     },
 
-    '& .ac-input': {
+    '& .ac-input, & .ac-inlineActionButton, & .ac-quickActionButton': {
       fontFamily: primaryFont
     }
   };
