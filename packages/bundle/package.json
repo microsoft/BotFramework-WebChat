@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "adaptivecards": "~1.1.3",
+    "adaptivecards": "~1.2.0",
     "botframework-directlinejs": "^0.11.4",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
