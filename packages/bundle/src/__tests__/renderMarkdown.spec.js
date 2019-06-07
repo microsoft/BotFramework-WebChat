@@ -54,4 +54,11 @@ describe('renderMarkdown', () => {
       '<pre><code>{\n  "hello": "World!"\n}\n</code></pre>\n'
     );
   });
+
+  it('should render sip protocol links correctly', () => {
+    const styleSet = { options: { markdownRespectCRLF: true } };
+    expect(renderMarkdown(`[example@test.com](sip:example@test.com)`, styleSet)).toBe(
+      '<p><a href="sip:example@test.com" target="_blank">example@test.com</a></p>\n'
+    );
+  });
 });
