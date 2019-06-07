@@ -1,4 +1,4 @@
-export default function({ accent, paddingRegular }) {
+export default function({ accent, paddingRegular, primaryFont }) {
   return {
     '& .ac-pushButton': {
       backgroundColor: 'White',
@@ -11,6 +11,10 @@ export default function({ accent, paddingRegular }) {
 
     '& .ac-multichoiceInput': {
       padding: paddingRegular
+    },
+
+    '& .ac-input': {
+      fontFamily: primaryFont
     }
   };
 }
