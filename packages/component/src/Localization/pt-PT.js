@@ -42,11 +42,11 @@ function xMinutesAgo(dateStr) {
 }
 
 function botSaidSomething(avatarInitials, text, timestamp) {
-  return `Bot ${avatarInitials} disse, ${text}, ${xMinutesAgo(timestamp)}`;
+  return `Bot ${avatarInitials} disse, ${text}`;
 }
 
 function userSaidSomething(avatarInitials, text, timestamp) {
-  return `User ${avatarInitials} disse, ${text}, ${xMinutesAgo(timestamp)}`;
+  return `User ${avatarInitials} disse, ${text}`;
 }
 
 export default {
@@ -64,23 +64,22 @@ export default {
   // '[Unknown Card '%1']': '[Unknown Card '%1']',
   'Adaptive Card parse error': 'Erro ao fazer parse do Adaptive Card',
   'Adaptive Card render error': 'Erro ao renderizar o Adaptive Card',
-  'Chat': 'Chat',
+  Chat: 'Chat',
   'Download file': 'Descarregar ficheiro',
+  Left: 'Esquerda',
+  'Listening…': 'A escutar…',
   'Microphone off': 'Desligar microfone',
   'Microphone on': 'Ligar microfone',
-  'Left': 'Esquerda',
-  'Listening…': 'A escutar…',
   'New messages': 'Novas mensagens',
-  'Right': 'Direita',
-  'retry': 'tentar novamente',
-  'Retry': 'Tentar novamente',
-  'Send': 'Enviar',
-  'Sending': 'A enviar',
-  'Speak': 'Falar',
+  Retry: 'Tentar novamente',
+  Right: 'Direita',
+  Send: 'Enviar',
+  Sending: 'A enviar',
+  Speak: 'Falar',
   'Starting…': 'A iniciar…',
-  'Tax': 'Imposto',
-  'Total': 'Total',
+  Tax: 'Imposto',
+  Total: 'Total',
   'Type your message': 'Escreva a sua mensagem',
   'Upload file': 'Enviar ficheiro',
-  'VAT': 'IVA'
+  VAT: 'IVA'
 }
