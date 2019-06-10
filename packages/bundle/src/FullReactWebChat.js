@@ -14,14 +14,16 @@ class FullReactWebChat extends React.Component {
   constructor(props) {
     super(props);
 
-    this.createAttachmentMiddleware = memoize((adaptiveCardHostConfig, middlewareFromProps, styleOptions) =>
-      concatMiddleware(
-        middlewareFromProps,
-        createAdaptiveCardsAttachmentMiddleware({
-          adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(styleOptions),
-          adaptiveCards
-        })
-      )
+    this.createAttachmentMiddleware = memoize(
+      (adaptiveCardHostConfig, middlewareFromProps, styleOptions, renderMarkdown) =>
+        concatMiddleware(
+          middlewareFromProps,
+          createAdaptiveCardsAttachmentMiddleware({
+            adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(styleOptions),
+            adaptiveCards,
+            renderMarkdown
+          })
+        )
     );
 
     this.memoizeStyleSet = memoize((styleSet, styleOptions) => styleSet || createStyleSet(styleOptions));
@@ -39,7 +41,8 @@ class FullReactWebChat extends React.Component {
         attachmentMiddleware={this.createAttachmentMiddleware(
           adaptiveCardHostConfig,
           attachmentMiddleware,
-          styleOptions
+          styleOptions,
+          memoizedRenderMarkdown
         )}
         renderMarkdown={memoizedRenderMarkdown}
         styleOptions={styleOptions}
