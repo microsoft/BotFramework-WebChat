@@ -1,4 +1,4 @@
-# ![Bot Framework Web Chat](./media/BotFrameworkWebChat_header.png)
+# ![Bot Framework Web Chat](https://github.com/microsoft/BotFramework-WebChat/edit/master/media/BotFrameworkWebChat_header.png)
 
 ### [Click here to find out what's new for //build2019!](https://github.com/Microsoft/botframework/blob/master/whats-new.md#whats-new)
 
