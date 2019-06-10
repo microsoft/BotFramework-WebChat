@@ -1,5 +1,6 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
+import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 
@@ -13,8 +14,8 @@ test('hero card', async () => {
 
   await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), timeouts.fetch);
+  await driver.wait(minNumActivitiesShown(2), 2000);
 
   const base64PNG = await driver.takeScreenshot();
 
