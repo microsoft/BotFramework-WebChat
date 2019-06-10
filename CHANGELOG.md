@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1947](https://github.com/Microsoft/BotFramework-WebChat/issues/1947). Fix scrollbar in suggested action should be hidden in Firefox, remove gaps, and use style set for customizing `react-film`, by [@compulim](https://github.com/compulim) in PR [#1953](https://github.com/Microsoft/BotFramework-WebChat/pull/1953)
 -  Fix [#1948](https://github.com/Microsoft/BotFramework-WebChat/issues/1948). Fixed sample 17.chat-send-history to work with Firefox and Edge, by [@tdurnford](https://github.com/tdurnford) in PR [#1956](https://github.com/Microsoft/BotFramework-WebChat/pull/1956)
 -  Fix [#1304](https://github.com/Microsoft/BotFramework-WebChat/issues/1304). Move Adaptive Cards from component to bundle, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum) in PR [#1936](https://github.com/Microsoft/BotFramework-WebChat/pull/1936)
+- Fix [#1990](https://github.com/Microsoft/BotFramework-WebChat/issues/1990). Bump Adaptive Cards & fix textarea font-family from monospace to Web Chat's `primaryFont`, by [@corinagum](https://github.com/corinagum) in PR [#2064](https://github.com/Microsoft/BotFramework-WebChat/pull/2064)
 
 ## [4.3.0] - 2019-03-04
 
