@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1982](https://github.com/Microsoft/BotFramework-WebChat/issues/1982). Move to prettier! by [@corinagum](https://github.com/corinagum) in PR [#2038](https://github.com/Microsoft/BotFramework-WebChat/pull/2038)
 -  Fix [#1429](https://github.com/Microsoft/BotFramework-WebChat/issues/1429). Added markdown string preprocessing so the renderer will respect CRLF carriage returns (\r\n), by [@tdurnford](https://github.com/tdurnford) in PR [#2055](https://github.com/Microsoft/BotFramework-WebChat/pull/2055)
 -  Fix [#2057](https://github.com/Microsoft/BotFramework-WebChat/issues/2057). Added sip protocol to sanitize HTML options, by [@tdurnford](https://github.com/tdurnford) in PR [#2061](https://github.com/Microsoft/BotFramework-WebChat/pull/2061)
+-  Fix [#1896](https://github.com/microsoft/BotFramework-WebChat/issues/1896). Added data schema to render base64 images, by [@denscollo](https://github.com/denscollo) in PR[#2067](https://github.com/microsoft/BotFramework-WebChat/pull/2067)
 
 ## [4.4.1] - 2019-05-02
 
