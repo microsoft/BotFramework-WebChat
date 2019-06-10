@@ -41,11 +41,11 @@ function xMinutesAgo(dateStr) {
   });
 }
 
-function botSaidSomething(avatarInitials, text, timestamp) {
+function botSaidSomething(avatarInitials, text) {
   return `Bot ${avatarInitials} disse, ${text}`;
 }
 
-function userSaidSomething(avatarInitials, text, timestamp) {
+function userSaidSomething(avatarInitials, text) {
   return `User ${avatarInitials} disse, ${text}`;
 }
 
@@ -53,8 +53,9 @@ export default {
   FAILED_CONNECTION_NOTIFICATION: 'Não foi possível ligar.',
   INITIAL_CONNECTION_NOTIFICATION: 'A ligar…',
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Interrupção de Rede. Reconectando…',
-  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  // eslint-disable-next-line prettier/prettier
   RENDER_ERROR_NOTIFICATION: 'Ocorreu um erro a renderizar. Por favor verifique a consola ou contacte o developer do bot.',
+  // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: 'O envio falhou. {Retry}.',
   SLOW_CONNECTION_NOTIFICATION: 'A ligação está a demorar mais tempo que o normal',
   'Bot said something': botSaidSomething,
@@ -82,4 +83,4 @@ export default {
   'Type your message': 'Escreva a sua mensagem',
   'Upload file': 'Enviar ficheiro',
   VAT: 'IVA'
-}
+};
