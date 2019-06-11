@@ -7,7 +7,7 @@ import React from 'react';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardMiddleware';
 import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
 import defaultAdaptiveCardHostConfig from './adaptiveCards/Styles/adaptiveCardHostConfig';
-import renderMarkdown from './renderMarkdown';
+import defaultRenderMarkdown from './renderMarkdown';
 
 // Add additional props to <WebChat>, so it support additional features
 class FullReactWebChat extends React.Component {
@@ -31,10 +31,18 @@ class FullReactWebChat extends React.Component {
   }
 
   render() {
-    const { adaptiveCardHostConfig, attachmentMiddleware, styleOptions, styleSet, ...otherProps } = this.props;
+    const {
+      adaptiveCardHostConfig,
+      attachmentMiddleware,
+      styleOptions,
+      styleSet,
+      renderMarkdown,
+      ...otherProps
+    } = this.props;
 
     const memoizedStyleSet = this.memoizeStyleSet(styleSet, styleOptions);
-    const memoizedRenderMarkdown = this.memoizeRenderMarkdown(renderMarkdown, memoizedStyleSet);
+    const memoizedRenderMarkdown =
+      renderMarkdown || this.memoizeRenderMarkdown(defaultRenderMarkdown, memoizedStyleSet.options.markdown);
 
     return (
       <BasicWebChat
