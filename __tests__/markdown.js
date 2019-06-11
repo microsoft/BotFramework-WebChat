@@ -15,6 +15,8 @@ test('hero card', async () => {
 
   await driver.wait(allImagesLoaded(), timeouts.fetch);
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  // Wait for transcript to scroll to bottom
+  await driver.sleep(1000);
 
   const base64PNG = await driver.takeScreenshot();
 
