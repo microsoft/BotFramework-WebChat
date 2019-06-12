@@ -1,15 +1,36 @@
+# Builder is based on Node.js 12 image
+# This builder image will build HTML and JavaScript code out of the create-react-app project
 FROM node:12 AS builder
 WORKDIR /var/web/
 
+# Copy the web app code to /var/web/
+# We excluded /.env and /node_modules/ via .dockerignore
 ADD app/ /var/web/
+
+# Doing a fresh "npm install" on build to make sure the image is reproducible
 RUN npm ci
+
+# Build the web app code via create-react-app and react-scripts
 RUN npm run build
 
+# Server is based on Node.js 12 image
 FROM node:12
+
+# Expose port 80 and set entrypoint
 EXPOSE 80
 WORKDIR /var/web/
 ENTRYPOINT node .
+
+# Set environment variable NODE_ENV to "production"
 ENV NODE_ENV production
+
+# Copy the REST API server code to /var/web/
+# We excluded /.env and /node_modules/ via .dockerignore
 ADD rest-api/ /var/web/
+
+# Copy the statically-built HTML and JavaScript to /var/web/public/
+# This will be served out of the REST API server
 COPY --from=builder /var/web/build/ /var/web/public
+
+# Doing a fresh "npm install" on build to make sure the image is reproducible
 RUN npm ci

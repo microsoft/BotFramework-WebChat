@@ -4,6 +4,8 @@ import React, { useMemo } from 'react';
 import Context from './Context';
 import openCenter from '../utils/openCenter';
 
+// Composer will prepare a React context object to use by consumer.
+// The composer and context used here is very generic and will be extended by GitHub and Microsoft Graph-specific composer and context.
 const Composer = ({
   accessToken,
   children,
@@ -13,6 +15,10 @@ const Composer = ({
 }) => {
   const context = useMemo(() => ({
     onSignIn: accessToken ? undefined : () => {
+      // When context.onSignIn is called, we will:
+      // 1. Open a new popup and navigate to the URL stored in "oauthAuthorizeURL" prop.
+      // 2. OAuth provider will call our OAuth callback page.
+      // 3. The callback page use "postMessage" to inform the parent window (this window) about the access token thru "message" event.
       const handleMessage = ({ data, origin }) => {
         const oauthAuthorizeLocation = new URL(oauthAuthorizeURL, window.location.href);
 
@@ -21,6 +27,7 @@ const Composer = ({
         }
 
         try {
+          // The counterpart of URLSearchParams used here can be found in /rest-api/src/routes/{aad|github}/oauth/callback.js.
           const params = new URLSearchParams(data);
 
           if (params.has('error')) {
@@ -44,6 +51,10 @@ const Composer = ({
       window.addEventListener('message', handleMessage);
       openCenter(oauthAuthorizeURL, 'oauth', 360, 640);
     },
+
+    // For sign out, we simply remove the token.
+    // Some OAuth provider support an optional logout URL.
+    // When the user sign out from the provider page, the logout URL for the specific application is being called.
     onSignOut: accessToken ? () => onAccessTokenChange('') : undefined
   }), [accessToken, oauthAuthorizeURL, onAccessTokenChange, onError]);
 

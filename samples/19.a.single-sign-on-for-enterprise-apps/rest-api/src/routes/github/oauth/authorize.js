@@ -9,6 +9,8 @@ const {
   GITHUB_OAUTH_STATE_SALT
 } = process.env;
 
+// GET /api/github/oauth/authorize
+// Redirects the user to GitHub OAuth authorize page at https://github.com/login/oauth/authorize
 module.exports = (_, res) => {
   const seed = random().toString(36).substr(2, 10);
   const state = generateOAuthState(seed, GITHUB_OAUTH_STATE_SALT);

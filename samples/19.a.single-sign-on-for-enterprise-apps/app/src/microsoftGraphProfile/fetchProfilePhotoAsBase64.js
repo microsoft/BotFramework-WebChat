@@ -1,5 +1,7 @@
 import { encode } from 'base64-arraybuffer';
 
+// Get the profile picture from Microsoft Graph, only works with work/school accounts.
+// https://docs.microsoft.com/en-us/graph/api/profilephoto-get?view=graph-rest-1.0
 export default async function fetchProfilePhotoInBase64(accessToken) {
   if (accessToken) {
     const res = await fetch(

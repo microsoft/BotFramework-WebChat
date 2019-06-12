@@ -13,6 +13,8 @@ import GitHubProfileComposer from '../gitHubProfile/Composer';
 
 const SETTINGS_URL = '/api/github/settings';
 
+// We will fetch authorize URL and client ID for GitHub sign-in flow from the server.
+// This help decouples the server settings (e.g. client ID) from the HTML code.
 async function fetchSettings() {
   try {
     const { authorizeURL, clientId } = await fetchJSON(SETTINGS_URL);
@@ -26,37 +28,46 @@ async function fetchSettings() {
   }
 }
 
+// The props are passed by GitHubProfileContext and its related composer.
 const GitHubProfileMenu = ({
   avatarURL,
   name,
   oauthReviewAccessURL,
-  onSignIn,
-  onSignOut
+  onSignIn, // This will become falsy if sign in is not available, e.g. already signed in or misconfiguration
+  onSignOut // This will become falsy if sign out is not available, e.g. not signed in
 }) => {
   const [expanded, setExpanded] = useState(false);
   const signedIn = !!onSignOut;
 
+  // Listen to "signin" event from the window.
+  // The "signin" event is fired when the user click on the "Sign in" button in Web Chat.
   useEffect(() => {
     window.addEventListener('signin', ({ data: { provider } = {} }) => provider === 'github' && onSignIn && onSignIn());
 
     return () => window.removeEventListener('signin', onSignIn);
   });
 
+  // Listen to "signout" event from the window.
+  // The "signout" event is fired when the bot request the webpage to sign out.
   useEffect(() => {
     window.addEventListener('signout', onSignOut);
 
     return () => window.removeEventListener('signout', onSignOut);
   });
 
+  // CSS style for displaying avatar as background image.
+  // Background image will ease handling 404 or other HTTP errors by not showing the image.
   const avatarStyle = useMemo(() => ({
     backgroundImage: `url(${ avatarURL || '/images/GitHub-Mark-64px-DDD-White.png' })`
   }), [avatarURL]);
 
+  // In addition to running the sign in logic from OAuth context, we will also collapse the menu.
   const handleSignIn = useCallback(() => {
     onSignIn && onSignIn();
     setExpanded(false);
   }, [onSignIn]);
 
+  // In addition to running the sign in logic from OAuth context, we will also collapse the menu.
   const handleSignOut = useCallback(() => {
     onSignOut && onSignOut();
     setExpanded(false);
@@ -133,6 +144,8 @@ GitHubProfileMenu.propTypes = {
   setAccessToken: PropTypes.func
 };
 
+// Borrowed from react-redux, "compose" is a function that combine the results of the functions.
+// The functions listed here will retrieve corresponding information from React context.
 const ComposedGitHubProfileMenu = compose(
   connectGitHubProfileAvatar(),
   connectGitHubProfileName(),
@@ -151,6 +164,8 @@ const ConnectedGitHubProfileMenu = ({
     const { authorizeURL, clientId } = await fetchSettings();
 
     setOAuthAuthorizeURL(authorizeURL);
+
+    // The OAuth review access URL is constructed based on OAuth client ID.
     setOAuthReviewAccessURL(`https://github.com/settings/connections/applications/${ clientId }`);
   }, []);
 

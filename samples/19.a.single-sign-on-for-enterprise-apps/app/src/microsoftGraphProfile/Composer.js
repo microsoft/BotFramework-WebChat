@@ -9,6 +9,7 @@ import fetchProfilePhotoAsBase64 from './fetchProfilePhotoAsBase64';
 import MicrosoftGraphProfileContext from './Context';
 import OAuthComposer from '../oauth/Composer';
 
+// Composer is a React component with a React context
 const MicrosoftGraphProfileComposer = ({
   accessToken,
   children,
@@ -18,6 +19,7 @@ const MicrosoftGraphProfileComposer = ({
   const [avatarURL, setAvatarURL] = useState('');
   const [name, setName] = useState('');
 
+  // If access token change, we will refresh the profile name and picture from Azure AD
   useMemo(async () => {
     const [avatarURL, name] = await Promise.all([
       fetchProfilePhotoAsBase64(accessToken),
@@ -28,6 +30,7 @@ const MicrosoftGraphProfileComposer = ({
     setName(name);
   }, [accessToken]);
 
+  // Build a new React context object if anything changed.
   const context = useMemo(() => ({
     avatarURL,
     name,
@@ -61,11 +64,15 @@ MicrosoftGraphProfileComposer.propTypes = {
   onSignOut: PropTypes.func,
 };
 
+// Hoist the functionality from generic OAuth composer to GitHub composer.
+// The generic OAuth composer provides sign in and sign out logic.
+// The Azure AD composer provide profile-related information.
 const ComposedMicrosoftGraphProfileComposer = compose(
   connectSignInButton(({ onClick }) => ({ onSignIn: onClick })),
   connectSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
 )(MicrosoftGraphProfileComposer)
 
+// This is the exported React component, provide basic UI-less functionality to its descendants.
 const ConnectedMicrosoftGraphProfileComposer = ({
   accessToken,
   children,

@@ -10,6 +10,9 @@ const {
   GITHUB_OAUTH_STATE_SALT
 } = process.env;
 
+// GET /api/github/oauth/callback
+// When the OAuth Provider completed, regardless of positive or negative result,
+// send the result back using window.opener.postMessage.
 module.exports = async (req, res) => {
   let data;
 

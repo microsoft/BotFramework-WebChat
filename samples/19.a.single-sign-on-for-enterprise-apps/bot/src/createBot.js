@@ -1,5 +1,5 @@
 const { ActivityHandler, TurnContext } = require('botbuilder');
-const { compareTwoStrings, findBestMatch } = require('string-similarity');
+const { findBestMatch } = require('string-similarity');
 
 const createBotAdapter = require('./createBotAdapter');
 const createOAuthStateManager = require('./createOAuthStateManager');
@@ -11,7 +11,7 @@ const QUESTIONS = {
   bye2: 'goodbye',
   hello1: 'hello',
   hello2: 'hi',
-  order: 'what are my orders',
+  order: 'where are my orders',
   time: 'what time is it'
 };
 
@@ -28,6 +28,7 @@ const SUGGESTED_ACTIONS = {
   }
 };
 
+// For simplicity, we are using "string-similarity" package to guess what the user asked.
 function guessQuestion(message) {
   const match = findBestMatch(message, Object.values(QUESTIONS));
 
@@ -39,9 +40,11 @@ function guessQuestion(message) {
 module.exports = () => {
   const bot = new ActivityHandler();
 
+  // Handler for "event" activity
   bot.onEvent(async (context, next) => {
     const { activity: { name, type, value } } = context;
 
+    // When we receive an event activity of "oauth/setaccesstoken", set the access token to conversation state.
     if (type === 'event' && name === 'oauth/setaccesstoken') {
       const oauthStateManager = createOAuthStateManager(context);
       const oauthState = await oauthStateManager.getState();
@@ -68,7 +71,9 @@ module.exports = () => {
 
         switch (provider) {
           case 'github':
+            // We are using .then() here to detach the background job.
             fetchGitHubProfileName(accessToken).then(async name => {
+              // When the GitHub profile is fetched, send a welcome message.
               const adapter = createBotAdapter();
 
               await adapter.continueConversation(reference, async context => {
@@ -82,7 +87,9 @@ module.exports = () => {
             break;
 
           case 'microsoft':
+            // We are using .then() here to detach the background job.
             fetchMicrosoftGraphProfileName(accessToken).then(async name => {
+              // When the Microsoft Graph profile is fetched, send a welcome message.
               const adapter = createBotAdapter();
 
               await adapter.continueConversation(reference, async context => {
@@ -96,6 +103,7 @@ module.exports = () => {
             break;
         }
       } else {
+        // If we receive the event activity with no access token inside, this means the user is signing out from the website.
         await context.sendActivity('See you later!');
       }
     }
@@ -103,6 +111,7 @@ module.exports = () => {
     await next();
   });
 
+  // Handler for "message" activity
   bot.onMessage(async (context, next) => {
     const oauthStateManager = createOAuthStateManager(context);
     const oauthState = await oauthStateManager.getState();
@@ -111,11 +120,13 @@ module.exports = () => {
     const match = guessQuestion(text);
 
     if (/^hello\d+$/.test(match)) {
+      // When the user say, "hello" or "hi".
       await context.sendActivity({
         text: 'Hello there. What can I help you with?',
         ...SUGGESTED_ACTIONS
       });
     } else if (/^bye\d+$/.test(match)) {
+      // When the user say "bye" or "goodbye".
       oauthState.accessToken ='';
       oauthState.provider = '';
 
@@ -125,6 +136,7 @@ module.exports = () => {
         type: 'event'
       });
     } else if (match === 'time') {
+      // When the user say "what time is it".
       const now = new Date();
 
       await context.sendActivity({
@@ -134,12 +146,16 @@ module.exports = () => {
     } else if (
       match === 'order'
     ) {
+      // When the user say "where are my orders".
+
       if (oauthState.accessToken) {
+        // Tell them they have a package if the are signed in.
         await context.sendActivity({
           text: 'There is a package arriving later today.',
           ...SUGGESTED_ACTIONS
         });
       } else {
+        // Send them a sign in card if they are not signed in.
         await context.sendActivity({
           type: 'message',
           attachments: [{
@@ -160,6 +176,7 @@ module.exports = () => {
         });
       }
     } else {
+      // Unknown phrases.
       await context.sendActivity({
         text: 'Sorry, I don\'t know what you mean.',
         ...SUGGESTED_ACTIONS

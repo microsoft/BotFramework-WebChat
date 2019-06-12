@@ -8,6 +8,7 @@ import fetchUserProfile from './fetchUserProfile';
 import GitHubProfileContext from './Context';
 import OAuthComposer from '../oauth/Composer';
 
+// Composer is a React component with a React context
 const GitHubProfileComposer = ({
   accessToken,
   children,
@@ -17,6 +18,7 @@ const GitHubProfileComposer = ({
   const [avatarURL, setAvatarURL] = useState('');
   const [name, setName] = useState('');
 
+  // If access token change, refresh the profile name and picture from GitHub.
   useMemo(async () => {
     const { avatar_url: avatarURL, name } = await fetchUserProfile(accessToken);
 
@@ -24,6 +26,7 @@ const GitHubProfileComposer = ({
     setName(name);
   }, [accessToken]);
 
+  // Build a new React context object if anything changed.
   const context = useMemo(() => ({
     avatarURL,
     name,
@@ -54,14 +57,18 @@ GitHubProfileComposer.propTypes = {
   accessToken: PropTypes.string,
   children: PropTypes.any,
   onSignIn: PropTypes.func,
-  onSignOut: PropTypes.func,
+  onSignOut: PropTypes.func
 };
 
+// Hoist the functionality from generic OAuth composer to GitHub composer.
+// The generic OAuth composer provides sign in and sign out logic.
+// The GitHub composer provide profile-related information.
 const ComposedGitHubProfileComposer = compose(
   connectSignInButton(({ onClick }) => ({ onSignIn: onClick })),
   connectSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
 )(GitHubProfileComposer)
 
+// This is the exported React component, provide basic UI-less functionality to its descendants.
 const ConnectedGitHubProfileComposer = ({
   accessToken,
   children,

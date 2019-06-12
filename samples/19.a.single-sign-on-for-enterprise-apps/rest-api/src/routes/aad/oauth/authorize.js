@@ -5,6 +5,8 @@ const {
   AAD_OAUTH_SCOPE
 } = process.env;
 
+// GET /api/aad/oauth/authorize
+// Redirects to https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
 module.exports = (_, res) => {
   const params = new URLSearchParams({
     client_id: AAD_OAUTH_CLIENT_ID,

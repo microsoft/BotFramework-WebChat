@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 
+// Exchanges an access token from OAuth provider.
 module.exports = async function exchangeAccessToken(tokenURL, clientID, clientSecret, code, redirectURI, state) {
   const params = new URLSearchParams({
     client_id: clientID,
