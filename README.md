@@ -138,8 +138,10 @@ See a working sample of [Web Chat rendered via React](https://github.com/Microso
 
 Web Chat is designed to be customizable without forking the source code. The table below outlines what kind of customizations you can achieve when you are importing Web Chat in different ways. This list is not exhaustive.
 
+<center>
+  
 |                               | CDN bundle         | React              |
-| ----------------------------- | ------------------ | ------------------ |
+| ----------------------------- | :----------------: | :----------------: |
 | Change colors                 | &#10004; | &#10004; |
 | Change sizes                  | &#10004; | &#10004; |
 | Update/replace CSS styles     | &#10004; | &#10004; |
@@ -149,6 +151,8 @@ Web Chat is designed to be customizable without forking the source code. The tab
 | Custom render attachments     |          | &#10004; |
 | Add new UI components         |          | &#10004; |
 | Recompose the whole UI        |          | &#10004; |
+
+</center>
 
 See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
 
