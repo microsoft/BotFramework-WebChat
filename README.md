@@ -140,15 +140,15 @@ Web Chat is designed to be customizable without forking the source code. The tab
 
 |                               | CDN bundle         | React              |
 | ----------------------------- | ------------------ | ------------------ |
-| Change colors                 | :heavy_check_mark: | :heavy_check_mark: |
-| Change sizes                  | :heavy_check_mark: | :heavy_check_mark: |
-| Update/replace CSS styles     | :heavy_check_mark: | :heavy_check_mark: |
-| Listen to events              | :heavy_check_mark: | :heavy_check_mark: |
-| Interact with hosting webpage | :heavy_check_mark: | :heavy_check_mark: |
-| Custom render activities      |                    | :heavy_check_mark: |
-| Custom render attachments     |                    | :heavy_check_mark: |
-| Add new UI components         |                    | :heavy_check_mark: |
-| Recompose the whole UI        |                    | :heavy_check_mark: |
+| Change colors                 | &#10004; | &#10004; |
+| Change sizes                  | &#10004; | &#10004; |
+| Update/replace CSS styles     | &#10004; | &#10004; |
+| Listen to events              | &#10004; | &#10004; |
+| Interact with hosting webpage | &#10004; | &#10004; |
+| Custom render activities      |          | &#10004; |
+| Custom render attachments     |          | &#10004; |
+| Add new UI components         |          | &#10004; |
+| Recompose the whole UI        |          | &#10004; |
 
 See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
 
