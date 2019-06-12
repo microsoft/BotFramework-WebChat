@@ -37,6 +37,14 @@ function xMinutesAgo(dateStr) {
   });
 }
 
+function botSaidSomething(avatarInitials, text) {
+  return `ボット${avatarInitials}は${text}と言いました`;
+}
+
+function userSaidSomething(avatarInitials, text) {
+  return `ユーザー ${avatarInitials}は${text}と言いました`;
+}
+
 export default {
   FAILED_CONNECTION_NOTIFICATION: '接続できませんでした。',
   INITIAL_CONNECTION_NOTIFICATION: '接続中...',
@@ -46,17 +54,26 @@ export default {
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: `送信できませんでした。{Retry}。`,
   SLOW_CONNECTION_NOTIFICATION: '接続するのにはいつもより長くかかります。',
+  'Bot said something': botSaidSomething,
+  'User said something': userSaidSomething,
+  'X minutes ago': xMinutesAgo,
+  'Adaptive Card parse error': 'Adaptive Cardの解析エラー',
+  'Adaptive Card render error': 'Adaptive Cardのレンダリングエラー',
   Chat: 'チャット',
   'Download file': 'ダウンロード',
   'Microphone off': 'マイクオン',
   'Microphone on': 'マイクオフ',
-  Listening: '聴いてます',
+  Left: '左',
+  Listening: '聴いてます…',
   Retry: '再送',
-  Sending: '送信中',
-  Tax: '税',
-  'Type your message': 'メッセージを入力してください',
-  Total: '合計',
-  VAT: '消費税',
+  Right: '右',
   Send: '送信',
-  'X minutes ago': xMinutesAgo
+  Sending: '送信中',
+  Speak: '話してください',
+  'Starting…': 'スタート…',
+  Tax: '税',
+  Total: '合計',
+  'Type your message': 'メッセージを入力してください',
+  'Upload file': 'ファイルをアップロード',
+  VAT: '消費税'
 };
