@@ -52,7 +52,7 @@ function userSaidSomething(avatarInitials, text) {
 export default {
   FAILED_CONNECTION_NOTIFICATION: 'Imposible conectar.',
   INITIAL_CONNECTION_NOTIFICATION: 'Conexión iniciada',
-  INTERRUPTED_CONNECTION_NOTIFICATION: '…Conexión interrumpida',
+  INTERRUPTED_CONNECTION_NOTIFICATION: 'Conexión interrumpida…',
   RENDER_ERROR_NOTIFICATION: 'Error de visualización',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
   SEND_FAILED_KEY: `No enviado. {Retry}.`,
