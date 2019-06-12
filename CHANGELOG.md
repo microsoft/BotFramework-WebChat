@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2057](https://github.com/Microsoft/BotFramework-WebChat/issues/2057). Added sip protocol to sanitize HTML options, by [@tdurnford](https://github.com/tdurnford) in PR [#2061](https://github.com/Microsoft/BotFramework-WebChat/pull/2061)
 -  Fix [#2062](https://github.com/Microsoft/BotFramework-WebChat/issues/2062). Fixed markdown rendering issue in cards, by [@tdurnford](https://github.com/tdurnford) in PR [#2063](https://github.com/Microsoft/BotFramework-WebChat/pull/2063)
 -  Fix [#1896](https://github.com/microsoft/BotFramework-WebChat/issues/1896). Added data schema to render base64 images, by [@denscollo](https://github.com/denscollo) in PR[#2067](https://github.com/microsoft/BotFramework-WebChat/pull/2067)
--  Fix [#2069](https://github.com/microsoft/BotFramework-WebChat/issues/2069). Fixed markdown renderer issue in Playground, by [@tdurnford](https://github.com/tdurnford) in PR[#xxx](https://github.com/microsoft/BotFramework-WebChat/pull/xxx)
+-  Fix [#2069](https://github.com/microsoft/BotFramework-WebChat/issues/2069). Fixed markdown renderer issue in Playground, by [@tdurnford](https://github.com/tdurnford) in PR[#2073](https://github.com/microsoft/BotFramework-WebChat/pull/2073)
 
 ## [4.4.1] - 2019-05-02
 
