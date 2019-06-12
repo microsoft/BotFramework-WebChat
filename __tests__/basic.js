@@ -15,7 +15,7 @@ test('setup', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('layout carousel', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), 2000);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), 2000);
 
   const base64PNG = await driver.takeScreenshot();
@@ -32,7 +32,7 @@ test('long URLs with break-word', async () => {
     { waitForSend: true }
   );
 
-  await driver.wait(minNumActivitiesShown(2), 2000);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), 2000);
 
   const base64PNG = await driver.takeScreenshot();
@@ -51,7 +51,7 @@ test('long URLs with break-all', async () => {
     { waitForSend: true }
   );
 
-  await driver.wait(minNumActivitiesShown(2), 2000);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), 2000);
 
   const base64PNG = await driver.takeScreenshot();
@@ -68,7 +68,7 @@ test('long URLs with keep-all', async () => {
     waitForSend: true
   });
 
-  await driver.wait(minNumActivitiesShown(2), 2000);
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), 2000);
 
   const base64PNG = await driver.takeScreenshot();
@@ -82,7 +82,7 @@ test('unknown activities do not render anything in the transcript', async () => 
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('unknown activity', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(1), 2000);
+  await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
