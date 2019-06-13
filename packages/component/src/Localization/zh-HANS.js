@@ -41,11 +41,27 @@ function xMinutesAgo(dateStr) {
   });
 }
 
+function botSaidSomething(avatarInitials, text) {
+  return `机器人 ${avatarInitials} 说： ${text}`;
+}
+
+function userSaidSomething(avatarInitials, text) {
+  return `使用者 ${avatarInitials} 说：${text}`;
+}
+
 export default {
   FAILED_CONNECTION_NOTIFICATION: '接驳失败。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  INITIAL_CONNECTION_NOTIFICATION: '接驳中…',
+  INTERRUPTED_CONNECTION_NOTIFICATION: '网络暂时中断，正尝试再接驳…',
+  RENDER_ERROR_NOTIFICATION: 'Render 失败，请检查控制台或与机器人开发人员联系。',
   SEND_FAILED_KEY: `无法发送。{Retry}`,
   SLOW_CONNECTION_NOTIFICATION: '接驳时间比平时长。',
+  'Bot said something': botSaidSomething,
+  'User said something': userSaidSomething,
+  'X minutes ago': xMinutesAgo,
+  'Adaptive Card parse error': 'Adaptive Card 解析失败',
+  'Adaptive Card render error': 'Adaptive Card render 失败',
   Chat: '聊天',
   'Download file': '下载文件',
   'Microphone off': '关掉麦克风',
@@ -63,6 +79,5 @@ export default {
   Total: '共计',
   'Type your message': '输入你的消息',
   'Upload file': '上传文件',
-  VAT: '消费税',
-  'X minutes ago': xMinutesAgo
+  VAT: '消费税'
 };
