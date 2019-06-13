@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2057](https://github.com/Microsoft/BotFramework-WebChat/issues/2057). Added sip protocol to sanitize HTML options, by [@tdurnford](https://github.com/tdurnford) in PR [#2061](https://github.com/Microsoft/BotFramework-WebChat/pull/2061)
 -  Fix [#2062](https://github.com/Microsoft/BotFramework-WebChat/issues/2062). Fixed markdown rendering issue in cards, by [@tdurnford](https://github.com/tdurnford) in PR [#2063](https://github.com/Microsoft/BotFramework-WebChat/pull/2063)
 -  Fix [#1896](https://github.com/microsoft/BotFramework-WebChat/issues/1896). Added data schema to render base64 images, by [@denscollo](https://github.com/denscollo) in PR[#2067](https://github.com/microsoft/BotFramework-WebChat/pull/2067)
--  Fix [#2068](https://github.com/Microsoft/BotFramework-WebChat/issues/2068). Fixed AdaptiveCards validate and speak issues, by [@tdurnford](https://github.com/tdurnford) in PR [#2075](https://github.com/Microsoft/BotFramework-WebChat/pull/2075)
+-  Fix [#2068](https://github.com/Microsoft/BotFramework-WebChat/issues/2068). Fixed AdaptiveCards validate and rich card speak issues, by [@tdurnford](https://github.com/tdurnford) in PR [#2075](https://github.com/Microsoft/BotFramework-WebChat/pull/2075)
 -  Fix [#1966](https://github.com/Microsoft/BotFramework-WebChat/issues/1966). Update Localization files for es-ES, ja-JP, zh-HANS, zh-HANT, zh-YUE, by [@corinagum](https://github.com/corinagum) in PR [#2077](https://github.com/Microsoft/BotFramework-WebChat/pull/2077)
 
 ## [4.4.1] - 2019-05-02
