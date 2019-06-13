@@ -1,8 +1,12 @@
 # Single sign-on demo for enterprise apps using OAuth
 
+## Description
+
 In this demo, we will show you how to authorize a user to access resources on an enterprise app with a bot. Two types of resources are used to demonstrate the interoperability of OAuth: [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) and [GitHub API](https://developer.github.com/v3/).
 
 You can browse to https://webchat-sso.azurewebsites.net/ to try out this demo.
+
+> When dealing with personal data, please respect user privacy. Follow platform guideline and post your privacy statement online.
 
 # Background
 
@@ -65,6 +69,7 @@ If you want to authenticate on GitHub, follow the steps below.
    1. Select "OAuth Apps"
    1. Click "New OAuth App"
    1. Fill out "Application name" and "Homepage URL"
+      - The "Application name" and "Homepage URL" will be shown to the user when they authorize your GitHub OAuth app
    1. In "Application callback URL", enter `http://localhost:3000/api/github/oauth/callback`
    1. Click "Register application"
 1. Save the client ID and secret
