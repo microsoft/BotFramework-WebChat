@@ -11,9 +11,5 @@ module.exports = function createBotAdapter() {
     appPassword: MICROSOFT_APP_PASSWORD
   });
 
-  // adapter.onTurnError = async (_, error) => {
-  //   console.error(error);
-  // };
-
   return adapter;
 };
