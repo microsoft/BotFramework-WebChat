@@ -120,6 +120,8 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 1. Save the Web Chat secret to `/rest-api/.env`
    - `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
 
+> When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the  secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token).
+
 During development, you will run your bot locally. You can use [ngrok](https://ngrok.com/) to expose your bot server.
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
@@ -171,6 +173,33 @@ To make this demo simpler to understand, we are using the access token, a.k.a. "
 In your production scenario, you may want to use the refresh token, a.k.a. "Authorization Code Grant" flow, instead of the access token. We did not use the Authorization Code Grant flow in this sample: it would increase the complexity of this demo because it requires server-to-server communications and secured persistent storage.
 
 Since this demo is focused around the interactions between bot and web app, we prefer to use access token to keep the code easier to understand.
+
+## What is inside the `.env` files?
+
+The `.env` file hold the environment variable critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend to keep them in Azure Vault, for simplicity of this sample, we would keep them in `.env` files.
+
+To ease the setup of this sample, here is the template of `.env` files.
+
+### `/bot/.env`
+
+```
+MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
+MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
+```
+
+### `/rest-api/.env`
+
+```
+AAD_OAUTH_ACCESS_TOKEN_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/token
+AAD_OAUTH_AUTHORIZE_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
+AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
+AAD_OAUTH_CLIENT_SECRET=<your app client secret>
+AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
+DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
+GITHUB_OAUTH_CLIENT_ID=a1b2c3d
+GITHUB_OAUTH_CLIENT_SECRET=a1b2c3d4e5f6
+GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback
+```
 
 # Further studies
 
