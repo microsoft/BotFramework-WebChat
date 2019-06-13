@@ -5,7 +5,7 @@
     }
   },
   "timeouts": {
-    "directLine": 5000,
+    "directLine": 15000,
     "fetch": 2500,
     "navigation": 10000,
     "postActivity": 30000,
