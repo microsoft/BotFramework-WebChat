@@ -38,8 +38,8 @@ This demo does not include any threat models and is designed for educational pur
 This demo integrates with multiple services. There are multiple services you need to setup in order to host the demo.
 
 1. [Clone the code](#clone-the-code)
-1. [Setup OAuth via Azure Active Directory](#setup-oauth-via-azure-active-directory)
 1. [Setup OAuth via GitHub](#setup-oauth-via-github)
+1. [Setup OAuth via Azure Active Directory](#setup-oauth-via-azure-active-directory)
 1. [Setup Azure Bot Services](#setup-azure-bot-services)
 1. [Prepare and run the code](#prepare-and-run-the-code)
 
@@ -54,6 +54,24 @@ To host this demo, you will need to clone the code and run locally.
          - When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
       - Write `GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback`
          - Same as Azure Active Directory, this is the URL for GitHub to send its result
+
+## Setup OAuth via GitHub
+
+If you want to authenticate on GitHub, follow the steps below.
+
+1. Sign into GitHub
+1. Create a new OAuth application
+   1. Browse to https://github.com/settings/developers
+   1. Select "OAuth Apps"
+   1. Click "New OAuth App"
+   1. Fill out "Application name" and "Homepage URL"
+   1. In "Application callback URL", enter `http://localhost:3000/api/github/oauth/callback`
+   1. Click "Register application"
+1. Save the client ID and secret
+   1. Copy the "Client ID" to `/rest-api/.env`
+      - `GITHUB_OAUTH_CLIENT_ID=a1b2c3d`
+   1. Copy the "Client Secret"
+      - `GITHUB_OAUTH_CLIENT_SECRET=a1b2c3d4e5f6`
 
 ## Setup OAuth via Azure Active Directory
 
@@ -89,24 +107,6 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. Select "Authentication"
    1. In the "Advanced Settings" section, check "Access tokens"
    1. Click "Save" button to save the changes
-
-## Setup OAuth via GitHub
-
-If you want to authenticate on GitHub, follow the steps below.
-
-1. Sign into GitHub
-1. Create a new OAuth application
-   1. Browse to https://github.com/settings/developers
-   1. Select "OAuth Apps"
-   1. Click "New OAuth App"
-   1. Fill out "Application name" and "Homepage URL"
-   1. In "Application callback URL", enter `http://localhost:3000/api/github/oauth/callback`
-   1. Click "Register application"
-1. Save the client ID and secret
-   1. Copy the "Client ID" to `/rest-api/.env`
-      - `GITHUB_OAUTH_CLIENT_ID=a1b2c3d`
-   1. Copy the "Client Secret"
-      - `GITHUB_OAUTH_CLIENT_SECRET=a1b2c3d4e5f6`
 
 ## Setup Azure Bot Services
 
