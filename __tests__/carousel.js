@@ -15,10 +15,10 @@ describe('carousel without avatar initials', () => {
   test('4 attachments and no message', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
-    await driver.wait(uiConnected(), timeouts.directLine);
+    await driver.wait(uiConnected(), timeouts.postActivity);
     await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
-    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.postActivity);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -115,10 +115,10 @@ describe('carousel with avatar initials', () => {
   test('4 attachments and no message', async () => {
     const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
-    await driver.wait(uiConnected(), timeouts.directLine);
+    await driver.wait(uiConnected(), timeouts.postActivity);
     await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
-    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.postActivity);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);

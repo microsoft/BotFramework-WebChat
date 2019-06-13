@@ -64,15 +64,15 @@ test('card action "signin"', async () => {
     }
   });
 
-  await driver.wait(uiConnected(), timeouts.directLine);
+  await driver.wait(uiConnected(), timeouts.postActivity);
   await pageObjects.sendMessageViaSendBox('oauth', { waitForSend: true });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(2), timeouts.postActivity);
   const openUrlButton = await driver.findElement(By.css('[role="log"] ul > li button'));
 
   await openUrlButton.click();
-  await driver.wait(minNumActivitiesShown(4), timeouts.directLine);
-  await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(4), timeouts.postActivity);
+  await driver.wait(allOutgoingActivitiesSent(), timeouts.postActivity);
 
   // When the "Sign in" button is clicked, the focus move to it, need to blur it.
   await driver.executeScript(() => {
