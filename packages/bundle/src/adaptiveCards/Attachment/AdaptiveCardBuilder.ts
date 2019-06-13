@@ -10,6 +10,7 @@ import {
   SizeAndUnit,
   SubmitAction,
   TextBlock,
+  TextColor,
   TextSize,
   TextWeight
 } from 'adaptivecards';
@@ -83,6 +84,7 @@ export default class AdaptiveCardBuilder {
   addTextBlock(text: string, template: Partial<TextBlock>, container: Container = this.container) {
     if (typeof text !== 'undefined') {
       const textblock = new TextBlock();
+      textblock.color = TextColor.Dark;
 
       // tslint:disable-next-line:forin
       for (const prop in template) {
