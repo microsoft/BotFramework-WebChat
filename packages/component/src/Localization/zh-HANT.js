@@ -41,11 +41,27 @@ function xMinutesAgo(dateStr) {
   });
 }
 
+function botSaidSomething(avatarInitials, text) {
+  return `Bot ${avatarInitials} 說：${text}`;
+}
+
+function userSaidSomething(avatarInitials, text) {
+  return `使用者 ${avatarInitials} 說：${text}`;
+}
+
 export default {
   FAILED_CONNECTION_NOTIFICATION: '接駁失敗。',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
+  INITIAL_CONNECTION_NOTIFICATION: '接駁中...',
+  INTERRUPTED_CONNECTION_NOTIFICATION: '網絡暫時中斷，正嘗試再接駁…',
+  RENDER_ERROR_NOTIFICATION: 'Render 失敗，請檢查控制台或與 Bot 開發人員聯絡。',
   SEND_FAILED_KEY: `無法發送。{Retry}`,
   SLOW_CONNECTION_NOTIFICATION: '接駁時間比平時長。',
+  'Bot said something': botSaidSomething,
+  'User said something': userSaidSomething,
+  'X minutes ago': xMinutesAgo,
+  'Adaptive Card parse error': 'Adaptive Card 解析失敗',
+  'Adaptive Card render error': 'Adaptive Card render 失敗',
   Chat: '聊天',
   'Download file': '下載檔案',
   'Microphone off': '關掉麥克風',
@@ -63,6 +79,5 @@ export default {
   Total: '總共',
   'Type your message': '請輸入您的訊息',
   'Upload file': '上載檔案',
-  VAT: '消費稅',
-  'X minutes ago': xMinutesAgo
+  VAT: '消費稅'
 };
