@@ -171,6 +171,8 @@ Since the demo is running in a heterogeneous environment (both React and pure Ja
 
 In your production system, since you are probably in a homogenous environment (either React or pure JavaScript), you may want to use Redux or other mechanisms to wire up different UI components.
 
+This demo is coded in heterogeneous environment. Web Chat code is written in pure JavaScript, and the website is written in React. This makes the Web Chat integration code easier to extract from the webpage code.
+
 ## OAuth access token vs. refresh token
 
 To make this demo simpler to understand, we are using the access token, a.k.a. "Implicit Grant" flow, in which the access token is considered as secure inside the browser.
