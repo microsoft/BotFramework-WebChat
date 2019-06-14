@@ -18,7 +18,7 @@ export default function setupTestEnvironment(browserName, builder, { height, wid
         baseURL: 'http://webchat/',
         builder: builder
           .forBrowser('chrome')
-          .usingServer('http://localhost:4444/wd/hub')
+          .usingServer('https://09065367.ngrok.io/wd/hub')
           .setChromeOptions(
             (builder.getChromeOptions() || new Options())
               .headless()

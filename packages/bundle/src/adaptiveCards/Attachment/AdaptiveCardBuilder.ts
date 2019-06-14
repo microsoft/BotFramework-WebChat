@@ -84,7 +84,6 @@ export default class AdaptiveCardBuilder {
   addTextBlock(text: string, template: Partial<TextBlock>, container: Container = this.container) {
     if (typeof text !== 'undefined') {
       const textblock = new TextBlock();
-      textblock.color = TextColor.Dark;
 
       // tslint:disable-next-line:forin
       for (const prop in template) {
@@ -106,9 +105,9 @@ export default class AdaptiveCardBuilder {
   }
 
   addCommonHeaders(content: ICommonContent) {
-    this.addTextBlock(content.title, { size: TextSize.Medium, weight: TextWeight.Bolder });
-    this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true });
-    this.addTextBlock(content.text, { wrap: true });
+    this.addTextBlock(content.title, { color: TextColor.Dark, size: TextSize.Medium, weight: TextWeight.Bolder });
+    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: true });
+    this.addTextBlock(content.text, { color: TextColor.Dark, wrap: true });
   }
 
   addCommon(content: ICommonContent) {
