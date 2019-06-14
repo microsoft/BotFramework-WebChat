@@ -1,14 +1,12 @@
 # Single sign-on demo for enterprise apps using OAuth
 
-## Description
+# Description
 
 In this demo, we will show you how to authorize a user to access resources on an enterprise app with a bot. Two types of resources are used to demonstrate the interoperability of OAuth: [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) and [GitHub API](https://developer.github.com/v3/).
 
-You can browse to https://webchat-sso.azurewebsites.net/ to try out this demo.
-
 > When dealing with personal data, please respect user privacy. Follow platform guideline and post your privacy statement online.
 
-# Background
+## Background
 
 Different companies may use different access delegation technologies to protect their resources. In our demo, we are targeting OAuth 2.0 ([RFC 6749](https://tools.ietf.org/html/rfc6749)).
 
@@ -18,26 +16,11 @@ Instead of OpenID, most enterprise apps use OAuth plus a graph API to identify a
 
 This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0.
 
-# Assumptions
+# Test out the hosted sample
 
-- Developer has an existing enterprise web app that uses OAuth to access protected resources
-   - We assume the OAuth access token lives in the browser's memory and is accessible using JavaScript
-      - Access token can live in browser memory but must be secured during transmit thru the use of TLS
-      - More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
-- Developer know how to alter existing JavaScript code around their existing UI for OAuth
+You can browse to https://webchat-sso.azurewebsites.net/ to try out this demo.
 
-# Goals
-
-- Website supports both anonymous and authenticated access. Forced page refresh and/or new conversation is not mandated
-- End-user is able to sign in through the web page, and is recognized by the bot immediately
-- End-user is able to sign in through the bot, and is recognized by the web page immediately
-- End-user is able to sign in through the web page and sign out though the bot
-- End-user is able to sign in through the bot and sign out through the web page
-- OAuth access token is saved as part of the conversation state or user state
-
-# How to run this demo
-
-> For quickstart, you can browse to https://webchat-sso.azurewebsites.net/ to try out this demo in our hosted environment.
+# How to run locally
 
 This demo integrates with multiple services. There are multiple services you need to setup in order to host the demo.
 
@@ -145,19 +128,57 @@ During development, you will run your bot locally. You can use [ngrok](https://n
    1. `npm start`
 1. Browse to http://localhost:3000/ to start the demo
 
-# Frequently asked questions
+# Things to try out
 
-## How can I reset my authorization?
+- Notice there are two sign-in buttons on top-right hand corner
+   - After signed in, both the website and the bot get your sign in information
+- Type, "where are my packages" in Web Chat
+   - If not signed in, the bot will present a sign-in button
+   - If signed in, the bot will answer the question
+- Type, "bye" in Web Chat
+   - If signed in, the bot will sign you out
 
-After having signed in on this app, click the profile photo on the upper-right hand corner, select "Review access on Office.com" or "Review access on GitHub". Then, you will be redirected to the OAuth provider page to remove your authorization.
+# Code
 
-- For GitHub, you can click the "Revoke access" button
-- For Azure Active Directory
-   1. On the AAD dashboard page, wait until "App permissions" loads. Here you see how many apps you have authorized
-   1. Click "Change app permissions"
-   1. In the "You can revoke permission for these apps" section, click the "Revoke" button below your app registration
+- `/app/` is the React app built using `create-react-app` scaffold
+- `/bot/` is the bot server
+- `/rest-api/` is the REST API for handling OAuth requests
+   - `GET /api/aad/oauth/authorize` will redirect to Azure AD OAuth authorize page at https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
+   - `GET /api/aad/oauth/callback` will handle callback from Azure AD OAuth
+   - `GET /api/aad/settings` will send Azure AD OAuth settings to the React app
+   - `GET /api/directline/token` will generate a new Direct Line token for the React app
+   - `GET /api/github/oauth/authorize` will redirect to GitHub OAuth authorize page at https://github.com/login/oauth/authorize
+   - `GET /api/github/oauth/callback` will handle callback from GitHub AD OAuth
+   - `GET /api/github/settings` will send GitHub OAuth settings to the React app
+   - It will serve React app as a static content
+   - During development-time, it will also serve the bot server via `/api/messages/`
 
-# Design considerations
+# Overview
+
+This sample includes multiple parts:
+
+- A basic web page with sign in and sign out button, coded with React
+- Web Chat integrated, coded with pure JavaScript
+- Wiring between the web page and Web Chat thru DOM events
+   - When web page sign in, it should emit DOM event `accesstokenchange` with `{ data: { accessToken, provider } }`
+   - When the bot ask for sign in, Web Chat will emit DOM event `signin` with `{ data: { provider: 'aad/github' } }`
+
+## Assumptions
+
+- Developer has an existing enterprise web app that uses OAuth to access protected resources
+   - We assume the OAuth access token lives in the browser's memory and is accessible using JavaScript
+      - Access token can live in browser memory but must be secured during transmit thru the use of TLS
+      - More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
+- Developer know how to alter existing JavaScript code around their existing UI for OAuth
+
+## Goals
+
+- Website supports both anonymous and authenticated access. Forced page refresh and/or new conversation is not mandated
+- End-user is able to sign in through the web page, and is recognized by the bot immediately
+- End-user is able to sign in through the bot, and is recognized by the web page immediately
+- End-user is able to sign in through the web page and sign out though the bot
+- End-user is able to sign in through the bot and sign out through the web page
+- OAuth access token is saved as part of the conversation state or user state
 
 ## Organization of JavaScript code
 
@@ -208,7 +229,27 @@ GITHUB_OAUTH_CLIENT_SECRET=a1b2c3d4e5f6
 GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback
 ```
 
-# Further studies
+## Only one redirect URI
+
+In order to use the website to sign in, the developer will need to set the redirect URI to their own web API.
+
+In order to use the bot to sign in, in the OAuth provider, the developer will need to set the redirect URI to https://token.botframework.com/.auth/web/redirect.
+
+Some OAuth providers do not support multiple redirect URIs. Thus, we prefer to use a single redirect URI from the web API to make sure existing flows are not disturbed.
+
+# Frequently asked questions
+
+## How can I reset my authorization?
+
+After having signed in on this app, click the profile photo on the upper-right hand corner, select "Review access on Office.com" or "Review access on GitHub". Then, you will be redirected to the OAuth provider page to remove your authorization.
+
+- For GitHub, you can click the "Revoke access" button
+- For Azure Active Directory
+   1. On the AAD dashboard page, wait until "App permissions" loads. Here you see how many apps you have authorized
+   1. Click "Change app permissions"
+   1. In the "You can revoke permission for these apps" section, click the "Revoke" button below your app registration
+
+# Further reading
 
 To reduce complexity and lower the learning curve, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
@@ -218,13 +259,3 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
    - This will also create a smooth UX by reducing the need for UI popups
 - Threat-modelling
    - IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
-
-# Caveats
-
-## More than one redirect URIs
-
-In order to use the website to sign in, the developer will need to set the redirect URI to their own web API.
-
-In order to use the bot to sign in, in the OAuth provider, the developer will need to set the redirect URI to https://token.botframework.com/.auth/web/redirect.
-
-Some OAuth providers do not support multiple redirect URIs. Thus, we need to use a redirect URI from the web API to make sure existing flows are not disturbed.
