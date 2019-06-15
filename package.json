@@ -78,7 +78,7 @@
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
-    "test": "jest --no-cache",
+    "test": "npx ngrok http 4444",
     "test:all": "lerna run --parallel --stream test",
     "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
   },
