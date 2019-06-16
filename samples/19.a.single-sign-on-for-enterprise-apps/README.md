@@ -14,7 +14,7 @@ Although OAuth and [OpenID](https://openid.net/) are often related to each other
 
 Instead of OpenID, most enterprise apps use OAuth plus a graph API to identify an individual user. In this demo, we will demonstrate how to use OAuth to obtain access to graph API and use the API to identifying the accessor.
 
-This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0.
+This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-00#section-9.4) is a good starting point for threat-modelling when using OAuth 2.0.
 
 # Test out the hosted sample
 
@@ -71,7 +71,8 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. Click "New registration"
    1. Give it a name
    1. In "Redirect URI (optional)" section, add a new entry
-      1. Select "web" as type
+      1. Select "Public client (mobile & desktop)" as type
+         - Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
       1. Enter `http://localhost:3000/api/aad/oauth/callback` as the redirect URI
          - This must match `AAD_OAUTH_REDIRECT_URI` in `/rest-api/.env` we saved earlier
    - Click "Register"
@@ -86,15 +87,6 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. Select "Overview"
    1. On the main pane, copy the content of "Application (client) ID" to `/rest-api/.env`
       - `AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd`
-- Save the client secret
-   1. Select "Certificates & secrets"
-   1. In the "Client secrets" section, create a "New client secret"
-   1. Save the client secret to `/rest-api/.env` file
-      - `AAD_OAUTH_CLIENT_SECRET=<your app client secret>`
-- Enable "Implicit Grant" flow
-   1. Select "Authentication"
-   1. In the "Advanced Settings" section, check "Access tokens"
-   1. Click "Save" button to save the changes
 
 ## Setup Azure Bot Services
 
@@ -196,7 +188,7 @@ This demo is coded in heterogeneous environment. Web Chat code is written in pur
 
 ## OAuth access token vs. refresh token
 
-To make this demo simpler to understand, we are using the access token, a.k.a. "Implicit Grant" flow, in which the access token is considered as secure inside the browser.
+To make this demo simpler to understand, we are using the access token via Authorization Code flow, in which the access token is considered as secure inside the browser.
 
 In your production scenario, you may want to use the refresh token, a.k.a. "Authorization Code Grant" flow, instead of the access token. We did not use the Authorization Code Grant flow in this sample: it would increase the complexity of this demo because it requires server-to-server communications and secured persistent storage.
 
@@ -221,7 +213,6 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 AAD_OAUTH_ACCESS_TOKEN_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/token
 AAD_OAUTH_AUTHORIZE_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
 AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
-AAD_OAUTH_CLIENT_SECRET=<your app client secret>
 AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 GITHUB_OAUTH_CLIENT_ID=a1b2c3d
