@@ -17,6 +17,10 @@ module.exports = (_, res) => {
     client_id: AAD_OAUTH_CLIENT_ID,
     code_challenge: challenge,
     code_challenge_method: 'S256',
+
+    // Azure Active Directory does not support having additional URL query parameters in the URL.
+    // This is to prevent Covert Redirect attack.
+    // https://blogs.msdn.microsoft.com/aaddevsup/2018/04/18/query-string-is-not-allowed-in-redirect_uri-for-azure-ad/
     redirect_uri: AAD_OAUTH_REDIRECT_URI,
     response_type: 'code',
     scope: AAD_OAUTH_SCOPE,
