@@ -26,7 +26,7 @@ module.exports = (_, res) => {
     scope: AAD_OAUTH_SCOPE,
 
     // https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-00#section-9.4
-    // "using the "state" parameter to link client requests and responses to prevent CSRF
+    // Excerpt: ...using the "state" parameter to link client requests and responses to prevent CSRF (Cross-Site Request Forgery) attacks.
     state: seed.toString('base64')
   });
 
