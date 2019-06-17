@@ -56,7 +56,7 @@ export default {
   Send: 'Gönder',
   Sending: 'gönderiliyor',
   // 'Speak': '',
-  'Starting…': 'Başlıyor...',
+  'Starting…': 'Başlıyor…',
   Tax: 'Vergi',
   Total: 'Toplam',
   'Type your message': 'İletinizi yazın',
