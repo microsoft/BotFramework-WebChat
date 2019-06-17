@@ -10,6 +10,7 @@ import {
   SizeAndUnit,
   SubmitAction,
   TextBlock,
+  TextColor,
   TextSize,
   TextWeight
 } from 'adaptivecards';
@@ -89,7 +90,7 @@ export default class AdaptiveCardBuilder {
         textblock[prop] = template[prop];
       }
 
-      textblock.speak = text;
+      this.card.speak += `${text} `;
       textblock.text = text;
 
       container.addItem(textblock);
@@ -104,9 +105,9 @@ export default class AdaptiveCardBuilder {
   }
 
   addCommonHeaders(content: ICommonContent) {
-    this.addTextBlock(content.title, { size: TextSize.Medium, weight: TextWeight.Bolder });
-    this.addTextBlock(content.subtitle, { isSubtle: true, wrap: true });
-    this.addTextBlock(content.text, { wrap: true });
+    this.addTextBlock(content.title, { color: TextColor.Dark, size: TextSize.Medium, weight: TextWeight.Bolder });
+    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: true });
+    this.addTextBlock(content.text, { color: TextColor.Dark, wrap: true });
   }
 
   addCommon(content: ICommonContent) {

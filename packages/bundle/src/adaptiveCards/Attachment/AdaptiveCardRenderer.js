@@ -117,10 +117,11 @@ class AdaptiveCardRenderer extends React.PureComponent {
           : adaptiveCardHostConfig;
       }
 
-      const errors = adaptiveCard.validate();
+      const { failures } = adaptiveCard.validateProperties();
 
-      if (errors.length) {
+      if (failures.length) {
         // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
+        const errors = failures.map(({ errors }) => errors).flat();
 
         return this.setState(() => ({ error: errors }));
       }
