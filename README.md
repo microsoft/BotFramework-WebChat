@@ -243,7 +243,6 @@ Re-subscribing requires that you reset your registry.
 1. Delete your `.npmrc file`
 1. Delete your root `package-lock.json`
 1. Remove your `node_modules` directory
-1. Clear your project cache `npm cache clean --force`
 1. Reinstall your packages with `npm i`
 1. Note that in your `package-lock.json`, the registries are pointing to https://npmjs.com/ again.
 
