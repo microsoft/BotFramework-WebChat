@@ -225,7 +225,7 @@ There are several properties that you might pass into your Web Chat React Compon
 
 If you want to test a feature or bug fix that has not yet been released, you will want to point your Web Chat package to Web Chat's daily feed, as opposed the official npmjs feed.
 
-Currently, you may access Web Chat's dailies by subscribing to our MyGet feed. To do this, you will need to update the registry in your project. **This change is reversable, and our directions include how to revert back to subscribing to the official release**.
+Currently, you may access Web Chat's dailies by subscribing to our MyGet feed. To do this, you will need to update the registry in your project. **This change is reversible, and our directions include how to revert back to subscribing to the official release**.
 
 ## Subscribe to latest bits on `myget.org`
 
@@ -237,7 +237,7 @@ To do this you may add your packages and then change the registry of your projec
 1. Add Web Chat to your project dependencies `npm i botframework-webchat --save`
 1. Note that in your `package-lock.json`, the registries pointed to are now MyGet. The Web Chat project has upstream source proxy enabled, which will redirect non-MyGet packages to `npmjs.com`.
 
-##  Re-subscribe to official release on `npmjs.com`
+## Re-subscribe to official release on `npmjs.com`
 Re-subscribing requires that you reset your registry.
 
 1. Delete your `.npmrc file`
@@ -245,7 +245,7 @@ Re-subscribing requires that you reset your registry.
 1. Remove your `node_modules` directory
 1. Clear your project cache `npm cache clean --force`
 1. Reinstall your packages with `npm i`
-1. Note that in your `package-lock.json`, the registries are pointing to `npmjs.com` again.
+1. Note that in your `package-lock.json`, the registries are pointing to https://npmjs.com/ again.
 
 # Contributing
 
