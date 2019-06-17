@@ -6,15 +6,21 @@ EXPOSE 80 2222
 
 WORKDIR /var/
 
-# Setup OpenSSH for debugging thru Azure Web App
-# https://docs.microsoft.com/en-us/azure/app-service/containers/app-service-linux-ssh-support#ssh-support-with-custom-docker-images
-RUN apk add openssh && echo "root:Docker!" | chpasswd
-
-# Adopted from https://github.com/Azure-App-Service/node/blob/master/10.14/sshd_config
-COPY sshd_config /etc/ssh/
-
 # Extract build image to /var/
 ADD build.tgz /var/
+
+# Setup OpenSSH for debugging thru Azure Web App
+# https://docs.microsoft.com/en-us/azure/app-service/containers/app-service-linux-ssh-support#ssh-support-with-custom-docker-images
+# https://docs.microsoft.com/en-us/azure/app-service/containers/tutorial-custom-docker-image
+ENV SSH_PASSWD "root:Docker!"
+RUN \
+  apt-get update \
+  && apt-get install -y --no-install-recommends dialog \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends openssh-server \
+  && echo "$SSH_PASSWD" | chpasswd \
+  && mv /var/sshd_config /etc/ssh/ \
+  && chmod +x ./startup.sh
 
 # Set up entrypoint
 ENTRYPOINT ./startup.sh

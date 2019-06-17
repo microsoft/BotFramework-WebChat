@@ -2,7 +2,7 @@
 #
 # /etc/sshd_config
 
-Port 			SSH_PORT
+Port 			2222
 ListenAddress 		0.0.0.0
 LoginGraceTime 		180
 X11Forwarding 		yes

@@ -24,6 +24,7 @@ ADD bot/ /var/bot/
 ADD rest-api/ /var/web/
 
 # Copy SSH configuration and startup script to /var/
+# Adopted from https://github.com/Azure-App-Service/node/blob/master/10.14/sshd_config and updated port to 2222
 ADD sshd_config /var/
 ADD startup.sh /var/
 
