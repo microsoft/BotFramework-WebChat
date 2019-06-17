@@ -25,7 +25,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | pt-pt         | @bodyzatva, @tiagodenoronha                                |
 | ru-ru         | @odysseus1973, @seaen                                      |
 | sv-se         | @pekspro                                                   |
-| tr-tr         |                                                            |
+| tr-tr         | @vefacaglar                                                |
 | zh-hans       | @Antimoney                                                 |
 | zh-hant       | @compulim                                                  |
 | zh-yue        | @compulim                                                  |
