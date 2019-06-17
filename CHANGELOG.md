@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  `*`: Added [`eslint`](https://npmjs.com/package/eslint/) to static code analysis, by [@compulim](https://github.com/compulim), in PR [#1970](https://github.com/microsoft/BotFramework-WebChat/pull/1970)
 -  Added pt-PT language, by [@bodyzatva](https://github.com/bodyzatva) in PR [#2005](https://github.com/microsoft/BotFramework-WebChat/pull/2005) and PR [#2020](https://github.com/Microsoft/BotFramework-WebChat/pull/2020)
+- Added documentation for using Web Chat dev build, by [@corinagum](https://github.com/corinagum), in PR [#2074](https://github.com/Microsoft/BotFramework-WebChat/pull/2074)
 
 ### Changed
 

@@ -219,7 +219,34 @@ There are several properties that you might pass into your Web Chat React Compon
 | `username`                 | Specify a username.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `webSpeechPonyFillFactory` | Specify the Web Speech object for text-to-speech and speech-to-text.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
-## Contributing
+# How to test with Web Chat's latest bits
+
+*Testing unreleased features is only available via MyGet packaging at this time.*
+
+If you want to test a feature or bug fix that has not yet been released, you will want to point your Web Chat package to Web Chat's daily feed, as opposed the official npmjs feed.
+
+Currently, you may access Web Chat's dailies by subscribing to our MyGet feed. To do this, you will need to update the registry in your project. **This change is reversible, and our directions include how to revert back to subscribing to the official release**.
+
+## Subscribe to latest bits on `myget.org`
+
+To do this you may add your packages and then change the registry of your project.
+
+1. Add your project dependencies other than Web Chat.
+1. In your project's root directory, create a `.npmrc` file
+1. Add the following line to your file: `registry=https://botbuilder.myget.org/F/botframework-webchat/npm/`
+1. Add Web Chat to your project dependencies `npm i botframework-webchat --save`
+1. Note that in your `package-lock.json`, the registries pointed to are now MyGet. The Web Chat project has upstream source proxy enabled, which will redirect non-MyGet packages to `npmjs.com`.
+
+## Re-subscribe to official release on `npmjs.com`
+Re-subscribing requires that you reset your registry.
+
+1. Delete your `.npmrc file`
+1. Delete your root `package-lock.json`
+1. Remove your `node_modules` directory
+1. Reinstall your packages with `npm i`
+1. Note that in your `package-lock.json`, the registries are pointing to https://npmjs.com/ again.
+
+# Contributing
 
 See our [Contributing page](https://github.com/Microsoft/BotFramework-WebChat/tree/master/.github/CONTRIBUTING.md) for details on how to build the project and our repository guidelines for Pull Requests.
 
@@ -227,7 +254,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Reporting Security Issues
+# Reporting Security Issues
 
 Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the [MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
 
