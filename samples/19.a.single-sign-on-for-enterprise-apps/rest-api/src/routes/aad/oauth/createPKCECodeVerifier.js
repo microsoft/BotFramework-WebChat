@@ -1,4 +1,5 @@
 const { createHash } = require('crypto');
+const encodeBase64URL = require('../../../encodeBase64URL');
 
 const { AAD_OAUTH_PKCE_SALT } = process.env;
 
@@ -10,5 +11,5 @@ module.exports = seed => {
   hash.update(seed);
   hash.update(AAD_OAUTH_PKCE_SALT);
 
-  return hash.digest().toString('base64');
+  return encodeBase64URL(hash.digest());
 };
