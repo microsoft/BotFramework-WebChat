@@ -4,10 +4,7 @@ const { createServer } = require('restify');
 const createBot = require('./createBot');
 const createBotAdapter = require('./createBotAdapter');
 
-const {
-  PORT = 3978
-} = process.env;
-
+const PORT = 3978;
 const adapter = createBotAdapter();
 const bot = createBot();
 const server = createServer();
