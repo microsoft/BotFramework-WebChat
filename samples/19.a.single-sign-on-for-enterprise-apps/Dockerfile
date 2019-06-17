@@ -1,4 +1,4 @@
-# Builder is based on Node.js 12 image
+# This container is for simplifying CI when using Azure Pipelines
 
 # The first builder image will build HTML and JavaScript code out of the create-react-app project
 FROM node:12 AS builder-web
@@ -23,6 +23,9 @@ ADD bot/ /var/bot/
 # Copy the web server code to /var/web/
 ADD rest-api/ /var/web/
 
+# Copy the startup script to /var/
+ADD startup.sh /var/
+
 # Copy static React app to /var/web/public/, to be consumed by web server
 COPY --from=builder-web /var/web/build/ /var/web/public/
 
@@ -39,4 +42,4 @@ WORKDIR /var/
 RUN npm install concurrently@4.1.0
 
 # Pack the build content as a "build.tgz" and export it out
-RUN tar -cf build.tgz bot node_modules web
+RUN tar -cf build.tgz bot node_modules sshd_config startup.sh web

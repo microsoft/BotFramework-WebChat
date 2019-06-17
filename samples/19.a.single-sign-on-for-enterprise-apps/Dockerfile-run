@@ -1,8 +1,20 @@
+# This is the container for running the demo under Azure Web App
 FROM node:12 AS builder-web
-EXPOSE 80
-WORKDIR /var/
-ADD build.tgz /var/
-ADD .env.bot /var/bot/
-ADD .env.web /var/web/
 
-ENTRYPOINT ./node_modules/.bin/concurrently --kill-others --names "bot,web" "node bot" "node web"
+# Expose both port 80 and 2222 (SSH for Azure Web App)
+EXPOSE 80 2222
+
+WORKDIR /var/
+
+# Setup OpenSSH for debugging thru Azure Web App
+# https://docs.microsoft.com/en-us/azure/app-service/containers/app-service-linux-ssh-support#ssh-support-with-custom-docker-images
+RUN apk add openssh && echo "root:Docker!" | chpasswd
+
+# Adopted from https://github.com/Azure-App-Service/node/blob/master/10.14/sshd_config
+COPY sshd_config /etc/ssh/
+
+# Extract build image to /var/
+ADD build.tgz /var/
+
+# Set up entrypoint
+ENTRYPOINT ./startup.sh
