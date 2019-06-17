@@ -18,7 +18,7 @@ describe('carousel without avatar initials', () => {
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
-    // await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -118,7 +118,7 @@ describe('carousel with avatar initials', () => {
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
-    // await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
