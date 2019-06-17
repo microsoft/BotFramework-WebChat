@@ -13,6 +13,7 @@ ADD build.tgz /var/
 # https://docs.microsoft.com/en-us/azure/app-service/containers/app-service-linux-ssh-support#ssh-support-with-custom-docker-images
 # https://docs.microsoft.com/en-us/azure/app-service/containers/tutorial-custom-docker-image
 ENV SSH_PASSWD "root:Docker!"
+ENV SSH_PORT 2222
 RUN \
   apt-get update \
   && apt-get install -y --no-install-recommends dialog \
@@ -20,7 +21,8 @@ RUN \
   && apt-get install -y --no-install-recommends openssh-server \
   && echo "$SSH_PASSWD" | chpasswd \
   && mv /var/sshd_config /etc/ssh/ \
-  && chmod +x ./startup.sh
+  && mv /var/init.sh /usr/local/bin/ \
+  && chmod u+x /usr/local/bin/init.sh
 
 # Set up entrypoint
-ENTRYPOINT ./startup.sh
+ENTRYPOINT init.sh
