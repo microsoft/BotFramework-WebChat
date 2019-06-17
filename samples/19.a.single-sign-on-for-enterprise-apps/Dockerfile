@@ -23,7 +23,8 @@ ADD bot/ /var/bot/
 # Copy the web server code to /var/web/
 ADD rest-api/ /var/web/
 
-# Copy the startup script to /var/
+# Copy SSH configuration and startup script to /var/
+ADD sshd_config /var/
 ADD startup.sh /var/
 
 # Copy static React app to /var/web/public/, to be consumed by web server
