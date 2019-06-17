@@ -26,6 +26,7 @@ WORKDIR /var/web/
 RUN npm ci
 
 WORKDIR /var/
-RUN tar -cf build.tgz bot web
+RUN npm install concurrently@4.1.0
+RUN tar -cf build.tgz bot node_modules web
 
 ENTRYPOINT sh
