@@ -5,4 +5,4 @@ ADD build.tgz /var/
 ADD .env.bot /var/bot/
 ADD .env.web /var/web/
 
-ENTRYPOINT ./node_modules/.bin/concurrently --kill-others --names "bot,web" "node bot" "node rest-api"
+ENTRYPOINT ./node_modules/.bin/concurrently --kill-others --names "bot,web" "node bot" "node web"
