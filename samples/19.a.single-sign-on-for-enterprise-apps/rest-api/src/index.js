@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const random = require('math-random');
 
-// Default environment variables
+// Setting default environment variables.
 process.env = {
   AAD_OAUTH_AUTHORIZE_URL: 'https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize',
   AAD_OAUTH_ACCESS_TOKEN_URL: 'https://login.microsoftonline.com/organizations/oauth2/v2.0/token',
@@ -17,6 +17,20 @@ process.env = {
   ...process.env,
 };
 
+// Checks for required environment variables.
+[
+  'AAD_OAUTH_CLIENT_ID',
+  'AAD_OAUTH_REDIRECT_URI',
+  'DIRECT_LINE_SECRET',
+  'GITHUB_OAUTH_CLIENT_ID',
+  'GITHUB_OAUTH_CLIENT_SECRET',
+  'GITHUB_OAUTH_REDIRECT_URI'
+].forEach(name => {
+  if (!process.env[name]) {
+    throw new Error(`Environment variable ${ name } must be set.`);
+  }
+});
+
 const { join } = require('path');
 const httpProxy = require('http-proxy');
 const restify = require('restify');
@@ -24,7 +38,6 @@ const restify = require('restify');
 const server = restify.createServer();
 const {
   PORT,
-  PROXY_BOT_URL,
   STATIC_FILES
 } = process.env;
 
