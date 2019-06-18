@@ -20,7 +20,7 @@ This demo does not include any threat models and is designed for educational pur
 
 # Test out the hosted sample
 
-You can browse to https://webchat-sso.azurewebsites.net/ to try out this demo.
+You can browse to https://webchat-sample-sso.azurewebsites.net/ to try out this demo.
 
 # How to run locally
 
