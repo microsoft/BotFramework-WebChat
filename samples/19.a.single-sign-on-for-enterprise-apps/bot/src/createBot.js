@@ -2,7 +2,6 @@ const { ActivityHandler, TurnContext } = require('botbuilder');
 const { findBestMatch } = require('string-similarity');
 
 const createBotAdapter = require('./createBotAdapter');
-const createOAuthStateManager = require('./createOAuthStateManager');
 const fetchGitHubProfileName = require('./fetchGitHubProfileName');
 const fetchMicrosoftGraphProfileName = require('./fetchMicrosoftGraphProfileName');
 
@@ -42,70 +41,53 @@ module.exports = () => {
 
   // Handler for "event" activity
   bot.onEvent(async (context, next) => {
-    const { activity: { name, type, value } } = context;
+    const { activity: { channelData, name } } = context;
 
-    // When we receive an event activity of "oauth/setaccesstoken", set the access token to conversation state.
-    if (type === 'event' && name === 'oauth/setaccesstoken') {
-      const oauthStateManager = createOAuthStateManager(context);
-      const oauthState = await oauthStateManager.getState();
-      const { accessToken, provider } = value;
+    // When we receive an event activity of "oauth/signin", set the access token to conversation state.
+    if (name === 'oauth/signin') {
+      const { oauthAccessToken, oauthProvider } = channelData;
 
-      // No-op if access token is not changed
-      if (
-        accessToken === oauthState.accessToken
-        && provider === oauthState.provider
-      ) {
-        return;
-      }
+      // For async operations that are outside of BotBuilder, we should use proactive messaging.
+      const reference = TurnContext.getConversationReference(context.activity);
 
-      oauthState.accessToken = accessToken;
-      oauthState.provider = provider;
+      await context.sendActivity({ type: 'typing' });
 
-      await oauthStateManager.saveChanges();
+      switch (oauthProvider) {
+        case 'github':
+          // We are using .then() here to detach the background job.
+          fetchGitHubProfileName(oauthAccessToken).then(async name => {
+            // When the GitHub profile is fetched, send a welcome message.
+            const adapter = createBotAdapter();
 
-      if (accessToken) {
-        // For async operations that are outside of BotBuilder, we should use proactive messaging.
-        const reference = TurnContext.getConversationReference(context.activity);
-
-        await context.sendActivity({ type: 'typing' });
-
-        switch (provider) {
-          case 'github':
-            // We are using .then() here to detach the background job.
-            fetchGitHubProfileName(accessToken).then(async name => {
-              // When the GitHub profile is fetched, send a welcome message.
-              const adapter = createBotAdapter();
-
-              await adapter.continueConversation(reference, async context => {
-                await context.sendActivity({
-                  text: `Welcome back, ${ name } (via GitHub).`,
-                  ...SUGGESTED_ACTIONS
-                });
+            await adapter.continueConversation(reference, async context => {
+              await context.sendActivity({
+                text: `Welcome back, ${ name } (via GitHub).`,
+                ...SUGGESTED_ACTIONS
               });
             });
+          });
 
-            break;
+          break;
 
-          case 'microsoft':
-            // We are using .then() here to detach the background job.
-            fetchMicrosoftGraphProfileName(accessToken).then(async name => {
-              // When the Microsoft Graph profile is fetched, send a welcome message.
-              const adapter = createBotAdapter();
+        case 'microsoft':
+          // We are using .then() here to detach the background job.
+          fetchMicrosoftGraphProfileName(oauthAccessToken).then(async name => {
+            // When the Microsoft Graph profile is fetched, send a welcome message.
+            const adapter = createBotAdapter();
 
-              await adapter.continueConversation(reference, async context => {
-                await context.sendActivity({
-                  text: `Welcome back, ${ name } (via Azure AD).`,
-                  ...SUGGESTED_ACTIONS
-                });
+            await adapter.continueConversation(reference, async context => {
+              await context.sendActivity({
+                text: `Welcome back, ${ name } (via Azure AD).`,
+                ...SUGGESTED_ACTIONS
               });
             });
+          });
 
-            break;
-        }
-      } else {
-        // If we receive the event activity with no access token inside, this means the user is signing out from the website.
-        await context.sendActivity('See you later!');
+          break;
       }
+    } else if (name === 'oauth/signout') {
+      // If we receive the event activity with no access token inside, this means the user is signing out from the website.
+      await context.sendActivity('See you later!');
     }
 
     await next();
@@ -113,9 +95,9 @@ module.exports = () => {
 
   // Handler for "message" activity
   bot.onMessage(async (context, next) => {
-    const oauthStateManager = createOAuthStateManager(context);
-    const oauthState = await oauthStateManager.getState();
-    const { activity: { text } } = context;
+    const { activity: { channelData: { oauthAccessToken } = {}, text } } = context;
+
+    console.log(context.activity.channelData);
 
     const match = guessQuestion(text);
 
@@ -127,10 +109,6 @@ module.exports = () => {
       });
     } else if (/^bye\d+$/.test(match)) {
       // When the user say "bye" or "goodbye".
-      oauthState.accessToken ='';
-      oauthState.provider = '';
-
-      await oauthStateManager.saveChanges();
       await context.sendActivity({
         name: 'oauth/signout',
         type: 'event'
@@ -148,7 +126,7 @@ module.exports = () => {
     ) {
       // When the user say "where are my orders".
 
-      if (oauthState.accessToken) {
+      if (oauthAccessToken) {
         // Tell them they have a package if the are signed in.
         await context.sendActivity({
           text: 'There is a package arriving later today.',

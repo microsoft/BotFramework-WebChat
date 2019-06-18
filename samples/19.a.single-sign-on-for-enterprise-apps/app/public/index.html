@@ -21,6 +21,7 @@
     -->
     <title>Web Chat Single Sign-On Demo</title>
     <script src="https://cdn.botframework.com/botframework-webchat/4.4.1/webchat.js"></script>
+    <script src="https://unpkg.com/simple-update-in@2.0.2/dist/simple-update-in.production.min.js"></script>
 
     <!-- This is for styling Web Chat for demonstration purpose -->
     <style type="text/css">
@@ -76,26 +77,39 @@
       (async function main() {
         const store = WebChat.createStore({}, ({ dispatch }) => {
           // We are using a Redux middleware to intercept actions in Web Chat and dispatch additional actions.
-          let accessToken;
           let connected;
-          let provider;
+          let oauthAccessToken;
+          let oauthProvider;
+
+          // If we receive "accesstokenchange" from the page, that means we are recently signed in or out.
+          // We should send the new token to the bot. If we send an empty string, the bot would know we are signed out.
+          window.addEventListener('accesstokenchange', ({ data: { accessToken, provider } }) => {
+            // Save the token/provider so we could piggyback it to every outgoing activities.
+            oauthAccessToken = accessToken;
+            oauthProvider = provider;
+
+            connected && dispatch({
+              type: 'WEB_CHAT/SEND_EVENT',
+              payload: { name: oauthAccessToken ? 'oauth/signin' : 'oauth/signout' }
+            });
+          });
 
           return next => action => {
             let shouldSendAccessToken;
 
-            if (action.type === 'CUSTOM/SEND_ACCESS_TOKEN') {
-              // This is a custom action from the code on this page.
-              // When we receive SEND_ACCESS_TOKEN action, we should send it to the bot.
-              // - If we are connected, send it to the bot (shouldSendAccessToken is truthy)
-              // - If we are not connected, save the token in the memory and wait until CONNECT_FULFILLED
-              accessToken = action.payload.accessToken;
-              provider = action.payload.provider;
-              shouldSendAccessToken = connected;
-            } else if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
               // Handle the case that we receive SEND_ACCESS_TOKEN but we are not connected at that moment.
               // Now, we are connected to the bot and should send the token to the bot.
-              shouldSendAccessToken = !!accessToken;
+              shouldSendAccessToken = !!oauthAccessToken;
               connected = true;
+
+              // If we are signed in before Web Chat is connected, tell the bot we have signed in.
+              if (oauthAccessToken) {
+                dispatch({
+                  type: 'WEB_CHAT/SEND_EVENT',
+                  payload: { name: 'oauth/signin' }
+                });
+              }
             } else if (action.type === 'DIRECT_LINE/DISCONNECT_PENDING') {
               // We are disconnecting.
               // Set connected to false so we don't send the access token automatically until CONNECT_FULFILLED.
@@ -107,35 +121,29 @@
             ) {
               // If the bot is sending an event activity named "oauth/signout", we should ask the page to sign out.
               window.dispatchEvent(new Event('signout'));
-            }
-
-            if (shouldSendAccessToken) {
-              console.log(`Sending access token "${ (accessToken || '').substr(0, 5) }" of provider "${ provider }".`);
-
-              // Sending the access token via event activity named "oauth/setaccesstoken"
-              dispatch({
-                type: 'WEB_CHAT/SEND_EVENT',
+            } else if (
+              action.type === 'DIRECT_LINE/POST_ACTIVITY'
+              && oauthAccessToken
+            ) {
+              // Piggyback the access token on every outgoing activity.
+              action = {
+                ...action,
                 payload: {
-                  name: 'oauth/setaccesstoken',
-                  value: {
-                    accessToken,
-                    provider
+                  ...action.payload,
+                  activity: {
+                    ...action.payload.activity,
+                    channelData: {
+                      ...action.payload.channelData,
+                      oauthAccessToken,
+                      oauthProvider
+                    }
                   }
                 }
-              });
+              };
             }
 
             return next(action);
           };
-        });
-
-        window.addEventListener('accesstokenchange', ({ data: { accessToken, provider } }) => {
-          // If we receive "accesstokenchange" from the page, that means we are recently signed in or out.
-          // We should send the new token to the bot. If we send an empty string, the bot would know we are signed out.
-          store.dispatch({
-            type: 'CUSTOM/SEND_ACCESS_TOKEN',
-            payload: { accessToken, provider }
-          });
         });
 
         // This is for obtaining Direct Line token from the bot.
@@ -145,7 +153,7 @@
         WebChat.renderWebChat({
           cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
             // To sign in, the bot will send a card action with a custom URL.
-            // For best compatibility, we are using "about:blank" as the placeholder.
+            // We are using "about:blank" as the placeholder URL.
             const { type, value } = cardAction;
 
             if (type === 'openUrl' && value === 'about:blank#sign-into-aad') {

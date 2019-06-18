@@ -11,27 +11,27 @@ const App = () => {
   const [gitHubAccessToken, setGitHubAccessToken] = useState(sessionStorage.getItem(GITHUB_OAUTH_ACCESS_TOKEN) || '');
   const [microsoftGraphAccessToken, setMicrosoftGraphAccessToken] = useState(sessionStorage.getItem(MICROSOFT_GRAPH_OAUTH_ACCESS_TOKEN) || '');
 
-  // We will fire "accesstokenchange" event to the browser if gitHubAccessToken changed.
+  // We will fire "accesstokenchange" event to the browser if gitHubAccessToken or microsoftGraphAccessToken changed.
   // Custom code in Web Chat will monitor "accesstokenchange" event and send to the bot when it is connected.
   useMemo(() => {
-    console.log(`Dispatching "accesstokenchange" event for GitHub access token "${ (gitHubAccessToken || '').substr(0, 5) }".`);
-
     const event = new Event('accesstokenchange');
 
-    event.data = { accessToken: gitHubAccessToken, provider: 'github' };
+    if (gitHubAccessToken) {
+      event.data = {
+        accessToken: gitHubAccessToken,
+        provider: 'github'
+      };
+    } else if (microsoftGraphAccessToken) {
+      event.data = {
+        accessToken: microsoftGraphAccessToken,
+        provider: 'microsoft'
+      };
+    } else {
+      event.data = {};
+    }
+
     window.dispatchEvent(event);
-  }, [gitHubAccessToken]);
-
-  // We will fire "accesstokenchange" event to the browser if microsoftGraphAccessToken changed.
-  // Custom code in Web Chat will monitor "accesstokenchange" event and send to the bot when it is connected.
-  useMemo(() => {
-    console.log(`Dispatching "accesstokenchange" event for Microsoft Graph access token "${ (microsoftGraphAccessToken || '').substr(0, 5) }".`);
-
-    const event = new Event('accesstokenchange');
-
-    event.data = { accessToken: microsoftGraphAccessToken, provider: 'microsoft' };
-    window.dispatchEvent(event);
-  }, [microsoftGraphAccessToken]);
+  }, [gitHubAccessToken, microsoftGraphAccessToken]);
 
   // In addition to state, we will save the gitHubAccessToken to session storage to persist across page refresh.
   const handleGitHubAccessTokenChange = useCallback(accessToken => {
