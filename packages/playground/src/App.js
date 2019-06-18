@@ -5,8 +5,7 @@ import memoize from 'memoize-one';
 import ReactWebChat, {
   createBrowserWebSpeechPonyfillFactory,
   createCognitiveServicesBingSpeechPonyfillFactory,
-  createCognitiveServicesSpeechServicesPonyfillFactory,
-  renderMarkdown
+  createCognitiveServicesSpeechServicesPonyfillFactory
 } from 'botframework-webchat';
 
 import createDevModeActivityMiddleware from './createDevModeActivityMiddleware';
@@ -281,7 +280,6 @@ export default class extends React.Component {
           directLine={directLine}
           disabled={disabled}
           locale={language}
-          renderMarkdown={renderMarkdown}
           sendTimeout={+sendTimeout || undefined}
           sendTypingIndicator={sendTypingIndicator}
           store={store}
