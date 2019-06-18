@@ -1,5 +1,15 @@
 pool:
   name: Hosted Ubuntu 1604
+
+trigger:
+  branches:
+    include:
+    - master
+    - sample-sso
+  paths:
+    include:
+    - samples/19.a.single-sign-on-for-enterprise-apps
+
 steps:
 - task: DockerInstaller@0
   displayName: 'Install Docker 18.09.6'
@@ -11,13 +21,13 @@ steps:
   inputs:
     command: build
     Dockerfile: 'samples/19.a.single-sign-on-for-enterprise-apps/Dockerfile'
-    arguments: '-t builder:$(Build.BuildId)'
+    arguments: '-t builder'
 
 - task: Docker@2
   displayName: 'Create an image'
   inputs:
     command: create
-    arguments: '--name builder-image builder:$(Build.BuildId)'
+    arguments: '--name builder-image builder'
 
 - task: Docker@2
   displayName: 'Copy build.tgz'
