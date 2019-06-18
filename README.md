@@ -219,6 +219,17 @@ There are several properties that you might pass into your Web Chat React Compon
 | `username`                 | Specify a username.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `webSpeechPonyFillFactory` | Specify the Web Speech object for text-to-speech and speech-to-text.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
+# Browser compatibility
+Web Chat supports the latest 2 versions of modern browsers like Edge, Google Chrome, and FireFox.
+If you need Web Chat to function in Internet Explorer 11, please see the [ES5 Bundle Demo](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle).
+
+Please note, however:
+- Web Chat does not support IE<11
+- Customization as shown in non-es5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5.  If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
+- Web Chat is unable to support the conversion of our samples to pre-2015 compatibility, and does not plan on supporting customization samples for IE11 (ES5).
+   - For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+
+
 # How to test with Web Chat's latest bits
 
 *Testing unreleased features is only available via MyGet packaging at this time.*
