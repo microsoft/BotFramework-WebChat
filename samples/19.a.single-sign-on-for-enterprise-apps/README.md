@@ -254,3 +254,9 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
       - This will also create a smooth UX by reducing the need for UI popups
 - Threat model
    - IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
+
+## Mixed conversations
+
+To lower the barrier for the end-user to initiate a conversation with the bot, in this sample, the conversation can be both anonymous or authenticated.
+
+That means at some points of time, the mixed conversation can be authenticated as different users. If it is not a desirable scenario for your use case, you might want to create a new conversation if the user signed out.
