@@ -1,5 +1,7 @@
 # Single sign-on demo for enterprise apps using OAuth
 
+![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)
+
 # Description
 
 In this demo, we will show you how to authorize a user to access resources on an enterprise app with a bot. Two types of resources are used to demonstrate the interoperability of OAuth: [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) and [GitHub API](https://developer.github.com/v3/).
