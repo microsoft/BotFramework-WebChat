@@ -1,6 +1,6 @@
 # Single sign-on demo for enterprise apps using OAuth
 
-![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)
+[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)](https://webchat-sample-sso.azurewebsites.net/)
 
 # Description
 
