@@ -78,13 +78,6 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
       1. Enter `http://localhost:3000/api/aad/oauth/callback` as the redirect URI
          - This must match `AAD_OAUTH_REDIRECT_URI` in `/rest-api/.env` we saved earlier
    - Click "Register"
-- Save the authorization endpoints
-   1. Select "Overview"
-   1. Click "Endpoints" on the main pane
-   1. Copy the content of "OAuth 2.0 authorization endpoint (v2)" to `/rest-api/.env`
-      - `AAD_OAUTH_AUTHORIZE_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize`
-   1. Copy the content of "OAuth 2.0 token endpoint (v2)" to `/rest-api/.env`
-      - `AAD_OAUTH_ACCESS_TOKEN_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/token`
 - Save the client ID
    1. Select "Overview"
    1. On the main pane, copy the content of "Application (client) ID" to `/rest-api/.env`
@@ -212,8 +205,6 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 ### `/rest-api/.env`
 
 ```
-AAD_OAUTH_ACCESS_TOKEN_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/token
-AAD_OAUTH_AUTHORIZE_URL=https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
 AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
 AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
