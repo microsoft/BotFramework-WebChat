@@ -52,7 +52,7 @@ If you want to authenticate on GitHub, follow the steps below.
    1. Browse to https://github.com/settings/developers
    1. Select "OAuth Apps"
    1. Click "New OAuth App" button
-   1. Fill out "Application name" and "Homepage URL"
+   1. Fill out "Application name" and "Homepage URL", for example, "Web Chat SSO Sample"
       - The "Application name" and "Homepage URL" will be shown to the user when they authorize your GitHub OAuth app
    1. In "Application callback URL", enter `http://localhost:3000/api/github/oauth/callback`
    1. Click "Register application"
@@ -68,7 +68,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
 - Create a new application
    1. Select "App registrations"
    1. Click "New registration"
-   1. Give it a name
+   1. Fill out "Name", for example, "Web Chat SSO Sample"
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "Public client (mobile & desktop)" as type
          - Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
@@ -77,7 +77,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    - Click "Register"
 - Save the client ID
    1. Select "Overview"
-   1. On the main pane, copy the content of "Application (client) ID" to `/rest-api/.env`
+   1. On the main pane, copy the content of "Application (client) ID" to `/rest-api/.env`, it should looks be a GUID
       - `AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd`
 
 ## Setup Azure Bot Services
