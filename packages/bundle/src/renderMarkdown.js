@@ -73,7 +73,7 @@ const customMarkdownIt = new MarkdownIt({
   }
 });
 
-export default function render(markdown, { options: { markdownRespectCRLF } }) {
+export default function render(markdown, { markdownRespectCRLF }) {
   if (markdownRespectCRLF) {
     markdown = markdown.replace(/\n\r|\r\n/gu, carriageReturn => (carriageReturn === '\n\r' ? '\r\n' : '\n\r'));
   }
