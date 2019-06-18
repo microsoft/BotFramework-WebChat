@@ -54,6 +54,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2068](https://github.com/Microsoft/BotFramework-WebChat/issues/2068). Fixed AdaptiveCards validate and rich card speak issues, by [@tdurnford](https://github.com/tdurnford) in PR [#2075](https://github.com/Microsoft/BotFramework-WebChat/pull/2075)
 -  Fix [#1966](https://github.com/Microsoft/BotFramework-WebChat/issues/1966). Update Localization files for es-ES, ja-JP, zh-HANS, zh-HANT, zh-YUE, by [@corinagum](https://github.com/corinagum) in PR [#2077](https://github.com/Microsoft/BotFramework-WebChat/pull/2077)
 -  Fix [#2078](https://github.com/microsoft/BotFramework-WebChat/issues/2078). Update Localization files for tr-TR by [@vefacaglar](https://github.com/vefacaglar)
+### Fixed
+-  Fix [#1971](https://github.com/Microsoft/BotFramework-WebChat/issues/1971). Fix mobile UX of Sendbox, SendButton, and SuggestedAction focus, by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+
 ## [4.4.1] - 2019-05-02
 
 ### Added
