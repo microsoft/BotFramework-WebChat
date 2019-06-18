@@ -17,7 +17,7 @@ const ROOT_CSS = css({
 
 const connectSendTextBox = (...selectors) =>
   connectToWebChat(
-    ({ disabled, language, scrollToEnd, sendBoxValue, setSendBox, submitSendBox }) => ({
+    ({ disabled, focusSendBox, language, scrollToEnd, sendBoxValue, setSendBox, submitSendBox }) => ({
       disabled,
       language,
       onChange: ({ target: { value } }) => {
@@ -33,6 +33,7 @@ const connectSendTextBox = (...selectors) =>
             setSendBox(sendBoxValue.trim());
             scrollToEnd();
             submitSendBox();
+            focusSendBox();
           }
         }
       },
