@@ -23,6 +23,12 @@ const allOutgoingMessagesFailed = new Condition('All outgoing messages to fail s
 });
 
 describe('offline UI', async () => {
+  test('git push testing', async () => {
+    console.log("begin git push testing");
+    const gittest2 = require('./gitpushtest');
+    return (1);
+  });
+
   test('should show "Taking longer than usual to connect" UI when connection is slow', async () => {
     const { driver } = await setupWebDriver({
       createDirectLine: options => {
