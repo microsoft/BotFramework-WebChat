@@ -54,7 +54,7 @@ const Composer = ({
 
     // For sign out, we simply remove the token.
     // Some OAuth providers support an optional logout URL.
-    // When the user sign out from the provider page, the logout URL for the specific application is being called.
+    // When the user signs out from the provider page, the logout URL for the specific application is being called.
     onSignOut: accessToken ? () => onAccessTokenChange('') : undefined
   }), [accessToken, oauthAuthorizeURL, onAccessTokenChange, onError]);
 
