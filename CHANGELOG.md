@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2078](https://github.com/microsoft/BotFramework-WebChat/issues/2078). Update Localization files for tr-TR by [@vefacaglar](https://github.com/vefacaglar)
 -  Fix [#2069](https://github.com/microsoft/BotFramework-WebChat/issues/2069). Fixed markdown renderer issue in Playground, by [@tdurnford](https://github.com/tdurnford) in PR[#2073](https://github.com/microsoft/BotFramework-WebChat/pull/2073)
 -  Fix [#1971](https://github.com/Microsoft/BotFramework-WebChat/issues/1971). Fix mobile UX of Sendbox, SendButton, and SuggestedAction focus, by [@corinagum](https://github.com/corinagum) in PR [#2087](https://github.com/Microsoft/BotFramework-WebChat/pull/2087)
--  Fix [#1627](https://github.com/Microsoft/BotFramework-WebChat/issues/1627). Fixed timestamps randomly stopped from updating, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+-  Fix [#1627](https://github.com/Microsoft/BotFramework-WebChat/issues/1627). Fixed timestamps randomly stopped from updating, by [@compulim](https://github.com/compulim) in PR [#2090](https://github.com/Microsoft/BotFramework-WebChat/pull/2090)
 
 ## [4.4.1] - 2019-05-02
 
