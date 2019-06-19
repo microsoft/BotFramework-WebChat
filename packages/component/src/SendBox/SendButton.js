@@ -8,11 +8,10 @@ import SendIcon from './Assets/SendIcon';
 
 const connectSendButton = (...selectors) =>
   connectToWebChat(
-    ({ disabled, focusSendBox, language, sendBoxValue, setSendBox, submitSendBox }) => ({
+    ({ disabled, language, sendBoxValue, setSendBox, submitSendBox }) => ({
       click: () => {
         setSendBox(sendBoxValue.trim());
         submitSendBox();
-        focusSendBox();
       },
       disabled,
       language

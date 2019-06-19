@@ -16,10 +16,9 @@ const SUGGESTED_ACTION_CSS = css({
 
 const connectSuggestedAction = (...selectors) =>
   connectToWebChat(
-    ({ disabled, focusSendBox, language, onCardAction }, { displayText, text, type, value }) => ({
+    ({ disabled, language, onCardAction }, { displayText, text, type, value }) => ({
       click: () => {
         onCardAction({ displayText, text, type, value });
-        focusSendBox();
       },
       disabled,
       language

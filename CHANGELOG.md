@@ -55,8 +55,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1966](https://github.com/Microsoft/BotFramework-WebChat/issues/1966). Update Localization files for es-ES, ja-JP, zh-HANS, zh-HANT, zh-YUE, by [@corinagum](https://github.com/corinagum) in PR [#2077](https://github.com/Microsoft/BotFramework-WebChat/pull/2077)
 -  Fix [#2078](https://github.com/microsoft/BotFramework-WebChat/issues/2078). Update Localization files for tr-TR by [@vefacaglar](https://github.com/vefacaglar)
 -  Fix [#2069](https://github.com/microsoft/BotFramework-WebChat/issues/2069). Fixed markdown renderer issue in Playground, by [@tdurnford](https://github.com/tdurnford) in PR[#2073](https://github.com/microsoft/BotFramework-WebChat/pull/2073)
+-  Fix [#1971](https://github.com/Microsoft/BotFramework-WebChat/issues/1971). Fix mobile UX of Sendbox, SendButton, and SuggestedAction focus, by [@corinagum](https://github.com/corinagum) in PR [#2087](https://github.com/Microsoft/BotFramework-WebChat/pull/2087)
+-  Fix [#1627](https://github.com/Microsoft/BotFramework-WebChat/issues/1627). Fixed timestamps randomly stopped from updating, by [@compulim](https://github.com/compulim) in PR [#2090](https://github.com/Microsoft/BotFramework-WebChat/pull/2090)
 -  Fix [#2001](https://github.com/Microsoft/BotFramework-WebChat/issues/2001). Strip markdown from aria labels, so screenreaders do not speak markdown in text, by [@corinagum](https://github.com/corinagum) in PR [#2096](https://github.com/Microsoft/BotFramework-WebChat/pull/2096)
 
+### Samples
+
+- `*`: [Single-sign on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps/), in [#2002](https://github.com/Microsoft/BotFramework-WebChat/pull/2002)
 
 ## [4.4.1] - 2019-05-02
 
