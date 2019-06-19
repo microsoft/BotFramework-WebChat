@@ -5,13 +5,13 @@
 //   Delete file dummy.txt from github.
 //   Delete folder BotFramework-WebChat.
 
-const USER = 'Some One';
+const USER = process.env.GITUSER;
+const PASS = process.env.GITPW;
 const EMAIL = 'some@one.com';
-const PASS = 'somewhere';
 const REPO = 'github.com/microsoft/BotFramework-WebChat';
 
 const git = require('simple-git/promise');
-const remote = `https://${REPO}`;
+const remote = `https://${USER}:${PASS}@${REPO}`;
 const rootDir = 'BotFramework-WebChat';
 const newTempDir = 'tempDir'
 
