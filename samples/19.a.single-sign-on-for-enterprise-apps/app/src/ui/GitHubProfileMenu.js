@@ -48,7 +48,7 @@ const GitHubProfileMenu = ({
   });
 
   // Listen to "signout" event from the window.
-  // The "signout" event is fired when the bot request the webpage to sign out.
+  // The "signout" event is fired when the bot requests the webpage to sign out.
   useEffect(() => {
     window.addEventListener('signout', onSignOut);
 
