@@ -127,7 +127,7 @@ module.exports = () => {
       // When the user say "where are my orders".
 
       if (oauthAccessToken) {
-        // Tell them they have a package if the are signed in.
+        // Tell them they have a package if they are signed in.
         await context.sendActivity({
           text: 'There is a package arriving later today.',
           ...SUGGESTED_ACTIONS
