@@ -62,7 +62,7 @@ GitHubProfileComposer.propTypes = {
 
 // Hoist the functionality from generic OAuth composer to GitHub composer.
 // The generic OAuth composer provides sign in and sign out logic.
-// The GitHub composer provide profile-related information.
+// The GitHub composer provides profile-related information.
 const ComposedGitHubProfileComposer = compose(
   connectSignInButton(({ onClick }) => ({ onSignIn: onClick })),
   connectSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
