@@ -72,7 +72,7 @@ const ComposedMicrosoftGraphProfileComposer = compose(
   connectSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
 )(MicrosoftGraphProfileComposer)
 
-// This is the exported React component, provide basic UI-less functionality to its descendants.
+// This is the exported React component, which provides basic UI-less functionality to its descendants.
 const ConnectedMicrosoftGraphProfileComposer = ({
   accessToken,
   children,
