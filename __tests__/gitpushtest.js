@@ -57,14 +57,22 @@ async function gittest() {
     console.log("process.chdir(", rootDir);
     await process.chdir(rootDir);
 
-    console.log(".addConfig('user.name',");
-    await git().addConfig('user.name', USER)
-        .then((result) => console.log("addConfig 1 finished: ", result))
-        .catch((err) => console.error('addConfig 1 failed: ', err));
-    await git().addConfig('user.email', EMAIL)
-        .then((result) => console.log("addConfig 2 finished: ", result))
-        .catch((err) => console.error('addConfig 2 failed: ', err));
-    
+    //console.log(".addConfig('user.name',");
+    //await git().addConfig('user.name', USER)
+    //    .then((result) => console.log("addConfig 1 finished: ", result))
+    //    .catch((err) => console.error('addConfig 1 failed: ', err));
+    //await git().addConfig('user.email', EMAIL)
+    //    .then((result) => console.log("addConfig 2 finished: ", result))
+    //    .catch((err) => console.error('addConfig 2 failed: ', err));
+
+    console.log(".raw(['config' user");
+    await git().raw(['config', '--global', 'user.name', USER])
+        .then((result) => console.log(".raw(['config' name finished: ", result))
+        .catch((err) => console.error(".raw(['config' name failed: ", err));
+    await git().raw(['config', '--global', 'user.email', USER])
+        .then((result) => console.log(".raw(['config' email finished: ", result))
+        .catch((err) => console.error(".raw(['config' email failed: ", err));
+
     console.log("git().status() 1");
     await git().status()
         .then((result) => console.log("status 1 finished: ", result))
