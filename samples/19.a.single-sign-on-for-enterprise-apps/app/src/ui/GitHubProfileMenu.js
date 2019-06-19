@@ -144,7 +144,7 @@ GitHubProfileMenu.propTypes = {
   setAccessToken: PropTypes.func
 };
 
-// Borrowed from react-redux, "compose" is a function that combine the results of the functions.
+// Borrowed from react-redux, "compose" is a function that combines the results of the functions.
 // The functions listed here will retrieve corresponding information from React context.
 const ComposedGitHubProfileMenu = compose(
   connectGitHubProfileAvatar(),
