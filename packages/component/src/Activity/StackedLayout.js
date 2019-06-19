@@ -1,3 +1,4 @@
+/* eslint-disable no-sync */
 /* eslint react/no-array-index-key: "off" */
 
 import { Constants } from 'botframework-webchat-core';
@@ -5,6 +6,8 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import remark from 'remark';
+import stripMarkdown from 'strip-markdown';
 
 import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
@@ -88,10 +91,18 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     type
   } = activity;
 
+  const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const ariaLabel = localize(fromUser ? 'User said something' : 'Bot said something', language, avatarInitials, text);
-  const activityDisplayText = messageBackDisplayText || text;
+  const strippedText = remark()
+    .use(stripMarkdown)
+    .processSync(text);
+  const ariaLabel = localize(
+    fromUser ? 'User said something' : 'Bot said something',
+    language,
+    avatarInitials,
+    strippedText
+  );
 
   return (
     <div className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', { 'from-user': fromUser })}>
