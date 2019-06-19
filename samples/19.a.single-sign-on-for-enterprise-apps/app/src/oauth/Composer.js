@@ -18,7 +18,7 @@ const Composer = ({
       // When context.onSignIn is called, we will:
       // 1. Open a new popup and navigate to the URL stored in "oauthAuthorizeURL" prop.
       // 2. OAuth provider will call our OAuth callback page.
-      // 3. The callback page use "postMessage" to inform the parent window (this window) about the access token thru "message" event.
+      // 3. The callback page uses "postMessage" to inform the parent window (this window) about the access token through the "message" event.
       const handleMessage = ({ data, origin }) => {
         const oauthAuthorizeLocation = new URL(oauthAuthorizeURL, window.location.href);
 
