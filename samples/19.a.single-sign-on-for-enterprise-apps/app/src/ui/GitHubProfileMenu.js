@@ -67,7 +67,7 @@ const GitHubProfileMenu = ({
     setExpanded(false);
   }, [onSignIn]);
 
-  // In addition to running the sign in logic from OAuth context, we will also collapse the menu.
+  // In addition to running the sign out logic from OAuth context, we will also collapse the menu.
   const handleSignOut = useCallback(() => {
     onSignOut && onSignOut();
     setExpanded(false);
