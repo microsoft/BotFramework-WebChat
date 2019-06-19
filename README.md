@@ -190,6 +190,7 @@ See more about [customizing Web Chat](https://github.com/Microsoft/BotFramework-
 | [`16.customization-selectable-activity`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/16.customization-selectable-activity)                                                                               | Advanced tutorial: Demonstrates how to add custom click behavior to each activity.                                                                                                                                                  | [Selectable Activity Demo](https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity)                   |
 | [`17.chat-send-history`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/17.chat-send-history)                                                                                                               | Advanced tutorial: Demonstrates the ability to save user input and allow the user to step back through previous sent messages.                                                                                                      | [Chat Send History Demo](https://microsoft.github.io/BotFramework-WebChat/17.chat-send-history)                                     |
 | [`18.customization-open-url`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/18.customization-open-url)                                                                                                     | Advanced tutorial: Demonstrates how to customize the open URL behavior.                                                                                                                                                             | [Customize Open URL Demo](https://microsoft.github.io/BotFramework-WebChat/18.customization-open-url)                               |
+| [`19.a.single-sign-on-for-enterprise-apps`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/19.a.single-sign-on-for-enterprise-apps)                                                                         | Demonstrates how to use single sign-on for enterprise apps using OAuth                                                                                                                                                              | [Single Sign-On using OAuth Demo](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)         |
 
 # Web Chat API Reference
 
@@ -220,13 +221,13 @@ There are several properties that you might pass into your Web Chat React Compon
 | `webSpeechPonyFillFactory` | Specify the Web Speech object for text-to-speech and speech-to-text.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 # Browser compatibility
-Web Chat supports the latest 2 versions of modern browsers like Edge, Google Chrome, and FireFox.
-If you need Web Chat to function in Internet Explorer 11, please see the [ES5 Bundle Demo](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle).
+Web Chat supports the latest 2 versions of modern browsers like Chrome, Edge, and FireFox.
+If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle).
 
 Please note, however:
-- Web Chat does not support IE<11
-- Customization as shown in non-es5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5.  If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
-- Web Chat is unable to support the conversion of our samples to pre-2015 compatibility, and does not plan on supporting customization samples for IE11 (ES5).
+- Web Chat does not support Internet Explorer older than version 11
+- Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5.  If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
+- Web Chat has no plan to support samples for IE11 (ES5).
    - For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
 
