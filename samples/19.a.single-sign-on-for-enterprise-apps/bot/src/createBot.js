@@ -124,7 +124,7 @@ module.exports = () => {
     } else if (
       match === 'order'
     ) {
-      // When the user say "where are my orders".
+      // When the user says "where are my orders".
 
       if (oauthAccessToken) {
         // Tell them they have a package if they are signed in.
