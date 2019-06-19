@@ -84,7 +84,7 @@
           // If we receive "accesstokenchange" from the page, that means we have recently signed in or out.
           // We should send the new token to the bot. If we send an empty string, the bot will know we are signed out.
           window.addEventListener('accesstokenchange', ({ data: { accessToken, provider } }) => {
-            // Save the token/provider so we could piggyback it to every outgoing activities.
+            // Save the token/provider so we can piggyback it to every outgoing activity.
             oauthAccessToken = accessToken;
             oauthProvider = provider;
 
