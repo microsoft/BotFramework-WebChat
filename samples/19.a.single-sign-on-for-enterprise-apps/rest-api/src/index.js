@@ -55,7 +55,7 @@ server.get('/api/github/oauth/callback', require('./routes/github/oauth/callback
 server.get('/api/github/settings', require('./routes/github/settings'));
 server.post('/api/messages', require('./routes/botMessages'));
 
-// We will use the REST API server to serve static web content to simplify deployment for demonstration purpose.
+// We will use the REST API server to serve static web content to simplify deployment for demonstration purposes.
 STATIC_FILES && server.get('/**/*', restify.plugins.serveStatic({
   default: 'index.html',
   directory: join(__dirname, '..', STATIC_FILES)
