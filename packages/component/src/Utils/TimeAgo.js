@@ -11,7 +11,7 @@ function nextTimer(date) {
   const time = new Date(date).getTime();
   const now = Date.now();
 
-  return time > now ? time : Math.ceil((now - time) / TIMER_INTERVAL) * TIMER_INTERVAL + time;
+  return time > now ? time : now + TIMER_INTERVAL - ((now - time) % TIMER_INTERVAL);
 }
 
 function getStateFromProps({ language, value }) {
