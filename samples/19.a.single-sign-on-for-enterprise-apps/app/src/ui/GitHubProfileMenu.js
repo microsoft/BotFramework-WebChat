@@ -13,7 +13,7 @@ import GitHubProfileComposer from '../gitHubProfile/Composer';
 
 const SETTINGS_URL = '/api/github/settings';
 
-// We will fetch authorize URL and client ID for GitHub sign-in flow from the server.
+// We will fetch the authorize URL and client ID for the GitHub sign-in flow from the server.
 // This help decouples the server settings (e.g. client ID) from the HTML code.
 async function fetchSettings() {
   try {
