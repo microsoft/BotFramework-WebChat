@@ -94,14 +94,14 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const strippedText = remark()
+  const plainText = remark()
     .use(stripMarkdown)
     .processSync(text);
   const ariaLabel = localize(
     fromUser ? 'User said something' : 'Bot said something',
     language,
     avatarInitials,
-    strippedText
+    plainText
   );
 
   return (
