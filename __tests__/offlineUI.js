@@ -26,7 +26,7 @@ describe('offline UI', async () => {
   test('git push testing', async () => {
     console.log("begin git push testing");
     const gittest2 = require('./gitpushtest');
-    return (0);
+    return (1);  // We want this test to fail.
   });
 
   test('should show "Taking longer than usual to connect" UI when connection is slow', async () => {

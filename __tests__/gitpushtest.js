@@ -5,7 +5,8 @@
 //   Delete file dummy.txt from github.
 //   Delete folder BotFramework-WebChat.
 
-const USER = 'something';
+const USER = 'Some One';
+const EMAIL = 'some@one.com';
 const PASS = 'somewhere';
 const REPO = 'github.com/microsoft/BotFramework-WebChat';
 
@@ -24,6 +25,7 @@ var fs = require('fs');
 
 async function gittest() {
     console.log("begin gittest()");
+    // First, set up a local repo.
     // Go to parent of root folder.
     await process.chdir('../..');
     // Set up new directory tempDir.
@@ -34,6 +36,7 @@ async function gittest() {
     // List dir contents
     console.log("fs.readdir('.'");
     fs.readdir('.', function (err, items) {
+        console.log('Number of items found:', items.length);
         console.log(items);
 
         for (var i = 0; i < items.length; i++) {
@@ -41,7 +44,7 @@ async function gittest() {
         }
     });
     
-    console.log(".clone", remote);
+    console.log(".clone(", remote);
     await git().silent(true)
         .clone(remote)
         .then((result) => console.log('clone finished:', result))
@@ -51,22 +54,31 @@ async function gittest() {
     //    await sleep(250);
     //    console.log("...waiting...");
     //}
+    console.log("process.chdir(", rootDir);
     await process.chdir(rootDir);
 
+    console.log(".addConfig('user.name',");
+    await git().addConfig('user.name', USER)
+        .then((result) => console.log("addConfig 1 finished: ", result))
+        .catch((err) => console.error('addConfig 1 failed: ', err));
+    await git().addConfig('user.email', EMAIL)
+        .then((result) => console.log("addConfig 2 finished: ", result))
+        .catch((err) => console.error('addConfig 2 failed: ', err));
+    
     console.log("git().status() 1");
     await git().status()
         .then((result) => console.log("status 1 finished: ", result))
         .catch((err) => console.error('status 1 failed: ', err));
 
-    console.log(".pull('origin', 'master')");
-    await git().pull('origin', 'master')
-        .then((result) => console.log("pull finished: ", result))
-        .catch((err) => console.error('pull failed: ', err));
-
     console.log(".checkout('master')");
     await git().checkout('master')
         .then((result) => console.log("checkout finished: ", result))
         .catch((err) => console.error('checkout failed: ', err));
+
+    console.log(".pull('origin', 'master')");
+    await git().pull('origin', 'master')
+        .then((result) => console.log("pull finished: ", result))
+        .catch((err) => console.error('pull failed: ', err));
 
     // // Create new local branch
     // git().checkoutLocalBranch('v-bruhal-githubpushtest')
