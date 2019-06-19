@@ -26,7 +26,7 @@ const GitHubProfileComposer = ({
     setName(name);
   }, [accessToken]);
 
-  // Build a new React context object if anything changed.
+  // Build a new React context object if anything has changed.
   const context = useMemo(() => ({
     avatarURL,
     name,
