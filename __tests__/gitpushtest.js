@@ -69,7 +69,7 @@ async function gittest() {
     await git().raw(['config', '--global', 'user.name', USER])
         .then((result) => console.log(".raw(['config' name finished: ", result))
         .catch((err) => console.error(".raw(['config' name failed: ", err));
-    await git().raw(['config', '--global', 'user.email', USER])
+    await git().raw(['config', '--global', 'user.email', EMAIL])
         .then((result) => console.log(".raw(['config' email finished: ", result))
         .catch((err) => console.error(".raw(['config' email failed: ", err));
 
