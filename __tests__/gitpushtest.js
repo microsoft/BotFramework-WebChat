@@ -12,6 +12,7 @@ const REPO = 'github.com/microsoft/BotFramework-WebChat';
 const git = require('simple-git/promise');
 const remote = `https://${REPO}`;
 const rootDir = 'BotFramework-WebChat';
+const newTempDir = 'tempDir'
 
 var fs = require('fs');
 
@@ -23,6 +24,23 @@ var fs = require('fs');
 
 async function gittest() {
     console.log("begin gittest()");
+    // Go to parent of root folder.
+    await process.chdir('../..');
+    // Set up new directory tempDir.
+    await fs.mkdirSync(newTempDir);
+    console.log(".chdir(newTempDir)");
+    await process.chdir(newTempDir);
+
+    // List dir contents
+    console.log("fs.readdir('.'");
+    fs.readdir('.', function (err, items) {
+        console.log(items);
+
+        for (var i = 0; i < items.length; i++) {
+            console.log(items[i]);
+        }
+    });
+    
     console.log(".clone", remote);
     await git().silent(true)
         .clone(remote)
@@ -61,7 +79,7 @@ async function gittest() {
     //     .catch((err) => console.error('push failed: ', err));
 
     console.log(".addTag('gittest_tag')");
-    await git().addTag('test_tag')
+    await git().addTag('gittest_tag')
         .then((result) => console.log("addTag finished: ", result))
         .catch((err) => console.error('addTag failed: ', err));
 
@@ -75,8 +93,8 @@ async function gittest() {
         .then((result) => console.log("push finished: ", result))
         .catch((err) => console.error('push failed: ', err));
     // Delete the tag with:
-    // git tag -d test_tag
-    // git push origin :refs/tags/test_tag
+    // git tag -d gittest_tag
+    // git push origin :refs/tags/gittest_tag
 
     // Create new file
     console.log("fs.writeFile('dummy.txt'");
