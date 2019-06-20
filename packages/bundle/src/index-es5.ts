@@ -1,3 +1,6 @@
+/* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
+// window['WebChat'] is required for TypeScript
+
 // Polyfills for IE11 and other ES5 browsers
 // To maintain quality, we prefer polyfills without additives
 // For example, we prefer Promise implementation from "core-js" than "bluebird"
@@ -13,8 +16,16 @@ import 'core-js/modules/es6.symbol';
 import 'core-js/modules/es7.array.includes';
 import 'url-search-params-polyfill';
 import 'whatwg-fetch';
-
 import addVersion from './addVersion';
+import defaultCreateDirectLine from './createDirectLine';
+import { version } from './index-minimal';
+
+const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat-es5/${version}`, ...options });
+
+window['WebChat'] = {
+  ...window['WebChat'],
+  createDirectLine
+};
 
 export * from './index';
 

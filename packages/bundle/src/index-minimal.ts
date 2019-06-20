@@ -1,7 +1,7 @@
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
-import { Constants, createStore } from 'botframework-webchat-core';
+import { Constants, createStore, version } from 'botframework-webchat-core';
 
 import ReactWebChat, {
   Components,
@@ -13,9 +13,10 @@ import ReactWebChat, {
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';
-import createDirectLine from './createDirectLine';
+import defaultCreateDirectLine from './createDirectLine';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
+const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat-minimal/${version}`, ...options });
 
 export default ReactWebChat;
 
@@ -28,7 +29,8 @@ export {
   createDirectLine,
   createStore,
   createStyleSet,
-  renderWebChat
+  renderWebChat,
+  version
 };
 
 window['WebChat'] = {
