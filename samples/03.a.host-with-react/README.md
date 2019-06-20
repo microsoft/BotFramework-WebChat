@@ -43,12 +43,12 @@ We'll start by adding React and Babel to the head or our template, based off of 
 + <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
 + <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
 + <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-  <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 </head>
 …
 ```
 
-> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+> For demonstration purposes, we are using the latest official release of Web Chat at "/latest/webchat.js". When you are using Web Chat for production, you may lock down on a specific version with the following format: "/4.1.0/webchat.js".
 
 The core of this code both creates and renders the React component that displays Web Chat.
 
@@ -84,7 +84,7 @@ Here is the finished `index.html`:
 +   <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
 +   <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
 +   <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }

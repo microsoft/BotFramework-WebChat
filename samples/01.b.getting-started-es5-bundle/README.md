@@ -58,8 +58,8 @@ Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Cha
 ```diff
 …
 <head>
-+ <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-es5.js"></script>
-- <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++ <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 </head>
 …
 ```
@@ -74,8 +74,8 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
 
-+   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-es5.js"></script>
--   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+-   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }

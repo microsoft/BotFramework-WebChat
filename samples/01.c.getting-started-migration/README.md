@@ -67,7 +67,7 @@ We'll start by using our old v3 `index.html` as our starting point.
 </html>
 ```
 
-> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js", or lock down on a specific version with the following format: "/4.1.0/webchat.js".
+> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 
 Our first change is to update the CDN the webpage uses from v3 to v4.
 
@@ -75,7 +75,7 @@ Our first change is to update the CDN the webpage uses from v3 to v4.
 …
  <head>
 -  <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
-+  <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
   </head>
   <body>
 -   <div id="bot" />
@@ -132,7 +132,7 @@ Finally, we will add basic styling since there is no longer a stylesheet include
 ```diff
 …
   <head>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 +   <style>
 +     html, body { height: 100% }
 +     body { margin: 0 }
@@ -155,7 +155,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle</title>
-+   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
++   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 +   <style>
 +     html, body { height: 100% }
 +     body { margin: 0 }

@@ -46,13 +46,13 @@ First, add the Markdown-It dependency to our `head`.
 ```diff
 …
 <head>
-   <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
+   <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
 +  <script src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
 </head>
 …
 ```
 
-> For demonstration purposes, we are using the development branch of Web Chat at "/master/webchat-minimal.js". When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat-minimal.js", or lock down on a specific version with the following format: "/4.1.0/webchat-minimal.js".
+> For demonstration purposes, we are using the latest official release of Web Chat at "/latest/webchat-minimal.js". When you are using Web Chat for production, you may lock down on a specific version with the following format: "/4.1.0/webchat-minimal.js".
 
 Next, add and bind the markdown-it object to `renderMarkdown`:
 
@@ -72,7 +72,7 @@ Here is the finished `index.html`:
 <html lang="en-US">
   <head>
     <title>Web Chat: Minimal bundle with Markdown</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat-minimal.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
 +   <script src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
     <style>
       html, body { height: 100% }

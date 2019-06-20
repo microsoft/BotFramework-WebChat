@@ -191,7 +191,7 @@ window.ReactDOM.render(
     <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
     <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
 
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
