@@ -52,7 +52,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
   }
 
   handleExecuteAction(action) {
-    const { disabled, onCardAction } = this.props;
+    const { disabled, onCardAction, scrollToEnd } = this.props;
+
+    scrollToEnd();
 
     // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
     if (disabled) {
@@ -200,11 +202,14 @@ AdaptiveCardRenderer.defaultProps = {
   tapAction: undefined
 };
 
-export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, styleSet, tapAction }) => ({
-  disabled,
-  language,
-  onCardAction,
-  renderMarkdown,
-  styleSet,
-  tapAction
-}))(AdaptiveCardRenderer);
+export default connectToWebChat(
+  ({ disabled, language, onCardAction, renderMarkdown, styleSet, tapAction, scrollToEnd }) => ({
+    disabled,
+    language,
+    onCardAction,
+    renderMarkdown,
+    styleSet,
+    tapAction,
+    scrollToEnd
+  })
+)(AdaptiveCardRenderer);

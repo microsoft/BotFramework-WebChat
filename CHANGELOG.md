@@ -53,6 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1896](https://github.com/microsoft/BotFramework-WebChat/issues/1896). Added data schema to render base64 images, by [@denscollo](https://github.com/denscollo) in PR[#2067](https://github.com/microsoft/BotFramework-WebChat/pull/2067)
 -  Fix [#1966](https://github.com/Microsoft/BotFramework-WebChat/issues/1966). Update Localization files for es-ES, ja-JP, zh-HANS, zh-HANT, zh-YUE, by [@corinagum](https://github.com/corinagum) in PR [#2077](https://github.com/Microsoft/BotFramework-WebChat/pull/2077)
 -  Fix [#2078](https://github.com/microsoft/BotFramework-WebChat/issues/2078). Update Localization files for tr-TR by [@vefacaglar](https://github.com/vefacaglar)
+-  Fix [#1926](https://github.com/microsoft/BotFramework-WebChat/issues/1926). Fixed scroll event trigger when executing card action by [@vefacaglar](https://github.com/vefacaglar).
+
 ## [4.4.1] - 2019-05-02
 
 ### Added
