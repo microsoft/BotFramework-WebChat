@@ -4,9 +4,9 @@ import React from 'react';
 
 import CommonCard from './CommonCard';
 
-const SignInCardAttachment = ({ adaptiveCards, attachment, styleSet }) => (
+const SignInCardAttachment = ({ adaptiveCards, adaptiveCardHostConfig, attachment, styleSet }) => (
   <div className={styleSet.animationCardAttachment}>
-    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCards={adaptiveCards} adaptiveCardHostConfig={adaptiveCardHostConfig} attachment={attachment} />
   </div>
 );
 

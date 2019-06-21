@@ -10,8 +10,11 @@ const { AudioContent } = Components;
 
 const AudioCardAttachment = ({
   adaptiveCards,
+  adaptiveCardHostConfig,
   attachment,
-  attachment: { content: { autostart = false, autoloop = false, image: { url: imageURL = '' }, media = [] } = {} } = {},
+  attachment: {
+    content: { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = {}
+  } = {},
   styleSet
 }) => (
   <div className={styleSet.audioCardAttachment}>
@@ -22,7 +25,7 @@ const AudioCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCards={adaptiveCards} adaptiveCardHostConfig={adaptiveCardHostConfig} attachment={attachment} />
   </div>
 );
 

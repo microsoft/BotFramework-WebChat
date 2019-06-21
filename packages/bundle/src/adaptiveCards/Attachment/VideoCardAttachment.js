@@ -10,6 +10,7 @@ const { VideoContent } = Components;
 
 const VideoCardAttachment = ({
   adaptiveCards,
+  adaptiveCardHostConfig,
   attachment,
   attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {},
   styleSet
@@ -22,7 +23,7 @@ const VideoCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCards={adaptiveCards} adaptiveCardHostConfig={adaptiveCardHostConfig} attachment={attachment} />
   </div>
 );
 

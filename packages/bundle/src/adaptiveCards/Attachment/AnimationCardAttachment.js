@@ -26,7 +26,13 @@ class AnimationCardAttachment extends React.Component {
   }
 
   render() {
-    const { adaptiveCards, attachment, attachment: { content: { media = [] } = {} } = {}, styleSet } = this.props;
+    const {
+      adaptiveCards,
+      adaptiveCardHostConfig,
+      attachment,
+      attachment: { content: { media = [] } = {} } = {},
+      styleSet
+    } = this.props;
 
     return (
       <div className={styleSet.animationCardAttachment}>
@@ -41,7 +47,11 @@ class AnimationCardAttachment extends React.Component {
             </li>
           ))}
         </ul>
-        <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+        <CommonCard
+          adaptiveCards={adaptiveCards}
+          adaptiveCardHostConfig={adaptiveCardHostConfig}
+          attachment={attachment}
+        />
       </div>
     );
   }
