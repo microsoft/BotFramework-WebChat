@@ -27,8 +27,8 @@ class AnimationCardAttachment extends React.Component {
 
   render() {
     const {
-      adaptiveCards,
       adaptiveCardHostConfig,
+      adaptiveCards,
       attachment,
       attachment: { content: { media = [] } = {} } = {},
       styleSet
@@ -48,8 +48,8 @@ class AnimationCardAttachment extends React.Component {
           ))}
         </ul>
         <CommonCard
-          adaptiveCards={adaptiveCards}
           adaptiveCardHostConfig={adaptiveCardHostConfig}
+          adaptiveCards={adaptiveCards}
           attachment={attachment}
         />
       </div>
@@ -58,6 +58,7 @@ class AnimationCardAttachment extends React.Component {
 }
 
 AnimationCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({

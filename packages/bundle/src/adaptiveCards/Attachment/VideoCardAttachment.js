@@ -9,8 +9,8 @@ import CommonCard from './CommonCard';
 const { VideoContent } = Components;
 
 const VideoCardAttachment = ({
-  adaptiveCards,
   adaptiveCardHostConfig,
+  adaptiveCards,
   attachment,
   attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {},
   styleSet
@@ -23,11 +23,12 @@ const VideoCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard adaptiveCards={adaptiveCards} adaptiveCardHostConfig={adaptiveCardHostConfig} attachment={attachment} />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
   </div>
 );
 
 VideoCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
