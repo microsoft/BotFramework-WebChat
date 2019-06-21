@@ -11,7 +11,6 @@ const { VideoContent } = Components;
 const VideoCardAttachment = ({
   adaptiveCardHostConfig,
   adaptiveCards,
-  adaptiveCardHostConfig,
   attachment,
   attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {},
   styleSet
