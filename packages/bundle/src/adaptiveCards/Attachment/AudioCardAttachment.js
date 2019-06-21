@@ -11,6 +11,7 @@ const { AudioContent } = Components;
 const AudioCardAttachment = ({
   adaptiveCardHostConfig,
   adaptiveCards,
+  adaptiveCardHostConfig,
   attachment,
   attachment: {
     content: { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = {}
