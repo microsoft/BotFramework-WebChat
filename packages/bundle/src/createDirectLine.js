@@ -13,6 +13,7 @@ export default function createDirectLine({
   webSocket
 }) {
   return new DirectLine({
+    botAgent,
     conversationId,
     domain,
     fetch,
@@ -22,7 +23,6 @@ export default function createDirectLine({
     token,
     watermark,
     webSocket,
-    botAgent,
     createFormData: attachments => {
       const formData = new FormData();
 

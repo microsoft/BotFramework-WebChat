@@ -16,7 +16,7 @@ import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyf
 import defaultCreateDirectLine from './createDirectLine';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat-minimal/${version}`, ...options });
+const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version} (Minimal)`, ...options });
 
 export default ReactWebChat;
 

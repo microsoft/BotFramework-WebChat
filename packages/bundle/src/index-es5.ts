@@ -16,11 +16,11 @@ import 'core-js/modules/es6.symbol';
 import 'core-js/modules/es7.array.includes';
 import 'url-search-params-polyfill';
 import 'whatwg-fetch';
+import { version } from './index-minimal';
 import addVersion from './addVersion';
 import defaultCreateDirectLine from './createDirectLine';
-import { version } from './index-minimal';
 
-const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat-es5/${version}`, ...options });
+const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version} (ES5)`, ...options });
 
 window['WebChat'] = {
   ...window['WebChat'],

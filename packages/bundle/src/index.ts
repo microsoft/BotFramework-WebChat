@@ -3,8 +3,8 @@
 
 export * from './index-minimal';
 
-import addVersion from './addVersion';
 import { version } from './index-minimal';
+import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createCognitiveServicesBingSpeechPonyfillFactory from './createCognitiveServicesBingSpeechPonyfillFactory';
 import createCognitiveServicesSpeechServicesPonyfillFactory from './createCognitiveServicesSpeechServicesPonyfillFactory';
@@ -15,7 +15,7 @@ import renderMarkdown from './renderMarkdown';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version}`, ...options });
+const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version} (Full)`, ...options });
 
 export default ReactWebChat;
 
