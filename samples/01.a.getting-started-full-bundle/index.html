@@ -8,7 +8,7 @@
       When you are using Web Chat for production, you should use the latest stable release at "/latest/webchat.js",
       or lock down on a specific version with the following format: "/4.1.0/webchat.js".
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="/packages/bundle/dist/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -32,7 +32,8 @@
         const { token } = await res.json();
 
         window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token })
+          directLine: window.WebChat.createDirectLine({ token }),
+          styleOptions: { sendBoxBackground: '#0063B1', sendBoxTextColor: 'White', sendBoxButtonColor: 'White', sendBoxPlaceholderColor: 'White', sendBoxTextWrap: false }
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();

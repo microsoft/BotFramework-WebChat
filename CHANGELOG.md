@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1971](https://github.com/Microsoft/BotFramework-WebChat/issues/1971). Fix mobile UX of Sendbox, SendButton, and SuggestedAction focus, by [@corinagum](https://github.com/corinagum) in PR [#2087](https://github.com/Microsoft/BotFramework-WebChat/pull/2087)
 -  Fix [#1627](https://github.com/Microsoft/BotFramework-WebChat/issues/1627). Fixed timestamps randomly stopped from updating, by [@compulim](https://github.com/compulim) in PR [#2090](https://github.com/Microsoft/BotFramework-WebChat/pull/2090)
 -  Fix [#2001](https://github.com/Microsoft/BotFramework-WebChat/issues/2001). Strip Markdown from ARIA labels, so screen readers do not speak Markdown in text, by [@corinagum](https://github.com/corinagum) in PR [#2096](https://github.com/Microsoft/BotFramework-WebChat/pull/2096)
+-  Fixed [#2110](https://github.com/Microsoft/BotFramework-WebChat/issues/2110). Fixed sendBox input/textarea background color issue, by [@tdurnford](https://github.com/johndoe) in PR [#2111](https://github.com/Microsoft/BotFramework-WebChat/pull/2111)
 
 ### Samples
 

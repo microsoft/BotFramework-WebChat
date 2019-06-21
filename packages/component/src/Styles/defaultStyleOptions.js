@@ -69,6 +69,7 @@ const DEFAULT_OPTIONS = {
   sendBoxBorderLeft: '',
   sendBoxBorderRight: '',
   sendBoxBorderTop: 'solid 1px #E6E6E6',
+  sendBoxPlaceholderColor: '#767676',
   sendBoxTextWrap: false,
 
   // Visually show spoken text
