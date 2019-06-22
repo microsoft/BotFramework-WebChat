@@ -105,10 +105,7 @@ export default function() {
    const now = Date.now();
 
    if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-      fetchPromise = fetch(
-         'https://webchat-mockbot.azurewebsites.net/speechservices/token',
-         { method: 'POST' }
-      )
+      fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
          .then(res => res.json())
          .then(({ token }) => token)
          .catch(() => {
@@ -142,17 +139,11 @@ const { connectMicrophoneButton } = Components;
 Next we will export a new `connectMicrophoneButton` method that will display the Microphone icon in a button and make it large.
 
 ```jsx
-export default connectMicrophoneButton()(
-   ({ className, click, dictating, disabled }) => (
-      <button
-         className={classNames(className, { dictating })}
-         disabled={disabled}
-         onClick={click}
-      >
-         <MicrophoneIcon size="10vmin" />
-      </button>
-   )
-);
+export default connectMicrophoneButton()(({ className, click, dictating, disabled }) => (
+   <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
+      <MicrophoneIcon size="10vmin" />
+   </button>
+));
 ```
 
 This component is finished and can now be imported into `App.js`.
@@ -211,9 +202,7 @@ export default connectToWebChat(({ activities }) => ({
       !!activity && (
          <React.Fragment>
             <p>{activity.text}</p>
-            {activity.channelData && activity.channelData.speak && (
-               <SpeakActivity activity={activity} />
-            )}
+            {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
          </React.Fragment>
       )
 );
@@ -334,21 +323,16 @@ export default class App extends Component {
    }
 
    async componentDidMount() {
-      const res = await fetch(
-         'https://webchat-mockbot.azurewebsites.net/directline/token',
-         { method: 'POST' }
-      );
+      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
       const { token } = await res.json();
 
       this.setState(() => ({
          directLine: createDirectLine({
             token,
-            webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory(
-               {
-                  region: 'westus',
-                  token: fetchSpeechServicesToken
-               }
-            )
+            webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({
+               region: 'westus',
+               token: fetchSpeechServicesToken
+            })
          })
       }));
    }
@@ -394,9 +378,7 @@ export default connectToWebChat(({ activities }) => ({
       !!activity && (
          <React.Fragment>
             <p>{activity.text}</p>
-            {activity.channelData && activity.channelData.speak && (
-               <SpeakActivity activity={activity} />
-            )}
+            {activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
          </React.Fragment>
       )
 );
@@ -438,17 +420,11 @@ import MicrophoneIcon from './MicrophoneIcon';
 
 const { connectMicrophoneButton } = Components;
 
-export default connectMicrophoneButton()(
-   ({ className, click, dictating, disabled }) => (
-      <button
-         className={classNames(className, { dictating })}
-         disabled={disabled}
-         onClick={click}
-      >
-         <MicrophoneIcon size="10vmin" />
-      </button>
-   )
-);
+export default connectMicrophoneButton()(({ className, click, dictating, disabled }) => (
+   <button className={classNames(className, { dictating })} disabled={disabled} onClick={click}>
+      <MicrophoneIcon size="10vmin" />
+   </button>
+));
 ```
 
 `fetchSpeechServicesToken`:
@@ -462,10 +438,7 @@ export default function() {
    const now = Date.now();
 
    if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
-      fetchPromise = fetch(
-         'https://webchat-mockbot.azurewebsites.net/speechservices/token',
-         { method: 'POST' }
-      )
+      fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
          .then(res => res.json())
          .then(({ token }) => token)
          .catch(() => {
