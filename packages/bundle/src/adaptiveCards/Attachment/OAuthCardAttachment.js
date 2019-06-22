@@ -2,15 +2,16 @@ import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-export default class OAuthCardAttachment extends React.Component {
+class OAuthCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.buildCard = memoize((adaptiveCards, content) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards);
+    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       builder.addCommonHeaders(content);
       builder.addButtons((content || {}).buttons, true);
@@ -40,5 +41,10 @@ OAuthCardAttachment.propTypes = {
     content: PropTypes.shape({
       buttons: PropTypes.array
     }).isRequired
+  }).isRequired,
+  styleSet: PropTypes.shape({
+    options: PropTypes.any.isRequired
   }).isRequired
 };
+
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(OAuthCardAttachment);

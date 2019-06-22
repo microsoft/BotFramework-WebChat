@@ -4,23 +4,29 @@ import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-export default class ThumbnailCardAttachment extends React.Component {
+class ThumbnailCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.buildCard = memoize((adaptiveCards, content) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards);
+    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
       const { TextSize, TextWeight } = adaptiveCards;
       const { buttons, images, subtitle, text, title } = content;
+      const { richCardsWrapTitle } = styleOptions;
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
         const [{ tap, url }] = images;
 
-        builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder }, firstColumn);
+        builder.addTextBlock(
+          title,
+          { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardsWrapTitle },
+          firstColumn
+        );
         builder.addTextBlock(subtitle, { isSubtle: true, wrap: true }, firstColumn);
         builder.addImage(url, lastColumn, tap);
         builder.addTextBlock(text, { wrap: true });
@@ -35,12 +41,17 @@ export default class ThumbnailCardAttachment extends React.Component {
 
   render() {
     const {
-      props: { adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }
+      props: {
+        adaptiveCardHostConfig,
+        adaptiveCards,
+        attachment: { content } = {},
+        styleSet: { options }
+      }
     } = this;
 
     return (
       <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content)}
+        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
         adaptiveCardHostConfig={adaptiveCardHostConfig}
         tapAction={content && content.tap}
       />
@@ -67,3 +78,5 @@ ThumbnailCardAttachment.propTypes = {
     }).isRequired
   }).isRequired
 };
+
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ThumbnailCardAttachment);

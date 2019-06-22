@@ -6,7 +6,7 @@ import CommonCard from './CommonCard';
 
 const SignInCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment, styleSet }) => (
   <div className={styleSet.animationCardAttachment}>
-    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} styleOptions={styleSet.options}/>
   </div>
 );
 
@@ -15,7 +15,8 @@ SignInCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
-    animationCardAttachment: PropTypes.any.isRequired
+    animationCardAttachment: PropTypes.any.isRequired,
+    options: PropTypes.any.isRequired
   }).isRequired
 };
 

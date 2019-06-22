@@ -49,6 +49,9 @@ const DEFAULT_OPTIONS = {
   // Markdown
   markdownRespectCRLF: true,
 
+  // Rich Cards
+  richCardsWrapTitle: false,
+
   // Root
   rootHeight: '100%',
   rootWidth: '100%',

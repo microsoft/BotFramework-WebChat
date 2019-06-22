@@ -8,8 +8,8 @@ export default class CommonCard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.buildCard = memoize((adaptiveCards, content) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards);
+    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       builder.addCommon(content);
 
@@ -19,12 +19,12 @@ export default class CommonCard extends React.Component {
 
   render() {
     const {
-      props: { adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }
+      props: { adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {}, styleOptions }
     } = this;
 
     return (
       <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content)}
+        adaptiveCard={content && this.buildCard(adaptiveCards, content, styleOptions)}
         adaptiveCardHostConfig={adaptiveCardHostConfig}
         tapAction={content && content.tap}
       />
@@ -39,5 +39,6 @@ CommonCard.propTypes = {
     content: PropTypes.shape({
       tap: PropTypes.any
     }).isRequired
-  }).isRequired
+  }).isRequired,
+  styleOptions: PropTypes.any.isRequired
 };

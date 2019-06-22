@@ -25,7 +25,7 @@ const AudioCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} styleOptions={styleSet.options}/>
   </div>
 );
 
@@ -47,7 +47,8 @@ AudioCardAttachment.propTypes = {
     })
   }).isRequired,
   styleSet: PropTypes.shape({
-    audioCardAttachment: PropTypes.any.isRequired
+    audioCardAttachment: PropTypes.any.isRequired,
+    options: PropTypes.any.isRequired
   }).isRequired
 };
 

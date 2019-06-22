@@ -23,7 +23,7 @@ const VideoCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} styleOptions={styleOptions}/>
   </div>
 );
 
