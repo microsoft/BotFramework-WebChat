@@ -66,6 +66,7 @@ class FullReactWebChat extends React.Component {
 FullReactWebChat.defaultProps = {
   adaptiveCardHostConfig: undefined,
   attachmentMiddleware: undefined,
+  renderMarkdown: undefined,
   styleOptions: undefined,
   styleSet: undefined
 };
@@ -73,6 +74,7 @@ FullReactWebChat.defaultProps = {
 FullReactWebChat.propTypes = {
   adaptiveCardHostConfig: PropTypes.any,
   attachmentMiddleware: PropTypes.func,
+  renderMarkdown: PropTypes.func,
   styleOptions: PropTypes.any,
   styleSet: PropTypes.any
 };
