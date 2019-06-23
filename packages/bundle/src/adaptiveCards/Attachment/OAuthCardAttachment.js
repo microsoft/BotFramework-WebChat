@@ -22,12 +22,17 @@ class OAuthCardAttachment extends React.Component {
 
   render() {
     const {
-      props: { adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }
+      props: {
+        adaptiveCardHostConfig,
+        adaptiveCards,
+        attachment: { content } = {},
+        styleSet: { options }
+      }
     } = this;
 
     return (
       <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content)}
+        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
         adaptiveCardHostConfig={adaptiveCardHostConfig}
       />
     );

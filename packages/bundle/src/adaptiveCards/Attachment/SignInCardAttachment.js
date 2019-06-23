@@ -6,7 +6,12 @@ import CommonCard from './CommonCard';
 
 const SignInCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment, styleSet }) => (
   <div className={styleSet.animationCardAttachment}>
-    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} styleOptions={styleSet.options}/>
+    <CommonCard
+      adaptiveCardHostConfig={adaptiveCardHostConfig}
+      adaptiveCards={adaptiveCards}
+      attachment={attachment}
+      styleOptions={styleSet.options}
+    />
   </div>
 );
 
