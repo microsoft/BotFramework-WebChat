@@ -77,10 +77,7 @@ In the `WebChat.js` file, import `memoize`, `React`, `ReactWebChat`, `createDire
 ```jsx
 import memoize from 'memoize-one';
 import React from 'react';
-import ReactWebChat, {
-   createDirectLine,
-   createStyleSet
-} from 'botframework-webchat';
+import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-webchat';
 ```
 
 Set up the component the same way you would set up a regular `React.Component`
@@ -405,12 +402,8 @@ export default class extends React.Component {
       super(props);
 
       this.handleFetchToken = this.handleFetchToken.bind(this);
-      this.handleMaximizeButtonClick = this.handleMaximizeButtonClick.bind(
-         this
-      );
-      this.handleMinimizeButtonClick = this.handleMinimizeButtonClick.bind(
-         this
-      );
+      this.handleMaximizeButtonClick = this.handleMaximizeButtonClick.bind(this);
+      this.handleMinimizeButtonClick = this.handleMinimizeButtonClick.bind(this);
       this.handleSwitchButtonClick = this.handleSwitchButtonClick.bind(this);
 
       const store = createStore({}, ({ dispatch }) => next => action => {
@@ -437,10 +430,7 @@ export default class extends React.Component {
 
    async handleFetchToken() {
       if (!this.state.token) {
-         const res = await fetch(
-            'https://webchat-mockbot.azurewebsites.net/directline/token',
-            { method: 'POST' }
-         );
+         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
          const { token } = await res.json();
 
          this.setState(() => ({ token }));
@@ -475,39 +465,18 @@ export default class extends React.Component {
       return (
          <div className="minimizable-web-chat">
             {minimized ? (
-               <button
-                  className="maximize"
-                  onClick={this.handleMaximizeButtonClick}
-               >
-                  <span
-                     className={
-                        token
-                           ? 'ms-Icon ms-Icon--MessageFill'
-                           : 'ms-Icon ms-Icon--Message'
-                     }
-                  />
-                  {newMessage && (
-                     <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />
-                  )}
+               <button className="maximize" onClick={this.handleMaximizeButtonClick}>
+                  <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
+                  {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
                </button>
             ) : (
-               <div
-                  className={
-                     side === 'left' ? 'chat-box left' : 'chat-box right'
-                  }
-               >
+               <div className={side === 'left' ? 'chat-box left' : 'chat-box right'}>
                   <header>
                      <div className="filler" />
-                     <button
-                        className="switch"
-                        onClick={this.handleSwitchButtonClick}
-                     >
+                     <button className="switch" onClick={this.handleSwitchButtonClick}>
                         <span className="ms-Icon ms-Icon--Switch" />
                      </button>
-                     <button
-                        className="minimize"
-                        onClick={this.handleMinimizeButtonClick}
-                     >
+                     <button className="minimize" onClick={this.handleMinimizeButtonClick}>
                         <span className="ms-Icon ms-Icon--ChromeMinimize" />
                      </button>
                   </header>
@@ -531,10 +500,7 @@ Completed `WebChat.js`
 ```jsx
 import memoize from 'memoize-one';
 import React from 'react';
-import ReactWebChat, {
-   createDirectLine,
-   createStyleSet
-} from 'botframework-webchat';
+import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-webchat';
 
 import './WebChat.css';
 

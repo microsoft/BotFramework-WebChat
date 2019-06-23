@@ -200,7 +200,7 @@ There are several properties that you might pass into your Web Chat React Compon
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `activityMiddleware`       | A chain of middleware, modeled after [Redux middleware](https://medium.com/@jacobp100/you-arent-using-redux-middleware-enough-94ffe991e6), that allows the developer to add new DOM components on the currently existing DOM of Activities. The middleware signature is the following: `options => next => card => children => next(card)(children)`.                                                                                                                                                                                                                                           |
 | `activityRenderer`         | The "flattened" version of `activityMiddleware`, similar to the [store enhancer](https://github.com/reduxjs/redux/blob/master/docs/Glossary.md#store-enhancer) concept in Redux.                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `adaptiveCardHostConfig`   | Pass in a custom Adaptive Cards host config. Be sure to verify your Host Config with the version of Adaptive Cards that is being used. See [Custom Host config](https://github.com/microsoft/BotFramework-WebChat/issues/2034#issuecomment-501818238) for more information.                                                                                                                                                                                                                                                                                                                                    |
+| `adaptiveCardHostConfig`   | Pass in a custom Adaptive Cards host config. Be sure to verify your Host Config with the version of Adaptive Cards that is being used. See [Custom Host config](https://github.com/microsoft/BotFramework-WebChat/issues/2034#issuecomment-501818238) for more information.                                                                                                                                                                                                                                                                                                                     |
 | `attachmentMiddleware`     | A chain of middleware that allows the developer to add their own custom HTML Elements on attachments. The signature is the following: `options => next => card => next(card)`.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `attachmentRenderer`       | The "flattened" version of `attachmentMiddleware`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `cardActionMiddleware`     | A chain of middleware that allows the developer to modify card actions, like Adaptive Cards or suggested actions. The middleware signature is the following: `cardActionMiddleware: () => next => ({ cardAction, getSignInUrl }) => next(cardAction)`                                                                                                                                                                                                                                                                                                                                           |
@@ -221,19 +221,20 @@ There are several properties that you might pass into your Web Chat React Compon
 | `webSpeechPonyFillFactory` | Specify the Web Speech object for text-to-speech and speech-to-text.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 # Browser compatibility
+
 Web Chat supports the latest 2 versions of modern browsers like Chrome, Edge, and FireFox.
 If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](https://microsoft.github.io/BotFramework-WebChat/01.b.getting-started-es5-bundle).
 
 Please note, however:
-- Web Chat does not support Internet Explorer older than version 11
-- Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5.  If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
-- Web Chat has no plan to support samples for IE11 (ES5).
-   - For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
+-  Web Chat does not support Internet Explorer older than version 11
+-  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
+-  Web Chat has no plan to support samples for IE11 (ES5).
+   -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
 # How to test with Web Chat's latest bits
 
-*Testing unreleased features is only available via MyGet packaging at this time.*
+_Testing unreleased features is only available via MyGet packaging at this time._
 
 If you want to test a feature or bug fix that has not yet been released, you will want to point your Web Chat package to Web Chat's daily feed, as opposed the official npmjs feed.
 
@@ -250,6 +251,7 @@ To do this you may add your packages and then change the registry of your projec
 1. Note that in your `package-lock.json`, the registries pointed to are now MyGet. The Web Chat project has upstream source proxy enabled, which will redirect non-MyGet packages to `npmjs.com`.
 
 ## Re-subscribe to official release on `npmjs.com`
+
 Re-subscribing requires that you reset your registry.
 
 1. Delete your `.npmrc file`
