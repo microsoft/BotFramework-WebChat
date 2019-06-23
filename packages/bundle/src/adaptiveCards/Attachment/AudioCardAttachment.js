@@ -9,9 +9,12 @@ import CommonCard from './CommonCard';
 const { AudioContent } = Components;
 
 const AudioCardAttachment = ({
+  adaptiveCardHostConfig,
   adaptiveCards,
   attachment,
-  attachment: { content: { autostart = false, autoloop = false, image: { url: imageURL = '' }, media = [] } = {} } = {},
+  attachment: {
+    content: { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = {}
+  } = {},
   styleSet
 }) => (
   <div className={styleSet.audioCardAttachment}>
@@ -22,11 +25,12 @@ const AudioCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
   </div>
 );
 
 AudioCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
