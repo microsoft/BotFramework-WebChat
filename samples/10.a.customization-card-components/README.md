@@ -89,10 +89,7 @@ const attachmentMiddleware = () => next => card => {
    switch (card.attachment.contentType) {
       case 'application/vnd.microsoft.botframework.samples.github-repository':
          return (
-            <GitHubRepositoryAttachment
-               owner={card.attachment.content.owner}
-               repo={card.attachment.content.repo}
-            />
+            <GitHubRepositoryAttachment owner={card.attachment.content.owner} repo={card.attachment.content.repo} />
          );
 
       default:

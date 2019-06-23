@@ -43,9 +43,7 @@ Mock Bot welcome message:
 ```js
 if (context.activity.name === 'webchat/join') {
    await context.sendActivity(
-      `Got \`webchat/join\` event, your language is \`${
-         (context.activity.value || {}).language
-      }\``
+      `Got \`webchat/join\` event, your language is \`${(context.activity.value || {}).language}\``
    );
 }
 ```

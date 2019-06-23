@@ -44,10 +44,7 @@ We'll start by using our old v3 `index.html` as our starting point.
 <!DOCTYPE html>
 <html lang="en-US">
    <head>
-      <link
-         href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css"
-         rel="stylesheet"
-      />
+      <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
    </head>
    <body>
       <div id="bot" />

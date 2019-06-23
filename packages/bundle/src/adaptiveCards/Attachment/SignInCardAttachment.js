@@ -4,13 +4,14 @@ import React from 'react';
 
 import CommonCard from './CommonCard';
 
-const SignInCardAttachment = ({ adaptiveCards, attachment, styleSet }) => (
+const SignInCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment, styleSet }) => (
   <div className={styleSet.animationCardAttachment}>
-    <CommonCard adaptiveCards={adaptiveCards} attachment={attachment} />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
   </div>
 );
 
 SignInCardAttachment.propTypes = {
+  adaptiveCardHostConfig: PropTypes.any.isRequired,
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
