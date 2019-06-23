@@ -57,7 +57,7 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Configurable timestamp grouping</title>
 
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       #webchat {
         height: 100%;

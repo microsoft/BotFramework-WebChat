@@ -59,7 +59,7 @@ Here is the finished `index.html` for subscription key flow:
     <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -124,7 +124,7 @@ Here is the finished `index.html` for authorization token flow:
     <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
 
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
