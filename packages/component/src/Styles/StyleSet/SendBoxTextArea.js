@@ -1,7 +1,9 @@
 export default function createSendBoxTextAreaStyle({
   paddingRegular,
   primaryFont,
+  sendBoxBackground,
   sendBoxMaxHeight,
+  sendBoxPlaceholderColor,
   sendBoxTextColor
 }) {
   return {
@@ -33,6 +35,7 @@ export default function createSendBoxTextAreaStyle({
       },
 
       '& > textarea': {
+        backgroundColor: sendBoxBackground,
         border: 0,
         color: 'inherit',
         fontFamily: 'inherit',
@@ -45,7 +48,11 @@ export default function createSendBoxTextAreaStyle({
         resize: 'none',
         top: 0,
         width: '100%',
-        wordBreak: 'break-word'
+        wordBreak: 'break-word',
+
+        '&::placeholder': {
+          color: sendBoxPlaceholderColor
+        }
       }
     }
   };
