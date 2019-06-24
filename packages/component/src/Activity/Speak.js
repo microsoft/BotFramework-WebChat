@@ -39,13 +39,8 @@ const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
   const lines = [speak || text];
 
   attachments.forEach(({ content: { speak } = {}, contentType }) => {
-    switch (contentType) {
-      case 'application/vnd.microsoft.card.adaptive':
-        lines.push(speak);
-        break;
-
-      default:
-        break;
+    if (contentType === 'application/vnd.microsoft.card.adaptive') {
+      lines.push(speak);
     }
   });
 
