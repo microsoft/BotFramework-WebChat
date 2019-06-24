@@ -61,7 +61,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1926](https://github.com/microsoft/BotFramework-WebChat/issues/1926). Fixed scroll stickiness issue when submitting an Adaptive Card form with suggested actions opened, by [@compulim](https://github.com/compulim) in PR [#2107](https://github.com/microsoft/BotFramework-WebChat/pull/2107)
 -  Fix [#2106](https://github.com/Microsoft/BotFramework-WebChat/issues/2016). Fix AdaptiveCardHostConfig warning associated with the CommonCard component, by [@tdurnford](https://github.com/tdurnford) in PR [#2108](https://github.com/Microsoft/BotFramework-WebChat/pull/2108)
 -  Fix [#2110](https://github.com/Microsoft/BotFramework-WebChat/issues/2110). Fixed sendBox input/textarea background color issue, by [@tdurnford](https://github.com/johndoe) in PR [#2111](https://github.com/Microsoft/BotFramework-WebChat/pull/2111)
--  Fix [#2104](https://github.com/Microsoft/BotFramework-WebChat/issues/2104). Remove deprecated `/master/webchat**.js links from samples, by [@corinagum](https://github.com/corinagum) in PR [#2105](https://github.com/Microsoft/BotFramework-WebChat/pull/2105)
+-  Fix [#2104](https://github.com/Microsoft/BotFramework-WebChat/issues/2104). Remove deprecated `/master/webchat\*\*.js links from samples, by [@corinagum](https://github.com/corinagum) in PR [#2105](https://github.com/Microsoft/BotFramework-WebChat/pull/2105)
+-  Fix [#1863](https://github.com/Microsoft/BotFramework-WebChat/issues/1863). Remove title, subtitle, and text of cards from being spoken by [@corinagum](https://github.com/corinagum) in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Samples
 

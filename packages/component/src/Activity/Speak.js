@@ -38,24 +38,10 @@ const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
 
   const lines = [speak || text];
 
-  attachments.forEach(({ content: { speak, subtitle, text, title } = {}, contentType }) => {
+  attachments.forEach(({ content: { speak } = {}, contentType }) => {
     switch (contentType) {
       case 'application/vnd.microsoft.card.adaptive':
         lines.push(speak);
-        break;
-
-      case 'application/vnd.microsoft.card.animation':
-      case 'application/vnd.microsoft.card.audio':
-      case 'application/vnd.microsoft.card.video':
-      case 'application/vnd.microsoft.card.hero':
-      case 'application/vnd.microsoft.card.thumbnail':
-        lines.push(title);
-        lines.push(subtitle);
-        lines.push(text);
-        break;
-
-      case 'application/vnd.microsoft.card.receipt':
-        lines.push(title);
         break;
 
       default:
