@@ -83,25 +83,31 @@
       } = window.azblob;
 
       async function uploadFile({ name, url }) {
+        // Today, Web Chat use createObjectURL() to represent the blob.
+        // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+        // Because it is not trivial to GC the URL, we might change this behavior to use ArrayBuffer or Blob in later versions of Web Chat.
         const res = await fetch(url);
 
         if (!res.ok) {
           throw new Error('Cannot obtain ArrayBuffer to uploading file');
         }
 
+        // Fetch a SAS token from the server, think of it as a permission to upload a single file to Azure Storage.
         const { sasQuery, url: uploadURL } = await fetchJSON('/api/azurestorage/uploadsastoken');
+
+        // Uploads the file to Azure Storage directly by using a fresh SAS token from the server.
         const pipeline = StorageURL.newPipeline(new AnonymousCredential());
         const blockBlobURL = new BlockBlobURL(`${ uploadURL }?${ sasQuery }`, pipeline);
 
+        // Using @azure/storage-blob package to upload, this function is parallelized for huge files.
         const result = await uploadBrowserDataToBlockBlob(
           Aborter.none,
           await res.arrayBuffer(),
           blockBlobURL,
-          {
-            metadata: { name }
-          }
+          { metadata: { name } }
         );
 
+        // Returns the blob URL.
         return uploadURL;
       }
 
@@ -109,14 +115,19 @@
         const store = WebChat.createStore({}, ({ dispatch }) => next => action => {
           const { type } = action;
 
+          // When Web Chat want to send files, we intercept this action and send an event instead.
           if (type === 'WEB_CHAT/SEND_FILES') {
             (async function () {
-              dispatch({
-                type: 'WEB_CHAT/SEND_TYPING'
-              });
+              // Tells the bot that you are uploading files. This is optional.
+              dispatch({ type: 'WEB_CHAT/SEND_TYPING' });
 
               const files = await Promise.all(action.payload.files.map(({ name, url }) => uploadFile({ name, url })));
 
+              // Today, DirectLineJS will intercept all attachments with URLs from message activity.
+              // Separating the attachment out as a multipart before sending to the bot.
+              // This behavior is to facilitate the createObjectURL() calls, we might change this behavior in later versions of Web Chat.
+
+              // In the meanwhile, we workaround this behavior by using an event activity.
               dispatch({
                 type: 'WEB_CHAT/SEND_EVENT',
                 payload: {
@@ -125,8 +136,6 @@
                   value: { files }
                 }
               });
-
-              console.log(files);
             })().catch(err => console.error(err));
           } else {
             return next(action);
@@ -136,9 +145,6 @@
         // This is for obtaining Direct Line token from the bot.
         // In production system, we should avoid using Direct Line secret to connect to the bot.
         const { token } = await fetchJSON('/api/directline/token');
-        const body = await fetchJSON('/api/azurestorage/uploadsastoken');
-
-        console.log(body);
 
         WebChat.renderWebChat({
           directLine: WebChat.createDirectLine({ token }),
