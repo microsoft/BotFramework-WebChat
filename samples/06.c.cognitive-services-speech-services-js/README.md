@@ -48,7 +48,7 @@ Here is the finished `index.html` for subscription key flow:
   <head>
     <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
 
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -95,7 +95,7 @@ Here is the finished `index.html` for subscription key flow:
 <html lang="en-US">
   <head>
     <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }

@@ -37,7 +37,7 @@ In this sample, we will be using the package `simple-update-in` to update our im
 …
 <head>
   <title>Web Chat: Inject data on post activity</title>
-  <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 + <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
 …
 ```
@@ -71,7 +71,7 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Inject data on post activity</title>
 
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 
     <script src="https://unpkg.com/simple-update-in/dist/simple-update-in.production.min.js"></script>
     <style>
