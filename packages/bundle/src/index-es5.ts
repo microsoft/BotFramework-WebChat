@@ -26,7 +26,7 @@ const createDirectLine = options => {
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent in the createDirectLine function. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
-  return defaultCreateDirectLine({ ...options, botAgent: `webchat/${version} (ES5)` });
+  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (ES5)` });
 };
 
 window['WebChat'] = {
