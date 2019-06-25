@@ -53,7 +53,6 @@ export default {
   FAILED_CONNECTION_NOTIFICATION: 'Não foi possível ligar.',
   INITIAL_CONNECTION_NOTIFICATION: 'A ligar…',
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Interrupção de Rede. Reconectando…',
-  // eslint-disable-next-line prettier/prettier
   RENDER_ERROR_NOTIFICATION:
     'Ocorreu um erro a renderizar. Por favor verifique a consola ou contacte o developer do bot.',
   // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
