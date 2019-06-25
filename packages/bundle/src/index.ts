@@ -15,7 +15,13 @@ import renderMarkdown from './renderMarkdown';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version} (Full)`, ...options });
+const createDirectLine = options => {
+  options.botAgent &&
+    console.warn(
+      'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
+    );
+  return defaultCreateDirectLine({ ...options, botAgent: `webchat/${version} (Full)` });
+};
 
 export default ReactWebChat;
 

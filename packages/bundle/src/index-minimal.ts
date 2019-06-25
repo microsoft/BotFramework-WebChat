@@ -16,7 +16,14 @@ import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyf
 import defaultCreateDirectLine from './createDirectLine';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version} (Minimal)`, ...options });
+
+const createDirectLine = options => {
+  options.botAgent &&
+    console.warn(
+      'Web Chat: Developers are not currently allowed to set botAgent in the createDirectLine function. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
+    );
+  return defaultCreateDirectLine({ ...options, botAgent: `webchat/${version} (Minimal)` });
+};
 
 export default ReactWebChat;
 

@@ -4,6 +4,7 @@
 // Polyfills for IE11 and other ES5 browsers
 // To maintain quality, we prefer polyfills without additives
 // For example, we prefer Promise implementation from "core-js" than "bluebird"
+
 import 'core-js/modules/es6.array.find-index';
 import 'core-js/modules/es6.array.find';
 import 'core-js/modules/es6.array.iterator';
@@ -20,7 +21,13 @@ import { version } from './index-minimal';
 import addVersion from './addVersion';
 import defaultCreateDirectLine from './createDirectLine';
 
-const createDirectLine = options => defaultCreateDirectLine({ botAgent: `webchat/${version} (ES5)`, ...options });
+const createDirectLine = options => {
+  options.botAgent &&
+    console.warn(
+      'Web Chat: Developers are not currently allowed to set botAgent in the createDirectLine function. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
+    );
+  return defaultCreateDirectLine({ ...options, botAgent: `webchat/${version} (ES5)` });
+};
 
 window['WebChat'] = {
   ...window['WebChat'],
