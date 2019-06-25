@@ -355,7 +355,7 @@ const localizedStrings: LocalizedStrings = {
         messageRetry: "próbálja újra",
         messageFailed: "nem sikerült elküldeni",
         messageSending: "küldés",
-        timeSent: "%2 ekkor: %1",
+        timeSent: " ekkor %1",
         consolePlaceholder: "Írja be üzenetét...",
         listeningIndicator: "Figyelés...",
         uploadFile: "",
