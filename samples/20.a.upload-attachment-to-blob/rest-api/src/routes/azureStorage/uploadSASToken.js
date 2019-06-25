@@ -20,7 +20,7 @@ function pad(value, count = 2, delimiter = "0") {
   return new Array(Math.max(0, count)).fill(delimiter).join("") + value;
 }
 
-module.exports = (req, res) => {
+module.exports = (_, res) => {
   // TODO: Verify if the HTTP request is sent from a valid client
   // TODO: Set up storage lifecycle management, https://docs.microsoft.com/en-us/azure/storage/blobs/storage-lifecycle-management-concepts
 
