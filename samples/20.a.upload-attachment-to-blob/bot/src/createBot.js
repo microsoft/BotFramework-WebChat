@@ -71,7 +71,7 @@ module.exports = () => {
             })
           ),
           text:
-            "Here is your upload summary.\n\nWe will not redistribute your uploads and will remove it tomorrow.",
+            "Here is your upload summary.\n\nWe will clean up daily and will not redistribute your uploads.",
           type: "message"
         });
       });
