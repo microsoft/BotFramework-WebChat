@@ -107,8 +107,6 @@
 
       (async function main() {
         const store = WebChat.createStore({}, ({ dispatch }) => next => action => {
-          console.log(action);
-
           const { type } = action;
 
           if (type === 'WEB_CHAT/SEND_FILES') {
