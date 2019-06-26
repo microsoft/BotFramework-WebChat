@@ -8,7 +8,7 @@ trigger:
     - sample-upload-to-blob
   paths:
     include:
-    - samples/20.a.upload-attachment-to-azure-storage
+    - samples/20.a.upload-to-azure-storage
 
 steps:
 - task: DockerInstaller@0
@@ -20,7 +20,7 @@ steps:
   displayName: 'Build builder container'
   inputs:
     command: build
-    Dockerfile: 'samples/20.a.upload-attachment-to-azure-storage/Dockerfile'
+    Dockerfile: 'samples/20.a.upload-to-azure-storage/Dockerfile'
     arguments: '-t builder'
 
 - task: Docker@2
@@ -41,7 +41,7 @@ steps:
     command: rm
     arguments: 'builder-image'
 
-- bash: 'cp samples/20.a.upload-attachment-to-azure-storage/Dockerfile-run $BUILD_ARTIFACTSTAGINGDIRECTORY/Dockerfile'
+- bash: 'cp samples/20.a.upload-to-azure-storage/Dockerfile-run $BUILD_ARTIFACTSTAGINGDIRECTORY/Dockerfile'
   displayName: 'Copy Dockerfile'
 
 - task: PublishBuildArtifacts@1
