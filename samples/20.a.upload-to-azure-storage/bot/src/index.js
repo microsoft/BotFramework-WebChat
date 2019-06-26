@@ -1,5 +1,10 @@
 require("dotenv").config();
 
+process.env = {
+  AZURE_STORAGE_CONTAINER_NAME: "userupload",
+  ...process.env
+};
+
 // Checks for required environment variables.
 [
   "AZURE_STORAGE_ACCOUNT_KEY",
