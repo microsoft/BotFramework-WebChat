@@ -10,6 +10,7 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "dependencies": {
+    "@azure/storage-blob": "^10.3.0",
     "botbuilder": "^4.4.0",
     "botbuilder-dialogs": "^4.4.0",
     "bytes": "^3.1.0",
