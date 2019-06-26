@@ -21,7 +21,10 @@ function pad(value, count = 2, delimiter = "0") {
 }
 
 module.exports = (_, res) => {
-  // TODO: Verify if the HTTP request is sent from a valid client
+  // Before issuing a SAS token, you should make sure the client is valid.
+  // Giving the SAS token to the client also means they can upload huge file and increase your spending significantly.
+  // The other way is to use a proxied connection to Azure Storage, so you can control the size of the upload.
+
   // TODO: Set up storage lifecycle management, https://docs.microsoft.com/en-us/azure/storage/blobs/storage-lifecycle-management-concepts
 
   const now = new Date();
@@ -34,6 +37,7 @@ module.exports = (_, res) => {
   ].join("/");
   const permissions = new BlobSASPermissions();
 
+  // We only allows create permission, so the user cannot use the URL to redownload the file to redistribute it.
   permissions.create = true;
 
   const sasQuery = generateBlobSASQueryParameters(
