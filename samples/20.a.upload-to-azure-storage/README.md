@@ -1,6 +1,6 @@
-# Single sign-on demo for enterprise apps using OAuth
+# Upload attachment to Azure Storage demo
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/10/10)](https://webchat-sample-sso.azurewebsites.net/)
+[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/10/10)](https://webchat-sample-upload-to-azure.azurewebsites.net/)
 
 # Description
 
@@ -8,7 +8,7 @@ In this demo, we will show you how to customize Web Chat to directly upload file
 
 ## Background
 
-Direct Line provides a temporary storage of user attachments, up to 4 MB per attachment for about 24 hours. If user need to upload for more than 4 MB, it is always advised to use your own storage.
+Direct Line provides a temporary storage of user attachments, up to 4 MB per attachment for about 24 hours. If end-user need to upload for more than 4 MB, it is always advised to use your own storage.
 
 > When handling user input such as attachments, please verify if the attachment is free of inappropriate content and is what your bot expected to receive.
 
@@ -142,7 +142,7 @@ After all attachments are uploaded to Azure Storage, we will send an event activ
 
 ### Processing attachment
 
-> It is critical to verify if the uploaded attachment before continue processing in your system.
+> It is critical to verify the uploaded files before continue processing them in your system.
 
 When the bot receive event activity named `upload`, it will start validating the content of the file, and respond to the end-user with the result of validation.
 
