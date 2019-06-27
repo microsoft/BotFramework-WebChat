@@ -25,8 +25,6 @@ module.exports = (_, res) => {
   // Giving the SAS token to the client also means they can upload huge file and increase your spending significantly.
   // The other way is to use a proxied connection to Azure Storage, so you can control the size of the upload.
 
-  // TODO: Set up storage lifecycle management, https://docs.microsoft.com/en-us/azure/storage/blobs/storage-lifecycle-management-concepts
-
   const now = new Date();
   const blobName = [
     now.getUTCFullYear(),
