@@ -92,7 +92,6 @@ export default class AdaptiveCardBuilder {
         textblock[prop] = template[prop];
       }
 
-      this.card.speak += `${text} `;
       textblock.text = text;
 
       container.addItem(textblock);
