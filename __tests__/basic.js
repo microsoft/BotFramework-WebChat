@@ -88,3 +88,59 @@ test('unknown activities do not render anything in the transcript', async () => 
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('hero card with a long title and richCardsWrapTitle set to true', async () => {
+  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardsWrapTitle: true } } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('herocard long title', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('hero card with a long title and richCardsWrapTitle set to default value', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('herocard long title', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('thumbnail card with a long title and richCardsWrapTitle set to true', async () => {
+  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardsWrapTitle: true } } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('thumbnailcard long title', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('thumbnail card with a long title and richCardsWrapTitle set to default value', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('thumbnailcard long title', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), 2000);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
