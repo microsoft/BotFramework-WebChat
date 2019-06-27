@@ -94,7 +94,7 @@ Here is the finished `index.html`:
   <head>
     <title>Web Chat: Custom Redux store</title>
 
-    <script src="https://cdn.botframework.com/botframework-webchat/master/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
