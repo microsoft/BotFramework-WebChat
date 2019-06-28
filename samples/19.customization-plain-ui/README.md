@@ -14,7 +14,7 @@ Below is the explanation of different layers of Web Chat.
    <thead>
       <tr>
          <th>Package</th>
-         <th>Layer</th>
+         <th>Component</th>
          <th>Description</th>
       </tr>
    </thead>
@@ -27,16 +27,16 @@ Below is the explanation of different layers of Web Chat.
          </td>
          <td></td>
          <td>
+            <p>SDK to communicate between the browser and Direct Line channel service</p>
             <ul>
-               <li>SDK to communicate between the browser and Direct Line channel service</li>
                <li>
-                  It is designed to be event-driven (via observables) and stateless
+                  Designed to be event-driven (via observables) and stateless
                   <ul>
                      <li>Due to its stateless nature, for example, it does not understood suggested actions, because suggested actions depends on previous state</li>
                   </ul>
                </li>
                <li>
-                  It is designed to be hackable/mockable thru <a href="https://github.com/microsoft/BotFramework-DirectLineJS/blob/master/src/directLine.ts#L381"><code>IBotConnection</code> interface</a>
+                  Designed to be hackable/mockable thru <a href="https://github.com/microsoft/BotFramework-DirectLineJS/blob/master/src/directLine.ts#L381"><code>IBotConnection</code> interface</a>
                </li>
             </ul>
          </td>
@@ -49,11 +49,12 @@ Below is the explanation of different layers of Web Chat.
                </a>
             </p>
             <p>
-               (a.k.a. Web Chat UI)
+               (a.k.a. Web Chat Core)
             </p>
          </td>
          <td></td>
          <td>
+            <p>A stateful UI data store for a basic chat experience.</p>
             <ul>
                <li>Using Redux to provide a stateful data store but minimal support to various UI frameworks and app scenarios</li>
                <li>UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings)</li>
@@ -77,7 +78,8 @@ Below is the explanation of different layers of Web Chat.
             </a>
          </td>
          <td>
-            The React context which connects to Web Chat Core. If you want to build a component using Web Chat, you will need to add the component inside `<Composer>`. This is very similar to Redux `<Provider>` but using React Context instead.
+            <p>React component container which enables all descendants to access Web Chat UI API.</p>
+            <p>This is very similar to Redux <code>&lt;Provider&gt;</code>.</p>
          </td>
       </tr>
       <tr>
@@ -87,17 +89,17 @@ Below is the explanation of different layers of Web Chat.
             </a>
          </td>
          <td>
-            Provides the mechanisms to build components from the ground up to support various creative ideas, such as ______ or _______. The `connectToWebChat` method is very similar to Redux's `connect` function, and provides access to all of the data required to build a chat component
+            HOC function to support components by exposing all Web Chat UI API as props. The <code>connectToWebChat</code> method is very similar to Redux <code>connect</code> function, and provides access to all of the data required to build a chat component.
          </td>
       </tr>
       <tr>
          <td>
             <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
-               <code>MicrophoneButton.<br />connectMicrophoneButton</code>
+               <code>connectMicrophoneButton</code>
             </a>
          </td>
          <td>
-            Provides HOC function to hoist features from Web Chat as props to the connected component. Although this is very similar to `connectToWebChat`, it provides encapsulation of information and the business logic required for the specific component.
+            HOC function to hoist specific features from Web Chat as props to the connected component. Although this is very similar to <code>connectToWebChat</code>, it provides encapsulation of information and the business logic only required for the specific component type.
          </td>
       </tr>
       <tr>
@@ -107,10 +109,8 @@ Below is the explanation of different layers of Web Chat.
             </a>
          </td>
          <td>
-            <ul>
-               <li>The actual UI component the developer can use to reproduce the full Web Chat experience.</li>
-               <li>Developers are also free to create a new UI by consulting how the original <code>MicrophoneButton</code> works.</li>
-            </ul>
+            <p>The actual UI component the developer can use to reproduce the full Web Chat experience.</p>
+            <p>Developers are also free to create a new UI by consulting how the original <code>MicrophoneButton</code> works.</p>
          </td>
       </tr>
    </tbody>
