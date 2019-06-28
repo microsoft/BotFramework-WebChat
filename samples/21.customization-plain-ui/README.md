@@ -118,7 +118,7 @@ Below is the explanation of different layers of Web Chat.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/19.customization-plain-ui)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/21.customization-plain-ui)
 
 # Things to try out
 
@@ -133,7 +133,7 @@ Below is the explanation of different layers of Web Chat.
 
 This project is based on [`create-react-app`](https://github.com/facebook/create-react-app).
 
-The completed code contains multiple files. You can start by reading [`App.js`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/19.customization-plain-ui/src/App.js), which replaces the default Web Chat renderer with [`<PlainWebChat>`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/19.customization-plain-ui/src/PlainWebChat.js) and uses its own UI.
+The completed code contains multiple files. You can start by reading [`App.js`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/src/App.js), which replaces the default Web Chat renderer with [`<PlainWebChat>`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/src/PlainWebChat.js) and uses its own UI.
 
 ## Goals of this bot
 
