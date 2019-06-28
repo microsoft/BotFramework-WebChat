@@ -4,7 +4,7 @@ import ImBackButton from './ImBackButton';
 import MessageBackButton from './MessageBackButton';
 import PostBackButton from './PostBackButton';
 
-// "CardAction" could be either, "imBack", "messageBack", or "postBack".
+// "cardAction" could be either, "imBack", "messageBack", or "postBack".
 export default ({ cardAction }) => {
   switch (cardAction.type) {
     case 'messageBack':

@@ -25,7 +25,7 @@ export default () => {
   }
 
   return (
-    // We are using "Composer" component here, which all descendants will have access to Web Chat API by HOC-ing thru "connectToWebChat".
+    // We are using the "Composer" component here, which all descendants will have access to the Web Chat API by HOC-ing thru "connectToWebChat".
     !!directLine &&
       <Components.Composer directLine={ directLine }>
         <PlainWebChat />

@@ -16,14 +16,22 @@ const PlainWebChat = ({
     <div>
       <ul>
         { activities
-            // Currently, we only display activity of type "message"
+            // Currently, this sample only displays an activity of type "message"
             .filter(({ type }) => type === 'message')
             // We need to hide "postBack" message sent by the user
             .filter(({ channelData: { postBack } = {}, from: { role } }) => !(role === 'user' && postBack))
-            // We normalize the activity:
-            // - Every activity should have an "attachments" array, consists of zero or more attachments;
+            // Normalize the activity:
+            // - Every activity should have an "attachments" array, consisting of zero or more attachments:
             // - If this is a "messageBack" message, we should use the "displayText",
-            //   because "text" is being submitted to bot, and "displayText" is what we use to override the bot displayed to the user.
+            //   because "text" is being submitted to bot, and "displayText" is what we use to override what the bot displays
+            
+             
+              
+               
+                
+                 
+                  
+                    to the user.
             .map(activity => ({
               ...activity,
               attachments: activity.attachments || [],
