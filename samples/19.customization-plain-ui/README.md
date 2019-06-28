@@ -10,17 +10,111 @@ When we designed Web Chat, we heavily considered the importance of customization
 
 Below is the explanation of different layers of Web Chat.
 
--  [botframework-directlinejs](https://github.com/Microsoft/BotFramework-DirectLineJS) is a SDK to communicate between the browser and Direct Line channel service
-   -  It is designed to be event-driven (via observables) and stateless
-      -  Due to its stateless nature, for example, it does not understood suggested actions, because suggested actions depends on previous state
-   -  It is designed to be hackable/mockable thru [`IBotConnection` interface](https://github.com/microsoft/BotFramework-DirectLineJS/blob/master/src/directLine.ts#L381)
--  [botframework-webchat-core](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/core) (a.k.a. Web Chat Core) is using Redux, provides a stateful data store but minimal support to various UI frameworks and app scenarios
-   -  UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings)
--  [botframework-webchat-component](https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component) (a.k.a. Web Chat UI) has multiple layers
-   -  [`Composer`](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js) is the React context which connects to Web Chat Core. If you want to build a component using Web Chat, you will need to add the component inside `<Composer>`. This is very similar to Redux `<Provider>` but using React Context instead
-   -  [`connectToWebChat`](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js) provides the mechanisms to build components from the ground up to support various creative ideas, such as ______ or _______. The `connectToWebChat` method is very similar to Redux's `connect` function, and provides access to all of the data required to build a chat component
-   -  [`MicrophoneButton.connectMicrophoneButton`](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js) provides HOC function to hoist features from Web Chat as props to the connected component. Although this is very similar to `connectToWebChat`, it provides encapsulation of information and the business logic required for the specific component
-   -  [`MicrophoneButton`](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js) is the actual component the developer can use to reproduce the full Web Chat experience
+<table>
+   <thead>
+      <tr>
+         <th>Package</th>
+         <th>Layer</th>
+         <th>Description</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-DirectLineJS">
+               <code>botframework-directlinejs</code>
+            </a>
+         </td>
+         <td></td>
+         <td>
+            <ul>
+               <li>SDK to communicate between the browser and Direct Line channel service</li>
+               <li>
+                  It is designed to be event-driven (via observables) and stateless
+                  <ul>
+                     <li>Due to its stateless nature, for example, it does not understood suggested actions, because suggested actions depends on previous state</li>
+                  </ul>
+               </li>
+               <li>
+                  It is designed to be hackable/mockable thru <a href="https://github.com/microsoft/BotFramework-DirectLineJS/blob/master/src/directLine.ts#L381"><code>IBotConnection</code> interface</a>
+               </li>
+            </ul>
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <p>
+               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/core">
+                  <code>botframework-webchat-core</code>
+               </a>
+            </p>
+            <p>
+               (a.k.a. Web Chat UI)
+            </p>
+         </td>
+         <td></td>
+         <td>
+            <ul>
+               <li>Using Redux to provide a stateful data store but minimal support to various UI frameworks and app scenarios</li>
+               <li>UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings)</li>
+            </ul>
+         </td>
+      </tr>
+      <tr>
+         <td rowspan="4">
+            <p>
+               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component">
+                  <code>botframework-webchat-component</code>
+               </a>
+            </p>
+            <p>
+               (a.k.a. Web Chat UI)
+            </p>
+         </td>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js">
+               <code>Composer</code>
+            </a>
+         </td>
+         <td>
+            The React context which connects to Web Chat Core. If you want to build a component using Web Chat, you will need to add the component inside `<Composer>`. This is very similar to Redux `<Provider>` but using React Context instead.
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js">
+               <code>connectToWebChat</code>
+            </a>
+         </td>
+         <td>
+            Provides the mechanisms to build components from the ground up to support various creative ideas, such as ______ or _______. The `connectToWebChat` method is very similar to Redux's `connect` function, and provides access to all of the data required to build a chat component
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
+               <code>MicrophoneButton.<br />connectMicrophoneButton</code>
+            </a>
+         </td>
+         <td>
+            Provides HOC function to hoist features from Web Chat as props to the connected component. Although this is very similar to `connectToWebChat`, it provides encapsulation of information and the business logic required for the specific component.
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
+               <code>MicrophoneButton</code>
+            </a>
+         </td>
+         <td>
+            <ul>
+               <li>The actual UI component the developer can use to reproduce the full Web Chat experience.</li>
+               <li>Developers are also free to create a new UI by consulting how the original <code>MicrophoneButton</code> works.</li>
+            </ul>
+         </td>
+      </tr>
+   </tbody>
+</table>
 
 # Test out the hosted sample
 
