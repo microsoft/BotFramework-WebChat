@@ -17,7 +17,7 @@ import defaultCreateDirectLine from './createDirectLine';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-const createDirectLine = options => {
+export const createDirectLine = options => {
   options.botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent in the createDirectLine function. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
@@ -33,7 +33,6 @@ export {
   connectToWebChat,
   Constants,
   createBrowserWebSpeechPonyfillFactory,
-  createDirectLine,
   createStore,
   createStyleSet,
   renderWebChat,

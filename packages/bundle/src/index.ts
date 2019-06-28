@@ -15,7 +15,7 @@ import renderMarkdown from './renderMarkdown';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-const createDirectLine = options => {
+export const createDirectLine = options => {
   options.botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
@@ -28,7 +28,6 @@ export default ReactWebChat;
 export {
   createCognitiveServicesBingSpeechPonyfillFactory,
   createCognitiveServicesSpeechServicesPonyfillFactory,
-  createDirectLine,
   createStyleSet,
   renderMarkdown,
   renderWebChat

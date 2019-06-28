@@ -21,7 +21,9 @@ import { version } from './index-minimal';
 import addVersion from './addVersion';
 import defaultCreateDirectLine from './createDirectLine';
 
-const createDirectLine = options => {
+export * from './index';
+
+export const createDirectLine = options => {
   options.botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent in the createDirectLine function. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
@@ -33,7 +35,5 @@ window['WebChat'] = {
   ...window['WebChat'],
   createDirectLine
 };
-
-export * from './index';
 
 addVersion('full-es5');
