@@ -4,9 +4,11 @@ This sample shows how to use Web Chat without its canned UI component.
 
 When we designed Web Chat, we heavily considered the importance of customization. To make customization great and accessible, we designed our components in layers. Developers can get the full experience of Web Chat by:
 
-1. using all of our layers as-is,
-2. building their own UI from the ground up using Web Chat's business logic, or
-3. opting into our UI but replacing just a handful of components as needed.
+1. Using all of our layers: using all of our layers as-is,
+2. Using just business layers: building their own UI from the ground up using Web Chat's business logic, or
+3. Using business layers and partly UI components: opting into our UI but replacing just a handful of components as needed.
+
+In this sample, we are demonstrating the ability to rebuild Web Chat UI using just the business layer of Web Chat.
 
 Below is the explanation of different layers of Web Chat.
 
@@ -19,6 +21,79 @@ Below is the explanation of different layers of Web Chat.
       </tr>
    </thead>
    <tbody>
+      <tr>
+         <td rowspan="4">
+            <p>
+               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component">
+                  <code>botframework-webchat-component</code>
+               </a>
+            </p>
+            <p>
+               <nobr>(Web Chat UI)</nobr>
+            </p>
+         </td>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
+               <code>MicrophoneButton</code>
+            </a>
+         </td>
+         <td>
+            <p>The actual UI component the developer can use to reproduce the full Web Chat experience.</p>
+            <p>Developers are also free to create a new UI by consulting how the original <code>MicrophoneButton</code> works.</p>
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
+               <code>connectMicrophoneButton</code>
+            </a>
+         </td>
+         <td>
+           <a href="https://reactjs.org/docs/higher-order-components.html">Higher-order component</a> to hoist specific features from Web Chat as props to the connected component. Although this is very similar to <a href="#connect-to-web-chat"><code>connectToWebChat</code></a>, it provides encapsulation of information and the business logic only required for the specific component type.
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js">
+               <a name="connect-to-web-chat"></a>
+               <code>connectToWebChat</code>
+            </a>
+         </td>
+         <td>
+           <a href="https://reactjs.org/docs/higher-order-components.html">Higher-order component</a> to expose all Web Chat UI API as props. The <code>connectToWebChat</code> method is very similar to Redux <a href="https://react-redux.js.org/api/connect"><code>connect</code></a> function, and provides access to all of the data required to build a chat component.
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js">
+               <code>Composer</code>
+            </a>
+         </td>
+         <td>
+            <p>React component which houses all components that requires access to Web Chat UI API.</p>
+            <p>This is very similar to Redux <code>&lt;Provider&gt;</code>.</p>
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <p>
+               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/core">
+                  <code>botframework-webchat-core</code>
+               </a>
+            </p>
+            <p>
+               <nobr>(Web Chat Core)</nobr>
+            </p>
+         </td>
+         <td></td>
+         <td>
+            <p>A stateful UI data store for a basic chat experience.</p>
+            <ul>
+               <li>Using Redux to provide a stateful data store but minimal support to various UI frameworks and app scenarios</li>
+               <li>UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings)</li>
+            </ul>
+         </td>
+      </tr>
       <tr>
          <td>
             <a href="https://github.com/Microsoft/BotFramework-DirectLineJS">
@@ -39,78 +114,6 @@ Below is the explanation of different layers of Web Chat.
                   Designed to be hackable/mockable thru <a href="https://github.com/microsoft/BotFramework-DirectLineJS/blob/master/src/directLine.ts#L381"><code>IBotConnection</code> interface</a>
                </li>
             </ul>
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <p>
-               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/core">
-                  <code>botframework-webchat-core</code>
-               </a>
-            </p>
-            <p>
-               (a.k.a. Web Chat Core)
-            </p>
-         </td>
-         <td></td>
-         <td>
-            <p>A stateful UI data store for a basic chat experience.</p>
-            <ul>
-               <li>Using Redux to provide a stateful data store but minimal support to various UI frameworks and app scenarios</li>
-               <li>UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings)</li>
-            </ul>
-         </td>
-      </tr>
-      <tr>
-         <td rowspan="4">
-            <p>
-               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component">
-                  <code>botframework-webchat-component</code>
-               </a>
-            </p>
-            <p>
-               (a.k.a. Web Chat UI)
-            </p>
-         </td>
-         <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js">
-               <code>Composer</code>
-            </a>
-         </td>
-         <td>
-            <p>React component container which enables all descendants to access Web Chat UI API.</p>
-            <p>This is very similar to Redux <code>&lt;Provider&gt;</code>.</p>
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js">
-               <code>connectToWebChat</code>
-            </a>
-         </td>
-         <td>
-            HOC function to support components by exposing all Web Chat UI API as props. The <code>connectToWebChat</code> method is very similar to Redux <code>connect</code> function, and provides access to all of the data required to build a chat component.
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
-               <code>connectMicrophoneButton</code>
-            </a>
-         </td>
-         <td>
-            HOC function to hoist specific features from Web Chat as props to the connected component. Although this is very similar to <code>connectToWebChat</code>, it provides encapsulation of information and the business logic only required for the specific component type.
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
-               <code>MicrophoneButton</code>
-            </a>
-         </td>
-         <td>
-            <p>The actual UI component the developer can use to reproduce the full Web Chat experience.</p>
-            <p>Developers are also free to create a new UI by consulting how the original <code>MicrophoneButton</code> works.</p>
          </td>
       </tr>
    </tbody>
@@ -140,12 +143,12 @@ The completed code contains multiple files. You can start by reading [`App.js`](
 This project has two goals:
 
 -  Use Web Chat without using any of its UI components
--  Build your own highly-customized UI with minimal functionalities
+-  Build your own UI with minimal functionalities
    -  Support suggested actions
-   -  Support `imBack`, `messageBack`, and `postBack`
+   -  Support [`imBack`, `messageBack`, and `postBack`](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-rich-cards?view=azure-bot-service-4.0#process-events-within-rich-cards)
    -  Support rendering hyperlinks
 
-Although the UI is the main part of Web Chat, the state machine and business logic in Web Chat Core is very valuable for building your own highly-customized chat UI.
+Although the UI is the main part of Web Chat, the state machine and business logic in Web Chat is very valuable for building your own chat experience.
 
 # Further reading
 

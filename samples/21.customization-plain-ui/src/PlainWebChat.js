@@ -78,6 +78,7 @@ const PlainWebChat = ({ activities, sendMessage }) => {
           }}
         >
           <input
+            autoFocus={true}
             onChange={({ target: { value } }) => setSendBoxValue(value)}
             type="textbox"
             value={sendBoxValue}

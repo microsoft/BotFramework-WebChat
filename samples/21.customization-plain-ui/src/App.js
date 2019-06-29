@@ -31,10 +31,40 @@ export default () => {
 
   return (
     // We are using the "Composer" component here, which all descendants will have access to the Web Chat API by HOC-ing thru "connectToWebChat".
-    !!directLine && (
-      <Components.Composer directLine={directLine}>
-        <PlainWebChat />
-      </Components.Composer>
-    )
+    <React.Fragment>
+      <h1>Web Chat with plain UI</h1>
+      <p>
+        This sample shows how to use Web Chat without any of its canned UI
+        component. There are few conversation you can try out.
+      </p>
+      <ol>
+        <li>
+          Say <code>image</code> to the bot
+        </li>
+        <li>
+          Say <code>suggested-actions</code> to the bot
+        </li>
+        <li>
+          Say <code>card bingsports</code> to the bot
+        </li>
+      </ol>
+      <p>
+        For the{" "}
+        <a href="https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/">
+          source code of this demo
+        </a>
+        , please visit{" "}
+        <a href="https://github.com/microsoft/BotFramework-WebChat/">
+          our GitHub repository
+        </a>
+        .
+      </p>
+      <hr />
+      {!!directLine && (
+        <Components.Composer directLine={directLine}>
+          <PlainWebChat />
+        </Components.Composer>
+      )}
+    </React.Fragment>
   );
 };
