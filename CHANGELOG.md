@@ -63,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2110](https://github.com/Microsoft/BotFramework-WebChat/issues/2110). Fixed sendBox input/textarea background color issue, by [@tdurnford](https://github.com/johndoe) in PR [#2111](https://github.com/Microsoft/BotFramework-WebChat/pull/2111)
 -  Fix [#2104](https://github.com/Microsoft/BotFramework-WebChat/issues/2104). Remove deprecated `/master/webchat\*\*.js links from samples, by [@corinagum](https://github.com/corinagum) in PR [#2105](https://github.com/Microsoft/BotFramework-WebChat/pull/2105)
 -  Fix [#1863](https://github.com/Microsoft/BotFramework-WebChat/issues/1863). Remove title, subtitle, and text of cards from being spoken by [@corinagum](https://github.com/corinagum) in PR [#2118](https://github.com/Microsoft/BotFramework-WebChat/pull/2118)
+-  Fix [#2134](https://github.com/Microsoft/BotFramework-WebChat/issues/2134). Added `azure-pipelines.yml` for embed package, by [@compulim](https://github.com/compulim) in PR [#2135](https://github.com/Microsoft/BotFramework-WebChat/pull/2135)
 
 ### Samples
 
