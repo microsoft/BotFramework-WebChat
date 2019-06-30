@@ -43,32 +43,26 @@ import defaultStyleOptions from './defaultStyleOptions';
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
 function parseBorder(border) {
-  let colors = [];
-  let styles = [];
-  let widths = [];
+  const dummyElement = document.createElement('div');
 
-  border.split(' ').forEach(value => {
-    const width = parseInt(value);
-    const styleMatch = STYLE_PATTERN.exec(value);
+  dummyElement.setAttribute('style', `border: ${ border }`);
 
-    if (!isNaN(width)) {
-      widths.push(width);
-    } else if (styleMatch) {
-      styles.push(styleMatch);
-    } else {
-      colors.push(value);
+  const {
+    style: {
+      borderColor: color,
+      borderStyle: style,
+      borderWidth: width
     }
-  });
+  } = dummyElement;
 
   return {
-    colors,
-    styles,
-    widths
+    color,
+    style,
+    width
   };
 }
 
 const PIXEL_UNIT_PATTERN = /^\d+px$/;
-const STYLE_PATTERN = /none|hidden|dotted|dashed|solid|groove|ridge|inset|outset|initial|inherit/;
 
 export default function createStyleSet(options) {
   options = { ...defaultStyleOptions, ...options };
@@ -81,26 +75,36 @@ export default function createStyleSet(options) {
   if (bubbleBorder) {
     console.warn('Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.');
 
-    const { colors, styles, widths } = parseBorder(bubbleBorder);
+    const { color, style, width } = parseBorder(bubbleBorder);
 
-    options.bubbleBorderColor = colors[0];
-    options.bubbleBorderStyle = styles[0];
+    if (color && color !== 'initial') {
+      options.bubbleBorderColor = color;
+    }
 
-    if (PIXEL_UNIT_PATTERN.test(widths[0])) {
-      options.bubbleBorderWidth = parseInt(widths[0]);
+    if (style && style !== 'initial') {
+      options.bubbleBorderStyle = style;
+    }
+
+    if (PIXEL_UNIT_PATTERN.test(width)) {
+      options.bubbleBorderWidth = parseInt(width);
     }
   }
 
   if (bubbleFromUserBorder) {
     console.warn('Web Chat: styleSet.bubbleFromUserBorder is being deprecated. Please use bubbleFromUserBorderColor, bubbleFromUserBorderStyle, and, bubbleFromUserBorderWidth.');
 
-    const { colors, styles, widths } = parseBorder(bubbleFromUserBorder);
+    const { color, style, width } = parseBorder(bubbleFromUserBorder);
 
-    options.bubbleFromUserBorderColor = colors[0];
-    options.bubbleFromUserBorderStyle = styles[0];
+    if (color && color !== 'initial') {
+      options.bubbleFromUserBorderColor = color;
+    }
 
-    if (PIXEL_UNIT_PATTERN.test(widths[0])) {
-      options.bubbleFromUserBorderWidth = parseInt(widths[0]);
+    if (style && style !== 'initial') {
+      options.bubbleFromUserBorderStyle = style;
+    }
+
+    if (PIXEL_UNIT_PATTERN.test(width)) {
+      options.bubbleFromUserBorderWidth = parseInt(width);
     }
   }
 

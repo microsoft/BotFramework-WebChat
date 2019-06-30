@@ -74,12 +74,16 @@ export default class extends React.Component {
     this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
     this.createMemoizedStyleOptions = memoize((hideSendBox, botAvatarInitials, userAvatarInitials, showNub) => ({
-      bubbleBorderColor: 'Red',
+      // bubbleBorderColor: 'Red',
+      bubbleBorder: 'dotted 2px Red',
       bubbleBorderRadius: 10,
-      bubbleBorderWidth: 3,
-      bubbleFromUserBorderColor: 'Green',
+      // bubbleBorderStyle: 'dotted',
+      // bubbleBorderWidth: 2,
+      bubbleFromUserBorder: 'dashed 2px Green',
+      // bubbleFromUserBorderColor: 'Green',
       bubbleFromUserBorderRadius: 10,
-      bubbleFromUserBorderWidth: 3,
+      // bubbleFromUserBorderStyle: 'dashed',
+      // bubbleFromUserBorderWidth: 2,
       bubbleFromUserNubSize: showNub ? 10 : 0,
       bubbleFromUserNubOffset: -5,
       bubbleNubOffset: 5,
