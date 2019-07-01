@@ -254,7 +254,7 @@ export default class extends React.Component {
   }
 
   handleStyleBubbleBorderChange({ target: { value } }) {
-    this.setState(() => ({ styleBubbleBorder: value }));
+    this.setState(() => ({ styleBubbleBorder: value === 'true' || (value === 'deprecated' && 'deprecated') }));
   }
 
   handleUseEmulatorCoreClick() {
