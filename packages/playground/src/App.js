@@ -66,6 +66,7 @@ export default class extends React.Component {
     this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
     this.handleSendTypingIndicatorChange = this.handleSendTypingIndicatorChange.bind(this);
     this.handleShowNubChange = this.handleShowNubChange.bind(this);
+    this.handleStyleBubbleBorderChange = this.handleStyleBubbleBorderChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
@@ -73,26 +74,42 @@ export default class extends React.Component {
     this.mainRef = React.createRef();
     this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
-    this.createMemoizedStyleOptions = memoize((hideSendBox, botAvatarInitials, userAvatarInitials, showNub) => ({
-      // bubbleBorderColor: 'Red',
-      bubbleBorder: 'dotted 2px Red',
-      bubbleBorderRadius: 10,
-      // bubbleBorderStyle: 'dotted',
-      // bubbleBorderWidth: 2,
-      bubbleFromUserBorder: 'dashed 2px Green',
-      // bubbleFromUserBorderColor: 'Green',
-      bubbleFromUserBorderRadius: 10,
-      // bubbleFromUserBorderStyle: 'dashed',
-      // bubbleFromUserBorderWidth: 2,
-      bubbleFromUserNubSize: showNub ? 10 : 0,
-      bubbleFromUserNubOffset: -5,
-      bubbleNubOffset: 5,
-      bubbleNubSize: showNub ? 10 : 0,
+    this.createMemoizedStyleOptions = memoize(
+      (hideSendBox, botAvatarInitials, userAvatarInitials, showNub, styleBubbleBorder) => ({
+        ...(styleBubbleBorder === 'deprecated'
+          ? {
+              bubbleBorder: 'dotted 2px Red',
+              bubbleBorderRadius: 10,
+              bubbleFromUserBorder: 'dashed 2px Green',
+              bubbleFromUserBorderRadius: 10
+            }
+          : styleBubbleBorder
+          ? {
+              bubbleBorderColor: 'Red',
+              bubbleBorderRadius: 10,
+              bubbleBorderStyle: 'dotted',
+              bubbleBorderWidth: 2,
+              bubbleFromUserBorderColor: 'Green',
+              bubbleFromUserBorderRadius: 10,
+              bubbleFromUserBorderStyle: 'dashed',
+              bubbleFromUserBorderWidth: 2
+            }
+          : {}),
 
-      botAvatarInitials,
-      hideSendBox,
-      userAvatarInitials
-    }));
+        ...(showNub
+          ? {
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserNubOffset: -5,
+              bubbleNubOffset: 5,
+              bubbleNubSize: 10
+            }
+          : {}),
+
+        botAvatarInitials,
+        hideSendBox,
+        userAvatarInitials
+      })
+    );
 
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
@@ -120,6 +137,7 @@ export default class extends React.Component {
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTypingIndicator: true,
       showNub: true,
+      styleBubbleBorder: false,
       userAvatarInitials: 'WC',
       userID,
       username: 'Web Chat user',
@@ -235,6 +253,10 @@ export default class extends React.Component {
     this.setState(() => ({ showNub: checked }));
   }
 
+  handleStyleBubbleBorderChange({ target: { value } }) {
+    this.setState(() => ({ styleBubbleBorder: value }));
+  }
+
   handleUseEmulatorCoreClick() {
     window.sessionStorage.removeItem('REDUX_STORE');
     window.location.href = '?domain=http://localhost:5000/v3/directline&websocket=0&u=default-user';
@@ -282,13 +304,20 @@ export default class extends React.Component {
         sendTimeout,
         sendTypingIndicator,
         showNub,
+        styleBubbleBorder,
         userAvatarInitials,
         userID,
         username,
         webSpeechPonyfillFactory
       }
     } = this;
-    const styleOptions = this.createMemoizedStyleOptions(hideSendBox, botAvatarInitials, userAvatarInitials, showNub);
+    const styleOptions = this.createMemoizedStyleOptions(
+      hideSendBox,
+      botAvatarInitials,
+      userAvatarInitials,
+      showNub,
+      styleBubbleBorder
+    );
 
     return (
       <div className={ROOT_CSS} ref={this.mainRef}>
@@ -438,11 +467,17 @@ export default class extends React.Component {
           </div>
           <div>
             <label>
-              <input
-                checked={ this.state.showNub }
-                onChange={ this.handleShowNubChange }
-                type="checkbox"
-              />
+              Style bubble border
+              <select onChange={this.handleStyleBubbleBorderChange} value={styleBubbleBorder || 'false'}>
+                <option value="false">Don't style bubble</option>
+                <option value="true">Style using new options</option>
+                <option value="deprecated">Style using old bubbleBorder</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              <input checked={this.state.showNub} onChange={this.handleShowNubChange} type="checkbox" />
               Show bubble nub
             </label>
           </div>
