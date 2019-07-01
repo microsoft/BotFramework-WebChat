@@ -107,22 +107,17 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
 
   return (
     <div
-      className={classNames(
-        ROOT_CSS + '',
-        styleSet.stackedLayout + '',
-        {
-          'extra-left-indent': fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
-          'extra-right-indent': !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
-          'from-user': fromUser,
-          'indented-content': avatarInitials && !indented
-        }
-      )}
+      className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
+        'extra-left-indent': fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
+        'extra-right-indent':
+          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
+        'from-user': fromUser,
+        'indented-content': avatarInitials && !indented
+      })}
     >
-      {
-        !avatarInitials
-        && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize)
-        && <div className="avatar" />
-      }
+      {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
+        <div className="avatar" />
+      )}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {type === 'typing' ? (
@@ -156,7 +151,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
             </Bubble>
           </div>
         ))}
-        <div className={ classNames('webchat__row', { indented }) }>
+        <div className={classNames('webchat__row', { indented })}>
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (

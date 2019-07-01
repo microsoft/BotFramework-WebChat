@@ -45,14 +45,10 @@ import defaultStyleOptions from './defaultStyleOptions';
 function parseBorder(border) {
   const dummyElement = document.createElement('div');
 
-  dummyElement.setAttribute('style', `border: ${ border }`);
+  dummyElement.setAttribute('style', `border: ${border}`);
 
   const {
-    style: {
-      borderColor: color,
-      borderStyle: style,
-      borderWidth: width
-    }
+    style: { borderColor: color, borderStyle: style, borderWidth: width }
   } = dummyElement;
 
   return {
@@ -73,7 +69,9 @@ export default function createStyleSet(options) {
   const { bubbleBorder, bubbleFromUserBorder } = options;
 
   if (bubbleBorder) {
-    console.warn('Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.');
+    console.warn(
+      'Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.'
+    );
 
     const { color, style, width } = parseBorder(bubbleBorder);
 
@@ -91,7 +89,9 @@ export default function createStyleSet(options) {
   }
 
   if (bubbleFromUserBorder) {
-    console.warn('Web Chat: styleSet.bubbleFromUserBorder is being deprecated. Please use bubbleFromUserBorderColor, bubbleFromUserBorderStyle, and, bubbleFromUserBorderWidth.');
+    console.warn(
+      'Web Chat: styleSet.bubbleFromUserBorder is being deprecated. Please use bubbleFromUserBorderColor, bubbleFromUserBorderStyle, and, bubbleFromUserBorderWidth.'
+    );
 
     const { color, style, width } = parseBorder(bubbleFromUserBorder);
 
