@@ -51,7 +51,6 @@ class AnimationCardAttachment extends React.Component {
           adaptiveCardHostConfig={adaptiveCardHostConfig}
           adaptiveCards={adaptiveCards}
           attachment={attachment}
-          styleOptions={styleSet.options}
         />
       </div>
     );

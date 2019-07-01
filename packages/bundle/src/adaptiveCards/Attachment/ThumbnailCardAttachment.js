@@ -16,7 +16,7 @@ class ThumbnailCardAttachment extends React.Component {
       const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
       const { TextSize, TextWeight } = adaptiveCards;
       const { buttons, images, subtitle, text, title } = content;
-      const { richCardsWrapTitle } = styleOptions;
+      const { richCardWrapTitle } = styleOptions;
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
@@ -24,7 +24,7 @@ class ThumbnailCardAttachment extends React.Component {
 
         builder.addTextBlock(
           title,
-          { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardsWrapTitle },
+          { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
           firstColumn
         );
         builder.addTextBlock(subtitle, { isSubtle: true, wrap: true }, firstColumn);

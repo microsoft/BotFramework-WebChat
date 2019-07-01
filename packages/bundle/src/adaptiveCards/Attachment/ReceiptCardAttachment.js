@@ -20,9 +20,9 @@ class ReceiptCardAttachment extends React.Component {
       (adaptiveCards, { buttons, facts, items, tax, title, total, vat }, language, styleOptions) => {
         const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
         const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
-        const { richCardsWrapTitle } = styleOptions;
+        const { richCardWrapTitle } = styleOptions;
 
-        builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardsWrapTitle });
+        builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle });
 
         if (facts) {
           const [firstFactColumn, lastFactColumn] = builder.addColumnSet([75, 25]);

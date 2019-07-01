@@ -25,12 +25,7 @@ const AudioCardAttachment = ({
         </li>
       ))}
     </ul>
-    <CommonCard
-      adaptiveCardHostConfig={adaptiveCardHostConfig}
-      adaptiveCards={adaptiveCards}
-      attachment={attachment}
-      styleOptions={styleSet.options}
-    />
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
   </div>
 );
 

@@ -50,7 +50,7 @@ const DEFAULT_OPTIONS = {
   markdownRespectCRLF: true,
 
   // Rich Cards
-  richCardsWrapTitle: false,
+  richCardWrapTitle: false,
 
   // Root
   rootHeight: '100%',

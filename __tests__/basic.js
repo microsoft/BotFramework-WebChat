@@ -89,8 +89,8 @@ test('unknown activities do not render anything in the transcript', async () => 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('hero card with a long title and richCardsWrapTitle set to true', async () => {
-  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardsWrapTitle: true } } });
+test('hero card with a long title and richCardWrapTitle set to true', async () => {
+  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardWrapTitle: true } } });
 
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('herocard long title', { waitForSend: true });
@@ -103,7 +103,7 @@ test('hero card with a long title and richCardsWrapTitle set to true', async () 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('hero card with a long title and richCardsWrapTitle set to default value', async () => {
+test('hero card with a long title and richCardWrapTitle set to default value', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
@@ -117,8 +117,8 @@ test('hero card with a long title and richCardsWrapTitle set to default value', 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('thumbnail card with a long title and richCardsWrapTitle set to true', async () => {
-  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardsWrapTitle: true } } });
+test('thumbnail card with a long title and richCardWrapTitle set to true', async () => {
+  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { richCardWrapTitle: true } } });
 
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('thumbnailcard long title', { waitForSend: true });
@@ -131,7 +131,7 @@ test('thumbnail card with a long title and richCardsWrapTitle set to true', asyn
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('thumbnail card with a long title and richCardsWrapTitle set to default value', async () => {
+test('thumbnail card with a long title and richCardWrapTitle set to default value', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);

@@ -1,10 +1,11 @@
+import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default class CommonCard extends React.Component {
+class CommonCard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,12 +20,17 @@ export default class CommonCard extends React.Component {
 
   render() {
     const {
-      props: { adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {}, styleOptions }
+      props: {
+        adaptiveCardHostConfig,
+        adaptiveCards,
+        attachment: { content } = {},
+        styleSet: { options }
+      }
     } = this;
 
     return (
       <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content, styleOptions)}
+        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
         adaptiveCardHostConfig={adaptiveCardHostConfig}
         tapAction={content && content.tap}
       />
@@ -40,5 +46,7 @@ CommonCard.propTypes = {
       tap: PropTypes.any
     }).isRequired
   }).isRequired,
-  styleOptions: PropTypes.any.isRequired
+  styleSet: PropTypes.any.isRequired
 };
+
+export default connectToWebChat(({ styleSet }) => ({ styleSet }))(CommonCard);
