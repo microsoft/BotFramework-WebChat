@@ -56,10 +56,10 @@ class ReceiptCardAttachment extends React.Component {
 
             builder.addTextBlock(
               title,
-              { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true },
+              { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
               itemTitleColumn
             );
-            builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: true }, itemTitleColumn);
+            builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
             builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
           });
 

@@ -27,7 +27,7 @@ class ThumbnailCardAttachment extends React.Component {
           { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
           firstColumn
         );
-        builder.addTextBlock(subtitle, { isSubtle: true, wrap: true }, firstColumn);
+        builder.addTextBlock(subtitle, { isSubtle: true, wrap: richCardWrapTitle }, firstColumn);
         builder.addImage(url, lastColumn, tap);
         builder.addTextBlock(text, { wrap: true });
         builder.addButtons(buttons);

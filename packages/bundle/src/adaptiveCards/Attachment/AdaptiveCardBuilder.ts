@@ -113,7 +113,7 @@ export default class AdaptiveCardBuilder {
       weight: TextWeight.Bolder,
       wrap: richCardWrapTitle
     });
-    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: true });
+    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: richCardWrapTitle });
     this.addTextBlock(content.text, { color: TextColor.Dark, wrap: true });
   }
 
