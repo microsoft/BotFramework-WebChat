@@ -14,8 +14,8 @@ class AnimationCardAttachment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.buildCard = memoize((adaptiveCards, content) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards);
+    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
 
@@ -71,7 +71,8 @@ AnimationCardAttachment.propTypes = {
     }).isRequired
   }).isRequired,
   styleSet: PropTypes.shape({
-    animationCardAttachment: PropTypes.any.isRequired
+    animationCardAttachment: PropTypes.any.isRequired,
+    options: PropTypes.any.isRequired
   }).isRequired
 };
 
