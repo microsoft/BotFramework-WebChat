@@ -150,6 +150,7 @@ const WebChatCarouselFilmStrip = ({
 };
 
 WebChatCarouselFilmStrip.defaultProps = {
+  avatarInitials: '',
   children: undefined,
   className: '',
   timestampClassName: ''
@@ -171,6 +172,7 @@ WebChatCarouselFilmStrip.propTypes = {
     textFormat: PropTypes.string,
     timestamp: PropTypes.string
   }).isRequired,
+  avatarInitials: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,

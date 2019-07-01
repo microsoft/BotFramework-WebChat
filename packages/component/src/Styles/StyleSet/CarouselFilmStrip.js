@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
     // Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function

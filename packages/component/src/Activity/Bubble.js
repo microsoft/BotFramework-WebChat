@@ -40,7 +40,7 @@ Bubble.defaultProps = {
   children: undefined,
   className: '',
   fromUser: false,
-  hideNub: false
+  nub: true
 };
 
 Bubble.propTypes = {
@@ -48,7 +48,7 @@ Bubble.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,
-  hideNub: PropTypes.bool,
+  nub: PropTypes.bool,
   styleSet: PropTypes.shape({
     bubble: PropTypes.any.isRequired
   }).isRequired

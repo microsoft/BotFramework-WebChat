@@ -58,7 +58,7 @@ function parseBorder(border) {
   };
 }
 
-const PIXEL_UNIT_PATTERN = /^\d+px$/;
+const PIXEL_UNIT_PATTERN = /^\d+px$/u;
 
 export default function createStyleSet(options) {
   options = { ...defaultStyleOptions, ...options };
@@ -84,7 +84,7 @@ export default function createStyleSet(options) {
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleBorderWidth = parseInt(width);
+      options.bubbleBorderWidth = parseInt(width, 10);
     }
   }
 
@@ -104,7 +104,7 @@ export default function createStyleSet(options) {
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleFromUserBorderWidth = parseInt(width);
+      options.bubbleFromUserBorderWidth = parseInt(width, 10);
     }
   }
 

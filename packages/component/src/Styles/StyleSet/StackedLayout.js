@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
     '&.extra-left-indent': {

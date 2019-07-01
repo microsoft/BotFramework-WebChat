@@ -1,5 +1,5 @@
-/* eslint-disable no-sync */
 /* eslint react/no-array-index-key: "off" */
+/* eslint-disable no-sync */
 
 import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';

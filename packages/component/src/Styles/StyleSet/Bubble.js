@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
+
 import Color from 'color';
 
 function acuteNubSVG(nubSize = 10, backgroundColor, color, strokeWidth = 1, side = 'bot', upSideDown = false) {
@@ -25,7 +27,7 @@ function isPositive(value) {
 }
 
 function svgToDataURI(svg) {
-  return `data:image/svg+xml;utf8,${svg.replace(/"/g, "'")}`;
+  return `data:image/svg+xml;utf8,${svg.replace(/"/gu, "'")}`;
 }
 
 export default function createBubbleStyle({
@@ -111,7 +113,7 @@ export default function createBubbleStyle({
       },
 
       '& > .nub': {
-        backgroundImage: `url("${svgToDataURI(botNubSVG).replace(/"/g, "'")}")`,
+        backgroundImage: `url("${svgToDataURI(botNubSVG).replace(/"/gu, "'")}")`,
         bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
         left: bubbleBorderWidth - bubbleNubSize + paddingRegular,
@@ -142,7 +144,7 @@ export default function createBubbleStyle({
       },
 
       '& > .nub': {
-        backgroundImage: `url("${svgToDataURI(userNubSVG).replace(/"/g, "'")}")`,
+        backgroundImage: `url("${svgToDataURI(userNubSVG).replace(/"/gu, "'")}")`,
         height: bubbleFromUserNubSize,
         right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
