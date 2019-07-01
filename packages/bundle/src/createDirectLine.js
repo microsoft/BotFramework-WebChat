@@ -1,6 +1,7 @@
 import { DirectLine } from 'botframework-directlinejs';
 
 export default function createDirectLine({
+  botAgent,
   conversationId,
   domain,
   fetch,
@@ -12,6 +13,7 @@ export default function createDirectLine({
   webSocket
 }) {
   return new DirectLine({
+    botAgent,
     conversationId,
     domain,
     fetch,
@@ -21,7 +23,6 @@ export default function createDirectLine({
     token,
     watermark,
     webSocket,
-    botAgent: 'webchat',
     createFormData: attachments => {
       const formData = new FormData();
 
