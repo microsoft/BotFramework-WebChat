@@ -7,7 +7,7 @@ FROM node:12
 ADD bot/ /var/build/bot/
 
 # Copy the web server code to /var/web/
-ADD rest-api/ /var/build/web/
+ADD web/ /var/build/web/
 
 # Copy SSH configuration and startup script to /var/
 # Adopted from https://github.com/Azure-App-Service/node/blob/master/10.14/sshd_config

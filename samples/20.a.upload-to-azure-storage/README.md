@@ -32,7 +32,7 @@ This demo integrates with multiple services. There are multiple services you nee
 To host this demo, you will need to clone the code and run locally.
 
 1. Clone this repository
-1. Create two empty files for environment variables, `/bot/.env` and `/rest-api/.env`
+1. Create two empty files for environment variables, `/bot/.env` and `/web/.env`
 
 ## Setup Azure Storage
 
@@ -44,9 +44,9 @@ This will create a new Azure Storage for temporary storage of user uploads.
    1. Click "Review + create"
 1. Save the account name and key
    1. Select "Access keys"
-   1. Copy "Storage account name" and save it to both `/bot/.env` and `/rest-api/.env`
+   1. Copy "Storage account name" and save it to both `/bot/.env` and `/web/.env`
       - `AZURE_STORAGE_ACCOUNT_NAME=youraccountname`
-   1. Copy "Key" of "key1" and save it to both `/bot/.env` and `/rest-api/.env`
+   1. Copy "Key" of "key1" and save it to both `/bot/.env` and `/web/.env`
       - `AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d`
 1. Create a new blob container named "userupload"
    1. Select "Blobs"
@@ -74,7 +74,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
    -  `MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6`
-1. Save the Web Chat secret to `/rest-api/.env`
+1. Save the Web Chat secret to `/web/.env`
    -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
@@ -92,7 +92,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 ## Prepare and run the code
 
-1. Under each of `bot`, and `rest-api` folder, run the following
+1. Under each of `bot`, and `web` folder, run the following
    1. `npm install`
    1. `npm start`
 1. Browse to http://localhost:3000/ to start the demo
@@ -107,11 +107,11 @@ During development, you will run your bot locally. Azure Bot Services will send 
 # Code
 
 -  `/bot/` is the bot server
--  `/rest-api/` is the REST API for distributing Shared Access Signature tokens
+-  `/web/` is the REST API for distributing Shared Access Signature tokens
    -  `GET /api/directline/token` will generate a new Direct Line token for the React app
    -  `GET /api/azurestorage/uploadsastoken` will generate a new Shared Access Signature token for the web app to upload a file
    -  During development-time, it will also serve the bot server via `/api/messages/`
-      -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/rest-api/.env`
+      -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
 
 # Overview
 
@@ -169,7 +169,7 @@ MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
 MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 ```
 
-### `/rest-api/.env`
+### `/web/.env`
 
 ```
 AZURE_STORAGE_ACCOUNT_NAME=youraccountname
