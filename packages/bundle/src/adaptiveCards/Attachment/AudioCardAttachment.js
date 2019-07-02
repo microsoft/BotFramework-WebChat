@@ -47,7 +47,8 @@ AudioCardAttachment.propTypes = {
     })
   }).isRequired,
   styleSet: PropTypes.shape({
-    audioCardAttachment: PropTypes.any.isRequired
+    audioCardAttachment: PropTypes.any.isRequired,
+    options: PropTypes.any.isRequired
   }).isRequired
 };
 
