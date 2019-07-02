@@ -53,10 +53,12 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
 export default class AdaptiveCardBuilder {
   card: AdaptiveCard;
   container: Container;
+  styleOptions: any;
 
-  constructor(adaptiveCards) {
+  constructor(adaptiveCards, styleOptions) {
     this.card = new adaptiveCards.AdaptiveCard();
     this.container = new Container();
+    this.styleOptions = styleOptions;
 
     this.card.addItem(this.container);
   }
@@ -104,8 +106,14 @@ export default class AdaptiveCardBuilder {
   }
 
   addCommonHeaders(content: ICommonContent) {
-    this.addTextBlock(content.title, { color: TextColor.Dark, size: TextSize.Medium, weight: TextWeight.Bolder });
-    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: true });
+    const { richCardWrapTitle } = this.styleOptions;
+    this.addTextBlock(content.title, {
+      color: TextColor.Dark,
+      size: TextSize.Medium,
+      weight: TextWeight.Bolder,
+      wrap: richCardWrapTitle
+    });
+    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: richCardWrapTitle });
     this.addTextBlock(content.text, { color: TextColor.Dark, wrap: true });
   }
 
