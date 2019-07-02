@@ -50,7 +50,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
--  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/Microsoft/BotFramework-WebChat/pull/XXX)
+-  `*`: Added [`eslint`](https://npmjs.com/package/eslint/) to static code analysis, by [@compulim](https://github.com/compulim), in PR [#1970](https://github.com/microsoft/BotFramework-WebChat/pull/1970)
+-  Added pt-PT language, by [@bodyzatva](https://github.com/bodyzatva) in PR [#2005](https://github.com/microsoft/BotFramework-WebChat/pull/2005) and PR [#2020](https://github.com/Microsoft/BotFramework-WebChat/pull/2020)
+-  Added documentation for using Web Chat dev build, by [@corinagum](https://github.com/corinagum), in PR [#2074](https://github.com/Microsoft/BotFramework-WebChat/pull/2074)
+-  Added the Web Chat version to DirectLine's botAgent option, by [@tdurnford](https://github.com/tdurnford), in PR [#2101](https://github.com/Microsoft/BotFramework-WebChat/pull/2101)
+-  Added `richCardWrapTitle` to `defaultStyleOptions`, by [@tdurnford](https://github.com/tdurnford), in PR [#2115](https://github.com/Microsoft/BotFramework-WebChat/pull/2115)
+-  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/Microsoft/BotFramework-WebChat/pull/2137)
 
 ## [4.5.0] - 2019-07-10
 
