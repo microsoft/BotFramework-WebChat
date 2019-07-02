@@ -6,6 +6,7 @@ import observeOnce from '../sagas/effects/observeOnce';
 describe('observeOnce', () => {
   let inputOutput;
   let observable;
+  let onComplete;
   let onError;
   let onNext;
   let unsubscribe;
@@ -16,6 +17,7 @@ describe('observeOnce', () => {
       subscribe: jest.fn((...args) => {
         onNext = args[0];
         onError = args[1];
+        onComplete = args[2];
 
         return {
           unsubscribe
@@ -61,6 +63,23 @@ describe('observeOnce', () => {
             }).toThrow('Hello, World!');
             expect(unsubscribe).toHaveBeenCalledTimes(1);
           }
+
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }));
+
+  test('should unsubscribe after complete', () =>
+    new Promise((resolve, reject) => {
+      runSaga(inputOutput, function*() {
+        try {
+          const [result] = yield all([observeOnce(observable), call(() => onComplete())]);
+
+          expect(observable.subscribe).toHaveBeenCalledTimes(1);
+          expect(result).toBeUndefined();
+          expect(unsubscribe).toHaveBeenCalledTimes(1);
 
           resolve();
         } catch (err) {
