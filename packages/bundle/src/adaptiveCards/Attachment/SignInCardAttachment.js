@@ -15,7 +15,8 @@ SignInCardAttachment.propTypes = {
   adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
-    animationCardAttachment: PropTypes.any.isRequired
+    animationCardAttachment: PropTypes.any.isRequired,
+    options: PropTypes.any.isRequired
   }).isRequired
 };
 

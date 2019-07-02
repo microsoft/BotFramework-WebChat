@@ -1,0 +1,46 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 11.x'
+  inputs:
+    versionSpec: 11.x
+
+- task: Npm@1
+  displayName: 'npm ci'
+  inputs:
+    command: custom
+    workingDir: packages/embed
+    verbose: false
+    customCommand: ci
+
+- task: Npm@1
+  displayName: 'npm run prepublishOnly'
+  inputs:
+    command: custom
+    workingDir: packages/embed
+    verbose: false
+    customCommand: 'run prepublishOnly'
+
+- task: CopyFiles@2
+  displayName: 'Copy index.html to drop'
+  inputs:
+    SourceFolder: packages/embed/dist
+    Contents: index.html
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
+
+- task: CopyFiles@2
+  displayName: 'Copy servicingPlan.json to drop'
+  inputs:
+    SourceFolder: packages/embed
+    Contents: servicingPlan.json
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'

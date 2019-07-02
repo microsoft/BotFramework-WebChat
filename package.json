@@ -33,6 +33,9 @@
       "lcov",
       "text-summary"
     ],
+    "globals": {
+      "VERSION": "0.0.0-0"
+    },
     "moduleDirectories": [
       "node_modules",
       "packages"
