@@ -10,6 +10,15 @@ A simple React web site that use 3 pieces of custom UI:
 
 This app is built with `create-react-app`.
 
+### Incompatible with Safari
+
+Currently, this sample does not work under Safari. Safari requires explicit user interaction to start recording on the microphone or playing audio clips. This is being investigated in [issue #995](https://github.com/microsoft/BotFramework-WebChat/issues/995).
+
+- Speech-to-text: after the user clicks the microphone, we fetch an authorization token and then start recording on the microphone
+   - The network call to fetch the token "disconnect" the user interaction and recording, thus, Safari considered the recording do not have explicit grant from the user and denied access
+- Text-to-speech: the synthesized text is played when the bot sends the message, without any user interactions
+   - Since the synthesized text is an audio clip and started playing without user interactions, Safari denied access to speaker
+
 # Test out the hosted sample
 
 -  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui)

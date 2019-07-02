@@ -70,6 +70,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Samples
 
 -  `*`: [Single-sign on for enterprise apps](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps/), in [#2002](https://github.com/Microsoft/BotFramework-WebChat/pull/2002)
+-  `*`: [Speech UI demo](https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui). Reconfigured to use Cognitive Services properly, by [@compulim](https://github.com/compulim) in PR [#2132](https://github.com/microsoft/BotFramework-WebChat/pull/2132)
 
 ## [4.4.1] - 2019-05-02
 
