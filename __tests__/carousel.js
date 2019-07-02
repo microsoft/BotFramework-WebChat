@@ -11,21 +11,9 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-let props;
-
-beforeEach(() => {
-  props = {
-    // We are using red/green border to emphasis the size of the border while testing
-    styleOptions: {
-      bubbleBorderColor: 'red',
-      bubbleFromUserBorderColor: 'green'
-    }
-  };
-});
-
 describe('carousel without avatar initials', () => {
   test('4 attachments and no message', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
@@ -49,7 +37,7 @@ describe('carousel without avatar initials', () => {
   });
 
   test('4 attachments and message', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout carousel', { waitForSend: true });
@@ -73,7 +61,7 @@ describe('carousel without avatar initials', () => {
   });
 
   test('2 attachments', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout double', { waitForSend: true });
@@ -85,7 +73,7 @@ describe('carousel without avatar initials', () => {
   });
 
   test('2 attachments with wide screen', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props, width: 640 });
+    const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout double', { waitForSend: true });
@@ -97,7 +85,7 @@ describe('carousel without avatar initials', () => {
   });
 
   test('1 attachment', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single carousel', { waitForSend: true });
@@ -109,7 +97,7 @@ describe('carousel without avatar initials', () => {
   });
 
   test('1 attachment with wide screen', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props, width: 640 });
+    const { driver, pageObjects } = await setupWebDriver({ width: 640 });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single carousel', { waitForSend: true });
@@ -122,19 +110,10 @@ describe('carousel without avatar initials', () => {
 });
 
 describe('carousel with avatar initials', () => {
-  beforeEach(() => {
-    props = {
-      ...props,
-      styleOptions: {
-        ...props.styleOptions,
-        botAvatarInitials: 'BF',
-        userAvatarInitials: 'WC'
-      }
-    };
-  });
+  const WEB_CHAT_PROPS = { styleOptions: { botAvatarInitials: 'BF', userAvatarInitials: 'WC' } };
 
   test('4 attachments and no message', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
@@ -158,7 +137,7 @@ describe('carousel with avatar initials', () => {
   });
 
   test('4 attachments and message', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout carousel', { waitForSend: true });
@@ -182,7 +161,7 @@ describe('carousel with avatar initials', () => {
   });
 
   test('2 attachments', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout double', { waitForSend: true });
@@ -194,7 +173,7 @@ describe('carousel with avatar initials', () => {
   });
 
   test('2 attachments with wide screen', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props, width: 640 });
+    const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout double', { waitForSend: true });
@@ -206,7 +185,7 @@ describe('carousel with avatar initials', () => {
   });
 
   test('1 attachment', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props });
+    const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single carousel', { waitForSend: true });
@@ -218,7 +197,7 @@ describe('carousel with avatar initials', () => {
   });
 
   test('1 attachment with wide screen', async () => {
-    const { driver, pageObjects } = await setupWebDriver({ props, width: 640 });
+    const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS, width: 640 });
 
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('layout single carousel', { waitForSend: true });

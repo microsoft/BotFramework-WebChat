@@ -63,6 +63,7 @@ export default class extends React.Component {
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleRichCardWrapTitleChange = this.handleRichCardWrapTitleChange.bind(this);
     this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
     this.handleSendTypingIndicatorChange = this.handleSendTypingIndicatorChange.bind(this);
     this.handleShowNubChange = this.handleShowNubChange.bind(this);
@@ -70,12 +71,21 @@ export default class extends React.Component {
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
+    this.handleWordBreakChange = this.handleWordBreakChange.bind(this);
 
     this.mainRef = React.createRef();
     this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
     this.createMemoizedStyleOptions = memoize(
-      (hideSendBox, botAvatarInitials, userAvatarInitials, showNub, styleBubbleBorder) => ({
+      (
+        hideSendBox,
+        botAvatarInitials,
+        userAvatarInitials,
+        showNub,
+        styleBubbleBorder,
+        wordBreak,
+        richCardWrapTitle
+      ) => ({
         ...(styleBubbleBorder === 'deprecated'
           ? {
               bubbleBorder: 'dotted 2px Red',
@@ -107,7 +117,9 @@ export default class extends React.Component {
 
         botAvatarInitials,
         hideSendBox,
-        userAvatarInitials
+        userAvatarInitials,
+        messageActivityWordBreak: wordBreak,
+        richCardWrapTitle
       })
     );
 
@@ -134,6 +146,7 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
+      richCardWrapTitle: false,
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTypingIndicator: true,
       showNub: true,
@@ -141,7 +154,8 @@ export default class extends React.Component {
       userAvatarInitials: 'WC',
       userID,
       username: 'Web Chat user',
-      webSpeechPonyfillFactory: undefined
+      webSpeechPonyfillFactory: undefined,
+      workBreak: ''
     };
   }
 
@@ -238,6 +252,10 @@ export default class extends React.Component {
     window.location.reload();
   }
 
+  handleRichCardWrapTitleChange({ target: { checked } }) {
+    this.setState(() => ({ richCardWrapTitle: checked }));
+  }
+
   handleSendTimeoutChange({ target: { value } }) {
     this.setState(
       () => ({ sendTimeout: value }),
@@ -290,6 +308,10 @@ export default class extends React.Component {
     }
   }
 
+  handleWordBreakChange({ target: { value } }) {
+    this.setState(() => ({ wordBreak: value }));
+  }
+
   render() {
     const {
       props: { store },
@@ -301,6 +323,7 @@ export default class extends React.Component {
         groupTimestamp,
         hideSendBox,
         language,
+        richCardWrapTitle,
         sendTimeout,
         sendTypingIndicator,
         showNub,
@@ -308,7 +331,8 @@ export default class extends React.Component {
         userAvatarInitials,
         userID,
         username,
-        webSpeechPonyfillFactory
+        webSpeechPonyfillFactory,
+        wordBreak
       }
     } = this;
     const styleOptions = this.createMemoizedStyleOptions(
@@ -316,7 +340,9 @@ export default class extends React.Component {
       botAvatarInitials,
       userAvatarInitials,
       showNub,
-      styleBubbleBorder
+      styleBubbleBorder,
+      wordBreak,
+      richCardWrapTitle
     );
 
     return (
@@ -479,6 +505,27 @@ export default class extends React.Component {
             <label>
               <input checked={this.state.showNub} onChange={this.handleShowNubChange} type="checkbox" />
               Show bubble nub
+            </label>
+          </div>
+          <div>
+            <label>
+              Word break
+              <select onChange={this.handleWordBreakChange} value={wordBreak || 'break-word'}>
+                <option value="break-word">Break word </option>
+                <option value="normal">Normal</option>
+                <option value="break-all">Break all</option>
+                <option value="keep-all">Keep all</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                checked={richCardWrapTitle || false}
+                onChange={this.handleRichCardWrapTitleChange}
+                type="checkbox"
+              />
+              Rich card wrap title
             </label>
           </div>
         </div>

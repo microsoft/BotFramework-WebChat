@@ -145,7 +145,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           )
         )}
         {attachments.map((attachment, index) => (
-          <div className="webchat__row attachment" key={index}>
+          <div className={classNames('webchat__row attachment', { indented })} key={index}>
             <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
