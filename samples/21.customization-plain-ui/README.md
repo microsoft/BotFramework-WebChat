@@ -6,7 +6,7 @@ When we designed Web Chat, we heavily considered the importance of customization
 
 1. Using all of our layers: using all of our layers as-is,
 2. Using just business layers: building their own UI from the ground up using Web Chat's business logic, or
-3. Using business layers and partly UI components: opting into our UI but replacing just a handful of components as needed.
+3. Using business layers and some UI components: opting into our UI but replacing just a handful of components as needed.
 
 In this sample, we are demonstrating the ability to rebuild Web Chat UI using just the business layer of Web Chat.
 
@@ -60,7 +60,7 @@ Below is the explanation of different layers of Web Chat.
             </a>
          </td>
          <td>
-           <a href="https://reactjs.org/docs/higher-order-components.html">Higher-order component</a> to expose all Web Chat UI API as props. The <code>connectToWebChat</code> method is very similar to Redux <a href="https://react-redux.js.org/api/connect"><code>connect</code></a> function, and provides access to all of the data required to build a chat component.
+           <a href="https://reactjs.org/docs/higher-order-components.html">Higher-order component</a> that exposes all of Web Chat's UI API as props. The <code>connectToWebChat</code> method is very similar to Redux <a href="https://react-redux.js.org/api/connect"><code>connect</code></a> function, and provides access to all of the data required to build a chat component.
          </td>
       </tr>
       <tr>
@@ -107,7 +107,7 @@ Below is the explanation of different layers of Web Chat.
                <li>
                   Designed to be event-driven (via observables) and stateless
                   <ul>
-                     <li>Due to its stateless nature, for example, it does not understood suggested actions, because suggested actions depends on previous state</li>
+                     <li>Due to its stateless nature, for example, it does not understand suggested actions, because suggested actions depends on previous state</li>
                   </ul>
                </li>
                <li>
@@ -142,7 +142,7 @@ The completed code contains multiple files. You can start by reading [`App.js`](
 
 This project has two goals:
 
--  Use Web Chat without using any of its UI components
+-  Use Web Chat without using any of its original UI components
 -  Build your own UI with minimal functionalities
    -  Support suggested actions
    -  Support [`imBack`, `messageBack`, and `postBack`](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-rich-cards?view=azure-bot-service-4.0#process-events-within-rich-cards)
