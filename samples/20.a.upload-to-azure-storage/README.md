@@ -4,15 +4,15 @@
 
 # Description
 
-In this demo, we will show you how to customize Web Chat to directly upload file to Azure Storage, and then send the blob URL to the bot for validation and further processing.
+In this demo, we will show you how to customize Web Chat to directly upload file(s) to Azure Storage, and then send the blob URL to the bot for validation and further processing.
 
 ## Background
 
-Direct Line provides a temporary storage of user attachments, up to 4 MB per attachment for about 24 hours. If end-user need to upload for more than 4 MB, it is always advised to use your own storage.
+Direct Line provides a temporary storage of user attachments, up to 4 MB per attachment for about 24 hours. If the end-user needs to upload more than 4 MB, it is always advised that the developer use their own storage.
 
-> When handling user input such as attachments, please verify if the attachment is free of inappropriate content and is what your bot expected to receive.
+> IMPORTANT: When handling user input such as attachments, please verify that the attachment is free of inappropriate content and is what your bot expected to receive.
 
-> When dealing with personal data, please respect user privacy. Follow platform guideline and post your privacy statement online.
+> IMPORTANT: When dealing with personal data, please respect user privacy. Follow platform guidelines and post your privacy statement online.
 
 # Test out the hosted sample
 
@@ -181,13 +181,13 @@ DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 
 ## Why using an event activity for uploaded files?
 
-Currently, DirectLineJS (0.11.4) will inspect every outgoing activity. If the `attachments` array is not empty, it will read the `contentURL` from every attachment, download the content as `Blob` using the `contentURL`, and then send a multipart message to Direct Line channel. Today, the `contentURL` is constructed by converting a `File` object into an URL thru [`URL.createObjectURL` function](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL) and is prefixed with `blob:` protocol.
+Currently, DirectLineJS (0.11.4) will inspect every outgoing activity. If the `attachments` array is not empty, it will read the `contentURL` from every attachment, download the content as `Blob` using the `contentURL`, and then send a multipart message to the Direct Line channel. Today, the `contentURL` is constructed by converting a `File` object into a URL through the [`URL.createObjectURL` function](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL) and is prefixed with `blob:` protocol.
 
-Thus, if we use `attachments` array to send blob URLs to the bot, DirectLineJS will tries to re-download every files and send it to Direct Line channel again.
+Thus, if we use `attachments` array to send blob URLs to the bot, DirectLineJS will try to re-download every file and send it to Direct Line channel again.
 
-As there are no workarounds for this behavior, we will need to use mechanism other than the `attachments` array.
+As there are no workarounds for this behavior, we will need to use a mechanism other than the `attachments` array.
 
-Since revoking the URL create thru `createObjectURL` is not trivial, in the future, we might change this behavior in DirectLineJS to use `ArrayBuffer` or `Blob` directly.
+Since revoking the URL created through `createObjectURL` is not trivial, there is a possibility that in the future we might change this behavior in DirectLineJS to use `ArrayBuffer` or `Blob` directly.
 
 # Further reading
 

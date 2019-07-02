@@ -35,7 +35,7 @@ module.exports = (_, res) => {
   ].join("/");
   const permissions = new BlobSASPermissions();
 
-  // We only allows create permission, so the user cannot use the URL to redownload the file to redistribute it.
+  // We only allow create permissions, so the user cannot use the URL to redownload the file to redistribute it.
   permissions.create = true;
 
   const sasQuery = generateBlobSASQueryParameters(

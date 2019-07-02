@@ -43,8 +43,8 @@ module.exports = () => {
 
           const blockBlobURL = new BlockBlobURL(file, pipeline);
 
-          // After the bot receive the URL, it should validate its content and associate it with user ID.
-          // If the content should be kept for longer than a day, it should copy it to another blob container because we set up a rule to clean the storage daily.
+          // After the bot receives the URL, it should validate its content and associate it with the user ID.
+          // If the content needs to be kept for longer than a day, we should copy it to another blob container because we set up a rule to clean the storage daily.
 
           return blockBlobURL.getProperties(Aborter.timeout(5000));
         })
@@ -63,7 +63,7 @@ module.exports = () => {
                 buttons: [
                   {
                     // Although we send the blob URL back to the user, since it does not contains SAS, it is not actually downloadable.
-                    // We put the blob URL here for completeness only. Because nevertheless, the user already obtained that URL in order to upload.
+                    // We put the blob URL here for completeness only, because the user already obtained that URL in order to upload.
                     title: "Get blob URL",
                     type: "openurl",
                     value: files[index]

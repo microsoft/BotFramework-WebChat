@@ -9,7 +9,7 @@
     <script src="https://cdn.botframework.com/botframework-webchat/4.4.1/webchat.js"></script>
     <script src="https://unpkg.com/@azure/storage-blob@10.3.0/browser/azure-storage.blob.min.js" integrity="sha384-fsfhtLyVQo3L3Bh73qgQoRR328xEeXnRGdoi53kjo1uectCfAHFfavrBBN2Nkbdf" crossorigin="anonymous"></script>
 
-    <!-- This is for styling Web Chat for demonstration purpose -->
+    <!-- This styling is for Web Chat demonstration purposes -->
     <style type="text/css">
       html, body {
         background-color: #F7F7F7;
@@ -71,7 +71,7 @@
 
       // Upload a file to Azure Storage by supplying an Object URL and a name.
       async function uploadFile({ name, url }) {
-        // Today, Web Chat use createObjectURL() to represent the blob.
+        // Today, Web Chat uses createObjectURL() to represent the blob.
         // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
         // Because it is not trivial to GC the URL, we might change this behavior to use ArrayBuffer or Blob in later versions of Web Chat.
         const res = await fetch(url);
@@ -103,7 +103,7 @@
         const store = WebChat.createStore({}, ({ dispatch }) => next => action => {
           const { type } = action;
 
-          // When Web Chat want to send files, we intercept this action and send an event instead.
+          // When Web Chat wants to send files, we intercept this action and send an event instead.
           if (type === 'WEB_CHAT/SEND_FILES') {
             (async function () {
               // Tells the bot that you are uploading files. This is optional.
@@ -113,9 +113,9 @@
 
               // Today, DirectLineJS will intercept all attachments with URLs from message activity.
               // Separating the attachment out as a multipart before sending to the bot.
-              // This behavior is to facilitate the createObjectURL() calls, we might change this behavior in later versions of Web Chat.
+              // This behavior is to facilitate the createObjectURL() calls. We might change this behavior in later versions of Web Chat.
 
-              // In the meanwhile, we workaround this behavior by using an event activity.
+              // In the meantime, we workaround this behavior by using an event activity.
               dispatch({
                 type: 'WEB_CHAT/SEND_EVENT',
                 payload: {
@@ -131,7 +131,7 @@
         });
 
         // This is for obtaining Direct Line token from the bot.
-        // In production system, we should avoid using Direct Line secret to connect to the bot.
+        // In a production system, we should avoid using Direct Line secret to connect to the bot.
         const { token } = await fetchJSON('/api/directline/token');
 
         WebChat.renderWebChat({
