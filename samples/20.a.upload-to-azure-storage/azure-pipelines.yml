@@ -5,7 +5,6 @@ trigger:
   branches:
     include:
     - master
-    - sample-upload-to-blob
   paths:
     include:
     - samples/20.a.upload-to-azure-storage
