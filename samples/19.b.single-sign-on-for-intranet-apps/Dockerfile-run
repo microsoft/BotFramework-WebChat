@@ -1,5 +1,5 @@
 # This is the container for running the demo under Azure Web App
-FROM node:12 AS builder-web
+FROM node:12
 
 # Expose both port 80 and 2222 (SSH for Azure Web App)
 EXPOSE 80 2222

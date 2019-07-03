@@ -8,7 +8,7 @@ trigger:
     - sample-sso
   paths:
     include:
-    - samples/19.a.single-sign-on-for-enterprise-apps
+    - samples/19.b.single-sign-on-for-intranet-apps
 
 steps:
 - task: DockerInstaller@0
@@ -20,7 +20,7 @@ steps:
   displayName: 'Build builder container'
   inputs:
     command: build
-    Dockerfile: 'samples/19.a.single-sign-on-for-enterprise-apps/Dockerfile'
+    Dockerfile: 'samples/19.b.single-sign-on-for-intranet-apps/Dockerfile'
     arguments: '-t builder'
 
 - task: Docker@2
@@ -41,7 +41,7 @@ steps:
     command: rm
     arguments: 'builder-image'
 
-- bash: 'cp samples/19.a.single-sign-on-for-enterprise-apps/Dockerfile-run $BUILD_ARTIFACTSTAGINGDIRECTORY/Dockerfile'
+- bash: 'cp samples/19.b.single-sign-on-for-intranet-apps/Dockerfile-run $BUILD_ARTIFACTSTAGINGDIRECTORY/Dockerfile'
   displayName: 'Copy Dockerfile'
 
 - task: PublishBuildArtifacts@1
