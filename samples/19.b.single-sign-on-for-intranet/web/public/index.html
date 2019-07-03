@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#000000" />
     <title>Web Chat Single Sign-On Demo</title>
     <script src="https://cdn.botframework.com/botframework-webchat/4.4.1/webchat.js"></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha384-Sxwk52KLiVpPaWwAq9wCiCgz1pSJKHv6xYurDPOD8okUWwY5tfK+G7jVRWdaL7r6"
+      src="https://unpkg.com/simple-update-in@2.0.2/dist/simple-update-in.production.min.js"
+    ></script>
 
     <!-- This is for styling Web Chat for demonstration purpose -->
     <style type="text/css">
@@ -61,59 +66,38 @@
         return await res.json();
       }
 
-      function verifyAccessToken() {
-        // TODO: Verify if the access token is valid or not.
-        return true;
+      // Verify if the access token is valid or not.
+      async function verifyAccessToken(accessToken) {
+        const res = await fetch(
+          "https://graph.microsoft.com/v1.0/me",
+          {
+            headers: {
+              authorization: `Bearer ${accessToken}`
+            }
+          }
+        );
+
+        return res.ok;
       }
 
       (async function main() {
-        const urlSearchParams = new URLSearchParams(document.location.search);
-        const error = urlSearchParams.get('error');
-
-        if (error) {
-          alert(`Failed to authenticate, please click OK to retry.\n\n${ error }`);
-        }
-
+        // When OAuth provider callback, the access token will be saved into session storage and redirected back to this page, see /web/src/routes/oauth/callback.js.
+        // We will retrive the token from session storage from here.
         const oauthAccessToken = window.sessionStorage.getItem('OAUTH_ACCESS_TOKEN');
 
-        // Redirect to sign-in page if the access token is not present or not working.
+        // If we are not authenticated, or the valid is not working, we will redirect the end-user to the sign-in page.
         if (!(oauthAccessToken && await verifyAccessToken(oauthAccessToken))) {
           location.href = OAUTH_REDIRECT_URI;
 
           return;
         }
 
+        // Piggyback the access token on every outgoing activity.
         const store = WebChat.createStore({}, ({ dispatch }) => {
           return next => action => {
-            let shouldSendAccessToken;
-
-            if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-              // Handle the case that we receive SEND_ACCESS_TOKEN but we are not connected at that moment.
-              // Now, we are connected to the bot and should send the token to the bot.
-
-              // If we are signed in before Web Chat is connected, tell the bot we have signed in.
-
-              if (oauthAccessToken) {
-                dispatch({
-                  type: 'WEB_CHAT/SEND_EVENT',
-                  payload: { name: 'oauth/signin' }
-                });
-              }
-            } else if (action.type === 'DIRECT_LINE/POST_ACTIVITY' && oauthAccessToken) {
-              // Piggyback the access token on every outgoing activity.
-              action = {
-                ...action,
-                payload: {
-                  ...action.payload,
-                  activity: {
-                    ...action.payload.activity,
-                    channelData: {
-                      ...action.payload.channelData,
-                      oauthAccessToken
-                    }
-                  }
-                }
-              };
+            if (action.type === 'DIRECT_LINE/POST_ACTIVITY' && oauthAccessToken) {
+              // For convenience, we are using a package called "simpleUpdateIn" to patch activity.
+              action = simpleUpdateIn(action, ['payload', 'activity', 'channelData', 'oauthAccessToken'], () => oauthAccessToken);
             }
 
             return next(action);
