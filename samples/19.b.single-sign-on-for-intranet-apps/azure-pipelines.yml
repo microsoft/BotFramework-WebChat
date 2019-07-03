@@ -5,7 +5,7 @@ trigger:
   branches:
     include:
     - master
-    - sample-sso
+    - sample-sso-intranet
   paths:
     include:
     - samples/19.b.single-sign-on-for-intranet-apps
