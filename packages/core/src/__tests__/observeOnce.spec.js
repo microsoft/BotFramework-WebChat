@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
+
 import { runSaga } from 'redux-saga';
 import { all, call } from 'redux-saga/effects';
 
@@ -15,9 +17,7 @@ describe('observeOnce', () => {
     unsubscribe = jest.fn();
     observable = {
       subscribe: jest.fn((...args) => {
-        onNext = args[0];
-        onError = args[1];
-        onComplete = args[2];
+        [onNext, onError, onComplete] = args;
 
         return {
           unsubscribe
@@ -27,7 +27,7 @@ describe('observeOnce', () => {
 
     inputOutput = {
       subscribe() {
-        return () => {};
+        return () => 0;
       }
     };
   });
@@ -56,7 +56,7 @@ describe('observeOnce', () => {
           try {
             yield all([observeOnce(observable), call(() => onError(new Error('Hello, World!')))]);
 
-            reject('Should not succeed');
+            reject(new Error('Should not succeed'));
           } catch (err) {
             expect(() => {
               throw err;
