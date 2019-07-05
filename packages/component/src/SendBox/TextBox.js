@@ -17,11 +17,12 @@ const ROOT_CSS = css({
 
 const connectSendTextBox = (...selectors) =>
   connectToWebChat(
-    ({ disabled, focusSendBox, language, scrollToEnd, sendBoxValue, setSendBox, submitSendBox }) => ({
+    ({ disabled, focusSendBox, language, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
       disabled,
       language,
       onChange: ({ target: { value } }) => {
         setSendBox(value);
+        stopDictate();
       },
       onKeyPress: event => {
         const { key, shiftKey } = event;

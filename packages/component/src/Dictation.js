@@ -46,11 +46,13 @@ class Dictation extends React.Component {
 
     setDictateInterims(interims);
     setDictateState(DICTATING);
+    // TODO: Send typing
+    // sendTyping();
 
-    // This is for two purposes:
-    // 1. Set send box will also trigger send typing
-    // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
-    setSendBox(interims.join(' '));
+    // // This is for two purposes:
+    // // 1. Set send box will also trigger send typing
+    // // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
+    // setSendBox(interims.join(' '));
   }
 
   handleError(event) {
