@@ -42,7 +42,7 @@ export default function* markActivityForSpeakOnIncomingActivityFromOthersSaga() 
         const shouldSpeakIncomingActivity = yield select(shouldSpeakIncomingActivitySelector);
         const shouldSpeak = speakableActivity(activity) && shouldSpeakIncomingActivity;
 
-        if (shouldSpeak) {
+        if (shouldSpeak && (activity.speak || activity.text)) {
           yield put(markActivity(activity, 'speak', true));
         }
 
