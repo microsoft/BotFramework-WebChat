@@ -20,6 +20,7 @@ class Dictation extends React.Component {
 
   handleDictate({ result: { transcript } = {} }) {
     const {
+      dictateState,
       setDictateInterims,
       setDictateState,
       setSendBox,
