@@ -67,6 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2134](https://github.com/Microsoft/BotFramework-WebChat/issues/2134). Added `azure-pipelines.yml` for embed package, by [@compulim](https://github.com/compulim) in PR [#2135](https://github.com/Microsoft/BotFramework-WebChat/pull/2135)
 -  Fix [#2106](https://github.com/Microsoft/BotFramework-WebChat/issues/2016). Fix `AdaptiveCardHostConfig` warning associated with the `CommonCard` component, by [@tdurnford](https://github.com/tdurnford) in PR [#2108](https://github.com/Microsoft/BotFramework-WebChat/pull/2108)
 -  Fix [#1872](https://github.com/Microsoft/BotFramework-WebChat/issues/1872). Fixed `observeOnce` to unsubscribe properly, by [@compulim](https://github.com/compulim) in PR [#2140](https://github.com/Microsoft/BotFramework-WebChat/pull/2140)
+-  Fix [#2022](https://github.com/Microsoft/BotFramework-WebChat/issues/2022). Fixed `"expectingInput"` in `inputHint` is not respected, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum) in PR [#2149](https://github.com/Microsoft/BotFramework-WebChat/pull/2149)
 
 ### Samples
 
