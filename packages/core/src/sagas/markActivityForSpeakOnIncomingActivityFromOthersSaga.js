@@ -7,6 +7,7 @@ import startDictate from '../actions/startDictate';
 import whileConnected from './effects/whileConnected';
 // import whileSpeakIncomingActivity from './effects/whileSpeakIncomingActivity';
 import shouldSpeakIncomingActivitySelector from '../selectors/shouldSpeakIncomingActivity';
+import stopDictate from '../actions/stopDictate';
 
 // function* markActivityForSpeakAndStartDictate({ payload: { activity } }) {
 //   yield put(markActivity(activity, 'speak', true));
@@ -47,6 +48,8 @@ export default function* markActivityForSpeakOnIncomingActivityFromOthersSaga() 
 
         if (activity.inputHint === 'expectingInput' || (shouldSpeak && activity.inputHint !== 'ignoringInput')) {
           yield put(startDictate());
+        } else if (activity.inputHint === 'ignoringInput') {
+          yield put(stopDictate());
         }
       }
     );
