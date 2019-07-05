@@ -28,40 +28,46 @@ class Dictation extends React.Component {
       submitSendBox
     } = this.props;
 
-    setDictateInterims([]);
-    setDictateState(IDLE);
-    stopDictate();
+    if (dictateState === DICTATING || dictateState === STARTING) {
+      setDictateInterims([]);
+      setDictateState(IDLE);
+      stopDictate();
 
-    if (transcript) {
-      setSendBox(transcript);
-      submitSendBox('speech');
-      startSpeakingActivity();
+      if (transcript) {
+        setSendBox(transcript);
+        submitSendBox('speech');
+        startSpeakingActivity();
+      }
     }
   }
 
   handleDictating({ results = [] }) {
-    const { setDictateInterims, setDictateState, setSendBox } = this.props;
+    const { dictateState, setDictateInterims, setDictateState, setSendBox } = this.props;
 
-    const interims = results.map(({ transcript }) => transcript);
+    if (dictateState === DICTATING || dictateState === STARTING) {
+      const interims = results.map(({ transcript }) => transcript);
 
-    setDictateInterims(interims);
-    setDictateState(DICTATING);
-    // TODO: Send typing
-    // sendTyping();
+      setDictateInterims(interims);
+      setDictateState(DICTATING);
+      // TODO: Send typing
+      // sendTyping();
 
-    // // This is for two purposes:
-    // // 1. Set send box will also trigger send typing
-    // // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
-    // setSendBox(interims.join(' '));
+      // // This is for two purposes:
+      // // 1. Set send box will also trigger send typing
+      // // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
+      // setSendBox(interims.join(' '));
+    }
   }
 
   handleError(event) {
-    const { onError, setDictateState, stopDictate } = this.props;
+    const { dictateState, onError, setDictateState, stopDictate } = this.props;
 
-    setDictateState(IDLE);
-    stopDictate();
+    if (dictateState === DICTATING || dictateState === STARTING) {
+      setDictateState(IDLE);
+      stopDictate();
 
-    onError && onError(event);
+      onError && onError(event);
+    }
   }
 
   render() {
@@ -77,6 +83,13 @@ class Dictation extends React.Component {
       handleDictating,
       handleError
     } = this;
+
+    console.warn('!!!', {
+      disabled,
+      dictateState,
+      numSpeakingActivities,
+      started: !disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities
+    });
 
     return (
       <DictateComposer
