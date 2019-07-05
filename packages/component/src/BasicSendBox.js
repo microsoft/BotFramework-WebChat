@@ -51,13 +51,12 @@ const BasicSendBox = ({ className, dictationStarted, styleSet, webSpeechPonyfill
 
 BasicSendBox.defaultProps = {
   className: '',
-  dictationStarted: false,
   webSpeechPonyfill: undefined
 };
 
 BasicSendBox.propTypes = {
   className: PropTypes.string,
-  dictationStarted: PropTypes.bool,
+  dictationStarted: PropTypes.bool.isRequired,
   styleSet: PropTypes.shape({
     sendBox: PropTypes.any.isRequired
   }).isRequired,
@@ -66,8 +65,15 @@ BasicSendBox.propTypes = {
   })
 };
 
-export default connectToWebChat(({ dictateState, styleSet, webSpeechPonyfill }) => ({
-  dictationStarted: dictateState === STARTING || dictateState === DICTATING,
+// TODO: [P3] We should consider exposing core/src/definitions and use it instead
+function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
+  return !!speak;
+}
+
+export default connectToWebChat(({ activities, dictateState, styleSet, webSpeechPonyfill }) => ({
+  dictationStarted:
+    (dictateState === STARTING || dictateState === DICTATING) &&
+    !activities.filter(activityIsSpeakingOrQueuedToSpeak).length,
   styleSet,
   webSpeechPonyfill
 }))(BasicSendBox);

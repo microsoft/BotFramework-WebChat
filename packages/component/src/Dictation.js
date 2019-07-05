@@ -64,7 +64,13 @@ class Dictation extends React.Component {
 
   render() {
     const {
-      props: { dictateState, disabled, language, webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {} },
+      props: {
+        dictateState,
+        disabled,
+        language,
+        numSpeakingActivities,
+        webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
+      },
       handleDictate,
       handleDictating,
       handleError
@@ -78,7 +84,7 @@ class Dictation extends React.Component {
         onProgress={handleDictating}
         speechGrammarList={SpeechGrammarList}
         speechRecognition={SpeechRecognition}
-        started={!disabled && (dictateState === STARTING || dictateState === DICTATING)}
+        started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
       />
     );
   }
@@ -94,6 +100,7 @@ Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
+  numSpeakingActivities: PropTypes.number.isRequired,
   onError: PropTypes.func,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
@@ -109,6 +116,7 @@ Dictation.propTypes = {
 
 export default connectToWebChat(
   ({
+    activities,
     dictateState,
     disabled,
     language,
@@ -123,6 +131,7 @@ export default connectToWebChat(
     dictateState,
     disabled,
     language,
+    numSpeakingActivities: activities.filter(({ channelData: { speak } = {} }) => speak).length,
     setDictateInterims,
     setDictateState,
     setSendBox,
