@@ -18,7 +18,10 @@ function* markActivityForSpeakAndStartDictate({ payload: { activity } }) {
 function* markActivityForSpeakOnIncomingActivityFromOthers(userID) {
   yield takeEvery(
     ({ payload, type }) =>
-      type === INCOMING_ACTIVITY && speakableActivity(payload.activity) && payload.activity.from.id !== userID,
+      type === INCOMING_ACTIVITY &&
+      payload.activity.from.id !== userID &&
+      (payload.activity.inputHint === 'expectingInput' ||
+        (speakableActivity(payload.activity) && payload.activity.inputHint !== 'ignoringInput')),
     markActivityForSpeakAndStartDictate
   );
 }
