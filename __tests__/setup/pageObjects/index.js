@@ -1,3 +1,4 @@
+import clickMicrophoneButton from './clickMicrophoneButton';
 import dispatchAction from './dispatchAction';
 import pingBot from './pingBot';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
@@ -13,6 +14,7 @@ function mapMap(map, mapper) {
 export default function pageObjects(driver) {
   return mapMap(
     {
+      clickMicrophoneButton,
       dispatchAction,
       pingBot,
       sendMessageViaSendBox
