@@ -1,8 +1,8 @@
 import dispatchAction from './dispatchAction';
 import getMicrophoneButton from './getMicrophoneButton';
 import getSendBoxTextBox from './getSendBoxTextBox';
+import isPendingSpeechSynthesis from './isPendingSpeechSynthesis';
 import isRecognizingSpeech from './isRecognizingSpeech';
-import isSynthesizingSpeech from './isSynthesizingSpeech';
 import peekSpeechSynthesisUtterance from './peekSpeechSynthesisUtterance';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
@@ -23,8 +23,8 @@ export default function pageObjects(driver) {
       dispatchAction,
       getMicrophoneButton,
       getSendBoxTextBox,
+      isPendingSpeechSynthesis,
       isRecognizingSpeech,
-      isSynthesizingSpeech,
       peekSpeechSynthesisUtterance,
       pingBot,
       putSpeechRecognitionResult,

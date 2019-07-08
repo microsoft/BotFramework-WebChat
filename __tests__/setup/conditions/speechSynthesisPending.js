@@ -1,7 +1,7 @@
 import { Condition } from 'selenium-webdriver';
 
-import isSynthesizingSpeech from '../pageObjects/isSynthesizingSpeech';
+import isPendingSpeechSynthesis from '../pageObjects/isPendingSpeechSynthesis';
 
 export default function speechRecognitionStarted() {
-  return new Condition('Speech synthesis is pending', async driver => await isSynthesizingSpeech(driver));
+  return new Condition('Speech synthesis is pending', async driver => await isPendingSpeechSynthesis(driver));
 }
