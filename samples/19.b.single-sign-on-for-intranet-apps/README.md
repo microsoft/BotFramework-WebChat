@@ -6,23 +6,23 @@
 
 In this demo, we will show you how to authorize a user to access resources on an Intranet app with a bot. We will use [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) for OAuth provider and [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) for the protected resources.
 
-> When dealing with personal data, please respect user privacy. Follow platform guideline and post your privacy statement online.
+> When dealing with personal data, please respect user privacy. Follow platform guidelines and post your privacy statement online.
 
 ## Background
 
 This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise)". There are notable differences:
 
--  In this demo, we are targeting traditional web page instead of single-page application
-   -  Page navigation and refresh are allowed in traditional web page but restricted in single-page application
--  We will only allow authenticated user to access to the page and the bot
+-  In this demo, we are targeting a traditional web page instead of single-page application
+   -  Page navigation and refresh are allowed on a traditional web page, but are restricted on a single-page application
+-  We will only allow an authenticated user access to the page and the bot
 -  Since we only allow authenticated access
-   -  We no longer have UI buttons for sign-in and sign-out, and only using plain HTML instead of React app
+   -  We no longer have UI buttons for sign-in and sign-out, and only use plain HTML instead of a React app
    -  We no longer send the sign-in and sign-out event activity to the bot
--  We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider, in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
-   -  Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) and we are using PKCE to simplify setup
-   -  If you are using GitHub or other OAuth providers that does not support PKCE, you should use client secret
+-  We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider; in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
+   -  Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)), which we are using PKCE to simplify setup
+   -  If you are using GitHub or other OAuth providers that does not support PKCE, you should use a client secret
 
-This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
+This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
 # Test out the hosted sample
 
@@ -69,7 +69,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
 
 ## Setup Azure Bot Services
 
-> We prefer to use [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
+> We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
 You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
 
@@ -81,7 +81,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
-During development, you will run your bot locally. Azure Bot Services will send activities to your bot thru a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
+During development, you will run your bot locally. Azure Bot Services will send activities to your bot through a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
 1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
@@ -94,7 +94,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 ## Prepare and run the code
 
-1. Under each of `bot`, and `web` folder, run the following
+1. Under both the `bot`, and `web` folder, run the following:
    1. `npm install`
    1. `npm start`
 1. Browse to http://localhost:3000/ to start the demo
@@ -102,7 +102,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 # Things to try out
 
 -  Type, "Hello" in Web Chat
-   -  The bot should be able to tell your full name by using your access token on Microsoft Graph
+   -  The bot should be able to identify your full name by using your access token on Microsoft Graph
 
 # Code
 
@@ -119,28 +119,28 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 This sample includes multiple parts:
 
--  A basic web page
-   -  Check your access token, redirect to OAuth provider if it is not present or valid
-   -  Integrated with Web Chat and piggyback your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
+-  A basic web page that:
+   -  Checks your access token or redirects to OAuth provider if it is not present or valid
+   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
 -  Bot
    -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
 
 ## Assumptions
 
 -  Developer has an existing Intranet web app that uses OAuth to access protected resources
-   -  We assume the OAuth access token lives in the browser's memory and is accessible thru JavaScript
-      -  Access token can live in browser memory but must be secured during transmit thru the use of TLS
+   -  We assume the OAuth access token lives in the browser's memory and is accessible through JavaScript
+      -  Access token can live in browser memory but must be secured during transmit through the use of TLS
       -  More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
 
 ## Goals
 
 -  Website and bot conversation supports authenticated access only
-   -  If the end-user is not authenticated or does not carry a valid authenticated, they will be redirected to OAuth provider
+   -  If the end-user is not authenticated or does not carry a valid authenticated token, they will be redirected to OAuth provider
 -  Bot will receive OAuth access token from the website
 
 ## Content of the `.env` files
 
-The `.env` file hold the environment variable critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend to keep them in Azure Vault, for simplicity of this sample, we would keep them in `.env` files.
+The `.env` files hold the environment variables critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend keeping these keys in Azure Vault, for simplicity of this sample, we would keep them in `.env` files.
 
 To ease the setup of this sample, here is the template of `.env` files.
 
@@ -163,7 +163,7 @@ DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 
 ## How can I reset my authorization?
 
-To reset application authorization, please follow steps below.
+To reset application authorization, please follow the steps below.
 
 1. On the [AAD dashboard page](https://portal.office.com/account/#apps), wait until "App permissions" loads. Here you see how many apps you have authorized
 1. Click "Change app permissions"

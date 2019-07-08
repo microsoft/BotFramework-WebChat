@@ -13,7 +13,7 @@
       src="https://unpkg.com/simple-update-in@2.0.2/dist/simple-update-in.production.min.js"
     ></script>
 
-    <!-- This is for styling Web Chat for demonstration purpose -->
+    <!-- This is for styling Web Chat for demonstration purposes -->
     <style type="text/css">
       html, body {
         background-color: #F7F7F7;
@@ -81,7 +81,7 @@
       }
 
       (async function main() {
-        // When OAuth provider callback, the access token will be saved into session storage and redirected back to this page, see /web/src/routes/oauth/callback.js.
+        // When OAuth provider performs callback, the access token will be saved into session storage and redirected back to this page. See /web/src/routes/oauth/callback.js.
         // We will retrive the token from session storage from here.
         const oauthAccessToken = window.sessionStorage.getItem('OAUTH_ACCESS_TOKEN');
 
