@@ -85,13 +85,6 @@ class Dictation extends React.Component {
       handleError
     } = this;
 
-    console.warn('!!!', {
-      disabled,
-      dictateState,
-      numSpeakingActivities,
-      started: !disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities
-    });
-
     return (
       <DictateComposer
         lang={language}
