@@ -2,7 +2,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
-import speechSynthesisPending from './setup/conditions/speechSynthesisPending';
+import speechSynthesisPending, { negate as speechSynthesisNotPending } from './setup/conditions/speechSynthesisPending';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -65,6 +65,7 @@ describe('speech recognition', () => {
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     await pageObjects.takeSpeechSynthesizeUtterance();
+    await driver.wait(speechSynthesisNotPending(), timeouts.ui);
 
     expect(pageObjects.isRecognizingSpeech()).resolves.toBeFalsy();
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
