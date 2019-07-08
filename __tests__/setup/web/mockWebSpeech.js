@@ -243,7 +243,7 @@ class SpeechSynthesis extends EventTarget {
   }
 }
 
-defineEventAttribute(SpeechSynthesis.prototype, 'vocieschanged');
+defineEventAttribute(SpeechSynthesis.prototype, 'voiceschanged');
 
 class SpeechSynthesisUtterance extends EventTarget {
   constructor(text) {
