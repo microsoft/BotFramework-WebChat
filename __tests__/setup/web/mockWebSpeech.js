@@ -36,23 +36,25 @@ function createProducerConsumer() {
   const consumers = [];
 
   return {
-    consume: consumer => {
+    cancel() {
+      queue = [];
+    },
+    consume(consumer) {
       consumers.push(consumer);
       queue.length && consumers.shift()(...queue.shift());
     },
-    hasConsumer: () => !!consumers.length,
-    produce: (...args) => {
+    hasConsumer() {
+      return !!consumers.length;
+    },
+    produce(...args) {
       queue.push(args);
       consumers.length && consumers.shift()(...queue.shift());
     }
   };
 }
 
-const {
-  consume: consumeSpeechRecognition,
-  hasConsumer: hasSpeechRecognitionConsumer,
-  produce: produceSpeechRecognition
-} = createProducerConsumer();
+const speechRecognitionQueue = createProducerConsumer();
+const speechSynthesisQueue = createProducerConsumer();
 
 class SpeechRecognition extends EventTarget {
   constructor() {
@@ -69,11 +71,7 @@ class SpeechRecognition extends EventTarget {
   }
 
   start() {
-    consumeSpeechRecognition((command, ...args) => {
-      console.log(this);
-      console.log(command);
-      console.log(args);
-
+    speechRecognitionQueue.consume((command, ...args) => {
       this[command](...args);
     });
   }
@@ -191,17 +189,79 @@ class SpeechGrammarList {
   }
 }
 
-window.mockWebSpeechPonyfill = () => {
-  window.SpeechGrammarList = SpeechGrammarList;
-  window.SpeechRecognition = SpeechRecognition;
+class SpeechSynthesis extends EventTarget {
+  constructor() {
+    super();
 
-  window.SpeechRecognitionMock = {
-    hasConsumer() {
-      return hasSpeechRecognitionConsumer();
-    },
+    this.voices = [
+      {
+        default: true,
+        lang: 'en-US',
+        localService: true,
+        name: 'Mock Voice',
+        voiceURI: 'mock://web-speech/voice'
+      }
+    ];
+  }
 
-    queue(...args) {
-      produceSpeechRecognition(...args);
-    }
-  };
+  getVoices() {
+    return this.voices;
+  }
+
+  cancel() {
+    speechSynthesisQueue.cancel();
+  }
+
+  pause() {}
+  resume() {}
+
+  speak(utterance) {
+    speechSynthesisQueue.produce(utterance);
+  }
+}
+
+defineEventAttribute(SpeechSynthesis.prototype, 'vocieschanged');
+
+class SpeechSynthesisUtterance extends EventTarget {
+  constructor(text) {
+    super();
+
+    this.text = text;
+  }
+}
+
+['boundary', 'end', 'error', 'mark', 'pause', 'resume', 'start'].forEach(name =>
+  defineEventAttribute(SpeechSynthesisUtterance.prototype, name)
+);
+
+window.WebSpeechMock = {
+  mockRecognize(...args) {
+    speechRecognitionQueue.produce(...args);
+  },
+
+  mockSynthesize(operation) {
+    return new Promise(resolve => {
+      speechSynthesisQueue.consume(utterance => {
+        switch (operation) {
+          case 'complete':
+            utterance.dispatchEvent({ type: 'start' });
+            utterance.dispatchEvent({ type: 'end' });
+            break;
+        }
+
+        const { lang, pitch, rate, text, voice, volume } = utterance;
+
+        resolve({ lang, pitch, rate, text, voice, volume });
+      });
+    });
+  },
+
+  recognizing() {
+    return speechRecognitionQueue.hasConsumer();
+  },
+
+  SpeechGrammarList,
+  SpeechRecognition,
+  speechSynthesis: new SpeechSynthesis(),
+  SpeechSynthesisUtterance
 };

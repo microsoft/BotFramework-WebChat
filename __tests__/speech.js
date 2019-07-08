@@ -1,10 +1,5 @@
-import { By } from 'selenium-webdriver';
-
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
-import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
-import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -19,13 +14,9 @@ describe('speech recognition', () => {
       setup: () =>
         Promise.resolve()
           .then(() => loadScript('https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js'))
-          .then(() => loadScript('/mockWebSpeech.js'))
-          .then(() => window.mockWebSpeechPonyfill()),
+          .then(() => loadScript('/mockWebSpeech.js')),
       props: {
-        webSpeechPonyfillFactory: () => ({
-          SpeechGrammarList: window.SpeechGrammarList,
-          SpeechRecognition: window.SpeechRecognition
-        })
+        webSpeechPonyfillFactory: () => window.WebSpeechMock
       }
     });
 
@@ -34,10 +25,13 @@ describe('speech recognition', () => {
     await pageObjects.clickMicrophoneButton();
 
     await driver.wait(speechRecognitionStarted(), 1000);
-    await driver.executeScript(() => window.SpeechRecognitionMock.queue('recognize', 'Hello, World!'));
+    await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
 
-    const base64PNG = await driver.takeScreenshot();
+    const utterance = await pageObjects.takeSpeechSynthesizeUtterance('complete');
 
-    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    expect(utterance).toHaveProperty(
+      'text',
+      `Unknown command: I don't know Hello, World!. You can say \"help\" to learn more.`
+    );
   });
 });
