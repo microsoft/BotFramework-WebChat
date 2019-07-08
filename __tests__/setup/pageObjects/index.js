@@ -8,7 +8,7 @@ import peekSpeechSynthesisUtterance from './peekSpeechSynthesisUtterance';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
-import takeSpeechSynthesizeUtterance from './takeSpeechSynthesizeUtterance';
+import takeSpeechSynthesisUtterance from './takeSpeechSynthesisUtterance';
 
 function mapMap(map, mapper) {
   return Object.keys(map).reduce((final, key) => {
@@ -31,7 +31,7 @@ export default function pageObjects(driver) {
       pingBot,
       putSpeechRecognitionResult,
       sendMessageViaSendBox,
-      takeSpeechSynthesizeUtterance
+      takeSpeechSynthesisUtterance
     },
     fn => fn.bind(null, driver)
   );

@@ -259,6 +259,10 @@ class SpeechSynthesisUtterance extends EventTarget {
 );
 
 window.WebSpeechMock = {
+  isRecognizing() {
+    return speechRecognitionQueue.hasConsumer();
+  },
+
   mockRecognize(...args) {
     speechRecognitionQueue.produce(...args);
   },
@@ -284,10 +288,6 @@ window.WebSpeechMock = {
 
       return { lang, pitch, rate, text, voice, volume };
     }
-  },
-
-  recognizing() {
-    return speechRecognitionQueue.hasConsumer();
   },
 
   SpeechGrammarList,

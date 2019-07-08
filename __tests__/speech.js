@@ -30,7 +30,7 @@ describe('speech recognition', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    const utterance = await pageObjects.takeSpeechSynthesizeUtterance();
+    const utterance = await pageObjects.takeSpeechSynthesisUtterance();
 
     expect(utterance).toHaveProperty(
       'text',
@@ -58,13 +58,20 @@ describe('speech recognition', () => {
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(speechSynthesisPending(), timeouts.ui);
 
+    const utterance = await pageObjects.peekSpeechSynthesisUtterance();
+
+    expect(utterance).toHaveProperty(
+      'text',
+      `Unknown command: I don't know Hello, World!. You can say \"help\" to learn more.`
+    );
+
     const sendBoxTextBox = await pageObjects.getSendBoxTextBox();
 
     await sendBoxTextBox.sendKeys('Aloha!');
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    await pageObjects.takeSpeechSynthesizeUtterance();
+    await pageObjects.takeSpeechSynthesisUtterance();
     await driver.wait(speechSynthesisNotPending(), timeouts.ui);
 
     expect(pageObjects.isRecognizingSpeech()).resolves.toBeFalsy();
