@@ -6,17 +6,17 @@
 
 In this demo, we will show you how to authorize a user to access resources on an enterprise app with a bot. Two types of resources are used to demonstrate the interoperability of OAuth: [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) and [GitHub API](https://developer.github.com/v3/).
 
-> When dealing with personal data, please respect user privacy. Follow platform guideline and post your privacy statement online.
+> When dealing with personal data, please respect user privacy. Follow platform guidelines and post your privacy statement online.
 
 ## Background
 
-Different companies may use different access delegation technologies to protect their resources. In our demo, we are targeting authorization thru [OAuth 2.0](https://tools.ietf.org/html/rfc6749)).
+Different companies may use different access delegation technologies to protect their resources. In our demo, we are targeting authorization through [OAuth 2.0](https://tools.ietf.org/html/rfc6749)).
 
 Although OAuth and [OpenID](https://openid.net/) are often related to each other, they solve different problems. OAuth is for authorization and access delegation, while OpenID is for authentication and user identity.
 
 Instead of OpenID, most enterprise apps use OAuth plus a user profile API to identify an individual user. In this demo, we will demonstrate how to use OAuth to obtain access to user profile API and use the API to identifying the accessor.
 
-This demo does not include any threat models and is designed for educational purpose only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
+This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
 # Test out the hosted sample
 
@@ -82,7 +82,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
 
 ## Setup Azure Bot Services
 
-> We prefer to use [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
+> We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
 You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
 
@@ -94,7 +94,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
-During development, you will run your bot locally. Azure Bot Services will send activities to your bot thru a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
+During development, you will run your bot locally. Azure Bot Services will send activities to your bot through a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
 1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
@@ -107,7 +107,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 ## Prepare and run the code
 
-1. Under each of `app`, `bot`, and `rest-api` folder, run the following
+1. Under `app`, `bot`, and `rest-api` folder, run the following:
    1. `npm install`
    1. `npm start`
 1. Browse to http://localhost:3000/ to start the demo
@@ -143,17 +143,17 @@ This sample includes multiple parts:
 
 -  A basic web page with sign in and sign out button, coded with React
 -  Web Chat integrated, coded with pure JavaScript
--  Wiring between the web page and Web Chat thru DOM events
+-  Wiring between the web page and Web Chat through DOM events
    -  When web page sign in, it should emit DOM event `accesstokenchange` with `{ data: { accessToken, provider } }`
    -  When the bot ask for sign in, Web Chat will emit DOM event `signin` with `{ data: { provider: 'aad/github' } }`
    -  When the bot ask for sign out, Web Chat will emit DOM event `signout`
--  For bot, OAuth access token is piggyback on every user-initiated activity thru `channelData.oauthAccessToken` and `channelData.oauthProvider`
+-  For bot, OAuth access token is piggybacked on every user-initiated activity through `channelData.oauthAccessToken` and `channelData.oauthProvider`
 
 ## Assumptions
 
 -  Developer has an existing enterprise web app that uses OAuth to access protected resources
-   -  We assume the OAuth access token lives in the browser's memory and is accessible thru JavaScript
-      -  Access token can live in browser memory but must be secured during transmit thru the use of TLS
+   -  We assume the OAuth access token lives in the browser's memory and is accessible through JavaScript
+      -  Access token can live in browser memory but must be secured during transmit through the use of TLS
       -  More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
 -  Developer know how to alter existing JavaScript code around their existing UI for OAuth
 
@@ -182,7 +182,7 @@ This demo is coded in heterogeneous environment. Web Chat code is written in pur
 
 ## Content of the `.env` files
 
-The `.env` file hold the environment variable critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend to keep them in Azure Vault, for simplicity of this sample, we would keep them in `.env` files.
+The `.env` files hold the environment variables critical to run the service. These are usually security-sensitive information and must not be committed to version control. Although we recommend keeping these keys in Azure Vault, for simplicity of this sample, we would keep them in `.env` files.
 
 To ease the setup of this sample, here is the template of `.env` files.
 
@@ -212,7 +212,7 @@ In order to use the website to sign in, the developer will need to set the redir
 
 In order to use the bot to sign in, in the OAuth provider, the developer will need to set the redirect URI to https://token.botframework.com/.auth/web/redirect.
 
-Since some OAuth providers do not support multiple redirect URIs, we prefer to use a single redirect URI from the web API to make sure existing authorization flow is not disturbed.
+Since some OAuth providers do not support multiple redirect URIs, we prefer using a single redirect URI from the web API to make sure existing authorization flow is not disturbed.
 
 # Frequently asked questions
 
@@ -248,7 +248,7 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
 
 -  Refreshing the access token
    -  Using silent prompt for refreshing access token
-      -  Some OAuth provider support `?prompt=none` for refreshing access token silently thru `<iframe>`
+      -  Some OAuth provider support `?prompt=none` for refreshing access token silently through `<iframe>`
    -  Using Authorization Code Grant flow with refresh token
       -  Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
       -  This will also create a smooth UX by reducing the need for UI popups
