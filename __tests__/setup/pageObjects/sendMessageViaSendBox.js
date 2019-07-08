@@ -1,4 +1,4 @@
-import { By, Key } from 'selenium-webdriver';
+import { Key } from 'selenium-webdriver';
 
 import { timeouts } from '../../constants.json';
 import allOutgoingActivitiesSent from '../conditions/allOutgoingActivitiesSent';

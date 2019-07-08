@@ -1,3 +1,5 @@
-export default async function takeSynthesizeUtterance(driver) {
-  return await driver.executeAsyncScript(callback => window.WebSpeechMock.mockSynthesize().then(callback, callback));
+import executePromiseScript from './executePromiseScript';
+
+export default async function takeSpeechSynthesisUtterance(driver) {
+  return await executePromiseScript(driver, () => window.WebSpeechMock.mockSynthesize());
 }

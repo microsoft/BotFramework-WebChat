@@ -1,4 +1,5 @@
 import dispatchAction from './dispatchAction';
+import executePromiseScript from './executePromiseScript';
 import getMicrophoneButton from './getMicrophoneButton';
 import getSendBoxTextBox from './getSendBoxTextBox';
 import isPendingSpeechSynthesis from './isPendingSpeechSynthesis';
@@ -21,6 +22,7 @@ export default function pageObjects(driver) {
   return mapMap(
     {
       dispatchAction,
+      executePromiseScript,
       getMicrophoneButton,
       getSendBoxTextBox,
       isPendingSpeechSynthesis,
