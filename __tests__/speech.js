@@ -28,6 +28,8 @@ describe('speech recognition', () => {
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
     const utterance = await pageObjects.takeSpeechSynthesizeUtterance();
 
     expect(utterance).toHaveProperty(
@@ -40,7 +42,7 @@ describe('speech recognition', () => {
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  test('should not start recognition after typing on keyboard', async () => {
+  test('should not start recognition after typing on keyboard while synthesizing', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         webSpeechPonyfillFactory: () => window.WebSpeechMock
@@ -54,7 +56,6 @@ describe('speech recognition', () => {
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-
     await driver.wait(speechSynthesisPending(), timeouts.ui);
 
     const sendBoxTextBox = await pageObjects.getSendBoxTextBox();
