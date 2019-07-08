@@ -99,7 +99,6 @@
     "babel-jest": "^24.1.0",
     "coveralls": "^3.0.2",
     "eslint-plugin-prettier": "^3.1.0",
-    "event-target-shim": "^5.0.1",
     "get-port": "^4.0.0",
     "husky": "^2.3.0",
     "jest": "^24.1.0",
