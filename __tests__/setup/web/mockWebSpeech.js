@@ -31,6 +31,29 @@ function createSpeechRecognitionResults(isFinal, transcript) {
   return results;
 }
 
+function createProducerConsumer() {
+  const queue = [];
+  const consumers = [];
+
+  return {
+    consume: consumer => {
+      consumers.push(consumer);
+      queue.length && consumers.shift()(...queue.shift());
+    },
+    hasConsumer: () => !!consumers.length,
+    produce: (...args) => {
+      queue.push(args);
+      consumers.length && consumers.shift()(...queue.shift());
+    }
+  };
+}
+
+const {
+  consume: consumeSpeechRecognition,
+  hasConsumer: hasSpeechRecognitionConsumer,
+  produce: produceSpeechRecognition
+} = createProducerConsumer();
+
 class SpeechRecognition extends EventTarget {
   constructor() {
     super();
@@ -42,102 +65,89 @@ class SpeechRecognition extends EventTarget {
     this.maxAlternatives = 1;
     this.serviceURI = 'mock://microsoft.com/web-speech-recognition';
 
-    this.start = this.stop = this.abort = NULL_FN;
+    this.stop = this.abort = NULL_FN;
+  }
+
+  start() {
+    consumeSpeechRecognition((command, ...args) => {
+      console.log(this);
+      console.log(command);
+      console.log(args);
+
+      this[command](...args);
+    });
   }
 
   microphoneMuted() {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'audioend' });
-      this.dispatchEvent({ type: 'error', error: 'no-speech' });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'error', error: 'no-speech' });
+    this.dispatchEvent({ type: 'end' });
   }
 
   birdTweet() {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'soundstart' });
-      this.dispatchEvent({ type: 'soundend' });
-      this.dispatchEvent({ type: 'audioend' });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'soundend' });
+    this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'end' });
   }
 
   unrecognizableSpeech() {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'soundstart' });
-      this.dispatchEvent({ type: 'speechstart' });
-      this.dispatchEvent({ type: 'speechend' });
-      this.dispatchEvent({ type: 'soundend' });
-      this.dispatchEvent({ type: 'audioend' });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'speechstart' });
+    this.dispatchEvent({ type: 'speechend' });
+    this.dispatchEvent({ type: 'soundend' });
+    this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'end' });
   }
 
   airplaneMode() {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'audioend' });
-      this.dispatchEvent({ type: 'error', error: 'network' });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'error', error: 'network' });
+    this.dispatchEvent({ type: 'end' });
   }
 
   accessDenied() {
-    this.start = () => {
-      this.dispatchEvent({ type: 'error', error: 'not-allowed' });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'error', error: 'not-allowed' });
+    this.dispatchEvent({ type: 'end' });
   }
 
   abortAfterAudioStart() {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-    };
-
     this.abort = () => {
       this.dispatchEvent({ type: 'audioend' });
       this.dispatchEvent({ type: 'error', error: 'aborted' });
       this.dispatchEvent({ type: 'end' });
     };
+
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
   }
 
   recognize(transcript) {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'soundstart' });
-      this.dispatchEvent({ type: 'speechstart' });
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'speechstart' });
 
-      this.interimResults &&
-        this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
+    this.interimResults &&
+      this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
 
-      this.dispatchEvent({ type: 'speechend' });
-      this.dispatchEvent({ type: 'soundend' });
-      this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'speechend' });
+    this.dispatchEvent({ type: 'soundend' });
+    this.dispatchEvent({ type: 'audioend' });
 
-      this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(true, transcript) });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(true, transcript) });
+    this.dispatchEvent({ type: 'end' });
   }
 
   recognizeButAborted(transcript) {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'soundstart' });
-      this.dispatchEvent({ type: 'speechstart' });
-      this.interimResults &&
-        this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
-    };
-
     this.abort = () => {
       this.dispatchEvent({ type: 'speechend' });
       this.dispatchEvent({ type: 'soundend' });
@@ -145,22 +155,27 @@ class SpeechRecognition extends EventTarget {
       this.dispatchEvent({ type: 'error', error: 'aborted' });
       this.dispatchEvent({ type: 'end' });
     };
+
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'speechstart' });
+    this.interimResults &&
+      this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
   }
 
   recognizeButNotConfident(transcript) {
-    this.start = () => {
-      this.dispatchEvent({ type: 'start' });
-      this.dispatchEvent({ type: 'audiostart' });
-      this.dispatchEvent({ type: 'soundstart' });
-      this.dispatchEvent({ type: 'speechstart' });
-      this.interimResults &&
-        this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
-      this.dispatchEvent({ type: 'speechend' });
-      this.dispatchEvent({ type: 'soundend' });
-      this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'speechstart' });
+    this.interimResults &&
       this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
-      this.dispatchEvent({ type: 'end' });
-    };
+    this.dispatchEvent({ type: 'speechend' });
+    this.dispatchEvent({ type: 'soundend' });
+    this.dispatchEvent({ type: 'audioend' });
+    this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
+    this.dispatchEvent({ type: 'end' });
   }
 }
 
@@ -176,17 +191,17 @@ class SpeechGrammarList {
   }
 }
 
-window.createMockWebSpeechPonyfill = ({ setupSpeechRecognition }) => {
-  class SpeechRecognitionWithScenario extends SpeechRecognition {
-    constructor() {
-      super();
+window.mockWebSpeechPonyfill = () => {
+  window.SpeechGrammarList = SpeechGrammarList;
+  window.SpeechRecognition = SpeechRecognition;
 
-      setupSpeechRecognition(this);
+  window.SpeechRecognitionMock = {
+    hasConsumer() {
+      return hasSpeechRecognitionConsumer();
+    },
+
+    queue(...args) {
+      produceSpeechRecognition(...args);
     }
-  }
-
-  return {
-    SpeechGrammarList,
-    SpeechRecognition: SpeechRecognitionWithScenario
   };
 };
