@@ -1,4 +1,4 @@
-import { imageSnapshotOptions, timeouts } from './constants.json';
+import { timeouts } from './constants.json';
 
 import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
 import uiConnected from './setup/conditions/uiConnected';
@@ -24,14 +24,16 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(speechRecognitionStarted(), 1000);
+    await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
 
-    const utterance = await pageObjects.takeSpeechSynthesizeUtterance('complete');
+    const utterance = await pageObjects.takeSpeechSynthesizeUtterance();
 
     expect(utterance).toHaveProperty(
       'text',
       `Unknown command: I don't know Hello, World!. You can say \"help\" to learn more.`
     );
+
+    await driver.wait(speechRecognitionStarted(), timeouts.ui);
   });
 });

@@ -46,6 +46,9 @@ function createProducerConsumer() {
     hasConsumer() {
       return !!consumers.length;
     },
+    peek() {
+      return queue[0];
+    },
     produce(...args) {
       queue.push(args);
       consumers.length && consumers.shift()(...queue.shift());
@@ -239,21 +242,21 @@ window.WebSpeechMock = {
     speechRecognitionQueue.produce(...args);
   },
 
-  mockSynthesize(operation) {
+  mockSynthesize() {
     return new Promise(resolve => {
       speechSynthesisQueue.consume(utterance => {
-        switch (operation) {
-          case 'complete':
-            utterance.dispatchEvent({ type: 'start' });
-            utterance.dispatchEvent({ type: 'end' });
-            break;
-        }
+        utterance.dispatchEvent({ type: 'start' });
+        utterance.dispatchEvent({ type: 'end' });
 
         const { lang, pitch, rate, text, voice, volume } = utterance;
 
         resolve({ lang, pitch, rate, text, voice, volume });
       });
     });
+  },
+
+  peekSynthesize() {
+    return speechSynthesisQueue.peek();
   },
 
   recognizing() {
