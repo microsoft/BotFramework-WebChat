@@ -1,5 +1,8 @@
-import { timeouts } from './constants.json';
+import { By } from 'selenium-webdriver';
+import { imageSnapshotOptions, timeouts } from './constants.json';
 
+import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import speechSynthesisPending from './setup/conditions/speechSynthesisPending';
 import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -11,10 +14,6 @@ jest.setTimeout(timeouts.test);
 describe('speech recognition', () => {
   test('should send on successful recognition', async () => {
     const { driver, pageObjects } = await setupWebDriver({
-      setup: () =>
-        Promise.resolve()
-          .then(() => loadScript('https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js'))
-          .then(() => loadScript('/mockWebSpeech.js')),
       props: {
         webSpeechPonyfillFactory: () => window.WebSpeechMock
       }
@@ -26,6 +25,7 @@ describe('speech recognition', () => {
 
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
     const utterance = await pageObjects.takeSpeechSynthesizeUtterance();
 
@@ -35,5 +35,36 @@ describe('speech recognition', () => {
     );
 
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
+
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  test('should not start recognition after typing on keyboard', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        webSpeechPonyfillFactory: () => window.WebSpeechMock
+      }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+
+    await pageObjects.clickMicrophoneButton();
+
+    await driver.wait(speechRecognitionStarted(), timeouts.ui);
+    await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    await driver.wait(speechSynthesisPending(), timeouts.ui);
+
+    const sendBoxTextBox = await pageObjects.getSendBoxTextBox();
+
+    await sendBoxTextBox.sendKeys('Aloha!');
+
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+    await pageObjects.takeSpeechSynthesizeUtterance();
+
+    expect(pageObjects.isRecognizingSpeech()).resolves.toBeFalsy();
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });

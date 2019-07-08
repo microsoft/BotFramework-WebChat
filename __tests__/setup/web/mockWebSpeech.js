@@ -1,19 +1,4 @@
 const { defineEventAttribute } = (EventTarget = window.EventTargetShim);
-
-const SPEECH_RECOGNITION_EVENT_NAMES = [
-  'audiostart',
-  'audioend',
-  'end',
-  'error',
-  'nomatch',
-  'result',
-  'soundstart',
-  'soundend',
-  'speechstart',
-  'speechend',
-  'start'
-];
-
 const NULL_FN = () => 0;
 
 function createSpeechRecognitionResults(isFinal, transcript) {
@@ -32,8 +17,8 @@ function createSpeechRecognitionResults(isFinal, transcript) {
 }
 
 function createProducerConsumer() {
-  const queue = [];
   const consumers = [];
+  const queue = [];
 
   return {
     cancel() {
@@ -70,7 +55,7 @@ class SpeechRecognition extends EventTarget {
     this.maxAlternatives = 1;
     this.serviceURI = 'mock://microsoft.com/web-speech-recognition';
 
-    this.stop = this.abort = NULL_FN;
+    this.abort = this.stop = NULL_FN;
   }
 
   start() {
@@ -80,6 +65,8 @@ class SpeechRecognition extends EventTarget {
   }
 
   microphoneMuted() {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'audioend' });
@@ -88,6 +75,8 @@ class SpeechRecognition extends EventTarget {
   }
 
   birdTweet() {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'soundstart' });
@@ -97,6 +86,8 @@ class SpeechRecognition extends EventTarget {
   }
 
   unrecognizableSpeech() {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'soundstart' });
@@ -108,6 +99,8 @@ class SpeechRecognition extends EventTarget {
   }
 
   airplaneMode() {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'audioend' });
@@ -116,6 +109,8 @@ class SpeechRecognition extends EventTarget {
   }
 
   accessDenied() {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'error', error: 'not-allowed' });
     this.dispatchEvent({ type: 'end' });
   }
@@ -127,11 +122,15 @@ class SpeechRecognition extends EventTarget {
       this.dispatchEvent({ type: 'end' });
     };
 
+    this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
   }
 
   recognize(transcript) {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'soundstart' });
@@ -157,6 +156,8 @@ class SpeechRecognition extends EventTarget {
       this.dispatchEvent({ type: 'end' });
     };
 
+    this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'soundstart' });
@@ -166,6 +167,8 @@ class SpeechRecognition extends EventTarget {
   }
 
   recognizeButNotConfident(transcript) {
+    this.abort = this.stop = NULL_FN;
+
     this.dispatchEvent({ type: 'start' });
     this.dispatchEvent({ type: 'audiostart' });
     this.dispatchEvent({ type: 'soundstart' });
@@ -180,7 +183,19 @@ class SpeechRecognition extends EventTarget {
   }
 }
 
-SPEECH_RECOGNITION_EVENT_NAMES.forEach(name => defineEventAttribute(SpeechRecognition.prototype, name));
+[
+  'audiostart',
+  'audioend',
+  'end',
+  'error',
+  'nomatch',
+  'result',
+  'soundstart',
+  'soundend',
+  'speechstart',
+  'speechend',
+  'start'
+].forEach(name => defineEventAttribute(SpeechRecognition.prototype, name));
 
 class SpeechGrammarList {
   addFromString() {
@@ -215,8 +230,13 @@ class SpeechSynthesis extends EventTarget {
     speechSynthesisQueue.cancel();
   }
 
-  pause() {}
-  resume() {}
+  pause() {
+    throw new Error('pause is not implemented.');
+  }
+
+  resume() {
+    throw new Error('resume is not implemented.');
+  }
 
   speak(utterance) {
     speechSynthesisQueue.produce(utterance);
@@ -256,7 +276,13 @@ window.WebSpeechMock = {
   },
 
   peekSynthesize() {
-    return speechSynthesisQueue.peek();
+    const args = speechSynthesisQueue.peek();
+
+    if (args) {
+      const { lang, pitch, rate, text, voice, volume } = args[0];
+
+      return { lang, pitch, rate, text, voice, volume };
+    }
   },
 
   recognizing() {

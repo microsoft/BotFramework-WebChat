@@ -1,8 +1,7 @@
 import { Condition } from 'selenium-webdriver';
 
+import isRecognizingSpeech from '../pageObjects/isRecognizingSpeech';
+
 export default function speechRecognitionStarted() {
-  return new Condition(
-    'Speech recognition to start',
-    async driver => await driver.executeScript(() => window.WebSpeechMock.recognizing())
-  );
+  return new Condition('Speech recognition to start', async driver => await isRecognizingSpeech(driver));
 }
