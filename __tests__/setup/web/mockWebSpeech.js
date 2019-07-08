@@ -207,23 +207,19 @@ class SpeechGrammarList {
   }
 }
 
-class SpeechSynthesis extends EventTarget {
-  constructor() {
-    super();
-
-    this.voices = [
-      {
-        default: true,
-        lang: 'en-US',
-        localService: true,
-        name: 'Mock Voice',
-        voiceURI: 'mock://web-speech/voice'
-      }
-    ];
+const SPEECH_SYNTHESIS_VOICES = [
+  {
+    default: true,
+    lang: 'en-US',
+    localService: true,
+    name: 'Mock Voice',
+    voiceURI: 'mock://web-speech/voice'
   }
+];
 
+class SpeechSynthesis extends EventTarget {
   getVoices() {
-    return this.voices;
+    return SPEECH_SYNTHESIS_VOICES;
   }
 
   cancel() {
@@ -249,7 +245,12 @@ class SpeechSynthesisUtterance extends EventTarget {
   constructor(text) {
     super();
 
+    this.lang = SPEECH_SYNTHESIS_VOICES[0].lang;
+    this.pitch = 1;
+    this.rate = 1;
     this.text = text;
+    this.voice = SPEECH_SYNTHESIS_VOICES[0];
+    this.volume = 1;
   }
 }
 
