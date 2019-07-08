@@ -43,20 +43,14 @@ class Dictation extends React.Component {
   }
 
   handleDictating({ results = [] }) {
-    const { dictateState, setDictateInterims, setDictateState, setSendBox } = this.props;
+    const { dictateState, postActivity, sendTypingIndicator, setDictateInterims, setDictateState } = this.props;
 
     if (dictateState === DICTATING || dictateState === STARTING) {
       const interims = results.map(({ transcript }) => transcript);
 
       setDictateInterims(interims);
       setDictateState(DICTATING);
-      // TODO: Send typing
-      // sendTyping();
-
-      // // This is for two purposes:
-      // // 1. Set send box will also trigger send typing
-      // // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
-      // setSendBox(interims.join(' '));
+      sendTypingIndicator && postActivity({ type: 'typing' });
     }
   }
 
@@ -111,6 +105,7 @@ Dictation.propTypes = {
   language: PropTypes.string.isRequired,
   numSpeakingActivities: PropTypes.number.isRequired,
   onError: PropTypes.func,
+  postActivity: PropTypes.func.isRequired,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
   setSendBox: PropTypes.func.isRequired,
@@ -129,6 +124,8 @@ export default connectToWebChat(
     dictateState,
     disabled,
     language,
+    postActivity,
+    sendTypingIndicator,
     setDictateInterims,
     setDictateState,
     setSendBox,
@@ -141,6 +138,8 @@ export default connectToWebChat(
     disabled,
     language,
     numSpeakingActivities: activities.filter(({ channelData: { speak } = {} }) => speak).length,
+    postActivity,
+    sendTypingIndicator,
     setDictateInterims,
     setDictateState,
     setSendBox,
