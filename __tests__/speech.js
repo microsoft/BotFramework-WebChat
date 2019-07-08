@@ -1,5 +1,6 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
+import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent.js';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
 import speechSynthesisPending, { negate as speechSynthesisNotPending } from './setup/conditions/speechSynthesisPending';
@@ -27,6 +28,7 @@ describe('speech recognition', () => {
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
@@ -56,6 +58,7 @@ describe('speech recognition', () => {
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
     await driver.wait(speechSynthesisPending(), timeouts.ui);
 
     const utterance = await pageObjects.peekSpeechSynthesisUtterance();
