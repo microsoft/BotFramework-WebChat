@@ -62,8 +62,8 @@ module.exports = () => {
               content: {
                 buttons: [
                   {
-                    // Although we send the blob URL back to the user, since it does not contains SAS, it is not actually downloadable.
-                    // We put the blob URL here for completeness only, because the user already obtained that URL in order to upload.
+                    subtitle:
+                      "The link of this blob URL being sent back to the user is for demonstration purposes; since it does not contain SAS, the file is not downloadable by the user, and the URL should be used for further processing in the bot/app.",
                     title: "Get blob URL",
                     type: "openurl",
                     value: files[index]
