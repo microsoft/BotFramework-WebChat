@@ -1,5 +1,5 @@
-import clickMicrophoneButton from './clickMicrophoneButton';
 import dispatchAction from './dispatchAction';
+import getMicrophoneButton from './getMicrophoneButton';
 import getSendBoxTextBox from './getSendBoxTextBox';
 import isRecognizingSpeech from './isRecognizingSpeech';
 import isSynthesizingSpeech from './isSynthesizingSpeech';
@@ -20,8 +20,8 @@ function mapMap(map, mapper) {
 export default function pageObjects(driver) {
   return mapMap(
     {
-      clickMicrophoneButton,
       dispatchAction,
+      getMicrophoneButton,
       getSendBoxTextBox,
       isRecognizingSpeech,
       isSynthesizingSpeech,

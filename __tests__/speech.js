@@ -1,9 +1,8 @@
-import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import speechSynthesisPending from './setup/conditions/speechSynthesisPending';
 import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
+import speechSynthesisPending from './setup/conditions/speechSynthesisPending';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -21,7 +20,9 @@ describe('speech recognition', () => {
 
     await driver.wait(uiConnected(), timeouts.directLine);
 
-    await pageObjects.clickMicrophoneButton();
+    const microphoneButton = await pageObjects.getMicrophoneButton();
+
+    await microphoneButton.click();
 
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
@@ -46,9 +47,9 @@ describe('speech recognition', () => {
       }
     });
 
-    await driver.wait(uiConnected(), timeouts.directLine);
+    const microphoneButton = await pageObjects.getMicrophoneButton();
 
-    await pageObjects.clickMicrophoneButton();
+    await microphoneButton.click();
 
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
