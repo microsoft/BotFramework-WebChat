@@ -13,6 +13,7 @@ function* markAllAsSpoken() {
   }
 }
 
+// TODO: [P4] We should turn this into a reducer instead
 export default function* markAllAsSpokenOnStopSpeakActivitySaga() {
   yield takeEvery(STOP_SPEAKING_ACTIVITY, markAllAsSpoken);
 }

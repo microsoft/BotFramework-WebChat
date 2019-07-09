@@ -2,14 +2,12 @@ import { put, takeEvery } from 'redux-saga/effects';
 
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import { SET_SEND_BOX } from '../actions/setSendBox';
-import { START_DICTATE } from '../actions/startDictate';
 import stopSpeakingActivity from '../actions/stopSpeakingActivity';
 import whileConnected from './effects/whileConnected';
 
 function* stopSpeakingActivityOnInput() {
   yield takeEvery(
     ({ meta, payload, type }) =>
-      type === START_DICTATE ||
       (type === SET_SEND_BOX && payload.text) ||
       // We want to stop speaking activity when the user click on a card action
       // But currently there are no actions generated out of a card action

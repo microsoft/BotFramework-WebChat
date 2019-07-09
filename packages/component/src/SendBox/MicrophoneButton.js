@@ -31,10 +31,11 @@ const ROOT_CSS = css({
 
 const connectMicrophoneButton = (...selectors) =>
   connectToWebChat(
-    ({ disabled, dictateState, language, startDictate, stopDictate }) => ({
+    ({ disabled, dictateInterims, dictateState, language, setSendBox, startDictate, stopDictate }) => ({
       click: () => {
         if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
           stopDictate();
+          setSendBox(dictateInterims.join(' '));
         } else {
           startDictate();
         }
