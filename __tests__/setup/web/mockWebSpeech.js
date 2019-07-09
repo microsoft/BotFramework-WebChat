@@ -18,31 +18,31 @@ function createSpeechRecognitionResults(isFinal, transcript) {
 
 function createProducerConsumer() {
   const consumers = [];
-  const queue = [];
+  const jobs = [];
 
   return {
     cancel() {
-      queue = [];
+      jobs = [];
     },
     consume(consumer) {
       consumers.push(consumer);
-      queue.length && consumers.shift()(...queue.shift());
+      jobs.length && consumers.shift()(...jobs.shift());
     },
     hasConsumer() {
       return !!consumers.length;
     },
     peek() {
-      return queue[0];
+      return jobs[0];
     },
     produce(...args) {
-      queue.push(args);
-      consumers.length && consumers.shift()(...queue.shift());
+      jobs.push(args);
+      consumers.length && consumers.shift()(...jobs.shift());
     }
   };
 }
 
-const speechRecognitionQueue = createProducerConsumer();
-const speechSynthesisQueue = createProducerConsumer();
+const speechRecognitionBroker = createProducerConsumer();
+const speechSynthesisBroker = createProducerConsumer();
 
 class SpeechRecognition extends EventTarget {
   constructor() {
@@ -59,7 +59,7 @@ class SpeechRecognition extends EventTarget {
   }
 
   start() {
-    speechRecognitionQueue.consume((command, ...args) => {
+    speechRecognitionBroker.consume((command, ...args) => {
       this[command](...args);
     });
   }
@@ -223,7 +223,7 @@ class SpeechSynthesis extends EventTarget {
   }
 
   cancel() {
-    speechSynthesisQueue.cancel();
+    speechSynthesisBroker.cancel();
   }
 
   pause() {
@@ -235,7 +235,7 @@ class SpeechSynthesis extends EventTarget {
   }
 
   speak(utterance) {
-    speechSynthesisQueue.produce(utterance);
+    speechSynthesisBroker.produce(utterance);
   }
 }
 
@@ -260,16 +260,16 @@ class SpeechSynthesisUtterance extends EventTarget {
 
 window.WebSpeechMock = {
   isRecognizing() {
-    return speechRecognitionQueue.hasConsumer();
+    return speechRecognitionBroker.hasConsumer();
   },
 
   mockRecognize(...args) {
-    speechRecognitionQueue.produce(...args);
+    speechRecognitionBroker.produce(...args);
   },
 
   mockSynthesize() {
     return new Promise(resolve => {
-      speechSynthesisQueue.consume(utterance => {
+      speechSynthesisBroker.consume(utterance => {
         utterance.dispatchEvent({ type: 'start' });
         utterance.dispatchEvent({ type: 'end' });
 
@@ -281,7 +281,7 @@ window.WebSpeechMock = {
   },
 
   peekSynthesize() {
-    const args = speechSynthesisQueue.peek();
+    const args = speechSynthesisBroker.peek();
 
     if (args) {
       const { lang, pitch, rate, text, voice, volume } = args[0];
