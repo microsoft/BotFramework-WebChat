@@ -2,7 +2,7 @@
 
 ## Description
 
-> Cognitive Services Speech Services support is current in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.
+> Cognitive Services Speech Services support is current in preview. If you encounter any problems, please file us an issue at https://github.com/microsoft/BotFramework-WebChat/issues/.
 
 A simple page with Web Chat integrated with speech-to-text and text-to-speech feature from Cognitive Services Speech Services.
 
@@ -136,4 +136,4 @@ Here is the finished `index.html` for subscription key flow:
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)

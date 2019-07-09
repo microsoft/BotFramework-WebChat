@@ -24,7 +24,7 @@ Below is the explanation of different layers of Web Chat.
       <tr>
          <td rowspan="4">
             <p>
-               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/component">
+               <a href="https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component">
                   <code>botframework-webchat-component</code>
                </a>
             </p>
@@ -33,7 +33,7 @@ Below is the explanation of different layers of Web Chat.
             </p>
          </td>
          <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
+            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
                <code>MicrophoneButton</code>
             </a>
          </td>
@@ -44,7 +44,7 @@ Below is the explanation of different layers of Web Chat.
       </tr>
       <tr>
          <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
+            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
                <code>connectMicrophoneButton</code>
             </a>
          </td>
@@ -54,7 +54,7 @@ Below is the explanation of different layers of Web Chat.
       </tr>
       <tr>
          <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js">
+            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js">
                <a name="connect-to-web-chat"></a>
                <code>connectToWebChat</code>
             </a>
@@ -65,7 +65,7 @@ Below is the explanation of different layers of Web Chat.
       </tr>
       <tr>
          <td>
-            <a href="https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js">
+            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js">
                <code>Composer</code>
             </a>
          </td>
@@ -77,7 +77,7 @@ Below is the explanation of different layers of Web Chat.
       <tr>
          <td>
             <p>
-               <a href="https://github.com/Microsoft/BotFramework-WebChat/tree/master/packages/core">
+               <a href="https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/core">
                   <code>botframework-webchat-core</code>
                </a>
             </p>
@@ -96,7 +96,7 @@ Below is the explanation of different layers of Web Chat.
       </tr>
       <tr>
          <td>
-            <a href="https://github.com/Microsoft/BotFramework-DirectLineJS">
+            <a href="https://github.com/microsoft/BotFramework-DirectLineJS">
                <code>botframework-directlinejs</code>
             </a>
          </td>
@@ -136,7 +136,7 @@ Below is the explanation of different layers of Web Chat.
 
 This project is based on [`create-react-app`](https://github.com/facebook/create-react-app).
 
-The completed code contains multiple files. You can start by reading [`App.js`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/src/App.js), which replaces the default Web Chat renderer with [`<PlainWebChat>`](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/src/PlainWebChat.js) and uses its own UI.
+The completed code contains multiple files. You can start by reading [`App.js`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/src/App.js), which replaces the default Web Chat renderer with [`<PlainWebChat>`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui/src/PlainWebChat.js) and uses its own UI.
 
 ## Goals of this bot
 
@@ -154,4 +154,4 @@ Although the UI is the main part of Web Chat, the state machine and business log
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)

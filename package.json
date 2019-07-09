@@ -9,12 +9,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Microsoft/BotFramework-WebChat.git"
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
   },
   "bugs": {
-    "url": "https://github.com/Microsoft/BotFramework-WebChat/issues"
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
-  "homepage": "https://github.com/Microsoft/BotFramework-WebChat#readme",
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat#readme",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

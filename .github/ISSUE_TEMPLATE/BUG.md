@@ -1,4 +1,4 @@
-### [GitHub issues](https://github.com/Microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the Support section to get support related to Bot Framework and Web Chat.
+### [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the Support section to get support related to Bot Framework and Web Chat.
 
 ## Screenshots
 

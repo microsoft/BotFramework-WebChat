@@ -1,6 +1,6 @@
 # Sample - Integrating with Cognitive Services Speech Services and using lexical result
 
-> Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/Microsoft/BotFramework-WebChat/issues/.
+> Cognitive Services Speech Services support is currently in preview. If you encounter any problems, please file us an issue at https://github.com/microsoft/BotFramework-WebChat/issues/.
 
 A simple page with Web Chat integrated with speech-to-text and text-to-speech feature from Cognitive Services Speech Services, with lexical result. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js).
 
@@ -56,4 +56,4 @@ Authorization Token:
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)

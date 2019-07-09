@@ -136,6 +136,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  `GET /api/github/settings` will send GitHub OAuth settings to the React app
    -  It will serve React app as a static content
    -  During development-time, it will also serve the bot server via `/api/messages/`
+      - To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
 
 # Overview
 
