@@ -10,6 +10,7 @@ import referenceGrammarID from './reducers/referenceGrammarID';
 import sendBoxValue from './reducers/sendBoxValue';
 import sendTimeout from './reducers/sendTimeout';
 import sendTypingIndicator from './reducers/sendTypingIndicator';
+import shouldSpeakIncomingActivity from './reducers/shouldSpeakIncomingActivity';
 import suggestedActions from './reducers/suggestedActions';
 
 export default combineReducers({
@@ -23,6 +24,7 @@ export default combineReducers({
   sendBoxValue,
   sendTimeout,
   sendTypingIndicator,
+  shouldSpeakIncomingActivity,
   suggestedActions,
 
   // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020

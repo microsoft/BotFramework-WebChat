@@ -20,6 +20,7 @@ class Dictation extends React.Component {
 
   handleDictate({ result: { transcript } = {} }) {
     const {
+      dictateState,
       setDictateInterims,
       setDictateState,
       setSendBox,
@@ -28,43 +29,51 @@ class Dictation extends React.Component {
       submitSendBox
     } = this.props;
 
-    setDictateInterims([]);
-    setDictateState(IDLE);
-    stopDictate();
+    if (dictateState === DICTATING || dictateState === STARTING) {
+      setDictateInterims([]);
+      setDictateState(IDLE);
+      stopDictate();
 
-    if (transcript) {
-      setSendBox(transcript);
-      submitSendBox('speech');
-      startSpeakingActivity();
+      if (transcript) {
+        setSendBox(transcript);
+        submitSendBox('speech');
+        startSpeakingActivity();
+      }
     }
   }
 
   handleDictating({ results = [] }) {
-    const { setDictateInterims, setDictateState, setSendBox } = this.props;
+    const { dictateState, postActivity, sendTypingIndicator, setDictateInterims, setDictateState } = this.props;
 
-    const interims = results.map(({ transcript }) => transcript);
+    if (dictateState === DICTATING || dictateState === STARTING) {
+      const interims = results.map(({ transcript }) => transcript);
 
-    setDictateInterims(interims);
-    setDictateState(DICTATING);
-
-    // This is for two purposes:
-    // 1. Set send box will also trigger send typing
-    // 2. If the user cancelled out, the interim result will be in the send box so the user can update it before send
-    setSendBox(interims.join(' '));
+      setDictateInterims(interims);
+      setDictateState(DICTATING);
+      sendTypingIndicator && postActivity({ type: 'typing' });
+    }
   }
 
   handleError(event) {
-    const { onError, setDictateState, stopDictate } = this.props;
+    const { dictateState, onError, setDictateState, stopDictate } = this.props;
 
-    setDictateState(IDLE);
-    stopDictate();
+    if (dictateState === DICTATING || dictateState === STARTING) {
+      setDictateState(IDLE);
+      stopDictate();
 
-    onError && onError(event);
+      onError && onError(event);
+    }
   }
 
   render() {
     const {
-      props: { dictateState, disabled, language, webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {} },
+      props: {
+        dictateState,
+        disabled,
+        language,
+        numSpeakingActivities,
+        webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
+      },
       handleDictate,
       handleDictating,
       handleError
@@ -78,7 +87,7 @@ class Dictation extends React.Component {
         onProgress={handleDictating}
         speechGrammarList={SpeechGrammarList}
         speechRecognition={SpeechRecognition}
-        started={!disabled && (dictateState === STARTING || dictateState === DICTATING)}
+        started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
       />
     );
   }
@@ -94,7 +103,9 @@ Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
   language: PropTypes.string.isRequired,
+  numSpeakingActivities: PropTypes.number.isRequired,
   onError: PropTypes.func,
+  postActivity: PropTypes.func.isRequired,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
   setSendBox: PropTypes.func.isRequired,
@@ -109,9 +120,12 @@ Dictation.propTypes = {
 
 export default connectToWebChat(
   ({
+    activities,
     dictateState,
     disabled,
     language,
+    postActivity,
+    sendTypingIndicator,
     setDictateInterims,
     setDictateState,
     setSendBox,
@@ -123,6 +137,9 @@ export default connectToWebChat(
     dictateState,
     disabled,
     language,
+    numSpeakingActivities: activities.filter(({ channelData: { speak } = {} }) => speak).length,
+    postActivity,
+    sendTypingIndicator,
     setDictateInterims,
     setDictateState,
     setSendBox,
