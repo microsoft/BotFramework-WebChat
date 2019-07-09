@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Added documentation for using Web Chat dev build, by [@corinagum](https://github.com/corinagum), in PR [#2074](https://github.com/Microsoft/BotFramework-WebChat/pull/2074)
 -  Added the Web Chat version to DirectLine's botAgent option, by [@tdurnford](https://github.com/tdurnford), in PR [#2101](https://github.com/Microsoft/BotFramework-WebChat/pull/2101)
 -  Added `richCardWrapTitle` to `defaultStyleOptions`, by [@tdurnford](https://github.com/tdurnford), in PR [#2115](https://github.com/Microsoft/BotFramework-WebChat/pull/2115)
+-  Added test harness for speech recognition and synthesis for [#2122](https://github.com/microsoft/BotFramework-WebChat/issues/2122), by [@compulim](https://github.com/compulim), in PR [#2153](https://github.com/Microsoft/BotFramework-WebChat/pull/2153)
 
 ### Changed
 
