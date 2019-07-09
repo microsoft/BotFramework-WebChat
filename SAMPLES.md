@@ -6,9 +6,9 @@ Follow the instructions on the [README.md](README.md) page to integrate the Web 
 
 The latest version of Web Chat control provides rich customization options: you can change colors, sizes, placement of elements, add custom elements, and interact with the hosting webpage. Below are several examples of how to customize those elements of the Web Chat UI.
 
-You can find the full list of all settings that you can easily modify in Web Chat on the [`defaultStyleOptions.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
+You can find the full list of all settings that you can easily modify in Web Chat on the [`defaultStyleOptions.js` file](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
 
-These settings will generate a _style set_, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/Microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
+These settings will generate a _style set_, which is a set of CSS rules enhanced with [glamor](https://github.com/threepointone/glamor). You can find the full list of CSS styles generated in the style set on the [`createStyleSet.js` file](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/createStyleSet.js).
 
 ## Set the size of the Web Chat container
 
@@ -48,13 +48,13 @@ It is now possible to adjust the size of the Web Chat container using `styleSetO
 
 Here is the result:
 
-<img alt="Web Chat with root height and root width set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/rootHeightWidth.png" width="600"/>
+<img alt="Web Chat with root height and root width set" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/rootHeightWidth.png" width="600"/>
 
 ## Change font or color
 
 Instead of using the default background color and the fonts used inside of the chat bubbles, you can customize those to match the style of the target web page. The code snippet below allows you to change the background color of messages from the user and from the bot.
 
-<img alt="Screenshot with custom style options" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/sample-custom-style-options.png" width="396" />
+<img alt="Screenshot with custom style options" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/sample-custom-style-options.png" width="396" />
 
 If you need to do some simple styling, you can set them via `styleOptions`. Style options are set of predefined styles that you can modify directly, and Web Chat will compute the whole stylesheet based on it.
 
@@ -90,7 +90,7 @@ If you need to do some simple styling, you can set them via `styleOptions`. Styl
 
 In addition to colors, you can modify fonts used to render messages:
 
-<img alt="Screenshot with custom style set" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/sample-custom-style-set.png" width="396" />
+<img alt="Screenshot with custom style set" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/sample-custom-style-set.png" width="396" />
 
 For deeper styling, you can also modify the style set manually by setting the CSS rules directly.
 
@@ -136,7 +136,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
 
 The latest Web Chat support avatar, you can customize them using `botAvatarInitials` and `userAvatarInitials` props.
 
-<img alt="Screenshot with avatar initials" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/sample-avatar-initials.png" width="396" />
+<img alt="Screenshot with avatar initials" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/sample-avatar-initials.png" width="396" />
 
 ```html
 <!DOCTYPE html>
@@ -184,7 +184,7 @@ With the latest version of Web Chat, you can also render activities or attachmen
 
 If you want to display a deck of GitHub repository cards, you can create a new React component for the GitHub repository and add it as a middleware for attachment.
 
-<img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/Microsoft/BotFramework-WebChat/master/media/sample-custom-github-repository-attachment.png" width="396" />
+<img alt="Screenshot with custom GitHub repository attachment" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/sample-custom-github-repository-attachment.png" width="396" />
 
 ```jsx
 import ReactWebChat from 'botframework-webchat';

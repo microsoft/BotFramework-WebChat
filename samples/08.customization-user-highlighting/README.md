@@ -175,10 +175,10 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 -  [Middleware wiki](https://en.wikipedia.org/wiki/Middleware)
 
--  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons) | [(Reaction buttons source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/09.customization-reaction-buttons)
+-  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/09.customization-reaction-buttons)
 
--  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components) | [(Card components source code)](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples/10.a.customization-card-components)
+-  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/10.a.customization-card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/10.a.customization-card-components)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/Microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
