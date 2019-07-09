@@ -42,8 +42,6 @@ describe('speech recognition', () => {
 
     await pageObjects.endSpeechSynthesize();
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
-
-    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should not start recognition after typing on keyboard while synthesizing', async () => {
@@ -78,6 +76,5 @@ describe('speech recognition', () => {
     await driver.wait(speechRecognitionNotStarted(), timeouts.ui);
 
     expect(pageObjects.isRecognizingSpeech()).resolves.toBeFalsy();
-    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 });
