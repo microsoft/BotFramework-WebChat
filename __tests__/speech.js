@@ -31,9 +31,6 @@ describe('speech recognition', () => {
     await pageObjects.putSpeechRecognitionResult('recognize', 'Hello, World!');
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
-
-    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-
     await driver.wait(speechSynthesisPending(), timeouts.ui);
 
     const utterance = await pageObjects.startSpeechSynthesize();
@@ -44,7 +41,6 @@ describe('speech recognition', () => {
     );
 
     await pageObjects.endSpeechSynthesize();
-
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
@@ -77,8 +73,6 @@ describe('speech recognition', () => {
     const sendBoxTextBox = await pageObjects.getSendBoxTextBox();
 
     await sendBoxTextBox.sendKeys('Aloha!');
-
-    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
     await driver.wait(speechSynthesisNotPending(), timeouts.ui);
     await driver.wait(speechRecognitionNotStarted(), timeouts.ui);
