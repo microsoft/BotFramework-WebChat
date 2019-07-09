@@ -22,7 +22,7 @@ function createProducerConsumer() {
 
   return {
     cancel() {
-      jobs = [];
+      jobs.splice(0);
     },
     consume(consumer) {
       consumers.push(consumer);
@@ -30,6 +30,9 @@ function createProducerConsumer() {
     },
     hasConsumer() {
       return !!consumers.length;
+    },
+    hasJob() {
+      return !!jobs.length;
     },
     peek() {
       return jobs[0];
@@ -259,18 +262,17 @@ class SpeechSynthesisUtterance extends EventTarget {
 );
 
 window.WebSpeechMock = {
+  hasPendingUtterance() {
+    return speechSynthesisBroker.hasJob();
+  },
+
   isRecognizing() {
     return speechRecognitionBroker.hasConsumer();
   },
 
-  mockRecognize(...args) {
-    speechRecognitionBroker.produce(...args);
-  },
-
-  mockSynthesize() {
+  mockEndSynthesize() {
     return new Promise(resolve => {
       speechSynthesisBroker.consume(utterance => {
-        utterance.dispatchEvent({ type: 'start' });
         utterance.dispatchEvent({ type: 'end' });
 
         const { lang, pitch, rate, text, voice, volume } = utterance;
@@ -280,14 +282,22 @@ window.WebSpeechMock = {
     });
   },
 
-  peekSynthesize() {
-    const args = speechSynthesisBroker.peek();
+  mockRecognize(...args) {
+    speechRecognitionBroker.produce(...args);
+  },
 
-    if (args) {
-      const { lang, pitch, rate, text, voice, volume } = args[0];
+  mockStartSynthesize() {
+    const [utterance] = speechSynthesisBroker.peek() || [];
 
-      return { lang, pitch, rate, text, voice, volume };
+    if (!utterance) {
+      throw new Error('No utterance pending synthesize.');
     }
+
+    utterance.dispatchEvent({ type: 'start' });
+
+    const { lang, pitch, rate, text, voice, volume } = utterance;
+
+    return { lang, pitch, rate, text, voice, volume };
   },
 
   SpeechGrammarList,

@@ -2,7 +2,9 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent.js';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import speechRecognitionStarted from './setup/conditions/speechRecognitionStarted';
+import speechRecognitionStarted, {
+  negate as speechRecognitionNotStarted
+} from './setup/conditions/speechRecognitionStarted';
 import speechSynthesisPending, { negate as speechSynthesisNotPending } from './setup/conditions/speechSynthesisPending';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -32,12 +34,16 @@ describe('speech recognition', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    const utterance = await pageObjects.takeSpeechSynthesisUtterance();
+    await driver.wait(speechSynthesisPending(), timeouts.ui);
+
+    const utterance = await pageObjects.startSpeechSynthesize();
 
     expect(utterance).toHaveProperty(
       'text',
       `Unknown command: I don't know Hello, World!. You can say \"help\" to learn more.`
     );
+
+    await pageObjects.endSpeechSynthesize();
 
     await driver.wait(speechRecognitionStarted(), timeouts.ui);
 
@@ -61,7 +67,7 @@ describe('speech recognition', () => {
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
     await driver.wait(speechSynthesisPending(), timeouts.ui);
 
-    const utterance = await pageObjects.peekSpeechSynthesisUtterance();
+    const utterance = await pageObjects.startSpeechSynthesize();
 
     expect(utterance).toHaveProperty(
       'text',
@@ -74,8 +80,8 @@ describe('speech recognition', () => {
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
-    await pageObjects.takeSpeechSynthesisUtterance();
     await driver.wait(speechSynthesisNotPending(), timeouts.ui);
+    await driver.wait(speechRecognitionNotStarted(), timeouts.ui);
 
     expect(pageObjects.isRecognizingSpeech()).resolves.toBeFalsy();
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);

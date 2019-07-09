@@ -1,13 +1,13 @@
 import { Condition } from 'selenium-webdriver';
 
-import isPendingSpeechSynthesis from '../pageObjects/isPendingSpeechSynthesis';
+import hasPendingSpeechSynthesisUtterance from '../pageObjects/hasPendingSpeechSynthesisUtterance';
 
-export default function speechRecognitionStarted() {
-  return new Condition('Speech synthesis is pending', async driver => await isPendingSpeechSynthesis(driver));
+export default function speechSynthesisPending() {
+  return new Condition('Speech synthesis is pending', async driver => await hasPendingSpeechSynthesisUtterance(driver));
 }
 
 function negate() {
-  const condition = speechRecognitionStarted();
+  const condition = speechSynthesisPending();
 
   return new Condition('Speech synthesis is not pending', async driver => !(await condition.fn(driver)));
 }
