@@ -19,7 +19,7 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
       yield put(markActivity(activity, 'speak', true));
     }
 
-    if (activity.inputHint === 'expectingInput' || (shouldSpeak && activity.inputHint !== 'ignoringInput')) {
+    if (shouldSpeak && activity.inputHint === 'expectingInput') {
       yield put(startDictate());
     } else if (activity.inputHint === 'ignoringInput') {
       yield put(stopDictate());

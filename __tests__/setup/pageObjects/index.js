@@ -7,6 +7,7 @@ import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtter
 import isRecognizingSpeech from './isRecognizingSpeech';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
+import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import startSpeechSynthesize from './startSpeechSynthesize';
 
@@ -30,6 +31,7 @@ export default function pageObjects(driver) {
       isRecognizingSpeech,
       pingBot,
       putSpeechRecognitionResult,
+      sendMessageViaMicrophone,
       sendMessageViaSendBox,
       startSpeechSynthesize
     },
