@@ -34,25 +34,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 -  `*`: Bumps to [`lerna@3.13.4`](https://npmjs.com/package/lerna/), by [@corinagum](https://github.com/corinagum), in PR [#1989](https://github.com/microsoft/BotFramework-WebChat/pull/1989)
--  `*`: Bump to:
+-  `*`: Bumps to:
    -  [`lerna@3.13.4`](https://npmjs.com/package/lerna/),
    -  [`react-scripts@3.0.0`](https://npmjs.com/package/react-scripts/),
    -  [`webpack@4.30.0`](https://npmjs.com/package/webpack/), by [@corinagum](https://github.com/corinagum), in PR [#1965](https://github.com/microsoft/BotFramework-WebChat/pull/1965)
+-  `bundle`: Bumps to [`adaptivecards@1.2.0`](https://npmjs.com/package/adaptivecards), by [@corinagum](https://github.com/corinagum), in PR [#2064](https://github.com/microsoft/BotFramework-WebChat/pull/2064)
 
 ### Fixed
 
 -  Fix [#1974](https://github.com/microsoft/BotFramework-WebChat/issues/1974). Update `/docs/` folder to `/media/` and delete unused images, by [@corinagum](https://github.com/corinagum) in PR [#1975](https://github.com/microsoft/BotFramework-WebChat/pull/1975)
 -  Fix [#1980](https://github.com/microsoft/BotFramework-WebChat/issues/1980). Changed `sendBoxTextArea` styles to break words longer than the `textarea`, by [@tdurnford](https://github.com/tdurnford) in PR [#1986](https://github.com/microsoft/BotFramework-WebChat/pull/1986)
 -  Fix [#1969](https://github.com/microsoft/BotFramework-WebChat/issues/1969). Move `styleSet`s related to Adaptive Cards to full bundle, by [@corinagum](https://github.com/corinagum) in PR [#1987](https://github.com/microsoft/BotFramework-WebChat/pull/1987)
--  Fix [#1429](https://github.com/microsoft/BotFramework-WebChat/issues/1429). Changed Markdown-it options to render newline characters correctly, by [@tdurnford](https://github.com/tdurnford) in PR [#1988](https://github.com/microsoft/BotFramework-WebChat/pull/1988)
+-  Fix [#1429](https://github.com/microsoft/BotFramework-WebChat/issues/1429). Changed Markdown-It options to render newline characters correctly, by [@tdurnford](https://github.com/tdurnford) in PR [#1988](https://github.com/microsoft/BotFramework-WebChat/pull/1988)
 -  Fix [#1736](https://github.com/microsoft/BotFramework-WebChat/issues/1736). Fixed only first activity in a batch is spoken, by [@compulim](https://github.com/compulim) in PR [#2016](https://github.com/microsoft/BotFramework-WebChat/pull/2016)
 -  Fix [#2008](https://github.com/microsoft/BotFramework-WebChat/issues/2008). Fixed playground due to recent eslint changes, by [@compulim](https://github.com/compulim) in PR [#2009](https://github.com/microsoft/BotFramework-WebChat/pull/2009)
 -  Fix [#1876](https://github.com/microsoft/BotFramework-WebChat/issues/1876). Accessibility fixes on Web Chat transcript, by [@corinagum](https://github.com/corinagum) in PR [#2018](https://github.com/microsoft/BotFramework-WebChat/pull/2018)
 -  Fix [#1829](https://github.com/microsoft/BotFramework-WebChat/issues/1829). Fixed long text not being synthesized by Cognitive Services by bumping to [`react-say@1.2.0`](https://github.com/compulim/react-say), by [@compulim](https://github.com/compulim) in PR [#2035](https://github.com/microsoft/BotFramework-WebChat/pull/2035)
 -  Fix [#1982](https://github.com/microsoft/BotFramework-WebChat/issues/1982). Move to prettier! by [@corinagum](https://github.com/corinagum) in PR [#2038](https://github.com/microsoft/BotFramework-WebChat/pull/2038)
--  Fix [#1429](https://github.com/microsoft/BotFramework-WebChat/issues/1429). Added markdown string preprocessing so the renderer will respect CRLF carriage returns (\r\n), by [@tdurnford](https://github.com/tdurnford) in PR [#2055](https://github.com/microsoft/BotFramework-WebChat/pull/2055)
+-  Fix [#1429](https://github.com/microsoft/BotFramework-WebChat/issues/1429). Added Markdown string preprocessing so the renderer will respect CRLF carriage returns (\r\n), by [@tdurnford](https://github.com/tdurnford) in PR [#2055](https://github.com/microsoft/BotFramework-WebChat/pull/2055)
 -  Fix [#2057](https://github.com/microsoft/BotFramework-WebChat/issues/2057). Added `sip:` protocol to sanitize HTML options, by [@tdurnford](https://github.com/tdurnford) in PR [#2061](https://github.com/microsoft/BotFramework-WebChat/pull/2061)
--  Fix [#2062](https://github.com/microsoft/BotFramework-WebChat/issues/2062). Fixed markdown rendering issue in cards, by [@tdurnford](https://github.com/tdurnford) in PR [#2063](https://github.com/microsoft/BotFramework-WebChat/pull/2063)
+-  Fix [#2062](https://github.com/microsoft/BotFramework-WebChat/issues/2062). Fixed Markdown rendering issue in cards, by [@tdurnford](https://github.com/tdurnford) in PR [#2063](https://github.com/microsoft/BotFramework-WebChat/pull/2063)
 -  Fix [#1896](https://github.com/microsoft/BotFramework-WebChat/issues/1896). Added data schema to render base64 images, by [@denscollo](https://github.com/denscollo) in PR[#2067](https://github.com/microsoft/BotFramework-WebChat/pull/2067)
 -  Fix [#2068](https://github.com/microsoft/BotFramework-WebChat/issues/2068). Fixed Adaptive Cards validate and rich card speak issues, by [@tdurnford](https://github.com/tdurnford) in PR [#2075](https://github.com/microsoft/BotFramework-WebChat/pull/2075)
 -  Fix [#1966](https://github.com/microsoft/BotFramework-WebChat/issues/1966). Update Localization files for es-ES, ja-JP, zh-HANS, zh-HANT, zh-YUE, by [@corinagum](https://github.com/corinagum) in PR [#2077](https://github.com/microsoft/BotFramework-WebChat/pull/2077)
