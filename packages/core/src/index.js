@@ -27,7 +27,7 @@ import * as ActivityClientState from './constants/ActivityClientState';
 import * as DictateState from './constants/DictateState';
 
 const Constants = { ActivityClientState, DictateState };
-const version = VERSION;
+const version = process.env.NPM_PACKAGE_VERSION;
 
 export {
   connect,

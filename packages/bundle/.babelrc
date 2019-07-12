@@ -10,7 +10,13 @@
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-runtime",
-    "babel-plugin-version-transform"
+    [
+      "transform-inline-environment-variables", {
+        "include": [
+          "NPM_PACKAGE_VERSION"
+        ]
+      }
+    ]
   ],
   "presets": [
     "@babel/preset-typescript",

@@ -13,7 +13,7 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-describe('suggested-actions command', async () => {
+describe('suggested-actions command', () => {
   test('should show correctly formatted buttons when suggested actions are displayed', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 

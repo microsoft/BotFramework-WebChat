@@ -36,9 +36,7 @@ import createStyleSet from './Styles/createStyleSet';
 import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 
-declare var VERSION;
-
-const version = VERSION;
+const version = process.env.NPM_PACKAGE_VERSION;
 
 const Components = {
   Composer,

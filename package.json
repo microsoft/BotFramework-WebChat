@@ -60,15 +60,10 @@
   },
   "keywords": [],
   "lint-staged": {
-    "linters": {
-      "*.{js,jsx,md,ts,tsx}": [
-        "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}",
-        "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
-        "git add"
-      ]
-    },
-    "ignore": [
-      "**/**/*.md"
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}",
+      "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
+      "git add"
     ]
   },
   "scripts": {
@@ -87,26 +82,27 @@
   },
   "devDependencies": {
     "@azure/storage-blob": "^10.3.0",
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
-    "@babel/plugin-transform-runtime": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
+    "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
-    "@babel/runtime": "^7.4.3",
-    "babel-jest": "^24.1.0",
-    "coveralls": "^3.0.2",
+    "@babel/runtime": "^7.5.4",
+    "babel-jest": "^24.8.0",
+    "core-js": "^3.1.4",
+    "coveralls": "^3.0.4",
     "eslint-plugin-prettier": "^3.1.0",
-    "get-port": "^4.0.0",
-    "husky": "^2.3.0",
-    "jest": "^24.1.0",
-    "jest-image-snapshot": "^2.8.1",
-    "lerna": "^3.14.0",
-    "lint-staged": "^8.1.7",
-    "prettier": "^1.17.1",
-    "selenium-webdriver": "^4.0.0-alpha.1",
-    "serve-handler": "^5.0.5"
+    "get-port": "^5.0.0",
+    "husky": "^3.0.0",
+    "jest": "^24.8.0",
+    "jest-image-snapshot": "^2.9.0",
+    "lerna": "^3.15.0",
+    "lint-staged": "^9.2.0",
+    "prettier": "^1.18.2",
+    "selenium-webdriver": "^4.0.0-alpha.4",
+    "serve-handler": "^6.1.0"
   }
 }

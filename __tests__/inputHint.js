@@ -11,7 +11,7 @@ import uiConnected from './setup/conditions/uiConnected';
 jest.setTimeout(timeouts.test);
 
 describe('input hint', () => {
-  describe('of expectingInput', async () => {
+  describe('of expectingInput', () => {
     test('should turn on microphone if initiated via microphone', async () => {
       const { driver, pageObjects } = await setupWebDriver({
         props: {
@@ -49,7 +49,7 @@ describe('input hint', () => {
     });
   });
 
-  describe('of acceptingInput', async () => {
+  describe('of acceptingInput', () => {
     test('should not turn on microphone if initiated via microphone', async () => {
       const { driver, pageObjects } = await setupWebDriver({
         props: {
@@ -87,7 +87,7 @@ describe('input hint', () => {
     });
   });
 
-  describe('of ignoringInput', async () => {
+  describe('of ignoringInput', () => {
     test('should turn off microphone if initiated via microphone', async () => {
       const { driver, pageObjects } = await setupWebDriver({
         props: {
@@ -125,7 +125,7 @@ describe('input hint', () => {
     });
   });
 
-  describe('of undefined', async () => {
+  describe('of undefined', () => {
     test('should not turn on microphone if initiated via microphone', async () => {
       const { driver, pageObjects } = await setupWebDriver({
         props: {
