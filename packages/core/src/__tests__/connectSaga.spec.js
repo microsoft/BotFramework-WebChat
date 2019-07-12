@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: "off" */
 
 import connectSaga from '../sagas/connectSaga';
-import Observable from 'core-js/library/es7/observable';
+import Observable from 'core-js/features/observable';
 
 import createSagaMiddleware from 'redux-saga';
 import { applyMiddleware, createStore } from 'redux';
