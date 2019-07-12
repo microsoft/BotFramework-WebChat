@@ -65,7 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^1.11.0",
     "@typescript-eslint/parser": "^1.11.0",
     "babel-plugin-istanbul": "^5.1.4",
-    "babel-plugin-version-transform": "^1.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "concurrently": "^4.1.1",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.2",

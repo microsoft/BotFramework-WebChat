@@ -8,7 +8,13 @@
   },
   "plugins": [
     "@babel/proposal-object-rest-spread",
-    "babel-plugin-version-transform"
+    [
+      "transform-inline-environment-variables", {
+        "include": [
+          "NPM_PACKAGE_VERSION"
+        ]
+      }
+    ]
   ],
   "presets": [
     "@babel/preset-typescript",
