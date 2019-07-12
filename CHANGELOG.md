@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  [`typescript@3.5.3`](https://www.npmjs.com/package/typescript)
    -  [`webpack@4.35.3`](https://www.npmjs.com/package/webpack)
 -  `*`: Bumps [`@babel/runtime@7.5.4`](https://www.npmjs.com/package/@babel/runtime), by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  `*`: Bumps Docker container for headless Chrome to `selenium/standalone-chrome:3.141.59-radium`, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.5.0] - 2019-07-10
 
