@@ -16,11 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX). Patched something, by [@johndoe](https://github.com/johndoe) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
-## [Unreleased]
-
 <!-- ### Added
 -  Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
+
+## [Unreleased]
+
+## [4.5.0] - 2019-07-10
 
 ### Added
 
