@@ -43,7 +43,7 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.5.4",
     "eslint": "^5.16.0",
     "jsonwebtoken": "^8.3.0",
     "math-random": "^1.0.4",
