@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Title</title>
+    <style type="text/css">
+      #console {
+        background-color: #EEE;
+        padding: 10px;
+      }
+
+      #console > div {
+        display: flex;
+      }
+
+      #console > div > div:first-child {
+        color: Red;
+        font-family: Consolas, 'Courier New', monospace;
+        margin-right: .5em;
+      }
+
+      code, pre {
+        font-family: Consolas, 'Courier New', monospace;
+      }
+
+      pre {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Web Chat SSO sample for Teams Apps</h1>
+    <script
+      crossorigin="anonymous"
+      integrity="sha384-DcoNUuQTjpW5Sw3msonn/2ojgtNvtC5fCGd5U9RUpL3g1hla1LzHz8I9YIYSXe6q"
+      src="https://statics.teams.microsoft.com/sdk/v1.4.2/js/MicrosoftTeams.min.js"
+    ></script>
+    <script>
+      'use strict';
+
+      const { microsoftTeams } = window;
+
+      microsoftTeams.initialize();
+
+      microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
+        console.log('registerOnSaveHandler');
+
+        microsoftTeams.settings.setSettings({
+          contentUrl: `https://0d1981f3.ngrok.io/?_=${ (Math.random() + '').substr(2) }`,
+          entityId: 'ssoTab',
+          // removeUrl: 'https://teams-get-started-sample.azurewebsites.net/tabremove.html',
+          // suggestedDisplayName: 'Bing Map',
+          // websiteUrl: 'https://www.bing.com/maps'
+        });
+
+        saveEvent.notifySuccess();
+        // saveEvent.notifyFailure('fail');
+      });
+
+      microsoftTeams.settings.setValidityState(true);
+    </script>
+  </body>
+</html>
