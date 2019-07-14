@@ -35,6 +35,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `*`: Bumps ESLint and related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2185](https://github.com/microsoft/BotFramework-WebChat/pull/2185)
    - [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
    - [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
+-  `*`: Bumps ESLint, React, Redux and their related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2184](https://github.com/microsoft/BotFramework-WebChat/pull/2184)
+   - [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
+   - [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
+   - [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
+   - [`react-redux@5.1.1`](https://www.npmjs.com/package/react-redux)
+   - [`react@16.8.6`](https://www.npmjs.com/package/react)
+   - [`redux@4.0.4`](https://www.npmjs.com/package/redux)
+   - Removed [`redux-promise-middleware`](https://www.npmjs.com/package/redux-promise-middleware)
 
 ## [4.5.0] - 2019-07-10
 
