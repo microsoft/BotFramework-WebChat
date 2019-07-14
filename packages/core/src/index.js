@@ -1,4 +1,4 @@
-/* global VERSION:readonly */
+/* global process:readonly */
 
 import connect from './actions/connect';
 import createStore from './createStore';

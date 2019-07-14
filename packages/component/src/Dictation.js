@@ -106,6 +106,7 @@ Dictation.propTypes = {
   numSpeakingActivities: PropTypes.number.isRequired,
   onError: PropTypes.func,
   postActivity: PropTypes.func.isRequired,
+  sendTypingIndicator: PropTypes.bool.isRequired,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
   setSendBox: PropTypes.func.isRequired,

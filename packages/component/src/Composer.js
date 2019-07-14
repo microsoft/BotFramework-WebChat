@@ -320,6 +320,14 @@ class ConnectedComposerWithStore extends React.Component {
   }
 }
 
+ConnectedComposerWithStore.defaultProps = {
+  store: undefined
+};
+
+ConnectedComposerWithStore.propTypes = {
+  store: PropTypes.any
+};
+
 export default ConnectedComposerWithStore;
 
 // TODO: [P3] We should consider moving some props to Redux store

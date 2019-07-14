@@ -1,3 +1,6 @@
+// We will revisit this logic in #2157 and should remove the following eslint ignore
+/* eslint require-atomic-updates: "off" */
+
 import { call, cancel, put, select, take, takeLatest } from 'redux-saga/effects';
 
 import { SET_SEND_BOX } from '../actions/setSendBox';
