@@ -35,6 +35,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `*`: Bumps ESLint and related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2185](https://github.com/microsoft/BotFramework-WebChat/pull/2185)
    - [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
    - [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
+-  `*`: Bumps React, Redux and their related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2184](https://github.com/microsoft/BotFramework-WebChat/pull/2184)
+   - [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
+   - [`react-redux@5.1.1`](https://www.npmjs.com/package/react-redux)
+   - [`react@16.8.6`](https://www.npmjs.com/package/react)
+   - [`redux@4.0.4`](https://www.npmjs.com/package/redux)
+   - Removed [`redux-promise-middleware`](https://www.npmjs.com/package/redux-promise-middleware)
 
 ### Fixed
 -  Fix [#2160](https://github.com/microsoft/BotFramework-WebChat/issues/2160). Clear suggested-actions after button click, by [@tdurnford](https://github.com/tdurnford) in PR [#2189](https://github.com/microsoft/BotFramework-WebChat/pull/2189)
