@@ -118,7 +118,9 @@ TextBox.propTypes = {
   styleSet: PropTypes.shape({
     options: PropTypes.shape({
       sendBoxTextWrap: PropTypes.bool.isRequired
-    }).isRequired
+    }).isRequired,
+    sendBoxTextArea: PropTypes.any.isRequired,
+    sendBoxTextBox: PropTypes.any.isRequired
   }).isRequired,
   value: PropTypes.string
 };

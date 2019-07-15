@@ -1,4 +1,4 @@
-/* global global:readonly, VERSION:readonly */
+/* global global:readonly, process:readonly */
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
 import { version as componentVersion } from 'botframework-webchat-component';

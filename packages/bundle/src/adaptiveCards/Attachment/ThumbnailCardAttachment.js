@@ -76,6 +76,9 @@ ThumbnailCardAttachment.propTypes = {
       text: PropTypes.string,
       title: PropTypes.string
     }).isRequired
+  }).isRequired,
+  styleSet: PropTypes.shape({
+    options: PropTypes.any.isRequired
   }).isRequired
 };
 
