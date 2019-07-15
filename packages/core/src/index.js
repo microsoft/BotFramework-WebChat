@@ -17,6 +17,7 @@ import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTyping from './actions/setSendTyping';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
+import setSuggestedActions from './actions/setSuggestedActions';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
 import stopDictate from './actions/stopDictate';
@@ -47,6 +48,7 @@ export {
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,
+  setSuggestedActions,
   startDictate,
   startSpeakingActivity,
   stopDictate,

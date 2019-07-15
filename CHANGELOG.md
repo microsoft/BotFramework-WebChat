@@ -36,6 +36,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
    - [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
 
+### Fixed
+-  Fix [#2160](https://github.com/microsoft/BotFramework-WebChat/issues/2160). Clear suggested-actions after button click, by [@tdurnford](https://github.com/tdurnford) in PR [#2189](https://github.com/microsoft/BotFramework-WebChat/pull/2189)
+
 ## [4.5.0] - 2019-07-10
 
 ### Added
