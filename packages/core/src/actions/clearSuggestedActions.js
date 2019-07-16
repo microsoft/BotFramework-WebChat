@@ -1,5 +1,9 @@
-import setSuggestedActions from './setSuggestedActions';
+const CLEAR_SUGGESTED_ACTIONS = 'WEB_CHAT/CLEAR_SUGGESTED_ACTIONS';
 
-const clearSuggestedActions = () => setSuggestedActions();
+export default function clearSuggestedActions() {
+  return {
+    type: CLEAR_SUGGESTED_ACTIONS
+  };
+}
 
-export default clearSuggestedActions;
+export { CLEAR_SUGGESTED_ACTIONS };
