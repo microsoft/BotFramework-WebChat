@@ -14,7 +14,7 @@ After sign-in, this demo will keep OAuth token inside the Teams tab, and also se
 
 This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)" and modified from "[Single sign-on demo for Intranet apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.b.single-sign-on-for-intranet-apps)". There are notable differences:
 
--  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages hosted on a embedded and limited web browser on Microsoft Teams
+-  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages browsed thru an embedded and limited web browser inside Microsoft Teams
    -  Tab apps are supported on desktop client only. Microsoft Teams on mobile client do not support embed content in apps and requires external apps for tab content
       - See "[Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)" for more information
    -  OAuth sign-in popup is controlled by Microsoft Teams
@@ -31,9 +31,9 @@ This demo does not include any threat models and is designed for educational pur
 
 # Test out the hosted sample
 
-You will need to create a new Microsoft Teams app to host the demo in your organization. You can use your hosted web server at https://webchat-sample-sso-teams.azurewebsites.net/.
+You will need to create a new Microsoft Teams app to host the demo in your organization.
 
-You can follow this article, "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)", on Microsoft Teams and use our web server in a "Personal tab".
+Please follow this article, "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)", and use our web page thru "Personal tab" by setting its content URL to https://webchat-sample-sso-teams.azurewebsites.net/.
 
 # How to run locally
 
@@ -53,7 +53,7 @@ Since Microsoft Teams support `https://` address only, for this demo, we will be
 1. Download [ngrok](https://ngrok.com/)
 1. Run `ngrok http 5000`
 1. Write down the Microsoft Teams app tunnel URL in this step
-   - In steps below, we will refer this URL as https://teams-app.ngrok.io/
+   - In steps below, we will refer this URL as https://a1b2c3d4.ngrok.io/
    - You should replace it with the tunnel URL you obtained from this step
 
 ## Clone the code
@@ -63,12 +63,12 @@ To host this demo, you will need to clone the code and run locally.
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/web/.env`
    -  In `/web/.env`:
-      -  Write `OAUTH_REDIRECT_URI=https://teams-app.ngrok.io/api/oauth/callback`
+      -  Write `OAUTH_REDIRECT_URI=https://a1b2c3d4.ngrok.io/api/oauth/callback`
          -  When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
+      -  Write `PROXY_URL=http://localhost:3978`
+         -  This will forward all traffic from https://a1b2c3d4.ngrok.io/api/messages to http://localhost:3978/api/messages, where your bot is listening to
 
 ## Setup OAuth via Azure Active Directory
-
-If you want to authenticate on Azure Active Directory, follow the steps below.
 
 -  Go to your [Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
 -  Create a new application
@@ -78,7 +78,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "Public client (mobile & desktop)" as type
          -  Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
-      1. Enter `http://teams-app.ngrok.io/api/oauth/callback` as the redirect URI
+      1. Enter `http://a1b2c3d4.ngrok.io/api/oauth/callback` as the redirect URI
          -  This must match `OAUTH_REDIRECT_URI` in `/web/.env` we saved earlier
    -  Click "Register"
 -  Save the client ID
@@ -90,7 +90,9 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
 
 > We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
+> Since we already setup `PROXY_BOT_URL` in our web server `/web/.env` in "[Clone the code](#clone-the-code)" step, we can reuse the same ngrok tunnel. It will forward traffic from web server to the bot.
+
+You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0). Points the messaging URL to https://a1b2c3d4.ngrok.io/api/messages.
 
 1. Save the Microsoft App ID and password to `/bot/.env`
    -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
@@ -100,29 +102,17 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
-During development, you will run your bot locally. Azure Bot Services will send activities to your bot through a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
-
-1. Run `ngrok http -host-header=localhost:3978 3978`
-   -  We will refer to this URL as `https://teams-bot.ngrok.io/`
-1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
-   -  Via Azure CLI
-      -  Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://teams-bot.ngrok.io/api/messages"`
-   -  Via Azure Portal
-      -  Browse to your Bot Channel Registration
-      -  Select "Settings"
-      -  In "Configuration" section, set "Messaging Endpoint" to `https://teams-bot.ngrok.io/api/messages`
-
 ## Setup a new Microsoft Teams app and install it locally
 
 > This section is based on the Microsoft Teams article named "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)".
 
 1. [Install App Studio app on Microsoft Teams](https://aka.ms/InstallTeamsAppStudio)
 1. In the App Studio, switch to "Manifest editor" tab
-1. Click "+ Create a new app"
+1. Click "+ Create a new app" button
 1. Fill out "App details" under "Details", for example
    1. For "App names", enter "Web Chat SSO"
    1. Under "Identification"
-      1. Click "Generate" on "App ID"
+      1. Click "Generate" button on "App ID"
       1. For "Package Name", enter "com.mycompany.bot.sso"
       1. For "Version", enter "1.0.0"
    1. Under "Descriptions"
@@ -137,7 +127,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
    1. On "Add a personal tab" section, click "Add"
       1. For "Name", enter "My Company"
       1. For "Entity ID", enter "webchat"
-      1. For "Content URL", enter `https://teams-app.ngrok.io/`
+      1. For "Content URL", enter `https://a1b2c3d4.ngrok.io/`
          - This URL will be based on the ngrok tunnel you create in "[Start ngrok tunnel](#start-ngrok-tunnel)" section
       1. Click "Save" button
 1. Under "Test and distribute" of "Finish" section
@@ -149,14 +139,14 @@ During development, you will run your bot locally. Azure Bot Services will send 
 1. Under both the `bot`, and `web` folder, run the following:
    1. `npm install`
    1. `npm start`
-1. In Microsoft Teams, open the new app you just created in "[Setup a new Microsoft Teams app and install it locally](#setup-a-new-microsoft-teams-app-and-install-it-locally)" step
-   1. Click "..." on the navigation bar
+1. In Microsoft Teams, open the new app you just created in the "[Setup a new Microsoft Teams app and install it locally](#setup-a-new-microsoft-teams-app-and-install-it-locally)" step
+   1. Click "..." on the navigation bar below "Files"
    1. Click "Web Chat SSO"
    1. Click "My Company" tab
 
 # Things to try out
 
--  When you open the tab in the app, the tab should automatically popup an Azure Active Directory sign-in dialog
+-  When you open the tab in the app for the first time, the tab should automatically popup an Azure Active Directory sign-in dialog
 -  Type, "Hello" in Web Chat
    -  The bot should be able to identify your full name by using your access token on Microsoft Graph
 
@@ -168,17 +158,17 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  `GET /api/oauth/callback` will handle callback from Azure AD OAuth
    -  `GET /api/directline/token` will generate a new Direct Line token for the React app
    -  It will serve a static `index.html`
-   -  During development-time, it will also serve the bot server via `/api/messages/`
+   -  During development-time, it will also serve the bot server via `/api/messages`
       -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
-      -  This will forward all traffic from `https://teams-app.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
+      -  This will forward all traffic from `https://a1b2c3d4.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
 
 # Overview
 
 This sample includes multiple parts:
 
 -  A basic web page that:
-   -  Checks your access token or popups to OAuth provider if it is not present or valid
-      -  The popups is provided by Microsoft Teams thru its JavaScript SDK, provided at https://statics.teams.microsoft.com/sdk/v1.4.2/js/MicrosoftTeams.min.js
+   -  Checks your access token or open a pop-up to OAuth provider if it is not present or valid
+      -  The pop-up is provided by [Microsoft Teams JavaScript client SDK](https://docs.microsoft.com/en-us/javascript/api/overview/msteams-client)
    -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
 -  Bot
    -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
@@ -216,8 +206,9 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 
 ```
 OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
-OAUTH_REDIRECT_URI=https://teams-app.ngrok.io/api/oauth/callback
+OAUTH_REDIRECT_URI=https://a1b2c3d4.ngrok.io/api/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
+PROXY_BOT_URL=http://localhost:3978
 ```
 
 # Frequently asked questions
