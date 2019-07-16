@@ -29,6 +29,8 @@
   </head>
   <body>
     <h1>Web Chat SSO sample for Teams Apps</h1>
+    <div id="console"></div>
+    <script src="console.js"></script>
     <script
       crossorigin="anonymous"
       integrity="sha384-DcoNUuQTjpW5Sw3msonn/2ojgtNvtC5fCGd5U9RUpL3g1hla1LzHz8I9YIYSXe6q"
@@ -41,11 +43,13 @@
 
       microsoftTeams.initialize();
 
+      microsoftTeams.getContext(context => console.log('getContext', context));
+
       microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
         console.log('registerOnSaveHandler');
 
         microsoftTeams.settings.setSettings({
-          contentUrl: `https://0d1981f3.ngrok.io/?_=${ (Math.random() + '').substr(2) }`,
+          contentUrl: `https://2f1d2eeb.ngrok.io/?_=${ (Math.random() + '').substr(2) }`,
           entityId: 'ssoTab',
           // removeUrl: 'https://teams-get-started-sample.azurewebsites.net/tabremove.html',
           // suggestedDisplayName: 'Bing Map',

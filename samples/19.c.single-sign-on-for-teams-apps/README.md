@@ -1,19 +1,24 @@
-# Single sign-on demo for Intranet apps using OAuth
+# Single sign-on demo for Microsoft Teams apps using OAuth
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)](https://webchat-sample-sso.azurewebsites.net/)
+[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/12/12)](https://webchat-sample-sso-teams.azurewebsites.net/)
 
 # Description
 
-In this demo, we will show you how to authorize a user to access resources on an Intranet app with a bot. We will use [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) for OAuth provider and [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) for the protected resources.
+In this demo, we will show you how to authorize a user to access resources thru a Microsoft Teams app with a bot. We will use [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) for OAuth provider and [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) for the protected resources.
+
+After sign-in, this demo will keep OAuth token inside the Teams tab, and also send it to the bot via Web Chat backchannel. Because both web page and bot need to hold a single OAuth token, we are unable to use OAuth card in this demo.
 
 > When dealing with personal data, please respect user privacy. Follow platform guidelines and post your privacy statement online.
 
 ## Background
 
-This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise)". There are notable differences:
+This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)" and modified from "[Single sign-on demo for Intranet apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.b.single-sign-on-for-intranet-apps)". There are notable differences:
 
--  In this demo, we are targeting a traditional web page instead of single-page application
-   -  Page navigation and refresh are allowed on a traditional web page, but are restricted on a single-page application
+-  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages hosted on a embedded and limited web browser on Microsoft Teams
+   -  Tab apps are supported on desktop client only. Microsoft Teams on mobile client do not support embed content in apps and requires external apps for tab content
+      - See "[Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)" for more information
+   -  OAuth sign-in popup is controlled by Microsoft Teams
+      - See "[Authenticate a user in a Microsoft Teams tab](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/authentication/auth-tab-AAD)" for more information
 -  We will only allow an authenticated user access to the page and the bot
 -  Since we only allow authenticated access
    -  We no longer have UI buttons for sign-in and sign-out, and only use plain HTML instead of a React app
@@ -26,16 +31,30 @@ This demo does not include any threat models and is designed for educational pur
 
 # Test out the hosted sample
 
-You can browse to https://webchat-sample-sso-intranet.azurewebsites.net/ to try out this demo.
+You will need to create a new Microsoft Teams app to host the demo in your organization. You can use your hosted web server at https://webchat-sample-sso-teams.azurewebsites.net/.
+
+You can follow this article, "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)", on Microsoft Teams and use our web server in a "Personal tab".
 
 # How to run locally
 
-This demo integrates with Azure Active Directory. You will need to set it up in order to host the demo.
+This demo integrates with Azure Active Directory and Microsoft Teams. You will need to set it up in order to host the demo.
 
+1. [Start ngrok tunnel for Microsoft Teams app](#start-ngrok-tunnel-for-microsoft-teams-app)
 1. [Clone the code](#clone-the-code)
 1. [Setup OAuth via Azure Active Directory](#setup-oauth-via-azure-active-directory)
 1. [Setup Azure Bot Services](#setup-azure-bot-services)
+1. [Setup a new Microsoft Teams app](#setup-a-new-microsoft-teams-app)
 1. [Prepare and run the code](#prepare-and-run-the-code)
+
+## Start ngrok tunnel for Microsoft Teams app
+
+Since Microsoft Teams support `https://` address only, for this demo, we will be using ngrok tunnel for providing a temporary HTTPS tunnel.
+
+1. Download [ngrok](https://ngrok.com/)
+1. Run `ngrok http 5000`
+1. Write down the Microsoft Teams app tunnel URL in this step
+   - In steps below, we will refer this URL as https://teams-app.ngrok.io/
+   - You should replace it with the tunnel URL you obtained from this step
 
 ## Clone the code
 
@@ -44,7 +63,7 @@ To host this demo, you will need to clone the code and run locally.
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/web/.env`
    -  In `/web/.env`:
-      -  Write `OAUTH_REDIRECT_URI=http://localhost:3000/api/oauth/callback`
+      -  Write `OAUTH_REDIRECT_URI=https://teams-app.ngrok.io/api/oauth/callback`
          -  When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
 
 ## Setup OAuth via Azure Active Directory
@@ -59,7 +78,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "Public client (mobile & desktop)" as type
          -  Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
-      1. Enter `http://localhost:3000/api/oauth/callback` as the redirect URI
+      1. Enter `http://teams-app.ngrok.io/api/oauth/callback` as the redirect URI
          -  This must match `OAUTH_REDIRECT_URI` in `/web/.env` we saved earlier
    -  Click "Register"
 -  Save the client ID
@@ -84,23 +103,60 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 During development, you will run your bot locally. Azure Bot Services will send activities to your bot through a public URL. You can use [ngrok](https://ngrok.com/) to expose your bot server on a public URL.
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
+   -  We will refer to this URL as `https://teams-bot.ngrok.io/`
 1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
    -  Via Azure CLI
-      -  Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
+      -  Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://teams-bot.ngrok.io/api/messages"`
    -  Via Azure Portal
       -  Browse to your Bot Channel Registration
       -  Select "Settings"
-      -  In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
+      -  In "Configuration" section, set "Messaging Endpoint" to `https://teams-bot.ngrok.io/api/messages`
+
+## Setup a new Microsoft Teams app and install it locally
+
+> This section is based on the Microsoft Teams article named "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)".
+
+1. [Install App Studio app on Microsoft Teams](https://aka.ms/InstallTeamsAppStudio)
+1. In the App Studio, switch to "Manifest editor" tab
+1. Click "+ Create a new app"
+1. Fill out "App details" under "Details", for example
+   1. For "App names", enter "Web Chat SSO"
+   1. Under "Identification"
+      1. Click "Generate" on "App ID"
+      1. For "Package Name", enter "com.mycompany.bot.sso"
+      1. For "Version", enter "1.0.0"
+   1. Under "Descriptions"
+      1. For both "Short description" and "Long description", enter "Company landing page with Web Chat and Single Sign-On"
+   1. Under "Developer information"
+      1. For "Name", enter "My Company"
+      1. For "Website", enter `https://mycompany.com/`
+   1. Under "App URLs"
+      1. For "Privacy statement", enter `https://mycompany.com/privacy.html`
+      1. For "Terms of use", enter `https://mycompany.com/termsofuse.html`
+1. Fill out "Tabs" under "Capabilities"
+   1. On "Add a personal tab" section, click "Add"
+      1. For "Name", enter "My Company"
+      1. For "Entity ID", enter "webchat"
+      1. For "Content URL", enter `https://teams-app.ngrok.io/`
+         - This URL will be based on the ngrok tunnel you create in "[Start ngrok tunnel](#start-ngrok-tunnel)" section
+      1. Click "Save" button
+1. Under "Test and distribute" of "Finish" section
+   1. Click "Install" button
+   1. On the "Web Chat SSO" dialog, click "Install" button again
 
 ## Prepare and run the code
 
 1. Under both the `bot`, and `web` folder, run the following:
    1. `npm install`
    1. `npm start`
-1. Browse to http://localhost:3000/ to start the demo
+1. In Microsoft Teams, open the new app you just created in "[Setup a new Microsoft Teams app and install it locally](#setup-a-new-microsoft-teams-app-and-install-it-locally)" step
+   1. Click "..." on the navigation bar
+   1. Click "Web Chat SSO"
+   1. Click "My Company" tab
 
 # Things to try out
 
+-  When you open the tab in the app, the tab should automatically popup an Azure Active Directory sign-in dialog
 -  Type, "Hello" in Web Chat
    -  The bot should be able to identify your full name by using your access token on Microsoft Graph
 
@@ -114,28 +170,33 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  It will serve a static `index.html`
    -  During development-time, it will also serve the bot server via `/api/messages/`
       -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
+      -  This will forward all traffic from `https://teams-app.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
 
 # Overview
 
 This sample includes multiple parts:
 
 -  A basic web page that:
-   -  Checks your access token or redirects to OAuth provider if it is not present or valid
+   -  Checks your access token or popups to OAuth provider if it is not present or valid
+      -  The popups is provided by Microsoft Teams thru its JavaScript SDK, provided at https://statics.teams.microsoft.com/sdk/v1.4.2/js/MicrosoftTeams.min.js
    -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
 -  Bot
    -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
 
 ## Assumptions
 
+-  Developer understand and has hands-on experience on creating a Microsoft Teams app for tab apps
 -  Developer has an existing Intranet web app that uses OAuth to access protected resources
    -  We assume the OAuth access token lives in the browser's memory and is accessible through JavaScript
       -  Access token can live in browser memory but must be secured during transmit through the use of TLS
       -  More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
+   -  We assume the web app can be hosted as a tab under Microsoft Teams app
 
 ## Goals
 
 -  Website and bot conversation supports authenticated access only
-   -  If the end-user is not authenticated or does not carry a valid authenticated token, they will be redirected to OAuth provider
+   -  If the end-user is not authenticated or does not carry a valid authenticated token, a sign-in dialog will be popped up
+   -  This website resembles a company landing page, in which authenticated content (e.g. vacation balance) and bot conversation is required to co-exist on the same page
 -  Bot will receive OAuth access token from the website
 
 ## Content of the `.env` files
@@ -155,7 +216,7 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 
 ```
 OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
-OAUTH_REDIRECT_URI=http://localhost:3000/api/oauth/callback
+OAUTH_REDIRECT_URI=https://teams-app.ngrok.io/api/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 ```
 
@@ -178,6 +239,9 @@ To reset application authorization, please follow the steps below.
 -  [RFC 7636: Proof Key for Code Exchange by OAuth Public Clients](https://tools.ietf.org/html/rfc7636)
 -  [IETF Draft: OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01)
 -  [Bot Framework Blog: Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+-  [Microsoft Teams: Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)
+-  [Microsoft Teams: Authenticate a user in a Microsoft Teams tab](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/authentication/auth-tab-AAD)
+-  [Microsoft Teams: Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)
 
 ## OAuth access token vs. refresh token
 
@@ -197,3 +261,12 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
       -  This will also create a smooth UX by reducing the need for UI popups
 -  Threat model
    -  IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
+
+## Microsoft Teams: Personal tab vs. team tab
+
+-  Personal tabs are tabs that are shown in the Microsoft Teams app only, i.e. only visible for the current user
+-  Team tabs are tabs that are configured on a per-conversation basis, i.e. tab will be shown in a conversation with one or more team members
+
+Because team tabs are designed to be used collaboratively by two or more users, content shown inside the team tab should be synchronized in terms of content and interactions. For example, a tab showing Microsoft Excel web app that two or more users can collaboratively edit the content.
+
+For content that is not designed to be used by multiple users at the same time, for example, conversation with a bot, these content should be limited to personal tab only to reduce confusion.
