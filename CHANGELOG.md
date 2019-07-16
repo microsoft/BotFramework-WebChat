@@ -32,6 +32,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `*`: Bumps [`@babel/runtime@7.5.4`](https://www.npmjs.com/package/@babel/runtime), by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
 -  `*`: Bumps Docker container for headless Chrome to `selenium/standalone-chrome:3.141.59-radium`, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
 -  `*`: Moves from [`babel-plugin-version-transform`](https://www.npmjs.com/package/babel-plugin-version-transform) to [`babel-plugin-transform-inline-environment-variables`](https://www.npmjs.com/package/babel-plugin-transform-inline-environment-variables), by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
+-  `*`: Bumps ESLint and related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2185](https://github.com/microsoft/BotFramework-WebChat/pull/2185)
+   - [`eslint-plugin-react@7.14.2`](https://www.npmjs.com/package/eslint-plugin-react)
+   - [`eslint@6.0.1`](https://www.npmjs.com/package/eslint)
+-  `*`: Bumps React, Redux and their related dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2184](https://github.com/microsoft/BotFramework-WebChat/pull/2184)
+   - [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
+   - [`react-redux@5.1.1`](https://www.npmjs.com/package/react-redux)
+   - [`react@16.8.6`](https://www.npmjs.com/package/react)
+   - [`redux@4.0.4`](https://www.npmjs.com/package/redux)
+   - Removed [`redux-promise-middleware`](https://www.npmjs.com/package/redux-promise-middleware)
 
 ## [4.5.0] - 2019-07-10
 

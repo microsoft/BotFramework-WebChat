@@ -58,6 +58,9 @@ BasicSendBox.propTypes = {
   className: PropTypes.string,
   dictationStarted: PropTypes.bool.isRequired,
   styleSet: PropTypes.shape({
+    options: PropTypes.shape({
+      hideUploadButton: PropTypes.bool.isRequired
+    }).isRequired,
     sendBox: PropTypes.any.isRequired
   }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
