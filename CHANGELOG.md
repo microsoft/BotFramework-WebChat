@@ -16,11 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX). Patched something, by [@johndoe](https://github.com/johndoe) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
-## [Unreleased]
+## [4.5.1] - 2019-07-16
 
 <!-- ### Added
 -  Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
+-  Fix [#2187](https://github.com/microsoft/BotFramework-WebChat/issues/2187). Bump core-js and update core-js modules on index-es5.js, by [@corinagum](https://github.com/corinagum) in PR [#2195](https://github.com/microsoft/BotFramework-WebChat/pull/2195)
+
+## [4.5.0] - 2019-07-10
 
 ### Added
 
@@ -69,6 +72,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2106](https://github.com/microsoft/BotFramework-WebChat/issues/2016). Fix `AdaptiveCardHostConfig` warning associated with the `CommonCard` component, by [@tdurnford](https://github.com/tdurnford) in PR [#2108](https://github.com/microsoft/BotFramework-WebChat/pull/2108)
 -  Fix [#1872](https://github.com/microsoft/BotFramework-WebChat/issues/1872). Fixed `observeOnce` to unsubscribe properly, by [@compulim](https://github.com/compulim) in PR [#2140](https://github.com/microsoft/BotFramework-WebChat/pull/2140)
 -  Fix [#2022](https://github.com/microsoft/BotFramework-WebChat/issues/2022). Fixed `"expectingInput"` in `inputHint` is not respected, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum) in PR [#2149](https://github.com/microsoft/BotFramework-WebChat/pull/2149) and PR [#2166](https://github.com/microsoft/BotFramework-WebChat/pull/2166)
+
 
 ### Samples
 
