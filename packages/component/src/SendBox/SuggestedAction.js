@@ -16,10 +16,10 @@ const SUGGESTED_ACTION_CSS = css({
 
 const connectSuggestedAction = (...selectors) =>
   connectToWebChat(
-    ({ disabled, language, onCardAction, setSuggestedActions }, { displayText, text, type, value }) => ({
+    ({ clearSuggestedActions, disabled, language, onCardAction }, { displayText, text, type, value }) => ({
       click: () => {
         onCardAction({ displayText, text, type, value });
-        setSuggestedActions();
+        type === 'openUrl' && clearSuggestedActions();
       },
       disabled,
       language

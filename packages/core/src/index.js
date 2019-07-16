@@ -1,5 +1,6 @@
 /* global process:readonly */
 
+import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore from './createStore';
 import disconnect from './actions/disconnect';
@@ -17,7 +18,6 @@ import setSendBox from './actions/setSendBox';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTyping from './actions/setSendTyping';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
-import setSuggestedActions from './actions/setSuggestedActions';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
 import stopDictate from './actions/stopDictate';
@@ -31,6 +31,7 @@ const Constants = { ActivityClientState, DictateState };
 const version = process.env.NPM_PACKAGE_VERSION;
 
 export {
+  clearSuggestedActions,
   connect,
   Constants,
   createStore,
@@ -48,7 +49,6 @@ export {
   setSendBox,
   setSendTimeout,
   setSendTypingIndicator,
-  setSuggestedActions,
   startDictate,
   startSpeakingActivity,
   stopDictate,

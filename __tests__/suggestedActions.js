@@ -174,31 +174,4 @@ describe('suggested-actions command', () => {
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
-
-  test('suggested action bar should reset after button click', async () => {
-    const { driver, pageObjects } = await setupWebDriver({
-      cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
-        const { type, value } = cardAction;
-        if (type !== 'openUrl') {
-          return next({ cardAction, getSignInUrl });
-        }
-      }
-    });
-
-    await driver.wait(uiConnected(), timeouts.directLine);
-    await pageObjects.sendMessageViaSendBox('card-actions', { waitForSend: true });
-
-    await driver.wait(suggestedActionsShowed(), timeouts.directLine);
-
-    const buttons = await driver.findElements(By.tagName('button'));
-
-    const openURL = buttons[0];
-
-    await openURL.click();
-    await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
-
-    const base64PNG = await driver.takeScreenshot();
-
-    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  });
 });

@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
+  clearSuggestedActions,
   connect as createConnectAction,
   createStore,
   disconnect,
@@ -47,6 +48,7 @@ import shallowEquals from './Utils/shallowEquals';
 const EMPTY_ARRAY = [];
 
 const DISPATCHERS = {
+  clearSuggestedActions,
   markActivity,
   postActivity,
   sendEvent,
