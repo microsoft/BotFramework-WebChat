@@ -112,8 +112,9 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  `GET /api/oauth/callback` will handle callback from Azure AD OAuth
    -  `GET /api/directline/token` will generate a new Direct Line token for the React app
    -  It will serve a static `index.html`
-   -  During development-time, it will also serve the bot server via `/api/messages/`
+   -  During development-time, it will also serve the bot server via `/api/messages`
       -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
+      -  This will forward all traffic from `https://a1b2c3d4.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
 
 # Overview
 
