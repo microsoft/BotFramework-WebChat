@@ -85,6 +85,7 @@
         return res.ok;
       }
 
+      // This will request Microsoft Teams to start a popup dialog for sign-in process.
       function authorize() {
         return new Promise((resolve, reject) => {
           window.microsoftTeams.authentication.authenticate({
@@ -97,22 +98,27 @@
         });
       }
 
+      // This will request Microsoft Teams to send context information to the web page.
+      // Microsoft Teams suggest that the context information should not be trusted and should only used as hint for further authentication.
       function getTeamsContext() {
         return new Promise(resolve => window.microsoftTeams.getContext(resolve));
       }
 
       (async function main() {
+        // Initialize Microsoft Teams JavaScript SDK
         window.microsoftTeams.initialize();
 
         // When OAuth provider performs callback, the access token will be saved into session storage and redirected back to this page. See /web/src/routes/oauth/callback.js.
         // We will retrive the token from session storage from here.
         let oauthAccessToken = window.localStorage.getItem('OAUTH_ACCESS_TOKEN');
 
+        // Get the Microsoft Teams context.
         const teamsContext = await getTeamsContext();
 
         // If we are not authenticated, or the valid is not working, we will redirect the end-user to the sign-in page.
         if (!(oauthAccessToken && await verifyAccessToken(oauthAccessToken))) {
           try {
+            // Opens a sign-in popup.
             oauthAccessToken = await authorize();
           } catch (err) {
             alert(`Failed to authorize due to ${ err }.`);
