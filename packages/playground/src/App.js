@@ -55,6 +55,7 @@ export default class extends React.Component {
     super(props);
 
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
+    this.handleBubbleBorderChange = this.handleBubbleBorderChange.bind(this);
     this.handleDisabledChange = this.handleDisabledChange.bind(this);
     this.handleDisconnectClick = this.handleDisconnectClick.bind(this);
     this.handleErrorClick = this.handleErrorClick.bind(this);
@@ -67,7 +68,6 @@ export default class extends React.Component {
     this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
     this.handleSendTypingIndicatorChange = this.handleSendTypingIndicatorChange.bind(this);
     this.handleShowNubChange = this.handleShowNubChange.bind(this);
-    this.handleStyleBubbleBorderChange = this.handleStyleBubbleBorderChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
@@ -206,6 +206,10 @@ export default class extends React.Component {
     this.setState(() => ({ botAvatarInitials: value }));
   }
 
+  handleBubbleBorderChange({ target: { value } }) {
+    this.setState(() => ({ styleBubbleBorder: value === 'true' || (value === 'deprecated' && 'deprecated') }));
+  }
+
   handleDisconnectClick() {
     this.props.store.dispatch({ type: 'DIRECT_LINE/DISCONNECT' });
   }
@@ -269,10 +273,6 @@ export default class extends React.Component {
 
   handleShowNubChange({ target: { checked } }) {
     this.setState(() => ({ showNub: checked }));
-  }
-
-  handleStyleBubbleBorderChange({ target: { value } }) {
-    this.setState(() => ({ styleBubbleBorder: value === 'true' || (value === 'deprecated' && 'deprecated') }));
   }
 
   handleUseEmulatorCoreClick() {
@@ -494,7 +494,7 @@ export default class extends React.Component {
           <div>
             <label>
               Style bubble border
-              <select onChange={this.handleStyleBubbleBorderChange} value={styleBubbleBorder || 'false'}>
+              <select onChange={this.handleBubbleBorderChange} value={styleBubbleBorder || 'false'}>
                 <option value="false">Don't style bubble</option>
                 <option value="true">Style using new options</option>
                 <option value="deprecated">Style using old bubbleBorder</option>
