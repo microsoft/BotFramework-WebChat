@@ -2,6 +2,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -18,6 +19,7 @@ describe('stacked without avatar initials', () => {
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(allImagesLoaded(), timeouts.fetch);
+    await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });

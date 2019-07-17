@@ -1,5 +1,6 @@
 /* global process:readonly */
 
+import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore from './createStore';
 import disconnect from './actions/disconnect';
@@ -30,6 +31,7 @@ const Constants = { ActivityClientState, DictateState };
 const version = process.env.NPM_PACKAGE_VERSION;
 
 export {
+  clearSuggestedActions,
   connect,
   Constants,
   createStore,
