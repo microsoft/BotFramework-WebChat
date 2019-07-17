@@ -5,16 +5,18 @@
 // To maintain quality, we prefer polyfills without additives
 // For example, we prefer Promise implementation from "core-js" than "bluebird"
 
-import 'core-js/modules/es6.array.find-index';
-import 'core-js/modules/es6.array.find';
-import 'core-js/modules/es6.array.iterator';
-import 'core-js/modules/es6.object.assign';
-import 'core-js/modules/es6.math.sign';
-import 'core-js/modules/es6.number.is-finite';
-import 'core-js/modules/es6.promise';
-import 'core-js/modules/es6.string.starts-with';
-import 'core-js/modules/es6.symbol';
-import 'core-js/modules/es7.array.includes';
+import 'core-js/features/dom-collections';
+
+import 'core-js/modules/es.array.find-index';
+import 'core-js/modules/es.array.find';
+import 'core-js/modules/es.array.includes';
+import 'core-js/modules/es.array.iterator';
+import 'core-js/modules/es.math.sign';
+import 'core-js/modules/es.number.is-finite';
+import 'core-js/modules/es.object.assign';
+import 'core-js/modules/es.promise';
+import 'core-js/modules/es.string.starts-with';
+import 'core-js/modules/es.symbol';
 import 'url-search-params-polyfill';
 import 'whatwg-fetch';
 import { version } from './index-minimal';
