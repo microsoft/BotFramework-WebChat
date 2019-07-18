@@ -99,7 +99,7 @@
       }
 
       // This will request Microsoft Teams to send context information to the web page.
-      // Microsoft Teams suggest that the context information should not be trusted and should only used as hint for further authentication.
+      // Microsoft Teams suggests that the context information should not be trusted and should only used as hint for further authentication.
       function getTeamsContext() {
         return new Promise(resolve => window.microsoftTeams.getContext(resolve));
       }
