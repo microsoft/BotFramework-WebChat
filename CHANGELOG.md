@@ -42,6 +42,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`react@16.8.6`](https://www.npmjs.com/package/react)
    - [`redux@4.0.4`](https://www.npmjs.com/package/redux)
    - Removed [`redux-promise-middleware`](https://www.npmjs.com/package/redux-promise-middleware)
+-  `*`: Bumps `lodash-*`(https://www.npmjs.com/package/lodash), by [@compulim](https://github.com/compulim), in PR [#2199](https://github.com/microsoft/BotFramework-WebChat/pull/2199)
+   - [`lodash@4.17.14`](https://www.npmjs.com/package/lodash)
+   - [`lodash.mergewith@4.6.2`](https://www.npmjs.com/package/lodash.mergewith)
+   - [`lodash.template@4.5.0`](https://www.npmjs.com/package/lodash.template)
+   - [`lodash.templatesettings@4.2.0`](https://www.npmjs.com/package/lodash.template)
+   - [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
+   - [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
+   - [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
 
 ### Fixed
 
