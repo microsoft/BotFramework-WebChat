@@ -15,7 +15,7 @@ After sign-in, this demo will keep OAuth token inside the Teams tab, and also se
 This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)" and modified from "[Single sign-on demo for Intranet apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.b.single-sign-on-for-intranet-apps)". There are notable differences:
 
 -  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages browsed through an embedded and limited web browser inside Microsoft Teams
-   -  Tab apps are supported on desktop client only. Microsoft Teams on mobile client do not support embed content in apps and requires external apps for tab content
+   -  **Tab apps are supported on desktop client only.** Microsoft Teams on mobile client do not support embed content in apps and requires external apps for tab content
       - See "[Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)" for more information
    -  OAuth sign-in popup is controlled by Microsoft Teams
       - See "[Authenticate a user in a Microsoft Teams tab](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/authentication/auth-tab-AAD)" for more information
