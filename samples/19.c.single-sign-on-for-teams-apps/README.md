@@ -4,7 +4,7 @@
 
 # Description
 
-In this demo, we will show you how to authorize a user to access resources thru a Microsoft Teams app with a bot. We will use [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) for OAuth provider and [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) for the protected resources.
+In this demo, we will show you how to authorize a user to access resources through a Microsoft Teams app with a bot. We will use [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) for OAuth provider and [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) for the protected resources.
 
 After sign-in, this demo will keep OAuth token inside the Teams tab, and also send it to the bot via Web Chat backchannel. Because both web page and bot need to hold a single OAuth token, we are unable to use OAuth card in this demo.
 
@@ -25,7 +25,7 @@ This sample is a simplified and reduced version of the sample "[Single sign-on d
    -  We no longer send the sign-in and sign-out event activity to the bot
 -  We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider; in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
    -  Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)), which we are using PKCE to simplify setup
-   -  If you are using GitHub or other OAuth providers that does not support PKCE, you should use a client secret
+   -  If you are using GitHub or other OAuth providers that do not support PKCE, you should use a client secret
 
 This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
@@ -48,12 +48,12 @@ This demo integrates with Azure Active Directory and Microsoft Teams. You will n
 
 ## Start ngrok tunnel for Microsoft Teams app
 
-Since Microsoft Teams support `https://` address only, for this demo, we will be using ngrok tunnel for providing a temporary HTTPS tunnel.
+Since Microsoft Teams only supports `https://` addresses, we will be using ngrok tunnel to provide a temporary HTTPS tunnel for this demo.
 
 1. Download [ngrok](https://ngrok.com/)
 1. Run `ngrok http 5000`
 1. Write down the Microsoft Teams app tunnel URL in this step
-   - In steps below, we will refer this URL as https://a1b2c3d4.ngrok.io/
+   - In the steps below, we will refer this URL as https://a1b2c3d4.ngrok.io/
    - You should replace it with the tunnel URL you obtained from this step
 
 ## Clone the code
@@ -90,7 +90,7 @@ To host this demo, you will need to clone the code and run locally.
 
 > We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
 
-> Since we already setup `PROXY_BOT_URL` in our web server `/web/.env` in "[Clone the code](#clone-the-code)" step, we can reuse the same ngrok tunnel. It will forward traffic from web server to the bot.
+> Since we already setup `PROXY_BOT_URL` in our web server `/web/.env` in "[Clone the code](#clone-the-code)" step, we can reuse the same ngrok tunnel. It will forward traffic from the web server to the bot.
 
 You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0). Points the messaging URL to https://a1b2c3d4.ngrok.io/api/messages.
 
@@ -100,7 +100,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 1. Save the Web Chat secret to `/web/.env`
    -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
 
-> When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
+> When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [generating a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
 ## Setup a new Microsoft Teams app and install it locally
 
@@ -109,7 +109,7 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
 1. [Install App Studio app on Microsoft Teams](https://aka.ms/InstallTeamsAppStudio)
 1. In the App Studio, switch to "Manifest editor" tab
 1. Click "+ Create a new app" button
-1. Fill out "App details" under "Details", for example
+1. Fill out "App details" under "Details", for example:
    1. For "App names", enter "Web Chat SSO"
    1. Under "Identification"
       1. Click "Generate" button on "App ID"
@@ -185,7 +185,7 @@ This sample includes multiple parts:
 ## Goals
 
 -  Website and bot conversation supports authenticated access only
-   -  If the end-user is not authenticated or does not carry a valid authenticated token, a sign-in dialog will be popped up
+   -  If the end-user is not authenticated or does not carry a valid authenticated token, a sign-in dialog will appear
    -  This website resembles a company landing page, in which authenticated content (e.g. vacation balance) and bot conversation is required to co-exist on the same page
 -  Bot will receive OAuth access token from the website
 
@@ -236,17 +236,17 @@ To reset application authorization, please follow the steps below.
 
 ## OAuth access token vs. refresh token
 
-To make this demo simpler to understand, instead of refresh token, we are obtaining the access token via Authorization Code Grant flow. Access token is short-lived and considered secure to live inside the browser.
+To make this demo simpler, we are obtaining the access token via Authorization Code Grant flow instead of the refresh token. Access token is short-lived and considered secure to live inside the browser.
 
-In your production scenario, instead of the access token, you may want to obtain the refresh token with "Authorization Code Grant" flow. We did not use the refresh token in this sample as it requires server-to-server communications and secured persistent storage, it would greatly increase the complexity of this demo.
+In your production scenario, you may want to obtain the refresh token with "Authorization Code Grant" flow instead of using the access token. We did not use the refresh token in this sample as it requires server-to-server communications and secured persistent storage, it would greatly increase the complexity of this demo.
 
 ## Threat model
 
-To reduce complexity and lower the learning curve, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
+To reduce complexity, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
 -  Refreshing the access token
    -  Using silent prompt for refreshing access token
-      -  Some OAuth provider support `?prompt=none` for refreshing access token silently thru `<iframe>`
+      -  Some OAuth providers support `?prompt=none` for refreshing access token silently through `<iframe>`
    -  Using Authorization Code Grant flow with refresh token
       -  Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
       -  This will also create a smooth UX by reducing the need for UI popups
@@ -260,4 +260,4 @@ To reduce complexity and lower the learning curve, this sample is limited in sco
 
 Because team tabs are designed to be used collaboratively by two or more users, content shown inside the team tab should be synchronized in terms of content and interactions. For example, a tab showing Microsoft Excel web app that two or more users can collaboratively edit the content.
 
-For content that is not designed to be used by multiple users at the same time, for example, conversation with a bot, these content should be limited to personal tab only to reduce confusion.
+For content that is not designed to be used by multiple users at the same time (for example, conversation with a bot), this type of content should be limited to personal tab only to reduce confusion.
