@@ -122,7 +122,7 @@ This sample includes multiple parts:
 
 -  A basic web page that:
    -  Checks your access token or redirects to OAuth provider if it is not present or valid
-   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
+   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity through `channelData.oauthAccessToken`
 -  Bot
    -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
 

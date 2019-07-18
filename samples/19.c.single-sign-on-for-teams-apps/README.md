@@ -14,7 +14,7 @@ After sign-in, this demo will keep OAuth token inside the Teams tab, and also se
 
 This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)" and modified from "[Single sign-on demo for Intranet apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.b.single-sign-on-for-intranet-apps)". There are notable differences:
 
--  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages browsed thru an embedded and limited web browser inside Microsoft Teams
+-  In this demo, we are targeting Microsoft Teams "tab apps", which is a set of web pages browsed through an embedded and limited web browser inside Microsoft Teams
    -  Tab apps are supported on desktop client only. Microsoft Teams on mobile client do not support embed content in apps and requires external apps for tab content
       - See "[Tabs on mobile clients](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-requirements#tabs-on-mobile-clients)" for more information
    -  OAuth sign-in popup is controlled by Microsoft Teams
@@ -33,7 +33,7 @@ This demo does not include any threat models and is designed for educational pur
 
 You will need to create a new Microsoft Teams app to host the demo in your organization.
 
-Please follow this article, "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)", and use our web page thru "Personal tab" by setting its content URL to https://webchat-sample-sso-teams.azurewebsites.net/.
+Please follow this article, "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)", and use our web page through "Personal tab" by setting its content URL to https://webchat-sample-sso-teams.azurewebsites.net/.
 
 # How to run locally
 
@@ -169,7 +169,7 @@ This sample includes multiple parts:
 -  A basic web page that:
    -  Checks your access token or open a pop-up to OAuth provider if it is not present or valid
       -  The pop-up is provided by [Microsoft Teams JavaScript client SDK](https://docs.microsoft.com/en-us/javascript/api/overview/msteams-client)
-   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
+   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity through `channelData.oauthAccessToken`
 -  Bot
    -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
 
