@@ -108,11 +108,12 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
   return (
     <div
       className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
-        'extra-left-indent': fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
-        'extra-right-indent':
-          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
         'from-user': fromUser,
-        'indented-content': avatarInitials && !indented
+        webchat__stacked_extra_left_indent:
+          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
+        webchat__stacked_extra_right_indent:
+          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
+        webchat__stacked_indented_content: avatarInitials && !indented
       })}
     >
       {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
@@ -145,13 +146,16 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           )
         )}
         {attachments.map((attachment, index) => (
-          <div className={classNames('webchat__row attachment', { indented })} key={index}>
+          <div
+            className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
+            key={index}
+          >
             <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
           </div>
         ))}
-        <div className={classNames('webchat__row', { indented })}>
+        <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (

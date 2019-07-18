@@ -107,8 +107,7 @@ const WebChatCarouselFilmStrip = ({
   return (
     <div
       className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '', {
-        'indented-content': avatarInitials && !indented,
-        'indented-right': !styleSet.options.userAvatarInitials && !!styleSet.options.bubbleFromUserNubSize
+        webchat__carousel_indented_content: avatarInitials && !indented
       })}
       ref={scrollableRef}
     >
@@ -128,7 +127,7 @@ const WebChatCarouselFilmStrip = ({
             <div className="filler" />
           </div>
         )}
-        <ul className={classNames({ indented })} ref={itemContainerRef}>
+        <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
               <Bubble fromUser={fromUser} key={index} nub={false}>
@@ -137,7 +136,7 @@ const WebChatCarouselFilmStrip = ({
             </li>
           ))}
         </ul>
-        <div className={classNames('webchat__row', { indented })}>
+        <div className={classNames({ webchat__carousel__item_indented: indented })}>
           {state === SENDING || state === SEND_FAILED ? (
             <SendStatus activity={activity} />
           ) : (

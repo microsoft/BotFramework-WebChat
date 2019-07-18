@@ -87,16 +87,16 @@ export default function createBubbleStyle({
   const userNubCornerRadius = Math.min(bubbleFromUserBorderRadius, Math.abs(bubbleFromUserNubOffset));
 
   return {
-    '& > .content': {
+    '& > .webchat__bubble__content': {
       wordBreak: messageActivityWordBreak
     },
 
     '&:not(.from-user)': {
-      '&.has-nub': {
-        '& > .content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+      '&.webchat__bubble_has_nub': {
+        '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
       },
 
-      '& > .content': {
+      '& > .webchat__bubble__content': {
         background: bubbleBackground,
         borderColor: bubbleBorderColor,
         borderRadius: bubbleBorderRadius,
@@ -106,13 +106,13 @@ export default function createBubbleStyle({
         minHeight: bubbleMinHeight - bubbleBorderWidth * 2
       },
 
-      '&.has-nub > .content': {
+      '&.webchat__bubble_has_nub > .webchat__bubble__content': {
         // Hide border radius if there is a nub on the top/bottom left corner
         ...(bubbleNubSize && botNubUpSideDown ? { borderBottomLeftRadius: botNubCornerRadius } : {}),
         ...(bubbleNubSize && !botNubUpSideDown ? { borderTopLeftRadius: botNubCornerRadius } : {})
       },
 
-      '& > .nub': {
+      '& > .webchat__bubble__nub': {
         backgroundImage: `url("${svgToDataURI(botNubSVG).replace(/"/gu, "'")}")`,
         bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
         height: bubbleNubSize,
@@ -123,11 +123,11 @@ export default function createBubbleStyle({
     },
 
     '&.from-user': {
-      '&.has-nub': {
-        '& > .content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+      '&.webchat__bubble_has_nub': {
+        '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
       },
 
-      '& > .content': {
+      '& > .webchat__bubble__content': {
         background: bubbleFromUserBackground,
         borderColor: bubbleFromUserBorderColor,
         borderRadius: bubbleFromUserBorderRadius,
@@ -137,13 +137,13 @@ export default function createBubbleStyle({
         minHeight: bubbleMinHeight - bubbleFromUserBorderWidth * 2
       },
 
-      '&.has-nub > .content': {
+      '&.webchat__bubble_has_nub > .webchat__bubble__content': {
         // Hide border radius if there is a nub on the top/bottom right corner
         ...(bubbleFromUserNubSize && userNubUpSideDown ? { borderBottomRightRadius: userNubCornerRadius } : {}),
         ...(bubbleFromUserNubSize && !userNubUpSideDown ? { borderTopRightRadius: userNubCornerRadius } : {})
       },
 
-      '& > .nub': {
+      '& > .webchat__bubble__nub': {
         backgroundImage: `url("${svgToDataURI(userNubSVG).replace(/"/gu, "'")}")`,
         height: bubbleFromUserNubSize,
         right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,

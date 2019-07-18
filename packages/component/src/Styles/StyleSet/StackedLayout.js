@@ -2,38 +2,38 @@
 
 export default function createStackedLayoutStyle({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
-    '&.extra-left-indent': {
+    '&.webchat__stacked_extra_left_indent': {
       marginLeft: paddingRegular * 2
     },
 
-    '&:not(.extra-left-indent)': {
+    '&:not(.webchat__stacked_extra_left_indent)': {
       marginLeft: paddingRegular
     },
 
-    '&.extra-right-indent': {
+    '&.webchat__stacked_extra_right_indent': {
       marginRight: paddingRegular * 2
     },
 
-    '&:not(.extra-right-indent)': {
+    '&:not(.webchat__stacked_extra_right_indent)': {
       marginRight: paddingRegular
     },
 
     '&:not(.from-user)': {
-      '&.indented-content > .avatar': {
+      '&.webchat__stacked_indented_content > .avatar': {
         marginRight: paddingRegular
       },
 
-      '& > .content > .indented': {
+      '& > .content > .webchat__stacked_item_indented': {
         marginLeft: paddingRegular
       }
     },
 
     '&.from-user': {
-      '&.indented-content > .avatar': {
+      '&.webchat__stacked_indented_content > .avatar': {
         marginLeft: paddingRegular
       },
 
-      '& > .content > .indented': {
+      '& > .content > .webchat__stacked_item_indented': {
         marginRight: paddingRegular
       }
     },

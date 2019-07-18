@@ -8,12 +8,12 @@ import connectToWebChat from '../connectToWebChat';
 const ROOT_CSS = css({
   position: 'relative',
 
-  '& > .content': {
+  '& > .webchat__bubble__content': {
     // This is for hiding content outside of the bubble, for example, content outside of border radius
     overflow: 'hidden'
   },
 
-  '& > .nub': {
+  '& > .webchat__bubble__nub': {
     position: 'absolute'
   }
 });
@@ -24,13 +24,13 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub,
     className={classNames(
       ROOT_CSS + '',
       styleSet.bubble + '',
-      { 'from-user': fromUser, indent: !nub, 'has-nub': nub },
+      { 'from-user': fromUser, webchat__bubble_has_nub: nub },
       className + '' || ''
     )}
   >
-    <div className="content">{children}</div>
+    <div className="webchat__bubble__content">{children}</div>
     {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-      <div className="nub" />
+      <div className="webchat__bubble__nub" />
     )}
   </div>
 );
