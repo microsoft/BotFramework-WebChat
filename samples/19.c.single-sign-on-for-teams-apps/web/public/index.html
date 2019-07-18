@@ -115,7 +115,7 @@
         // Get the Microsoft Teams context.
         const teamsContext = await getTeamsContext();
 
-        // If we are not authenticated, or the valid is not working, we will redirect the end-user to the sign-in page.
+        // If we are not authenticated, or the access token is not working, we will redirect the end-user to the sign-in page.
         if (!(oauthAccessToken && await verifyAccessToken(oauthAccessToken))) {
           try {
             // Opens a sign-in popup.
