@@ -43,7 +43,7 @@ This demo integrates with Azure Active Directory and Microsoft Teams. You will n
 1. [Clone the code](#clone-the-code)
 1. [Setup OAuth via Azure Active Directory](#setup-oauth-via-azure-active-directory)
 1. [Setup Azure Bot Services](#setup-azure-bot-services)
-1. [Setup a new Microsoft Teams app](#setup-a-new-microsoft-teams-app)
+1. [Setup a new Microsoft Teams app and install it locally](#setup-a-new-microsoft-teams-app-and-install-it-locally)
 1. [Prepare and run the code](#prepare-and-run-the-code)
 
 ## Start ngrok tunnel for Microsoft Teams app
