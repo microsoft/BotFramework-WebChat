@@ -55,6 +55,7 @@ export default class extends React.Component {
     super(props);
 
     this.handleBotAvatarInitialsChange = this.handleBotAvatarInitialsChange.bind(this);
+    this.handleBubbleBorderChange = this.handleBubbleBorderChange.bind(this);
     this.handleDisabledChange = this.handleDisabledChange.bind(this);
     this.handleDisconnectClick = this.handleDisconnectClick.bind(this);
     this.handleErrorClick = this.handleErrorClick.bind(this);
@@ -63,20 +64,64 @@ export default class extends React.Component {
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
     this.handleReliabilityChange = this.handleReliabilityChange.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleRichCardWrapTitleChange = this.handleRichCardWrapTitleChange.bind(this);
     this.handleSendTimeoutChange = this.handleSendTimeoutChange.bind(this);
     this.handleSendTypingIndicatorChange = this.handleSendTypingIndicatorChange.bind(this);
+    this.handleShowNubChange = this.handleShowNubChange.bind(this);
     this.handleUseEmulatorCoreClick = this.handleUseEmulatorCoreClick.bind(this);
     this.handleUseMockBot = this.handleUseMockBot.bind(this);
     this.handleUserAvatarInitialsChange = this.handleUserAvatarInitialsChange.bind(this);
+    this.handleWordBreakChange = this.handleWordBreakChange.bind(this);
 
     this.mainRef = React.createRef();
     this.activityMiddleware = createDevModeActivityMiddleware();
     this.attachmentMiddleware = createDevModeAttachmentMiddleware();
-    this.createMemoizedStyleOptions = memoize((hideSendBox, botAvatarInitials, userAvatarInitials) => ({
-      botAvatarInitials,
-      hideSendBox,
-      userAvatarInitials
-    }));
+    this.createMemoizedStyleOptions = memoize(
+      (
+        hideSendBox,
+        botAvatarInitials,
+        userAvatarInitials,
+        showNub,
+        styleBubbleBorder,
+        wordBreak,
+        richCardWrapTitle
+      ) => ({
+        ...(styleBubbleBorder === 'deprecated'
+          ? {
+              bubbleBorder: 'dotted 2px Red',
+              bubbleBorderRadius: 10,
+              bubbleFromUserBorder: 'dashed 2px Green',
+              bubbleFromUserBorderRadius: 10
+            }
+          : styleBubbleBorder
+          ? {
+              bubbleBorderColor: 'Red',
+              bubbleBorderRadius: 10,
+              bubbleBorderStyle: 'dotted',
+              bubbleBorderWidth: 2,
+              bubbleFromUserBorderColor: 'Green',
+              bubbleFromUserBorderRadius: 10,
+              bubbleFromUserBorderStyle: 'dashed',
+              bubbleFromUserBorderWidth: 2
+            }
+          : {}),
+
+        ...(showNub
+          ? {
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserNubOffset: -5,
+              bubbleNubOffset: 5,
+              bubbleNubSize: 10
+            }
+          : {}),
+
+        botAvatarInitials,
+        hideSendBox,
+        userAvatarInitials,
+        messageActivityWordBreak: wordBreak,
+        richCardWrapTitle
+      })
+    );
 
     const params = new URLSearchParams(window.location.search);
     const directLineToken = params.get('t');
@@ -101,12 +146,16 @@ export default class extends React.Component {
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
       language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
+      richCardWrapTitle: false,
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTypingIndicator: true,
+      showNub: true,
+      styleBubbleBorder: false,
       userAvatarInitials: 'WC',
       userID,
       username: 'Web Chat user',
-      webSpeechPonyfillFactory: undefined
+      webSpeechPonyfillFactory: undefined,
+      workBreak: ''
     };
   }
 
@@ -157,6 +206,10 @@ export default class extends React.Component {
     this.setState(() => ({ botAvatarInitials: value }));
   }
 
+  handleBubbleBorderChange({ target: { value } }) {
+    this.setState(() => ({ styleBubbleBorder: value === 'true' || (value === 'deprecated' && 'deprecated') }));
+  }
+
   handleDisconnectClick() {
     this.props.store.dispatch({ type: 'DIRECT_LINE/DISCONNECT' });
   }
@@ -203,6 +256,10 @@ export default class extends React.Component {
     window.location.reload();
   }
 
+  handleRichCardWrapTitleChange({ target: { checked } }) {
+    this.setState(() => ({ richCardWrapTitle: checked }));
+  }
+
   handleSendTimeoutChange({ target: { value } }) {
     this.setState(
       () => ({ sendTimeout: value }),
@@ -212,6 +269,10 @@ export default class extends React.Component {
 
   handleSendTypingIndicatorChange({ target: { checked } }) {
     this.setState(() => ({ sendTypingIndicator: !!checked }));
+  }
+
+  handleShowNubChange({ target: { checked } }) {
+    this.setState(() => ({ showNub: checked }));
   }
 
   handleUseEmulatorCoreClick() {
@@ -247,6 +308,10 @@ export default class extends React.Component {
     }
   }
 
+  handleWordBreakChange({ target: { value } }) {
+    this.setState(() => ({ wordBreak: value }));
+  }
+
   render() {
     const {
       props: { store },
@@ -258,15 +323,27 @@ export default class extends React.Component {
         groupTimestamp,
         hideSendBox,
         language,
+        richCardWrapTitle,
         sendTimeout,
         sendTypingIndicator,
+        showNub,
+        styleBubbleBorder,
         userAvatarInitials,
         userID,
         username,
-        webSpeechPonyfillFactory
+        webSpeechPonyfillFactory,
+        wordBreak
       }
     } = this;
-    const styleOptions = this.createMemoizedStyleOptions(hideSendBox, botAvatarInitials, userAvatarInitials);
+    const styleOptions = this.createMemoizedStyleOptions(
+      hideSendBox,
+      botAvatarInitials,
+      userAvatarInitials,
+      showNub,
+      styleBubbleBorder,
+      wordBreak,
+      richCardWrapTitle
+    );
 
     return (
       <div className={ROOT_CSS} ref={this.mainRef}>
@@ -412,6 +489,43 @@ export default class extends React.Component {
                 type="input"
                 value={userAvatarInitials}
               />
+            </label>
+          </div>
+          <div>
+            <label>
+              Style bubble border
+              <select onChange={this.handleBubbleBorderChange} value={styleBubbleBorder || 'false'}>
+                <option value="false">Don't style bubble</option>
+                <option value="true">Style using new options</option>
+                <option value="deprecated">Style using old bubbleBorder</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              <input checked={this.state.showNub} onChange={this.handleShowNubChange} type="checkbox" />
+              Show bubble nub
+            </label>
+          </div>
+          <div>
+            <label>
+              Word break
+              <select onChange={this.handleWordBreakChange} value={wordBreak || 'break-word'}>
+                <option value="break-word">Break word </option>
+                <option value="normal">Normal</option>
+                <option value="break-all">Break all</option>
+                <option value="keep-all">Keep all</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                checked={richCardWrapTitle || false}
+                onChange={this.handleRichCardWrapTitleChange}
+                type="checkbox"
+              />
+              Rich card wrap title
             </label>
           </div>
         </div>

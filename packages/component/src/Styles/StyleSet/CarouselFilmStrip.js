@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, paddingRegular }) {
   return {
     // Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function
@@ -6,19 +8,16 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
       marginBottom: -17
     },
 
-    '& > .avatar': {
+    paddingLeft: paddingRegular,
+
+    '&.webchat__carousel_indented_content > .content': {
       marginLeft: paddingRegular
     },
 
     '& > .content': {
-      '& > .message': {
-        marginLeft: paddingRegular
-      },
+      paddingRight: paddingRegular,
 
       '& > ul': {
-        marginLeft: paddingRegular,
-        marginRight: paddingRegular,
-
         '&:not(:first-child)': {
           marginTop: paddingRegular
         },
@@ -33,7 +32,7 @@ export default function CarouselFilmStrip({ bubbleMaxWidth, bubbleMinWidth, padd
         }
       },
 
-      '& > .webchat__row': {
+      '& > .webchat__carousel__item_indented': {
         marginLeft: paddingRegular
       }
     }
