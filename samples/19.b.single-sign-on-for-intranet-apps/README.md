@@ -20,7 +20,7 @@ This sample is a simplified and reduced version of the sample "[Single sign-on d
    -  We no longer send the sign-in and sign-out event activity to the bot
 -  We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider; in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
    -  Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)), which we are using PKCE to simplify setup
-   -  If you are using GitHub or other OAuth providers that does not support PKCE, you should use a client secret
+   -  If you are using GitHub or other OAuth providers that do not support PKCE, you should use a client secret
 
 This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
@@ -184,15 +184,15 @@ To reset application authorization, please follow the steps below.
 
 To make this demo simpler to understand, instead of refresh token, we are obtaining the access token via Authorization Code Grant flow. Access token is short-lived and considered secure to live inside the browser.
 
-In your production scenario, instead of the access token, you may want to obtain the refresh token with "Authorization Code Grant" flow. We did not use the refresh token in this sample as it requires server-to-server communications and secured persistent storage, it would greatly increase the complexity of this demo.
+In your production scenario, you may want to obtain the refresh token with "Authorization Code Grant" flow instead of using the access token. We did not use the refresh token in this sample as it requires server-to-server communications and secured persistent storage, it would greatly increase the complexity of this demo.
 
 ## Threat model
 
-To reduce complexity and lower the learning curve, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
+To reduce complexity, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
 -  Refreshing the access token
    -  Using silent prompt for refreshing access token
-      -  Some OAuth provider support `?prompt=none` for refreshing access token silently thru `<iframe>`
+      -  Some OAuth providers support `?prompt=none` for refreshing access token silently through `<iframe>`
    -  Using Authorization Code Grant flow with refresh token
       -  Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
       -  This will also create a smooth UX by reducing the need for UI popups
