@@ -18,7 +18,7 @@ const ImageAttachment = ({ activity, attachment }) => {
 };
 
 ImageAttachment.propTypes = {
-  activity: PropTypes.shapeOf({
+  activity: PropTypes.shape({
     attachments: PropTypes.array.isRequired
   }).isRequired,
   attachment: PropTypes.shape({
