@@ -1,4 +1,5 @@
-// This file is for Web Worker and is minimally transpiled thru Babel.
+// This file is the entrypoint of Web Worker and is minimally transpiled thru Babel.
+// Do not include any dependencies here because they will not be bundled.
 
 export default () => {
   onmessage = async ({ data: { arrayBuffer, maxHeight, maxWidth, type, quality }, ports: [port] }) => {
