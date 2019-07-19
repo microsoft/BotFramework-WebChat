@@ -38,12 +38,19 @@ async function getWorker() {
   return worker;
 }
 
+const support =
+  typeof window.createImageBitmap !== 'undefined' &&
+  typeof window.MessageChannel !== 'undefined' &&
+  typeof window.OffscreenCanvas !== 'undefined' &&
+  typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' &&
+  typeof window.Worker !== 'undefined';
+
 export default async function downscaleImageToDataURL(
   arrayBuffer,
   maxWidth = 480,
   maxHeight = 240,
   type = 'image/jpeg',
-  quality = 0.6
+  quality = 0.8
 ) {
   return new Promise(async (resolve, reject) => {
     const { port1, port2 } = new MessageChannel();
@@ -59,3 +66,5 @@ export default async function downscaleImageToDataURL(
     worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type }, [arrayBuffer, port2]);
   });
 }
+
+export { support };

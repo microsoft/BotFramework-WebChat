@@ -7,7 +7,7 @@ import { localize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import blobToArrayBuffer from '../Utils/blobToArrayBuffer';
 import connectToWebChat from '../connectToWebChat';
-import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
+import downscaleImageToDataURL, { support as supportDownscaleImage } from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
 
 const ROOT_CSS = css({
@@ -25,7 +25,7 @@ const ROOT_CSS = css({
 });
 
 async function makeThumbnail(file) {
-  if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
+  if (supportDownscaleImage && /\.(gif|jpe?g|png)$/iu.test(file.name)) {
     try {
       return await downscaleImageToDataURL(await blobToArrayBuffer(file));
     } catch (error) {
