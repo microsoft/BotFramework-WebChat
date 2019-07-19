@@ -48,7 +48,6 @@ export default () => {
       );
 
       const { height, width } = keepAspectRatio(imageBitmap.width, imageBitmap.height, maxWidth, maxHeight);
-
       const offscreenCanvas = new OffscreenCanvas(width, height);
       const context = offscreenCanvas.getContext('2d');
 
