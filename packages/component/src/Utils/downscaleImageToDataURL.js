@@ -45,13 +45,7 @@ const support =
   typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' &&
   typeof window.Worker !== 'undefined';
 
-export default async function downscaleImageToDataURL(
-  arrayBuffer,
-  maxWidth = 480,
-  maxHeight = 240,
-  type = 'image/jpeg',
-  quality = 0.8
-) {
+export default async function downscaleImageToDataURL(arrayBuffer, maxWidth, maxHeight, type, quality) {
   return new Promise(async (resolve, reject) => {
     const { port1, port2 } = new MessageChannel();
 

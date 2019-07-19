@@ -24,19 +24,28 @@ const ROOT_CSS = css({
   }
 });
 
-async function makeThumbnail(file) {
+async function makeThumbnail(file, width, height, contentType, quality) {
+  console.log(arguments);
+
   if (supportDownscaleImage && /\.(gif|jpe?g|png)$/iu.test(file.name)) {
     try {
-      return await downscaleImageToDataURL(await blobToArrayBuffer(file));
+      return await downscaleImageToDataURL(await blobToArrayBuffer(file), width, height, contentType, quality);
     } catch (error) {
-      console.warn(`Web Chat: Failed to downscale image due to ${error.message}.`);
+      console.warn(`Web Chat: Failed to downscale image due to ${error}.`);
     }
   }
 }
 
 const connectUploadButton = (...selectors) =>
   connectToWebChat(
-    ({ disabled, language, sendFiles }) => ({
+    ({
+      disabled,
+      language,
+      sendFiles,
+      styleSet: {
+        options: { thumbnailContentType, thumbnailHeight, thumbnailQuality, thumbnailWidth }
+      }
+    }) => ({
       disabled,
       language,
       sendFiles: async files => {
@@ -49,7 +58,13 @@ const connectUploadButton = (...selectors) =>
               [].map.call(files, async file => ({
                 name: file.name,
                 size: file.size,
-                thumbnail: await makeThumbnail(file),
+                thumbnail: await makeThumbnail(
+                  file,
+                  thumbnailWidth,
+                  thumbnailHeight,
+                  thumbnailContentType,
+                  thumbnailQuality
+                ),
                 url: window.URL.createObjectURL(file)
               }))
             )
@@ -120,6 +135,12 @@ UploadButton.propTypes = {
   language: PropTypes.string.isRequired,
   sendFiles: PropTypes.func.isRequired,
   styleSet: PropTypes.shape({
+    options: PropTypes.shape({
+      thumbnailContentType: PropTypes.string.isRequired,
+      thumbnailHeight: PropTypes.number.isRequired,
+      thumbnailQuality: PropTypes.number.isRequired,
+      thumbnailWidth: PropTypes.number.isRequired
+    }).isRequired,
     uploadButton: PropTypes.any.isRequired
   }).isRequired
 };
