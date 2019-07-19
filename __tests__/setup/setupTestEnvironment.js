@@ -1,4 +1,3 @@
-import { join, posix, relative } from 'path';
 import { Options } from 'selenium-webdriver/chrome';
 
 export default function setupTestEnvironment(browserName, builder, { height = 640, width = 360, zoom = 1 } = {}) {
@@ -24,17 +23,7 @@ export default function setupTestEnvironment(browserName, builder, { height = 64
             (builder.getChromeOptions() || new Options())
               .headless()
               .windowSize({ height: height * zoom, width: width * zoom })
-          ),
-        fileDetector: {
-          handleFile: (_, path) => {
-            // It seems file detector does not work in local Chrome.
-            // Thus, we are prepending local path first (for local Chrome), and removing it here (for Docker Chrome).
-            const localPath = join(__dirname, 'local');
-            const relativePath = relative(localPath, path);
-
-            return posix.join('/~/Downloads', relativePath);
-          }
-        }
+          )
       };
   }
 }
