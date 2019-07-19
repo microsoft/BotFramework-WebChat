@@ -24,6 +24,16 @@ const ROOT_CSS = css({
   }
 });
 
+async function makeThumbnail(file) {
+  if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
+    try {
+      return await downscaleImageToDataURL(await blobToArrayBuffer(file));
+    } catch (error) {
+      console.warn(`Web Chat: Failed to downscale image due to ${error.message}.`);
+    }
+  }
+}
+
 const connectUploadButton = (...selectors) =>
   connectToWebChat(
     ({ disabled, language, sendFiles }) => ({
@@ -35,21 +45,13 @@ const connectUploadButton = (...selectors) =>
           //       Redux store should not know about the browser environment
           //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
           sendFiles(
-            [].map.call(files, file => ({
-              name: file.name,
-              size: file.size,
-              url: window.URL.createObjectURL(file)
-            })),
             await Promise.all(
-              [].map.call(files, async file => {
-                if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
-                  try {
-                    return await downscaleImageToDataURL(await blobToArrayBuffer(file));
-                  } catch (error) {
-                    console.warn(`Web Chat: Failed to downscale image due to ${error.message}.`);
-                  }
-                }
-              })
+              [].map.call(files, async file => ({
+                name: file.name,
+                size: file.size,
+                thumbnail: await makeThumbnail(file),
+                url: window.URL.createObjectURL(file)
+              }))
             )
           );
         }

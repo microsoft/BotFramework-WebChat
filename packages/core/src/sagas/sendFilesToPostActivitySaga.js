@@ -7,7 +7,7 @@ import whileConnected from './effects/whileConnected';
 
 const getType = mime.getType.bind(mime);
 
-function* postActivityWithFiles({ payload: { files, thumbnails } }) {
+function* postActivityWithFiles({ payload: { files } }) {
   yield put(
     postActivity({
       attachments: [].map.call(files, ({ name, url }) => ({
@@ -17,7 +17,7 @@ function* postActivityWithFiles({ payload: { files, thumbnails } }) {
       })),
       channelData: {
         attachmentSizes: [].map.call(files, ({ size }) => size),
-        attachmentThumbnails: thumbnails
+        attachmentThumbnails: [].map.call(files, ({ thumbnail }) => thumbnail)
       },
       type: 'message'
     })
