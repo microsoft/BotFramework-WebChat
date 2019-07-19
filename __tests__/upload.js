@@ -27,9 +27,9 @@ test('upload a file with custom thumbnail size', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
       styleOptions: {
-        thumbnailContentType: 'image/png',
-        thumbnailHeight: 60,
-        thumbnailWidth: 120
+        uploadThumbnailContentType: 'image/png',
+        uploadThumbnailHeight: 60,
+        uploadThumbnailWidth: 120
       }
     }
   });
@@ -49,7 +49,27 @@ test('upload a file with custom thumbnail quality', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
       styleOptions: {
-        thumbnailQuality: 0.1
+        uploadThumbnailQuality: 0.1
+      }
+    }
+  });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.sendFile('seaofthieves.jpg');
+  await driver.wait(minNumActivitiesShown(2));
+  await driver.wait(allImagesLoaded());
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('upload a file with custom thumbnail disabled', async () => {
+  const { driver, pageObjects } = await setupWebDriver({
+    props: {
+      styleOptions: {
+        enableUploadThumbnail: false
       }
     }
   });

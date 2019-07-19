@@ -129,10 +129,11 @@ const DEFAULT_OPTIONS = {
   spinnerAnimationWidth: 16,
   spinnerAnimationPaddingRight: 12,
 
-  thumbnailContentType: 'image/jpeg',
-  thumbnailHeight: 360,
-  thumbnailQuality: 0.6,
-  thumbnailWidth: 720
+  enableUploadThumbnail: true,
+  uploadThumbnailContentType: 'image/jpeg',
+  uploadThumbnailHeight: 360,
+  uploadThumbnailQuality: 0.6,
+  uploadThumbnailWidth: 720
 };
 
 export default DEFAULT_OPTIONS;

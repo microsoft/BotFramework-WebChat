@@ -25,8 +25,6 @@ const ROOT_CSS = css({
 });
 
 async function makeThumbnail(file, width, height, contentType, quality) {
-  console.log(arguments);
-
   if (supportDownscaleImage && /\.(gif|jpe?g|png)$/iu.test(file.name)) {
     try {
       return await downscaleImageToDataURL(await blobToArrayBuffer(file), width, height, contentType, quality);
@@ -43,7 +41,13 @@ const connectUploadButton = (...selectors) =>
       language,
       sendFiles,
       styleSet: {
-        options: { thumbnailContentType, thumbnailHeight, thumbnailQuality, thumbnailWidth }
+        options: {
+          enableUploadThumbnail,
+          uploadThumbnailContentType,
+          uploadThumbnailHeight,
+          uploadThumbnailQuality,
+          uploadThumbnailWidth
+        }
       }
     }) => ({
       disabled,
@@ -58,14 +62,16 @@ const connectUploadButton = (...selectors) =>
               [].map.call(files, async file => ({
                 name: file.name,
                 size: file.size,
-                thumbnail: await makeThumbnail(
-                  file,
-                  thumbnailWidth,
-                  thumbnailHeight,
-                  thumbnailContentType,
-                  thumbnailQuality
-                ),
-                url: window.URL.createObjectURL(file)
+                url: window.URL.createObjectURL(file),
+                ...(enableUploadThumbnail && {
+                  thumbnail: await makeThumbnail(
+                    file,
+                    uploadThumbnailWidth,
+                    uploadThumbnailHeight,
+                    uploadThumbnailContentType,
+                    uploadThumbnailQuality
+                  )
+                })
               }))
             )
           );
@@ -136,10 +142,11 @@ UploadButton.propTypes = {
   sendFiles: PropTypes.func.isRequired,
   styleSet: PropTypes.shape({
     options: PropTypes.shape({
-      thumbnailContentType: PropTypes.string.isRequired,
-      thumbnailHeight: PropTypes.number.isRequired,
-      thumbnailQuality: PropTypes.number.isRequired,
-      thumbnailWidth: PropTypes.number.isRequired
+      enableUploadThumbnail: PropTypes.bool.isRequired,
+      uploadThumbnailContentType: PropTypes.string.isRequired,
+      uploadThumbnailHeight: PropTypes.number.isRequired,
+      uploadThumbnailQuality: PropTypes.number.isRequired,
+      uploadThumbnailWidth: PropTypes.number.isRequired
     }).isRequired,
     uploadButton: PropTypes.any.isRequired
   }).isRequired
