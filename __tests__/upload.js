@@ -9,7 +9,7 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('upload a file', async () => {
+test('upload a picture', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
@@ -23,7 +23,7 @@ test('upload a file', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('upload a file with custom thumbnail size', async () => {
+test('upload a picture with custom thumbnail size', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
       styleOptions: {
@@ -45,7 +45,7 @@ test('upload a file with custom thumbnail size', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('upload a file with custom thumbnail quality', async () => {
+test('upload a picture with custom thumbnail quality', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
       styleOptions: {
@@ -65,7 +65,7 @@ test('upload a file with custom thumbnail quality', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('upload a file with custom thumbnail disabled', async () => {
+test('upload a picture with custom thumbnail disabled', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
       styleOptions: {
@@ -77,6 +77,20 @@ test('upload a file with custom thumbnail disabled', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
 
   await pageObjects.sendFile('seaofthieves.jpg');
+  await driver.wait(minNumActivitiesShown(2));
+  await driver.wait(allImagesLoaded());
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('upload a text file', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.sendFile('hello.txt');
   await driver.wait(minNumActivitiesShown(2));
   await driver.wait(allImagesLoaded());
 
