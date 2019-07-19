@@ -4,10 +4,12 @@ import executePromiseScript from './executePromiseScript';
 import getMicrophoneButton from './getMicrophoneButton';
 import getSendBoxTextBox from './getSendBoxTextBox';
 import getStore from './getStore';
+import getUploadButton from './getUploadButton';
 import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtterance';
 import isRecognizingSpeech from './isRecognizingSpeech';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
+import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import startSpeechSynthesize from './startSpeechSynthesize';
@@ -29,10 +31,12 @@ export default function pageObjects(driver) {
       getMicrophoneButton,
       getSendBoxTextBox,
       getStore,
+      getUploadButton,
       hasPendingSpeechSynthesisUtterance,
       isRecognizingSpeech,
       pingBot,
       putSpeechRecognitionResult,
+      sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
       startSpeechSynthesize

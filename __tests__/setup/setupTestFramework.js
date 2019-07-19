@@ -56,8 +56,10 @@ global.setupWebDriver = async options => {
 
   if (!driverPromise) {
     driverPromise = retry(async () => {
-      let { baseURL, builder } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
+      let { baseURL, builder, fileDetector } = await setupTestEnvironment(BROWSER_NAME, new Builder(), options);
       const driver = builder.build();
+
+      fileDetector && driver.setFileDetector(fileDetector);
 
       try {
         // If the baseURL contains $PORT, it means it requires us to fill-in

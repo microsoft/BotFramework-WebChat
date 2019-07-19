@@ -1,4 +1,5 @@
 import { Options } from 'selenium-webdriver/chrome';
+import { join } from 'path';
 
 export default function setupTestEnvironment(browserName, builder, { height = 640, width = 360, zoom = 1 } = {}) {
   switch (browserName) {
@@ -9,7 +10,10 @@ export default function setupTestEnvironment(browserName, builder, { height = 64
           .forBrowser('chrome')
           .setChromeOptions(
             (builder.getChromeOptions() || new Options()).windowSize({ height: height * zoom, width: width * zoom })
-          )
+          ),
+        fileDetector: {
+          handleFile: (_, path) => join(__dirname, 'setup/local', path)
+        }
       };
 
     case 'chrome-docker':
@@ -23,7 +27,10 @@ export default function setupTestEnvironment(browserName, builder, { height = 64
             (builder.getChromeOptions() || new Options())
               .headless()
               .windowSize({ height: height * zoom, width: width * zoom })
-          )
+          ),
+        fileDetector: {
+          handleFile: (_, path) => `/~/Downloads/${path}`
+        }
       };
   }
 }
