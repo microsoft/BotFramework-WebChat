@@ -5,7 +5,9 @@ import React from 'react';
 
 import { localize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
+import blobToArrayBuffer from '../Utils/blobToArrayBuffer';
 import connectToWebChat from '../connectToWebChat';
+import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
 
 const ROOT_CSS = css({
@@ -27,7 +29,7 @@ const connectUploadButton = (...selectors) =>
     ({ disabled, language, sendFiles }) => ({
       disabled,
       language,
-      sendFiles: files => {
+      sendFiles: async files => {
         if (files && files.length) {
           // TODO: [P3] We need to find revokeObjectURL on the UI side
           //       Redux store should not know about the browser environment
@@ -37,7 +39,18 @@ const connectUploadButton = (...selectors) =>
               name: file.name,
               size: file.size,
               url: window.URL.createObjectURL(file)
-            }))
+            })),
+            await Promise.all(
+              [].map.call(files, async file => {
+                if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
+                  try {
+                    return await downscaleImageToDataURL(await blobToArrayBuffer(file));
+                  } catch (error) {
+                    console.warn(`Web Chat: Failed to downscale image due to ${error.message}.`);
+                  }
+                }
+              })
+            )
           );
         }
       }
