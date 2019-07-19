@@ -2,6 +2,43 @@
 // Do not include any dependencies here because they will not be bundled.
 
 export default () => {
+  function blobToDataURL(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onerror = ({ error, message }) => reject(error || new Error(message));
+      reader.onloadend = () => resolve(reader.result);
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function keepAspectRatio(width, height, maxWidth, maxHeight) {
+    if (width < maxWidth && height < maxHeight) {
+      // Photo is smaller than both maximum dimensions, take it as-is
+      return {
+        height,
+        width
+      };
+    }
+
+    const aspectRatio = width / height;
+
+    if (aspectRatio > maxWidth / maxHeight) {
+      // Photo is wider than maximum dimension, downscale it based on maxWidth.
+      return {
+        height: maxWidth / aspectRatio,
+        width: maxWidth
+      };
+    }
+
+    // Photo is taller than maximum dimension, downscale it based on maxHeight.
+    return {
+      height: maxHeight,
+      width: maxHeight * aspectRatio
+    };
+  }
+
   onmessage = async ({ data: { arrayBuffer, maxHeight, maxWidth, type, quality }, ports: [port] }) => {
     try {
       const imageBitmap = await createImageBitmap(
@@ -31,43 +68,6 @@ export default () => {
       });
     }
   };
-
-  function blobToDataURL(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onerror = ({ error, message }) => reject(error || new Error(message));
-      reader.onloadend = () => resolve(reader.result);
-
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  function keepAspectRatio(width, height, maxWidth, maxHeight) {
-    if (width < maxWidth && height < maxHeight) {
-      // Photo is smaller than both maximum dimensions, take it as-is
-      return {
-        height,
-        width
-      };
-    }
-
-    const aspectRatio = width / height;
-
-    if (aspectRatio > maxWidth / maxHeight) {
-      // Photo is wider than maximum dimension, downscale it based on maxWidth.
-      return {
-        height: maxWidth / aspectRatio,
-        width: maxWidth
-      };
-    } else {
-      // Photo is taller than maximum dimension, downscale it based on maxHeight.
-      return {
-        height: maxHeight,
-        width: maxHeight * aspectRatio
-      };
-    }
-  }
 
   postMessage('ready');
 };

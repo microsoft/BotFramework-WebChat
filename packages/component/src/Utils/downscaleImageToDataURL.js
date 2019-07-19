@@ -28,10 +28,7 @@ async function getWorker() {
     worker.addEventListener('error', () => {
       // Current worker errored out, will create a new worker next time.
       workerPromise = null;
-
-      try {
-        worker.terminate();
-      } catch (err) {}
+      worker.terminate();
     });
   }
 
@@ -45,19 +42,19 @@ const support =
   typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' &&
   typeof window.Worker !== 'undefined';
 
-export default async function downscaleImageToDataURL(arrayBuffer, maxWidth, maxHeight, type, quality) {
-  return new Promise(async (resolve, reject) => {
+export default function downscaleImageToDataURL(arrayBuffer, maxWidth, maxHeight, type, quality) {
+  return new Promise((resolve, reject) => {
     const { port1, port2 } = new MessageChannel();
 
     port1.onmessage = ({ data: { error, result } }) => {
+      error ? reject(error) : resolve(result);
       port1.close();
       port2.close();
-      error ? reject(error) : resolve(result);
     };
 
-    const worker = await getWorker();
-
-    worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type }, [arrayBuffer, port2]);
+    getWorker().then(worker =>
+      worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type }, [arrayBuffer, port2])
+    );
   });
 }
 
