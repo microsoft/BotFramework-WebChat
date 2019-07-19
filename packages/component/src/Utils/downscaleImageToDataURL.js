@@ -1,3 +1,4 @@
+import memoizeOne from 'memoize-one';
 import worker from './downscaleImageToDataURL.worker';
 
 function createWorker() {
@@ -35,19 +36,50 @@ async function getWorker() {
   return worker;
 }
 
-const support =
-  typeof window.createImageBitmap !== 'undefined' &&
-  typeof window.MessageChannel !== 'undefined' &&
-  typeof window.OffscreenCanvas !== 'undefined' &&
-  typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' &&
-  typeof window.Worker !== 'undefined';
+// We are using a lazy-check because:
+// 1. OffscreenCanvas.getContext has a toll
+// 2. Developers could bring polyfills
+
+const checkSupport = memoizeOne(() => {
+  const hasOffscreenCanvas =
+    typeof window.OffscreenCanvas !== 'undefined' &&
+    (typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' ||
+      typeof window.OffscreenCanvas.prototype.toBlob !== 'undefined');
+  let isOffscreenCanvasSupportGetContext2D;
+
+  if (hasOffscreenCanvas) {
+    try {
+      new OffscreenCanvas(1, 1).getContext('2d');
+      isOffscreenCanvasSupportGetContext2D = true;
+    } catch (err) {
+      isOffscreenCanvasSupportGetContext2D = false;
+    }
+  }
+
+  return (
+    typeof window.createImageBitmap !== 'undefined' &&
+    typeof window.MessageChannel !== 'undefined' &&
+    hasOffscreenCanvas &&
+    isOffscreenCanvasSupportGetContext2D &&
+    typeof window.Worker !== 'undefined'
+  );
+});
 
 export default function downscaleImageToDataURL(arrayBuffer, maxWidth, maxHeight, type, quality) {
   return new Promise((resolve, reject) => {
     const { port1, port2 } = new MessageChannel();
 
     port1.onmessage = ({ data: { error, result } }) => {
-      error ? reject(error) : resolve(result);
+      if (error) {
+        const err = new Error(error.message);
+
+        err.stack = error.stack;
+
+        reject(err);
+      } else {
+        resolve(result);
+      }
+
       port1.close();
       port2.close();
     };
@@ -58,4 +90,4 @@ export default function downscaleImageToDataURL(arrayBuffer, maxWidth, maxHeight
   });
 }
 
-export { support };
+export { checkSupport };

@@ -68,10 +68,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Make thumbnails for uploading GIF/JPEG/PNG and store it in `channelData.attachmentThumbnails`, by [@compulim](https://github.com/compulim), in PR [#2206](https://github.com/microsoft/BotFramework-WebChat/pull/2206), requires modern browsers with following features:
    - [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
    - [`createImageBitmap`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/createImageBitmap)
-US/docs/Web/API/OffscreenCanvas/convertToBlob)
    - [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)/[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)
    - [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
-      - Specifically [`OffscreenCanvas.convertToBlob`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/convertToBlob)
+      - Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
 
 ### Samples
 

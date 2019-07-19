@@ -53,7 +53,8 @@ export default () => {
 
       context.drawImage(imageBitmap, 0, 0, width, height);
 
-      const blob = await offscreenCanvas.convertToBlob({
+      // Firefox quirks: 68.0.1 call named OffscreenCanvas.convertToBlob as OffscreenCanvas.toBlob.
+      const blob = await (offscreenCanvas.convertToBlob || offscreenCanvas.toBlob).call(offscreenCanvas, {
         type,
         quality
       });
@@ -61,9 +62,13 @@ export default () => {
       port.postMessage({
         result: await blobToDataURL(blob)
       });
-    } catch ({ message }) {
+    } catch (err) {
+      console.error(err);
+
+      const { message, stack } = err;
+
       port.postMessage({
-        error: message
+        error: { message, stack }
       });
     }
   };
