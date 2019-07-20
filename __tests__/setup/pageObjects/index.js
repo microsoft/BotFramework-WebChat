@@ -1,6 +1,7 @@
 import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
+import getActivityElements from './getActivityElements';
 import getMicrophoneButton from './getMicrophoneButton';
 import getSendBoxTextBox from './getSendBoxTextBox';
 import getStore from './getStore';
@@ -28,6 +29,7 @@ export default function pageObjects(driver) {
       dispatchAction,
       endSpeechSynthesize,
       executePromiseScript,
+      getActivityElements,
       getMicrophoneButton,
       getSendBoxTextBox,
       getStore,

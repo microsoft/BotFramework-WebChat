@@ -85,12 +85,12 @@ test('upload a picture with custom thumbnail disabled', async () => {
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
-test('upload a text file', async () => {
+test('upload a PDF file', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.sendFile('hello.txt');
+  await pageObjects.sendFile('empty.pdf');
   await driver.wait(minNumActivitiesShown(2));
   await driver.wait(allImagesLoaded());
 
