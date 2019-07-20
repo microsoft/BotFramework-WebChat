@@ -13,6 +13,7 @@ import setupTestEnvironment from './setupTestEnvironment';
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
 // const BROWSER_NAME = 'chrome-local';
+const NUM_RETRIES = 1;
 
 function marshal(props) {
   return (
@@ -101,7 +102,7 @@ global.setupWebDriver = async options => {
 
         throw err;
       }
-    }, 3);
+    }, NUM_RETRIES);
   }
 
   return await driverPromise;
