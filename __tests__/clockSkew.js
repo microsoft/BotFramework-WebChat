@@ -91,13 +91,11 @@ describe('Clock skew', () => {
           }),
           connectionStatus$: workingDirectLine.connectionStatus$,
           getSessionId: () => 0,
-          postActivity: workingDirectLine.postActivity.bind(workingDirectLine)
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          token: workingDirectLine.token
         };
       },
       pingBotOnLoad: false,
-      props: {
-        userID: 'user'
-      },
       setup: () => {
         window.WebChatTest.loadScript('https://unpkg.com/core-js@2.6.3/client/core.min.js');
       }
@@ -120,5 +118,7 @@ describe('Clock skew', () => {
     const lastActivity = await driver.findElement(By.css('[role="list"] > li:last-child p'));
 
     expect(lastActivity.getText()).resolves.toBe('echo This outgoing activity should be the last in the list.');
+
+    // TODO: Take a screenshot
   });
 });
