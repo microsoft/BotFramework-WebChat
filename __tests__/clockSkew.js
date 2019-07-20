@@ -14,46 +14,8 @@ describe('Clock skew', () => {
   test('should not have any effects', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       createDirectLine: options => {
-        function createProducerConsumer() {
-          const consumers = [];
-          const jobs = [];
-
-          return {
-            cancel() {
-              jobs.splice(0);
-            },
-            consume(consumer) {
-              consumers.push(consumer);
-
-              if (jobs.length) {
-                const consumer = consumers.shift();
-
-                consumer.apply(consumer, jobs.shift());
-              }
-            },
-            hasConsumer() {
-              return !!consumers.length;
-            },
-            hasJob() {
-              return !!jobs.length;
-            },
-            peek() {
-              return jobs[0];
-            },
-            produce(...args) {
-              jobs.push(args);
-
-              if (consumers.length) {
-                const consumer = consumers.shift();
-
-                consumer.apply(consumer, jobs.shift());
-              }
-            }
-          };
-        }
-
         const workingDirectLine = window.WebChat.createDirectLine(options);
-        const activityBroker = createProducerConsumer();
+        const activityBroker = window.createProduceConsumeBroker();
         const activityObservers = [];
 
         const activitySubscription = workingDirectLine.activity$.subscribe({
