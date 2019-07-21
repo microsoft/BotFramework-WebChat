@@ -42,7 +42,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       })),
     channelData: {
       clientActivityID,
-      // This is unskewed local timestamp for measuring clock skew.
+      // This is unskewed local timestamp for estimating clock skew.
       clientTimestamp: getTimestamp(),
       ...deleteKey(activity.channelData, 'state')
     },
