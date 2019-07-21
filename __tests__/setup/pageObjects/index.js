@@ -3,6 +3,7 @@ import endSpeechSynthesize from './endSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
 import getMicrophoneButton from './getMicrophoneButton';
 import getSendBoxTextBox from './getSendBoxTextBox';
+import getStore from './getStore';
 import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtterance';
 import isRecognizingSpeech from './isRecognizingSpeech';
 import pingBot from './pingBot';
@@ -27,6 +28,7 @@ export default function pageObjects(driver) {
       executePromiseScript,
       getMicrophoneButton,
       getSendBoxTextBox,
+      getStore,
       hasPendingSpeechSynthesisUtterance,
       isRecognizingSpeech,
       pingBot,
