@@ -40,6 +40,6 @@ App ABC and XYZ implemented this feature. In app ABC, they show the auto-complet
 
 <!-- If you would implement this feature, please let us know how it should be done -->
 
-While the user is typing, we should send partial text to the bot via `typing` activity. And the bot would suggest in real time using suggested actions.
+While the user is typing, we could send partial text to the bot via `typing` activity. And the bot would suggest in real time using suggested actions.
 
 [Enhancement]
