@@ -61,6 +61,8 @@ botframework-webchat:ui:version=
 
 <!-- Please fill out if you know any potential fixes -->
 
+I think the background color of hero card should be defaulted to white, and settable thru style options.
+
 ## Additional contexts
 
 I am rendering an Adaptive Card and here is the content of the card.
