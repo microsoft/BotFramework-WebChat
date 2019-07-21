@@ -45,7 +45,7 @@ I tested on these versions and variants of Web Chat:
 
 <!-- Please open Developer Tools and run the following script and paste the content:
 
-[].map.call(document.querySelectorAll('meta[name^="botframework"]'), function (m) { return '- ' + m.name + '=' + m.content; }).join('\n')
+[].map.call(document.querySelectorAll('meta[name^="botframework"]'), function (m) { return m.name + '=' + m.content; }).join('\n')
 -->
 
 ```
