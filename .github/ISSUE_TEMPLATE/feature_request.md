@@ -17,11 +17,11 @@ https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+
 
 ## User story
 
-I want to add auto complete to the send box.
+Today, auto complete is not implemented in the send box.
+
+Tomorrow, I want to add auto complete to the send box. Our users are mostly on mobile devices. Tapping buttons than typing make the chatbot experience more attractive.
 
 <!-- Please attach sketches with annotations, if any -->
-
-Our users are mostly on mobile devices. Typing on a mobile device is not as attractive as tapping on buttons.
 
 ## Alternatives
 
@@ -40,6 +40,6 @@ App ABC and XYZ implemented this feature. In app ABC, they show the auto-complet
 
 <!-- If you would implement this feature, please let us know how it should be done -->
 
-While the user is typing, we should send partial text to the bot. And the bot would suggest in real time.
+While the user is typing, we should send partial text to the bot via `typing` activity. And the bot would suggest in real time using suggested actions.
 
 [Enhancement]
