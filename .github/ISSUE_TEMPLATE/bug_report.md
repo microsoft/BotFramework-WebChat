@@ -20,13 +20,13 @@ To expedite the fix, please follow this template and fill out as concise as poss
 
 ### Expectations
 
-<!-- If it did not render anything, please open Developer Tools in your browser and paste the console log here -->
-
-<!-- Please attach any screenshots with annotations, if any -->
-
 It should display the hero card with white background.
 
 But instead, it displayed the hero card with red background.
+
+<!-- If it did not render anything, please open Developer Tools in your browser and paste the console log here -->
+
+<!-- Please attach any screenshots with annotations, if any -->
 
 ## Versions
 
@@ -45,11 +45,6 @@ I tested on these versions and variants of Web Chat:
 - [ ] Thru NPM, React version of `16.x.x`
 - [ ] Thru IFRAME, hosted by `https://webchat.botframework.com/embed/`
 
-<!-- Please open Developer Tools and run the following script and paste the content:
-
-[].map.call(document.querySelectorAll('meta[name^="botframework"]'), function (m) { return m.name + '=' + m.content; }).join('\n')
--->
-
 ```
 botframework-webchat:bundle:variant=
 botframework-webchat:bundle:version=
@@ -57,9 +52,12 @@ botframework-webchat:core:version=
 botframework-webchat:ui:version=
 ```
 
-## Steps to fix
+<!-- Please open Developer Tools and run the following script and paste the content:
 
-<!-- Please fill out if you know any potential fixes -->
+[].map.call(document.querySelectorAll('meta[name^="botframework"]'), function (m) { return m.name + '=' + m.content; }).join('\n')
+-->
+
+## Steps to fix
 
 I think the background color of hero card should be defaulted to white, and settable thru style options.
 
