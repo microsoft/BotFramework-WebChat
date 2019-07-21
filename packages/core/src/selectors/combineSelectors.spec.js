@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [1, 2, 3] }] */
+
 import combineSelectors from './combineSelectors';
 
 describe('combineSelectors', () => {
