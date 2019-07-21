@@ -59,7 +59,7 @@ botframework-webchat:ui:version=
 
 ## Steps to fix
 
-I think the background color of hero card should be defaulted to white, and settable thru style options.
+I think the background color of hero card should default to white color, and settable thru style options.
 
 ## Additional contexts
 
