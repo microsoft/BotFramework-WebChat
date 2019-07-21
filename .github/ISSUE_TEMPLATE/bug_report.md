@@ -4,40 +4,70 @@ about: Create a report to help us improve
 title: ''
 labels: Bug, Pending
 assignees: ''
+
 ---
 
-### [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the Support section to get support related to Bot Framework and Web Chat.
+<!--
+Thanks for posting the issue to us. Before posting, please remove any personal-identifiable information, secret, token, or conversation ID.
 
-## Screenshots
+To expedite the fix, please follow this template and fill out as concise as possible.
+-->
 
-<!-- If applicable, add screenshots to help explain your problem. -->
-<!-- Be sure to remove or obscure personally identifiable information from your code and screenshots -->
+## Reproduce steps
 
-## Version
+1. Using style options, set background color to red
+1. Type `herocard` to render a hero card
 
-<!-- What version of Web Chat are you using? Are you using the CDN? NPM package? Or embedding Web Chat to your site via `<iframe>`? -->
-<!-- The fastest way to find your Web Chat version is by checking the meta tag on your deployed site. -->
+### Expectations
 
-## Describe the bug
+<!-- If it did not render anything, please open Developer Tools in your browser and paste the console log here -->
 
-<!-- Give a clear and concise description of what the bug is. -->
-<!-- Please be sure to add screenshots of the console errors in your browser, if there are any -->
+<!-- Please attach any screenshots with annotations, if any -->
 
-## To Reproduce
+It should display the hero card with white background. But instead, it displayed the hero card with red background.
 
-Steps to reproduce the behavior:
+## Versions
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+I tested on these versions of browsers:
 
-## Expected behavior
+- [ ] Chrome: `latest`
+- [ ] Edge: `latest`
+- [ ] Firefox: `latest`
+- [ ] Internet Explorer: `11`
 
-<!-- Give a clear and concise description of what you expect to happen when following the reproduction steps above. -->
+<!-- Please indicate if you host Web Chat under non-browser environment, e.g. Microsoft Teams, React Native, iOS WebView -->
 
-## Additional context
+I tested on these versions and variants of Web Chat:
 
-<!-- Add any other context about the problem here.-->
+- [ ] Thru CDN, hosted by `https://cdn.botframework.com/`
+- [ ] Thru NPM, React version of `16.x.x`
+- [ ] Thru IFRAME, hosted by `https://webchat.botframework.com/embed/`
+
+<!-- Please open Developer Tools and run the following script and paste the content:
+
+[].map.call(document.querySelectorAll('meta[name^="botframework"]'), function (m) { return '- ' + m.name + '=' + m.content; }).join('\n')
+-->
+
+```
+botframework-webchat:bundle:variant=
+botframework-webchat:bundle:version=
+botframework-webchat:core:version=
+botframework-webchat:ui:version=
+```
+
+## Steps to fix
+
+<!-- Please fill out if you know any potential fixes -->
+
+## Additional contexts
+
+I am rendering an Adaptive Card and here is the content of the card.
+
+```json
+{
+  "$schema": "https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",
+  "type": "AdaptiveCard"
+}
+```
 
 [Bug]

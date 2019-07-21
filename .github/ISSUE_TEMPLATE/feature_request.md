@@ -4,28 +4,42 @@ about: Suggest an idea for this project
 title: ''
 labels: Enhancement, Pending
 assignees: ''
+
 ---
 
-## Feature Request
+<!--
+To let use better understand your request, please follow this template and fill out as comprehensive as possible.
 
-### Use the ['Enhancement' query](https://github.com/microsoft/botframework-Webchat/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Aenhancement) to search for the most popular feature requests.
+Creative ideas are not uncommon. Please check this query to see if anyone already on the same topic
 
-### The [Sample tag](https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample) also lists examples and implementations that have already been requested.
+https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample
+-->
 
-**Is your feature request related to a problem? Please describe.**
+## User story
 
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
+I want to add auto complete to the send box.
 
-**Describe the suggestion or request in detail**
+<!-- Please attach sketches with annotations, if any -->
 
-<!-- A clear and concise description of what you want to happen. -->
+Our users are mostly on mobile devices. Typing on a mobile device is not as attractive as tapping on buttons.
 
-**Describe alternatives you have considered**
+## Alternatives
 
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
+I have tried suggested actions but it does not fit in the user story because:
 
-**Additional context**
+- They are not dynamic
+- Only 5 of them is shown
 
-<!-- Add any other context or screenshots about the feature request here. -->
+## Other implementations
+
+App ABC and XYZ implemented this feature. In app ABC, they show the auto-completes using inlined text. In app XYZ, they show the auto-completes on top of the input box.
+
+<!-- Please attach screenshots, if any -->
+
+## Potential implementation
+
+<!-- If you would implement this feature, please let us know how it should be done -->
+
+While the user is typing, we should send partial text to the bot. And the bot would suggest in real time.
 
 [Enhancement]
