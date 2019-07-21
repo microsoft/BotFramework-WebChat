@@ -24,7 +24,9 @@ To expedite the fix, please follow this template and fill out as concise as poss
 
 <!-- Please attach any screenshots with annotations, if any -->
 
-It should display the hero card with white background. But instead, it displayed the hero card with red background.
+It should display the hero card with white background.
+
+But instead, it displayed the hero card with red background.
 
 ## Versions
 
