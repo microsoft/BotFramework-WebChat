@@ -10,7 +10,7 @@ assignees: ''
 <!--
 To let use better understand your request, please follow this template and fill out as comprehensive as possible.
 
-Creative ideas are not uncommon. Please check this query to see if anyone already on the same topic
+Creative ideas are not uncommon. Please check the following to see if anyone has already requested the same feature:
 
 https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample
 -->

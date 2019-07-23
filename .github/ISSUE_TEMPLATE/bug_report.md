@@ -8,9 +8,9 @@ assignees: ''
 ---
 
 <!--
-Thanks for posting the issue to us. Before posting, please remove any personal-identifiable information, secret, token, or conversation ID.
+Thanks for posting the issue to us. Before posting, please remove any personally-identifiable information such as your  secret, token, or conversation ID.
 
-To expedite the fix, please follow this template and fill out as concise as possible.
+To expedite the fix, please follow this template and fill out as concisely as possible.
 -->
 
 ## Reproduce steps
@@ -28,9 +28,9 @@ But instead, it displayed the hero card with red background.
 
 <!-- Please attach any screenshots with annotations, if any -->
 
-## Versions
+## Version
 
-I tested on these versions of browsers:
+I tested on the following browsers:
 
 - [ ] Chrome: `latest`
 - [ ] Edge: `latest`
@@ -39,7 +39,7 @@ I tested on these versions of browsers:
 
 <!-- Please indicate if you host Web Chat under non-browser environment, e.g. Microsoft Teams, React Native, iOS WebView -->
 
-I tested on these versions and variants of Web Chat:
+I tested on the following versions and variants of Web Chat:
 
 - [ ] Thru CDN, hosted by `https://cdn.botframework.com/`
 - [ ] Thru NPM, React version of `16.x.x`
@@ -61,7 +61,7 @@ botframework-webchat:ui:version=
 
 I think the background color of hero card should default to white color, and settable thru style options.
 
-## Additional contexts
+## Additional context
 
 I am rendering an Adaptive Card and here is the content of the card.
 

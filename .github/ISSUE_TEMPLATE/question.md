@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 <!--
-🚨 We generally do not answer questions on GitHub. 🚨
+🚨 We generally do not answer implementation questions on GitHub. 🚨
 
 Please submit your question to https://stackoverflow.com/questions/tagged/botframework
 
