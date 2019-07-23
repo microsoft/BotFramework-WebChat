@@ -17,7 +17,7 @@ export default async function sendFile(driver, filename, { waitForSend = true } 
   const uploadButton = await getUploadButton(driver);
   const isUnderDocker = !!(await driver.getCapabilities()).get('webdriver.remote.sessionid');
 
-  // The send file function is asynchronous, it don't send immediate until thumbnails are generated.
+  // The send file function is asynchronous, it doesn't send immediately until thumbnails are generated.
   // We will save the numActivities, anticipate for numActivities + 1, then wait until everything is sent
   const numActivities = (await getActivityElements(driver)).length;
 
