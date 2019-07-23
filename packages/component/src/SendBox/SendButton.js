@@ -14,16 +14,21 @@ const connectSendButton = (...selectors) =>
         submitSendBox();
       },
       disabled,
-      language
+      language,
+      sendBoxValue
     }),
     ...selectors
   );
 
-const SendButton = ({ click, disabled, language }) => (
-  <IconButton alt={localize('Send', language)} disabled={disabled} onClick={click}>
-    <SendIcon />
-  </IconButton>
-);
+const SendButton = ({ click, disabled, language, sendBoxValue }) => {
+  disabled = sendBoxValue ? false : true;
+
+  return (
+    <IconButton alt={localize('Send', language)} disabled={disabled} onClick={click}>
+      <SendIcon />
+    </IconButton>
+  );
+};
 
 SendButton.defaultProps = {
   disabled: false
@@ -32,7 +37,8 @@ SendButton.defaultProps = {
 SendButton.propTypes = {
   click: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
+  sendBoxValue: PropTypes.string.isRequired
 };
 
 export default connectSendButton()(SendButton);
