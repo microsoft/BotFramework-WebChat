@@ -8,5 +8,6 @@
     "samples/16.customization-selectable-activity",
     "samples/17.chat-send-history",
     "samples/21.customization-plain-ui"
-  ]
+  ],
+  "version": "0.0.0"
 }
