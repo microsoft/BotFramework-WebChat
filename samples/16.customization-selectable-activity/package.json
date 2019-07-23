@@ -1,10 +1,10 @@
 {
   "name": "sample-customization-selectable-activity",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/16.customization-selectable-activity/",
   "dependencies": {
-    "botframework-webchat": "^1.0.0",
+    "botframework-webchat": ">= 0.0.0-0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-scripts": "^3.0.0"

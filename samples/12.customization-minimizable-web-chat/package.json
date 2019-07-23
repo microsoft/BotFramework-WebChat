@@ -1,10 +1,10 @@
 {
   "name": "sample-customization-minimizable-web-chat",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/",
   "dependencies": {
-    "botframework-webchat": "^1.0.0",
+    "botframework-webchat": ">= 0.0.0-0",
     "memoize-one": "^5.0.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
