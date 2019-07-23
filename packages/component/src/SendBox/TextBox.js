@@ -6,6 +6,7 @@ import React from 'react';
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import { POST_ACTIVITY_PENDING } from '../../../core/src/actions/postActivity';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -17,12 +18,24 @@ const ROOT_CSS = css({
 
 const connectSendTextBox = (...selectors) =>
   connectToWebChat(
-    ({ disabled, focusSendBox, language, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
+    ({
+      disabled,
+      focusSendBox,
+      language,
+      scrollToEnd,
+      sendBoxValue,
+      setSendBox,
+      stopDictate,
+      submitSendBox,
+      store
+    }) => ({
       disabled,
       language,
       onChange: ({ target: { value } }) => {
-        setSendBox(value);
-        stopDictate();
+        if (store.getState().lastAction !== POST_ACTIVITY_PENDING) {
+          setSendBox(value);
+          stopDictate();
+        }
       },
       onKeyPress: event => {
         const { key, shiftKey } = event;
