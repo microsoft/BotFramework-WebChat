@@ -3,11 +3,12 @@ import { all, call, cancelled, put, race, select, take, takeEvery } from 'redux-
 import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
 
+import clockSkewAdjustmentSelector from '../selectors/clockSkewAdjustment';
+import combineSelectors from '../selectors/combineSelectors';
 import languageSelector from '../selectors/language';
 import sendTimeoutSelector from '../selectors/sendTimeout';
 
 import deleteKey from '../utils/deleteKey';
-import getTimestamp from '../utils/getTimestamp';
 import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 
@@ -20,8 +21,14 @@ import {
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
+function getTimestamp(clockSkewAdjustment = 0) {
+  return new Date(Date.now() + clockSkewAdjustment).toISOString();
+}
+
 function* postActivity(directLine, userID, username, numActivitiesPosted, { meta: { method }, payload: { activity } }) {
-  const locale = yield select(languageSelector);
+  const { clockSkewAdjustment, locale } = yield select(
+    combineSelectors({ clockSkewAdjustment: clockSkewAdjustmentSelector, locale: languageSelector })
+  );
   const { attachments, channelData: { clientActivityID = uniqueID() } = {} } = activity;
 
   activity = {
@@ -35,6 +42,8 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       })),
     channelData: {
       clientActivityID,
+      // This is unskewed local timestamp for estimating clock skew.
+      clientTimestamp: getTimestamp(),
       ...deleteKey(activity.channelData, 'state')
     },
     channelId: 'webchat',
@@ -44,7 +53,9 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
       role: 'user'
     },
     locale,
-    timestamp: getTimestamp()
+    // This timestamp will be replaced by Direct Line Channel in echoback.
+    // We are adding this timestamp for sorting temporarily.
+    timestamp: getTimestamp(clockSkewAdjustment)
   };
 
   if (!numActivitiesPosted) {

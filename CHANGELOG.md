@@ -55,6 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fix [#2160](https://github.com/microsoft/BotFramework-WebChat/issues/2160). Clear suggested actions after clicking on a suggested actions of type `openUrl`, by [@tdurnford](https://github.com/tdurnford) in PR [#2190](https://github.com/microsoft/BotFramework-WebChat/pull/2190)
 -  Fix [#2187](https://github.com/microsoft/BotFramework-WebChat/issues/2187). Bump core-js and update core-js modules on index-es5.js, by [@corinagum](https://github.com/corinagum) in PR [#2195](https://github.com/microsoft/BotFramework-WebChat/pull/2195)
+-  Fix [#1954](https://github.com/microsoft/BotFramework-WebChat/issues/1954). Estimate clock skew and adjust timestamp for outgoing activity, by [@compulim](https://github.com/compulim) in PR [#2208](https://github.com/microsoft/BotFramework-WebChat/pull/2208)
 
 ### Added
 

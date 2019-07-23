@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import activities from './reducers/activities';
+import clockSkewAdjustment from './reducers/clockSkewAdjustment';
 import connectivityStatus from './reducers/connectivityStatus';
 import dictateInterims from './reducers/dictateInterims';
 import dictateState from './reducers/dictateState';
@@ -15,6 +16,7 @@ import suggestedActions from './reducers/suggestedActions';
 
 export default combineReducers({
   activities,
+  clockSkewAdjustment,
   connectivityStatus,
   dictateInterims,
   dictateState,
