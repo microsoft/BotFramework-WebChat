@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-embed",
-  "version": "4.0.0-0",
+  "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "private": true,
