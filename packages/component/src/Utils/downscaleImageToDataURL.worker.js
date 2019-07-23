@@ -1,4 +1,4 @@
-// This file is the entrypoint of Web Worker and is minimally transpiled thru Babel.
+// This file is the entrypoint of Web Worker and is minimally transpiled through Babel.
 // Do not include any dependencies here because they will not be bundled.
 
 export default () => {
