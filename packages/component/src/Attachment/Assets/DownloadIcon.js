@@ -3,9 +3,9 @@ import React from 'react';
 
 const ICON_SIZE_FACTOR = 22;
 
-const DownloadIcon = ({ className, label, size }) => (
+const DownloadIcon = ({ className, size }) => (
   <svg
-    aria-label={label}
+    aria-hidden={true}
     className={className}
     height={ICON_SIZE_FACTOR * size}
     viewBox="0 0 31.8 46"
@@ -17,13 +17,11 @@ const DownloadIcon = ({ className, label, size }) => (
 
 DownloadIcon.defaultProps = {
   className: '',
-  label: '',
   size: 1
 };
 
 DownloadIcon.propTypes = {
   className: PropTypes.string,
-  label: PropTypes.string,
   size: PropTypes.number
 };
 

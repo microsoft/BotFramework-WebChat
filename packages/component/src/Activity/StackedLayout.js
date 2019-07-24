@@ -118,8 +118,9 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           </div>
         ) : (
           !!activityDisplayText && (
-            <div aria-label={ariaLabel} className="webchat__row message">
-              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+            <div className="webchat__row message">
+              <span aria-label={ariaLabel} />
+              <Bubble ariaHidden={true} className="bubble" fromUser={fromUser}>
                 {children({
                   activity,
                   attachment: {
@@ -133,8 +134,9 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           )
         )}
         {attachments.map((attachment, index) => (
-          <div className="webchat__row attachment" key={index}>
-            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index}>
+          <div aria-label=" " className="webchat__row attachment" key={index}>
+            <span aria-label={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <Bubble ariaHidden={false} className="attachment bubble" fromUser={fromUser} key={index}>
               {children({ attachment })}
             </Bubble>
           </div>
@@ -143,7 +145,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (
-            <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
+            <Timestamp activity={activity} className={classNames('timestamp', timestampClassName)} />
           )}
           <div className="filler" />
         </div>

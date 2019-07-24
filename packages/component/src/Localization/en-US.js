@@ -45,6 +45,11 @@ function botSaidSomething(avatarInitials, text) {
   return `Bot ${avatarInitials} said, ${text}`;
 }
 
+function downloadFileWithFileSize(downloadFileText, fileName, size) {
+  // Full text should read: "Download file <filename> of size <filesize>"
+  return `${downloadFileText} ${fileName} of size ${size}`;
+}
+
 function userSaidSomething(avatarInitials, text) {
   return `User ${avatarInitials} said, ${text}`;
 }
@@ -64,8 +69,11 @@ export default {
   // '[Unknown Card '%1']': '[Unknown Card '%1']',
   'Adaptive Card parse error': 'Adaptive Card parse error',
   'Adaptive Card render error': 'Adaptive Card render error',
+  BotSent: 'Bot sent: ',
   Chat: 'Chat',
   'Download file': 'Download file',
+  DownloadFileWithFileSize: downloadFileWithFileSize,
+  ErrorMessage: 'Error message',
   'Microphone off': 'Microphone off',
   'Microphone on': 'Microphone on',
   Left: 'Left',
@@ -75,11 +83,14 @@ export default {
   Right: 'Right',
   Send: 'Send',
   Sending: 'Sending',
+  SendStatus: 'Send status: ',
+  SentAt: 'Sent at: ',
   Speak: 'Speak',
   'Starting…': 'Starting…',
   Tax: 'Tax',
   Total: 'Total',
   'Type your message': 'Type your message',
   'Upload file': 'Upload file',
+  UserSent: 'User sent: ',
   VAT: 'VAT'
 };

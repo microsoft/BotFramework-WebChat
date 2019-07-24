@@ -3,7 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../../connectToWebChat';
 
-const TypingAnimation = ({ styleSet }) => <div className={styleSet.typingAnimation} />;
+const TypingAnimation = ({ styleSet }) => <div aria-label="typing indicator" className={styleSet.typingAnimation} />;
 
 TypingAnimation.propTypes = {
   styleSet: PropTypes.shape({

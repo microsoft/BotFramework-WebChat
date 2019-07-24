@@ -13,17 +13,24 @@ const DownloadAttachment = ({
   styleSet
 }) => {
   const attachmentIndex = attachments.indexOf(attachment);
-  const label = localize('Download file', language);
+  const downloadLabel = localize('Download file', language);
   const size = attachmentSizes[attachmentIndex];
-
+  const formattedSize = typeof size === 'number' && format(size);
+  const downloadFileWithFileSizeLabel = localize(
+    'DownloadFileWithFileSize',
+    language,
+    downloadLabel,
+    attachment.name,
+    formattedSize
+  );
   return (
-    <div className={styleSet.downloadAttachment}>
-      <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
+    <div aria-label={downloadFileWithFileSizeLabel} className={styleSet.downloadAttachment}>
+      <a aria-hidden={true} href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
         <div className="details">
           <div className="name">{attachment.name}</div>
-          {typeof size === 'number' && <div className="size">{format(size)}</div>}
+          <div className="size">{formattedSize}</div>
         </div>
-        <DownloadIcon className="icon" label={label} size={1.5} />
+        <DownloadIcon className="icon" size={1.5} />
       </a>
     </div>
   );
