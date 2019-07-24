@@ -1,0 +1,21 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node-dev --no-notify --respawn .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "dependencies": {
+    "botbuilder": "^4.4.0",
+    "botbuilder-dialogs": "^4.4.0",
+    "dotenv": "^8.0.0",
+    "restify": "^8.3.2"
+  },
+  "devDependencies": {
+    "node-dev": "^4.0.0"
+  }
+}

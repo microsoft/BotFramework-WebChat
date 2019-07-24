@@ -42,10 +42,71 @@ import defaultStyleOptions from './defaultStyleOptions';
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
+function parseBorder(border) {
+  const dummyElement = document.createElement('div');
+
+  dummyElement.setAttribute('style', `border: ${border}`);
+
+  const {
+    style: { borderColor: color, borderStyle: style, borderWidth: width }
+  } = dummyElement;
+
+  return {
+    color,
+    style,
+    width
+  };
+}
+
+const PIXEL_UNIT_PATTERN = /^\d+px$/u;
+
 export default function createStyleSet(options) {
   options = { ...defaultStyleOptions, ...options };
 
   // Keep this list flat (no nested style) and serializable (no functions)
+
+  // TODO: [P4] Deprecate this code after bump to v5
+  const { bubbleBorder, bubbleFromUserBorder } = options;
+
+  if (bubbleBorder) {
+    console.warn(
+      'Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.'
+    );
+
+    const { color, style, width } = parseBorder(bubbleBorder);
+
+    if (color && color !== 'initial') {
+      options.bubbleBorderColor = color;
+    }
+
+    if (style && style !== 'initial') {
+      options.bubbleBorderStyle = style;
+    }
+
+    if (PIXEL_UNIT_PATTERN.test(width)) {
+      options.bubbleBorderWidth = parseInt(width, 10);
+    }
+  }
+
+  if (bubbleFromUserBorder) {
+    console.warn(
+      'Web Chat: styleSet.bubbleFromUserBorder is being deprecated. Please use bubbleFromUserBorderColor, bubbleFromUserBorderStyle, and, bubbleFromUserBorderWidth.'
+    );
+
+    const { color, style, width } = parseBorder(bubbleFromUserBorder);
+
+    if (color && color !== 'initial') {
+      options.bubbleFromUserBorderColor = color;
+    }
+
+    if (style && style !== 'initial') {
+      options.bubbleFromUserBorderStyle = style;
+    }
+
+    if (PIXEL_UNIT_PATTERN.test(width)) {
+      options.bubbleFromUserBorderWidth = parseInt(width, 10);
+    }
+  }
 
   return {
     activities: createActivitiesStyle(options),

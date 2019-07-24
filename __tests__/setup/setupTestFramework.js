@@ -13,6 +13,7 @@ import setupTestEnvironment from './setupTestEnvironment';
 const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
 // const BROWSER_NAME = 'chrome-local';
+const NUM_RETRIES = 3;
 
 function marshal(props) {
   return (
@@ -72,6 +73,10 @@ global.setupWebDriver = async options => {
           (coverage, options, callback) => {
             window.__coverage__ = coverage;
 
+            if (options.zoom) {
+              document.body.style.zoom = options.zoom;
+            }
+
             main(options).then(
               () => callback(),
               err => {
@@ -97,7 +102,7 @@ global.setupWebDriver = async options => {
 
         throw err;
       }
-    }, 3);
+    }, NUM_RETRIES);
   }
 
   return await driverPromise;
@@ -109,7 +114,14 @@ global.setupWebServer = async () => {
       const port = await getPort();
       const httpServer = createServer((req, res) =>
         handler(req, res, {
-          redirects: [{ source: '/', destination: '__tests__/setup/web/index.html' }],
+          redirects: [
+            { source: '/', destination: '__tests__/setup/web/index.html' },
+            {
+              source: '/createProduceConsumeBroker.js',
+              destination: '__tests__/setup/web/createProduceConsumeBroker.js'
+            },
+            { source: '/mockWebSpeech.js', destination: '__tests__/setup/web/mockWebSpeech.js' }
+          ],
           rewrites: [
             { source: '/webchat.js', destination: 'packages/bundle/dist/webchat.js' },
             { source: '/webchat-es5.js', destination: 'packages/bundle/dist/webchat-es5.js' },

@@ -1,5 +1,5 @@
-/* eslint-disable no-sync */
 /* eslint react/no-array-index-key: "off" */
+/* eslint-disable no-sync */
 
 import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
@@ -103,9 +103,22 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     avatarInitials,
     plainText
   );
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', { 'from-user': fromUser })}>
+    <div
+      className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
+        'from-user': fromUser,
+        webchat__stacked_extra_left_indent:
+          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
+        webchat__stacked_extra_right_indent:
+          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
+        webchat__stacked_indented_content: avatarInitials && !indented
+      })}
+    >
+      {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
+        <div className="avatar" />
+      )}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {type === 'typing' ? (
@@ -120,7 +133,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           !!activityDisplayText && (
             <div className="webchat__row message">
               <span aria-label={ariaLabel} />
-              <Bubble ariaHidden={true} className="bubble" fromUser={fromUser}>
+              <Bubble ariaHidden={true} className="bubble" fromUser={fromUser} nub={true}>
                 {children({
                   activity,
                   attachment: {
@@ -134,14 +147,18 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           )
         )}
         {attachments.map((attachment, index) => (
-          <div aria-label=" " className="webchat__row attachment" key={index}>
+          <div
+            aria-label=" "
+            className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
+            key={index}
+          >
             <span aria-label={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
-            <Bubble ariaHidden={false} className="attachment bubble" fromUser={fromUser} key={index}>
+            <Bubble ariaHidden={false} className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
           </div>
         ))}
-        <div className="webchat__row">
+        <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (

@@ -84,6 +84,7 @@ const connectCarouselFilmStrip = (...selectors) =>
 
 const WebChatCarouselFilmStrip = ({
   activity,
+  avatarInitials,
   children,
   className,
   itemContainerRef,
@@ -101,14 +102,20 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '')} ref={scrollableRef}>
+    <div
+      className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '', {
+        webchat__carousel_indented_content: avatarInitials && !indented
+      })}
+      ref={scrollableRef}
+    >
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
                 attachment: {
@@ -120,16 +127,16 @@ const WebChatCarouselFilmStrip = ({
             <div className="filler" />
           </div>
         )}
-        <ul ref={itemContainerRef}>
+        <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble fromUser={fromUser} key={index}>
+              <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>
             </li>
           ))}
         </ul>
-        <div className="webchat__row">
+        <div className={classNames({ webchat__carousel__item_indented: indented })}>
           {state === SENDING || state === SEND_FAILED ? (
             <SendStatus activity={activity} />
           ) : (
@@ -142,6 +149,7 @@ const WebChatCarouselFilmStrip = ({
 };
 
 WebChatCarouselFilmStrip.defaultProps = {
+  avatarInitials: '',
   children: undefined,
   className: '',
   timestampClassName: ''
@@ -163,6 +171,7 @@ WebChatCarouselFilmStrip.propTypes = {
     textFormat: PropTypes.string,
     timestamp: PropTypes.string
   }).isRequired,
+  avatarInitials: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,

@@ -1,6 +1,6 @@
 # Single sign-on demo for Intranet apps using OAuth
 
-[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)](https://webchat-sample-sso.azurewebsites.net/)
+[![Deploy Status](https://fuselabs.vsrm.visualstudio.com/_apis/public/Release/badge/531382a8-71ae-46c8-99eb-9512ccb91a43/9/9)](https://webchat-sample-sso-intranet.azurewebsites.net/)
 
 # Description
 
@@ -10,7 +10,7 @@ In this demo, we will show you how to authorize a user to access resources on an
 
 ## Background
 
-This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise)". There are notable differences:
+This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/19.a.single-sign-on-for-enterprise-apps)". There are notable differences:
 
 -  In this demo, we are targeting a traditional web page instead of single-page application
    -  Page navigation and refresh are allowed on a traditional web page, but are restricted on a single-page application
@@ -20,7 +20,7 @@ This sample is a simplified and reduced version of the sample "[Single sign-on d
    -  We no longer send the sign-in and sign-out event activity to the bot
 -  We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider; in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
    -  Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)), which we are using PKCE to simplify setup
-   -  If you are using GitHub or other OAuth providers that does not support PKCE, you should use a client secret
+   -  If you are using GitHub or other OAuth providers that do not support PKCE, you should use a client secret
 
 This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
@@ -112,8 +112,9 @@ During development, you will run your bot locally. Azure Bot Services will send 
    -  `GET /api/oauth/callback` will handle callback from Azure AD OAuth
    -  `GET /api/directline/token` will generate a new Direct Line token for the React app
    -  It will serve a static `index.html`
-   -  During development-time, it will also serve the bot server via `/api/messages/`
+   -  During development-time, it will also serve the bot server via `/api/messages`
       -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
+      -  This will forward all traffic from `https://a1b2c3d4.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
 
 # Overview
 
@@ -121,7 +122,7 @@ This sample includes multiple parts:
 
 -  A basic web page that:
    -  Checks your access token or redirects to OAuth provider if it is not present or valid
-   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity thru `channelData.oauthAccessToken`
+   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity through `channelData.oauthAccessToken`
 -  Bot
    -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
 
@@ -155,7 +156,7 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 
 ```
 OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
-OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
+OAUTH_REDIRECT_URI=http://localhost:3000/api/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 ```
 
@@ -183,15 +184,15 @@ To reset application authorization, please follow the steps below.
 
 To make this demo simpler to understand, instead of refresh token, we are obtaining the access token via Authorization Code Grant flow. Access token is short-lived and considered secure to live inside the browser.
 
-In your production scenario, instead of the access token, you may want to obtain the refresh token with "Authorization Code Grant" flow. We did not use the refresh token in this sample as it requires server-to-server communications and secured persistent storage, it would greatly increase the complexity of this demo.
+In your production scenario, you may want to obtain the refresh token with "Authorization Code Grant" flow instead of using the access token. We did not use the refresh token in this sample as it requires server-to-server communications and secured persistent storage, it would greatly increase the complexity of this demo.
 
 ## Threat model
 
-To reduce complexity and lower the learning curve, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
+To reduce complexity, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
 -  Refreshing the access token
    -  Using silent prompt for refreshing access token
-      -  Some OAuth provider support `?prompt=none` for refreshing access token silently thru `<iframe>`
+      -  Some OAuth providers support `?prompt=none` for refreshing access token silently through `<iframe>`
    -  Using Authorization Code Grant flow with refresh token
       -  Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
       -  This will also create a smooth UX by reducing the need for UI popups
