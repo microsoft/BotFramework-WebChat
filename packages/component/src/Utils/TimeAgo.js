@@ -1,3 +1,5 @@
+/* eslint react/no-unsafe: off */
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -30,7 +32,7 @@ class TimeAgo extends React.Component {
     this.state = getStateFromProps(props);
   }
 
-  componentWillReceiveProps({ language, value }) {
+  UNSAFE_componentWillReceiveProps({ language, value }) {
     this.updateText({ language, value });
   }
 

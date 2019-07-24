@@ -1,3 +1,5 @@
+/* eslint react/no-unsafe: off */
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -8,7 +10,7 @@ export default class Timer extends React.Component {
     this.schedule(at);
   }
 
-  componentWillReceiveProps({ at: nextAt }) {
+  UNSAFE_componentWillReceiveProps({ at: nextAt }) {
     const { at } = this.props;
 
     if (at !== nextAt) {
