@@ -5,8 +5,8 @@ import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
 import { POST_ACTIVITY_PENDING } from '../../../core/src/actions/postActivity';
+import connectToWebChat from '../connectToWebChat';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -26,8 +26,8 @@ const connectSendTextBox = (...selectors) =>
       sendBoxValue,
       setSendBox,
       stopDictate,
-      submitSendBox,
-      store
+      store,
+      submitSendBox
     }) => ({
       disabled,
       language,
