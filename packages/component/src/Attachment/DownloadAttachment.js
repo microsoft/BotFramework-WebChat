@@ -24,15 +24,18 @@ const DownloadAttachment = ({
     formattedSize
   );
   return (
-    <div aria-label={downloadFileWithFileSizeLabel} className={styleSet.downloadAttachment}>
-      <a aria-hidden={true} href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
-        <div className="details">
-          <div className="name">{attachment.name}</div>
-          <div className="size">{formattedSize}</div>
-        </div>
-        <DownloadIcon className="icon" size={1.5} />
-      </a>
-    </div>
+    <React.Fragment>
+      <span aria-label={downloadFileWithFileSizeLabel} />
+      <div aria-hidden={true} className={styleSet.downloadAttachment}>
+        <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
+          <div aria-hidden={true} className="details">
+            <div className="name">{attachment.name}</div>
+            <div className="size">{formattedSize}</div>
+          </div>
+          <DownloadIcon className="icon" size={1.5} />
+        </a>
+      </div>
+    </React.Fragment>
   );
 };
 

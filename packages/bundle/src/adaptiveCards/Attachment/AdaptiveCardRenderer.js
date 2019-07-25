@@ -178,7 +178,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
         <pre>{JSON.stringify(error, null, 2)}</pre>
       </ErrorBox>
     ) : (
-      <div aria-label=" " className={styleSet.adaptiveCardRenderer} onClick={this.handleClick} ref={this.contentRef} />
+      <div className={styleSet.adaptiveCardRenderer} onClick={this.handleClick} ref={this.contentRef} />
     );
   }
 }

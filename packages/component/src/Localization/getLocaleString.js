@@ -9,7 +9,7 @@ export default function getLocaleString(value, language) {
   };
 
   if (window.Intl) {
-    return !!date && new Intl.DateTimeFormat('en-US', options).format(date);
+    return !!date && new Intl.DateTimeFormat(language, options).format(date);
   }
   return date.toLocaleDateString(language, options);
 }
