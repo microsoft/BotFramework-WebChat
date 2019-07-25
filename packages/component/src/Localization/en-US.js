@@ -1,5 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
 
+import getLocaleString from './getLocaleString';
+
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();
@@ -27,18 +29,8 @@ function xMinutesAgo(dateStr) {
     return `Today`;
   } else if (deltaInHours <= 48) {
     return `Yesterday`;
-  } else if (window.Intl) {
-    return new Intl.DateTimeFormat('en-US').format(date);
   }
-
-  return date.toLocaleString('en-US', {
-    day: '2-digit',
-    hour: '2-digit',
-    hour12: false,
-    minute: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  return getLocaleString(date, 'en-US');
 }
 
 function botSaidSomething(avatarInitials, text) {

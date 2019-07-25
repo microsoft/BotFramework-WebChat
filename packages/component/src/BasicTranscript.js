@@ -95,6 +95,8 @@ const BasicTranscript = ({
           >
             {activityElements.map(({ activity, element }, index) => (
               <li
+                /* Because of differences in browser implementations, aria-label=" " is used to make screenreader not repeat the same text multiple times */
+                aria-label=" "
                 className={classNames(styleSet.activity + '', {
                   // Hide timestamp if same timestamp group with the next activity
                   'hide-timestamp': sameTimestampGroup(

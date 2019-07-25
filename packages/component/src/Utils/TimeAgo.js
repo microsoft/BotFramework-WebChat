@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
+import { getLocaleString, localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
 
@@ -49,9 +49,14 @@ class TimeAgo extends React.Component {
   render() {
     const { text, timer } = this.state;
 
+    const { language, value } = this.props;
+
+    const localizedSentAtTime = localize('SentAt', language) + getLocaleString(value, language);
+
     return (
       <React.Fragment>
-        {text}
+        <span aria-label={localizedSentAtTime} />
+        <span aria-hidden={true}>{text}</span>
         <Timer at={timer} onInterval={this.handleInterval} />
       </React.Fragment>
     );
