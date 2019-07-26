@@ -24,3 +24,6 @@ When developing your bot's web page, you may discover that the bot sends an acti
 
 1. [Customize Web Chat with Reaction Buttons](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/09.customization-reaction-buttons/)
 1. [Customize Web Chat with GitHub Stargazer Components](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/10.a.customization-card-components)
+
+
+Note: The Web Chat team does not recommend creating custom Activity Types. Instead, use the `Event` Activity Type.
