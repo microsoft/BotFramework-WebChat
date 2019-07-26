@@ -54,7 +54,7 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     },
     locale,
     // This timestamp will be replaced by Direct Line Channel in echoback.
-    // We are adding this timestamp for sorting temporarily.
+    // We are temporarily adding this timestamp for sorting.
     timestamp: getTimestamp(clockSkewAdjustment)
   };
 
