@@ -25,10 +25,11 @@ const DownloadAttachment = ({
   );
   return (
     <React.Fragment>
+      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
       <span aria-label={downloadFileWithFileSizeLabel} />
       <div aria-hidden={true} className={styleSet.downloadAttachment}>
         <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
-          <div aria-hidden={true} className="details">
+          <div className="details">
             <div className="name">{attachment.name}</div>
             <div className="size">{formattedSize}</div>
           </div>

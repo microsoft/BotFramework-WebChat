@@ -82,6 +82,7 @@ export default {
   Tax: 'Tax',
   Total: 'Total',
   'Type your message': 'Type your message',
+  TypingIndicator: 'Showing typing indicator',
   'Upload file': 'Upload file',
   UserSent: 'User sent: ',
   VAT: 'VAT'

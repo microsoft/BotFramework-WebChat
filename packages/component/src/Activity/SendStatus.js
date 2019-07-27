@@ -31,11 +31,12 @@ const SendStatus = ({ activity: { channelData: { state } = {} }, language, retry
   //       We could refactor this into a general component if there are more templated strings
   const localizedSending = localize('Sending', language);
   const localizedSendStatus = localize('SendStatus', language);
-  const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
   const sendFailedText = localize('SEND_FAILED_KEY', language);
+  const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
 
   return (
     <React.Fragment>
+      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
       <span aria-label={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={styleSet.sendStatus}>
         {state === SENDING ? (

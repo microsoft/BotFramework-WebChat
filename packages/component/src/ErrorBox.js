@@ -4,12 +4,12 @@ import React from 'react';
 import connectToWebChat from './connectToWebChat';
 import { localize } from './Localization/Localize';
 
-const ErrorBox = ({ children, language, message, styleSet }) => {
+const ErrorBox = ({ children, language, message, styleSet }) => (
   <div aria-label={localize('ErrorMessage', language)} className={styleSet.errorBox}>
     <div aria-label={message}>{message}</div>
     <div>{children}</div>
-  </div>;
-};
+  </div>
+);
 
 ErrorBox.defaultProps = {
   children: undefined,

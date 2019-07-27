@@ -55,6 +55,7 @@ class TimeAgo extends React.Component {
 
     return (
       <React.Fragment>
+        {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
         <span aria-label={localizedSentAtTime} />
         <span aria-hidden={true}>{text}</span>
         <Timer at={timer} onInterval={this.handleInterval} />

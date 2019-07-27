@@ -132,8 +132,9 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         ) : (
           !!activityDisplayText && (
             <div className="webchat__row message">
+              {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
               <span aria-label={ariaLabel} />
-              <Bubble ariaHidden={true} className="bubble" fromUser={fromUser} nub={true}>
+              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
                 {children({
                   activity,
                   attachment: {
@@ -146,13 +147,14 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
             </div>
           )
         )}
+        {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
         {attachments.map((attachment, index) => (
-          /* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times */
           <div
             aria-label=" "
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
+            {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
             <span aria-label={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
             <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
