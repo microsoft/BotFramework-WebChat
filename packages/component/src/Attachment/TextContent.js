@@ -11,7 +11,7 @@ import connectToWebChat from '../connectToWebChat';
 const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
   contentType === 'text/markdown' && renderMarkdown ? (
     <React.Fragment>
-      {/* Because of differences in browser implementations, <span aria-label> is used to make screenreader perform the same on different browsers  */}
+      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers  */}
       <span aria-label={text} />
       <div
         aria-hidden={true}
@@ -22,7 +22,7 @@ const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
   ) : (
     (text || '').split('\n').map((line, index) => (
       <React.Fragment key={index}>
-        {/* Because of differences in browser implementations, <span aria-label> is used to make screenreader perform the same on different browsers  */}
+        {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers  */}
         <span aria-label={text} />
         <p aria-hidden={true} className={classNames('plain', styleSet.textContent + '')}>
           {line.trim()}

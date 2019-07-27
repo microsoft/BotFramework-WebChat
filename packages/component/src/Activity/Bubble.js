@@ -18,7 +18,7 @@ const ROOT_CSS = css({
   }
 });
 
-const Bubble = ({ ariaHidden, children, className, fromUser, nub, styleSet }) => (
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub, styleSet }) => (
   <div
     aria-hidden={ariaHidden}
     className={classNames(
@@ -36,6 +36,7 @@ const Bubble = ({ ariaHidden, children, className, fromUser, nub, styleSet }) =>
 );
 
 Bubble.defaultProps = {
+  'aria-hidden': false,
   children: undefined,
   className: '',
   fromUser: false,
@@ -43,7 +44,7 @@ Bubble.defaultProps = {
 };
 
 Bubble.propTypes = {
-  ariaHidden: PropTypes.bool.isRequired,
+  'aria-hidden': PropTypes.bool,
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,

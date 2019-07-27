@@ -147,13 +147,14 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           )
         )}
         {attachments.map((attachment, index) => (
+          /* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times */
           <div
             aria-label=" "
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
             <span aria-label={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
-            <Bubble ariaHidden={false} className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
+            <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
           </div>

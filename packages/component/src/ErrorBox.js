@@ -5,14 +5,10 @@ import connectToWebChat from './connectToWebChat';
 import { localize } from './Localization/Localize';
 
 const ErrorBox = ({ children, language, message, styleSet }) => {
-  const errorMessageLabel = localize('ErrorMessage', language);
-
-  return (
-    <div aria-label={errorMessageLabel} className={styleSet.errorBox}>
-      <div aria-label={message}>{message}</div>
-      <div>{children}</div>
-    </div>
-  );
+  <div aria-label={localize('ErrorMessage', language)} className={styleSet.errorBox}>
+    <div aria-label={message}>{message}</div>
+    <div>{children}</div>
+  </div>;
 };
 
 ErrorBox.defaultProps = {

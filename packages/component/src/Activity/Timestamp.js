@@ -6,7 +6,7 @@ import connectToWebChat from '../connectToWebChat';
 import TimeAgo from '../Utils/TimeAgo';
 
 const Timestamp = ({ activity: { timestamp }, className, styleSet }) => (
-  <span className={classNames(styleSet.timestamp + '', className + '')}>
+  <span className={classNames(styleSet.timestamp + '', (className || '') + '')}>
     <TimeAgo value={timestamp} />
   </span>
 );

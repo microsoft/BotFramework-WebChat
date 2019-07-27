@@ -130,7 +130,7 @@ const WebChatCarouselFilmStrip = ({
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble fromUser={fromUser} key={index} nub={false}>
+              <Bubble aria-hidden={true} fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>
             </li>
@@ -140,7 +140,7 @@ const WebChatCarouselFilmStrip = ({
           {state === SENDING || state === SEND_FAILED ? (
             <SendStatus activity={activity} />
           ) : (
-            <Timestamp activity={activity} aria-hidden={true} className={timestampClassName} />
+            <Timestamp activity={activity} className={timestampClassName} />
           )}
         </div>
       </div>
