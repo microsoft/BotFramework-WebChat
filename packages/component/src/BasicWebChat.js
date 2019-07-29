@@ -1,4 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
+/* eslint react/no-unsafe: off */
 
 import { css } from 'glamor';
 import classNames from 'classnames';
@@ -80,7 +81,7 @@ export default class BasicWebChat extends React.Component {
   }
 
   // TODO: [P2] Move to React 16 APIs
-  componentWillReceiveProps({
+  UNSAFE_componentWillReceiveProps({
     activityMiddleware: nextActivityMiddleware,
     attachmentMiddleware: nextAttachmentMiddleware
   }) {

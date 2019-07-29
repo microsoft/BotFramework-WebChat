@@ -1,7 +1,9 @@
+/* eslint react/no-unsafe: off */
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
+import { getLocaleString, localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import Timer from './Timer';
 
@@ -30,7 +32,7 @@ class TimeAgo extends React.Component {
     this.state = getStateFromProps(props);
   }
 
-  componentWillReceiveProps({ language, value }) {
+  UNSAFE_componentWillReceiveProps({ language, value }) {
     this.updateText({ language, value });
   }
 
@@ -47,9 +49,15 @@ class TimeAgo extends React.Component {
   render() {
     const { text, timer } = this.state;
 
+    const { language, value } = this.props;
+
+    const localizedSentAtTime = localize('SentAt', language) + getLocaleString(value, language);
+
     return (
       <React.Fragment>
-        {text}
+        {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
+        <span aria-label={localizedSentAtTime} />
+        <span aria-hidden={true}>{text}</span>
         <Timer at={timer} onInterval={this.handleInterval} />
       </React.Fragment>
     );

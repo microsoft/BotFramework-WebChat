@@ -131,7 +131,9 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           </div>
         ) : (
           !!activityDisplayText && (
-            <div aria-label={ariaLabel} className="webchat__row message">
+            <div className="webchat__row message">
+              {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
+              <span aria-label={ariaLabel} />
               <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
                 {children({
                   activity,
@@ -145,12 +147,16 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
             </div>
           )
         )}
+        {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
         {attachments.map((attachment, index) => (
           <div
+            aria-label=" "
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
-            <Bubble aria-hidden={true} className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
+            {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
+            <span aria-label={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
           </div>
@@ -159,7 +165,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
           {showSendStatus ? (
             <SendStatus activity={activity} className="timestamp" />
           ) : (
-            <Timestamp activity={activity} aria-hidden={true} className={classNames('timestamp', timestampClassName)} />
+            <Timestamp activity={activity} className={classNames('timestamp', timestampClassName)} />
           )}
           <div className="filler" />
         </div>
