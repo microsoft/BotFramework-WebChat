@@ -17,6 +17,7 @@ export default {
   Total: 'Totalt',
   'Type your message': 'Skriv inn melding',
   'Upload file': 'Last opp fil',
-  VAT: 'MVA'
+  VAT: 'MVA',
+  'New messages': 'Ny melding'
   // 'X minutes ago': xMinutesAgo
 };
