@@ -1,3 +1,5 @@
+/* eslint react/no-unsafe: off */
+
 import {
   Composer as ScrollToBottomComposer,
   FunctionContext as ScrollToBottomFunctionContext
@@ -203,7 +205,7 @@ class Composer extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { props } = this;
     const { directLine, userID, username } = props;
 

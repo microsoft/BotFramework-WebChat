@@ -1,3 +1,5 @@
+/* eslint react/no-unsafe: off */
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -19,7 +21,7 @@ class DebouncedConnectivityStatus extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { children, interval } = this.props;
     const { children: nextChildren, interval: nextInterval } = nextProps;
     const { since } = this.state;

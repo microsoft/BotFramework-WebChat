@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 -  Fix [#2187](https://github.com/microsoft/BotFramework-WebChat/issues/2187). Bump core-js and update core-js modules on index-es5.js, by [@corinagum](https://github.com/corinagum) in PR [#2195](https://github.com/microsoft/BotFramework-WebChat/pull/2195)
+-  Fix [#2193](https://github.com/microsoft/BotFramework-WebChat/issues/2193). Fix Adaptive Card/attachments do not get read by Narrator, by [@corinagum](https://github.com/corinagum) in PR [#2226](https://github.com/microsoft/BotFramework-WebChat/pull/2226)
+-  Fix [#2150](https://github.com/microsoft/BotFramework-WebChat/issues/2193). Fix timestamps read by Narrator, by [@corinagum](https://github.com/corinagum) in PR [#2226](https://github.com/microsoft/BotFramework-WebChat/pull/2226)
 
 ## [4.5.0] - 2019-07-10
 

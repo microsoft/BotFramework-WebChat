@@ -2,6 +2,7 @@
 /* eslint complexity: "off" */
 
 import connectToWebChat from '../connectToWebChat';
+import getLocaleString from './getLocaleString';
 
 import csCZ from './cs-CZ';
 import daDK from './da-DK';
@@ -150,4 +151,4 @@ export default connectToWebChat(({ language }) => ({ language }))(({ args, langu
   localize(text, language, ...(args || []))
 );
 
-export { localize };
+export { getLocaleString, localize };
