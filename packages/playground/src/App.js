@@ -145,7 +145,7 @@ export default class extends React.Component {
       faulty: false,
       groupTimestamp: window.sessionStorage.getItem('PLAYGROUND_GROUP_TIMESTAMP'),
       hideSendBox: false,
-      language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || '',
+      language: window.sessionStorage.getItem('PLAYGROUND_LANGUAGE') || undefined,
       richCardWrapTitle: false,
       sendTimeout: window.sessionStorage.getItem('PLAYGROUND_SEND_TIMEOUT') || '',
       sendTypingIndicator: true,

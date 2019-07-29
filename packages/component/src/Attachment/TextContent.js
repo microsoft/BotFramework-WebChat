@@ -10,15 +10,24 @@ import connectToWebChat from '../connectToWebChat';
 
 const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
   contentType === 'text/markdown' && renderMarkdown ? (
-    <div
-      className={classNames('markdown', styleSet.textContent + '')}
-      dangerouslySetInnerHTML={{ __html: renderMarkdown(text || '') }}
-    />
+    <React.Fragment>
+      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
+      <span aria-label={text} />
+      <div
+        aria-hidden={true}
+        className={classNames('markdown', styleSet.textContent + '')}
+        dangerouslySetInnerHTML={{ __html: renderMarkdown(text || '') }}
+      />
+    </React.Fragment>
   ) : (
     (text || '').split('\n').map((line, index) => (
-      <p className={classNames('plain', styleSet.textContent + '')} key={index}>
-        {line.trim()}
-      </p>
+      <React.Fragment key={index}>
+        {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
+        <span aria-label={text} />
+        <p aria-hidden={true} className={classNames('plain', styleSet.textContent + '')}>
+          {line.trim()}
+        </p>
+      </React.Fragment>
     ))
   );
 

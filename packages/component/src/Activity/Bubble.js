@@ -36,7 +36,7 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub,
 );
 
 Bubble.defaultProps = {
-  'aria-hidden': true,
+  'aria-hidden': false,
   children: undefined,
   className: '',
   fromUser: false,

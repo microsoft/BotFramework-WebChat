@@ -1,5 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [1, 5, 24, 48, 60000, 3600000] }] */
 
+import getLocaleString from './getLocaleString';
+
 function xMinutesAgo(dateStr) {
   const date = new Date(dateStr);
   const dateTime = date.getTime();
@@ -27,22 +29,17 @@ function xMinutesAgo(dateStr) {
     return `Today`;
   } else if (deltaInHours <= 48) {
     return `Yesterday`;
-  } else if (window.Intl) {
-    return new Intl.DateTimeFormat('en-US').format(date);
   }
-
-  return date.toLocaleString('en-US', {
-    day: '2-digit',
-    hour: '2-digit',
-    hour12: false,
-    minute: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  return getLocaleString(date, 'en-US');
 }
 
 function botSaidSomething(avatarInitials, text) {
   return `Bot ${avatarInitials} said, ${text}`;
+}
+
+function downloadFileWithFileSize(downloadFileText, fileName, size) {
+  // Full text should read: "Download file <filename> of size <filesize>"
+  return `${downloadFileText} ${fileName} of size ${size}`;
 }
 
 function userSaidSomething(avatarInitials, text) {
@@ -64,8 +61,11 @@ export default {
   // '[Unknown Card '%1']': '[Unknown Card '%1']',
   'Adaptive Card parse error': 'Adaptive Card parse error',
   'Adaptive Card render error': 'Adaptive Card render error',
+  BotSent: 'Bot sent: ',
   Chat: 'Chat',
   'Download file': 'Download file',
+  DownloadFileWithFileSize: downloadFileWithFileSize,
+  ErrorMessage: 'Error message',
   'Microphone off': 'Microphone off',
   'Microphone on': 'Microphone on',
   Left: 'Left',
@@ -75,11 +75,15 @@ export default {
   Right: 'Right',
   Send: 'Send',
   Sending: 'Sending',
+  SendStatus: 'Send status: ',
+  SentAt: 'Sent at: ',
   Speak: 'Speak',
   'Starting…': 'Starting…',
   Tax: 'Tax',
   Total: 'Total',
   'Type your message': 'Type your message',
+  TypingIndicator: 'Showing typing indicator',
   'Upload file': 'Upload file',
+  UserSent: 'User sent: ',
   VAT: 'VAT'
 };
