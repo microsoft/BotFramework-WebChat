@@ -83,8 +83,8 @@ Next, add styling via glamor and the classes that will be applied in this compon
 + });
 
 class ActivityWithFeedback extends React.Component {
-  handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: -1 } })
-  handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: 1 } })
+  handleDownvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }] })
+  handleUpvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }] })
 
   render() {
     const { props } = this;
@@ -188,8 +188,8 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 +       });
 
 +       class ActivityWithFeedback extends React.Component {
-+         handleDownvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: -1 } })
-+         handleUpvoteButton = () => this.props.postActivity({ type: 'message', name: 'evaluate-activity', value: { activityID: this.props.activityID, helpful: 1 } })
++         handleDownvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }] })
++         handleUpvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }] })
 
 +         render() {
 +           const { props } = this;
