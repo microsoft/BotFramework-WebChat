@@ -8,7 +8,7 @@
 [![Build Status](https://fuselabs.visualstudio.com/BotFramework-WebChat/_apis/build/status/BotFramework-WebChat-daily?branchName=master)](https://fuselabs.visualstudio.com/BotFramework-WebChat/_build/latest?definitionId=498&branchName=master)
 [![Coverage Status](https://coveralls.io/repos/github/microsoft/BotFramework-WebChat/badge.svg?branch=master)](https://coveralls.io/github/microsoft/BotFramework-WebChat?branch=master)
 
-This repository contains code for the Bot Framework Web Chat component. The Bot Framework Web Chat component is a highly-customizable web-based client for the Bot Framework V4 SDK. The Bot Framework SDK v4 enable developers to model conversation and build sophisticated bot applications.
+This repository contains code for the Bot Framework Web Chat component. The Bot Framework Web Chat component is a highly-customizable web-based client for the Bot Framework V4 SDK. The Bot Framework SDK v4 enables developers to model conversation and build sophisticated bot applications.
 
 This repo is part of the [Microsoft Bot Framework](https://github.com/microsoft/botframework) - a comprehensive framework for building enterprise-grade conversational AI experiences.
 
@@ -223,7 +223,7 @@ There are several properties that you might pass into your Web Chat React Compon
 | `cardActionMiddleware`     | A chain of middleware that allows the developer to modify card actions, like Adaptive Cards or suggested actions. The middleware signature is the following: `cardActionMiddleware: () => next => ({ cardAction, getSignInUrl }) => next(cardAction)`                                                                                                                                                                                                                                                                                                                                           |
 | `createDirectLine`         | A factory method for instantiating the Direct Line object. Azure Government users should use `createDirectLine({ domain: 'https://directline.botframework.azure.us/v3/directline', token });` to change the endpoint. The full list of parameters are: `conversationId`, `domain`, `fetch`, `pollingInterval`, `secret`, `streamUrl`, `token`, `watermark` `webSocket`.                                                                                                                                                                                                                         |
 | `createStore`              | A chain of middleware that allows the developer to modify the store actions. The middleware signature is the following: `createStore: ({}, ({ dispatch }) => next => action => next(cardAction)`                                                                                                                                                                                                                                                                                                                                                                                                |
-| `directLine`               | Specify the DirectLine object with DirectLine token.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `directLine`               | Specify the DirectLine object with DirectLine token. We strongly recommend using the token API for authentication instead of providing the app with your secret. To learn more about why, see the [authentication documentation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) or [connecting client app to bot](#how-to-connect-client-app-to-bot)                                                         |
 | `disabled`                 | Disable the UI (i.e. for presentation mode) of Web Chat.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `grammars`                 | Specify a grammar list for Speech (Bing Speech or Cognitive Services Speech Services).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `groupTimeStamp`           | Change default settings for timestamp groupings.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -248,6 +248,22 @@ Please note, however:
 -  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Edge.
 -  Web Chat has no plan to support samples for IE11 (ES5).
    -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+
+
+# How to connect client app to bot
+
+Web Chat provides UI on top of the Direct Line Channel. There are two ways to connect to your bot through HTTP calls from the client: by sending the Bot secret or generating a token via the secret. 
+
+<!-- TODO: https://github.com/microsoft/BotFramework-WebChat/issues/2151 -->
+<!-- Update the following paragraph and the API table (`directline`) with new documentation when updated docs are published  -->
+
+We strongly recommend using the token API instead of providing the app with your secret. To learn more about why, see the [authentication documentation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0) on the [token API](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-api-reference?view=azure-bot-service-4.0) and client security.
+
+For further reading, please see the following links:
+
+-  [Using Web Chat with Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
+
+-  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
 
 # How to test with Web Chat's latest bits
 
