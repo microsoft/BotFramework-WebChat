@@ -262,7 +262,6 @@ For further reading, please see the following links:
 
 -  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
 
-
 # How to test with Web Chat's latest bits
 
 _Testing unreleased features is only available via MyGet packaging at this time._
