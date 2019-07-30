@@ -2,7 +2,7 @@
 
 First, see the [Activities overview](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-activities?view=azure-bot-service-3.0) documentation to learn about what activities types are available in Bot Framework.
 
-This document will discuss what Bot Framework Activity Types that Web Chat is prepared to handle *as a client*. To see documentation on which activity types are supported by different channels, please see the [Activities by Channel](https://github.com/microsoft/botframework-sdk/issues/5294) discussion. 
+This document will discuss what Bot Framework activity types that Web Chat is prepared to handle *as a client*. To see documentation on which activity types are supported by different channels, please see the [Activities by Channel](https://github.com/microsoft/botframework-sdk/issues/5294) discussion. 
 
 Although the Direct Line channel and Web Chat channel support the following activity types, Web Chat is only designed to support the following activities:
 
@@ -26,4 +26,4 @@ When developing your bot's web page, you may discover that the bot sends an acti
 1. [Customize Web Chat with GitHub Stargazer Components](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/10.a.customization-card-components)
 
 
-Note: We do not recommend creating custom Activity Types. Instead, please use the `event` activity type.
+Note: We do not recommend creating custom activity types. Instead, please use the `event` activity type.

@@ -150,8 +150,8 @@ Web Chat is designed to be customizable without forking the source code. The tab
 
 See more about [customizing Web Chat](https://github.com/microsoft/BotFramework-WebChat/blob/master/SAMPLES.md) to learn more on customization.
 
-# Supported Activity Types on the Web Chat Client
-[Web Chat and Activity Types](https://github.com/microsoft/BotFramework-WebChat/blob/master/ACTIVITYTYPES.md)
+## Supported Activity Types on the Web Chat Client
+Please refer to [`ACTIVITYTYPES.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/ACTIVITYTYPES.md) for list of Web Chat supported activity types.
 
 ## Speech changes in Web Chat 4.5
 
