@@ -57,12 +57,10 @@ class Dictation extends React.Component {
   handleError(event) {
     const { dictateState, onError, setDictateState, stopDictate } = this.props;
 
-    if (dictateState === DICTATING || dictateState === STARTING || dictateState === STOPPING) {
-      setDictateState(IDLE);
-      stopDictate();
+    dictateState !== IDLE && setDictateState(IDLE);
+    (dictateState === DICTATING || dictateState === STARTING) && stopDictate();
 
-      onError && onError(event);
-    }
+    onError && onError(event);
   }
 
   render() {
