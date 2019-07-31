@@ -9,11 +9,13 @@ import 'core-js/features/dom-collections';
 
 import 'core-js/modules/es.array.find-index';
 import 'core-js/modules/es.array.find';
+import 'core-js/modules/es.array.flat';
 import 'core-js/modules/es.array.includes';
 import 'core-js/modules/es.array.iterator';
 import 'core-js/modules/es.math.sign';
 import 'core-js/modules/es.number.is-finite';
 import 'core-js/modules/es.object.assign';
+import 'core-js/modules/es.object.keys';
 import 'core-js/modules/es.promise';
 import 'core-js/modules/es.string.starts-with';
 import 'core-js/modules/es.symbol';
