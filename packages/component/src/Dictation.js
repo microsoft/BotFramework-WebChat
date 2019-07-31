@@ -6,7 +6,7 @@ import React from 'react';
 import connectToWebChat from './connectToWebChat';
 
 const {
-  DictateState: { DICTATING, IDLE, STARTING }
+  DictateState: { DICTATING, IDLE, STARTING, STOPPING }
 } = Constants;
 
 class Dictation extends React.Component {
@@ -57,12 +57,10 @@ class Dictation extends React.Component {
   handleError(event) {
     const { dictateState, onError, setDictateState, stopDictate } = this.props;
 
-    if (dictateState === DICTATING || dictateState === STARTING) {
-      setDictateState(IDLE);
-      stopDictate();
+    dictateState !== IDLE && setDictateState(IDLE);
+    (dictateState === DICTATING || dictateState === STARTING) && stopDictate();
 
-      onError && onError(event);
-    }
+    onError && onError(event);
   }
 
   render() {
