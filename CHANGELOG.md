@@ -63,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/Microsoft/BotFramework-WebChat/pull/2137)
+-  Fix [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on activity types, by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
 
 ### Samples
 
