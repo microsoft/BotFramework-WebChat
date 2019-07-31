@@ -59,6 +59,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2193](https://github.com/microsoft/BotFramework-WebChat/issues/2193). Fix Adaptive Card/attachments do not get read by Narrator, by [@corinagum](https://github.com/corinagum) in PR [#2226](https://github.com/microsoft/BotFramework-WebChat/pull/2226)
 -  Fix [#2150](https://github.com/microsoft/BotFramework-WebChat/issues/2193). Fix timestamps read by Narrator, by [@corinagum](https://github.com/corinagum) in PR [#2226](https://github.com/microsoft/BotFramework-WebChat/pull/2226)
 -  Fix [#2240](https://github.com/microsoft/BotFramework-WebChat/issues/2240). Fix microphone button should be re-enabled after error, by [@compulim](https://github.com/compulim) in PR [#2241](https://github.com/microsoft/BotFramework-WebChat/pull/2241)
+-  Fix [#2250](https://github.com/microsoft/BotFramework-WebChat/issues/2250). Fix React warnings regarding prop types, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Added
 
