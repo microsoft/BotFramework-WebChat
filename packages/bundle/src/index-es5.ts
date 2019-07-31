@@ -9,6 +9,8 @@ import 'core-js/features/dom-collections';
 
 import 'core-js/modules/es.array.find-index';
 import 'core-js/modules/es.array.find';
+// import 'core-js/modules/es.array.flat-map';
+import 'core-js/modules/es.array.flat';
 import 'core-js/modules/es.array.includes';
 import 'core-js/modules/es.array.iterator';
 import 'core-js/modules/es.math.sign';
