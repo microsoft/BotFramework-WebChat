@@ -35,7 +35,7 @@ const connectMicrophoneButton = (...selectors) => {
     if (speechSynthesis && SpeechSynthesisUtterance) {
       const utterance = new SpeechSynthesisUtterance('');
 
-      utterance.voice = speechSynthesis.getVoices()[0];
+      [utterance.voice] = speechSynthesis.getVoices();
       speechSynthesis.speak(utterance);
     }
   });

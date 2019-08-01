@@ -1,6 +1,6 @@
 import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
-export default async function createCognitiveServicesSpeechServicesPonyfillFactory({
+export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   authorizationToken,
   region,
   subscriptionKey,
