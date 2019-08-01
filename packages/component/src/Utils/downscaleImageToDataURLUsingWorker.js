@@ -67,7 +67,7 @@ const checkSupport = memoizeOne(() => {
 });
 
 export default function downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const { port1, port2 } = new MessageChannel();
 
     port1.onmessage = ({ data: { error, result } }) => {
@@ -85,9 +85,9 @@ export default function downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHe
       port2.close();
     };
 
-    const [arrayBuffer, worker] = await Promise.all([blobToArrayBuffer(blob), getWorker()]);
-
-    worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type }, [arrayBuffer, port2]);
+    Promise.all([blobToArrayBuffer(blob), getWorker()]).then(([arrayBuffer, worker]) =>
+      worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type }, [arrayBuffer, port2])
+    );
   });
 }
 

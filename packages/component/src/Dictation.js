@@ -6,7 +6,7 @@ import React from 'react';
 import connectToWebChat from './connectToWebChat';
 
 const {
-  DictateState: { DICTATING, IDLE, STARTING, STOPPING }
+  DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
 class Dictation extends React.Component {

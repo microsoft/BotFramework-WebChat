@@ -1,3 +1,7 @@
+/* eslint object-shorthand: "off" */
+/* eslint prefer-destructuring: "off" */
+/* eslint prefer-arrow-callback: "off" */
+
 // This file is the entrypoint of Web Worker and is minimally transpiled through Babel.
 // Do not include any dependencies here because they will not be bundled.
 
@@ -48,6 +52,7 @@ export default function() {
 
   onmessage = function(event) {
     const data = event.data;
+    const arrayBuffer = data.arrayBuffer;
     const maxHeight = data.maxHeight;
     const maxWidth = data.maxWidth;
     const type = data.type;
