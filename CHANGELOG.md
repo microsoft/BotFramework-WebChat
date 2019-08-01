@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
    - [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
    - [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
-- Bumps [`web-speech-cognitive-services@4.0.1-master.45e7796`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
+- Bumps [`web-speech-cognitive-services@4.0.1-master.c12f923`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 
 ### Fixed
 

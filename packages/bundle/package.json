@@ -48,7 +48,7 @@
     "react-dom": "^16.8.6",
     "sanitize-html": "^1.19.0",
     "url-search-params-polyfill": "^5.0.0",
-    "web-speech-cognitive-services": "4.0.1-master.45e7796",
+    "web-speech-cognitive-services": "4.0.1-master.c12f923",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
