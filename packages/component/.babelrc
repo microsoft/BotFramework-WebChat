@@ -2,7 +2,7 @@
   "env": {
     "test": {
       "exclude": [
-        "src/Utils/downscaleImageToDataURL.worker.js"
+        "src/**/*.worker.js"
       ],
       "plugins": [
         "babel-plugin-istanbul"
@@ -10,7 +10,7 @@
     }
   },
   "overrides": [{
-    "test": "src/Utils/downscaleImageToDataURL.worker.js",
+    "test": "src/**/*.worker.js",
     "plugins": [],
     "presets": [
       ["@babel/preset-env", {

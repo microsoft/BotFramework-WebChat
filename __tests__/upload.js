@@ -9,80 +9,149 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('upload a picture', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
+describe('upload a picture', () => {
+  test('', async () => {
+    const { driver, pageObjects } = await setupWebDriver();
 
-  await driver.wait(uiConnected(), timeouts.directLine);
+    await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.sendFile('seaofthieves.jpg');
-  await driver.wait(minNumActivitiesShown(2));
-  await driver.wait(allImagesLoaded());
+    await pageObjects.sendFile('seaofthieves.jpg');
+    await driver.wait(minNumActivitiesShown(2));
+    await driver.wait(allImagesLoaded());
 
-  const base64PNG = await driver.takeScreenshot();
+    const base64PNG = await driver.takeScreenshot();
 
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('upload a picture with custom thumbnail size', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    props: {
-      styleOptions: {
-        uploadThumbnailContentType: 'image/png',
-        uploadThumbnailHeight: 60,
-        uploadThumbnailWidth: 120
-      }
-    }
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  await driver.wait(uiConnected(), timeouts.directLine);
-
-  await pageObjects.sendFile('seaofthieves.jpg');
-  await driver.wait(minNumActivitiesShown(2));
-  await driver.wait(allImagesLoaded());
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('upload a picture with custom thumbnail quality', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    props: {
-      styleOptions: {
-        uploadThumbnailQuality: 0.1
+  test('with custom thumbnail size', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        styleOptions: {
+          uploadThumbnailContentType: 'image/png',
+          uploadThumbnailHeight: 60,
+          uploadThumbnailWidth: 120
+        }
       }
-    }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+
+    await pageObjects.sendFile('seaofthieves.jpg');
+    await driver.wait(minNumActivitiesShown(2));
+    await driver.wait(allImagesLoaded());
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  await driver.wait(uiConnected(), timeouts.directLine);
-
-  await pageObjects.sendFile('seaofthieves.jpg');
-  await driver.wait(minNumActivitiesShown(2));
-  await driver.wait(allImagesLoaded());
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('upload a picture with custom thumbnail disabled', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    props: {
-      styleOptions: {
-        enableUploadThumbnail: false
+  test('with custom thumbnail quality', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        styleOptions: {
+          uploadThumbnailQuality: 0.1
+        }
       }
-    }
+    });
+
+    await driver.wait(uiConnected(), timeouts.directLine);
+
+    await pageObjects.sendFile('seaofthieves.jpg');
+    await driver.wait(minNumActivitiesShown(2));
+    await driver.wait(allImagesLoaded());
+
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  await driver.wait(uiConnected(), timeouts.directLine);
+  test('with custom thumbnail disabled', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        styleOptions: {
+          enableUploadThumbnail: false
+        }
+      }
+    });
 
-  await pageObjects.sendFile('seaofthieves.jpg');
-  await driver.wait(minNumActivitiesShown(2));
-  await driver.wait(allImagesLoaded());
+    await driver.wait(uiConnected(), timeouts.directLine);
 
-  const base64PNG = await driver.takeScreenshot();
+    await pageObjects.sendFile('seaofthieves.jpg');
+    await driver.wait(minNumActivitiesShown(2));
+    await driver.wait(allImagesLoaded());
 
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    const base64PNG = await driver.takeScreenshot();
+
+    expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+  });
+
+  describe('without Web Worker', () => {
+    test('', async () => {
+      const { driver, pageObjects } = await setupWebDriver();
+
+      await driver.executeScript(() => {
+        window.Worker = undefined;
+      });
+      await driver.wait(uiConnected(), timeouts.directLine);
+
+      await pageObjects.sendFile('seaofthieves.jpg');
+      await driver.wait(minNumActivitiesShown(2));
+      await driver.wait(allImagesLoaded());
+
+      const base64PNG = await driver.takeScreenshot();
+
+      expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    });
+
+    test('with custom thumbnail size', async () => {
+      const { driver, pageObjects } = await setupWebDriver({
+        props: {
+          styleOptions: {
+            uploadThumbnailContentType: 'image/png',
+            uploadThumbnailHeight: 60,
+            uploadThumbnailWidth: 120
+          }
+        }
+      });
+
+      await driver.executeScript(() => {
+        window.Worker = undefined;
+      });
+      await driver.wait(uiConnected(), timeouts.directLine);
+
+      await pageObjects.sendFile('seaofthieves.jpg');
+      await driver.wait(minNumActivitiesShown(2));
+      await driver.wait(allImagesLoaded());
+
+      const base64PNG = await driver.takeScreenshot();
+
+      expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    });
+
+    test('with custom thumbnail quality', async () => {
+      const { driver, pageObjects } = await setupWebDriver({
+        props: {
+          styleOptions: {
+            uploadThumbnailQuality: 0.1
+          }
+        }
+      });
+
+      await driver.executeScript(() => {
+        window.Worker = undefined;
+      });
+      await driver.wait(uiConnected(), timeouts.directLine);
+
+      await pageObjects.sendFile('seaofthieves.jpg');
+      await driver.wait(minNumActivitiesShown(2));
+      await driver.wait(allImagesLoaded());
+
+      const base64PNG = await driver.takeScreenshot();
+
+      expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+    });
+  });
 });
 
 test('upload a PDF file', async () => {

@@ -5,9 +5,8 @@ import React from 'react';
 
 import { localize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
-import blobToArrayBuffer from '../Utils/blobToArrayBuffer';
 import connectToWebChat from '../connectToWebChat';
-import downscaleImageToDataURL, { checkSupport as checkSupportDownscaleImage } from '../Utils/downscaleImageToDataURL';
+import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
 
 const ROOT_CSS = css({
@@ -25,9 +24,9 @@ const ROOT_CSS = css({
 });
 
 async function makeThumbnail(file, width, height, contentType, quality) {
-  if (checkSupportDownscaleImage() && /\.(gif|jpe?g|png)$/iu.test(file.name)) {
+  if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
     try {
-      return await downscaleImageToDataURL(await blobToArrayBuffer(file), width, height, contentType, quality);
+      return await downscaleImageToDataURL(file, width, height, contentType, quality);
     } catch (error) {
       console.warn(`Web Chat: Failed to downscale image due to ${error}.`);
     }
