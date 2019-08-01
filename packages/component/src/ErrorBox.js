@@ -25,4 +25,4 @@ ErrorBox.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ErrorBox);
+export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(ErrorBox);
