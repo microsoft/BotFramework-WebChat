@@ -193,7 +193,10 @@ AdaptiveCardRenderer.propTypes = {
   styleSet: PropTypes.shape({
     adaptiveCardRenderer: PropTypes.any.isRequired
   }).isRequired,
-  tapAction: PropTypes.func
+  tapAction: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    value: PropTypes.string
+  })
 };
 
 AdaptiveCardRenderer.defaultProps = {
