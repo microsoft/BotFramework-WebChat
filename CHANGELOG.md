@@ -20,7 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
-## [4.5.1] - 2019-07-16
+## [Unreleased]
+
+## [4.5.1] - 2019-08-01
 
 ### Fixed
 
