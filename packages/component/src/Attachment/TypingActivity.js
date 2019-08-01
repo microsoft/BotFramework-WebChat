@@ -7,7 +7,7 @@ import TypingAnimation from './Assets/TypingAnimation';
 
 const TypingActivity = ({ language, styleSet }) => (
   <div className={styleSet.typingActivity}>
-    <TypingAnimation ariaLabel={localize('TypingIndicator', language)} />
+    <TypingAnimation aria-label={localize('TypingIndicator', language)} />
   </div>
 );
 
@@ -18,4 +18,4 @@ TypingActivity.propTypes = {
   }).isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(TypingActivity);
+export default connectToWebChat(({ language, styleSet }) => ({ language, styleSet }))(TypingActivity);
