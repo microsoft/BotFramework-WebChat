@@ -60,31 +60,29 @@ export default function() {
     const port = event.ports[0];
 
     return Promise.resolve()
-      .then(
-        function() {
-          return createImageBitmap(new Blob([arrayBuffer], { resizeQuality: 'high' }));
-        },
-        function(imageBitmap) {
-          const dimension = keepAspectRatio(imageBitmap.width, imageBitmap.height, maxWidth, maxHeight);
-          const height = dimension.height;
-          const width = dimension.width;
-          const offscreenCanvas = new OffscreenCanvas(width, height);
-          const context = offscreenCanvas.getContext('2d');
+      .then(function() {
+        return createImageBitmap(new Blob([arrayBuffer], { resizeQuality: 'high' }));
+      })
+      .then(function(imageBitmap) {
+        const dimension = keepAspectRatio(imageBitmap.width, imageBitmap.height, maxWidth, maxHeight);
+        const height = dimension.height;
+        const width = dimension.width;
+        const offscreenCanvas = new OffscreenCanvas(width, height);
+        const context = offscreenCanvas.getContext('2d');
 
-          context.drawImage(imageBitmap, 0, 0, width, height);
+        context.drawImage(imageBitmap, 0, 0, width, height);
 
-          // Firefox quirks: 68.0.1 call named OffscreenCanvas.convertToBlob as OffscreenCanvas.toBlob.
-          const convertToBlob = (offscreenCanvas.convertToBlob || offscreenCanvas.toBlob).bind(offscreenCanvas);
+        // Firefox quirks: 68.0.1 call named OffscreenCanvas.convertToBlob as OffscreenCanvas.toBlob.
+        const convertToBlob = (offscreenCanvas.convertToBlob || offscreenCanvas.toBlob).bind(offscreenCanvas);
 
-          return convertToBlob({ type: type, quality: quality });
-        },
-        function(blob) {
-          return blobToDataURL(blob);
-        },
-        function(dataURL) {
-          return port.postMessage({ result: dataURL });
-        }
-      )
+        return convertToBlob({ type: type, quality: quality });
+      })
+      .then(function(blob) {
+        return blobToDataURL(blob);
+      })
+      .then(function(dataURL) {
+        return port.postMessage({ result: dataURL });
+      })
       .catch(function(err) {
         console.error(err);
 
