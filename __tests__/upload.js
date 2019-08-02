@@ -154,12 +154,12 @@ describe('upload a picture', () => {
   });
 });
 
-test('upload a PDF file', async () => {
+test('upload a ZIP file', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.sendFile('empty.pdf');
+  await pageObjects.sendFile('empty.zip');
   await driver.wait(minNumActivitiesShown(2));
   await driver.wait(allImagesLoaded());
 
