@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1954](https://github.com/microsoft/BotFramework-WebChat/issues/1954). Estimate clock skew and adjust timestamp for outgoing activity, by [@compulim](https://github.com/compulim) in PR [#2208](https://github.com/microsoft/BotFramework-WebChat/pull/2208)
 -  Fix [#2240](https://github.com/microsoft/BotFramework-WebChat/issues/2240). Fix microphone button should be re-enabled after error, by [@compulim](https://github.com/compulim) in PR [#2241](https://github.com/microsoft/BotFramework-WebChat/pull/2241)
 -  Fix [#2250](https://github.com/microsoft/BotFramework-WebChat/issues/2250). Fix React warnings related prop types, by [@compulim](https://github.com/compulim) in PR [#2253](https://github.com/microsoft/BotFramework-WebChat/pull/2253)
--  Fix [#2248](https://github.com/microsoft/BotFramework-WebChat/issues/2248). Remove download links from user-uploaded attachment, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fix [#2248](https://github.com/microsoft/BotFramework-WebChat/issues/2248). Remove download links from user-uploaded attachment without thumbnails, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Added
 

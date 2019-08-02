@@ -9,18 +9,25 @@ import TextAttachment from '../../Attachment/TextAttachment';
 import TypingActivity from '../../Attachment/TypingActivity';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
+function hasThumbnail(activity, attachment) {
+  const attachmentIndex = activity.attachments.indexOf(attachment);
+  const { channelData: { attachmentThumbnails = [] } = {} } = activity;
+
+  return !!attachmentThumbnails[attachmentIndex];
+}
+
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware() {
   return () => next => {
     const Attachment = ({ activity = {}, attachment, attachment: { contentType, contentUrl } = {} }) =>
       activity.type === 'typing' ? (
         <TypingActivity />
-      ) : /^image\//u.test(contentType) ? (
-        <ImageAttachment activity={activity} attachment={attachment} />
-      ) : activity.from.role === 'user' ? (
+      ) : activity.from.role === 'user' && !hasThumbnail(activity, attachment) ? (
         <UploadAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
         <AudioAttachment activity={activity} attachment={attachment} />
+      ) : /^image\//u.test(contentType) ? (
+        <ImageAttachment activity={activity} attachment={attachment} />
       ) : /^video\//u.test(contentType) ? (
         <VideoAttachment activity={activity} attachment={attachment} />
       ) : contentUrl || contentType === 'application/octet-stream' ? (
