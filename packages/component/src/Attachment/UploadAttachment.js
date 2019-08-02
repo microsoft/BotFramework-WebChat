@@ -42,7 +42,6 @@ UploadAttachment.propTypes = {
     })
   }).isRequired,
   attachment: PropTypes.shape({
-    contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
   language: PropTypes.string.isRequired,
