@@ -4,6 +4,7 @@ import React from 'react';
 import AudioAttachment from '../../Attachment/AudioAttachment';
 import DownloadAttachment from '../../Attachment/DownloadAttachment';
 import ImageAttachment from '../../Attachment/ImageAttachment';
+import UploadAttachment from '../../Attachment/UploadAttachment';
 import TextAttachment from '../../Attachment/TextAttachment';
 import TypingActivity from '../../Attachment/TypingActivity';
 import VideoAttachment from '../../Attachment/VideoAttachment';
@@ -14,10 +15,12 @@ export default function createCoreMiddleware() {
     const Attachment = ({ activity = {}, attachment, attachment: { contentType, contentUrl } = {} }) =>
       activity.type === 'typing' ? (
         <TypingActivity />
-      ) : /^audio\//u.test(contentType) ? (
-        <AudioAttachment activity={activity} attachment={attachment} />
       ) : /^image\//u.test(contentType) ? (
         <ImageAttachment activity={activity} attachment={attachment} />
+      ) : activity.from.role === 'user' ? (
+        <UploadAttachment activity={activity} attachment={attachment} />
+      ) : /^audio\//u.test(contentType) ? (
+        <AudioAttachment activity={activity} attachment={attachment} />
       ) : /^video\//u.test(contentType) ? (
         <VideoAttachment activity={activity} attachment={attachment} />
       ) : contentUrl || contentType === 'application/octet-stream' ? (
