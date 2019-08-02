@@ -9,9 +9,8 @@ import TextAttachment from '../../Attachment/TextAttachment';
 import TypingActivity from '../../Attachment/TypingActivity';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
-function hasThumbnail(activity, attachment) {
-  const attachmentIndex = activity.attachments.indexOf(attachment);
-  const { channelData: { attachmentThumbnails = [] } = {} } = activity;
+function hasThumbnail({ attachments = [], channelData: { attachmentThumbnails = [] } = {} }, attachment) {
+  const attachmentIndex = attachments.indexOf(attachment);
 
   return !!attachmentThumbnails[attachmentIndex];
 }
@@ -22,7 +21,7 @@ export default function createCoreMiddleware() {
     const Attachment = ({ activity = {}, attachment, attachment: { contentType, contentUrl } = {} }) =>
       activity.type === 'typing' ? (
         <TypingActivity />
-      ) : activity.from.role === 'user' && !hasThumbnail(activity, attachment) ? (
+      ) : activity.from.role === 'user' && !/^text\//u.test(contentType) && !hasThumbnail(activity, attachment) ? (
         <UploadAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
         <AudioAttachment activity={activity} attachment={attachment} />
