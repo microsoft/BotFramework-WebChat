@@ -67,7 +67,7 @@ Since we know we want to filter by the role value in the activity, we will use a
 const activityMiddleware = () => next => card => {
   return (
     children =>
-+     <div className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
++     <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
         <!-- content here -->
       </div>
   );
@@ -80,7 +80,7 @@ const activityMiddleware = () => next => card => {
 const activityMiddleware = () => next => card => {
   return (
     children =>
-      <div className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
+      <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
 +       { next(card)(children) }
       </div>
   );
@@ -147,7 +147,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 +       const activityMiddleware = () => next => card => {
 +         return (
 +           children =>
-+             <div className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
++             <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
 +               { next(card)(children) }
 +             </div>
 +         );
