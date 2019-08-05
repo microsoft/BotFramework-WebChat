@@ -29,12 +29,6 @@ This sample is a simplified and reduced version of the sample "[Single sign-on d
 
 This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
-# Test out the hosted sample
-
-You will need to create a new Microsoft Teams app to host the demo in your organization.
-
-Please follow this article, "[Add tabs to Microsoft Teams apps](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/tabs/tabs-overview)", and use our web page through "Personal tab" by setting its content URL to https://webchat-sample-sso-teams.azurewebsites.net/.
-
 # How to run locally
 
 This demo integrates with Azure Active Directory and Microsoft Teams. You will need to set it up in order to host the demo.
