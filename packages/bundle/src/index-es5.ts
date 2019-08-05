@@ -17,6 +17,7 @@ import 'core-js/modules/es.number.is-finite';
 import 'core-js/modules/es.object.assign';
 import 'core-js/modules/es.object.keys';
 import 'core-js/modules/es.promise';
+import 'core-js/modules/es.promise.finally';
 import 'core-js/modules/es.string.starts-with';
 import 'core-js/modules/es.symbol';
 import 'url-search-params-polyfill';

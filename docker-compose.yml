@@ -4,9 +4,9 @@ services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
   chrome:
-    # https://github.com/SeleniumHQ/docker-selenium
-    # https://hub.docker.com/r/selenium/standalone-chrome/tags/
-    image: selenium/standalone-chrome:3.141.0-actinium
+    build:
+      context: ./
+      dockerfile: Dockerfile-selenium
     networks:
     - selenium
     depends_on:

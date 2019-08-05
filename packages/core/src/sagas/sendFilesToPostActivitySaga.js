@@ -16,7 +16,8 @@ function* postActivityWithFiles({ payload: { files } }) {
         name
       })),
       channelData: {
-        attachmentSizes: [].map.call(files, ({ size }) => size)
+        attachmentSizes: [].map.call(files, ({ size }) => size),
+        attachmentThumbnails: [].map.call(files, ({ thumbnail }) => thumbnail)
       },
       type: 'message'
     })

@@ -119,7 +119,13 @@ const DEFAULT_OPTIONS = {
   spinnerAnimationBackgroundImage: null,
   spinnerAnimationHeight: 16,
   spinnerAnimationWidth: 16,
-  spinnerAnimationPaddingRight: 12
+  spinnerAnimationPaddingRight: 12,
+
+  enableUploadThumbnail: true,
+  uploadThumbnailContentType: 'image/jpeg',
+  uploadThumbnailHeight: 360,
+  uploadThumbnailQuality: 0.6,
+  uploadThumbnailWidth: 720
 };
 
 export default DEFAULT_OPTIONS;
