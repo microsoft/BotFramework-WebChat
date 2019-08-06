@@ -29,6 +29,7 @@ import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
 import createTypingActivityStyle from './StyleSet/TypingActivity';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
+import createUploadAttachmentStyle from './StyleSet/UploadAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
@@ -82,6 +83,7 @@ export default function createStyleSet(options) {
     timestamp: createTimestampStyle(options),
     typingActivity: createTypingActivityStyle(options),
     typingAnimation: createTypingAnimationStyle(options),
+    uploadAttachment: createUploadAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),
     videoContent: createVideoContentStyle(options),

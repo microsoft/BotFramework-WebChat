@@ -42,6 +42,10 @@ function downloadFileWithFileSize(downloadFileText, fileName, size) {
   return `${downloadFileText} ${fileName} of size ${size}`;
 }
 
+function uploadFileWithFileSize(fileName, size) {
+  return `${fileName} of size ${size}`;
+}
+
 function userSaidSomething(avatarInitials, text) {
   return `User ${avatarInitials} said, ${text}`;
 }
@@ -86,6 +90,7 @@ export default {
   'Type your message': 'Type your message',
   TypingIndicator: 'Showing typing indicator',
   'Upload file': 'Upload file',
+  UploadFileWithFileSize: uploadFileWithFileSize,
   UserSent: 'User sent: ',
   VAT: 'VAT'
 };
