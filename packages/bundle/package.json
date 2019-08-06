@@ -44,11 +44,9 @@
     "memoize-one": "^5.0.2",
     "microsoft-speech-browser-sdk": "^0.0.12",
     "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "sanitize-html": "^1.19.0",
     "url-search-params-polyfill": "^5.0.0",
-    "web-speech-cognitive-services": "4.0.1-master.c12f923",
+    "web-speech-cognitive-services": "4.0.1-master.ad6e780",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
@@ -75,5 +73,9 @@
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5",
     "webpack-visualizer-plugin": "^0.1.11"
+  },
+  "peerDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   }
 }
