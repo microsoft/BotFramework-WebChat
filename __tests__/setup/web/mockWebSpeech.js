@@ -221,6 +221,12 @@ const SPEECH_SYNTHESIS_VOICES = [
 ];
 
 class SpeechSynthesis extends EventTarget {
+  constructor() {
+    super();
+
+    this.ignoreFirstUtteranceIfEmpty = true;
+  }
+
   getVoices() {
     return SPEECH_SYNTHESIS_VOICES;
   }
@@ -238,7 +244,13 @@ class SpeechSynthesis extends EventTarget {
   }
 
   speak(utterance) {
-    speechSynthesisBroker.produce(utterance);
+    // We prime the speech engine by sending an empty utterance on start.
+    // We should ignore the first utterance if it is empty.
+    if (!this.ignoreFirstUtteranceIfEmpty || utterance.text) {
+      speechSynthesisBroker.produce(utterance);
+    }
+
+    this.ignoreFirstUtteranceIfEmpty = false;
   }
 }
 
