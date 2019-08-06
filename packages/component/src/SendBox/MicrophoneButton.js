@@ -4,6 +4,7 @@
 import { Constants } from 'botframework-webchat-core';
 import { css } from 'glamor';
 import classNames from 'classnames';
+import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -29,9 +30,27 @@ const ROOT_CSS = css({
   }
 });
 
-const connectMicrophoneButton = (...selectors) =>
-  connectToWebChat(
-    ({ disabled, dictateInterims, dictateState, language, setSendBox, startDictate, stopDictate }) => ({
+const connectMicrophoneButton = (...selectors) => {
+  const primeSpeechSynthesis = memoize((speechSynthesis, SpeechSynthesisUtterance) => {
+    if (speechSynthesis && SpeechSynthesisUtterance) {
+      const utterance = new SpeechSynthesisUtterance('');
+
+      [utterance.voice] = speechSynthesis.getVoices();
+      speechSynthesis.speak(utterance);
+    }
+  });
+
+  return connectToWebChat(
+    ({
+      disabled,
+      dictateInterims,
+      dictateState,
+      language,
+      setSendBox,
+      startDictate,
+      stopDictate,
+      webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
+    }) => ({
       click: () => {
         if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
           stopDictate();
@@ -39,6 +58,8 @@ const connectMicrophoneButton = (...selectors) =>
         } else {
           startDictate();
         }
+
+        primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
       },
       dictating: dictateState === DictateState.DICTATING,
       disabled: disabled || (dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING),
@@ -46,6 +67,7 @@ const connectMicrophoneButton = (...selectors) =>
     }),
     ...selectors
   );
+};
 
 const MicrophoneButton = ({ className, click, dictating, disabled, language, styleSet }) => (
   <div
