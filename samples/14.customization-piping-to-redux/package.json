@@ -4,12 +4,12 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/14.customization-piping-to-redux/",
   "dependencies": {
-    "botframework-webchat": ">= 0.0.0-0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-redux": "^6.0.0",
-    "react-scripts": "^3.0.0",
-    "redux": "^4.0.0"
+    "botframework-webchat": "~4.5.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^6.0.1",
+    "react-scripts": "^3.0.1",
+    "redux": "^4.0.4"
   },
   "scripts": {
     "start": "react-scripts start",

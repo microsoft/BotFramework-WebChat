@@ -4,11 +4,11 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/19.customization-plain-ui/",
   "dependencies": {
-    "botframework-webchat": "*",
-    "botframework-webchat-component": "*",
+    "botframework-webchat": "~4.5.1",
+    "botframework-webchat-component": "~4.5.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8"
+    "react-scripts": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
