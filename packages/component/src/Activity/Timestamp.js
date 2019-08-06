@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
-import TimeAgo from '../Utils/TimeAgo';
+import RelativeTime from '../Utils/RelativeTime';
 
 const Timestamp = ({ activity: { timestamp }, className, styleSet }) => (
   <span className={classNames(styleSet.timestamp + '', (className || '') + '')}>
-    <TimeAgo value={timestamp} />
+    <RelativeTime value={timestamp} />
   </span>
 );
 

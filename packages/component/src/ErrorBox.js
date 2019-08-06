@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from './connectToWebChat';
 import { localize } from './Localization/Localize';
+import connectToWebChat from './connectToWebChat';
+import ScreenReaderText from './ScreenReaderText';
 
 const ErrorBox = ({ children, language, message, styleSet }) => (
-  <div aria-label={localize('ErrorMessage', language)} className={styleSet.errorBox}>
-    <div aria-label={message}>{message}</div>
-    <div>{children}</div>
-  </div>
+  <React.Fragment>
+    <ScreenReaderText text={localize('ErrorMessage', language)} />
+    <div className={styleSet.errorBox}>
+      <div>{message}</div>
+      <div>{children}</div>
+    </div>
+  </React.Fragment>
 );
 
 ErrorBox.defaultProps = {

@@ -7,12 +7,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 
 const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
   contentType === 'text/markdown' && renderMarkdown ? (
     <React.Fragment>
-      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-      <span aria-label={text} />
+      <ScreenReaderText text={text} />
       <div
         aria-hidden={true}
         className={classNames('markdown', styleSet.textContent + '')}
@@ -22,8 +22,7 @@ const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
   ) : (
     (text || '').split('\n').map((line, index) => (
       <React.Fragment key={index}>
-        {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-        <span aria-label={text} />
+        <ScreenReaderText text={text} />
         <p aria-hidden={true} className={classNames('plain', styleSet.textContent + '')}>
           {line.trim()}
         </p>

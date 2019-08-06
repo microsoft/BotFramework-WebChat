@@ -121,8 +121,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
       if (failures.length) {
         // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
-        const errors = failures.map(({ errors }) => errors).flat();
-
+        const errors = failures.reduce((items, { errors }) => [...items, ...errors], []);
         return this.setState(() => ({ error: errors }));
       }
 
