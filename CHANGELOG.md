@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `bundle`: Move [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies` to `peerDependencies`
    -  `component`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `devDependencies`
    -  `playground`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies`
-   -  `samples/*`: Remove from Lerna, move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
+   -  `samples/*`: Move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
 
 ### Fixed
 
