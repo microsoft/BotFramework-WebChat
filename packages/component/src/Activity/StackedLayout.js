@@ -13,6 +13,7 @@ import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
@@ -119,8 +120,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         ) : (
           !!activityDisplayText && (
             <div className="webchat__row message">
-              {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-              <span aria-label={ariaLabel} />
+              <ScreenReaderText text={ariaLabel} />
               <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
                 {children({
                   activity,
@@ -137,8 +137,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
         {attachments.map((attachment, index) => (
           <div aria-label=" " className="webchat__row attachment" key={index}>
-            {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-            <span aria-label={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
             <Bubble className="attachment bubble" fromUser={fromUser} key={index}>
               {children({ attachment })}
             </Bubble>

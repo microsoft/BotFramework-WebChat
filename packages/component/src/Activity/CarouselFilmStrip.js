@@ -8,9 +8,11 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
+import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
@@ -87,6 +89,7 @@ const WebChatCarouselFilmStrip = ({
   children,
   className,
   itemContainerRef,
+  language,
   scrollableRef,
   styleSet,
   timestampClassName
@@ -108,7 +111,8 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser}>
+            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <Bubble className="bubble" fromUser={fromUser}>
               {children({
                 activity,
                 attachment: {
@@ -123,7 +127,8 @@ const WebChatCarouselFilmStrip = ({
         <ul ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble aria-hidden={true} fromUser={fromUser} key={index}>
+              <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+              <Bubble fromUser={fromUser} key={index}>
                 {children({ attachment })}
               </Bubble>
             </li>
@@ -166,6 +171,7 @@ WebChatCarouselFilmStrip.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
+  language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
     carouselFilmStrip: PropTypes.any.isRequired
