@@ -4,13 +4,13 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/13.customization-speech-ui/",
   "dependencies": {
-    "botframework-webchat": ">= 0.0.0-0",
+    "botframework-webchat": "~4.5.1",
     "classnames": "^2.2.6",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-redux": "^5.0.7",
-    "react-scripts": "^3.0.0",
-    "redux": "^4.0.1"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^5.1.1",
+    "react-scripts": "^3.0.1",
+    "redux": "^4.0.4"
   },
   "scripts": {
     "start": "react-scripts start",

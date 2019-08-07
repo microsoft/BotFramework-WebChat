@@ -193,10 +193,12 @@ export default class extends React.Component {
         }
       );
 
-      createCognitiveServicesSpeechServicesPonyfillFactory({
+      const webSpeechPonyfillFactory = createCognitiveServicesSpeechServicesPonyfillFactory({
         authorizationToken: () => fetchAuthorizationToken(Date.now()),
         region: 'westus'
-      }).then(webSpeechPonyfillFactory => this.setState(() => ({ webSpeechPonyfillFactory })));
+      });
+
+      this.setState(() => ({ webSpeechPonyfillFactory }));
     } else {
       this.setState(() => ({ webSpeechPonyfillFactory: createBrowserWebSpeechPonyfillFactory() }));
     }

@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 - Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
 
+### Breaking changes
+
+-  We will no longer include `react` and `react-dom` in our NPM package, instead, we will requires peer dependencies of `react@^16.8.6` and `react-dom@^16.8.6`
+
 ### Changed
 
 -  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182), notably
@@ -51,7 +55,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
    - [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
    - [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
-- Bumps [`web-speech-cognitive-services@4.0.1-master.c12f923`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
+-  Bumps [`web-speech-cognitive-services@4.0.1-master.ad6e780`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246) and PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
+-  Fix for React hooks constraints: both app and component must share the same reference of [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom), in PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
+   -  `/`: Install [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) to `devDependencies`
+   -  `bundle`: Move [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies` to `peerDependencies`
+   -  `component`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `devDependencies`
+   -  `playground`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies`
+   -  `samples/*`: Move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
 
 ### Fixed
 
