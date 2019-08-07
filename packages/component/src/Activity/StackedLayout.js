@@ -133,7 +133,6 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
         ) : (
           !!activityDisplayText && (
             <div className="webchat__row message">
-              {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
               <ScreenReaderText text={ariaLabel} />
               <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
                 {children({
