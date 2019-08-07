@@ -6,6 +6,7 @@ import React from 'react';
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
+import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
 
@@ -62,42 +63,77 @@ const connectConnectivityStatus = (...selectors) =>
   connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
 
 const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => (
-  <div aria-live="polite" role="status">
+  <div aria-atomic="false" aria-live="polite" role="status">
     <DebouncedConnectivityStatus
       interval={
         connectivityStatus === 'uninitialized' || connectivityStatus === 'error' ? 0 : CONNECTIVITY_STATUS_DEBOUNCE
       }
     >
-      {() =>
-        connectivityStatus === 'connectingslow' ? (
-          <div className={styleSet.warningNotification}>
-            <WarningNotificationIcon />
-            {localize('SLOW_CONNECTION_NOTIFICATION', language)}
-          </div>
-        ) : connectivityStatus === 'error' || connectivityStatus === 'notconnected' ? (
-          <div className={styleSet.errorNotification}>
-            <ErrorNotificationIcon />
-            {localize('FAILED_CONNECTION_NOTIFICATION', language)}
-          </div>
-        ) : connectivityStatus === 'uninitialized' ? (
-          <div className={styleSet.connectivityNotification}>
-            <SpinnerAnimation />
-            {localize('INITIAL_CONNECTION_NOTIFICATION', language)}
-          </div>
-        ) : connectivityStatus === 'reconnecting' ? (
-          <div className={styleSet.connectivityNotification}>
-            <SpinnerAnimation />
-            {localize('INTERRUPTED_CONNECTION_NOTIFICATION', language)}
-          </div>
-        ) : connectivityStatus === 'sagaerror' ? (
-          <div className={styleSet.errorNotification}>
-            <ErrorNotificationIcon />
-            {localize('RENDER_ERROR_NOTIFICATION', language)}
-          </div>
-        ) : (
-          connectivityStatus === 'reconnected' || (connectivityStatus === 'connected' && false)
-        )
-      }
+      {() => {
+        if (connectivityStatus === 'connectingslow') {
+          const localizedText = localize('SLOW_CONNECTION_NOTIFICATION', language);
+
+          return (
+            <React.Fragment>
+              <ScreenReaderText text={localizedText} />
+              <div aria-hidden={true} className={styleSet.warningNotification}>
+                <WarningNotificationIcon />
+                {localizedText}
+              </div>
+            </React.Fragment>
+          );
+        } else if (connectivityStatus === 'error' || connectivityStatus === 'notconnected') {
+          const localizedText = localize('FAILED_CONNECTION_NOTIFICATION', language);
+
+          return (
+            <React.Fragment>
+              <ScreenReaderText text={localizedText} />
+              <div aria-hidden={true} className={styleSet.errorNotification}>
+                <ErrorNotificationIcon />
+                {localizedText}
+              </div>
+            </React.Fragment>
+          );
+        } else if (connectivityStatus === 'uninitialized') {
+          const localizedText = localize('INITIAL_CONNECTION_NOTIFICATION', language);
+
+          return (
+            <React.Fragment>
+              <ScreenReaderText text={localizedText} />
+              <div aria-hidden={true} className={styleSet.connectivityNotification}>
+                <SpinnerAnimation />
+                {localizedText}
+              </div>
+            </React.Fragment>
+          );
+        } else if (connectivityStatus === 'reconnecting') {
+          const localizedText = localize('INTERRUPTED_CONNECTION_NOTIFICATION', language);
+
+          return (
+            <React.Fragment>
+              <ScreenReaderText text={localizedText} />
+              <div aria-hidden={true} className={styleSet.connectivityNotification}>
+                <SpinnerAnimation />
+                {localizedText}
+              </div>
+            </React.Fragment>
+          );
+        } else if (connectivityStatus === 'sagaerror') {
+          const localizedText = localize('RENDER_ERROR_NOTIFICATION', language);
+
+          return (
+            <React.Fragment>
+              <ScreenReaderText text={localizedText} />
+              <div className={styleSet.errorNotification}>
+                <ErrorNotificationIcon />
+                {localizedText}
+              </div>
+            </React.Fragment>
+          );
+        }
+
+        return <ScreenReaderText text={localize('CONNECTED_NOTIFICATION', language)} />;
+      }}
     </DebouncedConnectivityStatus>
   </div>
 );

@@ -5,6 +5,7 @@ import React from 'react';
 
 import { getLocaleString, localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 import Timer from './Timer';
 
 const TIMER_INTERVAL = 60000;
@@ -23,7 +24,7 @@ function getStateFromProps({ language, value }) {
   };
 }
 
-class TimeAgo extends React.Component {
+class RelativeTime extends React.Component {
   constructor(props) {
     super(props);
 
@@ -55,8 +56,7 @@ class TimeAgo extends React.Component {
 
     return (
       <React.Fragment>
-        {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-        <span aria-label={localizedSentAtTime} />
+        <ScreenReaderText text={localizedSentAtTime} />
         <span aria-hidden={true}>{text}</span>
         <Timer at={timer} onInterval={this.handleInterval} />
       </React.Fragment>
@@ -64,9 +64,9 @@ class TimeAgo extends React.Component {
   }
 }
 
-TimeAgo.propTypes = {
+RelativeTime.propTypes = {
   language: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(TimeAgo);
+export default connectToWebChat(({ language }) => ({ language }))(RelativeTime);

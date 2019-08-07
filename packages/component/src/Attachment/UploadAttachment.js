@@ -4,8 +4,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import { localize } from '../Localization/Localize';
+import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -24,8 +25,7 @@ const UploadAttachment = ({
   const uploadFileWithFileSizeLabel = localize('UploadFileWithFileSize', language, attachment.name, formattedSize);
   return (
     <React.Fragment>
-      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-      <span aria-label={uploadFileWithFileSizeLabel} />
+      <ScreenReaderText text={uploadFileWithFileSizeLabel} />
       <div aria-hidden={true} className={classNames(ROOT_CSS + '', styleSet.uploadAttachment + '')}>
         <div className="name">{attachment.name}</div>
         <div className="size">{formattedSize}</div>
