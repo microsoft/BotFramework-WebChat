@@ -19,13 +19,16 @@ const ROOT_CSS = css({
   display: 'flex',
   height: '100%',
 
+  // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
+
   '& > .sr-only': {
     color: 'transparent',
     height: 1,
     left: -10000,
     overflow: 'hidden',
     position: 'absolute',
-    top: 'auto',
+    top: 0,
+    whiteSpace: 'nowrap',
     width: 1
   }
 });

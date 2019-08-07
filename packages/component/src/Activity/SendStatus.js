@@ -4,6 +4,7 @@ import React from 'react';
 
 import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }
@@ -36,8 +37,7 @@ const SendStatus = ({ activity: { channelData: { state } = {} }, language, retry
 
   return (
     <React.Fragment>
-      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-      <span aria-label={localizedSendStatus + localizedSending} />
+      <ScreenReaderText text={localizedSendStatus + localizedSending} />
       <span aria-hidden={true} className={styleSet.sendStatus}>
         {state === SENDING ? (
           localizedSending

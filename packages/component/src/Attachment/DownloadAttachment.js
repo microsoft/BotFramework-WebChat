@@ -2,9 +2,10 @@ import { format } from 'bytes';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import DownloadIcon from './Assets/DownloadIcon';
-import { localize } from '../Localization/Localize';
+import ScreenReaderText from '../ScreenReaderText';
 
 const DownloadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
@@ -25,11 +26,11 @@ const DownloadAttachment = ({
   );
   return (
     <React.Fragment>
-      {/* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers in Edge v44 */}
-      <span aria-label={downloadFileWithFileSizeLabel} />
+      <ScreenReaderText text={downloadFileWithFileSizeLabel} />
       <div aria-hidden={true} className={styleSet.downloadAttachment}>
         <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
-          <div className="details">
+          {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden necessary */}
+          <div aria-hidden={true} className="details">
             <div className="name">{attachment.name}</div>
             <div className="size">{formattedSize}</div>
           </div>

@@ -8,9 +8,11 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
+import { localize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
+import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
@@ -88,6 +90,7 @@ const WebChatCarouselFilmStrip = ({
   children,
   className,
   itemContainerRef,
+  language,
   scrollableRef,
   styleSet,
   timestampClassName
@@ -115,7 +118,8 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
+            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <Bubble className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
                 attachment: {
@@ -130,7 +134,8 @@ const WebChatCarouselFilmStrip = ({
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <Bubble aria-hidden={true} fromUser={fromUser} key={index} nub={false}>
+              <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+              <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>
             </li>
@@ -175,6 +180,7 @@ WebChatCarouselFilmStrip.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
+  language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
     carouselFilmStrip: PropTypes.any.isRequired

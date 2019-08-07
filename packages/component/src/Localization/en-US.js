@@ -51,6 +51,7 @@ function userSaidSomething(avatarInitials, text) {
 }
 
 export default {
+  CONNECTED_NOTIFICATION: 'Connected',
   FAILED_CONNECTION_NOTIFICATION: 'Unable to connect.',
   INITIAL_CONNECTION_NOTIFICATION: 'Connecting…',
   INTERRUPTED_CONNECTION_NOTIFICATION: 'Network interruption occurred. Reconnecting…',
