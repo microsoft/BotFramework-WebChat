@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.5.2] - 2019-08-07
+
 ### Fixed
 -  Fix [#2273](https://github.com/microsoft/BotFramework-WebChat/issues/2273). Add `ScreenReaderText` component, by [@corinagum](https://github.com/corinagum) in PR [#2278](https://github.com/microsoft/BotFramework-WebChat/pull/2278)
 
