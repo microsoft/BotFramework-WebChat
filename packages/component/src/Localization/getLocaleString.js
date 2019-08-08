@@ -8,8 +8,17 @@ export default function getLocaleString(value, language) {
     month: 'long'
   };
 
-  if (window.Intl) {
-    return !!date && new Intl.DateTimeFormat(language, options).format(date);
-  }
-  return date.toLocaleDateString(language, options);
+  try {
+    if (window.Intl) {
+      return !!date && new Intl.DateTimeFormat(language, options).format(date);
+    }
+  } catch (err) {}
+
+  try {
+    return date.toLocaleDateString(language, options);
+  } catch (err) {}
+
+  // Fallback to en-US if failed, for example, invalid language code would throw exception
+
+  return date.toLocaleDateString('en-US', options);
 }
