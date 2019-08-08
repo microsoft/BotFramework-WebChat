@@ -1,3 +1,5 @@
+/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+
 export default function getLocaleString(value, language) {
   const date = new Date(value);
   const options = {
