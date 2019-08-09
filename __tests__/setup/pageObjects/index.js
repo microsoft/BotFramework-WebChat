@@ -1,10 +1,13 @@
 import clickMicrophoneButton from './clickMicrophoneButton';
+import clickSendButton from './clickSendButton';
+import clickSuggestedActionButton from './clickSuggestedActionButton';
 import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
 import getNumActivitiesShown from './getNumActivitiesShown';
 import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
+import hasFocusOnSendBoxTextBox from './hasFocusOnSendBoxTextBox';
 import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtterance';
 import hasSpeechRecognitionStartCalled from './hasSpeechRecognitionStartCalled';
 import isDictating from './isDictating';
@@ -31,15 +34,18 @@ export default function pageObjects(driver) {
   return mapMap(
     {
       clickMicrophoneButton,
+      clickSendButton,
+      clickSuggestedActionButton,
       dispatchAction,
       endSpeechSynthesize,
       executePromiseScript,
       getNumActivitiesShown,
       getSendBoxText,
       getStore,
+      hasFocusOnSendBoxTextBox,
       hasPendingSpeechSynthesisUtterance,
-      isDictating,
       hasSpeechRecognitionStartCalled,
+      isDictating,
       pingBot,
       putSpeechRecognitionResult,
       sendFile,
