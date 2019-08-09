@@ -26,7 +26,7 @@ function createProducerConsumer() {
     },
     consume(fn, context) {
       consumers.push({ fn, context });
-      jobs.length && consumers.shift()(...jobs.shift());
+      jobs.length && consumers.shift().fn(...jobs.shift());
     },
     hasConsumer() {
       return !!consumers.length && consumers[0].context;
