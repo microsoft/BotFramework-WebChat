@@ -152,7 +152,7 @@ describe('suggested-actions command', () => {
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
-    await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
+    await driver.wait(suggestedActionsShowed(), timeouts.directLine);
     await driver.wait(allImagesLoaded(), 2000);
 
     const base64PNG = await driver.takeScreenshot();
@@ -167,7 +167,7 @@ describe('suggested-actions command', () => {
     await driver.wait(uiConnected(), timeouts.directLine);
     await pageObjects.sendMessageViaSendBox('emptycard', { waitForSend: true });
 
-    await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
+    await driver.wait(suggestedActionsShowed(), timeouts.directLine);
     await driver.wait(allImagesLoaded(), 2000);
 
     const base64PNG = await driver.takeScreenshot();
