@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1514](https://github.com/microsoft/BotFramework-WebChat/issues/1514). Added reference grammar ID when using Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 -  Fix [#1515](https://github.com/microsoft/BotFramework-WebChat/issues/1515). Added dynamic phrases when using Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 -  Fix [#2273](https://github.com/microsoft/BotFramework-WebChat/issues/2273). Add `ScreenReaderText` component, by [@corinagum](https://github.com/corinagum) in PR [#2278](https://github.com/microsoft/BotFramework-WebChat/pull/2278)
-
+-  Fix [#2231](https://github.com/microsoft/BotFramework-WebChat/issues/2231). Fallback to English (US) if date time formatting failed, by [@compulim](https://github.com/compulim) in PR [#2286](https://github.com/microsoft/BotFramework-WebChat/pull/2286)
 
 ### Added
 
@@ -92,6 +92,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  [Single sign-on for Microsoft Teams apps](https://microsoft.github.io/BotFramework-WebChat/19.c.single-sign-on-for-teams-apps/), by [@compulim](https://github.com/compulim) in [#2196](https://github.com/microsoft/BotFramework-WebChat/pull/2196)
 -  [Customize Web Chat with Reaction Buttons](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons/). Updated reaction handlers to send `messageReaction` activities, by [@tdurnford](https://github.com/tdurnford) in [#2239](https://github.com/microsoft/BotFramework-WebChat/pull/2239)
+
+## [4.5.2] - 2019-08-07
+
+-  Fix [#2273](https://github.com/microsoft/BotFramework-WebChat/issues/2273). Add `ScreenReaderText` component, by [@corinagum](https://github.com/corinagum) in PR [#2278](https://github.com/microsoft/BotFramework-WebChat/pull/2278)
 
 ## [4.5.1] - 2019-08-01
 
