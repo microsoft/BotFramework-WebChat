@@ -24,12 +24,12 @@ function createProducerConsumer() {
     cancel() {
       jobs.splice(0);
     },
-    consume(consumer) {
-      consumers.push(consumer);
+    consume(fn, context) {
+      consumers.push({ fn, context });
       jobs.length && consumers.shift()(...jobs.shift());
     },
     hasConsumer() {
-      return !!consumers.length;
+      return !!consumers.length && consumers[0].context;
     },
     hasJob() {
       return !!jobs.length;
@@ -39,7 +39,7 @@ function createProducerConsumer() {
     },
     produce(...args) {
       jobs.push(args);
-      consumers.length && consumers.shift()(...jobs.shift());
+      consumers.length && consumers.shift().fn(...jobs.shift());
     }
   };
 }
@@ -68,7 +68,7 @@ class SpeechRecognition extends EventTarget {
       } else {
         this[scenario](...args);
       }
-    });
+    }, this);
   }
 
   microphoneMuted() {
@@ -231,8 +231,15 @@ const SPEECH_SYNTHESIS_VOICES = [
     default: true,
     lang: 'en-US',
     localService: true,
-    name: 'Mock Voice',
-    voiceURI: 'mock://web-speech/voice'
+    name: 'Mock Voice (en-US)',
+    voiceURI: 'mock://web-speech/voice/en-US'
+  },
+  {
+    default: false,
+    lang: 'zh-YUE',
+    localService: true,
+    name: 'Mock Voice (zh-YUE)',
+    voiceURI: 'mock://web-speech/voice/zh-YUE'
   }
 ];
 
@@ -295,7 +302,22 @@ window.WebSpeechMock = {
   },
 
   hasSpeechRecognitionStartCalled() {
-    return speechRecognitionBroker.hasConsumer();
+    const context = speechRecognitionBroker.hasConsumer();
+
+    if (context) {
+      const { continuous, grammars, interimResults, lang, maxAlternatives, serviceURI } = context;
+
+      return {
+        continuous,
+        grammars,
+        interimResults,
+        lang,
+        maxAlternatives,
+        serviceURI
+      };
+    } else {
+      return false;
+    }
   },
 
   mockEndSynthesize() {
