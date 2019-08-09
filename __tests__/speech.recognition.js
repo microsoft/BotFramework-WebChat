@@ -25,7 +25,7 @@ describe('speech recognition', () => {
     await driver.wait(pageObjects.hasPendingSpeechSynthesisUtterance(), timeouts.ui);
 
     await pageObjects.startSpeechSynthesize();
-    await pageObjects.setSendBoxText('Aloha!');
+    await pageObjects.typeOnSendBox('Aloha!');
 
     await driver.wait(negate(pageObjects.hasPendingSpeechSynthesisUtterance), timeouts.ui);
     await expect(pageObjects.isDictating()).resolves.toBeFalsy();
@@ -170,7 +170,7 @@ describe('speech recognition', () => {
     await expect(pageObjects.getNumActivitiesShown(0)).resolves.toBe(0);
   });
 
-  test('should not send anything if abort while recognizing', async () => {
+  test('should not send anything if aborted while recognizing', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         webSpeechPonyfillFactory: () => window.WebSpeechMock
@@ -192,7 +192,7 @@ describe('speech recognition', () => {
     await expect(pageObjects.getSendBoxText()).resolves.toBe('Hello');
   });
 
-  test('should not send anything if recognize but not confident', async () => {
+  test('should not send anything if recognize is complete but not confident', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         webSpeechPonyfillFactory: () => window.WebSpeechMock

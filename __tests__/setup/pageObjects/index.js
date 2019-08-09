@@ -16,8 +16,8 @@ import putSpeechRecognitionResult from './putSpeechRecognitionResult';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
-import setSendBoxText from './setSendBoxText';
 import startSpeechSynthesize from './startSpeechSynthesize';
+import typeOnSendBox from './typeOnSendBox';
 
 function mapMap(map, mapper) {
   return Object.keys(map).reduce((final, key) => {
@@ -51,7 +51,7 @@ export default function pageObjects(driver) {
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
-      setSendBoxText,
+      typeOnSendBox,
       startSpeechSynthesize
     },
     fn => fn.bind(null, driver)

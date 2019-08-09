@@ -8,7 +8,7 @@ import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 jest.setTimeout(timeouts.test);
 
 describe('speech synthesis', () => {
-  // Verification of fix of #1736
+  // Verification of fix of #1736, https://github.com/microsoft/BotFramework-WebChat/issues/1736
   test('should synthesize two consecutive messages', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
@@ -33,7 +33,7 @@ describe('speech synthesis', () => {
     await pageObjects.endSpeechSynthesize();
   });
 
-  // Verification of fix of #2096
+  // Verification of fix of #2096, https://github.com/microsoft/BotFramework-WebChat/issues/2096
   test('should synthesize speak property of Adaptive Card', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
