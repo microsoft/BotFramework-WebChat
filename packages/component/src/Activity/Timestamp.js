@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import AbsoluteTime from '../Utils/AbsoluteTime';
 import RelativeTime from '../Utils/RelativeTime';
 
 const Timestamp = ({ activity: { timestamp }, className, styleSet }) => (
   <span className={classNames(styleSet.timestamp + '', (className || '') + '')}>
-    <RelativeTime value={timestamp} />
+    {styleSet.options.timestampConfig === 'relative' ? (
+      <RelativeTime value={timestamp} />
+    ) : (
+      <AbsoluteTime value={timestamp} />
+    )}
   </span>
 );
 
