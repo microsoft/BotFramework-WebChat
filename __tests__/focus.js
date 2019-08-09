@@ -9,7 +9,7 @@ import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 
 jest.setTimeout(timeouts.test);
 
-// Verification of fix of #1971
+// Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
 test('should not focus send box after clicking on send button', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
@@ -21,7 +21,7 @@ test('should not focus send box after clicking on send button', async () => {
   await expect(pageObjects.hasFocusOnSendBoxTextBox()).resolves.toBeFalsy();
 });
 
-// Verification of fix of #1971
+// Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
 test('should not focus send box after clicking on suggested actions', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
@@ -35,7 +35,7 @@ test('should not focus send box after clicking on suggested actions', async () =
   await expect(pageObjects.hasFocusOnSendBoxTextBox()).resolves.toBeFalsy();
 });
 
-// Verification of fix of #1971
+// Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
 test('should focus send box after pressing ENTER to send message', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
