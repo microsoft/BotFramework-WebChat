@@ -62,8 +62,12 @@ class SpeechRecognition extends EventTarget {
   }
 
   start() {
-    speechRecognitionBroker.consume((command, ...args) => {
-      this[command](...args);
+    speechRecognitionBroker.consume((scenario, ...args) => {
+      if (!this[scenario]) {
+        throw new Error(`Cannot find speech scenario named "${scenario}" in mockWebSpeech.js`);
+      } else {
+        this[scenario](...args);
+      }
     });
   }
 
@@ -148,6 +152,18 @@ class SpeechRecognition extends EventTarget {
 
     this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(true, transcript) });
     this.dispatchEvent({ type: 'end' });
+  }
+
+  recognizing(transcript) {
+    this.abort = this.stop = NULL_FN;
+
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'speechstart' });
+
+    this.interimResults &&
+      this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
   }
 
   recognizeButAborted(transcript) {
@@ -278,7 +294,7 @@ window.WebSpeechMock = {
     return speechSynthesisBroker.hasJob();
   },
 
-  isRecognizing() {
+  hasSpeechRecognitionStartCalled() {
     return speechRecognitionBroker.hasConsumer();
   },
 

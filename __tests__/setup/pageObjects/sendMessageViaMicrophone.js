@@ -1,15 +1,14 @@
 import { timeouts } from '../../constants.json';
 import allOutgoingActivitiesSent from '../conditions/allOutgoingActivitiesSent';
-import getMicrophoneButton from './getMicrophoneButton';
+import clickMicrophoneButton from './clickMicrophoneButton';
+import hasSpeechRecognitionStartCalled from './hasSpeechRecognitionStartCalled';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
-import speechRecognitionStarted from '../conditions/speechRecognitionStarted';
 
 export default async function sendMessageViaMicrophone(driver, text, { waitForSend = true } = {}) {
-  const microphoneButton = await getMicrophoneButton(driver);
+  await clickMicrophoneButton(driver);
 
-  await microphoneButton.click();
+  await driver.wait(hasSpeechRecognitionStartCalled(driver), timeouts.ui);
 
-  await driver.wait(speechRecognitionStarted(), timeouts.ui);
   await putSpeechRecognitionResult(driver, 'recognize', text);
 
   waitForSend && (await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine));

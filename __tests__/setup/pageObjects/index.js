@@ -1,18 +1,19 @@
+import clickMicrophoneButton from './clickMicrophoneButton';
 import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
-import getActivityElements from './getActivityElements';
-import getMicrophoneButton from './getMicrophoneButton';
-import getSendBoxTextBox from './getSendBoxTextBox';
+import getNumActivitiesShown from './getNumActivitiesShown';
+import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
-import getUploadButton from './getUploadButton';
 import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtterance';
-import isRecognizingSpeech from './isRecognizingSpeech';
+import hasSpeechRecognitionStartCalled from './hasSpeechRecognitionStartCalled';
+import isDictating from './isDictating';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
+import setSendBoxText from './setSendBoxText';
 import startSpeechSynthesize from './startSpeechSynthesize';
 
 function mapMap(map, mapper) {
@@ -24,23 +25,27 @@ function mapMap(map, mapper) {
 }
 
 export default function pageObjects(driver) {
+  // We will not export page objects under /elements/ folder
+  // The /elements/ folder is designed to hold "get elements" function internal to page objects
+
   return mapMap(
     {
+      clickMicrophoneButton,
       dispatchAction,
       endSpeechSynthesize,
       executePromiseScript,
-      getActivityElements,
-      getMicrophoneButton,
-      getSendBoxTextBox,
+      getNumActivitiesShown,
+      getSendBoxText,
       getStore,
-      getUploadButton,
       hasPendingSpeechSynthesisUtterance,
-      isRecognizingSpeech,
+      isDictating,
+      hasSpeechRecognitionStartCalled,
       pingBot,
       putSpeechRecognitionResult,
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
+      setSendBoxText,
       startSpeechSynthesize
     },
     fn => fn.bind(null, driver)
