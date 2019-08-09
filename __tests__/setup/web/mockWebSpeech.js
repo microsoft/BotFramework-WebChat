@@ -297,29 +297,6 @@ class SpeechSynthesisUtterance extends EventTarget {
 );
 
 window.WebSpeechMock = {
-  hasPendingUtterance() {
-    return speechSynthesisBroker.hasJob();
-  },
-
-  hasSpeechRecognitionStartCalled() {
-    const context = speechRecognitionBroker.hasConsumer();
-
-    if (context) {
-      const { continuous, grammars, interimResults, lang, maxAlternatives, serviceURI } = context;
-
-      return {
-        continuous,
-        grammars,
-        interimResults,
-        lang,
-        maxAlternatives,
-        serviceURI
-      };
-    } else {
-      return false;
-    }
-  },
-
   mockEndSynthesize() {
     return new Promise(resolve => {
       speechSynthesisBroker.consume(utterance => {
@@ -348,6 +325,29 @@ window.WebSpeechMock = {
     const { lang, pitch, rate, text, voice, volume } = utterance;
 
     return { lang, pitch, rate, text, voice, volume };
+  },
+
+  speechRecognitionStartCalled() {
+    const context = speechRecognitionBroker.hasConsumer();
+
+    if (context) {
+      const { continuous, grammars, interimResults, lang, maxAlternatives, serviceURI } = context;
+
+      return {
+        continuous,
+        grammars,
+        interimResults,
+        lang,
+        maxAlternatives,
+        serviceURI
+      };
+    } else {
+      return false;
+    }
+  },
+
+  speechSynthesisUtterancePended() {
+    return speechSynthesisBroker.hasJob();
   },
 
   SpeechGrammarList,

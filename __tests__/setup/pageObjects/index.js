@@ -7,9 +7,6 @@ import executePromiseScript from './executePromiseScript';
 import getNumActivitiesShown from './getNumActivitiesShown';
 import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
-import hasFocusOnSendBoxTextBox from './hasFocusOnSendBoxTextBox';
-import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtterance';
-import hasSpeechRecognitionStartCalled from './hasSpeechRecognitionStartCalled';
 import isDictating from './isDictating';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
@@ -28,9 +25,6 @@ function mapMap(map, mapper) {
 }
 
 export default function pageObjects(driver) {
-  // We will not export page objects under /elements/ folder
-  // The /elements/ folder is designed to hold "get elements" function internal to page objects
-
   return mapMap(
     {
       clickMicrophoneButton,
@@ -42,17 +36,14 @@ export default function pageObjects(driver) {
       getNumActivitiesShown,
       getSendBoxText,
       getStore,
-      hasFocusOnSendBoxTextBox,
-      hasPendingSpeechSynthesisUtterance,
-      hasSpeechRecognitionStartCalled,
       isDictating,
       pingBot,
       putSpeechRecognitionResult,
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
-      typeOnSendBox,
-      startSpeechSynthesize
+      startSpeechSynthesize,
+      typeOnSendBox
     },
     fn => fn.bind(null, driver)
   );

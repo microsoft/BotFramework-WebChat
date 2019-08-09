@@ -1,8 +1,9 @@
 import { Key } from 'selenium-webdriver';
-import { timeouts } from './constants.json';
 
+import { timeouts } from './constants.json';
+import sendBoxTextBoxFocused from './setup/conditions/sendBoxTextBoxFocused';
+import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
 import uiConnected from './setup/conditions/uiConnected';
-import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -18,7 +19,7 @@ test('should not focus send box after clicking on send button', async () => {
   await pageObjects.typeOnSendBox('echo 123');
   await pageObjects.clickSendButton();
 
-  await expect(pageObjects.hasFocusOnSendBoxTextBox()).resolves.toBeFalsy();
+  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
@@ -28,11 +29,11 @@ test('should not focus send box after clicking on suggested actions', async () =
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('suggested-actions');
 
-  await driver.wait(suggestedActionsShowed(), timeouts.directLine);
+  await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
   await pageObjects.clickSuggestedActionButton(0);
 
-  await expect(pageObjects.hasFocusOnSendBoxTextBox()).resolves.toBeFalsy();
+  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
 });
 
 // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
@@ -43,5 +44,5 @@ test('should focus send box after pressing ENTER to send message', async () => {
 
   await pageObjects.typeOnSendBox('echo 123', Key.RETURN);
 
-  await expect(pageObjects.hasFocusOnSendBoxTextBox()).resolves.toBeTruthy();
+  await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeTruthy();
 });

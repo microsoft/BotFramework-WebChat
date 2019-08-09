@@ -1,4 +1,4 @@
-import getSendBoxTextBox from './elements/getSendBoxTextBox';
+import getSendBoxTextBox from '../elements/getSendBoxTextBox';
 
 export default async function typeOnSendBox(driver, ...args) {
   const textBox = await getSendBoxTextBox(driver);

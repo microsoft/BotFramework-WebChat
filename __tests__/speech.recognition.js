@@ -1,15 +1,13 @@
 import { timeouts } from './constants.json';
-
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import negateCondition from './setup/conditions/negate';
+import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
+import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
 jest.setTimeout(timeouts.test);
-
-function negate(fn) {
-  return async (...args) => !(await fn(...args));
-}
 
 describe('speech recognition', () => {
   test('should not start recognition after typing on keyboard while synthesizing', async () => {
@@ -22,12 +20,12 @@ describe('speech recognition', () => {
     await pageObjects.sendMessageViaMicrophone('hint expecting input');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-    await driver.wait(pageObjects.hasPendingSpeechSynthesisUtterance(), timeouts.ui);
+    await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
     await pageObjects.startSpeechSynthesize();
     await pageObjects.typeOnSendBox('Aloha!');
 
-    await driver.wait(negate(pageObjects.hasPendingSpeechSynthesisUtterance), timeouts.ui);
+    await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
     await expect(pageObjects.isDictating()).resolves.toBeFalsy();
   });
 
@@ -40,7 +38,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
   });
 
   test('should stop recognition after clicking on microphone button while recognizing', async () => {
@@ -52,7 +50,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('recognizing', 'Hello');
 
@@ -73,7 +71,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('microphoneMuted');
 
@@ -90,7 +88,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('birdTweet');
 
@@ -107,7 +105,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('unrecognizableSpeech');
 
@@ -124,7 +122,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('airplaneMode');
 
@@ -141,7 +139,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('accessDenied');
 
@@ -158,7 +156,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('abortAfterAudioStart');
 
@@ -179,7 +177,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('recognizeButAborted', 'Hello');
 
@@ -201,7 +199,7 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await driver.wait(pageObjects.hasSpeechRecognitionStartCalled(), timeouts.ui);
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
 
     await pageObjects.putSpeechRecognitionResult('recognizeButNotConfident', 'Hello');
 
@@ -213,7 +211,7 @@ describe('speech recognition', () => {
   });
 
   test('should set recognition language', async () => {
-    const { pageObjects } = await setupWebDriver({
+    const { driver, pageObjects } = await setupWebDriver({
       props: {
         locale: 'zh-YUE',
         webSpeechPonyfillFactory: () => window.WebSpeechMock
@@ -222,6 +220,6 @@ describe('speech recognition', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await expect(pageObjects.hasSpeechRecognitionStartCalled()).resolves.toHaveProperty('lang', 'zh-YUE');
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toHaveProperty('lang', 'zh-YUE');
   });
 });

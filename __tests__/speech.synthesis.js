@@ -1,6 +1,7 @@
 import { timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 
 // selenium-webdriver API doc:
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -19,7 +20,7 @@ describe('speech synthesis', () => {
     await pageObjects.sendMessageViaMicrophone('echo 123');
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
-    await driver.wait(pageObjects.hasPendingSpeechSynthesisUtterance(), timeouts.ui);
+    await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
     await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty(
       'text',
@@ -44,7 +45,7 @@ describe('speech synthesis', () => {
     await pageObjects.sendMessageViaMicrophone('card bingsports');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-    await driver.wait(pageObjects.hasPendingSpeechSynthesisUtterance(), timeouts.ui);
+    await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
     await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty(
       'text',
