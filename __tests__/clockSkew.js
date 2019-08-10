@@ -84,7 +84,7 @@ describe('Clock skew', () => {
 
     // Make sure the clock skew is set correctly.
     // If it is not set, the result could be false-positive.
-    expect(pageObjects.getStore()).resolves.toHaveProperty('clockSkewAdjustment', 120000);
+    await expect(pageObjects.getStore()).resolves.toHaveProperty('clockSkewAdjustment', 120000);
 
     await pageObjects.sendMessageViaSendBox('echo This outgoing activity should be the last in the list.', {
       waitForSend: false
@@ -94,7 +94,7 @@ describe('Clock skew', () => {
 
     const lastActivity = await driver.findElement(By.css('[role="list"] > li:last-child p'));
 
-    expect(lastActivity.getText()).resolves.toBe('echo This outgoing activity should be the last in the list.');
+    await expect(lastActivity.getText()).resolves.toBe('echo This outgoing activity should be the last in the list.');
 
     // Skip the echoback for 2nd user-originated activity, so we don't apply server timestamp to it. It will be visually appear as "sending".
     // Even the 2nd user-originated activity didn't apply server timestamp, the insertion-sort algorithm should put bot-originated activity below it.
