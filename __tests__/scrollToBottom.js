@@ -4,7 +4,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
-import suggestedActionsShowed from './setup/conditions/suggestedActionsShowed';
+import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -21,7 +21,7 @@ test('should stick to bottom if submitting an Adaptive Card while suggested acti
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
   await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
-  await driver.wait(suggestedActionsShowed(), timeouts.directLine);
+  await driver.wait(suggestedActionsShown(), timeouts.directLine);
   await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
 
   const submitButton = await driver.findElement(By.css('button.ac-pushButton:nth-of-type(2)'));
