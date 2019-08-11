@@ -309,6 +309,18 @@ window.WebSpeechMock = {
     });
   },
 
+  mockErrorSynthesize(error = 'artificial-error') {
+    return new Promise(resolve => {
+      speechSynthesisBroker.consume(utterance => {
+        utterance.dispatchEvent({ error, type: 'error' });
+
+        const { lang, pitch, rate, text, voice, volume } = utterance;
+
+        resolve({ lang, pitch, rate, text, voice, volume });
+      });
+    });
+  },
+
   mockRecognize(...args) {
     speechRecognitionBroker.produce(...args);
   },

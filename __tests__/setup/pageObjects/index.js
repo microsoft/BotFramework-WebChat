@@ -3,6 +3,7 @@ import clickSendButton from './clickSendButton';
 import clickSuggestedActionButton from './clickSuggestedActionButton';
 import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
+import errorSpeechSynthesize from './errorSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
 import getNumActivitiesShown from './getNumActivitiesShown';
 import getSendBoxText from './getSendBoxText';
@@ -32,6 +33,7 @@ export default function pageObjects(driver) {
       clickSuggestedActionButton,
       dispatchAction,
       endSpeechSynthesize,
+      errorSpeechSynthesize,
       executePromiseScript,
       getNumActivitiesShown,
       getSendBoxText,
