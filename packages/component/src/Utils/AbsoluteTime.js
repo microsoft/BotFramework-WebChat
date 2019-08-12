@@ -11,10 +11,10 @@ const AbsoluteTime = ({ language, value }) => {
   const localizedTime = getLocaleString(value, language);
 
   return (
-    <>
+    <React.Fragment>
       <ScreenReaderText text={localize('SentAt', language) + localizedTime} />
       <span aria-hidden={true}>{localizedTime}</span>
-    </>
+    </React.Fragment>
   );
 };
 
