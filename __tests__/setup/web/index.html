@@ -92,7 +92,7 @@
       const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
 
       async function main(options) {
-        let { createDirectLine, createStyleSet, props, setup, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
+        let { createDirectLine, createStyleSet, props, setup, storeDefaultState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
 
         props = unmarshal(props);
 
@@ -113,7 +113,7 @@
           }
         }, 3);
 
-        const store = window.WebChatTest.store = window.WebChat.createStore({}, store => {
+        const store = window.WebChatTest.store = window.WebChat.createStore(storeDefaultState, store => {
           const setupMiddleware = storeMiddleware(store);
 
           return next => {
