@@ -2,12 +2,10 @@ import { Key } from 'selenium-webdriver';
 
 import { timeouts } from '../../constants.json';
 import allOutgoingActivitiesSent from '../conditions/allOutgoingActivitiesSent';
-import getSendBoxTextBox from './getSendBoxTextBox';
+import typeOnSendBox from './typeOnSendBox';
 
 export default async function sendMessageViaSendBox(driver, text, { waitForSend = true } = {}) {
-  const input = await getSendBoxTextBox(driver);
-
-  await input.sendKeys(text, Key.RETURN);
+  await typeOnSendBox(driver, text, Key.RETURN);
 
   waitForSend && (await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine));
 }

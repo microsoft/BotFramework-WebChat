@@ -24,12 +24,12 @@ function createProducerConsumer() {
     cancel() {
       jobs.splice(0);
     },
-    consume(consumer) {
-      consumers.push(consumer);
-      jobs.length && consumers.shift()(...jobs.shift());
+    consume(fn, context) {
+      consumers.push({ fn, context });
+      jobs.length && consumers.shift().fn(...jobs.shift());
     },
     hasConsumer() {
-      return !!consumers.length;
+      return !!consumers.length && consumers[0].context;
     },
     hasJob() {
       return !!jobs.length;
@@ -39,7 +39,7 @@ function createProducerConsumer() {
     },
     produce(...args) {
       jobs.push(args);
-      consumers.length && consumers.shift()(...jobs.shift());
+      consumers.length && consumers.shift().fn(...jobs.shift());
     }
   };
 }
@@ -62,9 +62,13 @@ class SpeechRecognition extends EventTarget {
   }
 
   start() {
-    speechRecognitionBroker.consume((command, ...args) => {
-      this[command](...args);
-    });
+    speechRecognitionBroker.consume((scenario, ...args) => {
+      if (!this[scenario]) {
+        throw new Error(`Cannot find speech scenario named "${scenario}" in mockWebSpeech.js`);
+      } else {
+        this[scenario](...args);
+      }
+    }, this);
   }
 
   microphoneMuted() {
@@ -150,6 +154,18 @@ class SpeechRecognition extends EventTarget {
     this.dispatchEvent({ type: 'end' });
   }
 
+  recognizing(transcript) {
+    this.abort = this.stop = NULL_FN;
+
+    this.dispatchEvent({ type: 'start' });
+    this.dispatchEvent({ type: 'audiostart' });
+    this.dispatchEvent({ type: 'soundstart' });
+    this.dispatchEvent({ type: 'speechstart' });
+
+    this.interimResults &&
+      this.dispatchEvent({ type: 'result', results: createSpeechRecognitionResults(false, transcript) });
+  }
+
   recognizeButAborted(transcript) {
     this.abort = () => {
       this.dispatchEvent({ type: 'speechend' });
@@ -215,8 +231,15 @@ const SPEECH_SYNTHESIS_VOICES = [
     default: true,
     lang: 'en-US',
     localService: true,
-    name: 'Mock Voice',
-    voiceURI: 'mock://web-speech/voice'
+    name: 'Mock Voice (en-US)',
+    voiceURI: 'mock://web-speech/voice/en-US'
+  },
+  {
+    default: false,
+    lang: 'zh-YUE',
+    localService: true,
+    name: 'Mock Voice (zh-YUE)',
+    voiceURI: 'mock://web-speech/voice/zh-YUE'
   }
 ];
 
@@ -274,14 +297,6 @@ class SpeechSynthesisUtterance extends EventTarget {
 );
 
 window.WebSpeechMock = {
-  hasPendingUtterance() {
-    return speechSynthesisBroker.hasJob();
-  },
-
-  isRecognizing() {
-    return speechRecognitionBroker.hasConsumer();
-  },
-
   mockEndSynthesize() {
     return new Promise(resolve => {
       speechSynthesisBroker.consume(utterance => {
@@ -310,6 +325,29 @@ window.WebSpeechMock = {
     const { lang, pitch, rate, text, voice, volume } = utterance;
 
     return { lang, pitch, rate, text, voice, volume };
+  },
+
+  speechRecognitionStartCalled() {
+    const context = speechRecognitionBroker.hasConsumer();
+
+    if (context) {
+      const { continuous, grammars, interimResults, lang, maxAlternatives, serviceURI } = context;
+
+      return {
+        continuous,
+        grammars,
+        interimResults,
+        lang,
+        maxAlternatives,
+        serviceURI
+      };
+    } else {
+      return false;
+    }
+  },
+
+  speechSynthesisUtterancePended() {
+    return speechSynthesisBroker.hasJob();
   },
 
   SpeechGrammarList,
