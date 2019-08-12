@@ -39,9 +39,9 @@ To host this demo, you will need to clone the code and run locally.
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/rest-api/.env`
    -  In `/rest-api/.env`:
-      -  Write `AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback`
+      -  Write `AAD_OAUTH_REDIRECT_URI=http://localhost:5000/api/aad/oauth/callback`
          -  When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
-      -  Write `GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback`
+      -  Write `GITHUB_OAUTH_REDIRECT_URI=http://localhost:5000/api/github/oauth/callback`
          -  Same as Azure Active Directory, this is the URL for GitHub to send its result
 
 ## Setup OAuth via GitHub
@@ -54,7 +54,7 @@ If you want to authenticate on GitHub, follow the steps below.
    1. Click "New OAuth App" button
    1. Fill out "Application name" and "Homepage URL", for example, "Web Chat SSO Sample"
       -  The "Application name" and "Homepage URL" will be shown to the user when they authorize your GitHub OAuth app
-   1. In "Application callback URL", enter `http://localhost:3000/api/github/oauth/callback`
+   1. In "Application callback URL", enter `http://localhost:5000/api/github/oauth/callback`
    1. Click "Register application"
 1. Save the "Client ID" and "Client Secret" to `/rest-api/.env`
    -  `GITHUB_OAUTH_CLIENT_ID=a1b2c3d`
@@ -72,7 +72,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "Public client (mobile & desktop)" as type
          -  Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
-      1. Enter `http://localhost:3000/api/aad/oauth/callback` as the redirect URI
+      1. Enter `http://localhost:5000/api/aad/oauth/callback` as the redirect URI
          -  This must match `AAD_OAUTH_REDIRECT_URI` in `/rest-api/.env` we saved earlier
    -  Click "Register"
 -  Save the client ID
@@ -110,7 +110,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 1. Under `app`, `bot`, and `rest-api` folder, run the following:
    1. `npm install`
    1. `npm start`
-1. Browse to http://localhost:3000/ to start the demo
+1. Browse to http://localhost:5000/ to start the demo
 
 # Things to try out
 
@@ -199,11 +199,11 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 
 ```
 AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
-AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
+AAD_OAUTH_REDIRECT_URI=http://localhost:5000/api/aad/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 GITHUB_OAUTH_CLIENT_ID=a1b2c3d
 GITHUB_OAUTH_CLIENT_SECRET=a1b2c3d4e5f6
-GITHUB_OAUTH_REDIRECT_URI=http://localhost:3000/api/github/oauth/callback
+GITHUB_OAUTH_REDIRECT_URI=http://localhost:5000/api/github/oauth/callback
 ```
 
 ## OAuth provider support single redirect URI only
