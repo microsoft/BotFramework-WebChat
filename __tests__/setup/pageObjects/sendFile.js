@@ -1,8 +1,9 @@
 import { join, posix } from 'path';
+
 import { timeouts } from '../../constants.json';
 import allOutgoingActivitiesSent from '../conditions/allOutgoingActivitiesSent';
-import getActivityElements from './getActivityElements';
-import getUploadButton from './getUploadButton';
+import getActivityElements from '../elements/getActivityElements';
+import getUploadButton from '../elements/getUploadButton';
 import minNumActivitiesShown from '../conditions/minNumActivitiesShown.js';
 
 function resolveDockerFile(filename) {

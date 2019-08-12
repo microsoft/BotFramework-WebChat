@@ -1,19 +1,20 @@
+import clickMicrophoneButton from './clickMicrophoneButton';
+import clickSendButton from './clickSendButton';
+import clickSuggestedActionButton from './clickSuggestedActionButton';
 import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
-import getActivityElements from './getActivityElements';
-import getMicrophoneButton from './getMicrophoneButton';
-import getSendBoxTextBox from './getSendBoxTextBox';
+import getNumActivitiesShown from './getNumActivitiesShown';
+import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
-import getUploadButton from './getUploadButton';
-import hasPendingSpeechSynthesisUtterance from './hasPendingSpeechSynthesisUtterance';
-import isRecognizingSpeech from './isRecognizingSpeech';
+import isDictating from './isDictating';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
 import startSpeechSynthesize from './startSpeechSynthesize';
+import typeOnSendBox from './typeOnSendBox';
 
 function mapMap(map, mapper) {
   return Object.keys(map).reduce((final, key) => {
@@ -26,22 +27,23 @@ function mapMap(map, mapper) {
 export default function pageObjects(driver) {
   return mapMap(
     {
+      clickMicrophoneButton,
+      clickSendButton,
+      clickSuggestedActionButton,
       dispatchAction,
       endSpeechSynthesize,
       executePromiseScript,
-      getActivityElements,
-      getMicrophoneButton,
-      getSendBoxTextBox,
+      getNumActivitiesShown,
+      getSendBoxText,
       getStore,
-      getUploadButton,
-      hasPendingSpeechSynthesisUtterance,
-      isRecognizingSpeech,
+      isDictating,
       pingBot,
       putSpeechRecognitionResult,
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
-      startSpeechSynthesize
+      startSpeechSynthesize,
+      typeOnSendBox
     },
     fn => fn.bind(null, driver)
   );
