@@ -157,7 +157,6 @@ const ThemeTemplate = (theme: Theme) => `
     .feedbot-header {
         z-index: 10;
         color: white;
-        height: 20px;
         line-height: 20px;
         padding: 8px;
         cursor: pointer;

@@ -30,6 +30,7 @@
   "author": "Microsoft Corp",
   "license": "MIT",
   "dependencies": {
+    "@types/google.analytics": "0.0.40",
     "adaptivecards": "1.0.0",
     "bluebird": "^3.5.1",
     "botframework-directlinejs": "0.9.15",

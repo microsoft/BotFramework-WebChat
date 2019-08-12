@@ -210,7 +210,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                             ...activity.channelData,
                             userData: {
                                 ...(this.props.userData || {}),
-                                ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {})
+                                ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {}),
+                                ...getGoogleAnalyticsUserData()
                             }
                         }
                     };
@@ -464,4 +465,13 @@ const INPUTTABLE_KEY: { [key: string]: string } = {
 
 function inputtableKey(key: string) {
     return key.length === 1 ? key : INPUTTABLE_KEY[key];
+}
+
+function getGoogleAnalyticsUserData() {
+    const tracker = ga && ga.getAll() && ga.getAll()[0]
+    if (tracker) {
+        const trackingId = tracker.get('trackingId')
+        return {googleAnalyticsTrackingId: trackingId} || {}
+    }
+    return {}
 }
