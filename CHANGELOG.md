@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `samples/*`: Move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
 -  Moved the typing indicator to the send box and removed the typing indicator logic from the sagas, by [@tdurnford](https://github.com/tdurnford), in PR [#2321](https://github.com/microsoft/BotFramework-WebChat/pull/2321)
 -  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
--  `component`: Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  `component`: Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2311](https://github.com/microsoft/BotFramework-WebChat/pull/2311)
 
 ### Fixed
 
