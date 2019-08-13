@@ -5,11 +5,10 @@ import {
   FunctionContext as ScrollToBottomFunctionContext
 } from 'react-scroll-to-bottom';
 
-import { connect } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { css } from 'glamor';
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 import {
   clearSuggestedActions,
@@ -43,11 +42,9 @@ import createStyleSet from './Styles/createStyleSet';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
-import shallowEquals from './Utils/shallowEquals';
+import WebChatReduxContext from './WebChatReduxContext';
 
-// Flywheel object
-const EMPTY_ARRAY = [];
-
+// List of Redux actions factory we are hoisted as Web Chat functions
 const DISPATCHERS = {
   clearSuggestedActions,
   markActivity,
@@ -113,12 +110,6 @@ function createFocusSendBoxLogic({ sendBoxRef }) {
   };
 }
 
-function createStyleSetLogic({ styleOptions, styleSet }) {
-  return {
-    styleSet: styleSetToClassNames(styleSet || createStyleSet(styleOptions))
-  };
-}
-
 // TODO: [P3] Take this deprecation code out when releasing on or after 2019 December 11
 function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ...props }) {
   // This code will take out "botAvatarInitials" and "userAvatarInitials" from props
@@ -147,7 +138,90 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
   };
 }
 
-function createLogic(props) {
+const Composer = ({
+  activityRenderer,
+  attachmentRenderer,
+  botAvatarInitials,
+  cardActionMiddleware,
+  children,
+  directLine,
+  disabled,
+  dispatch,
+  grammars,
+  groupTimestamp,
+  locale,
+  referenceGrammarID,
+  renderMarkdown,
+  scrollToEnd,
+  sendBoxRef,
+  sendTimeout,
+  sendTyping,
+  sendTypingIndicator,
+  styleOptions,
+  styleSet,
+  userAvatarInitials,
+  userID,
+  username,
+  webSpeechPonyfillFactory
+}) => {
+  useEffect(() => {
+    dispatch(setLanguage(locale));
+  }, [dispatch, locale]);
+
+  useEffect(() => {
+    dispatch(setSendTimeout(sendTimeout));
+  }, [dispatch, sendTimeout]);
+
+  useEffect(() => {
+    if (typeof sendTyping === 'undefined') {
+      dispatch(setSendTypingIndicator(!!sendTypingIndicator));
+    } else {
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+      console.warn(
+        'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
+      );
+
+      dispatch(setSendTypingIndicator(!!sendTyping));
+    }
+  }, [dispatch, sendTyping, sendTypingIndicator]);
+
+  useEffect(() => {
+    // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+    dispatch(disconnect());
+    dispatch(createConnectAction({ directLine, userID, username }));
+  }, [dispatch, directLine, userID, username]);
+
+  const cardActionContext = useMemo(() => createCardActionLogic({ cardActionMiddleware, directLine, dispatch }), [
+    cardActionMiddleware,
+    directLine,
+    dispatch
+  ]);
+
+  const focusSendBoxContext = useMemo(() => createFocusSendBoxLogic({ sendBoxRef }), [sendBoxRef]);
+
+  const patchedStyleOptions = useMemo(
+    () => patchPropsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
+    [botAvatarInitials, styleOptions, userAvatarInitials]
+  );
+
+  const styleSetContext = useMemo(
+    () => ({
+      styleOptions: patchedStyleOptions,
+      styleSet: styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions))
+    }),
+    [botAvatarInitials, userAvatarInitials, patchedStyleOptions, styleSet]
+  );
+
+  const hoistedDispatchers = useMemo(
+    () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher.apply(this, args))),
+    [dispatch]
+  );
+
+  const webSpeechPonyfill = useMemo(
+    () => webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID }),
+    [referenceGrammarID, webSpeechPonyfillFactory]
+  );
+
   // This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
   // - User ID changed, causing all send* functions to be updated
   // - send
@@ -159,149 +233,52 @@ function createLogic(props) {
   // 2. Filter out profanity
 
   // TODO: [P4] Revisit all members of context
-  props = patchPropsForAvatarInitials(props);
+  const context = useMemo(
+    () => ({
+      ...cardActionContext,
+      ...focusSendBoxContext,
+      ...styleSetContext,
+      ...hoistedDispatchers,
+      activityRenderer,
+      attachmentRenderer,
+      disabled,
+      grammars: grammars || EMPTY_ARRAY,
+      groupTimestamp,
+      renderMarkdown,
+      scrollToEnd,
+      webSpeechPonyfill
+    }),
+    [
+      activityRenderer,
+      attachmentRenderer,
+      cardActionContext,
+      disabled,
+      focusSendBoxContext,
+      grammars,
+      groupTimestamp,
+      hoistedDispatchers,
+      renderMarkdown,
+      scrollToEnd,
+      styleSetContext,
+      webSpeechPonyfill
+    ]
+  );
 
-  return {
-    ...props,
-    ...createCardActionLogic(props),
-    ...createFocusSendBoxLogic(props),
-    ...createStyleSetLogic(props)
-  };
-}
+  return (
+    <Context.Provider value={context}>
+      {typeof children === 'function' ? children(context) : children}
+      <Dictation />
+    </Context.Provider>
+  );
+};
 
-function dispatchSetLanguageFromProps({ dispatch, locale }) {
-  dispatch(setLanguage(locale));
-}
-
-function dispatchSetSendTimeoutFromProps({ dispatch, sendTimeout }) {
-  dispatch(setSendTimeout(sendTimeout));
-}
-
-function dispatchSetSendTypingIndicatorFromProps({ dispatch, sendTyping, sendTypingIndicator }) {
-  if (typeof sendTyping === 'undefined') {
-    dispatch(setSendTypingIndicator(!!sendTypingIndicator));
-  } else {
-    // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-    console.warn(
-      'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
-    );
-    dispatch(setSendTypingIndicator(!!sendTyping));
-  }
-}
-
-class Composer extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.createContextFromProps = memoize(createLogic, shallowEquals);
-
-    this.createWebSpeechPonyfill = memoize(
-      (webSpeechPonyfillFactory, referenceGrammarID) =>
-        webSpeechPonyfillFactory && webSpeechPonyfillFactory({ referenceGrammarID })
-    );
-
-    this.mergeContext = memoize((...contexts) => Object.assign({}, ...contexts), shallowEquals);
-
-    this.state = {
-      hoistedDispatchers: mapMap(DISPATCHERS, dispatcher => (...args) => props.dispatch(dispatcher.apply(this, args)))
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    const { props } = this;
-    const { directLine, userID, username } = props;
-
-    dispatchSetLanguageFromProps(props);
-    dispatchSetSendTimeoutFromProps(props);
-    dispatchSetSendTypingIndicatorFromProps(props);
-
-    props.dispatch(createConnectAction({ directLine, userID, username }));
-  }
-
-  componentDidUpdate(prevProps) {
-    const { props } = this;
-    const { directLine, locale, sendTimeout, sendTyping, sendTypingIndicator, userID, username } = props;
-
-    if (prevProps.locale !== locale) {
-      dispatchSetLanguageFromProps(props);
-    }
-
-    if (prevProps.sendTimeout !== sendTimeout) {
-      dispatchSetSendTimeoutFromProps(props);
-    }
-
-    if (
-      !prevProps.sendTypingIndicator !== !sendTypingIndicator ||
-      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      !prevProps.sendTyping !== !sendTyping
-    ) {
-      dispatchSetSendTypingIndicatorFromProps(props);
-    }
-
-    if (prevProps.directLine !== directLine || prevProps.userID !== userID || prevProps.username !== username) {
-      // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
-      props.dispatch(disconnect());
-      props.dispatch(createConnectAction({ directLine, userID, username }));
-    }
-  }
-
-  render() {
-    const {
-      props: {
-        activityRenderer,
-        attachmentRenderer,
-        children,
-
-        // TODO: [P2] Add disable interactivity
-        disabled,
-
-        grammars,
-        groupTimestamp,
-        referenceGrammarID,
-        renderMarkdown,
-        scrollToEnd,
-        store,
-        userID: _userID, // Ignoring eslint no-unused-vars: we just want to remove userID and username from propsForLogic
-        username: _username, // Ignoring eslint no-unused-vars: we just want to remove userID and username from propsForLogic
-        webSpeechPonyfillFactory,
-        ...propsForLogic
-      },
-      state
-    } = this;
-
-    const contextFromProps = this.createContextFromProps(propsForLogic);
-
-    const context = this.mergeContext(
-      contextFromProps,
-      state.hoistedDispatchers,
-
-      // TODO: [P4] Should we normalize empties here? Or should we let it thru?
-      //       If we let it thru, the code below become simplified and the user can plug in whatever they want for context, via Composer.props
-      {
-        activityRenderer,
-        attachmentRenderer,
-        groupTimestamp,
-        disabled,
-        grammars: grammars || EMPTY_ARRAY,
-        renderMarkdown,
-        scrollToEnd,
-        store,
-        webSpeechPonyfill: this.createWebSpeechPonyfill(webSpeechPonyfillFactory, referenceGrammarID)
-      }
-    );
-
-    // TODO: [P3] Check how many times we do re-render context
-
-    return (
-      <Context.Provider value={context}>
-        {typeof children === 'function' ? children(context) : children}
-        <Dictation />
-      </Context.Provider>
-    );
-  }
-}
-
-const ConnectedComposer = connect(({ referenceGrammarID }) => ({ referenceGrammarID }))(props => (
+// TODO: [P1] When react-redux support useSelector with custom context, we should move to that architecture to simplify our code.
+const ConnectedComposer = connect(
+  ({ referenceGrammarID }) => ({ referenceGrammarID }),
+  null,
+  null,
+  { context: WebChatReduxContext }
+)(props => (
   <ScrollToBottomComposer>
     <ScrollToBottomFunctionContext.Consumer>
       {({ scrollToEnd }) => <Composer scrollToEnd={scrollToEnd} {...props} />}
@@ -310,19 +287,15 @@ const ConnectedComposer = connect(({ referenceGrammarID }) => ({ referenceGramma
 ));
 
 // We will create a Redux store if it was not passed in
-class ConnectedComposerWithStore extends React.Component {
-  constructor(props) {
-    super(props);
+const ConnectedComposerWithStore = ({ store, ...props }) => {
+  const memoizedStore = useMemo(() => store || createStore(), [store]);
 
-    this.createMemoizedStore = memoize(() => createStore());
-  }
-
-  render() {
-    const { props } = this;
-
-    return <ConnectedComposer {...props} store={props.store || this.createMemoizedStore()} />;
-  }
-}
+  return (
+    <Provider context={WebChatReduxContext} store={memoizedStore}>
+      <ConnectedComposer {...props} />
+    </Provider>
+  );
+};
 
 ConnectedComposerWithStore.defaultProps = {
   store: undefined
