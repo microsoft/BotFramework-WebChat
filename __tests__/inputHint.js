@@ -1,8 +1,8 @@
 import { timeouts } from './constants.json';
 
-import isRecognizingSpeech from './setup/pageObjects/isRecognizingSpeech';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import speechSynthesisPending from './setup/conditions/speechSynthesisPending';
+import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
+import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 import uiConnected from './setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -21,15 +21,15 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint expecting input');
+      await pageObjects.sendMessageViaMicrophone('hint expecting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await driver.wait(speechSynthesisPending(), timeouts.ui);
+      await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeTruthy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
     });
 
     test('should not turn on microphone if initiated via typing', async () => {
@@ -41,11 +41,11 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint expecting input');
+      await pageObjects.sendMessageViaMicrophone('hint expecting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
   });
 
@@ -59,15 +59,15 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint accepting input');
+      await pageObjects.sendMessageViaMicrophone('hint accepting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await driver.wait(speechSynthesisPending(), timeouts.ui);
+      await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
 
     test('should not turn on microphone if initiated via typing', async () => {
@@ -79,11 +79,11 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaSendBox('hint accepting input');
+      await pageObjects.sendMessageViaSendBox('hint accepting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
   });
 
@@ -97,15 +97,15 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint ignoring input');
+      await pageObjects.sendMessageViaMicrophone('hint ignoring');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await driver.wait(speechSynthesisPending(), timeouts.ui);
+      await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
 
     test('should turn off microphone if initiated via typing', async () => {
@@ -117,11 +117,11 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaSendBox('hint ignoring input');
+      await pageObjects.sendMessageViaSendBox('hint ignoring');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
   });
 
@@ -139,11 +139,11 @@ describe('input hint', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await driver.wait(speechSynthesisPending(), timeouts.ui);
+      await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
       await pageObjects.startSpeechSynthesize();
       await pageObjects.endSpeechSynthesize();
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
 
     test('should not turn on microphone if initiated via typing', async () => {
@@ -159,7 +159,7 @@ describe('input hint', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      expect(isRecognizingSpeech(driver)).resolves.toBeFalsy();
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
     });
   });
 });
