@@ -468,7 +468,7 @@ function inputtableKey(key: string) {
 }
 
 function getGoogleAnalyticsUserData() {
-    const tracker = ga && ga.getAll() && ga.getAll()[0]
+    const tracker = (typeof ga !== 'undefined') && ga && ga.getAll() && ga.getAll()[0]
     if (tracker) {
         const trackingId = tracker.get('trackingId')
         return {googleAnalyticsTrackingId: trackingId} || {}
