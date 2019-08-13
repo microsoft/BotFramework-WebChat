@@ -48,7 +48,7 @@ const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
 
   return (
     <React.Fragment>
-      <Say onEnd={markAsSpoken} speak={singleLine} voice={selectVoice} />
+      <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
       {!!styleSet.options.showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
     </React.Fragment>
   );

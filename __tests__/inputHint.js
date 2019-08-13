@@ -21,7 +21,7 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint expecting input');
+      await pageObjects.sendMessageViaMicrophone('hint expecting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -41,7 +41,7 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint expecting input');
+      await pageObjects.sendMessageViaMicrophone('hint expecting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -59,7 +59,7 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint accepting input');
+      await pageObjects.sendMessageViaMicrophone('hint accepting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -79,7 +79,7 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaSendBox('hint accepting input');
+      await pageObjects.sendMessageViaSendBox('hint accepting');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -97,7 +97,7 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaMicrophone('hint ignoring input');
+      await pageObjects.sendMessageViaMicrophone('hint ignoring');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
@@ -117,7 +117,7 @@ describe('input hint', () => {
 
       await driver.wait(uiConnected(), timeouts.directLine);
 
-      await pageObjects.sendMessageViaSendBox('hint ignoring input');
+      await pageObjects.sendMessageViaSendBox('hint ignoring');
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
