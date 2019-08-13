@@ -29,10 +29,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182), notably
+-  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182) and PR [#XXX](https://github.com/compulim/BotFramework-WebChat/pull/XXX), notably
    -  [`@babel/*@7.5.4`](https://www.npmjs.com/package/@babel/core)
    -  [`jest@24.8.0`](https://www.npmjs.com/package/jest)
    -  [`lerna@3.15.0`](https://www.npmjs.com/package/lerna)
+   -  [`react-redux@7.1.0`](https://www.npmjs.com/package/react-redux)
    -  [`typescript@3.5.3`](https://www.npmjs.com/package/typescript)
    -  [`webpack@4.35.3`](https://www.npmjs.com/package/webpack)
 -  `*`: Bumps [`@babel/runtime@7.5.4`](https://www.npmjs.com/package/@babel/runtime), by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
@@ -63,6 +64,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `playground`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies`
    -  `samples/*`: Move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
 -  Moved the typing indicator to the send box and removed the typing indicator logic from the sagas, by [@tdurnford](https://github.com/tdurnford), in PR [#2321](https://github.com/microsoft/BotFramework-WebChat/pull/2321)
+-  `component`: Move to React hooks and functional components, by [@compulim](https://github.com), in PR [#XXX](https://github.com/compulim/BotFramework-WebChat/pull/XXX)
 
 ### Fixed
 
