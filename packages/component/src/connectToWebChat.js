@@ -31,6 +31,7 @@ export default function connectToWebChat(...selectors) {
   const combinedSelector = combineSelectors(...selectors);
 
   // TODO: [P1] Instead of exposing Redux store via props, we should consider exposing via Context.
+  //       We should also hide dispatch function.
   return Component => {
     const ConnectedComponent = connect(
       (state, { context, ...ownProps }) => combinedSelector({ ...state, ...context }, ownProps),

@@ -231,8 +231,6 @@ const Composer = ({
   // - User ID changed, causing all send* functions to be updated
   // - send
 
-  // TODO: [P4] We should break this into smaller pieces using memoization function, so we don't recreate styleSet if userID is changed
-
   // TODO: [P3] We should think about if we allow the user to change onSendBoxValueChanged/sendBoxValue, e.g.
   // 1. Turns text into UPPERCASE
   // 2. Filter out profanity
@@ -326,7 +324,7 @@ ConnectedComposerWithStore.propTypes = {
 
 export default ConnectedComposerWithStore;
 
-// TODO: [P3] We should consider moving some props to Redux store
+// TODO: [P3] We should consider moving some data from Redux store to props
 //       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
 //       we should clean up the responsibility between Context and Redux store
 //       We should decide which data is needed for React but not in other environment such as CLI/VSCode
