@@ -74,6 +74,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2245](https://github.com/microsoft/BotFramework-WebChat/issues/2245). Fix speech synthesis not working on Safari by priming the engine on the first microphone button click, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 -  Fix [#1514](https://github.com/microsoft/BotFramework-WebChat/issues/1514). Added reference grammar ID when using Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 -  Fix [#1515](https://github.com/microsoft/BotFramework-WebChat/issues/1515). Added dynamic phrases when using Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
+-  Fix [#2273](https://github.com/microsoft/BotFramework-WebChat/issues/2273). Add `ScreenReaderText` component, by [@corinagum](https://github.com/corinagum) in PR [#2278](https://github.com/microsoft/BotFramework-WebChat/pull/2278)
+-  Fix [#2231](https://github.com/microsoft/BotFramework-WebChat/issues/2231). Fallback to English (US) if date time formatting failed, by [@compulim](https://github.com/compulim) in PR [#2286](https://github.com/microsoft/BotFramework-WebChat/pull/2286)
+-  Fix [#2298](https://github.com/microsoft/BotFramework-WebChat/issues/2298). Speech synthesize errors to be ignored, by [@compulim](https://github.com/compulim) in PR [#2300](https://github.com/microsoft/BotFramework-WebChat/issues/2300)
 
 ### Added
 
