@@ -113,7 +113,7 @@
           }
         }, 3);
 
-        const store = window.WebChatTest.store = window.WebChat.createStore(storeDefaultState, store => {
+        const store = window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
           const setupMiddleware = storeMiddleware(store);
 
           return next => {
