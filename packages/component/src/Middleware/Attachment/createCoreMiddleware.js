@@ -6,7 +6,6 @@ import DownloadAttachment from '../../Attachment/DownloadAttachment';
 import ImageAttachment from '../../Attachment/ImageAttachment';
 import UploadAttachment from '../../Attachment/UploadAttachment';
 import TextAttachment from '../../Attachment/TextAttachment';
-import TypingActivity from '../../Attachment/TypingActivity';
 import VideoAttachment from '../../Attachment/VideoAttachment';
 
 function hasThumbnail({ attachments = [], channelData: { attachmentThumbnails = [] } = {} }, attachment) {
@@ -19,9 +18,7 @@ function hasThumbnail({ attachments = [], channelData: { attachmentThumbnails = 
 export default function createCoreMiddleware() {
   return () => next => {
     const Attachment = ({ activity = {}, attachment, attachment: { contentType, contentUrl } = {} }) =>
-      activity.type === 'typing' ? (
-        <TypingActivity />
-      ) : activity.from.role === 'user' && !/^text\//u.test(contentType) && !hasThumbnail(activity, attachment) ? (
+      activity.from.role === 'user' && !/^text\//u.test(contentType) && !hasThumbnail(activity, attachment) ? (
         <UploadAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
         <AudioAttachment activity={activity} attachment={attachment} />

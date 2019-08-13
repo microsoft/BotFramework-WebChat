@@ -21,39 +21,25 @@ function findByClientActivityID(clientActivityID) {
 }
 
 function upsertActivityWithSort(activities, nextActivity) {
-  const {
-    channelData: { clientActivityID: nextClientActivityID } = {},
-    from: { id: nextFromID, role: nextFromRole } = {},
-    type: nextType
-  } = nextActivity;
-
-  if (nextType === 'typing' && nextFromRole === 'user') {
-    return activities;
-  }
+  const { channelData: { clientActivityID: nextClientActivityID } = {} } = nextActivity;
 
   const nextTimestamp = Date.parse(nextActivity.timestamp);
   const nextActivities = activities.filter(
-    ({ channelData: { clientActivityID } = {}, from, type }) =>
-      // We will remove all "typing" and "sending messages" activities
+    ({ channelData: { clientActivityID } = {} }) =>
+      // We will remove all "sending messages" activities
       // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
-      !(
-        (type === 'typing' && from.id === nextFromID) ||
-        (nextClientActivityID && clientActivityID === nextClientActivityID)
-      )
+      !(nextClientActivityID && clientActivityID === nextClientActivityID)
   );
 
-  // Then, find the right (sorted) place to insert the new activity at, based on timestamp, and must be before "typing"
+  // Then, find the right (sorted) place to insert the new activity at, based on timestamp
   // Since clockskew might happen, we will ignore timestamp on messages that are sending
   // If we are inserting "typing", we will always append it
 
   // TODO: [P4] Move "typing" into Constants.ActivityType
-  const indexToInsert =
-    nextActivity.type === 'typing'
-      ? -1
-      : nextActivities.findIndex(
-          ({ channelData: { state } = {}, timestamp, type }) =>
-            (Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED) || type === 'typing'
-        );
+  const indexToInsert = nextActivities.findIndex(
+    ({ channelData: { state } = {}, timestamp, type }) =>
+      Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED
+  );
 
   // If no right place are found, append it
   nextActivities.splice(~indexToInsert ? indexToInsert : nextActivities.length, 0, nextActivity);
@@ -97,7 +83,7 @@ export default function activities(state = DEFAULT_STATE, { meta, payload, type 
 
     case INCOMING_ACTIVITY:
       // UpdateActivity is not supported right now because we ignore duplicated activity ID
-      if (!~state.findIndex(({ id }) => id === payload.activity.id)) {
+      if (payload.activity.type !== 'typing' && !~state.findIndex(({ id }) => id === payload.activity.id)) {
         state = upsertActivityWithSort(state, payload.activity);
       }
 
