@@ -17,7 +17,7 @@ describe('speech recognition', () => {
       }
     });
 
-    await pageObjects.sendMessageViaMicrophone('hint expecting input');
+    await pageObjects.sendMessageViaMicrophone('hint expecting');
 
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
