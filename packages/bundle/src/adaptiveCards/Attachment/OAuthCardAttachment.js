@@ -1,43 +1,29 @@
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-class OAuthCardAttachment extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
+const OAuthCardAttachment = ({
+  adaptiveCardHostConfig,
+  adaptiveCards,
+  attachment: { content } = {},
+  styleSet: { options }
+}) => {
+  const buildCard = useMemo(() => {
+    if (content) {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 
       builder.addCommonHeaders(content);
       builder.addButtons((content || {}).buttons, true);
 
       return builder.card;
-    });
-  }
+    }
+  }, [adaptiveCards, content, options]);
 
-  render() {
-    const {
-      props: {
-        adaptiveCardHostConfig,
-        adaptiveCards,
-        attachment: { content } = {},
-        styleSet: { options }
-      }
-    } = this;
-
-    return (
-      <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-      />
-    );
-  }
-}
+  return <AdaptiveCardRenderer adaptiveCard={buildCard} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
+};
 
 OAuthCardAttachment.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,

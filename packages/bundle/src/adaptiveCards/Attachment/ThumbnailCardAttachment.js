@@ -1,22 +1,24 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [25, 75] }] */
 
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-class ThumbnailCardAttachment extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
+const ThumbnailCardAttachment = ({
+  adaptiveCardHostConfig,
+  adaptiveCards,
+  attachment: { content } = {},
+  styleSet: { options }
+}) => {
+  const buildCard = useMemo(() => {
+    if (content) {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
       const { TextSize, TextWeight } = adaptiveCards;
       const { buttons, images, subtitle, text, title } = content;
-      const { richCardWrapTitle } = styleOptions;
+      const { richCardWrapTitle } = options;
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
@@ -27,6 +29,7 @@ class ThumbnailCardAttachment extends React.Component {
           { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
           firstColumn
         );
+
         builder.addTextBlock(subtitle, { isSubtle: true, wrap: richCardWrapTitle }, firstColumn);
         builder.addImage(url, lastColumn, tap);
         builder.addTextBlock(text, { wrap: true });
@@ -34,30 +37,18 @@ class ThumbnailCardAttachment extends React.Component {
       } else {
         builder.addCommon(content);
       }
-
       return builder.card;
-    });
-  }
+    }
+  }, [adaptiveCards, content, options]);
 
-  render() {
-    const {
-      props: {
-        adaptiveCardHostConfig,
-        adaptiveCards,
-        attachment: { content } = {},
-        styleSet: { options }
-      }
-    } = this;
-
-    return (
-      <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        tapAction={content && content.tap}
-      />
-    );
-  }
-}
+  return (
+    <AdaptiveCardRenderer
+      adaptiveCard={buildCard}
+      adaptiveCardHostConfig={adaptiveCardHostConfig}
+      tapAction={content && content.tap}
+    />
+  );
+};
 
 ThumbnailCardAttachment.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,

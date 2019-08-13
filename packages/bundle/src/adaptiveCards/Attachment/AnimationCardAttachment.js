@@ -1,61 +1,33 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { Components, connectToWebChat } from 'botframework-webchat-component';
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { AdaptiveCardBuilder } from './AdaptiveCardBuilder';
 import CommonCard from './CommonCard';
 
 const { ImageContent, VideoContent } = Components;
 
-class AnimationCardAttachment extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
-
-      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
-
-      builder.addCommon(content);
-
-      return builder.card;
-    });
-  }
-
-  render() {
-    const {
-      adaptiveCardHostConfig,
-      adaptiveCards,
-      attachment,
-      attachment: { content: { media = [] } = {} } = {},
-      styleSet
-    } = this.props;
-
-    return (
-      <div className={styleSet.animationCardAttachment}>
-        <ul className="media-list">
-          {media.map(({ profile = '', url }, index) => (
-            <li key={index}>
-              {/\.gif$/iu.test(url) ? (
-                <ImageContent alt={profile} src={url} />
-              ) : (
-                <VideoContent alt={profile} src={url} />
-              )}
-            </li>
-          ))}
-        </ul>
-        <CommonCard
-          adaptiveCardHostConfig={adaptiveCardHostConfig}
-          adaptiveCards={adaptiveCards}
-          attachment={attachment}
-        />
-      </div>
-    );
-  }
-}
+const AnimationCardAttachment = ({
+  adaptiveCardHostConfig,
+  adaptiveCards,
+  attachment,
+  attachment: {
+    content: { media = [] }
+  },
+  styleSet
+}) => (
+  <div className={styleSet.animationCardAttachment}>
+    <ul className="media-list">
+      {media.map(({ profile = '', url }, index) => (
+        <li key={index}>
+          {/\.gif$/iu.test(url) ? <ImageContent alt={profile} src={url} /> : <VideoContent alt={profile} src={url} />}
+        </li>
+      ))}
+    </ul>
+    <CommonCard adaptiveCardHostConfig={adaptiveCardHostConfig} adaptiveCards={adaptiveCards} attachment={attachment} />
+  </div>
+);
 
 AnimationCardAttachment.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,
