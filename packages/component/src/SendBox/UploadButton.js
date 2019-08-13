@@ -91,8 +91,6 @@ const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
 
   const handleFileChange = useCallback(
     ({ target: { files } }) => {
-      console.log(95);
-
       sendFiles(files);
 
       if (current) {
