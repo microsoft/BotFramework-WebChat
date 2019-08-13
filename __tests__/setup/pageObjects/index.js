@@ -14,6 +14,7 @@ import putSpeechRecognitionResult from './putSpeechRecognitionResult';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
+import sendTextToClipboard from './sendTextToClipboard';
 import startSpeechSynthesize from './startSpeechSynthesize';
 import typeOnSendBox from './typeOnSendBox';
 
@@ -44,6 +45,7 @@ export default function pageObjects(driver) {
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,
+      sendTextToClipboard,
       startSpeechSynthesize,
       typeOnSendBox
     },
