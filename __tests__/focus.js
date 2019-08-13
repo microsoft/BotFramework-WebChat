@@ -1,6 +1,7 @@
 import { By, Key } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import sendBoxTextBoxFocused from './setup/conditions/sendBoxTextBoxFocused';
@@ -68,6 +69,7 @@ describe('type focus sink', () => {
       .perform();
 
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+    await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
 
