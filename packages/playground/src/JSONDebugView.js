@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-magic-numbers */
 
 import { css } from 'glamor';
 import classNames from 'classnames';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const ROOT_CSS = css({
   position: 'relative',
