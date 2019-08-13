@@ -69,7 +69,7 @@ function styleSetToClassNames(styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : css(style)));
 }
 
-function createCardActionLogic({ cardActionMiddleware, directLine, dispatch }) {
+function createCardActionContext({ cardActionMiddleware, directLine, dispatch }) {
   const runMiddleware = concatMiddleware(cardActionMiddleware, createCoreCardActionMiddleware())({ dispatch });
 
   return {
@@ -100,7 +100,7 @@ function createCardActionLogic({ cardActionMiddleware, directLine, dispatch }) {
   };
 }
 
-function createFocusSendBoxLogic({ sendBoxRef }) {
+function createFocusSendBoxContext({ sendBoxRef }) {
   return {
     focusSendBox: () => {
       const { current } = sendBoxRef || {};
@@ -164,6 +164,25 @@ const Composer = ({
   username,
   webSpeechPonyfillFactory
 }) => {
+  const patchedGrammars = useMemo(() => grammars || []);
+  const patchedSendTypingIndicator = useMemo(() => {
+    if (typeof sendTyping === 'undefined') {
+      return sendTypingIndicator;
+    } else {
+      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+      console.warn(
+        'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
+      );
+
+      return sendTyping;
+    }
+  }, [sendTyping, sendTypingIndicator]);
+
+  const patchedStyleOptions = useMemo(
+    () => patchPropsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
+    [botAvatarInitials, styleOptions, userAvatarInitials]
+  );
+
   useEffect(() => {
     dispatch(setLanguage(locale));
   }, [dispatch, locale]);
@@ -173,44 +192,30 @@ const Composer = ({
   }, [dispatch, sendTimeout]);
 
   useEffect(() => {
-    if (typeof sendTyping === 'undefined') {
-      dispatch(setSendTypingIndicator(!!sendTypingIndicator));
-    } else {
-      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      console.warn(
-        'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
-      );
-
-      dispatch(setSendTypingIndicator(!!sendTyping));
-    }
-  }, [dispatch, sendTyping, sendTypingIndicator]);
+    dispatch(setSendTypingIndicator(!!patchedSendTypingIndicator));
+  }, [dispatch, patchedSendTypingIndicator]);
 
   useEffect(() => {
-    // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
-    dispatch(disconnect());
     dispatch(createConnectAction({ directLine, userID, username }));
+
+    return () => {
+      // TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+      dispatch(disconnect());
+    };
   }, [dispatch, directLine, userID, username]);
 
-  const cardActionContext = useMemo(() => createCardActionLogic({ cardActionMiddleware, directLine, dispatch }), [
+  const cardActionContext = useMemo(() => createCardActionContext({ cardActionMiddleware, directLine, dispatch }), [
     cardActionMiddleware,
     directLine,
     dispatch
   ]);
 
-  const focusSendBoxContext = useMemo(() => createFocusSendBoxLogic({ sendBoxRef }), [sendBoxRef]);
+  const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
-  const patchedStyleOptions = useMemo(
-    () => patchPropsForAvatarInitials({ botAvatarInitials, styleOptions, userAvatarInitials }),
-    [botAvatarInitials, styleOptions, userAvatarInitials]
-  );
-
-  const styleSetContext = useMemo(
-    () => ({
-      styleOptions: patchedStyleOptions,
-      styleSet: styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions))
-    }),
-    [botAvatarInitials, userAvatarInitials, patchedStyleOptions, styleSet]
-  );
+  const patchedStyleSet = useMemo(() => styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions)), [
+    patchedStyleOptions,
+    styleSet
+  ]);
 
   const hoistedDispatchers = useMemo(
     () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher.apply(this, args))),
@@ -237,29 +242,43 @@ const Composer = ({
     () => ({
       ...cardActionContext,
       ...focusSendBoxContext,
-      ...styleSetContext,
       ...hoistedDispatchers,
       activityRenderer,
       attachmentRenderer,
+      directLine,
       disabled,
-      grammars: grammars || EMPTY_ARRAY,
+      grammars: patchedGrammars,
       groupTimestamp,
       renderMarkdown,
       scrollToEnd,
+      sendBoxRef,
+      sendTimeout,
+      sendTypingIndicator: patchedSendTypingIndicator,
+      styleOptions: patchedStyleOptions,
+      styleSet: patchedStyleSet,
+      userID,
+      username,
       webSpeechPonyfill
     }),
     [
+      cardActionContext,
+      focusSendBoxContext,
+      hoistedDispatchers,
       activityRenderer,
       attachmentRenderer,
-      cardActionContext,
+      directLine,
       disabled,
-      focusSendBoxContext,
       grammars,
       groupTimestamp,
-      hoistedDispatchers,
       renderMarkdown,
       scrollToEnd,
-      styleSetContext,
+      sendBoxRef,
+      sendTimeout,
+      sendTypingIndicator,
+      styleOptions,
+      styleSet,
+      userID,
+      username,
       webSpeechPonyfill
     ]
   );
