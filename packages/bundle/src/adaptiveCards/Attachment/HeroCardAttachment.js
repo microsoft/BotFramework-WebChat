@@ -1,45 +1,34 @@
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-class HeroCardAttachment extends React.Component {
-  constructor(props) {
-    super(props);
+const HeroCardAttachment = ({
+  adaptiveCardHostConfig,
+  adaptiveCards,
+  attachment: { content } = {},
+  styleSet: { options }
+}) => {
+  const buildCard = useMemo(() => {
+    const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 
-    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
+    (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
 
-      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
+    builder.addCommon(content);
 
-      builder.addCommon(content);
+    return builder.card;
+  }, [adaptiveCards, content, options]);
 
-      return builder.card;
-    });
-  }
-
-  render() {
-    const {
-      props: {
-        adaptiveCardHostConfig,
-        adaptiveCards,
-        attachment: { content } = {},
-        styleSet: { options }
-      }
-    } = this;
-
-    return (
-      <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        tapAction={content && content.tap}
-      />
-    );
-  }
-}
+  return (
+    <AdaptiveCardRenderer
+      adaptiveCard={buildCard}
+      adaptiveCardHostConfig={adaptiveCardHostConfig}
+      tapAction={content && content.tap}
+    />
+  );
+};
 
 HeroCardAttachment.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,

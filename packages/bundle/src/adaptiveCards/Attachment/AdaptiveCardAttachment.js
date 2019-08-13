@@ -1,6 +1,5 @@
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
@@ -17,11 +16,9 @@ function stripSubmitAction(card) {
   return { ...card, nextActions };
 }
 
-export default class AdaptiveCardAttachment extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.createAdaptiveCard = memoize((adaptiveCards, content) => {
+const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, renderMarkdown }) => {
+  const createAdaptiveCard = useMemo(() => {
+    if (content) {
       const card = new adaptiveCards.AdaptiveCard();
       const errors = [];
 
@@ -41,18 +38,21 @@ export default class AdaptiveCardAttachment extends React.Component {
         card,
         errors
       };
-    });
-  }
+    }
+  }, [adaptiveCards, content]);
 
-  render() {
-    const {
-      props: { adaptiveCardHostConfig, adaptiveCards, attachment, renderMarkdown }
-    } = this;
-    const { card } = this.createAdaptiveCard(adaptiveCards, attachment.content, renderMarkdown);
+  const { card } = createAdaptiveCard;
 
-    return <AdaptiveCardRenderer adaptiveCard={card} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
-  }
-}
+  return (
+    <AdaptiveCardRenderer
+      adaptiveCard={card}
+      adaptiveCardHostConfig={adaptiveCardHostConfig}
+      renderMarkdown={renderMarkdown}
+    />
+  );
+};
+
+export default AdaptiveCardAttachment;
 
 AdaptiveCardAttachment.propTypes = {
   // TODO: [P2] We should rename adaptiveCards to adaptiveCardsPolyfill
