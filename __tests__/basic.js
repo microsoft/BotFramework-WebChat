@@ -214,7 +214,7 @@ test('absolute timestamp', async () => {
       replyToId: '6266x5ZXhXkBfuIH0fNx0h-o|0000000'
     }
   ];
-  const styleOptions = { timestampConfig: 'absolute' };
+  const styleOptions = { timestampFormat: 'absolute' };
   const { driver } = await setupWebDriver({ storeDefaultState: { activities }, props: { styleOptions } });
 
   await driver.wait(uiConnected(), timeouts.directLine);

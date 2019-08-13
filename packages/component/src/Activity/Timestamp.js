@@ -8,7 +8,7 @@ import RelativeTime from '../Utils/RelativeTime';
 
 const Timestamp = ({ activity: { timestamp }, className, styleSet }) => (
   <span className={classNames(styleSet.timestamp + '', (className || '') + '')}>
-    {styleSet.options.timestampConfig === 'relative' ? (
+    {styleSet.options.timestampFormat === 'relative' ? (
       <RelativeTime value={timestamp} />
     ) : (
       <AbsoluteTime value={timestamp} />
