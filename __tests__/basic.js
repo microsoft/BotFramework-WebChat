@@ -151,71 +151,39 @@ test('absolute timestamp', async () => {
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000000',
       timestamp: '2019-08-08T16:41:12.9397263Z',
-      serviceUrl: 'https://directline.botframework.com/',
-      channelId: 'directline',
       from: {
         id: 'dl_654b35e09ab4149595a70aa6f1af6f50',
         name: '',
         role: 'user'
       },
-      conversation: {
-        id: '6266x5ZXhXkBfuIH0fNx0h-o'
-      },
-      recipient: {
-        id: 'webchat-mockbot@WYDIyKwAZCw',
-        name: 'webchat-mockbot'
-      },
       textFormat: 'plain',
-      locale: 'en-US',
-      text: 'echo "Hello, World!"',
-      entities: [
-        {
-          type: 'ClientCapabilities',
-          requiresBotState: true,
-          supportsListening: true,
-          supportsTts: true
-        }
-      ],
-      channelData: {
-        clientActivityID: '15652824727613jrws6ok6u2',
-        clientTimestamp: '2019-08-08T16:41:12.761Z'
-      }
+      text: 'echo "Hello, World!"'
     },
     {
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000001',
       timestamp: '2019-08-08T16:41:13.1835518Z',
-      channelId: 'directline',
       from: {
         id: 'webchat-mockbot',
         name: 'webchat-mockbot',
         role: 'bot'
       },
-      conversation: {
-        id: '6266x5ZXhXkBfuIH0fNx0h-o'
-      },
-      text: 'Echoing back in a separate activity.',
-      replyToId: '6266x5ZXhXkBfuIH0fNx0h-o|0000000'
+      text: 'Echoing back in a separate activity.'
     },
     {
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000002',
       timestamp: '2019-08-08T16:41:13.3963019Z',
-      channelId: 'directline',
       from: {
         id: 'webchat-mockbot',
         name: 'webchat-mockbot',
         role: 'bot'
       },
-      conversation: {
-        id: '6266x5ZXhXkBfuIH0fNx0h-o'
-      },
-      text: 'Hello, World!',
-      replyToId: '6266x5ZXhXkBfuIH0fNx0h-o|0000000'
+      text: 'Hello, World!'
     }
   ];
   const styleOptions = { timestampFormat: 'absolute' };
-  const { driver } = await setupWebDriver({ storeDefaultState: { activities }, props: { styleOptions } });
+  const { driver } = await setupWebDriver({ storeInitialState: { activities }, props: { styleOptions } });
 
   await driver.wait(uiConnected(), timeouts.directLine);
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
