@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import AbsoluteTime from '../Utils/AbsoluteTime';
+import connectToWebChat from '../connectToWebChat';
 import RelativeTime from '../Utils/RelativeTime';
 
 const Timestamp = ({ activity: { timestamp }, className, styleSet }) => (

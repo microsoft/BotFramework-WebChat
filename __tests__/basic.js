@@ -218,7 +218,6 @@ test('absolute timestamp', async () => {
   const { driver } = await setupWebDriver({ storeDefaultState: { activities }, props: { styleOptions } });
 
   await driver.wait(uiConnected(), timeouts.directLine);
-
   await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
