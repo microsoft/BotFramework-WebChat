@@ -13,7 +13,7 @@ const TypingIndicator = ({ language, lastTypingAt, styleSet }) => {
 
   useEffect(() => {
     let timeout;
-    const last = Math.max(Object.values(lastTypingAt)); // check pollyfill
+    const last = Math.max(Object.values(lastTypingAt));
     if (last && Date.now() - last < typingAnimationDuration) {
       setShowTyping(true);
       timeout = setTimeout(() => setShowTyping(false), typingAnimationDuration - Date.now() + last);
