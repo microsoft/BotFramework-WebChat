@@ -44,7 +44,7 @@ To host this demo, you will need to clone the code and run locally.
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/web/.env`
    -  In `/web/.env`:
-      -  Write `OAUTH_REDIRECT_URI=http://localhost:3000/api/oauth/callback`
+      -  Write `OAUTH_REDIRECT_URI=http://localhost:5000/api/oauth/callback`
          -  When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
 
 ## Setup OAuth via Azure Active Directory
@@ -59,7 +59,7 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "Public client (mobile & desktop)" as type
          -  Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
-      1. Enter `http://localhost:3000/api/oauth/callback` as the redirect URI
+      1. Enter `http://localhost:5000/api/oauth/callback` as the redirect URI
          -  This must match `OAUTH_REDIRECT_URI` in `/web/.env` we saved earlier
    -  Click "Register"
 -  Save the client ID
@@ -97,7 +97,7 @@ During development, you will run your bot locally. Azure Bot Services will send 
 1. Under both the `bot`, and `web` folder, run the following:
    1. `npm install`
    1. `npm start`
-1. Browse to http://localhost:3000/ to start the demo
+1. Browse to http://localhost:5000/ to start the demo
 
 # Things to try out
 
@@ -156,7 +156,7 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 
 ```
 OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
-OAUTH_REDIRECT_URI=http://localhost:3000/api/oauth/callback
+OAUTH_REDIRECT_URI=http://localhost:5000/api/oauth/callback
 DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
 ```
 
