@@ -1,6 +1,7 @@
 import { timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
 import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 
 // selenium-webdriver API doc:
@@ -53,5 +54,24 @@ describe('speech synthesis', () => {
     );
 
     await pageObjects.endSpeechSynthesize();
+  });
+
+  test('should start recognition after failing on speech synthesis with activity of expecting input', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        webSpeechPonyfillFactory: () => window.WebSpeechMock
+      }
+    });
+
+    await pageObjects.sendMessageViaMicrophone('hint expecting');
+
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
+
+    await pageObjects.startSpeechSynthesize();
+    await pageObjects.errorSpeechSynthesize();
+
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
   });
 });
