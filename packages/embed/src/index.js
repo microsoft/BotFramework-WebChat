@@ -3,6 +3,7 @@ import 'core-js/modules/es.array.iterator';
 import 'core-js/modules/es.promise';
 import 'core-js/modules/es.symbol';
 import 'url-search-params-polyfill';
+import 'whatwg-fetch';
 
 import { embedConfigurationURL, embedTelemetryURL } from './urlBuilder';
 import { error, log, warn } from './logger';
