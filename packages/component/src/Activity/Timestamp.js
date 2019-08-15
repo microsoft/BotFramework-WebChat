@@ -6,15 +6,21 @@ import AbsoluteTime from '../Utils/AbsoluteTime';
 import connectToWebChat from '../connectToWebChat';
 import RelativeTime from '../Utils/RelativeTime';
 
-const Timestamp = ({ activity: { timestamp }, className, styleSet }) => (
-  <span className={classNames(styleSet.timestamp + '', (className || '') + '')}>
-    {styleSet.options.timestampFormat === 'relative' ? (
-      <RelativeTime value={timestamp} />
-    ) : (
-      <AbsoluteTime value={timestamp} />
-    )}
-  </span>
-);
+const Timestamp = ({ activity: { timestamp }, className, styleSet }) => {
+  if (!timestamp) {
+    return false;
+  }
+
+  return (
+    <span className={classNames(styleSet.timestamp + '', (className || '') + '')}>
+      {styleSet.options.timestampFormat === 'relative' ? (
+        <RelativeTime value={timestamp} />
+      ) : (
+        <AbsoluteTime value={timestamp} />
+      )}
+    </span>
+  );
+};
 
 Timestamp.defaultProps = {
   className: ''
