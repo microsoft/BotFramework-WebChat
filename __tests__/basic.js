@@ -144,3 +144,51 @@ test('thumbnail card with a long title and richCardWrapTitle set to default valu
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('absolute timestamp', async () => {
+  const activities = [
+    {
+      type: 'message',
+      id: '6266x5ZXhXkBfuIH0fNx0h-o|0000000',
+      timestamp: '2019-08-08T16:41:12.9397263Z',
+      from: {
+        id: 'dl_654b35e09ab4149595a70aa6f1af6f50',
+        name: '',
+        role: 'user'
+      },
+      textFormat: 'plain',
+      text: 'echo "Hello, World!"'
+    },
+    {
+      type: 'message',
+      id: '6266x5ZXhXkBfuIH0fNx0h-o|0000001',
+      timestamp: '2019-08-08T16:41:13.1835518Z',
+      from: {
+        id: 'webchat-mockbot',
+        name: 'webchat-mockbot',
+        role: 'bot'
+      },
+      text: 'Echoing back in a separate activity.'
+    },
+    {
+      type: 'message',
+      id: '6266x5ZXhXkBfuIH0fNx0h-o|0000002',
+      timestamp: '2019-08-08T16:41:13.3963019Z',
+      from: {
+        id: 'webchat-mockbot',
+        name: 'webchat-mockbot',
+        role: 'bot'
+      },
+      text: 'Hello, World!'
+    }
+  ];
+  const styleOptions = { timestampFormat: 'absolute' };
+  const { driver } = await setupWebDriver({ storeInitialState: { activities }, props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
