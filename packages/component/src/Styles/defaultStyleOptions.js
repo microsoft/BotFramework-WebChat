@@ -99,6 +99,7 @@ const DEFAULT_OPTIONS = {
 
   // Timestamp
   timestampColor: DEFAULT_SUBTLE,
+  timestampFormat: 'relative', // 'absolute'
 
   // Transcript overlay buttons (e.g. carousel and suggested action flippers, scroll to bottom, etc.)
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
