@@ -39,3 +39,5 @@ CroppedImage.propTypes = {
   src: PropTypes.string.isRequired,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
+
+export default CroppedImage;
