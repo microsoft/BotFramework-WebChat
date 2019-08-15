@@ -102,6 +102,11 @@ onConversationStarted?: (callback: (conversationId: string) => void) => void // 
 * Running Web Chat inline may not work for some web pages. Read on for a solution.
 -->
 
+### URL parameters
+WebChat looks for following parameters in the URL when implemented on any page:
+  * `#feedbot-test-mode` sets `testMode: true` into the `userData` object enables test mode in the chatbot for given user
+  * `#feedbot-intro-dialog` overrides default bot dialog which is started when user opens webchat and also value set by `introDialog.id` in the webchat settings 
+
 ### Advanced customization
 If you want to use WebChat directly as the component in your React app or you just want to customize it more than described above, check out the [advanced README](https://github.com/wearefeedyou/feedbot-webchat/blob/master/README-ADVANCED.md) or contact [Feedyou](mailto:hello@feedyou.agency) directly.
 
