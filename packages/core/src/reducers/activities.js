@@ -35,7 +35,7 @@ function upsertActivityWithSort(activities, nextActivity) {
   // Since clockskew might happen, we will ignore timestamp on messages that are sending
 
   const indexToInsert = nextActivities.findIndex(
-    ({ channelData: { state } = {}, timestamp, type }) =>
+    ({ channelData: { state } = {}, timestamp }) =>
       Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED
   );
 

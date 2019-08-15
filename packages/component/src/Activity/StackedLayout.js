@@ -88,8 +88,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
     from: { role } = {},
     text,
-    textFormat,
-    type
+    textFormat
   } = activity;
 
   const activityDisplayText = messageBackDisplayText || text;

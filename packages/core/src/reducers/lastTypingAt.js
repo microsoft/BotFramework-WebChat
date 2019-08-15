@@ -1,3 +1,6 @@
+/*eslint no-case-declarations: "off"*/
+/*eslint no-unused-vars: "off"*/
+
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 
 const DEFAULT_STATE = {};
