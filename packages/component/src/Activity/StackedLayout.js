@@ -122,30 +122,20 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
       )}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
-        {type === 'typing' ? (
-          <div className="webchat__row typing">
-            {children({
-              activity,
-              attachment: { contentType: 'typing' }
-            })}
+        {!!activityDisplayText && (
+          <div className="webchat__row message">
+            <ScreenReaderText text={ariaLabel} />
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
+              {children({
+                activity,
+                attachment: {
+                  content: activityDisplayText,
+                  contentType: textFormatToContentType(textFormat)
+                }
+              })}
+            </Bubble>
             <div className="filler" />
           </div>
-        ) : (
-          !!activityDisplayText && (
-            <div className="webchat__row message">
-              <ScreenReaderText text={ariaLabel} />
-              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
-                {children({
-                  activity,
-                  attachment: {
-                    content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
-                  }
-                })}
-              </Bubble>
-              <div className="filler" />
-            </div>
-          )
         )}
         {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
         {attachments.map((attachment, index) => (

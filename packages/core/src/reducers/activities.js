@@ -33,9 +33,7 @@ function upsertActivityWithSort(activities, nextActivity) {
 
   // Then, find the right (sorted) place to insert the new activity at, based on timestamp
   // Since clockskew might happen, we will ignore timestamp on messages that are sending
-  // If we are inserting "typing", we will always append it
 
-  // TODO: [P4] Move "typing" into Constants.ActivityType
   const indexToInsert = nextActivities.findIndex(
     ({ channelData: { state } = {}, timestamp, type }) =>
       Date.parse(timestamp) > nextTimestamp && state !== SENDING && state !== SEND_FAILED
@@ -83,6 +81,7 @@ export default function activities(state = DEFAULT_STATE, { meta, payload, type 
 
     case INCOMING_ACTIVITY:
       // UpdateActivity is not supported right now because we ignore duplicated activity ID
+      // TODO: [P4] Move "typing" into Constants.ActivityType
       if (payload.activity.type !== 'typing' && !~state.findIndex(({ id }) => id === payload.activity.id)) {
         state = upsertActivityWithSort(state, payload.activity);
       }
