@@ -30,8 +30,8 @@ const TEXT_BOX_CSS = css({ flex: 10000 });
 
 const BasicSendBox = ({ className, dictationStarted, styleSet, webSpeechPonyfill }) => (
   <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
-    <ConnectivityStatus />
     <TypingIndicator />
+    <ConnectivityStatus />
     <SuggestedActions />
     <div className="main">
       {!styleSet.options.hideUploadButton && <UploadButton />}
