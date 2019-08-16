@@ -2,12 +2,12 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: Enhancement, Pending, customer-reported
+labels: Enhancement, Pending, customer-reported, Bot Services
 assignees: ''
 
 ---
 
-<!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` label before submitting this issue. -->
+<!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` and `Bot Services` labels before submitting this issue. -->
 
 ## Feature Request
 
