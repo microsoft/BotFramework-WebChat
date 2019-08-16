@@ -76,6 +76,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2273](https://github.com/microsoft/BotFramework-WebChat/issues/2273). Add `ScreenReaderText` component, by [@corinagum](https://github.com/corinagum) in PR [#2278](https://github.com/microsoft/BotFramework-WebChat/pull/2278)
 -  Fix [#2231](https://github.com/microsoft/BotFramework-WebChat/issues/2231). Fallback to English (US) if date time formatting failed, by [@compulim](https://github.com/compulim) in PR [#2286](https://github.com/microsoft/BotFramework-WebChat/pull/2286)
 -  Fix [#2298](https://github.com/microsoft/BotFramework-WebChat/issues/2298). Speech synthesize errors to be ignored, by [@compulim](https://github.com/compulim) in PR [#2300](https://github.com/microsoft/BotFramework-WebChat/issues/2300)
+-  Fix [#2243](https://github.com/microsoft/BotFramework-WebChat/issues/2243). Fixed sagas to correctly mark activities with speaking attachments, by [@tdurnford](https://github.com/tdurnford) in PR [#2320](https://github.com/microsoft/BotFramework-WebChat/issues/2320)
 
 ### Added
 
@@ -87,6 +88,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)/[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)
    - [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
       - Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
+-  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
+-  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
 
 ### Samples
 

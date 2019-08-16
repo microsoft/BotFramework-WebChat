@@ -15,7 +15,12 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
     const shouldSpeakIncomingActivity = yield select(shouldSpeakIncomingActivitySelector);
     const shouldSpeak = speakableActivity(activity) && shouldSpeakIncomingActivity;
 
-    if (shouldSpeak && (activity.speak || activity.text)) {
+    if (
+      shouldSpeak &&
+      (activity.speak ||
+        activity.text ||
+        ~(activity.attachments || []).findIndex(({ content: { speak } = {} }) => speak))
+    ) {
       yield put(markActivity(activity, 'speak', true));
     }
 
