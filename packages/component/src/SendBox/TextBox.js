@@ -45,6 +45,7 @@ const connectSendTextBox = (...selectors) =>
         // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
 
         if (sendBoxValue) {
+          setSendBox(sendBoxValue.trim());
           scrollToEnd();
           submitSendBox();
         }
