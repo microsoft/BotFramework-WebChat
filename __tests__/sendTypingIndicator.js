@@ -2,7 +2,7 @@ import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
-import receivedTypingActivity from './setup/conditions/receivedTypingActivity';
+import typingActivityReceived from './setup/conditions/typingActivityReceived';
 import typingAnimationBackgroundImage from './setup/assets/typingIndicator';
 import uiConnected from './setup/conditions/uiConnected';
 
@@ -23,7 +23,7 @@ test('Send typing indicator', async () => {
   await input.sendKeys('ABC');
 
   // Typing indicator takes longer to come back
-  await driver.wait(receivedTypingActivity(), timeouts.directLine);
+  await driver.wait(typingActivityReceived(), timeouts.directLine);
 });
 
 // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
@@ -41,7 +41,7 @@ test('Send typing indicator using deprecated props', async () => {
   await input.sendKeys('ABC');
 
   // Typing indicator takes longer to come back
-  await driver.wait(receivedTypingActivity(), timeouts.directLine);
+  await driver.wait(typingActivityReceived(), timeouts.directLine);
 });
 
 test('typing indicator should display in SendBox', async () => {
@@ -52,7 +52,7 @@ test('typing indicator should display in SendBox', async () => {
   await pageObjects.sendMessageViaSendBox('typing 1', { waitForSend: true });
 
   // Typing indicator takes longer to come back
-  await driver.wait(receivedTypingActivity(), timeouts.directLine);
+  await driver.wait(typingActivityReceived(), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 

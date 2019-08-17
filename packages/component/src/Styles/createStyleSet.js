@@ -27,8 +27,8 @@ import createSuggestedActionsStyleSet from './StyleSet/SuggestedActionsStyleSet'
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createTimestampStyle from './StyleSet/Timestamp';
-import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
+import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadAttachmentStyle from './StyleSet/UploadAttachment';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
@@ -142,8 +142,8 @@ export default function createStyleSet(options) {
     suggestedActions: createSuggestedActionsStyle(options),
     textContent: createTextContentStyle(options),
     timestamp: createTimestampStyle(options),
-    typingIndicator: createTypingIndicatorStyle(options),
     typingAnimation: createTypingAnimationStyle(options),
+    typingIndicator: createTypingIndicatorStyle(options),
     uploadAttachment: createUploadAttachmentStyle(options),
     uploadButton: createUploadButtonStyle(options),
     videoAttachment: createVideoAttachmentStyle(options),

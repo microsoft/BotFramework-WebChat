@@ -5,18 +5,24 @@ import { localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import TypingAnimation from './Assets/TypingAnimation';
 
-const TypingIndicator = ({ language, lastTypingAt, styleSet }) => {
-  const {
-    options: { typingAnimationDuration }
-  } = styleSet;
+const TypingIndicator = ({
+  language,
+  lastTypingAt,
+  styleSet: {
+    options: { typingAnimationDuration },
+    typingIndicator
+  }
+}) => {
   const [showTyping, setShowTyping] = useState(false);
 
   useEffect(() => {
     let timeout;
     const last = Math.max(Object.values(lastTypingAt));
-    if (last && Date.now() - last < typingAnimationDuration) {
+    const typingAnimationTimeRemaining = typingAnimationDuration - Date.now() + last;
+
+    if (typingAnimationTimeRemaining > 0) {
       setShowTyping(true);
-      timeout = setTimeout(() => setShowTyping(false), typingAnimationDuration - Date.now() + last);
+      timeout = setTimeout(() => setShowTyping(false), typingAnimationTimeRemaining);
     } else {
       setShowTyping(false);
     }
@@ -26,7 +32,7 @@ const TypingIndicator = ({ language, lastTypingAt, styleSet }) => {
 
   return (
     showTyping && (
-      <div className={styleSet.typingIndicator}>
+      <div className={typingIndicator}>
         <TypingAnimation aria-label={localize('TypingIndicator', language)} />
       </div>
     )
@@ -37,7 +43,9 @@ TypingIndicator.propTypes = {
   language: PropTypes.string.isRequired,
   lastTypingAt: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
-    options: PropTypes.any.isRequired,
+    options: PropTypes.shape({
+      typingAnimationDuration: PropTypes.number
+    }).isRequired,
     typingIndicator: PropTypes.any.isRequired
   }).isRequired
 };

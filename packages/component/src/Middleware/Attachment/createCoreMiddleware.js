@@ -17,8 +17,13 @@ function hasThumbnail({ attachments = [], channelData: { attachmentThumbnails = 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware() {
   return () => next => {
-    const Attachment = ({ activity = {}, attachment, attachment: { contentType, contentUrl } = {} }) =>
-      activity.from.role === 'user' && !/^text\//u.test(contentType) && !hasThumbnail(activity, attachment) ? (
+    const Attachment = ({
+      activity = {},
+      activity: { from: { role } } = {},
+      attachment,
+      attachment: { contentType, contentUrl } = {}
+    }) =>
+      role === 'user' && !/^text\//u.test(contentType) && !hasThumbnail(activity, attachment) ? (
         <UploadAttachment activity={activity} attachment={attachment} />
       ) : /^audio\//u.test(contentType) ? (
         <AudioAttachment activity={activity} attachment={attachment} />

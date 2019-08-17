@@ -1,6 +1,6 @@
 import { Condition } from 'selenium-webdriver';
 
-export default function receivedTypingActivity() {
+export default function typingActivityReceived() {
   return new Condition(
     `Waiting for typing activity`,
     async driver =>
@@ -12,11 +12,11 @@ export default function receivedTypingActivity() {
               ({
                 payload: {
                   activity: {
-                    type,
-                    from: { role }
+                    from: { role },
+                    type
                   }
                 }
-              }) => type === 'typing' && role === 'bot'
+              }) => role === 'bot' && type === 'typing'
             )
       )
   );
