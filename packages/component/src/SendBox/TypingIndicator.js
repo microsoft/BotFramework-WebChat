@@ -20,7 +20,7 @@ const TypingIndicator = ({
     const last = Math.max(Object.values(lastTypingAt));
     const typingAnimationTimeRemaining = typingAnimationDuration - Date.now() + last;
 
-    if (typingAnimationTimeRemaining > 0) {
+    if (last && typingAnimationTimeRemaining > 0) {
       setShowTyping(true);
       timeout = setTimeout(() => setShowTyping(false), typingAnimationTimeRemaining);
     } else {
