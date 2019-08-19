@@ -15,9 +15,9 @@ In order to use speech functionality in Web Chat, browser would need to provide 
 Speech-to-text requires:
 
 - [WebRTC support](https://caniuse.com/#feat=rtcpeerconnection) in browser
-   - All modern browsers, excludes Internet Explorer 11
+   - All modern browsers, excluding Internet Explorer 11
 - Hosted over HTTPS
-- User permission given for microphone access
+- User permission explicitly given for microphone access
 
 On iOS, Safari is the only browser that support WebRTC. Both Chrome and Edge on iOS does not support WebRTC. Moreover, native apps built using `WKWebView` do not support WebRTC. This would include apps built using Cordova/PhoneGap and React Native.
 
@@ -26,13 +26,11 @@ On iOS, Safari is the only browser that support WebRTC. Both Chrome and Edge on 
 Text-to-speech requires:
 
 - [Web Audio API support](https://caniuse.com/#feat=audio-api) in browser
-   - All modern browsers, excludes Internet Explorer 11
+   - All modern browsers, excluding Internet Explorer 11
 
-#### Special considerations for Safari
+#### Special considerations for Safari on Mac OS and iOS
 
-> This includes both Safari on Mac OS and iOS.
-
-To play an audio clip, Safari requires additional permission granted implicitly by the user. The user would need to perform an interaction (click/tap/type) before any audio clips can be played.
+To play an audio clip, Safari requires additional permission granted *implicitly* by the user. The user would need to perform an interaction (click/tap/type) before any audio clips can be played.
 
 Web Chat will play a very short and silent audio clip when the user tap on the send button. This will enable Web Chat to play any audio clip during the browser session. If you customize Web Chat to perform any text-to-speech operations before any user gestures, Web Chat will be blocked by Safari.
 
@@ -48,7 +46,7 @@ You will need to obtain a subscription key for your Azure Cognitive Services sub
 
 To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization token, and send only the authorization token to client. You can find [more information about authorization token in this article](https://docs.microsoft.com/en-us/azure/cognitive-services/authentication).
 
-> To use the latest neural speech voice, you might need to have a subscription in "West US 2" region.
+> To use the [voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region.
 
 ### Integrating Web Chat into your page
 
