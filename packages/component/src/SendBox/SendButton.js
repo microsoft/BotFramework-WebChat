@@ -10,7 +10,6 @@ const connectSendButton = (...selectors) =>
   connectToWebChat(
     ({ disabled, language, sendBoxValue, setSendBox, submitSendBox }) => ({
       click: () => {
-        setSendBox(sendBoxValue.trim());
         submitSendBox();
       },
       disabled,
