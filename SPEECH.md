@@ -52,7 +52,7 @@ To prevent leaking your subscription key, you should build/host a server which u
 
 This integration code is excerpted from a [sample named "Integrating with Cognitive Services Speech Services"](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js).
 
-> To focus on the integration code, we simplified from the original by using subscription key instead of authorization token. You should always use authorization token for production systems.
+> To bring more focus around the integration, we simplified from the original sample code by using subscription key instead of authorization token. You should always use authorization token for production systems.
 
 ```js
 const {
@@ -73,17 +73,17 @@ renderWebChat({
 }, document.getElementById('webchat'));
 ```
 
-After adding the ponyfill factory, you should be able to see microphone button in Web Chat.
+After adding the ponyfill factory, you should be able to see a microphone button in Web Chat.
 
 ## Additional features
 
-These features are for improving the overall user experiences.
+These features are for improving the overall user experiences while using speech in Web Chat.
 
-- [Selecting different voice](#selecting-difference-voice)
+- [Selecting different voice](#selecting-different-voice)
 - [Custom Speech](#custom-speech)
 - [Custom Voice](#custom-voice)
 - [Text-to-speech audio format](#text-to-speech-audio-format)
-- [Inverse text normalization option](#inverse-text-normalization-option)
+- [Text normalization options](#text-normalization-options)
 - [Disabling telemetry](#disabling-telemetry)
 - [Using authorization token](#using-authorization-token)
 - [Using two subscription keys for speech-to-text and text-to-speech](#using-two-subscription-keys-for-speech-to-text-and-text-to-speech)
@@ -100,7 +100,7 @@ First, you will need to set up a Custom Speech project. Please follow [this arti
 
 After your Custom Speech project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Endpoint ID".
 
-You will then modify your integration code as below.
+You will then need to modify your integration code as below.
 
 ```diff
   renderWebChat({
@@ -124,7 +124,7 @@ First, you will need to set up a Custom Voice project. Please follow [this artic
 
 After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and "Endpoint URL".
 
-You will then modify your integration code as below.
+You will then need to modify your integration code as below.
 
 ```diff
   renderWebChat({
@@ -140,7 +140,7 @@ You will then modify your integration code as below.
   }, document.getElementById('webchat'));
 ```
 
-(TBD)
+(TBD for selecting voice)
 
 ### Text-to-speech audio format
 
@@ -162,13 +162,13 @@ To conserve bandwidth, you can set the text-to-speech audio format to a format t
 
 Please refer to [this article for list of supported audio formats](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech#audio-outputs).
 
-### Inverse text normalization option
+### Text normalization options
 
-Inverse text normalization (a.k.a. ITN), is an option to modify how the engine is normalizing text. For example, when the end-user say, "I would like to order 2 4-piece of chicken nuggets." It could be recognized as "two four piece" (default) or "2 four piece" (ITN).
+Text normalization is an option to modify how the speech engine is normalizing text. For example, when the user say, "I would like to order 2 4-piece of chicken nuggets." It could be recognized as "two four piece" (default) or "2 four piece" (inverse text normalization, or ITN).
 
 You can read more about [various text normalization options in this article](https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/cognitive-services/Speech-Service/rest-speech-to-text.md#response-parameters).
 
-You will modify your integration code as below.
+You will need to modify your integration code as below.
 
 ```diff
   renderWebChat({
@@ -184,7 +184,7 @@ You will modify your integration code as below.
   }, document.getElementById('webchat'));
 ```
 
-> You can pass `"display"` (default), `"itn"`, `"lexical"`, and `"maskeditn"`.
+> Supported text normalization options are `"display"` (default), `"itn"`, `"lexical"`, and `"maskeditn"`.
 
 ### Disabling telemetry
 
@@ -206,7 +206,7 @@ By default, [Azure Cognitive Services are collecting telemetry for service perfo
 
 ### Using authorization token
 
-In our sample, we are using subscription key. If you prfer to use authorization token, you can pass a Promise function that could be potentially a network call.
+In our sample, we are using subscription key. If you are using authorization token, you can pass a `Promise` function that could be potentially a network call.
 
 ```diff
   async function fetchAuthorizationToken() {
@@ -233,11 +233,11 @@ In our sample, we are using subscription key. If you prfer to use authorization 
   }, document.getElementById('webchat'));
 ```
 
-The function passed to `fetchAuthorizationToken` will be called *every time* a token is needed. If simplicity, token caching is not handled in this sample code. You should add caching based on the validity of the token.
+The function passed to `fetchAuthorizationToken` will be called *every time* a token is needed. If simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
 
 ### Using two subscription keys for speech-to-text and text-to-speech
 
-In some cases, you may need to use two different Cognitive Services subscription, one for speech-to-text and one for text-to-speech. You could create two ponyfills and merge them together as another ponyfill.
+In some cases, you may be using two different Cognitive Services subscriptions, one for speech-to-text and another one for text-to-speech. You could create two ponyfills and merge them together as another ponyfill.
 
 ```diff
 + const speechToTextPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
