@@ -7,7 +7,6 @@ import detectSlowConnectionSaga from './sagas/detectSlowConnectionSaga';
 import incomingActivitySaga from './sagas/incomingActivitySaga';
 import markAllAsSpokenOnStopSpeakActivitySaga from './sagas/markAllAsSpokenOnStopSpeakActivitySaga';
 import postActivitySaga from './sagas/postActivitySaga';
-import removeIncomingTypingAfterIntervalSaga from './sagas/removeIncomingTypingAfterIntervalSaga';
 import sendEventToPostActivitySaga from './sagas/sendEventToPostActivitySaga';
 import sendFilesToPostActivitySaga from './sagas/sendFilesToPostActivitySaga';
 import sendMessageBackToPostActivitySaga from './sagas/sendMessageBackToPostActivitySaga';
@@ -30,7 +29,6 @@ export default function* sagas() {
   yield fork(incomingActivitySaga);
   yield fork(markAllAsSpokenOnStopSpeakActivitySaga);
   yield fork(postActivitySaga);
-  yield fork(removeIncomingTypingAfterIntervalSaga);
   yield fork(sendEventToPostActivitySaga);
   yield fork(sendFilesToPostActivitySaga);
   yield fork(sendMessageBackToPostActivitySaga);
