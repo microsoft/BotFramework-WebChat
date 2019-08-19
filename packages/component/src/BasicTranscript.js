@@ -116,7 +116,7 @@ const BasicTranscript = ({
           </ul>
         </SayComposer>
       </ScrollToBottomPanel>
-      <ScrollToEndButton />
+      {!styleSet.options.hideScrollToEndButton && <ScrollToEndButton />}
     </div>
   );
 };
@@ -135,7 +135,10 @@ BasicTranscript.propTypes = {
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool.isRequired, PropTypes.number.isRequired]),
   styleSet: PropTypes.shape({
     activities: PropTypes.any.isRequired,
-    activity: PropTypes.any.isRequired
+    activity: PropTypes.any.isRequired,
+    options: PropTypes.shape({
+      hideScrollToEndButton: PropTypes.bool.isRequired
+    }).isRequired
   }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
     speechSynthesis: PropTypes.any.isRequired,
