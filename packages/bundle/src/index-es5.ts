@@ -14,6 +14,7 @@ import 'core-js/modules/es.array.iterator';
 import 'core-js/modules/es.math.sign';
 import 'core-js/modules/es.number.is-finite';
 import 'core-js/modules/es.object.assign';
+import 'core-js/modules/es.object.values';
 import 'core-js/modules/es.promise';
 import 'core-js/modules/es.promise.finally';
 import 'core-js/modules/es.string.starts-with';
