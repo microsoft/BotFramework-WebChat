@@ -65,6 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+-  Fix [#2328](https://github.com/microsoft/BotFramework-WebChat/issues/2328). Updating submitSendBoxSaga.js to send sendBoxValue.trim(), by [@jimmyjames177414](https://github.com/jimmyjames177414) in PR [#2331](https://github.com/microsoft/BotFramework-WebChat/pull/2331)
 -  Fix [#2160](https://github.com/microsoft/BotFramework-WebChat/issues/2160). Clear suggested actions after clicking on a suggested actions of type `openUrl`, by [@tdurnford](https://github.com/tdurnford) in PR [#2190](https://github.com/microsoft/BotFramework-WebChat/pull/2190)
 -  Fix [#1954](https://github.com/microsoft/BotFramework-WebChat/issues/1954). Estimate clock skew and adjust timestamp for outgoing activity, by [@compulim](https://github.com/compulim) in PR [#2208](https://github.com/microsoft/BotFramework-WebChat/pull/2208)
 -  Fix [#2240](https://github.com/microsoft/BotFramework-WebChat/issues/2240). Fix microphone button should be re-enabled after error, by [@compulim](https://github.com/compulim) in PR [#2241](https://github.com/microsoft/BotFramework-WebChat/pull/2241)
@@ -95,6 +96,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  [Single sign-on for Microsoft Teams apps](https://microsoft.github.io/BotFramework-WebChat/19.c.single-sign-on-for-teams-apps/), by [@compulim](https://github.com/compulim) in [#2196](https://github.com/microsoft/BotFramework-WebChat/pull/2196)
 -  [Customize Web Chat with Reaction Buttons](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons/). Updated reaction handlers to send `messageReaction` activities, by [@tdurnford](https://github.com/tdurnford) in [#2239](https://github.com/microsoft/BotFramework-WebChat/pull/2239)
+
+## [4.5.3] - 2019-16-07
+
+-  Fix [#2328](https://github.com/microsoft/BotFramework-WebChat/issues/2328). Updating submitSendBoxSaga.js to send sendBoxValue.trim(), by [@jimmyjames177414](https://github.com/jimmyjames177414) in PR [#2331](https://github.com/microsoft/BotFramework-WebChat/pull/2331)
 
 ## [4.5.2] - 2019-08-07
 
