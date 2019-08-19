@@ -81,6 +81,15 @@ After adding the ponyfill factory, you should be able to see microphone button i
 
 These features are for improving the overall user experiences.
 
+- [Selecting different voice](#selecting-difference-voice)
+- [Custom Speech](#custom-speech)
+- [Custom Voice](#custom-voice)
+- [Text-to-speech audio format](#text-to-speech-audio-format)
+- [Inverse text normalization option](#inverse-text-normalization-option)
+- [Disabling telemetry](#disabling-telemetry)
+- [Using authorization token](#using-authorization-token)
+- [Using two subscription keys for speech-to-text and text-to-speech](#using-two-subscription-keys-for-speech-to-text-and-text-to-speech)
+
 ### Selecting different voice
 
 (TBD)
@@ -155,7 +164,7 @@ To conserve bandwidth, you can set the text-to-speech audio format to a format t
 
 Please refer to [this article for list of supported audio formats](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech#audio-outputs).
 
-### Inverse text normalization options
+### Inverse text normalization option
 
 Inverse text normalization (a.k.a. ITN), is an option to modify how the engine is normalizing text. For example, when the end-user say, "I would like to order 2 4-piece of chicken nuggets." It could be recognized as "two four piece" (default) or "2 four piece" (ITN).
 
@@ -228,9 +237,9 @@ In our sample, we are using subscription key. If you prfer to use authorization 
 
 The function passed to `fetchAuthorizationToken` will be called *every time* a token is needed. If simplicity, token caching is not handled in this sample code. You should add caching based on the validity of the token.
 
-### Using two different subscription key for speech-to-text and text-to-speech
+### Using two subscription keys for speech-to-text and text-to-speech
 
-If you need to use two different Cognitive Services subscription, one for speech-to-text and one for text-to-speech, you can create two ponyfills and merge them together as another ponyfill.
+In some cases, you may need to use two different Cognitive Services subscription, one for speech-to-text and one for text-to-speech. You could create two ponyfills and merge them together as another ponyfill.
 
 ```diff
 + const speechToTextPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
