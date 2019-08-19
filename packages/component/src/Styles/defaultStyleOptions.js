@@ -64,6 +64,9 @@ const DEFAULT_OPTIONS = {
   rootHeight: '100%',
   rootWidth: '100%',
 
+  // Scroll to end button
+  hideScrollToEndButton: false,
+
   // Send box
   hideSendBox: false,
   hideUploadButton: false,
