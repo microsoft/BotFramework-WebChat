@@ -37,6 +37,7 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
+import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
@@ -339,6 +340,7 @@ Composer.defaultProps = {
   locale: window.navigator.language || 'en-US',
   referenceGrammarID: '',
   renderMarkdown: text => text,
+  selectVoice: defaultSelectVoice,
   sendTimeout: 20000,
   sendTyping: undefined,
   sendTypingIndicator: false,
@@ -376,6 +378,7 @@ Composer.propTypes = {
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
+  selectVoice: PropTypes.func,
   sendTimeout: PropTypes.number,
   sendTyping: PropTypes.bool,
   sendTypingIndicator: PropTypes.bool,
