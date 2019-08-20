@@ -127,9 +127,9 @@ In the following code, voice is selected based on the language of the synthesizi
 
 ### Custom Speech
 
-Custom Speech is a trained model to improve recognition of words that are not in the default recognition model. For example, you can use it to improve accuracy when recognizing trademarks or name of person.
+Custom Speech is a trained recognition model to improve recognition of words that are not in the default recognition model. For example, you can use it to improve accuracy when recognizing trademarks or name of person.
 
-First, you will need to set up a Custom Speech project. Please follow [this article to create a new Custom Speech project][What is Custom Speech].
+First, you need to set up a Custom Speech project. Please follow [this article to create a new Custom Speech project][What is Custom Speech].
 
 After your Custom Speech project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Endpoint ID".
 
@@ -151,13 +151,13 @@ You will then need to modify your integration code as below.
 
 ### Custom Voice
 
-Custom Voice is a trained model for providing your user with an unique voice when performing text-to-speech.
+Custom Voice is a trained synthesis model for providing your user with an unique synthesized voice when performing text-to-speech.
 
-First, you will need to set up a Custom Voice project. Please follow [this article to create a new Custom Voice project][Get started with Custom Voice].
+First, you need to set up a Custom Voice project. Please follow [this article to create a new Custom Voice project][Get started with Custom Voice].
 
 After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and "Endpoint URL".
 
-You will then need to modify your integration code as below. The `selectVoice` function will always choose the voice of your trained model.
+You will then need to modify your integration code as below. The `selectVoice` function will be used to choose which trained synthesis model to use.
 
 ```diff
   renderWebChat({
@@ -174,9 +174,11 @@ You will then need to modify your integration code as below. The `selectVoice` f
   }, document.getElementById('webchat'));
 ```
 
+> Note: if you send SSML instead of plain text, make sure the voice model is correctly selected in your SSML.
+
 ### Text-to-speech audio format
 
-To conserve bandwidth, you can set the text-to-speech audio format to a format that consume less bandwidth by modifying your integration code as below.
+To conserve bandwidth, you can set the text-to-speech audio format to one that consume less bandwidth by modifying your integration code as below.
 
 ```diff
   renderWebChat({
