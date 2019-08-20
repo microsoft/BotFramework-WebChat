@@ -252,7 +252,8 @@ In our sample, we are using subscription key. If you are using authorization tok
     }),
     language: 'en-US',
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
-+     // Note we are passing the function, but not the result of the function call, there is no () behind it
++     // Note we are passing the function, but not the result of the function call, there is no () appended to it.
++     // This function will be called every time the authorization token is being used.
 +     authorizationToken: fetchAuthorizationToken,
       region: 'YOUR_REGION',
 -     subscriptionKey: 'YOUR_SUBSCRIPTION_KEY',
