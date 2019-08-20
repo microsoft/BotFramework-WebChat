@@ -215,7 +215,7 @@ You will need to modify your integration code as below.
 
 ### Disabling telemetry
 
-By default, [Azure Cognitive Services are collecting telemetry for service performance](https://github.com/Microsoft/cognitive-services-speech-sdk-js#data--telemetry). If you prefer to disable telemetry, modify the code as below.
+By default, [Azure Cognitive Services will collect telemetry for service performance](https://github.com/Microsoft/cognitive-services-speech-sdk-js#data--telemetry). If you prefer to disable telemetry, modify the code as below.
 
 ```diff
   renderWebChat({
