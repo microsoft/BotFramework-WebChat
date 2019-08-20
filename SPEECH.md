@@ -337,4 +337,4 @@ Using this approach, you can also combine two polyfills of different types. For 
 [Sample: Using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
 [Web Audio API support]: https://caniuse.com/#feat=audio-api
 [WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
-[What is Custom Speech]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech)
+[What is Custom Speech]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech
