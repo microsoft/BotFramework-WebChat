@@ -16,7 +16,7 @@ const connectSendButton = (...selectors) =>
     ...selectors
   );
 
-const SendButton = ({ click, disabled, language }) => (
+const SendButton = ({ disabled, language, submitSendBox }) => (
   <IconButton alt={localize('Send', language)} disabled={disabled} onClick={submitSendBox}>
     <SendIcon />
   </IconButton>
