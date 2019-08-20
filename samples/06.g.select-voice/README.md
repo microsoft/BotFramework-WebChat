@@ -47,7 +47,7 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
 
   window.WebChat.renderWebChat({
     directLine: window.WebChat.createDirectLine({ token }),
-+   selectVoice: (voices, { language }, activity) =>
++   selectVoice: (voices, activity) =>
 +     // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
 +     // Otherwise, use "JessaNeural" (preferred) or "Jessa".
 +     activity.locale === 'zh-HK' ?
@@ -72,7 +72,7 @@ webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechSer
 
 window.WebChat.renderWebChat({
   directLine: window.WebChat.createDirectLine({ token }),
-  selectVoice: (voices, { language }, activity) =>
+  selectVoice: (voices, activity) =>
     // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
     // Otherwise, use "JessaNeural" (preferred) or "Jessa".
     activity.locale === 'zh-HK' ?

@@ -399,7 +399,7 @@ const App = ({ store }) => {
         directLine={directLine}
         disabled={disabled}
         locale={language}
-        selectVoice={voiceGenderPreference ? this.selectVoiceWithGender : undefined}
+        selectVoice={voiceGenderPreference ? selectVoiceWithGender : undefined}
         sendTimeout={+sendTimeout || undefined}
         sendTypingIndicator={sendTypingIndicator}
         store={store}

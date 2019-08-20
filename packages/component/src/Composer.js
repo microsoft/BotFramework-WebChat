@@ -209,6 +209,10 @@ const Composer = ({
     dispatch
   ]);
 
+  const selectVoice = useCallback(
+    (selectVoice, language) => selectVoice || defaultSelectVoice.bind(null, { language })
+  );
+
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
   const patchedStyleSet = useMemo(() => styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions)), [
@@ -248,6 +252,7 @@ const Composer = ({
       groupTimestamp,
       renderMarkdown,
       scrollToEnd,
+      selectVoice,
       sendBoxRef,
       sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
@@ -269,6 +274,7 @@ const Composer = ({
       hoistedDispatchers,
       renderMarkdown,
       scrollToEnd,
+      selectVoice,
       sendBoxRef,
       sendTimeout,
       sendTypingIndicator,
@@ -340,7 +346,7 @@ Composer.defaultProps = {
   locale: window.navigator.language || 'en-US',
   referenceGrammarID: '',
   renderMarkdown: text => text,
-  selectVoice: defaultSelectVoice,
+  selectVoice: undefined,
   sendTimeout: 20000,
   sendTyping: undefined,
   sendTypingIndicator: false,

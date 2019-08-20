@@ -14,7 +14,7 @@ const connectSpeakActivity = (...selectors) =>
     ({ language, markActivity, selectVoice }, { activity }) => ({
       language,
       markAsSpoken: () => markActivity(activity, 'speak', false),
-      selectVoice: voices => selectVoice(voices, { language }, activity)
+      selectVoice: voices => selectVoice(voices, activity)
     }),
     ...selectors
   );
