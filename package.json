@@ -76,8 +76,8 @@
     "lerna-publish": "lerna publish",
     "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
     "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
-    "start:playground": "cd packages/playground && npm run start",
     "start:docker": "npm run build && docker-compose up --build",
+    "start:playground": "cd packages/playground && npm run start",
     "test": "jest --no-cache",
     "test:all": "lerna run --parallel --stream test",
     "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
