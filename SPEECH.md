@@ -79,7 +79,7 @@ After adding the ponyfill factory, you should be able to see a microphone button
 
 These features are for improving the overall user experiences while using speech in Web Chat.
 
-- [Selecting different voice](#selecting-different-voice)
+- [Selecting voice](#selecting-voice)
 - [Custom Speech](#custom-speech)
 - [Custom Voice](#custom-voice)
 - [Text-to-speech audio format](#text-to-speech-audio-format)
@@ -88,9 +88,37 @@ These features are for improving the overall user experiences while using speech
 - [Using authorization token](#using-authorization-token)
 - [Using two subscription keys for speech-to-text and text-to-speech](#using-two-subscription-keys-for-speech-to-text-and-text-to-speech)
 
-### Selecting different voice
+### Selecting voice
 
-(TBD)
+Different voice can be selected based on the synthesizing activity.
+
+In the following code, voice is selected based on the language of the synthesizing activity. If the activity is in Cantonese, we will select the voice with keyword "TracyRUS". Otherwise, we will select the voice with keyword "Jessa24kRUS".
+
+```diff
+  const {
+    createCognitiveServicesSpeechServicesPonyfillFactory,
+    createDirectLine,
+    renderWebChat
+  } = window.WebChat;
+
+  renderWebChat({
+    directLine: createDirectLine({
+      secret: 'YOUR_DIRECT_LINE_SECRET'
+    }),
+    language: 'en-US',
++   selectVoice: (voices, activity) => {
++     if (activity.locale === 'zh-HK') {
++       return voices.find(({ name }) => /TracyRUS/iu.test(name));
++     } else {
++       return voices.find(({ name }) => /Jessa24kRUS/iu.test(name));
++     }
++   }
+    webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
+      region: 'YOUR_REGION',
+      subscriptionKey: 'YOUR_SUBSCRIPTION_KEY'
+    })
+  }, document.getElementById('webchat'));
+```
 
 ### Custom Speech
 
@@ -124,7 +152,7 @@ First, you will need to set up a Custom Voice project. Please follow [this artic
 
 After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and "Endpoint URL".
 
-You will then need to modify your integration code as below.
+You will then need to modify your integration code as below. The `selectVoice` function will always choose the voice of your trained model.
 
 ```diff
   renderWebChat({
@@ -132,6 +160,7 @@ You will then need to modify your integration code as below.
       secret: 'YOUR_DIRECT_LINE_SECRET'
     }),
     language: 'en-US',
++   selectVoice: () => ({ voiceURI: 'YOUR_VOICE_MODEL_NAME' }),
     webSpeechPonyfillFactory: await createCognitiveServicesSpeechServicesPonyfillFactory({
       region: 'YOUR_REGION',
 +     speechSynthesisDeploymentId: 'YOUR_DEPLOYMENT_ID',
@@ -139,8 +168,6 @@ You will then need to modify your integration code as below.
     })
   }, document.getElementById('webchat'));
 ```
-
-(TBD for selecting voice)
 
 ### Text-to-speech audio format
 
