@@ -49,15 +49,15 @@ To use Cognitive Services in Web Chat, you will need to add minimal setup code t
 
 You will need to obtain a subscription key for your Azure Cognitive Services subscription. Please follow instructions on [this page][Try Cognitive Services] to obtain a subscription key.
 
-To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization token, and send only the authorization token to client. You can find [more information about authorization token in this article][Authenticate requests to Azure Cognitive Services].
+To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization token, and send only the authorization token to client. You can find [more information about authorization token in this article][Authenticate requests to Azure Cognitive Services]. *Never use subscription keys to access your Cognitive Services resource in a production environment.*
 
-> To use the [voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region.
+> To use [new voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region.
 
 ### Integrating Web Chat into your page
 
 This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"][Integrating with Cognitive Services Speech Services sample].
 
-> To bring more focus around the integration, we simplified from the original sample code by using subscription key instead of authorization token. You should always use authorization token for production systems.
+> To bring more focus for the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should *always use authorization token* for production systems.
 
 ```js
 const {
