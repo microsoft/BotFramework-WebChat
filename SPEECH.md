@@ -55,7 +55,7 @@ To prevent leaking your subscription key, you should build/host a server which u
 
 ### Integrating Web Chat into your page
 
-This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"]Sample: [Integrating with Cognitive Services Speech Services].
+This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"][Sample: Integrating with Cognitive Services Speech Services].
 
 > To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should *always use authorization token* for production environment.
 
