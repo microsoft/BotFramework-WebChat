@@ -55,7 +55,7 @@ To prevent leaking your subscription key, you should build/host a server which u
 
 ### Integrating Web Chat into your page
 
-This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"][Integrating with Cognitive Services Speech Services sample].
+This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"]Sample: [Integrating with Cognitive Services Speech Services].
 
 > To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should *always use authorization token* for production environment.
 
@@ -268,11 +268,11 @@ For simplicity, in our sample, we are using subscription key. If you need to use
   }, document.getElementById('webchat'));
 ```
 
-The function passed to `fetchAuthorizationToken` will be called *every time* a token is needed. If simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
+The function `fetchAuthorizationToken` will be called *every time* a token is needed. If simplicity, token caching is not provided in this sample code. You should add caching based on the validity of the token.
 
 ### Using two subscription keys for speech-to-text and text-to-speech
 
-In some cases, you may be using two different Cognitive Services subscriptions, one for speech-to-text and another one for text-to-speech. You could create two ponyfills and merge them together as another ponyfill.
+In some cases, you may be using two different Cognitive Services subscriptions, one for speech-to-text and another one for text-to-speech. You could create two ponyfills and combine together to form a hybrid ponyfill.
 
 ```diff
 + const speechToTextPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
@@ -310,18 +310,23 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 
 > Note: it is correct that `speechSynthesis` is in camel-casing, while others are in Pascal-casing.
 
+Using this approach, you can also combine two polyfills of different types. For example, speech recognition powered by Cognitive Services with browser-supported speech synthesis. You can refer to [this sample for the hybrid speech approach][Sample: Using hybrid speech engine].
+
 ## Related articles
 
+- [Try Cognitive Services]
 - [Web Audio API support]
 - [WebRTC API Support]
-- [Integrating with Cognitive Services Speech Services sample]
 - [Get started with Custom Voice]
 - [What is Custom Speech]
+- [Sample: Integrating with Cognitive Services Speech Services]
+- [Sample: Using hybrid speech engine]
 
 [Authenticate requests to Azure Cognitive Services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
 [Get started with Custom Voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
-[Integrating with Cognitive Services Speech Services sample]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
+[Sample: Integrating with Cognitive Services Speech Services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
 [Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
+[Sample: Using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
 [Web Audio API support]: https://caniuse.com/#feat=audio-api
 [WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
 [What is Custom Speech]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech)
