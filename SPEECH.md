@@ -15,18 +15,21 @@ Internet Explorer 11 does not meet the basic requirements for both speech recogn
 ### Speech-to-text requirements
 
 - [WebRTC API support] in browser
-   - All modern browsers, excluding Internet Explorer 11
-- Hosted over HTTPS
-- User permission explicitly given for microphone access
+   - All modern browsers on desktop and mobile platform
+   - With the exception of apps or third-party browsers on iOS
+- Must be hosted over HTTPS
+- User permission explicitly granted for microphone access
 
 #### Special considerations for iOS
 
-Safari is the only browser that support WebRTC API on iOS. Both Chrome and Edge on iOS does not support WebRTC API. Moreover, native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plug-ins to support WebRTC API.
+Safari is the only browser that support WebRTC API on iOS.
+
+Chrome, Edge and native apps built using `WKWebView` does not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plug-ins or custom code to support WebRTC API.
 
 ### Text-to-speech requirements
 
 - [Web Audio API support] in browser
-   - All modern browsers, excluding Internet Explorer 11
+   - All modern browsers on desktop and mobile platform
 
 #### Special considerations for Safari on Mac OS and iOS
 
