@@ -222,7 +222,7 @@ To select different text normalization option, you will need to modify your inte
 
 ### Disabling telemetry
 
-By default, [Azure Cognitive Services will collect telemetry for service performance](https://github.com/Microsoft/cognitive-services-speech-sdk-js#data--telemetry). If you prefer to disable telemetry, modify the code as below.
+By default, [Azure Cognitive Services will collect telemetry for service performance](https://github.com/Microsoft/cognitive-services-speech-sdk-js#data--telemetry). If you prefer to disable telemetry, please modify the code as below.
 
 ```diff
   renderWebChat({
@@ -240,7 +240,7 @@ By default, [Azure Cognitive Services will collect telemetry for service perform
 
 ### Using authorization token
 
-In our sample, we are using subscription key. If you are using authorization token, you can pass a `Promise` function that could be potentially a network call.
+For simplicity, in our sample, we are using subscription key. If you need to use authorization token, you can pass a `Promise` function to the `authorizationToken` property. And the function could potentially be a network call to your token server.
 
 ```diff
   async function fetchAuthorizationToken() {
