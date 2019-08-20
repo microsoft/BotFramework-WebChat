@@ -323,8 +323,8 @@ Using this approach, you can also combine two polyfills of different types. For 
 ## Related articles
 
 - [Try Cognitive Services]
-- [Web Audio API support][Browsers which support Web Audio API]
-- [WebRTC API Support][Browsers which support WebRTC API]
+- [List of browsers which support Web Audio API][Web Audio API support]
+- [List of browsers which support WebRTC API][WebRTC API Support]
 - [Get started with Custom Voice]
 - [What is Custom Speech]
 - [Sample: Integrating with Cognitive Services Speech Services]
