@@ -39,7 +39,7 @@ When the user tap on the microphone button for the first time, Web Chat will pla
 
 If you customize Web Chat to perform any text-to-speech operations before any user gestures, Web Chat will be blocked by Safari for audio playback. Thus, bot messages will not be synthesized.
 
-You can present a splash screen with a tap-to-continue button, which would ready the engine by sending an empty utterance and unblock Safari.
+You can present a splash screen with a tap-to-continue button, which would ready the engine by sending an empty utterance to unblock Safari.
 
 ## Setting up Web Chat
 
@@ -49,7 +49,7 @@ To use Cognitive Services in Web Chat, you will need to add minimal setup code t
 
 You will need to obtain a subscription key for your Azure Cognitive Services subscription. Please follow instructions on [this page][Try Cognitive Services] to obtain a subscription key.
 
-To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization token, and send only the authorization token to client. You can find [more information about authorization token in this article][Authenticate requests to Azure Cognitive Services]. *Never use subscription keys to access your Cognitive Services resource in a production environment.*
+To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization tokens, and only send the authorization token to the client. You can find [more information about authorization token in this article][Authenticate requests to Azure Cognitive Services]. *Never use subscription keys to access your Azure resources in a production environment.*
 
 > To use [new voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region.
 
@@ -57,7 +57,7 @@ To prevent leaking your subscription key, you should build/host a server which u
 
 This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"][Integrating with Cognitive Services Speech Services sample].
 
-> To bring more focus for the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should *always use authorization token* for production systems.
+> To bring more focus to the integration part, we simplified the original sample code by using subscription key instead of authorization token. You should *always use authorization token* for production environment.
 
 ```js
 const {
@@ -97,7 +97,7 @@ These features are for improving the overall user experiences while using speech
 
 Different voice can be selected based on the synthesizing activity.
 
-In the following code, voice is selected based on the language of the synthesizing activity. If the activity is in Cantonese, we will select the voice with keyword "TracyRUS". Otherwise, we will select the voice with keyword "Jessa24kRUS".
+In the following code, voice is selected based on the language of the synthesizing activity. If the activity is in Cantonese (zh-HK), we will select the voice with keyword "TracyRUS". Otherwise, we will select the voice with keyword "Jessa24kRUS".
 
 ```diff
   const {
@@ -127,9 +127,9 @@ In the following code, voice is selected based on the language of the synthesizi
 
 ### Custom Speech
 
-Custom Speech is a trained model to improve recognition of words that are not in the default recognition model. For example, you can use it to improve accuracy when recognizing trademarks or people names.
+Custom Speech is a trained model to improve recognition of words that are not in the default recognition model. For example, you can use it to improve accuracy when recognizing trademarks or name of person.
 
-First, you will need to set up a Custom Speech project. Please follow [this article to create a new Custom Speech project][What is Custom Speech?].
+First, you will need to set up a Custom Speech project. Please follow [this article to create a new Custom Speech project][What is Custom Speech].
 
 After your Custom Speech project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Endpoint ID".
 
@@ -314,7 +314,7 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 - [WebRTC API Support]
 - [Integrating with Cognitive Services Speech Services sample]
 - [Get started with Custom Voice]
-- [What is Custom Speech?]
+- [What is Custom Speech]
 
 [Authenticate requests to Azure Cognitive Services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
 [Get started with Custom Voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
@@ -322,4 +322,4 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 [Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [Web Audio API support]: https://caniuse.com/#feat=audio-api
 [WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
-[What is Custom Speech?]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech)
+[What is Custom Speech]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech)
