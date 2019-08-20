@@ -6,19 +6,19 @@ We assume you have already set up a bot and have Web Chat running on a page.
 
 > Sample code in this article are optimized for modern browsers. You may need to use a [transpiler](https://en.wikipedia.org/wiki/Source-to-source_compiler) (e.g. [Babel](https://babeljs.io/)) to target broader range of browsers.
 
-## Browser requirements
+## Requirements
 
 In order to use speech functionality in Web Chat, browser would need to provide minimum media capabilities, including recording from microphone and playing audio clips.
 
-Internet Explorer 11 does not meet the basic requirements for both speech recognition and synthesis.
+Internet Explorer 11 does not meet the basic requirements for both speech recognition and speech synthesis.
 
 ### Speech-to-text requirements
 
-- [WebRTC API support] in browser
+- Browser must [support WebRTC API][WebRTC API support]
    - All modern browsers on desktop and mobile platform
-   - With the exception of apps or third-party browsers on iOS
-- Must be hosted over HTTPS
-- User permission explicitly granted for microphone access
+   - With the exception of third-party apps or browsers on iOS
+- Web page must be hosted over HTTPS
+- User must explicitly grant permission for microphone access
 
 #### Special considerations for iOS
 
@@ -28,7 +28,7 @@ Chrome, Edge and native apps built using `WKWebView` does not support WebRTC API
 
 ### Text-to-speech requirements
 
-- [Web Audio API support] in browser
+- Browser must [support Web Audio API][Web Audio API support]
    - All modern browsers on desktop and mobile platform
 
 #### Special considerations for Safari on Mac OS and iOS
@@ -323,8 +323,8 @@ Using this approach, you can also combine two polyfills of different types. For 
 ## Related articles
 
 - [Try Cognitive Services]
-- [Web Audio API support]
-- [WebRTC API Support]
+- [Web Audio API support][Browsers which support Web Audio API]
+- [WebRTC API Support][Browsers which support WebRTC API]
 - [Get started with Custom Voice]
 - [What is Custom Speech]
 - [Sample: Integrating with Cognitive Services Speech Services]
