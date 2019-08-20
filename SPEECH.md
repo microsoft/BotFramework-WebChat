@@ -198,11 +198,11 @@ Please refer to [this article for list of supported audio formats](https://docs.
 
 ### Text normalization options
 
-Text normalization is an option to modify how the speech engine is normalizing text. For example, when the user say, "I would like to order 2 4-piece of chicken nuggets." It could be recognized as "two four piece" (default) or "2 four piece" (inverse text normalization, or ITN).
+Text normalization is an option to modify how the speech engine normalize texts. For example, when the user say, "I would like to order 2 4-piece of chicken nuggets." It could be recognized as "two four piece" (default) or "2 four piece" (inverse text normalization, or ITN).
 
 You can read more about [various text normalization options in this article](https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/cognitive-services/Speech-Service/rest-speech-to-text.md#response-parameters).
 
-You will need to modify your integration code as below.
+To select different text normalization option, you will need to modify your integration code as below.
 
 ```diff
   renderWebChat({
