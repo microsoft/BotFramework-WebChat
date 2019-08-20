@@ -1,8 +1,10 @@
-# Sample - Integrating with Cognitive Services Speech Services
+# Sample - Selecting voice
 
 ## Description
 
-A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality and select different voices.
+A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality and select different voices based on the activity to be synthesized.
+
+This is an extension of sample [06.c.cognitive-services-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js).
 
 # Test out the hosted sample
 
@@ -26,13 +28,61 @@ A simple page with Web Chat integrated with speech-to-text and text-to-speech fu
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-### Goals of this bot
+## Selecting voice
 
-Demonstrates ability to select different voice for speech synthesis on-the-fly.
+To select different voice used for speech synthesis, pass a `selectVoice` function when creating Web Chat.
+
+When Web Chat synthesize an activity, it will call the `selectVoice` function with list of voices available and the activity to be synthesized. The code should return the `SpeechSynthesisVoice` object to use for speech synthesis.
+
+In the sample code below, if the activity is for language "zh-HK", we will use a voice with keyword "TracyRUS". Otherwise, it will prefer a voice with keyword "JessaNeural" over "Jessa".
+
+```diff
+  const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const { token } = await directLineTokenResponse.json();
+
+  const speechTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+  const { region, token: authorizationToken } = await speechTokenResponse.json();
+
+  webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
+
+  window.WebChat.renderWebChat({
+    directLine: window.WebChat.createDirectLine({ token }),
++   selectVoice: (voices, { language }, activity) =>
++     // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
++     // Otherwise, use "JessaNeural" (preferred) or "Jessa".
++     activity.locale === 'zh-HK' ?
++       voices.find(({ name }) => /TracyRUS/iu.test(name))
++     :
++       voices.find(({ name }) => /JessaNeural/iu.test(name))
++       || voices.find(({ name }) => /Jessa/iu.test(name)),
+    webSpeechPonyfillFactory
+  }, document.getElementById('webchat'));
+```
 
 ## Completed code
 
-(TBD)
+```js
+const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+const { token } = await directLineTokenResponse.json();
+
+const speechTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+const { region, token: authorizationToken } = await speechTokenResponse.json();
+
+webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
+
+window.WebChat.renderWebChat({
+  directLine: window.WebChat.createDirectLine({ token }),
+  selectVoice: (voices, { language }, activity) =>
+    // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
+    // Otherwise, use "JessaNeural" (preferred) or "Jessa".
+    activity.locale === 'zh-HK' ?
+      voices.find(({ name }) => /TracyRUS/iu.test(name))
+    :
+      voices.find(({ name }) => /JessaNeural/iu.test(name))
+      || voices.find(({ name }) => /Jessa/iu.test(name)),
+  webSpeechPonyfillFactory
+}, document.getElementById('webchat'));
+```
 
 # Further reading
 
