@@ -40,7 +40,7 @@
         window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({ token }),
           selectVoice: (voices, { language }, activity) =>
-            // If the activity is in Cantonese, use a voice with keyword "TracyRUS".
+            // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
             // Otherwise, use "JessaNeural" (preferred) or "Jessa".
             activity.locale === 'zh-HK' ?
               voices.find(({ name }) => /TracyRUS/iu.test(name))
