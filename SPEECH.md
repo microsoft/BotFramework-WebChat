@@ -97,6 +97,14 @@ These features are for improving the overall user experiences while using speech
 
 Different voice can be selected based on the synthesizing activity.
 
+By default, we will use the following order to determine which voice to use. And if available, we prefer deep neural network-based voices than traditional voices.
+
+- Locale specified in the activity
+- Display language of Web Chat
+- Browser language
+- "en-US"
+- The first available voice
+
 In the following code, voice is selected based on the language of the synthesizing activity. If the activity is in Cantonese (zh-HK), we will select the voice with keyword "TracyRUS". Otherwise, we will select the voice with keyword "Jessa24kRUS".
 
 ```diff
