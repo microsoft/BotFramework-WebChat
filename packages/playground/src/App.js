@@ -54,22 +54,6 @@ const WEB_CHAT_CSS = css({
   maxWidth: 768
 });
 
-const fetchAndMemoizeBingSpeechAuthorizationToken = memoize(
-  () =>
-    fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' })
-      .then(res => res.json())
-      .then(({ token }) => token),
-  (x, y) => Math.abs(x - y) < 60000
-);
-
-const fetchAndMemoizeSpeechServicesAuthorizationToken = memoize(
-  () =>
-    fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
-      .then(res => res.json())
-      .then(({ token }) => token),
-  (x, y) => Math.abs(x - y) < 60000
-);
-
 const createStyleOptionsFromProps = (
   hideSendBox,
   botAvatarInitials,
@@ -114,6 +98,22 @@ const createStyleOptionsFromProps = (
   messageActivityWordBreak: wordBreak,
   richCardWrapTitle
 });
+
+const fetchAndMemoizeBingSpeechAuthorizationToken = memoize(
+  () =>
+    fetch('https://webchat-mockbot.azurewebsites.net/bingspeech/token', { method: 'POST' })
+      .then(res => res.json())
+      .then(({ token }) => token),
+  (x, y) => Math.abs(x - y) < 60000
+);
+
+const fetchAndMemoizeSpeechServicesAuthorizationToken = memoize(
+  () =>
+    fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
+      .then(res => res.json())
+      .then(({ token }) => token),
+  (x, y) => Math.abs(x - y) < 60000
+);
 
 const App = ({ store }) => {
   const params = new URLSearchParams(window.location.search);
