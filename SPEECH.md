@@ -4,53 +4,55 @@ This guide is for integrating speech-to-text and text-to-speech functionality of
 
 We assume you have already set up a bot and have Web Chat running on a page.
 
-> Sample code in this article are optimized for modern browsers. You may need to use a transpiler  (e.g. [Babel](https://babeljs.io/)) to target broader range of browsers.
+> Sample code in this article are optimized for modern browsers. You may need to use a [transpiler](https://en.wikipedia.org/wiki/Source-to-source_compiler) (e.g. [Babel](https://babeljs.io/)) to target broader range of browsers.
 
 ## Browser requirements
 
 In order to use speech functionality in Web Chat, browser would need to provide minimum media capabilities, including recording from microphone and playing audio clips.
 
-### Speech-to-text
+Internet Explorer 11 does not meet the basic requirements for both speech recognition and synthesis.
 
-Speech-to-text requires:
+### Speech-to-text requirements
 
-- [WebRTC support](https://caniuse.com/#feat=rtcpeerconnection) in browser
+- [WebRTC API support] in browser
    - All modern browsers, excluding Internet Explorer 11
 - Hosted over HTTPS
 - User permission explicitly given for microphone access
 
-On iOS, Safari is the only browser that support WebRTC. Both Chrome and Edge on iOS does not support WebRTC. Moreover, native apps built using `WKWebView` do not support WebRTC. This would include apps built using Cordova/PhoneGap and React Native.
+#### Special considerations for iOS
 
-### Text-to-speech
+Safari is the only browser that support WebRTC API on iOS. Both Chrome and Edge on iOS does not support WebRTC API. Moreover, native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plug-ins to support WebRTC API.
 
-Text-to-speech requires:
+### Text-to-speech requirements
 
-- [Web Audio API support](https://caniuse.com/#feat=audio-api) in browser
+- [Web Audio API support] in browser
    - All modern browsers, excluding Internet Explorer 11
 
 #### Special considerations for Safari on Mac OS and iOS
 
-To play an audio clip, Safari requires additional permission granted *implicitly* by the user. The user would need to perform an interaction (click/tap/type) before any audio clips can be played.
+Safari requires additional permission granted *implicitly* by the user. The user would need to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
 
-Web Chat will play a very short and silent audio clip when the user tap on the send button. This will enable Web Chat to play any audio clip during the browser session. If you customize Web Chat to perform any text-to-speech operations before any user gestures, Web Chat will be blocked by Safari.
+When the user tap on the microphone button for the first time, Web Chat will play a very short and silent audio clip. This will enable Web Chat to play any audio clip synthesized from bot messages.
 
-In order to workaround with this requirement, you can present a splash screen with a tap-to-continue button, which would ready the engine by sending an empty utterance.
+If you customize Web Chat to perform any text-to-speech operations before any user gestures, Web Chat will be blocked by Safari for audio playback. Thus, bot messages will not be synthesized.
+
+You can present a splash screen with a tap-to-continue button, which would ready the engine by sending an empty utterance and unblock Safari.
 
 ## Setting up Web Chat
 
-Web Chat is bundled with Web Speech API adapter for Cognitive Services.
+To use Cognitive Services in Web Chat, you will need to add minimal setup code to wire them up with your subscription.
 
 ### Setting up your Azure subscription
 
-You will need to obtain a subscription key for your Azure Cognitive Services subscription. Please follow instructions on [this page](https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech) to obtain a subscription key.
+You will need to obtain a subscription key for your Azure Cognitive Services subscription. Please follow instructions on [this page][Try Cognitive Services] to obtain a subscription key.
 
-To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization token, and send only the authorization token to client. You can find [more information about authorization token in this article](https://docs.microsoft.com/en-us/azure/cognitive-services/authentication).
+To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization token, and send only the authorization token to client. You can find [more information about authorization token in this article][Authenticate requests to Azure Cognitive Services].
 
 > To use the [voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region.
 
 ### Integrating Web Chat into your page
 
-This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js).
+This integration code is excerpted from the [sample named "Integrating with Cognitive Services Speech Services"][Integrating with Cognitive Services Speech Services sample].
 
 > To bring more focus around the integration, we simplified from the original sample code by using subscription key instead of authorization token. You should always use authorization token for production systems.
 
@@ -124,7 +126,7 @@ In the following code, voice is selected based on the language of the synthesizi
 
 Custom Speech is a trained model to improve recognition of words that are not in the default recognition model. For example, you can use it to improve accuracy when recognizing trademarks or people names.
 
-First, you will need to set up a Custom Speech project. Please follow [this article to create a new Custom Speech project](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech).
+First, you will need to set up a Custom Speech project. Please follow [this article to create a new Custom Speech project][What is Custom Speech?].
 
 After your Custom Speech project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Endpoint ID".
 
@@ -148,7 +150,7 @@ You will then need to modify your integration code as below.
 
 Custom Voice is a trained model for providing your user with an unique voice when performing text-to-speech.
 
-First, you will need to set up a Custom Voice project. Please follow [this article to create a new Custom Voice project](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice).
+First, you will need to set up a Custom Voice project. Please follow [this article to create a new Custom Voice project][Get started with Custom Voice].
 
 After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and "Endpoint URL".
 
@@ -302,3 +304,19 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 ```
 
 > Note: it is correct that `speechSynthesis` is in camel-casing, while others are in Pascal-casing.
+
+## Related articles
+
+- [Web Audio API support]
+- [WebRTC API Support]
+- [Integrating with Cognitive Services Speech Services sample]
+- [Get started with Custom Voice]
+- [What is Custom Speech?]
+
+[Authenticate requests to Azure Cognitive Services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
+[Get started with Custom Voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
+[Integrating with Cognitive Services Speech Services sample]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
+[Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
+[Web Audio API support]: https://caniuse.com/#feat=audio-api
+[WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
+[What is Custom Speech?]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech)
