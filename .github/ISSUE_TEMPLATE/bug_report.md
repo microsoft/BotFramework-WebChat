@@ -2,12 +2,12 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: Bug, Pending, customer-reported
+labels: Bug, Pending, customer-reported, Bot Services
 assignees: ''
 
 ---
 
-<!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` label before submitting this issue. -->
+<!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` and `Bot Services` labels before submitting this issue. -->
 
 <!-- [GitHub issues](https://github.com/microsoft/botframework-webchat/issues) should be used for bugs and feature requests. See the Support section to get support related to Bot Framework and Web Chat. -->
 

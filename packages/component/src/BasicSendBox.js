@@ -11,6 +11,7 @@ import MicrophoneButton from './SendBox/MicrophoneButton';
 import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
+import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
 
 const {
@@ -29,6 +30,7 @@ const TEXT_BOX_CSS = css({ flex: 10000 });
 
 const BasicSendBox = ({ className, dictationStarted, styleSet, webSpeechPonyfill }) => (
   <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
+    <TypingIndicator />
     <ConnectivityStatus />
     <SuggestedActions />
     <div className="main">
