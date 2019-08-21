@@ -33,7 +33,7 @@ Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. 
 
 #### Special considerations for Safari on Mac OS and iOS
 
-Safari requires additional permission granted *implicitly* by the user. The user would need to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
+Safari requires additional permission granted *implicitly* by the user. The user needs to perform an interaction (click/tap/type) before any audio clips can be played during the browser session.
 
 When the user taps on the microphone button for the first time, Web Chat will play a very short and silent audio clip. This will enable Web Chat to play any audio clip synthesized from bot messages.
 
@@ -98,7 +98,7 @@ These features are for improving the overall user experience while using speech 
 
 Instead of synthesizing text, Web Chat can also synthesize [Speech Synthesis Markup Language] (or SSML). [Cognitive Services supports SSML 1.0 with "mstts" extensions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup).
 
-When the bot sends the activity, simply the SSML in the `speak` property.
+When the bot sends the activity, include the SSML in the `speak` property.
 
 ```xml
 <speak
@@ -110,8 +110,8 @@ When the bot sends the activity, simply the SSML in the `speak` property.
   <voice name="en-US-JessaNeural">
     <mstts:express-as type="cheerful">That'd be just amazing!</mstts:express-as>
   </voice>
-  <voice name="zh-HK-TracyRUS">
-    <prosody pitch="+150%">太神奇啦！</prosody>
+  <voice name="ja-JP-Ayumi-Apollo">
+    <prosody pitch="+150%">素晴らしい!</prosody>
   </voice>
 </speak>
 ```
@@ -190,7 +190,7 @@ Custom Voice is a trained synthesis model for providing your user with an unique
 
 First, you need to set up a Custom Voice project. Please follow the article on [creating a new Custom Voice project][Get started with Custom Voice].
 
-After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and your "Endpoint URL".
+After your Custom Voice project is set up and a model is published to a deployment endpoint, in the "Deployment" tab, save the "Model / Voice name" and the value of "deploymentId" inside the "Endpoint URL" field.
 
 You will then need to modify your integration code as below. The `selectVoice` function will be used to choose which trained synthesis model to use.
 
@@ -329,17 +329,17 @@ In some cases, you may be using two different Cognitive Services subscriptions, 
 -     region: 'YOUR_REGION',
 -     subscriptionKey: 'YOUR_SUBSCRIPTION_KEY',
 -   })
-    webSpeechPonyfillFactory: options => {
-      const { SpeechGrammarList, SpeechRecognition } = speechToTextPonyfillFactory(options);
-      const { speechSynthesis, SpeechSynthesisUtterance } = textToSpeechPonyfillFactory(options);
-
-      return {
-        SpeechGrammarList,
-        SpeechRecognition,
-        speechSynthesis,
-        SpeechSynthesisUtterance
-      };
-    }
++   webSpeechPonyfillFactory: options => {
++     const { SpeechGrammarList, SpeechRecognition } = speechToTextPonyfillFactory(options);
++     const { speechSynthesis, SpeechSynthesisUtterance } = textToSpeechPonyfillFactory(options);
++
++     return {
++       SpeechGrammarList,
++       SpeechRecognition,
++       speechSynthesis,
++       SpeechSynthesisUtterance
++     };
++   }
   }, document.getElementById('webchat'));
 ```
 
