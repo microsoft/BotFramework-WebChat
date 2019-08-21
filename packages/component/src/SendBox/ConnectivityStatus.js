@@ -10,7 +10,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
 
-const CONNECTIVITY_STATUS_DEBOUNCE = 4000;
+const CONNECTIVITY_STATUS_DEBOUNCE = 400;
 
 const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
   const [children, setChildren] = useState(propsChildren);
