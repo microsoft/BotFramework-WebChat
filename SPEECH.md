@@ -51,7 +51,7 @@ You will need to obtain a subscription key for your Azure Cognitive Services sub
 
 To prevent leaking your subscription key, you should build/host a server which use your subscription key to generate authorization tokens, and only send the authorization token to the client. You can find [more information about authorization token in this article][Authenticate requests to Azure Cognitive Services]. *Never use subscription keys to access your Azure resources in a production environment.*
 
-> To use [new voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region.
+> To use [new voices powered by deep neural network](https://azure.microsoft.com/en-us/blog/microsoft-s-new-neural-text-to-speech-service-helps-machines-speak-like-people/), you might need to have a subscription in "West US 2" region or [other supported regions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/regions#standard-and-neural-voices).
 
 ### Integrating Web Chat into your page
 
@@ -84,6 +84,7 @@ After adding the ponyfill factory, you should be able to see a microphone button
 
 These features are for improving the overall user experiences while using speech in Web Chat.
 
+- [Using Speech Synthesis Markup Language](#using-speech-synthesis-markup-language)
 - [Selecting voice](#selecting-voice)
 - [Custom Speech](#custom-speech)
 - [Custom Voice](#custom-voice)
@@ -92,6 +93,32 @@ These features are for improving the overall user experiences while using speech
 - [Disabling telemetry](#disabling-telemetry)
 - [Using authorization token](#using-authorization-token)
 - [Using two subscription keys for speech-to-text and text-to-speech](#using-two-subscription-keys-for-speech-to-text-and-text-to-speech)
+
+### Using Speech Synthesis Markup Language
+
+Instead of synthesizing text, Web Chat can also synthesize [Speech Synthesis Markup Language] (or SSML). [Cognitive Services supports SSML 1.0 with "mstts" extensions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup).
+
+When the bot send the activity, simply the SSML in the `speak` property.
+
+```xml
+<speak
+  version="1.0"
+  xmlns="https://www.w3.org/2001/10/synthesis"
+  xmlns:mstts="https://www.w3.org/2001/mstts"
+  xml:lang="en-US"
+>
+  <voice name="en-US-JessaNeural">
+    <mstts:express-as type="cheerful">That'd be just amazing!</mstts:express-as>
+  </voice>
+  <voice name="zh-HK-TracyRUS">
+    <prosody pitch="+150%">太神奇啦！</prosody>
+  </voice>
+</speak>
+```
+
+> The SSML code snippet above is using neural voice "JessaNeural" for expression, which is only supported in some regions.
+
+With "mstts" extension, you can also [add speaking style](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup#adjust-speaking-styles) (e.g. cheerful) and [background audio](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup#add-background-audio) to your synthesized speech.
 
 ### Selecting voice
 
@@ -102,7 +129,7 @@ By default, we will use the following order to determine which voice to use. And
 - Locale specified in the activity
 - Display language of Web Chat
 - Browser language
-- "en-US"
+- English (US)
 - The first available voice
 
 In the following code, voice is selected based on the language of the synthesizing activity. If the activity is in Cantonese (zh-HK), we will select the voice with keyword "TracyRUS". Otherwise, we will select the voice with keyword "Jessa24kRUS".
@@ -325,6 +352,7 @@ Using this approach, you can also combine two polyfills of different types. For 
 - [Try Cognitive Services]
 - [List of browsers which support Web Audio API][Web Audio API support]
 - [List of browsers which support WebRTC API][WebRTC API Support]
+- [Speech Synthesis Markup Language (SSML)][Speech Synthesis Markup Language]
 - [Get started with Custom Voice]
 - [What is Custom Speech]
 - [Sample: Integrating with Cognitive Services Speech Services]
@@ -333,8 +361,9 @@ Using this approach, you can also combine two polyfills of different types. For 
 [Authenticate requests to Azure Cognitive Services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
 [Get started with Custom Voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
 [Sample: Integrating with Cognitive Services Speech Services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
-[Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [Sample: Using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
+[Speech Synthesis Markup Language]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup)
+[Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [Web Audio API support]: https://caniuse.com/#feat=audio-api
 [WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
 [What is Custom Speech]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech
