@@ -31,7 +31,6 @@ const connectSendTextBox = (...selectors) =>
           event.preventDefault();
 
           if (sendBoxValue) {
-            setSendBox(sendBoxValue.trim());
             scrollToEnd();
             submitSendBox();
             focusSendBox();
