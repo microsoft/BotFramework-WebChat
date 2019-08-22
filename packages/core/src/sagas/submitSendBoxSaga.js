@@ -11,7 +11,7 @@ function* submitSendBox() {
     const sendBoxValue = yield select(sendBoxValueSelector);
 
     if (sendBoxValue) {
-      yield put(sendMessage(sendBoxValue, method));
+      yield put(sendMessage(sendBoxValue.trim(), method));
       yield put(setSendBox(''));
     }
   });

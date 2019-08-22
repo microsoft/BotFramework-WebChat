@@ -29,10 +29,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182), notably
+-  `*`: Bumps all dev dependencies to latest version, by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182) and PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
    -  [`@babel/*@7.5.4`](https://www.npmjs.com/package/@babel/core)
    -  [`jest@24.8.0`](https://www.npmjs.com/package/jest)
    -  [`lerna@3.15.0`](https://www.npmjs.com/package/lerna)
+   -  [`react-redux@7.1.0`](https://www.npmjs.com/package/react-redux)
    -  [`typescript@3.5.3`](https://www.npmjs.com/package/typescript)
    -  [`webpack@4.35.3`](https://www.npmjs.com/package/webpack)
 -  `*`: Bumps [`@babel/runtime@7.5.4`](https://www.npmjs.com/package/@babel/runtime), by [@compulim](https://github.com/compulim), in PR [#2182](https://github.com/microsoft/BotFramework-WebChat/pull/2182)
@@ -63,10 +64,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `playground`: Remove [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies`
    -  `samples/*`: Move to production version of Web Chat, and bump to [`react@16.8.6`](https://www.npmjs.com/package/react) and [`react-dom@16.8.6`](https://www.npmjs.com/package/react-dom)
 -  Moved the typing indicator to the send box and removed the typing indicator logic from the sagas, by [@tdurnford](https://github.com/tdurnford), in PR [#2321](https://github.com/microsoft/BotFramework-WebChat/pull/2321)
+-  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2311](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
 
 ### Fixed
 
+-  Fix [#2328](https://github.com/microsoft/BotFramework-WebChat/issues/2328). Updating submitSendBoxSaga.js to send sendBoxValue.trim(), by [@jimmyjames177414](https://github.com/jimmyjames177414) in PR [#2331](https://github.com/microsoft/BotFramework-WebChat/pull/2331)
 -  Fix [#2160](https://github.com/microsoft/BotFramework-WebChat/issues/2160). Clear suggested actions after clicking on a suggested actions of type `openUrl`, by [@tdurnford](https://github.com/tdurnford) in PR [#2190](https://github.com/microsoft/BotFramework-WebChat/pull/2190)
 -  Fix [#1954](https://github.com/microsoft/BotFramework-WebChat/issues/1954). Estimate clock skew and adjust timestamp for outgoing activity, by [@compulim](https://github.com/compulim) in PR [#2208](https://github.com/microsoft/BotFramework-WebChat/pull/2208)
 -  Fix [#2240](https://github.com/microsoft/BotFramework-WebChat/issues/2240). Fix microphone button should be re-enabled after error, by [@compulim](https://github.com/compulim) in PR [#2241](https://github.com/microsoft/BotFramework-WebChat/pull/2241)

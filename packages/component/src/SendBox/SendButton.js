@@ -8,19 +8,16 @@ import SendIcon from './Assets/SendIcon';
 
 const connectSendButton = (...selectors) =>
   connectToWebChat(
-    ({ disabled, language, sendBoxValue, setSendBox, submitSendBox }) => ({
-      click: () => {
-        setSendBox(sendBoxValue.trim());
-        submitSendBox();
-      },
+    ({ disabled, language, submitSendBox }) => ({
       disabled,
-      language
+      language,
+      submitSendBox
     }),
     ...selectors
   );
 
-const SendButton = ({ click, disabled, language }) => (
-  <IconButton alt={localize('Send', language)} disabled={disabled} onClick={click}>
+const SendButton = ({ disabled, language, submitSendBox }) => (
+  <IconButton alt={localize('Send', language)} disabled={disabled} onClick={submitSendBox}>
     <SendIcon />
   </IconButton>
 );
@@ -30,9 +27,9 @@ SendButton.defaultProps = {
 };
 
 SendButton.propTypes = {
-  click: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
+  submitSendBox: PropTypes.func.isRequired
 };
 
 export default connectSendButton()(SendButton);
