@@ -181,9 +181,11 @@ const App = ({ store }) => {
 
   const username = 'Web Chat user';
 
-  const [voiceGenderPreference, setVoiceGenderPreference] = useState(window.sessionStorage.getItem('PLAYGROUND_VOICE_GENDER_PREFERENCE'));
+  const [voiceGenderPreference, setVoiceGenderPreference] = useState(
+    window.sessionStorage.getItem('PLAYGROUND_VOICE_GENDER_PREFERENCE')
+  );
 
-  const [webSpeechPonyfillFactory, setWebSpeechPonyfillFactory] = useState(false);
+  const [webSpeechPonyfillFactory, setWebSpeechPonyfillFactory] = useState();
 
   const [wordBreak, setWordBreak] = useState('');
 
@@ -327,20 +329,24 @@ const App = ({ store }) => {
   }, []);
 
   const selectVoiceWithGender = useCallback(
-    (voices, activity) =>
-      [activity.locale, language, window.navigator.language, 'en-US'].reduce(
-        (result, targetLanguage) =>
-          result ||
-          voices.find(
-            ({ gender, lang, name }) =>
-              (gender || '').toLowerCase() === voiceGenderPreference && lang === targetLanguage && /neural/iu.test(name)
-          ) ||
-          voices.find(
-            ({ gender, lang }) => (gender || '').toLowerCase() === voiceGenderPreference && lang === targetLanguage
-          ),
-        null
-      ) || voices[0],
-    [voiceGenderPreference]
+    voiceGenderPreference
+      ? (voices, activity) =>
+          [activity.locale, language, window.navigator.language, 'en-US'].reduce(
+            (result, targetLanguage) =>
+              result ||
+              voices.find(
+                ({ gender, lang, name }) =>
+                  (gender || '').toLowerCase() === voiceGenderPreference &&
+                  lang === targetLanguage &&
+                  /neural/iu.test(name)
+              ) ||
+              voices.find(
+                ({ gender, lang }) => (gender || '').toLowerCase() === voiceGenderPreference && lang === targetLanguage
+              ),
+            null
+          ) || voices[0]
+      : undefined,
+    [language, voiceGenderPreference]
   );
 
   useEffect(() => {
@@ -399,7 +405,7 @@ const App = ({ store }) => {
         directLine={directLine}
         disabled={disabled}
         locale={language}
-        selectVoice={voiceGenderPreference ? selectVoiceWithGender : undefined}
+        selectVoice={selectVoiceWithGender}
         sendTimeout={+sendTimeout || undefined}
         sendTypingIndicator={sendTypingIndicator}
         store={store}

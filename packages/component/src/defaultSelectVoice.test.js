@@ -2,6 +2,8 @@
  * @jest-environment node
  */
 
+/* global global */
+
 import selectVoice from './defaultSelectVoice';
 
 const VOICES = [
