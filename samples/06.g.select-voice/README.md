@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality and select different voices based on the activity to be synthesized.
+A simple page with Web Chat integrated with speech-to-text and text-to-speech functionality that selects different voices based on the activity to be synthesized.
 
 This is an extension of sample [06.c.cognitive-services-speech-services-js](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js).
 
@@ -30,11 +30,11 @@ This is an extension of sample [06.c.cognitive-services-speech-services-js](http
 
 ## Selecting voice
 
-To select different voice used for speech synthesis, pass a `selectVoice` function when creating Web Chat.
+To select a different voice for speech synthesis, pass a `selectVoice` function when creating Web Chat.
 
-When Web Chat synthesize an activity, it will call the `selectVoice` function with list of voices available and the activity to be synthesized. The code should return the `SpeechSynthesisVoice` object to use for speech synthesis.
+When Web Chat synthesizes an activity, it will call the `selectVoice` function with a list of voices available and the activity to be synthesized. The code should return the `SpeechSynthesisVoice` object to use for speech synthesis.
 
-In the sample code below, if the activity is for language "zh-HK", we will use a voice with keyword "TracyRUS". Otherwise, it will prefer a voice with keyword "JessaNeural" over "Jessa".
+In the sample code below, if the activity is for language "zh-HK", we will use a voice with keyword "TracyRUS". Otherwise, it will choose a voice with keyword "JessaNeural" over "Jessa".
 
 ```diff
   const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });

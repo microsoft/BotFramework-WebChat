@@ -6,7 +6,7 @@ export default function({ language }, voices, activity) {
   // 4. English (United States)
   // 5. First voice
 
-  // We also prefer voice powered by deep neural network (with keyword "neural" in the voice name).
+  // We also prioritize voices powered by deep neural network (with keyword "neural" in the voice name).
   return (
     [activity.locale, language, window.navigator.language, 'en-US'].reduce(
       (result, targetLanguage) =>
