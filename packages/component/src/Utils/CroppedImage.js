@@ -1,8 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -18,29 +17,15 @@ const ROOT_CSS = css({
   }
 });
 
-export default class CroppedImage extends React.Component {
-  constructor(props) {
-    super(props);
+const CroppedImage = ({ alt, className, height, src, width }) => {
+  const sizeStyle = useMemo(() => ({ height, width }), [height, width]);
 
-    this.createSizeStyle = memoize((width, height) => ({
-      height,
-      width
-    }));
-  }
-
-  render() {
-    const {
-      props: { alt, className, height, src, width }
-    } = this;
-    const sizeStyle = this.createSizeStyle(width, height);
-
-    return (
-      <div className={classNames(ROOT_CSS + '', className + '')} style={sizeStyle}>
-        <img alt={alt} src={src} />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={classNames(ROOT_CSS + '', className + '')} style={sizeStyle}>
+      <img alt={alt} src={src} />
+    </div>
+  );
+};
 
 CroppedImage.defaultProps = {
   alt: '',
@@ -54,3 +39,5 @@ CroppedImage.propTypes = {
   src: PropTypes.string.isRequired,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
+
+export default CroppedImage;

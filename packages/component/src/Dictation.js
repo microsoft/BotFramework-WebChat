@@ -1,7 +1,7 @@
 import { Composer as DictateComposer } from 'react-dictate-button';
 import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from './connectToWebChat';
 
@@ -9,87 +9,71 @@ const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-class Dictation extends React.Component {
-  constructor(props) {
-    super(props);
+const Dictation = ({
+  dictateState,
+  disabled,
+  language,
+  numSpeakingActivities,
+  onError,
+  postActivity,
+  sendTypingIndicator,
+  setDictateInterims,
+  setDictateState,
+  setSendBox,
+  startSpeakingActivity,
+  stopDictate,
+  submitSendBox,
+  webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
+}) => {
+  const handleDictate = useCallback(
+    ({ result: { transcript } = {} }) => {
+      if (dictateState === DICTATING || dictateState === STARTING) {
+        setDictateInterims([]);
+        setDictateState(IDLE);
+        stopDictate();
 
-    this.handleDictate = this.handleDictate.bind(this);
-    this.handleDictating = this.handleDictating.bind(this);
-    this.handleError = this.handleError.bind(this);
-  }
-
-  handleDictate({ result: { transcript } = {} }) {
-    const {
-      dictateState,
-      setDictateInterims,
-      setDictateState,
-      setSendBox,
-      startSpeakingActivity,
-      stopDictate,
-      submitSendBox
-    } = this.props;
-
-    if (dictateState === DICTATING || dictateState === STARTING) {
-      setDictateInterims([]);
-      setDictateState(IDLE);
-      stopDictate();
-
-      if (transcript) {
-        setSendBox(transcript);
-        submitSendBox('speech');
-        startSpeakingActivity();
+        if (transcript) {
+          setSendBox(transcript);
+          submitSendBox('speech');
+          startSpeakingActivity();
+        }
       }
-    }
-  }
+    },
+    [dictateState, setDictateInterims, setDictateState, stopDictate, setSendBox, submitSendBox, startSpeakingActivity]
+  );
 
-  handleDictating({ results = [] }) {
-    const { dictateState, postActivity, sendTypingIndicator, setDictateInterims, setDictateState } = this.props;
+  const handleDictating = useCallback(
+    ({ results = [] }) => {
+      if (dictateState === DICTATING || dictateState === STARTING) {
+        const interims = results.map(({ transcript }) => transcript);
 
-    if (dictateState === DICTATING || dictateState === STARTING) {
-      const interims = results.map(({ transcript }) => transcript);
+        setDictateInterims(interims);
+        setDictateState(DICTATING);
+        sendTypingIndicator && postActivity({ type: 'typing' });
+      }
+    },
+    [dictateState, postActivity, sendTypingIndicator, setDictateInterims, setDictateState]
+  );
 
-      setDictateInterims(interims);
-      setDictateState(DICTATING);
-      sendTypingIndicator && postActivity({ type: 'typing' });
-    }
-  }
-
-  handleError(event) {
-    const { dictateState, onError, setDictateState, stopDictate } = this.props;
-
+  const handleError = useCallback(() => {
     dictateState !== IDLE && setDictateState(IDLE);
     (dictateState === DICTATING || dictateState === STARTING) && stopDictate();
 
     onError && onError(event);
-  }
+  }, [dictateState, onError, setDictateState, stopDictate]);
 
-  render() {
-    const {
-      props: {
-        dictateState,
-        disabled,
-        language,
-        numSpeakingActivities,
-        webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
-      },
-      handleDictate,
-      handleDictating,
-      handleError
-    } = this;
-
-    return (
-      <DictateComposer
-        lang={language}
-        onDictate={handleDictate}
-        onError={handleError}
-        onProgress={handleDictating}
-        speechGrammarList={SpeechGrammarList}
-        speechRecognition={SpeechRecognition}
-        started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
-      />
-    );
-  }
-}
+  return (
+    <DictateComposer
+      lang={language}
+      onDictate={handleDictate}
+      onError={handleError}
+      onProgress={handleDictating}
+      speechGrammarList={SpeechGrammarList}
+      speechRecognition={SpeechRecognition}
+      started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
+    />
+  );
+};
 
 Dictation.defaultProps = {
   disabled: false,

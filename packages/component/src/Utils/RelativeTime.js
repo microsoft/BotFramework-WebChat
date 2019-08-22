@@ -1,68 +1,48 @@
-/* eslint react/no-unsafe: off */
-
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { getLocaleString, localize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import Timer from './Timer';
 
+// This function calculates the next absolute time that the timer should be fired based on the origin (original time received), interval, and current time.
+// If the origin is t=260, and we are currently at t=1000, nextTimer must return t=60260.
+// If the origin is t=260, and we are currently at t=60260 (exact landing), we must return t=120260, not t=60260.
+// This is for fixing bug #2103: https://github.com/microsoft/BotFramework-WebChat/issues/2103.
+
 const TIMER_INTERVAL = 60000;
 
-function nextTimer(date) {
-  const time = new Date(date).getTime();
+function nextTimer(origin) {
+  const time = new Date(origin).getTime();
   const now = Date.now();
 
   return time > now ? time : now + TIMER_INTERVAL - ((now - time) % TIMER_INTERVAL);
 }
 
-function getStateFromProps({ language, value }) {
-  return {
-    text: localize('X minutes ago', language, value),
-    timer: nextTimer(value)
-  };
+function getText(language, value) {
+  return localize('X minutes ago', language, value);
 }
 
-class RelativeTime extends React.Component {
-  constructor(props) {
-    super(props);
+const RelativeTime = ({ language, value }) => {
+  const [text, setText] = useState(getText(language, value));
+  const [timer, setTimer] = useState(nextTimer(value));
 
-    this.handleInterval = this.handleInterval.bind(this);
+  const localizedAbsoluteTime = localize('SentAt', language) + getLocaleString(value, language);
 
-    this.state = getStateFromProps(props);
-  }
+  const handleInterval = useCallback(() => {
+    setText(getText(language, value));
+    setTimer(nextTimer(value));
+  }, [language, value]);
 
-  UNSAFE_componentWillReceiveProps({ language, value }) {
-    this.updateText({ language, value });
-  }
-
-  handleInterval() {
-    const { language, value } = this.props;
-
-    this.updateText({ language, value });
-  }
-
-  updateText({ language, value }) {
-    this.setState(() => getStateFromProps({ language, value }));
-  }
-
-  render() {
-    const { text, timer } = this.state;
-
-    const { language, value } = this.props;
-
-    const localizedSentAtTime = localize('SentAt', language) + getLocaleString(value, language);
-
-    return (
-      <React.Fragment>
-        <ScreenReaderText text={localizedSentAtTime} />
-        <span aria-hidden={true}>{text}</span>
-        <Timer at={timer} onInterval={this.handleInterval} />
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <React.Fragment>
+      <ScreenReaderText text={localizedAbsoluteTime} />
+      <span aria-hidden={true}>{text}</span>
+      <Timer at={timer} onInterval={handleInterval} />
+    </React.Fragment>
+  );
+};
 
 RelativeTime.propTypes = {
   language: PropTypes.string.isRequired,

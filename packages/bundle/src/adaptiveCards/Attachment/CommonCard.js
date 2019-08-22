@@ -1,42 +1,29 @@
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
+
 import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import memoize from 'memoize-one';
-import PropTypes from 'prop-types';
-import React from 'react';
 
-class CommonCard extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.buildCard = memoize((adaptiveCards, content, styleOptions) => {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
+const CommonCard = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, styleSet: { options } }) => {
+  const builtCard = useMemo(() => {
+    if (content) {
+      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 
       builder.addCommon(content);
 
       return builder.card;
-    });
-  }
+    }
+  }, [adaptiveCards, content, options]);
 
-  render() {
-    const {
-      props: {
-        adaptiveCardHostConfig,
-        adaptiveCards,
-        attachment: { content } = {},
-        styleSet: { options }
-      }
-    } = this;
-
-    return (
-      <AdaptiveCardRenderer
-        adaptiveCard={content && this.buildCard(adaptiveCards, content, options)}
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        tapAction={content && content.tap}
-      />
-    );
-  }
-}
+  return (
+    <AdaptiveCardRenderer
+      adaptiveCard={builtCard}
+      adaptiveCardHostConfig={adaptiveCardHostConfig}
+      tapAction={content && content.tap}
+    />
+  );
+};
 
 CommonCard.propTypes = {
   adaptiveCardHostConfig: PropTypes.any.isRequired,

@@ -1,5 +1,5 @@
-import Box from './Box';
+import FocusBox from './FocusBox';
 import Context from './Context';
 
-export default Box;
+export default FocusBox;
 export { Context };

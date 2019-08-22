@@ -37,8 +37,7 @@ There are 3 types of build tasks in the build process.
 We built a playground app for testing Web Chat so we can test certain Web Chat specific features.
 
 ```sh
-cd packages/playground
-npm start
+npm run start:playground
 ```
 
 Then browse to http://localhost:3000/, and click on one of the connection options on the upper right corner.
