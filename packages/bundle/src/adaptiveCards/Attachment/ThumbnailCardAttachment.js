@@ -13,7 +13,7 @@ const ThumbnailCardAttachment = ({
   attachment: { content } = {},
   styleSet: { options }
 }) => {
-  const buildCard = useMemo(() => {
+  const builtCard = useMemo(() => {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCards, options);
       const { TextSize, TextWeight } = adaptiveCards;
@@ -43,7 +43,7 @@ const ThumbnailCardAttachment = ({
 
   return (
     <AdaptiveCardRenderer
-      adaptiveCard={buildCard}
+      adaptiveCard={builtCard}
       adaptiveCardHostConfig={adaptiveCardHostConfig}
       tapAction={content && content.tap}
     />

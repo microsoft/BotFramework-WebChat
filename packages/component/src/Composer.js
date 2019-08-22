@@ -1,5 +1,3 @@
-/* eslint react/no-unsafe: off */
-
 import {
   Composer as ScrollToBottomComposer,
   FunctionContext as ScrollToBottomFunctionContext

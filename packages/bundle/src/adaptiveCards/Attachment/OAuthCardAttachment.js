@@ -11,7 +11,7 @@ const OAuthCardAttachment = ({
   attachment: { content } = {},
   styleSet: { options }
 }) => {
-  const buildCard = useMemo(() => {
+  const builtCard = useMemo(() => {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 
@@ -22,7 +22,7 @@ const OAuthCardAttachment = ({
     }
   }, [adaptiveCards, content, options]);
 
-  return <AdaptiveCardRenderer adaptiveCard={buildCard} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
 };
 
 OAuthCardAttachment.propTypes = {

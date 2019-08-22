@@ -1,12 +1,12 @@
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
+
 import { connectToWebChat } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
-
 const CommonCard = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, styleSet: { options } }) => {
-  const buildCard = useMemo(() => {
+  const builtCard = useMemo(() => {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 
@@ -18,7 +18,7 @@ const CommonCard = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { conte
 
   return (
     <AdaptiveCardRenderer
-      adaptiveCard={buildCard}
+      adaptiveCard={builtCard}
       adaptiveCardHostConfig={adaptiveCardHostConfig}
       tapAction={content && content.tap}
     />

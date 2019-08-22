@@ -18,7 +18,7 @@ const ReceiptCardAttachment = ({
   language,
   styleSet: { options }
 }) => {
-  const buildCard = useMemo(() => {
+  const builtCard = useMemo(() => {
     const builder = new AdaptiveCardBuilder(adaptiveCards, options);
     const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
     const { buttons, fact, items, tax, title, total, vat } = content;
@@ -106,9 +106,10 @@ const ReceiptCardAttachment = ({
         });
     }
   }, [adaptiveCards, content, language, options]);
+
   return (
     <AdaptiveCardRenderer
-      adaptiveCard={buildCard}
+      adaptiveCard={builtCard}
       adaptiveCardHostConfig={adaptiveCardHostConfig}
       tapAction={content && content.tap}
     />

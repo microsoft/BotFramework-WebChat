@@ -17,7 +17,7 @@ function stripSubmitAction(card) {
 }
 
 const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, renderMarkdown }) => {
-  const createAdaptiveCard = useMemo(() => {
+  const { card } = useMemo(() => {
     if (content) {
       const card = new adaptiveCards.AdaptiveCard();
       const errors = [];
@@ -40,8 +40,6 @@ const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachm
       };
     }
   }, [adaptiveCards, content]);
-
-  const { card } = createAdaptiveCard;
 
   return (
     <AdaptiveCardRenderer

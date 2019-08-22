@@ -11,19 +11,21 @@ const HeroCardAttachment = ({
   attachment: { content } = {},
   styleSet: { options }
 }) => {
-  const buildCard = useMemo(() => {
+  const builtCard = useMemo(() => {
     const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 
-    (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
+    if (content) {
+      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
 
-    builder.addCommon(content);
+      builder.addCommon(content);
 
-    return builder.card;
+      return builder.card;
+    }
   }, [adaptiveCards, content, options]);
 
   return (
     <AdaptiveCardRenderer
-      adaptiveCard={buildCard}
+      adaptiveCard={builtCard}
       adaptiveCardHostConfig={adaptiveCardHostConfig}
       tapAction={content && content.tap}
     />
