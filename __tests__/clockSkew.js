@@ -1,6 +1,7 @@
-import { By, Condition, Key } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
+import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import uiConnected from './setup/conditions/uiConnected';
@@ -149,6 +150,7 @@ describe('Clock skew', () => {
     await driver.executeScript(() => window.WebChatTest.releaseActivity(3));
     await driver.wait(minNumActivitiesShown(5), timeouts.directLine);
     await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
+    await driver.wait(allImagesLoaded(), timeouts.fetch);
 
     expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
