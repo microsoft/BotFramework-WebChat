@@ -44,7 +44,7 @@ import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
 import WebChatReduxContext from './WebChatReduxContext';
 
-// List of Redux actions factory we are hoisted as Web Chat functions
+// List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
   clearSuggestedActions,
   markActivity,
