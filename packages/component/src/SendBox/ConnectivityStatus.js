@@ -139,8 +139,6 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => {
     renderUninitialized
   ]);
 
-  console.warn({ connectivityStatus });
-
   return (
     <div aria-atomic="false" aria-live="polite" role="status">
       <DebouncedConnectivityStatus
