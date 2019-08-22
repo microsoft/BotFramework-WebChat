@@ -159,7 +159,7 @@ Please refer to [`ACTIVITYTYPES.md`](https://github.com/microsoft/BotFramework-W
 
 ## Speech changes in Web Chat 4.5
 
-This is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to this section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md#input-hint-behavior-before-4-5-0).
+There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to this section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
 
 # Samples list
 
