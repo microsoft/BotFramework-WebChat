@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: "off" */
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { AdaptiveCard } from 'adaptivecards';
 import { ValidationError } from 'adaptivecards/lib/enums';

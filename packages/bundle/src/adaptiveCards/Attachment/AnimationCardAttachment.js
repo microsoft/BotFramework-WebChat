@@ -12,9 +12,7 @@ const AnimationCardAttachment = ({
   adaptiveCardHostConfig,
   adaptiveCards,
   attachment,
-  attachment: {
-    content: { media = [] }
-  },
+  attachment: { content: { media = [] } } = {},
   styleSet
 }) => (
   <div className={styleSet.animationCardAttachment}>
