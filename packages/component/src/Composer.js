@@ -8,7 +8,7 @@ import {
 import { connect, Provider } from 'react-redux';
 import { css } from 'glamor';
 import PropTypes from 'prop-types';
-import React, { useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   clearSuggestedActions,
@@ -259,15 +259,15 @@ const Composer = ({
       webSpeechPonyfill
     }),
     [
-      cardActionContext,
-      focusSendBoxContext,
-      hoistedDispatchers,
       activityRenderer,
       attachmentRenderer,
+      cardActionContext,
       directLine,
       disabled,
+      focusSendBoxContext,
       grammars,
       groupTimestamp,
+      hoistedDispatchers,
       renderMarkdown,
       scrollToEnd,
       sendBoxRef,
