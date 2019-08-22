@@ -2,7 +2,11 @@ import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   authorizationToken,
+  enableTelemetry,
   region,
+  speechRecognitionEndpointId,
+  speechSynthesisDeploymentId,
+  speechSynthesisOutputFormat,
   subscriptionKey,
   textNormalization
 }) {
@@ -13,8 +17,12 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   return ({ referenceGrammarID }) => {
     const ponyfill = createPonyfill({
       authorizationToken,
+      enableTelemetry,
       referenceGrammars: [`luis/${referenceGrammarID}-PRODUCTION`],
       region,
+      speechRecognitionEndpointId,
+      speechSynthesisDeploymentId,
+      speechSynthesisOutputFormat,
       subscriptionKey,
       textNormalization
     });

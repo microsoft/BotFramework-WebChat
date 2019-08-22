@@ -64,6 +64,9 @@ const DEFAULT_OPTIONS = {
   rootHeight: '100%',
   rootWidth: '100%',
 
+  // Scroll to end button
+  hideScrollToEndButton: false,
+
   // Send box
   hideSendBox: false,
   hideUploadButton: false,
@@ -122,6 +125,7 @@ const DEFAULT_OPTIONS = {
   notificationText: '#5E5E5E',
 
   typingAnimationBackgroundImage: null,
+  typingAnimationDuration: 5000,
   typingAnimationHeight: 20,
   typingAnimationWidth: 64,
 
