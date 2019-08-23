@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
    - [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
    - [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
--  Bumps [`web-speech-cognitive-services@4.0.1-master.ad6e780`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246) and PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
+-  Bumps [`web-speech-cognitive-services@4.0.1-master.6b2b9e3`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246), PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274), and PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
 -  Fix for React hooks constraints: both app and component must share the same reference of [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom), in PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
    -  `/`: Install [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) to `devDependencies`
    -  `bundle`: Move [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies` to `peerDependencies`
