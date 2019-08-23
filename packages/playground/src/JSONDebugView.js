@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-magic-numbers */
+
 import { css } from 'glamor';
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 
 const ROOT_CSS = css({
   position: 'relative',
@@ -39,40 +42,24 @@ const ROOT_CSS = css({
   }
 });
 
-export default class extends React.Component {
-  constructor(props) {
-    super(props);
+const JSONDebugView = ({ debug, children, className }) => {
+  const [debugView, setDebugView] = useState(false);
 
-    this.handleDebugViewClick = this.handleDebugViewClick.bind(this);
+  const handleDebugViewClick = () => {
+    setDebugView(!debugView);
+  };
 
-    this.state = {
-      debugView: false
-    };
-  }
+  return (
+    <div className={classNames(ROOT_CSS + '', { 'debug-view': debugView }, className + '')}>
+      {children}
+      {!!debugView && <pre>{JSON.stringify(debug, null, 2)}</pre>}
+      {!!debug && (
+        <button className="debug" onClick={handleDebugViewClick} tabIndex={-1} type="button">
+          &hellip;
+        </button>
+      )}
+    </div>
+  );
+};
 
-  handleDebugViewClick() {
-    this.setState(({ debugView }) => ({
-      debugView: !debugView
-    }));
-  }
-
-  render() {
-    const {
-      props: { debug, children, className }
-    } = this;
-
-    const debugView = this.state.debugView && !!debug;
-
-    return (
-      <div className={classNames(ROOT_CSS + '', { 'debug-view': debugView }, className + '')}>
-        {children}
-        {!!debugView && <pre>{JSON.stringify(debug, null, 2)}</pre>}
-        {!!debug && (
-          <button className="debug" onClick={this.handleDebugViewClick} tabIndex={-1} type="button">
-            &hellip;
-          </button>
-        )}
-      </div>
-    );
-  }
-}
+export default JSONDebugView;

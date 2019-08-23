@@ -4,6 +4,7 @@ extends:
 parser: "@typescript-eslint/parser"
 plugins:
 - prettier
+- react-hooks
 - "@typescript-eslint"
 rules:
   # We will rework on these rules
@@ -95,3 +96,5 @@ rules:
     beforeSelfClosing: always
     closingSlash: never
   react/jsx-wrap-multilines: error
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: warn

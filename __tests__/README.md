@@ -2,10 +2,10 @@
 
 Automated testing in Web Chat is using multiple open-source technologies.
 
--  [Travis CI](https://travis-ci.org/) for automatic testing
+-  [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) for automatic testing
 -  Test against [MockBot](https://github.com/compulim/BotFramework-MockBot)
    -  Try it out with this [live demo](https://microsoft.github.io/BotFramework-WebChat/01.a.getting-started-full-bundle)
--  Visual regression test (a.k.a. compare screenshots)
+-  Visual regression tests (a.k.a. compare screenshots)
    -  Generated on [Chrome on Docker](https://github.com/SeleniumHQ/docker-selenium)
    -  Compared using [`pixelmatch`](https://npmjs.com/package/pixelmatch) via [`jest-image-snapshot`](https://npmjs.com/package/jest-image-snapshot)
 -  Run under [`Jest`](https://jestjs.io/)
@@ -16,7 +16,8 @@ Automated testing in Web Chat is using multiple open-source technologies.
 
 -  Install Docker
 -  On Windows, set environment variable `COMPOSE_CONVERT_WINDOWS_PATHS=1`
--  `docker-compose up --build`
+-   `npm run start:docker`
+- In a separate terminal, run:
 -  `npm test`
 
 ### Running tests under local box

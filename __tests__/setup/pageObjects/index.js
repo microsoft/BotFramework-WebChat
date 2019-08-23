@@ -5,6 +5,7 @@ import dispatchAction from './dispatchAction';
 import endSpeechSynthesize from './endSpeechSynthesize';
 import errorSpeechSynthesize from './errorSpeechSynthesize';
 import executePromiseScript from './executePromiseScript';
+import getNotificationText from './getNotificationText';
 import getNumActivitiesShown from './getNumActivitiesShown';
 import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
@@ -36,6 +37,7 @@ export default function pageObjects(driver) {
       endSpeechSynthesize,
       errorSpeechSynthesize,
       executePromiseScript,
+      getNotificationText,
       getNumActivitiesShown,
       getSendBoxText,
       getStore,

@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { localize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
@@ -80,56 +80,44 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-class UploadButton extends React.Component {
-  constructor(props) {
-    super(props);
+const UploadButton = ({ disabled, language, sendFiles, styleSet }) => {
+  const inputRef = useRef();
+  const uploadFileString = localize('Upload file', language);
+  const { current } = inputRef;
 
-    this.handleClick = this.handleClick.bind(this);
-    this.handleFileChange = this.handleFileChange.bind(this);
-    this.inputRef = React.createRef();
-  }
-
-  handleClick() {
-    const { current } = this.inputRef;
-
+  const handleClick = useCallback(() => {
     current && current.click();
-  }
+  }, [current]);
 
-  handleFileChange({ target: { files } }) {
-    const { sendFiles } = this.props;
+  const handleFileChange = useCallback(
+    ({ target: { files } }) => {
+      sendFiles(files);
 
-    sendFiles(files);
+      if (current) {
+        current.value = null;
+      }
+    },
+    [current, sendFiles]
+  );
 
-    const { current } = this.inputRef;
-
-    if (current) {
-      current.value = null;
-    }
-  }
-
-  render() {
-    const { disabled, language, styleSet } = this.props;
-    const uploadFileString = localize('Upload file', language);
-
-    return (
-      <div className={classNames(ROOT_CSS + '', styleSet.uploadButton + '')}>
-        <input
-          aria-hidden="true"
-          disabled={disabled}
-          multiple={true}
-          onChange={this.handleFileChange}
-          ref={this.inputRef}
-          role="button"
-          tabIndex={-1}
-          type="file"
-        />
-        <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={this.handleClick}>
-          <AttachmentIcon />
-        </IconButton>
-      </div>
-    );
-  }
-}
+  return (
+    <div className={classNames(ROOT_CSS + '', styleSet.uploadButton + '')}>
+      <input
+        aria-hidden="true"
+        disabled={disabled}
+        multiple={true}
+        onChange={handleFileChange}
+        ref={inputRef}
+        role="button"
+        tabIndex={-1}
+        type="file"
+      />
+      <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
+        <AttachmentIcon />
+      </IconButton>
+    </div>
+  );
+};
 
 UploadButton.defaultProps = {
   disabled: false

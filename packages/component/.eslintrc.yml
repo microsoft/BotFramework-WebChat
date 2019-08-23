@@ -2,6 +2,7 @@ extends:
 - plugin:react/recommended
 plugins:
 - prettier
+- react-hooks
 rules:
 # plugins
   prettier/prettier: error
@@ -85,3 +86,5 @@ rules:
     beforeSelfClosing: always
     closingSlash: never
   react/jsx-wrap-multilines: error # Conflict with no-extra-parens
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: warn

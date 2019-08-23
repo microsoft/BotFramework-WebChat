@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
+
 import { AdaptiveCard } from 'adaptivecards';
 import { ValidationError } from 'adaptivecards/lib/enums';
 import memoize from 'memoize-one';

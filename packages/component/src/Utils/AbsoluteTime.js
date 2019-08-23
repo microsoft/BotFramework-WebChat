@@ -1,5 +1,3 @@
-/* eslint react/no-unsafe: off */
-
 import PropTypes from 'prop-types';
 import React from 'react';
 
