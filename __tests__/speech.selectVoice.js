@@ -54,4 +54,27 @@ describe('selecting voice based on language', () => {
       });
     });
   });
+
+  test('using a custom selectVoice function', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        locale: 'en-US',
+        selectVoice: voices => voices.find(({ lang }) => lang === 'zh-YUE'),
+        webSpeechPonyfillFactory: () => window.WebSpeechMock
+      }
+    });
+
+    await pageObjects.sendMessageViaMicrophone('echo 123');
+
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+    await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
+
+    await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty('voice', {
+      default: false,
+      lang: 'zh-YUE',
+      localService: true,
+      name: 'Mock Voice (zh-YUE)',
+      voiceURI: 'mock://web-speech/voice/zh-YUE'
+    });
+  });
 });
