@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    - [`mixin-deep@1.3.2`](https://www.npmjs.com/package/mixin-deep)
    - [`set-value@2.0.1`](https://www.npmjs.com/package/set-value)
    - [`union-value@1.0.1`](https://www.npmjs.com/package/union-value)
--  Bumps [`web-speech-cognitive-services@4.0.1-master.ad6e780`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246) and PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
+-  Bumps [`web-speech-cognitive-services@4.0.1-master.6b2b9e3`](https://www.npmjs.com/package/web-speech-cognitive-services), by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246), PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274), and PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
 -  Fix for React hooks constraints: both app and component must share the same reference of [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom), in PR [#2274](https://github.com/microsoft/BotFramework-WebChat/pull/2274)
    -  `/`: Install [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) to `devDependencies`
    -  `bundle`: Move [`react`](https://www.npmjs.com/package/react) and [`react-dom`](https://www.npmjs.com/package/react-dom) from `dependencies` to `peerDependencies`
@@ -66,6 +66,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Moved the typing indicator to the send box and removed the typing indicator logic from the sagas, by [@tdurnford](https://github.com/tdurnford), in PR [#2321](https://github.com/microsoft/BotFramework-WebChat/pull/2321)
 -  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2322](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
+-  Fix [#2292](https://github.com/microsoft/BotFramework-WebChat/issues/2292). Added function to select voice to props, `selectVoice()`, by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
 
 ### Fixed
 
@@ -101,6 +102,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  [Single sign-on for Microsoft Teams apps](https://microsoft.github.io/BotFramework-WebChat/19.c.single-sign-on-for-teams-apps/), by [@compulim](https://github.com/compulim) in [#2196](https://github.com/microsoft/BotFramework-WebChat/pull/2196)
 -  [Customize Web Chat with Reaction Buttons](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons/). Updated reaction handlers to send `messageReaction` activities, by [@tdurnford](https://github.com/tdurnford) in [#2239](https://github.com/microsoft/BotFramework-WebChat/pull/2239)
+-  [Select voice for speech synthesis](https://microsoft.github.io/BotFramework-WebChat/06.g.select-voice/), by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
 
 ## [4.5.2] - 2019-08-07
 
