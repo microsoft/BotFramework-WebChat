@@ -11,20 +11,10 @@ import SayAlt from './SayAlt';
 // TODO: [P3] We should add a "spoken" or "speakState" flag to indicate whether this activity is going to speak, or spoken
 const connectSpeakActivity = (...selectors) =>
   connectToWebChat(
-    ({ language, markActivity }, { activity }) => ({
+    ({ language, markActivity, selectVoice }, { activity }) => ({
       language,
       markAsSpoken: () => markActivity(activity, 'speak', false),
-      selectVoice: voices => {
-        voices = [].slice.call(voices);
-
-        return (
-          voices.find(({ lang }) => lang === activity.locale) ||
-          voices.find(({ lang }) => lang === language) ||
-          voices.find(({ lang }) => lang === window.navigator.language) ||
-          voices.find(({ lang }) => lang === 'en-US') ||
-          voices[0]
-        );
-      }
+      selectVoice: voices => selectVoice(voices, activity)
     }),
     ...selectors
   );

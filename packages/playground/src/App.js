@@ -181,6 +181,10 @@ const App = ({ store }) => {
 
   const username = 'Web Chat user';
 
+  const [voiceGenderPreference, setVoiceGenderPreference] = useState(
+    window.sessionStorage.getItem('PLAYGROUND_VOICE_GENDER_PREFERENCE')
+  );
+
   const [webSpeechPonyfillFactory, setWebSpeechPonyfillFactory] = useState();
 
   const [wordBreak, setWordBreak] = useState('');
@@ -190,6 +194,14 @@ const App = ({ store }) => {
       setBotAvatarInitials(value);
     },
     [setBotAvatarInitials]
+  );
+
+  const handleVoiceGenderPreferenceChange = useCallback(
+    ({ target: { value } }) => {
+      setVoiceGenderPreference(value || null);
+      window.sessionStorage.setItem('PLAYGROUND_VOICE_GENDER_PREFERENCE', value);
+    },
+    [setVoiceGenderPreference]
   );
 
   const handleBubbleBorderChange = useCallback(
@@ -316,6 +328,27 @@ const App = ({ store }) => {
     }
   }, []);
 
+  const selectVoiceWithGender = useCallback(
+    voiceGenderPreference
+      ? (voices, activity) =>
+          [activity.locale, language, window.navigator.language, 'en-US'].reduce(
+            (result, targetLanguage) =>
+              result ||
+              voices.find(
+                ({ gender, lang, name }) =>
+                  (gender || '').toLowerCase() === voiceGenderPreference &&
+                  lang === targetLanguage &&
+                  /neural/iu.test(name)
+              ) ||
+              voices.find(
+                ({ gender, lang }) => (gender || '').toLowerCase() === voiceGenderPreference && lang === targetLanguage
+              ),
+            null
+          ) || voices[0]
+      : undefined,
+    [language, voiceGenderPreference]
+  );
+
   useEffect(() => {
     if (speech === 'bingspeech') {
       createCognitiveServicesBingSpeechPonyfillFactory({
@@ -372,6 +405,7 @@ const App = ({ store }) => {
         directLine={directLine}
         disabled={disabled}
         locale={language}
+        selectVoice={selectVoiceWithGender}
         sendTimeout={+sendTimeout || undefined}
         sendTypingIndicator={sendTypingIndicator}
         store={store}
@@ -537,6 +571,16 @@ const App = ({ store }) => {
           <label>
             <input checked={richCardWrapTitle || false} onChange={handleRichCardWrapTitleChange} type="checkbox" />
             Rich card wrap title
+          </label>
+        </div>
+        <div>
+          <label>
+            Voice gender preference
+            <select onChange={handleVoiceGenderPreferenceChange} value={voiceGenderPreference || ''}>
+              <option value="">No preferences</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </select>
           </label>
         </div>
       </div>

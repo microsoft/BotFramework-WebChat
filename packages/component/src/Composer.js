@@ -6,7 +6,7 @@ import {
 import { connect, Provider } from 'react-redux';
 import { css } from 'glamor';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import {
   clearSuggestedActions,
@@ -37,6 +37,7 @@ import concatMiddleware from './Middleware/concatMiddleware';
 import Context from './Context';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
+import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
@@ -151,6 +152,7 @@ const Composer = ({
   referenceGrammarID,
   renderMarkdown,
   scrollToEnd,
+  selectVoice,
   sendBoxRef,
   sendTimeout,
   sendTyping,
@@ -162,18 +164,18 @@ const Composer = ({
   username,
   webSpeechPonyfillFactory
 }) => {
-  const patchedGrammars = useMemo(() => grammars || []);
+  const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedSendTypingIndicator = useMemo(() => {
     if (typeof sendTyping === 'undefined') {
       return sendTypingIndicator;
-    } else {
-      // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
-      console.warn(
-        'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
-      );
-
-      return sendTyping;
     }
+
+    // TODO: [P3] Take this deprecation code out when releasing on or after January 13 2020
+    console.warn(
+      'Web Chat: "sendTyping" has been renamed to "sendTypingIndicator". Please use "sendTypingIndicator" instead. This deprecation migration will be removed on or after January 13 2020.'
+    );
+
+    return sendTyping;
   }, [sendTyping, sendTypingIndicator]);
 
   const patchedStyleOptions = useMemo(
@@ -208,6 +210,10 @@ const Composer = ({
     dispatch
   ]);
 
+  const patchedSelectVoice = useCallback(selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
+    selectVoice
+  ]);
+
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 
   const patchedStyleSet = useMemo(() => styleSetToClassNames(styleSet || createStyleSet(patchedStyleOptions)), [
@@ -216,7 +222,7 @@ const Composer = ({
   ]);
 
   const hoistedDispatchers = useMemo(
-    () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher.apply(this, args))),
+    () => mapMap(DISPATCHERS, dispatcher => (...args) => dispatch(dispatcher(...args))),
     [dispatch]
   );
 
@@ -247,6 +253,7 @@ const Composer = ({
       groupTimestamp,
       renderMarkdown,
       scrollToEnd,
+      selectVoice: patchedSelectVoice,
       sendBoxRef,
       sendTimeout,
       sendTypingIndicator: patchedSendTypingIndicator,
@@ -263,16 +270,17 @@ const Composer = ({
       directLine,
       disabled,
       focusSendBoxContext,
-      grammars,
       groupTimestamp,
       hoistedDispatchers,
+      patchedGrammars,
+      patchedSelectVoice,
+      patchedSendTypingIndicator,
+      patchedStyleOptions,
+      patchedStyleSet,
       renderMarkdown,
       scrollToEnd,
       sendBoxRef,
       sendTimeout,
-      sendTypingIndicator,
-      styleOptions,
-      styleSet,
       userID,
       username,
       webSpeechPonyfill
@@ -329,8 +337,8 @@ export default ConnectedComposerWithStore;
 
 Composer.defaultProps = {
   activityRenderer: undefined,
-  adaptiveCardHostConfig: undefined,
   attachmentRenderer: undefined,
+  botAvatarInitials: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
   disabled: false,
@@ -339,11 +347,14 @@ Composer.defaultProps = {
   locale: window.navigator.language || 'en-US',
   referenceGrammarID: '',
   renderMarkdown: text => text,
+  selectVoice: undefined,
+  sendBoxRef: undefined,
   sendTimeout: 20000,
   sendTyping: undefined,
   sendTypingIndicator: false,
-  store: undefined,
   styleOptions: {},
+  styleSet: undefined,
+  userAvatarInitials: undefined,
   userID: '',
   username: '',
   webSpeechPonyfillFactory: undefined
@@ -351,8 +362,8 @@ Composer.defaultProps = {
 
 Composer.propTypes = {
   activityRenderer: PropTypes.func,
-  adaptiveCardHostConfig: PropTypes.any,
   attachmentRenderer: PropTypes.func,
+  botAvatarInitials: PropTypes.string,
   cardActionMiddleware: PropTypes.func,
   children: PropTypes.any,
   directLine: PropTypes.shape({
@@ -376,11 +387,16 @@ Composer.propTypes = {
   referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
+  selectVoice: PropTypes.func,
+  sendBoxRef: PropTypes.shape({
+    current: PropTypes.any
+  }),
   sendTimeout: PropTypes.number,
   sendTyping: PropTypes.bool,
   sendTypingIndicator: PropTypes.bool,
-  store: PropTypes.any,
   styleOptions: PropTypes.any,
+  styleSet: PropTypes.any,
+  userAvatarInitials: PropTypes.string,
   userID: PropTypes.string,
   username: PropTypes.string,
   webSpeechPonyfillFactory: PropTypes.func
