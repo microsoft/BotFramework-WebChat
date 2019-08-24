@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -->
 
 ## [Unreleased]
+- Added missing Italian (it-IT) translations, by [@AntoT84](https://github.com/AntoT84)
+
+## [Unreleased]
 - Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
 
 ### Breaking changes
