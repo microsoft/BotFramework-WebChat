@@ -14,7 +14,7 @@ If you want to help to translate Web Chat to different language, please submit a
 | fi-fi         | @jsur                                                      |
 | fr-fr         | @meulta, @tao1                                             |
 | hu-hu         |                                                            |
-| it-it         | Maurizio Moriconi, @Andrea-Orimoto                         |
+| it-it         | Maurizio Moriconi, @Andrea-Orimoto, @AntoT84               |
 | ja-jp         | @bigplants, @corinagum                                     |
 | ko-kr         | @Eunji                                                     |
 | lv-lv         |                                                            |
