@@ -33,8 +33,7 @@ CommonCard.propTypes = {
     content: PropTypes.shape({
       tap: PropTypes.any
     }).isRequired
-  }).isRequired,
-  styleSet: PropTypes.any.isRequired
+  }).isRequired
 };
 
 export default CommonCard;

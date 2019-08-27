@@ -2,9 +2,9 @@
 
 import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { Components, connectToWebChat, getTabIndex, localize } from 'botframework-webchat-component';
+import { Components, getTabIndex, useLocalize, useStyleSet, useWebChat } from 'botframework-webchat-component';
 
 const { ErrorBox } = Components;
 
@@ -12,88 +12,66 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
-class AdaptiveCardRenderer extends React.PureComponent {
-  constructor(props) {
-    super(props);
+const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig }) => {
+  const { disabled, language, onCardAction, renderMarkdown, tapAction } = useWebChat();
+  const styleSet = useStyleSet();
+  const contentRef = useRef();
+  const handleClick = useCallback(
+    ({ target }) => {
+      // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
+      if (!disabled) {
+        const tabIndex = getTabIndex(target);
 
-    this.handleClick = this.handleClick.bind(this);
-    this.handleExecuteAction = this.handleExecuteAction.bind(this);
-
-    this.contentRef = React.createRef();
-
-    this.state = {
-      error: null
-    };
-  }
-
-  componentDidMount() {
-    this.renderCard();
-  }
-
-  componentDidUpdate({ adaptiveCard: prevAdaptiveCard }) {
-    const { adaptiveCard } = this.props;
-
-    prevAdaptiveCard !== adaptiveCard && this.renderCard();
-  }
-
-  handleClick({ target }) {
-    const { disabled, onCardAction, tapAction } = this.props;
-
-    // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
-    if (!disabled) {
-      const tabIndex = getTabIndex(target);
-
-      // If the user is clicking on something that is already clickable, do not allow them to click the card.
-      // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
-      if (typeof tabIndex !== 'number' || tabIndex < 0) {
-        tapAction && onCardAction(tapAction);
-      }
-    }
-  }
-
-  handleExecuteAction(action) {
-    const { disabled, onCardAction } = this.props;
-
-    // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
-    if (disabled) {
-      return;
-    }
-
-    const actionTypeName = action.getJsonTypeName();
-
-    if (actionTypeName === 'Action.OpenUrl') {
-      onCardAction({
-        type: 'openUrl',
-        value: action.url
-      });
-    } else if (actionTypeName === 'Action.Submit') {
-      if (typeof action.data !== 'undefined') {
-        const { data: actionData } = action;
-
-        if (actionData && actionData.__isBotFrameworkCardAction) {
-          const { cardAction } = actionData;
-          const { displayText, type, value } = cardAction;
-
-          onCardAction({ displayText, type, value });
-        } else {
-          onCardAction({
-            type: typeof action.data === 'string' ? 'imBack' : 'postBack',
-            value: action.data
-          });
+        // If the user is clicking on something that is already clickable, do not allow them to click the card.
+        // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
+        if (typeof tabIndex !== 'number' || tabIndex < 0) {
+          tapAction && onCardAction(tapAction);
         }
       }
-    } else {
-      console.error(`Web Chat: received unknown action from Adaptive Cards`);
-      console.error(action);
-    }
-  }
+    },
+    [disabled, onCardAction, tapAction]
+  );
 
-  renderCard() {
-    const {
-      contentRef: { current },
-      props: { adaptiveCard, adaptiveCardHostConfig, disabled, renderMarkdown },
-      state: { error }
-    } = this;
+  const handleExecuteAction = useCallback(
+    action => {
+      // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
+      if (disabled) {
+        return;
+      }
+
+      const actionTypeName = action.getJsonTypeName();
+
+      if (actionTypeName === 'Action.OpenUrl') {
+        onCardAction({
+          type: 'openUrl',
+          value: action.url
+        });
+      } else if (actionTypeName === 'Action.Submit') {
+        if (typeof action.data !== 'undefined') {
+          const { data: actionData } = action;
+
+          if (actionData && actionData.__isBotFrameworkCardAction) {
+            const { cardAction } = actionData;
+            const { displayText, type, value } = cardAction;
+
+            onCardAction({ displayText, type, value });
+          } else {
+            onCardAction({
+              type: typeof action.data === 'string' ? 'imBack' : 'postBack',
+              value: action.data
+            });
+          }
+        }
+      } else {
+        console.error(`Web Chat: received unknown action from Adaptive Cards`);
+        console.error(action);
+      }
+    },
+    [disabled, onCardAction]
+  );
+
+  const renderCard = useCallback(() => {
+    const { current } = contentRef;
 
     if (current && adaptiveCard) {
       // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
@@ -109,7 +87,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
         }
       };
 
-      adaptiveCard.onExecuteAction = this.handleExecuteAction;
+      adaptiveCard.onExecuteAction = handleExecuteAction;
 
       if (adaptiveCardHostConfig) {
         adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig)
@@ -130,14 +108,14 @@ class AdaptiveCardRenderer extends React.PureComponent {
       try {
         element = adaptiveCard.render();
       } catch (error) {
-        return this.setState(() => ({ error }));
+        return setError(error);
       }
 
       if (!element) {
-        return this.setState(() => ({ error: 'Adaptive Card rendered as empty element' }));
+        return setError('Adaptive Card rendered as empty element');
       }
 
-      error && this.setState(() => ({ error: null }));
+      error && setError(null);
 
       if (disabled) {
         const hyperlinks = element.querySelectorAll('a');
@@ -164,50 +142,28 @@ class AdaptiveCardRenderer extends React.PureComponent {
         current.appendChild(element);
       }
     }
-  }
+  }, [adaptiveCard, adaptiveCardHostConfig, contentRef.current, disabled, error, handleExecuteAction, renderMarkdown]);
 
-  render() {
-    const {
-      props: { language, styleSet },
-      state: { error }
-    } = this;
+  const [error, setError] = useState();
 
-    return error ? (
-      <ErrorBox message={localize('Adaptive Card render error', language)}>
-        <pre>{JSON.stringify(error, null, 2)}</pre>
-      </ErrorBox>
-    ) : (
-      <div className={styleSet.adaptiveCardRenderer} onClick={this.handleClick} ref={this.contentRef} />
-    );
-  }
-}
+  useLayoutEffect(() => {
+    renderCard();
+  }, [adaptiveCard]);
+
+  const errorMessage = useLocalize('Adaptive Card render error');
+
+  return error ? (
+    <ErrorBox message={errorMessage}>
+      <pre>{JSON.stringify(error, null, 2)}</pre>
+    </ErrorBox>
+  ) : (
+    <div className={styleSet.adaptiveCardRenderer} onClick={handleClick} ref={contentRef} />
+  );
+};
 
 AdaptiveCardRenderer.propTypes = {
   adaptiveCard: PropTypes.any.isRequired,
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  onCardAction: PropTypes.func.isRequired,
-  renderMarkdown: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    adaptiveCardRenderer: PropTypes.any.isRequired
-  }).isRequired,
-  tapAction: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string
-  })
+  adaptiveCardHostConfig: PropTypes.any.isRequired
 };
 
-AdaptiveCardRenderer.defaultProps = {
-  disabled: false,
-  tapAction: undefined
-};
-
-export default connectToWebChat(({ disabled, language, onCardAction, renderMarkdown, styleSet, tapAction }) => ({
-  disabled,
-  language,
-  onCardAction,
-  renderMarkdown,
-  styleSet,
-  tapAction
-}))(AdaptiveCardRenderer);
+export default AdaptiveCardRenderer;
