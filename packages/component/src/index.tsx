@@ -6,7 +6,7 @@ import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
 import CarouselLayout from './Activity/CarouselLayout';
 import ErrorBox from './ErrorBox';
-import Localize, { localize } from './Localization/Localize';
+import Localize, { localize, useLocalize } from './Localization/Localize';
 import SendStatus, { connectSendStatus } from './Activity/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
 import StackedLayout, { connectStackedLayout } from './Activity/StackedLayout';
@@ -35,6 +35,9 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createStyleSet from './Styles/createStyleSet';
 import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+
+import useLanguage from './hooks/useLanguage';
+import useStyleSet from './hooks/useStyleSet';
 import useWebChat from './useWebChat';
 
 const version = process.env.NPM_PACKAGE_VERSION;
@@ -95,6 +98,9 @@ export {
   defaultStyleOptions,
   getTabIndex,
   localize,
+  useLocalize,
+  useLanguage,
+  useStyleSet,
   useWebChat,
   version
 };
