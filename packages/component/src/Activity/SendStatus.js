@@ -5,8 +5,9 @@ import React from 'react';
 import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useFocusSendBox from '../hooks/useFocusSendBox';
+import usePostActivity from '../hooks/usePostActivity';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }
@@ -34,8 +35,11 @@ const connectSendStatus = (...selectors) => {
   );
 };
 
-const useSendStatus = ({ activity }) =>
-  useWebChat(({ focusSendBox, postActivity }) => ({
+const useSendStatus = ({ activity }) => {
+  const focusSendBox = useFocusSendBox();
+  const postActivity = usePostActivity();
+
+  return {
     retrySend: evt => {
       evt.preventDefault();
 
@@ -45,11 +49,11 @@ const useSendStatus = ({ activity }) =>
       // We want to make sure the user stay inside Web Chat
       focusSendBox();
     }
-  }));
+  };
+};
 
 const SendStatus = ({ activity }) => {
   const { retrySend } = useSendStatus({ activity });
-  const { channelData: { state } = {} } = activity;
   const styleSet = useStyleSet();
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
@@ -58,6 +62,7 @@ const SendStatus = ({ activity }) => {
   const retryText = useLocalize('Retry');
   const sendFailedText = useLocalize('SEND_FAILED_KEY');
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
+  const { channelData: { state } = {} } = activity;
 
   return (
     <React.Fragment>

@@ -6,8 +6,14 @@ import React, { useCallback, useMemo } from 'react';
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import useDisabled from '../hooks/useDisabled';
+import useFocusSendBox from '../hooks/useFocusSendBox';
+import useScrollToEnd from '../hooks/useScrollToEnd';
+import useSendBoxValue from '../hooks/useSendBoxValue';
+import useSetSendBox from '../hooks/useSetSendBox';
+import useStopDictate from '../hooks/useStopDictate';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
+import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -62,17 +68,13 @@ const connectSendTextBox = (...selectors) => {
 
 // TODO: [P2] Revisit these functions. Think about apps that are not React, how useful are these functions appears to them.
 const useSendTextBox = () => {
-  const { disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox } = useWebChat(
-    ({ disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
-      disabled,
-      focusSendBox,
-      scrollToEnd,
-      sendBoxValue,
-      setSendBox,
-      stopDictate,
-      submitSendBox
-    })
-  );
+  const disabled = useDisabled();
+  const focusSendBox = useFocusSendBox();
+  const scrollToEnd = useScrollToEnd();
+  const sendBoxValue = useSendBoxValue();
+  const setSendBox = useSetSendBox();
+  const stopDictate = useStopDictate();
+  const submitSendBox = useSubmitSendBox();
 
   const onChange = useCallback(
     ({ target: { value } }) => {

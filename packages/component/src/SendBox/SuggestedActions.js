@@ -8,7 +8,7 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
+import useSuggestedActionsHook from '../hooks/useSuggestedActions';
 
 function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {
@@ -36,7 +36,11 @@ const connectSuggestedActions = (...selectors) => {
   );
 };
 
-const useSuggestedActions = () => useWebChat(({ suggestedActions = [] }) => ({ suggestedActions }));
+const useSuggestedActions = () => {
+  const suggestedActions = useSuggestedActionsHook();
+
+  return { suggestedActions };
+};
 
 const SuggestedActions = ({ className }) => {
   const { suggestedActions } = useSuggestedActions();

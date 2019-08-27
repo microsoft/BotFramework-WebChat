@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 
-import { useWebChat } from 'botframework-webchat-component';
+import { useMarkActivity, useWebSpeechPonyfill } from 'botframework-webchat-component';
 
 const ROOT_CSS = css({
   alignItems: 'flex-start',
@@ -58,7 +58,8 @@ const SpeakActivity = ({ activity, children, markActivity }) => {
 };
 
 const useDevModeDecorator = () => {
-  const { markActivity, webSpeechPonyfill } = useWebChat(state => state);
+  const markActivity = useMarkActivity();
+  const webSpeechPonyfill = useWebSpeechPonyfill();
 
   return { markActivity, webSpeechPonyfill };
 };

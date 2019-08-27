@@ -6,9 +6,13 @@ import React from 'react';
 
 import Localize from '../Localization/Localize';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
+import useScrollToEnd from '../hooks/useScrollToEnd';
 
-const useScrollToEndButton = () => useWebChat(({ scrollToEnd }) => ({ scrollToEnd }));
+const useScrollToEndButton = () => {
+  const scrollToEnd = useScrollToEnd();
+
+  return { scrollToEnd };
+};
 
 const ScrollToEndButton = ({ className }) => {
   const { scrollToEnd } = useScrollToEndButton();

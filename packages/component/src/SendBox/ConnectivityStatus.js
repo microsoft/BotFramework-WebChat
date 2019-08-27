@@ -6,9 +6,9 @@ import connectToWebChat from '../connectToWebChat';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
-import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
-import useWebChat from '../useWebChat';
+import useConnectivityStatusHook from '../hooks/useConnectivityStatus';
 import useStyleSet from '../hooks/useStyleSet';
+import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
 
 const CONNECTIVITY_STATUS_DEBOUNCE = 400;
 
@@ -45,7 +45,11 @@ const connectConnectivityStatus = (...selectors) => {
   return connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
 };
 
-const useConnectivityStatus = () => useWebChat(({ connectivityStatus }) => ({ connectivityStatus }));
+const useConnectivityStatus = () => {
+  const connectivityStatus = useConnectivityStatusHook();
+
+  return { connectivityStatus };
+};
 
 const ConnectivityStatus = () => {
   const { connectivityStatus } = useConnectivityStatus();

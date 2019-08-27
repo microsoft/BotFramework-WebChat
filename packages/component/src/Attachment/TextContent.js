@@ -7,10 +7,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useWebChat from '../useWebChat';
+import useRenderMarkdown from '../hooks/useRenderMarkdown';
 import useStyleSet from '../hooks/useStyleSet';
 
-const useTextContext = () => useWebChat(({ renderMarkdown = text => text }) => ({ renderMarkdown }));
+const PASSTHRU_FN = text => text;
+
+const useTextContext = () => {
+  const renderMarkdown = useRenderMarkdown() || PASSTHRU_FN;
+
+  return { renderMarkdown };
+};
 
 const TextContent = ({ contentType, text }) => {
   const { renderMarkdown } = useTextContext();

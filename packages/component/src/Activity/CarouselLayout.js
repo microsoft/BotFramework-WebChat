@@ -15,9 +15,10 @@ const ROOT_CSS = css({
 
 const CarouselLayout = ({ activity, children, timestampClassName }) => {
   const styleSet = useStyleSet();
-  const filmStyleSet = createBasicStyleSet({ cursor: null });
   const leftLabel = useLocalize('Left');
   const rightLabel = useLocalize('Right');
+
+  const filmStyleSet = createBasicStyleSet({ cursor: null });
 
   return (
     <Composer numItems={React.Children.count(children)}>

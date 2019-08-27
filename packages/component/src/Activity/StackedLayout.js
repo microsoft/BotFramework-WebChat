@@ -17,6 +17,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const {
@@ -89,9 +90,7 @@ const connectStackedLayout = (...selectors) => {
 };
 
 const useStackedLayout = ({ fromUser }) => {
-  const {
-    options: { botAvatarInitials, userAvatarInitials }
-  } = useStyleSet();
+  const { botAvatarInitials, userAvatarInitials } = useStyleOptions();
 
   return {
     avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
@@ -113,74 +112,72 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const ariaLabel = useLocalize(fromUser ? 'User said something' : 'Bot said something', avatarInitials, plainText);
   const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
 
-  return useMemo(() => {
-    const {
-      attachments = [],
-      channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
-      textFormat
-    } = activity;
+  const {
+    attachments = [],
+    channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
+    textFormat
+  } = activity;
 
-    const activityDisplayText = messageBackDisplayText || text;
-    const showSendStatus = state === SENDING || state === SEND_FAILED;
-    const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const activityDisplayText = messageBackDisplayText || text;
+  const showSendStatus = state === SENDING || state === SEND_FAILED;
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
-    return (
-      <div
-        className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
-          'from-user': fromUser,
-          webchat__stacked_extra_left_indent:
-            fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
-          webchat__stacked_extra_right_indent:
-            !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
-          webchat__stacked_indented_content: avatarInitials && !indented
-        })}
-      >
-        {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-          <div className="avatar" />
-        )}
-        <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
-        <div className="content">
-          {!!activityDisplayText && (
-            <div className="webchat__row message">
-              <ScreenReaderText text={ariaLabel} />
-              <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
-                {children({
-                  activity,
-                  attachment: {
-                    content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
-                  }
-                })}
-              </Bubble>
-              <div className="filler" />
-            </div>
-          )}
-          {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
-          {attachments.map((attachment, index) => (
-            <div
-              aria-label=" "
-              className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
-              key={index}
-            >
-              <ScreenReaderText text={roleLabel} />
-              <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
-                {children({ attachment })}
-              </Bubble>
-            </div>
-          ))}
-          <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
-            {showSendStatus ? (
-              <SendStatus activity={activity} className="timestamp" />
-            ) : (
-              <Timestamp activity={activity} className={classNames('timestamp', timestampClassName)} />
-            )}
+  return (
+    <div
+      className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
+        'from-user': fromUser,
+        webchat__stacked_extra_left_indent:
+          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
+        webchat__stacked_extra_right_indent:
+          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
+        webchat__stacked_indented_content: avatarInitials && !indented
+      })}
+    >
+      {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
+        <div className="avatar" />
+      )}
+      <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
+      <div className="content">
+        {!!activityDisplayText && (
+          <div className="webchat__row message">
+            <ScreenReaderText text={ariaLabel} />
+            <Bubble aria-hidden={true} className="bubble" fromUser={fromUser} nub={true}>
+              {children({
+                activity,
+                attachment: {
+                  content: activityDisplayText,
+                  contentType: textFormatToContentType(textFormat)
+                }
+              })}
+            </Bubble>
             <div className="filler" />
           </div>
+        )}
+        {/* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */}
+        {attachments.map((attachment, index) => (
+          <div
+            aria-label=" "
+            className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
+            key={index}
+          >
+            <ScreenReaderText text={roleLabel} />
+            <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
+              {children({ attachment })}
+            </Bubble>
+          </div>
+        ))}
+        <div className={classNames('webchat__row', { webchat__stacked_item_indented: indented })}>
+          {showSendStatus ? (
+            <SendStatus activity={activity} className="timestamp" />
+          ) : (
+            <Timestamp activity={activity} className={classNames('timestamp', timestampClassName)} />
+          )}
+          <div className="filler" />
         </div>
-        <div className="filler" />
       </div>
-    );
-  }, [activity, ariaLabel, avatarInitials, children, fromUser, roleLabel, styleSet, text, timestampClassName]);
+      <div className="filler" />
+    </div>
+  );
 };
 
 StackedLayout.defaultProps = {

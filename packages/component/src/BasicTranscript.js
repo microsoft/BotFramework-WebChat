@@ -7,8 +7,12 @@ import React from 'react';
 
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import useActivities from './hooks/useActivities';
+import useActivityRenderer from './hooks/useActivityRenderer';
+import useAttachmentRenderer from './hooks/useAttachmentRenderer';
+import useGroupTimestamp from './hooks/useGroupTimestamp';
 import useStyleSet from './hooks/useStyleSet';
-import useWebChat from './useWebChat';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -52,14 +56,21 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const useBasicTranscript = () =>
-  useWebChat(({ activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+const useBasicTranscript = () => {
+  const activityRenderer = useActivityRenderer();
+  const activities = useActivities();
+  const attachmentRenderer = useAttachmentRenderer();
+  const groupTimestamp = useGroupTimestamp();
+  const webSpeechPonyfill = useWebSpeechPonyfill();
+
+  return {
     activityRenderer,
     activities,
     attachmentRenderer,
     groupTimestamp,
     webSpeechPonyfill
-  }));
+  };
+};
 
 const BasicTranscript = ({ className }) => {
   const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useBasicTranscript();

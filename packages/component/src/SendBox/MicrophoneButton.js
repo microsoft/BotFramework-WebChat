@@ -12,8 +12,14 @@ import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useDictateInterims from '../hooks/useDictateInterims';
+import useDictateState from '../hooks/useDictateState';
+import useDisabled from '../hooks/useDisabled';
+import useSetSendBox from '../hooks/useSetSendBox';
+import useStartDictate from '../hooks/useStartDictate';
+import useStopDictate from '../hooks/useStopDictate';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
+import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 
 const { DictateState } = Constants;
 
@@ -79,15 +85,13 @@ const connectMicrophoneButton = (...selectors) => {
 };
 
 const useMicrophoneButton = () => {
-  const {
-    disabled,
-    dictateInterims,
-    dictateState,
-    setSendBox,
-    startDictate,
-    stopDictate,
-    webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
-  } = useWebChat(state => state);
+  const disabled = useDisabled();
+  const dictateInterims = useDictateInterims();
+  const dictateState = useDictateState();
+  const setSendBox = useSetSendBox();
+  const startDictate = useStartDictate();
+  const stopDictate = useStopDictate();
+  const { speechSynthesis, SpeechSynthesisUtterance } = useWebSpeechPonyfill();
 
   const [primeSpeechSynthesis] = useState(() =>
     memoize((speechSynthesis, SpeechSynthesisUtterance) => {

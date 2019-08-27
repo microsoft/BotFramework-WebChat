@@ -4,8 +4,9 @@ import Say from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
+import useMarkActivity from '../hooks/useMarkActivity';
+import useSelectVoice from '../hooks/useSelectVoice';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
@@ -26,11 +27,15 @@ const connectSpeakActivity = (...selectors) => {
   );
 };
 
-const useSpeakActivity = ({ activity }) =>
-  useWebChat(({ markActivity, selectVoice }) => ({
+const useSpeakActivity = ({ activity }) => {
+  const markActivity = useMarkActivity();
+  const selectVoice = useSelectVoice();
+
+  return {
     markAsSpoken: () => markActivity(activity, 'speak', false),
     selectVoice: voices => selectVoice(voices, activity)
-  }));
+  };
+};
 
 const Speak = ({ activity }) => {
   const { markAsSpoken, selectVoice } = useSpeakActivity();

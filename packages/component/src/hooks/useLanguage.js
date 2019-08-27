@@ -1,5 +1,5 @@
-import useWebChat from '../useWebChat';
+import useSelector from './useSelector';
 
 export default function useLanguage() {
-  return useWebChat(({ language }) => language);
+  return useSelector(({ language }) => language);
 }

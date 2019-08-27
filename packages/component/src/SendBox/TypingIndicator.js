@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { useLocalize } from '../Localization/Localize';
 import TypingAnimation from './Assets/TypingAnimation';
+import useLastTypingAt from '../hooks/useLastTypingAt';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
 
-const useTypingIndicator = () => useWebChat(({ lastTypingAt }) => ({ lastTypingAt }));
+const useTypingIndicator = () => {
+  const lastTypingAt = useLastTypingAt();
+
+  return { lastTypingAt };
+};
 
 const TypingIndicator = () => {
   const [showTyping, setShowTyping] = useState(false);

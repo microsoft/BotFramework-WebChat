@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import useClearSuggestedActions from '../hooks/useClearSuggestedActions';
+import useDisabled from '../hooks/useDisabled';
+import useOnCardAction from '../hooks/useOnCardAction';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
@@ -34,12 +36,17 @@ const connectSuggestedAction = (...selectors) => {
   );
 };
 
-const useSuggestedAction = () =>
-  useWebChat(({ clearSuggestedActions, disabled, onCardAction }) => ({
+const useSuggestedAction = () => {
+  const clearSuggestedActions = useClearSuggestedActions();
+  const disabled = useDisabled();
+  const onCardAction = useOnCardAction();
+
+  return {
     clearSuggestedActions,
     disabled,
     onCardAction
-  }));
+  };
+};
 
 const SuggestedAction = ({ buttonText, displayText, image, text, type, value }) => {
   const { clearSuggestedActions, disabled, onCardAction } = useSuggestedAction();

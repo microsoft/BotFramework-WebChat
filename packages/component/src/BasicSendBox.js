@@ -12,7 +12,10 @@ import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
 import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
-import useWebChat from './useWebChat';
+import useActivities from './hooks/useActivities';
+import useDictateState from './hooks/useDictateState';
+import useStyleSet from './hooks/useStyleSet';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
   DictateState: { DICTATING, STARTING }
@@ -33,16 +36,21 @@ function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
   return !!speak;
 }
 
-const useBasicSendBox = () =>
-  useWebChat(({ activities, dictateState, styleSet, webSpeechPonyfill }) => ({
+const useBasicSendBox = () => {
+  const activities = useActivities();
+  const dictateState = useDictateState();
+  const webSpeechPonyfill = useWebSpeechPonyfill();
+
+  return {
     activities,
     dictateState,
-    styleSet,
     webSpeechPonyfill
-  }));
+  };
+};
 
 const BasicSendBox = ({ className }) => {
-  const { activities, dictateState, styleSet, webSpeechPonyfill } = useBasicSendBox();
+  const { activities, dictateState, webSpeechPonyfill } = useBasicSendBox();
+  const styleSet = useStyleSet();
   const dictationStarted =
     (dictateState === STARTING || dictateState === DICTATING) &&
     !activities.filter(activityIsSpeakingOrQueuedToSpeak).length;

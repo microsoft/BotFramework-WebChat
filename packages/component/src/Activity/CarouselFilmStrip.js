@@ -16,6 +16,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const {
@@ -91,9 +92,7 @@ const connectCarouselFilmStrip = (...selectors) => {
 };
 
 const useCarouselFilmStrip = ({ fromUser }) => {
-  const {
-    options: { botAvatarInitials, userAvatarInitials }
-  } = useStyleSet();
+  const { botAvatarInitials, userAvatarInitials } = useStyleOptions();
 
   return {
     avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials

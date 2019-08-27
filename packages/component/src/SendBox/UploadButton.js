@@ -7,8 +7,9 @@ import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
+import useDisabled from '../hooks/useDisabled';
+import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -87,7 +88,8 @@ const connectUploadButton = (...selectors) => {
 };
 
 const useUploadButton = () => {
-  const { disabled, sendFiles } = useWebChat(({ disabled, sendFiles }) => ({ disabled, sendFiles }));
+  const disabled = useDisabled();
+  const sendFiles = useSendFiles();
   const {
     options: {
       enableUploadThumbnail,

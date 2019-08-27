@@ -4,6 +4,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const connectAvatar = (...selectors) => {
@@ -26,9 +27,7 @@ const connectAvatar = (...selectors) => {
 };
 
 const useAvatar = ({ fromUser }) => {
-  const {
-    options: { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials }
-  } = useStyleSet();
+  const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = useStyleOptions();
 
   return {
     avatarImage: fromUser ? userAvatarImage : botAvatarImage,
