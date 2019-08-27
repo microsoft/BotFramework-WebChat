@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import AbsoluteTime from '../Utils/AbsoluteTime';
-import connectToWebChat from '../connectToWebChat';
 import RelativeTime from '../Utils/RelativeTime';
+import useStyleSet from '../../lib/hooks/useStyleSet';
 
-const Timestamp = ({ activity: { timestamp }, className, styleSet }) => {
+const Timestamp = ({ activity: { timestamp }, className }) => {
+  const styleSet = useStyleSet();
+
   if (!timestamp) {
     return false;
   }
@@ -30,10 +32,7 @@ Timestamp.propTypes = {
   activity: PropTypes.shape({
     timestamp: PropTypes.string.isRequired
   }).isRequired,
-  className: PropTypes.string,
-  styleSet: PropTypes.shape({
-    timestamp: PropTypes.any.isRequired
-  }).isRequired
+  className: PropTypes.string
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(Timestamp);
+export default Timestamp;

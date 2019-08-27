@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
-import { getLocaleString, localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
+import { getLocaleString, localize, useLocalize } from '../Localization/Localize';
 import ScreenReaderText from '../ScreenReaderText';
 import Timer from './Timer';
+import useLanguage from '../hooks/useLanguage';
 
 // This function calculates the next absolute time that the timer should be fired based on the origin (original time received), interval, and current time.
 // If the origin is t=260, and we are currently at t=1000, nextTimer must return t=60260.
@@ -20,18 +20,18 @@ function nextTimer(origin) {
   return time > now ? time : now + TIMER_INTERVAL - ((now - time) % TIMER_INTERVAL);
 }
 
-function getText(language, value) {
+function nextText(language, value) {
   return localize('X minutes ago', language, value);
 }
 
-const RelativeTime = ({ language, value }) => {
-  const [text, setText] = useState(getText(language, value));
+const RelativeTime = ({ value }) => {
+  const language = useLanguage();
+  const [text, setText] = useState(nextText(language, value));
   const [timer, setTimer] = useState(nextTimer(value));
-
-  const localizedAbsoluteTime = localize('SentAt', language) + getLocaleString(value, language);
+  const localizedAbsoluteTime = useLocalize('SentAt') + getLocaleString(value, language);
 
   const handleInterval = useCallback(() => {
-    setText(getText(language, value));
+    setText(nextText(language, value));
     setTimer(nextTimer(value));
   }, [language, value]);
 
@@ -45,8 +45,7 @@ const RelativeTime = ({ language, value }) => {
 };
 
 RelativeTime.propTypes = {
-  language: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ language }) => ({ language }))(RelativeTime);
+export default RelativeTime;

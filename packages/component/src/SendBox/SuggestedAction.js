@@ -76,4 +76,4 @@ SuggestedAction.propTypes = {
 
 export default SuggestedAction;
 
-export { connectSuggestedAction };
+export { connectSuggestedAction, useSuggestedAction };

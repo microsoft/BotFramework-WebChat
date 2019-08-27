@@ -1,19 +1,24 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { localize } from '../Localization/Localize';
-import connectToWebChat from '../connectToWebChat';
+import { useLocalize } from '../Localization/Localize';
 import TypingAnimation from './Assets/TypingAnimation';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
-const TypingIndicator = ({
-  language,
-  lastTypingAt,
-  styleSet: {
+const useTypingIndicator = () => {
+  const { lastTypingAt } = useWebChat(state => state);
+
+  return { lastTypingAt };
+};
+
+const TypingIndicator = () => {
+  const [showTyping, setShowTyping] = useState(false);
+  const { lastTypingAt } = useTypingIndicator();
+  const typingAnimationLabel = useLocalize('TypingIndicator');
+  const {
     options: { typingAnimationDuration },
     typingIndicator
-  }
-}) => {
-  const [showTyping, setShowTyping] = useState(false);
+  } = useStyleSet();
 
   useEffect(() => {
     let timeout;
@@ -33,23 +38,12 @@ const TypingIndicator = ({
   return (
     showTyping && (
       <div className={typingIndicator}>
-        <TypingAnimation aria-label={localize('TypingIndicator', language)} />
+        <TypingAnimation aria-label={typingAnimationLabel} />
       </div>
     )
   );
 };
 
-TypingIndicator.propTypes = {
-  language: PropTypes.string.isRequired,
-  lastTypingAt: PropTypes.any.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      typingAnimationDuration: PropTypes.number
-    }).isRequired,
-    typingIndicator: PropTypes.any.isRequired
-  }).isRequired
-};
+export default TypingIndicator;
 
-export default connectToWebChat(({ lastTypingAt, language, styleSet }) => ({ lastTypingAt, language, styleSet }))(
-  TypingIndicator
-);
+export { useTypingIndicator };

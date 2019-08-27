@@ -11,7 +11,7 @@ const useSelector = createSelectorHook(WebChatReduxContext);
 export default function useWebChat(...selectors) {
   const context = useContext(WebChatContext);
   const dispatch = useDispatch();
-  const state = useSelector(combineSelectors(selectors));
+  const state = useSelector(combineSelectors(...selectors));
 
   return { ...state, ...context, dispatch };
 }

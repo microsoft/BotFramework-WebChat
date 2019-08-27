@@ -1,7 +1,6 @@
 // Localize is designed to be elaboratively return multiple results and possibly exceeding complexity requirement
 /* eslint complexity: "off" */
 
-import connectToWebChat from '../connectToWebChat';
 import getLocaleString from './getLocaleString';
 import useLanguage from '../hooks/useLanguage';
 
@@ -160,8 +159,6 @@ function useLocalize(text, ...args) {
   return localize(text, language, ...args);
 }
 
-export default connectToWebChat(({ language }) => ({ language }))(({ args, language, text }) =>
-  localize(text, language, ...(args || []))
-);
+export default ({ args, text }) => useLocalize(text, ...(args || []));
 
 export { getLocaleString, localize, useLocalize };

@@ -243,7 +243,7 @@ const App = ({ store }) => {
 
   const handleLanguageChange = useCallback(
     ({ target: { value } }) => {
-      setLanguage(!!value);
+      setLanguage(value);
       document.querySelector('html').setAttribute('lang', value || window.navigator.language);
       window.sessionStorage.setItem('PLAYGROUND_LANGUAGE', value);
     },
