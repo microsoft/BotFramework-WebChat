@@ -132,6 +132,10 @@ export default class extends React.Component {
 
 See a working sample of [Web Chat rendered via React](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.a.host-with-react/).
 
+## Integrate with Cognitive Services Speech Services
+
+You can use Cognitive Services Speech Services to add bi-directional speech functionality to Web Chat. Please refer to this article about [using Cognitive Services Speech Services](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md) for details.
+
 # Customize Web Chat UI
 
 Web Chat is designed to be customizable without forking the source code. The table below outlines what kind of customizations you can achieve when you are importing Web Chat in different ways. This list is not exhaustive.
@@ -155,13 +159,7 @@ Please refer to [`ACTIVITYTYPES.md`](https://github.com/microsoft/BotFramework-W
 
 ## Speech changes in Web Chat 4.5
 
-> This is a breaking change on behavior expectations regarding speech in Web Chat.
-
-In issue [#2022](https://github.com/microsoft/BotFramework-WebChat/issues/2022), it was brought to the Web Chat team's attention that the speech behavior of v3 and v4 of Web Chat do not match. In the 4.5 release, the expected behavior of a speech bot has been modified in order to bring parity to v3 behavior regarding [input hint](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-add-input-hints?view=azure-bot-service-3.0). This means the following:
-- Expecting input will now be respected by Web Chat and open the microphone during a speech conversation. This is assuming that the user has given permission for the browser to use the mic.
-- Accepting input **will no longer** open the mic after the bot has responded to a speech activity from the user. Instead, the user will have to press the microphone button again in order to further interact with the bot.
-- Ignoring input will continue to **not** open the mic after a speech activity has been sent from the bot.
-
+There is a breaking change on behavior expectations regarding speech and input hint in Web Chat. Please refer to this section on [input hint behavior before 4.5.0](https://github.com/microsoft/BotFramework-WebChat/blob/master/SPEECH.md#input-hint-behavior-before-4-5-0) for details.
 
 # Samples list
 
