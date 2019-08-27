@@ -52,15 +52,14 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const useBasicTranscript = () => {
-  return useWebChat(({ activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+const useBasicTranscript = () =>
+  useWebChat(({ activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
     activityRenderer,
     activities,
     attachmentRenderer,
     groupTimestamp,
     webSpeechPonyfill
   }));
-};
 
 const BasicTranscript = ({ className }) => {
   const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useBasicTranscript();

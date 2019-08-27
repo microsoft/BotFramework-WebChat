@@ -5,7 +5,6 @@ import React from 'react';
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
 import useStyleSet from '../hooks/useStyleSet';
-import useWebChat from '../useWebChat';
 
 const connectAvatar = (...selectors) => {
   console.warn('Web Chat: connectAvatar() will be removed on or after 2021-09-27, please use useAvatar() instead.');

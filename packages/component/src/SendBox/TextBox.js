@@ -61,48 +61,67 @@ const connectSendTextBox = (...selectors) => {
 };
 
 // TODO: [P2] Revisit these functions. Think about apps that are not React, how useful are these functions appears to them.
-const useSendTextBox = () =>
-  useWebChat(({ disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
-    disabled,
-    onChange: useCallback(
-      ({ target: { value } }) => {
-        setSendBox(value);
-        stopDictate();
-      },
-      [setSendBox, stopDictate]
-    ),
-    onKeyPress: useCallback(
-      event => {
-        const { key, shiftKey } = event;
+const useSendTextBox = () => {
+  const { disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox } = useWebChat(
+    ({ disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
+      disabled,
+      focusSendBox,
+      scrollToEnd,
+      sendBoxValue,
+      setSendBox,
+      stopDictate,
+      submitSendBox
+    })
+  );
 
-        if (key === 'Enter' && !shiftKey) {
-          event.preventDefault();
+  const onChange = useCallback(
+    ({ target: { value } }) => {
+      setSendBox(value);
+      stopDictate();
+    },
+    [setSendBox, stopDictate]
+  );
 
-          if (sendBoxValue) {
-            scrollToEnd();
-            submitSendBox();
-            focusSendBox();
-          }
-        }
-      },
-      [focusSendBox, scrollToEnd, submitSendBox]
-    ),
-    onSubmit: useCallback(
-      event => {
+  const onKeyPress = useCallback(
+    event => {
+      const { key, shiftKey } = event;
+
+      if (key === 'Enter' && !shiftKey) {
         event.preventDefault();
-
-        // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
-        // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
 
         if (sendBoxValue) {
           scrollToEnd();
           submitSendBox();
+          focusSendBox();
         }
-      },
-      [scrollToEnd, sendBoxValue, submitSendBox]
-    ),
+      }
+    },
+    [focusSendBox, scrollToEnd, sendBoxValue, submitSendBox]
+  );
+
+  const onSubmit = useCallback(
+    event => {
+      event.preventDefault();
+
+      // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
+      // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
+
+      if (sendBoxValue) {
+        scrollToEnd();
+        submitSendBox();
+      }
+    },
+    [scrollToEnd, sendBoxValue, submitSendBox]
+  );
+
+  return {
+    disabled,
+    onChange,
+    onKeyPress,
+    onSubmit,
     value: sendBoxValue
-  }));
+  };
+};
 
 const TextBox = ({ className }) => {
   const { disabled, onChange, onKeyPress, onSubmit, value } = useSendTextBox();
@@ -158,7 +177,7 @@ const TextBox = ({ className }) => {
         }
       </form>
     ),
-    [disabled, onChange, onKeyPress, onSubmit, styleSet, typeYourMessageString, value]
+    [className, disabled, onChange, onKeyPress, onSubmit, sendBoxTextWrap, styleSet, typeYourMessageString, value]
   );
 };
 

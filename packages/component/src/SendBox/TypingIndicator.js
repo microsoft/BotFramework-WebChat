@@ -5,9 +5,7 @@ import TypingAnimation from './Assets/TypingAnimation';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebChat from '../useWebChat';
 
-const useTypingIndicator = () => {
-  return useWebChat(({ lastTypingAt }) => ({ lastTypingAt }));
-};
+const useTypingIndicator = () => useWebChat(({ lastTypingAt }) => ({ lastTypingAt }));
 
 const TypingIndicator = () => {
   const [showTyping, setShowTyping] = useState(false);
