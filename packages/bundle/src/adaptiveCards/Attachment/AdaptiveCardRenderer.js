@@ -13,7 +13,7 @@ function isPlainObject(obj) {
 }
 
 const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig }) => {
-  const { disabled, language, onCardAction, renderMarkdown, tapAction } = useWebChat();
+  const { disabled, language, onCardAction, renderMarkdown, tapAction } = useWebChat(state => state);
   const styleSet = useStyleSet();
   const contentRef = useRef();
   const handleClick = useCallback(

@@ -11,7 +11,7 @@ import useWebChat from '../useWebChat';
 import useStyleSet from '../hooks/useStyleSet';
 
 const useTextContext = () => {
-  const { renderMarkdown = text => text } = useWebChat();
+  const { renderMarkdown = text => text } = useWebChat(state => state);
 
   return { renderMarkdown };
 };

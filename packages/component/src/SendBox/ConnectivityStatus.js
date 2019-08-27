@@ -46,7 +46,7 @@ const connectConnectivityStatus = (...selectors) => {
 };
 
 const useConnectivityStatus = () => {
-  const { connectivityStatus } = useWebChat();
+  const connectivityStatus = useWebChat(({ connectivityStatus }) => connectivityStatus);
 
   return { connectivityStatus };
 };

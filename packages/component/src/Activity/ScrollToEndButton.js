@@ -9,7 +9,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useWebChat from '../useWebChat';
 
 const useScrollToEndButton = () => {
-  const { scrollToEnd } = useWebChat();
+  const { scrollToEnd } = useWebChat(state => state);
 
   return { scrollToEnd };
 };

@@ -35,7 +35,7 @@ const connectSendStatus = (...selectors) => {
 };
 
 const useSendStatus = ({ activity }) => {
-  const { focusSendBox, postActivity } = useWebChat();
+  const { focusSendBox, postActivity } = useWebChat(state => state);
 
   return {
     retrySend: evt => {

@@ -31,7 +31,7 @@ const useAvatar = ({ fromUser }) => {
     styleSet: {
       options: { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials }
     }
-  } = useWebChat();
+  } = useWebChat(state => state);
 
   return {
     avatarImage: fromUser ? userAvatarImage : botAvatarImage,

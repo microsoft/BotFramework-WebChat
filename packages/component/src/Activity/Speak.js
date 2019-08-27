@@ -27,7 +27,7 @@ const connectSpeakActivity = (...selectors) => {
 };
 
 const useSpeakActivity = ({ activity }) => {
-  const { markActivity, selectVoice } = useWebChat();
+  const { markActivity, selectVoice } = useWebChat(state => state);
 
   return {
     markAsSpoken: () => markActivity(activity, 'speak', false),

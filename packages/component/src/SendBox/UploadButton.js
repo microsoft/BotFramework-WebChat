@@ -87,7 +87,7 @@ const connectUploadButton = (...selectors) => {
 };
 
 const useUploadButton = () => {
-  const { disabled, sendFiles } = useWebChat();
+  const { disabled, sendFiles } = useWebChat(({ disabled, sendFiles }) => ({ disabled, sendFiles }));
   const {
     options: {
       enableUploadThumbnail,
