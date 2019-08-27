@@ -127,9 +127,6 @@ const TextBox = ({ className }) => {
   const { disabled, onChange, onKeyPress, onSubmit, value } = useSendTextBox();
   const styleSet = useStyleSet();
   const typeYourMessageString = useLocalize('Type your message');
-  const {
-    options: { sendBoxTextWrap }
-  } = styleSet;
 
   return useMemo(
     () => (
@@ -145,7 +142,7 @@ const TextBox = ({ className }) => {
         {
           <TypeFocusSinkContext.Consumer>
             {({ sendFocusRef }) =>
-              !sendBoxTextWrap ? (
+              !styleSet.options.sendBoxTextWrap ? (
                 <input
                   aria-label={typeYourMessageString}
                   data-id="webchat-sendbox-input"
@@ -177,7 +174,7 @@ const TextBox = ({ className }) => {
         }
       </form>
     ),
-    [className, disabled, onChange, onKeyPress, onSubmit, sendBoxTextWrap, styleSet, typeYourMessageString, value]
+    [className, disabled, onChange, onKeyPress, onSubmit, styleSet, typeYourMessageString, value]
   );
 };
 
