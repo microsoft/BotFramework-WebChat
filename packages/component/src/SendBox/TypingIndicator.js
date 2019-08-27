@@ -6,9 +6,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useWebChat from '../useWebChat';
 
 const useTypingIndicator = () => {
-  const { lastTypingAt } = useWebChat(state => state);
-
-  return { lastTypingAt };
+  return useWebChat(({ lastTypingAt }) => ({ lastTypingAt }));
 };
 
 const TypingIndicator = () => {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
@@ -21,17 +21,7 @@ const connectSendButton = (...selectors) => {
   );
 };
 
-const useSendButton = () => {
-  const { disabled, submitSendBox } = useWebChat(state => state);
-
-  return useMemo(
-    () => ({
-      disabled,
-      submitSendBox
-    }),
-    [disabled, submitSendBox]
-  );
-};
+const useSendButton = () => useWebChat(({ disabled, submitSendBox }) => ({ disabled, submitSendBox }));
 
 const SendButton = () => {
   const { disabled, submitSendBox } = useSendButton();

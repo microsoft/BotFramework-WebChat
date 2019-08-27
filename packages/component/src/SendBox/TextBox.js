@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
 import { useLocalize } from '../Localization/Localize';
@@ -60,13 +60,9 @@ const connectSendTextBox = (...selectors) => {
   );
 };
 
-const useSendTextBox = () => {
-  const { disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox } = useWebChat(
-    state => state
-  );
-
-  // TODO: [P2] Revisit these functions. Think about apps that are not React, how useful are these functions appears to them.
-  return {
+// TODO: [P2] Revisit these functions. Think about apps that are not React, how useful are these functions appears to them.
+const useSendTextBox = () =>
+  useWebChat(({ disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
     disabled,
     onChange: ({ target: { value } }) => {
       setSendBox(value);
@@ -97,8 +93,7 @@ const useSendTextBox = () => {
       }
     },
     value: sendBoxValue
-  };
-};
+  }));
 
 const TextBox = ({ className }) => {
   const { disabled, onChange, onKeyPress, onSubmit, value } = useSendTextBox();

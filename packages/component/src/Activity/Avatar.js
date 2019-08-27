@@ -28,10 +28,8 @@ const connectAvatar = (...selectors) => {
 
 const useAvatar = ({ fromUser }) => {
   const {
-    styleSet: {
-      options: { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials }
-    }
-  } = useWebChat(state => state);
+    options: { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials }
+  } = useStyleSet();
 
   return {
     avatarImage: fromUser ? userAvatarImage : botAvatarImage,

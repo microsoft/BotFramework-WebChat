@@ -52,10 +52,18 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
+const useBasicTranscript = () => {
+  return useWebChat(({ activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill }) => ({
+    activityRenderer,
+    activities,
+    attachmentRenderer,
+    groupTimestamp,
+    webSpeechPonyfill
+  }));
+};
+
 const BasicTranscript = ({ className }) => {
-  const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useWebChat(
-    state => state
-  );
+  const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useBasicTranscript();
   const styleSet = useStyleSet();
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 

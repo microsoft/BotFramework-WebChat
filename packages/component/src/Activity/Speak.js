@@ -26,14 +26,11 @@ const connectSpeakActivity = (...selectors) => {
   );
 };
 
-const useSpeakActivity = ({ activity }) => {
-  const { markActivity, selectVoice } = useWebChat(state => state);
-
-  return {
+const useSpeakActivity = ({ activity }) =>
+  useWebChat(({ markActivity, selectVoice }) => ({
     markAsSpoken: () => markActivity(activity, 'speak', false),
     selectVoice: voices => selectVoice(voices, activity)
-  };
-};
+  }));
 
 const Speak = ({ activity }) => {
   const { markAsSpoken, selectVoice } = useSpeakActivity();

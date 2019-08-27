@@ -36,11 +36,8 @@ const connectDictationInterims = (...selectors) => {
   );
 };
 
-const useDictationInterims = () => {
-  const { dictateInterims = [], dictateState } = useWebChat(state => state);
-
-  return { dictateInterims, dictateState };
-};
+const useDictationInterims = () =>
+  useWebChat(({ dictateInterims = [], dictateState }) => ({ dictateInterims, dictateState }));
 
 const DictationInterims = ({ className }) => {
   const { dictateInterims, dictateState } = useDictationInterims();

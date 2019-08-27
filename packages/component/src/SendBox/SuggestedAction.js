@@ -34,15 +34,12 @@ const connectSuggestedAction = (...selectors) => {
   );
 };
 
-const useSuggestedAction = () => {
-  const { clearSuggestedActions, disabled, onCardAction } = useWebChat(state => state);
-
-  return {
+const useSuggestedAction = () =>
+  useWebChat(({ clearSuggestedActions, disabled, onCardAction }) => ({
     clearSuggestedActions,
     disabled,
     onCardAction
-  };
-};
+  }));
 
 const SuggestedAction = ({ buttonText, displayText, image, text, type, value }) => {
   const { clearSuggestedActions, disabled, onCardAction } = useSuggestedAction();

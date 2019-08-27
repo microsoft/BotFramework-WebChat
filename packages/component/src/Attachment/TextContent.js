@@ -10,11 +10,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import useWebChat from '../useWebChat';
 import useStyleSet from '../hooks/useStyleSet';
 
-const useTextContext = () => {
-  const { renderMarkdown = text => text } = useWebChat(state => state);
-
-  return { renderMarkdown };
-};
+const useTextContext = () => useWebChat(({ renderMarkdown = text => text }) => ({ renderMarkdown }));
 
 const TextContent = ({ contentType, text }) => {
   const { renderMarkdown } = useTextContext();

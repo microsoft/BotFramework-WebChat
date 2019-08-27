@@ -33,8 +33,16 @@ function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
   return !!speak;
 }
 
+const useBasicSendBox = () =>
+  useWebChat(({ activities, dictateState, styleSet, webSpeechPonyfill }) => ({
+    activities,
+    dictateState,
+    styleSet,
+    webSpeechPonyfill
+  }));
+
 const BasicSendBox = ({ className }) => {
-  const { activities, dictateState, styleSet, webSpeechPonyfill } = useWebChat(state => state);
+  const { activities, dictateState, styleSet, webSpeechPonyfill } = useBasicSendBox();
   const dictationStarted =
     (dictateState === STARTING || dictateState === DICTATING) &&
     !activities.filter(activityIsSpeakingOrQueuedToSpeak).length;

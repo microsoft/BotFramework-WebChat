@@ -34,10 +34,8 @@ const connectSendStatus = (...selectors) => {
   );
 };
 
-const useSendStatus = ({ activity }) => {
-  const { focusSendBox, postActivity } = useWebChat(state => state);
-
-  return {
+const useSendStatus = ({ activity }) =>
+  useWebChat(({ focusSendBox, postActivity }) => ({
     retrySend: evt => {
       evt.preventDefault();
 
@@ -47,8 +45,7 @@ const useSendStatus = ({ activity }) => {
       // We want to make sure the user stay inside Web Chat
       focusSendBox();
     }
-  };
-};
+  }));
 
 const SendStatus = ({ activity }) => {
   const { retrySend } = useSendStatus({ activity });

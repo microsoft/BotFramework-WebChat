@@ -36,11 +36,7 @@ const connectSuggestedActions = (...selectors) => {
   );
 };
 
-const useSuggestedActions = () => {
-  const { suggestedActions = [] } = useWebChat(state => state);
-
-  return { suggestedActions };
-};
+const useSuggestedActions = () => useWebChat(({ suggestedActions = [] }) => ({ suggestedActions }));
 
 const SuggestedActions = ({ className }) => {
   const { suggestedActions } = useSuggestedActions();

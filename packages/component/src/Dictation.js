@@ -20,11 +20,43 @@ const Dictation = ({ onError }) => {
     setDictateInterims,
     setDictateState,
     setSendBox,
+    SpeechGrammarList,
+    SpeechRecognition,
     startSpeakingActivity,
     stopDictate,
-    submitSendBox,
-    webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
-  } = useWebChat(state => state);
+    submitSendBox
+  } = useWebChat(
+    ({
+      activities,
+      dictateState,
+      disabled,
+      language,
+      postActivity,
+      sendTypingIndicator,
+      setDictateInterims,
+      setDictateState,
+      setSendBox,
+      startSpeakingActivity,
+      stopDictate,
+      submitSendBox,
+      webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
+    }) => ({
+      activities,
+      dictateState,
+      disabled,
+      language,
+      postActivity,
+      sendTypingIndicator,
+      setDictateInterims,
+      setDictateState,
+      setSendBox,
+      SpeechGrammarList,
+      SpeechRecognition,
+      startSpeakingActivity,
+      stopDictate,
+      submitSendBox
+    })
+  );
 
   const numSpeakingActivities = activities.filter(({ channelData: { speak } = {} }) => speak).length;
 
