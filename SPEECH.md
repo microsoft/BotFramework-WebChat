@@ -85,6 +85,7 @@ After adding the ponyfill factory, you should be able to see the microphone butt
 These features are for improving the overall user experience while using speech in Web Chat.
 
 - [Using Speech Synthesis Markup Language](#using-speech-synthesis-markup-language)
+- [Using input hint](#using-input-hint)
 - [Selecting voice](#selecting-voice)
 - [Custom Speech](#custom-speech)
 - [Custom Voice](#custom-voice)
@@ -119,6 +120,24 @@ When the bot sends the activity, include the SSML in the `speak` property.
 > The SSML code snippet above is using neural voice "JessaNeural" for expression, which is only supported in some regions.
 
 With "mstts" extension, you can also [add speaking style](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup#adjust-speaking-styles) (e.g. cheerful) and [background audio](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup#add-background-audio) to your synthesized speech.
+
+### Using input hint
+
+The bot can set input hint when sending activity to the user to indicate whether the bot is anticipating user input. This can be used re-open the microphone if the last message was sent through microphone. You can set it to either `expectingInput`, `acceptingInput`, and `ignoringInput`. If it is not defined, it will default to `acceptingInput`.
+
+-  `"expectingInput"`: Web Chat will open the microphone after the bot's message is spoken and the last message was sent through microphone
+-  `"acceptingInput"`: Web Chat will do nothing after the bot's message is spoken
+-  `"ignoringInput"`: Web Chat will explicitly close the microphone
+
+For more details, please follow this article on [adding input hints to messages][Add input hints to messages].
+
+#### Input hint behavior before 4.5.0
+
+In issue [#2022](https://github.com/microsoft/BotFramework-WebChat/issues/2022), it was brought to the Web Chat team's attention that the speech behavior of v3 and v4 of Web Chat do not match. In the 4.5.0 release, the expected behavior of a speech bot has been modified in order to bring parity to v3 behavior regarding [input hint](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-add-input-hints?view=azure-bot-service-3.0). This means the following:
+
+-  Expecting input will now be respected by Web Chat and open the microphone during a speech conversation. This is assuming that the user has given permission for the browser to use the mic.
+-  Accepting input **will no longer** open the mic after the bot has responded to a speech activity from the user. Instead, the user will have to press the microphone button again in order to further interact with the bot.
+-  Ignoring input will continue to **not** open the mic after a speech activity has been sent from the bot.
 
 ### Selecting voice
 
@@ -353,6 +372,7 @@ Using this approach, you can also combine two polyfills of different types. For 
 - [List of browsers which support Web Audio API][Web Audio API support]
 - [List of browsers which support WebRTC API][WebRTC API Support]
 - [Speech Synthesis Markup Language (SSML)][Speech Synthesis Markup Language]
+- [Add input hints to messages]
 - [Get started with Custom Voice]
 - [What is Custom Speech]
 - [Sample: Integrating with Cognitive Services Speech Services]
@@ -362,8 +382,9 @@ Using this approach, you can also combine two polyfills of different types. For 
 [Get started with Custom Voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
 [Sample: Integrating with Cognitive Services Speech Services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.c.cognitive-services-speech-services-js
 [Sample: Using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/06.f.hybrid-speech
-[Speech Synthesis Markup Language]: (https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup)
+[Speech Synthesis Markup Language]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
 [Try Cognitive Services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [Web Audio API support]: https://caniuse.com/#feat=audio-api
 [WebRTC API Support]: https://caniuse.com/#feat=rtcpeerconnection
 [What is Custom Speech]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-speech
+[Add input hints to messages]: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-add-input-hints?view=azure-bot-service-4.0
