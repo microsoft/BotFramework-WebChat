@@ -28,6 +28,8 @@ function combineSelectors(...selectors) {
 }
 
 export default function connectToWebChat(...selectors) {
+  console.warn('Web Chat: connectToWebChat() will be removed on or after 2021-09-27, please use useWebChat() instead.');
+
   const combinedSelector = combineSelectors(...selectors);
 
   // TODO: [P1] Instead of exposing Redux store via props, we should consider exposing via Context.

@@ -1,13 +1,17 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
+import useWebChat from '../useWebChat';
 
-const connectSendButton = (...selectors) =>
-  connectToWebChat(
+const connectSendButton = (...selectors) => {
+  console.warn(
+    'Web Chat: connectSendButton() will be removed on or after 2021-09-27, please use useSendButton() instead.'
+  );
+
+  return connectToWebChat(
     ({ disabled, language, submitSendBox }) => ({
       disabled,
       language,
@@ -15,23 +19,31 @@ const connectSendButton = (...selectors) =>
     }),
     ...selectors
   );
-
-const SendButton = ({ disabled, language, submitSendBox }) => (
-  <IconButton alt={localize('Send', language)} disabled={disabled} onClick={submitSendBox}>
-    <SendIcon />
-  </IconButton>
-);
-
-SendButton.defaultProps = {
-  disabled: false
 };
 
-SendButton.propTypes = {
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  submitSendBox: PropTypes.func.isRequired
+const useSendButton = () => {
+  const { disabled, submitSendBox } = useWebChat(state => state);
+
+  return useMemo(
+    () => ({
+      disabled,
+      submitSendBox
+    }),
+    [disabled, submitSendBox]
+  );
 };
 
-export default connectSendButton()(SendButton);
+const SendButton = () => {
+  const { disabled, submitSendBox } = useSendButton();
+  const buttonAltText = useLocalize('Send');
 
-export { connectSendButton };
+  return (
+    <IconButton alt={buttonAltText} disabled={disabled} onClick={submitSendBox}>
+      <SendIcon />
+    </IconButton>
+  );
+};
+
+export default SendButton;
+
+export { connectSendButton, useSendButton };

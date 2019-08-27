@@ -1,9 +1,11 @@
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
@@ -27,30 +29,51 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-const SuggestedAction = ({ buttonText, click, disabled, image, styleSet }) => (
-  <div className={classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS + '')}>
-    <button disabled={disabled} onClick={click} type="button">
-      {image && <img src={image} />}
-      <nobr>{buttonText}</nobr>
-    </button>
-  </div>
-);
+const useSuggestedAction = () => {
+  const { clearSuggestedActions, disabled, onCardAction } = useWebChat(state => state);
+
+  return {
+    clearSuggestedActions,
+    disabled,
+    onCardAction
+  };
+};
+
+const SuggestedAction = ({ buttonText, displayText, image, text, type, value }) => {
+  const { clearSuggestedActions, disabled, onCardAction } = useSuggestedAction();
+  const styleSet = useStyleSet();
+  const click = useCallback(() => {
+    onCardAction({ displayText, text, type, value });
+    type === 'openUrl' && clearSuggestedActions();
+  }, [clearSuggestedActions, onCardAction, displayText, text, type, value]);
+
+  return (
+    <div className={classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS + '')}>
+      <button disabled={disabled} onClick={click} type="button">
+        {image && <img src={image} />}
+        <nobr>{buttonText}</nobr>
+      </button>
+    </div>
+  );
+};
 
 SuggestedAction.defaultProps = {
-  disabled: false,
-  image: ''
+  displayText: '',
+  image: '',
+  text: '',
+  type: '',
+  value: undefined
 };
 
 SuggestedAction.propTypes = {
   buttonText: PropTypes.string.isRequired,
-  click: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
+  displayText: PropTypes.string,
   image: PropTypes.string,
-  styleSet: PropTypes.shape({
-    suggestedAction: PropTypes.any.isRequired
-  }).isRequired
+  text: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.any
 };
 
-export default connectSuggestedAction(({ styleSet }) => ({ styleSet }))(SuggestedAction);
+export default SuggestedAction;
 
 export { connectSuggestedAction };

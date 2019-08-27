@@ -6,12 +6,14 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
 const { DictateState } = Constants;
 
@@ -34,6 +36,10 @@ const ROOT_CSS = css({
 });
 
 const connectMicrophoneButton = (...selectors) => {
+  console.warn(
+    'Web Chat: connectMicrophoneButton() will be removed on or after 2021-09-27, please use useMicrophoneButton() instead.'
+  );
+
   const primeSpeechSynthesis = memoize((speechSynthesis, SpeechSynthesisUtterance) => {
     if (speechSynthesis && SpeechSynthesisUtterance) {
       const utterance = new SpeechSynthesisUtterance('');
@@ -72,37 +78,89 @@ const connectMicrophoneButton = (...selectors) => {
   );
 };
 
-const MicrophoneButton = ({ className, click, dictating, disabled, language, styleSet }) => (
-  <div
-    aria-controls="webchatSendBoxMicrophoneButton"
-    className={classNames(styleSet.microphoneButton + '', ROOT_CSS + '', className + '', { dictating })}
-  >
-    <IconButton alt={localize('Speak', language)} disabled={disabled} onClick={click}>
-      <MicrophoneIcon />
-    </IconButton>
-    <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
-      {localize(dictating ? 'Microphone on' : 'Microphone off', language)}
+const useMicrophoneButton = () => {
+  const {
+    disabled,
+    dictateInterims,
+    dictateState,
+    setSendBox,
+    startDictate,
+    stopDictate,
+    webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
+  } = useWebChat(state => state);
+
+  const [primeSpeechSynthesis] = useState(() =>
+    memoize((speechSynthesis, SpeechSynthesisUtterance) => {
+      if (speechSynthesis && SpeechSynthesisUtterance) {
+        const utterance = new SpeechSynthesisUtterance('');
+
+        [utterance.voice] = speechSynthesis.getVoices();
+        speechSynthesis.speak(utterance);
+      }
+    })
+  );
+
+  // TODO: [P2] We should revisit this function later
+  //       The click() logic seems local to the component, but may not be generalized across all implementations.
+  const click = useCallback(() => {
+    if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
+      stopDictate();
+      setSendBox(dictateInterims.join(' '));
+    } else {
+      startDictate();
+    }
+
+    primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
+  }, [
+    dictateInterims,
+    dictateState,
+    primeSpeechSynthesis,
+    setSendBox,
+    speechSynthesis,
+    SpeechSynthesisUtterance,
+    startDictate,
+    stopDictate
+  ]);
+
+  return useMemo(
+    () => ({
+      click,
+      dictating: dictateState === DictateState.DICTATING,
+      disabled: disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING
+    }),
+    [click, dictateState, disabled]
+  );
+};
+
+const MicrophoneButton = ({ className }) => {
+  const { click, dictating, disabled } = useMicrophoneButton();
+  const styleSet = useStyleSet();
+  const buttonAltText = useLocalize('Speak');
+  const microphoneStatusLabel = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
+
+  return (
+    <div
+      aria-controls="webchatSendBoxMicrophoneButton"
+      className={classNames(styleSet.microphoneButton + '', ROOT_CSS + '', className + '', { dictating })}
+    >
+      <IconButton alt={buttonAltText} disabled={disabled} onClick={click}>
+        <MicrophoneIcon />
+      </IconButton>
+      <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
+        {microphoneStatusLabel}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 MicrophoneButton.defaultProps = {
-  className: '',
-  dictating: false,
-  disabled: false
+  className: ''
 };
 
 MicrophoneButton.propTypes = {
-  className: PropTypes.string,
-  click: PropTypes.func.isRequired,
-  dictating: PropTypes.bool,
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    microphoneButton: PropTypes.any.isRequired
-  }).isRequired
+  className: PropTypes.string
 };
 
-export default connectMicrophoneButton(({ styleSet }) => ({ styleSet }))(MicrophoneButton);
+export default MicrophoneButton;
 
-export { connectMicrophoneButton };
+export { connectMicrophoneButton, useMicrophoneButton };
