@@ -4,13 +4,19 @@ import Say from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
 
 // TODO: [P3] We should add a "spoken" or "speakState" flag to indicate whether this activity is going to speak, or spoken
-const connectSpeakActivity = (...selectors) =>
-  connectToWebChat(
+const connectSpeakActivity = (...selectors) => {
+  console.warn(
+    'Web Chat: connectSpeakActivity() will be removed on or after 2021-09-27, please use useSpeakActivity() instead.'
+  );
+
+  return connectToWebChat(
     ({ language, markActivity, selectVoice }, { activity }) => ({
       language,
       markAsSpoken: () => markActivity(activity, 'speak', false),
@@ -18,14 +24,26 @@ const connectSpeakActivity = (...selectors) =>
     }),
     ...selectors
   );
+};
 
-const Speak = ({ activity, markAsSpoken, selectVoice, styleSet }) => {
+const useSpeakActivity = ({ activity }) => {
+  const { markActivity, selectVoice } = useWebChat();
+
+  return {
+    markAsSpoken: () => markActivity(activity, 'speak', false),
+    selectVoice: voices => selectVoice(voices, activity)
+  };
+};
+
+const Speak = ({ activity }) => {
+  const { markAsSpoken, selectVoice } = useSpeakActivity();
+  const styleSet = useStyleSet();
+
   if (!activity) {
     return false;
   }
 
   const { attachments = [], speak, text } = activity;
-
   const lines = [speak || text];
 
   attachments.forEach(({ content: { speak } = {}, contentType }) => {
@@ -56,16 +74,9 @@ Speak.propTypes = {
     ),
     speak: PropTypes.string,
     text: PropTypes.string
-  }).isRequired,
-  markAsSpoken: PropTypes.func.isRequired,
-  selectVoice: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      showSpokenText: PropTypes.bool.isRequired
-    }).isRequired
   }).isRequired
 };
 
-export default connectSpeakActivity(({ styleSet }) => ({ styleSet }))(Speak);
+export default Speak;
 
-export { connectSpeakActivity };
+export { connectSpeakActivity, useSpeakActivity };

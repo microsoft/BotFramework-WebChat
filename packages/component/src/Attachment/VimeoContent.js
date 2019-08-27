@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
-const VimeoContent = ({ alt, autoPlay, embedID, loop, styleSet: { vimeoContent } }) => {
+const VimeoContent = ({ alt, autoPlay, embedID, loop }) => {
+  const styleSet = useStyleSet();
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     badge: 0,
@@ -17,7 +18,7 @@ const VimeoContent = ({ alt, autoPlay, embedID, loop, styleSet: { vimeoContent }
     <iframe
       allowFullScreen={true}
       aria-label={alt}
-      className={vimeoContent}
+      className={styleSet.vimeoContent}
       src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
     />
   );
@@ -33,10 +34,7 @@ VimeoContent.propTypes = {
   alt: PropTypes.string,
   autoPlay: PropTypes.bool,
   embedID: PropTypes.string.isRequired,
-  loop: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    vimeoContent: PropTypes.any.isRequired
-  }).isRequired
+  loop: PropTypes.bool
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(VimeoContent);
+export default VimeoContent;

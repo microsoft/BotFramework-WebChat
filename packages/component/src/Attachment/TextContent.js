@@ -6,11 +6,21 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useWebChat from '../useWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
-const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
-  contentType === 'text/markdown' && renderMarkdown ? (
+const useTextContext = () => {
+  const { renderMarkdown = text => text } = useWebChat();
+
+  return { renderMarkdown };
+};
+
+const TextContent = ({ contentType, text }) => {
+  const { renderMarkdown } = useTextContext();
+  const styleSet = useStyleSet();
+
+  return contentType === 'text/markdown' && renderMarkdown ? (
     <React.Fragment>
       <ScreenReaderText text={text} />
       <div
@@ -29,19 +39,17 @@ const TextContent = ({ contentType, renderMarkdown, styleSet, text }) =>
       </React.Fragment>
     ))
   );
+};
 
 TextContent.defaultProps = {
-  contentType: 'text/markdown',
-  renderMarkdown: text => text
+  contentType: 'text/markdown'
 };
 
 TextContent.propTypes = {
   contentType: PropTypes.string,
-  renderMarkdown: PropTypes.func,
-  styleSet: PropTypes.shape({
-    textContent: PropTypes.any.isRequired
-  }).isRequired,
   text: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ renderMarkdown, styleSet }) => ({ renderMarkdown, styleSet }))(TextContent);
+export default TextContent;
+
+export { useTextContext };

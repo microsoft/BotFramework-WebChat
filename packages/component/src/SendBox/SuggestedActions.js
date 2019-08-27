@@ -22,14 +22,19 @@ function suggestedActionText({ displayText, title, type, value }) {
   return JSON.stringify(value);
 }
 
-const connectSuggestedActions = (...selectors) =>
-  connectToWebChat(
+const connectSuggestedActions = (...selectors) => {
+  console.warn(
+    'Web Chat: connectSuggestedActions() will be removed on or after 2021-09-27, please use useSuggestedActions() instead.'
+  );
+
+  return connectToWebChat(
     ({ language, suggestedActions }) => ({
       language,
       suggestedActions
     }),
     ...selectors
   );
+};
 
 const useSuggestedActions = () => {
   const { suggestedActions = [] } = useWebChat(state => state);

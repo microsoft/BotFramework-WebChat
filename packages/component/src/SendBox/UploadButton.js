@@ -34,8 +34,12 @@ async function makeThumbnail(file, width, height, contentType, quality) {
   }
 }
 
-const connectUploadButton = (...selectors) =>
-  connectToWebChat(
+const connectUploadButton = (...selectors) => {
+  console.warn(
+    'Web Chat: connectUploadButton() will be removed on or after 2021-09-27, please use useUploadButton() instead.'
+  );
+
+  return connectToWebChat(
     ({
       disabled,
       language,
@@ -80,6 +84,7 @@ const connectUploadButton = (...selectors) =>
     }),
     ...selectors
   );
+};
 
 const useUploadButton = () => {
   const { disabled, sendFiles } = useWebChat();

@@ -9,7 +9,7 @@ import React from 'react';
 import remark from 'remark';
 import stripMarkdown from 'strip-markdown';
 
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -17,6 +17,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -61,8 +62,12 @@ const ROOT_CSS = css({
   }
 });
 
-const connectStackedLayout = (...selectors) =>
-  connectToWebChat(
+const connectStackedLayout = (...selectors) => {
+  console.warn(
+    'Web Chat: connectStackedLayout() will be removed on or after 2021-09-27, please use useStackedLayout() instead.'
+  );
+
+  return connectToWebChat(
     (
       {
         language,
@@ -81,8 +86,19 @@ const connectStackedLayout = (...selectors) =>
     }),
     ...selectors
   );
+};
 
-const StackedLayout = ({ activity, avatarInitials, children, language, styleSet, timestampClassName }) => {
+const useStackedLayout = ({ fromUser }) => {
+  const {
+    options: { botAvatarInitials, userAvatarInitials }
+  } = useStyleSet();
+
+  return {
+    avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
+  };
+};
+
+const StackedLayout = ({ activity, children, timestampClassName }) => {
   const {
     attachments = [],
     channelData: { messageBack: { displayText: messageBackDisplayText } = {}, state } = {},
@@ -90,19 +106,18 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     text,
     textFormat
   } = activity;
+  const fromUser = role === 'user';
+
+  const { avatarInitials } = useStackedLayout({ fromUser });
+  const styleSet = useStyleSet();
 
   const activityDisplayText = messageBackDisplayText || text;
-  const fromUser = role === 'user';
   const showSendStatus = state === SENDING || state === SEND_FAILED;
   const plainText = remark()
     .use(stripMarkdown)
     .processSync(text);
-  const ariaLabel = localize(
-    fromUser ? 'User said something' : 'Bot said something',
-    language,
-    avatarInitials,
-    plainText
-  );
+  const ariaLabel = useLocalize(fromUser ? 'User said something' : 'Bot said something', avatarInitials, plainText);
+  const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
   const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
   return (
@@ -143,7 +158,7 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
             className={classNames('webchat__row attachment', { webchat__stacked_item_indented: indented })}
             key={index}
           >
-            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <ScreenReaderText text={roleLabel} />
             <Bubble className="attachment bubble" fromUser={fromUser} key={index} nub={false}>
               {children({ attachment })}
             </Bubble>
@@ -184,19 +199,10 @@ StackedLayout.propTypes = {
     timestamp: PropTypes.string,
     type: PropTypes.string.isRequired
   }).isRequired,
-  avatarInitials: PropTypes.string.isRequired,
   children: PropTypes.any,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    stackedLayout: PropTypes.any.isRequired
-  }).isRequired,
   timestampClassName: PropTypes.string
 };
 
-export default connectStackedLayout(({ avatarInitials, language, styleSet }) => ({
-  avatarInitials,
-  language,
-  styleSet
-}))(StackedLayout);
+export default StackedLayout;
 
-export { connectStackedLayout };
+export { connectStackedLayout, useStackedLayout };

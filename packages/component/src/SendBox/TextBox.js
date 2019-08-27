@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
 const ROOT_CSS = css({
   display: 'flex',
@@ -15,8 +17,12 @@ const ROOT_CSS = css({
   }
 });
 
-const connectSendTextBox = (...selectors) =>
-  connectToWebChat(
+const connectSendTextBox = (...selectors) => {
+  console.warn(
+    'Web Chat: connectSendTextBox() will be removed on or after 2021-09-27, please use useSendTextBox() instead.'
+  );
+
+  return connectToWebChat(
     ({ disabled, focusSendBox, language, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox }) => ({
       disabled,
       language,
@@ -52,9 +58,52 @@ const connectSendTextBox = (...selectors) =>
     }),
     ...selectors
   );
+};
 
-const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit, styleSet, value }) => {
-  const typeYourMessageString = localize('Type your message', language);
+const useSendTextBox = () => {
+  const { disabled, focusSendBox, scrollToEnd, sendBoxValue, setSendBox, stopDictate, submitSendBox } = useWebChat(
+    state => state
+  );
+
+  // TODO: [P2] Revisit these functions. Think about apps that are not React, how useful are these functions appears to them.
+  return {
+    disabled,
+    onChange: ({ target: { value } }) => {
+      setSendBox(value);
+      stopDictate();
+    },
+    onKeyPress: event => {
+      const { key, shiftKey } = event;
+
+      if (key === 'Enter' && !shiftKey) {
+        event.preventDefault();
+
+        if (sendBoxValue) {
+          scrollToEnd();
+          submitSendBox();
+          focusSendBox();
+        }
+      }
+    },
+    onSubmit: event => {
+      event.preventDefault();
+
+      // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
+      // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
+
+      if (sendBoxValue) {
+        scrollToEnd();
+        submitSendBox();
+      }
+    },
+    value: sendBoxValue
+  };
+};
+
+const TextBox = ({ className }) => {
+  const { disabled, onChange, onKeyPress, onSubmit, value } = useSendTextBox();
+  const styleSet = useStyleSet();
+  const typeYourMessageString = useLocalize('Type your message');
   const {
     options: { sendBoxTextWrap }
   } = styleSet;
@@ -102,28 +151,13 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
 };
 
 TextBox.defaultProps = {
-  className: '',
-  disabled: false,
-  value: ''
+  className: ''
 };
 
 TextBox.propTypes = {
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onKeyPress: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      sendBoxTextWrap: PropTypes.bool.isRequired
-    }).isRequired,
-    sendBoxTextArea: PropTypes.any.isRequired,
-    sendBoxTextBox: PropTypes.any.isRequired
-  }).isRequired,
-  value: PropTypes.string
+  className: PropTypes.string
 };
 
-export default connectSendTextBox(({ styleSet }) => ({ styleSet }))(TextBox);
+export default TextBox;
 
-export { connectSendTextBox };
+export { connectSendTextBox, useSendTextBox };

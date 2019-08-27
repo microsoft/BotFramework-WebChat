@@ -4,9 +4,13 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
-const connectAvatar = (...selectors) =>
-  connectToWebChat(
+const connectAvatar = (...selectors) => {
+  console.warn('Web Chat: connectAvatar() will be removed on or after 2021-09-27, please use useAvatar() instead.');
+
+  return connectToWebChat(
     (
       {
         styleSet: {
@@ -20,40 +24,53 @@ const connectAvatar = (...selectors) =>
     }),
     ...selectors
   );
+};
+
+const useAvatar = ({ fromUser }) => {
+  const {
+    styleSet: {
+      options: { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials }
+    }
+  } = useWebChat();
+
+  return {
+    avatarImage: fromUser ? userAvatarImage : botAvatarImage,
+    avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
+  };
+};
 
 // TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
-const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, className, fromUser, styleSet }) =>
-  !!(avatarImage || avatarInitials) && (
-    <div
-      aria-hidden={ariaHidden}
-      className={classNames(styleSet.avatar + '', { 'from-user': fromUser }, className + '')}
-    >
-      {avatarInitials}
-      {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
-    </div>
+const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+  const { avatarImage, avatarInitials } = useAvatar({ fromUser });
+  const styleSet = useStyleSet();
+
+  return (
+    !!(avatarImage || avatarInitials) && (
+      <div
+        aria-hidden={ariaHidden}
+        className={classNames(styleSet.avatar + '', { 'from-user': fromUser }, className + '')}
+      >
+        {avatarInitials}
+        {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
+      </div>
+    )
   );
+};
 
 Avatar.defaultProps = {
   'aria-hidden': false,
-  avatarImage: '',
-  avatarInitials: '',
   className: '',
   fromUser: false
 };
 
 Avatar.propTypes = {
   'aria-hidden': PropTypes.bool,
-  avatarImage: PropTypes.string,
-  avatarInitials: PropTypes.string,
   className: PropTypes.string,
-  fromUser: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    avatar: PropTypes.any.isRequired
-  }).isRequired
+  fromUser: PropTypes.bool
 };
 
-export default connectAvatar(({ styleSet }) => ({ styleSet }))(Avatar);
+export default Avatar;
 
-export { connectAvatar };
+export { connectAvatar, useAvatar };

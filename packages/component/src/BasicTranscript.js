@@ -5,9 +5,10 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
+import useStyleSet from './hooks/useStyleSet';
+import useWebChat from './useWebChat';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -51,15 +52,11 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const BasicTranscript = ({
-  activityRenderer,
-  activities,
-  attachmentRenderer,
-  className,
-  groupTimestamp,
-  styleSet,
-  webSpeechPonyfill
-}) => {
+const BasicTranscript = ({ className }) => {
+  const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useWebChat(
+    state => state
+  );
+  const styleSet = useStyleSet();
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
@@ -122,37 +119,11 @@ const BasicTranscript = ({
 };
 
 BasicTranscript.defaultProps = {
-  className: '',
-  groupTimestamp: true,
-  webSpeechPonyfill: undefined
+  className: ''
 };
 
 BasicTranscript.propTypes = {
-  activities: PropTypes.array.isRequired,
-  activityRenderer: PropTypes.func.isRequired,
-  attachmentRenderer: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  groupTimestamp: PropTypes.oneOfType([PropTypes.bool.isRequired, PropTypes.number.isRequired]),
-  styleSet: PropTypes.shape({
-    activities: PropTypes.any.isRequired,
-    activity: PropTypes.any.isRequired,
-    options: PropTypes.shape({
-      hideScrollToEndButton: PropTypes.bool.isRequired
-    }).isRequired
-  }).isRequired,
-  webSpeechPonyfill: PropTypes.shape({
-    speechSynthesis: PropTypes.any.isRequired,
-    SpeechSynthesisUtterance: PropTypes.any.isRequired
-  })
+  className: PropTypes.string
 };
 
-export default connectToWebChat(
-  ({ activities, activityRenderer, attachmentRenderer, groupTimestamp, styleSet, webSpeechPonyfill }) => ({
-    activities,
-    activityRenderer,
-    attachmentRenderer,
-    groupTimestamp,
-    styleSet,
-    webSpeechPonyfill
-  })
-)(BasicTranscript);
+export default BasicTranscript;

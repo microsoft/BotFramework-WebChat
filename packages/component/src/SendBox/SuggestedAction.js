@@ -16,8 +16,12 @@ const SUGGESTED_ACTION_CSS = css({
   }
 });
 
-const connectSuggestedAction = (...selectors) =>
-  connectToWebChat(
+const connectSuggestedAction = (...selectors) => {
+  console.warn(
+    'Web Chat: connectSuggestedAction() will be removed on or after 2021-09-27, please use useSuggestedAction() instead.'
+  );
+
+  return connectToWebChat(
     ({ clearSuggestedActions, disabled, language, onCardAction }, { displayText, text, type, value }) => ({
       click: () => {
         onCardAction({ displayText, text, type, value });
@@ -28,6 +32,7 @@ const connectSuggestedAction = (...selectors) =>
     }),
     ...selectors
   );
+};
 
 const useSuggestedAction = () => {
   const { clearSuggestedActions, disabled, onCardAction } = useWebChat(state => state);

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
   position: 'relative',
@@ -18,22 +18,26 @@ const ROOT_CSS = css({
   }
 });
 
-const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub, styleSet }) => (
-  <div
-    aria-hidden={ariaHidden}
-    className={classNames(
-      ROOT_CSS + '',
-      styleSet.bubble + '',
-      { 'from-user': fromUser, webchat__bubble_has_nub: nub },
-      className + '' || ''
-    )}
-  >
-    <div className="webchat__bubble__content">{children}</div>
-    {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-      <div className="webchat__bubble__nub" />
-    )}
-  </div>
-);
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
+  const styleSet = useStyleSet();
+
+  return (
+    <div
+      aria-hidden={ariaHidden}
+      className={classNames(
+        ROOT_CSS + '',
+        styleSet.bubble + '',
+        { 'from-user': fromUser, webchat__bubble_has_nub: nub },
+        className + '' || ''
+      )}
+    >
+      <div className="webchat__bubble__content">{children}</div>
+      {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
+        <div className="webchat__bubble__nub" />
+      )}
+    </div>
+  );
+};
 
 Bubble.defaultProps = {
   'aria-hidden': false,
@@ -48,10 +52,7 @@ Bubble.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   fromUser: PropTypes.bool,
-  nub: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    bubble: PropTypes.any.isRequired
-  }).isRequired
+  nub: PropTypes.bool
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(Bubble);
+export default Bubble;

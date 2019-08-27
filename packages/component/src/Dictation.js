@@ -3,28 +3,31 @@ import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import connectToWebChat from './connectToWebChat';
+import useWebChat from './useWebChat';
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-const Dictation = ({
-  dictateState,
-  disabled,
-  language,
-  numSpeakingActivities,
-  onError,
-  postActivity,
-  sendTypingIndicator,
-  setDictateInterims,
-  setDictateState,
-  setSendBox,
-  startSpeakingActivity,
-  stopDictate,
-  submitSendBox,
-  webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
-}) => {
+const Dictation = ({ onError }) => {
+  const {
+    activities,
+    dictateState,
+    disabled,
+    language,
+    postActivity,
+    sendTypingIndicator,
+    setDictateInterims,
+    setDictateState,
+    setSendBox,
+    startSpeakingActivity,
+    stopDictate,
+    submitSendBox,
+    webSpeechPonyfill: { SpeechGrammarList, SpeechRecognition } = {}
+  } = useWebChat(state => state);
+
+  const numSpeakingActivities = activities.filter(({ channelData: { speak } = {} }) => speak).length;
+
   const handleDictate = useCallback(
     ({ result: { transcript } = {} }) => {
       if (dictateState === DICTATING || dictateState === STARTING) {
@@ -76,59 +79,11 @@ const Dictation = ({
 };
 
 Dictation.defaultProps = {
-  disabled: false,
-  onError: undefined,
-  webSpeechPonyfill: undefined
+  onError: undefined
 };
 
 Dictation.propTypes = {
-  dictateState: PropTypes.number.isRequired,
-  disabled: PropTypes.bool,
-  language: PropTypes.string.isRequired,
-  numSpeakingActivities: PropTypes.number.isRequired,
-  onError: PropTypes.func,
-  postActivity: PropTypes.func.isRequired,
-  sendTypingIndicator: PropTypes.bool.isRequired,
-  setDictateInterims: PropTypes.func.isRequired,
-  setDictateState: PropTypes.func.isRequired,
-  setSendBox: PropTypes.func.isRequired,
-  startSpeakingActivity: PropTypes.func.isRequired,
-  stopDictate: PropTypes.func.isRequired,
-  submitSendBox: PropTypes.func.isRequired,
-  webSpeechPonyfill: PropTypes.shape({
-    SpeechGrammarList: PropTypes.any.isRequired,
-    SpeechRecognition: PropTypes.any.isRequired
-  })
+  onError: PropTypes.func
 };
 
-export default connectToWebChat(
-  ({
-    activities,
-    dictateState,
-    disabled,
-    language,
-    postActivity,
-    sendTypingIndicator,
-    setDictateInterims,
-    setDictateState,
-    setSendBox,
-    startSpeakingActivity,
-    stopDictate,
-    submitSendBox,
-    webSpeechPonyfill
-  }) => ({
-    dictateState,
-    disabled,
-    language,
-    numSpeakingActivities: activities.filter(({ channelData: { speak } = {} }) => speak).length,
-    postActivity,
-    sendTypingIndicator,
-    setDictateInterims,
-    setDictateState,
-    setSendBox,
-    startSpeakingActivity,
-    stopDictate,
-    submitSendBox,
-    webSpeechPonyfill
-  })
-)(Dictation);
+export default Dictation;

@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
+import useWebChat from '../useWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
 const CONNECTIVITY_STATUS_DEBOUNCE = 400;
 
@@ -35,84 +37,100 @@ DebouncedConnectivityStatus.propTypes = {
   interval: PropTypes.number.isRequired
 };
 
-const connectConnectivityStatus = (...selectors) =>
-  connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
+const connectConnectivityStatus = (...selectors) => {
+  console.warn(
+    'Web Chat: connectConnectivityStatus() will be removed on or after 2021-09-27, please use useConnectivityStatus() instead.'
+  );
 
-const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => {
-  const renderConnectingSlow = useCallback(() => {
-    const localizedText = localize('SLOW_CONNECTION_NOTIFICATION', language);
+  return connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
+};
 
-    return (
+const useConnectivityStatus = () => {
+  const { connectivityStatus } = useWebChat();
+
+  return { connectivityStatus };
+};
+
+const ConnectivityStatus = () => {
+  const { connectivityStatus } = useConnectivityStatus();
+  const styleSet = useStyleSet();
+  const connectingSlowText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
+  const renderConnectingSlow = useCallback(
+    () => (
       <React.Fragment>
-        <ScreenReaderText text={localizedText} />
+        <ScreenReaderText text={connectingSlowText} />
         <div aria-hidden={true} className={styleSet.warningNotification}>
           <WarningNotificationIcon />
-          {localizedText}
+          {connectingSlowText}
         </div>
       </React.Fragment>
-    );
-  }, [language, styleSet.warningNotification]);
+    ),
+    [connectingSlowText, styleSet.warningNotification]
+  );
 
-  const renderNotConnected = useCallback(() => {
-    const localizedText = localize('FAILED_CONNECTION_NOTIFICATION', language);
+  const notConnectedText = useLocalize('FAILED_CONNECTION_NOTIFICATION');
 
-    return (
+  const renderNotConnected = useCallback(
+    () => (
       <React.Fragment>
-        <ScreenReaderText text={localizedText} />
+        <ScreenReaderText text={notConnectedText} />
         <div aria-hidden={true} className={styleSet.errorNotification}>
           <ErrorNotificationIcon />
-          {localizedText}
+          {notConnectedText}
         </div>
       </React.Fragment>
-    );
-  }, [language, styleSet.errorNotification]);
+    ),
+    [notConnectedText, styleSet.errorNotification]
+  );
 
-  const renderUninitialized = useCallback(() => {
-    const localizedText = localize('INITIAL_CONNECTION_NOTIFICATION', language);
+  const uninitializedText = useLocalize('INITIAL_CONNECTION_NOTIFICATION');
 
-    return (
+  const renderUninitialized = useCallback(
+    () => (
       <React.Fragment>
-        <ScreenReaderText text={localizedText} />
+        <ScreenReaderText text={uninitializedText} />
         <div aria-hidden={true} className={styleSet.connectivityNotification}>
           <SpinnerAnimation />
-          {localizedText}
+          {uninitializedText}
         </div>
       </React.Fragment>
-    );
-  }, [language, styleSet.connectivityNotification]);
+    ),
+    [styleSet.connectivityNotification, uninitializedText]
+  );
 
-  const renderReconnecting = useCallback(() => {
-    const localizedText = localize('INTERRUPTED_CONNECTION_NOTIFICATION', language);
+  const reconnectingText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
 
-    return (
+  const renderReconnecting = useCallback(
+    () => (
       <React.Fragment>
-        <ScreenReaderText text={localizedText} />
+        <ScreenReaderText text={reconnectingText} />
         <div aria-hidden={true} className={styleSet.connectivityNotification}>
           <SpinnerAnimation />
-          {localizedText}
+          {reconnectingText}
         </div>
       </React.Fragment>
-    );
-  }, [language, styleSet.connectivityNotification]);
+    ),
+    [reconnectingText, styleSet.connectivityNotification]
+  );
 
-  const renderSagaError = useCallback(() => {
-    const localizedText = localize('RENDER_ERROR_NOTIFICATION', language);
+  const sagaErrorText = useLocalize('RENDER_ERROR_NOTIFICATION');
 
-    return (
+  const renderSagaError = useCallback(
+    () => (
       <React.Fragment>
-        <ScreenReaderText text={localizedText} />
+        <ScreenReaderText text={sagaErrorText} />
         <div className={styleSet.errorNotification}>
           <ErrorNotificationIcon />
-          {localizedText}
+          {sagaErrorText}
         </div>
       </React.Fragment>
-    );
-  }, [language, styleSet.errorNotification]);
-
-  const renderEmptyStatus = useCallback(
-    () => <ScreenReaderText text={localize('CONNECTED_NOTIFICATION', language)} />,
-    [language]
+    ),
+    [sagaErrorText, styleSet.errorNotification]
   );
+
+  const emptyStatusText = useLocalize('CONNECTED_NOTIFICATION');
+
+  const renderEmptyStatus = useCallback(() => <ScreenReaderText text={emptyStatusText} />, [emptyStatusText]);
 
   const renderStatus = useCallback(() => {
     if (connectivityStatus === 'connectingslow') {
@@ -150,14 +168,6 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => {
   );
 };
 
-ConnectivityStatus.propTypes = {
-  connectivityStatus: PropTypes.string.isRequired,
-  language: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    connectivityNotification: PropTypes.any.isRequired,
-    errorNotification: PropTypes.any.isRequired,
-    warningNotification: PropTypes.any.isRequired
-  }).isRequired
-};
+export default ConnectivityStatus;
 
-export default connectConnectivityStatus(({ styleSet }) => ({ styleSet }))(ConnectivityStatus);
+export { connectConnectivityStatus, useConnectivityStatus };

@@ -2,16 +2,22 @@ import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebChat from '../useWebChat';
 
 const {
   ActivityClientState: { SEND_FAILED, SENDING }
 } = Constants;
 
-const connectSendStatus = (...selectors) =>
-  connectToWebChat(
+const connectSendStatus = (...selectors) => {
+  console.warn(
+    'Web Chat: connectSendStatus() will be removed on or after 2021-09-27, please use useSendStatus() instead.'
+  );
+
+  return connectToWebChat(
     ({ focusSendBox, language, postActivity }, { activity }) => ({
       language,
       retrySend: evt => {
@@ -26,13 +32,34 @@ const connectSendStatus = (...selectors) =>
     }),
     ...selectors
   );
+};
 
-const SendStatus = ({ activity: { channelData: { state } = {} }, language, retrySend, styleSet }) => {
+const useSendStatus = ({ activity }) => {
+  const { focusSendBox, postActivity } = useWebChat();
+
+  return {
+    retrySend: evt => {
+      evt.preventDefault();
+
+      postActivity(activity);
+
+      // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
+      // We want to make sure the user stay inside Web Chat
+      focusSendBox();
+    }
+  };
+};
+
+const SendStatus = ({ activity }) => {
+  const { retrySend } = useSendStatus({ activity });
+  const { channelData: { state } = {} } = activity;
+  const styleSet = useStyleSet();
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
-  const localizedSending = localize('Sending', language);
-  const localizedSendStatus = localize('SendStatus', language);
-  const sendFailedText = localize('SEND_FAILED_KEY', language);
+  const localizedSending = useLocalize('Sending');
+  const localizedSendStatus = useLocalize('SendStatus');
+  const retryText = useLocalize('Retry');
+  const sendFailedText = useLocalize('SEND_FAILED_KEY');
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
 
   return (
@@ -46,7 +73,7 @@ const SendStatus = ({ activity: { channelData: { state } = {} }, language, retry
             <React.Fragment>
               {sendFailedText.substr(0, sendFailedRetryMatch.index)}
               <button onClick={retrySend} type="button">
-                {localize('Retry', language)}
+                {retryText}
               </button>
               {sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length)}
             </React.Fragment>
@@ -68,14 +95,9 @@ SendStatus.propTypes = {
     channelData: PropTypes.shape({
       state: PropTypes.string
     })
-  }).isRequired,
-  language: PropTypes.string.isRequired,
-  retrySend: PropTypes.func.isRequired,
-  styleSet: PropTypes.shape({
-    sendStatus: PropTypes.any.isRequired
   }).isRequired
 };
 
-export default connectSendStatus(({ styleSet }) => ({ styleSet }))(SendStatus);
+export default SendStatus;
 
-export { connectSendStatus };
+export { connectSendStatus, useSendStatus };

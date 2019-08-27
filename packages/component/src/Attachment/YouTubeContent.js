@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
+import useStyleSet from '../hooks/useStyleSet';
 
-const YouTubeContent = ({ alt, autoPlay, embedID, loop, styleSet: { youTubeContent } }) => {
+const YouTubeContent = ({ alt, autoPlay, embedID, loop }) => {
+  const styleSet = useStyleSet();
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     loop: loop ? 1 : 0,
@@ -15,7 +16,7 @@ const YouTubeContent = ({ alt, autoPlay, embedID, loop, styleSet: { youTubeConte
     <iframe
       allowFullScreen={true}
       aria-label={alt}
-      className={youTubeContent}
+      className={styleSet.youTubeContent}
       src={`https://youtube.com/embed/${embedID}?${search}`}
     />
   );
@@ -31,10 +32,7 @@ YouTubeContent.propTypes = {
   alt: PropTypes.string,
   autoPlay: PropTypes.bool,
   embedID: PropTypes.string.isRequired,
-  loop: PropTypes.bool,
-  styleSet: PropTypes.shape({
-    youTubeContent: PropTypes.any.isRequired
-  }).isRequired
+  loop: PropTypes.bool
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(YouTubeContent);
+export default YouTubeContent;

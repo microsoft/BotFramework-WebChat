@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
+import useStyleSet from '../hooks/useStyleSet';
 
-const ImageContent = ({ alt, src, styleSet }) => (
-  <CroppedImage alt={alt} height={styleSet.options.bubbleImageHeight} src={src} width="100%" />
-);
+const ImageContent = ({ alt, src }) => {
+  const styleSet = useStyleSet();
+
+  return <CroppedImage alt={alt} height={styleSet.options.bubbleImageHeight} src={src} width="100%" />;
+};
 
 ImageContent.defaultProps = {
   alt: ''
@@ -14,12 +16,7 @@ ImageContent.defaultProps = {
 
 ImageContent.propTypes = {
   alt: PropTypes.string,
-  src: PropTypes.string.isRequired,
-  styleSet: PropTypes.shape({
-    options: PropTypes.shape({
-      bubbleImageHeight: PropTypes.number.isRequired
-    }).isRequired
-  }).isRequired
+  src: PropTypes.string.isRequired
 };
 
-export default connectToWebChat(({ styleSet }) => ({ styleSet }))(ImageContent);
+export default ImageContent;

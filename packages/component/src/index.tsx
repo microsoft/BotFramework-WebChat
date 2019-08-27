@@ -35,6 +35,7 @@ import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMi
 import createStyleSet from './Styles/createStyleSet';
 import defaultStyleOptions from './Styles/defaultStyleOptions';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import useWebChat from './useWebChat';
 
 const version = process.env.NPM_PACKAGE_VERSION;
 
@@ -94,5 +95,6 @@ export {
   defaultStyleOptions,
   getTabIndex,
   localize,
+  useWebChat,
   version
 };

@@ -8,7 +8,7 @@ import React from 'react';
 
 import { Constants } from 'botframework-webchat-core';
 
-import { localize } from '../Localization/Localize';
+import { useLocalize } from '../Localization/Localize';
 import Avatar from './Avatar';
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -16,6 +16,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useStyleSet from '../hooks/useStyleSet';
 
 const {
   ActivityClientState: { SENDING, SEND_FAILED }
@@ -67,8 +68,12 @@ const ROOT_CSS = css({
   }
 });
 
-const connectCarouselFilmStrip = (...selectors) =>
-  connectToWebChat(
+const connectCarouselFilmStrip = (...selectors) => {
+  console.warn(
+    'Web Chat: connectCarouselFilmStrip() will be removed on or after 2021-09-27, please use useCarouselFilmStrip() instead.'
+  );
+
+  return connectToWebChat(
     (
       {
         language,
@@ -83,16 +88,24 @@ const connectCarouselFilmStrip = (...selectors) =>
     }),
     ...selectors
   );
+};
+
+const useCarouselFilmStrip = ({ fromUser }) => {
+  const {
+    options: { botAvatarInitials, userAvatarInitials }
+  } = useStyleSet();
+
+  return {
+    avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
+  };
+};
 
 const WebChatCarouselFilmStrip = ({
   activity,
-  avatarInitials,
   children,
   className,
   itemContainerRef,
-  language,
   scrollableRef,
-  styleSet,
   timestampClassName
 }) => {
   const {
@@ -102,8 +115,12 @@ const WebChatCarouselFilmStrip = ({
     text,
     textFormat
   } = activity;
-
   const fromUser = role === 'user';
+
+  const avatarInitials = useCarouselFilmStrip({ fromUser });
+  const styleSet = useStyleSet();
+  const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
+
   const activityDisplayText = messageBackDisplayText || text;
   const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
 
@@ -118,7 +135,7 @@ const WebChatCarouselFilmStrip = ({
       <div className="content">
         {!!activityDisplayText && (
           <div className="message">
-            <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+            <ScreenReaderText text={roleLabel} />
             <Bubble className="bubble" fromUser={fromUser} nub={true}>
               {children({
                 activity,
@@ -134,7 +151,7 @@ const WebChatCarouselFilmStrip = ({
         <ul className={classNames({ webchat__carousel__item_indented: indented })} ref={itemContainerRef}>
           {attachments.map((attachment, index) => (
             <li key={index}>
-              <ScreenReaderText text={fromUser ? localize('UserSent', language) : localize('BotSent', language)} />
+              <ScreenReaderText text={roleLabel} />
               <Bubble fromUser={fromUser} key={index} nub={false}>
                 {children({ attachment })}
               </Bubble>
@@ -154,7 +171,6 @@ const WebChatCarouselFilmStrip = ({
 };
 
 WebChatCarouselFilmStrip.defaultProps = {
-  avatarInitials: '',
   children: undefined,
   className: '',
   timestampClassName: ''
@@ -176,23 +192,14 @@ WebChatCarouselFilmStrip.propTypes = {
     textFormat: PropTypes.string,
     timestamp: PropTypes.string
   }).isRequired,
-  avatarInitials: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,
   itemContainerRef: PropTypes.any.isRequired,
-  language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
-  styleSet: PropTypes.shape({
-    carouselFilmStrip: PropTypes.any.isRequired
-  }).isRequired,
   timestampClassName: PropTypes.string
 };
 
-const ConnectedCarouselFilmStrip = connectCarouselFilmStrip(({ avatarInitials, language, styleSet }) => ({
-  avatarInitials,
-  language,
-  styleSet
-}))(WebChatCarouselFilmStrip);
+const ConnectedCarouselFilmStrip = WebChatCarouselFilmStrip;
 
 const CarouselFilmStrip = props => (
   <FilmContext.Consumer>
@@ -204,4 +211,4 @@ const CarouselFilmStrip = props => (
 
 export default CarouselFilmStrip;
 
-export { connectCarouselFilmStrip };
+export { connectCarouselFilmStrip, useCarouselFilmStrip };

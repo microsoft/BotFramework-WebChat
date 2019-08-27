@@ -3,8 +3,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import connectToWebChat from './connectToWebChat';
-
 const ROOT_CSS = css({
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
   color: 'transparent',
@@ -28,4 +26,4 @@ ScreenReaderText.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-export default connectToWebChat()(ScreenReaderText);
+export default ScreenReaderText;

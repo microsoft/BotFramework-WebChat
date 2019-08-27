@@ -21,8 +21,12 @@ const ROOT_CSS = css({
   display: 'flex'
 });
 
-const connectDictationInterims = (...selectors) =>
-  connectToWebChat(
+const connectDictationInterims = (...selectors) => {
+  console.warn(
+    'Web Chat: connectDictationInterims() will be removed on or after 2021-09-27, please use useDictationInterims() instead.'
+  );
+
+  return connectToWebChat(
     ({ dictateInterims, dictateState, language }) => ({
       dictateInterims,
       dictateState,
@@ -30,6 +34,7 @@ const connectDictationInterims = (...selectors) =>
     }),
     ...selectors
   );
+};
 
 const useDictationInterims = () => {
   const { dictateInterims = [], dictateState } = useWebChat(state => state);
