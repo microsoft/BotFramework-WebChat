@@ -38,7 +38,7 @@ const useSpeakActivity = ({ activity }) => {
 };
 
 const Speak = ({ activity }) => {
-  const { markAsSpoken, selectVoice } = useSpeakActivity();
+  const { markAsSpoken, selectVoice } = useSpeakActivity({ activity });
   const styleSet = useStyleSet();
 
   if (!activity) {

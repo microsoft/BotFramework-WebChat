@@ -91,11 +91,12 @@ const connectCarouselFilmStrip = (...selectors) => {
   );
 };
 
-const useCarouselFilmStrip = ({ fromUser }) => {
+const useCarouselFilmStrip = ({ activity }) => {
+  const { from: { role } = {} } = activity || {};
   const { botAvatarInitials, userAvatarInitials } = useStyleOptions();
 
   return {
-    avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
+    avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials
   };
 };
 
@@ -116,12 +117,13 @@ const WebChatCarouselFilmStrip = ({
   } = activity;
   const fromUser = role === 'user';
 
-  const avatarInitials = useCarouselFilmStrip({ fromUser });
+  const { avatarInitials } = useCarouselFilmStrip({ activity });
+  const styleOptions = useStyleOptions();
   const styleSet = useStyleSet();
   const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
 
   const activityDisplayText = messageBackDisplayText || text;
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? styleOptions.bubbleFromUserNubSize : styleOptions.bubbleNubSize;
 
   return (
     <div

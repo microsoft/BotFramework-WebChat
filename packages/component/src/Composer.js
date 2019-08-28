@@ -131,10 +131,7 @@ function patchPropsForAvatarInitials({ botAvatarInitials, userAvatarInitials, ..
     );
   }
 
-  return {
-    ...props,
-    styleOptions
-  };
+  return styleOptions;
 }
 
 const Composer = ({
