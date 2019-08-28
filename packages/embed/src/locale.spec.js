@@ -4,6 +4,10 @@ test('Normalizing "en.en-us"', () => {
   expect(normalize('en.en-us')).toBe('en-US');
 });
 
+test('Normalizing "bg.bg-bg"', () => {
+  expect(normalize('bg.bg-bg')).toBe('bg-BG');
+});
+
 test('Normalizing "cs.cs-cz"', () => {
   expect(normalize('cs.cs-cz')).toBe('cs-CZ');
 });
