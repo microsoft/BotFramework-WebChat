@@ -4,6 +4,7 @@
 import connectToWebChat from '../connectToWebChat';
 import getLocaleString from './getLocaleString';
 
+import bgBG from './ar-AR';
 import bgBG from './bg-BG';
 import csCZ from './cs-CZ';
 import daDK from './da-DK';
@@ -32,8 +33,9 @@ import zhYUE from './zh-YUE';
 
 function normalizeLanguage(language) {
   language = language.toLowerCase();
-
-  if (language.startsWith('bg')) {
+  if (language.startsWith('ar')) {
+    return 'ar-AR';
+  } else if (language.startsWith('bg')) {
     return 'bg-BG';
   } else if (language.startsWith('cs')) {
     return 'cs-CZ';
@@ -88,6 +90,8 @@ function normalizeLanguage(language) {
 
 function getStrings(language) {
   switch (normalizeLanguage(language || '')) {
+    case 'ar-AR':
+      return arAR;
     case 'bg-BG':
       return bgBG;
     case 'cs-CZ':

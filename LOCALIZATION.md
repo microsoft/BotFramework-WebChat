@@ -6,6 +6,7 @@ If you want to help to translate Web Chat to different language, please submit a
 
 | Language code | Translator                                                 |
 | ------------- | ---------------------------------------------------------- |
+| ar-AR         | Odai Hatem AbuGaith                                        |
 | bg-bg         | @kalin.krustev                                             |
 | cs-cz         | @msimecek                                                  |
 | da-dk         | @Simon_lfr, Thomas Skødt Andersen                          |
