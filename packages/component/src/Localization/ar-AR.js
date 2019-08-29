@@ -34,20 +34,20 @@ function xMinutesAgo(dateStr) {
 }
 
 function botSaidSomething(avatarInitials, text) {
-    return `Bot ${avatarInitials} said, ${text}`;
+    return `${avatarInitials} اجاب, ${text}`;
 }
 
 function downloadFileWithFileSize(downloadFileText, fileName, size) {
     // Full text should read: "Download file <filename> of size <filesize>"
-    return `${downloadFileText} ${fileName} of size ${size}`;
+    return `${downloadFileText} ${fileName}  من حجم ${size}`;
 }
 
 function uploadFileWithFileSize(fileName, size) {
-    return `${fileName} of size ${size}`;
+    return `${fileName} من حجم ${size}`;
 }
 
 function userSaidSomething(avatarInitials, text) {
-    return `User ${avatarInitials} said, ${text}`;
+    return `المستخدم ${avatarInitials} اجاب, ${text}`;
 }
 
 export default {
@@ -55,7 +55,7 @@ export default {
     FAILED_CONNECTION_NOTIFICATION: 'غير قادر على الاتصال.',
     INITIAL_CONNECTION_NOTIFICATION: 'اتصال ...',
     INTERRUPTED_CONNECTION_NOTIFICATION: 'حدث انقطاع في الشبكة. إعادة اتصال ... ',
-    RENDER_ERROR_NOTIFICATION: 'Render error. Please check the console or contact the bot developer.',
+    RENDER_ERROR_NOTIFICATION: 'هناك مشكلة في العرض، الرجاء التواصل مع المطور',
     // Do not localize {Retry}; it is a placeholder for "Retry". English translation should be, "Send failed. Retry."
     SEND_FAILED_KEY: `فشل إرسال. {Retry}.`,
     SLOW_CONNECTION_NOTIFICATION: 'يستغرق وقتا أطول من المعتاد للاتصال.',
@@ -64,8 +64,8 @@ export default {
     'X minutes ago': xMinutesAgo,
     // '[File of type '%1']': '[File of type '%1']",
     // '[Unknown Card '%1']': '[Unknown Card '%1']',
-    'Adaptive Card parse error': 'Adaptive Card parse error',
-    'Adaptive Card render error': 'Adaptive Card render error',
+    'Adaptive Card parse error': 'Adaptive Card خطأ',
+    'Adaptive Card render error': 'Adaptive Card خطأ في عرض',
     BotSent: 'تم الارسال: ',
     Chat: 'محادثة',
     'Download file': 'تحميل الملف',
@@ -74,16 +74,16 @@ export default {
     'Microphone off': 'الميكروفون مغلق',
     'Microphone on': 'الميكروفون يعمل',
     Left: 'يسار',
-    'Listening…': 'الاستماع ...',
+    'Listening…': 'الاستماع…',
     'New messages': 'رسائل جديدة',
     Retry: 'حاول مرة اخرى',
     Right: 'يمين',
     Send: 'ارسل',
     Sending: 'ارسال',
-    SendStatus: 'حالة الارسال: ',
+    SendStatus: 'حالة الارسال:',
     SentAt: 'ارسلت ب',
     Speak: 'تكلم',
-    'Starting…': 'بداية ... ',
+    'Starting…': 'بداية …',
     Tax: 'ضريبة',
     Total: 'كلياً',
     'Type your message': 'اكتب سؤالك',
