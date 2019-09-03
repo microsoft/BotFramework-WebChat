@@ -1,68 +1,161 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Sample - Clear Conversation After Idle
 
-## Available Scripts
+This sample shows how to replace Web Chat's store to clear the conversation.
 
-In the project directory, you can run:
+> _Note: This is just a proof of concept thus should not be used in production
+> and lacks security considerations._
 
-### `npm start`
+# Test out the hosted sample
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/17.b.clear-after-idle)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+# How to run locally
 
-### `npm test`
+-  Fork this repository
+-  Navigate to `/Your-Local-WebChat/samples/17.b.clear-after-idle` in the command line
+-  Run `npm install && npm run start` in the directory
+-  Browse to [http://localhost:3000/](http://localhost:3000/)
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Things to try out
 
-### `npm run build`
+-  Send a message to the bot - this will start the timer in the upper right corner. When the timer expires, Web Chat will restart the conversation.
+-  Either send another message to the bot to restart the timer or let the timer expire which will make the conversation restart.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Code
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+> Jump to [completed code](#completed-code) to see the end-result `App.js`, `Timer.js`, and `useTimer.js`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Overview
 
-### `npm run eject`
+In this sample, once the user has sat idle for 30 seconds, we will be replacing the Web Chat store to clear the conversation history and start a new conversation with the bot. Note, when the store is replaced, Web Chat dispatches a `DIRECT_LINE/DISCONNECT` action so we will need to re-initialize our Direct Line connection. In this sample we will simply request a new token; however, it is possible to reuse the old one.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Completed Code
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Here is the finished `App.js`:
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```jsx
+import React, { useCallback, useEffect, useState } from "react";
+import ReactWebChat, {
+  createDirectLine,
+  createStore
+} from "botframework-webchat";
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+import "./App.css";
+import Timer from "./Timer";
 
-## Learn More
+const TIME_INTERVAL = 30000;
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+function App() {
+  const [directLine, setDirectLine] = useState(createDirectLine({}));
+  const [store, setStore] = useState();
+  const [timeRemaining, setTimeRemaining] = useState();
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  const initConversation = useCallback(() => {
+    setStore(
+      createStore({}, ({ dispatch }) => next => action => {
+        if (action.type === "DIRECT_LINE/CONNECT_FULFILLED") {
+          dispatch({
+            type: "WEB_CHAT/SEND_EVENT",
+            payload: {
+              name: "webchat/join",
+              value: { language: window.navigator.language }
+            }
+          });
+        }
+        if (action.type === "WEB_CHAT/SUBMIT_SEND_BOX") {
+          setTimeRemaining(TIME_INTERVAL);
+        }
+        return next(action);
+      })
+    );
 
-### Code Splitting
+    (async function() {
+      const res = await fetch(
+        "https://webchat-mockbot.azurewebsites.net/directline/token",
+        { method: "POST" }
+      );
+      const { token } = await res.json();
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+      setDirectLine(createDirectLine({ token }));
+    })().catch(error => console.log(error));
+  }, [setStore, setDirectLine, setTimeRemaining]);
 
-### Analyzing the Bundle Size
+  const restartConversation = useCallback(() => {
+    alert("Restarting Conversation");
+    initConversation();
+  }, [initConversation]);
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+  useEffect(() => {
+    initConversation();
+  }, []);
 
-### Making a Progressive Web App
+  return (
+    <div className="App">
+      <Timer
+        onComplete={restartConversation}
+        setTimeRemaining={setTimeRemaining}
+        timeRemaining={timeRemaining}
+      />
+      <ReactWebChat className="chat" directLine={directLine} store={store} />
+    </div>
+  );
+}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+export default App;
+```
 
-### Advanced Configuration
+Here is the finished `Timer.js`:
+```jsx
+import React from "react";
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+import useTimer from "./utils/useTimer";
 
-### Deployment
+export default function Timer({ onComplete, setTimeRemaining, timeRemaining }) {
+  const ms = timeRemaining || 0;
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+  useTimer(timeRemaining, onComplete, setTimeRemaining);
+  
+  return <div className="timer">
+      Time Remaining:{" "}
+      <span className={`${timeRemaining < 10000 ? "timer-red" : ""}`}>
+        {Math.floor(ms / 60000)}:{ ("0" + (Math.floor(ms / 1000) % 60)).slice(-2) }
+      </span>
+    </div>
+}
+```
 
-### `npm run build` fails to minify
+Here is the finished `useTimer.js`:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```javascript
+import { useEffect } from "react";
+
+export default function useTimer(
+  timeRemaining,
+  fn,
+  setTimeRemaining,
+  step = 1000
+) {
+  useEffect(() => {
+    let timeout;
+    if (timeRemaining > 0) {
+      timeout = setTimeout(
+        () => setTimeRemaining(ms => (ms > step ? ms - step : 0)),
+        step
+      );
+    } else if (timeRemaining === 0) {
+      fn();
+      setTimeRemaining();
+    }
+
+    return () => clearTimeout(timeout);
+  }, [fn, timeRemaining, setTimeRemaining, step]);
+}
+```
+
+# Further reading
+
+-  [Hooks at a Glance](https://reactjs.org/docs/hooks-overview.html)
+-  [Web Chat Back Channel Welcome Event Sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/15.d.backchannel-send-welcome-event)
+## Full list of Web Chat hosted samples
+
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)

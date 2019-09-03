@@ -7,7 +7,7 @@ import ReactWebChat, {
 import "./App.css";
 import Timer from "./Timer";
 
-const TIME_INTERVAL = 10000;
+const TIME_INTERVAL = 30000;
 
 function App() {
   const [directLine, setDirectLine] = useState(createDirectLine({}));
@@ -27,6 +27,7 @@ function App() {
           });
         }
         if (action.type === "WEB_CHAT/SUBMIT_SEND_BOX") {
+          // Reset the timer when the user sends an activity
           setTimeRemaining(TIME_INTERVAL);
         }
         return next(action);
@@ -60,9 +61,9 @@ function App() {
   return (
     <div className="App">
       <Timer
-        ms={timeRemaining}
         onComplete={restartConversation}
         setTimeRemaining={setTimeRemaining}
+        timeRemaining={timeRemaining}
       />
       <ReactWebChat className="chat" directLine={directLine} store={store} />
     </div>
