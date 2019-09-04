@@ -76,7 +76,7 @@ describe('type focus sink', () => {
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  test('should not type in the send box when focus is on a text box of Adaptive Card', async () => {
+  test('should not type in the send box when focus is on a text box of an Adaptive Card', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
