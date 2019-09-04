@@ -59,7 +59,7 @@ To host this demo, you will need to clone the code and run locally.
    -  In `/web/.env`:
       -  Write `OAUTH_REDIRECT_URI=https://a1b2c3d4.ngrok.io/api/oauth/callback`
          -  When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
-      -  Write `PROXY_URL=http://localhost:3978`
+      -  Write `PROXY_BOT_URL=http://localhost:3978`
          -  This will forward all traffic from https://a1b2c3d4.ngrok.io/api/messages to http://localhost:3978/api/messages, where your bot is listening to
 
 ## Setup OAuth via Azure Active Directory

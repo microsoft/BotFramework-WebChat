@@ -24,6 +24,7 @@ const AZURE_LOCALE_PATTERN = /^(([a-z]{2})(-[a-z]{2,})?)\.([a-z]{2})/;
 const JAVASCRIPT_LOCALE_PATTERN = /^([a-z]{2})-([A-Z]{2,})?$/;
 
 const AZURE_LOCALE_MAPPING = {
+  bg: 'bg-BG',
   cs: 'cs-CZ',
   de: 'de-DE',
   en: 'en-US',
