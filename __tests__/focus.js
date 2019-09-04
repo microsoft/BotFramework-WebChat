@@ -98,7 +98,7 @@ describe('type focus sink', () => {
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  test('should not focus on the send box when SHIFT is presseds', async () => {
+  test('should not focus on the send box when SHIFT is pressed', async () => {
     const { driver } = await setupWebDriver();
 
     await driver.wait(uiConnected(), timeouts.directLine);
@@ -117,7 +117,7 @@ describe('type focus sink', () => {
     await expect(sendBoxTextBoxFocused().fn(driver)).resolves.toBeFalsy();
   });
 
-  test('should paste in the send box when focus is on the transcript', async () => {
+  test('should paste into the send box when focus is on the transcript', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await pageObjects.sendTextToClipboard('Hello, World!');
@@ -144,7 +144,7 @@ describe('type focus sink', () => {
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
-  test('should not paste in the send box when focus is on a text box of Adaptive Card', async () => {
+  test('should not paste in the send box when focus is on a text box of an Adaptive Card', async () => {
     const { driver, pageObjects } = await setupWebDriver();
 
     await pageObjects.sendTextToClipboard('Hello, World!');
