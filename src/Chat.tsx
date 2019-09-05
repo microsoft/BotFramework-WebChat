@@ -211,7 +211,8 @@ export class Chat extends React.Component<ChatProps, {}> {
                             userData: {
                                 ...(this.props.userData || {}),
                                 ...(window.location.hash === '#feedbot-test-mode' ? { testMode: true } : {}),
-                                ...getGoogleAnalyticsUserData()
+                                ...getGoogleAnalyticsUserData(),
+                                ...getReferrerUserData()
                             }
                         }
                     };
@@ -479,4 +480,8 @@ function getGoogleAnalyticsUserData() {
         return {googleAnalyticsTrackingId: trackingId} || {}
     }
     return {}
+}
+
+function getReferrerUserData() {
+    return {referrerUrl: window.location.href}
 }
