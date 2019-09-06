@@ -7,7 +7,7 @@
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <script src="/packages/bundle/dist/webchat.js"></script>
     <style>
       html, body { height: 100% }
       body { margin: 0 }
@@ -30,8 +30,30 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
+        const store = window.WebChat.createStore(
+          {},
+          ({ dispatch }) => next => action => {
+            if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+              dispatch({
+                type: 'WEB_CHAT/SET_SEND_BOX',
+                payload: {
+                  text: 'hello'
+                }
+              });
+            }
+            return next(action);
+          }
+        );
+
+        const styleOptions = {
+
+        };
+
         window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token })
+          disabled: true,
+          directLine: window.WebChat.createDirectLine({ token }),
+          store,
+          styleOptions
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();

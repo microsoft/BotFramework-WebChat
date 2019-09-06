@@ -27,14 +27,15 @@ const DEFAULT_OPTIONS = {
 
   // Avatar
   avatarSize: 40,
-  botAvatarBackgroundColor: null, // defaults to accent color in styleSet
+  botAvatarBackgroundColor: null, // defaults to accent color
   botAvatarImage: '',
   botAvatarInitials: '',
-  userAvatarBackgroundColor: null, // defaults to accent color in styleSet
+  userAvatarBackgroundColor: null, // defaults to accent color
   userAvatarImage: '',
   userAvatarInitials: '',
 
   // Bubble
+  // TODO: Should we make a bubbleFromBot*
   bubbleBackground: 'White',
   bubbleBorderColor: '#E6E6E6',
   bubbleBorderRadius: 2,
@@ -74,18 +75,20 @@ const DEFAULT_OPTIONS = {
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
-  sendBoxButtonColor: '#767676',
+  sendBoxButtonColor: null, // defaults to subtle
   sendBoxButtonColorOnDisabled: '#CCC',
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',
+  sendBoxDisabledTextColor: null, // defaults to subtle
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,
   sendBoxTextColor: 'Black',
+  // TODO: We should deprecate this because there isn't an easy way to make the width of the send box, narrower than the transcript
   sendBoxBorderBottom: '',
   sendBoxBorderLeft: '',
   sendBoxBorderRight: '',
-  sendBoxBorderTop: 'solid 1px #E6E6E6',
-  sendBoxPlaceholderColor: '#767676',
+  sendBoxBorderTop: 'solid 1px #E6E6E6', // split into 3
+  sendBoxPlaceholderColor: null, // defaults to subtle
   sendBoxTextWrap: false,
 
   // Visually show spoken text
@@ -93,17 +96,23 @@ const DEFAULT_OPTIONS = {
 
   // Suggested actions
   suggestedActionBackground: 'White',
-  suggestedActionBorder: `solid 2px ${DEFAULT_ACCENT}`,
+  suggestedActionBorder: null, // split into 3, null
+  suggestedActionBorderColor: null, // defaults to accent
+  suggestedActionBorderStyle: 'solid',
+  suggestedActionBoarderWidth: 2,
   suggestedActionBorderRadius: 0,
   suggestedActionImageHeight: 20,
-  suggestedActionTextColor: DEFAULT_ACCENT,
-  suggestedActionDisabledBackground: 'White',
-  suggestedActionDisabledBorder: `solid 2px #E6E6E6`,
-  suggestedActionDisabledTextColor: DEFAULT_SUBTLE,
+  suggestedActionTextColor: null,
+  suggestedActionDisabledBackground: null, // defaults to suggestedActionBackground
+  suggestedActionDisabledBorder: null,
+  suggestedActionDisabledBorderColor: '#E6E6E6',
+  suggestedActionDisabledBorderStyle: 'solid',
+  suggestedActionDisabledBorderWidth: 2,
+  suggestedActionDisabledTextColor: null, // defaults to subtle
   suggestedActionHeight: 40,
 
   // Timestamp
-  timestampColor: DEFAULT_SUBTLE,
+  timestampColor: null, // defaults to subtle
   timestampFormat: 'relative', // 'absolute'
 
   // Transcript overlay buttons (e.g. carousel and suggested action flippers, scroll to bottom, etc.)
@@ -111,8 +120,8 @@ const DEFAULT_OPTIONS = {
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonColor: 'White',
-  transcriptOverlayButtonColorOnFocus: 'White',
-  transcriptOverlayButtonColorOnHover: 'White',
+  transcriptOverlayButtonColorOnFocus: null, // defaults to transcriptOverlayButtonColor
+  transcriptOverlayButtonColorOnHover: null, // defaults to transcriptOverlayButtonColor
 
   // Video
   videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270
@@ -121,7 +130,7 @@ const DEFAULT_OPTIONS = {
   connectivityIconPadding: PADDING_REGULAR * 1.2,
   connectivityMarginLeftRight: PADDING_REGULAR * 1.4,
   connectivityMarginTopBottom: PADDING_REGULAR * 0.8,
-  connectivityTextSize: 12,
+  connectivityTextSize: '75%',
   failedConnectivity: '#C50F1F',
   slowConnectivity: '#EAA300',
   notificationText: '#5E5E5E',
