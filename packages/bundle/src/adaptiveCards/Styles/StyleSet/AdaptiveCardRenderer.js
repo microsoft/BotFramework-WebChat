@@ -1,6 +1,7 @@
 export default function({ accent, paddingRegular, primaryFont }) {
   return {
     '& .ac-pushButton': {
+      appearance: 'none',
       backgroundColor: 'White',
       borderStyle: 'solid',
       borderWidth: 1,
