@@ -27,8 +27,10 @@ const DEFAULT_OPTIONS = {
 
   // Avatar
   avatarSize: 40,
+  botAvatarBackgroundColor: null, // defaults to accent color in styleSet
   botAvatarImage: '',
   botAvatarInitials: '',
+  userAvatarBackgroundColor: null, // defaults to accent color in styleSet
   userAvatarImage: '',
   userAvatarInitials: '',
 
