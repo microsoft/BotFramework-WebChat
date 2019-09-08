@@ -69,6 +69,9 @@ function toAzureLocale(language) {
     case 'pt-BR':
       return 'pt-br.pt-br';
 
+      case 'ar':
+      return 'ar.ar-ar';
+
     case 'pt-PT':
       return 'pt-pt.pt-pt';
 
@@ -96,3 +99,4 @@ function toAzureLocale(language) {
 }
 
 export { normalize, toAzureLocale };
+

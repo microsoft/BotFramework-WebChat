@@ -7,6 +7,7 @@ test('Normalizing "en.en-us"', () => {
 test('Normalizing "ar.ar-ar"', () => {
   expect(normalize('ar.ar-ar')).toBe('ar-AR');
 }); 
+
 test('Normalizing "bg.bg-bg"', () => {
   expect(normalize('bg.bg-bg')).toBe('bg-BG');
 });
