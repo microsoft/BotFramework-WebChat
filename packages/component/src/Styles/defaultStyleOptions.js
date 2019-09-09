@@ -27,10 +27,10 @@ const DEFAULT_OPTIONS = {
 
   // Avatar
   avatarSize: 40,
-  botAvatarBackgroundColor: null, // defaults to accent color
+  botAvatarBackgroundColor: undefined, // defaults to accent color
   botAvatarImage: '',
   botAvatarInitials: '',
-  userAvatarBackgroundColor: null, // defaults to accent color
+  userAvatarBackgroundColor: undefined, // defaults to accent color
   userAvatarImage: '',
   userAvatarInitials: '',
 
@@ -75,11 +75,11 @@ const DEFAULT_OPTIONS = {
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
-  sendBoxButtonColor: null, // defaults to subtle
+  sendBoxButtonColor: undefined, // defaults to subtle
   sendBoxButtonColorOnDisabled: '#CCC',
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',
-  sendBoxDisabledTextColor: null, // defaults to subtle
+  sendBoxDisabledTextColor: undefined, // defaults to subtle
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,
   sendBoxTextColor: 'Black',
@@ -87,8 +87,8 @@ const DEFAULT_OPTIONS = {
   sendBoxBorderBottom: '',
   sendBoxBorderLeft: '',
   sendBoxBorderRight: '',
-  sendBoxBorderTop: 'solid 1px #E6E6E6', // split into 3
-  sendBoxPlaceholderColor: null, // defaults to subtle
+  sendBoxBorderTop: 'solid 1px #E6E6E6',
+  sendBoxPlaceholderColor: undefined, // defaults to subtle
   sendBoxTextWrap: false,
 
   // Visually show spoken text
@@ -96,23 +96,23 @@ const DEFAULT_OPTIONS = {
 
   // Suggested actions
   suggestedActionBackground: 'White',
-  suggestedActionBorder: null, // split into 3, null
-  suggestedActionBorderColor: null, // defaults to accent
+  suggestedActionBorder: undefined, // split into 3, null
+  suggestedActionBorderColor: undefined, // defaults to accent
   suggestedActionBorderStyle: 'solid',
   suggestedActionBoarderWidth: 2,
   suggestedActionBorderRadius: 0,
   suggestedActionImageHeight: 20,
   suggestedActionTextColor: null,
-  suggestedActionDisabledBackground: null, // defaults to suggestedActionBackground
+  suggestedActionDisabledBackground: undefined, // defaults to suggestedActionBackground
   suggestedActionDisabledBorder: null,
   suggestedActionDisabledBorderColor: '#E6E6E6',
   suggestedActionDisabledBorderStyle: 'solid',
   suggestedActionDisabledBorderWidth: 2,
-  suggestedActionDisabledTextColor: null, // defaults to subtle
+  suggestedActionDisabledTextColor: undefined, // defaults to subtle
   suggestedActionHeight: 40,
 
   // Timestamp
-  timestampColor: null, // defaults to subtle
+  timestampColor: undefined, // defaults to subtle
   timestampFormat: 'relative', // 'absolute'
 
   // Transcript overlay buttons (e.g. carousel and suggested action flippers, scroll to bottom, etc.)
@@ -120,8 +120,8 @@ const DEFAULT_OPTIONS = {
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonColor: 'White',
-  transcriptOverlayButtonColorOnFocus: null, // defaults to transcriptOverlayButtonColor
-  transcriptOverlayButtonColorOnHover: null, // defaults to transcriptOverlayButtonColor
+  transcriptOverlayButtonColorOnFocus: undefined, // defaults to transcriptOverlayButtonColor
+  transcriptOverlayButtonColorOnHover: undefined, // defaults to transcriptOverlayButtonColor
 
   // Video
   videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270

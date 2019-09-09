@@ -6,7 +6,6 @@ export default function createSuggestedActionStyle({
   paddingWide,
   primaryFont,
   suggestedActionBackground,
-  suggestedActionBorder,
   suggestedActionBorderColor,
   suggestedActionBorderStyle,
   suggestedActionBorderWidth,
@@ -14,7 +13,6 @@ export default function createSuggestedActionStyle({
   suggestedActionImageHeight,
   suggestedActionTextColor,
   suggestedActionDisabledBackground,
-  suggestedActionDisabledBorder,
   suggestedActionDisabledBorderColor,
   suggestedActionDisabledBorderStyle,
   suggestedActionDisabledBorderWidth,
@@ -39,19 +37,17 @@ export default function createSuggestedActionStyle({
 
       '&:disabled': {
         background: suggestedActionDisabledBackground || suggestedActionBackground,
-        border: suggestedActionDisabledBorder,
-        borderColor: !suggestedActionDisabledBorder ? suggestedActionDisabledBorderColor : null,
-        borderStyle: !suggestedActionDisabledBorder ? suggestedActionDisabledBorderStyle : null,
-        borderWidth: !suggestedActionDisabledBorder ? suggestedActionDisabledBorderWidth : null,
+        borderColor: suggestedActionDisabledBorderColor,
+        borderStyle: suggestedActionDisabledBorderStyle,
+        borderWidth: suggestedActionDisabledBorderWidth,
         color: suggestedActionDisabledTextColor || subtle
       },
 
       '&:not(:disabled)': {
         background: suggestedActionBackground,
-        border: suggestedActionBorder,
-        borderColor: !suggestedActionBorder ? suggestedActionBorderColor || accent : null,
-        borderStyle: !suggestedActionBorder ? suggestedActionBorderStyle : null,
-        borderWidth: !suggestedActionBorder ? suggestedActionBorderWidth : null,
+        borderColor: suggestedActionBorderColor || accent,
+        borderStyle: suggestedActionBorderStyle,
+        borderWidth: suggestedActionBorderWidth,
         color: suggestedActionTextColor || accent
       },
 
