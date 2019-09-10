@@ -47,6 +47,7 @@
         width: 100%;
       }
     </style>
+    <script src="https://tdurnford.github.io/BotFramework-Offline-MockBot/index.js"></script>
     <script src="https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js"></script>
     <script src="/createProduceConsumeBroker.js"></script>
     <script src="/mockWebSpeech.js"></script>
@@ -92,7 +93,7 @@
       const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
 
       async function main(options) {
-        let { createDirectLine, createStyleSet, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
+        let { createDirectLine, createStyleSet, offline, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
 
         props = unmarshal(props);
 
@@ -100,19 +101,26 @@
 
         await loadScript('/webchat-instrumented.js');
 
-        const { token } = await retry(async () => {
-          try {
-            const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST', timeout: 2000 });
+        let directLine;
+        if (!!offline && !createDirectLine) {
+          directLine = window.MockBotAdapter.createDirectLine({});
+        } else {
+          const { token } = await retry(async () => {
+            try {
+              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST', timeout: 2000 });
 
-            return await res.json();
-          } catch (err) {
-            console.error('Failed to fetch Direct Line token from Mockbot.');
-            console.error(err);
+              return await res.json();
+            } catch (err) {
+              console.error('Failed to fetch Direct Line token from Mockbot.');
+              console.error(err);
 
-            throw err;
-          }
-        }, 3);
-
+              throw err;
+            }
+          }, 3);
+          createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
+          directLine = createDirectLine({ token });
+        }
+        
         const store = window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
           const setupMiddleware = storeMiddleware(store);
 
@@ -127,10 +135,8 @@
           };
         });
 
-        createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
-
         window.WebChat.renderWebChat({
-          directLine: createDirectLine({ token }),
+          directLine,
           store,
           styleSet: createStyleSet && createStyleSet(props.styleOptions),
           username: 'Happy Web Chat user',
