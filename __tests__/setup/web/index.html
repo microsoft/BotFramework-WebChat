@@ -102,7 +102,7 @@
         await loadScript('/webchat-instrumented.js');
 
         let directLine;
-        if (!!offline && !createDirectLine) {
+        if (offline !== false && !createDirectLine) {
           directLine = window.MockBotAdapter.createDirectLine({});
         } else {
           const { token } = await retry(async () => {
