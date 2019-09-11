@@ -1,4 +1,4 @@
-const { BotFrameworkAdapter } = require("botbuilder");
+const { BotFrameworkAdapter } = require('botbuilder');
 
 const { MICROSOFT_APP_ID, MICROSOFT_APP_PASSWORD } = process.env;
 

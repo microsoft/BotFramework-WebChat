@@ -75,7 +75,7 @@ class SendHistory {
       if (this._persist) {
         window.sessionStorage.setItem(this._storageKey, JSON.stringify(this._state));
       }
-    }
+    };
   }
 }
 

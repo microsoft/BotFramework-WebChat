@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Customize open URL behavior</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
@@ -10,8 +10,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat,
       #webchat > * {
@@ -23,7 +28,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -32,35 +37,38 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
 
-          // We are adding a new middleware to handle card action
-          cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
-            const { type, value } = cardAction;
+            // We are adding a new middleware to handle card action
+            cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+              const { type, value } = cardAction;
 
-            switch (type) {
-              case 'signin':
-                // For OAuth or sign-in popups, we will open the auth dialog directly.
-                const popup = window.open();
-                const url = await getSignInUrl();
+              switch (type) {
+                case 'signin':
+                  // For OAuth or sign-in popups, we will open the auth dialog directly.
+                  const popup = window.open();
+                  const url = await getSignInUrl();
 
-                popup.location.href = url;
+                  popup.location.href = url;
 
-                break;
+                  break;
 
-              case 'openUrl':
-                if (confirm(`Do you want to open this URL?\n\n${ value }`)) {
-                  window.open(value, '_blank');
-                }
+                case 'openUrl':
+                  if (confirm(`Do you want to open this URL?\n\n${value}`)) {
+                    window.open(value, '_blank');
+                  }
 
-                break;
+                  break;
 
-              default:
-                return next({ cardAction, getSignInUrl });
+                default:
+                  return next({ cardAction, getSignInUrl });
+              }
             }
-          }
-        }, document.getElementById('webchat'));
+          },
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));

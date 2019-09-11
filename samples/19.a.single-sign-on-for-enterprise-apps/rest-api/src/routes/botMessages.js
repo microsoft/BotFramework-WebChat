@@ -9,7 +9,7 @@ const { PROXY_BOT_URL } = process.env;
 if (PROXY_BOT_URL) {
   const proxy = httpProxy.createProxyServer();
 
-  console.log(`Will redirect /api/messages to ${ new URL('api/messages', PROXY_BOT_URL).href }`);
+  console.log(`Will redirect /api/messages to ${new URL('api/messages', PROXY_BOT_URL).href}`);
 
   module.exports = (req, res) => {
     proxy.web(req, res, { target: PROXY_BOT_URL });

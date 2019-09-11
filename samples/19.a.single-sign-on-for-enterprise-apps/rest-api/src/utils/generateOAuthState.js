@@ -9,4 +9,4 @@ module.exports = function generateOAuthState(seed, salt) {
   hash.update(salt);
 
   return hash.digest('hex').substr(0, 10);
-}
+};

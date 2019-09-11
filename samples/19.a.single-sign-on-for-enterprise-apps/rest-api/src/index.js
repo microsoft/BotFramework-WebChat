@@ -14,7 +14,7 @@ process.env = {
   GITHUB_OAUTH_STATE_SALT: random.toString(36).substr(2),
   PORT: '5000',
   STATIC_FILES: 'public',
-  ...process.env,
+  ...process.env
 };
 
 // Checks for required environment variables.
@@ -27,7 +27,7 @@ process.env = {
   'GITHUB_OAUTH_REDIRECT_URI'
 ].forEach(name => {
   if (!process.env[name]) {
-    throw new Error(`Environment variable ${ name } must be set.`);
+    throw new Error(`Environment variable ${name} must be set.`);
   }
 });
 
@@ -36,10 +36,7 @@ const httpProxy = require('http-proxy');
 const restify = require('restify');
 
 const server = restify.createServer();
-const {
-  PORT,
-  STATIC_FILES
-} = process.env;
+const { PORT, STATIC_FILES } = process.env;
 
 server.use(restify.plugins.queryParser());
 
@@ -56,13 +53,17 @@ server.get('/api/github/settings', require('./routes/github/settings'));
 server.post('/api/messages', require('./routes/botMessages'));
 
 // We will use the REST API server to serve static web content to simplify deployment for demonstration purposes.
-STATIC_FILES && server.get('/**/*', restify.plugins.serveStatic({
-  default: 'index.html',
-  directory: join(__dirname, '..', STATIC_FILES)
-}));
+STATIC_FILES &&
+  server.get(
+    '/**/*',
+    restify.plugins.serveStatic({
+      default: 'index.html',
+      directory: join(__dirname, '..', STATIC_FILES)
+    })
+  );
 
 server.listen(PORT, () => {
-  STATIC_FILES && console.log(`Will serve static content from ${ STATIC_FILES }`);
+  STATIC_FILES && console.log(`Will serve static content from ${STATIC_FILES}`);
 
-  console.log(`Rest API server is listening to port ${ PORT }`);
+  console.log(`Rest API server is listening to port ${PORT}`);
 });
