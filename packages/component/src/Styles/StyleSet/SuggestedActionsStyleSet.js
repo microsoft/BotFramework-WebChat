@@ -36,12 +36,12 @@ export default function createSuggestedActionsStyleSet({
 
     '&:focus > div.slider > div': {
       backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
-      color: transcriptOverlayButtonColorOnFocus
+      color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
     },
 
     '&:hover > div.slider > div': {
       backgroundColor: transcriptOverlayButtonBackgroundOnHover,
-      color: transcriptOverlayButtonColorOnHover
+      color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
     }
   });
 

@@ -192,3 +192,23 @@ test('absolute timestamp', async () => {
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('avatar background color', async () => {
+  const styleOptions = {
+    botAvatarBackgroundColor: 'red',
+    botAvatarInitials: 'B',
+    userAvatarBackgroundColor: 'blue',
+    userAvatarInitials: 'TJ'
+  };
+
+  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('echo "Hello, World!"', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+
+  const base64PNG = await driver.takeScreenshot();
+
+  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
