@@ -26,12 +26,12 @@ export default function createScrollToEndButtonStyle({
 
     '&:hover': {
       backgroundColor: transcriptOverlayButtonBackgroundOnHover,
-      color: transcriptOverlayButtonColorOnHover
+      color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
     },
 
     '&:focus': {
       backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
-      color: transcriptOverlayButtonColorOnFocus
+      color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
     }
   };
 }

@@ -3,7 +3,8 @@ export default function createSendBoxButtonStyle({
   sendBoxButtonColorOnDisabled,
   sendBoxButtonColorOnFocus,
   sendBoxButtonColorOnHover,
-  sendBoxHeight
+  sendBoxHeight,
+  subtle
 }) {
   return {
     backgroundColor: 'Transparent',
@@ -26,7 +27,7 @@ export default function createSendBoxButtonStyle({
     },
 
     '& svg': {
-      fill: sendBoxButtonColor
+      fill: sendBoxButtonColor || subtle
     },
 
     '&:disabled svg': {

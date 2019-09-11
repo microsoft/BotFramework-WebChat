@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import createActivitiesStyle from './StyleSet/Activities';
 import createActivityStyle from './StyleSet/Activity';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
@@ -67,7 +68,7 @@ export default function createStyleSet(options) {
   // Keep this list flat (no nested style) and serializable (no functions)
 
   // TODO: [P4] Deprecate this code after bump to v5
-  const { bubbleBorder, bubbleFromUserBorder } = options;
+  const { bubbleBorder, bubbleFromUserBorder, suggestedActionBorder, suggestedActionDisabledBorder } = options;
 
   if (bubbleBorder) {
     console.warn(
@@ -106,6 +107,46 @@ export default function createStyleSet(options) {
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
       options.bubbleFromUserBorderWidth = parseInt(width, 10);
+    }
+  }
+
+  if (suggestedActionBorder) {
+    console.warn(
+      'Web Chat: styleSet.suggestedActionBorder is being deprecated. Please use suggestedActionBorderColor, suggestedActionBorderStyle, and, suggestedActionBorderWidth.'
+    );
+
+    const { color, style, width } = parseBorder(suggestedActionBorder);
+
+    if (color && color !== 'initial') {
+      options.suggestedActionBorderColor = color;
+    }
+
+    if (style && style !== 'initial') {
+      options.suggestedActionBorderStyle = style;
+    }
+
+    if (PIXEL_UNIT_PATTERN.test(width)) {
+      options.suggestedActionBorderWidth = parseInt(width, 10);
+    }
+  }
+
+  if (suggestedActionDisabledBorder) {
+    console.warn(
+      'Web Chat: styleSet.suggestedActionDisabledBorder is being deprecated. Please use suggestedActionDisabledBorderColor, suggestedActionDisabledBorderStyle, and, suggestedActionDisabledBorderWidth.'
+    );
+
+    const { color, style, width } = parseBorder(suggestedActionDisabledBorder);
+
+    if (color && color !== 'initial') {
+      options.suggestedActionDisabledBorderColor = color;
+    }
+
+    if (style && style !== 'initial') {
+      options.suggestedActionDisabledBorderStyle = style;
+    }
+
+    if (PIXEL_UNIT_PATTERN.test(width)) {
+      options.suggestedActionDisabledBorderWidth = parseInt(width, 10);
     }
   }
 
