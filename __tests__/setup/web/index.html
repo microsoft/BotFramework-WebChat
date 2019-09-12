@@ -93,7 +93,7 @@
       const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
 
       async function main(options) {
-        let { createDirectLine, createStyleSet, offline, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
+        let { createDirectLine, createStyleSet, useProductionBot, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE } = unmarshal(options);
 
         props = unmarshal(props);
 
@@ -102,7 +102,7 @@
         await loadScript('/webchat-instrumented.js');
 
         let directLine;
-        if (offline !== false && !createDirectLine) {
+        if (!useProductionBot && !createDirectLine) {
           directLine = window.MockBotAdapter.createDirectLine({});
         } else {
           const { token } = await retry(async () => {

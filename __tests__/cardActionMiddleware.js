@@ -46,7 +46,7 @@ test('card action "openUrl"', async () => {
 
 test('card action "signin"', async () => {
   const { driver, pageObjects } = await setupWebDriver({
-    offline: false,
+    useProductionBot: true,
     props: {
       cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
         if (cardAction.type === 'signin') {
