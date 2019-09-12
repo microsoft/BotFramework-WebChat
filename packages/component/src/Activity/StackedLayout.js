@@ -103,22 +103,23 @@ const StackedLayout = ({ activity, avatarInitials, children, language, styleSet,
     avatarInitials,
     plainText
   );
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleFromBotNubSize;
 
   return (
     <div
       className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
         'from-user': fromUser,
         webchat__stacked_extra_left_indent:
-          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
+          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleFromBotNubSize,
         webchat__stacked_extra_right_indent:
           !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
         webchat__stacked_indented_content: avatarInitials && !indented
       })}
     >
-      {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-        <div className="avatar" />
-      )}
+      {!avatarInitials &&
+        !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleFromBotNubSize) && (
+          <div className="avatar" />
+        )}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {type === 'typing' ? (

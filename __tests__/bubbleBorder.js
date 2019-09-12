@@ -25,10 +25,10 @@ describe('bubble border', () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         styleOptions: {
-          bubbleBorderColor: 'Red',
-          bubbleBorderRadius: 10,
-          bubbleBorderStyle: 'dashed',
-          bubbleBorderWidth: 2,
+          bubbleFromBotBorderColor: 'Red',
+          bubbleFromBotBorderRadius: 10,
+          bubbleFromBotBorderStyle: 'dashed',
+          bubbleFromBotBorderWidth: 2,
 
           bubbleFromUserBorderColor: 'Green',
           bubbleFromUserBorderRadius: 20,
@@ -48,7 +48,7 @@ describe('bubble border', () => {
         props: {
           styleOptions: {
             bubbleBorder: 'dashed 2px Red',
-            bubbleBorderRadius: 10,
+            bubbleFromBotBorderRadius: 10,
 
             bubbleFromUserBorder: 'dotted 3px Green',
             bubbleFromUserBorderRadius: 20

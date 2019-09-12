@@ -66,7 +66,7 @@ If you need to do some simple styling, you can set them via `styleOptions`. Styl
       <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <script>
          const styleOptions = {
-            bubbleBackground: 'rgba(0, 0, 255, .1)',
+            bubbleFromBotBackground: 'rgba(0, 0, 255, .1)',
             bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
          };
 
@@ -105,7 +105,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
       <script>
          // "styleSet" is a set of CSS rules which are generated from "styleOptions"
          const styleSet = window.WebChat.createStyleSet({
-            bubbleBackground: 'rgba(0, 0, 255, .1)',
+            bubbleFromBotBackground: 'rgba(0, 0, 255, .1)',
             bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
          });
 

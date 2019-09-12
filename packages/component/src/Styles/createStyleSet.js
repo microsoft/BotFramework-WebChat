@@ -70,21 +70,21 @@ export default function createStyleSet(options) {
 
   if (bubbleBorder) {
     console.warn(
-      'Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleBorderColor, bubbleBorderStyle, and, bubbleBorderWidth.'
+      'Web Chat: styleSet.bubbleBorder is being deprecated. Please use bubbleFromBotBorderColor, bubbleFromBotBorderStyle, and, bubbleFromBotBorderWidth.'
     );
 
     const { color, style, width } = parseBorder(bubbleBorder);
 
     if (color && color !== 'initial') {
-      options.bubbleBorderColor = color;
+      options.bubbleFromBotBorderColor = color;
     }
 
     if (style && style !== 'initial') {
-      options.bubbleBorderStyle = style;
+      options.bubbleFromBotBorderStyle = style;
     }
 
     if (PIXEL_UNIT_PATTERN.test(width)) {
-      options.bubbleBorderWidth = parseInt(width, 10);
+      options.bubbleFromBotBorderWidth = parseInt(width, 10);
     }
   }
 

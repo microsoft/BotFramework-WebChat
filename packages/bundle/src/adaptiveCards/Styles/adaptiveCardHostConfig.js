@@ -1,31 +1,28 @@
 import { defaultStyleOptions } from 'botframework-webchat-component';
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
-export default ({
-  accent,
-  bubbleTextColor,
-  cardEmphasisBackgroundColor,
-  primaryFont,
-  subtle
-} = defaultStyleOptions) => ({
+export default ({ accent, primaryFont, subtle } = defaultStyleOptions) => ({
   containerStyles: {
     default: {
+      backgroundColor: null,
       foregroundColors: {
         default: {
-          default: bubbleTextColor,
-          subtle
+          default: null,
+          subtle: subtle
         },
         accent: {
-          default: accent,
+          default: null,
           subtle: accent
         }
       }
     },
     emphasis: {
-      backgroundColor: cardEmphasisBackgroundColor,
-      default: {
-        default: bubbleTextColor,
-        subtle
+      backgroundColor: null,
+      foregroundColors: {
+        default: {
+          default: null,
+          subtle: subtle
+        }
       }
     }
   },

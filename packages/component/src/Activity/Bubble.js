@@ -29,7 +29,7 @@ const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub,
     )}
   >
     <div className="webchat__bubble__content">{children}</div>
-    {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
+    {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleFromBotNubSize) && (
       <div className="webchat__bubble__nub" />
     )}
   </div>

@@ -89,16 +89,16 @@ export default class extends React.Component {
         ...(styleBubbleBorder === 'deprecated'
           ? {
               bubbleBorder: 'dotted 2px Red',
-              bubbleBorderRadius: 10,
+              bubbleFromBotBorderRadius: 10,
               bubbleFromUserBorder: 'dashed 2px Green',
               bubbleFromUserBorderRadius: 10
             }
           : styleBubbleBorder
           ? {
-              bubbleBorderColor: 'Red',
-              bubbleBorderRadius: 10,
-              bubbleBorderStyle: 'dotted',
-              bubbleBorderWidth: 2,
+              bubbleFromBotBorderColor: 'Red',
+              bubbleFromBotBorderRadius: 10,
+              bubbleFromBotBorderStyle: 'dotted',
+              bubbleFromBotBorderWidth: 2,
               bubbleFromUserBorderColor: 'Green',
               bubbleFromUserBorderRadius: 10,
               bubbleFromUserBorderStyle: 'dashed',
@@ -110,8 +110,8 @@ export default class extends React.Component {
           ? {
               bubbleFromUserNubSize: 10,
               bubbleFromUserNubOffset: -5,
-              bubbleNubOffset: 5,
-              bubbleNubSize: 10
+              bubbleFromBotNubOffset: 5,
+              bubbleFromBotNubSize: 10
             }
           : {}),
 

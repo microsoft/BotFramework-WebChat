@@ -43,7 +43,7 @@ First, we want to overwrite the current `styleSet` by using the `createStyleSet`
 …
   const { token } = await res.json();
 + const styleSet = window.WebChat.createStyleSet({
-+ bubbleBackground: 'rgba(0, 0, 255, .1)',
++ bubbleFromBotBackground: 'rgba(0, 0, 255, .1)',
 +  bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
 + });
 
@@ -100,7 +100,7 @@ Here is the finished `index.html`:
         const { token } = await res.json();
 
 +       const styleSet = window.WebChat.createStyleSet({
-+         bubbleBackground: 'rgba(0, 0, 255, .1)',
++         bubbleFromBotBackground: 'rgba(0, 0, 255, .1)',
 +         bubbleFromUserBackground: 'rgba(0, 255, 0, .1)'
 +       });
 

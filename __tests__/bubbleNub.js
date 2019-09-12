@@ -28,10 +28,12 @@ describe('bubble nub', () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         styleOptions: {
-          bubbleNubOffset: 0,
-          bubbleNubSize: 10,
+          bubbleFromBotNubOffset: 0,
+          bubbleFromBotNubSize: 10,
+          bubbleFromBotNubBorderColor: 'white',
           bubbleFromUserNubOffset: 0,
-          bubbleFromUserNubSize: 10
+          bubbleFromUserNubSize: 10,
+          bubbleFromUserNubBorderColor: 'white'
         }
       },
       zoom: 3
@@ -43,16 +45,18 @@ describe('bubble nub', () => {
   beforeEach(() => {
     props = {
       styleOptions: {
-        bubbleBorderColor: 'red',
-        bubbleBorderRadius: 10,
-        bubbleBorderWidth: 2,
+        bubbleFromBotBorderColor: 'red',
+        bubbleFromBotBorderRadius: 10,
+        bubbleFromBotBorderWidth: 2,
         bubbleFromUserBorderColor: 'green',
         bubbleFromUserBorderRadius: 10,
         bubbleFromUserNubOffset: 0,
         bubbleFromUserNubSize: 10,
+        bubbleFromUserNubBorderColor: 'white',
         bubbleFromUserBorderWidth: 2,
-        bubbleNubOffset: 0,
-        bubbleNubSize: 10
+        bubbleFromBotNubOffset: 0,
+        bubbleFromBotNubSize: 10,
+        bubbleFromBotNubBorderColor: 'white'
       }
     };
   });
@@ -140,7 +144,7 @@ describe('bubble nub', () => {
           styleOptions: {
             ...props.styleOptions,
             bubbleFromUserNubOffset: 5,
-            bubbleNubOffset: 5
+            bubbleFromBotNubOffset: 5
           }
         },
         zoom: 3
@@ -156,7 +160,7 @@ describe('bubble nub', () => {
           styleOptions: {
             ...props.styleOptions,
             bubbleFromUserNubOffset: 10,
-            bubbleNubOffset: 10
+            bubbleFromBotNubOffset: 10
           }
         },
         zoom: 3
@@ -172,7 +176,7 @@ describe('bubble nub', () => {
           styleOptions: {
             ...props.styleOptions,
             bubbleFromUserNubOffset: -5,
-            bubbleNubOffset: -5
+            bubbleFromBotNubOffset: -5
           }
         },
         zoom: 3
@@ -188,7 +192,7 @@ describe('bubble nub', () => {
           styleOptions: {
             ...props.styleOptions,
             bubbleFromUserNubOffset: -10,
-            bubbleNubOffset: -10
+            bubbleFromBotNubOffset: -10
           }
         },
         zoom: 3
@@ -204,7 +208,7 @@ describe('bubble nub', () => {
           styleOptions: {
             ...props.styleOptions,
             bubbleFromUserNubOffset: 'bottom',
-            bubbleNubOffset: 'bottom'
+            bubbleFromBotNubOffset: 'bottom'
           }
         },
         zoom: 3

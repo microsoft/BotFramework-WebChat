@@ -102,7 +102,7 @@ const WebChatCarouselFilmStrip = ({
 
   const fromUser = role === 'user';
   const activityDisplayText = messageBackDisplayText || text;
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleFromBotNubSize;
 
   return (
     <div

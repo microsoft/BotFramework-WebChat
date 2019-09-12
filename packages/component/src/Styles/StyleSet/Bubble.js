@@ -31,23 +31,25 @@ function svgToDataURI(svg) {
 }
 
 export default function createBubbleStyle({
-  bubbleBackground,
-  bubbleBorderColor,
-  bubbleBorderRadius,
-  bubbleBorderStyle,
-  bubbleBorderWidth,
+  bubbleFromBotBackground,
+  bubbleFromBotTextColor,
+  bubbleFromBotBorderColor,
+  bubbleFromBotBorderRadius,
+  bubbleFromBotBorderStyle,
+  bubbleFromBotBorderWidth,
   bubbleFromUserBackground,
+  bubbleFromUserTextColor,
   bubbleFromUserBorderColor,
   bubbleFromUserBorderRadius,
   bubbleFromUserBorderStyle,
   bubbleFromUserBorderWidth,
+  bubbleFromBotNubOffset,
+  bubbleFromBotNubSize,
+  bubbleFromBotNubBorderColor,
   bubbleFromUserNubOffset,
   bubbleFromUserNubSize,
-  bubbleFromUserTextColor,
+  bubbleFromUserNubBorderColor,
   bubbleMinHeight,
-  bubbleNubOffset,
-  bubbleNubSize,
-  bubbleTextColor,
   messageActivityWordBreak,
   paddingRegular
 }) {
@@ -57,33 +59,33 @@ export default function createBubbleStyle({
     bubbleFromUserNubOffset = -0;
   }
 
-  if (bubbleNubOffset === 'top') {
-    bubbleNubOffset = 0;
-  } else if (typeof bubbleNubOffset !== 'number') {
-    bubbleNubOffset = -0;
+  if (bubbleFromBotNubOffset === 'top') {
+    bubbleFromBotNubOffset = 0;
+  } else if (typeof bubbleFromBotNubOffset !== 'number') {
+    bubbleFromBotNubOffset = -0;
   }
 
-  const botNubUpSideDown = !isPositive(bubbleNubOffset);
+  const botNubUpSideDown = !isPositive(bubbleFromBotNubOffset);
   const userNubUpSideDown = !isPositive(bubbleFromUserNubOffset);
 
   const botNubSVG = acuteNubSVG(
-    bubbleNubSize,
-    bubbleBackground,
-    bubbleBorderColor,
-    bubbleBorderWidth,
+    bubbleFromBotNubSize,
+    bubbleFromBotBackground,
+    bubbleFromBotTextColor,
+    bubbleFromBotBorderWidth,
     'bot',
     botNubUpSideDown
   );
   const userNubSVG = acuteNubSVG(
     bubbleFromUserNubSize,
     bubbleFromUserBackground,
-    bubbleFromUserBorderColor,
+    bubbleFromUserTextColor,
     bubbleFromUserBorderWidth,
     'user',
     userNubUpSideDown
   );
 
-  const botNubCornerRadius = Math.min(bubbleBorderRadius, Math.abs(bubbleNubOffset));
+  const botNubCornerRadius = Math.min(bubbleFromBotBorderRadius, Math.abs(bubbleFromBotNubOffset));
   const userNubCornerRadius = Math.min(bubbleFromUserBorderRadius, Math.abs(bubbleFromUserNubOffset));
 
   return {
@@ -93,38 +95,39 @@ export default function createBubbleStyle({
 
     '&:not(.from-user)': {
       '&.webchat__bubble_has_nub': {
-        '& > .webchat__bubble__content': bubbleNubSize ? { marginLeft: paddingRegular } : {}
+        '& > .webchat__bubble__content': bubbleFromBotNubSize ? { marginLeft: paddingRegular } : {}
       },
 
       '& > .webchat__bubble__content': {
-        background: bubbleBackground,
-        borderColor: bubbleBorderColor,
-        borderRadius: bubbleBorderRadius,
-        borderStyle: bubbleBorderStyle,
-        borderWidth: bubbleBorderWidth,
-        color: bubbleTextColor,
-        minHeight: bubbleMinHeight - bubbleBorderWidth * 2
+        background: bubbleFromBotBackground,
+        borderColor: bubbleFromBotBorderColor,
+        borderRadius: bubbleFromBotBorderRadius,
+        borderStyle: bubbleFromBotBorderStyle,
+        borderWidth: bubbleFromBotBorderWidth,
+        color: bubbleFromBotTextColor,
+        minHeight: bubbleMinHeight - bubbleFromBotBorderWidth * 2
       },
 
       '&.webchat__bubble_has_nub > .webchat__bubble__content': {
         // Hide border radius if there is a nub on the top/bottom left corner
-        ...(bubbleNubSize && botNubUpSideDown ? { borderBottomLeftRadius: botNubCornerRadius } : {}),
-        ...(bubbleNubSize && !botNubUpSideDown ? { borderTopLeftRadius: botNubCornerRadius } : {})
+        ...(bubbleFromBotNubSize && botNubUpSideDown ? { borderBottomLeftRadius: botNubCornerRadius } : {}),
+        ...(bubbleFromBotNubSize && !botNubUpSideDown ? { borderTopLeftRadius: botNubCornerRadius } : {})
       },
 
       '& > .webchat__bubble__nub': {
         backgroundImage: `url("${svgToDataURI(botNubSVG).replace(/"/gu, "'")}")`,
-        bottom: isPositive(bubbleNubOffset) ? undefined : -bubbleNubOffset,
-        height: bubbleNubSize,
-        left: bubbleBorderWidth - bubbleNubSize + paddingRegular,
-        top: isPositive(bubbleNubOffset) ? bubbleNubOffset : undefined,
-        width: bubbleNubSize
+        bottom: isPositive(bubbleFromBotNubOffset) ? undefined : -bubbleFromBotNubOffset,
+        height: bubbleFromBotNubSize,
+        left: bubbleFromBotBorderWidth - bubbleFromBotNubSize + paddingRegular,
+        top: isPositive(bubbleFromBotNubOffset) ? bubbleFromBotNubOffset : undefined,
+        width: bubbleFromBotNubSize,
+        borderColor: bubbleFromBotNubBorderColor
       }
     },
 
     '&.from-user': {
       '&.webchat__bubble_has_nub': {
-        '& > .webchat__bubble__content': bubbleNubSize ? { marginRight: paddingRegular } : {}
+        '& > .webchat__bubble__content': bubbleFromBotNubSize ? { marginRight: paddingRegular } : {}
       },
 
       '& > .webchat__bubble__content': {
@@ -149,7 +152,8 @@ export default function createBubbleStyle({
         right: bubbleFromUserBorderWidth - bubbleFromUserNubSize + paddingRegular,
         bottom: isPositive(bubbleFromUserNubOffset) ? undefined : -bubbleFromUserNubOffset,
         top: isPositive(bubbleFromUserNubOffset) ? bubbleFromUserNubOffset : undefined,
-        width: bubbleFromUserNubSize
+        width: bubbleFromUserNubSize,
+        borderColor: bubbleFromUserNubBorderColor
       }
     }
   };

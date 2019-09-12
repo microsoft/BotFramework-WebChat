@@ -1,10 +1,32 @@
-export default function({ accent, paddingRegular, primaryFont }) {
+export default function({
+  accent,
+  bubbleAttachmentBackground,
+  bubbleAttachmentBorderColor,
+  bubbleAttachmentBorderRadius,
+  bubbleAttachmentBorderStyle,
+  bubbleAttachmentBorderWidth,
+  bubbleAttachmentTextColor,
+  paddingRegular,
+  primaryFont
+}) {
   return {
+    '& .ac-adaptiveCard': {
+      backgroundColor: bubbleAttachmentBackground,
+      borderColor: bubbleAttachmentBorderColor,
+      borderRadius: bubbleAttachmentBorderRadius,
+      borderStyle: bubbleAttachmentBorderStyle,
+      borderWidth: bubbleAttachmentBorderWidth
+    },
+
+    '& p': {
+      color: bubbleAttachmentTextColor
+    },
+
     '& .ac-pushButton': {
       backgroundColor: 'White',
       borderStyle: 'solid',
       borderWidth: 1,
-      color: accent,
+      color: 'accent',
       fontWeight: 600,
       padding: paddingRegular
     },
