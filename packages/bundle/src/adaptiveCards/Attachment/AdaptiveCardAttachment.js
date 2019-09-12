@@ -39,14 +39,18 @@ const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachm
         errors
       };
     }
+
+    return {};
   }, [adaptiveCards, content]);
 
   return (
-    <AdaptiveCardRenderer
-      adaptiveCard={card}
-      adaptiveCardHostConfig={adaptiveCardHostConfig}
-      renderMarkdown={renderMarkdown}
-    />
+    !!card && (
+      <AdaptiveCardRenderer
+        adaptiveCard={card}
+        adaptiveCardHostConfig={adaptiveCardHostConfig}
+        renderMarkdown={renderMarkdown}
+      />
+    )
   );
 };
 
