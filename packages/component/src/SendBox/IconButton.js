@@ -5,11 +5,11 @@ import React from 'react';
 import useStyleSet from '../../lib/hooks/useStyleSet';
 
 const IconButton = ({ alt, children, className, disabled, onClick }) => {
-  const styleSet = useStyleSet();
+  const { sendBoxButton: sendBoxButtonStyleSet } = useStyleSet();
 
   return (
     <button
-      className={classNames(styleSet.sendBoxButton + '', className + '')}
+      className={classNames(sendBoxButtonStyleSet + '', className + '')}
       disabled={disabled}
       onClick={onClick}
       title={alt}

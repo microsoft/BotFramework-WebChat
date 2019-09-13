@@ -101,7 +101,8 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const { from: { role } = {}, text } = activity;
   const fromUser = role === 'user';
   const { avatarInitials } = useStackedLayout({ fromUser });
-  const styleSet = useStyleSet();
+  const { botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials } = useStyleOptions();
+  const { stackedLayout: stackedLayoutStyleSet } = useStyleSet();
   const plainText = useMemo(
     () =>
       remark()
@@ -120,22 +121,18 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
 
   const activityDisplayText = messageBackDisplayText || text;
   const showSendStatus = state === SENDING || state === SEND_FAILED;
-  const indented = fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize;
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', styleSet.stackedLayout + '', {
+      className={classNames(ROOT_CSS + '', stackedLayoutStyleSet + '', {
         'from-user': fromUser,
-        webchat__stacked_extra_left_indent:
-          fromUser && !styleSet.options.botAvatarInitials && styleSet.options.bubbleNubSize,
-        webchat__stacked_extra_right_indent:
-          !fromUser && !styleSet.options.userAvatarInitials && styleSet.options.bubbleFromUserNubSize,
+        webchat__stacked_extra_left_indent: fromUser && !botAvatarInitials && bubbleNubSize,
+        webchat__stacked_extra_right_indent: !fromUser && !userAvatarInitials && bubbleFromUserNubSize,
         webchat__stacked_indented_content: avatarInitials && !indented
       })}
     >
-      {!avatarInitials && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-        <div className="avatar" />
-      )}
+      {!avatarInitials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {!!activityDisplayText && (

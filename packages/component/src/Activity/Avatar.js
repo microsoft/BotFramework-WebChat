@@ -40,14 +40,11 @@ const useAvatar = ({ fromUser }) => {
 
 const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
   const { avatarImage, avatarInitials } = useAvatar({ fromUser });
-  const styleSet = useStyleSet();
+  const { avatar } = useStyleSet();
 
   return (
     !!(avatarImage || avatarInitials) && (
-      <div
-        aria-hidden={ariaHidden}
-        className={classNames(styleSet.avatar + '', { 'from-user': fromUser }, className + '')}
-      >
+      <div aria-hidden={ariaHidden} className={classNames(avatar + '', { 'from-user': fromUser }, className + '')}>
         {avatarInitials}
         {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
       </div>

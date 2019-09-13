@@ -20,14 +20,14 @@ const useTextContext = () => {
 
 const TextContent = ({ contentType, text }) => {
   const { renderMarkdown } = useTextContext();
-  const styleSet = useStyleSet();
+  const { textContent: textContentStyleSet } = useStyleSet();
 
   return contentType === 'text/markdown' && renderMarkdown ? (
     <React.Fragment>
       <ScreenReaderText text={text} />
       <div
         aria-hidden={true}
-        className={classNames('markdown', styleSet.textContent + '')}
+        className={classNames('markdown', textContentStyleSet + '')}
         dangerouslySetInnerHTML={{ __html: renderMarkdown(text || '') }}
       />
     </React.Fragment>
@@ -35,7 +35,7 @@ const TextContent = ({ contentType, text }) => {
     (text || '').split('\n').map((line, index) => (
       <React.Fragment key={index}>
         <ScreenReaderText text={text} />
-        <p aria-hidden={true} className={classNames('plain', styleSet.textContent + '')}>
+        <p aria-hidden={true} className={classNames('plain', textContentStyleSet + '')}>
           {line.trim()}
         </p>
       </React.Fragment>

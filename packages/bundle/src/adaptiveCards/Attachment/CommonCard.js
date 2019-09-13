@@ -1,21 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { useStyleSet } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+const { useStyleOptions } = hooks;
+
 const CommonCard = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } }) => {
-  const { options } = useStyleSet();
+  const styleOptions = useStyleOptions();
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       builder.addCommon(content);
 
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return (
     <AdaptiveCardRenderer

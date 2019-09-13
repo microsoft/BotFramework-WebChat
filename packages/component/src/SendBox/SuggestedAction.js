@@ -50,14 +50,14 @@ const useSuggestedAction = () => {
 
 const SuggestedAction = ({ buttonText, displayText, image, text, type, value }) => {
   const { clearSuggestedActions, disabled, onCardAction } = useSuggestedAction();
-  const styleSet = useStyleSet();
+  const { suggestedAction: suggestedActionStyleSet } = useStyleSet();
   const click = useCallback(() => {
     onCardAction({ displayText, text, type, value });
     type === 'openUrl' && clearSuggestedActions();
   }, [clearSuggestedActions, onCardAction, displayText, text, type, value]);
 
   return (
-    <div className={classNames(styleSet.suggestedAction + '', SUGGESTED_ACTION_CSS + '')}>
+    <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
       <button disabled={disabled} onClick={click} type="button">
         {image && <img src={image} />}
         <nobr>{buttonText}</nobr>

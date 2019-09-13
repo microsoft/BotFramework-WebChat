@@ -4,13 +4,13 @@ import React from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 
 const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src }) => {
-  const styleSet = useStyleSet();
+  const { videoContent } = useStyleSet();
 
   return (
     <video
       aria-label={alt}
       autoPlay={autoPlay}
-      className={styleSet.videoContent}
+      className={videoContent}
       controls={true}
       loop={loop}
       poster={poster}

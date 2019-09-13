@@ -16,15 +16,19 @@ const ROOT_CSS = css({
 const CarouselLayout = ({ activity, children, timestampClassName }) => {
   const leftLabel = useLocalize('Left');
   const rightLabel = useLocalize('Right');
-  const styleSet = useStyleSet();
+  const { carouselFlipper: carouselFlipperStyleSet } = useStyleSet();
 
-  const filmStyleSet = createBasicStyleSet({ cursor: null });
+  const {
+    carousel: carouselStyleSet,
+    leftFlipper: leftFlipperStyleSet,
+    rightFlipper: rightFlipperStyleSet
+  } = createBasicStyleSet({ cursor: null });
 
   return (
     <Composer numItems={React.Children.count(children)}>
       <FilmContext.Consumer>
         {({ scrollBarWidth }) => (
-          <div className={classNames(ROOT_CSS + '', filmStyleSet.carousel + '')}>
+          <div className={classNames(ROOT_CSS + '', carouselStyleSet + '')}>
             <CarouselFilmStrip activity={activity} timestampClassName={timestampClassName}>
               {children}
             </CarouselFilmStrip>
@@ -32,14 +36,14 @@ const CarouselLayout = ({ activity, children, timestampClassName }) => {
               <React.Fragment>
                 <Flipper
                   aria-label={leftLabel}
-                  className={classNames(styleSet.carouselFlipper + '', filmStyleSet.leftFlipper + '')}
+                  className={classNames(carouselFlipperStyleSet + '', leftFlipperStyleSet + '')}
                   mode="left"
                 >
                   <div className="button">{'<'}</div>
                 </Flipper>
                 <Flipper
                   aria-label={rightLabel}
-                  className={classNames(styleSet.carouselFlipper + '', filmStyleSet.rightFlipper + '')}
+                  className={classNames(carouselFlipperStyleSet + '', rightFlipperStyleSet + '')}
                   mode="right"
                 >
                   <div className="button">{'>'}</div>

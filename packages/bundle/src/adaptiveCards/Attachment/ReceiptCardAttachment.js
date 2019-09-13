@@ -1,27 +1,29 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 75] }] */
 
-import { useStyleSet, useLocalize } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+const { useLocalize, useStyleOptions } = hooks;
+
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
 const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } }) => {
-  const { options } = useStyleSet();
-  const vatText = useLocalize('VAT');
+  const styleOptions = useStyleOptions();
   const taxText = useLocalize('Tax');
   const totalText = useLocalize('Total');
+  const vatText = useLocalize('VAT');
 
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+    const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
     const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
     const { buttons, fact, items, tax, title, total, vat } = content;
-    const { richCardWrapTitle } = options;
+    const { richCardWrapTitle } = styleOptions;
 
     if (content) {
       builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle });
@@ -92,7 +94,7 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
           return builder.card;
         });
     }
-  }, [adaptiveCards, content, language, options]);
+  }, [adaptiveCards, content, language, styleOptions]);
 
   return (
     <AdaptiveCardRenderer

@@ -4,7 +4,7 @@ import React from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 
 const VimeoContent = ({ alt, autoPlay, embedID, loop }) => {
-  const styleSet = useStyleSet();
+  const { vimeoContent: vimeoContentStyleSet } = useStyleSet();
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     badge: 0,
@@ -18,7 +18,7 @@ const VimeoContent = ({ alt, autoPlay, embedID, loop }) => {
     <iframe
       allowFullScreen={true}
       aria-label={alt}
-      className={styleSet.vimeoContent}
+      className={vimeoContentStyleSet}
       src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
     />
   );

@@ -54,7 +54,7 @@ const useSendStatus = ({ activity }) => {
 
 const SendStatus = ({ activity }) => {
   const { retrySend } = useSendStatus({ activity });
-  const styleSet = useStyleSet();
+  const { sendStatus: sendStatusStyleSet } = useStyleSet();
   // TODO: [P4] Currently, this is the only place which use a templated string
   //       We could refactor this into a general component if there are more templated strings
   const localizedSending = useLocalize('Sending');
@@ -67,7 +67,7 @@ const SendStatus = ({ activity }) => {
   return (
     <React.Fragment>
       <ScreenReaderText text={localizedSendStatus + localizedSending} />
-      <span aria-hidden={true} className={styleSet.sendStatus}>
+      <span aria-hidden={true} className={sendStatusStyleSet}>
         {state === SENDING ? (
           localizedSending
         ) : state === SEND_FAILED ? (

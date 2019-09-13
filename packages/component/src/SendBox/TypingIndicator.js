@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import TypingAnimation from './Assets/TypingAnimation';
 import useLastTypingAt from '../hooks/useLastTypingAt';
 import useLocalize from '../hooks/useLocalize';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const useTypingIndicator = () => {
@@ -15,10 +16,8 @@ const TypingIndicator = () => {
   const [showTyping, setShowTyping] = useState(false);
   const { lastTypingAt } = useTypingIndicator();
   const typingAnimationLabel = useLocalize('TypingIndicator');
-  const {
-    options: { typingAnimationDuration },
-    typingIndicator
-  } = useStyleSet();
+  const { typingAnimationDuration } = useStyleOptions();
+  const { typingIndicator: typingIndicatorStyleSet } = useStyleSet();
 
   useEffect(() => {
     let timeout;
@@ -37,7 +36,7 @@ const TypingIndicator = () => {
 
   return (
     showTyping && (
-      <div className={typingIndicator}>
+      <div className={typingIndicatorStyleSet}>
         <TypingAnimation aria-label={typingAnimationLabel} />
       </div>
     )

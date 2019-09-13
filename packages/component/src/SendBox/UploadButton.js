@@ -9,6 +9,7 @@ import IconButton from './IconButton';
 import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
 import useSendFiles from '../hooks/useSendFiles';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -91,14 +92,12 @@ const useUploadButton = () => {
   const disabled = useDisabled();
   const sendFiles = useSendFiles();
   const {
-    options: {
-      enableUploadThumbnail,
-      uploadThumbnailContentType,
-      uploadThumbnailHeight,
-      uploadThumbnailQuality,
-      uploadThumbnailWidth
-    }
-  } = useStyleSet();
+    enableUploadThumbnail,
+    uploadThumbnailContentType,
+    uploadThumbnailHeight,
+    uploadThumbnailQuality,
+    uploadThumbnailWidth
+  } = useStyleOptions();
 
   return {
     disabled,
@@ -132,7 +131,7 @@ const useUploadButton = () => {
 
 const UploadButton = () => {
   const { disabled, sendFiles } = useUploadButton();
-  const styleSet = useStyleSet();
+  const { uploadButton: uploadButtonStyleSet } = useStyleSet();
   const inputRef = useRef();
   const uploadFileString = useLocalize('Upload file');
   const { current } = inputRef;
@@ -153,7 +152,7 @@ const UploadButton = () => {
   );
 
   return (
-    <div className={classNames(ROOT_CSS + '', styleSet.uploadButton + '')}>
+    <div className={classNames(ROOT_CSS + '', uploadButtonStyleSet + '')}>
       <input
         aria-hidden="true"
         disabled={disabled}

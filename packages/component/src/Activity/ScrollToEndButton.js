@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Localize from '../Localization/Localize';
-import useStyleSet from '../hooks/useStyleSet';
 import useScrollToEnd from '../hooks/useScrollToEnd';
+import useStyleSet from '../hooks/useStyleSet';
 
 const useScrollToEndButton = () => {
   const scrollToEnd = useScrollToEnd();
@@ -16,10 +16,10 @@ const useScrollToEndButton = () => {
 
 const ScrollToEndButton = ({ className }) => {
   const { scrollToEnd } = useScrollToEndButton();
-  const styleSet = useStyleSet();
+  const { scrollToEndButton: scrollToEndButtonStyleSet } = useStyleSet();
 
   return (
-    <button className={classNames(styleSet.scrollToEndButton + '', className + '')} onClick={scrollToEnd} type="button">
+    <button className={classNames(scrollToEndButtonStyleSet + '', className + '')} onClick={scrollToEnd} type="button">
       <Localize text="New messages" />
     </button>
   );

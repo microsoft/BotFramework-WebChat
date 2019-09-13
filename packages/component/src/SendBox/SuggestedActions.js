@@ -7,6 +7,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useSuggestedActionsHook from '../hooks/useSuggestedActions';
 
@@ -44,15 +45,16 @@ const useSuggestedActions = () => {
 
 const SuggestedActions = ({ className }) => {
   const { suggestedActions } = useSuggestedActions();
-  const styleSet = useStyleSet();
+  const { suggestedActions: suggestedActionsStyleSet } = useStyleSet();
+  const { suggestedActionsStyleSet: suggestedActionsStyleSetForBasicFilm } = useStyleOptions();
 
   return (
     !!suggestedActions.length && (
       <BasicFilm
         autoCenter={false}
-        className={classNames(styleSet.suggestedActions + '', className + '')}
+        className={classNames(suggestedActionsStyleSet + '', className + '')}
         showDots={false}
-        styleSet={styleSet.options.suggestedActionsStyleSet}
+        styleSet={suggestedActionsStyleSetForBasicFilm}
       >
         {suggestedActions.map(({ displayText, image, text, title, type, value }, index) => (
           <SuggestedAction

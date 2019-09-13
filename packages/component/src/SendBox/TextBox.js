@@ -12,6 +12,7 @@ import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
 import useSetSendBox from '../hooks/useSetSendBox';
 import useStopDictate from '../hooks/useStopDictate';
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
@@ -127,24 +128,20 @@ const useSendTextBox = () => {
 
 const TextBox = ({ className }) => {
   const { disabled, onChange, onKeyPress, onSubmit, value } = useSendTextBox();
-  const styleSet = useStyleSet();
+  const { sendBoxTextWrap } = useStyleOptions();
+  const { sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet } = useStyleSet();
   const typeYourMessageString = useLocalize('Type your message');
 
   return useMemo(
     () => (
       <form
-        className={classNames(
-          ROOT_CSS + '',
-          styleSet.sendBoxTextArea + '',
-          styleSet.sendBoxTextBox + '',
-          className + ''
-        )}
+        className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
         onSubmit={onSubmit}
       >
         {
           <TypeFocusSinkContext.Consumer>
             {({ sendFocusRef }) =>
-              !styleSet.options.sendBoxTextWrap ? (
+              !sendBoxTextWrap ? (
                 <input
                   aria-label={typeYourMessageString}
                   data-id="webchat-sendbox-input"

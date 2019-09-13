@@ -6,13 +6,13 @@ import useLocalize from './hooks/useLocalize';
 import useStyleSet from './hooks/useStyleSet';
 
 const ErrorBox = ({ children, message }) => {
-  const styleSet = useStyleSet();
+  const { errorBox: errorBoxStyleSet } = useStyleSet();
   const errorLabel = useLocalize('ErrorMessage');
 
   return (
     <React.Fragment>
       <ScreenReaderText text={errorLabel} />
-      <div className={styleSet.errorBox}>
+      <div className={errorBoxStyleSet}>
         <div>{message}</div>
         <div>{children}</div>
       </div>

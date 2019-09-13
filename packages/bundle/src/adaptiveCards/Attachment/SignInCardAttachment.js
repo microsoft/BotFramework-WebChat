@@ -1,14 +1,16 @@
-import { useStyleSet } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import CommonCard from './CommonCard';
 
+const { useStyleSet } = hooks;
+
 const SignInCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment }) => {
-  const styleSet = useStyleSet();
+  const { animationCardAttachment: animationCardAttachmentStyleSet } = useStyleSet();
 
   return (
-    <div className={styleSet.animationCardAttachment}>
+    <div className={animationCardAttachmentStyleSet}>
       <CommonCard
         adaptiveCardHostConfig={adaptiveCardHostConfig}
         adaptiveCards={adaptiveCards}

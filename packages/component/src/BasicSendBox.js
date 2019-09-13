@@ -14,6 +14,7 @@ import TypingIndicator from './SendBox/TypingIndicator';
 import UploadButton from './SendBox/UploadButton';
 import useActivities from './hooks/useActivities';
 import useDictateState from './hooks/useDictateState';
+import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
@@ -50,18 +51,19 @@ const useBasicSendBox = () => {
 
 const BasicSendBox = ({ className }) => {
   const { activities, dictateState, webSpeechPonyfill } = useBasicSendBox();
-  const styleSet = useStyleSet();
+  const { hideUploadButton } = useStyleOptions();
+  const { sendBox: sendBoxStyleSet } = useStyleSet();
   const dictationStarted =
     (dictateState === STARTING || dictateState === DICTATING) &&
     !activities.filter(activityIsSpeakingOrQueuedToSpeak).length;
 
   return (
-    <div className={classNames(styleSet.sendBox + '', ROOT_CSS + '', className + '')} role="form">
+    <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} role="form">
       <TypingIndicator />
       <ConnectivityStatus />
       <SuggestedActions />
       <div className="main">
-        {!styleSet.options.hideUploadButton && <UploadButton />}
+        {!hideUploadButton && <UploadButton />}
         {dictationStarted ? (
           <DictationInterims className={DICTATION_INTERIMS_CSS + ''} />
         ) : (

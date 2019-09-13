@@ -4,13 +4,13 @@ import React from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 
 const AudioContent = ({ alt, autoPlay, loop, poster, src }) => {
-  const styleSet = useStyleSet();
+  const { audioContent } = useStyleSet();
 
   return (
     <audio
       aria-label={alt}
       autoPlay={autoPlay}
-      className={styleSet.audioContent}
+      className={audioContent}
       controls={true}
       loop={loop}
       poster={poster}

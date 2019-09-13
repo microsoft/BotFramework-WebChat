@@ -46,16 +46,16 @@ const useDictationInterims = () => {
 
 const DictationInterims = ({ className }) => {
   const { dictateInterims, dictateState } = useDictationInterims();
-  const styleSet = useStyleSet();
+  const { dictationInterims: dictationInterimsStyleSet } = useStyleSet();
 
   return dictateState === STARTING || dictateState === STOPPING ? (
-    <p className={classNames(styleSet.dictationInterims + '', ROOT_CSS + '', className + '', 'status')}>
+    <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
       {dictateState === STARTING && <Localize text="Starting&hellip;" />}
     </p>
   ) : (
     dictateState === DICTATING &&
       (dictateInterims.length ? (
-        <p className={classNames(styleSet.dictationInterims + '', ROOT_CSS + '', className + '', 'dictating')}>
+        <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'dictating')}>
           {dictateInterims.map((interim, index) => (
             <span key={index}>
               {interim}
@@ -64,7 +64,7 @@ const DictationInterims = ({ className }) => {
           ))}
         </p>
       ) : (
-        <p className={classNames(styleSet.dictationInterims + '', ROOT_CSS + '', className + '', 'status')}>
+        <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
           <Localize text="Listening&hellip;" />
         </p>
       ))

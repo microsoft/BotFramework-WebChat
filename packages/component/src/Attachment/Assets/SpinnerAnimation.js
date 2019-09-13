@@ -3,9 +3,9 @@ import React from 'react';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const SpinnerAnimation = () => {
-  const styleSet = useStyleSet();
+  const { spinnerAnimation } = useStyleSet();
 
-  return <div className={styleSet.spinnerAnimation} />;
+  return <div className={spinnerAnimation} />;
 };
 
 export default SpinnerAnimation;

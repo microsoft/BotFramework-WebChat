@@ -4,17 +4,10 @@ import { HostConfig } from 'adaptivecards';
 import PropTypes from 'prop-types';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import {
-  Components,
-  getTabIndex,
-  useDisabled,
-  useLocalize,
-  useOnCardAction,
-  useRenderMarkdown,
-  useStyleSet
-} from 'botframework-webchat-component';
+import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 
 const { ErrorBox } = Components;
+const { useDisabled, useLocalize, useOnCardAction, useRenderMarkdown, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
@@ -25,7 +18,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
   const onCardAction = useOnCardAction();
   const renderMarkdown = useRenderMarkdown();
 
-  const styleSet = useStyleSet();
+  const { adaptiveCardRenderer: adaptiveCardRendererStyleSet } = useStyleSet();
   const contentRef = useRef();
   const handleClick = useCallback(
     ({ target }) => {
@@ -168,7 +161,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
       <pre>{JSON.stringify(error, null, 2)}</pre>
     </ErrorBox>
   ) : (
-    <div className={styleSet.adaptiveCardRenderer} onClick={handleClick} ref={contentRef} />
+    <div className={adaptiveCardRendererStyleSet} onClick={handleClick} ref={contentRef} />
   );
 };
 

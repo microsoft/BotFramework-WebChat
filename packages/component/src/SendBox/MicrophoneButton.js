@@ -138,14 +138,14 @@ const useMicrophoneButton = () => {
 
 const MicrophoneButton = ({ className }) => {
   const { click, dictating, disabled } = useMicrophoneButton();
-  const styleSet = useStyleSet();
+  const { microphoneButton: microphoneButtonStyleSet } = useStyleSet();
   const buttonAltText = useLocalize('Speak');
   const microphoneStatusLabel = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
 
   return (
     <div
       aria-controls="webchatSendBoxMicrophoneButton"
-      className={classNames(styleSet.microphoneButton + '', ROOT_CSS + '', className + '', { dictating })}
+      className={classNames(microphoneButtonStyleSet + '', ROOT_CSS + '', className + '', { dictating })}
     >
       <IconButton alt={buttonAltText} disabled={disabled} onClick={click}>
         <MicrophoneIcon />

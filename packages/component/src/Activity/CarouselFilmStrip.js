@@ -118,16 +118,16 @@ const WebChatCarouselFilmStrip = ({
   const fromUser = role === 'user';
 
   const { avatarInitials } = useCarouselFilmStrip({ activity });
-  const styleOptions = useStyleOptions();
-  const styleSet = useStyleSet();
+  const { bubbleNubSize, bubbleFromUserNubSize } = useStyleOptions();
+  const { carouselFilmStrip: carouselFilmStripStyleSet } = useStyleSet();
   const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
 
   const activityDisplayText = messageBackDisplayText || text;
-  const indented = fromUser ? styleOptions.bubbleFromUserNubSize : styleOptions.bubbleNubSize;
+  const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
   return (
     <div
-      className={classNames(ROOT_CSS + '', styleSet.carouselFilmStrip + '', className + '', {
+      className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
         webchat__carousel_indented_content: avatarInitials && !indented
       })}
       ref={scrollableRef}

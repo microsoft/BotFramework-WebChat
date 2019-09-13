@@ -1,22 +1,24 @@
+import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { useStyleSet } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+const { useStyleOptions } = hooks;
+
 const OAuthCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
-  const { options } = useStyleSet();
+  const styleOptions = useStyleOptions();
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
       builder.addCommonHeaders(content);
       builder.addButtons((content || {}).buttons, true);
 
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return <AdaptiveCardRenderer adaptiveCard={builtCard} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
 };

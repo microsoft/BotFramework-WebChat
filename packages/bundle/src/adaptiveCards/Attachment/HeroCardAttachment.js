@@ -1,12 +1,14 @@
+import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { useStyleSet } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+const { useStyleOptions } = hooks;
+
 const HeroCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
-  const { options } = useStyleSet();
+  const options = useStyleOptions();
   const builtCard = useMemo(() => {
     const builder = new AdaptiveCardBuilder(adaptiveCards, options);
 

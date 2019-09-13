@@ -11,7 +11,7 @@ const DownloadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
   attachment
 }) => {
-  const styleSet = useStyleSet();
+  const { downloadAttachment } = useStyleSet();
   const attachmentIndex = attachments.indexOf(attachment);
   const downloadLabel = useLocalize('Download file');
   const size = attachmentSizes[attachmentIndex];
@@ -25,7 +25,7 @@ const DownloadAttachment = ({
   return (
     <React.Fragment>
       <ScreenReaderText text={downloadFileWithFileSizeLabel} />
-      <div aria-hidden={true} className={styleSet.downloadAttachment}>
+      <div aria-hidden={true} className={downloadAttachment}>
         <a href={attachment.contentUrl} rel="noopener noreferrer" target="_blank">
           {/* Although nested, Chrome v75 does not respect the above aria-hidden and makes the below aria-hidden necessary */}
           <div aria-hidden={true} className="details">

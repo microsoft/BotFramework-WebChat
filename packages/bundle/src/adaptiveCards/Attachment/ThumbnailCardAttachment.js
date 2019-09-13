@@ -3,18 +3,20 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { useStyleSet } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+const { useStyleOptions } = hooks;
+
 const ThumbnailCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
-  const { options } = useStyleSet();
+  const styleOptions = useStyleOptions();
   const builtCard = useMemo(() => {
     if (content) {
-      const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+      const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
       const { TextSize, TextWeight } = adaptiveCards;
       const { buttons, images, subtitle, text, title } = content;
-      const { richCardWrapTitle } = options;
+      const { richCardWrapTitle } = styleOptions;
 
       if (images && images.length) {
         const [firstColumn, lastColumn] = builder.addColumnSet([75, 25]);
@@ -35,7 +37,7 @@ const ThumbnailCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attach
       }
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return (
     <AdaptiveCardRenderer

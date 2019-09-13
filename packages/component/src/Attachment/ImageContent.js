@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import CroppedImage from '../Utils/CroppedImage';
-import useStyleSet from '../hooks/useStyleSet';
+import useStyleOptions from '../hooks/useStyleOptions';
 
 const ImageContent = ({ alt, src }) => {
-  const styleSet = useStyleSet();
+  const { bubbleImageHeight } = useStyleOptions();
 
-  return <CroppedImage alt={alt} height={styleSet.options.bubbleImageHeight} src={src} width="100%" />;
+  return <CroppedImage alt={alt} height={bubbleImageHeight} src={src} width="100%" />;
 };
 
 ImageContent.defaultProps = {

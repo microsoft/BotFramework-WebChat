@@ -17,7 +17,7 @@ const UploadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
   attachment
 }) => {
-  const styleSet = useStyleSet();
+  const { uploadAttachment: uploadAttachmentStyleSet } = useStyleSet();
   const attachmentIndex = attachments.indexOf(attachment);
   const size = attachmentSizes[attachmentIndex];
   const formattedSize = typeof size === 'number' && format(size);
@@ -26,7 +26,7 @@ const UploadAttachment = ({
   return (
     <React.Fragment>
       <ScreenReaderText text={uploadFileWithFileSizeLabel} />
-      <div aria-hidden={true} className={classNames(ROOT_CSS + '', styleSet.uploadAttachment + '')}>
+      <div aria-hidden={true} className={classNames(ROOT_CSS + '', uploadAttachmentStyleSet + '')}>
         <div className="name">{attachment.name}</div>
         <div className="size">{formattedSize}</div>
       </div>

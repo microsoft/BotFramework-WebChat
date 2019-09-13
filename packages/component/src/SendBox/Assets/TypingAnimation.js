@@ -5,12 +5,12 @@ import ScreenReaderText from '../../ScreenReaderText';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const TypingAnimation = ({ 'aria-label': ariaLabel }) => {
-  const styleSet = useStyleSet();
+  const { typingAnimation: typingAnimationStyleSet } = useStyleSet();
 
   return (
     <React.Fragment>
       <ScreenReaderText text={ariaLabel} />
-      <div aria-hidden={true} className={styleSet.typingAnimation} />
+      <div aria-hidden={true} className={typingAnimationStyleSet} />
     </React.Fragment>
   );
 };

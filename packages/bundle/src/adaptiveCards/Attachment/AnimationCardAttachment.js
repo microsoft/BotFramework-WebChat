@@ -1,12 +1,13 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { Components, useStyleSet } from 'botframework-webchat-component';
+import { Components, hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import CommonCard from './CommonCard';
 
 const { ImageContent, VideoContent } = Components;
+const { useStyleSet } = hooks;
 
 const AnimationCardAttachment = ({
   adaptiveCardHostConfig,
@@ -14,10 +15,10 @@ const AnimationCardAttachment = ({
   attachment,
   attachment: { content: { media = [] } } = {}
 }) => {
-  const styleSet = useStyleSet();
+  const { animationCardAttachment: animationCardAttachmentStyleSet } = useStyleSet();
 
   return (
-    <div className={styleSet.animationCardAttachment}>
+    <div className={animationCardAttachmentStyleSet}>
       <ul className="media-list">
         {media.map(({ profile = '', url }, index) => (
           <li key={index}>

@@ -5,10 +5,10 @@ import AudioContent from './AudioContent';
 import useStyleSet from '../hooks/useStyleSet';
 
 const AudioAttachment = ({ attachment }) => {
-  const styleSet = useStyleSet();
+  const { audioAttachment } = useStyleSet();
 
   return (
-    <div className={styleSet.audioAttachment}>
+    <div className={audioAttachment}>
       <AudioContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );

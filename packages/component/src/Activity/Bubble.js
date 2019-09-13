@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -19,22 +20,21 @@ const ROOT_CSS = css({
 });
 
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
-  const styleSet = useStyleSet();
+  const { bubble: bubbleStyleSet } = useStyleSet();
+  const { bubbleNubSize, bubbleFromUserNubSize } = useStyleOptions();
 
   return (
     <div
       aria-hidden={ariaHidden}
       className={classNames(
         ROOT_CSS + '',
-        styleSet.bubble + '',
+        bubbleStyleSet + '',
         { 'from-user': fromUser, webchat__bubble_has_nub: nub },
         className + '' || ''
       )}
     >
       <div className="webchat__bubble__content">{children}</div>
-      {nub && !!(fromUser ? styleSet.options.bubbleFromUserNubSize : styleSet.options.bubbleNubSize) && (
-        <div className="webchat__bubble__nub" />
-      )}
+      {nub && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="webchat__bubble__nub" />}
     </div>
   );
 };

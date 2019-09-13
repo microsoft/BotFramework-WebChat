@@ -53,19 +53,25 @@ const useConnectivityStatus = () => {
 
 const ConnectivityStatus = () => {
   const { connectivityStatus } = useConnectivityStatus();
-  const styleSet = useStyleSet();
+
+  const {
+    connectivityNotification: connectivityNotificationStyleSet,
+    errorNotification: errorNotificationStyleSet,
+    warningNotification: warningNotificationStyleSet
+  } = useStyleSet();
+
   const connectingSlowText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
   const renderConnectingSlow = useCallback(
     () => (
       <React.Fragment>
         <ScreenReaderText text={connectingSlowText} />
-        <div aria-hidden={true} className={styleSet.warningNotification}>
+        <div aria-hidden={true} className={warningNotificationStyleSet}>
           <WarningNotificationIcon />
           {connectingSlowText}
         </div>
       </React.Fragment>
     ),
-    [connectingSlowText, styleSet.warningNotification]
+    [connectingSlowText, warningNotificationStyleSet]
   );
 
   const notConnectedText = useLocalize('FAILED_CONNECTION_NOTIFICATION');
@@ -74,13 +80,13 @@ const ConnectivityStatus = () => {
     () => (
       <React.Fragment>
         <ScreenReaderText text={notConnectedText} />
-        <div aria-hidden={true} className={styleSet.errorNotification}>
+        <div aria-hidden={true} className={errorNotificationStyleSet}>
           <ErrorNotificationIcon />
           {notConnectedText}
         </div>
       </React.Fragment>
     ),
-    [notConnectedText, styleSet.errorNotification]
+    [notConnectedText, errorNotificationStyleSet]
   );
 
   const uninitializedText = useLocalize('INITIAL_CONNECTION_NOTIFICATION');
@@ -89,13 +95,13 @@ const ConnectivityStatus = () => {
     () => (
       <React.Fragment>
         <ScreenReaderText text={uninitializedText} />
-        <div aria-hidden={true} className={styleSet.connectivityNotification}>
+        <div aria-hidden={true} className={connectivityNotificationStyleSet}>
           <SpinnerAnimation />
           {uninitializedText}
         </div>
       </React.Fragment>
     ),
-    [styleSet.connectivityNotification, uninitializedText]
+    [connectivityNotificationStyleSet, uninitializedText]
   );
 
   const reconnectingText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
@@ -104,13 +110,13 @@ const ConnectivityStatus = () => {
     () => (
       <React.Fragment>
         <ScreenReaderText text={reconnectingText} />
-        <div aria-hidden={true} className={styleSet.connectivityNotification}>
+        <div aria-hidden={true} className={connectivityNotificationStyleSet}>
           <SpinnerAnimation />
           {reconnectingText}
         </div>
       </React.Fragment>
     ),
-    [reconnectingText, styleSet.connectivityNotification]
+    [reconnectingText, connectivityNotificationStyleSet]
   );
 
   const sagaErrorText = useLocalize('RENDER_ERROR_NOTIFICATION');
@@ -119,13 +125,13 @@ const ConnectivityStatus = () => {
     () => (
       <React.Fragment>
         <ScreenReaderText text={sagaErrorText} />
-        <div className={styleSet.errorNotification}>
+        <div className={errorNotificationStyleSet}>
           <ErrorNotificationIcon />
           {sagaErrorText}
         </div>
       </React.Fragment>
     ),
-    [sagaErrorText, styleSet.errorNotification]
+    [sagaErrorText, errorNotificationStyleSet]
   );
 
   const emptyStatusText = useLocalize('CONNECTED_NOTIFICATION');

@@ -4,7 +4,7 @@ import React from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 
 const YouTubeContent = ({ alt, autoPlay, embedID, loop }) => {
-  const styleSet = useStyleSet();
+  const { youTubeContent: youTubeContentStyleSet } = useStyleSet();
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     loop: loop ? 1 : 0,
@@ -16,7 +16,7 @@ const YouTubeContent = ({ alt, autoPlay, embedID, loop }) => {
     <iframe
       allowFullScreen={true}
       aria-label={alt}
-      className={styleSet.youTubeContent}
+      className={youTubeContentStyleSet}
       src={`https://youtube.com/embed/${embedID}?${search}`}
     />
   );

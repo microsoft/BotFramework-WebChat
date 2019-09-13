@@ -11,6 +11,7 @@ import useActivities from './hooks/useActivities';
 import useActivityRenderer from './hooks/useActivityRenderer';
 import useAttachmentRenderer from './hooks/useAttachmentRenderer';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
+import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
@@ -74,7 +75,8 @@ const useBasicTranscript = () => {
 
 const BasicTranscript = ({ className }) => {
   const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useBasicTranscript();
-  const styleSet = useStyleSet();
+  const { activities: activitiesStyleSet, activity: activityStyleSet } = useStyleSet();
+  const { hideScrollToEndButton } = useStyleOptions();
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
@@ -105,14 +107,14 @@ const BasicTranscript = ({ className }) => {
             aria-atomic="false"
             aria-live="polite"
             aria-relevant="additions text"
-            className={classNames(LIST_CSS + '', styleSet.activities + '')}
+            className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
             role="list"
           >
             {activityElements.map(({ activity, element }, index) => (
               <li
                 /* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */
                 aria-label=" "
-                className={classNames(styleSet.activity + '', {
+                className={classNames(activityStyleSet + '', {
                   // Hide timestamp if same timestamp group with the next activity
                   'hide-timestamp': sameTimestampGroup(
                     activity,
@@ -131,7 +133,7 @@ const BasicTranscript = ({ className }) => {
           </ul>
         </SayComposer>
       </ScrollToBottomPanel>
-      {!styleSet.options.hideScrollToEndButton && <ScrollToEndButton />}
+      {!hideScrollToEndButton && <ScrollToEndButton />}
     </div>
   );
 };
