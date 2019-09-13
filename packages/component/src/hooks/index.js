@@ -12,6 +12,7 @@ import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastTypingAt from './useLastTypingAt';
+import useLocalize from './useLocalize';
 import useMarkActivity from './useMarkActivity';
 import useOnCardAction from './useOnCardAction';
 import usePostActivity from './usePostActivity';
@@ -61,6 +62,7 @@ export {
   useGroupTimestamp,
   useLanguage,
   useLastTypingAt,
+  useLocalize,
   useMarkActivity,
   useOnCardAction,
   usePostActivity,

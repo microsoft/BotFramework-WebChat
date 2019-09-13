@@ -9,7 +9,7 @@ import useStyleSet from '../hooks/useStyleSet';
 
 const Timestamp = ({ activity: { timestamp }, className }) => {
   const { timestampFormat } = useStyleOptions();
-  const { timestampStyleSet } = useStyleSet();
+  const { timestamp: timestampStyleSet } = useStyleSet();
 
   if (!timestamp) {
     return false;
