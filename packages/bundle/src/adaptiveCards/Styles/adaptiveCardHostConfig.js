@@ -22,6 +22,10 @@ export default ({ accent, primaryFont, subtle } = defaultStyleOptions) => ({
         default: {
           default: null,
           subtle: subtle
+        },
+        accent: {
+          default: null,
+          subtle: accent
         }
       }
     }

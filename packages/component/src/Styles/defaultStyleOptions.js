@@ -5,15 +5,12 @@ function fontFamily(fonts) {
 }
 
 const DEFAULT_ACCENT = '#0063B1';
-const DEFAULT_BACKGROUND = '#FFFFFF';
-const DEFAULT_COLOR = '#000000';
 const PADDING_REGULAR = 10;
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 
 const DEFAULT_OPTIONS = {
   // Color and paddings
   accent: DEFAULT_ACCENT,
-  backgroundColor: DEFAULT_BACKGROUND,
   paddingRegular: PADDING_REGULAR,
   paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
@@ -34,30 +31,30 @@ const DEFAULT_OPTIONS = {
   userAvatarInitials: '',
 
   // Bubble
-  bubbleFromBotBackground: `${DEFAULT_BACKGROUND}`,
-  bubbleFromBotBorderColor: `${DEFAULT_ACCENT}`,
+  bubbleFromBotBackground: 'White',
+  bubbleFromBotBorderColor: '#E6E6E6',
   bubbleFromBotBorderRadius: 2,
   bubbleFromBotBorderStyle: 'solid',
   bubbleFromBotBorderWidth: 1,
-  bubbleFromBotTextColor: `${DEFAULT_COLOR}`,
-  bubbleFromUserBackground: `${DEFAULT_BACKGROUND}`,
-  bubbleFromUserBorderColor: `${DEFAULT_ACCENT}`,
+  bubbleFromBotTextColor: 'Black',
+  bubbleFromUserBackground: 'White',
+  bubbleFromUserBorderColor: '#E6E6E6',
   bubbleFromUserBorderRadius: 2,
   bubbleFromUserBorderStyle: 'solid',
   bubbleFromUserBorderWidth: 1,
-  bubbleFromUserTextColor: `${DEFAULT_COLOR}`,
-  bubbleAttachmentBackground: `${DEFAULT_BACKGROUND}`,
-  bubbleAttachmentTextColor: `${DEFAULT_COLOR}`,
-  bubbleAttachmentBorderColor: `${DEFAULT_ACCENT}`,
+  bubbleFromUserTextColor: 'Black',
+  bubbleAttachmentBackground: 'White',
+  bubbleAttachmentTextColor: 'Black',
+  bubbleAttachmentBorderColor: '#E6E6E6',
   bubbleAttachmentBorderRadius: 2,
   bubbleAttachmentBorderStyle: 'solid',
   bubbleAttachmentBorderWidth: 1,
   bubbleFromBotNubOffset: 'bottom',
   bubbleFromBotNubSize: 0,
-  bubbleFromBotNubBorderColor: `${DEFAULT_ACCENT}`,
+  bubbleFromBotNubBorderColor: '#E6E6E6',
   bubbleFromUserNubOffset: 'bottom',
   bubbleFromUserNubSize: 0,
-  bubbleFromUserNubBorderColor: `${DEFAULT_ACCENT}`,
+  bubbleFromUserNubBorderColor: '#E6E6E6',
   bubbleImageHeight: 240,
   bubbleMaxWidth: 480, // screen width = 600px
   bubbleMinHeight: 40,
@@ -77,14 +74,14 @@ const DEFAULT_OPTIONS = {
   hideSendBox: false,
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
-  sendBoxBackground: `${DEFAULT_BACKGROUND}`,
+  sendBoxBackground: 'White',
   sendBoxButtonColor: '#767676',
   sendBoxButtonColorOnDisabled: '#CCC',
   sendBoxButtonColorOnFocus: '#333',
   sendBoxButtonColorOnHover: '#333',
   sendBoxHeight: 40,
   sendBoxMaxHeight: 200,
-  sendBoxTextColor: `${DEFAULT_COLOR}`,
+  sendBoxTextColor: 'Black',
   sendBoxBorderBottom: '',
   sendBoxBorderLeft: '',
   sendBoxBorderRight: '',
@@ -96,12 +93,12 @@ const DEFAULT_OPTIONS = {
   showSpokenText: false,
 
   // Suggested actions
-  suggestedActionBackground: `${DEFAULT_BACKGROUND}`,
+  suggestedActionBackground: 'White',
   suggestedActionBorder: `solid 2px ${DEFAULT_ACCENT}`,
   suggestedActionBorderRadius: 0,
   suggestedActionImageHeight: 20,
   suggestedActionTextColor: DEFAULT_ACCENT,
-  suggestedActionDisabledBackground: `${DEFAULT_BACKGROUND}`,
+  suggestedActionDisabledBackground: 'White',
   suggestedActionDisabledBorder: `solid 2px #E6E6E6`,
   suggestedActionDisabledTextColor: DEFAULT_SUBTLE,
   suggestedActionHeight: 40,
@@ -113,9 +110,9 @@ const DEFAULT_OPTIONS = {
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
   transcriptOverlayButtonBackgroundOnHover: 'rgba(0, 0, 0, .8)',
-  transcriptOverlayButtonColor: `${DEFAULT_BACKGROUND}`,
-  transcriptOverlayButtonColorOnFocus: `${DEFAULT_BACKGROUND}`,
-  transcriptOverlayButtonColorOnHover: `${DEFAULT_BACKGROUND}`,
+  transcriptOverlayButtonColor: 'White',
+  transcriptOverlayButtonColorOnFocus: 'White',
+  transcriptOverlayButtonColorOnHover: 'White',
 
   // Video
   videoHeight: 270, // based on bubbleMaxWidth, 480 / 16 * 9 = 270
