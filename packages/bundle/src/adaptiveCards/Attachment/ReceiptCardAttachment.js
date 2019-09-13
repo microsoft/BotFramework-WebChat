@@ -94,7 +94,7 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
           return builder.card;
         });
     }
-  }, [adaptiveCards, content, language, styleOptions]);
+  }, [adaptiveCards, content, styleOptions, taxText, totalText, vatText]);
 
   return (
     <AdaptiveCardRenderer
@@ -135,7 +135,6 @@ ReceiptCardAttachment.propTypes = {
       vat: PropTypes.string
     }).isRequired
   }).isRequired,
-  language: PropTypes.string.isRequired,
   styleSet: PropTypes.shape({
     options: PropTypes.any.isRequired
   }).isRequired

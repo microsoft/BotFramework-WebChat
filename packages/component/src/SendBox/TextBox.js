@@ -173,7 +173,18 @@ const TextBox = ({ className }) => {
         }
       </form>
     ),
-    [className, disabled, onChange, onKeyPress, onSubmit, styleSet, typeYourMessageString, value]
+    [
+      className,
+      disabled,
+      onChange,
+      onKeyPress,
+      onSubmit,
+      sendBoxTextAreaStyleSet,
+      sendBoxTextBoxStyleSet,
+      sendBoxTextWrap,
+      typeYourMessageString,
+      value
+    ]
   );
 };
 

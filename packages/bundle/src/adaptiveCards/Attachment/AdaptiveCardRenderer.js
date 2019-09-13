@@ -14,6 +14,7 @@ function isPlainObject(obj) {
 }
 
 const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction }) => {
+  const [error, setError] = useState();
   const disabled = useDisabled();
   const onCardAction = useOnCardAction();
   const renderMarkdown = useRenderMarkdown();
@@ -104,7 +105,8 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
       if (failures.length) {
         // TODO: [P3] Since this can be called from `componentDidUpdate` and potentially error, we should fix a better way to propagate the error.
         const errors = failures.reduce((items, { errors }) => [...items, ...errors], []);
-        return this.setState(() => ({ error: errors }));
+
+        return setError(errors);
       }
 
       let element;
@@ -146,13 +148,11 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
         current.appendChild(element);
       }
     }
-  }, [adaptiveCard, adaptiveCardHostConfig, contentRef.current, disabled, error, handleExecuteAction, renderMarkdown]);
-
-  const [error, setError] = useState();
+  }, [adaptiveCard, adaptiveCardHostConfig, disabled, error, handleExecuteAction, renderMarkdown]);
 
   useLayoutEffect(() => {
     renderCard();
-  }, [adaptiveCard]);
+  }, [renderCard]);
 
   const errorMessage = useLocalize('Adaptive Card render error');
 
@@ -163,6 +163,10 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
   ) : (
     <div className={adaptiveCardRendererStyleSet} onClick={handleClick} ref={contentRef} />
   );
+};
+
+AdaptiveCardRenderer.defaultProps = {
+  tapAction: undefined
 };
 
 AdaptiveCardRenderer.propTypes = {

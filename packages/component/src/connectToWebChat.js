@@ -45,7 +45,9 @@ export default function connectToWebChat(...selectors) {
     )(Component);
 
     const WebChatConnectedComponent = props => (
-      <Context.Consumer>{context => <ConnectedComponent {...props} context={context} />}</Context.Consumer>
+      <WebChatUIContext.Consumer>
+        {context => <ConnectedComponent {...props} context={context} />}
+      </WebChatUIContext.Consumer>
     );
 
     return WebChatConnectedComponent;
