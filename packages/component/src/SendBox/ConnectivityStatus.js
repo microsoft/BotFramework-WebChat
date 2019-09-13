@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
 import useConnectivityStatusHook from '../hooks/useConnectivityStatus';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
 

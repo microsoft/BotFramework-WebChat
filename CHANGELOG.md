@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Breaking changes
 
 -  We will no longer include `react` and `react-dom` in our NPM package, instead, we will requires peer dependencies of `react@^16.8.6` and `react-dom@^16.8.6`
+-  `botframework-webchat-component`: We will no longer export `Context`. You should use our new React hooks instead.
 
 ### Changed
 

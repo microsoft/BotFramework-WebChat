@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useRenderMarkdown() {
-  return useContext(WebChatContext).renderMarkdown;
+  return useContext(WebChatUIContext).renderMarkdown;
 }

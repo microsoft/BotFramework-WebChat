@@ -4,6 +4,6 @@ const context = React.createContext({
   sendFocusRef: null
 });
 
-context.displayName = 'TypeFocusSinkContext';
+context.displayName = 'WebChatUIContext';
 
 export default context;

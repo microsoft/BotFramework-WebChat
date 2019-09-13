@@ -7,8 +7,8 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import {
   Components,
   getTabIndex,
-  useLocalize,
   useDisabled,
+  useLocalize,
   useOnCardAction,
   useRenderMarkdown,
   useStyleSet

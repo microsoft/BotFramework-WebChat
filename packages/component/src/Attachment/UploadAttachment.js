@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({

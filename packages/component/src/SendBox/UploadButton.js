@@ -2,12 +2,12 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React, { useCallback, useRef } from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL';
 import IconButton from './IconButton';
 import useDisabled from '../hooks/useDisabled';
+import useLocalize from '../hooks/useLocalize';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 

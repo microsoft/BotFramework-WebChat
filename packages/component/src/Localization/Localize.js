@@ -2,7 +2,7 @@
 /* eslint complexity: "off" */
 
 import getLocaleString from './getLocaleString';
-import useLanguage from '../hooks/useLanguage';
+import useLocalize from '../hooks/useLocalize';
 
 import bgBG from './bg-BG';
 import csCZ from './cs-CZ';
@@ -152,13 +152,6 @@ function localize(text, language, ...args) {
   return string || text;
 }
 
-// Move it to hooks/useLocalize.js
-function useLocalize(text, ...args) {
-  const language = useLanguage();
-
-  return localize(text, language, ...args);
-}
-
 export default ({ args, text }) => useLocalize(text, ...(args || []));
 
-export { getLocaleString, localize, useLocalize };
+export { getLocaleString, localize };

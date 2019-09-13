@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useSetSendTimeout() {
-  return useContext(WebChatContext).setSendTimeout;
+  return useContext(WebChatUIContext).setSendTimeout;
 }

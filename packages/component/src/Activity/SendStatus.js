@@ -2,10 +2,10 @@ import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
 import useFocusSendBox from '../hooks/useFocusSendBox';
+import useLocalize from '../hooks/useLocalize';
 import usePostActivity from '../hooks/usePostActivity';
 import useStyleSet from '../hooks/useStyleSet';
 

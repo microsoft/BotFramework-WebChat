@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import CarouselFilmStrip from './CarouselFilmStrip';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -14,9 +14,9 @@ const ROOT_CSS = css({
 });
 
 const CarouselLayout = ({ activity, children, timestampClassName }) => {
-  const styleSet = useStyleSet();
   const leftLabel = useLocalize('Left');
   const rightLabel = useLocalize('Right');
+  const styleSet = useStyleSet();
 
   const filmStyleSet = createBasicStyleSet({ cursor: null });
 

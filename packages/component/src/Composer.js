@@ -3,10 +3,11 @@ import {
   FunctionContext as ScrollToBottomFunctionContext
 } from 'react-scroll-to-bottom';
 
-import { connect, Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import { css } from 'glamor';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo } from 'react';
+import useReferenceGrammarID from './hooks/useReferenceGrammarID';
 
 import {
   clearSuggestedActions,
@@ -34,14 +35,14 @@ import {
 } from 'botframework-webchat-core';
 
 import concatMiddleware from './Middleware/concatMiddleware';
-import Context from './Context';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import defaultSelectVoice from './defaultSelectVoice';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
-import WebChatReduxContext from './WebChatReduxContext';
+import WebChatReduxContext, { useDispatch } from './WebChatReduxContext';
+import WebChatUIContext from './WebChatUIContext';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -142,11 +143,9 @@ const Composer = ({
   children,
   directLine,
   disabled,
-  dispatch,
   grammars,
   groupTimestamp,
   locale,
-  referenceGrammarID,
   renderMarkdown,
   scrollToEnd,
   selectVoice,
@@ -161,6 +160,9 @@ const Composer = ({
   username,
   webSpeechPonyfillFactory
 }) => {
+  const dispatch = useDispatch();
+  const referenceGrammarID = useReferenceGrammarID();
+
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedSendTypingIndicator = useMemo(() => {
     if (typeof sendTyping === 'undefined') {
@@ -237,6 +239,8 @@ const Composer = ({
   // 2. Filter out profanity
 
   // TODO: [P4] Revisit all members of context
+  //       This context should have all stuff that is not in the Redux store
+  //       That means, stuff that are not interested in other type of UIs
   const context = useMemo(
     () => ({
       ...cardActionContext,
@@ -285,47 +289,37 @@ const Composer = ({
   );
 
   return (
-    <Context.Provider value={context}>
+    <WebChatUIContext.Provider value={context}>
       {typeof children === 'function' ? children(context) : children}
       <Dictation />
-    </Context.Provider>
+    </WebChatUIContext.Provider>
   );
 };
 
-// TODO: [P1] When react-redux support useSelector with custom context, we should move to that architecture to simplify our code.
-const ConnectedComposer = connect(
-  ({ referenceGrammarID }) => ({ referenceGrammarID }),
-  null,
-  null,
-  { context: WebChatReduxContext }
-)(props => (
-  <ScrollToBottomComposer>
-    <ScrollToBottomFunctionContext.Consumer>
-      {({ scrollToEnd }) => <Composer scrollToEnd={scrollToEnd} {...props} />}
-    </ScrollToBottomFunctionContext.Consumer>
-  </ScrollToBottomComposer>
-));
-
 // We will create a Redux store if it was not passed in
-const ConnectedComposerWithStore = ({ store, ...props }) => {
+const ComposerWithStore = ({ store, ...props }) => {
   const memoizedStore = useMemo(() => store || createStore(), [store]);
 
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ConnectedComposer {...props} />
+      <ScrollToBottomComposer>
+        <ScrollToBottomFunctionContext.Consumer>
+          {({ scrollToEnd }) => <Composer scrollToEnd={scrollToEnd} {...props} />}
+        </ScrollToBottomFunctionContext.Consumer>
+      </ScrollToBottomComposer>
     </Provider>
   );
 };
 
-ConnectedComposerWithStore.defaultProps = {
+ComposerWithStore.defaultProps = {
   store: undefined
 };
 
-ConnectedComposerWithStore.propTypes = {
+ComposerWithStore.propTypes = {
   store: PropTypes.any
 };
 
-export default ConnectedComposerWithStore;
+export default ComposerWithStore;
 
 // TODO: [P3] We should consider moving some data from Redux store to props
 //       Although we use `connectToWebChat` to hide the details of accessor of Redux store,
@@ -342,7 +336,6 @@ Composer.defaultProps = {
   grammars: [],
   groupTimestamp: true,
   locale: window.navigator.language || 'en-US',
-  referenceGrammarID: '',
   renderMarkdown: text => text,
   selectVoice: undefined,
   sendBoxRef: undefined,
@@ -377,11 +370,9 @@ Composer.propTypes = {
     token: PropTypes.string
   }).isRequired,
   disabled: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   locale: PropTypes.string,
-  referenceGrammarID: PropTypes.string,
   renderMarkdown: PropTypes.func,
   scrollToEnd: PropTypes.func.isRequired,
   selectVoice: PropTypes.func,

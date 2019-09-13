@@ -8,13 +8,13 @@ import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
+import useLocalize from '../hooks/useLocalize';
 import useSetSendBox from '../hooks/useSetSendBox';
 import useStartDictate from '../hooks/useStartDictate';
 import useStopDictate from '../hooks/useStopDictate';

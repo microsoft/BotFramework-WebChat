@@ -2,9 +2,9 @@ import { format } from 'bytes';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import DownloadIcon from './Assets/DownloadIcon';
 import ScreenReaderText from '../ScreenReaderText';
+import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 
 const DownloadAttachment = ({

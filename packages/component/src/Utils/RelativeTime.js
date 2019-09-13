@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
-import { getLocaleString, localize, useLocalize } from '../Localization/Localize';
+import { getLocaleString, localize } from '../Localization/Localize';
 import ScreenReaderText from '../ScreenReaderText';
 import Timer from './Timer';
 import useLanguage from '../hooks/useLanguage';
+import useLocalize from '../hooks/useLocalize';
 
 // This function calculates the next absolute time that the timer should be fired based on the origin (original time received), interval, and current time.
 // If the origin is t=260, and we are currently at t=1000, nextTimer must return t=60260.

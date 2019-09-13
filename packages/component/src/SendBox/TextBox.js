@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
 import { Context as TypeFocusSinkContext } from '../Utils/TypeFocusSink';
-import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import useDisabled from '../hooks/useDisabled';
 import useFocusSendBox from '../hooks/useFocusSendBox';
+import useLocalize from '../hooks/useLocalize';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
 import useSetSendBox from '../hooks/useSetSendBox';

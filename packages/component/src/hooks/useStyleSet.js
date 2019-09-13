@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useStyleSet() {
-  return useContext(WebChatContext).styleSet;
+  return useContext(WebChatUIContext).styleSet;
 }

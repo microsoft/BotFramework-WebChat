@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useSendBoxRef() {
-  return useContext(WebChatContext).sendBoxRef;
+  return useContext(WebChatUIContext).sendBoxRef;
 }

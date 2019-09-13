@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { getLocaleString, useLocalize } from '../Localization/Localize';
+import { getLocaleString } from '../Localization/Localize';
 import ScreenReaderText from '../ScreenReaderText';
 import useLanguage from '../hooks/useLanguage';
+import useLocalize from '../hooks/useLocalize';
 
 const AbsoluteTime = ({ value }) => {
   const language = useLanguage();

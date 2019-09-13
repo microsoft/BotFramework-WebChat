@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useSetDictateInterims() {
-  return useContext(WebChatContext).setDictateInterims;
+  return useContext(WebChatUIContext).setDictateInterims;
 }

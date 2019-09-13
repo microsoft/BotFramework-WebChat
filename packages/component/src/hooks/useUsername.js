@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useUsername() {
-  return useContext(WebChatContext).username;
+  return useContext(WebChatUIContext).username;
 }

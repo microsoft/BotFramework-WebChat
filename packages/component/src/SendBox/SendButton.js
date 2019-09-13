@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useLocalize } from '../Localization/Localize';
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 import useDisabled from '../hooks/useDisabled';
+import useLocalize from '../hooks/useLocalize';
 import useSubmitSendBox from '../hooks/useSubmitSendBox';
 
 const connectSendButton = (...selectors) => {

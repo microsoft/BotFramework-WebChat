@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import WebChatContext from '../Context';
+import WebChatUIContext from '../WebChatUIContext';
 
 export default function useDisabled() {
-  return useContext(WebChatContext).disabled;
+  return useContext(WebChatUIContext).disabled;
 }
