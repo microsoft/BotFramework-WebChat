@@ -29,5 +29,13 @@ module.exports = {
     libraryTarget: 'umd',
     path: resolve(__dirname, 'dist')
   },
-  plugins: [new Visualizer()]
+  plugins: [new Visualizer()],
+  resolve: {
+    alias: {
+      // These isomorphic packages provide isomorphism between window.React and require('react').
+      // window.React is preferred because it is loaded by the user explicitly.
+      react: resolve(__dirname, 'node_modules/isomorphic-react/dist/react.js'),
+      'react-dom': resolve(__dirname, 'node_modules/isomorphic-react-dom/dist/react-dom.js')
+    }
+  }
 };

@@ -39,6 +39,8 @@
     "botframework-webchat-core": "0.0.0-0",
     "core-js": "^3.1.4",
     "eslint": "^5.16.0",
+    "isomorphic-react": "^0.0.0-0",
+    "isomorphic-react-dom": "^0.0.0-0",
     "markdown-it": "^8.4.2",
     "markdown-it-for-inline": "^0.1.1",
     "memoize-one": "^5.0.2",
@@ -46,7 +48,7 @@
     "prop-types": "^15.7.2",
     "sanitize-html": "^1.19.0",
     "url-search-params-polyfill": "^5.0.0",
-    "web-speech-cognitive-services": "4.0.1-master.6b2b9e3",
+    "web-speech-cognitive-services": "4.0.1-master.556e2aa",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
