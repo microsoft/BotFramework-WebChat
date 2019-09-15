@@ -51,7 +51,7 @@ const Speak = ({ activity }) => {
       [
         speak || text,
         ...attachments
-          .forEach(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
+          .filter(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
           .map(({ content: { speak } = {} }) => speak)
       ]
         .filter(line => line)
