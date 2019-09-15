@@ -97,6 +97,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
 
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
+  const initials = fromUser ? userInitials : botInitials;
 
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
@@ -111,7 +112,6 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
         .processSync(text),
     [text]
   );
-  const initials = fromUser ? userInitials : botInitials;
 
   const {
     attachments = [],

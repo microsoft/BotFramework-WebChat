@@ -29,21 +29,19 @@ const connectSpeakActivity = (...selectors) => {
 
 const Speak = ({ activity }) => {
   const [{ showSpokenText }] = useStyleOptions();
+  const markActivityAsSpoken = useMarkActivityAsSpoken();
+  const selectVoice = useSelectVoice();
 
   const markAsSpoken = useCallback(() => {
-    useMarkActivityAsSpoken()(activity);
+    markActivityAsSpoken(activity);
   }, [activity]);
 
   const selectVoice = useCallback(
     voices => {
-      useSelectVoice()(voices, activity);
+      selectVoice(voices, activity);
     },
     [activity]
   );
-
-  if (!activity) {
-    return false;
-  }
 
   const singleLine = useMemo(() => {
     const { attachments = [], speak, text } = activity;

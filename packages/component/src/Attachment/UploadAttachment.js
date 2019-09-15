@@ -19,11 +19,10 @@ const UploadAttachment = ({
 }) => {
   const [{ uploadAttachment: uploadAttachmentStyleSet }] = useStyleSet();
 
-  const formattedSize = typeof size === 'number' && format(size);
-  const uploadFileWithFileSizeLabel = useLocalize('UploadFileWithFileSize', attachment.name, formattedSize);
-
   const attachmentIndex = attachments.indexOf(attachment);
   const size = attachmentSizes[attachmentIndex];
+  const formattedSize = typeof size === 'number' && format(size);
+  const uploadFileWithFileSizeLabel = useLocalize('UploadFileWithFileSize', attachment.name, formattedSize);
 
   return (
     <React.Fragment>
