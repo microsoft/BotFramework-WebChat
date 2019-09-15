@@ -21,7 +21,6 @@ import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderMarkdown from './useRenderMarkdown';
 import useScrollToEnd from './useScrollToEnd';
-import useSelectVoice from './useSelectVoice';
 import useSendBoxRef from './useSendBoxRef';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
@@ -29,7 +28,6 @@ import useSendFiles from './useSendFiles';
 import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
-import useTimeoutForSend from './useTimeoutForSend';
 import useSendTypingIndicator from './useSendTypingIndicator';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
@@ -38,8 +36,10 @@ import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
 import useSuggestedActions from './useSuggestedActions';
+import useTimeoutForSend from './useTimeoutForSend';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
+import useVoiceSelector from './useVoiceSelector';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
 export {
@@ -66,7 +66,6 @@ export {
   useReferenceGrammarID,
   useRenderMarkdown,
   useScrollToEnd,
-  useSelectVoice,
   useSendBoxRef,
   useSendBoxValue,
   useSendEvent,
@@ -74,7 +73,6 @@ export {
   useSendMessage,
   useSendMessageBack,
   useSendPostBack,
-  useTimeoutForSend,
   useSendTypingIndicator,
   useShouldSpeakIncomingActivity,
   useStartDictate,
@@ -83,7 +81,9 @@ export {
   useStyleSet,
   useSubmitSendBox,
   useSuggestedActions,
+  useTimeoutForSend,
   useUserID,
   useUsername,
+  useVoiceSelector,
   useWebSpeechPonyfill
 };

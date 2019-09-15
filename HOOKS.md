@@ -45,7 +45,6 @@ Following is the list of hooks supported by Web Chat API.
 - [`useReferenceGrammarID`](#usereferencegrammarid)
 - [`useRenderMarkdown`](#userendermarkdown)
 - [`useScrollToEnd`](#usescrolltoend)
-- [`useSelectVoice`](#useselectvoice)
 - [`useSendBoxRef`](#usesendboxref)
 - [`useSendBoxValue`](#usesendboxvalue)
 - [`useSendEvent`](#usesendevent)
@@ -53,7 +52,6 @@ Following is the list of hooks supported by Web Chat API.
 - [`useSendMessage`](#usesendmessage)
 - [`useSendMessageBack`](#usesendmessageback)
 - [`useSendPostBack`](#usesendpostback)
-- [`useTimeoutForSend`](#usetimeoutforsend)
 - [`useSendTypingIndicator`](#usesendtypingindicator)
 - [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 - [`useStartDictate`](#usestartdictate)
@@ -62,8 +60,10 @@ Following is the list of hooks supported by Web Chat API.
 - [`useStyleSet`](#usestyleset)
 - [`useSubmitSendBox`](#usesubmitsendbox)
 - [`useSuggestedActions`](#usesuggestedactions)
+- [`useTimeoutForSend`](#usetimeoutforsend)
 - [`useUserID`](#useuserid)
 - [`useUsername`](#useusername)
+- [`useVoiceSelector`](#usevoiceselector)
 - [`useWebSpeechPonyfill`](#usewebspeechponyfill)
 
 ## `useActivities`
@@ -321,16 +321,6 @@ useScrollToEnd(): (): void
 
 This function will return a function that when called, it will scroll the transcript view to the end.
 
-## `useSelectVoice`
-
-```js
-useSelectVoice(): (voices: SpeechSynthesisVoice[], activity: Activity[]): SpeechSynthesisVoice
-```
-
-This function will return a function that can be called to select the voice for a specific activity.
-
-To modify this value, change the props passed to Web Chat.
-
 ## `useSendBoxRef`
 
 ```js
@@ -507,6 +497,16 @@ useUsername(): [string]
 ```
 
 This function will return the username.
+
+To modify this value, change the props passed to Web Chat.
+
+## `useVoiceSelector`
+
+```js
+useVoiceSelector(activity: Activity): (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice
+```
+
+This function will return a function that can be called to select the voice for a specific activity.
 
 To modify this value, change the props passed to Web Chat.
 
