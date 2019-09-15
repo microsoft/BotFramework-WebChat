@@ -38,7 +38,7 @@ const connectSuggestedActions = (...selectors) => {
 };
 
 const SuggestedActions = ({ className }) => {
-  const suggestedActions = useSuggestedActions();
+  const [suggestedActions] = useSuggestedActions();
 
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [{ suggestedActionsStyleSet: suggestedActionsStyleSetForBasicFilm }] = useStyleOptions();
