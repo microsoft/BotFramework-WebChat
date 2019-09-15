@@ -27,7 +27,7 @@ import useSendEvent from './useSendEvent';
 import useSendFiles from './useSendFiles';
 import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
-import useSendPostback from './useSendPostback';
+import useSendPostBack from './useSendPostBack';
 import useSendTimeout from './useSendTimeout';
 import useSendTypingIndicator from './useSendTypingIndicator';
 import useSetDictateInterims from './useSetDictateInterims';
@@ -77,7 +77,7 @@ export {
   useSendFiles,
   useSendMessage,
   useSendMessageBack,
-  useSendPostback,
+  useSendPostBack,
   useSendTimeout,
   useSendTypingIndicator,
   useSetDictateInterims,

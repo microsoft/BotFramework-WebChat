@@ -1,4 +1,4 @@
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import React, { useState } from 'react';
 
 import Attachment from './Attachment';
@@ -6,7 +6,11 @@ import SuggestedActions from './SuggestedActions';
 
 import getValueOrUndefined from './util/getValueOrUndefined';
 
-const PlainWebChat = ({ activities, sendMessage }) => {
+const { useActivities, useSendMessage } = hooks;
+
+const PlainWebChat = () => {
+  const activities = useActivities();
+  const sendMessage = useSendMessage();
   const [sendBoxValue, setSendBoxValue] = useState('');
 
   return (
@@ -76,7 +80,4 @@ const PlainWebChat = ({ activities, sendMessage }) => {
   );
 };
 
-export default connectToWebChat(({ activities, sendMessage }) => ({
-  activities,
-  sendMessage
-}))(PlainWebChat);
+export default PlainWebChat;

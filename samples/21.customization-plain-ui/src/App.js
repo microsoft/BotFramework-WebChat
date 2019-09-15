@@ -25,7 +25,7 @@ export default () => {
   }
 
   return (
-    // We are using the "Composer" component here, which all descendants will have access to the Web Chat API by HOC-ing thru "connectToWebChat".
+    // We are using the "Composer" component here, which all descendants will have access to the Web Chat API by React Hooks.
     <React.Fragment>
       <h1>Web Chat with plain UI</h1>
       <p>

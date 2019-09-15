@@ -33,34 +33,23 @@ Below is the explanation of different layers of Web Chat.
             </p>
          </td>
          <td>
-            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
-               <code>MicrophoneButton</code>
+            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/SendButton.js">
+               <code>SendButton</code>
             </a>
          </td>
          <td>
             <p>The actual UI component the developer can use to reproduce the full Web Chat experience.</p>
-            <p>Developers are also free to create a new UI by consulting how the original <code>MicrophoneButton</code> works.</p>
+            <p>Developers are also free to create a new UI by consulting how the original <code>SendButton</code> works.</p>
          </td>
       </tr>
       <tr>
          <td>
-            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/SendBox/MicrophoneButton.js">
-               <code>connectMicrophoneButton</code>
+            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/hooks/useSendMessage.js">
+               <code>useSendMessage</code>
             </a>
          </td>
          <td>
-           <a href="https://reactjs.org/docs/higher-order-components.html">Higher-order component</a> to hoist specific features from Web Chat as props to the connected component. Although this is very similar to <a href="#connect-to-web-chat"><code>connectToWebChat</code></a>, it provides encapsulation of information and the business logic only required for the specific component type.
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <a href="https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/connectToWebChat.js">
-               <a name="connect-to-web-chat"></a>
-               <code>connectToWebChat</code>
-            </a>
-         </td>
-         <td>
-           <a href="https://reactjs.org/docs/higher-order-components.html">Higher-order component</a> that exposes all of Web Chat's UI API as props. The <code>connectToWebChat</code> method is very similar to Redux <a href="https://react-redux.js.org/api/connect"><code>connect</code></a> function, and provides access to all of the data required to build a chat component.
+           <a href="https://reactjs.org/docs/hooks-intro.html">React hooks</a> to provide a single specific feature from Web Chat to the component. It provides encapsulation of information and the business logic only required by the component.
          </td>
       </tr>
       <tr>
@@ -71,7 +60,6 @@ Below is the explanation of different layers of Web Chat.
          </td>
          <td>
             <p>React component which houses all components that requires access to Web Chat UI API.</p>
-            <p>This is very similar to Redux <code>&lt;Provider&gt;</code>.</p>
          </td>
       </tr>
       <tr>
@@ -90,7 +78,7 @@ Below is the explanation of different layers of Web Chat.
             <p>A stateful UI data store for a basic chat experience.</p>
             <ul>
                <li>Using Redux to provide a stateful data store but minimal support to various UI frameworks and app scenarios</li>
-               <li>UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings)</li>
+               <li>UI framework agnostic: we think about building apps on React Native and Angular (using Redux bindings). If the feature is only for React but not Angular, we will not put it in Web Chat Core</li>
             </ul>
          </td>
       </tr>

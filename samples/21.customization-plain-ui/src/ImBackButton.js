@@ -1,14 +1,20 @@
-import { connectToWebChat } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import React from 'react';
 
-const ImBackButton = ({ cardAction, sendMessage }) => (
-  <button
-    // ImBack is essentially sending a message
-    onClick={() => sendMessage(cardAction.value)}
-    type="button"
-  >
-    ImBack: {cardAction.title}
-  </button>
-);
+const { useSendMessage } = hooks;
 
-export default connectToWebChat(({ sendMessage }) => ({ sendMessage }))(ImBackButton);
+const ImBackButton = ({ cardAction }) => {
+  const sendMessage = useSendMessage();
+
+  return (
+    <button
+      // ImBack is essentially sending a message
+      onClick={() => sendMessage(cardAction.value)}
+      type="button"
+    >
+      ImBack: {cardAction.title}
+    </button>
+  );
+};
+
+export default ImBackButton;
