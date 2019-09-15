@@ -30,27 +30,29 @@ In this sample we will build a new React component around the `activity` sent fr
 Let's start building the React Component. It will have two methods, `handleDownvoteButton` and `handleUpvoteButton`. Both methods will build new activity objects to be sent to the bot. The render function contains the new markup to contain the activities made by the bot.
 
 ```jsx
-class ActivityWithFeedback extends React.Component {
-   handleDownvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }] })
-   handleUpvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }] })
+const ActivityWithFeedback = ({ activityID, children }) => {
+  const postActivity = usePostActivity();
+  const handleDownvoteButton = useCallback(
+    () => postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID, helpful: -1 }] }),
+    [activityID, postActivity]
+  );
 
-   render() {
-      const { props } = this;
+  const handleUpvoteButton = useCallback(
+    () => postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID, helpful: 1 }] }),
+    [activityID, postActivity]
+  );
 
-      return (
-         <div>
-            <ul>
-               <li>
-                  <button onClick={this.handleUpvoteButton}>👍</button>
-               </li>
-               <li>
-                  <button onClick={this.handleDownvoteButton}>👎</button>
-               </li>
-            </ul>
-            <div>{props.children}</div>
-         </div>
-      );
-   }
+  return (
+    <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
+      <ul className="button-bar">
+        <li><button onClick={ handleUpvoteButton }>👍</button></li>
+        <li><button onClick={ handleDownvoteButton }>👎</button></li>
+      </ul>
+      <div className="activity">
+        { children }
+      </div>
+    </div>
+  );
 }
 ```
 
@@ -82,45 +84,41 @@ Next, add styling via glamor and the classes that will be applied in this compon
 +   }
 + });
 
-class ActivityWithFeedback extends React.Component {
-  handleDownvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }] })
-  handleUpvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }] })
+const ActivityWithFeedback = ({ activityID, children }) => {
+  const postActivity = usePostActivity();
+  const handleDownvoteButton = useCallback(
+    () => postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID, helpful: -1 }] }),
+    [activityID, postActivity]
+  );
 
-  render() {
-    const { props } = this;
+  const handleUpvoteButton = useCallback(
+    () => postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID, helpful: 1 }] }),
+    [activityID, postActivity]
+  );
 
-    return (
-+     <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
-+       <ul className="button-bar">
-          <li><button onClick={ this.handleUpvoteButton }>👍</button></li>
-          <li><button onClick={ this.handleDownvoteButton }>👎</button></li>
-        </ul>
-+       <div className="activity">
-+         { props.children }
-        </div>
+  return (
++   <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
++     <ul className="button-bar">
+        <li><button onClick={ handleUpvoteButton }>👍</button></li>
+        <li><button onClick={ handleDownvoteButton }>👎</button></li>
+      </ul>
++     <div className="activity">
+        { children }
       </div>
-    );
-  }
+    </div>
+  );
 }
 ```
 
-This next step is not required. Let's build a wrapper container around ActivityWithFeedback that will strip props to only contain `postActivity`.
-
-```jsx
-const ConnectedActivityWithFeedback = connectToWebChat(({ postActivity }) => ({
-   postActivity
-}))(props => <ActivityWithFeedback {...props} />);
-```
-
-Next let's build the if statement in `activityMiddleware` that will filter which activities are rendered with a new component, `ConnectedActivityWithFeedback`.
+Next let's build the if statement in `activityMiddleware` that will filter which activities are rendered with a new component, `ActivityWithFeedback`.
 
 ```jsx
 const activityMiddleware = () => next => card => {
    if (card.activity.from.role === 'bot') {
       return children => (
-         <ConnectedActivityWithFeedback activityID={card.activity.id}>
+         <ActivityWithFeedback activityID={card.activity.id}>
             {next(card)(children)}
-         </ConnectedActivityWithFeedback>
+         </ActivityWithFeedback>
       );
    } else {
       return next(card);
@@ -138,10 +136,9 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
   <head>
     <title>Web Chat: Custom attachment with GitHub Stargazers</title>
 
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.6.0/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.9.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.9.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
 
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
@@ -161,8 +158,15 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
       (async function () {
         'use strict';
 
-        const { connectToWebChat, ReactWebChat } = window.WebChat;
 +       const { css } = window.Glamor;
++       const { useCallback } = window.React;
+
++       const {
++         hooks: {
++           usePostActivity
++         },
++         ReactWebChat
++       } = window.WebChat;
 
 +       const ACTIVITY_WITH_FEEDBACK_CSS = css({
 +         minHeight: 60,
@@ -187,30 +191,30 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 +         }
 +       });
 
-+       class ActivityWithFeedback extends React.Component {
-+         handleDownvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }] })
-+         handleUpvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }] })
++       const ActivityWithFeedback = ({ activityID, children }) => {
++         const postActivity = usePostActivity();
++         const handleDownvoteButton = useCallback(
++           () => postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID, helpful: -1 }] }),
++           [activityID, postActivity]
++         );
 
-+         render() {
-+           const { props } = this;
++         const handleUpvoteButton = useCallback(
++           () => postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID, helpful: 1 }] }),
++           [activityID, postActivity]
++         );
 
-+           return (
-+             <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
-+               <ul className="button-bar">
-+                 <li><button onClick={ this.handleUpvoteButton }>👍</button></li>
-+                 <li><button onClick={ this.handleDownvoteButton }>👎</button></li>
-+               </ul>
-+               <div className="activity">
-+                 { props.children }
-+               </div>
++         return (
++           <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
++             <ul className="button-bar">
++               <li><button onClick={ handleUpvoteButton }>👍</button></li>
++               <li><button onClick={ handleDownvoteButton }>👎</button></li>
++             </ul>
++             <div className="activity">
++               { children }
 +             </div>
-+           );
-+         }
++           </div>
++         );
 +       }
-
-+       const ConnectedActivityWithFeedback = connectToWebChat(
-+         ({ postActivity }) => ({ postActivity })
-+       )(props => <ActivityWithFeedback { ...props } />)
 
 +       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
 +       const { token } = await res.json();
@@ -218,9 +222,9 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 +         if (card.activity.from.role === 'bot') {
 +           return (
 +             children =>
-+               <ConnectedActivityWithFeedback activityID={ card.activity.id }>
++               <ActivityWithFeedback activityID={ card.activity.id }>
 +                 { next(card)(children) }
-+               </ConnectedActivityWithFeedback>
++               </ActivityWithFeedback>
 +           );
 +         } else {
 +           return next(card);
