@@ -3,7 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const VimeoContent = ({ alt, autoPlay, embedID, loop, styleSet }) => {
+const VimeoContent = ({ alt, autoPlay, embedID, loop, styleSet: { vimeoContent } }) => {
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     badge: 0,
@@ -15,8 +15,9 @@ const VimeoContent = ({ alt, autoPlay, embedID, loop, styleSet }) => {
 
   return (
     <iframe
+      allowFullScreen={true}
       aria-label={alt}
-      className={styleSet.vimeoContent}
+      className={vimeoContent}
       src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
     />
   );
