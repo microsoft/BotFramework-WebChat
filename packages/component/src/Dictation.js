@@ -11,7 +11,7 @@ import useLanguage from './hooks/useLanguage';
 import usePostActivity from './hooks/usePostActivity';
 import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
-import useSetDictateState from './hooks/useSetDictateState';
+import useSetDictateState from './hooks/internal/useSetDictateState';
 import useStartSpeakingActivity from './hooks/useStartSpeakingActivity';
 import useStopDictate from './hooks/useStopDictate';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
