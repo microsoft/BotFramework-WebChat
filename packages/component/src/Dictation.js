@@ -52,7 +52,15 @@ const Dictation = ({ onError }) => {
         }
       }
     },
-    [dictateState, setDictateInterims, setDictateState, stopDictate, setSendBox, submitSendBox, startSpeakingActivity]
+    [
+      dictateState,
+      setDictateInterims,
+      setDictateState,
+      stopDictate,
+      setSendBox,
+      setShouldSpeakIncomingActivity,
+      submitSendBox
+    ]
   );
 
   const handleDictating = useCallback(

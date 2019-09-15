@@ -6,7 +6,7 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';

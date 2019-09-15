@@ -78,7 +78,7 @@ function useTextBoxSubmit(setFocus) {
       submitSendBox();
       setFocus && focusSendBox();
     }
-  }, [scrollToEnd, sendBoxValue, submitSendBox]);
+  }, [focusSendBox, scrollToEnd, sendBoxValue, setFocus, submitSendBox]);
 }
 
 function useTextBoxValue() {
@@ -127,7 +127,7 @@ const TextBox = ({ className }) => {
       // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
       submitTextBox();
     },
-    [submitSendBox]
+    [submitTextBox]
   );
 
   return useMemo(
@@ -175,8 +175,8 @@ const TextBox = ({ className }) => {
       className,
       disabled,
       handleChange,
-      onKeyPress,
-      onSubmit,
+      handleKeyPress,
+      handleSubmit,
       sendBoxTextAreaStyleSet,
       sendBoxTextBoxStyleSet,
       sendBoxTextWrap,

@@ -14,6 +14,7 @@ import {
   connect as createConnectAction,
   createStore,
   disconnect,
+  emitTypingIndicator,
   markActivity,
   postActivity,
   sendEvent,
@@ -47,6 +48,7 @@ import WebChatUIContext from './WebChatUIContext';
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
   clearSuggestedActions,
+  emitTypingIndicator,
   markActivity,
   postActivity,
   sendEvent,

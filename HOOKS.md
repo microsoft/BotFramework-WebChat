@@ -1,4 +1,26 @@
-# Generic hooks
+# Web Chat API as React hooks
+
+Web Chat is designed to be highly customizable. In order to build your own UI, you can use React Hooks to hook your UI component into Web Chat API.
+
+To enable Web Chat API, all UI components must be located under the [`<Composer>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js) component. You can refer to our [plain UI customization](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui) sample for details.
+
+## Properties
+
+All properties follow [React State Hook pattern](https://reactjs.org/docs/hooks-state.html). For example, if you want to get and set the value of send box, you will use the following code:
+
+```js
+const [sendBoxValue, setSendBoxValue] = useSendBoxValue();
+
+console.log(`The send box value is "${ sendBoxValue }".`);
+
+setSendBoxValue('Hello, World!');
+```
+
+Some properties may not be settable and exception will be thrown if called.
+
+# List of hooks
+
+Following is the list of hooks supported by Web Chat API.
 
 - [`useActivities`](#useactivities)
 - [`useActivityRenderer`](#useactivityrenderer)
@@ -10,6 +32,7 @@
 - [`useDictateInterims`](#usedictateinterims)
 - [`useDictateState`](#usedictatestate)
 - [`useDisabled`](#usedisabled)
+- [`useEmitTypingIndicator`](#useemittypingindicator)
 - [`useFocusSendBox`](#usefocussendbox)
 - [`useGrammars`](#usegrammars)
 - [`useGroupTimestamp`](#usegrouptimestamp)
@@ -19,7 +42,6 @@
 - [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
 - [`usePerformCardAction`](#useperformcardaction)
 - [`usePostActivity`](#usepostactivity)
-- [`useReadyState`](#usereadystate)
 - [`useReferenceGrammarID`](#usereferencegrammarid)
 - [`useRenderMarkdown`](#userendermarkdown)
 - [`useScrollToEnd`](#usescrolltoend)
@@ -58,11 +80,13 @@ This function will return a list of activities.
 useActivityRenderer(): [ActivityMiddleware]
 ```
 
-This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthru middleware would looks like the following code.
+This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthrough middleware would looks like the following code:
 
 ```js
-() => next => { activity, timestampClassName } => children => next({ activity, timestampClassName })(children)
+() => next => ({ activity: Activity, timestampClassName: string }) => children: React.Element[] => next({ activity, timestampClassName })(children)
 ```
+
+`children` is a list of React elements that represent attachments. They should be rendered as part of the activity.
 
 ## `useAttachmentRenderer`
 
@@ -70,7 +94,7 @@ This function will return an activity renderer middleware. The middleware patter
 useAttachmentRenderer(): [AttachmentMiddleware]
 ```
 
-This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthru middleware would looks like the following code.
+This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthrough middleware would looks like the following code:
 
 ```js
 () => next => { activity, attachment } => next({ activity, attachment })
@@ -87,6 +111,8 @@ useAvatarForBot(): [{
 
 This function will return the image and initials of the bot. Both image and initials are optional and can be falsy.
 
+To set the avatar for bot, use style options.
+
 ## `useAvatarForUser`
 
 ```js
@@ -98,6 +124,8 @@ useAvatarForUser(): [{
 
 This function will return the image and initials of the user. Both image and initials are optional and can be falsy.
 
+To set the avatar for user, use style options.
+
 ## `useClockSkewAdjustment`
 
 ```js
@@ -105,6 +133,8 @@ useClockSkewAdjustment(): [number]
 ```
 
 This function will return the clock skew between the client and the server, represented in milliseconds.
+
+This value is computed on every outgoing activity.
 
 ## `useConnectivityStatus`
 
@@ -121,7 +151,7 @@ This function will return the connectivity status of:
 - `reconnected`: Reconnected after interruption
 - `reconnecting`: Reconnecting after interruption
 - `sagaerror`: Errors on JavaScript side
-- `uninitialized`: Never connect
+- `uninitialized`: Never connect and not connecting
 
 ## `useDictateInterims`
 
@@ -130,6 +160,8 @@ useDictateInterims(): [string[][]]
 ```
 
 This function will return interims for dictation.
+
+The first array represents separate sentences. And the second array represents various ambiguities/alternatives for the same sentence.
 
 ## `useDictateState`
 
@@ -144,6 +176,8 @@ This function will return the dictate state of:
 - `2`: Dictating
 - `3`: Stopping
 
+To control dictate state, use [`useStartDictate`](#usestartdictate) and [`useStopDictate`](#usestopdictate) hooks.
+
 ## `useDisabled`
 
 ```js
@@ -152,13 +186,23 @@ useDisabled(): [boolean]
 
 This function will return whether the UI should be disabled or not. All interactable UI components should honor this value.
 
+To modify this value, change the props passed to Web Chat.
+
+## `useEmitTypingIndicator`
+
+```js
+useEmitTypingIndicator(): void
+```
+
+When called, this function will send a typing activity to the bot.
+
 ## `useFocusSendBox`
 
 ```js
 useFocusSendBox(): void
 ```
 
-When calling this function, it will send focus to the send box.
+When called, this function will send focus to the send box.
 
 ## `useGrammars`
 
@@ -167,6 +211,8 @@ useGrammars(): [string[]]
 ```
 
 This function will return the grammars for speech-to-text.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useGroupTimestamp`
 
@@ -178,6 +224,8 @@ This function will return the interval for grouping similar activities with a si
 
 For example, if this value is `5000`, activities with successive within 5 seconds will not have timestamp shown.
 
+To control the `groupTimestamp` state, use style options.
+
 ## `useLanguage`
 
 ```js
@@ -185,6 +233,8 @@ useLanguage(): [string]
 ```
 
 This function will return the language of the UI. All UI components should honor this value.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useLastTypingAt`
 
@@ -196,6 +246,8 @@ useLastTypingAt(): [{
 
 This function will return a map of last typing time of all participants. The time is based on client clock.
 
+This property is computed on every incoming activity.
+
 ## `useLocalize`
 
 ```js
@@ -203,6 +255,8 @@ useLocalize(identifier: string): string
 ```
 
 This function will return a localized string represented by the identifier. It honor the language settings from `useLanguage` hook.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useMarkActivityAsSpoken`
 
@@ -233,7 +287,11 @@ usePostActivity(activity: Activity): void
 
 When called, this function will post the activity on behalf of the user, to the bot.
 
-## ~`useReadyState`~
+You can use this function to send any type of activities to the bot. We highly recommend you send the following type of activities only:
+
+- `event`
+- `message`
+- `typing`
 
 ## `useReferenceGrammarID`
 
@@ -243,6 +301,8 @@ useReferenceGrammarId(): [string]
 
 When called, this function will return the reference grammar ID used to improve speech-to-text performance when used with Cognitive Services.
 
+This value is not controllable and is passed from Direct Line channel.
+
 ## `useRenderMarkdown`
 
 ```js
@@ -250,6 +310,8 @@ useRenderMarkdown(): (markdown: string): string
 ```
 
 This function will return a function that render Markdown into HTML.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useScrollToEnd`
 
@@ -267,6 +329,8 @@ useSelectVoice(): (voices: SpeechSynthesisVoice[], activity: Activity[]): Speech
 
 This function will return a function that can be called to select the voice for a specific activity.
 
+To modify this value, change the props passed to Web Chat.
+
 ## `useSendBoxRef`
 
 ```js
@@ -274,6 +338,8 @@ useSendBoxRef(): React.Ref
 ```
 
 This function will return a React Ref object that reference the focusable send box element.
+
+When building your own UI, you may want to pass this React Ref object to the HTML element that should receive focus when user start typing.
 
 ## `useSendBoxValue`
 
@@ -346,6 +412,8 @@ useSendTypingIndicator(): [boolean]
 
 This function will return whether typing indicator will be send to the bot when the send box value is changed.
 
+To modify this value, change the props passed to Web Chat.
+
 ## `useShouldSpeakIncomingActivity`
 
 ```js
@@ -353,6 +421,8 @@ useShouldSpeakIncomingActivity(): [boolean, (value: boolean): void]
 ```
 
 This function will return whether the next incoming activity will be queued for text-to-speech or not, and a setter function to control the behavior.
+
+If the last outgoing message is sent by speech, Web Chat will set this state to `true`, so the response from bot will be synthesized as speech.
 
 ## `useStartDictate`
 
@@ -378,6 +448,10 @@ useStyleOptions(): [StyleOptions]
 
 This function will return the style options. UI components should honor the styling preferences.
 
+The value is not the same as the props. Web Chat will merge the style options passed in props with default values specified in [`defaultStyleOptions.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js).
+
+To modify the value of `styleOptions` state, change the props you pass to Web Chat.
+
 ## `useStyleSet`
 
 ```js
@@ -385,6 +459,8 @@ useStyleSet(): [StyleSet]
 ```
 
 This function will return the style set.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useSubmitSendBox`
 
@@ -397,10 +473,12 @@ This function will send the text in the send box to the bot, and clear the send 
 ## `useSuggestedActions`
 
 ```js
-useSuggestedActions(): [CardAction[]]
+useSuggestedActions(): [CardAction[], (CardAction[]): void]
 ```
 
-This function will return a list of suggested actions that should show to the user.
+This function will return a list of suggested actions that should show to the user, and a setter function to clear suggested actions. The setter function can only be used to clear suggested actions, and it will accept empty array or falsy value only.
+
+The suggested actions is computed from the last message activity sent from the bot. If the user posted an activity, the suggested actions will be cleared.
 
 ## `useTimeoutForSend`
 
@@ -410,6 +488,8 @@ useTimeoutForSend(): [number]
 
 This function will return the interval before a sending activity is considered fail. The interval is represented in milliseconds. Due to network partitioning problem, activity that failed to send could eventually successfully deliver to the bot.
 
+To modify this value, change the props passed to Web Chat.
+
 ## `useUserID`
 
 ```js
@@ -418,6 +498,8 @@ useUserID(): [string]
 
 This function will return the user ID.
 
+To modify this value, change the props passed to Web Chat.
+
 ## `useUsername`
 
 ```js
@@ -425,6 +507,8 @@ useUsername(): [string]
 ```
 
 This function will return the username.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useWebSpeechPonyfill`
 
@@ -438,6 +522,8 @@ useWebSpeechPonyfill(): [{
 ```
 
 This function will return the ponyfill for Web Speech API.
+
+To modify this value, change the props passed to Web Chat.
 
 # Component-specific hooks
 
@@ -465,6 +551,8 @@ useMicrophoneButtonDisabled(): void
 ```
 
 This function will return whether the microphone button is disabled. This is more than `useDisabled()`. The microphone button could be disabled because it is currently starting or stopping.
+
+This value can be partly controllable through Web Chat props.
 
 ## `SendBox`
 
@@ -503,9 +591,9 @@ The focus is useful for phone scenario, where virtual keyboard will only be show
 useTextBoxValue(): [string, (value: string): void]
 ```
 
-This function will return the text box value, and a setter function for the value.
+This function will return the text box value, and a setter function to set the value.
 
-The setter function will also stop dictation if started.
+The setter function will call the setter of [`useSendBoxValue`](#usesendboxvalue) and also stop dictation if started.
 
 ## `TypingIndicator`
 

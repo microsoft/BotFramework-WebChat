@@ -4,6 +4,7 @@ import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import createStore from './createStore';
 import disconnect from './actions/disconnect';
+import emitTypingIndicator from './actions/emitTypingIndicator';
 import markActivity from './actions/markActivity';
 import postActivity from './actions/postActivity';
 import sendEvent from './actions/sendEvent';
@@ -36,6 +37,7 @@ export {
   Constants,
   createStore,
   disconnect,
+  emitTypingIndicator,
   markActivity,
   postActivity,
   sendEvent,

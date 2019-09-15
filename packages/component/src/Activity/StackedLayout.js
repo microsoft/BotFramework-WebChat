@@ -102,9 +102,6 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
   const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
   const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
 
-  const ariaLabel = useLocalize(fromUser ? 'User said something' : 'Bot said something', initials, plainText);
-  const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
-
   const plainText = useMemo(
     () =>
       remark()
@@ -112,6 +109,8 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
         .processSync(text),
     [text]
   );
+  const ariaLabel = useLocalize(fromUser ? 'User said something' : 'Bot said something', initials, plainText);
+  const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
 
   const {
     attachments = [],

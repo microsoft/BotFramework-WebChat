@@ -1,3 +1,5 @@
+import useStyleOptions from './useStyleOptions';
+
 export default function useAvatarForUser() {
   const [{ userAvatarImage: image, userAvatarInitials: initials }] = useStyleOptions();
 

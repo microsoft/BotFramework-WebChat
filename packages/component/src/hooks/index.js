@@ -8,6 +8,7 @@ import useConnectivityStatus from './useConnectivityStatus';
 import useDictateInterims from './useDictateInterims';
 import useDictateState from './useDictateState';
 import useDisabled from './useDisabled';
+import useEmitTypingIndicator from './useEmitTypingIndicator';
 import useFocusSendBox from './useFocusSendBox';
 import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
@@ -17,7 +18,6 @@ import useLocalize from './useLocalize';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
-import useReadyState from './useReadyState';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderMarkdown from './useRenderMarkdown';
 import useScrollToEnd from './useScrollToEnd';
@@ -53,6 +53,7 @@ export {
   useDictateInterims,
   useDictateState,
   useDisabled,
+  useEmitTypingIndicator,
   useFocusSendBox,
   useGrammars,
   useGroupTimestamp,
@@ -62,7 +63,6 @@ export {
   useMarkActivityAsSpoken,
   usePerformCardAction,
   usePostActivity,
-  useReadyState,
   useReferenceGrammarID,
   useRenderMarkdown,
   useScrollToEnd,

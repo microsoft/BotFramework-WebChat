@@ -34,13 +34,13 @@ const Speak = ({ activity }) => {
 
   const markAsSpoken = useCallback(() => {
     markActivityAsSpoken(activity);
-  }, [activity]);
+  }, [activity, markActivityAsSpoken]);
 
-  const selectVoice = useCallback(
+  const selectVoiceWithActivity = useCallback(
     voices => {
       selectVoice(voices, activity);
     },
-    [activity]
+    [activity, selectVoice]
   );
 
   const singleLine = useMemo(() => {
@@ -62,8 +62,8 @@ const Speak = ({ activity }) => {
   return (
     !!activity && (
       <React.Fragment>
-        <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
-        {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
+        <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoiceWithActivity} />
+        {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoiceWithActivity} />}
       </React.Fragment>
     )
   );
