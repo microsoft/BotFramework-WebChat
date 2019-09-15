@@ -53,11 +53,9 @@
     <script src="/mockWebSpeech.js"></script>
   </head>
   <body>
-    <div style="align-items: center; display: flex; height: 100%; justify-content: center; width: 100%;">
-      <button id="loadWebChat" type="button">
-        Load Web Chat
-      </button>
-    </div>
+    <button id="loadWebChat" type="button">
+      Load Web Chat
+    </button>
     <div id="webchat" role="main"></div>
     <script>
       function unmarshal({ __evalKeys, ...obj } = {}) {
@@ -151,6 +149,10 @@
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
+
+        const loadWebChatButton = document.getElementById('loadWebChat');
+
+        loadWebChatButton && loadWebChatButton.remove();
       }
 
       document.getElementById('loadWebChat').addEventListener('click', () => main());
