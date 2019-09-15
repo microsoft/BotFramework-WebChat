@@ -53,6 +53,11 @@
     <script src="/mockWebSpeech.js"></script>
   </head>
   <body>
+    <div style="align-items: center; display: flex; height: 100%; justify-content: center; width: 100%;">
+      <button id="loadWebChat" type="button">
+        Load Web Chat
+      </button>
+    </div>
     <div id="webchat" role="main"></div>
     <script>
       function unmarshal({ __evalKeys, ...obj } = {}) {
@@ -102,7 +107,7 @@
         await loadScript('/webchat-instrumented.js');
 
         let directLine;
-        
+
         if (!useProductionBot && !createDirectLine) {
           directLine = window.MockBotAdapter.createDirectLine({});
         } else {
@@ -118,11 +123,11 @@
               throw err;
             }
           }, 3);
-          
+
           createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
           directLine = (createDirectLine || window.WebChat.createDirectLine)({ token });
         }
-        
+
         const store = window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
           const setupMiddleware = storeMiddleware(store);
 
@@ -147,6 +152,8 @@
 
         document.querySelector('#webchat > *').focus();
       }
+
+      document.getElementById('loadWebChat').addEventListener('click', () => main());
 
       window.WebChatTest = {
         actions: [],
