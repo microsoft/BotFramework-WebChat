@@ -26,10 +26,10 @@ export default class App extends Component {
   async componentDidMount() {
     const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
     const { token } = await res.json();
+    const { region } = await fetchSpeechServicesToken();
     const webSpeechPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
-      // TODO: [P3] Fetch token should be able to return different region
-      authorizationToken: fetchSpeechServicesToken,
-      region: 'westus'
+      authorizationToken: () => fetchSpeechServicesToken().then(({ token }) => token),
+      region
     });
 
     this.setState(() => ({

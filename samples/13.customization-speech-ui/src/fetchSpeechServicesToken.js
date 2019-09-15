@@ -10,7 +10,6 @@ export default function() {
   if (!fetchPromise || now - lastFetch > RENEW_EVERY) {
     fetchPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' })
       .then(res => res.json())
-      .then(({ token }) => token)
       .catch(() => {
         lastFetch = 0;
       });
