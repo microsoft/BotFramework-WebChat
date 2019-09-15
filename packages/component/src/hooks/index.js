@@ -33,9 +33,7 @@ import useTimeoutForSend from './useTimeoutForSend';
 import useSendTypingIndicator from './useSendTypingIndicator';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
-import useStartSpeakingActivity from './useStartSpeakingActivity';
 import useStopDictate from './useStopDictate';
-import useStopSpeakingActivity from './useStopSpeakingActivity';
 import useStyleOptions from './useStyleOptions';
 import useStyleSet from './useStyleSet';
 import useSubmitSendBox from './useSubmitSendBox';
@@ -80,9 +78,7 @@ export {
   useSendTypingIndicator,
   useShouldSpeakIncomingActivity,
   useStartDictate,
-  useStartSpeakingActivity,
   useStopDictate,
-  useStopSpeakingActivity,
   useStyleOptions,
   useStyleSet,
   useSubmitSendBox,

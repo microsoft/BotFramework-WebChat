@@ -12,7 +12,7 @@ import usePostActivity from './hooks/usePostActivity';
 import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
 import useSetDictateState from './hooks/internal/useSetDictateState';
-import useStartSpeakingActivity from './hooks/useStartSpeakingActivity';
+import useShouldSpeakIncomingActivity from './hooks/useShouldSpeakIncomingActivity';
 import useStopDictate from './hooks/useStopDictate';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
@@ -32,7 +32,7 @@ const Dictation = ({ onError }) => {
   const [sendTypingIndicator] = useSendTypingIndicator();
   const postActivity = usePostActivity();
   const setDictateState = useSetDictateState();
-  const startSpeakingActivity = useStartSpeakingActivity();
+  const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
 
@@ -48,7 +48,7 @@ const Dictation = ({ onError }) => {
         if (transcript) {
           setSendBox(transcript);
           submitSendBox('speech');
-          startSpeakingActivity();
+          setShouldSpeakIncomingActivity(true);
         }
       }
     },

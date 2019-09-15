@@ -35,9 +35,7 @@
 - [`useSendTypingIndicator`](#usesendtypingindicator)
 - [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 - [`useStartDictate`](#usestartdictate)
-- [`useStartSpeakingActivity`](#usestartspeakingactivity)
 - [`useStopDictate`](#usestopdictate)
-- [`useStopSpeakingActivity`](#usestopspeakingactivity)
 - [`useStyleOptions`](#usestyleoptions)
 - [`useStyleSet`](#usestyleset)
 - [`useSubmitSendBox`](#usesubmitsendbox)
@@ -351,12 +349,10 @@ This function will return whether typing indicator will be send to the bot when 
 ## `useShouldSpeakIncomingActivity`
 
 ```js
-useShouldSpeakIncomingActivity(): [boolean]
+useShouldSpeakIncomingActivity(): [boolean, (value: boolean): void]
 ```
 
-This function will return whether the next incoming activity will be queued for text-to-speech or not.
-
-To control this behavior, call `useStartSpeakingActivity` and `useStopSpeakingActivity` hooks.
+This function will return whether the next incoming activity will be queued for text-to-speech or not, and a setter function to control the behavior.
 
 ## `useStartDictate`
 
@@ -366,8 +362,6 @@ useStartDictate(): void
 
 This function will open the microphone for dictation. You should only call this function by user-initiated gesture. Otherwise, the browser may block access to the microphone.
 
-## `useStartSpeakingActivity`
-
 ## `useStopDictate`
 
 ```js
@@ -375,8 +369,6 @@ useStopDictate(): void
 ```
 
 This function will close the microphone. It will not send the interims to the bot, but leave the interims in the send box.
-
-## `useStopSpeakingActivity`
 
 ## `useStyleOptions`
 
