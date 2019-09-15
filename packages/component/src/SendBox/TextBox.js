@@ -10,7 +10,6 @@ import useFocusSendBox from '../hooks/useFocusSendBox';
 import useLocalize from '../hooks/useLocalize';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useSendBoxValue from '../hooks/useSendBoxValue';
-import useSetSendBox from '../hooks/useSetSendBox';
 import useStopDictate from '../hooks/useStopDictate';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -67,76 +66,75 @@ const connectSendTextBox = (...selectors) => {
   );
 };
 
-// TODO: [P2] Revisit these functions. Think about apps that are not React, how useful are these functions appears to them.
-const useSendTextBox = () => {
-  const disabled = useDisabled();
+function useTextBoxSubmit(setFocus) {
+  const [sendBoxValue] = useSendBoxValue();
   const focusSendBox = useFocusSendBox();
   const scrollToEnd = useScrollToEnd();
-  const sendBoxValue = useSendBoxValue();
-  const setSendBox = useSetSendBox();
-  const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
 
-  const onChange = useCallback(
-    ({ target: { value } }) => {
+  return useCallback(() => {
+    if (sendBoxValue) {
+      scrollToEnd();
+      submitSendBox();
+      setFocus && focusSendBox();
+    }
+  }, [scrollToEnd, sendBoxValue, submitSendBox]);
+}
+
+function useTextBoxValue() {
+  const [value, setSendBox] = useSendBoxValue();
+  const stopDictate = useStopDictate();
+  const setter = useCallback(
+    value => {
       setSendBox(value);
       stopDictate();
     },
     [setSendBox, stopDictate]
   );
 
-  const onKeyPress = useCallback(
+  return [value, setter];
+}
+
+const TextBox = ({ className }) => {
+  const [disabled] = useDisabled();
+  const [textBoxValue, setTextBoxValue] = useTextBoxValue();
+  const submitTextBox = useTextBoxSubmit();
+
+  const [{ sendBoxTextWrap }] = useStyleOptions();
+  const [{ sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+
+  const typeYourMessageString = useLocalize('Type your message');
+
+  const handleChange = useCallback(({ target: { value } }) => setTextBoxValue(value), [setTextBoxValue]);
+  const handleKeyPress = useCallback(
     event => {
       const { key, shiftKey } = event;
 
       if (key === 'Enter' && !shiftKey) {
         event.preventDefault();
 
-        if (sendBoxValue) {
-          scrollToEnd();
-          submitSendBox();
-          focusSendBox();
-        }
+        // If text box is submitted, focus on the send box
+        submitTextBox(true);
       }
     },
-    [focusSendBox, scrollToEnd, sendBoxValue, submitSendBox]
+    [submitTextBox]
   );
-
-  const onSubmit = useCallback(
+  const handleSubmit = useCallback(
     event => {
       event.preventDefault();
 
       // Consider clearing the send box only after we received POST_ACTIVITY_PENDING
       // E.g. if the connection is bad, sending the message essentially do nothing but just clearing the send box
-
-      if (sendBoxValue) {
-        scrollToEnd();
-        submitSendBox();
-      }
+      submitTextBox();
     },
-    [scrollToEnd, sendBoxValue, submitSendBox]
+    [submitSendBox]
   );
-
-  return {
-    disabled,
-    onChange,
-    onKeyPress,
-    onSubmit,
-    value: sendBoxValue
-  };
-};
-
-const TextBox = ({ className }) => {
-  const { disabled, onChange, onKeyPress, onSubmit, value } = useSendTextBox();
-  const { sendBoxTextWrap } = useStyleOptions();
-  const { sendBoxTextArea: sendBoxTextAreaStyleSet, sendBoxTextBox: sendBoxTextBoxStyleSet } = useStyleSet();
-  const typeYourMessageString = useLocalize('Type your message');
 
   return useMemo(
     () => (
       <form
         className={classNames(ROOT_CSS + '', sendBoxTextAreaStyleSet + '', sendBoxTextBoxStyleSet + '', className + '')}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       >
         {
           <TypeFocusSinkContext.Consumer>
@@ -146,11 +144,11 @@ const TextBox = ({ className }) => {
                   aria-label={typeYourMessageString}
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
-                  onChange={onChange}
+                  onChange={handleChange}
                   placeholder={typeYourMessageString}
                   ref={sendFocusRef}
                   type="text"
-                  value={value}
+                  value={textBoxValue}
                 />
               ) : (
                 <div>
@@ -158,14 +156,14 @@ const TextBox = ({ className }) => {
                     aria-label={typeYourMessageString}
                     data-id="webchat-sendbox-input"
                     disabled={disabled}
-                    onChange={onChange}
-                    onKeyPress={onKeyPress}
+                    onChange={handleChange}
+                    onKeyPress={handleKeyPress}
                     placeholder={typeYourMessageString}
                     ref={sendFocusRef}
                     rows="1"
-                    value={value}
+                    value={textBoxValue}
                   />
-                  <div>{value + '\n'}</div>
+                  <div>{textBoxValue + '\n'}</div>
                 </div>
               )
             }
@@ -176,14 +174,14 @@ const TextBox = ({ className }) => {
     [
       className,
       disabled,
-      onChange,
+      handleChange,
       onKeyPress,
       onSubmit,
       sendBoxTextAreaStyleSet,
       sendBoxTextBoxStyleSet,
       sendBoxTextWrap,
       typeYourMessageString,
-      value
+      textBoxValue
     ]
   );
 };
@@ -198,4 +196,4 @@ TextBox.propTypes = {
 
 export default TextBox;
 
-export { connectSendTextBox, useSendTextBox };
+export { connectSendTextBox, useTextBoxSubmit, useTextBoxValue };

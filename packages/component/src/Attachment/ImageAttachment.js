@@ -4,7 +4,7 @@ import React from 'react';
 import ImageContent from './ImageContent';
 
 const ImageAttachment = ({ activity, attachment }) => {
-  const { attachmentThumbnails } = activity.channelData || {};
+  const { channelData: { attachmentThumbnails } = {} } = activity;
 
   if (attachmentThumbnails) {
     const attachmentThumbnail = attachmentThumbnails[activity.attachments.indexOf(attachment)];

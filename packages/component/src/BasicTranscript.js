@@ -57,46 +57,58 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
   return false;
 }
 
-const useBasicTranscript = () => {
-  const activityRenderer = useActivityRenderer();
-  const activities = useActivities();
-  const attachmentRenderer = useAttachmentRenderer();
-  const groupTimestamp = useGroupTimestamp();
-  const webSpeechPonyfill = useWebSpeechPonyfill();
-
-  return {
-    activityRenderer,
-    activities,
-    attachmentRenderer,
-    groupTimestamp,
-    webSpeechPonyfill
-  };
-};
-
 const BasicTranscript = ({ className }) => {
-  const { activityRenderer, activities, attachmentRenderer, groupTimestamp, webSpeechPonyfill } = useBasicTranscript();
-  const { activities: activitiesStyleSet, activity: activityStyleSet } = useStyleSet();
-  const { hideScrollToEndButton } = useStyleOptions();
-  const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
+  const [activities] = useActivities();
+  const [activityRenderer] = useActivityRenderer();
+  const [attachmentRenderer] = useAttachmentRenderer();
+  const [groupTimestamp] = useGroupTimestamp();
+
+  const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
+  const [{ hideScrollToEndButton }] = useStyleOptions();
 
   // We use 2-pass approach for rendering activities, for show/hide timestamp grouping.
   // Until the activity pass thru middleware, we never know if it is going to show up.
   // After we know which activities will show up, we can compute which activity will show timestamps.
   // If the activity does not render, it will not be spoken if text-to-speech is enabled.
-  const activityElements = activities.reduce((activityElements, activity) => {
-    const element = activityRenderer({
-      activity,
-      timestampClassName: 'transcript-timestamp'
-    })(({ attachment }) => attachmentRenderer({ activity, attachment }));
+  const activityElements = useMemo(
+    () =>
+      activities.reduce((activityElements, activity, index) => {
+        const element = activityRenderer({
+          activity,
+          timestampClassName: 'transcript-timestamp'
+        })(({ attachment }) => attachmentRenderer({ activity, attachment }));
 
-    element &&
-      activityElements.push({
-        activity,
-        element
-      });
+        element &&
+          activityElements.push({
+            activity,
+            element,
+            key: (activity.channelData && activity.channelData.clientActivityID) || activity.id || index,
 
-    return activityElements;
-  }, []);
+            // TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
+            shouldSpeak: activity.channelData && activity.channelData.speak
+          });
+
+        return activityElements;
+      }, []),
+    [activities, activityRenderer, attachmentRenderer]
+  );
+
+  const activityElements2 = useMemo(
+    () =>
+      activityElements.map((activityElement, index) => {
+        const { activity } = activityElement;
+        const nextActivityElement = activityElements[index + 1];
+        const { activity: nextActivity } = nextActivityElement || {};
+
+        return {
+          ...activityElement,
+          // Hide timestamp if same timestamp group with the next activity
+          shouldShowTimestamp: !sameTimestampGroup(activity, nextActivity, groupTimestamp)
+        };
+      }),
+    [activityElements, groupTimestamp]
+  );
 
   return (
     <div className={classNames(ROOT_CSS + '', className + '')} role="log">
@@ -110,24 +122,18 @@ const BasicTranscript = ({ className }) => {
             className={classNames(LIST_CSS + '', activitiesStyleSet + '')}
             role="list"
           >
-            {activityElements.map(({ activity, element }, index) => (
+            {activityElements2.map(({ activity, element, key, shouldShowTimestamp, shouldSpeak }) => (
               <li
-                /* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */
+                // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75
                 aria-label=" "
                 className={classNames(activityStyleSet + '', {
-                  // Hide timestamp if same timestamp group with the next activity
-                  'hide-timestamp': sameTimestampGroup(
-                    activity,
-                    (activityElements[index + 1] || {}).activity,
-                    groupTimestamp
-                  )
+                  'hide-timestamp': !shouldShowTimestamp
                 })}
-                key={(activity.channelData && activity.channelData.clientActivityID) || activity.id || index}
+                key={key}
                 role="listitem"
               >
                 {element}
-                {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+                {shouldSpeak && <SpeakActivity activity={activity} />}
               </li>
             ))}
           </ul>

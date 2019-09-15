@@ -7,9 +7,11 @@ import useLanguage from '../hooks/useLanguage';
 import useLocalize from '../hooks/useLocalize';
 
 const AbsoluteTime = ({ value }) => {
-  const language = useLanguage();
-  const localizedTime = getLocaleString(value, language);
+  const [language] = useLanguage();
+
   const label = useLocalize('SentAt');
+
+  const localizedTime = getLocaleString(value, language);
 
   return (
     <React.Fragment>

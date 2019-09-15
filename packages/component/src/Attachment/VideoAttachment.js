@@ -12,7 +12,7 @@ const ROOT_CSS = css({
 });
 
 const VideoAttachment = ({ attachment }) => {
-  const { videoAttachment: videoAttachmentStyleSet } = useStyleSet();
+  const [{ videoAttachment: videoAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={classNames(ROOT_CSS + '', videoAttachmentStyleSet + '')}>

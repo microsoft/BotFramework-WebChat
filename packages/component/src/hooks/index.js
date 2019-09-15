@@ -1,7 +1,8 @@
 import useActivities from './useActivities';
 import useActivityRenderer from './useActivityRenderer';
 import useAttachmentRenderer from './useAttachmentRenderer';
-import useClearSuggestedActions from './useClearSuggestedActions';
+import useAvatarForBot from './useAvatarForBot';
+import useAvatarForUser from './useAvatarForUser';
 import useClockSkewAdjustment from './useClockSkewAdjustment';
 import useConnectivityStatus from './useConnectivityStatus';
 import useDictateInterims from './useDictateInterims';
@@ -13,8 +14,8 @@ import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastTypingAt from './useLastTypingAt';
 import useLocalize from './useLocalize';
-import useMarkActivity from './useMarkActivity';
-import useOnCardAction from './useOnCardAction';
+import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
+import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReadyState from './useReadyState';
 import useReferenceGrammarID from './useReferenceGrammarID';
@@ -28,12 +29,8 @@ import useSendFiles from './useSendFiles';
 import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
-import useSendTimeout from './useSendTimeout';
+import useTimeoutForSend from './useTimeoutForSend';
 import useSendTypingIndicator from './useSendTypingIndicator';
-import useSetDictateInterims from './useSetDictateInterims';
-import useSetDictateState from './useSetDictateState';
-import useSetSendBox from './useSetSendBox';
-import useSetSendTimeout from './useSetSendTimeout';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useStartDictate from './useStartDictate';
 import useStartSpeakingActivity from './useStartSpeakingActivity';
@@ -51,7 +48,8 @@ export {
   useActivities,
   useActivityRenderer,
   useAttachmentRenderer,
-  useClearSuggestedActions,
+  useAvatarForBot,
+  useAvatarForUser,
   useClockSkewAdjustment,
   useConnectivityStatus,
   useDictateInterims,
@@ -63,8 +61,8 @@ export {
   useLanguage,
   useLastTypingAt,
   useLocalize,
-  useMarkActivity,
-  useOnCardAction,
+  useMarkActivityAsSpoken,
+  usePerformCardAction,
   usePostActivity,
   useReadyState,
   useReferenceGrammarID,
@@ -78,12 +76,8 @@ export {
   useSendMessage,
   useSendMessageBack,
   useSendPostBack,
-  useSendTimeout,
+  useTimeoutForSend,
   useSendTypingIndicator,
-  useSetDictateInterims,
-  useSetDictateState,
-  useSetSendBox,
-  useSetSendTimeout,
   useShouldSpeakIncomingActivity,
   useStartDictate,
   useStartSpeakingActivity,

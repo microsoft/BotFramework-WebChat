@@ -15,6 +15,8 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -91,15 +93,6 @@ const connectCarouselFilmStrip = (...selectors) => {
   );
 };
 
-const useCarouselFilmStrip = ({ activity }) => {
-  const { from: { role } = {} } = activity || {};
-  const { botAvatarInitials, userAvatarInitials } = useStyleOptions();
-
-  return {
-    avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials
-  };
-};
-
 const WebChatCarouselFilmStrip = ({
   activity,
   children,
@@ -117,18 +110,22 @@ const WebChatCarouselFilmStrip = ({
   } = activity;
   const fromUser = role === 'user';
 
-  const { avatarInitials } = useCarouselFilmStrip({ activity });
-  const { bubbleNubSize, bubbleFromUserNubSize } = useStyleOptions();
-  const { carouselFilmStrip: carouselFilmStripStyleSet } = useStyleSet();
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const [{ initials: userInitials }] = useAvatarForUser();
+
+  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
+  const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
+
   const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
 
   const activityDisplayText = messageBackDisplayText || text;
   const indented = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
+  const initials = fromUser ? userInitials : botInitials;
 
   return (
     <div
       className={classNames(ROOT_CSS + '', carouselFilmStripStyleSet + '', className + '', {
-        webchat__carousel_indented_content: avatarInitials && !indented
+        webchat__carousel_indented_content: initials && !indented
       })}
       ref={scrollableRef}
     >
@@ -212,4 +209,4 @@ const CarouselFilmStrip = props => (
 
 export default CarouselFilmStrip;
 
-export { connectCarouselFilmStrip, useCarouselFilmStrip };
+export { connectCarouselFilmStrip };

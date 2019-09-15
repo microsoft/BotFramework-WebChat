@@ -7,19 +7,20 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalize, useOnCardAction, useRenderMarkdown, useStyleSet } = hooks;
+const { useDisabled, useLocalize, usePerformCardAction, useRenderMarkdown, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
 const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction }) => {
+  const [disabled] = useDisabled();
   const [error, setError] = useState();
-  const disabled = useDisabled();
-  const onCardAction = useOnCardAction();
+  const performCardAction = usePerformCardAction();
   const renderMarkdown = useRenderMarkdown();
 
-  const { adaptiveCardRenderer: adaptiveCardRendererStyleSet } = useStyleSet();
+  const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
+
   const contentRef = useRef();
   const handleClick = useCallback(
     ({ target }) => {
@@ -30,11 +31,11 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
         // If the user is clicking on something that is already clickable, do not allow them to click the card.
         // E.g. a hero card can be tappable, and image and buttons inside the hero card can also be tappable.
         if (typeof tabIndex !== 'number' || tabIndex < 0) {
-          tapAction && onCardAction(tapAction);
+          tapAction && performCardAction(tapAction);
         }
       }
     },
-    [disabled, onCardAction, tapAction]
+    [disabled, performCardAction, tapAction]
   );
 
   const handleExecuteAction = useCallback(
@@ -47,7 +48,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
       const actionTypeName = action.getJsonTypeName();
 
       if (actionTypeName === 'Action.OpenUrl') {
-        onCardAction({
+        performCardAction({
           type: 'openUrl',
           value: action.url
         });
@@ -59,9 +60,9 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
             const { cardAction } = actionData;
             const { displayText, type, value } = cardAction;
 
-            onCardAction({ displayText, type, value });
+            performCardAction({ displayText, type, value });
           } else {
-            onCardAction({
+            performCardAction({
               type: typeof action.data === 'string' ? 'imBack' : 'postBack',
               value: action.data
             });
@@ -72,7 +73,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
         console.error(action);
       }
     },
-    [disabled, onCardAction]
+    [disabled, performCardAction]
   );
 
   const renderCard = useCallback(() => {

@@ -14,7 +14,8 @@ function nullOrUndefined(obj) {
 }
 
 const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } }) => {
-  const styleOptions = useStyleOptions();
+  const [styleOptions] = useStyleOptions();
+
   const taxText = useLocalize('Tax');
   const totalText = useLocalize('Total');
   const vatText = useLocalize('VAT');

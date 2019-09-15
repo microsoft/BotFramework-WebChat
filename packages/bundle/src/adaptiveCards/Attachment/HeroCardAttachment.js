@@ -8,9 +8,10 @@ import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 const { useStyleOptions } = hooks;
 
 const HeroCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
-  const options = useStyleOptions();
+  const [styleOptions] = useStyleOptions();
+
   const builtCard = useMemo(() => {
-    const builder = new AdaptiveCardBuilder(adaptiveCards, options);
+    const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
 
     if (content) {
       (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap));
@@ -19,7 +20,7 @@ const HeroCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment:
 
       return builder.card;
     }
-  }, [adaptiveCards, content, options]);
+  }, [adaptiveCards, content, styleOptions]);
 
   return (
     <AdaptiveCardRenderer

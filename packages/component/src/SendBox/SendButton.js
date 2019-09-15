@@ -22,15 +22,10 @@ const connectSendButton = (...selectors) => {
   );
 };
 
-const useSendButton = () => {
-  const disabled = useDisabled();
+const SendButton = () => {
+  const [disabled] = useDisabled();
   const submitSendBox = useSubmitSendBox();
 
-  return { disabled, submitSendBox };
-};
-
-const SendButton = () => {
-  const { disabled, submitSendBox } = useSendButton();
   const buttonAltText = useLocalize('Send');
 
   return (
@@ -42,4 +37,4 @@ const SendButton = () => {
 
 export default SendButton;
 
-export { connectSendButton, useSendButton };
+export { connectSendButton };

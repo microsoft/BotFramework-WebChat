@@ -26,10 +26,12 @@ function nextText(language, value) {
 }
 
 const RelativeTime = ({ value }) => {
-  const language = useLanguage();
+  const [language] = useLanguage();
+
+  const localizedAbsoluteTime = useLocalize('SentAt') + getLocaleString(value, language);
+
   const [text, setText] = useState(nextText(language, value));
   const [timer, setTimer] = useState(nextTimer(value));
-  const localizedAbsoluteTime = useLocalize('SentAt') + getLocaleString(value, language);
 
   const handleInterval = useCallback(() => {
     setText(nextText(language, value));

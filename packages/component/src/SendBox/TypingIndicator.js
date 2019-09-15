@@ -6,18 +6,12 @@ import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
-const useTypingIndicator = () => {
-  const lastTypingAt = useLastTypingAt();
+function useTypingIndicatorVisible() {
+  const [lastTypingAt] = useLastTypingAt();
 
-  return { lastTypingAt };
-};
+  const [{ typingAnimationDuration }] = useStyleOptions();
 
-const TypingIndicator = () => {
-  const [showTyping, setShowTyping] = useState(false);
-  const { lastTypingAt } = useTypingIndicator();
-  const typingAnimationLabel = useLocalize('TypingIndicator');
-  const { typingAnimationDuration } = useStyleOptions();
-  const { typingIndicator: typingIndicatorStyleSet } = useStyleSet();
+  const [value, setValue] = useState(false);
 
   useEffect(() => {
     let timeout;
@@ -25,14 +19,29 @@ const TypingIndicator = () => {
     const typingAnimationTimeRemaining = typingAnimationDuration - Date.now() + last;
 
     if (last && typingAnimationTimeRemaining > 0) {
-      setShowTyping(true);
-      timeout = setTimeout(() => setShowTyping(false), typingAnimationTimeRemaining);
+      setValue(true);
+      timeout = setTimeout(() => setValue(false), typingAnimationTimeRemaining);
     } else {
-      setShowTyping(false);
+      setValue(false);
     }
 
     return () => clearTimeout(timeout);
   }, [lastTypingAt, typingAnimationDuration]);
+
+  return [
+    value,
+    () => {
+      throw new Error('TypingIndicatorVisible cannot be set.');
+    }
+  ];
+}
+
+const TypingIndicator = () => {
+  const [showTyping] = useTypingIndicatorVisible();
+
+  const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
+
+  const typingAnimationLabel = useLocalize('TypingIndicator');
 
   return (
     showTyping && (
@@ -45,4 +54,4 @@ const TypingIndicator = () => {
 
 export default TypingIndicator;
 
-export { useTypingIndicator };
+export { useTypingIndicatorVisible };

@@ -4,7 +4,7 @@ import React from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 
 const YouTubeContent = ({ alt, autoPlay, embedID, loop }) => {
-  const { youTubeContent: youTubeContentStyleSet } = useStyleSet();
+  const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     loop: loop ? 1 : 0,

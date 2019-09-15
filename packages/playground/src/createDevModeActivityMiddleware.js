@@ -59,13 +59,13 @@ const SpeakActivity = ({ activity, children, markActivity }) => {
 
 const useDevModeDecorator = () => {
   const markActivity = useMarkActivity();
-  const webSpeechPonyfill = useWebSpeechPonyfill();
+  const [{ speechSynthesis } = {}] = useWebSpeechPonyfill();
 
-  return { markActivity, webSpeechPonyfill };
+  return { markActivity, speechSynthesis };
 };
 
 const DevModeDecorator = ({ card, children }) => {
-  const { markActivity, webSpeechPonyfill: { speechSynthesis } = {} } = useDevModeDecorator();
+  const { markActivity, speechSynthesis } = useDevModeDecorator();
 
   return speechSynthesis ? (
     <SpeakActivity activity={card.activity} markActivity={markActivity}>

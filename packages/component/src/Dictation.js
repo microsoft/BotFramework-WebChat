@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import useActivities from './hooks/useActivities';
+import useDictateInterims from './hooks/useDictateInterims';
 import useDictateState from './hooks/useDictateState';
 import useDisabled from './hooks/useDisabled';
 import useLanguage from './hooks/useLanguage';
 import usePostActivity from './hooks/usePostActivity';
+import useSendBoxValue from './hooks/useSendBoxValue';
 import useSendTypingIndicator from './hooks/useSendTypingIndicator';
-import useSetDictateInterims from './hooks/useSetDictateInterims';
 import useSetDictateState from './hooks/useSetDictateState';
-import useSetSendBox from './hooks/useSetSendBox';
 import useStartSpeakingActivity from './hooks/useStartSpeakingActivity';
 import useStopDictate from './hooks/useStopDictate';
 import useSubmitSendBox from './hooks/useSubmitSendBox';
@@ -22,19 +22,19 @@ const {
 } = Constants;
 
 const Dictation = ({ onError }) => {
-  const activities = useActivities();
-  const dictateState = useDictateState();
-  const disabled = useDisabled();
-  const language = useLanguage();
+  const [, setDictateInterims] = useDictateInterims();
+  const [, setSendBox] = useSendBoxValue();
+  const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
+  const [activities] = useActivities();
+  const [dictateState] = useDictateState();
+  const [disabled] = useDisabled();
+  const [language] = useLanguage();
+  const [sendTypingIndicator] = useSendTypingIndicator();
   const postActivity = usePostActivity();
-  const sendTypingIndicator = useSendTypingIndicator();
-  const setDictateInterims = useSetDictateInterims();
   const setDictateState = useSetDictateState();
-  const setSendBox = useSetSendBox();
   const startSpeakingActivity = useStartSpeakingActivity();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
-  const { SpeechGrammarList, SpeechRecognition } = useWebSpeechPonyfill() || {};
 
   const numSpeakingActivities = activities.filter(({ channelData: { speak } = {} }) => speak).length;
 

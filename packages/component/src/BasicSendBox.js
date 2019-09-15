@@ -37,25 +37,25 @@ function activityIsSpeakingOrQueuedToSpeak({ channelData: { speak } = {} }) {
   return !!speak;
 }
 
-const useBasicSendBox = () => {
-  const activities = useActivities();
-  const dictateState = useDictateState();
-  const webSpeechPonyfill = useWebSpeechPonyfill();
+function useSendBoxDictationStarted() {
+  const [activities] = useActivities();
+  const [dictateState] = useDictateState();
 
-  return {
-    activities,
-    dictateState,
-    webSpeechPonyfill
-  };
-};
+  return [
+    (dictateState === STARTING || dictateState === DICTATING) &&
+      !activities.filter(activityIsSpeakingOrQueuedToSpeak).length,
+    () => {
+      throw new Error('SendBoxDictationStarted cannot be set.');
+    }
+  ];
+}
 
 const BasicSendBox = ({ className }) => {
-  const { activities, dictateState, webSpeechPonyfill } = useBasicSendBox();
-  const { hideUploadButton } = useStyleOptions();
-  const { sendBox: sendBoxStyleSet } = useStyleSet();
-  const dictationStarted =
-    (dictateState === STARTING || dictateState === DICTATING) &&
-    !activities.filter(activityIsSpeakingOrQueuedToSpeak).length;
+  const [dictationStarted] = useSendBoxDictationStarted();
+  const [{ SpeechRecognition } = {}] = useWebSpeechPonyfill();
+
+  const [{ hideUploadButton }] = useStyleOptions();
+  const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
 
   return (
     <div className={classNames(sendBoxStyleSet + '', ROOT_CSS + '', className + '')} role="form">
@@ -69,13 +69,7 @@ const BasicSendBox = ({ className }) => {
         ) : (
           <TextBox className={TEXT_BOX_CSS + ''} />
         )}
-        <div>
-          {(webSpeechPonyfill || {}).SpeechRecognition ? (
-            <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} />
-          ) : (
-            <SendButton />
-          )}
-        </div>
+        <div>{SpeechRecognition ? <MicrophoneButton className={MICROPHONE_BUTTON_CSS + ''} /> : <SendButton />}</div>
       </div>
     </div>
   );
@@ -90,3 +84,5 @@ BasicSendBox.propTypes = {
 };
 
 export default BasicSendBox;
+
+export { useSendBoxDictationStarted };

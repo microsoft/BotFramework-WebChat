@@ -9,7 +9,7 @@ import getValueOrUndefined from './util/getValueOrUndefined';
 const { useActivities, useSendMessage } = hooks;
 
 const PlainWebChat = () => {
-  const activities = useActivities();
+  const [activities] = useActivities();
   const sendMessage = useSendMessage();
   const [sendBoxValue, setSendBoxValue] = useState('');
 

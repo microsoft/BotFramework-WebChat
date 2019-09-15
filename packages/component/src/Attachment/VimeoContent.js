@@ -4,7 +4,7 @@ import React from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 
 const VimeoContent = ({ alt, autoPlay, embedID, loop }) => {
-  const { vimeoContent: vimeoContentStyleSet } = useStyleSet();
+  const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     badge: 0,

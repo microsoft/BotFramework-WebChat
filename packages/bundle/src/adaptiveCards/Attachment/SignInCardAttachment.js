@@ -7,7 +7,7 @@ import CommonCard from './CommonCard';
 const { useStyleSet } = hooks;
 
 const SignInCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment }) => {
-  const { animationCardAttachment: animationCardAttachmentStyleSet } = useStyleSet();
+  const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={animationCardAttachmentStyleSet}>

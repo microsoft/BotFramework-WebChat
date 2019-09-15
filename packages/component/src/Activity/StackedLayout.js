@@ -16,6 +16,8 @@ import ScreenReaderText from '../ScreenReaderText';
 import SendStatus from './SendStatus';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import Timestamp from './Timestamp';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
 import useLocalize from '../hooks/useLocalize';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
@@ -89,20 +91,19 @@ const connectStackedLayout = (...selectors) => {
   );
 };
 
-const useStackedLayout = ({ fromUser }) => {
-  const { botAvatarInitials, userAvatarInitials } = useStyleOptions();
-
-  return {
-    avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
-  };
-};
-
 const StackedLayout = ({ activity, children, timestampClassName }) => {
   const { from: { role } = {}, text } = activity;
   const fromUser = role === 'user';
-  const { avatarInitials } = useStackedLayout({ fromUser });
-  const { botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials } = useStyleOptions();
-  const { stackedLayout: stackedLayoutStyleSet } = useStyleSet();
+
+  const [{ initials: botInitials }] = useAvatarForBot();
+  const [{ initials: userInitials }] = useAvatarForUser();
+
+  const [{ botAvatarInitials, bubbleNubSize, bubbleFromUserNubSize, userAvatarInitials }] = useStyleOptions();
+  const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
+
+  const ariaLabel = useLocalize(fromUser ? 'User said something' : 'Bot said something', initials, plainText);
+  const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
+
   const plainText = useMemo(
     () =>
       remark()
@@ -110,8 +111,7 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
         .processSync(text),
     [text]
   );
-  const ariaLabel = useLocalize(fromUser ? 'User said something' : 'Bot said something', avatarInitials, plainText);
-  const roleLabel = useLocalize(fromUser ? 'UserSent' : 'BotSent');
+  const initials = fromUser ? userInitials : botInitials;
 
   const {
     attachments = [],
@@ -129,10 +129,10 @@ const StackedLayout = ({ activity, children, timestampClassName }) => {
         'from-user': fromUser,
         webchat__stacked_extra_left_indent: fromUser && !botAvatarInitials && bubbleNubSize,
         webchat__stacked_extra_right_indent: !fromUser && !userAvatarInitials && bubbleFromUserNubSize,
-        webchat__stacked_indented_content: avatarInitials && !indented
+        webchat__stacked_indented_content: initials && !indented
       })}
     >
-      {!avatarInitials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
+      {!initials && !!(fromUser ? bubbleFromUserNubSize : bubbleNubSize) && <div className="avatar" />}
       <Avatar aria-hidden={true} className="avatar" fromUser={fromUser} />
       <div className="content">
         {!!activityDisplayText && (
@@ -204,4 +204,4 @@ StackedLayout.propTypes = {
 
 export default StackedLayout;
 
-export { connectStackedLayout, useStackedLayout };
+export { connectStackedLayout };

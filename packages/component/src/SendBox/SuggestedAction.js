@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
-import useClearSuggestedActions from '../hooks/useClearSuggestedActions';
 import useDisabled from '../hooks/useDisabled';
-import useOnCardAction from '../hooks/useOnCardAction';
+import usePerformCardAction from '../hooks/usePerformCardAction';
 import useStyleSet from '../hooks/useStyleSet';
+import useSuggestedActions from '../hooks/useSuggestedActions';
 
 const SUGGESTED_ACTION_CSS = css({
   display: 'inline-block',
@@ -36,29 +36,21 @@ const connectSuggestedAction = (...selectors) => {
   );
 };
 
-const useSuggestedAction = () => {
-  const clearSuggestedActions = useClearSuggestedActions();
-  const disabled = useDisabled();
-  const onCardAction = useOnCardAction();
-
-  return {
-    clearSuggestedActions,
-    disabled,
-    onCardAction
-  };
-};
-
 const SuggestedAction = ({ buttonText, displayText, image, text, type, value }) => {
-  const { clearSuggestedActions, disabled, onCardAction } = useSuggestedAction();
-  const { suggestedAction: suggestedActionStyleSet } = useStyleSet();
-  const click = useCallback(() => {
-    onCardAction({ displayText, text, type, value });
-    type === 'openUrl' && clearSuggestedActions();
-  }, [clearSuggestedActions, onCardAction, displayText, text, type, value]);
+  const [_, setSuggestedActions] = useSuggestedActions();
+  const [disabled] = useDisabled();
+  const performCardAction = usePerformCardAction();
+
+  const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
+
+  const handleClick = useCallback(() => {
+    performCardAction({ displayText, text, type, value });
+    type === 'openUrl' && setSuggestedActions([]);
+  }, [displayText, performCardAction, setSuggestedActions, text, type, value]);
 
   return (
     <div className={classNames(suggestedActionStyleSet + '', SUGGESTED_ACTION_CSS + '')}>
-      <button disabled={disabled} onClick={click} type="button">
+      <button disabled={disabled} onClick={handleClick} type="button">
         {image && <img src={image} />}
         <nobr>{buttonText}</nobr>
       </button>
@@ -85,4 +77,4 @@ SuggestedAction.propTypes = {
 
 export default SuggestedAction;
 
-export { connectSuggestedAction, useSuggestedAction };
+export { connectSuggestedAction };

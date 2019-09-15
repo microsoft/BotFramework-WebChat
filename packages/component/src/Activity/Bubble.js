@@ -20,8 +20,8 @@ const ROOT_CSS = css({
 });
 
 const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
-  const { bubble: bubbleStyleSet } = useStyleSet();
-  const { bubbleNubSize, bubbleFromUserNubSize } = useStyleOptions();
+  const [{ bubble: bubbleStyleSet }] = useStyleSet();
+  const [{ bubbleNubSize, bubbleFromUserNubSize }] = useStyleOptions();
 
   return (
     <div

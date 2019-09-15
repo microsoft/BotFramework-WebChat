@@ -15,7 +15,7 @@ import useDictateInterims from '../hooks/useDictateInterims';
 import useDictateState from '../hooks/useDictateState';
 import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
-import useSetSendBox from '../hooks/useSetSendBox';
+import useSendBoxValue from '../hooks/useSendBoxValue';
 import useStartDictate from '../hooks/useStartDictate';
 import useStopDictate from '../hooks/useStopDictate';
 import useStyleSet from '../hooks/useStyleSet';
@@ -84,14 +84,13 @@ const connectMicrophoneButton = (...selectors) => {
   );
 };
 
-const useMicrophoneButton = () => {
-  const disabled = useDisabled();
-  const dictateInterims = useDictateInterims();
-  const dictateState = useDictateState();
-  const setSendBox = useSetSendBox();
+const useMicrophoneButtonClick = () => {
+  const [_, setSendBox] = useSendBoxValue();
+  const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
+  const [dictateInterims] = useDictateInterims();
+  const [dictateState] = useDictateState();
   const startDictate = useStartDictate();
   const stopDictate = useStopDictate();
-  const { speechSynthesis, SpeechSynthesisUtterance } = useWebSpeechPonyfill();
 
   const [primeSpeechSynthesis] = useState(() =>
     memoize((speechSynthesis, SpeechSynthesisUtterance) => {
@@ -106,7 +105,7 @@ const useMicrophoneButton = () => {
 
   // TODO: [P2] We should revisit this function later
   //       The click() logic seems local to the component, but may not be generalized across all implementations.
-  const click = useCallback(() => {
+  return useCallback(() => {
     if (dictateState === DictateState.STARTING || dictateState === DictateState.DICTATING) {
       stopDictate();
       setSendBox(dictateInterims.join(' '));
@@ -125,20 +124,27 @@ const useMicrophoneButton = () => {
     startDictate,
     stopDictate
   ]);
-
-  return useMemo(
-    () => ({
-      click,
-      dictating: dictateState === DictateState.DICTATING,
-      disabled: disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING
-    }),
-    [click, dictateState, disabled]
-  );
 };
 
+function useMicrophoneButtonDisabled() {
+  const [dictateState] = useDictateState();
+  const [disabled] = useDisabled();
+
+  return [
+    disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING,
+    () => {
+      throw new Error('MicrophoneButtonDisabled cannot be set.');
+    }
+  ];
+}
+
 const MicrophoneButton = ({ className }) => {
-  const { click, dictating, disabled } = useMicrophoneButton();
-  const { microphoneButton: microphoneButtonStyleSet } = useStyleSet();
+  const [disabled] = useMicrophoneButtonDisabled();
+  const click = useMicrophoneButtonClick();
+  const dictating = useDictateState()[0] === DictateState.DICTATING;
+
+  const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
+
   const buttonAltText = useLocalize('Speak');
   const microphoneStatusLabel = useLocalize(dictating ? 'Microphone on' : 'Microphone off');
 
@@ -167,4 +173,4 @@ MicrophoneButton.propTypes = {
 
 export default MicrophoneButton;
 
-export { connectMicrophoneButton, useMicrophoneButton };
+export { connectMicrophoneButton, useMicrophoneButtonClick, useMicrophoneButtonDisabled };

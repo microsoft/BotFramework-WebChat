@@ -15,7 +15,7 @@ const VideoCardAttachment = ({
   attachment,
   attachment: { content: { media, autostart, autoloop, image: { url: imageURL } = {} } = {} } = {}
 }) => {
-  const { audioCardAttachment: audioCardAttachmentStyleSet } = useStyleSet();
+  const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={audioCardAttachmentStyleSet}>

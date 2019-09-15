@@ -37,16 +37,10 @@ const connectDictationInterims = (...selectors) => {
   );
 };
 
-const useDictationInterims = () => {
-  const dictateInterims = useDictateInterims() || [];
-  const dictateState = useDictateState();
-
-  return { dictateInterims, dictateState };
-};
-
 const DictationInterims = ({ className }) => {
-  const { dictateInterims, dictateState } = useDictationInterims();
-  const { dictationInterims: dictationInterimsStyleSet } = useStyleSet();
+  const [dictateInterims] = useDictateInterims();
+  const [dictateState] = useDictateState();
+  const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
 
   return dictateState === STARTING || dictateState === STOPPING ? (
     <p className={classNames(dictationInterimsStyleSet + '', ROOT_CSS + '', className + '', 'status')}>
@@ -84,4 +78,4 @@ DictationInterims.propTypes = {
 
 export default DictationInterims;
 
-export { connectDictationInterims, useDictationInterims };
+export { connectDictationInterims };

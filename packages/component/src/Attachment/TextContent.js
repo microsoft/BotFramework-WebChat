@@ -10,17 +10,9 @@ import ScreenReaderText from '../ScreenReaderText';
 import useRenderMarkdown from '../hooks/useRenderMarkdown';
 import useStyleSet from '../hooks/useStyleSet';
 
-const PASSTHRU_FN = text => text;
-
-const useTextContext = () => {
-  const renderMarkdown = useRenderMarkdown() || PASSTHRU_FN;
-
-  return { renderMarkdown };
-};
-
 const TextContent = ({ contentType, text }) => {
-  const { renderMarkdown } = useTextContext();
-  const { textContent: textContentStyleSet } = useStyleSet();
+  const renderMarkdown = useRenderMarkdown();
+  const [{ textContent: textContentStyleSet }] = useStyleSet();
 
   return contentType === 'text/markdown' && renderMarkdown ? (
     <React.Fragment>
@@ -53,5 +45,3 @@ TextContent.propTypes = {
 };
 
 export default TextContent;
-
-export { useTextContext };

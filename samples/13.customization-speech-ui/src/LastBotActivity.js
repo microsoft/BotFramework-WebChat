@@ -6,7 +6,7 @@ const { SpeakActivity } = Components;
 const { useActivities } = hooks;
 
 const LastBotActivity = () => {
-  const activities = useActivities();
+  const [activities] = useActivities();
   const activity = activities
     .slice()
     .reverse()

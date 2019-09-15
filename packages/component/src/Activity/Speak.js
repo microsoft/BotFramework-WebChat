@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Say from 'react-say';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
-import useMarkActivity from '../hooks/useMarkActivity';
+import useMarkActivityAsSpoken from '../hooks/useMarkActivityAsSpoken';
 import useSelectVoice from '../hooks/useSelectVoice';
 import useStyleOptions from '../hooks/useStyleOptions';
 
@@ -27,40 +27,47 @@ const connectSpeakActivity = (...selectors) => {
   );
 };
 
-const useSpeakActivity = ({ activity }) => {
-  const markActivity = useMarkActivity();
-  const selectVoice = useSelectVoice();
-
-  return {
-    markAsSpoken: () => markActivity(activity, 'speak', false),
-    selectVoice: voices => selectVoice(voices, activity)
-  };
-};
-
 const Speak = ({ activity }) => {
-  const { markAsSpoken, selectVoice } = useSpeakActivity({ activity });
-  const { showSpokenText } = useStyleOptions();
+  const [{ showSpokenText }] = useStyleOptions();
+
+  const markAsSpoken = useCallback(() => {
+    useMarkActivityAsSpoken()(activity);
+  }, [activity]);
+
+  const selectVoice = useCallback(
+    voices => {
+      useSelectVoice()(voices, activity);
+    },
+    [activity]
+  );
 
   if (!activity) {
     return false;
   }
 
-  const { attachments = [], speak, text } = activity;
-  const lines = [speak || text];
+  const singleLine = useMemo(() => {
+    const { attachments = [], speak, text } = activity;
 
-  attachments.forEach(({ content: { speak } = {}, contentType }) => {
-    if (contentType === 'application/vnd.microsoft.card.adaptive') {
-      lines.push(speak);
-    }
-  });
-
-  const singleLine = lines.filter(line => line).join('\r\n');
+    return (
+      !!activity &&
+      [
+        speak || text,
+        ...attachments
+          .forEach(({ contentType }) => contentType === 'application/vnd.microsoft.card.adaptive')
+          .map(({ content: { speak } = {} }) => speak)
+      ]
+        .filter(line => line)
+        .join('\r\n')
+    );
+  }, [activity]);
 
   return (
-    <React.Fragment>
-      <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
-      {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
-    </React.Fragment>
+    !!activity && (
+      <React.Fragment>
+        <Say onEnd={markAsSpoken} onError={markAsSpoken} speak={singleLine} voice={selectVoice} />
+        {!!showSpokenText && <SayAlt speak={singleLine} voice={selectVoice} />}
+      </React.Fragment>
+    )
   );
 };
 
@@ -81,4 +88,4 @@ Speak.propTypes = {
 
 export default Speak;
 
-export { connectSpeakActivity, useSpeakActivity };
+export { connectSpeakActivity };

@@ -1,4 +1,9 @@
-import { Composer, Context as FilmContext, createBasicStyleSet, Flipper } from 'react-film';
+import {
+  Composer,
+  Context as FilmContext,
+  createBasicStyleSet as createReactFilmBasicStyleSet,
+  Flipper
+} from 'react-film';
 import { css } from 'glamor';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -14,15 +19,16 @@ const ROOT_CSS = css({
 });
 
 const CarouselLayout = ({ activity, children, timestampClassName }) => {
+  const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
+
   const leftLabel = useLocalize('Left');
   const rightLabel = useLocalize('Right');
-  const { carouselFlipper: carouselFlipperStyleSet } = useStyleSet();
 
   const {
     carousel: carouselStyleSet,
     leftFlipper: leftFlipperStyleSet,
     rightFlipper: rightFlipperStyleSet
-  } = createBasicStyleSet({ cursor: null });
+  } = createReactFilmBasicStyleSet({ cursor: null });
 
   return (
     <Composer numItems={React.Children.count(children)}>

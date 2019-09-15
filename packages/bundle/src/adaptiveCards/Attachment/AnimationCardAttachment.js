@@ -15,7 +15,7 @@ const AnimationCardAttachment = ({
   attachment,
   attachment: { content: { media = [] } } = {}
 }) => {
-  const { animationCardAttachment: animationCardAttachmentStyleSet } = useStyleSet();
+  const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
     <div className={animationCardAttachmentStyleSet}>

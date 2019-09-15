@@ -161,7 +161,7 @@ const Composer = ({
   webSpeechPonyfillFactory
 }) => {
   const dispatch = useDispatch();
-  const referenceGrammarID = useReferenceGrammarID();
+  const [referenceGrammarID] = useReferenceGrammarID();
 
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedSendTypingIndicator = useMemo(() => {

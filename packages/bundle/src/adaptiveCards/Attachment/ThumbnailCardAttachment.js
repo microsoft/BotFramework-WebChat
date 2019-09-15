@@ -10,7 +10,8 @@ import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 const { useStyleOptions } = hooks;
 
 const ThumbnailCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
-  const styleOptions = useStyleOptions();
+  const [styleOptions] = useStyleOptions();
+
   const builtCard = useMemo(() => {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);

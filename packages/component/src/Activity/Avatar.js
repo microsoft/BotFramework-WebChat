@@ -4,7 +4,8 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
-import useStyleOptions from '../hooks/useStyleOptions';
+import useAvatarForBot from '../hooks/useAvatarForBot';
+import useAvatarForUser from '../hooks/useAvatarForUser';
 import useStyleSet from '../hooks/useStyleSet';
 
 const connectAvatar = (...selectors) => {
@@ -26,27 +27,25 @@ const connectAvatar = (...selectors) => {
   );
 };
 
-const useAvatar = ({ fromUser }) => {
-  const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = useStyleOptions();
-
-  return {
-    avatarImage: fromUser ? userAvatarImage : botAvatarImage,
-    avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
-  };
-};
-
 // TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
 const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
-  const { avatarImage, avatarInitials } = useAvatar({ fromUser });
-  const { avatar } = useStyleSet();
+  const [{ avatar: avatarStyleSet }] = useStyleSet();
+
+  const [botAvatar] = useAvatarForBot();
+  const [userAvatar] = useAvatarForUser();
+
+  const { image, initials } = fromUser ? userAvatar : botAvatar;
 
   return (
-    !!(avatarImage || avatarInitials) && (
-      <div aria-hidden={ariaHidden} className={classNames(avatar + '', { 'from-user': fromUser }, className + '')}>
-        {avatarInitials}
-        {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
+    !!(image || initials) && (
+      <div
+        aria-hidden={ariaHidden}
+        className={classNames(avatarStyleSet + '', { 'from-user': fromUser }, className + '')}
+      >
+        {initials}
+        {!!image && <CroppedImage alt="" className="image" height="100%" src={image} width="100%" />}
       </div>
     )
   );
@@ -66,4 +65,4 @@ Avatar.propTypes = {
 
 export default Avatar;
 
-export { connectAvatar, useAvatar };
+export { connectAvatar };

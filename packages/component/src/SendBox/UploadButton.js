@@ -88,20 +88,20 @@ const connectUploadButton = (...selectors) => {
   );
 };
 
-const useUploadButton = () => {
-  const disabled = useDisabled();
+const useUploadButtonSendFiles = () => {
   const sendFiles = useSendFiles();
-  const {
-    enableUploadThumbnail,
-    uploadThumbnailContentType,
-    uploadThumbnailHeight,
-    uploadThumbnailQuality,
-    uploadThumbnailWidth
-  } = useStyleOptions();
+  const [
+    {
+      enableUploadThumbnail,
+      uploadThumbnailContentType,
+      uploadThumbnailHeight,
+      uploadThumbnailQuality,
+      uploadThumbnailWidth
+    }
+  ] = useStyleOptions();
 
-  return {
-    disabled,
-    sendFiles: async files => {
+  return useCallback(
+    async files => {
       if (files && files.length) {
         // TODO: [P3] We need to find revokeObjectURL on the UI side
         //       Redux store should not know about the browser environment
@@ -125,30 +125,44 @@ const useUploadButton = () => {
           )
         );
       }
-    }
-  };
+    },
+    [
+      enableUploadThumbnail,
+      sendFiles,
+      uploadThumbnailContentType,
+      uploadThumbnailHeight,
+      uploadThumbnailQuality,
+      uploadThumbnailWidth
+    ]
+  );
 };
 
 const UploadButton = () => {
-  const { disabled, sendFiles } = useUploadButton();
-  const { uploadButton: uploadButtonStyleSet } = useStyleSet();
-  const inputRef = useRef();
-  const uploadFileString = useLocalize('Upload file');
-  const { current } = inputRef;
+  const [disabled] = useDisabled();
+  const sendFiles = useUploadButtonSendFiles();
 
+  const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+
+  const uploadFileString = useLocalize('Upload file');
+
+  const inputRef = useRef();
   const handleClick = useCallback(() => {
+    const { current } = inputRef;
+
     current && current.click();
-  }, [current]);
+  }, [inputRef]);
 
   const handleFileChange = useCallback(
     ({ target: { files } }) => {
+      const { current } = inputRef;
+
       sendFiles(files);
 
       if (current) {
         current.value = null;
       }
     },
-    [current, sendFiles]
+    [inputRef, sendFiles]
   );
 
   return (
@@ -172,4 +186,4 @@ const UploadButton = () => {
 
 export default UploadButton;
 
-export { connectUploadButton, useUploadButton };
+export { connectUploadButton, useUploadButtonSendFiles };

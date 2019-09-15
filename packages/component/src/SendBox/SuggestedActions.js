@@ -9,7 +9,7 @@ import connectToWebChat from '../connectToWebChat';
 import SuggestedAction from './SuggestedAction';
 import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
-import useSuggestedActionsHook from '../hooks/useSuggestedActions';
+import useSuggestedActions from '../hooks/useSuggestedActions';
 
 function suggestedActionText({ displayText, title, type, value }) {
   if (type === 'messageBack') {
@@ -37,16 +37,11 @@ const connectSuggestedActions = (...selectors) => {
   );
 };
 
-const useSuggestedActions = () => {
-  const suggestedActions = useSuggestedActionsHook();
-
-  return { suggestedActions };
-};
-
 const SuggestedActions = ({ className }) => {
-  const { suggestedActions } = useSuggestedActions();
-  const { suggestedActions: suggestedActionsStyleSet } = useStyleSet();
-  const { suggestedActionsStyleSet: suggestedActionsStyleSetForBasicFilm } = useStyleOptions();
+  const suggestedActions = useSuggestedActions();
+
+  const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const [{ suggestedActionsStyleSet: suggestedActionsStyleSetForBasicFilm }] = useStyleOptions();
 
   return (
     !!suggestedActions.length && (
@@ -82,4 +77,4 @@ SuggestedActions.propTypes = {
 
 export default SuggestedActions;
 
-export { connectSuggestedActions, useSuggestedActions };
+export { connectSuggestedActions };

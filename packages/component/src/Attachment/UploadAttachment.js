@@ -17,11 +17,13 @@ const UploadAttachment = ({
   activity: { attachments = [], channelData: { attachmentSizes = [] } = {} } = {},
   attachment
 }) => {
-  const { uploadAttachment: uploadAttachmentStyleSet } = useStyleSet();
-  const attachmentIndex = attachments.indexOf(attachment);
-  const size = attachmentSizes[attachmentIndex];
+  const [{ uploadAttachment: uploadAttachmentStyleSet }] = useStyleSet();
+
   const formattedSize = typeof size === 'number' && format(size);
   const uploadFileWithFileSizeLabel = useLocalize('UploadFileWithFileSize', attachment.name, formattedSize);
+
+  const attachmentIndex = attachments.indexOf(attachment);
+  const size = attachmentSizes[attachmentIndex];
 
   return (
     <React.Fragment>

@@ -1,11 +1,13 @@
 import { createContext } from 'react';
 import { createDispatchHook, createSelectorHook } from 'react-redux';
 
-const WebChatReduxContext = createContext();
+const context = createContext();
 
-const useDispatch = createDispatchHook(WebChatReduxContext);
-const useSelector = createSelectorHook(WebChatReduxContext);
+const useDispatch = createDispatchHook(context);
+const useSelector = createSelectorHook(context);
 
-export default WebChatReduxContext;
+context.displayName = 'WebChatReduxContext';
+
+export default context;
 
 export { useDispatch, useSelector };

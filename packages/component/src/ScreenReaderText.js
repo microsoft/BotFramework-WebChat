@@ -16,7 +16,7 @@ const ROOT_CSS = css({
 });
 
 const ScreenReaderText = ({ text }) => (
-  /* Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers. This workaround was made to accommodate Edge v44 */
+  // Because of differences in browser implementations, <span aria-label> is used to make the screen reader perform the same on different browsers. This workaround was made to accommodate Edge v44
   <span aria-label={text} className={classNames(ROOT_CSS + '')}>
     {text}
   </span>

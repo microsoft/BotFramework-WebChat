@@ -5,7 +5,7 @@ import connectToWebChat from '../connectToWebChat';
 import ErrorNotificationIcon from '../Attachment/Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from '../Attachment/Assets/SpinnerAnimation';
-import useConnectivityStatusHook from '../hooks/useConnectivityStatus';
+import useConnectivityStatus from '../hooks/useConnectivityStatus';
 import useLocalize from '../hooks/useLocalize';
 import useStyleSet from '../hooks/useStyleSet';
 import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIcon';
@@ -45,20 +45,16 @@ const connectConnectivityStatus = (...selectors) => {
   return connectToWebChat(({ connectivityStatus, language }) => ({ connectivityStatus, language }), ...selectors);
 };
 
-const useConnectivityStatus = () => {
-  const connectivityStatus = useConnectivityStatusHook();
-
-  return { connectivityStatus };
-};
-
 const ConnectivityStatus = () => {
-  const { connectivityStatus } = useConnectivityStatus();
+  const [connectivityStatus] = useConnectivityStatus();
 
-  const {
-    connectivityNotification: connectivityNotificationStyleSet,
-    errorNotification: errorNotificationStyleSet,
-    warningNotification: warningNotificationStyleSet
-  } = useStyleSet();
+  const [
+    {
+      connectivityNotification: connectivityNotificationStyleSet,
+      errorNotification: errorNotificationStyleSet,
+      warningNotification: warningNotificationStyleSet
+    }
+  ] = useStyleSet();
 
   const connectingSlowText = useLocalize('SLOW_CONNECTION_NOTIFICATION');
   const renderConnectingSlow = useCallback(
@@ -75,7 +71,6 @@ const ConnectivityStatus = () => {
   );
 
   const notConnectedText = useLocalize('FAILED_CONNECTION_NOTIFICATION');
-
   const renderNotConnected = useCallback(
     () => (
       <React.Fragment>
@@ -90,7 +85,6 @@ const ConnectivityStatus = () => {
   );
 
   const uninitializedText = useLocalize('INITIAL_CONNECTION_NOTIFICATION');
-
   const renderUninitialized = useCallback(
     () => (
       <React.Fragment>
@@ -105,7 +99,6 @@ const ConnectivityStatus = () => {
   );
 
   const reconnectingText = useLocalize('INTERRUPTED_CONNECTION_NOTIFICATION');
-
   const renderReconnecting = useCallback(
     () => (
       <React.Fragment>
@@ -120,7 +113,6 @@ const ConnectivityStatus = () => {
   );
 
   const sagaErrorText = useLocalize('RENDER_ERROR_NOTIFICATION');
-
   const renderSagaError = useCallback(
     () => (
       <React.Fragment>
@@ -135,7 +127,6 @@ const ConnectivityStatus = () => {
   );
 
   const emptyStatusText = useLocalize('CONNECTED_NOTIFICATION');
-
   const renderEmptyStatus = useCallback(() => <ScreenReaderText text={emptyStatusText} />, [emptyStatusText]);
 
   const renderStatus = useCallback(() => {
@@ -176,4 +167,4 @@ const ConnectivityStatus = () => {
 
 export default ConnectivityStatus;
 
-export { connectConnectivityStatus, useConnectivityStatus };
+export { connectConnectivityStatus };

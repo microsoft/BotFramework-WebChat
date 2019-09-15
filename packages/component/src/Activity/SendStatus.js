@@ -1,6 +1,6 @@
 import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import ScreenReaderText from '../ScreenReaderText';
@@ -35,12 +35,21 @@ const connectSendStatus = (...selectors) => {
   );
 };
 
-const useSendStatus = ({ activity }) => {
+const SendStatus = ({ activity }) => {
   const focusSendBox = useFocusSendBox();
   const postActivity = usePostActivity();
 
-  return {
-    retrySend: evt => {
+  const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
+  // TODO: [P4] Currently, this is the only place which use a templated string
+  //       We could refactor this into a general component if there are more templated strings
+
+  const localizedSending = useLocalize('Sending');
+  const localizedSendStatus = useLocalize('SendStatus');
+  const retryText = useLocalize('Retry');
+  const sendFailedText = useLocalize('SEND_FAILED_KEY');
+
+  const handleRetryClick = useCallback(
+    evt => {
       evt.preventDefault();
 
       postActivity(activity);
@@ -48,19 +57,10 @@ const useSendStatus = ({ activity }) => {
       // After clicking on "retry", the button will be gone and focus will be lost (back to document.body)
       // We want to make sure the user stay inside Web Chat
       focusSendBox();
-    }
-  };
-};
+    },
+    [activity, focusSendBox, postActivity]
+  );
 
-const SendStatus = ({ activity }) => {
-  const { retrySend } = useSendStatus({ activity });
-  const { sendStatus: sendStatusStyleSet } = useStyleSet();
-  // TODO: [P4] Currently, this is the only place which use a templated string
-  //       We could refactor this into a general component if there are more templated strings
-  const localizedSending = useLocalize('Sending');
-  const localizedSendStatus = useLocalize('SendStatus');
-  const retryText = useLocalize('Retry');
-  const sendFailedText = useLocalize('SEND_FAILED_KEY');
   const sendFailedRetryMatch = /\{Retry\}/u.exec(sendFailedText);
   const { channelData: { state } = {} } = activity;
 
@@ -74,13 +74,13 @@ const SendStatus = ({ activity }) => {
           sendFailedRetryMatch ? (
             <React.Fragment>
               {sendFailedText.substr(0, sendFailedRetryMatch.index)}
-              <button onClick={retrySend} type="button">
+              <button onClick={handleRetryClick} type="button">
                 {retryText}
               </button>
               {sendFailedText.substr(sendFailedRetryMatch.index + sendFailedRetryMatch[0].length)}
             </React.Fragment>
           ) : (
-            <button onClick={retrySend} type="button">
+            <button onClick={handleRetryClick} type="button">
               {sendFailedText}
             </button>
           )
@@ -102,4 +102,4 @@ SendStatus.propTypes = {
 
 export default SendStatus;
 
-export { connectSendStatus, useSendStatus };
+export { connectSendStatus };

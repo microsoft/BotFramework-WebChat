@@ -6,7 +6,7 @@ import useLocalize from './hooks/useLocalize';
 import useStyleSet from './hooks/useStyleSet';
 
 const ErrorBox = ({ children, message }) => {
-  const { errorBox: errorBoxStyleSet } = useStyleSet();
+  const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const errorLabel = useLocalize('ErrorMessage');
 
   return (

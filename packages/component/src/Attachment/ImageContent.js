@@ -5,7 +5,7 @@ import CroppedImage from '../Utils/CroppedImage';
 import useStyleOptions from '../hooks/useStyleOptions';
 
 const ImageContent = ({ alt, src }) => {
-  const { bubbleImageHeight } = useStyleOptions();
+  const [{ bubbleImageHeight }] = useStyleOptions();
 
   return <CroppedImage alt={alt} height={bubbleImageHeight} src={src} width="100%" />;
 };
