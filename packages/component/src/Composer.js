@@ -38,7 +38,7 @@ import {
 import concatMiddleware from './Middleware/concatMiddleware';
 import createCoreCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import defaultSelectVoice from './defaultSelectVoice';
+import createDefaultSelectVoice from './createDefaultSelectVoice';
 import Dictation from './Dictation';
 import mapMap from './Utils/mapMap';
 import observableToPromise from './Utils/observableToPromise';
@@ -211,9 +211,7 @@ const Composer = ({
     dispatch
   ]);
 
-  const patchedSelectVoice = useCallback(selectVoice || defaultSelectVoice.bind(null, { language: locale }), [
-    selectVoice
-  ]);
+  const patchedSelectVoice = useCallback(selectVoice || createDefaultSelectVoice(locale), [locale, selectVoice]);
 
   const focusSendBoxContext = useMemo(() => createFocusSendBoxContext({ sendBoxRef }), [sendBoxRef]);
 

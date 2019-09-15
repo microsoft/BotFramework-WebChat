@@ -4,7 +4,7 @@
 
 /* global global */
 
-import selectVoice from './defaultSelectVoice';
+import createDefaultSelectVoice from './createDefaultSelectVoice';
 
 const VOICES = [
   {
@@ -26,19 +26,22 @@ beforeEach(() => {
 });
 
 test('Select voice based on activity locale', () => {
-  const actual = selectVoice({ language: 'en-US' }, VOICES, { locale: 'zh-HK' });
+  const selectVoice = createDefaultSelectVoice('en-US');
+  const actual = selectVoice(VOICES, { locale: 'zh-HK' });
 
   expect(actual).toHaveProperty('lang', 'zh-HK');
 });
 
 test('Select voice based on options', () => {
-  const actual = selectVoice({ language: 'en-UK' }, VOICES, { locale: 'en-XX' });
+  const selectVoice = createDefaultSelectVoice('en-UK');
+  const actual = selectVoice(VOICES, { locale: 'en-XX' });
 
   expect(actual).toHaveProperty('lang', 'en-UK');
 });
 
 test('Select voice based on browser', () => {
-  const actual = selectVoice({ language: 'en-XX' }, VOICES, { locale: 'en-XX' });
+  const selectVoice = createDefaultSelectVoice('en-XX');
+  const actual = selectVoice(VOICES, { locale: 'en-XX' });
 
   expect(actual).toHaveProperty('lang', 'ja-JP');
 });
@@ -46,13 +49,15 @@ test('Select voice based on browser', () => {
 test('Select voice of "en-US"', () => {
   global.window.navigator.language = 'en-XX';
 
-  const actual = selectVoice({ language: 'en-XX' }, VOICES, { locale: 'en-XX' });
+  const selectVoice = createDefaultSelectVoice('en-XX');
+  const actual = selectVoice(VOICES, { locale: 'en-XX' });
 
   expect(actual).toHaveProperty('lang', 'en-US');
 });
 
 test('Select first voice', () => {
-  const actual = selectVoice({ language: 'en-XX' }, [{ lang: 'ko-KR' }], { locale: 'en-XX' });
+  const selectVoice = createDefaultSelectVoice('en-XX');
+  const actual = selectVoice([{ lang: 'ko-KR' }], { locale: 'en-XX' });
 
   expect(actual).toHaveProperty('lang', 'ko-KR');
 });
@@ -69,7 +74,8 @@ test('Prefer voice powered by deep neural network', () => {
     }
   ];
 
-  const actual = selectVoice({ language: 'en-US' }, voices, { locale: 'en-US' });
+  const selectVoice = createDefaultSelectVoice('en-US');
+  const actual = selectVoice(voices, { locale: 'en-US' });
 
   expect(actual).toHaveProperty('name', 'GuyNeural');
 });
