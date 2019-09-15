@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <title>Web Chat: Password input activity</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!--
+<head>
+  <title>Web Chat: Password input activity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-    <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
-    <!--
+  <script src="https://unpkg.com/@babel/standalone@7.6.0/babel.min.js"></script>
+  <script src="https://unpkg.com/react@16.9.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.9.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
+  <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-      }
+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script type="text/babel">
+    body {
+      margin: 0;
+    }
+
+    #webchat {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="webchat" role="main"></div>
+  <script type="text/babel">
       (async function() {
         'use strict';
 
-        const { connectToWebChat, ReactWebChat } = window.WebChat;
+        const { ReactWebChat, hooks: { useSendPostBack } } = window.WebChat;
         const { css } = window.Glamor;
+        const { useCallback, useState } = window.React;
 
         const PASSWORD_INPUT_CSS = css({
           backgroundColor: 'Red',
@@ -75,55 +78,40 @@
           }
         });
 
-        class PasswordInputActivity extends React.Component {
-          constructor(props) {
-            super(props);
+        const PasswordInputActivity = () => {
+          const sendPostBack = useSendPostBack();
+          const [code, setCode] = useState('');
+          const [submitted, setSubmitted] = useState(false);
 
-            this.handleCodeChange = this.handleCodeChange.bind(this);
-            this.handleSubmit = this.handleSubmit.bind(this);
+          const handleCodeChange = useCallback(({ target: { value: code } }) => {
+            setCode(code);
+          }, [setCode]);
 
-            this.state = {
-              code: '',
-              submitted: false
-            };
-          }
-
-          handleCodeChange({ target: { value: code } }) {
-            this.setState(() => ({ code }));
-          }
-
-          handleSubmit(event) {
+          const handleSubmit = useCallback(event => {
             event.preventDefault();
 
-            this.props.sendPostBack({ code: this.state.code });
-            this.setState(() => ({ submitted: true }));
-          }
+            sendPostBack({ code });
+            setSubmitted(true);
+          }, [code, sendPostBack, setSubmitted]);
 
-          render() {
-            const {
-              state: { code, submitted }
-            } = this;
-
-            return (
-              <form className={PASSWORD_INPUT_CSS} onSubmit={this.handleSubmit}>
-                <label>
-                  <span>Please input your 2FA code</span>
-                  <input
-                    autoFocus={true}
-                    disabled={submitted}
-                    onChange={this.handleCodeChange}
-                    type="password"
-                    value={code}
-                  />
-                </label>
-              </form>
-            );
-          }
+          return (
+            <form
+              className={ PASSWORD_INPUT_CSS }
+              onSubmit={ handleSubmit }
+            >
+              <label>
+                <span>Please input your 2FA code</span>
+                <input
+                  autoFocus={ true }
+                  disabled={ submitted }
+                  onChange={ handleCodeChange }
+                  type="password"
+                  value={ code }
+                />
+              </label>
+            </form>
+          );
         }
-
-        const ConnectedPasswordInputActivity = connectToWebChat(({ sendPostBack }) => ({ sendPostBack }))(props => (
-          <PasswordInputActivity {...props} />
-        ));
 
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
@@ -139,7 +127,7 @@
           } = card;
 
           if (type === 'event' && name === 'passwordInput') {
-            return () => <ConnectedPasswordInputActivity />;
+            return () => <PasswordInputActivity />;
           } else {
             return next(card);
           }
@@ -162,5 +150,6 @@
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
-  </body>
+</body>
+
 </html>
