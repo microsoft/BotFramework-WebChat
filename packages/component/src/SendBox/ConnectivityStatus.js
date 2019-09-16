@@ -13,17 +13,23 @@ import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIco
 const CONNECTIVITY_STATUS_DEBOUNCE = 400;
 
 const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
-  const [children, setChildren] = useState(propsChildren);
+  const [children, setChildren] = useState(() => propsChildren);
   const [since, setSince] = useState(Date.now());
 
+  const intervalBeforeSwitch = Math.max(0, interval - Date.now() + since);
+
   useEffect(() => {
+    if (children === propsChildren) {
+      return () => 0;
+    }
+
     const timeout = setTimeout(() => {
-      setChildren(propsChildren);
+      setChildren(() => propsChildren);
       setSince(Date.now());
-    }, Math.max(0, interval - Date.now() + since));
+    }, intervalBeforeSwitch);
 
     return () => clearTimeout(timeout);
-  }, [interval, propsChildren, setChildren, setSince, since]);
+  }, [children, intervalBeforeSwitch, propsChildren]);
 
   return typeof children === 'function' ? children() : false;
 };
@@ -131,18 +137,18 @@ const ConnectivityStatus = () => {
 
   const renderStatus = useCallback(() => {
     if (connectivityStatus === 'connectingslow') {
-      return renderConnectingSlow;
+      return renderConnectingSlow();
     } else if (connectivityStatus === 'error' || connectivityStatus === 'notconnected') {
-      return renderNotConnected;
+      return renderNotConnected();
     } else if (connectivityStatus === 'uninitialized') {
-      return renderUninitialized;
+      return renderUninitialized();
     } else if (connectivityStatus === 'reconnecting') {
-      return renderReconnecting;
+      return renderReconnecting();
     } else if (connectivityStatus === 'sagaerror') {
-      return renderSagaError;
+      return renderSagaError();
     }
 
-    return renderEmptyStatus;
+    return renderEmptyStatus();
   }, [
     connectivityStatus,
     renderConnectingSlow,
