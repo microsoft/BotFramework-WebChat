@@ -1,4 +1,4 @@
-const generateDirectLineToken = require("../../generateDirectLineToken");
+const generateDirectLineToken = require('../../generateDirectLineToken');
 
 const { DIRECT_LINE_SECRET } = process.env;
 

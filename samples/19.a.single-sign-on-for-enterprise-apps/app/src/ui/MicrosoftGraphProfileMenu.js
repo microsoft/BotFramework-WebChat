@@ -53,9 +53,12 @@ const MicrosoftGraphProfileMenu = ({
 
   // CSS style for displaying avatar as background image.
   // Background image will ease handling 404 or other HTTP errors by not showing the image.
-  const avatarStyle = useMemo(() => ({
-    backgroundImage: `url(${ avatarURL || '/images/Microsoft-Graph-64px-DDD-White.png' })`
-  }), [avatarURL]);
+  const avatarStyle = useMemo(
+    () => ({
+      backgroundImage: `url(${avatarURL || '/images/Microsoft-Graph-64px-DDD-White.png'})`
+    }),
+    [avatarURL]
+  );
 
   // In addition to running the sign in logic from OAuth context, we will also collapse the menu.
   const handleSignIn = useCallback(() => {
@@ -72,57 +75,43 @@ const MicrosoftGraphProfileMenu = ({
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded]);
 
   return (
-    <div
-      aria-expanded={ expanded }
-      className="sso__profile"
-    >
+    <div aria-expanded={expanded} className="sso__profile">
       <button
         aria-label="Open profile menu"
         className="sso__profileAvatar"
-        onClick={ signedIn ? handleToggleExpand : handleSignIn }
-        style={ avatarStyle }
+        onClick={signedIn ? handleToggleExpand : handleSignIn}
+        style={avatarStyle}
       >
-        { signedIn && <div className="sso__profileAvatarBadge sso__profileAvatarBadge__microsoft" /> }
+        {signedIn && <div className="sso__profileAvatarBadge sso__profileAvatarBadge__microsoft" />}
       </button>
-      {
-        signedIn && expanded &&
-          <ul className="sso__profileMenu">
-            {
-              name &&
-                <li className="sso__profileMenuItem">
-                  <span>
-                    Signed in as <strong>{ name }</strong>
-                  </span>
-                </li>
-            }
-            {
-              onSignOut &&
-                <li className="sso__profileMenuItem">
-                  <a
-                    href="https://portal.office.com/account/#apps"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    Review access on Office.com
-                  </a>
-                </li>
-            }
-            {
-              onSignOut &&
-                <li className="sso__profileMenuItem">
-                  <button
-                    onClick={ handleSignOut }
-                    type="button"
-                  >
-                    Sign out
-                  </button>
-                </li>
-            }
-          </ul>
-      }
+      {signedIn && expanded && (
+        <ul className="sso__profileMenu">
+          {name && (
+            <li className="sso__profileMenuItem">
+              <span>
+                Signed in as <strong>{name}</strong>
+              </span>
+            </li>
+          )}
+          {onSignOut && (
+            <li className="sso__profileMenuItem">
+              <a href="https://portal.office.com/account/#apps" rel="noopener noreferrer" target="_blank">
+                Review access on Office.com
+              </a>
+            </li>
+          )}
+          {onSignOut && (
+            <li className="sso__profileMenuItem">
+              <button onClick={handleSignOut} type="button">
+                Sign out
+              </button>
+            </li>
+          )}
+        </ul>
+      )}
     </div>
   );
-}
+};
 
 MicrosoftGraphProfileMenu.defaultProps = {
   accessToken: '',
@@ -153,11 +142,8 @@ const ComposedMicrosoftGraphProfileMenu = compose(
   connectMicrosoftGraphSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
 )(MicrosoftGraphProfileMenu);
 
-const ConnectedMicrosoftGraphProfileMenu = ({
-  accessToken,
-  onAccessTokenChange
-}) => {
-  const [oauthAuthorizeURL, setOAuthAuthorizeURL ] = useState('');
+const ConnectedMicrosoftGraphProfileMenu = ({ accessToken, onAccessTokenChange }) => {
+  const [oauthAuthorizeURL, setOAuthAuthorizeURL] = useState('');
 
   useMemo(async () => {
     const { authorizeURL } = await fetchSettings();
@@ -167,9 +153,9 @@ const ConnectedMicrosoftGraphProfileMenu = ({
 
   return (
     <MicrosoftGraphProfileComposer
-      accessToken={ accessToken }
-      oauthAuthorizeURL={ oauthAuthorizeURL }
-      onAccessTokenChange={ onAccessTokenChange }
+      accessToken={accessToken}
+      oauthAuthorizeURL={oauthAuthorizeURL}
+      onAccessTokenChange={onAccessTokenChange}
     >
       <ComposedMicrosoftGraphProfileMenu />
     </MicrosoftGraphProfileComposer>
@@ -186,4 +172,4 @@ ConnectedMicrosoftGraphProfileMenu.propTypes = {
   onSignedInChange: PropTypes.func
 };
 
-export default ConnectedMicrosoftGraphProfileMenu
+export default ConnectedMicrosoftGraphProfileMenu;

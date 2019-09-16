@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Password input activity</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
@@ -18,8 +18,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -30,7 +35,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel">
-      (async function () {
+      (async function() {
         'use strict';
 
         const { connectToWebChat, ReactWebChat } = window.WebChat;
@@ -47,7 +52,7 @@
           '& > label': {
             display: 'flex',
             flex: 1,
-            fontFamily: 'Calibri, \'Helvetica Neue\', Arial, sans-serif',
+            fontFamily: "Calibri, 'Helvetica Neue', Arial, sans-serif",
 
             '& > span': {
               padding: 10
@@ -95,21 +100,20 @@
           }
 
           render() {
-            const { state: { code, submitted } } = this;
+            const {
+              state: { code, submitted }
+            } = this;
 
             return (
-              <form
-                className={ PASSWORD_INPUT_CSS }
-                onSubmit={ this.handleSubmit }
-              >
+              <form className={PASSWORD_INPUT_CSS} onSubmit={this.handleSubmit}>
                 <label>
                   <span>Please input your 2FA code</span>
                   <input
-                    autoFocus={ true }
-                    disabled={ submitted }
-                    onChange={ this.handleCodeChange }
+                    autoFocus={true}
+                    disabled={submitted}
+                    onChange={this.handleCodeChange}
                     type="password"
-                    value={ code }
+                    value={code}
                   />
                 </label>
               </form>
@@ -117,9 +121,9 @@
           }
         }
 
-        const ConnectedPasswordInputActivity = connectToWebChat(
-          ({ sendPostBack }) => ({ sendPostBack })
-        )(props => <PasswordInputActivity { ...props } />)
+        const ConnectedPasswordInputActivity = connectToWebChat(({ sendPostBack }) => ({ sendPostBack }))(props => (
+          <PasswordInputActivity {...props} />
+        ));
 
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
@@ -130,7 +134,9 @@
         const { token } = await res.json();
         const store = createStore();
         const activityMiddleware = () => next => card => {
-          const { activity: { name, type } } = card;
+          const {
+            activity: { name, type }
+          } = card;
 
           if (type === 'event' && name === 'passwordInput') {
             return () => <ConnectedPasswordInputActivity />;
@@ -141,9 +147,9 @@
 
         window.ReactDOM.render(
           <ReactWebChat
-            activityMiddleware={ activityMiddleware }
-            directLine={ window.WebChat.createDirectLine({ token }) }
-            store={ store }
+            activityMiddleware={activityMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
+            store={store}
           />,
           document.getElementById('webchat')
         );

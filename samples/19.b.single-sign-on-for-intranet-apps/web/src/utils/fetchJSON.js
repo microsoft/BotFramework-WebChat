@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
 // Helper function for fetching network resource as JSON
 module.exports = async function fetchJSON(url, options) {
@@ -6,7 +6,7 @@ module.exports = async function fetchJSON(url, options) {
     ...options,
     headers: {
       ...options.headers,
-      accept: "application/json"
+      accept: 'application/json'
     }
   });
 

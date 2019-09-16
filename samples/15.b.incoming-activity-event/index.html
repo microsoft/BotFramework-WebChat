@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Incoming activity to JavaScript event</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
@@ -10,8 +10,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -22,7 +27,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -32,31 +37,31 @@
         const { token } = await res.json();
 
         // We are adding a new middleware to customize the behavior of DIRECT_LINE/INCOMING_ACTIVITY.
-        const store = window.WebChat.createStore(
-          {},
-          ({ dispatch }) => next => action => {
-            if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-              const event = new Event('webchatincomingactivity');
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+            const event = new Event('webchatincomingactivity');
 
-              event.data = action.payload.activity;
-              window.dispatchEvent(event);
-            }
-
-            return next(action);
+            event.data = action.payload.activity;
+            window.dispatchEvent(event);
           }
-        );
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-          // We will use a custom version of Redux store, in which we added middleware to handle all incoming activities.
-          store
-        }, document.getElementById('webchat'));
+          return next(action);
+        });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            // We will use a custom version of Redux store, in which we added middleware to handle all incoming activities.
+            store
+          },
+          document.getElementById('webchat')
+        );
 
         // We will hook into "webchatincomingactivity" event
         window.addEventListener('webchatincomingactivity', ({ data }) => {
           // In this sample, we will dump the activity to console log.
           // You may want to hook to activity of type "event", and based on its "name" and "value" property, you can do further processing.
-          console.log(`Received an activity of type "${ data.type }":`);
+          console.log(`Received an activity of type "${data.type}":`);
           console.log(data);
         });
 

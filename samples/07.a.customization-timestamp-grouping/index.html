@@ -2,19 +2,22 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Configurable timestamp grouping</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
+      html,
+      body {
+        height: 100%;
+      }
       body {
         display: flex;
         flex-direction: column;
         height: 100%;
-        margin: 0
+        margin: 0;
       }
 
       #webchat {
@@ -36,8 +39,8 @@
       }
 
       #buttonBar > a {
-        border: solid 2px #0063B1;
-        color: #0063B1;
+        border: solid 2px #0063b1;
+        color: #0063b1;
         font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
         font-size: 80%;
         margin: 0 10px 10px 0;
@@ -46,7 +49,7 @@
       }
 
       #buttonBar > a.selected {
-        background-color: #0063B1;
+        background-color: #0063b1;
         color: White;
       }
     </style>
@@ -72,12 +75,12 @@
       const groupTimestamp = new URLSearchParams(window.location.search).get('ts') || 'default';
 
       document.querySelectorAll('#buttonBar > a').forEach(hyperlink => {
-        if (hyperlink.getAttribute('href') === `?ts=${ groupTimestamp }`) {
+        if (hyperlink.getAttribute('href') === `?ts=${groupTimestamp}`) {
           hyperlink.className = 'selected';
         }
       });
 
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -94,17 +97,21 @@
           return next(action);
         });
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
 
-          // You can set groupTimestamp to configure how timestamps are grouped.
-          // - Set to `undefined` to use default grouping (5 minutes)
-          // - Set to `false` to not to group timestamps, it will show on every bubble
-          // - Set to `1000` to hide timestamps if they are less than 1 second apart. This can be adjusted (in milliseconds) to any desired number
-          // - Set to `0` to show a timestamp with every message
-          groupTimestamp: groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp,
-          store
-        }, document.getElementById('webchat'));
+            // You can set groupTimestamp to configure how timestamps are grouped.
+            // - Set to `undefined` to use default grouping (5 minutes)
+            // - Set to `false` to not to group timestamps, it will show on every bubble
+            // - Set to `1000` to hide timestamps if they are less than 1 second apart. This can be adjusted (in milliseconds) to any desired number
+            // - Set to `0` to show a timestamp with every message
+            groupTimestamp:
+              groupTimestamp === 'default' ? undefined : groupTimestamp === 'false' ? false : +groupTimestamp,
+            store
+          },
+          document.getElementById('webchat')
+        );
 
         // The following code is for convenience only. It not required for production.
         document.querySelector('#webchat > *').focus();

@@ -10,31 +10,28 @@ export default class App extends React.Component {
     isDirty: false
   };
 
-  store = createStore(
-    {},
-    () => next => action => {
-      if (action.type === 'WEB_CHAT/SEND_MESSAGE') {
-        // add to history
-        this.history.add(action.payload.text);
-      } else if (!action.fromHistory && action.type === 'WEB_CHAT/SET_SEND_BOX') {
-        // sendbox was modified by the user, not history
-        this.setState({ isDirty: action.payload.text !== '' });
-        this.history.reset();
-      }
-
-      return next(action);
+  store = createStore({}, () => next => action => {
+    if (action.type === 'WEB_CHAT/SEND_MESSAGE') {
+      // add to history
+      this.history.add(action.payload.text);
+    } else if (!action.fromHistory && action.type === 'WEB_CHAT/SET_SEND_BOX') {
+      // sendbox was modified by the user, not history
+      this.setState({ isDirty: action.payload.text !== '' });
+      this.history.reset();
     }
-  )
+
+    return next(action);
+  });
 
   render() {
     return (
-      <div className="app" onKeyDown={ this.handleKeyDown }>
-        <ReactWebChat store={ this.store } />
+      <div className="app" onKeyDown={this.handleKeyDown}>
+        <ReactWebChat store={this.store} />
       </div>
-    )
+    );
   }
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     const { target } = e;
 
     if (!this.state.isDirty && target.dataset.id === 'webchat-sendbox-input') {
@@ -45,7 +42,7 @@ export default class App extends React.Component {
           text = this.history.getNext();
           break;
         case 'ArrowDown':
-            text = this.history.getPrevious();
+          text = this.history.getPrevious();
           break;
         default:
           return;
@@ -59,5 +56,5 @@ export default class App extends React.Component {
         });
       }
     }
-  }
+  };
 }

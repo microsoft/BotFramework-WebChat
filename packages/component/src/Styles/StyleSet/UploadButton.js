@@ -2,14 +2,15 @@ export default function createUploadButtonStyle({
   sendBoxButtonColor,
   sendBoxButtonColorOnFocus,
   sendBoxButtonColorOnHover,
-  sendBoxHeight
+  sendBoxHeight,
+  subtle
 }) {
   return {
     // We use the sendBoxHeight, so the button looks square
     width: sendBoxHeight,
 
     '& > .icon > svg': {
-      fill: sendBoxButtonColor
+      fill: sendBoxButtonColor || subtle
     },
 
     '& > input:hover + .icon > svg': {

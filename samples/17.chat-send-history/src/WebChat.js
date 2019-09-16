@@ -25,15 +25,10 @@ export default class extends React.Component {
   }
 
   render() {
-    return (
-      this.state.directLine ?
-        <ReactWebChat
-          className="chat"
-          directLine={ this.state.directLine }
-          { ...this.props }
-        />
-      :
-        <div>Connecting to bot&hellip;</div>
+    return this.state.directLine ? (
+      <ReactWebChat className="chat" directLine={this.state.directLine} {...this.props} />
+    ) : (
+      <div>Connecting to bot&hellip;</div>
     );
   }
 }

@@ -7,10 +7,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.store = createStore(
-      {},
-      dispatchIncomingActivityMiddleware(props.appDispatch)
-    );
+    this.store = createStore({}, dispatchIncomingActivityMiddleware(props.appDispatch));
 
     this.state = {};
   }
@@ -37,18 +34,17 @@ export default class extends React.Component {
   }
 
   render() {
-    return (
-      this.state.directLine ?
-        <ReactWebChat
-          className="chat"
-          directLine={ this.state.directLine }
-          store={ this.store }
-          styleOptions={{
-            backgroundColor: 'Transparent'
-          }}
-        />
-      :
-        <div>Connecting to bot&hellip;</div>
+    return this.state.directLine ? (
+      <ReactWebChat
+        className="chat"
+        directLine={this.state.directLine}
+        store={this.store}
+        styleOptions={{
+          backgroundColor: 'Transparent'
+        }}
+      />
+    ) : (
+      <div>Connecting to bot&hellip;</div>
     );
   }
 }

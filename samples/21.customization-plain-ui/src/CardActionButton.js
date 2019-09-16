@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 
-import ImBackButton from "./ImBackButton";
-import MessageBackButton from "./MessageBackButton";
-import PostBackButton from "./PostBackButton";
+import ImBackButton from './ImBackButton';
+import MessageBackButton from './MessageBackButton';
+import PostBackButton from './PostBackButton';
 
 // "cardAction" could be either, "imBack", "messageBack", or "postBack".
 export default ({ cardAction }) => {
   switch (cardAction.type) {
-    case "messageBack":
+    case 'messageBack':
       return <MessageBackButton cardAction={cardAction} />;
 
-    case "postBack":
+    case 'postBack':
       return <PostBackButton cardAction={cardAction} />;
 
     default:
