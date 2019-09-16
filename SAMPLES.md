@@ -134,7 +134,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
 
 ## Change the avatar of the bot within the dialog box
 
-The latest version of Web Chat support avatars, which you can customize by setting `botAvatarInitials` and `userAvatarInitials` in the `styleOptions` prop.
+The latest version of Web Chat supports avatars, which you can customize by setting `botAvatarInitials` and `userAvatarInitials` in the `styleOptions` prop.
 
 <img alt="Screenshot with avatar initials" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/sample-avatar-initials.png" width="396" />
 
