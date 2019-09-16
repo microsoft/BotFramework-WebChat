@@ -1,7 +1,7 @@
-import { connectToWebChat } from "botframework-webchat-component";
-import React from "react";
+import { connectToWebChat } from 'botframework-webchat-component';
+import React from 'react';
 
-import CardActionButton from "./CardActionButton";
+import CardActionButton from './CardActionButton';
 
 // Web Chat cleaned up the suggestedActions for us.
 // If the last activity is from the bot and contains "suggestedActions", Web Chat will send it to us thru "suggestedActions".

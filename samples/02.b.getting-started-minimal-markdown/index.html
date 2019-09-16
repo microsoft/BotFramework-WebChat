@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Minimal bundle with Markdown</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       We are using a "core" build, which does not contains:
       - Adaptive Cards
@@ -19,8 +19,13 @@
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js"></script>
     <script src="https://unpkg.com/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -31,7 +36,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -41,10 +46,13 @@
         const { token } = await res.json();
         const markdownIt = window.markdownit();
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-          renderMarkdown: markdownIt.render.bind(markdownIt)
-        }, document.getElementById('webchat'));
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            renderMarkdown: markdownIt.render.bind(markdownIt)
+          },
+          document.getElementById('webchat')
+        );
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));

@@ -21,6 +21,8 @@ export default function openCenter(url, title, popupWidth, popupHeight) {
   return window.open(
     url,
     title,
-    Object.keys(features).map(key => `${ key }=${ features[key] }`).join(',')
+    Object.keys(features)
+      .map(key => `${key}=${features[key]}`)
+      .join(',')
   );
 }

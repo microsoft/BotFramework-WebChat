@@ -1,5 +1,5 @@
-import { connectToWebChat } from "botframework-webchat-component";
-import React from "react";
+import { connectToWebChat } from 'botframework-webchat-component';
+import React from 'react';
 
 const ImBackButton = ({ cardAction, sendMessage }) => (
   <button
@@ -11,6 +11,4 @@ const ImBackButton = ({ cardAction, sendMessage }) => (
   </button>
 );
 
-export default connectToWebChat(({ sendMessage }) => ({ sendMessage }))(
-  ImBackButton
-);
+export default connectToWebChat(({ sendMessage }) => ({ sendMessage }))(ImBackButton);

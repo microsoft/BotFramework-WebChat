@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Cognitive Services Bing Speech using React</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
@@ -16,8 +16,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -28,7 +33,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel">
-      (async function () {
+      (async function() {
         'use strict';
 
         const { render } = window.ReactDOM;
@@ -66,10 +71,7 @@
         // You can also use your own speech engine given it is complaint to W3C Web Speech API, https://w3c.github.io/speech-api/.
         // For implementor, look at createBrowserWebSpeechPonyfill.js for details.
         render(
-          <ReactWebChat
-            directLine={ createDirectLine({ token }) }
-            webSpeechPonyfillFactory={ webSpeechPonyfillFactory }
-          />,
+          <ReactWebChat directLine={createDirectLine({ token })} webSpeechPonyfillFactory={webSpeechPonyfillFactory} />,
           document.getElementById('webchat')
         );
 
