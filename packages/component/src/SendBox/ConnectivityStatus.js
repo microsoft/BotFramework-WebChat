@@ -141,6 +141,7 @@ const ConnectivityStatus = () => {
     } else if (connectivityStatus === 'sagaerror') {
       return renderSagaError;
     }
+
     return renderEmptyStatus;
   }, [
     connectivityStatus,
