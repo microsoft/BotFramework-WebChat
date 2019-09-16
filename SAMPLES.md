@@ -134,7 +134,7 @@ For deeper styling, you can also modify the style set manually by setting the CS
 
 ## Change the avatar of the bot within the dialog box
 
-The latest Web Chat support avatar, you can customize them using `botAvatarInitials` and `userAvatarInitials` props.
+The latest version of Web Chat support avatars, which you can customize by setting `botAvatarInitials` and `userAvatarInitials` in the `styleOptions` prop.
 
 <img alt="Screenshot with avatar initials" src="https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/master/media/sample-avatar-initials.png" width="396" />
 
@@ -145,15 +145,17 @@ The latest Web Chat support avatar, you can customize them using `botAvatarIniti
       <div id="webchat" role="main"></div>
       <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
       <script>
+         const styleOptions = {
+            botAvatarInitials: 'BF',
+            userAvatarInitials: 'WC'
+         };
+
          window.WebChat.renderWebChat(
             {
                directLine: window.WebChat.createDirectLine({
                   secret: 'YOUR_BOT_SECRET'
                }),
-
-               // Passing avatar initials when rendering Web Chat
-               botAvatarInitials: 'BF',
-               userAvatarInitials: 'WC'
+               styleOptions
             },
             document.getElementById('webchat')
          );
@@ -162,14 +164,14 @@ The latest Web Chat support avatar, you can customize them using `botAvatarIniti
 </html>
 ```
 
-Inside the `renderWebChat` code, we added `botAvatarInitials` and `userAvatarInitials`:
+Inside Web Chat's `styleOptions` prop, we added `botAvatarInitials` and `userAvatarInitials`:
 
 ```js
 botAvatarInitials: 'BF',
 userAvatarInitials: 'WC'
 ```
 
-`botAvatarInitials` will set the text inside the avatar on the left-hand side. If it is set to falsy value, the avatar on the bot side will be hidden. In contrast, `userAvatarInitials` will set the avatar text on the right-hand side.
+`botAvatarInitials` will set the text inside the avatar on the left-hand side. If it is set to a falsy value, the avatar on the bot side will be hidden. In contrast, `userAvatarInitials` will set the avatar text on the right-hand side.
 
 # Custom rendering activity or attachment
 
