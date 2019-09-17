@@ -1,4 +1,4 @@
-import { call, fork } from 'redux-saga/effects';
+import { fork } from 'redux-saga/effects';
 
 import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
