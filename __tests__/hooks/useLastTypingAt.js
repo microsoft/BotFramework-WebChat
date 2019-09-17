@@ -21,3 +21,9 @@ test('getter should get last typing at', async () => {
 
   expect(Math.abs(lastTypingAt.bot - now)).toBeLessThanOrEqual(timeouts.directLine);
 });
+
+test('setter should throw exception', async () => {
+  const { pageObjects } = await setupWebDriver();
+
+  await expect(pageObjects.runHook('useLastTypingAt', [], lastTypingAt => lastTypingAt[1]())).rejects.toThrow();
+});
