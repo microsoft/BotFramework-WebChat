@@ -11,14 +11,15 @@ function useTypingIndicatorVisible() {
 
   const [{ typingAnimationDuration }] = useStyleOptions();
 
-  const [value, setValue] = useState(false);
+  const last = Math.max(Object.values(lastTypingAt));
+  const typingAnimationTimeRemaining = last ? Math.max(0, typingAnimationDuration - Date.now() + last) : 0;
+
+  const [value, setValue] = useState(typingAnimationTimeRemaining > 0);
 
   useEffect(() => {
     let timeout;
-    const last = Math.max(Object.values(lastTypingAt));
-    const typingAnimationTimeRemaining = typingAnimationDuration - Date.now() + last;
 
-    if (last && typingAnimationTimeRemaining > 0) {
+    if (typingAnimationTimeRemaining > 0) {
       setValue(true);
       timeout = setTimeout(() => setValue(false), typingAnimationTimeRemaining);
     } else {
@@ -26,7 +27,7 @@ function useTypingIndicatorVisible() {
     }
 
     return () => clearTimeout(timeout);
-  }, [lastTypingAt, typingAnimationDuration]);
+  }, [typingAnimationTimeRemaining]);
 
   return [
     value,
