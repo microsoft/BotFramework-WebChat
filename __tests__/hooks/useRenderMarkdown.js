@@ -13,4 +13,14 @@ test('renderMarkdown should use Markdown-It if not set in props', async () => {
   );
 });
 
-test.todo('renderMarkdown should return transform function set in props');
+test('renderMarkdown should use custom Markdown transform function from props', async () => {
+  const { pageObjects } = await setupWebDriver({
+    props: {
+      renderMarkdown: text => text.toUpperCase()
+    }
+  });
+
+  await expect(pageObjects.runHook('useRenderMarkdown', [], fn => fn('Hello, World!'))).resolves.toMatchInlineSnapshot(
+    `"HELLO, WORLD!"`
+  );
+});

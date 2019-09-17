@@ -7,7 +7,7 @@ jest.setTimeout(timeouts.test);
 
 test.todo('getter should return reference grammar ID');
 
-test('setter should throw an exception', async () => {
+test('setter should throw exception', async () => {
   const { pageObjects } = await setupWebDriver();
 
   await expect(pageObjects.runHook('useReferenceGrammarID', [], result => result[1]())).rejects.toThrow();
