@@ -8,16 +8,13 @@ import uiConnected from '../setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('calling postActivity should send an activity', async () => {
+test('calling sendMessageBack should send a message back activity', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.runHook('usePostActivity', [], fn =>
-    fn({
-      text: 'Hello, World!',
-      type: 'message'
-    })
+  await pageObjects.runHook('useSendMessageBack', [], sendMessageBack =>
+    sendMessageBack({ hello: 'World!' }, 'Aloha!', 'Display text')
   );
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
