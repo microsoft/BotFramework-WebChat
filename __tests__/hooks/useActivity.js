@@ -47,7 +47,7 @@ test('should return list of activities', async () => {
   `);
 });
 
-test('setter should throw an exception', async () => {
+test('setter should throw exception', async () => {
   const { pageObjects } = await setupWebDriver();
 
   await expect(pageObjects.runHook('useActivities', [], result => result[1]())).rejects.toThrow();
