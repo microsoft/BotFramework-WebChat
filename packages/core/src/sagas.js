@@ -1,4 +1,4 @@
-import { fork } from 'redux-saga/effects';
+import { call, fork } from 'redux-saga/effects';
 
 import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
@@ -42,4 +42,11 @@ export default function* sagas() {
   yield fork(stopDictateOnCardActionSaga);
   yield fork(stopSpeakingActivityOnInputSaga);
   yield fork(submitSendBoxSaga);
+
+  // yield call(
+  //   () =>
+  //     new Promise((_, reject) => {
+  //       setTimeout(() => reject(new Error('artificial error')), 2000);
+  //     })
+  // );
 }
