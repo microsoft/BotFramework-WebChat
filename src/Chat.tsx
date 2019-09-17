@@ -296,7 +296,7 @@ export class Chat extends React.Component<ChatProps, State> {
                         conversationId,
                         user.id,
                         this.props.directLine.secret,
-                        window.location.origin
+                        window.location.toString()
                     )
                     .then((res: any) => {
                         // Only save these when we successfully connect
