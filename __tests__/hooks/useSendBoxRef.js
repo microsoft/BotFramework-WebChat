@@ -1,6 +1,5 @@
 import { timeouts } from '../constants.json';
 
-import minNumActivitiesShown from '../setup/conditions/minNumActivitiesShown';
 import uiConnected from '../setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
