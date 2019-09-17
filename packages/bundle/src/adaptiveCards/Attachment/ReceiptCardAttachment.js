@@ -23,16 +23,16 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
   const builtCard = useMemo(() => {
     const builder = new AdaptiveCardBuilder(adaptiveCards, styleOptions);
     const { HorizontalAlignment, TextSize, TextWeight } = adaptiveCards;
-    const { buttons, fact, items, tax, title, total, vat } = content;
+    const { buttons, facts, items, tax, title, total, vat } = content;
     const { richCardWrapTitle } = styleOptions;
 
     if (content) {
       builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle });
 
-      if (fact) {
+      if (facts) {
         const [firstFactColumn, lastFactColumn] = builder.addColumnSet([75, 25]);
 
-        fact.map(({ key, value }) => {
+        facts.map(({ key, value }) => {
           builder.addTextBlock(key, { size: TextSize.Medium }, firstFactColumn);
           builder.addTextBlock(
             value,
@@ -64,36 +64,36 @@ const ReceiptCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachme
           );
           builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
           builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
-
-          if (!nullOrUndefined(vat)) {
-            const vatCol = builder.addColumnSet([75, 25]);
-
-            builder.addTextBlock(vatText, { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
-            builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
-          }
-
-          if (!nullOrUndefined(tax)) {
-            const taxCol = builder.addColumnSet([75, 25]);
-
-            builder.addTextBlock(taxText, { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
-            builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
-          }
-
-          if (!nullOrUndefined(total)) {
-            const totalCol = builder.addColumnSet([75, 25]);
-
-            builder.addTextBlock(totalText, { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
-            builder.addTextBlock(
-              total,
-              { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder },
-              totalCol[1]
-            );
-          }
-
-          builder.addButtons(buttons);
-
-          return builder.card;
         });
+
+      if (!nullOrUndefined(vat)) {
+        const vatCol = builder.addColumnSet([75, 25]);
+
+        builder.addTextBlock(vatText, { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
+        builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
+      }
+
+      if (!nullOrUndefined(tax)) {
+        const taxCol = builder.addColumnSet([75, 25]);
+
+        builder.addTextBlock(taxText, { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
+        builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
+      }
+
+      if (!nullOrUndefined(total)) {
+        const totalCol = builder.addColumnSet([75, 25]);
+
+        builder.addTextBlock(totalText, { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
+        builder.addTextBlock(
+          total,
+          { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder },
+          totalCol[1]
+        );
+      }
+
+      builder.addButtons(buttons);
+
+      return builder.card;
     }
   }, [adaptiveCards, content, styleOptions, taxText, totalText, vatText]);
 
