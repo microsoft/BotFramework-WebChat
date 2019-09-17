@@ -1,6 +1,6 @@
 import { timeouts } from '../constants.json';
 
-import speechRecognitionStartCalled from '../setup/conditions/speechRecognitionStartCalled';
+import isDictating from '../setup/pageObjects/isDictating';
 import uiConnected from '../setup/conditions/uiConnected';
 
 // selenium-webdriver API doc:
@@ -18,5 +18,5 @@ test('calling startDictate should start dictate', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.runHook('useStartDictate', [], startDictate => startDictate());
 
-  await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
+  await expect(pageObjects.isDictating()).resolves.toBeFalsy();
 });
