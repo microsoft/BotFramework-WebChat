@@ -12,6 +12,7 @@ import getStore from './getStore';
 import isDictating from './isDictating';
 import pingBot from './pingBot';
 import putSpeechRecognitionResult from './putSpeechRecognitionResult';
+import runHook from './runHook';
 import sendFile from './sendFile';
 import sendMessageViaMicrophone from './sendMessageViaMicrophone';
 import sendMessageViaSendBox from './sendMessageViaSendBox';
@@ -44,6 +45,7 @@ export default function pageObjects(driver) {
       isDictating,
       pingBot,
       putSpeechRecognitionResult,
+      runHook,
       sendFile,
       sendMessageViaMicrophone,
       sendMessageViaSendBox,

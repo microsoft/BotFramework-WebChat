@@ -49,6 +49,8 @@
     </style>
     <script src="https://tdurnford.github.io/BotFramework-Offline-MockBot/index.js"></script>
     <script src="https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js"></script>
+    <script src="https://unpkg.com/react@16.9.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.9.0/umd/react-dom.development.js"></script>
     <script src="/createProduceConsumeBroker.js"></script>
     <script src="/mockWebSpeech.js"></script>
   </head>
@@ -93,9 +95,30 @@
         throw lastErr;
       }
 
+      async function runHook(name, args) {
+        return new Promise((resolve, reject) => {
+          window.WebChatTest.store.dispatch({
+            type: 'DIRECT_LINE/INCOMING_ACTIVITY',
+            payload: {
+              activity: {
+                from: { id: 'bot' },
+                id: Math.random().toString(36).substr(2, 10),
+                name: 'hook',
+                type: 'event',
+                value: { args, name, reject, resolve }
+              }
+            }
+          });
+        });
+      }
+
       const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
 
       async function main(options) {
+        const loadWebChatButton = document.getElementById('loadWebChat');
+
+        loadWebChatButton && loadWebChatButton.remove();
+
         let { createDirectLine, createStyleSet, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE, useProductionBot } = unmarshal(options);
 
         props = unmarshal(props);
@@ -140,7 +163,26 @@
           };
         });
 
+        const activityMiddleware = () => next => ({ activity }) => {
+          if (activity.type === 'event' && activity.name === 'hook') {
+            return children => React.createElement(() => {
+              const { args, name, reject, resolve } = activity.value;
+
+              try {
+                resolve(window.WebChat.hooks[name](args));
+              } catch (err) {
+                reject(err);
+              }
+
+              return false;
+            });
+          }
+
+          return next({ activity });
+        };
+
         window.WebChat.renderWebChat({
+          activityMiddleware,
           directLine,
           store,
           styleSet: createStyleSet && createStyleSet(props.styleOptions),
@@ -149,17 +191,14 @@
         }, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
-
-        const loadWebChatButton = document.getElementById('loadWebChat');
-
-        loadWebChatButton && loadWebChatButton.remove();
       }
 
       document.getElementById('loadWebChat').addEventListener('click', () => main());
 
       window.WebChatTest = {
         actions: [],
-        loadScript
+        loadScript,
+        runHook
       };
     </script>
   </body>
