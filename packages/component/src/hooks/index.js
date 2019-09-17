@@ -42,6 +42,12 @@ import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
+import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
+import { useSendBoxDictationStarted } from '../BasicSendBox';
+import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
+import { useTypingIndicatorVisible } from '../SendBox/TypingIndicator';
+import { useUploadButtonSendFiles } from '../SendBox/UploadButton';
+
 export {
   useActivities,
   useActivityRenderer,
@@ -61,11 +67,14 @@ export {
   useLastTypingAt,
   useLocalize,
   useMarkActivityAsSpoken,
+  useMicrophoneButtonClick,
+  useMicrophoneButtonDisabled,
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
   useRenderMarkdown,
   useScrollToEnd,
+  useSendBoxDictationStarted,
   useSendBoxRef,
   useSendBoxValue,
   useSendEvent,
@@ -81,7 +90,11 @@ export {
   useStyleSet,
   useSubmitSendBox,
   useSuggestedActions,
+  useTextBoxSubmit,
+  useTextBoxValue,
   useTimeoutForSend,
+  useTypingIndicatorVisible,
+  useUploadButtonSendFiles,
   useUserID,
   useUsername,
   useVoiceSelector,
