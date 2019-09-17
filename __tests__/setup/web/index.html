@@ -125,7 +125,8 @@
 
         if (setup) { await setup(); }
 
-        await loadScript('/webchat-instrumented.js');
+        // await loadScript('/webchat-instrumented.js');
+        await loadScript('http://localhost:5000/webchat.js');
 
         let directLine;
 
@@ -163,7 +164,9 @@
           };
         });
 
-        const activityMiddleware = () => next => ({ activity }) => {
+        const activityMiddleware = () => next => card => {
+          const { activity } = card;
+
           if (activity.type === 'event' && activity.name === 'hook') {
             return children => React.createElement(() => {
               const { args, name, reject, resolve } = activity.value;
@@ -178,7 +181,7 @@
             });
           }
 
-          return next({ activity });
+          return next(card);
         };
 
         window.WebChat.renderWebChat({
