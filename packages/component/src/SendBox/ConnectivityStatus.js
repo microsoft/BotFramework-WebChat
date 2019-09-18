@@ -12,6 +12,14 @@ import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIco
 
 const CONNECTIVITY_STATUS_DEBOUNCE = 400;
 
+function setTimeoutSync(fn, interval) {
+  if (interval > 0) {
+    return setTimeout(fn, interval);
+  }
+
+  fn();
+}
+
 const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
   const [children, setChildren] = useState(() => propsChildren);
   const [since, setSince] = useState(Date.now());
@@ -20,7 +28,7 @@ const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
 
   useEffect(() => {
     if (children !== propsChildren) {
-      const timeout = setTimeout(() => {
+      const timeout = setTimeoutSync(() => {
         setChildren(() => propsChildren);
         setSince(Date.now());
       }, intervalBeforeSwitch);

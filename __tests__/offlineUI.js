@@ -64,10 +64,6 @@ describe('offline UI', () => {
       window.WebChatTest.clock.tick(14600); // Go to t=15s
     });
 
-    await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Taking longer than usual to connect"
-    });
-
     await driver.wait(actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING'), timeouts.directLine);
 
     const base64PNG = await driver.takeScreenshot();
@@ -293,12 +289,6 @@ describe('offline UI', () => {
       window.WebChatTest.clock.tick(200);
     });
 
-    // TODO: [P4] Understand why we need to fire tick() using two cross-VM calls
-    //       When we put everything in a single cross-VM call, the last tick has no effect
-    await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Network interruption occured."
-    });
-
     const base64PNG = await driver.takeScreenshot();
 
     expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
@@ -348,12 +338,6 @@ describe('offline UI', () => {
     await driver.executeScript(() => {
       window.WebChatTest.clock.tick(400); // "Connecting" will be gone after 400ms
       window.WebChatTest.clock.tick(14600); // Go to t=15s
-    });
-
-    // TODO: [P4] Understand why we need to fire tick() using two cross-VM calls
-    //       When we put everything in a single cross-VM call, the last tick has no effect
-    await driver.executeScript(() => {
-      window.WebChatTest.clock.tick(1); // Shortly after 15s, it will show "Taking longer than usual to connect"
     });
 
     const base64PNG = await driver.takeScreenshot();
