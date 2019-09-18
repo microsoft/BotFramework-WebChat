@@ -112,7 +112,7 @@ ReceiptCardAttachment.propTypes = {
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       buttons: PropTypes.array,
-      fact: PropTypes.arrayOf(
+      facts: PropTypes.arrayOf(
         PropTypes.shape({
           key: PropTypes.string,
           value: PropTypes.string
