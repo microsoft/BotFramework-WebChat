@@ -14,7 +14,7 @@ test('calling uploadButtonSendFiles should send files', async () => {
   await driver.wait(uiConnected(), timeouts.directLine);
 
   await pageObjects.executePromiseScript(() => {
-    return window.WebChatTest.runHook('useUploadButtonSendFiles', []).then(sendFiles => {
+    return window.WebChatTest.runHook('useUploadButtonSendFiles').then(sendFiles => {
       sendFiles([new Blob([new ArrayBuffer(1024)])]);
     });
   });

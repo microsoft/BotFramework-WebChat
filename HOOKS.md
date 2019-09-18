@@ -12,7 +12,7 @@ Web Chat expose our APIs through React Hooks. This API surface enables us to fre
 
 ## Two types of hooks
 
-We design our hooks with two basic shapes:
+We design our hooks largely with two basic shapes:
 
 - Actions, these are functions that you can call at any time to perform a side-effect
 - Properties, these are getter function with an optional setter
@@ -50,7 +50,6 @@ Following is the list of hooks supported by Web Chat API.
 - [`useActivities`](#useactivities)
 - [`useAvatarForBot`](#useavatarforbot)
 - [`useAvatarForUser`](#useavatarforuser)
-- [`useClockSkewAdjustment`](#useclockskewadjustment)
 - [`useConnectivityStatus`](#useconnectivitystatus)
 - [`useDictateInterims`](#usedictateinterims)
 - [`useDictateState`](#usedictatestate)
@@ -70,7 +69,6 @@ Following is the list of hooks supported by Web Chat API.
 - [`useRenderAttachment`](#useRenderAttachment)
 - [`useRenderMarkdown`](#userendermarkdown)
 - [`useScrollToEnd`](#usescrolltoend)
-- [`useSendBoxRef`](#usesendboxref)
 - [`useSendBoxValue`](#usesendboxvalue)
 - [`useSendEvent`](#usesendevent)
 - [`useSendFiles`](#usesendfiles)
@@ -124,16 +122,6 @@ useAvatarForUser(): [{
 This function will return the image and initials of the user. Both image and initials are optional and can be falsy.
 
 To set the avatar for user, use style options.
-
-## `useClockSkewAdjustment`
-
-```js
-useClockSkewAdjustment(): [number]
-```
-
-This function will return the clock skew between the client and the server, represented in milliseconds.
-
-This value is computed on every outgoing activity.
 
 ## `useConnectivityStatus`
 
@@ -190,7 +178,7 @@ To modify this value, change the props passed to Web Chat.
 ## `useEmitTypingIndicator`
 
 ```js
-useEmitTypingIndicator(): void
+useEmitTypingIndicator(): () => void
 ```
 
 When called, this function will send a typing activity to the bot.
@@ -198,7 +186,7 @@ When called, this function will send a typing activity to the bot.
 ## `useFocusSendBox`
 
 ```js
-useFocusSendBox(): void
+useFocusSendBox(): () => void
 ```
 
 When called, this function will send focus to the send box.
@@ -250,7 +238,7 @@ This property is computed on every incoming activity.
 ## `useLocalize`
 
 ```js
-useLocalize(identifier: string): string
+useLocalize(): (identifier: string) => string
 ```
 
 This function will return a localized string represented by the identifier. It honor the language settings from `useLanguage` hook.
@@ -260,7 +248,7 @@ To modify this value, change the props passed to Web Chat.
 ## `useMarkActivityAsSpoken`
 
 ```js
-useMarkActivityAsSpoken(activity: Activity): void
+useMarkActivityAsSpoken(): (activity: Activity) => void
 ```
 
 When called, this function will mark the activity as spoken and remove it from the text-to-speech queue.
@@ -268,12 +256,12 @@ When called, this function will mark the activity as spoken and remove it from t
 ## `usePerformCardAction`
 
 ```js
-usePerformCardAction({
+usePerformCardAction(): ({
   displayText: string,
   text: string,
   type: string,
   value: string
-}): void
+}) => void
 ```
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
@@ -281,7 +269,7 @@ When called, this function will perform the card action based on its `type`. The
 ## `usePostActivity`
 
 ```js
-usePostActivity(activity: Activity): void
+usePostActivity(): (activity: Activity) => void
 ```
 
 When called, this function will post the activity on behalf of the user, to the bot.
@@ -305,40 +293,36 @@ This value is not controllable and is passed from Direct Line channel.
 ## `useRenderActivity`
 
 ```js
-useRenderActivity(): [
-  ({
+useRenderActivity(): ({
+  activity: Activity,
+  renderAttachment: ({
     activity: Activity,
-    renderAttachment: ({
-      activity: Activity,
-      attachment: Attachment
-    }) : React.Element,
-    timestampClassName: string
-  }): React.Element
-]
+    attachment: Attachment
+  }) => React.Element,
+  timestampClassName: string
+}) => React.Element
 ```
 
-This function will return an activity renderer. `BasicTranscript` will pass in the `activity` and `timestampClassName` to the renderer. The renderer should return a function that can be called to pass an attachment renderer, with the signature of `({ activity, attachment }): React.Element`.
-
-When the activity renderer is called, it will create a function. The caller should call the subsequent function to pass an attachment renderer.
+This function is for rendering activity into React element. The caller will need to pass `activity`, `timestampClassName`, and a render function for attachment. This function is a composition of `activityRendererMiddleware`, which is passed as a prop.
 
 ## `useRenderAttachment`
 
 ```js
-useRenderAttachment(): [
-  ({
-    activity: Activity,
-    attachment: Attachment
-  }) : React.Element
-]
+useRenderAttachment(): ({
+  activity: Activity,
+  attachment: Attachment
+}) => React.Element
 ```
 
-This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthrough middleware would looks like the following code:
+This function is for rendering attachment into React element. The caller will need to pass `activity` and `attachment`. This function is a composition of `attachmentRendererMiddleware`, which is passed as a prop.
 
 ```js
 () => next => { activity, attachment } => next({ activity, attachment })
 ```
 
 ## `useRenderMarkdown`
+
+> TODO: Update this
 
 ```js
 useRenderMarkdown(): (markdown: string): string
@@ -351,25 +335,15 @@ To modify this value, change the props passed to Web Chat.
 ## `useScrollToEnd`
 
 ```js
-useScrollToEnd(): (): void
+useScrollToEnd(): () => void
 ```
 
 This function will return a function that when called, it will scroll the transcript view to the end.
 
-## `useSendBoxRef`
-
-```js
-useSendBoxRef(): React.Ref
-```
-
-This function will return a React Ref object that reference the focusable send box element.
-
-When building your own UI, you may want to pass this React Ref object to the HTML element that should receive focus when user start typing.
-
 ## `useSendBoxValue`
 
 ```js
-useSendBoxValue(): [string, (value: string): void]
+useSendBoxValue(): [string, (value: string) => void]
 ```
 
 This function will return the value of the send box, and the setter function to change the value.
@@ -377,7 +351,7 @@ This function will return the value of the send box, and the setter function to 
 ## `useSendEvent`
 
 ```js
-useSendEvent(name: string, value: string): void
+useSendEvent(): (name: string, value: string) => void
 ```
 
 When called, this function will send an event activity to the bot.
@@ -385,7 +359,7 @@ When called, this function will send an event activity to the bot.
 ## `useSendFiles`
 
 ```js
-useSendFiles(files: File[]): void
+useSendFiles(): (files: File[]) => void
 
 interface File {
   name: string;
@@ -406,7 +380,7 @@ Thumbnail must be presented in Data URI format.
 ## `useSendMessage`
 
 ```js
-useSendMessage(text: string, method: string): void
+useSendMessage(): (text: string, method: string) => void
 ```
 
 When called, this function will send a text message activity to the bot.
@@ -416,7 +390,7 @@ You can optionally include the input method the text message is collected. Curre
 ## `useSendMessageBack`
 
 ```js
-useSendMessageBack(value: any, text: string, displayText: string): void
+useSendMessageBack(): (value: any, text: string, displayText: string) => void
 ```
 
 When called, this function will send a `messageBack` activity to the bot.
@@ -424,7 +398,7 @@ When called, this function will send a `messageBack` activity to the bot.
 ## `useSendPostBack`
 
 ```js
-useSendPostBack(value: any): void
+useSendPostBack(): (value: any) => void
 ```
 
 When called, this function will send a `postBack` activity to the bot.
@@ -442,7 +416,7 @@ To modify this value, change the props passed to Web Chat.
 ## `useShouldSpeakIncomingActivity`
 
 ```js
-useShouldSpeakIncomingActivity(): [boolean, (value: boolean): void]
+useShouldSpeakIncomingActivity(): [boolean, (value: boolean) => void]
 ```
 
 This function will return whether the next incoming activity will be queued for text-to-speech or not, and a setter function to control the behavior.
@@ -452,7 +426,7 @@ If the last outgoing message is sent by speech, Web Chat will set this state to 
 ## `useStartDictate`
 
 ```js
-useStartDictate(): void
+useStartDictate(): () => void
 ```
 
 This function will open the microphone for dictation. You should only call this function by user-initiated gesture. Otherwise, the browser may block access to the microphone.
@@ -460,7 +434,7 @@ This function will open the microphone for dictation. You should only call this 
 ## `useStopDictate`
 
 ```js
-useStopDictate(): void
+useStopDictate(): () => void
 ```
 
 This function will close the microphone. It will not send the interims to the bot, but leave the interims in the send box.
@@ -490,7 +464,7 @@ To modify this value, change the props passed to Web Chat.
 ## `useSubmitSendBox`
 
 ```js
-useSubmitSendBox(): void
+useSubmitSendBox(): () => void
 ```
 
 This function will send the text in the send box to the bot, and clear the send box.
@@ -498,7 +472,7 @@ This function will send the text in the send box to the bot, and clear the send 
 ## `useSuggestedActions`
 
 ```js
-useSuggestedActions(): [CardAction[], (CardAction[]): void]
+useSuggestedActions(): [CardAction[], (CardAction[]) => void]
 ```
 
 This function will return a list of suggested actions that should show to the user, and a setter function to clear suggested actions. The setter function can only be used to clear suggested actions, and it will accept empty array or falsy value only.
@@ -538,7 +512,7 @@ To modify this value, change the props passed to Web Chat.
 ## `useVoiceSelector`
 
 ```js
-useVoiceSelector(activity: Activity): (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice
+useVoiceSelector(activity: Activity): (voices: SpeechSynthesisVoice[]) => SpeechSynthesisVoice
 ```
 
 This function will return a function that can be called to select the voice for a specific activity.
@@ -574,7 +548,7 @@ These are hooks that are specific for the microphone button.
 ### `useMicrophoneButtonClick`
 
 ```js
-useMicrophoneButtonClick(): void
+useMicrophoneButtonClick(): () => void
 ```
 
 When called, this function will toggle microphone open or close.
@@ -582,7 +556,7 @@ When called, this function will toggle microphone open or close.
 ### `useMicrophoneButtonDisabled`
 
 ```js
-useMicrophoneButtonDisabled(): void
+useMicrophoneButtonDisabled(): () => void
 ```
 
 This function will return whether the microphone button is disabled. This is more than `useDisabled()`. The microphone button could be disabled because it is currently starting or stopping.
@@ -613,7 +587,7 @@ These are hooks that are specific to the text box in the send box.
 ### `useTextBoxSubmit`
 
 ```js
-useTextBoxSubmit(setFocus: boolean): void
+useTextBoxSubmit(): (setFocus: boolean) => void
 ```
 
 This function will send the text box value as a message to the bot. In addition to the original `useSubmitSendBox` hook, this function will also scroll to bottom and optionally, set focus to the send box.
@@ -623,7 +597,7 @@ The focus is useful for phone scenario, where virtual keyboard will only be show
 ### `useTextBoxValue`
 
 ```js
-useTextBoxValue(): [string, (value: string): void]
+useTextBoxValue(): [string, (value: string) => void]
 ```
 
 This function will return the text box value, and a setter function to set the value.
@@ -637,6 +611,10 @@ These are hooks that are specific to the typing indicator.
 - [`useTypingIndicatorVisible`](#usetypingindicatorvisible)
 
 ### `useTypingIndicatorVisible`
+
+```js
+useTypingIndicatorVisible(): [boolean]
+```
 
 This function will return whether the typing indicator should be visible or not. This function is time-sensitive, means, the value could varies based on the clock.
 
@@ -654,7 +632,7 @@ These are hooks that are specific to the upload button.
 ### `useUploadButtonSendFiles`
 
 ```js
-useUploadButtonSendFiles: (files: File[]): void
+useUploadButtonSendFiles(): (files: File[]) => void
 ```
 
 This function is intended to simplify the handling of converting files into attachments.
