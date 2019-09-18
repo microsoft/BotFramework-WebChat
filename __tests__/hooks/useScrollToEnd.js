@@ -22,8 +22,6 @@ test('calling scrollToEnd should scroll to end', async () => {
     document.querySelector('[role="log"] > *').scrollTop = 0;
   });
 
-  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
-
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.runHook('useScrollToEnd', [], scrollToEnd => scrollToEnd());
