@@ -1,15 +1,16 @@
 import { hooks } from 'botframework-webchat-component';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 const { useSendMessage } = hooks;
 
 const ImBackButton = ({ cardAction }) => {
   const sendMessage = useSendMessage();
+  const handleClick = useCallback(() => sendMessage(cardAction.value), [cardAction, sendMessage]);
 
   return (
     <button
       // ImBack is essentially sending a message
-      onClick={() => sendMessage(cardAction.value)}
+      onClick={handleClick}
       type="button"
     >
       ImBack: {cardAction.title}

@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import Attachment from './Attachment';
 import SuggestedActions from './SuggestedActions';
@@ -12,6 +12,18 @@ const PlainWebChat = () => {
   const [activities] = useActivities();
   const sendMessage = useSendMessage();
   const [sendBoxValue, setSendBoxValue] = useState('');
+
+  const handleSubmit = useCallback(
+    event => {
+      event.preventDefault();
+
+      sendMessage(sendBoxValue);
+      setSendBoxValue('');
+    },
+    [sendBoxValue, sendMessage, setSendBoxValue]
+  );
+
+  const handleChange = useCallback(({ target: { value } }) => setSendBoxValue(value), [setSendBoxValue]);
 
   return (
     <div>
@@ -60,20 +72,8 @@ const PlainWebChat = () => {
       <div>
         {/* This is the send box, and suggested actions change based on the send box, not activity */}
         <SuggestedActions />
-        <form
-          onSubmit={event => {
-            event.preventDefault();
-
-            sendMessage(sendBoxValue);
-            setSendBoxValue('');
-          }}
-        >
-          <input
-            autoFocus={true}
-            onChange={({ target: { value } }) => setSendBoxValue(value)}
-            type="textbox"
-            value={sendBoxValue}
-          />
+        <form onSubmit={handleSubmit}>
+          <input autoFocus={true} onChange={handleChange} type="textbox" value={sendBoxValue} />
         </form>
       </div>
     </div>
