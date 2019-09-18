@@ -7,7 +7,7 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalize, usePerformCardAction, useRenderMarkdown, useStyleSet } = hooks;
+const { useDisabled, useLocalize, usePerformCardAction, useRenderMarkdownAsHTML, useStyleSet } = hooks;
 
 function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
@@ -17,7 +17,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
   const [disabled] = useDisabled();
   const [error, setError] = useState();
   const performCardAction = usePerformCardAction();
-  const renderMarkdown = useRenderMarkdown();
+  const renderMarkdown = useRenderMarkdownAsHTML();
 
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
 

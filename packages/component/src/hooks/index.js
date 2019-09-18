@@ -18,7 +18,7 @@ import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRenderActivity from './useRenderActivity';
 import useRenderAttachment from './useRenderAttachment';
-import useRenderMarkdown from './useRenderMarkdown';
+import useRenderMarkdownAsHTML from './useRenderMarkdownAsHTML';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
@@ -69,7 +69,7 @@ export {
   useReferenceGrammarID,
   useRenderActivity,
   useRenderAttachment,
-  useRenderMarkdown,
+  useRenderMarkdownAsHTML,
   useScrollToEnd,
   useSendBoxDictationStarted,
   useSendBoxValue,

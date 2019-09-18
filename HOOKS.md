@@ -67,7 +67,7 @@ Following is the list of hooks supported by Web Chat API.
 - [`useReferenceGrammarID`](#usereferencegrammarid)
 - [`useRenderActivity`](#useRenderActivity)
 - [`useRenderAttachment`](#useRenderAttachment)
-- [`useRenderMarkdown`](#userendermarkdown)
+- [`useRenderMarkdownAsHTML`](#useRenderMarkdownAsHTML)
 - [`useScrollToEnd`](#usescrolltoend)
 - [`useSendBoxValue`](#usesendboxvalue)
 - [`useSendEvent`](#usesendevent)
@@ -320,15 +320,19 @@ This function is for rendering attachment into React element. The caller will ne
 () => next => { activity, attachment } => next({ activity, attachment })
 ```
 
-## `useRenderMarkdown`
-
-> TODO: Update this
+## `useRenderMarkdownAsHTML`
 
 ```js
-useRenderMarkdown(): (markdown: string): string
+useRenderMarkdownAsHTML(): (markdown: string): string
 ```
 
-This function will return a function that render Markdown into HTML.
+This function will return a function that render Markdown into HTML string. For example,
+
+```js
+const renderMarkdown = useRenderMarkdown();
+
+renderMarkdown('Hello, World!') === '<p>Hello, World!</p>\n';
+```
 
 To modify this value, change the props passed to Web Chat.
 

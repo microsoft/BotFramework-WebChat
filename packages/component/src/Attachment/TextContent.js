@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useRenderMarkdown from '../hooks/useRenderMarkdown';
+import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../hooks/useStyleSet';
 
 const TextContent = ({ contentType, text }) => {
-  const renderMarkdown = useRenderMarkdown();
+  const renderMarkdown = useRenderMarkdownAsHTML();
   const [{ textContent: textContentStyleSet }] = useStyleSet();
 
   return contentType === 'text/markdown' && renderMarkdown ? (
