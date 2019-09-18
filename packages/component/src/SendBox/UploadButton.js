@@ -96,23 +96,21 @@ const UploadButton = () => {
   const uploadFileString = useLocalize('Upload file');
 
   const inputRef = useRef();
-  const handleClick = useCallback(() => {
-    const { current } = inputRef;
+  const { current } = inputRef;
 
+  const handleClick = useCallback(() => {
     current && current.click();
-  }, [inputRef]);
+  }, [current]);
 
   const handleFileChange = useCallback(
     ({ target: { files } }) => {
-      const { current } = inputRef;
-
       sendFiles(files);
 
       if (current) {
         current.value = null;
       }
     },
-    [inputRef, sendFiles]
+    [current, sendFiles]
   );
 
   return (
