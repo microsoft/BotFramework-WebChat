@@ -12,6 +12,7 @@ Embeddable web chat control for the [Microsoft Bot Framework](http://www.botfram
   * configurable style themes (currently only `theme.mainColor` prop)
   * auto show upload button when `inputHint` property of last incoming activity was `expectingUpload`
   * force intro dialog ID using `introDialog.id` property
+  * option `disableInputWhenNotNeeded` to disable input after messages with `inputHint==='ignoringInput`
 
 ## How to add Web Chat to your website
 
@@ -89,6 +90,7 @@ locale?: 'cs' | 'en' | 'sk' | 'sr' | 'hu' = 'cs',
 userData?: object, // allows to preset some data we already know about user (email, phone, etc.)
 startOverTrigger?: (trigger: () => void) => void, // can be used to binding onclick event on element which can be used to restart conversation
 onConversationStarted?: (callback: (conversationId: string) => void) => void // can be used to store conversationId for new conversations (useful for history persistence)
+disableInputWhenNotNeeded?: boolean = false // disables input after messages with `inputHint==='ignoringInput`
 ```
 
 <!---

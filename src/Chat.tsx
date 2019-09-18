@@ -28,6 +28,7 @@ export interface ChatProps {
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     showUploadButton?: boolean,
+    disableInputWhenNotNeeded?: boolean,
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect',
     userData?: {},
@@ -93,6 +94,10 @@ export class Chat extends React.Component<ChatProps, {}> {
         }
 
         this.store.dispatch<ChatActions>({ type: 'Toggle_Upload_Button', showUploadButton: props.showUploadButton !== false });
+
+        this.store.dispatch<ChatActions>({ type: 'Toggle_Disable_Input', disableInput: props.disableInputWhenNotNeeded });
+
+        this.store.dispatch<ChatActions>({ type: 'Toggle_Disable_Input_When_Not_Needed', disableInputWhenNotNeeded: props.disableInputWhenNotNeeded });
 
         if (props.sendTyping) {
             this.store.dispatch<ChatActions>({ type: 'Set_Send_Typing', sendTyping: props.sendTyping });
@@ -314,6 +319,13 @@ export class Chat extends React.Component<ChatProps, {}> {
             this.store.dispatch<ChatActions>({
                 type: 'Toggle_Upload_Button',
                 showUploadButton: nextProps.showUploadButton
+            });
+        }
+
+        if (this.props.disableInputWhenNotNeeded !== nextProps.disableInputWhenNotNeeded) {
+            this.store.dispatch<ChatActions>({
+                type: 'Toggle_Disable_Input_When_Not_Needed',
+                disableInputWhenNotNeeded: nextProps.disableInputWhenNotNeeded
             });
         }
 
