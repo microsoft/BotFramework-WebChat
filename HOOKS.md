@@ -4,7 +4,32 @@ Web Chat is designed to be highly customizable. In order to build your own UI, y
 
 To enable Web Chat API, all UI components must be located under the [`<Composer>`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Composer.js) component. You can refer to our [plain UI customization](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/21.customization-plain-ui) sample for details.
 
-## Properties
+## Why React Hooks
+
+React Hooks will make your code cleaner and shorter, and also greatly improve readability.
+
+Web Chat expose our APIs through React Hooks. This API surface enables us to freely move stuff behind the scene, introduce new APIs, and a safe way to deprecate APIs. It will also make us easier to shuffle work between our internal Redux store and React Context.
+
+## Two types of hooks
+
+We design our hooks with two basic shapes:
+
+- Actions, these are functions that you can call at any time to perform a side-effect
+- Properties, these are getter function with an optional setter
+   - This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setter could be optional
+   - If the value changed, React will call your render function again
+
+### Actions
+
+All actions will return a function that you can call later. For example, if you want to focus to the send box, you will use the following code:
+
+```js
+const focusSendBox = useFocusSendBox();
+
+focusSendBox();
+```
+
+### Properties
 
 All properties follow [React State Hook pattern](https://reactjs.org/docs/hooks-state.html). For example, if you want to get and set the value of send box, you will use the following code:
 
@@ -16,15 +41,13 @@ console.log(`The send box value is "${ sendBoxValue }".`);
 setSendBoxValue('Hello, World!');
 ```
 
-Some properties may not be settable and exception will be thrown if called.
+> Note: some properties may not be settable.
 
 # List of hooks
 
 Following is the list of hooks supported by Web Chat API.
 
 - [`useActivities`](#useactivities)
-- [`useActivityRenderer`](#useactivityrenderer)
-- [`useAttachmentRenderer`](#useattachmentrenderer)
 - [`useAvatarForBot`](#useavatarforbot)
 - [`useAvatarForUser`](#useavatarforuser)
 - [`useClockSkewAdjustment`](#useclockskewadjustment)
@@ -43,6 +66,8 @@ Following is the list of hooks supported by Web Chat API.
 - [`usePerformCardAction`](#useperformcardaction)
 - [`usePostActivity`](#usepostactivity)
 - [`useReferenceGrammarID`](#usereferencegrammarid)
+- [`useRenderActivity`](#useRenderActivity)
+- [`useRenderAttachment`](#useRenderAttachment)
 - [`useRenderMarkdown`](#userendermarkdown)
 - [`useScrollToEnd`](#usescrolltoend)
 - [`useSendBoxRef`](#usesendboxref)
@@ -73,32 +98,6 @@ useActivities(): [Activity[]]
 ```
 
 This function will return a list of activities.
-
-## `useActivityRenderer`
-
-```js
-useActivityRenderer(): [ActivityMiddleware]
-```
-
-This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthrough middleware would looks like the following code:
-
-```js
-() => next => ({ activity: Activity, timestampClassName: string }) => children: React.Element[] => next({ activity, timestampClassName })(children)
-```
-
-`children` is a list of React elements that represent attachments. They should be rendered as part of the activity.
-
-## `useAttachmentRenderer`
-
-```js
-useAttachmentRenderer(): [AttachmentMiddleware]
-```
-
-This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthrough middleware would looks like the following code:
-
-```js
-() => next => { activity, attachment } => next({ activity, attachment })
-```
 
 ## `useAvatarForBot`
 
@@ -302,6 +301,42 @@ useReferenceGrammarId(): [string]
 When called, this function will return the reference grammar ID used to improve speech-to-text performance when used with Cognitive Services.
 
 This value is not controllable and is passed from Direct Line channel.
+
+## `useRenderActivity`
+
+```js
+useRenderActivity(): [
+  ({
+    activity: Activity,
+    renderAttachment: ({
+      activity: Activity,
+      attachment: Attachment
+    }) : React.Element,
+    timestampClassName: string
+  }): React.Element
+]
+```
+
+This function will return an activity renderer. `BasicTranscript` will pass in the `activity` and `timestampClassName` to the renderer. The renderer should return a function that can be called to pass an attachment renderer, with the signature of `({ activity, attachment }): React.Element`.
+
+When the activity renderer is called, it will create a function. The caller should call the subsequent function to pass an attachment renderer.
+
+## `useRenderAttachment`
+
+```js
+useRenderAttachment(): [
+  ({
+    activity: Activity,
+    attachment: Attachment
+  }) : React.Element
+]
+```
+
+This function will return an activity renderer middleware. The middleware pattern is very similar to Redux. For example, a passthrough middleware would looks like the following code:
+
+```js
+() => next => { activity, attachment } => next({ activity, attachment })
+```
 
 ## `useRenderMarkdown`
 

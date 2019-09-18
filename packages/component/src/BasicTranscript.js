@@ -8,9 +8,9 @@ import React, { useMemo } from 'react';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 import useActivities from './hooks/useActivities';
-import useActivityRenderer from './hooks/useActivityRenderer';
-import useAttachmentRenderer from './hooks/useAttachmentRenderer';
 import useGroupTimestamp from './hooks/useGroupTimestamp';
+import useRenderActivity from './hooks/useRenderActivity';
+import useRenderAttachment from './hooks/useRenderAttachment';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
@@ -60,8 +60,8 @@ function sameTimestampGroup(activityX, activityY, groupTimestamp) {
 const BasicTranscript = ({ className }) => {
   const [{ speechSynthesis, SpeechSynthesisUtterance } = {}] = useWebSpeechPonyfill();
   const [activities] = useActivities();
-  const [activityRenderer] = useActivityRenderer();
-  const [attachmentRenderer] = useAttachmentRenderer();
+  const [renderActivity] = useRenderActivity();
+  const [renderAttachment] = useRenderAttachment();
   const [groupTimestamp] = useGroupTimestamp();
 
   const [{ activities: activitiesStyleSet, activity: activityStyleSet }] = useStyleSet();
@@ -74,10 +74,11 @@ const BasicTranscript = ({ className }) => {
   const activityElements = useMemo(
     () =>
       activities.reduce((activityElements, activity, index) => {
-        const element = activityRenderer({
+        const element = renderActivity({
           activity,
+          renderAttachment,
           timestampClassName: 'transcript-timestamp'
-        })(({ attachment }) => attachmentRenderer({ activity, attachment }));
+        });
 
         element &&
           activityElements.push({
@@ -91,7 +92,7 @@ const BasicTranscript = ({ className }) => {
 
         return activityElements;
       }, []),
-    [activities, activityRenderer, attachmentRenderer]
+    [activities, renderActivity, renderAttachment]
   );
 
   const activityElements2 = useMemo(

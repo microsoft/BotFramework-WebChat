@@ -1,6 +1,4 @@
 import useActivities from './useActivities';
-import useActivityRenderer from './useActivityRenderer';
-import useAttachmentRenderer from './useAttachmentRenderer';
 import useAvatarForBot from './useAvatarForBot';
 import useAvatarForUser from './useAvatarForUser';
 import useClockSkewAdjustment from './useClockSkewAdjustment';
@@ -19,6 +17,8 @@ import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import usePerformCardAction from './usePerformCardAction';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
+import useRenderActivity from './useRenderActivity';
+import useRenderAttachment from './useRenderAttachment';
 import useRenderMarkdown from './useRenderMarkdown';
 import useScrollToEnd from './useScrollToEnd';
 import useSendBoxRef from './useSendBoxRef';
@@ -50,8 +50,6 @@ import { useUploadButtonSendFiles } from '../SendBox/UploadButton';
 
 export {
   useActivities,
-  useActivityRenderer,
-  useAttachmentRenderer,
   useAvatarForBot,
   useAvatarForUser,
   useClockSkewAdjustment,
@@ -72,6 +70,8 @@ export {
   usePerformCardAction,
   usePostActivity,
   useReferenceGrammarID,
+  useRenderActivity,
+  useRenderAttachment,
   useRenderMarkdown,
   useScrollToEnd,
   useSendBoxDictationStarted,
