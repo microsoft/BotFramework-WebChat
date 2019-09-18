@@ -1,4 +1,5 @@
 import clickMicrophoneButton from './clickMicrophoneButton';
+import clickScrollToBottomButton from './clickScrollToBottomButton';
 import clickSendButton from './clickSendButton';
 import clickSuggestedActionButton from './clickSuggestedActionButton';
 import dispatchAction from './dispatchAction';
@@ -32,6 +33,7 @@ export default function pageObjects(driver) {
   return mapMap(
     {
       clickMicrophoneButton,
+      clickScrollToBottomButton,
       clickSendButton,
       clickSuggestedActionButton,
       dispatchAction,

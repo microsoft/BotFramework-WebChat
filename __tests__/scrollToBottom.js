@@ -34,3 +34,29 @@ test('should stick to bottom if submitting an Adaptive Card while suggested acti
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
+
+test('clicking "New messages" button should scroll to end and stick to bottom', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+
+  await pageObjects.sendMessageViaSendBox('help');
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  await driver.executeScript(() => {
+    document.querySelector('[role="log"] > *').scrollTop = 0;
+  });
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.clickScrollToBottomButton();
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.sendMessageViaSendBox('Hello, World!');
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+});
