@@ -36,8 +36,8 @@ const FullReactWebChat = ({
   );
 
   const patchedAdaptiveCardsPackage = useMemo(() => adaptiveCardsPackage || defaultAdaptiveCardsPackage, [
-    defaultAdaptiveCardsPackage,
-    adaptiveCardsPackage
+    adaptiveCardsPackage,
+    defaultAdaptiveCardsPackage
   ]);
 
   const patchedRenderMarkdown = useMemo(
@@ -47,7 +47,7 @@ const FullReactWebChat = ({
 
   const patchedAttachmentMiddleware = useMemo(
     () => concatMiddleware(attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()),
-    [patchedAdaptiveCardsHostConfig, attachmentMiddleware, patchedRenderMarkdown, patchedStyleOptions]
+    [attachmentMiddleware]
   );
 
   const adaptiveCardsContext = useMemo(
@@ -73,6 +73,8 @@ const FullReactWebChat = ({
 
 FullReactWebChat.defaultProps = {
   adaptiveCardHostConfig: undefined,
+  adaptiveCardsHostConfig: undefined,
+  adaptiveCardsPackage: undefined,
   attachmentMiddleware: undefined,
   renderMarkdown: undefined,
   styleOptions: undefined,
@@ -81,6 +83,8 @@ FullReactWebChat.defaultProps = {
 
 FullReactWebChat.propTypes = {
   adaptiveCardHostConfig: PropTypes.any,
+  adaptiveCardsHostConfig: PropTypes.any,
+  adaptiveCardsPackage: PropTypes.any,
   attachmentMiddleware: PropTypes.func,
   renderMarkdown: PropTypes.func,
   styleOptions: PropTypes.any,

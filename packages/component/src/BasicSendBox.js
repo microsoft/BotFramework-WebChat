@@ -43,10 +43,7 @@ function useSendBoxDictationStarted() {
 
   return [
     (dictateState === STARTING || dictateState === DICTATING) &&
-      !activities.filter(activityIsSpeakingOrQueuedToSpeak).length,
-    () => {
-      throw new Error('SendBoxDictationStarted cannot be set.');
-    }
+      !activities.filter(activityIsSpeakingOrQueuedToSpeak).length
   ];
 }
 
