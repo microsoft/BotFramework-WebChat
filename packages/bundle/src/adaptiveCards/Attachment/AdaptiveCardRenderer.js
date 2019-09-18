@@ -15,12 +15,14 @@ function isPlainObject(obj) {
 
 const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction }) => {
   const [disabled] = useDisabled();
-  const [error, setError] = useState();
   const performCardAction = usePerformCardAction();
   const renderMarkdown = useRenderMarkdownAsHTML();
 
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
 
+  const errorMessage = useLocalize('Adaptive Card render error');
+
+  const [error, setError] = useState();
   const contentRef = useRef();
   const handleClick = useCallback(
     ({ target }) => {
@@ -76,7 +78,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
     [disabled, performCardAction]
   );
 
-  const renderCard = useCallback(() => {
+  useLayoutEffect(() => {
     const { current } = contentRef;
 
     if (current && adaptiveCard) {
@@ -150,12 +152,6 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
       }
     }
   }, [adaptiveCard, adaptiveCardHostConfig, disabled, error, handleExecuteAction, renderMarkdown]);
-
-  useLayoutEffect(() => {
-    renderCard();
-  }, [renderCard]);
-
-  const errorMessage = useLocalize('Adaptive Card render error');
 
   return error ? (
     <ErrorBox message={errorMessage}>
