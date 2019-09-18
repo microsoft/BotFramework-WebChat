@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const Timer = ({ at, onInternval }) => {
+const Timer = ({ at, onInterval }) => {
   useEffect(() => {
     if (!isNaN(at)) {
       const timeout = setTimeout(() => {
@@ -12,7 +12,7 @@ const Timer = ({ at, onInternval }) => {
 
       return () => clearTimeout(timeout);
     }
-  }, [at, onInternval]);
+  }, [at, onInterval]);
 
   return false;
 };
