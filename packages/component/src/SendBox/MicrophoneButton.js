@@ -130,12 +130,7 @@ function useMicrophoneButtonDisabled() {
   const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
 
-  return [
-    disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING,
-    () => {
-      throw new Error('MicrophoneButtonDisabled cannot be set.');
-    }
-  ];
+  return [disabled || dictateState === DictateState.STARTING || dictateState === DictateState.STOPPING];
 }
 
 const MicrophoneButton = ({ className }) => {
