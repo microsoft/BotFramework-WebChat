@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+
 import WebChatUIContext from '../WebChatUIContext';
 
 export default function useRenderActivity() {
@@ -14,9 +15,6 @@ export default function useRenderActivity() {
           activity,
           ...renderAttachmentArgs
         })
-      ),
-    () => {
-      throw new Error('ActivityRenderer must be set using props.');
-    }
+      )
   ];
 }

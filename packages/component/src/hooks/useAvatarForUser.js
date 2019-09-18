@@ -7,9 +7,6 @@ export default function useAvatarForUser() {
     {
       image,
       initials
-    },
-    () => {
-      throw new Error('AvatarForUser cannot be set.');
     }
   ];
 }

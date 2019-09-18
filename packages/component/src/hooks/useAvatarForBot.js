@@ -7,9 +7,6 @@ export default function useAvatarForBot() {
     {
       image,
       initials
-    },
-    () => {
-      throw new Error('AvatarForBot cannot be set.');
     }
   ];
 }

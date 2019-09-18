@@ -260,7 +260,7 @@ This property is computed on every incoming activity.
 ## `useLocalize`
 
 ```js
-useLocalize(): (identifier: string) => string
+useLocalize(identifier: string) => string
 ```
 
 This function will return a localized string represented by the identifier. It honor the language settings from `useLanguage` hook.
