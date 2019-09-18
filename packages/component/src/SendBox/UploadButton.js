@@ -9,7 +9,6 @@ import IconButton from './IconButton';
 import useDisabled from '../hooks/useDisabled';
 import useLocalize from '../hooks/useLocalize';
 import useSendFiles from '../hooks/useSendFiles';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 
 const ROOT_CSS = css({
@@ -88,58 +87,9 @@ const connectUploadButton = (...selectors) => {
   );
 };
 
-const useUploadButtonSendFiles = () => {
-  const sendFiles = useSendFiles();
-  const [
-    {
-      enableUploadThumbnail,
-      uploadThumbnailContentType,
-      uploadThumbnailHeight,
-      uploadThumbnailQuality,
-      uploadThumbnailWidth
-    }
-  ] = useStyleOptions();
-
-  return useCallback(
-    async files => {
-      if (files && files.length) {
-        // TODO: [P3] We need to find revokeObjectURL on the UI side
-        //       Redux store should not know about the browser environment
-        //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-        sendFiles(
-          await Promise.all(
-            [].map.call(files, async file => ({
-              name: file.name,
-              size: file.size,
-              url: window.URL.createObjectURL(file),
-              ...(enableUploadThumbnail && {
-                thumbnail: await makeThumbnail(
-                  file,
-                  uploadThumbnailWidth,
-                  uploadThumbnailHeight,
-                  uploadThumbnailContentType,
-                  uploadThumbnailQuality
-                )
-              })
-            }))
-          )
-        );
-      }
-    },
-    [
-      enableUploadThumbnail,
-      sendFiles,
-      uploadThumbnailContentType,
-      uploadThumbnailHeight,
-      uploadThumbnailQuality,
-      uploadThumbnailWidth
-    ]
-  );
-};
-
 const UploadButton = () => {
   const [disabled] = useDisabled();
-  const sendFiles = useUploadButtonSendFiles();
+  const sendFiles = useSendFiles();
 
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
 
@@ -186,4 +136,4 @@ const UploadButton = () => {
 
 export default UploadButton;
 
-export { connectUploadButton, useUploadButtonSendFiles };
+export { connectUploadButton };

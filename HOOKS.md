@@ -385,23 +385,15 @@ When called, this function will send an event activity to the bot.
 ## `useSendFiles`
 
 ```js
-useSendFiles(): (files: File[]) => void
-
-interface File {
-  name: string;
-  size: number;
-  thumbnail: string;
-  url: string;
-}
+useSendFiles(): (files: (Blob | File)[]) => void
 ```
 
-When called, this function will send a message activity with one or more file attachments to the bot.
+When called, this function will send a message activity with one or more [File](https://developer.mozilla.org/en-US/docs/Web/API/File) attachments to the bot, including these operations:
 
-The content of the file must be represented in URL. If you are uploading an `Blob`/`File`, you can use [`URL.createObjectURL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL) function to create a temporary URL.
+- Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
+- Generate thumbnail and will use Web Worker and offscreen canvas if supported
 
 If you are using `ArrayBuffer`, you can use `FileReader` to convert it into a blob before calling [`URL.createObjectURL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL).
-
-Thumbnail must be presented in Data URI format.
 
 ## `useSendMessage`
 
@@ -648,22 +640,3 @@ This function derive the visibility of the typing indicator by:
 
 - `typingAnimationDuration` value specified in style options, in milliseconds
 - Values from the `useLastTypingAt` hook
-
-## `UploadButton`
-
-These are hooks that are specific to the upload button.
-
-- [`useUploadButtonSendFiles`](#useuploadbuttonsendfiles)
-
-### `useUploadButtonSendFiles`
-
-```js
-useUploadButtonSendFiles(): (files: File[]) => void
-```
-
-This function is intended to simplify the handling of converting files into attachments.
-
-When called with an array of [File](https://developer.mozilla.org/en-US/docs/Web/API/File), this function will call `useSendFiles` hook with the following additional behaviors:
-
-- Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
-- Generate thumbnail and will use Web Worker and offscreen canvas if supported
