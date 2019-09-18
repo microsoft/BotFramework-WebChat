@@ -24,11 +24,11 @@ const FocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...other
     [patchedSendFocusRef]
   );
 
-  const { current: sendFocusCurrent } = patchedSendFocusRef;
-
   const focus = useCallback(() => {
-    sendFocusCurrent && sendFocusCurrent.focus();
-  }, [sendFocusCurrent]);
+    const { current } = patchedSendFocusRef;
+
+    current && current.focus();
+  }, [patchedSendFocusRef]);
 
   const handleKeyDownCapture = useCallback(
     event => {

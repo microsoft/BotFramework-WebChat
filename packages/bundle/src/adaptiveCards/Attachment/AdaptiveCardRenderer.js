@@ -28,7 +28,6 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
 
   const [error, setError] = useState();
   const contentRef = useRef();
-  const { current: contentCurrent } = contentRef;
   const handleClick = useCallback(
     ({ target }) => {
       // Some items, e.g. tappable text, cannot be disabled thru DOM attributes
@@ -84,7 +83,9 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
   );
 
   useLayoutEffect(() => {
-    if (contentCurrent && adaptiveCard) {
+    const { current } = contentRef;
+
+    if (current && adaptiveCard) {
       // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
 
       // TODO: [P3] Checks if we could make the "renderMarkdown" per card
@@ -146,15 +147,15 @@ const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
         });
       }
 
-      const [firstChild] = contentCurrent.children;
+      const [firstChild] = current.children;
 
       if (firstChild) {
-        contentCurrent.replaceChild(element, firstChild);
+        current.replaceChild(element, firstChild);
       } else {
-        contentCurrent.appendChild(element);
+        current.appendChild(element);
       }
     }
-  }, [adaptiveCard, adaptiveCardsHostConfig, contentCurrent, disabled, error, handleExecuteAction, renderMarkdown]);
+  }, [adaptiveCard, adaptiveCardsHostConfig, contentRef, disabled, error, handleExecuteAction, renderMarkdown]);
 
   return error ? (
     <ErrorBox message={errorMessage}>
