@@ -8,7 +8,7 @@ jest.setTimeout(timeouts.test);
 test('renderMarkdown should use Markdown-It if not set in props', async () => {
   const { pageObjects } = await setupWebDriver();
 
-  await expect(pageObjects.runHook('useRenderMarkdown', [], fn => fn('Hello, World!'))).resolves.toBe(
+  await expect(pageObjects.runHook('useRenderMarkdownAsHTML', [], fn => fn('Hello, World!'))).resolves.toBe(
     '<p>Hello, World!</p>\n'
   );
 });
@@ -20,7 +20,7 @@ test('renderMarkdown should use custom Markdown transform function from props', 
     }
   });
 
-  await expect(pageObjects.runHook('useRenderMarkdown', [], fn => fn('Hello, World!'))).resolves.toMatchInlineSnapshot(
-    `"HELLO, WORLD!"`
-  );
+  await expect(
+    pageObjects.runHook('useRenderMarkdownAsHTML', [], fn => fn('Hello, World!'))
+  ).resolves.toMatchInlineSnapshot(`"HELLO, WORLD!"`);
 });
