@@ -1,10 +1,9 @@
 import { css } from 'glamor';
+import { hooks } from 'botframework-webchat';
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 
-import { hooks } from 'botframework-webchat';
-
-const { useMarkActivity, useWebSpeechPonyfill } = hooks;
+const { useMarkActivityAsSpoken, useWebSpeechPonyfill } = hooks;
 
 const ROOT_CSS = css({
   alignItems: 'flex-start',
@@ -40,10 +39,10 @@ const ROOT_CSS = css({
   }
 });
 
-const SpeakActivity = ({ activity, children, markActivity }) => {
+const SpeakActivity = ({ activity, children, markActivityAsSpoken }) => {
   const handleSpeak = useCallback(() => {
-    markActivity(activity, 'speak', true);
-  }, [activity, markActivity]);
+    markActivityAsSpoken(activity);
+  }, [activity, markActivityAsSpoken]);
 
   return (
     <div className={classNames(ROOT_CSS + '', { 'from-user': activity.from.role === 'user' })}>
@@ -60,17 +59,17 @@ const SpeakActivity = ({ activity, children, markActivity }) => {
 };
 
 const useDevModeDecorator = () => {
-  const markActivity = useMarkActivity();
+  const markActivityAsSpoken = useMarkActivityAsSpoken();
   const [{ speechSynthesis } = {}] = useWebSpeechPonyfill();
 
-  return { markActivity, speechSynthesis };
+  return { markActivityAsSpoken, speechSynthesis };
 };
 
 const DevModeDecorator = ({ card, children }) => {
-  const { markActivity, speechSynthesis } = useDevModeDecorator();
+  const { markActivityAsSpoken, speechSynthesis } = useDevModeDecorator();
 
   return speechSynthesis ? (
-    <SpeakActivity activity={card.activity} markActivity={markActivity}>
+    <SpeakActivity activity={card.activity} markActivityAsSpoken={markActivityAsSpoken}>
       {children}
     </SpeakActivity>
   ) : (
