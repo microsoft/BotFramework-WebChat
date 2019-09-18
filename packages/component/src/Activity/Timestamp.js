@@ -11,14 +11,12 @@ const Timestamp = ({ activity: { timestamp }, className }) => {
   const [{ timestampFormat }] = useStyleOptions();
   const [{ timestamp: timestampStyleSet }] = useStyleSet();
 
-  if (!timestamp) {
-    return false;
-  }
-
   return (
-    <span className={classNames(timestampStyleSet + '', (className || '') + '')}>
-      {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
-    </span>
+    !!timestamp && (
+      <span className={classNames(timestampStyleSet + '', (className || '') + '')}>
+        {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
+      </span>
+    )
   );
 };
 
