@@ -1,6 +1,7 @@
 /* eslint react/no-unsafe: off */
 
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
 const Timer = ({ at, onInternval }) => {
   useEffect(() => {
