@@ -5,9 +5,12 @@ import React, { useMemo } from 'react';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+import useAdaptiveCardsPackage from '../../hooks/useAdaptiveCardsPackage';
+
 const { useStyleOptions } = hooks;
 
-const OAuthCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
+const OAuthCardAttachment = ({ attachment: { content } = {} }) => {
+  const [adaptiveCards] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
 
   const builtCard = useMemo(() => {
@@ -21,12 +24,10 @@ const OAuthCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment
     }
   }, [adaptiveCards, content, styleOptions]);
 
-  return <AdaptiveCardRenderer adaptiveCard={builtCard} adaptiveCardHostConfig={adaptiveCardHostConfig} />;
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} />;
 };
 
 OAuthCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       buttons: PropTypes.array

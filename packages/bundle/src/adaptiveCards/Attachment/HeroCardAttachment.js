@@ -5,9 +5,12 @@ import React, { useMemo } from 'react';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+import useAdaptiveCardsPackage from '../../hooks/useAdaptiveCardsPackage';
+
 const { useStyleOptions } = hooks;
 
-const HeroCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content } = {} }) => {
+const HeroCardAttachment = ({ attachment: { content } = {} }) => {
+  const [adaptiveCards] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
 
   const builtCard = useMemo(() => {
@@ -22,18 +25,10 @@ const HeroCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment:
     }
   }, [adaptiveCards, content, styleOptions]);
 
-  return (
-    <AdaptiveCardRenderer
-      adaptiveCard={builtCard}
-      adaptiveCardHostConfig={adaptiveCardHostConfig}
-      tapAction={content && content.tap}
-    />
-  );
+  return <AdaptiveCardRenderer adaptiveCard={builtCard} tapAction={content && content.tap} />;
 };
 
 HeroCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       tap: PropTypes.any

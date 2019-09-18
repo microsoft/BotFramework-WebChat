@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
+import useAdaptiveCardsPackage from '../../hooks/useAdaptiveCardsPackage';
+
 function stripSubmitAction(card) {
   if (!card.actions) {
     return card;
@@ -16,14 +18,16 @@ function stripSubmitAction(card) {
   return { ...card, nextActions };
 }
 
-const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachment: { content }, renderMarkdown }) => {
+const AdaptiveCardAttachment = ({ attachment: { content } }) => {
+  const [{ AdaptiveCard }] = useAdaptiveCardsPackage();
+
   const { card } = useMemo(() => {
     if (content) {
-      const card = new adaptiveCards.AdaptiveCard();
+      const card = new AdaptiveCard();
       const errors = [];
 
       // TODO: [P3] Move from "onParseError" to "card.parse(json, errors)"
-      adaptiveCards.AdaptiveCard.onParseError = error => errors.push(error);
+      AdaptiveCard.onParseError = error => errors.push(error);
 
       card.parse(
         stripSubmitAction({
@@ -32,7 +36,7 @@ const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachm
         })
       );
 
-      adaptiveCards.AdaptiveCard.onParseError = null;
+      AdaptiveCard.onParseError = null;
 
       return {
         card,
@@ -41,27 +45,16 @@ const AdaptiveCardAttachment = ({ adaptiveCardHostConfig, adaptiveCards, attachm
     }
 
     return {};
-  }, [adaptiveCards, content]);
+  }, [AdaptiveCard, content]);
 
-  return (
-    !!card && (
-      <AdaptiveCardRenderer
-        adaptiveCard={card}
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        renderMarkdown={renderMarkdown}
-      />
-    )
-  );
+  return !!card && <AdaptiveCardRenderer adaptiveCard={card} />;
 };
 
 export default AdaptiveCardAttachment;
 
 AdaptiveCardAttachment.propTypes = {
   // TODO: [P2] We should rename adaptiveCards to adaptiveCardsPolyfill
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.any.isRequired
-  }).isRequired,
-  renderMarkdown: PropTypes.any.isRequired
+  }).isRequired
 };

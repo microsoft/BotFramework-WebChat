@@ -8,6 +8,7 @@ import ReactWebChat, {
   concatMiddleware,
   connectToWebChat,
   createStyleSet,
+  defaultStyleOptions,
   hooks
 } from 'botframework-webchat-component';
 
@@ -36,6 +37,7 @@ export {
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStyleSet,
+  defaultStyleOptions,
   hooks,
   renderWebChat,
   version
@@ -50,6 +52,7 @@ window['WebChat'] = {
   createDirectLine,
   createStore,
   createStyleSet,
+  defaultStyleOptions,
   hooks,
   ReactWebChat,
   renderWebChat

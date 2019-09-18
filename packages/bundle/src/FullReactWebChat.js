@@ -1,67 +1,75 @@
-import * as adaptiveCards from 'adaptivecards';
+import * as defaultAdaptiveCardsPackage from 'adaptivecards';
 import BasicWebChat, { concatMiddleware } from 'botframework-webchat-component';
-import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 
+import AdaptiveCardsContext from './AdaptiveCardsContext';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardMiddleware';
+import createDefaultAdaptiveCardHostConfig from './adaptiveCards/Styles/adaptiveCardHostConfig';
+import createDefaultRenderMarkdown from './renderMarkdown';
 import createStyleSet from './adaptiveCards/Styles/createStyleSetWithAdaptiveCards';
-import defaultAdaptiveCardHostConfig from './adaptiveCards/Styles/adaptiveCardHostConfig';
-import defaultRenderMarkdown from './renderMarkdown';
 
 // Add additional props to <WebChat>, so it support additional features
-class FullReactWebChat extends React.Component {
-  constructor(props) {
-    super(props);
+const FullReactWebChat = ({
+  adaptiveCardHostConfig,
+  adaptiveCardsHostConfig,
+  adaptiveCardsPackage,
+  attachmentMiddleware,
+  renderMarkdown,
+  styleOptions,
+  styleSet,
+  ...otherProps
+}) => {
+  useEffect(() => {
+    adaptiveCardHostConfig &&
+      console.warn(
+        'Web Chat: "adaptiveCardHostConfig" is deprecated. Please use "adaptiveCardsHostConfig" instead. "adaptiveCardHostConfig" will be removed on or after 2021-09-27.'
+      );
+  }, []);
 
-    this.createAttachmentMiddleware = memoize(
-      (adaptiveCardHostConfig, middlewareFromProps, styleOptions, renderMarkdown) =>
-        concatMiddleware(
-          middlewareFromProps,
-          createAdaptiveCardsAttachmentMiddleware({
-            adaptiveCardHostConfig: adaptiveCardHostConfig || defaultAdaptiveCardHostConfig(styleOptions),
-            adaptiveCards,
-            renderMarkdown
-          })
-        )
-    );
+  const patchedStyleSet = useMemo(() => styleSet || createStyleSet(styleOptions), [styleOptions, styleSet]);
+  const { options: patchedStyleOptions } = patchedStyleSet;
 
-    this.memoizeStyleSet = memoize((styleSet, styleOptions) => styleSet || createStyleSet(styleOptions));
-    this.memoizeRenderMarkdown = memoize((renderMarkdown, { options }) => markdown =>
-      renderMarkdown(markdown, options)
-    );
-  }
+  const patchedAdaptiveCardsHostConfig = useMemo(
+    () => adaptiveCardsHostConfig || adaptiveCardHostConfig || createDefaultAdaptiveCardHostConfig(patchedStyleOptions),
+    [adaptiveCardHostConfig, adaptiveCardsHostConfig, patchedStyleOptions]
+  );
 
-  render() {
-    const {
-      adaptiveCardHostConfig,
-      attachmentMiddleware,
-      renderMarkdown,
-      styleOptions,
-      styleSet,
-      ...otherProps
-    } = this.props;
+  const patchedAdaptiveCardsPackage = useMemo(() => adaptiveCardsPackage || defaultAdaptiveCardsPackage, [
+    defaultAdaptiveCardsPackage,
+    adaptiveCardsPackage
+  ]);
 
-    const memoizedStyleSet = this.memoizeStyleSet(styleSet, styleOptions);
-    const memoizedRenderMarkdown =
-      renderMarkdown || this.memoizeRenderMarkdown(defaultRenderMarkdown, memoizedStyleSet);
+  const patchedRenderMarkdown = useMemo(
+    () => renderMarkdown || (markdown => createDefaultRenderMarkdown(markdown, patchedStyleOptions)),
+    [renderMarkdown, patchedStyleOptions]
+  );
 
-    return (
+  const patchedAttachmentMiddleware = useMemo(
+    () => concatMiddleware(attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()),
+    [patchedAdaptiveCardsHostConfig, attachmentMiddleware, patchedRenderMarkdown, patchedStyleOptions]
+  );
+
+  const adaptiveCardsContext = useMemo(
+    () => ({
+      adaptiveCardsPackage: patchedAdaptiveCardsPackage,
+      hostConfig: patchedAdaptiveCardsHostConfig
+    }),
+    [patchedAdaptiveCardsPackage, patchedAdaptiveCardsHostConfig]
+  );
+
+  return (
+    <AdaptiveCardsContext.Provider value={adaptiveCardsContext}>
       <BasicWebChat
-        attachmentMiddleware={this.createAttachmentMiddleware(
-          adaptiveCardHostConfig,
-          attachmentMiddleware,
-          styleOptions,
-          memoizedRenderMarkdown
-        )}
-        renderMarkdown={memoizedRenderMarkdown}
+        attachmentMiddleware={patchedAttachmentMiddleware}
+        renderMarkdown={patchedRenderMarkdown}
         styleOptions={styleOptions}
-        styleSet={memoizedStyleSet}
+        styleSet={patchedStyleSet}
         {...otherProps}
       />
-    );
-  }
-}
+    </AdaptiveCardsContext.Provider>
+  );
+};
 
 FullReactWebChat.defaultProps = {
   adaptiveCardHostConfig: undefined,

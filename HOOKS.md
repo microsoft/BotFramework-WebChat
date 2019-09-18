@@ -48,6 +48,8 @@ setSendBoxValue('Hello, World!');
 Following is the list of hooks supported by Web Chat API.
 
 - [`useActivities`](#useactivities)
+- [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
+- [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
 - [`useAvatarForBot`](#useavatarforbot)
 - [`useAvatarForUser`](#useavatarforuser)
 - [`useConnectivityStatus`](#useconnectivitystatus)
@@ -96,6 +98,26 @@ useActivities(): [Activity[]]
 ```
 
 This function will return a list of activities.
+
+## `useAdaptiveCardsHostConfig`
+
+```js
+useAdaptiveCardsHostConfig(): [AdaptiveCards.HostConfig]
+```
+
+This function is only available in full bundle. The function will return the Adaptive Cards Host Config used for styling Adaptive Cards.
+
+To modify this value, change the props passed to Web Chat.
+
+## `useAdaptiveCardsPackage`
+
+```js
+useAdaptiveCardsPackage(): [AdaptiveCards]
+```
+
+This function is only available in full bundle. The function will return the Adaptive Cards package used for building and rendering Adaptive Cards.
+
+To modify this value, change the props passed to Web Chat.
 
 ## `useAvatarForBot`
 

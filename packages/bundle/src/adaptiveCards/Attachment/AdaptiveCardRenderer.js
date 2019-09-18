@@ -6,6 +6,8 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 
+import useAdaptiveCardsHostConfig from '../../hooks/useAdaptiveCardsHostConfig';
+
 const { ErrorBox } = Components;
 const { useDisabled, useLocalize, usePerformCardAction, useRenderMarkdownAsHTML, useStyleSet } = hooks;
 
@@ -13,7 +15,9 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === Object.prototype;
 }
 
-const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction }) => {
+const AdaptiveCardRenderer = ({ adaptiveCard, tapAction }) => {
+  const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
+
   const [disabled] = useDisabled();
   const performCardAction = usePerformCardAction();
   const renderMarkdown = useRenderMarkdownAsHTML();
@@ -97,10 +101,10 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
 
       adaptiveCard.onExecuteAction = handleExecuteAction;
 
-      if (adaptiveCardHostConfig) {
-        adaptiveCard.hostConfig = isPlainObject(adaptiveCardHostConfig)
-          ? new HostConfig(adaptiveCardHostConfig)
-          : adaptiveCardHostConfig;
+      if (adaptiveCardsHostConfig) {
+        adaptiveCard.hostConfig = isPlainObject(adaptiveCardsHostConfig)
+          ? new HostConfig(adaptiveCardsHostConfig)
+          : adaptiveCardsHostConfig;
       }
 
       const { failures } = adaptiveCard.validateProperties();
@@ -151,7 +155,7 @@ const AdaptiveCardRenderer = ({ adaptiveCard, adaptiveCardHostConfig, tapAction 
         current.appendChild(element);
       }
     }
-  }, [adaptiveCard, adaptiveCardHostConfig, disabled, error, handleExecuteAction, renderMarkdown]);
+  }, [adaptiveCard, adaptiveCardsHostConfig, disabled, error, handleExecuteAction, renderMarkdown]);
 
   return error ? (
     <ErrorBox message={errorMessage}>
@@ -168,7 +172,6 @@ AdaptiveCardRenderer.defaultProps = {
 
 AdaptiveCardRenderer.propTypes = {
   adaptiveCard: PropTypes.any.isRequired,
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
   tapAction: PropTypes.any
 };
 

@@ -9,12 +9,7 @@ import CommonCard from './CommonCard';
 const { ImageContent, VideoContent } = Components;
 const { useStyleSet } = hooks;
 
-const AnimationCardAttachment = ({
-  adaptiveCardHostConfig,
-  adaptiveCards,
-  attachment,
-  attachment: { content: { media = [] } } = {}
-}) => {
+const AnimationCardAttachment = ({ attachment, attachment: { content: { media = [] } } = {} }) => {
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
@@ -26,18 +21,12 @@ const AnimationCardAttachment = ({
           </li>
         ))}
       </ul>
-      <CommonCard
-        adaptiveCardHostConfig={adaptiveCardHostConfig}
-        adaptiveCards={adaptiveCards}
-        attachment={attachment}
-      />
+      <CommonCard attachment={attachment} />
     </div>
   );
 };
 
 AnimationCardAttachment.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any.isRequired,
-  adaptiveCards: PropTypes.any.isRequired,
   attachment: PropTypes.shape({
     content: PropTypes.shape({
       media: PropTypes.arrayOf(
