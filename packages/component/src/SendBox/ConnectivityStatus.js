@@ -19,16 +19,14 @@ const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
   const intervalBeforeSwitch = Math.max(0, interval - Date.now() + since);
 
   useEffect(() => {
-    if (children === propsChildren) {
-      return () => 0;
+    if (children !== propsChildren) {
+      const timeout = setTimeout(() => {
+        setChildren(() => propsChildren);
+        setSince(Date.now());
+      }, intervalBeforeSwitch);
+
+      return () => clearTimeout(timeout);
     }
-
-    const timeout = setTimeout(() => {
-      setChildren(() => propsChildren);
-      setSince(Date.now());
-    }, intervalBeforeSwitch);
-
-    return () => clearTimeout(timeout);
   }, [children, intervalBeforeSwitch, propsChildren]);
 
   return typeof children === 'function' ? children() : false;

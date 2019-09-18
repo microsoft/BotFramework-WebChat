@@ -25,7 +25,7 @@ const FullReactWebChat = ({
       console.warn(
         'Web Chat: "adaptiveCardHostConfig" is deprecated. Please use "adaptiveCardsHostConfig" instead. "adaptiveCardHostConfig" will be removed on or after 2021-09-27.'
       );
-  }, []);
+  }, [adaptiveCardHostConfig]);
 
   const patchedStyleSet = useMemo(() => styleSet || createStyleSet(styleOptions), [styleOptions, styleSet]);
   const { options: patchedStyleOptions } = patchedStyleSet;
@@ -36,8 +36,7 @@ const FullReactWebChat = ({
   );
 
   const patchedAdaptiveCardsPackage = useMemo(() => adaptiveCardsPackage || defaultAdaptiveCardsPackage, [
-    adaptiveCardsPackage,
-    defaultAdaptiveCardsPackage
+    adaptiveCardsPackage
   ]);
 
   const patchedRenderMarkdown = useMemo(
