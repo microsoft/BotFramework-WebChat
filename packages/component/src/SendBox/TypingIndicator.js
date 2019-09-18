@@ -29,12 +29,7 @@ function useTypingIndicatorVisible() {
     return () => clearTimeout(timeout);
   }, [typingAnimationTimeRemaining]);
 
-  return [
-    value,
-    () => {
-      throw new Error('TypingIndicatorVisible cannot be set.');
-    }
-  ];
+  return [value];
 }
 
 const TypingIndicator = () => {
