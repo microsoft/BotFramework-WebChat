@@ -183,7 +183,7 @@
           return next(card);
         };
 
-        window.WebChat.renderWebChat({
+        renderWebChat = props => window.WebChat.renderWebChat({
           activityMiddleware,
           directLine,
           store,
@@ -192,8 +192,14 @@
           ...props
         }, document.getElementById('webchat'));
 
+        renderWebChat(props);
+
         document.querySelector('#webchat > *').focus();
+
+        window.WebChatTest.updateProps = renderWebChat;
       }
+
+      let renderWebChat;
 
       document.getElementById('loadWebChat').addEventListener('click', () => main());
 

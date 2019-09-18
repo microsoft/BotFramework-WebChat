@@ -2,6 +2,7 @@ import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import scrollToBottomCompleted from './setup/conditions/scrollToBottomCompleted';
 import uiConnected from './setup/conditions/uiConnected';
 
 import createAdaptiveCardsHostConfig from '../packages/bundle/src/adaptiveCards/Styles/adaptiveCardHostConfig';
@@ -44,4 +45,21 @@ test('breakfast card with custom host config', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
+});
+
+test('disable card inputs', async () => {
+  const { driver, pageObjects } = await setupWebDriver();
+
+  await driver.wait(uiConnected(), timeouts.directLine);
+  await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
+
+  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(allImagesLoaded(), 2000);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await driver.executeScript(() => window.WebChatTest.updateProps({ disabled: true }));
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
