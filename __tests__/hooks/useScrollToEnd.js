@@ -1,6 +1,7 @@
 import { imageSnapshotOptions, timeouts } from '../constants.json';
 
 import minNumActivitiesShown from '../setup/conditions/minNumActivitiesShown';
+import scrollToBottomButtonVisible from '../setup/conditions/scrollToBottomButtonVisible';
 import scrollToBottomCompleted from '../setup/conditions/scrollToBottomCompleted';
 import uiConnected from '../setup/conditions/uiConnected';
 
@@ -22,6 +23,7 @@ test('calling scrollToEnd should scroll to end', async () => {
     document.querySelector('[role="log"] > *').scrollTop = 0;
   });
 
+  await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.runHook('useScrollToEnd', [], scrollToEnd => scrollToEnd());
