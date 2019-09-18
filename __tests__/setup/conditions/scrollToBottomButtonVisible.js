@@ -1,9 +1,9 @@
-import { Condition } from 'selenium-webdriver';
+import { By, Condition } from 'selenium-webdriver';
 
-import getScrollToBottomButton from '../elements/getScrollToBottomButton';
+import hasElement from './hasElement';
 
 export default function scrollToBottomButtonVisible() {
   return new Condition('for scroll to bottom become visible', driver =>
-    driver.executeScript(() => !!getScrollToBottomButton(driver))
+    hasElement(By.css('[role="log"] > button:last-child')).fn(driver)
   );
 }

@@ -24,6 +24,7 @@ test('calling scrollToEnd should scroll to end', async () => {
   });
 
   await driver.wait(scrollToBottomButtonVisible(), timeouts.ui);
+
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 
   await pageObjects.runHook('useScrollToEnd', [], scrollToEnd => scrollToEnd());
