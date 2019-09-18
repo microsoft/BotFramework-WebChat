@@ -13,7 +13,7 @@ async function makeThumbnail(file, width, height, contentType, quality) {
     }
   }
 }
-console.log('123');
+
 export default function useSendFiles() {
   const { sendFiles } = useContext(WebChatUIContext);
   const [
