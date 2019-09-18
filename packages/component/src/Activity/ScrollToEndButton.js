@@ -11,7 +11,7 @@ import useStyleSet from '../hooks/useStyleSet';
 const ScrollToEndButton = ({ className }) => {
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
 
-  const { scrollToEnd } = useScrollToEnd();
+  const scrollToEnd = useScrollToEnd();
 
   return (
     <ScrollToBottomStateContext.Consumer>
