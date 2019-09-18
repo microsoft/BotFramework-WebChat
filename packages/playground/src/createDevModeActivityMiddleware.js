@@ -2,7 +2,9 @@ import { css } from 'glamor';
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 
-import { useMarkActivity, useWebSpeechPonyfill } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat';
+
+const { useMarkActivity, useWebSpeechPonyfill } = hooks;
 
 const ROOT_CSS = css({
   alignItems: 'flex-start',
