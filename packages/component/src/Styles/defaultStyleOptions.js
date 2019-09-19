@@ -11,6 +11,7 @@ const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 const DEFAULT_OPTIONS = {
   // Color and paddings
   accent: DEFAULT_ACCENT,
+  backgroundColor: 'White',
   paddingRegular: PADDING_REGULAR,
   paddingWide: PADDING_REGULAR * 2,
   subtle: DEFAULT_SUBTLE,
