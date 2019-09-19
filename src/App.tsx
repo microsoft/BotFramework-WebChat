@@ -116,6 +116,20 @@ const ThemeTemplate = (theme: Theme) => `
         color: ${theme.mainColor};
     }
 
+    .wc-suggested-actions .wc-hscroll > ul > li button {
+        color: ${theme.mainColor} !important;
+        border-color: ${theme.mainColor} !important;
+    }
+
+    .wc-suggested-actions .wc-hscroll > ul > li button:hover {
+        background-color: #ededed;
+    }
+
+    .wc-suggested-actions .wc-hscroll > ul > li button:active {
+        color: white !important;
+        background-color: ${theme.mainColor};
+    }
+
     .wc-app .wc-card button:hover {
         border-color: ${theme.mainColor};
         color: ${theme.mainColor};
