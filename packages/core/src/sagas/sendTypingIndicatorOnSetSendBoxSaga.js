@@ -6,7 +6,8 @@ import { call, cancel, put, select, take, takeLatest } from 'redux-saga/effects'
 import { SET_SEND_BOX } from '../actions/setSendBox';
 import { SET_SEND_TYPING } from '../actions/setSendTyping';
 import { SET_SEND_TYPING_INDICATOR } from '../actions/setSendTypingIndicator';
-import postActivity, { POST_ACTIVITY } from '../actions/postActivity';
+import { POST_ACTIVITY } from '../actions/postActivity';
+import emitTypingIndicator from '../actions/emitTypingIndicator';
 import sendTypingIndicatorSelector from '../selectors/sendTypingIndicator';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
@@ -47,7 +48,7 @@ function* sendTypingIndicatorOnSetSendBox() {
             yield call(sleep, interval);
           }
 
-          yield put(postActivity({ type: 'typing' }));
+          yield put(emitTypingIndicator());
 
           lastSend = Date.now();
         }
