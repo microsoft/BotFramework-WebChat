@@ -7,6 +7,7 @@ import getPort from 'get-port';
 import handler from 'serve-handler';
 
 import createPageObjects from './pageObjects/index';
+import marshal from './marshal';
 import retry from './retry';
 import setupTestEnvironment from './setupTestEnvironment';
 
@@ -14,29 +15,6 @@ const BROWSER_NAME = process.env.WEBCHAT_TEST_ENV || 'chrome-docker';
 // const BROWSER_NAME = 'chrome-docker';
 // const BROWSER_NAME = 'chrome-local';
 const NUM_RETRIES = 3;
-
-function marshal(props) {
-  return (
-    props &&
-    Object.keys(props).reduce(
-      (nextProps, key) => {
-        const { [key]: value } = props;
-
-        if (typeof value === 'function') {
-          nextProps[key] = `() => ${value.toString()}`;
-          nextProps.__evalKeys.push(key);
-        } else {
-          nextProps[key] = value;
-        }
-
-        return nextProps;
-      },
-      {
-        __evalKeys: []
-      }
-    )
-  );
-}
 
 expect.extend({
   toMatchImageSnapshot: configureToMatchImageSnapshot({

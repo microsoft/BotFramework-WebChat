@@ -28,12 +28,29 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
   componentDidMount() {
     this.renderCard();
+    this.refreshDisabled();
   }
 
-  componentDidUpdate({ adaptiveCard: prevAdaptiveCard }) {
-    const { adaptiveCard } = this.props;
+  componentDidUpdate({ adaptiveCard: prevAdaptiveCard, disabled: prevDisabled }) {
+    const { adaptiveCard, disabled } = this.props;
 
     prevAdaptiveCard !== adaptiveCard && this.renderCard();
+    !prevDisabled !== !disabled && this.refreshDisabled();
+  }
+
+  refreshDisabled() {
+    const { disabled } = this.props;
+    const { current } = this.contentRef;
+
+    if (current) {
+      const {
+        children: [element]
+      } = current;
+
+      [].forEach.call(element.querySelectorAll('button, input, select, textarea'), input => {
+        input.disabled = disabled;
+      });
+    }
   }
 
   handleClick({ target }) {
@@ -139,22 +156,15 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
       error && this.setState(() => ({ error: null }));
 
-      if (disabled) {
-        const hyperlinks = element.querySelectorAll('a');
-        const inputs = element.querySelectorAll('button, input, select, textarea');
-
-        [].forEach.call(inputs, input => {
-          input.disabled = true;
-        });
-
-        [].forEach.call(hyperlinks, hyperlink => {
-          hyperlink.addEventListener('click', event => {
+      [].forEach.call(element.querySelectorAll('a'), hyperlink => {
+        hyperlink.addEventListener('click', event => {
+          if (this.props.disabled) {
             event.preventDefault();
             event.stopImmediatePropagation();
             event.stopPropagation();
-          });
+          }
         });
-      }
+      });
 
       const [firstChild] = current.children;
 
