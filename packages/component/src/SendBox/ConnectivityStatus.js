@@ -26,7 +26,7 @@ const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
 
   useEffect(() => {
     if (children !== propsChildren) {
-      const timeout = setTimeout(() => {
+      const timeout = setTimeoutSync(() => {
         setChildren(() => propsChildren);
         setSince(Date.now());
       }, intervalBeforeSwitch);
@@ -149,8 +149,6 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => {
     renderSagaError,
     renderUninitialized
   ]);
-
-  console.log('render');
 
   return (
     <div aria-atomic="false" aria-live="polite" role="status">
