@@ -95,6 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#2435](https://github.com/microsoft/BotFramework-WebChat/issues/2435). Fix microphone button getting stuck on voice-triggered expecting input hint without a speech synthesis engine, by [@compulim](https://github.com/compulim) in PR [#2445](https://github.com/microsoft/BotFramework-WebChat/pull/2445)
 -  Fixes [#2472](https://github.com/microsoft/BotFramework-WebChat/issues/2472). Update samples to use repo's version of React, by [@corinagum](https://github.com/corinagum) in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478)
 -  Fixes [#2473](https://github.com/microsoft/BotFramework-WebChat/issues/2473). Fix samples 13 using wrong region for Speech Services credentials, by [@compulim](https://github.com/compulim) in PR [#2482](https://github.com/microsoft/BotFramework-WebChat/pull/2482)
+-  Fixes [#2420](https://github.com/microsoft/BotFramework-WebChat/issues/2420). Fix saga error should not result in an unhandled exception, by [@compulim](https://github.com/compulim) in PR [#2421](https://github.com/microsoft/BotFramework-WebChat/pull/2421)
 
 ### Added
 
