@@ -88,7 +88,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2379](https://github.com/microsoft/BotFramework-WebChat/issues/2379). Speech synthesis can be configured off by passing `null`, by [@compulim](https://github.com/compulim) in PR [#2408](https://github.com/microsoft/BotFramework-WebChat/pull/2408)
 -  Fix [#2418](https://github.com/microsoft/BotFramework-WebChat/issues/2418). Connectivity status should not waste-render every 400 ms, by [@compulim](https://github.com/compulim) in PR [#2419](https://github.com/microsoft/BotFramework-WebChat/pull/2419)
 -  Fix [Emulator:#1823](https://github.com/microsoft/BotFramework-Emulator/issues/1823). Fix Sendbox "Type your message" being read twice by AT, by [@corinagum](https://github.com/corinagum) in PR [#2423](https://github.com/microsoft/BotFramework-WebChat/pull/2423)
--  Fix [#2415](https://github.com/microsoft/BotFramework-WebChat/issues/2415) and [#2416](https://github.com/microsoft/BotFramework-WebChat/issues/2416). Fix receipt card rendering and Adaptive Cards should be able to disabled on-the-fly, by [@compulim](https://github.com/compulim) in PR [#2417](https://github.com/microsoft/BotFramework-WebChat/issues/2417)
+-  Fix [#2415](https://github.com/microsoft/BotFramework-WebChat/issues/2415) and [#2416](https://github.com/microsoft/BotFramework-WebChat/issues/2416). Fix receipt card rendering, by [@compulim](https://github.com/compulim) in PR [#2417](https://github.com/microsoft/BotFramework-WebChat/issues/2417)
+-  Fix [#2415](https://github.com/microsoft/BotFramework-WebChat/issues/2415) and [#2416](https://github.com/microsoft/BotFramework-WebChat/issues/2416). Fix Adaptive Cards cannot be disabled on-the-fly, by [@compulim](https://github.com/compulim) in PR [#2417](https://github.com/microsoft/BotFramework-WebChat/issues/2417)
 
 ### Added
 
