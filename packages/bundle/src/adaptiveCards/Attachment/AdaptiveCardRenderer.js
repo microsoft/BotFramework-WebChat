@@ -108,7 +108,7 @@ class AdaptiveCardRenderer extends React.PureComponent {
   renderCard() {
     const {
       contentRef: { current },
-      props: { adaptiveCard, adaptiveCardHostConfig, disabled, renderMarkdown },
+      props: { adaptiveCard, adaptiveCardHostConfig, renderMarkdown },
       state: { error }
     } = this;
 
@@ -158,7 +158,9 @@ class AdaptiveCardRenderer extends React.PureComponent {
 
       [].forEach.call(element.querySelectorAll('a'), hyperlink => {
         hyperlink.addEventListener('click', event => {
-          if (this.props.disabled) {
+          const { disabled } = this.props;
+
+          if (disabled) {
             event.preventDefault();
             event.stopImmediatePropagation();
             event.stopPropagation();
