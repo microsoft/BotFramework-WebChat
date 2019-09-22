@@ -25,15 +25,13 @@ function getText(language, value) {
 }
 
 const RelativeTime = ({ language, value }) => {
-  const [text, setText] = useState(getText(language, value));
   const [timer, setTimer] = useState(nextTimer(value));
-
-  const localizedAbsoluteTime = localize('SentAt', language) + getLocaleString(value, language);
-
   const handleInterval = useCallback(() => {
-    setText(getText(language, value));
     setTimer(nextTimer(value));
   }, [language, value]);
+
+  const localizedAbsoluteTime = localize('SentAt', language) + getLocaleString(value, language);
+  const text = getText(language, value);
 
   return (
     <React.Fragment>
