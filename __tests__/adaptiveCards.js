@@ -66,4 +66,14 @@ test('disable card inputs', async () => {
   await pageObjects.updateProps({ disabled: true });
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
+
+  await pageObjects.updateProps({ disabled: false });
+  await driver.executeScript(() => {
+    document.querySelector('.ac-actionSet button:nth-of-type(2)').click();
+  });
+
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
+  await driver.wait(scrollToBottomCompleted(), timeouts.scrollToBottom);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
