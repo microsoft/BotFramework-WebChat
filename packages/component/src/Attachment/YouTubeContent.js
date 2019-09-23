@@ -3,7 +3,7 @@ import React from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 
-const YouTubeContent = ({ alt, autoPlay, embedID, loop, styleSet }) => {
+const YouTubeContent = ({ alt, autoPlay, embedID, loop, styleSet: { youTubeContent } }) => {
   const search = new URLSearchParams({
     autoplay: autoPlay ? 1 : 0,
     loop: loop ? 1 : 0,
@@ -13,8 +13,9 @@ const YouTubeContent = ({ alt, autoPlay, embedID, loop, styleSet }) => {
   return (
     // TODO: We should encodeURI the URL
     <iframe
+      allowFullScreen={true}
       aria-label={alt}
-      className={styleSet.youTubeContent}
+      className={youTubeContent}
       src={`https://youtube.com/embed/${embedID}?${search}`}
     />
   );

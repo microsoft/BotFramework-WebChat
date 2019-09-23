@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Integrate with React</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
@@ -15,8 +15,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -27,7 +32,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel">
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -38,7 +43,7 @@
         const { ReactWebChat } = window.WebChat;
 
         window.ReactDOM.render(
-          <ReactWebChat directLine={ window.WebChat.createDirectLine({ token }) } />,
+          <ReactWebChat directLine={window.WebChat.createDirectLine({ token })} />,
           document.getElementById('webchat')
         );
 

@@ -63,6 +63,7 @@
     "*.{js,jsx,ts,tsx}": [
       "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}",
       "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
+      "prettier --write samples/**/*.{js,html}",
       "git add"
     ]
   },

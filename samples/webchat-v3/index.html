@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Using Web Chat v3</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
       If you want to continue to use the deprecated Web Chat v3, you can use our bundle "botchat.js" or "botchat-es5.js".
@@ -12,8 +12,13 @@
     <link rel="stylesheet" href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" />
     <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -24,7 +29,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -33,12 +38,15 @@
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
 
-        BotChat.App({
-          directLine: { token },
-          user: { id: 'userid' },
-          bot: { id: 'botid' },
-          resize: 'detect'
-        }, document.getElementById('webchat'));
+        BotChat.App(
+          {
+            directLine: { token },
+            user: { id: 'userid' },
+            bot: { id: 'botid' },
+            resize: 'detect'
+          },
+          document.getElementById('webchat')
+        );
       })().catch(err => console.error(err));
     </script>
   </body>

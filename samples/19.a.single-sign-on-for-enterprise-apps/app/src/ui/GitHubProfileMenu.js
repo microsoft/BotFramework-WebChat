@@ -57,9 +57,12 @@ const GitHubProfileMenu = ({
 
   // CSS style for displaying avatar as background image.
   // Background image will ease handling 404 or other HTTP errors by not showing the image.
-  const avatarStyle = useMemo(() => ({
-    backgroundImage: `url(${ avatarURL || '/images/GitHub-Mark-64px-DDD-White.png' })`
-  }), [avatarURL]);
+  const avatarStyle = useMemo(
+    () => ({
+      backgroundImage: `url(${avatarURL || '/images/GitHub-Mark-64px-DDD-White.png'})`
+    }),
+    [avatarURL]
+  );
 
   // In addition to running the sign in logic from OAuth context, we will also collapse the menu.
   const handleSignIn = useCallback(() => {
@@ -76,53 +79,43 @@ const GitHubProfileMenu = ({
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded]);
 
   return (
-    <div
-      aria-expanded={ expanded }
-      className="sso__profile"
-    >
+    <div aria-expanded={expanded} className="sso__profile">
       <button
         aria-label="Open profile menu"
         className="sso__profileAvatar"
-        onClick={ signedIn ? handleToggleExpand : handleSignIn }
-        style={ avatarStyle }
+        onClick={signedIn ? handleToggleExpand : handleSignIn}
+        style={avatarStyle}
       >
-        { signedIn && <div className="sso__profileAvatarBadge sso__profileAvatarBadge__gitHub" /> }
+        {signedIn && <div className="sso__profileAvatarBadge sso__profileAvatarBadge__gitHub" />}
       </button>
-      {
-        signedIn && expanded &&
-          <ul className="sso__profileMenu">
-            {
-              name &&
-                <li className="sso__profileMenuItem">
-                  <span>
-                    Signed in as <strong>{ name }</strong>
-                  </span>
-                </li>
-            }
-            {
-              onSignOut && oauthReviewAccessURL &&
-                <li className="sso__profileMenuItem">
-                  <a href={ oauthReviewAccessURL } rel="noopener noreferrer" target="_blank">
-                    Review access on GitHub
-                  </a>
-                </li>
-            }
-            {
-              onSignOut &&
-                <li className="sso__profileMenuItem">
-                  <button
-                    onClick={ handleSignOut }
-                    type="button"
-                  >
-                    Sign out
-                  </button>
-                </li>
-            }
-          </ul>
-      }
+      {signedIn && expanded && (
+        <ul className="sso__profileMenu">
+          {name && (
+            <li className="sso__profileMenuItem">
+              <span>
+                Signed in as <strong>{name}</strong>
+              </span>
+            </li>
+          )}
+          {onSignOut && oauthReviewAccessURL && (
+            <li className="sso__profileMenuItem">
+              <a href={oauthReviewAccessURL} rel="noopener noreferrer" target="_blank">
+                Review access on GitHub
+              </a>
+            </li>
+          )}
+          {onSignOut && (
+            <li className="sso__profileMenuItem">
+              <button onClick={handleSignOut} type="button">
+                Sign out
+              </button>
+            </li>
+          )}
+        </ul>
+      )}
     </div>
   );
-}
+};
 
 GitHubProfileMenu.defaultProps = {
   accessToken: '',
@@ -153,10 +146,7 @@ const ComposedGitHubProfileMenu = compose(
   connectGitHubSignOutButton(({ onClick }) => ({ onSignOut: onClick }))
 )(GitHubProfileMenu);
 
-const ConnectedGitHubProfileMenu = ({
-  accessToken,
-  onAccessTokenChange
-}) => {
+const ConnectedGitHubProfileMenu = ({ accessToken, onAccessTokenChange }) => {
   const [oauthAuthorizeURL, setOAuthAuthorizeURL] = useState('');
   const [oauthReviewAccessURL, setOAuthReviewAccessURL] = useState('');
 
@@ -166,18 +156,16 @@ const ConnectedGitHubProfileMenu = ({
     setOAuthAuthorizeURL(authorizeURL);
 
     // The OAuth review access URL is constructed based on OAuth client ID.
-    setOAuthReviewAccessURL(`https://github.com/settings/connections/applications/${ clientId }`);
+    setOAuthReviewAccessURL(`https://github.com/settings/connections/applications/${clientId}`);
   }, []);
 
   return (
     <GitHubProfileComposer
-      accessToken={ accessToken }
-      oauthAuthorizeURL={ oauthAuthorizeURL }
-      onAccessTokenChange={ onAccessTokenChange }
+      accessToken={accessToken}
+      oauthAuthorizeURL={oauthAuthorizeURL}
+      onAccessTokenChange={onAccessTokenChange}
     >
-      <ComposedGitHubProfileMenu
-        oauthReviewAccessURL={ oauthReviewAccessURL }
-      />
+      <ComposedGitHubProfileMenu oauthReviewAccessURL={oauthReviewAccessURL} />
     </GitHubProfileComposer>
   );
 };
@@ -192,4 +180,4 @@ ConnectedGitHubProfileMenu.propTypes = {
   onSignedInChange: PropTypes.func
 };
 
-export default ConnectedGitHubProfileMenu
+export default ConnectedGitHubProfileMenu;

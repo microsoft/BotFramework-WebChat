@@ -1,7 +1,12 @@
-export default function createAvatarStyle({ accent, avatarSize, primaryFont }) {
+export default function createAvatarStyle({
+  accent,
+  avatarSize,
+  botAvatarBackgroundColor,
+  primaryFont,
+  userAvatarBackgroundColor
+}) {
   return {
     alignItems: 'center',
-    backgroundColor: accent,
     borderRadius: '50%',
     color: 'White',
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
@@ -12,6 +17,14 @@ export default function createAvatarStyle({ accent, avatarSize, primaryFont }) {
     overflow: 'hidden',
     position: 'relative',
     width: avatarSize,
+
+    '&.from-user': {
+      backgroundColor: userAvatarBackgroundColor || accent
+    },
+
+    '&:not(.from-user)': {
+      backgroundColor: botAvatarBackgroundColor || accent
+    },
 
     '& > .image': {
       left: 0,

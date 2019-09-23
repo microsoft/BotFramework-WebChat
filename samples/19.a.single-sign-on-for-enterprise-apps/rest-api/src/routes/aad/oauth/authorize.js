@@ -1,12 +1,7 @@
 const { randomBytes } = require('crypto');
 const createPKCECodeChallenge = require('./createPKCECodeChallenge');
 
-const {
-  AAD_OAUTH_AUTHORIZE_URL,
-  AAD_OAUTH_CLIENT_ID,
-  AAD_OAUTH_REDIRECT_URI,
-  AAD_OAUTH_SCOPE
-} = process.env;
+const { AAD_OAUTH_AUTHORIZE_URL, AAD_OAUTH_CLIENT_ID, AAD_OAUTH_REDIRECT_URI, AAD_OAUTH_SCOPE } = process.env;
 
 // GET /api/aad/oauth/authorize
 // Redirects to https://login.microsoftonline.com/12345678-1234-5678-abcd-12345678abcd/oauth2/v2.0/authorize
@@ -30,6 +25,6 @@ module.exports = (_, res) => {
     state: seed.toString('base64')
   });
 
-  res.setHeader('location', `${ AAD_OAUTH_AUTHORIZE_URL }?${ params }`);
+  res.setHeader('location', `${AAD_OAUTH_AUTHORIZE_URL}?${params}`);
   res.send(302);
 };

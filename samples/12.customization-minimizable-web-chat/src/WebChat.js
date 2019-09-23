@@ -27,23 +27,22 @@ export default class extends React.Component {
       state: { styleSet }
     } = this;
 
-    return (
-      token ?
-        <ReactWebChat
-          className={ `${ className || '' } web-chat` }
-          directLine={ this.createDirectLine(token) }
-          store={ store }
-          styleSet={ styleSet }
-        />
-      :
-        <div className={ `${ className || '' } connect-spinner` }>
-          <div className="content">
-            <div className="icon">
-              <span className="ms-Icon ms-Icon--Robot" />
-            </div>
-            <p>Please wait while we are connecting.</p>
+    return token ? (
+      <ReactWebChat
+        className={`${className || ''} web-chat`}
+        directLine={this.createDirectLine(token)}
+        store={store}
+        styleSet={styleSet}
+      />
+    ) : (
+      <div className={`${className || ''} connect-spinner`}>
+        <div className="content">
+          <div className="icon">
+            <span className="ms-Icon ms-Icon--Robot" />
           </div>
+          <p>Please wait while we are connecting.</p>
         </div>
+      </div>
     );
   }
 }

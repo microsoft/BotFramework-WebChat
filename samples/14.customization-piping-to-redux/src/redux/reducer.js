@@ -6,13 +6,14 @@ const DEFAULT_STATE = {
   backgroundColor: 'White'
 };
 
-export default function (state = DEFAULT_STATE, { payload, type }) {
+export default function(state = DEFAULT_STATE, { payload, type }) {
   switch (type) {
     case SET_BACKGROUND_COLOR:
       state = { ...state, backgroundColor: payload.color };
       break;
 
-    default: break;
+    default:
+      break;
   }
 
   return state;

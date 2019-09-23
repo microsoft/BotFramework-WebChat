@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Custom attachment with GitHub Stargazers</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
@@ -17,8 +17,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -29,7 +34,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel">
-      (async function () {
+      (async function() {
         'use strict';
 
         // In this demo, we are using Direct Line token from MockBot.
@@ -57,18 +62,20 @@
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
         const activityMiddleware = () => next => card => {
-          return (
-            children =>
-              <div key={() => card.activity.id} className={ card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS }>
-                { next(card)(children) }
-              </div>
+          return children => (
+            <div
+              key={() => card.activity.id}
+              className={card.activity.from.role === 'user' ? HIGHLIGHT_FROM_USER_CSS : HIGHLIGHT_FROM_BOT_CSS}
+            >
+              {next(card)(children)}
+            </div>
           );
         };
 
         window.ReactDOM.render(
           <ReactWebChat
-            activityMiddleware={ activityMiddleware }
-            directLine={ window.WebChat.createDirectLine({ token }) }
+            activityMiddleware={activityMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
           />,
           document.getElementById('webchat')
         );

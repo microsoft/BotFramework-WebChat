@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Programmatic access to post activity</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
@@ -10,8 +10,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -29,7 +34,7 @@
     <div id="webchat" role="main"></div>
     <button id="helpButton" type="button">Help</button>
     <script>
-      (async function () {
+      (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
         // Tokens are more secure. To learn about the differences between secrets and tokens
@@ -41,11 +46,14 @@
         // We are creating the Web Chat store here so we can dispatch WEB_CHAT/SEND_MESSAGE action later.
         const store = window.WebChat.createStore();
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-          // We are passing our own version of Web Chat store.
-          store
-        }, document.getElementById('webchat'));
+        window.WebChat.renderWebChat(
+          {
+            directLine: window.WebChat.createDirectLine({ token }),
+            // We are passing our own version of Web Chat store.
+            store
+          },
+          document.getElementById('webchat')
+        );
 
         // The help button, when clicked, will send an activity with the text "help" to the bot.
         document.querySelector('#helpButton').addEventListener('click', () => {

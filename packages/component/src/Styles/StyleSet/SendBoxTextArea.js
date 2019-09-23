@@ -4,7 +4,8 @@ export default function createSendBoxTextAreaStyle({
   sendBoxBackground,
   sendBoxMaxHeight,
   sendBoxPlaceholderColor,
-  sendBoxTextColor
+  sendBoxTextColor,
+  subtle
 }) {
   return {
     alignItems: 'center',
@@ -51,7 +52,7 @@ export default function createSendBoxTextAreaStyle({
         wordBreak: 'break-word',
 
         '&::placeholder': {
-          color: sendBoxPlaceholderColor
+          color: sendBoxPlaceholderColor || subtle
         }
       }
     }

@@ -85,6 +85,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2298](https://github.com/microsoft/BotFramework-WebChat/issues/2298). Speech synthesize errors to be ignored, by [@compulim](https://github.com/compulim) in PR [#2300](https://github.com/microsoft/BotFramework-WebChat/issues/2300)
 -  Fix [#2243](https://github.com/microsoft/BotFramework-WebChat/issues/2243). Fixed sagas to correctly mark activities with speaking attachments, by [@tdurnford](https://github.com/tdurnford) in PR [#2320](https://github.com/microsoft/BotFramework-WebChat/issues/2320)
 -  Fix [#2365](https://github.com/microsoft/BotFramework-WebChat/issues/2365). Fix Adaptive Card `pushButton` appearance on Chrome, by [@corinagum](https://github.com/corinagum) in PR [#2382](https://github.com/microsoft/BotFramework-WebChat/pull/2382)
+-  Fix [#2379](https://github.com/microsoft/BotFramework-WebChat/issues/2379). Speech synthesis can be configured off by passing `null`, by [@compulim](https://github.com/compulim) in PR [#2408](https://github.com/microsoft/BotFramework-WebChat/pull/2408)
+-  Fix [#2418](https://github.com/microsoft/BotFramework-WebChat/issues/2418). Connectivity status should not waste-render every 400 ms, by [@compulim](https://github.com/compulim) in PR [#2419](https://github.com/microsoft/BotFramework-WebChat/pull/2419)
 -  Fix [Emulator1823](https://github.com/microsoft/BotFramework-Emulator/issues/1823). Fix Sendbox "Type your message" being read twice by AT, by [@corinagum](https://github.com/corinagum) in PR [#2423](https://github.com/microsoft/BotFramework-WebChat/pull/2423)
 
 ### Added
@@ -100,6 +102,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       - Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
 -  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
+-  Fix [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
+-  Added full screen capability to `IFRAME` in the `YouTubeContent` and `VimeoContent` components by [@tdurnford](https://github.com/tdurnford) in PR [#2399](https://github.com/microsoft/BotFramework-WebChat/pull/2399)
 
 ### Samples
 

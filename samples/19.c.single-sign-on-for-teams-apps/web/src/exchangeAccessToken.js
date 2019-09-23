@@ -1,5 +1,5 @@
-const encodeBase64URL = require("./encodeBase64URL");
-const fetch = require("node-fetch");
+const encodeBase64URL = require('./encodeBase64URL');
+const fetch = require('node-fetch');
 
 // Exchanges an access token from OAuth provider.
 module.exports = async function exchangeAccessToken(
@@ -16,7 +16,7 @@ module.exports = async function exchangeAccessToken(
     ...(clientSecret ? { client_secret: clientSecret } : {}),
     code,
     code_verifier: codeVerifier,
-    grant_type: "authorization_code",
+    grant_type: 'authorization_code',
     redirect_uri: redirectURI,
     state
   });
@@ -24,10 +24,10 @@ module.exports = async function exchangeAccessToken(
   const accessTokenRes = await fetch(tokenURL, {
     body: params.toString(),
     headers: {
-      accept: "application/json",
-      "content-type": "application/x-www-form-urlencoded"
+      accept: 'application/json',
+      'content-type': 'application/x-www-form-urlencoded'
     },
-    method: "POST"
+    method: 'POST'
   });
 
   if (!accessTokenRes.ok) {
