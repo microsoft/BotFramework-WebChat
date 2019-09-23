@@ -8,7 +8,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <img alt="product background" src={ WebPageBackground } />
+        <img alt="product background" src={WebPageBackground} />
         <MinimizableWebChat />
       </div>
     );

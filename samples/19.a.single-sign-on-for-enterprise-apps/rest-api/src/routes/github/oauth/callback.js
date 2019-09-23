@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
     if ('error' in req.query) {
       console.warn(req.query);
 
-      throw new Error(`OAuth: Failed to start authorization flow due to "${ req.query.error }"`);
+      throw new Error(`OAuth: Failed to start authorization flow due to "${req.query.error}"`);
     }
 
     const { code, seed } = req.query;

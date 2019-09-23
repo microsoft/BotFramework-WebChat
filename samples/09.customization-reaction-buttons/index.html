@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <title>Web Chat: Custom attachment with GitHub Stargazers</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--
       For simplicity and code clarity, we are using Babel and React from unpkg.com.
     -->
@@ -17,8 +17,13 @@
     -->
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
 
       #webchat {
         height: 100%;
@@ -29,7 +34,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel">
-      (async function () {
+      (async function() {
         'use strict';
 
         // In this demo, we are using Direct Line token from MockBot.
@@ -64,39 +69,48 @@
         });
 
         class ActivityWithFeedback extends React.Component {
-          handleDownvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }] })
-          handleUpvoteButton = () => this.props.postActivity({ type: 'messageReaction', reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }] })
+          handleDownvoteButton = () =>
+            this.props.postActivity({
+              type: 'messageReaction',
+              reactionsAdded: [{ activityID: this.props.activityID, helpful: -1 }]
+            });
+          handleUpvoteButton = () =>
+            this.props.postActivity({
+              type: 'messageReaction',
+              reactionsAdded: [{ activityID: this.props.activityID, helpful: 1 }]
+            });
 
           render() {
             const { props } = this;
 
             return (
-              <div className={ ACTIVITY_WITH_FEEDBACK_CSS }>
+              <div className={ACTIVITY_WITH_FEEDBACK_CSS}>
                 <ul className="button-bar">
-                  <li><button onClick={ this.handleUpvoteButton }>👍</button></li>
-                  <li><button onClick={ this.handleDownvoteButton }>👎</button></li>
+                  <li>
+                    <button onClick={this.handleUpvoteButton}>👍</button>
+                  </li>
+                  <li>
+                    <button onClick={this.handleDownvoteButton}>👎</button>
+                  </li>
                 </ul>
-                <div className="activity">
-                  { props.children }
-                </div>
+                <div className="activity">{props.children}</div>
               </div>
             );
           }
         }
 
-        const ConnectedActivityWithFeedback = connectToWebChat(
-          ({ postActivity }) => ({ postActivity })
-        )(props => <ActivityWithFeedback { ...props } />)
+        const ConnectedActivityWithFeedback = connectToWebChat(({ postActivity }) => ({ postActivity }))(props => (
+          <ActivityWithFeedback {...props} />
+        ));
 
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const activityMiddleware = () => next => card => {
           if (card.activity.from.role === 'bot') {
-            return (
-              children =>
-                <ConnectedActivityWithFeedback key={card.activity.id} activityID={ card.activity.id }>
-                  { next(card)(children) }
-                </ConnectedActivityWithFeedback>
+            return children => (
+              <ConnectedActivityWithFeedback key={card.activity.id} activityID={card.activity.id}>
+                {next(card)(children)}
+              </ConnectedActivityWithFeedback>
             );
           } else {
             return next(card);
@@ -105,8 +119,8 @@
 
         window.ReactDOM.render(
           <ReactWebChat
-            activityMiddleware={ activityMiddleware }
-            directLine={ window.WebChat.createDirectLine({ token }) }
+            activityMiddleware={activityMiddleware}
+            directLine={window.WebChat.createDirectLine({ token })}
           />,
           document.getElementById('webchat')
         );

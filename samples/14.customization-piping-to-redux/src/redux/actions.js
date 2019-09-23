@@ -7,7 +7,4 @@ function setBackgroundColor(color) {
   };
 }
 
-export {
-  SET_BACKGROUND_COLOR,
-  setBackgroundColor
-}
+export { SET_BACKGROUND_COLOR, setBackgroundColor };

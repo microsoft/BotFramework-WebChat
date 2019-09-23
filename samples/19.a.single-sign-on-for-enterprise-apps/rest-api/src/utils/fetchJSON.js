@@ -11,8 +11,8 @@ module.exports = async function fetchJSON(url, options) {
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch JSON from server due to ${ res.status }`);
+    throw new Error(`Failed to fetch JSON from server due to ${res.status}`);
   }
 
   return await res.json();
-}
+};

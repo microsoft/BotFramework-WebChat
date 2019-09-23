@@ -61,7 +61,8 @@ test('card action "signin"', async () => {
           return next(cardAction);
         }
       }
-    }
+    },
+    useProductionBot: true
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);

@@ -6,7 +6,7 @@ const {
   AAD_OAUTH_ACCESS_TOKEN_URL,
   AAD_OAUTH_CLIENT_ID,
   AAD_OAUTH_CLIENT_SECRET,
-  AAD_OAUTH_REDIRECT_URI,
+  AAD_OAUTH_REDIRECT_URI
 } = process.env;
 
 // GET /api/aad/oauth/callback
@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
     if ('error' in req.query) {
       console.warn(req.query);
 
-      throw new Error(`OAuth: Failed to start authorization flow due to "${ req.query.error }"`);
+      throw new Error(`OAuth: Failed to start authorization flow due to "${req.query.error}"`);
     }
 
     const { code, state } = req.query;

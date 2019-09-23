@@ -79,57 +79,37 @@ export default class extends React.Component {
   }
 
   render() {
-    const { state: {
-      minimized,
-      newMessage,
-      side,
-      store,
-      styleSet,
-      token
-    } } = this;
+    const {
+      state: { minimized, newMessage, side, store, styleSet, token }
+    } = this;
 
     return (
       <div className="minimizable-web-chat">
-        {
-          minimized ?
-            <button
-              className="maximize"
-              onClick={ this.handleMaximizeButtonClick }
-            >
-              <span className={ token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message' } />
-              {
-                newMessage &&
-                  <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />
-              }
-            </button>
-          :
-            <div
-              className={ side === 'left' ? 'chat-box left' : 'chat-box right' }
-            >
-              <header>
-                <div className="filler" />
-                <button
-                  className="switch"
-                  onClick={ this.handleSwitchButtonClick }
-                >
-                  <span className="ms-Icon ms-Icon--Switch" />
-                </button>
-                <button
-                  className="minimize"
-                  onClick={ this.handleMinimizeButtonClick }
-                >
-                  <span className="ms-Icon ms-Icon--ChromeMinimize" />
-                </button>
-              </header>
-              <WebChat
-                className="react-web-chat"
-                onFetchToken={ this.handleFetchToken }
-                store={ store }
-                styleSet={ styleSet }
-                token={ token }
-              />
-            </div>
-        }
+        {minimized ? (
+          <button className="maximize" onClick={this.handleMaximizeButtonClick}>
+            <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
+            {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
+          </button>
+        ) : (
+          <div className={side === 'left' ? 'chat-box left' : 'chat-box right'}>
+            <header>
+              <div className="filler" />
+              <button className="switch" onClick={this.handleSwitchButtonClick}>
+                <span className="ms-Icon ms-Icon--Switch" />
+              </button>
+              <button className="minimize" onClick={this.handleMinimizeButtonClick}>
+                <span className="ms-Icon ms-Icon--ChromeMinimize" />
+              </button>
+            </header>
+            <WebChat
+              className="react-web-chat"
+              onFetchToken={this.handleFetchToken}
+              store={store}
+              styleSet={styleSet}
+              token={token}
+            />
+          </div>
+        )}
       </div>
     );
   }

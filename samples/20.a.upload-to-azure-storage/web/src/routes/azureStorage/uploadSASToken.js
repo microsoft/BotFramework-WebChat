@@ -1,23 +1,15 @@
-const uuidV4 = require("uuid/v4");
-const {
-  BlobSASPermissions,
-  generateBlobSASQueryParameters,
-  SharedKeyCredential
-} = require("@azure/storage-blob");
+const uuidV4 = require('uuid/v4');
+const { BlobSASPermissions, generateBlobSASQueryParameters, SharedKeyCredential } = require('@azure/storage-blob');
 
-const {
-  AZURE_STORAGE_ACCOUNT_KEY,
-  AZURE_STORAGE_ACCOUNT_NAME,
-  AZURE_STORAGE_CONTAINER_NAME
-} = process.env;
+const { AZURE_STORAGE_ACCOUNT_KEY, AZURE_STORAGE_ACCOUNT_NAME, AZURE_STORAGE_CONTAINER_NAME } = process.env;
 
 const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
-function pad(value, count = 2, delimiter = "0") {
-  value += "";
+function pad(value, count = 2, delimiter = '0') {
+  value += '';
   count -= value.length;
 
-  return new Array(Math.max(0, count)).fill(delimiter).join("") + value;
+  return new Array(Math.max(0, count)).fill(delimiter).join('') + value;
 }
 
 module.exports = (_, res) => {
@@ -32,7 +24,7 @@ module.exports = (_, res) => {
     pad(now.getUTCDate()),
     pad(now.getUTCHours()),
     uuidV4()
-  ].join("/");
+  ].join('/');
   const permissions = new BlobSASPermissions();
 
   // We only allow create permissions, so the user cannot use the URL to redownload the file to redistribute it.
@@ -45,10 +37,7 @@ module.exports = (_, res) => {
       expiryTime: new Date(Date.now() + FIFTEEN_MINUTES),
       permissions: permissions.toString()
     },
-    new SharedKeyCredential(
-      AZURE_STORAGE_ACCOUNT_NAME,
-      AZURE_STORAGE_ACCOUNT_KEY
-    )
+    new SharedKeyCredential(AZURE_STORAGE_ACCOUNT_NAME, AZURE_STORAGE_ACCOUNT_KEY)
   );
 
   res.send({

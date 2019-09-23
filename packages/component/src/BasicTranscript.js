@@ -110,7 +110,9 @@ const BasicTranscript = ({
               >
                 {element}
                 {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
+                speechSynthesis && activity.channelData && activity.channelData.speak && (
+                  <SpeakActivity activity={activity} />
+                )}
               </li>
             ))}
           </ul>
@@ -141,8 +143,8 @@ BasicTranscript.propTypes = {
     }).isRequired
   }).isRequired,
   webSpeechPonyfill: PropTypes.shape({
-    speechSynthesis: PropTypes.any.isRequired,
-    SpeechSynthesisUtterance: PropTypes.any.isRequired
+    speechSynthesis: PropTypes.any,
+    SpeechSynthesisUtterance: PropTypes.any
   })
 };
 

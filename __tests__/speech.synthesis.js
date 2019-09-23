@@ -74,4 +74,28 @@ describe('speech synthesis', () => {
 
     await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
   });
+
+  test('should not synthesis if engine is explicitly configured off', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        webSpeechPonyfillFactory: () => {
+          const { SpeechGrammarList, SpeechRecognition } = window.WebSpeechMock;
+
+          return {
+            SpeechGrammarList,
+            SpeechRecognition,
+            speechSynthesis: null,
+            SpeechSynthesisUtterance: null
+          };
+        }
+      }
+    });
+
+    await pageObjects.sendMessageViaMicrophone('Hello, World!');
+
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    expect((await pageObjects.getConsoleLogs()).filter(([type]) => type === 'error')).toEqual([]);
+  });
 });

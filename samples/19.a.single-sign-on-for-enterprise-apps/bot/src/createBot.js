@@ -16,13 +16,16 @@ const QUESTIONS = {
 
 const SUGGESTED_ACTIONS = {
   suggestedActions: {
-    actions: [{
-      type: 'imBack',
-      value: 'What time is it?'
-    }, {
-      type: 'imBack',
-      value: 'Where are my orders?'
-    }],
+    actions: [
+      {
+        type: 'imBack',
+        value: 'What time is it?'
+      },
+      {
+        type: 'imBack',
+        value: 'Where are my orders?'
+      }
+    ],
     to: []
   }
 };
@@ -31,7 +34,7 @@ const SUGGESTED_ACTIONS = {
 function guessQuestion(message) {
   const match = findBestMatch(message, Object.values(QUESTIONS));
 
-  if (match.bestMatch.rating > .5) {
+  if (match.bestMatch.rating > 0.5) {
     return Object.keys(QUESTIONS)[match.bestMatchIndex];
   }
 }
@@ -41,7 +44,9 @@ module.exports = () => {
 
   // Handler for "event" activity
   bot.onEvent(async (context, next) => {
-    const { activity: { channelData, name } } = context;
+    const {
+      activity: { channelData, name }
+    } = context;
 
     // When we receive an event activity of "oauth/signin", set the access token to conversation state.
     if (name === 'oauth/signin') {
@@ -61,7 +66,7 @@ module.exports = () => {
 
             await adapter.continueConversation(reference, async context => {
               await context.sendActivity({
-                text: `Welcome back, ${ name } (via GitHub).`,
+                text: `Welcome back, ${name} (via GitHub).`,
                 ...SUGGESTED_ACTIONS
               });
             });
@@ -77,7 +82,7 @@ module.exports = () => {
 
             await adapter.continueConversation(reference, async context => {
               await context.sendActivity({
-                text: `Welcome back, ${ name } (via Azure AD).`,
+                text: `Welcome back, ${name} (via Azure AD).`,
                 ...SUGGESTED_ACTIONS
               });
             });
@@ -95,7 +100,9 @@ module.exports = () => {
 
   // Handler for "message" activity
   bot.onMessage(async (context, next) => {
-    const { activity: { channelData: { oauthAccessToken } = {}, text } } = context;
+    const {
+      activity: { channelData: { oauthAccessToken } = {}, text }
+    } = context;
 
     console.log(context.activity.channelData);
 
@@ -118,12 +125,13 @@ module.exports = () => {
       const now = new Date();
 
       await context.sendActivity({
-        text: `The time is now ${ now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }. What can I do to help?`,
+        text: `The time is now ${now.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        })}. What can I do to help?`,
         ...SUGGESTED_ACTIONS
       });
-    } else if (
-      match === 'order'
-    ) {
+    } else if (match === 'order') {
       // When the user says "where are my orders".
 
       if (oauthAccessToken) {
@@ -136,27 +144,32 @@ module.exports = () => {
         // Send them a sign in card if they are not signed in.
         await context.sendActivity({
           type: 'message',
-          attachments: [{
-            content: {
-              buttons: [{
-                title: 'Sign into Azure Active Directory',
-                type: 'openUrl',
-                value: 'about:blank#sign-into-aad'
-              }, {
-                title: 'Sign into GitHub',
-                type: 'openUrl',
-                value: 'about:blank#sign-into-github'
-              }],
-              text: 'Please sign in so I can help tracking your orders.'
-            },
-            contentType: 'application/vnd.microsoft.card.hero',
-          }]
+          attachments: [
+            {
+              content: {
+                buttons: [
+                  {
+                    title: 'Sign into Azure Active Directory',
+                    type: 'openUrl',
+                    value: 'about:blank#sign-into-aad'
+                  },
+                  {
+                    title: 'Sign into GitHub',
+                    type: 'openUrl',
+                    value: 'about:blank#sign-into-github'
+                  }
+                ],
+                text: 'Please sign in so I can help tracking your orders.'
+              },
+              contentType: 'application/vnd.microsoft.card.hero'
+            }
+          ]
         });
       }
     } else {
       // Unknown phrases.
       await context.sendActivity({
-        text: 'Sorry, I don\'t know what you mean.',
+        text: "Sorry, I don't know what you mean.",
         ...SUGGESTED_ACTIONS
       });
     }
