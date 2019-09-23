@@ -69,7 +69,7 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (
               <input
-                aria-label={typeYourMessageString}
+                aria-label={'Sendbox'}
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
                 onChange={onChange}
@@ -81,7 +81,7 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
             ) : (
               <div>
                 <textarea
-                  aria-label={typeYourMessageString}
+                  aria-label={'Sendbox'}
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
                   onChange={onChange}
