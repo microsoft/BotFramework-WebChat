@@ -10,18 +10,30 @@ import WarningNotificationIcon from '../Attachment/Assets/WarningNotificationIco
 
 const CONNECTIVITY_STATUS_DEBOUNCE = 400;
 
+function setTimeoutSync(fn, interval) {
+  if (interval > 0) {
+    return setTimeout(fn, interval);
+  }
+
+  fn();
+}
+
 const DebouncedConnectivityStatus = ({ interval, children: propsChildren }) => {
-  const [children, setChildren] = useState(propsChildren);
+  const [children, setChildren] = useState(() => propsChildren);
   const [since, setSince] = useState(Date.now());
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setChildren(propsChildren);
-      setSince(Date.now());
-    }, Math.max(0, interval - Date.now() + since));
+  const intervalBeforeSwitch = Math.max(0, interval - Date.now() + since);
 
-    return () => clearTimeout(timeout);
-  }, [interval, propsChildren, setChildren, setSince, since]);
+  useEffect(() => {
+    if (children !== propsChildren) {
+      const timeout = setTimeoutSync(() => {
+        setChildren(() => propsChildren);
+        setSince(Date.now());
+      }, intervalBeforeSwitch);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [children, intervalBeforeSwitch, propsChildren]);
 
   return typeof children === 'function' ? children() : false;
 };
@@ -116,17 +128,18 @@ const ConnectivityStatus = ({ connectivityStatus, language, styleSet }) => {
 
   const renderStatus = useCallback(() => {
     if (connectivityStatus === 'connectingslow') {
-      return renderConnectingSlow;
+      return renderConnectingSlow();
     } else if (connectivityStatus === 'error' || connectivityStatus === 'notconnected') {
-      return renderNotConnected;
+      return renderNotConnected();
     } else if (connectivityStatus === 'uninitialized') {
-      return renderUninitialized;
+      return renderUninitialized();
     } else if (connectivityStatus === 'reconnecting') {
-      return renderReconnecting;
+      return renderReconnecting();
     } else if (connectivityStatus === 'sagaerror') {
-      return renderSagaError;
+      return renderSagaError();
     }
-    return renderEmptyStatus;
+
+    return renderEmptyStatus();
   }, [
     connectivityStatus,
     renderConnectingSlow,
