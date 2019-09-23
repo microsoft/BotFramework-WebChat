@@ -171,7 +171,7 @@ We gradually migrate customers' sites to our new version using a mechanism we ca
 | `?s=`              | Secret for accessing the bot. If token is specified, this will be ignored                                 |
 | `?t=`              | Token for accessing the bot                                                                               |
 | `?userid=dl_12345` | User ID to use when sending the activity. If user ID is available in token, this will be ignored          |
-| `?username=WW`     | Username to show, only for v3 or lower                                                                    |
+| `?username=WW`     | Username to show, only for v3 or lower. This parameter is accepted in v4, but will not be shown.          |
 | `?v=4`             | Specify version                                                                                           |
 
 ### What is Gemini, Scorpio and Aries?
