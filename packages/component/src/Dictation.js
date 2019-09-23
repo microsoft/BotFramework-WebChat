@@ -50,7 +50,6 @@ const Dictation = ({
 
         setDictateInterims(interims);
         setDictateState(DICTATING);
-        // sendTypingIndicator && postActivity({ type: 'typing' });
         sendTypingIndicator && emitTypingIndicator();
       }
     },
