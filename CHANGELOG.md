@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2298](https://github.com/microsoft/BotFramework-WebChat/issues/2298). Speech synthesize errors to be ignored, by [@compulim](https://github.com/compulim) in PR [#2300](https://github.com/microsoft/BotFramework-WebChat/issues/2300)
 -  Fix [#2243](https://github.com/microsoft/BotFramework-WebChat/issues/2243). Fixed sagas to correctly mark activities with speaking attachments, by [@tdurnford](https://github.com/tdurnford) in PR [#2320](https://github.com/microsoft/BotFramework-WebChat/issues/2320)
 -  Fix [#2365](https://github.com/microsoft/BotFramework-WebChat/issues/2365). Fix Adaptive Card `pushButton` appearance on Chrome, by [@corinagum](https://github.com/corinagum) in PR [#2382](https://github.com/microsoft/BotFramework-WebChat/pull/2382)
+-  Fix [Emulator1823](https://github.com/microsoft/BotFramework-Emulator/issues/1823). Fix Sendbox "Type your message" being read twice by AT, by [@corinagum](https://github.com/corinagum) in PR [#2423](https://github.com/microsoft/BotFramework-WebChat/pull/2423)
 
 ### Added
 
