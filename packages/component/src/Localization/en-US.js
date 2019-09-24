@@ -79,6 +79,7 @@ export default {
   Retry: 'Retry',
   Right: 'Right',
   Send: 'Send',
+  SendBox: 'Sendbox',
   Sending: 'Sending',
   SendStatus: 'Send status: ',
   SentAt: 'Sent at: ',
