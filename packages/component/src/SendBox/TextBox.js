@@ -56,6 +56,7 @@ const connectSendTextBox = (...selectors) =>
 
 const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit, styleSet, value }) => {
   const typeYourMessageString = localize('Type your message', language);
+  const sendBoxString = localize('Sendbox', language);
   const {
     options: { sendBoxTextWrap }
   } = styleSet;
@@ -70,7 +71,7 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
           {({ sendFocusRef }) =>
             !sendBoxTextWrap ? (
               <input
-                aria-label={typeYourMessageString}
+                aria-label={sendBoxString}
                 data-id="webchat-sendbox-input"
                 disabled={disabled}
                 onChange={onChange}
@@ -82,7 +83,7 @@ const TextBox = ({ className, disabled, language, onChange, onKeyPress, onSubmit
             ) : (
               <div>
                 <textarea
-                  aria-label={typeYourMessageString}
+                  aria-label={sendBoxString}
                   data-id="webchat-sendbox-input"
                   disabled={disabled}
                   onChange={onChange}

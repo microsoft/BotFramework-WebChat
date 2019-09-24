@@ -68,6 +68,7 @@ export default {
   Retry: '再送',
   Right: '右',
   Send: '送信',
+  SendBox: 'テキストボックス',
   Sending: '送信中',
   Speak: '話してください',
   'Starting…': 'スタート…',
