@@ -4,6 +4,7 @@ import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActio
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
 import connectSaga from './sagas/connectSaga';
 import detectSlowConnectionSaga from './sagas/detectSlowConnectionSaga';
+import emitTypingIndicatorToPostActivitySaga from './sagas/emitTypingIndicatorToPostActivitySaga';
 import incomingActivitySaga from './sagas/incomingActivitySaga';
 import markAllAsSpokenOnStopSpeakActivitySaga from './sagas/markAllAsSpokenOnStopSpeakActivitySaga';
 import postActivitySaga from './sagas/postActivitySaga';
@@ -26,6 +27,7 @@ export default function* sagas() {
   yield fork(connectionStatusUpdateSaga);
   yield fork(connectSaga);
   yield fork(detectSlowConnectionSaga);
+  yield fork(emitTypingIndicatorToPostActivitySaga);
   yield fork(incomingActivitySaga);
   yield fork(markAllAsSpokenOnStopSpeakActivitySaga);
   yield fork(postActivitySaga);

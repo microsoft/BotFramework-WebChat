@@ -12,6 +12,7 @@ const {
 const Dictation = ({
   dictateState,
   disabled,
+  emitTypingIndicator,
   language,
   numSpeakingActivities,
   onError,
@@ -49,7 +50,7 @@ const Dictation = ({
 
         setDictateInterims(interims);
         setDictateState(DICTATING);
-        sendTypingIndicator && postActivity({ type: 'typing' });
+        sendTypingIndicator && emitTypingIndicator();
       }
     },
     [dictateState, postActivity, sendTypingIndicator, setDictateInterims, setDictateState]
@@ -106,6 +107,7 @@ export default connectToWebChat(
     activities,
     dictateState,
     disabled,
+    emitTypingIndicator,
     language,
     postActivity,
     sendTypingIndicator,
@@ -119,6 +121,7 @@ export default connectToWebChat(
   }) => ({
     dictateState,
     disabled,
+    emitTypingIndicator,
     language,
     numSpeakingActivities: activities.filter(({ channelData: { speak } = {} }) => speak).length,
     postActivity,
