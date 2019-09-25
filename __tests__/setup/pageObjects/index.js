@@ -1,4 +1,5 @@
 import clickMicrophoneButton from './clickMicrophoneButton';
+import clickScrollToBottomButton from './clickScrollToBottomButton';
 import clickSendButton from './clickSendButton';
 import clickSuggestedActionButton from './clickSuggestedActionButton';
 import dispatchAction from './dispatchAction';
@@ -19,6 +20,7 @@ import sendMessageViaSendBox from './sendMessageViaSendBox';
 import sendTextToClipboard from './sendTextToClipboard';
 import startSpeechSynthesize from './startSpeechSynthesize';
 import typeOnSendBox from './typeOnSendBox';
+import updateProps from './updateProps';
 
 function mapMap(map, mapper) {
   return Object.keys(map).reduce((final, key) => {
@@ -32,6 +34,7 @@ export default function pageObjects(driver) {
   return mapMap(
     {
       clickMicrophoneButton,
+      clickScrollToBottomButton,
       clickSendButton,
       clickSuggestedActionButton,
       dispatchAction,
@@ -51,7 +54,8 @@ export default function pageObjects(driver) {
       sendMessageViaSendBox,
       sendTextToClipboard,
       startSpeechSynthesize,
-      typeOnSendBox
+      typeOnSendBox,
+      updateProps
     },
     fn => fn.bind(null, driver)
   );

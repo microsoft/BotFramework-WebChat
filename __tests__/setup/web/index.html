@@ -102,7 +102,7 @@
         await loadScript('/webchat-instrumented.js');
 
         let directLine;
-        
+
         if (!useProductionBot && !createDirectLine) {
           directLine = window.MockBotAdapter.createDirectLine({});
         } else {
@@ -118,11 +118,11 @@
               throw err;
             }
           }, 3);
-          
+
           createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
           directLine = (createDirectLine || window.WebChat.createDirectLine)({ token });
         }
-        
+
         const store = window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
           const setupMiddleware = storeMiddleware(store);
 
@@ -137,15 +137,29 @@
           };
         });
 
-        window.WebChat.renderWebChat({
+        props = {
           directLine,
           store,
           styleSet: createStyleSet && createStyleSet(props.styleOptions),
           username: 'Happy Web Chat user',
           ...props
-        }, document.getElementById('webchat'));
+        };
+
+        renderWebChat = props => {
+          console.log(props);
+
+          window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+        };
+
+        renderWebChat(props);
 
         document.querySelector('#webchat > *').focus();
+
+        window.WebChatTest.updateProps = mergeProps => {
+          props = { ...props, ...mergeProps };
+
+          renderWebChat(props);
+        };
       }
 
       window.WebChatTest = {
