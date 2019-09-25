@@ -145,12 +145,7 @@
           ...props
         };
 
-        renderWebChat = props => {
-          console.log(props);
-
-          window.WebChat.renderWebChat(props, document.getElementById('webchat'));
-        };
-
+        renderWebChat = props => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
         renderWebChat(props);
 
         document.querySelector('#webchat > *').focus();
