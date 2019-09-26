@@ -40,14 +40,17 @@
           // We will invalidate the token after 5 minutes.
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
           if (Date.now() > expireAfter) {
-            const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+            const speechServicesTokenRes = await fetch(
+              'https://webchat-mockbot.azurewebsites.net/speechservices/token',
+              { method: 'POST' }
+            );
 
             lastResult = await speechServicesTokenRes.json();
             expireAfter = Date.now() + 300000;
           }
 
           return lastResult;
-        }
+        };
       }
 
       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();

@@ -40,14 +40,17 @@
           // We will invalidate the token after 5 minutes.
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
           if (Date.now() > expireAfter) {
-            const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+            const speechServicesTokenRes = await fetch(
+              'https://webchat-mockbot.azurewebsites.net/speechservices/token',
+              { method: 'POST' }
+            );
 
             lastResult = await speechServicesTokenRes.json();
             expireAfter = Date.now() + 300000;
           }
 
           return lastResult;
-        }
+        };
       }
 
       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
@@ -80,14 +83,16 @@
         // We are creating a hybrid ponyfill factory that will merge the result of two ponyfill factories together.
         async function createHybridPonyfillFactory({ authorizationToken, region }) {
           // Create the ponyfill factory function, that can be called to create a concrete implementation of the ponyfill.
-          const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-            // We are passing the Promise function to the authorizationToken field.
-            // This function will be called every time the token is being used.
-            authorizationToken: fetchSpeechServicesToken,
+          const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
+            {
+              // We are passing the Promise function to the authorizationToken field.
+              // This function will be called every time the token is being used.
+              authorizationToken: fetchSpeechServicesToken,
 
-            // In contrast, we are only fetching the region once.
-            region: await fetchSpeechServicesRegion()
-          });
+              // In contrast, we are only fetching the region once.
+              region: await fetchSpeechServicesRegion()
+            }
+          );
 
           const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
 
