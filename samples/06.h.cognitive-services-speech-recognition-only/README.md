@@ -1,6 +1,6 @@
-# Sample - Using hybrid speech engine
+# Sample - Using speech recognition only
 
-A simple web page that uses separate speech engines for speech-to-text and text-to-speech. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js/README.md).
+A simple web page that uses speech-to-text only and disable text-to-speech. This sample makes changes that are based off of the [Cognitive Services Speech Services sample](./../06.c.cognitive-services-speech-services-js/README.md).
 
 # Test out the hosted sample
 
@@ -9,10 +9,11 @@ A simple web page that uses separate speech engines for speech-to-text and text-
 # How to run locally
 
 -  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/06.f.hybrid-speech` in command line
+-  Navigate to `/Your-Local-WebChat/samples/06.h.cognitive-services-speech-recognition-only` in command line
 -  Run `npx serve`
 -  Browse to [http://localhost:5000/](http://localhost:5000/)
 
+<!--
 # Things to try out
 
 -  Use the microphone button: you should be able to provide commands to the bot via speech
@@ -47,14 +48,11 @@ async function createHybridPonyfillFactory({ authorizationToken, region }) {…}
 Create two ponyfills, one from Speech Services and the other from Web Speech.
 
 ```diff
-  async function createHybridPonyfillFactory({ authorizationToken, region }) {
-+   const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+     authorizationToken: fetchSpeechServicesToken,
-+     region: await fetchSpeechServicesRegion()
-+   });
-+   const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
-  …
-  };
+async function createHybridPonyfillFactory({ authorizationToken, region }) {
++ const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
++ const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
+…
+};
 ```
 
 Combine into one ponyfill the features you want to pull from Web Speech and Speech Services respectively
@@ -64,11 +62,11 @@ Combine into one ponyfill the features you want to pull from Web Speech and Spee
 + return options => {
 +   const speechServicesPonyfill = speechServicesPonyfillFactory(options);
 +   const webSpeechPonyfill = webSpeechPonyfillFactory(options);
-+
+
 +   return {
 +     SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,
 +     SpeechRecognition: webSpeechPonyfill.SpeechRecognition,
-+
+
 +     speechSynthesis: speechServicesPonyfill.speechSynthesis,
 +     SpeechSynthesisUtterance: speechServicesPonyfill.SpeechSynthesisUtterance
 +   }
@@ -116,21 +114,17 @@ Here is the finished `index.html`:
         const { region, token: authorizationToken } = await speechServicesTokenRes.json();
 
 +       async function createHybridPonyfillFactory({ authorizationToken, region }) {
-+         const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+           authorizationToken: fetchSpeechServicesToken,
-+           region: await fetchSpeechServicesRegion()
-+         });
-+
++         const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
 +         const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
-+
+
 +         return options => {
 +           const speechServicesPonyfill = speechServicesPonyfillFactory(options);
 +           const webSpeechPonyfill = webSpeechPonyfillFactory(options);
-+
+
 +           return {
 +             SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,
 +             SpeechRecognition: webSpeechPonyfill.SpeechRecognition,
-+
+
 +             speechSynthesis: speechServicesPonyfill.speechSynthesis,
 +             SpeechSynthesisUtterance: speechServicesPonyfill.SpeechSynthesisUtterance
 +           }
@@ -160,4 +154,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) -->

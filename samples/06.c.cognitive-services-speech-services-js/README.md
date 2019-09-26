@@ -34,100 +34,72 @@ Cognitive Services Speech Services has published a new API to provide speech rec
 
 ## Completed code
 
-#### Using subscription key
-
-> This approach is for demonstration purposes only. In production code, you should always store the subscription key on a secured token server. The token server should only send out limited authorization code. This [article on authorizations](https://docs.microsoft.com/en-us/azure/cognitive-services/speech/api-reference-rest/websocketprotocol#authorization) outlines the authorization process.
-
-In this portion, we are hardcoding the subscription key in the client code.
-
-Here is the finished `index.html` for subscription key flow:
+### Using authorization token
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html, body { height: 100% }
+        body { margin: 0 }
 
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
-
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
-
-+       const searchParams = new URLSearchParams(window.location.search);
-
-+       const subscriptionKey = searchParams.get('s');
-
-+       const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-+           region: searchParams.get('r') || 'westus',
-+           subscriptionKey
-+         });
+        #webchat {
+          height: 100%;
+          width: 100%;
         }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
++       function createFetchSpeechServicesCredentials() {
++         let expireAfter = 0;
++         let lastResult = {};
++
++         return async () => {
++           if (Date.now() > expireAfter) {
++             const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
++
++             lastResult = await speechServicesTokenRes.json();
++             expireAfter = Date.now() + 300000;
++           }
++
++           return lastResult;
++         }
++       }
++
++       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
++
++       async function fetchSpeechServicesRegion() {
++         return (await fetchSpeechServicesCredentials()).region;
++       }
++
++       async function fetchSpeechServicesToken() {
++         return (await fetchSpeechServicesCredentials()).token;
++       }
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         webSpeechPonyfillFactory
-        }, document.getElementById('webchat'));
+        (async function () {
+          const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await res.json();
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
-```
++         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
++           authorizationToken: fetchSpeechServicesToken,
++           region: await fetchSpeechServicesRegion()
++         });
 
-#### Using authorization token
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
++           webSpeechPonyfillFactory
+          }, document.getElementById('webchat'));
 
-```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Cognitive Services Speech Services using JavaScript</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
-
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await res.json();
-
-+         const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
-+         const { region, token: authorizationToken } = await res.json();
-
-+         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
-
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         webSpeechPonyfillFactory
-        }, document.getElementById('webchat'));
-
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further reading
