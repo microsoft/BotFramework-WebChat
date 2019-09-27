@@ -75,11 +75,6 @@
 
         const { token } = await directLineTokenRes.json();
 
-        // For this demo, we are using our authorization token. For your production code, you should use a token from your Cognitive Services subscription.
-        const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
-          method: 'POST'
-        });
-
         // We are creating a ponyfill factory that will only return speech recognition part.
         async function createSpeechRecognitionOnlyPonyfillFactory() {
           // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
