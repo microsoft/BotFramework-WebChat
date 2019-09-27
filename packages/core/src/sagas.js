@@ -18,7 +18,6 @@ import speakActivityAndStartDictateOnIncomingActivityFromOthersSaga from './saga
 import startSpeakActivityOnPostActivitySaga from './sagas/startSpeakActivityOnPostActivitySaga';
 import stopDictateOnCardActionSaga from './sagas/stopDictateOnCardActionSaga';
 import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInputSaga';
-import stopSpeakingActivityOnStartDictate from './sagas/stopSpeakingActivityOnStartDictate';
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 
 export default function* sagas() {
@@ -42,6 +41,5 @@ export default function* sagas() {
   yield fork(startSpeakActivityOnPostActivitySaga);
   yield fork(stopDictateOnCardActionSaga);
   yield fork(stopSpeakingActivityOnInputSaga);
-  yield fork(stopSpeakingActivityOnStartDictate);
   yield fork(submitSendBoxSaga);
 }
