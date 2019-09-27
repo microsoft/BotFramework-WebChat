@@ -1,6 +1,7 @@
 import { timeouts } from './constants.json';
 
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
+import negateCondition from './setup/conditions/negate';
 import speechRecognitionStartCalled from './setup/conditions/speechRecognitionStartCalled';
 import speechSynthesisUtterancePended from './setup/conditions/speechSynthesisUtterancePended';
 
@@ -97,5 +98,30 @@ describe('speech synthesis', () => {
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
     expect((await pageObjects.getConsoleLogs()).filter(([type]) => type === 'error')).toEqual([]);
+  });
+
+  test('should stop synthesis after clicking on microphone button', async () => {
+    const { driver, pageObjects } = await setupWebDriver({
+      props: {
+        webSpeechPonyfillFactory: () => window.WebSpeechMock
+      }
+    });
+
+    await pageObjects.sendMessageViaMicrophone('echo Hello, World!');
+
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+    await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty(
+      'text',
+      'Echoing back in a separate activity.'
+    );
+
+    await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
+
+    await pageObjects.clickMicrophoneButton();
+
+    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
   });
 });
