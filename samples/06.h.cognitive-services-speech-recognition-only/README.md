@@ -4,7 +4,7 @@ A simple web page that uses speech-to-text only and disable text-to-speech. This
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.f.hybrid-speech)
+-  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/06.h.cognitive-services-speech-recognition-only)
 
 # How to run locally
 

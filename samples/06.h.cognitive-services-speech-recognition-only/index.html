@@ -9,8 +9,7 @@
       This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
-    <!-- <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script> -->
-    <script src="/webchat.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
       html,
       body {
@@ -36,7 +35,7 @@
         let lastResult = {};
 
         return async () => {
-          // Fetch a new token if the existing is expiring.
+          // Fetch a new token if the existing one is expiring.
           // The following article mentioned the token is only valid for 10 minutes.
           // We will invalidate the token after 5 minutes.
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
@@ -81,13 +80,13 @@
           method: 'POST'
         });
 
-        // We are creating a ponyfill factory that will only return the speech recognition part.
+        // We are creating a ponyfill factory that will only return speech recognition part.
         async function createSpeechRecognitionOnlyPonyfillFactory() {
-          // Create the ponyfill factory function, that can be called to create a concrete implementation of the ponyfill.
+          // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
             {
               // We are passing the Promise function to the authorizationToken field.
-              // This function will be called every time the token is being used.
+              // This function will be called every time the token is used.
               authorizationToken: fetchSpeechServicesToken,
 
               // In contrast, we are only fetching the region once.

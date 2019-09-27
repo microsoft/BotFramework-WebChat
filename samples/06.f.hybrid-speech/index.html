@@ -35,7 +35,7 @@
         let lastResult = {};
 
         return async () => {
-          // Fetch a new token if the existing is expiring.
+          // Fetch a new token if the existing one is expiring.
           // The following article mentioned the token is only valid for 10 minutes.
           // We will invalidate the token after 5 minutes.
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
@@ -82,7 +82,7 @@
 
         // We are creating a hybrid ponyfill factory that will merge the result of two ponyfill factories together.
         async function createHybridPonyfillFactory({ authorizationToken, region }) {
-          // Create the ponyfill factory function, that can be called to create a concrete implementation of the ponyfill.
+          // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
             {
               // We are passing the Promise function to the authorizationToken field.
