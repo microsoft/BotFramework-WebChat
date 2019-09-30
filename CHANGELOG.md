@@ -68,6 +68,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2322](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
 -  Fix [#2292](https://github.com/microsoft/BotFramework-WebChat/issues/2292). Added function to select voice to props, `selectVoice()`, by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
+-  `bundle`: Bumped DirectLineJS to support metadata when uploading attachments, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   - [`botframework-directlinejs@0.11.5`](https://www.npmjs.com/package/botframework-directlinejs)
+   - Removed DirectLineJS as a dev dependency for `component` because it was not referenced
 
 ### Fixed
 
@@ -92,6 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2415](https://github.com/microsoft/BotFramework-WebChat/issues/2415) and [#2416](https://github.com/microsoft/BotFramework-WebChat/issues/2416). Fix Adaptive Cards cannot be disabled on-the-fly, by [@compulim](https://github.com/compulim) in PR [#2417](https://github.com/microsoft/BotFramework-WebChat/issues/2417)
 -  Fix [#2360](https://github.com/microsoft/BotFramework-WebChat/issues/2360). Timestamp should update on language change, by [@compulim](https://github.com/compulim) in PR [#2414](https://github.com/microsoft/BotFramework-WebChat/pull/2414)
 -  Fix [#2428](https://github.com/microsoft/BotFramework-WebChat/issues/2428). Should interrupt speech synthesis after microphone button is clicked, by [@compulim](https://github.com/compulim) in PR [#2429](https://github.com/microsoft/BotFramework-WebChat/pull/2429)
+-  Fix [#2422](https://github.com/microsoft/BotFramework-WebChat/issues/2422). Storing thumbnail URL using `attachment.thumbnailUrl` field in the activity, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Added
 

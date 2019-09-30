@@ -10,14 +10,14 @@ const getType = mime.getType.bind(mime);
 function* postActivityWithFiles({ payload: { files } }) {
   yield put(
     postActivity({
-      attachments: [].map.call(files, ({ name, url }) => ({
+      attachments: [].map.call(files, ({ name, thumbnail, url }) => ({
         contentType: getType(name) || 'application/octet-stream',
         contentUrl: url,
-        name
+        name,
+        thumbnailUrl: thumbnail
       })),
       channelData: {
-        attachmentSizes: [].map.call(files, ({ size }) => size),
-        attachmentThumbnails: [].map.call(files, ({ thumbnail }) => thumbnail)
+        attachmentSizes: [].map.call(files, ({ size }) => size)
       },
       type: 'message'
     })
