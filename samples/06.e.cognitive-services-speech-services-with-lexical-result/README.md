@@ -27,27 +27,15 @@ We'll start by using the [Cognitive Services Speech Services sample](./../06.c.c
 
 The main change you will need to make, regardless of whether you are using the subscription key or authorization token, is adding the value `'lexical'` to a `textNormalization` key in your `webSpeechPonyFillFactory` object.
 
-Subscription key:
-
 ```diff
-webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-  region: searchParams.get('r') || 'westus',
-  subscriptionKey,
-+ textNormalization: 'lexical'
-});
-```
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+    const { region, token: authorizationToken } = await res.json();
 
-Authorization Token:
-
-```diff
-   const res = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
-   const { region, token: authorizationToken } = await res.json();
-
-   webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-     authorizationToken,
-     region,
-+    textNormalization: 'lexical'
-   });
+    webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
++     authorizationToken: fetchSpeechServicesToken,
++     region: await fetchSpeechServicesRegion()
++     textNormalization: 'lexical'
+    });
 ```
 
 # Further reading

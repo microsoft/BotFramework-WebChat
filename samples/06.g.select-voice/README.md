@@ -37,24 +37,13 @@ When Web Chat synthesizes an activity, it will call the `selectVoice` function w
 In the sample code below, if the activity is for language "zh-HK", we will use a voice with keyword "TracyRUS". Otherwise, it will choose a voice with keyword "JessaNeural" over "Jessa".
 
 ```diff
-  const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-  const { token } = await directLineTokenResponse.json();
-
-  const speechTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
-  const { region, token: authorizationToken } = await speechTokenResponse.json();
-
-  webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
-
   window.WebChat.renderWebChat({
     directLine: window.WebChat.createDirectLine({ token }),
 +   selectVoice: (voices, activity) =>
-+     // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
-+     // Otherwise, use "JessaNeural" (preferred) or "Jessa".
-+     activity.locale === 'zh-HK' ?
-+       voices.find(({ name }) => /TracyRUS/iu.test(name))
-+     :
-+       voices.find(({ name }) => /JessaNeural/iu.test(name))
-+       || voices.find(({ name }) => /Jessa/iu.test(name)),
++     activity.locale === 'zh-HK'
++     ? voices.find(({ name }) => /TracyRUS/iu.test(name))
++     : voices.find(({ name }) => /JessaNeural/iu.test(name)) ||
++       voices.find(({ name }) => /Jessa/iu.test(name)),
     webSpeechPonyfillFactory
   }, document.getElementById('webchat'));
 ```
@@ -62,23 +51,12 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
 ## Completed code
 
 ```js
-const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-const { token } = await directLineTokenResponse.json();
-
-const speechTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
-const { region, token: authorizationToken } = await speechTokenResponse.json();
-
-webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
-
 window.WebChat.renderWebChat({
   directLine: window.WebChat.createDirectLine({ token }),
   selectVoice: (voices, activity) =>
-    // If the activity is in zh-HK, use a voice with keyword "TracyRUS" (Cantonese).
-    // Otherwise, use "JessaNeural" (preferred) or "Jessa".
-    activity.locale === 'zh-HK' ?
-      voices.find(({ name }) => /TracyRUS/iu.test(name))
-    :
-      voices.find(({ name }) => /JessaNeural/iu.test(name))
+    activity.locale === 'zh-HK'
+    ? voices.find(({ name }) => /TracyRUS/iu.test(name))
+    : voices.find(({ name }) => /JessaNeural/iu.test(name))
       || voices.find(({ name }) => /Jessa/iu.test(name)),
   webSpeechPonyfillFactory
 }, document.getElementById('webchat'));

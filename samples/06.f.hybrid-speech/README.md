@@ -47,11 +47,14 @@ async function createHybridPonyfillFactory({ authorizationToken, region }) {…}
 Create two ponyfills, one from Speech Services and the other from Web Speech.
 
 ```diff
-async function createHybridPonyfillFactory({ authorizationToken, region }) {
-+ const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
-+ const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
-…
-};
+  async function createHybridPonyfillFactory({ authorizationToken, region }) {
++   const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
++     authorizationToken: fetchSpeechServicesToken,
++     region: await fetchSpeechServicesRegion()
++   });
++   const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
+  …
+  };
 ```
 
 Combine into one ponyfill the features you want to pull from Web Speech and Speech Services respectively
@@ -61,11 +64,11 @@ Combine into one ponyfill the features you want to pull from Web Speech and Spee
 + return options => {
 +   const speechServicesPonyfill = speechServicesPonyfillFactory(options);
 +   const webSpeechPonyfill = webSpeechPonyfillFactory(options);
-
++
 +   return {
 +     SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,
 +     SpeechRecognition: webSpeechPonyfill.SpeechRecognition,
-
++
 +     speechSynthesis: speechServicesPonyfill.speechSynthesis,
 +     SpeechSynthesisUtterance: speechServicesPonyfill.SpeechSynthesisUtterance
 +   }
@@ -87,59 +90,95 @@ Finally, pass your new ponyfill factory into `renderWebChat`.
 Here is the finished `index.html`:
 
 ```diff
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <title>Web Chat: Hybrid speech engine using JavaScript</title>
-    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-    <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+  <!DOCTYPE html>
+  <html lang="en-US">
+    <head>
+      <title>Web Chat: Hybrid speech engine using JavaScript</title>
+      <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+      <style>
+        html, body { height: 100% }
+        body { margin: 0 }
 
-      #webchat {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="webchat" role="main"></div>
-    <script>
-      (async function () {
-        const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-        const { token } = await directLineTokenRes.json();
+        #webchat {
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="webchat" role="main"></div>
+      <script>
+        function createFetchSpeechServicesCredentials() {
+          let expireAfter = 0;
+          let lastResult = {};
 
-        const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
-        const { region, token: authorizationToken } = await speechServicesTokenRes.json();
+          return async () => {
+            if (Date.now() > expireAfter) {
+              const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
 
-+       async function createHybridPonyfillFactory({ authorizationToken, region }) {
-+         const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({ authorizationToken, region });
-+         const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
+              lastResult = await speechServicesTokenRes.json();
+              expireAfter = Date.now() + 300000;
+            }
 
-+         return options => {
-+           const speechServicesPonyfill = speechServicesPonyfillFactory(options);
-+           const webSpeechPonyfill = webSpeechPonyfillFactory(options);
+            return lastResult;
+          }
+        }
 
-+           return {
-+             SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,
-+             SpeechRecognition: webSpeechPonyfill.SpeechRecognition,
+        const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
 
-+             speechSynthesis: speechServicesPonyfill.speechSynthesis,
-+             SpeechSynthesisUtterance: speechServicesPonyfill.SpeechSynthesisUtterance
-+           }
+        async function fetchSpeechServicesRegion() {
+          return (await fetchSpeechServicesCredentials()).region;
+        }
+
+        async function fetchSpeechServicesToken() {
+          return (await fetchSpeechServicesCredentials()).token;
+        }
+
+        (async function () {
+          const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+          const { token } = await directLineTokenRes.json();
+
+          const speechServicesTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
+          const { region, token: authorizationToken } = await speechServicesTokenRes.json();
+
+-         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+-           authorizationToken: fetchSpeechServicesToken,
+-           region: await fetchSpeechServicesRegion()
+-         });
+
++         async function createHybridPonyfillFactory({ authorizationToken, region }) {
++           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
++             authorizationToken: fetchSpeechServicesToken,
++             region: await fetchSpeechServicesRegion()
++           });
++
++           const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
++
++           return options => {
++             const speechServicesPonyfill = speechServicesPonyfillFactory(options);
++             const webSpeechPonyfill = webSpeechPonyfillFactory(options);
++
++             return {
++               SpeechGrammarList: webSpeechPonyfill.SpeechGrammarList,
++               SpeechRecognition: webSpeechPonyfill.SpeechRecognition,
++
++               speechSynthesis: speechServicesPonyfill.speechSynthesis,
++               SpeechSynthesisUtterance: speechServicesPonyfill.SpeechSynthesisUtterance
++             }
++           };
 +         };
-+       };
 
-        window.WebChat.renderWebChat({
-          directLine: window.WebChat.createDirectLine({ token }),
-+         webSpeechPonyfillFactory: await createHybridPonyfillFactory({ authorizationToken, region })
-        }, document.getElementById('webchat'));
+          window.WebChat.renderWebChat({
+            directLine: window.WebChat.createDirectLine({ token }),
+-           webSpeechPonyfillFactory
++           webSpeechPonyfillFactory: await createHybridPonyfillFactory({ authorizationToken, region })
+          }, document.getElementById('webchat'));
 
-        document.querySelector('#webchat > *').focus();
-      })().catch(err => console.error(err));
-    </script>
-  </body>
-</html>
+          document.querySelector('#webchat > *').focus();
+        })().catch(err => console.error(err));
+      </script>
+    </body>
+  </html>
 ```
 
 # Further Reading

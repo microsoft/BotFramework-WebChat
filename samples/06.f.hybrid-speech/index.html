@@ -28,6 +28,41 @@
   <body>
     <div id="webchat" role="main"></div>
     <script>
+      // Create a function to fetch the Cognitive Services Speech Services credentials.
+      // The async function created will hold expiration information about the token and will return cached token when possible.
+      function createFetchSpeechServicesCredentials() {
+        let expireAfter = 0;
+        let lastResult = {};
+
+        return async () => {
+          // Fetch a new token if the existing one is expiring.
+          // The following article mentioned the token is only valid for 10 minutes.
+          // We will invalidate the token after 5 minutes.
+          // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
+          if (Date.now() > expireAfter) {
+            const speechServicesTokenRes = await fetch(
+              'https://webchat-mockbot.azurewebsites.net/speechservices/token',
+              { method: 'POST' }
+            );
+
+            lastResult = await speechServicesTokenRes.json();
+            expireAfter = Date.now() + 300000;
+          }
+
+          return lastResult;
+        };
+      }
+
+      const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
+
+      async function fetchSpeechServicesRegion() {
+        return (await fetchSpeechServicesCredentials()).region;
+      }
+
+      async function fetchSpeechServicesToken() {
+        return (await fetchSpeechServicesCredentials()).token;
+      }
+
       (async function() {
         // In this demo, we are using Direct Line token from MockBot.
         // Your client code must provide either a secret or a token to talk to your bot.
@@ -47,9 +82,18 @@
 
         // We are creating a hybrid ponyfill factory that will merge the result of two ponyfill factories together.
         async function createHybridPonyfillFactory({ authorizationToken, region }) {
+          // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
           const speechServicesPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory(
-            { authorizationToken, region }
+            {
+              // We are passing the Promise function to the authorizationToken field.
+              // This function will be called every time the token is being used.
+              authorizationToken: fetchSpeechServicesToken,
+
+              // In contrast, we are only fetching the region once.
+              region: await fetchSpeechServicesRegion()
+            }
           );
+
           const webSpeechPonyfillFactory = await window.WebChat.createBrowserWebSpeechPonyfillFactory();
 
           return options => {
@@ -70,7 +114,7 @@
         }
 
         // Pass a Web Speech ponyfill factory to renderWebChat.
-        // You can also use your own speech engine, given it is compliant to W3C Web Speech API, https://w3c.github.io/speech-api/.
+        // You can also use your own speech engine, given it is compliant to W3C Web Speech API: https://w3c.github.io/speech-api/.
         // For implementation, look at createBrowserWebSpeechPonyfill.js for details.
         window.WebChat.renderWebChat(
           {

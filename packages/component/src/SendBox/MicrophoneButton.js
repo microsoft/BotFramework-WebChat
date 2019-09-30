@@ -52,6 +52,7 @@ const connectMicrophoneButton = (...selectors) => {
       setSendBox,
       startDictate,
       stopDictate,
+      stopSpeakingActivity,
       webSpeechPonyfill: { speechSynthesis, SpeechSynthesisUtterance } = {}
     }) => ({
       click: () => {
@@ -59,6 +60,7 @@ const connectMicrophoneButton = (...selectors) => {
           stopDictate();
           setSendBox(dictateInterims.join(' '));
         } else {
+          stopSpeakingActivity();
           startDictate();
         }
 
