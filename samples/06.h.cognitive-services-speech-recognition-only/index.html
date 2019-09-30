@@ -92,7 +92,7 @@
           return options => {
             const speechServicesPonyfill = speechServicesPonyfillFactory(options);
 
-            // We are only returning speech recognition part of the ponyfill, but not the speech synthesis part.
+            // We are only returning the speech recognition part of the ponyfill, not the speech synthesis part.
             return {
               SpeechGrammarList: speechServicesPonyfill.SpeechGrammarList,
               SpeechRecognition: speechServicesPonyfill.SpeechRecognition
