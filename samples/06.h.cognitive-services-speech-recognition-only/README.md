@@ -53,7 +53,7 @@ Create a ponyfill factory from Speech Services.
   );
 ```
 
-Then, return a new ponyfill factory, that will call the one from Speech Services, but partially returning the result.
+Then return a new ponyfill factory that will call the one from Speech Services, but partially return the result.
 
 ```diff
 …
