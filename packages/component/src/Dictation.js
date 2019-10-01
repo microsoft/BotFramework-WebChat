@@ -16,7 +16,6 @@ const Dictation = ({
   language,
   numSpeakingActivities,
   onError,
-  postActivity,
   sendTypingIndicator,
   setDictateInterims,
   setDictateState,
@@ -53,7 +52,7 @@ const Dictation = ({
         sendTypingIndicator && emitTypingIndicator();
       }
     },
-    [dictateState, postActivity, sendTypingIndicator, setDictateInterims, setDictateState]
+    [dictateState, emitTypingIndicator, sendTypingIndicator, setDictateInterims, setDictateState]
   );
 
   const handleError = useCallback(() => {
@@ -85,10 +84,10 @@ Dictation.defaultProps = {
 Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
+  emitTypingIndicator: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,
   numSpeakingActivities: PropTypes.number.isRequired,
   onError: PropTypes.func,
-  postActivity: PropTypes.func.isRequired,
   sendTypingIndicator: PropTypes.bool.isRequired,
   setDictateInterims: PropTypes.func.isRequired,
   setDictateState: PropTypes.func.isRequired,
