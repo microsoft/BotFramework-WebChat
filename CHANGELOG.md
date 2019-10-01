@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  `bundle`: Bumped DirectLineJS to support metadata when uploading attachments, in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
+   - [`botframework-directlinejs@0.11.5`](https://www.npmjs.com/package/botframework-directlinejs)
+   - Removed DirectLineJS as a dev dependency for `component` because it was not referenced
+
 ## [4.5.2] - 2019-08-07
 
 ### Fixed

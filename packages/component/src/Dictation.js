@@ -102,6 +102,7 @@ Dictation.defaultProps = {
 Dictation.propTypes = {
   dictateState: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
+  emitTypingIndicator: PropTypes.func.isRequired,
   language: PropTypes.string.isRequired,
   numSpeakingActivities: PropTypes.number.isRequired,
   onError: PropTypes.func,

@@ -28,10 +28,11 @@ function* postActivity(directLine, userID, username, numActivitiesPosted, { meta
     ...deleteKey(activity, 'id'),
     attachments:
       attachments &&
-      attachments.map(({ contentType, contentUrl, name }) => ({
+      attachments.map(({ contentType, contentUrl, name, thumbnailUrl }) => ({
         contentType,
         contentUrl,
-        name
+        name,
+        thumbnailUrl
       })),
     channelData: {
       clientActivityID,
