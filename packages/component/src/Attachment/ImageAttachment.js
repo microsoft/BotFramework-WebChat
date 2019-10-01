@@ -3,9 +3,9 @@ import React from 'react';
 
 import ImageContent from './ImageContent';
 
-const ImageAttachment = ({ attachment }) => {
-  return <ImageContent alt={attachment.name} src={attachment.thumbnailUrl || attachment.contentUrl} />;
-};
+const ImageAttachment = ({ attachment }) => (
+  <ImageContent alt={attachment.name} src={attachment.thumbnailUrl || attachment.contentUrl} />
+);
 
 ImageAttachment.propTypes = {
   activity: PropTypes.shape({
@@ -13,7 +13,8 @@ ImageAttachment.propTypes = {
   }).isRequired,
   attachment: PropTypes.shape({
     contentUrl: PropTypes.string.isRequired,
-    name: PropTypes.string
+    name: PropTypes.string,
+    thumbnailUrl: PropTypes.string
   }).isRequired
 };
 

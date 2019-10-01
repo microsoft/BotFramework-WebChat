@@ -28,7 +28,7 @@ const RelativeTime = ({ language, value }) => {
   const [timer, setTimer] = useState(nextTimer(value));
   const handleInterval = useCallback(() => {
     setTimer(nextTimer(value));
-  }, [language, value]);
+  }, [value]);
 
   const localizedAbsoluteTime = localize('SentAt', language) + getLocaleString(value, language);
   const text = getText(language, value);
