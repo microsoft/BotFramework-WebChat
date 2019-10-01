@@ -16,7 +16,6 @@ const Dictation = ({
   language,
   numSpeakingActivities,
   onError,
-  postActivity,
   sendTypingIndicator,
   setDictateInterims,
   setDictateState,
