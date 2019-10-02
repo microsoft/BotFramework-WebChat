@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+    -->
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      // In this demo, we are using Direct Line token from MockBot.
+      // To talk to your bot, you should use the token exchanged using your Direct Line secret.
+      // You should never put the Direct Line secret in the browser or client app.
+      // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
+
+      // This code is modified to run in browser without async and Promise support
+      window
+        .fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
+        .then(function(res) {
+          return res.json();
+        })
+        .then(function(json) {
+          const token = json.token;
+
+          window.WebChat.renderWebChat(
+            {
+              directLine: window.WebChat.createDirectLine({
+                token: token
+              })
+            },
+            document.getElementById('webchat')
+          );
+
+          document.querySelector('#webchat > *').focus();
+        });
+    </script>
+  </body>
+</html>

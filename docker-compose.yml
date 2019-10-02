@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
+
+  chrome:
+    build:
+      context: ./
+      dockerfile: Dockerfile-selenium
+    networks:
+    - selenium
+    depends_on:
+    - webchat
+    ports:
+    - "4444:4444"
+    volumes:
+    - /dev/shm:/dev/shm
+
+  webchat:
+    build:
+      context: ./
+      dockerfile: Dockerfile-testharness
+    ports:
+    - "5080:80"
+    networks:
+    - selenium
+
+networks:
+  selenium:
+    driver: bridge

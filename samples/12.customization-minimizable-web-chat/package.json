@@ -1,0 +1,28 @@
+{
+  "name": "sample-customization-minimizable-web-chat",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/12.customization-minimizable-web-chat/",
+  "dependencies": {
+    "botframework-webchat": "~4.5.1",
+    "memoize-one": "^5.0.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^3.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

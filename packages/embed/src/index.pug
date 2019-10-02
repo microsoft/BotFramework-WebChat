@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(viewport="initial-scale=1,width=device-width")
+    title #{htmlWebpackPlugin.options.title}
+    style
+      | body { margin: 0; }
+      | body, html { height: 100%; }
+  body
+    each cssFile in htmlWebpackPlugin.files.css
+      style !{compilation.assets[cssFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()}
+    each jsFile in htmlWebpackPlugin.files.js
+      script !{compilation.assets[jsFile.substr(htmlWebpackPlugin.files.publicPath.length)].source()}

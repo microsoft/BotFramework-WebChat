@@ -1,0 +1,17 @@
+.web-chat {
+  overflow: hidden;
+}
+
+.connect-spinner {
+  display: flex;
+  margin: auto;
+  text-align: center;
+}
+
+.connect-spinner > .content {
+  margin: auto;
+}
+
+.connect-spinner > .content > .icon {
+  font-size: 64px;
+}

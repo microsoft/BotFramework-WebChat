@@ -1,0 +1,17 @@
+html, body { height: 100%; }
+body { margin: 0 }
+
+#root {
+  display: flex;
+  height: 100%;
+}
+
+#app {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+.chat {
+  flex: 1;
+}

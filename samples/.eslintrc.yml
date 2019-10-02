@@ -1,0 +1,90 @@
+extends:
+- plugin:react/recommended
+plugins:
+- prettier
+- react-hooks
+rules:
+# plugins
+  prettier/prettier: error
+
+  react/button-has-type: error
+  react/default-props-match-prop-types: error
+  react/destructuring-assignment: error
+  react/forbid-component-props:
+  - error
+  - forbid:
+    - style
+  react/forbid-dom-props:
+  - error
+  - forbid:
+    - id
+  # react/forbid-prop-types: error // How to deal with Adaptive Card schema?
+  react/no-access-state-in-setstate: error
+  react/no-array-index-key: error
+  react/no-danger: error
+  react/no-did-mount-set-state: error
+  react/no-did-update-set-state: error
+  react/no-redundant-should-component-update: error
+  react/no-typos: error
+  react/no-this-in-sfc: error
+  react/no-unescaped-entities: error
+  react/no-unsafe: error
+  react/no-unused-prop-types: error
+  react/no-unused-state: error
+  react/no-will-update-set-state: error
+  react/prefer-es6-class: error
+  react/prefer-read-only-props: error
+  react/require-default-props: error
+  react/self-closing-comp: error
+  react/sort-prop-types: error
+  react/state-in-constructor: error
+  react/static-property-placement:
+  - error
+  - property assignment
+  react/style-prop-object: error
+  react/void-dom-elements-no-children: error
+  react/jsx-boolean-value:
+  - error
+  - always
+  react/jsx-closing-bracket-location:
+  - error
+  - tag-aligned
+  react/jsx-closing-tag-location: error
+  react/jsx-equals-spacing:
+  - error
+  - never
+  react/jsx-first-prop-new-line:
+  - error
+  - multiline-multiprop
+  react/jsx-handler-names: error
+  react/jsx-indent:
+  - error
+  - 2
+  react/jsx-indent-props:
+  - error
+  - 2
+  react/jsx-max-props-per-line:
+  - error
+  - maximum: 1
+    when: multiline
+  react/jsx-no-bind: error
+  react/jsx-no-literals: error
+  # react/jsx-one-expression-per-line: #conflicts with prettier
+  # - error
+  # - allow: literal
+  react/jsx-fragments:
+  - error
+  - element
+  react/jsx-pascal-case: error
+  react/jsx-props-no-multi-spaces: error
+  react/jsx-sort-default-props: error
+  react/jsx-sort-props: error
+  react/jsx-tag-spacing:
+  - error
+  - afterOpening: never
+    beforeClosing: never
+    beforeSelfClosing: always
+    closingSlash: never
+  react/jsx-wrap-multilines: error # Conflict with no-extra-parens
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: warn

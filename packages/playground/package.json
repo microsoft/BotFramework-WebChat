@@ -1,0 +1,29 @@
+{
+  "name": "playground",
+  "version": "0.0.0-0",
+  "private": true,
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "adaptivecards": "~1.2.0",
+    "botframework-directlinejs": "^0.11.5",
+    "botframework-webchat": "0.0.0-0",
+    "classnames": "^2.2.6",
+    "glamor": "^2.20.40",
+    "memoize-one": "^5.0.2",
+    "on-error-resume-next": "^1.0.0",
+    "react-scripts": "^3.0.0",
+    "rxjs": "5"
+  },
+  "scripts": {
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "prepublishOnly": "npm run build",
+    "start": "react-scripts start",
+    "test": "react-scripts test --env=jsdom"
+  }
+}

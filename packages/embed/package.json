@@ -1,0 +1,58 @@
+{
+  "name": "botframework-webchat-embed",
+  "version": "4.0.0-0",
+  "description": "",
+  "main": "src/index.js",
+  "private": true,
+  "jest": {
+    "collectCoverageFrom": [
+      "**/src/**/*.{js,jsx}",
+      "!**/*.{spec,test}.{js,jsx,ts,tsx}",
+      "!**/node_modules/**"
+    ],
+    "testEnvironment": "node"
+  },
+  "scripts": {
+    "build": "npm run build:babel && webpack-cli --mode development",
+    "build:babel": "babel --extensions .js,.ts --ignore **/*.spec.js,**/*.spec.ts,**/*.test.js,**/*.test.ts,__test__/**/*.js,__test__/**/*.ts --out-dir lib --source-maps inline --verbose src",
+    "build:webpack": "webpack-cli --mode development",
+    "clean": "npm run clean:dist && npm run clean:lib",
+    "clean:dist": "rimraf dist",
+    "clean:lib": "rimraf lib",
+    "prepublishOnly": "npm run build:babel && webpack-cli",
+    "start": "concurrently --kill-others --names \"build,server\" \"npm run watch\" \"npm run start:server\"",
+    "start:server": "node-dev --no-notify --respawn hostDevServer",
+    "test": "jest",
+    "watch": "concurrently --kill-others --names \"babel,webpack\" \"npm run watch:babel\" \"npm run watch:webpack\"",
+    "watch:babel": "npm run build:babel -- --watch",
+    "watch:webpack": "webpack-cli --config webpack-watch.config.js --watch"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
+    "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
+    "concurrently": "^4.1.1",
+    "copy-webpack-plugin": "^5.0.3",
+    "html-webpack-plugin": "^3.2.0",
+    "http-proxy-middleware": "^0.19.1",
+    "jest": "^24.8.0",
+    "node-dev": "^4.0.0",
+    "node-fetch": "^2.6.0",
+    "pug": "^2.0.4",
+    "pug-loader": "^2.4.0",
+    "restify": "^8.4.0",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5",
+    "webpack-visualizer-plugin": "^0.1.11"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.5.4",
+    "core-js": "^3.2.1",
+    "url-search-params-polyfill": "^7.0.0",
+    "whatwg-fetch": "^3.0.0"
+  }
+}

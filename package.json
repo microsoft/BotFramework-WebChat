@@ -1,89 +1,113 @@
 {
-  "name": "botframework-webchat",
-  "version": "0.11.4",
-  "description": "Embeddable web chat control for the Microsoft Bot Framework",
-  "main": "built/BotChat.js",
-  "types": "built/BotChat.d.ts",
-  "scripts": {
-    "build-test": "tsc -p ./test/mock_dl && tsc -p ./test && tsc -p ./test/mock_speech",
-    "build-test-watch": "concurrently \"tsc -w -p ./test/mock_dl\" \"tsc -w -p ./test\"",
-    "build-css": "node-sass ./src/scss/ -o . && rimraf ./includes/",
-    "build-ac-config": "ac-scss2json ./src/scss/includes/adaptive-card-config.scss > adaptivecards-hostconfig.json",
-    "build-all-style": "npm run build-css && npm run build-ac-config && webpack",
-    "build": "npm run build-css && tsc && webpack --progress",
-    "watch": "npm-run-all -p -r -l tsc-watch webpack-watch",
-    "tsc-watch": "tsc -w",
-    "webpack": "webpack",
-    "webpack-watch": "webpack --progress --watch",
-    "clean": "rimraf built",
-    "prepublish": "tsc && npm run build-css && webpack --progress --config webpack.production.config.js",
-    "start": "http-server -p 8000",
-    "test": "concurrently  \"node test/mock_dl/index.js\" \"mocha test\" ",
-    "mock": "node test/mock_dl/index.js"
-  },
+  "name": "botframework-webchat-root",
+  "version": "4.5.3-0",
+  "private": true,
+  "files": [
+    "lib/**/*"
+  ],
+  "author": "Microsoft Corporation",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://git@github.com/Microsoft/BotFramework-WebChat.git"
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
   },
-  "author": "Microsoft Corp",
-  "license": "MIT",
-  "dependencies": {
-    "@types/react": "15.0.38",
-    "botframework-directlinejs": "0.9.13",
-    "core-js": "2.4.1",
-    "markdown-it": "8.3.1",
-    "microsoft-adaptivecards": "0.6.1",
-    "microsoft-speech-browser-sdk": "0.0.1",
-    "react": "15.6.1",
-    "react-dom": "15.6.1",
-    "react-redux": "5.0.5",
-    "redux": "3.7.2",
-    "redux-observable": "0.13.0",
-    "rxjs": "5.4.3",
-    "tslib": "1.7.1"
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/packages/**/src/**/*.{js,jsx,ts,tsx}",
+      "!**/*.{spec,test}.{js,jsx,ts,tsx}",
+      "!**/*.json",
+      "!**/node_modules/**",
+      "!**/packages/playground/**"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text-summary"
+    ],
+    "globals": {
+      "VERSION": "0.0.0-0"
+    },
+    "moduleDirectories": [
+      "node_modules",
+      "packages"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "ts",
+      "tsx"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setup/setupTestFramework.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/setup/",
+      "<rootDir>/packages/playground/",
+      "<rootDir>/samples/"
+    ],
+    "transform": {
+      "\\.[jt]sx?$": "./babel-jest-config.js"
+    }
+  },
+  "keywords": [],
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write packages/{bundle,component,core,embed,playground}/src/**/*.{js,jsx,ts,tsx}",
+      "prettier --write __tests__/**/*.{js,jsx,ts,tsx}",
+      "prettier --write samples/**/*.{js,html}",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run --scope=botframework-webchat* --stream build",
+    "build:sample": "lerna run --scope=sample-* --stream build",
+    "clean": "lerna run --scope=botframework-webchat* --parallel --stream clean",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "eslint": "lerna run --scope=botframework-webchat* --parallel --stream eslint",
+    "lerna-publish": "lerna publish",
+    "prepublishOnly": "lerna run --scope=botframework-webchat* --scope=playground --stream prepublishOnly",
+    "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
+    "start:docker": "npm run build && docker-compose up --build",
+    "start:playground": "cd packages/playground && npm run start",
+    "test": "jest --no-cache",
+    "test:all": "lerna run --parallel --stream test",
+    "watch": "lerna run --parallel --scope=botframework-webchat* --stream watch"
   },
   "devDependencies": {
-    "@types/body-parser": "0.0.33",
-    "@types/chai": "3.4.34",
-    "@types/chai-subset": "1.0.29",
-    "@types/deep-freeze": "0.0.29",
-    "@types/express": "4.0.35",
-    "@types/markdown-it": "0.0.2",
-    "@types/nightmare": "1.6.30",
-    "@types/react-dom": "0.14.23",
-    "@types/react-redux": "4.4.38",
-    "awesome-typescript-loader": "3.1.2",
-    "body-parser": "1.16.0",
-    "chai": "3.5",
-    "chai-subset": "1.4.0",
-    "concurrently": "3.1.0",
-    "deep-freeze": "0.0.1",
-    "dotenv": "4.0.0",
-    "expose-loader": "0.7.3",
-    "express": "4.14.0",
-    "fs-extra": "1.0.0",
-    "http-server": "0.9.0",
-    "microsoft-adaptivecards-scss-to-json": "1.2.0",
-    "mocha": "3.2.0",
-    "multer": "1.3.0",
-    "nightmare": "2.8.1",
-    "nightmare-upload": "0.1.1",
-    "node-sass": "4.5.0",
-    "nodemon": "1.11.0",
-    "npm-run-all": "3.1.2",
-    "remote": "0.2.6",
-    "rimraf": "2.6.1",
-    "source-map-loader": "0.2.1",
-    "typescript": "2.3",
-    "vo": "4.0.2",
-    "webpack": "2.3.3"
-  },
-  "files": [
-    "built/",
-    "adaptivecards-hostconfig.json",
-    "botchat-fullwindow.css",
-    "botchat.css",
-    "botchat.js",
-    "CognitiveServices.js"
-  ]
+    "@azure/storage-blob": "^10.3.0",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
+    "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/runtime": "^7.5.4",
+    "babel-jest": "^24.8.0",
+    "core-js": "^3.1.4",
+    "coveralls": "^3.0.4",
+    "eslint-plugin-prettier": "^3.1.0",
+    "get-port": "^5.0.0",
+    "husky": "^3.0.0",
+    "jest": "^24.8.0",
+    "jest-image-snapshot": "^2.9.0",
+    "lerna": "^3.15.0",
+    "lint-staged": "^9.2.0",
+    "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "selenium-webdriver": "^4.0.0-alpha.4",
+    "serve-handler": "^6.1.0"
+  }
 }

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+rsync -av --progress samples/ gh-pages/ \
+  --exclude backend-cli \
+  --exclude 12.customization-minimizable-web-chat \
+  --exclude 13.customization-speech-ui \
+  --exclude 14.customization-piping-to-redux \
+  --exclude 16.customization-selectable-activity \
+  --exclude 17.chat-send-history \
+  --exclude 21.customization-plain-ui
+
+mkdir gh-pages/12.customization-minimizable-web-chat
+rsync -av --progress samples/12.customization-minimizable-web-chat/build/ gh-pages/12.customization-minimizable-web-chat/
+
+mkdir gh-pages/13.customization-speech-ui
+rsync -av --progress samples/13.customization-speech-ui/build/ gh-pages/13.customization-speech-ui/
+
+mkdir gh-pages/14.customization-piping-to-redux
+rsync -av --progress samples/14.customization-piping-to-redux/build/ gh-pages/14.customization-piping-to-redux/
+
+mkdir gh-pages/16.customization-selectable-activity
+rsync -av --progress samples/16.customization-selectable-activity/build/ gh-pages/16.customization-selectable-activity/
+
+mkdir gh-pages/17.chat-send-history
+rsync -av --progress samples/17.chat-send-history/build/ gh-pages/17.chat-send-history/
+
+mkdir gh-pages/21.customization-plain-ui
+rsync -av --progress samples/21.customization-plain-ui/build/ gh-pages/21.customization-plain-ui/

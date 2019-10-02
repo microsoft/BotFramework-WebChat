@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/images/BotServices.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Web Chat Single Sign-On Demo</title>
+    <script src="https://cdn.botframework.com/botframework-webchat/4.4.1/webchat.js"></script>
+    <script src="https://unpkg.com/simple-update-in@2.0.2/dist/simple-update-in.production.min.js"></script>
+
+    <!-- This is for styling Web Chat for demonstration purposes -->
+    <style type="text/css">
+      html,
+      body {
+        background-color: #f7f7f7;
+        height: 100%;
+      }
+
+      body {
+        background-image: url(/images/BotServices-Translucent.svg);
+        background-position: 100% 100%;
+        background-repeat: no-repeat;
+        background-size: auto 50%;
+        margin: 0;
+      }
+
+      #webchat {
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+        height: calc(100% - 20px);
+        left: 10px;
+        overflow: hidden;
+        position: fixed;
+        top: 10px;
+        width: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="webchat"></div>
+    <script>
+      // This is a helper function for fetching JSON resources.
+      async function fetchJSON(url, options = {}) {
+        const res = await fetch(url, {
+          ...options,
+          headers: {
+            ...options.headers,
+            accept: 'application/json'
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch JSON due to ${res.status}`);
+        }
+
+        return await res.json();
+      }
+
+      (async function main() {
+        const store = WebChat.createStore({}, ({ dispatch }) => {
+          // We are using a Redux middleware to intercept actions in Web Chat and dispatch additional actions.
+          let connected;
+          let oauthAccessToken;
+          let oauthProvider;
+
+          // If we receive "accesstokenchange" from the page, that means we have recently signed in or out.
+          // We should send the new token to the bot. If we send an empty string, the bot will know we are signed out.
+          window.addEventListener('accesstokenchange', ({ data: { accessToken, provider } }) => {
+            // Save the token/provider so we can piggyback it to every outgoing activity.
+            oauthAccessToken = accessToken;
+            oauthProvider = provider;
+
+            connected &&
+              dispatch({
+                type: 'WEB_CHAT/SEND_EVENT',
+                payload: { name: oauthAccessToken ? 'oauth/signin' : 'oauth/signout' }
+              });
+          });
+
+          return next => action => {
+            let shouldSendAccessToken;
+
+            if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+              // Handle the case that we receive SEND_ACCESS_TOKEN but we are not connected at that moment.
+              // Now, we are connected to the bot and should send the token to the bot.
+              shouldSendAccessToken = !!oauthAccessToken;
+              connected = true;
+
+              // If we are signed in before Web Chat is connected, tell the bot we have signed in.
+              if (oauthAccessToken) {
+                dispatch({
+                  type: 'WEB_CHAT/SEND_EVENT',
+                  payload: { name: 'oauth/signin' }
+                });
+              }
+            } else if (action.type === 'DIRECT_LINE/DISCONNECT_PENDING') {
+              // We are disconnecting.
+              // Set connected to false so we don't send the access token automatically until CONNECT_FULFILLED.
+              connected = false;
+            } else if (
+              action.type === 'DIRECT_LINE/INCOMING_ACTIVITY' &&
+              action.payload.activity.type === 'event' &&
+              action.payload.activity.name === 'oauth/signout'
+            ) {
+              // If the bot is sending an event activity named "oauth/signout", we should ask the page to sign out.
+              window.dispatchEvent(new Event('signout'));
+            } else if (action.type === 'DIRECT_LINE/POST_ACTIVITY' && oauthAccessToken) {
+              // Piggyback the access token on every outgoing activity.
+              action = {
+                ...action,
+                payload: {
+                  ...action.payload,
+                  activity: {
+                    ...action.payload.activity,
+                    channelData: {
+                      ...action.payload.channelData,
+                      oauthAccessToken,
+                      oauthProvider
+                    }
+                  }
+                }
+              };
+            }
+
+            return next(action);
+          };
+        });
+
+        // This is for obtaining Direct Line token from the bot.
+        // In production system, we should avoid using Direct Line secret to connect to the bot.
+        const { token } = await fetchJSON('/api/directline/token');
+
+        WebChat.renderWebChat(
+          {
+            cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+              // To sign in, the bot will send a card action with a custom URL.
+              // We are using "about:blank" as the placeholder URL.
+              const { type, value } = cardAction;
+
+              if (type === 'openUrl' && value === 'about:blank#sign-into-aad') {
+                // Request the page to start sign-in flow for Azure Active Directory.
+                const signInEvent = new Event('signin');
+
+                signInEvent.data = { provider: 'aad' };
+                window.dispatchEvent(signInEvent);
+              } else if (type === 'openUrl' && value === 'about:blank#sign-into-github') {
+                // Request the page to start sign-in flow for GitHub OAuth app.
+                const signInEvent = new Event('signin');
+
+                signInEvent.data = { provider: 'github' };
+                window.dispatchEvent(signInEvent);
+              } else {
+                // Non-SSO related actions, fallback to default behavior.
+                return next({ cardAction, getSignInUrl });
+              }
+            },
+            directLine: WebChat.createDirectLine({ token }),
+            store,
+            styleOptions: {
+              backgroundColor: 'rgba(255, 255, 255, .8)'
+            }
+          },
+          document.getElementById('webchat')
+        );
+      })().catch(err => console.error(err));
+    </script>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>

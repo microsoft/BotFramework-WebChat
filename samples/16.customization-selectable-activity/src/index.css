@@ -1,0 +1,58 @@
+html, body { height: 100%; }
+body { margin: 0 }
+* {
+  box-sizing: border-box;
+  font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
+}
+
+#root {
+  display: flex;
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+.app > * {
+  min-width: 50%;
+}
+
+.chat {
+  flex: 1 0;
+}
+
+.chat * {
+  box-sizing: content-box;
+}
+
+.activity-wrapper {
+  margin: 5px;
+  padding: 5px;
+}
+
+.activity-wrapper.selected {
+  background: #DCEBFC;
+}
+
+.inspector {
+  border-left: 2px solid lightgray;
+  display: flex;
+  flex: 1 0;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.inspector > div {
+  background: #eee;
+  border: 1px solid lightgray;
+  padding: 20px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.inspector pre {
+  margin: 0;
+}

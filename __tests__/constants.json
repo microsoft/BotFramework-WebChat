@@ -1,0 +1,16 @@
+{
+  "imageSnapshotOptions": {
+    "customDiffConfig": {
+      "threshold": 0.14
+    }
+  },
+  "timeouts": {
+    "directLine": 15000,
+    "fetch": 2500,
+    "navigation": 10000,
+    "postActivity": 30000,
+    "scrollToBottom": 2000,
+    "test": 60000,
+    "ui": 1000
+  }
+}

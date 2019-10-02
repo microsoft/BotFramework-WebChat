@@ -1,0 +1,6 @@
+# https://github.com/SeleniumHQ/docker-selenium
+# https://hub.docker.com/r/selenium/standalone-chrome/tags/
+
+FROM selenium/standalone-chrome:3.141.59-radium
+
+ADD __tests__/setup/local ~/Downloads

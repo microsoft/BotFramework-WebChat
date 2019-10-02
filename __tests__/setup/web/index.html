@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Automated test harness</title>
+    <script>
+    !function () {
+      'use strict';
+
+      const { console } = window;
+      const log = window.__console__ = [];
+      const push = (type, ...args) => {
+        log.push([type, args.join(' ')]);
+        console[type].apply(console, args);
+      };
+
+      window.console = {
+        ...console,
+
+        debug: push.bind(null, 'debug'),
+        error: push.bind(null, 'error'),
+        info: push.bind(null, 'info'),
+        log: push.bind(null, 'log'),
+        warn: push.bind(null, 'warn')
+      };
+
+      window.addEventListener('error', ({ colno, error, filename, lineno, message }) => {
+        push('onError', JSON.stringify({
+          colno,
+          error,
+          filename,
+          lineno,
+          message
+        }));
+      });
+    }();
+    </script>
+    <!--
+      For demonstration purposes, we are using the latest official release of Web Chat at "/latest/webchat.js". When you are using Web Chat for production, you may lock down on a specific version with the following format: "/4.1.0/webchat.js".
+    -->
+    <style>
+      html, body { height: 100% }
+      body { margin: 0 }
+      input, textarea, [contenteditable] { caret-color: Transparent; }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script src="https://tdurnford.github.io/BotFramework-Offline-MockBot/index.js"></script>
+    <script src="https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js"></script>
+    <script src="/createProduceConsumeBroker.js"></script>
+    <script src="/mockWebSpeech.js"></script>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script>
+      function unmarshal({ __evalKeys, ...obj } = {}) {
+        __evalKeys && __evalKeys.forEach(key => {
+          obj[key] = eval(obj[key])();
+        });
+
+        return obj;
+      }
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+
+          script.setAttribute('async', '');
+          script.setAttribute('src', src);
+          script.addEventListener('load', resolve);
+          script.addEventListener('error', ({ error }) => reject(error));
+
+          document.body.appendChild(script);
+        });
+      }
+
+      async function retry(fn, retries) {
+        let lastErr;
+
+        for (; retries >= 0; retries--) {
+          try {
+            return await fn();
+          } catch (err) {
+            lastErr = err;
+          }
+        }
+
+        throw lastErr;
+      }
+
+      const PASSTHRU_MIDDLEWARE = store => next => action => next(action);
+
+      async function main(options) {
+        let { createDirectLine, createStyleSet, props, setup, storeInitialState = {}, storeMiddleware = PASSTHRU_MIDDLEWARE, useProductionBot } = unmarshal(options);
+
+        props = unmarshal(props);
+
+        if (setup) { await setup(); }
+
+        await loadScript('/webchat-instrumented.js');
+
+        let directLine;
+
+        if (!useProductionBot && !createDirectLine) {
+          directLine = window.MockBotAdapter.createDirectLine({});
+        } else {
+          const { token } = await retry(async () => {
+            try {
+              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST', timeout: 2000 });
+
+              return await res.json();
+            } catch (err) {
+              console.error('Failed to fetch Direct Line token from Mockbot.');
+              console.error(err);
+
+              throw err;
+            }
+          }, 3);
+
+          createDirectLine || (createDirectLine = window.WebChat.createDirectLine);
+          directLine = (createDirectLine || window.WebChat.createDirectLine)({ token });
+        }
+
+        const store = window.WebChatTest.store = window.WebChat.createStore(storeInitialState, store => {
+          const setupMiddleware = storeMiddleware(store);
+
+          return next => {
+            const processAction = setupMiddleware(next);
+
+            return action => {
+              window.WebChatTest.actions.push(action);
+
+              return processAction(action);
+            };
+          };
+        });
+
+        props = {
+          directLine,
+          store,
+          styleSet: createStyleSet && createStyleSet(props.styleOptions),
+          username: 'Happy Web Chat user',
+          ...props
+        };
+
+        renderWebChat = props => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+        renderWebChat(props);
+
+        document.querySelector('#webchat > *').focus();
+
+        window.WebChatTest.updateProps = mergeProps => {
+          props = { ...props, ...mergeProps };
+
+          renderWebChat(props);
+        };
+      }
+
+      window.WebChatTest = {
+        actions: [],
+        loadScript
+      };
+    </script>
+  </body>
+</html>

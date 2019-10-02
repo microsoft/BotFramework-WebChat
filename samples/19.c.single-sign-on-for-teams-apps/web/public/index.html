@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="/images/BotServices.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>Web Chat Single Sign-On Demo</title>
+    <script src="https://cdn.botframework.com/botframework-webchat/4.4.1/webchat.js"></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha384-Sxwk52KLiVpPaWwAq9wCiCgz1pSJKHv6xYurDPOD8okUWwY5tfK+G7jVRWdaL7r6"
+      src="https://unpkg.com/simple-update-in@2.0.2/dist/simple-update-in.production.min.js"
+    ></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha384-DcoNUuQTjpW5Sw3msonn/2ojgtNvtC5fCGd5U9RUpL3g1hla1LzHz8I9YIYSXe6q"
+      src="https://statics.teams.microsoft.com/sdk/v1.4.2/js/MicrosoftTeams.min.js"
+    ></script>
+
+    <!-- This is for styling Web Chat for demonstration purposes -->
+    <style type="text/css">
+      html,
+      body {
+        background-color: #f7f7f7;
+        height: 100%;
+      }
+
+      body {
+        background-image: url(/images/BotServices-Translucent.svg);
+        background-position: 100% 100%;
+        background-repeat: no-repeat;
+        background-size: auto 50%;
+        margin: 0;
+      }
+
+      #webchat {
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+        height: calc(100% - 20px);
+        left: 10px;
+        overflow: hidden;
+        position: fixed;
+        top: 10px;
+        width: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      // Settings.
+      const OAUTH_REDIRECT_URI = '/api/oauth/authorize';
+
+      // This is a helper function for fetching JSON resources.
+      async function fetchJSON(url, options = {}) {
+        const res = await fetch(url, {
+          ...options,
+          headers: {
+            ...options.headers,
+            accept: 'application/json'
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch JSON due to ${res.status}`);
+        }
+
+        return await res.json();
+      }
+
+      // Verify if the access token is valid or not.
+      async function verifyAccessToken(accessToken) {
+        const res = await fetch('https://graph.microsoft.com/v1.0/me', {
+          headers: {
+            authorization: `Bearer ${accessToken}`
+          }
+        });
+
+        return res.ok;
+      }
+
+      // This will request Microsoft Teams to start a popup dialog for sign-in process.
+      function authorize() {
+        return new Promise((resolve, reject) => {
+          window.microsoftTeams.authentication.authenticate({
+            failureCallback: reject,
+            height: 535,
+            successCallback: ({ accessToken }) => resolve(accessToken),
+            url: window.location.origin + '/api/oauth/authorize',
+            width: 600
+          });
+        });
+      }
+
+      // This will request Microsoft Teams to send context information to the web page.
+      // Microsoft Teams suggests that the context information should not be trusted and should only used as hint for further authentication.
+      function getTeamsContext() {
+        return new Promise(resolve => window.microsoftTeams.getContext(resolve));
+      }
+
+      (async function main() {
+        // Initialize Microsoft Teams JavaScript SDK
+        window.microsoftTeams.initialize();
+
+        // When OAuth provider performs callback, the access token will be saved into session storage and redirected back to this page. See /web/src/routes/oauth/callback.js.
+        // We will retrive the token from session storage from here.
+        let oauthAccessToken = window.localStorage.getItem('OAUTH_ACCESS_TOKEN');
+
+        // Get the Microsoft Teams context.
+        const teamsContext = await getTeamsContext();
+
+        // If we are not authenticated, or the access token is not working, we will redirect the end-user to the sign-in page.
+        if (!(oauthAccessToken && (await verifyAccessToken(oauthAccessToken)))) {
+          try {
+            // Opens a sign-in popup.
+            oauthAccessToken = await authorize();
+          } catch (err) {
+            alert(`Failed to authorize due to ${err}.`);
+            return;
+          }
+
+          window.localStorage.setItem('OAUTH_ACCESS_TOKEN', oauthAccessToken);
+        }
+
+        // Piggyback the access token on every outgoing activity.
+        const store = WebChat.createStore({}, ({ dispatch }) => {
+          return next => action => {
+            if (action.type === 'DIRECT_LINE/POST_ACTIVITY' && oauthAccessToken) {
+              // For convenience, we are using a package called "simpleUpdateIn" to patch activity.
+              action = simpleUpdateIn(
+                action,
+                ['payload', 'activity', 'channelData', 'oauthAccessToken'],
+                () => oauthAccessToken
+              );
+            }
+
+            return next(action);
+          };
+        });
+
+        // This is for obtaining Direct Line token from the bot.
+        // In production system, we should avoid using Direct Line secret to connect to the bot.
+        const { token } = await fetchJSON('/api/directline/token');
+        const webChatElement = document.createElement('div');
+
+        webChatElement.id = 'webchat';
+
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token }),
+            store,
+            styleOptions: {
+              backgroundColor: 'rgba(255, 255, 255, .8)'
+            }
+          },
+          webChatElement
+        );
+
+        document.documentElement.append(webChatElement);
+      })().catch(err => console.error(err));
+    </script>
+    <div id="root"></div>
+  </body>
+</html>

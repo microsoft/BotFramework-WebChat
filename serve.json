@@ -1,0 +1,9 @@
+{
+  "cleanUrls": false,
+  "redirects": [
+    { "source": "/", "destination": "samples/index.html" },
+    { "source": "/webchat.js", "destination": "packages/bundle/dist/webchat.js" },
+    { "source": "/webchat-es5.js", "destination": "packages/bundle/dist/webchat-es5.js" },
+    { "source": "/webchat-minimal.js", "destination": "packages/bundle/dist/webchat-minimal.js" }
+  ]
+}
