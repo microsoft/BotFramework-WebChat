@@ -6,17 +6,23 @@ import connectToWebChat from '../connectToWebChat';
 import CroppedImage from '../Utils/CroppedImage';
 
 const connectAvatar = (...selectors) =>
-  connectToWebChat(
+connectToWebChat(
     (
       {
         styleSet: {
-          options: { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials }
+          options: { botAvatarBackgroundColor, botAvatarBorderRadius, botAvatarFont, botAvatarFontSize, botAvatarImage, botAvatarInitials, botAvatarTextColor,
+                     userAvatarBackgroundColor, userAvatarBorderRadius, userAvatarFont, userAvatarFontSize, userAvatarImage, userAvatarInitials, userAvatarTextColor }
         }
       },
       { fromUser }
     ) => ({
+      accent: fromUser ? userAvatarBackgroundColor : botAvatarBackgroundColor,
+      avatarBorderRadius: fromUser ? userAvatarBorderRadius: botAvatarBorderRadius,
       avatarImage: fromUser ? userAvatarImage : botAvatarImage,
-      avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials
+      avatarInitials: fromUser ? userAvatarInitials : botAvatarInitials,
+      avatarTextColor: fromUser ? userAvatarTextColor : botAvatarTextColor,
+      fontSize: fromUser ? userAvatarFontSize: botAvatarFontSize,
+      primaryFont: fromUser ? userAvatarFont : botAvatarFont
     }),
     ...selectors
   );
@@ -24,11 +30,12 @@ const connectAvatar = (...selectors) =>
 // TODO: [P2] Consider memoizing "style={ backgroundImage }" in our upstreamers
 //       We have 2 different upstreamers <CarouselFilmStrip> and <StackedLayout>
 
-const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, className, fromUser, styleSet }) =>
+const Avatar = ({ 'aria-hidden': ariaHidden, accent, avatarBorderRadius, avatarImage, avatarInitials, avatarTextColor, className, fontSize, fromUser, primaryFont,styleSet }) =>
   !!(avatarImage || avatarInitials) && (
     <div
       aria-hidden={ariaHidden}
       className={classNames(styleSet.avatar + '', { 'from-user': fromUser }, className + '')}
+      style={{ backgroundColor: accent, borderRadius: avatarBorderRadius, color: avatarTextColor, fontFamily: primaryFont, fontSize: fontSize }}
     >
       {avatarInitials}
       {!!avatarImage && <CroppedImage alt="" className="image" height="100%" src={avatarImage} width="100%" />}
@@ -37,18 +44,28 @@ const Avatar = ({ 'aria-hidden': ariaHidden, avatarImage, avatarInitials, classN
 
 Avatar.defaultProps = {
   'aria-hidden': false,
+  accent: '',
+  avatarBorderRadius: '',
   avatarImage: '',
   avatarInitials: '',
+  avatarTextColor: '',
   className: '',
-  fromUser: false
+  fontSize: '',
+  fromUser: false,
+  primaryFont: ''
 };
 
 Avatar.propTypes = {
+  accent: PropTypes.string,
   'aria-hidden': PropTypes.bool,
+  avatarBorderRadius: PropTypes.string,
   avatarImage: PropTypes.string,
   avatarInitials: PropTypes.string,
+  avatarTextColor: PropTypes.string,
   className: PropTypes.string,
+  fontSize: PropTypes.string,
   fromUser: PropTypes.bool,
+  primaryFont: PropTypes.string,
   styleSet: PropTypes.shape({
     avatar: PropTypes.any.isRequired
   }).isRequired

@@ -2,13 +2,20 @@ export default function createAvatarStyle({
   accent,
   avatarSize,
   botAvatarBackgroundColor,
+  botAvatarBorderRadius,
+  botAvatarFont,
+  botAvatarFontSize,
+  botAvatarTextColor,
+  fontSizeSmall,
   primaryFont,
-  userAvatarBackgroundColor
+  userAvatarBackgroundColor,
+  userAvatarBorderRadius,
+  userAvatarFont,
+  userAvatarFontSize,
+  userAvatarTextColor
 }) {
   return {
     alignItems: 'center',
-    borderRadius: '50%',
-    color: 'White',
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
     display: 'flex',
     fontFamily: primaryFont,
@@ -19,11 +26,19 @@ export default function createAvatarStyle({
     width: avatarSize,
 
     '&.from-user': {
-      backgroundColor: userAvatarBackgroundColor || accent
+      backgroundColor: userAvatarBackgroundColor || accent,
+      borderRadius: userAvatarBorderRadius,
+      color: userAvatarTextColor || 'White',
+      font: userAvatarFont || primaryFont,
+      fontSize: userAvatarFontSize || fontSizeSmall
     },
 
     '&:not(.from-user)': {
-      backgroundColor: botAvatarBackgroundColor || accent
+      backgroundColor: botAvatarBackgroundColor || accent,
+      borderRadius: botAvatarBorderRadius,
+      color: botAvatarTextColor || 'White',
+      font: botAvatarFont || primaryFont,
+      fontSize: botAvatarFontSize || fontSizeSmall
     },
 
     '& > .image': {

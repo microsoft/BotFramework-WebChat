@@ -27,10 +27,20 @@ const DEFAULT_OPTIONS = {
 
   // Avatar
   avatarSize: 40,
+  avatarBorderRadius: '50%',
+  avatarTextColor: 'White',
   botAvatarBackgroundColor: undefined, // defaults to accent color
+  botAvatarBorderRadius: '50%',
+  botAvatarFont: undefined,
+  botAvatarFontSize: undefined,
+  botAvatarTextColor: 'White',
   botAvatarImage: '',
   botAvatarInitials: '',
   userAvatarBackgroundColor: undefined, // defaults to accent color
+  userAvatarBorderRadius: '50%',
+  userAvatarFont: undefined,
+  userAvatarFontSize: undefined,
+  userAvatarTextColor: 'White',
   userAvatarImage: '',
   userAvatarInitials: '',
 

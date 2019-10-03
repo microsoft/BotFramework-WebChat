@@ -39,8 +39,16 @@
           {
             directLine: window.WebChat.createDirectLine({ token }),
             styleOptions: {
+              botAvatarBackgroundColor: '#CE1126',
               botAvatarInitials: 'BF',
-              userAvatarInitials: 'WC'
+              botAvatarBorderRadius: '30%',
+              botAvatarFont: 'Consolas, Courier New, monospace',
+              botAvatarFontSize: '60%',
+              botAvatarTextColor: '#FFFFFF',
+              userAvatarBackgroundColor: '#006341',
+              userAvatarInitials: 'WC',
+              userBorderRadius: '50%',
+              userAvatarTextColor: '#FFF8DC',
             }
           },
           document.getElementById('webchat')
