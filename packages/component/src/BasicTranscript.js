@@ -91,6 +91,7 @@ const BasicTranscript = ({
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
         <SayComposer
+          // These are props for passing in Web Speech ponyfill, where speech synthesis requires these two class/object to be ponyfilled.
           speechSynthesis={speechSynthesis || bypassSpeechSynthesis}
           speechSynthesisUtterance={SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance}
         >

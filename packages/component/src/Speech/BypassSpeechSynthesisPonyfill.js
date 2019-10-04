@@ -1,4 +1,5 @@
-// Since this is a bypass, we will relax some ESLint rules
+// Since this is a bypass, we will relax some ESLint rules.
+// All classes/properties defined here are in W3C Web Speech API.
 
 /* eslint class-methods-use-this: "off" */
 /* eslint getter-return: "off" */

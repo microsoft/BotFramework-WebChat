@@ -1,7 +1,34 @@
 // This is adopted from event-target-shim@5.0.1 under MIT License.
-// The source code is copied here because the original package do not support ES5 browsers.
+// The source code is copied here because the original package does not support ES5 browsers.
+
+// Webpack assumes all code under node_modules are correctly transpiled to ES5.
+// But since this package did not transpile, thus, the output bundle will contains non-ES5 code which break older browsers.
 
 /* eslint-disable */
+
+/*!
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Toru Nagashima
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 /**
  * @author Toru Nagashima <https://github.com/mysticatea>
