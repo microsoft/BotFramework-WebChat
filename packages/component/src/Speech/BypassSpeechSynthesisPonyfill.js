@@ -1,3 +1,10 @@
+// Since this is a bypass, we will relax some ESLint rules
+
+/* eslint class-methods-use-this: "off" */
+/* eslint getter-return: "off" */
+/* eslint max-classes-per-file: ["error", 4] */
+/* eslint no-empty-function: "off" */
+
 import EventTarget, { defineEventAttribute } from '../external/event-target-shim';
 
 class SpeechSynthesisEvent {

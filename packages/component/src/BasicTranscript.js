@@ -10,9 +10,9 @@ import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 
 import {
-  speechSynthesis as noopSpeechSynthesis,
-  SpeechSynthesisUtterance as NoopSpeechSynthesisUtterance
-} from './Speech/noopSpeechSynthesisPonyfill';
+  speechSynthesis as bypassSpeechSynthesis,
+  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
+} from './Speech/BypassSpeechSynthesisPonyfill';
 
 const ROOT_CSS = css({
   overflow: 'hidden',
@@ -91,8 +91,8 @@ const BasicTranscript = ({
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
         <SayComposer
-          speechSynthesis={speechSynthesis || noopSpeechSynthesis}
-          speechSynthesisUtterance={SpeechSynthesisUtterance || NoopSpeechSynthesisUtterance}
+          speechSynthesis={speechSynthesis || bypassSpeechSynthesis}
+          speechSynthesisUtterance={SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance}
         >
           <ul
             aria-atomic="false"

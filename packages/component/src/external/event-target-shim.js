@@ -1,6 +1,8 @@
 // This is adopted from event-target-shim@5.0.1 under MIT License.
 // The source code is copied here because the original package do not support ES5 browsers.
 
+/* eslint-disable */
+
 /**
  * @author Toru Nagashima <https://github.com/mysticatea>
  * @copyright 2015 Toru Nagashima. All rights reserved.
