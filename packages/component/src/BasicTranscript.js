@@ -9,6 +9,11 @@ import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 
+import {
+  speechSynthesis as noopSpeechSynthesis,
+  SpeechSynthesisUtterance as NoopSpeechSynthesisUtterance
+} from './Speech/noopSpeechSynthesisPonyfill';
+
 const ROOT_CSS = css({
   overflow: 'hidden',
   position: 'relative'
@@ -85,7 +90,10 @@ const BasicTranscript = ({
     <div className={classNames(ROOT_CSS + '', className + '')} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
-        <SayComposer speechSynthesis={speechSynthesis} speechSynthesisUtterance={SpeechSynthesisUtterance}>
+        <SayComposer
+          speechSynthesis={speechSynthesis || noopSpeechSynthesis}
+          speechSynthesisUtterance={SpeechSynthesisUtterance || NoopSpeechSynthesisUtterance}
+        >
           <ul
             aria-atomic="false"
             aria-live="polite"
@@ -110,9 +118,7 @@ const BasicTranscript = ({
               >
                 {element}
                 {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                speechSynthesis && activity.channelData && activity.channelData.speak && (
-                  <SpeakActivity activity={activity} />
-                )}
+                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
               </li>
             ))}
           </ul>
