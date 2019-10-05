@@ -9,6 +9,11 @@ import connectToWebChat from './connectToWebChat';
 import ScrollToEndButton from './Activity/ScrollToEndButton';
 import SpeakActivity from './Activity/Speak';
 
+import {
+  speechSynthesis as bypassSpeechSynthesis,
+  SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
+} from './Speech/BypassSpeechSynthesisPonyfill';
+
 const ROOT_CSS = css({
   overflow: 'hidden',
   position: 'relative'
@@ -85,7 +90,11 @@ const BasicTranscript = ({
     <div className={classNames(ROOT_CSS + '', className + '')} role="log">
       <ScrollToBottomPanel className={PANEL_CSS + ''}>
         <div className={FILLER_CSS} />
-        <SayComposer speechSynthesis={speechSynthesis} speechSynthesisUtterance={SpeechSynthesisUtterance}>
+        <SayComposer
+          // These are props for passing in Web Speech ponyfill, where speech synthesis requires these two class/object to be ponyfilled.
+          speechSynthesis={speechSynthesis || bypassSpeechSynthesis}
+          speechSynthesisUtterance={SpeechSynthesisUtterance || BypassSpeechSynthesisUtterance}
+        >
           <ul
             aria-atomic="false"
             aria-live="polite"
@@ -95,7 +104,7 @@ const BasicTranscript = ({
           >
             {activityElements.map(({ activity, element }, index) => (
               <li
-                /* Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75 */
+                // Because of differences in browser implementations, aria-label=" " is used to make the screen reader not repeat the same text multiple times in Chrome v75
                 aria-label=" "
                 className={classNames(styleSet.activity + '', {
                   // Hide timestamp if same timestamp group with the next activity
@@ -110,9 +119,7 @@ const BasicTranscript = ({
               >
                 {element}
                 {// TODO: [P2] We should use core/definitions/speakingActivity for this predicate instead
-                speechSynthesis && activity.channelData && activity.channelData.speak && (
-                  <SpeakActivity activity={activity} />
-                )}
+                activity.channelData && activity.channelData.speak && <SpeakActivity activity={activity} />}
               </li>
             ))}
           </ul>

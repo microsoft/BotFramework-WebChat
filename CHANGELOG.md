@@ -96,6 +96,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2360](https://github.com/microsoft/BotFramework-WebChat/issues/2360). Timestamp should update on language change, by [@compulim](https://github.com/compulim) in PR [#2414](https://github.com/microsoft/BotFramework-WebChat/pull/2414)
 -  Fix [#2428](https://github.com/microsoft/BotFramework-WebChat/issues/2428). Should interrupt speech synthesis after microphone button is clicked, by [@compulim](https://github.com/compulim) in PR [#2429](https://github.com/microsoft/BotFramework-WebChat/pull/2429)
 -  Fix [#2422](https://github.com/microsoft/BotFramework-WebChat/issues/2422). Store thumbnail URL using the activity's `attachment.thumbnailUrl` field, by [@compulim](https://github.com/compulim) in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
+-  Fix [#2435](https://github.com/microsoft/BotFramework-WebChat/issues/2435). Fix microphone button getting stuck on voice-triggered expecting input hint without a speech synthesis engine, by [@compulim](https://github.com/compulim) in PR [#2445](https://github.com/microsoft/BotFramework-WebChat/pull/2445)
 
 ### Added
 

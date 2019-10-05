@@ -124,4 +124,28 @@ describe('speech synthesis', () => {
     await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
     await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
   });
+
+  describe('without speech synthesis', () => {
+    test('should start recognition immediately after receiving expected input hint', async () => {
+      const { driver, pageObjects } = await setupWebDriver({
+        props: {
+          webSpeechPonyfillFactory: () => {
+            const { SpeechGrammarList, SpeechRecognition } = window.WebSpeechMock;
+
+            return {
+              SpeechGrammarList,
+              SpeechRecognition
+            };
+          }
+        }
+      });
+
+      await pageObjects.sendMessageViaMicrophone('input hint expected');
+
+      await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+
+      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+      await driver.wait(negateCondition(speechSynthesisUtterancePended()), timeouts.ui);
+    });
+  });
 });
