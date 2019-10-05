@@ -8,9 +8,6 @@ const ImageAttachment = ({ attachment }) => (
 );
 
 ImageAttachment.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array.isRequired
-  }).isRequired,
   attachment: PropTypes.shape({
     contentUrl: PropTypes.string.isRequired,
     name: PropTypes.string,
