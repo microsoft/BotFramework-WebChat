@@ -27,95 +27,89 @@ A simple web page with a maximized Web Chat and hosted using React. This sample 
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-## Goals of this bot
+## Overview
 
-The `index.html` page has two main goals.
+This sample has two main goals:
 
--  To import React and Babel from [unpkg.com](https://unpkg.com/)
+-  To import React and Babel standalone from [unpkg.com](https://unpkg.com/)
 -  To render Web Chat via React component
 
 We'll start by adding React and Babel to the head or our template, based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
-```diff
-…
-<head>
-+ <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-+ <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
-+ <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
-+ <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
-  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
-</head>
-…
-```
+We will use standalone version of Babel and React. In your production code, you should [setup Babel to precompile code](https://babeljs.io/en/setup/).
 
-> For demonstration purposes, we are using the latest official release of Web Chat at "/latest/webchat.js". When you are using Web Chat for production, you may lock down on a specific version with the following format: "/4.1.0/webchat.js".
+```diff
+  <head>
++   <script src="https://unpkg.com/@babel/standalone@7.6.2/babel.min.js"></script>
++   <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
++   <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+  </head>
+```
 
 The core of this code both creates and renders the React component that displays Web Chat.
 
-```jsx
-…
-const { createStore, ReactWebChat } = window.WebChat;
-const { Provider } = window.ReactRedux;
-const store = createStore();
+```diff
+  (async function() {
+    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const { token } = await res.json();
++   const { createDirectLine, ReactWebChat } = window.WebChat;
 
-window.ReactDOM.render(
-  <ReactWebChat
-    directLine={ window.WebChat.createDirectLine({ token }) }
-  />,
-  document.getElementById('webchat')
-);
-…
+-   window.WebChat.renderWebChat(
+-     {
+-       directLine: window.WebChat.createDirectLine({ token })
+-     },
+-     document.getElementById('webchat')
+-   );
++   window.ReactDOM.render(
++     <ReactWebChat directLine={createDirectLine({ token })} />,
++     document.getElementById('webchat')
++   );
+  })().catch(err => console.error(err));
 ```
-
-In our design, we believe we should allow developers to bring in their own version of backend with the Web Chat UI. Therefore, the backend (i.e. Redux facility) can be used separately from the UI (i.e. React component).
-
-When instantiating Web Chat using React, one would need to use [`react-redux/Provider`](https://github.com/reduxjs/react-redux/blob/master/docs/api.md#provider-store) to connect them together.
 
 ## Completed code
 
 Here is the finished `index.html`:
 
-```diff
+```html
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Integrate with React</title>
-+   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-+   <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
-+   <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
-+   <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.6.2/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style>
-      html, body { height: 100% }
-      body { margin: 0 }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
       #webchat {
         height: 100%;
         width: 100%;
       }
     </style>
   </head>
+  <body>
     <div id="webchat" role="main"></div>
--   <script>
-+   <script type="text/babel">
+    <script type="text/babel">
       (async function () {
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
-+       const { createStore, ReactWebChat } = window.WebChat;
-+       const { createProvider } = window.ReactRedux;
-+       const Provider = createProvider('webchat');
-+       const store = createStore();
+        const { createDirectLine, ReactWebChat } = window.WebChat;
 
--       window.WebChat.renderWebChat({
-+       window.ReactDOM.render(
-+         <Provider store={ store }>
-+           <ReactWebChat
-              directLine={ window.WebChat.createDirectLine({ token }) }
-+             storeKey="webchat"
-+           />
--       }, document.getElementById('webchat'));
-+         </Provider>,
-+         document.getElementById('webchat')
-+       );
+        window.ReactDOM.render(
+          <ReactWebChat directLine={createDirectLine({ token })} />,
+          document.getElementById('webchat')
+        );
+
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
     </script>
