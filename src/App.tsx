@@ -181,3 +181,20 @@ const ThemeTemplate = (theme: Theme) => `
         border-top-right-radius: 5px;
     }
   `
+
+  /*
+// TODO invert suggsted actions button colors
+  #bot .wc-suggested-actions .wc-hscroll > ul > li button, .wc-app .wc-card button {
+    color: white !important;
+    background-color: #D83838 !important;
+    border-color: #D83838 !important;
+    border-radius: 20px;
+}
+
+#bot .wc-suggested-actions .wc-hscroll > ul > li button:active, .wc-app .wc-card button:active {
+    color: #D83838 !important;
+    background-color: white !important;
+    border-color: #D83838 !important;
+}
+
+  */
