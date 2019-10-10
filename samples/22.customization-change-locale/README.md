@@ -26,7 +26,7 @@ This sample shows bot can send activity to change locale on Web Chat.
 
 > Note: this sample is based from [`03.a.host-with-react`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.a.host-with-react).
 
-First, we will create a new `<App>` component that house Web Chat, and render the `<App>` component.
+First, we will create a new `<App>` component that houses Web Chat, and render the `<App>` component.
 
 ```diff
 + const { createDirectLine, ReactWebChat } = window.WebChat;
