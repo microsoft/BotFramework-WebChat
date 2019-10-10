@@ -36,7 +36,7 @@ This sample has two main goals:
 
 We'll start by adding React and Babel to the head or our template, based off of the [full-bundle CDN sample](./../01.a.getting-started-full-bundle/README.md).
 
-We will use standalone version of Babel and React. In your production code, you should [setup Babel to precompile code](https://babeljs.io/en/setup/).
+We will use standalone versions of Babel and React. In your production code, you should [setup Babel to precompile code](https://babeljs.io/en/setup/).
 
 ```diff
   <head>

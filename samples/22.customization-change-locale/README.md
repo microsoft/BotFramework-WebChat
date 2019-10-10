@@ -46,7 +46,7 @@ First, we will create a new `<App>` component that houses Web Chat, and render t
   );
 ```
 
-Then, we will add locale to the `<App>` component, default to browser language.
+Then, we will add a locale to the `<App>` component, defaulting to browser's language.
 
 ```diff
   const { createDirectLine, ReactWebChat } = window.WebChat;
