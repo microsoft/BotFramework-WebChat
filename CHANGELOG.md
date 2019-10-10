@@ -68,9 +68,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `component`: Move `Composer` to React hooks and functional components, by [@compulim](https://github.com), in PR [#2308](https://github.com/compulim/BotFramework-WebChat/pull/2308)
 -  `component`: Fix [#1818](https://github.com/microsoft/BotFramework-WebChat/issues/1818) Move to functional components by [@corinagum](https://github.com/corinagum), in PR [#2322](https://github.com/microsoft/BotFramework-WebChat/pull/2322)
 -  Fix [#2292](https://github.com/microsoft/BotFramework-WebChat/issues/2292). Added function to select voice to props, `selectVoice()`, by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
--  `bundle`: Bumped DirectLineJS to support metadata when uploading attachments, in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
-   - [`botframework-directlinejs@0.11.5`](https://www.npmjs.com/package/botframework-directlinejs)
-   - Removed DirectLineJS as a dev dependency for `component` because it was not referenced
 
 ### Fixed
 
@@ -79,7 +76,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#1954](https://github.com/microsoft/BotFramework-WebChat/issues/1954). Estimate clock skew and adjust timestamp for outgoing activity, by [@compulim](https://github.com/compulim) in PR [#2208](https://github.com/microsoft/BotFramework-WebChat/pull/2208)
 -  Fix [#2240](https://github.com/microsoft/BotFramework-WebChat/issues/2240). Fix microphone button should be re-enabled after error, by [@compulim](https://github.com/compulim) in PR [#2241](https://github.com/microsoft/BotFramework-WebChat/pull/2241)
 -  Fix [#2250](https://github.com/microsoft/BotFramework-WebChat/issues/2250). Fix React warnings related prop types, by [@compulim](https://github.com/compulim) in PR [#2253](https://github.com/microsoft/BotFramework-WebChat/pull/2253)
--  Fix [#2248](https://github.com/microsoft/BotFramework-WebChat/issues/2248). Remove download links from user-uploaded attachment without thumbnails, by [@compulim](https://github.com/compulim) in PR [#2262](https://github.com/microsoft/BotFramework-WebChat/pull/2262)
 -  Fix [#2245](https://github.com/microsoft/BotFramework-WebChat/issues/2245). Fix speech synthesis not working on Safari by priming the engine on the first microphone button click, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 -  Fix [#1514](https://github.com/microsoft/BotFramework-WebChat/issues/1514). Added reference grammar ID when using Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
 -  Fix [#1515](https://github.com/microsoft/BotFramework-WebChat/issues/1515). Added dynamic phrases when using Cognitive Services Speech Services, by [@compulim](https://github.com/compulim) in PR [#2246](https://github.com/microsoft/BotFramework-WebChat/pull/2246)
@@ -90,12 +86,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2365](https://github.com/microsoft/BotFramework-WebChat/issues/2365). Fix Adaptive Card `pushButton` appearance on Chrome, by [@corinagum](https://github.com/corinagum) in PR [#2382](https://github.com/microsoft/BotFramework-WebChat/pull/2382)
 -  Fix [#2379](https://github.com/microsoft/BotFramework-WebChat/issues/2379). Speech synthesis can be configured off by passing `null`, by [@compulim](https://github.com/compulim) in PR [#2408](https://github.com/microsoft/BotFramework-WebChat/pull/2408)
 -  Fix [#2418](https://github.com/microsoft/BotFramework-WebChat/issues/2418). Connectivity status should not waste-render every 400 ms, by [@compulim](https://github.com/compulim) in PR [#2419](https://github.com/microsoft/BotFramework-WebChat/pull/2419)
--  Fix [Emulator:#1823](https://github.com/microsoft/BotFramework-Emulator/issues/1823). Fix Sendbox "Type your message" being read twice by AT, by [@corinagum](https://github.com/corinagum) in PR [#2423](https://github.com/microsoft/BotFramework-WebChat/pull/2423)
 -  Fix [#2415](https://github.com/microsoft/BotFramework-WebChat/issues/2415) and [#2416](https://github.com/microsoft/BotFramework-WebChat/issues/2416). Fix receipt card rendering, by [@compulim](https://github.com/compulim) in PR [#2417](https://github.com/microsoft/BotFramework-WebChat/issues/2417)
 -  Fix [#2415](https://github.com/microsoft/BotFramework-WebChat/issues/2415) and [#2416](https://github.com/microsoft/BotFramework-WebChat/issues/2416). Fix Adaptive Cards cannot be disabled on-the-fly, by [@compulim](https://github.com/compulim) in PR [#2417](https://github.com/microsoft/BotFramework-WebChat/issues/2417)
 -  Fix [#2360](https://github.com/microsoft/BotFramework-WebChat/issues/2360). Timestamp should update on language change, by [@compulim](https://github.com/compulim) in PR [#2414](https://github.com/microsoft/BotFramework-WebChat/pull/2414)
 -  Fix [#2428](https://github.com/microsoft/BotFramework-WebChat/issues/2428). Should interrupt speech synthesis after microphone button is clicked, by [@compulim](https://github.com/compulim) in PR [#2429](https://github.com/microsoft/BotFramework-WebChat/pull/2429)
--  Fix [#2422](https://github.com/microsoft/BotFramework-WebChat/issues/2422). Store thumbnail URL using the activity's `attachment.thumbnailUrl` field, by [@compulim](https://github.com/compulim) in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
 -  Fix [#2435](https://github.com/microsoft/BotFramework-WebChat/issues/2435). Fix microphone button getting stuck on voice-triggered expecting input hint without a speech synthesis engine, by [@compulim](https://github.com/compulim) in PR [#2445](https://github.com/microsoft/BotFramework-WebChat/pull/2445)
 
 ### Added
@@ -104,23 +98,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2307](https://github.com/Microsoft/BotFramework-WebChat/issues/2307). Added options to hide ScrollToEnd button, by [@nt-7](https://github.com/nt-7) in PR [#2332](https://github.com/Microsoft/BotFramework-WebChat/pull/2332)
 -  Added bubble nub and style options, by [@compulim](https://github.com/compulim), in PR [#2137](https://github.com/Microsoft/BotFramework-WebChat/pull/2137)
 -  Fix [#1808](https://github.com/microsoft/BotFramework-WebChat/issues/1808). Added documentation on activity types, by [@corinagum](https://github.com/corinagum) in PR [#2228](https://github.com/microsoft/BotFramework-WebChat/pull/2228)
--  Make thumbnails when uploading GIF/JPEG/PNG and store it in `channelData.attachmentThumbnails`, by [@compulim](https://github.com/compulim), in PR [#2206](https://github.com/microsoft/BotFramework-WebChat/pull/2206), requires modern browsers with following features:
-   - [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
-   - [`createImageBitmap`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/createImageBitmap)
-   - [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)/[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)
-   - [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
-      - Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
 -  Added `timestampFormat` option to the default style options and created `AbsoluteTime` component, by [@tdurnford](https://github.com/tdurnford), in PR [#2295](https://github.com/microsoft/BotFramework-WebChat/pull/2295)
 -  `embed`: Added ES5 polyfills and dev server, by [@compulim](https://github.com/compulim), in PR [#2315](https://github.com/microsoft/BotFramework-WebChat/pull/2315)
 -  Fix [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
 -  Added full screen capability to `IFRAME` in the `YouTubeContent` and `VimeoContent` components by [@tdurnford](https://github.com/tdurnford) in PR [#2399](https://github.com/microsoft/BotFramework-WebChat/pull/2399)
--  Render thumbnail for image attachments using `activity.attachments[].thumbnailUrl`, by [@compulim](https://github.com/compulim) in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
 
 ### Samples
 
 -  [Single sign-on for Microsoft Teams apps](https://microsoft.github.io/BotFramework-WebChat/19.c.single-sign-on-for-teams-apps/), by [@compulim](https://github.com/compulim) in [#2196](https://github.com/microsoft/BotFramework-WebChat/pull/2196)
 -  [Customize Web Chat with Reaction Buttons](https://microsoft.github.io/BotFramework-WebChat/09.customization-reaction-buttons/). Updated reaction handlers to send `messageReaction` activities, by [@tdurnford](https://github.com/tdurnford) in [#2239](https://github.com/microsoft/BotFramework-WebChat/pull/2239)
 -  [Select voice for speech synthesis](https://microsoft.github.io/BotFramework-WebChat/06.g.select-voice/), by [@compulim](https://github.com/compulim), in PR [#2338](https://github.com/microsoft/BotFramework-WebChat/pull/2338)
+
+## [4.5.3] - 2019-10-10
+
+### Changed
+
+-  `bundle`: Bumped DirectLineJS to support metadata when uploading attachments, in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
+   - [`botframework-directlinejs@0.11.5`](https://www.npmjs.com/package/botframework-directlinejs)
+   - Removed DirectLineJS as a dev dependency for `component` because it was not referenced
+
+### Fixed
+
+-  Fix [#2248](https://github.com/microsoft/BotFramework-WebChat/issues/2248). Remove download links from user-uploaded attachment without thumbnails, by [@compulim](https://github.com/compulim) in PR [#2262](https://github.com/microsoft/BotFramework-WebChat/pull/2262)
+-  Fix [Emulator:#1823](https://github.com/microsoft/BotFramework-Emulator/issues/1823). Fix Sendbox "Type your message" being read twice by AT, by [@corinagum](https://github.com/corinagum) in PR [#2423](https://github.com/microsoft/BotFramework-WebChat/pull/2423)
+-  Fix [#2422](https://github.com/microsoft/BotFramework-WebChat/issues/2422). Store thumbnail URL using the activity's `attachment.thumbnailUrl` field, by [@compulim](https://github.com/compulim) in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
+
+### Added
+
+-  Make thumbnails when uploading GIF/JPEG/PNG and store it in `channelData.attachmentThumbnails`, by [@compulim](https://github.com/compulim), in PR [#2206](https://github.com/microsoft/BotFramework-WebChat/pull/2206), requires modern browsers with following features:
+   - [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
+   - [`createImageBitmap`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/createImageBitmap)
+   - [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)/[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)
+   - [`OffscreenCanvas`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)
+      - Specifically [`OffscreenCanvas.getContext('2d')`](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/getContext)
+-  Render thumbnail for image attachments using `activity.attachments[].thumbnailUrl`, by [@compulim](https://github.com/compulim) in PR [#2433](https://github.com/microsoft/BotFramework-WebChat/pull/2433)
 
 ## [4.5.2] - 2019-08-07
 
