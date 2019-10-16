@@ -186,9 +186,9 @@ window.ReactDOM.render(
     <title>Web Chat: Password input activity</title>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://unpkg.com/react@16.5.0/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16.5.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/react-redux@5.0.7/dist/react-redux.min.js"></script>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
     <script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
 
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>

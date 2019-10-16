@@ -50,32 +50,27 @@
         const App = () => {
           const directLine = useMemo(() => createDirectLine({ token }), []);
           const [locale, setLocale] = useState(navigator.language);
-          const store = useMemo(() => createStore({}, () => next => action => {
-            if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-              console.log(action.payload.activity);
+          const store = useMemo(
+            () =>
+              createStore({}, () => next => action => {
+                if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+                  console.log(action.payload.activity);
 
-              const nextLocale = ['en-US', 'ja-JP', 'zh-YUE'][~~(Math.random() * 3)];
+                  const nextLocale = ['en-US', 'ja-JP', 'zh-YUE'][~~(Math.random() * 3)];
 
-              console.warn(nextLocale);
-              setLocale(nextLocale);
-            }
+                  console.warn(nextLocale);
+                  setLocale(nextLocale);
+                }
 
-            return next(action);
-          }), []);
-
-          return (
-            <ReactWebChat
-              directLine={directLine}
-              locale={locale}
-              store={store}
-            />
+                return next(action);
+              }),
+            []
           );
+
+          return <ReactWebChat directLine={directLine} locale={locale} store={store} />;
         };
 
-        window.ReactDOM.render(
-          <App />,
-          document.getElementById('webchat')
-        );
+        window.ReactDOM.render(<App />, document.getElementById('webchat'));
 
         document.querySelector('#webchat > *').focus();
       })().catch(err => console.error(err));
