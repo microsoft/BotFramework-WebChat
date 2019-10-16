@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.4",
-    "adaptivecards": "~1.2.0",
+    "adaptivecards": "1.2.0",
     "botframework-directlinejs": "^0.11.5",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
@@ -78,7 +78,7 @@
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }
