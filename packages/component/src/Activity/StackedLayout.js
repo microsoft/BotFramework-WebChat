@@ -193,7 +193,7 @@ StackedLayout.propTypes = {
       bubbleFromUserNubSize: PropTypes.number.isRequired,
       botAvatarInitials: PropTypes.string,
       userAvatarInitials: PropTypes.string
-    }),
+    }).isRequired,
     stackedLayout: PropTypes.any.isRequired
   }).isRequired,
   timestampClassName: PropTypes.string

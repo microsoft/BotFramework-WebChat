@@ -54,7 +54,7 @@ Bubble.propTypes = {
     options: PropTypes.shape({
       bubbleNubSize: PropTypes.number.isRequired,
       bubbleFromUserNubSize: PropTypes.number.isRequired
-    })
+    }).isRequired
   }).isRequired
 };
 

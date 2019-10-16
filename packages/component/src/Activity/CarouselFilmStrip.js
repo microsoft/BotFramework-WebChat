@@ -187,7 +187,7 @@ WebChatCarouselFilmStrip.propTypes = {
     options: PropTypes.shape({
       bubbleFromUserNubSize: PropTypes.number.isRequired,
       bubbleNubSize: PropTypes.number.isRequired
-    })
+    }).isRequired
   }).isRequired,
   timestampClassName: PropTypes.string
 };
