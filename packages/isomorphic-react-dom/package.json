@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "",
   "main": "dist/react.js",
+  "private": true,
   "scripts": {
     "build": "npm run build:babel && npm run build:webpack -- --config webpack-development.config.js",
     "build:babel": "babel --out-dir lib src",

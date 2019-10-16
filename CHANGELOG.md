@@ -22,9 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
--  Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
--  Added missing Italian (it-IT) translations, by [@AntoT84](https://github.com/AntoT84)
-
 ### Breaking changes
 
 -  We will no longer include `react` and `react-dom` in our NPM package, instead, we will requires peer dependencies of `react@^16.8.6` and `react-dom@^16.8.6`
@@ -105,6 +102,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fix [#2380](https://github.com/microsoft/BotFramework-WebChat/issues/2380). Added `botAvatarBackgroundColor` and `userAvatarBackgroundColor` to the default style options, by [@tdurnford](https://github.com/tdurnford) in PR [#2384](https://github.com/microsoft/BotFramework-WebChat/pull/2384)
 -  Added full screen capability to `IFRAME` in the `YouTubeContent` and `VimeoContent` components by [@tdurnford](https://github.com/tdurnford) in PR [#2399](https://github.com/microsoft/BotFramework-WebChat/pull/2399)
 -  Fix [#2461](https://github.com/Microsoft/BotFramework-WebChat/issues/2461), added `isomorphic-react` and `isomorphic-react-dom` packages, by [@compulim](https://github.com/compulim) and [@corinagum](https://github.com/corinagum), in PR [#2478](https://github.com/microsoft/BotFramework-WebChat/pull/2478)
+-  Added missing Norwegian (nb-NO) translations, by [@taarskog](https://github.com/taarskog)
+-  Added missing Italian (it-IT) translations, by [@AntoT84](https://github.com/AntoT84)
 
 ### Samples
 

@@ -6,7 +6,7 @@ module.exports = {
   },
   mode: 'production',
   output: {
-    filename: '[name]'.js,
+    filename: '[name].js',
     libraryTarget: 'umd',
     path: resolve(__dirname, 'dist')
   }
