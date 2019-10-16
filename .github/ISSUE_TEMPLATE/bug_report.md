@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: ''
 labels: Bug, Pending, customer-reported, Bot Services
 assignees: ''
-
 ---
 
 <!-- ATTENTION: Bot Framework internals, please remove the `customer-reported` and `Bot Services` labels before submitting this issue. -->
