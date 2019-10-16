@@ -50,7 +50,11 @@ Bubble.propTypes = {
   fromUser: PropTypes.bool,
   nub: PropTypes.bool,
   styleSet: PropTypes.shape({
-    bubble: PropTypes.any.isRequired
+    bubble: PropTypes.any.isRequired,
+    options: PropTypes.shape({
+      bubbleNubSize: PropTypes.number.isRequired,
+      bubbleFromUserNubSize: PropTypes.number.isRequired
+    })
   }).isRequired
 };
 

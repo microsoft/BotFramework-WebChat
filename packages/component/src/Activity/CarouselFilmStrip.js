@@ -183,7 +183,11 @@ WebChatCarouselFilmStrip.propTypes = {
   language: PropTypes.string.isRequired,
   scrollableRef: PropTypes.any.isRequired,
   styleSet: PropTypes.shape({
-    carouselFilmStrip: PropTypes.any.isRequired
+    carouselFilmStrip: PropTypes.any.isRequired,
+    options: PropTypes.shape({
+      bubbleFromUserNubSize: PropTypes.number.isRequired,
+      bubbleNubSize: PropTypes.number.isRequired
+    })
   }).isRequired,
   timestampClassName: PropTypes.string
 };
